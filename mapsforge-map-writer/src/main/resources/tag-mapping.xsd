@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://mapsforge.org/tag-mapping"
+	xmlns:tns="http://mapsforge.org/tag-mapping" elementFormDefault="qualified">
+
+
+
+    <complexType name="osm-tag">
+    	<annotation>
+    		<documentation>
+    			The osm-tag represents an OpenStreetMap tag and may
+    			refer to either a POI tag or a way tag. The required
+    			attributes 'key' and 'value' determine the OpenStreetMap
+    			tag. The optional attribute 'zoom-appear' defines the
+    			zoom level on which the tag will first appear on the
+    			map. The optional attribute 'enabled' specifies whether
+    			the osm-tag is recognized during the map generation
+    			process. Omitting the attribute is interpreted as
+    			enabled=true. The attribute 'renderable' specifies
+    			whether the tag is renderable. Omitting the attribute is
+    			interpreted as renderable=true.
+    		</documentation>
+    	</annotation>
+    	<sequence>
+    		<element name="zoom-override" type="tns:simple-tag"
+    			maxOccurs="unbounded" minOccurs="0">
+    		</element>
+    	</sequence>
+    	<attribute name="key" use="required">
+    		<annotation>
+    			<documentation>
+    				The key of the OpenStreetMap tag. E.g. 'highway' in
+    				the tag 'highway=primary'.
+    			</documentation>
+    		</annotation>
+    		<simpleType>
+    			<restriction base="string">
+    				<minLength value="1"></minLength>
+    				<maxLength value="100"></maxLength>
+    				<whiteSpace value="collapse"></whiteSpace>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="value" use="required">
+    		<annotation>
+    			<documentation>
+    				The value of the OpenStreetMap tag. E.g. 'primary'
+    				in the tag 'highway=primary'.
+    			</documentation>
+    		</annotation>
+    		<simpleType>
+    			<restriction base="string">
+    				<maxLength value="100"></maxLength>
+    				<minLength value="1"></minLength>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="zoom-appear" use="optional" default="17">
+    		<annotation>
+    			<documentation>
+    				The zoom level on which the tag should first appear
+    				on the map.
+    			</documentation>
+    		</annotation>
+    		<simpleType>
+    			<restriction base="int">
+    				<minInclusive value="0"></minInclusive>
+    				<maxInclusive value="21"></maxInclusive>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="enabled" type="boolean" use="optional"
+    		default="false">
+    		<annotation>
+    			<documentation>
+    				Activates or deactivates the tag in the map
+    				generation process. Omitting the attribute activates
+    				the tag.
+    			</documentation>
+    		</annotation>
+    	</attribute>
+    	<attribute name="renderable" type="boolean" use="optional"
+    		default="false">
+    		<annotation>
+    			<documentation>
+    				Indicates whether the tag is renderable. Omitting
+    				the attribute indicates that the tag is renderable.
+    			</documentation>
+    		</annotation>
+    	</attribute>
+    	<attribute name="force-polygon-line" type="boolean" default="false"></attribute>
+    	<attribute name="equivalent-values" type="string"
+    		use="optional">
+    		<annotation>
+    			<documentation>
+    				The usage of some tags such as "oneway" is quite
+    				inconsistent in the OSM dataset. Expressions such as
+    				"oneway=yes", "oneway=1" or oneway="true" are
+    				semantically equivalent. This attribute allows to
+    				associate these equivalent values to the single
+    				canonical value defined in the "value-attribute".
+    			</documentation>
+    		</annotation>
+    	</attribute>
+    </complexType>
+
+    <complexType name="tag-group">
+    	<annotation>
+    		<documentation>
+    			A tag-group groups an arbitrary number of osm-tags. It
+    			takes the optional boolean attribute 'enabled' which
+    			allows to specify whether the group of osm-tags is used
+    			in the map file generation process. Effectively, the
+    			attribute sets a default value for the 'enable'
+    			attribute of the osm-tags grouped under this tag-group.
+    			However, this default value maybe overridden by the
+    			'enable' attribute in a specific osm-tag. A missing
+    			'enable' attribute is interpreted as enabled=true.
+    		</documentation>
+    	</annotation>
+    	<sequence>
+    		<element name="osm-tag" type="tns:osm-tag"
+    			maxOccurs="unbounded" minOccurs="1">
+    			<annotation>
+    				<documentation>
+    					The osm-tag represents an OpenStreetMap tag and
+    					may refer to either a POI tag or a way tag.
+    				</documentation>
+    			</annotation>
+    		</element>
+    	</sequence>
+    	<attribute name="enabled" type="boolean" use="optional"
+    		default="false">
+    		<annotation>
+    			<documentation>
+    				Activates or deactivates all the tags in this group
+    				in the map generation process. It can be overidden
+    				by the 'enabled' attribute in an osm-tag. Omitting
+    				the attribute is equivalent to setting enabled=true.
+    			</documentation>
+    		</annotation>
+    	</attribute>
+    </complexType>
+
+
+
+
+    <complexType name="tag-mapping">
+    	<sequence>
+    		<element name="pois" type="tns:tag-group"
+    			maxOccurs="unbounded" minOccurs="0">
+    			<annotation>
+    				<documentation>
+    					A group of osm-tags referring to POIs.
+    				</documentation>
+    			</annotation>
+    		</element>
+    		<element name="ways" type="tns:tag-group"
+    			maxOccurs="unbounded" minOccurs="0">
+    			<annotation>
+    				<documentation>
+    					A group of osm-tags referring to ways.
+    				</documentation>
+    			</annotation>
+    		</element>
+    	</sequence>
+    	<attribute name="default-zoom-appear" use="required">
+            <annotation>
+            	<documentation>The default zoom-appear level that is used if the attribute 'zoom-appear' is omitted in an osm-tag.</documentation>
+            </annotation>
+            <simpleType>
+    			<restriction base="int">
+    				<minInclusive value="0"></minInclusive>
+    				<maxInclusive value="21"></maxInclusive>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="profile-name" use="required">
+            <annotation>
+            	<documentation>The name of this tag mapping profile. The name is attached to the comment field in the map file.</documentation>
+            </annotation>
+            <simpleType>
+    			<restriction base="string">
+    				<minLength value="3"></minLength>
+    				<maxLength value="100"></maxLength>
+    				<whiteSpace value="collapse"></whiteSpace>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    </complexType>
+
+    <element name="tag-mapping" type="tns:tag-mapping">
+    	<annotation>
+    		<documentation>A tag-mapping specifies which OpenStreetMap tags for POIs and ways should be recognized by the map file generator.
+Mappings for POIs and ways may be grouped be using the pois tag or the ways tag, respectively.
+A tag-mapping takes as required attributes a default-zoom-appear value and a profile name.
+The default-zoom-appear attribute specifies which zoom-appear value is attributed to osm-tags which are missing the zoom-appear attribute.
+The profile attribute is an arbitrary name that is attached to the comment field in the map file.</documentation>
+    	</annotation></element>
+
+    <complexType name="simple-tag">
+    	<attribute name="key" use="required">
+    		<simpleType>
+    			<restriction base="string">
+    				<minLength value="1"></minLength>
+    				<maxLength value="100"></maxLength>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="value" use="required">
+    		<simpleType>
+    			<restriction base="string">
+    				<minLength value="1"></minLength>
+    				<maxLength value="100"></maxLength>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    </complexType>
+</schema>

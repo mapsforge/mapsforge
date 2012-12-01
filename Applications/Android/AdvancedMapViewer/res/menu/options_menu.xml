@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/menu_info" android:title="@string/menu_info" android:icon="@drawable/ic_menu_info_details" android:showAsAction="never">
+		<menu>
+			<item android:id="@+id/menu_info_map_file" android:title="@string/menu_info_map_file" />
+			<item android:id="@+id/menu_info_about" android:title="@string/menu_info_about" />
+		</menu>
+	</item>
+	<item android:id="@+id/menu_position" android:title="@string/menu_position" android:icon="@drawable/ic_menu_mylocation" android:showAsAction="always">
+		<menu>
+			<item android:id="@+id/menu_position_my_location_enable" android:title="@string/menu_position_my_location_enable" />
+			<item android:id="@+id/menu_position_my_location_disable" android:title="@string/menu_position_my_location_disable" />
+			<item android:id="@+id/menu_position_last_known" android:title="@string/menu_position_last_known" />
+			<item android:id="@+id/menu_position_enter_coordinates" android:title="@string/menu_position_enter_coordinates" />
+			<item android:id="@+id/menu_position_map_center" android:title="@string/menu_position_map_file_center" />
+		</menu>
+	</item>
+	<item android:id="@+id/menu_screenshot" android:title="@string/menu_screenshot" android:icon="@drawable/ic_menu_camera" android:showAsAction="never">
+		<menu>
+			<item android:id="@+id/menu_screenshot_jpeg" android:title="@string/menu_screenshot_jpeg" />
+			<item android:id="@+id/menu_screenshot_png" android:title="@string/menu_screenshot_png" />
+		</menu>
+	</item>
+	<item android:id="@+id/menu_preferences" android:title="@string/menu_preferences" android:icon="@drawable/ic_menu_preferences" android:showAsAction="never"/>
+	<item android:id="@+id/menu_render_theme" android:title="@string/menu_render_theme" android:icon="@drawable/ic_menu_mapmode" android:showAsAction="ifRoom">
+		<menu>
+			<item android:id="@+id/menu_render_theme_osmarender" android:title="@string/menu_render_theme_osmarender" />
+			<item android:id="@+id/menu_render_theme_select_file" android:title="@string/menu_render_theme_select_file" />
+		</menu>
+	</item>
+	<item android:id="@+id/menu_mapfile" android:title="@string/menu_mapfile" android:icon="@drawable/ic_menu_archive" android:showAsAction="always"/>
+</menu>

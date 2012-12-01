@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<string-array name="preferences_scale_bar_unit_values">
+		<item>angloamerikanisch</item>
+		<item>metrisch</item>
+	</string-array>
+
+	<string-array name="preferences_text_scale_values">
+		<item>winzig</item>
+		<item>klein</item>
+		<item>normal</item>
+		<item>groß</item>
+		<item>riesig</item>
+	</string-array>
+
+	<string name="application_name">AdvancedMapViewer</string>
+	<string name="cancel">Abbrechen</string>
+	<string name="error">Fehler</string>
+	<string name="error_last_location_unknown">Die letzte Position ist unbekannt</string>
+	<string name="file_invalid">Die gewählte Datei ist ungültig.</string>
+	<string name="file_select">Bitte wählen Sie eine Datei.</string>
+	<string name="file_size_byte">byte</string>
+	<string name="file_size_bytes">bytes</string>
+	<string name="file_size_kb">kB</string>
+	<string name="file_size_mb">MB</string>
+	<string name="file_size_gb">GB</string>
+	<string name="go_to_position">Gehe zu Position</string>
+	<string name="info_map_file_area">Fläche</string>
+	<string name="info_map_file_comment">Kommentar</string>
+	<string name="info_map_file_created_by">Erzeugt von</string>
+	<string name="info_map_file_date">Datum</string>
+	<string name="info_map_file_debug">Debug-Informationen</string>
+	<string name="info_map_file_debug_no">nicht enthalten</string>
+	<string name="info_map_file_debug_yes">enthalten</string>
+	<string name="info_map_file_language_preference">Bevorzugte Sprache</string>
+	<string name="info_map_file_name">Datei</string>
+	<string name="info_map_file_size">Dateigröße</string>
+	<string name="info_map_file_start_position">Startposition</string>
+	<string name="info_map_file_start_zoom_level">Start-Zoomstufe</string>
+	<string name="info_map_file_version">Version</string>
+	<string name="latitude">Breitengrad</string>
+	<string name="longitude">Längengrad</string>
+	<string name="menu_info">Info</string>
+	<string name="menu_info_map_file">Kartendatei-Info</string>
+	<string name="menu_info_about">Über diese Software</string>
+	<string name="menu_mapfile">Kartendatei</string>
+	<string name="menu_position">Position</string>
+	<string name="menu_position_enter_coordinates">Koordinaten eingeben</string>
+	<string name="menu_position_last_known">Letzte bekannte Position</string>
+	<string name="menu_position_map_file_center">Zentrum der Kartendatei</string>
+	<string name="menu_position_my_location_enable">Meine Position anzeigen</string>
+	<string name="menu_position_my_location_disable">Meine Position entfernen</string>
+	<string name="menu_preferences">Einstellungen</string>
+	<string name="menu_render_theme">Render-Theme</string>
+	<string name="menu_render_theme_osmarender">Osmarender</string>
+	<string name="menu_render_theme_select_file">XML-Datei wählen …</string>
+	<string name="menu_screenshot">Screenshot</string>
+	<string name="menu_screenshot_jpeg">JPEG (verlustbehaftet)</string>
+	<string name="menu_screenshot_png">PNG (verlustlos)</string>
+	<string name="no_location_provider_available">Keine Standortquelle verfügbar</string>
+	<string name="ok">OK</string>
+	<string name="preferences_debug">Entwicklungs-Einstellungen</string>
+	<string name="preferences_general">Allgemeine Einstellungen</string>
+	<string name="preferences_cache_persistence">Cache-Persistenz</string>
+	<string name="preferences_cache_persistence_desc">Zwischenspeicher beim Beenden beibehalten</string>
+	<string name="preferences_cache_size">Externer Speicher</string>
+	<string name="preferences_cache_size_desc">Größe des Caches anpassen</string>
+	<string name="preferences_cache_size_value">%.1f MB</string>
+	<string name="preferences_fullscreen">Vollbildmodus</string>
+	<string name="preferences_fullscreen_desc">Verberge die Statusleiste</string>
+	<string name="preferences_map">Karteneinstellungen</string>
+	<string name="preferences_move_speed">Scrollgeschwindigkeit</string>
+	<string name="preferences_move_speed_desc">Scrollgeschwindigkeit der Karte anpassen</string>
+	<string name="preferences_move_speed_value">%d %% Scrollgeschwindigkeit</string>
+	<string name="preferences_scale_bar_unit">Kartenmaßstabs-Einheit</string>
+	<string name="preferences_scale_bar_unit_desc">Einheit des Kartenmaßstabs auswählen</string>
+	<string name="preferences_show_fps_counter">Bildfrequenz</string>
+	<string name="preferences_show_fps_counter_desc">FPS-Zähler anzeigen</string>
+	<string name="preferences_show_scale_bar">Kartenmaßstab</string>
+	<string name="preferences_show_scale_bar_desc">Maßstabsbalken der Karte anzeigen</string>
+	<string name="preferences_show_tile_coordinates">Tile-Koordinaten</string>
+	<string name="preferences_show_tile_coordinates_desc">Koordinaten auf Kacheln malen</string>
+	<string name="preferences_show_tile_frames">Tile-Umrandungen</string>
+	<string name="preferences_show_tile_frames_desc">Rahmen um Tiles malen</string>
+	<string name="preferences_show_water_tiles">Wasser-Kacheln</string>
+	<string name="preferences_show_water_tiles_desc">Kacheln mit gesetztem Wasser-Bit hervorheben</string>
+	<string name="preferences_text_scale">Schriftgröße</string>
+	<string name="preferences_text_scale_desc">Basisgröße für Karten-Beschriftungen auswählen</string>
+	<string name="preferences_wake_lock">Aktiv bleiben</string>
+	<string name="preferences_wake_lock_desc">Abschaltung des Bildschirms verhindern</string>
+	<string name="snap_to_location_enabled">Snap to position ist aktiviert</string>
+	<string name="snap_to_location_disabled">Snap-to-Position ist deaktiviert</string>
+	<string name="unit_symbol_kilometer">&#160;km</string>
+	<string name="unit_symbol_meter">&#160;m</string>
+	<string name="zoomLevel">Zoomstufe</string>
+</resources>

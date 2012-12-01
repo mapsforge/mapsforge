@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6">
+	<bounds minlat="0.1" minlon="0.2" maxlat="0.3" maxlon="0.4" />
+</osm>

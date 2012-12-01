@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:padding="20dip">
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_name"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewName" android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_size"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewSize" android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_version"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewVersion" android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_debug"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewDebug" android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_date"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewDate" android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_area"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewArea" android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_start_position"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewStartPosition" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_start_zoom_level"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewStartZoomLevel" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/info_map_file_language_preference" android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewLanguagePreference" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_comment"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewComment" android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="10dip" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/info_map_file_created_by"
+			android:textStyle="bold" android:textColor="#FFF" />
+		<TextView android:id="@+id/infoMapFileViewCreatedBy" android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:paddingBottom="10dip" />
+	</LinearLayout>
+</ScrollView>

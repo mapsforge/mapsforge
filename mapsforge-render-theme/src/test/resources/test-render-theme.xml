@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2" map-background="#111111" base-stroke-width="2.2" base-text-size="3.3">
+
+	<rule e="way" k="amenity" v="parking" closed="yes">
+		<area fill="#444444" />
+		<symbol src="jar:/parking.png" />
+	</rule>
+
+	<rule e="way" k="highway" v="primary" closed="no">
+		<line stroke="#555555" />
+
+		<rule e="way" k="tunnel" v="~|false|no">
+			<pathText k="name" stroke="#666666" />
+		</rule>
+
+		<rule e="any" k="oneway" v="yes|true" zoom-min="16">
+			<lineSymbol src="file:oneway.png" />
+		</rule>
+	</rule>
+
+	<rule e="node" k="place" v="city" zoom-max="15">
+		<caption k="name" fill="#777777" />
+	</rule>
+
+	<rule e="node" k="highway" v="turning_circle">
+		<circle radius="1.5" fill="#888888" />
+	</rule>
+</rendertheme>

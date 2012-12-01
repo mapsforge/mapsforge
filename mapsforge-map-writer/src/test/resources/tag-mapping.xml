@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tag-mapping xmlns="http://mapsforge.org/tag-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mapsforge.org/tag-mapping tag-mapping.xsd" default-zoom-appear="16" profile-name="default-profile">
+
+	<!-- ************* POIS *************** -->
+	<!-- PUBLIC AMENITIES -->
+	<pois>		
+		<osm-tag key="amenity" value="university" zoom-appear="17" />
+	</pois>
+
+
+	<!-- ************* WAYS *************** -->
+	<!-- NATURAL / WATERWAY TAGS -->
+	<ways>
+		<osm-tag key="natural" value="beach" zoom-appear="14" />
+		<osm-tag key="natural" value="coastline" zoom-appear="0" />		
+	</ways>
+</tag-mapping>

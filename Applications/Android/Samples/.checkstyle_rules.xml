@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+<module name="Checker">
+	<property name="severity" value="warning"/>
+
+	<!-- See http://checkstyle.sourceforge.net/config_header.html -->
+	<module name="Header">
+		<property name="fileExtensions" value="java" />
+		<property name="header" value="/*\n * Copyright 2010, 2011, 2012 mapsforge.org\n *\n * This program is free software: you can redistribute it and/or modify it under the\n * terms of the GNU Lesser General Public License as published by the Free Software\n * Foundation, either version 3 of the License, or (at your option) any later version.\n *\n * This program is distributed in the hope that it will be useful, but WITHOUT ANY\n * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A\n * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.\n *\n * You should have received a copy of the GNU Lesser General Public License along with\n * this program. If not, see &lt;http://www.gnu.org/licenses/&gt;.\n */" />
+	</module>
+
+	<module name="NewlineAtEndOfFile">
+		<property name="fileExtensions" value="java" />
+		<property name="lineSeparator" value="lf" />
+	</module>
+
+	<module name="TreeWalker">
+		<!-- See http://checkstyle.sourceforge.net/config_misc.html -->
+		<module name="ArrayTypeStyle" />
+		<module name="OuterTypeFilename" />
+		<module name="UncommentedMain" />
+		<module name="UpperEll" />
+
+		<!-- See http://checkstyle.sourceforge.net/config_javadoc.html -->
+		<module name="JavadocStyle" />
+
+		<!-- See http://checkstyle.sourceforge.net/config_naming.html -->
+		<module name="ConstantName">
+			<property name="format" value="^[A-Z][A-Z0-9\$]*(_[A-Z0-9\$]+)*$" />
+		</module>
+		<module name="LocalFinalVariableName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName">
+			<property name="format" value="^[a-z][a-zA-Z0-9_\$]*$" />
+		</module>
+		<module name="MethodName" />
+		<module name="PackageName" />
+		<module name="ParameterName" />
+		<module name="StaticVariableName" />
+		<module name="TypeName" />
+
+		<!-- See http://checkstyle.sourceforge.net/config_imports.html -->
+		<module name="AvoidStarImport" />
+		<module name="RedundantImport" />
+
+		<!-- See http://checkstyle.sourceforge.net/config_whitespace.html -->
+		<module name="GenericWhitespace" />
+		<module name="MethodParamPad" />
+		<module name="NoWhitespaceAfter">
+			<property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS" />
+		</module>
+		<module name="NoWhitespaceBefore" />
+		<module name="OperatorWrap" />
+		<module name="ParenPad" />
+		<module name="TypecastParenPad" />
+		<module name="WhitespaceAfter" />
+		<module name="WhitespaceAround" />
+
+		<!-- See http://checkstyle.sourceforge.net/config_modifier.html -->
+		<module name="ModifierOrder" />
+		<module name="RedundantModifier" />
+
+		<!-- See http://checkstyle.sourceforge.net/config_blocks.html -->
+		<module name="AvoidNestedBlocks" />
+		<module name="EmptyBlock" />
+		<module name="LeftCurly" />
+		<module name="RightCurly">
+			<property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_ELSE" />
+		</module>
+
+		<!-- See http://checkstyle.sourceforge.net/config_coding.html -->
+		<module name="CovariantEquals" />
+		<module name="DefaultComesLast" />
+		<module name="EmptyStatement" />
+		<module name="EqualsAvoidNull" />
+		<module name="EqualsHashCode" />
+		<module name="IllegalCatch" />
+		<module name="IllegalThrows" />
+		<module name="InnerAssignment" />
+		<module name="MultipleStringLiterals" />
+		<module name="NoClone" />
+		<module name="NoFinalizer" />
+		<module name="OneStatementPerLine" />
+		<module name="ParameterAssignment" />
+		<module name="RedundantThrows" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="UnnecessaryParentheses" />
+
+		<!-- See http://checkstyle.sourceforge.net/config_design.html -->
+		<module name="FinalClass" />
+		<module name="HideUtilityClassConstructor" />
+		<module name="InterfaceIsType" />
+	</module>
+</module>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://mapsforge.org/renderTheme"
+	xmlns:tns="http://mapsforge.org/renderTheme" elementFormDefault="qualified" xml:lang="en">
+	<!-- attribute types -->
+	<xs:simpleType name="cap">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="butt" />
+			<xs:enumeration value="round" />
+			<xs:enumeration value="square" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="closed">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="yes" />
+			<xs:enumeration value="no" />
+			<xs:enumeration value="any" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="color">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="elementList">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="node" />
+			<xs:enumeration value="way" />
+			<xs:enumeration value="any" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="fontFamily">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="default" />
+			<xs:enumeration value="default_bold" />
+			<xs:enumeration value="monospace" />
+			<xs:enumeration value="sans_serif" />
+			<xs:enumeration value="serif" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="fontStyle">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="bold" />
+			<xs:enumeration value="bold_italic" />
+			<xs:enumeration value="italic" />
+			<xs:enumeration value="normal" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="nonNegativeFloat">
+		<xs:restriction base="xs:float">
+			<xs:minInclusive value="0" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="src">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(jar|file)\:.+" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="strokeDasharray">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="([0-9]+(\.[0-9]+)? *, *[0-9]+(\.[0-9]+)? *, *)*[0-9]+(\.[0-9]+)? *, *[0-9]+(\.[0-9]+)?" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="textKey">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ele" />
+			<xs:enumeration value="addr:housenumber" />
+			<xs:enumeration value="name" />
+			<xs:enumeration value="ref" />
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<!-- rendering instructions -->
+	<xs:complexType name="area">
+		<xs:attribute name="src" type="tns:src" use="optional" />
+		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
+		<xs:attribute name="stroke" type="tns:color" use="optional" default="#00000000" />
+		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
+	</xs:complexType>
+
+	<xs:complexType name="caption">
+		<xs:attribute name="k" type="tns:textKey" use="required" />
+		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
+		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
+		<xs:attribute name="font-style" type="tns:fontStyle" use="optional" default="normal" />
+		<xs:attribute name="font-size" type="tns:nonNegativeFloat" use="optional" default="0" />
+		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
+		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
+		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
+	</xs:complexType>
+
+	<xs:complexType name="circle">
+		<xs:attribute name="radius" type="tns:nonNegativeFloat" use="required" />
+		<xs:attribute name="scale-radius" type="xs:boolean" use="optional" default="false" />
+		<xs:attribute name="fill" type="tns:color" use="optional" default="#00000000" />
+		<xs:attribute name="stroke" type="tns:color" use="optional" default="#00000000" />
+		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
+	</xs:complexType>
+
+	<xs:complexType name="line">
+		<xs:attribute name="src" type="tns:src" use="optional" />
+		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
+		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
+		<xs:attribute name="stroke-dasharray" type="tns:strokeDasharray" use="optional" />
+		<xs:attribute name="stroke-linecap" type="tns:cap" use="optional" default="round" />
+	</xs:complexType>
+
+	<xs:complexType name="lineSymbol">
+		<xs:attribute name="src" type="tns:src" use="required" />
+		<xs:attribute name="align-center" type="xs:boolean" use="optional" default="false" />
+		<xs:attribute name="repeat" type="xs:boolean" use="optional" default="false" />
+	</xs:complexType>
+
+	<xs:complexType name="pathText">
+		<xs:attribute name="k" type="tns:textKey" use="required" />
+		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
+		<xs:attribute name="font-style" type="tns:fontStyle" use="optional" default="normal" />
+		<xs:attribute name="font-size" type="tns:nonNegativeFloat" use="optional" default="0" />
+		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
+		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
+		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
+	</xs:complexType>
+
+	<xs:complexType name="symbol">
+		<xs:attribute name="src" type="tns:src" use="required" />
+	</xs:complexType>
+
+
+	<!-- rule elements -->
+	<xs:complexType name="rule">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<!-- recursion to allow for nested rules -->
+			<xs:element name="rule" type="tns:rule" />
+
+			<xs:element name="area" type="tns:area" />
+			<xs:element name="caption" type="tns:caption" />
+			<xs:element name="circle" type="tns:circle" />
+			<xs:element name="line" type="tns:line" />
+			<xs:element name="lineSymbol" type="tns:lineSymbol" />
+			<xs:element name="pathText" type="tns:pathText" />
+			<xs:element name="symbol" type="tns:symbol" />
+		</xs:choice>
+		<xs:attribute name="e" type="tns:elementList" use="required" />
+		<xs:attribute name="k" type="xs:string" use="required" />
+		<xs:attribute name="v" type="xs:string" use="required" />
+		<xs:attribute name="closed" type="tns:closed" use="optional" default="any" />
+		<xs:attribute name="zoom-min" type="xs:unsignedByte" use="optional" default="0" />
+		<xs:attribute name="zoom-max" type="xs:unsignedByte" use="optional" default="127" />
+	</xs:complexType>
+
+
+	<!-- rendertheme element -->
+	<xs:complexType name="rendertheme">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="rule" type="tns:rule" />
+		</xs:sequence>
+		<xs:attribute name="version" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="map-background" type="tns:color" use="optional" default="#ffffff" />
+		<xs:attribute name="base-stroke-width" type="tns:nonNegativeFloat" use="optional" default="1" />
+		<xs:attribute name="base-text-size" type="tns:nonNegativeFloat" use="optional" default="1" />
+	</xs:complexType>
+
+
+	<!-- root element -->
+	<xs:element name="rendertheme" type="tns:rendertheme" />
+</xs:schema>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6">
+	<bounds minlat="0" minlon="0" maxlat="0.08" maxlon="0.08" />
+	<node id="1" lat="0" lon="0" version="1" timestamp="2012-01-01T00:00:00Z" />
+	<node id="2" lat="0.04" lon="0.08" version="1" timestamp="2012-01-01T00:00:00Z">
+		<tag k="place" v="country" />
+		<tag k="name" v="АБВГДЕЖЗ" />
+		<tag k="addr:housenumber" v="абвгдежз" />
+		<tag k="ele" v="25" />
+		<tag k="layer" v="2" />
+	</node>
+	<node id="3" lat="0.08" lon="0" version="1" timestamp="2012-01-01T00:00:00Z" />
+	<way id="4" version="1" timestamp="2012-01-01T00:00:00Z">
+		<nd ref="1" />
+		<nd ref="2" />
+		<nd ref="3" />
+		<tag k="highway" v="motorway" />
+		<tag k="name" v="ÄÖÜ" />
+		<tag k="ref" v="äöü" />
+		<tag k="layer" v="-1" />
+	</way>
+</osm>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>About this software</title>
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+	</head>
+	<body style="padding: 0.5em;">
+		<p style="text-align: center;"><img alt="mapsforge logo" src="file:///android_asset/mapsforge_logo.png" style="width: 255px; height: 223px;" /><br />Version 0.3.1-SNAPSHOT</p>
+		<p>This software is a part of the <a href="http://mapsforge.org/">mapsforge</a> project and distributed under the <a href="http://www.gnu.org/licenses/lgpl.html">LGPL3 license</a>.</p>
+		<p>Map data © <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>.</p>
+		<p>Please report all bugs and feature requests either via our <a href="https://code.google.com/p/mapsforge/issues/list">issue tracker</a> or our public <a href="http://groups.google.com/group/mapsforge-dev">mapsforge-dev</a> mailing list.</p>
+	</body>
+</html>
