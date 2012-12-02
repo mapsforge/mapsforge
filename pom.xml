@@ -87,6 +87,15 @@
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>2.9.1</version>
+					<configuration>
+						<configLocation>static-code-analysis/checkstyle_rules.xml</configLocation>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>2.5</version>
 				</plugin>
@@ -177,6 +186,31 @@
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9</version>
+					<configuration>
+						<author>false</author>
+						<bottom><![CDATA[Copyright &#169; {currentYear} <a href="http://mapsforge.org/" target="_top">mapsforge.org</a>]]></bottom>
+						<quiet>true</quiet>
+						<show>protected</show>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>2.7.1</version>
+					<configuration>
+						<aggregate>true</aggregate>
+						<includeTests>true</includeTests>
+						<rulesets>
+							<ruleset>static-code-analysis/pmd_ruleset.xml</ruleset>
+						</rulesets>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.3.2</version>
 					<configuration>
@@ -194,47 +228,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>3.1</version>
-					<configuration>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>2.9.1</version>
-							<configuration>
-								<configLocation>static-code-analysis/checkstyle_rules.xml</configLocation>
-							</configuration>
-						</plugin>
-
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.9</version>
-							<configuration>
-								<author>false</author>
-								<bottom><![CDATA[Copyright &#169; {currentYear} <a href="http://mapsforge.org/" target="_top">mapsforge.org</a>]]></bottom>
-								<quiet>true</quiet>
-								<show>protected</show>
-							</configuration>
-						</plugin>
-
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-jxr-plugin</artifactId>
-							<version>2.3</version>
-						</plugin>
-
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-pmd-plugin</artifactId>
-							<version>2.7.1</version>
-							<configuration>
-								<aggregate>true</aggregate>
-								<includeTests>true</includeTests>
-								<rulesets>
-									<ruleset>static-code-analysis/pmd_ruleset.xml</ruleset>
-								</rulesets>
-							</configuration>
-						</plugin>
-					</configuration>
 				</plugin>
 
 				<plugin>
