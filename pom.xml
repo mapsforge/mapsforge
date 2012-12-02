@@ -65,6 +65,12 @@
 		</mailingList>
 	</mailingLists>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<compileSource>1.6</compileSource>
+	</properties>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -249,12 +255,6 @@
 			</plugin>
 		</plugins>
 	</reporting>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<compileSource>1.6</compileSource>
-	</properties>
 
 	<dependencyManagement>
 		<dependencies>
