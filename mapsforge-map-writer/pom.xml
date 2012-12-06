@@ -114,6 +114,17 @@
 			</properties>
 		</profile>
 		<profile>
+			<id>osx-build</id>
+			<activation>
+				<os>
+					<name>mac os x</name>
+				</os>
+			</activation>
+			<properties>
+				<osmosis.plugin.dir>${user.home}/.openstreetmap/osmosis/plugins/</osmosis.plugin.dir>
+			</properties>
+		</profile>
+		<profile>
 			<id>windows-build</id>
 			<activation>
 				<os>
