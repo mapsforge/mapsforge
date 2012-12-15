@@ -87,7 +87,15 @@
     			</documentation>
     		</annotation>
     	</attribute>
-    	<attribute name="force-polygon-line" type="boolean" default="false"></attribute>
+    	<attribute name="force-polygon-line" type="boolean" default="false">	
+	        <annotation>
+                        <documentation>
+			        Indicates whether a closed polygon should be interpreted
+				as a polyline or area. For example, important for correct
+				clipping if the geometry completely covers a tile.
+                        </documentation>
+                </annotation>
+	</attribute>
     	<attribute name="equivalent-values" type="string"
     		use="optional">
     		<annotation>
