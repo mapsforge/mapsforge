@@ -56,50 +56,51 @@ public class FrameBuffer {
 	 *            the bitmap to be drawn.
 	 * @return true if the tile is visible and the bitmap was drawn, false otherwise.
 	 */
-	public synchronized boolean drawBitmap(Tile tile, Bitmap bitmap) {
+	public boolean drawBitmap(Tile tile, Bitmap bitmap) {
 		MapPosition mapPosition = this.mapView.getMapViewPosition().getMapPosition();
-		if (tile.zoomLevel != mapPosition.zoomLevel) {
-			// the tile doesn't fit to the current zoom level
-			return false;
-		} else if (this.mapView.isZoomAnimatorRunning()) {
-			// do not disturb the ongoing animation
-			return false;
+		synchronized (this) {
+			if (tile.zoomLevel != mapPosition.zoomLevel) {
+				// the tile doesn't fit to the current zoom level
+				return false;
+			} else if (this.mapView.isZoomAnimatorRunning()) {
+				// do not disturb the ongoing animation
+				return false;
+			}
+
+			GeoPoint geoPoint = mapPosition.geoPoint;
+			double pixelLeft = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.zoomLevel);
+			double pixelTop = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.zoomLevel);
+			pixelLeft -= this.width >> 1;
+			pixelTop -= this.height >> 1;
+
+			if (pixelLeft - tile.getPixelX() > Tile.TILE_SIZE || pixelLeft + this.width < tile.getPixelX()) {
+				// no horizontal intersection
+				return false;
+			} else if (pixelTop - tile.getPixelY() > Tile.TILE_SIZE || pixelTop + this.height < tile.getPixelY()) {
+				// no vertical intersection
+				return false;
+			}
+			if (!this.matrix.isIdentity()) {
+				// change the current MapView bitmap
+				this.mapViewBitmap2.eraseColor(MAP_VIEW_BACKGROUND);
+				this.mapViewCanvas.setBitmap(this.mapViewBitmap2);
+
+				// draw the previous MapView bitmap on the current MapView bitmap
+				this.mapViewCanvas.drawBitmap(this.mapViewBitmap1, this.matrix, null);
+				this.matrix.reset();
+
+				// swap the two MapView bitmaps
+				Bitmap mapViewBitmapSwap = this.mapViewBitmap1;
+				this.mapViewBitmap1 = this.mapViewBitmap2;
+				this.mapViewBitmap2 = mapViewBitmapSwap;
+			}
+
+			// draw the tile bitmap at the correct position
+			float left = (float) (tile.getPixelX() - pixelLeft);
+			float top = (float) (tile.getPixelY() - pixelTop);
+			this.mapViewCanvas.drawBitmap(bitmap, left, top, null);
+			return true;
 		}
-
-		GeoPoint geoPoint = mapPosition.geoPoint;
-		double pixelLeft = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.zoomLevel);
-		double pixelTop = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.zoomLevel);
-		pixelLeft -= this.width >> 1;
-		pixelTop -= this.height >> 1;
-
-		if (pixelLeft - tile.getPixelX() > Tile.TILE_SIZE || pixelLeft + this.width < tile.getPixelX()) {
-			// no horizontal intersection
-			return false;
-		} else if (pixelTop - tile.getPixelY() > Tile.TILE_SIZE || pixelTop + this.height < tile.getPixelY()) {
-			// no vertical intersection
-			return false;
-		}
-
-		if (!this.matrix.isIdentity()) {
-			// change the current MapView bitmap
-			this.mapViewBitmap2.eraseColor(MAP_VIEW_BACKGROUND);
-			this.mapViewCanvas.setBitmap(this.mapViewBitmap2);
-
-			// draw the previous MapView bitmap on the current MapView bitmap
-			this.mapViewCanvas.drawBitmap(this.mapViewBitmap1, this.matrix, null);
-			this.matrix.reset();
-
-			// swap the two MapView bitmaps
-			Bitmap mapViewBitmapSwap = this.mapViewBitmap1;
-			this.mapViewBitmap1 = this.mapViewBitmap2;
-			this.mapViewBitmap2 = mapViewBitmapSwap;
-		}
-
-		// draw the tile bitmap at the correct position
-		float left = (float) (tile.getPixelX() - pixelLeft);
-		float top = (float) (tile.getPixelY() - pixelTop);
-		this.mapViewCanvas.drawBitmap(bitmap, left, top, null);
-		return true;
 	}
 
 	/**
