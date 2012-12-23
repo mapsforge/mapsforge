@@ -17,7 +17,7 @@ package org.mapsforge.core.util;
 import java.io.Closeable;
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 

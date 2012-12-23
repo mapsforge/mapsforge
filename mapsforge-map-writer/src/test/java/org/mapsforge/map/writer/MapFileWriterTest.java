@@ -16,7 +16,7 @@ package org.mapsforge.map.writer;
 
 import java.nio.ByteBuffer;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;

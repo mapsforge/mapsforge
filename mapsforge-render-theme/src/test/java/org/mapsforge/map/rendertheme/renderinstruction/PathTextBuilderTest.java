@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.mapsforge.map.rendertheme.GraphicAdapter;

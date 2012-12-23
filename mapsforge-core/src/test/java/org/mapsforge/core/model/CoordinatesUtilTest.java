@@ -14,7 +14,7 @@
  */
 package org.mapsforge.core.model;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 
