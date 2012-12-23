@@ -13,7 +13,6 @@
 	<artifactId>mapsforge</artifactId>
 	<version>0.3.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>mapsforge</name>
 	<description>free mapping and navigation tools</description>
 	<url>http://mapsforge.org</url>
 
@@ -45,6 +44,7 @@
 			<name>Thilo Mühlberg</name>
 			<email>thilo.muehlberg@gmail.com</email>
 		</developer>
+
 		<developer>
 			<id>jjbross</id>
 			<name>Jürgen Broß</name>
@@ -77,7 +77,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.3</version>
+					<version>2.4</version>
 					<configuration>
 						<descriptorRefs>
 							<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -103,7 +103,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.5.1</version>
+					<version>3.0</version>
 					<configuration>
 						<source>${targetJdk}</source>
 						<target>${targetJdk}</target>
@@ -212,7 +212,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.3.2</version>
+					<version>2.4</version>
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 					</configuration>
@@ -227,13 +227,13 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.1</version>
+					<version>3.2</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>2.2</version>
+					<version>2.2.1</version>
 				</plugin>
 
 				<plugin>
@@ -250,14 +250,8 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.10</version>
+				<version>4.11</version>
 				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.hamcrest</groupId>
-						<artifactId>hamcrest-core</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
