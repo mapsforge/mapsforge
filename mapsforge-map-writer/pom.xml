@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
@@ -12,8 +11,6 @@
 
 	<artifactId>mapsforge-map-writer</artifactId>
 	<packaging>jar</packaging>
-	<name>mapsforge-map-writer</name>
-	<description>An osmosis plugin to create binary map files</description>
 
 	<build>
 		<resources>
@@ -29,8 +26,29 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-jar</id>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<echo message="Copying jar file to osmosis plugin dir" />
+								<copy overwrite="true"
+									file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
+									todir="${osmosis.plugin.dir}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.2</version>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -42,28 +60,6 @@
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.7</version>
-				<executions>
-					<execution>
-						<id>copy-jar</id>
-						<phase>install</phase>
-						<configuration>
-							<target>
-								<echo message="Copying jar file to osmosis plugin dir" />
-								<copy overwrite="true" file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
-									todir="${osmosis.plugin.dir}" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -84,20 +80,6 @@
 					</filesets>
 				</configuration>
 			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -113,6 +95,7 @@
 				<osmosis.plugin.dir>${user.home}/.openstreetmap/osmosis/plugins/</osmosis.plugin.dir>
 			</properties>
 		</profile>
+
 		<profile>
 			<id>osx-build</id>
 			<activation>
@@ -124,6 +107,7 @@
 				<osmosis.plugin.dir>${user.home}/.openstreetmap/osmosis/plugins/</osmosis.plugin.dir>
 			</properties>
 		</profile>
+
 		<profile>
 			<id>windows-build</id>
 			<activation>
@@ -146,21 +130,18 @@
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-core</artifactId>
 			<version>0.3.1-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>net.sf.trove4j</groupId>
 			<artifactId>trove4j</artifactId>
 			<version>3.0.3</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
-			<version>1.12</version>
-			<scope>compile</scope>
+			<version>1.13</version>
 			<exclusions>
 				<exclusion>
 					<groupId>xerces</groupId>
@@ -172,8 +153,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>11.0.2</version>
-			<scope>compile</scope>
+			<version>13.0.1</version>
 		</dependency>
 
 		<dependency>

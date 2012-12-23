@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
@@ -12,8 +11,6 @@
 
 	<artifactId>mapsforge-map</artifactId>
 	<packaging>jar</packaging>
-	<name>mapsforge-map</name>
-	<description>A library to render maps without Internet connection</description>
 
 	<build>
 		<plugins>
@@ -31,20 +28,6 @@
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -91,21 +74,18 @@
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-core</artifactId>
 			<version>0.3.1-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-map-reader</artifactId>
 			<version>0.3.1-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-render-theme</artifactId>
 			<version>0.3.1-SNAPSHOT</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
