@@ -22,7 +22,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.junit.Assert;
-
 import org.mapsforge.core.util.IOUtils;
 
 final class TestUtils {
@@ -53,6 +52,9 @@ final class TestUtils {
 	}
 
 	static void equalsTest(Object object1, Object object2) {
+		Assert.assertEquals(object1, object1);
+		Assert.assertEquals(object2, object2);
+
 		Assert.assertEquals(object1.hashCode(), object2.hashCode());
 		Assert.assertEquals(object1, object2);
 		Assert.assertEquals(object2, object1);
