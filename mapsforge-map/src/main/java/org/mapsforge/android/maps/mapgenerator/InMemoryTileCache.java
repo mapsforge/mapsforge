@@ -34,6 +34,8 @@ public class InMemoryTileCache implements TileCache {
 	 */
 	private static final float LOAD_FACTOR = 0.6f;
 
+	private static final int TILE_SIZE_IN_BYTES = Tile.TILE_SIZE * Tile.TILE_SIZE * 2;
+
 	private static List<Bitmap> createBitmapPool(int poolSize) {
 		List<Bitmap> bitmaps = new ArrayList<Bitmap>();
 
@@ -84,7 +86,7 @@ public class InMemoryTileCache implements TileCache {
 		this.capacity = getCapacity(capacity);
 		this.bitmapPool = createBitmapPool(this.capacity + 1);
 		this.map = createMap(this.capacity, this.bitmapPool);
-		this.byteBuffer = ByteBuffer.allocate(Tile.TILE_SIZE_IN_BYTES);
+		this.byteBuffer = ByteBuffer.allocate(TILE_SIZE_IN_BYTES);
 	}
 
 	@Override

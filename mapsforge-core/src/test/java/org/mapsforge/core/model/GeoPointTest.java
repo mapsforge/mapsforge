@@ -17,12 +17,11 @@ package org.mapsforge.core.model;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class GeoPointTest {
 	private static final String DELIMITER = ",";
-	private static final String GEO_POINT_TO_STRING = "GeoPoint [latitude=1.0, longitude=2.0]";
+	private static final String GEO_POINT_TO_STRING = "latitude=1.0, longitude=2.0";
 	private static final double LATITUDE = 1.0;
 	private static final double LONGITUDE = 2.0;
 
@@ -42,8 +41,8 @@ public class GeoPointTest {
 		GeoPoint geoPoint3 = new GeoPoint(0, 0);
 
 		Assert.assertEquals(0, geoPoint1.compareTo(geoPoint2));
-		Assert.assertFalse(geoPoint1.compareTo(geoPoint3) == 0);
-		Assert.assertFalse(geoPoint3.compareTo(geoPoint1) == 0);
+		Assert.assertNotEquals(0, geoPoint1.compareTo(geoPoint3));
+		Assert.assertNotEquals(0, geoPoint3.compareTo(geoPoint1));
 	}
 
 	@Test
@@ -54,9 +53,9 @@ public class GeoPointTest {
 
 		TestUtils.equalsTest(geoPoint1, geoPoint2);
 
-		Assert.assertFalse(geoPoint1.equals(geoPoint3));
-		Assert.assertFalse(geoPoint3.equals(geoPoint1));
-		Assert.assertFalse(geoPoint1.equals(new Object()));
+		Assert.assertNotEquals(geoPoint1, geoPoint3);
+		Assert.assertNotEquals(geoPoint3, geoPoint1);
+		Assert.assertNotEquals(geoPoint1, new Object());
 	}
 
 	@Test

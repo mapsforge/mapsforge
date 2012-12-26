@@ -17,12 +17,11 @@ package org.mapsforge.core.model;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class TagTest {
 	private static final String KEY = "foo";
-	private static final String TAG_TO_STRING = "Tag [key=foo, value=bar]";
+	private static final String TAG_TO_STRING = "key=foo, value=bar";
 	private static final String VALUE = "bar";
 
 	@Test
@@ -42,11 +41,11 @@ public class TagTest {
 
 		TestUtils.equalsTest(tag1, tag2);
 
-		Assert.assertFalse(tag1.equals(tag3));
-		Assert.assertFalse(tag1.equals(tag4));
-		Assert.assertFalse(tag3.equals(tag1));
-		Assert.assertFalse(tag4.equals(tag1));
-		Assert.assertFalse(tag1.equals(new Object()));
+		Assert.assertNotEquals(tag1, tag3);
+		Assert.assertNotEquals(tag1, tag4);
+		Assert.assertNotEquals(tag3, tag1);
+		Assert.assertNotEquals(tag4, tag3);
+		Assert.assertNotEquals(tag1, new Object());
 	}
 
 	@Test

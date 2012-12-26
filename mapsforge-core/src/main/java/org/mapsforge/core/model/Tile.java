@@ -14,8 +14,6 @@
  */
 package org.mapsforge.core.model;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 /**
@@ -24,19 +22,9 @@ import java.io.Serializable;
  */
 public class Tile implements Serializable {
 	/**
-	 * Bytes per pixel required in a map tile bitmap.
-	 */
-	public static final byte TILE_BYTES_PER_PIXEL = 2;
-
-	/**
 	 * Width and height of a map tile in pixel.
 	 */
 	public static final int TILE_SIZE = 256;
-
-	/**
-	 * Size of a single uncompressed map tile bitmap in bytes.
-	 */
-	public static final int TILE_SIZE_IN_BYTES = TILE_SIZE * TILE_SIZE * TILE_BYTES_PER_PIXEL;
 
 	private static final long serialVersionUID = 1L;
 
@@ -51,13 +39,9 @@ public class Tile implements Serializable {
 	public final long tileY;
 
 	/**
-	 * The Zoom level of this tile.
+	 * The zoom level of this tile.
 	 */
 	public final byte zoomLevel;
-
-	private transient int hashCodeValue;
-	private transient long pixelX;
-	private transient long pixelY;
 
 	/**
 	 * @param tileX
@@ -71,7 +55,6 @@ public class Tile implements Serializable {
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.zoomLevel = zoomLevel;
-		calculateTransientValues();
 	}
 
 	@Override
@@ -96,38 +79,18 @@ public class Tile implements Serializable {
 	 * @return the pixel X coordinate of the upper left corner of this tile.
 	 */
 	public long getPixelX() {
-		return this.pixelX;
+		return this.tileX * TILE_SIZE;
 	}
 
 	/**
 	 * @return the pixel Y coordinate of the upper left corner of this tile.
 	 */
 	public long getPixelY() {
-		return this.pixelY;
+		return this.tileY * TILE_SIZE;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.hashCodeValue;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Tile [tileX=");
-		stringBuilder.append(this.tileX);
-		stringBuilder.append(", tileY=");
-		stringBuilder.append(this.tileY);
-		stringBuilder.append(", zoomLevel=");
-		stringBuilder.append(this.zoomLevel);
-		stringBuilder.append("]");
-		return stringBuilder.toString();
-	}
-
-	/**
-	 * @return the hash code of this object.
-	 */
-	private int calculateHashCode() {
 		int result = 7;
 		result = 31 * result + (int) (this.tileX ^ (this.tileX >>> 32));
 		result = 31 * result + (int) (this.tileY ^ (this.tileY >>> 32));
@@ -135,17 +98,15 @@ public class Tile implements Serializable {
 		return result;
 	}
 
-	/**
-	 * Calculates the values of some transient variables.
-	 */
-	private void calculateTransientValues() {
-		this.pixelX = this.tileX * TILE_SIZE;
-		this.pixelY = this.tileY * TILE_SIZE;
-		this.hashCodeValue = calculateHashCode();
-	}
-
-	private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
-		objectInputStream.defaultReadObject();
-		calculateTransientValues();
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("tileX=");
+		stringBuilder.append(this.tileX);
+		stringBuilder.append(", tileY=");
+		stringBuilder.append(this.tileY);
+		stringBuilder.append(", zoomLevel=");
+		stringBuilder.append(this.zoomLevel);
+		return stringBuilder.toString();
 	}
 }

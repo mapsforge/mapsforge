@@ -17,12 +17,11 @@ package org.mapsforge.core.model;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class MapPositionTest {
 	private static final GeoPoint GEO_POINT = new GeoPoint(1.0, 2.0);
-	private static final String MAP_POSITION_TO_STRING = "MapPosition [geoPoint=GeoPoint [latitude=1.0, longitude=2.0], zoomLevel=3]";
+	private static final String MAP_POSITION_TO_STRING = "geoPoint=latitude=1.0, longitude=2.0, zoomLevel=3";
 	private static final byte ZOOM_LEVEL = 3;
 
 	private static MapPosition invokeConstructor(GeoPoint geoPoint, byte zoomLevel) {
@@ -52,9 +51,9 @@ public class MapPositionTest {
 
 		TestUtils.equalsTest(mapPosition1, mapPosition2);
 
-		Assert.assertFalse(mapPosition1.equals(mapPosition3));
-		Assert.assertFalse(mapPosition3.equals(mapPosition1));
-		Assert.assertFalse(mapPosition1.equals(new Object()));
+		Assert.assertNotEquals(mapPosition1, mapPosition3);
+		Assert.assertNotEquals(mapPosition3, mapPosition1);
+		Assert.assertNotEquals(mapPosition1, new Object());
 	}
 
 	@Test

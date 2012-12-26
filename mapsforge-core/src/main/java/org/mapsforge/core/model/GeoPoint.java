@@ -133,11 +133,10 @@ public class GeoPoint implements Comparable<GeoPoint>, Serializable {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("GeoPoint [latitude=");
+		stringBuilder.append("latitude=");
 		stringBuilder.append(this.latitude);
 		stringBuilder.append(", longitude=");
 		stringBuilder.append(this.longitude);
-		stringBuilder.append("]");
 		return stringBuilder.toString();
 	}
 }

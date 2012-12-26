@@ -17,11 +17,10 @@ package org.mapsforge.core.model;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class BoundingBoxTest {
-	private static final String BOUNDING_BOX_TO_STRING = "BoundingBox [minLatitude=2.0, minLongitude=1.0, maxLatitude=4.0, maxLongitude=3.0]";
+	private static final String BOUNDING_BOX_TO_STRING = "minLatitude=2.0, minLongitude=1.0, maxLatitude=4.0, maxLongitude=3.0";
 	private static final String DELIMITER = ",";
 	private static final double MAX_LATITUDE = 4.0;
 	private static final double MAX_LONGITUDE = 3.0;
@@ -59,9 +58,9 @@ public class BoundingBoxTest {
 
 		TestUtils.equalsTest(boundingBox1, boundingBox2);
 
-		Assert.assertFalse(boundingBox1.equals(boundingBox3));
-		Assert.assertFalse(boundingBox3.equals(boundingBox1));
-		Assert.assertFalse(boundingBox1.equals(new Object()));
+		Assert.assertNotEquals(boundingBox1, boundingBox3);
+		Assert.assertNotEquals(boundingBox3, boundingBox1);
+		Assert.assertNotEquals(boundingBox1, new Object());
 	}
 
 	@Test

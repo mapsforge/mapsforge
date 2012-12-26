@@ -17,11 +17,10 @@ package org.mapsforge.core.model;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class TileTest {
-	private static final String TILE_TO_STRING = "Tile [tileX=1, tileY=2, zoomLevel=3]";
+	private static final String TILE_TO_STRING = "tileX=1, tileY=2, zoomLevel=3";
 	private static final long TILE_X = 1;
 	private static final long TILE_Y = 2;
 	private static final byte ZOOM_LEVEL = 3;
@@ -34,9 +33,9 @@ public class TileTest {
 
 		TestUtils.equalsTest(tile1, tile2);
 
-		Assert.assertFalse(tile1.equals(tile3));
-		Assert.assertFalse(tile3.equals(tile1));
-		Assert.assertFalse(tile1.equals(new Object()));
+		Assert.assertNotEquals(tile1, tile3);
+		Assert.assertNotEquals(tile3, tile1);
+		Assert.assertNotEquals(tile1, new Object());
 	}
 
 	@Test

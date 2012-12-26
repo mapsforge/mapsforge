@@ -173,7 +173,7 @@ public class BoundingBox implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("BoundingBox [minLatitude=");
+		stringBuilder.append("minLatitude=");
 		stringBuilder.append(this.minLatitude);
 		stringBuilder.append(", minLongitude=");
 		stringBuilder.append(this.minLongitude);
@@ -181,7 +181,6 @@ public class BoundingBox implements Serializable {
 		stringBuilder.append(this.maxLatitude);
 		stringBuilder.append(", maxLongitude=");
 		stringBuilder.append(this.maxLongitude);
-		stringBuilder.append("]");
 		return stringBuilder.toString();
 	}
 }

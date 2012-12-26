@@ -92,11 +92,10 @@ public class Tag implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("Tag [key=");
+		stringBuilder.append("key=");
 		stringBuilder.append(this.key);
 		stringBuilder.append(", value=");
 		stringBuilder.append(this.value);
-		stringBuilder.append("]");
 		return stringBuilder.toString();
 	}
 }

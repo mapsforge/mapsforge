@@ -75,6 +75,8 @@ public class FileSystemTileCache implements TileCache {
 	 */
 	private static final String SERIALIZATION_FILE_NAME = "cache.ser";
 
+	private static final int TILE_SIZE_IN_BYTES = Tile.TILE_SIZE * Tile.TILE_SIZE * 2;
+
 	private static File createDirectory(String pathName) {
 		File file = new File(pathName);
 		if (!file.exists() && !file.mkdirs()) {
@@ -216,7 +218,7 @@ public class FileSystemTileCache implements TileCache {
 		} else {
 			this.map = deserializedMap;
 		}
-		this.byteBuffer = ByteBuffer.allocate(Tile.TILE_SIZE_IN_BYTES);
+		this.byteBuffer = ByteBuffer.allocate(TILE_SIZE_IN_BYTES);
 		this.bitmapGet = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Config.RGB_565);
 	}
 

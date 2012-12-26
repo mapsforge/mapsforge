@@ -15,7 +15,6 @@
 package org.mapsforge.core.util;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class LRUCacheTest {
@@ -26,9 +25,13 @@ public class LRUCacheTest {
 	private static final String VALUE2 = "bar2";
 	private static final String VALUE3 = "bar3";
 
+	private static LRUCache<String, String> createLRUCache(int capacity) {
+		return new LRUCache<String, String>(capacity);
+	}
+
 	@Test
 	public void lruCacheTest() {
-		LRUCache<String, String> lruCache = new LRUCache<String, String>(2);
+		LRUCache<String, String> lruCache = createLRUCache(2);
 
 		lruCache.put(KEY1, VALUE1);
 		Assert.assertEquals(VALUE1, lruCache.get(KEY1));
@@ -53,8 +56,18 @@ public class LRUCacheTest {
 
 	@Test
 	public void lruCacheWithCapacityZeroTest() {
-		LRUCache<String, String> lruCache = new LRUCache<String, String>(0);
+		LRUCache<String, String> lruCache = createLRUCache(0);
 		lruCache.put(KEY1, VALUE1);
 		Assert.assertFalse(lruCache.containsKey(KEY1));
+	}
+
+	@Test
+	public void lruCacheWithNegativeCapacityTest() {
+		try {
+			createLRUCache(-1);
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
 	}
 }

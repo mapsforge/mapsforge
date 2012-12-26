@@ -26,6 +26,7 @@ import android.util.AttributeSet;
  */
 public class CacheSizePreference extends SeekBarPreference {
 	private static final double ONE_MEGABYTE = 1000000d;
+	private static final int TILE_SIZE_IN_BYTES = Tile.TILE_SIZE * Tile.TILE_SIZE * 2;
 
 	/**
 	 * Construct a new cache size preference seek bar.
@@ -49,7 +50,7 @@ public class CacheSizePreference extends SeekBarPreference {
 	@Override
 	String getCurrentValueText(int progress) {
 		String format = getContext().getString(R.string.preferences_cache_size_value);
-		Double value = Double.valueOf(Tile.TILE_SIZE_IN_BYTES * progress / ONE_MEGABYTE);
+		Double value = Double.valueOf(TILE_SIZE_IN_BYTES * progress / ONE_MEGABYTE);
 		return String.format(format, value);
 	}
 }

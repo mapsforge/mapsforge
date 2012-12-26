@@ -17,11 +17,10 @@ package org.mapsforge.core.model;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class PointTest {
-	private static final String POINT_TO_STRING = "Point [x=222.2, y=333.3]";
+	private static final String POINT_TO_STRING = "x=222.2, y=333.3";
 	private static final double X = 222.2;
 	private static final double Y = 333.3;
 
@@ -32,8 +31,8 @@ public class PointTest {
 		Point point3 = new Point(0, 0);
 
 		Assert.assertEquals(0, point1.compareTo(point2));
-		Assert.assertFalse(point1.compareTo(point3) == 0);
-		Assert.assertFalse(point3.compareTo(point1) == 0);
+		Assert.assertNotEquals(0, point1.compareTo(point3));
+		Assert.assertNotEquals(0, point3.compareTo(point1));
 	}
 
 	@Test
@@ -44,9 +43,9 @@ public class PointTest {
 
 		TestUtils.equalsTest(point1, point2);
 
-		Assert.assertFalse(point1.equals(point3));
-		Assert.assertFalse(point3.equals(point1));
-		Assert.assertFalse(point1.equals(new Object()));
+		Assert.assertNotEquals(point1, point3);
+		Assert.assertNotEquals(point3, point1);
+		Assert.assertNotEquals(point1, new Object());
 	}
 
 	@Test

@@ -82,11 +82,10 @@ public class MapPosition implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("MapPosition [geoPoint=");
+		stringBuilder.append("geoPoint=");
 		stringBuilder.append(this.geoPoint);
 		stringBuilder.append(", zoomLevel=");
 		stringBuilder.append(this.zoomLevel);
-		stringBuilder.append("]");
 		return stringBuilder.toString();
 	}
 }
