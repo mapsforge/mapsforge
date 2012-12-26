@@ -31,9 +31,9 @@
 	</modules>
 
 	<scm>
-		<connection>scm:svn:https://mapsforge.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://mapsforge.googlecode.com/svn/trunk/</developerConnection>
-		<url>https://mapsforge.googlecode.com/svn/trunk/</url>
+		<connection>scm:git:https://code.google.com/p/mapsforge/</connection>
+		<developerConnection>scm:git:https://code.google.com/p/mapsforge/</developerConnection>
+		<url>https://code.google.com/p/mapsforge/source/browse/</url>
 	</scm>
 
 	<developers>
@@ -59,7 +59,7 @@
 		<mailingList>
 			<name>mapsforge-dev</name>
 			<post>mapsforge-dev@googlegroups.com</post>
-			<archive>http://groups.google.com/group/mapsforge-dev</archive>
+			<archive>https://groups.google.com/forum/?fromgroups#!forum/mapsforge-dev</archive>
 		</mailingList>
 	</mailingLists>
 
