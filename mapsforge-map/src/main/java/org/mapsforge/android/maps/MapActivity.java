@@ -41,10 +41,16 @@ public abstract class MapActivity extends Activity {
 	private static final String KEY_MAP_FILE = "mapFile";
 	private static final String KEY_ZOOM_LEVEL = "zoomLevel";
 	private static final String PREFERENCES_FILE = "MapActivity";
+	private static final String PREFERENCES_VERSION_KEY = "version";
+	private static final int PREFERENCES_VERSION_NUMBER = 2;
 
 	private static boolean containsMapViewPosition(SharedPreferences sharedPreferences) {
 		return sharedPreferences.contains(KEY_LATITUDE) && sharedPreferences.contains(KEY_LONGITUDE)
 				&& sharedPreferences.contains(KEY_ZOOM_LEVEL);
+	}
+
+	private static boolean isCompatible(SharedPreferences sharedPreferences) {
+		return sharedPreferences.getInt(PREFERENCES_VERSION_KEY, -1) == PREFERENCES_VERSION_NUMBER;
 	}
 
 	/**
@@ -66,7 +72,8 @@ public abstract class MapActivity extends Activity {
 
 	private void restoreMapView(MapView mapView) {
 		SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCES_FILE, MODE_PRIVATE);
-		if (containsMapViewPosition(sharedPreferences)) {
+
+		if (isCompatible(sharedPreferences) && containsMapViewPosition(sharedPreferences)) {
 			if (sharedPreferences.contains(KEY_MAP_FILE)) {
 				// get and set the map file
 				mapView.setMapFile(new File(sharedPreferences.getString(KEY_MAP_FILE, null)));
@@ -103,6 +110,7 @@ public abstract class MapActivity extends Activity {
 
 		Editor editor = getSharedPreferences(PREFERENCES_FILE, MODE_PRIVATE).edit();
 		editor.clear();
+		editor.putInt(PREFERENCES_VERSION_KEY, PREFERENCES_VERSION_NUMBER);
 
 		MapView mapView = this.mapViews.get(0);
 
