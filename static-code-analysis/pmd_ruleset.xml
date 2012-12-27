@@ -51,7 +51,7 @@
 	<rule ref="rulesets/codesize.xml/ExcessiveMethodLength" />
 	<rule ref="rulesets/codesize.xml/ExcessiveParameterList">
 		<properties>
-			<property name="minimum" value="8" />
+			<property name="minimum" value="7" />
 		</properties>
 	</rule>
 	<rule ref="rulesets/codesize.xml/ExcessivePublicCount" />
