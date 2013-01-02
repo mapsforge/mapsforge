@@ -36,6 +36,23 @@ public class PointTest {
 	}
 
 	@Test
+	public void distanceTest() {
+		Point point1 = new Point(0, 0);
+		Point point2 = new Point(1, 1);
+		Point point3 = new Point(0, -1);
+
+		Assert.assertEquals(0, point1.distance(point1), 0);
+		Assert.assertEquals(0, point2.distance(point2), 0);
+		Assert.assertEquals(0, point3.distance(point3), 0);
+
+		Assert.assertEquals(Math.sqrt(2), point1.distance(point2), 0);
+		Assert.assertEquals(Math.sqrt(2), point2.distance(point1), 0);
+
+		Assert.assertEquals(1, point1.distance(point3), 0);
+		Assert.assertEquals(1, point3.distance(point1), 0);
+	}
+
+	@Test
 	public void equalsTest() {
 		Point point1 = new Point(X, Y);
 		Point point2 = new Point(X, Y);

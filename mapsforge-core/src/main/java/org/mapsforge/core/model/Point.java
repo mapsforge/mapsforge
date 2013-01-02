@@ -57,6 +57,13 @@ public class Point implements Comparable<Point>, Serializable {
 		return 0;
 	}
 
+	/**
+	 * @return the euclidian distance from this point to the given point.
+	 */
+	public double distance(Point point) {
+		return Math.hypot(this.x - point.x, this.y - point.y);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
