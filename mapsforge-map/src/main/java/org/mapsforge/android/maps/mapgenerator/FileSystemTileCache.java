@@ -77,20 +77,6 @@ public class FileSystemTileCache implements TileCache {
 
 	private static final int TILE_SIZE_IN_BYTES = Tile.TILE_SIZE * Tile.TILE_SIZE * 2;
 
-	private static File createDirectory(String pathName) {
-		File file = new File(pathName);
-		if (!file.exists() && !file.mkdirs()) {
-			throw new IllegalArgumentException("could not create directory: " + file);
-		} else if (!file.isDirectory()) {
-			throw new IllegalArgumentException("not a directory: " + file);
-		} else if (!file.canRead()) {
-			throw new IllegalArgumentException("cannot read directory: " + file);
-		} else if (!file.canWrite()) {
-			throw new IllegalArgumentException("cannot write directory: " + file);
-		}
-		return file;
-	}
-
 	private static Map<MapGeneratorJob, File> createMap(final int mapCapacity) {
 		int initialCapacity = (int) (mapCapacity / LOAD_FACTOR) + 2;
 
@@ -149,13 +135,54 @@ public class FileSystemTileCache implements TileCache {
 		}
 	}
 
-	private static int getCapacity(int capacity) {
-		if (capacity < 0) {
-			throw new IllegalArgumentException("capacity must not be negative: " + capacity);
+	private final Bitmap bitmapGet;
+	private final ByteBuffer byteBuffer;
+	private File cacheDirectory;
+	private long cacheId;
+	private int mapViewId;
+	private int capacity;
+	private Map<MapGeneratorJob, File> map;
+	private boolean persistent;
+
+	private File createCacheDirectory() {
+		String externalStorageDirectory = Environment.getExternalStorageDirectory().getAbsolutePath();
+		String cacheDirectoryPath = externalStorageDirectory + CACHE_DIRECTORY + this.mapViewId;
+		File file = new File(cacheDirectoryPath);
+		if (!file.exists() && !file.mkdirs()) {
+			LOGGER.log(Level.SEVERE, "could not create directory: ", file);
+			file = null;
+		} else if (!file.isDirectory()) {
+			LOGGER.log(Level.SEVERE, "not a directory", file);
+			file = null;
+		} else if (!file.canRead()) {
+			LOGGER.log(Level.SEVERE, "cannot read directory", file);
+			file = null;
+		} else if (!file.canWrite()) {
+			LOGGER.log(Level.SEVERE, "cannot write directory", file);
+			file = null;
+		}
+		return file;
+	}
+
+	private int checkCapacity(int requestedCapacity) {
+		if (requestedCapacity < 0) {
+			throw new IllegalArgumentException("capacity must not be negative: " + requestedCapacity);
 		} else if (AndroidUtils.applicationRunsOnAndroidEmulator()) {
 			return 0;
 		}
-		return capacity;
+
+		String state = Environment.getExternalStorageState();
+		if (!Environment.MEDIA_MOUNTED.equals(state)) {
+			// no writable external media available
+			return 0;
+		}
+
+		this.cacheDirectory = createCacheDirectory();
+		if (this.cacheDirectory == null) {
+			return 0;
+		}
+
+		return requestedCapacity;
 	}
 
 	/**
@@ -189,14 +216,6 @@ public class FileSystemTileCache implements TileCache {
 		}
 	}
 
-	private final Bitmap bitmapGet;
-	private final ByteBuffer byteBuffer;
-	private final File cacheDirectory;
-	private long cacheId;
-	private int capacity;
-	private Map<MapGeneratorJob, File> map;
-	private boolean persistent;
-
 	/**
 	 * @param capacity
 	 *            the maximum number of entries in this cache.
@@ -206,20 +225,23 @@ public class FileSystemTileCache implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, int mapViewId) {
-		this.capacity = getCapacity(capacity);
+		this.mapViewId = mapViewId;
+		this.capacity = checkCapacity(capacity);
 
-		String externalStorageDirectory = Environment.getExternalStorageDirectory().getAbsolutePath();
-		String cacheDirectoryPath = externalStorageDirectory + CACHE_DIRECTORY + mapViewId;
-		this.cacheDirectory = createDirectory(cacheDirectoryPath);
-
-		Map<MapGeneratorJob, File> deserializedMap = deserializeMap(this.cacheDirectory);
-		if (deserializedMap == null) {
-			this.map = createMap(this.capacity);
+		if (this.capacity > 0 && this.cacheDirectory != null) {
+			Map<MapGeneratorJob, File> deserializedMap = deserializeMap(this.cacheDirectory);
+			if (deserializedMap == null) {
+				this.map = createMap(this.capacity);
+			} else {
+				this.map = deserializedMap;
+			}
+			this.byteBuffer = ByteBuffer.allocate(TILE_SIZE_IN_BYTES);
+			this.bitmapGet = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Config.RGB_565);
 		} else {
-			this.map = deserializedMap;
+			this.byteBuffer = null;
+			this.bitmapGet = null;
+			this.map = createMap(0);
 		}
-		this.byteBuffer = ByteBuffer.allocate(TILE_SIZE_IN_BYTES);
-		this.bitmapGet = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Config.RGB_565);
 	}
 
 	@Override
@@ -229,6 +251,14 @@ public class FileSystemTileCache implements TileCache {
 
 	@Override
 	public synchronized void destroy() {
+		if (this.bitmapGet != null) {
+			this.bitmapGet.recycle();
+		}
+
+		if (this.capacity == 0) {
+			return;
+		}
+
 		if (!this.persistent || !serializeMap(this.cacheDirectory, this.map)) {
 			for (File file : this.map.values()) {
 				if (!file.delete()) {
@@ -236,18 +266,19 @@ public class FileSystemTileCache implements TileCache {
 				}
 			}
 			this.map.clear();
-
-			File[] filesToDelete = this.cacheDirectory.listFiles(ImageFileNameFilter.INSTANCE);
-			if (filesToDelete != null) {
-				for (File file : filesToDelete) {
-					if (!file.delete()) {
-						file.deleteOnExit();
+			if (this.cacheDirectory != null) {
+				File[] filesToDelete = this.cacheDirectory.listFiles(ImageFileNameFilter.INSTANCE);
+				if (filesToDelete != null) {
+					for (File file : filesToDelete) {
+						if (!file.delete()) {
+							file.deleteOnExit();
+						}
 					}
 				}
-			}
 
-			if (!this.cacheDirectory.delete()) {
-				this.cacheDirectory.deleteOnExit();
+				if (!this.cacheDirectory.delete()) {
+					this.cacheDirectory.deleteOnExit();
+				}
 			}
 		}
 	}
@@ -323,7 +354,11 @@ public class FileSystemTileCache implements TileCache {
 
 			this.map.put(mapGeneratorJob, outputFile);
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			// this is the exception thrown when the external storage
+			// is full. We do not want the error to be repeated
+			// over and over, so we set capacity to 0.
+			LOGGER.log(Level.SEVERE, "external storage appears full", e);
+			this.capacity = 0;
 		} finally {
 			try {
 				if (fileOutputStream != null) {
@@ -341,10 +376,14 @@ public class FileSystemTileCache implements TileCache {
 			return;
 		}
 
-		this.capacity = getCapacity(capacity);
-		Map<MapGeneratorJob, File> newMap = createMap(this.capacity);
-		newMap.putAll(this.map);
-		this.map = newMap;
+		this.capacity = checkCapacity(capacity);
+		if (this.capacity != 0) {
+			Map<MapGeneratorJob, File> newMap = createMap(this.capacity);
+			if (this.map != null) {
+				newMap.putAll(this.map);
+			}
+			this.map = newMap;
+		}
 	}
 
 	@Override
