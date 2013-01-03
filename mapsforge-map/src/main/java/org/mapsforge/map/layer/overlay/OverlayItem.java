@@ -12,41 +12,29 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer;
+package org.mapsforge.map.layer.overlay;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
 
 import android.graphics.Canvas;
 
-public abstract class Layer {
-	private boolean visible;
-
-	public void destroy() {
-		// do nothing
-	}
-
+/**
+ * An {@code OverlayItem} is a geographical object which can draw itself on a {@link Canvas}.
+ */
+public interface OverlayItem {
 	/**
-	 * Draws this {@code Layer} on the given canvas.
+	 * Draws this {@code OverlayItem} on the given canvas.
 	 * 
 	 * @param boundingBox
 	 *            the geographical area which should be drawn.
-	 * @param mapPosition
-	 *            the center position of the map.
+	 * @param zoomLevel
+	 *            the zoom level at which this {@code OverlayItem} should draw itself.
 	 * @param canvas
-	 *            the canvas on which this {@code Layer} should draw itself.
+	 *            the canvas on which this {@code OverlayItem} should draw itself.
+	 * @param canvasPosition
+	 *            the top-left pixel position of the canvas relative to the top-left world map position.
+	 * @return true if this {@code OverlayItem} is visible and has drawn itself, false otherwise.
 	 */
-	public abstract void draw(BoundingBox boundingBox, MapPosition mapPosition, Canvas canvas);
-
-	public final boolean isVisible() {
-		return this.visible;
-	}
-
-	public final void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
-	protected final void redraw() {
-
-	}
+	boolean draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition);
 }

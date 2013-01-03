@@ -46,7 +46,7 @@ public class ListOverlay implements Overlay {
 	}
 
 	/**
-	 * @return a synchronized (thread-safe) list of all {@link OverlayItem OverlayItems} on this {@code ListOverlay}.
+	 * @return a synchronized (thread-safe) list of all {@link OverlayItem OverlayItems} on this {@code ArrayListOverlay}.
 	 *         Manual synchronization on this list is necessary when iterating over it.
 	 */
 	public List<OverlayItem> getOverlayItems() {

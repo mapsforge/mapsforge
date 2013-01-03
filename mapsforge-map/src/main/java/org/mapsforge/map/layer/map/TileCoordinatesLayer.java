@@ -14,11 +14,13 @@
  */
 package org.mapsforge.map.layer.map;
 
+import java.util.List;
+
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.layer.LayerUtil;
+import org.mapsforge.map.layer.TilePosition;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -46,6 +48,7 @@ public final class TileCoordinatesLayer extends Layer {
 		canvas.drawText(text, x, y, PAINT_FILL);
 	}
 
+	// TODO remove this variable
 	private int i;
 
 	private TileCoordinatesLayer() {
@@ -54,34 +57,20 @@ public final class TileCoordinatesLayer extends Layer {
 
 	@Override
 	public void draw(BoundingBox boundingBox, MapPosition mapPosition, Canvas canvas) {
-		byte zoomLevel = mapPosition.zoomLevel;
-
-		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
-		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
-		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
-		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
-
-		GeoPoint geoPoint = mapPosition.geoPoint;
-		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvas.getWidth() / 2;
-		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvas.getHeight() / 2;
-
 		++this.i;
-
-		for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
-			for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
-				double longitude = MercatorProjection.tileXToLongitude(tileX, zoomLevel);
-				double pixelX2 = MercatorProjection.longitudeToPixelX(longitude, zoomLevel);
-				float x = (float) (pixelX2 - pixelX) + 10;
-
-				double latitude = MercatorProjection.tileYToLatitude(tileY, zoomLevel);
-				double pixelY2 = MercatorProjection.latitudeToPixelY(latitude, zoomLevel);
-				float y = (float) (pixelY2 - pixelY);
-
-				drawText("X: " + tileX, x, y + 30, canvas);
-				drawText("Y: " + tileY, x, y + 60, canvas);
-				drawText("Z: " + zoomLevel, x, y + 90, canvas);
-				drawText("i: " + this.i, x, y + 120, canvas);
-			}
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, mapPosition, canvas);
+		for (TilePosition tilePosition : tilePositions) {
+			drawTile(tilePosition, canvas);
 		}
+	}
+
+	private void drawTile(TilePosition tilePosition, Canvas canvas) {
+		float x = (float) tilePosition.point.x;
+		float y = (float) tilePosition.point.y;
+
+		drawText("X: " + tilePosition.tile.tileX, x + 10, y + 30, canvas);
+		drawText("Y: " + tilePosition.tile.tileY, x + 10, y + 60, canvas);
+		drawText("Z: " + tilePosition.tile.zoomLevel, x + 10, y + 90, canvas);
+		drawText("i: " + this.i, x + 10, y + 120, canvas);
 	}
 }

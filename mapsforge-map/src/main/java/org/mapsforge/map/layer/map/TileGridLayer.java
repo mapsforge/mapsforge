@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.layer.LayerUtil;
+import org.mapsforge.map.layer.TilePosition;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -43,54 +43,39 @@ public final class TileGridLayer extends Layer {
 		return paint;
 	}
 
+	private static void drawPaths(Canvas canvas, List<Path> paths, Paint paint) {
+		for (Path path : paths) {
+			canvas.drawPath(path, paint);
+		}
+	}
+
+	private static Path createPath(TilePosition tilePosition) {
+		float x = (float) tilePosition.point.x;
+		float y = (float) tilePosition.point.y;
+
+		Path path = new Path();
+		path.moveTo(x, y);
+		path.lineTo(x + Tile.TILE_SIZE, y);
+		path.lineTo(x + Tile.TILE_SIZE, y + Tile.TILE_SIZE);
+		path.lineTo(x, y + Tile.TILE_SIZE);
+		path.lineTo(x, y);
+
+		return path;
+	}
+
 	private TileGridLayer() {
 		// do nothing
 	}
 
 	@Override
 	public void draw(BoundingBox boundingBox, MapPosition mapPosition, Canvas canvas) {
-		byte zoomLevel = mapPosition.zoomLevel;
-
-		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
-		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
-		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
-		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
-
-		GeoPoint geoPoint = mapPosition.geoPoint;
-		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvas.getWidth() / 2;
-		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvas.getHeight() / 2;
-
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, mapPosition, canvas);
 		List<Path> paths = new ArrayList<Path>();
-
-		for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
-			for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
-				double longitude = MercatorProjection.tileXToLongitude(tileX, zoomLevel);
-				double latitude = MercatorProjection.tileYToLatitude(tileY, zoomLevel);
-
-				double pixelX2 = MercatorProjection.longitudeToPixelX(longitude, zoomLevel);
-				double pixelY2 = MercatorProjection.latitudeToPixelY(latitude, zoomLevel);
-
-				float x = (float) (pixelX2 - pixelX);
-				float y = (float) (pixelY2 - pixelY);
-
-				Path path = new Path();
-				path.moveTo(x, y);
-				path.lineTo(x + Tile.TILE_SIZE, y);
-				path.lineTo(x + Tile.TILE_SIZE, y + Tile.TILE_SIZE);
-				path.lineTo(x, y + Tile.TILE_SIZE);
-				path.lineTo(x, y);
-
-				paths.add(path);
-			}
+		for (TilePosition tilePosition : tilePositions) {
+			paths.add(createPath(tilePosition));
 		}
 
 		drawPaths(canvas, paths, PAINT_STROKE);
 		drawPaths(canvas, paths, PAINT_FILL);
-	}
-
-	private static void drawPaths(Canvas canvas, List<Path> paths, Paint paint) {
-		for (Path path : paths) {
-			canvas.drawPath(path, paint);
-		}
 	}
 }
