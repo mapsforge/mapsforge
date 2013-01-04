@@ -51,7 +51,7 @@ public class LayerManager extends PausableThread {
 	}
 
 	@Override
-	protected void doWork() throws InterruptedException {
+	protected void doWork() {
 		this.redrawNeeded = false;
 
 		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
@@ -63,7 +63,6 @@ public class LayerManager extends PausableThread {
 			MapPosition mapPositionBefore = this.mapView.getMapViewPosition().getMapPosition();
 			BoundingBox boundingBox = MapView.getBoundingBox(mapPositionBefore, width, height);
 
-			Thread.sleep(1000);
 			for (Layer layer : this.getLayers()) {
 				layer.draw(boundingBox, mapPositionBefore, canvas);
 			}

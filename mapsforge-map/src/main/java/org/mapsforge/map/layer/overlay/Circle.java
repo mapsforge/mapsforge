@@ -17,6 +17,7 @@ package org.mapsforge.map.layer.overlay;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.MercatorProjection;
 
 import android.graphics.Canvas;
@@ -70,7 +71,11 @@ public class Circle implements OverlayItem {
 		float pixelY = (float) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - canvasPosition.y);
 		float radiusInPixel = (float) metersToPixels(latitude, this.radius, zoomLevel);
 
-		// TODO check for intersection. If no intersection, skip drawing and return false
+		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+		if (!canvasRectangle.intersectsCircle(pixelX, pixelY, radiusInPixel)) {
+			return false;
+		}
+
 		if (this.paintStroke != null) {
 			canvas.drawCircle(pixelX, pixelY, radiusInPixel, this.paintStroke);
 		}

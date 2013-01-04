@@ -60,11 +60,11 @@ public final class TileCoordinatesLayer extends Layer {
 		++this.i;
 		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, mapPosition, canvas);
 		for (TilePosition tilePosition : tilePositions) {
-			drawTile(tilePosition, canvas);
+			drawTileCoordinates(tilePosition, canvas);
 		}
 	}
 
-	private void drawTile(TilePosition tilePosition, Canvas canvas) {
+	private void drawTileCoordinates(TilePosition tilePosition, Canvas canvas) {
 		float x = (float) tilePosition.point.x;
 		float y = (float) tilePosition.point.y;
 

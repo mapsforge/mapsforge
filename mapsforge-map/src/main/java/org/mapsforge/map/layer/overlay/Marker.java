@@ -17,6 +17,7 @@ package org.mapsforge.map.layer.overlay;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.MercatorProjection;
 
 import android.graphics.Canvas;
@@ -55,10 +56,6 @@ public class Marker implements OverlayItem {
 		return drawable;
 	}
 
-	private static boolean intersect(Canvas canvas, float left, float top, float right, float bottom) {
-		return right >= 0 && left <= canvas.getWidth() && bottom >= 0 && top <= canvas.getHeight();
-	}
-
 	private Drawable drawable;
 	private GeoPoint geoPoint;
 
@@ -84,19 +81,21 @@ public class Marker implements OverlayItem {
 		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - canvasPosition.x);
 		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - canvasPosition.y);
 
-		Rect drawableBounds = this.drawable.copyBounds();
-		int left = pixelX + drawableBounds.left;
-		int top = pixelY + drawableBounds.top;
-		int right = pixelX + drawableBounds.right;
-		int bottom = pixelY + drawableBounds.bottom;
+		Rect originalBounds = this.drawable.copyBounds();
+		int left = pixelX + originalBounds.left;
+		int top = pixelY + originalBounds.top;
+		int right = pixelX + originalBounds.right;
+		int bottom = pixelY + originalBounds.bottom;
 
-		if (!intersect(canvas, left, top, right, bottom)) {
+		Rectangle drawableRectangle = new Rectangle(left, top, right, bottom);
+		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
+		if (!canvasRectangle.intersects(drawableRectangle)) {
 			return false;
 		}
 
 		this.drawable.setBounds(left, top, right, bottom);
 		this.drawable.draw(canvas);
-		this.drawable.setBounds(drawableBounds);
+		this.drawable.setBounds(originalBounds);
 		return true;
 	}
 
