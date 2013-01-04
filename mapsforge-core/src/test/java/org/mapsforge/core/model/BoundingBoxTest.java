@@ -27,6 +27,16 @@ public class BoundingBoxTest {
 	private static final double MIN_LATITUDE = 2.0;
 	private static final double MIN_LONGITUDE = 1.0;
 
+	private static void assertIntersection(BoundingBox boundingBox1, BoundingBox boundingBox2) {
+		Assert.assertTrue(boundingBox1.intersects(boundingBox2));
+		Assert.assertTrue(boundingBox2.intersects(boundingBox1));
+	}
+
+	private static void assertNoIntersection(BoundingBox boundingBox1, BoundingBox boundingBox2) {
+		Assert.assertFalse(boundingBox1.intersects(boundingBox2));
+		Assert.assertFalse(boundingBox2.intersects(boundingBox1));
+	}
+
 	private static void verifyInvalid(String string) {
 		try {
 			BoundingBox.fromString(string);
@@ -135,20 +145,14 @@ public class BoundingBoxTest {
 		BoundingBox boundingBox5 = new BoundingBox(0, 0, 0, 0);
 		BoundingBox boundingBox6 = new BoundingBox(-4, -3, -2, -1);
 
-		Assert.assertTrue(boundingBox1.intersects(boundingBox1));
-		Assert.assertTrue(boundingBox1.intersects(boundingBox2));
-		Assert.assertTrue(boundingBox2.intersects(boundingBox1));
-		Assert.assertTrue(boundingBox1.intersects(boundingBox3));
-		Assert.assertTrue(boundingBox3.intersects(boundingBox1));
-		Assert.assertTrue(boundingBox1.intersects(boundingBox4));
-		Assert.assertTrue(boundingBox4.intersects(boundingBox1));
+		assertIntersection(boundingBox1, boundingBox1);
+		assertIntersection(boundingBox1, boundingBox2);
+		assertIntersection(boundingBox1, boundingBox3);
+		assertIntersection(boundingBox1, boundingBox4);
 
-		Assert.assertFalse(boundingBox1.intersects(boundingBox5));
-		Assert.assertFalse(boundingBox5.intersects(boundingBox1));
-		Assert.assertFalse(boundingBox1.intersects(boundingBox6));
-		Assert.assertFalse(boundingBox6.intersects(boundingBox1));
-		Assert.assertFalse(boundingBox5.intersects(boundingBox6));
-		Assert.assertFalse(boundingBox6.intersects(boundingBox5));
+		assertNoIntersection(boundingBox1, boundingBox5);
+		assertNoIntersection(boundingBox1, boundingBox6);
+		assertNoIntersection(boundingBox5, boundingBox6);
 	}
 
 	@Test
