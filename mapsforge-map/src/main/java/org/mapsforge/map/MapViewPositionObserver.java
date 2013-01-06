@@ -15,27 +15,29 @@
 package org.mapsforge.map;
 
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Observer;
 
 class MapViewPositionObserver implements Observer {
+	private final FrameBuffer frameBuffer;
 	private MapPosition lastMapPosition;
 	private final MapView mapView;
+	private final MapViewPosition mapViewPosition;
 
 	MapViewPositionObserver(MapView mapView) {
 		this.mapView = mapView;
+
+		this.frameBuffer = mapView.getFrameBuffer();
+		this.mapViewPosition = mapView.getMapViewPosition();
+		this.lastMapPosition = this.mapViewPosition.getMapPosition();
 	}
 
 	@Override
 	public void onChange() {
-		MapPosition mapPosition = this.mapView.getMapViewPosition().getMapPosition();
-		if (this.lastMapPosition != null) {
-			FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
-			frameBuffer.adjustMatrix(this.lastMapPosition, mapPosition);
-		}
-
+		MapPosition mapPosition = this.mapViewPosition.getMapPosition();
+		this.frameBuffer.adjustMatrix(this.lastMapPosition, mapPosition);
 		this.lastMapPosition = mapPosition;
 		this.mapView.invalidateOnUiThread();
-
 		this.mapView.getLayerManager().redrawLayers();
 	}
 }

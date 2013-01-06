@@ -14,53 +14,27 @@
  */
 package org.mapsforge.map.layer.map;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.LayerUtil;
-import org.mapsforge.map.layer.TilePosition;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.Path;
 
 public final class TileGridLayer extends Layer {
 	public static final TileGridLayer INSTANCE = new TileGridLayer();
-	private static final Paint PAINT_FILL = createPaint(Color.BLACK, 2);
-	private static final Paint PAINT_STROKE = createPaint(Color.WHITE, 4);
+	private static final Paint PAINT = createPaint();
 
-	private static Paint createPaint(int color, float strokeWidth) {
+	private static Paint createPaint() {
 		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setColor(color);
-		paint.setStrokeWidth(strokeWidth);
+		paint.setColor(Color.BLACK);
+		paint.setStrokeWidth(3);
 		paint.setStyle(Style.STROKE);
 		return paint;
-	}
-
-	private static void drawPaths(Canvas canvas, List<Path> paths, Paint paint) {
-		for (Path path : paths) {
-			canvas.drawPath(path, paint);
-		}
-	}
-
-	private static Path createPath(TilePosition tilePosition) {
-		float x = (float) tilePosition.point.x;
-		float y = (float) tilePosition.point.y;
-
-		Path path = new Path();
-		path.moveTo(x, y);
-		path.lineTo(x + Tile.TILE_SIZE, y);
-		path.lineTo(x + Tile.TILE_SIZE, y + Tile.TILE_SIZE);
-		path.lineTo(x, y + Tile.TILE_SIZE);
-		path.lineTo(x, y);
-
-		return path;
 	}
 
 	private TileGridLayer() {
@@ -68,14 +42,23 @@ public final class TileGridLayer extends Layer {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, MapPosition mapPosition, Canvas canvas) {
-		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, mapPosition, canvas);
-		List<Path> paths = new ArrayList<Path>();
-		for (TilePosition tilePosition : tilePositions) {
-			paths.add(createPath(tilePosition));
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
+		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
+		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
+		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
+
+		float pixelX1 = (float) (MercatorProjection.tileXToPixelX(tileLeft) - canvasPosition.x);
+		float pixelY1 = (float) (MercatorProjection.tileYToPixelY(tileTop) - canvasPosition.y);
+		float pixelX2 = (float) (MercatorProjection.tileXToPixelX(tileRight) - canvasPosition.x + Tile.TILE_SIZE);
+		float pixelY2 = (float) (MercatorProjection.tileYToPixelY(tileBottom) - canvasPosition.y + Tile.TILE_SIZE);
+
+		for (float lineX = pixelX1; lineX <= pixelX2; lineX += Tile.TILE_SIZE) {
+			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, PAINT);
 		}
 
-		drawPaths(canvas, paths, PAINT_STROKE);
-		drawPaths(canvas, paths, PAINT_FILL);
+		for (float lineY = pixelY1; lineY <= pixelY2; lineY += Tile.TILE_SIZE) {
+			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, PAINT);
+		}
 	}
 }

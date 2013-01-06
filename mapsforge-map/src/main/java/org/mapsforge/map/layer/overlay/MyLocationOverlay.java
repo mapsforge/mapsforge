@@ -16,10 +16,8 @@ package org.mapsforge.map.layer.overlay;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
-import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.LayerUtil;
 import org.mapsforge.map.model.MapViewPosition;
 
 import android.content.Context;
@@ -56,13 +54,13 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	private static Paint getDefaultCircleStroke() {
-		return getPaint(128, Color.BLUE, 2, Style.STROKE);
+		return getPaint(160, Color.BLUE, 2, Style.STROKE);
 	}
 
 	private static Paint getPaint(int alpha, int color, int strokeWidth, Style style) {
 		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setAlpha(alpha);
 		paint.setColor(color);
+		paint.setAlpha(alpha);
 		paint.setStrokeWidth(strokeWidth);
 		paint.setStyle(style);
 		return paint;
@@ -125,14 +123,13 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, MapPosition mapPosition, Canvas canvas) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
 		if (!this.myLocationEnabled) {
 			return;
 		}
 
-		Point canvasPosition = LayerUtil.getCanvasPosition(mapPosition, canvas.getWidth(), canvas.getHeight());
-		this.circle.draw(boundingBox, mapPosition.zoomLevel, canvas, canvasPosition);
-		this.marker.draw(boundingBox, mapPosition.zoomLevel, canvas, canvasPosition);
+		this.circle.draw(boundingBox, zoomLevel, canvas, canvasPosition);
+		this.marker.draw(boundingBox, zoomLevel, canvas, canvasPosition);
 	}
 
 	/**

@@ -70,9 +70,6 @@ public class MapScaleBar {
 		this.mapViewPosition = mapViewPosition;
 		this.mapScaleBitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
 		this.mapScaleCanvas = new Canvas(this.mapScaleBitmap);
-
-		// TODO remove this
-		this.visible = true;
 	}
 
 	public Adapter getAdapter() {

@@ -75,20 +75,6 @@ public class Tile implements Serializable {
 		return true;
 	}
 
-	/**
-	 * @return the pixel X coordinate of the upper left corner of this tile.
-	 */
-	public long getPixelX() {
-		return this.tileX * TILE_SIZE;
-	}
-
-	/**
-	 * @return the pixel Y coordinate of the upper left corner of this tile.
-	 */
-	public long getPixelY() {
-		return this.tileY * TILE_SIZE;
-	}
-
 	@Override
 	public int hashCode() {
 		int result = 7;

@@ -21,10 +21,10 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.layer.Layer;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 
 /**
  * A {@code Polyline} draws a connected series of line segments specified by a list of {@link GeoPoint GeoPoints}.
@@ -32,7 +32,7 @@ import android.graphics.Path;
  * A {@code Polyline} holds a {@link Paint} object which defines drawing parameters such as color, stroke width, pattern
  * and transparency. {@link Paint#setAntiAlias Anti-aliasing} should be enabled to improve the overall drawing quality.
  */
-public class Polyline implements OverlayItem {
+public class Polyline extends Layer {
 	private final List<GeoPoint> geoPoints = new CopyOnWriteArrayList<GeoPoint>();
 	private Paint paintStroke;
 
@@ -45,28 +45,25 @@ public class Polyline implements OverlayItem {
 	}
 
 	@Override
-	public synchronized boolean draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
 		if (this.paintStroke == null) {
-			return false;
+			return;
 		}
 
-		Path path = new Path();
-		boolean firstPoint = true;
+		float previousX = Float.NaN;
+		float previousY = Float.NaN;
 
 		for (GeoPoint geoPoint : this.geoPoints) {
-			float pixelX = (float) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
-			float pixelY = (float) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
+			float x = (float) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
+			float y = (float) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
 
-			if (firstPoint) {
-				firstPoint = false;
-				path.moveTo(pixelX, pixelY);
-			} else {
-				path.lineTo(pixelX, pixelY);
+			if (!Float.isNaN(previousX)) {
+				canvas.drawLine(previousX, previousY, x, y, this.paintStroke);
 			}
-		}
 
-		canvas.drawPath(path, this.paintStroke);
-		return true;
+			previousX = x;
+			previousY = y;
+		}
 	}
 
 	/**

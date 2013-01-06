@@ -26,29 +26,22 @@ import android.os.SystemClock;
  */
 public class FpsCounter {
 	private static final int ONE_SECOND = 1000;
-	private static final Paint PAINT_FILL = createPaint(Color.BLACK, 0);
-	private static final Paint PAINT_STROKE = createPaint(Color.WHITE, 3);
+	private static final Paint PAINT = createPaint();
 
-	private static Paint createPaint(int color, float strokeWidth) {
+	private static Paint createPaint() {
 		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setColor(color);
-		paint.setStrokeWidth(strokeWidth);
+		paint.setColor(Color.BLACK);
+		paint.setStrokeWidth(0);
 		paint.setStyle(Style.STROKE);
 		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-		paint.setTextSize(20);
+		paint.setTextSize(25);
 		return paint;
 	}
 
-	private int fps;
+	private String fps;
 	private int frameCounter;
 	private long lastTime;
 	private boolean visible;
-
-	public FpsCounter() {
-		this.lastTime = SystemClock.uptimeMillis();
-		// TODO remove this
-		this.visible = true;
-	}
 
 	public void draw(Canvas canvas) {
 		if (!this.visible) {
@@ -58,12 +51,12 @@ public class FpsCounter {
 		long currentTime = SystemClock.uptimeMillis();
 		long elapsedTime = currentTime - this.lastTime;
 		if (elapsedTime > ONE_SECOND) {
-			this.fps = Math.round((this.frameCounter * 1000f) / elapsedTime);
+			this.fps = String.valueOf(Math.round((this.frameCounter * 1000f) / elapsedTime));
 			this.lastTime = currentTime;
 			this.frameCounter = 0;
 		}
-		canvas.drawText(String.valueOf(this.fps), 20, 30, PAINT_STROKE);
-		canvas.drawText(String.valueOf(this.fps), 20, 30, PAINT_FILL);
+
+		canvas.drawText(this.fps, 20, 40, PAINT);
 		++this.frameCounter;
 	}
 

@@ -31,18 +31,12 @@ public class FrameBuffer {
 		return new Point(pixelX, pixelY);
 	}
 
-	private final Bitmap bitmap1;
-	private final Bitmap bitmap2;
-	private final Canvas drawingCanvas;
-	private final Matrix matrix;
-
-	public FrameBuffer(int width, int height) {
-		this.bitmap1 = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-		this.bitmap2 = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-		this.drawingCanvas = new Canvas(this.bitmap2);
-		this.matrix = new Matrix();
-	}
+	private Bitmap bitmap1;
+	private Bitmap bitmap2;
+	private final Canvas drawingCanvas = new Canvas();
+	private int height;
+	private final Matrix matrix = new Matrix();
+	private int width;
 
 	public void adjustMatrix(MapPosition mapPositionBefore, MapPosition mapPositionAfter) {
 		if (mapPositionBefore.zoomLevel == mapPositionAfter.zoomLevel) {
@@ -55,17 +49,41 @@ public class FrameBuffer {
 			}
 		} else {
 			float scaleFactor = (float) Math.pow(2, mapPositionAfter.zoomLevel - mapPositionBefore.zoomLevel);
-			int pivotX = this.drawingCanvas.getWidth() / 2;
-			int pivotY = this.drawingCanvas.getHeight() / 2;
 			synchronized (this.matrix) {
-				this.matrix.postScale(scaleFactor, scaleFactor, pivotX, pivotY);
+				if (this.bitmap1 != null) {
+					int pivotX = this.drawingCanvas.getWidth() / 2;
+					int pivotY = this.drawingCanvas.getHeight() / 2;
+					this.matrix.postScale(scaleFactor, scaleFactor, pivotX, pivotY);
+				}
+			}
+		}
+	}
+
+	public void changeSize(int widthNew, int heightNew) {
+		synchronized (this.matrix) {
+			this.width = widthNew;
+			this.height = heightNew;
+
+			if (widthNew > 0 && heightNew > 0) {
+				double overdrawFactor = 2;
+				int bitmapWidth = (int) (widthNew * overdrawFactor);
+				int bitmapHeight = (int) (heightNew * overdrawFactor);
+
+				this.bitmap1 = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+				this.bitmap2 = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+				this.drawingCanvas.setBitmap(this.bitmap2);
+			} else {
+				this.bitmap1 = null;
+				this.bitmap2 = null;
 			}
 		}
 	}
 
 	public void draw(Canvas canvas) {
 		synchronized (this.matrix) {
-			canvas.drawBitmap(this.bitmap1, this.matrix, null);
+			if (this.bitmap1 != null) {
+				canvas.drawBitmap(this.bitmap1, this.matrix, null);
+			}
 		}
 	}
 
@@ -76,17 +94,25 @@ public class FrameBuffer {
 			MapPosition mapPositionAfter = mapViewPosition.getMapPosition();
 			adjustMatrix(mapPositionBefore, mapPositionAfter);
 
-			this.bitmap1.eraseColor(Color.TRANSPARENT);
-			this.drawingCanvas.setBitmap(this.bitmap1);
-			this.drawingCanvas.drawBitmap(this.bitmap2, this.matrix, null);
+			Bitmap bitmapTemp = this.bitmap1;
+			this.bitmap1 = this.bitmap2;
+			this.bitmap2 = bitmapTemp;
 
 			this.bitmap2.eraseColor(Color.TRANSPARENT);
 			this.drawingCanvas.setBitmap(this.bitmap2);
-			this.matrix.reset();
+
+			float dx = (this.drawingCanvas.getWidth() - this.width) / -2f;
+			float dy = (this.drawingCanvas.getHeight() - this.height) / -2f;
+			this.matrix.postTranslate(dx, dy);
 		}
 	}
 
 	public Canvas getDrawingCanvas() {
-		return this.drawingCanvas;
+		synchronized (this.matrix) {
+			if (this.bitmap1 != null) {
+				return this.drawingCanvas;
+			}
+			return null;
+		}
 	}
 }

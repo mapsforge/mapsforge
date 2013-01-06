@@ -14,63 +14,60 @@
  */
 package org.mapsforge.map.layer.map;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.LayerUtil;
-import org.mapsforge.map.layer.TilePosition;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Typeface;
 
 public final class TileCoordinatesLayer extends Layer {
 	public static final TileCoordinatesLayer INSTANCE = new TileCoordinatesLayer();
-	private static final Paint PAINT_FILL = createPaint(Color.BLACK, 0);
-	private static final Paint PAINT_STROKE = createPaint(Color.WHITE, 3);
+	private static final Paint PAINT = createPaint();
 
-	private static Paint createPaint(int color, float strokeWidth) {
+	private static Paint createPaint() {
 		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setColor(color);
-		paint.setStrokeWidth(strokeWidth);
-		paint.setStyle(Style.STROKE);
+		paint.setColor(Color.BLACK);
 		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 		paint.setTextSize(20);
 		return paint;
 	}
 
-	private static void drawText(String text, float x, float y, Canvas canvas) {
-		canvas.drawText(text, x, y, PAINT_STROKE);
-		canvas.drawText(text, x, y, PAINT_FILL);
-	}
+	private static void drawTileCoordinates(TilePosition tilePosition, Canvas canvas) {
+		float x = (float) tilePosition.point.x + 15;
+		float y = (float) tilePosition.point.y + 30;
+		Tile tile = tilePosition.tile;
 
-	// TODO remove this variable
-	private int i;
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("X: ");
+		stringBuilder.append(tile.tileX);
+		canvas.drawText(stringBuilder.toString(), x, y, PAINT);
+
+		stringBuilder.setLength(0);
+		stringBuilder.append("Y: ");
+		stringBuilder.append(tile.tileY);
+		canvas.drawText(stringBuilder.toString(), x, y + 30, PAINT);
+
+		stringBuilder.setLength(0);
+		stringBuilder.append("Z: ");
+		stringBuilder.append(tile.zoomLevel);
+		canvas.drawText(stringBuilder.toString(), x, y + 60, PAINT);
+	}
 
 	private TileCoordinatesLayer() {
 		// do nothing
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, MapPosition mapPosition, Canvas canvas) {
-		++this.i;
-		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, mapPosition, canvas);
-		for (TilePosition tilePosition : tilePositions) {
-			drawTileCoordinates(tilePosition, canvas);
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+		ArrayList<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, canvasPosition);
+		for (int i = tilePositions.size() - 1; i >= 0; --i) {
+			drawTileCoordinates(tilePositions.get(i), canvas);
 		}
-	}
-
-	private void drawTileCoordinates(TilePosition tilePosition, Canvas canvas) {
-		float x = (float) tilePosition.point.x;
-		float y = (float) tilePosition.point.y;
-
-		drawText("X: " + tilePosition.tile.tileX, x + 10, y + 30, canvas);
-		drawText("Y: " + tilePosition.tile.tileY, x + 10, y + 60, canvas);
-		drawText("Z: " + tilePosition.tile.zoomLevel, x + 10, y + 90, canvas);
-		drawText("i: " + this.i, x + 10, y + 120, canvas);
 	}
 }

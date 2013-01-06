@@ -19,6 +19,7 @@ import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.layer.Layer;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -30,7 +31,7 @@ import android.graphics.Paint;
  * drawing parameters such as color, stroke width, pattern and transparency. {@link Paint#setAntiAlias Anti-aliasing}
  * should be enabled to improve the drawing quality.
  */
-public class Circle implements OverlayItem {
+public class Circle extends Layer {
 	private static double metersToPixels(double latitude, float meters, byte zoom) {
 		return meters / MercatorProjection.calculateGroundResolution(latitude, zoom);
 	}
@@ -60,9 +61,9 @@ public class Circle implements OverlayItem {
 	}
 
 	@Override
-	public synchronized boolean draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
 		if (this.geoPoint == null || (this.paintStroke == null && this.paintFill == null)) {
-			return false;
+			return;
 		}
 
 		double latitude = this.geoPoint.latitude;
@@ -73,7 +74,7 @@ public class Circle implements OverlayItem {
 
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
 		if (!canvasRectangle.intersectsCircle(pixelX, pixelY, radiusInPixel)) {
-			return false;
+			return;
 		}
 
 		if (this.paintStroke != null) {
@@ -82,7 +83,6 @@ public class Circle implements OverlayItem {
 		if (this.paintFill != null) {
 			canvas.drawCircle(pixelX, pixelY, radiusInPixel, this.paintFill);
 		}
-		return true;
 	}
 
 	/**

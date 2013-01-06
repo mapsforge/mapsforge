@@ -14,47 +14,36 @@
  */
 package org.mapsforge.map.layer.map;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.LayerUtil;
-import org.mapsforge.map.layer.TilePosition;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.Path;
 
 public class MapLayer extends Layer {
 	private static void drawTile(TilePosition tilePosition, Canvas canvas) {
 		float x = (float) tilePosition.point.x;
 		float y = (float) tilePosition.point.y;
 
-		Path path = new Path();
-		path.moveTo(x, y);
-		path.lineTo(x + Tile.TILE_SIZE, y);
-		path.lineTo(x + Tile.TILE_SIZE, y + Tile.TILE_SIZE);
-		path.lineTo(x, y + Tile.TILE_SIZE);
-		path.lineTo(x, y);
-
 		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		Random random = new Random(tilePosition.tile.hashCode());
-		int color = Color.argb(random.nextInt(), random.nextInt(), random.nextInt(), random.nextInt());
+		int color = Color.rgb(random.nextInt(), random.nextInt(), random.nextInt());
 		paint.setColor(color);
-		paint.setStyle(Style.FILL);
-		canvas.drawPath(path, paint);
+
+		canvas.drawRect(x, y, x + Tile.TILE_SIZE, y + Tile.TILE_SIZE, paint);
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, MapPosition mapPosition, Canvas canvas) {
-		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, mapPosition, canvas);
-		for (TilePosition tilePosition : tilePositions) {
-			drawTile(tilePosition, canvas);
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+		ArrayList<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, canvasPosition);
+		for (int i = tilePositions.size() - 1; i >= 0; --i) {
+			drawTile(tilePositions.get(i), canvas);
 		}
 	}
 }

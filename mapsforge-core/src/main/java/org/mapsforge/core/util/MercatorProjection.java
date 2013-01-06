@@ -217,6 +217,15 @@ public final class MercatorProjection {
 	}
 
 	/**
+	 * @param tileX
+	 *            the tile X number that should be converted.
+	 * @return the pixel X coordinate for the given tile X number.
+	 */
+	public static long tileXToPixelX(long tileX) {
+		return tileX * Tile.TILE_SIZE;
+	}
+
+	/**
 	 * Converts a tile Y number at a certain zoom level to a latitude coordinate.
 	 * 
 	 * @param tileY
@@ -227,6 +236,15 @@ public final class MercatorProjection {
 	 */
 	public static double tileYToLatitude(long tileY, byte zoomLevel) {
 		return pixelYToLatitude(tileY * Tile.TILE_SIZE, zoomLevel);
+	}
+
+	/**
+	 * @param tileY
+	 *            the tile Y number that should be converted.
+	 * @return the pixel Y coordinate for the given tile Y number.
+	 */
+	public static long tileYToPixelY(long tileY) {
+		return tileY * Tile.TILE_SIZE;
 	}
 
 	private MercatorProjection() {

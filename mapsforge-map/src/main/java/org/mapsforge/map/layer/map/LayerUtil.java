@@ -12,48 +12,29 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer;
+package org.mapsforge.map.layer.map;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
-import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 
-import android.graphics.Canvas;
-
 public final class LayerUtil {
-	public static Point getCanvasPosition(MapPosition mapPosition, int width, int height) {
-		GeoPoint centerPoint = mapPosition.geoPoint;
-		byte zoomLevel = mapPosition.zoomLevel;
-
-		double pixelX = MercatorProjection.longitudeToPixelX(centerPoint.longitude, zoomLevel) - width / 2;
-		double pixelY = MercatorProjection.latitudeToPixelY(centerPoint.latitude, zoomLevel) - height / 2;
-		return new Point(pixelX, pixelY);
-	}
-
-	public static List<TilePosition> getTilePositions(BoundingBox boundingBox, MapPosition mapPosition, Canvas canvas) {
-		byte zoomLevel = mapPosition.zoomLevel;
-
+	public static ArrayList<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Point canvasPosition) {
 		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
 		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
 		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
 		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
 
-		Point canvasPosition = getCanvasPosition(mapPosition, canvas.getWidth(), canvas.getHeight());
-		List<TilePosition> tilePositions = new ArrayList<TilePosition>();
+		int initialCapacity = (int) ((tileRight - tileLeft + 1) * (tileBottom - tileTop + 1));
+		ArrayList<TilePosition> tilePositions = new ArrayList<TilePosition>(initialCapacity);
 
 		for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
 			for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
-				double longitude = MercatorProjection.tileXToLongitude(tileX, zoomLevel);
-				double latitude = MercatorProjection.tileYToLatitude(tileY, zoomLevel);
-
-				double pixelX = MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - canvasPosition.x;
-				double pixelY = MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - canvasPosition.y;
+				double pixelX = MercatorProjection.tileXToPixelX(tileX) - canvasPosition.x;
+				double pixelY = MercatorProjection.tileYToPixelY(tileY) - canvasPosition.y;
 
 				tilePositions.add(new TilePosition(new Tile(tileX, tileY, zoomLevel), new Point(pixelX, pixelY)));
 			}

@@ -19,6 +19,7 @@ import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.layer.Layer;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -27,7 +28,7 @@ import android.graphics.drawable.Drawable;
 /**
  * A {@code Marker} draws a {@link Drawable} at a given geographical position.
  */
-public class Marker implements OverlayItem {
+public class Marker extends Layer {
 	/**
 	 * Sets the bounds of the given drawable so that (0,0) is the center of its bounding box.
 	 * 
@@ -71,32 +72,29 @@ public class Marker implements OverlayItem {
 	}
 
 	@Override
-	public synchronized boolean draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
 		if (this.geoPoint == null || this.drawable == null) {
-			return false;
+			return;
 		}
 
-		double latitude = this.geoPoint.latitude;
-		double longitude = this.geoPoint.longitude;
-		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - canvasPosition.x);
-		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - canvasPosition.y);
+		double pixelX = MercatorProjection.longitudeToPixelX(this.geoPoint.longitude, zoomLevel) - canvasPosition.x;
+		double pixelY = MercatorProjection.latitudeToPixelY(this.geoPoint.latitude, zoomLevel) - canvasPosition.y;
 
 		Rect originalBounds = this.drawable.copyBounds();
-		int left = pixelX + originalBounds.left;
-		int top = pixelY + originalBounds.top;
-		int right = pixelX + originalBounds.right;
-		int bottom = pixelY + originalBounds.bottom;
+		double left = pixelX + originalBounds.left;
+		double top = pixelY + originalBounds.top;
+		double right = pixelX + originalBounds.right;
+		double bottom = pixelY + originalBounds.bottom;
 
 		Rectangle drawableRectangle = new Rectangle(left, top, right, bottom);
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
 		if (!canvasRectangle.intersects(drawableRectangle)) {
-			return false;
+			return;
 		}
 
-		this.drawable.setBounds(left, top, right, bottom);
+		this.drawable.setBounds((int) left, (int) top, (int) right, (int) bottom);
 		this.drawable.draw(canvas);
 		this.drawable.setBounds(originalBounds);
-		return true;
 	}
 
 	/**

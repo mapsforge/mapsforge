@@ -14,9 +14,6 @@
  */
 package org.mapsforge.map;
 
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.input.TouchEventHandler;
 import org.mapsforge.map.input.TouchGestureDetector;
 import org.mapsforge.map.model.MapViewPosition;
@@ -30,30 +27,8 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 public class MapView extends View {
-	// TODO move this method to some other class?
-	public static BoundingBox getBoundingBox(MapPosition mapPosition, int width, int height) {
-		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.geoPoint.longitude, mapPosition.zoomLevel);
-		double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.geoPoint.latitude, mapPosition.zoomLevel);
-
-		int halfCanvasWidth = width / 2;
-		int halfCanvasHeight = height / 2;
-		long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel);
-
-		double pixelXMin = Math.max(0, pixelX - halfCanvasWidth);
-		double pixelYMin = Math.max(0, pixelY - halfCanvasHeight);
-		double pixelXMax = Math.min(mapSize, pixelX + halfCanvasWidth);
-		double pixelYMax = Math.min(mapSize, pixelY + halfCanvasHeight);
-
-		double minLatitude = MercatorProjection.pixelYToLatitude(pixelYMax, mapPosition.zoomLevel);
-		double minLongitude = MercatorProjection.pixelXToLongitude(pixelXMin, mapPosition.zoomLevel);
-		double maxLatitude = MercatorProjection.pixelYToLatitude(pixelYMin, mapPosition.zoomLevel);
-		double maxLongitude = MercatorProjection.pixelXToLongitude(pixelXMax, mapPosition.zoomLevel);
-
-		return new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
-	}
-
 	private final FpsCounter fpsCounter = new FpsCounter();
-	private FrameBuffer frameBuffer = new FrameBuffer(1, 1);
+	private final FrameBuffer frameBuffer = new FrameBuffer();
 	private final LayerManager layerManager = new LayerManager(this);
 	private final MapScaleBar mapScaleBar;
 	private final MapViewPosition mapViewPosition = new MapViewPosition();
@@ -82,6 +57,9 @@ public class MapView extends View {
 		return this.fpsCounter;
 	}
 
+	/**
+	 * @return the FrameBuffer used in this MapView.
+	 */
 	public FrameBuffer getFrameBuffer() {
 		return this.frameBuffer;
 	}
@@ -127,7 +105,9 @@ public class MapView extends View {
 
 	@Override
 	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-		this.frameBuffer = new FrameBuffer(width, height);
-		this.layerManager.redrawLayers();
+		this.frameBuffer.changeSize(width, height);
+		if (width > 0 && height > 0) {
+			this.layerManager.redrawLayers();
+		}
 	}
 }

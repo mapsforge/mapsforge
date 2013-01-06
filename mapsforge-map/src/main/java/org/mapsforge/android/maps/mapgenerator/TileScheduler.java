@@ -38,8 +38,8 @@ final class TileScheduler {
 		byte tileZoomLevel = tile.zoomLevel;
 
 		// calculate the center coordinates of the tile
-		long tileCenterPixelX = tile.getPixelX() + (Tile.TILE_SIZE >> 1);
-		long tileCenterPixelY = tile.getPixelY() + (Tile.TILE_SIZE >> 1);
+		long tileCenterPixelX = MercatorProjection.tileXToPixelX(tile.tileX) + (Tile.TILE_SIZE >> 1);
+		long tileCenterPixelY = MercatorProjection.tileYToPixelY(tile.tileY) + (Tile.TILE_SIZE >> 1);
 		double tileCenterLongitude = MercatorProjection.pixelXToLongitude(tileCenterPixelX, tileZoomLevel);
 		double tileCenterLatitude = MercatorProjection.pixelYToLatitude(tileCenterPixelY, tileZoomLevel);
 

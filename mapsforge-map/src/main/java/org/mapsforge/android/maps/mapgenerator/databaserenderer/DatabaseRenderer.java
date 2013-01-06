@@ -384,9 +384,9 @@ public class DatabaseRenderer implements RenderCallback {
 	 */
 	private Point scaleGeoPoint(GeoPoint geoPoint) {
 		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, this.currentTile.zoomLevel)
-				- this.currentTile.getPixelX();
+				- MercatorProjection.tileXToPixelX(this.currentTile.tileX);
 		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, this.currentTile.zoomLevel)
-				- this.currentTile.getPixelY();
+				- MercatorProjection.tileYToPixelY(this.currentTile.tileY);
 
 		return new Point((float) pixelX, (float) pixelY);
 	}

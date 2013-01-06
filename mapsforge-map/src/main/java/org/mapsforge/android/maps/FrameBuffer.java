@@ -73,10 +73,12 @@ public class FrameBuffer {
 			pixelLeft -= this.width >> 1;
 			pixelTop -= this.height >> 1;
 
-			if (pixelLeft - tile.getPixelX() > Tile.TILE_SIZE || pixelLeft + this.width < tile.getPixelX()) {
+			long tileXToPixelX = MercatorProjection.tileXToPixelX(tile.tileX);
+			long tileYToPixelY = MercatorProjection.tileYToPixelY(tile.tileY);
+			if (pixelLeft - tileXToPixelX > Tile.TILE_SIZE || pixelLeft + this.width < tileXToPixelX) {
 				// no horizontal intersection
 				return false;
-			} else if (pixelTop - tile.getPixelY() > Tile.TILE_SIZE || pixelTop + this.height < tile.getPixelY()) {
+			} else if (pixelTop - tileYToPixelY > Tile.TILE_SIZE || pixelTop + this.height < tileYToPixelY) {
 				// no vertical intersection
 				return false;
 			}
@@ -96,8 +98,8 @@ public class FrameBuffer {
 			}
 
 			// draw the tile bitmap at the correct position
-			float left = (float) (tile.getPixelX() - pixelLeft);
-			float top = (float) (tile.getPixelY() - pixelTop);
+			float left = (float) (tileXToPixelX - pixelLeft);
+			float top = (float) (MercatorProjection.tileYToPixelY(tile.tileX) - pixelTop);
 			this.mapViewCanvas.drawBitmap(bitmap, left, top, null);
 			return true;
 		}

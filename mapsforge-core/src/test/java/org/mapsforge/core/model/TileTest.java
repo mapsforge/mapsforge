@@ -45,9 +45,6 @@ public class TileTest {
 		Assert.assertEquals(TILE_X, tile.tileX);
 		Assert.assertEquals(TILE_Y, tile.tileY);
 		Assert.assertEquals(ZOOM_LEVEL, tile.zoomLevel);
-
-		Assert.assertEquals(TILE_X * Tile.TILE_SIZE, tile.getPixelX());
-		Assert.assertEquals(TILE_Y * Tile.TILE_SIZE, tile.getPixelY());
 	}
 
 	@Test
