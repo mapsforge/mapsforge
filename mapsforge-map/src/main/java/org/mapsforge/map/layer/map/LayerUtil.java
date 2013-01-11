@@ -42,4 +42,8 @@ public final class LayerUtil {
 
 		return tilePositions;
 	}
+
+	private LayerUtil() {
+		throw new IllegalStateException();
+	}
 }

@@ -69,8 +69,8 @@ public class FrameBuffer {
 				int bitmapWidth = (int) (widthNew * overdrawFactor);
 				int bitmapHeight = (int) (heightNew * overdrawFactor);
 
-				this.bitmap1 = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
-				this.bitmap2 = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+				this.bitmap1 = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
+				this.bitmap2 = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.RGB_565);
 				this.drawingCanvas.setBitmap(this.bitmap2);
 			} else {
 				this.bitmap1 = null;
