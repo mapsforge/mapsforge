@@ -12,25 +12,24 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.map.queue;
+package org.mapsforge.map.controller;
 
-import java.util.Collection;
+import org.mapsforge.map.model.Model;
+import org.mapsforge.map.model.common.Observer;
+import org.mapsforge.map.view.LayerManager;
 
-import org.mapsforge.core.model.MapPosition;
+public class LayerManagerController implements Observer {
+	private final LayerManager layerManager;
 
-final class QueueItemScheduler {
-	private static double calculatePriority(QueueItem queueItem, MapPosition mapPosition) {
-		// TODO make this weighting function smarter
-		return Math.abs(queueItem.tile.zoomLevel - mapPosition.zoomLevel);
+	public LayerManagerController(LayerManager layerManager, Model model) {
+		this.layerManager = layerManager;
+
+		model.mapViewModel.addObserver(this);
+		model.mapViewPosition.addObserver(this);
 	}
 
-	static void schedule(Collection<QueueItem> queueItems, MapPosition mapPosition) {
-		for (QueueItem queueItem : queueItems) {
-			queueItem.priority = calculatePriority(queueItem, mapPosition);
-		}
-	}
-
-	private QueueItemScheduler() {
-		throw new IllegalStateException();
+	@Override
+	public void onChange() {
+		this.layerManager.redrawLayers();
 	}
 }

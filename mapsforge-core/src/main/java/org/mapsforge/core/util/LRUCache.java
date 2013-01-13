@@ -50,6 +50,10 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
 		this.capacity = capacity;
 	}
 
+	public int getCapacity() {
+		return this.capacity;
+	}
+
 	@Override
 	protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
 		return size() > this.capacity;

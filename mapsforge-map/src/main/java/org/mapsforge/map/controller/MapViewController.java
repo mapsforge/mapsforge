@@ -14,26 +14,21 @@
  */
 package org.mapsforge.map.controller;
 
-import org.mapsforge.map.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.MapView;
 
 public class MapViewController implements Observer {
-	private final LayerManager layerManager;
 	private final MapView mapView;
 
 	public MapViewController(MapView mapView, Model model) {
 		this.mapView = mapView;
 
 		model.mapViewPosition.addObserver(this);
-
-		this.layerManager = mapView.getLayerManager();
 	}
 
 	@Override
 	public void onChange() {
 		this.mapView.invalidateOnUiThread();
-		this.layerManager.redrawLayers();
 	}
 }

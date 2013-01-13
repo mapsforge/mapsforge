@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map;
+package org.mapsforge.map.view;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,10 +24,9 @@ import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.PausableThread;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.view.FrameBuffer;
-import org.mapsforge.map.view.MapView;
+import org.mapsforge.map.model.MapViewPosition;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -71,22 +70,26 @@ public class LayerManager extends PausableThread {
 	}
 
 	private final Canvas drawingCanvas;
-	private final List<Layer> layers = new CopyOnWriteArrayList<Layer>();
+	private final List<Layer> layers;
 	private final MapView mapView;
-	private final Model model;
+	private final MapViewPosition mapViewPosition;
 	private boolean redrawNeeded;
 
-	public LayerManager(MapView mapView, Model model) {
+	public LayerManager(MapView mapView, MapViewPosition mapViewPosition) {
 		this.mapView = mapView;
-		this.model = model;
+		this.mapViewPosition = mapViewPosition;
 
 		this.drawingCanvas = new Canvas();
+		this.layers = new CopyOnWriteArrayList<Layer>();
 	}
 
 	public List<Layer> getLayers() {
 		return this.layers;
 	}
 
+	/**
+	 * Requests an asynchronous redrawing of all layers.
+	 */
 	public void redrawLayers() {
 		this.redrawNeeded = true;
 		synchronized (this) {
@@ -112,7 +115,7 @@ public class LayerManager extends PausableThread {
 			bitmap.eraseColor(Color.WHITE);
 			this.drawingCanvas.setBitmap(bitmap);
 
-			MapPosition mapPosition = this.model.mapViewPosition.getMapPosition();
+			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
 			BoundingBox boundingBox = getBoundingBox(mapPosition, this.drawingCanvas);
 			Point canvasPosition = getCanvasPosition(mapPosition, this.drawingCanvas);
 

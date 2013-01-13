@@ -35,11 +35,8 @@ import android.graphics.Typeface;
  * @see <a href="http://developer.android.com/reference/android/graphics/Canvas.html">Canvas</a>
  */
 class CanvasRasterer {
-	private static android.graphics.Paint createAndroidPaint() {
-		return new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
-	}
-
 	private static final android.graphics.Paint PAINT_BITMAP_FILTER = createAndroidPaint();
+
 	private static final android.graphics.Paint PAINT_TILE_COORDINATES = createAndroidPaint();
 	private static final android.graphics.Paint PAINT_TILE_COORDINATES_STROKE = createAndroidPaint();
 	private static final android.graphics.Paint PAINT_TILE_FRAME = createAndroidPaint();
@@ -55,6 +52,10 @@ class CanvasRasterer {
 		PAINT_TILE_COORDINATES_STROKE.setStrokeWidth(5);
 		PAINT_TILE_COORDINATES_STROKE.setTextSize(20);
 		PAINT_TILE_COORDINATES_STROKE.setColor(AndroidGraphics.INSTANCE.getColor(Color.WHITE));
+	}
+
+	private static android.graphics.Paint createAndroidPaint() {
+		return new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
 	}
 
 	private final Canvas canvas;

@@ -15,8 +15,8 @@
 package org.mapsforge.map.view;
 
 import org.mapsforge.core.model.Dimension;
-import org.mapsforge.map.LayerManager;
 import org.mapsforge.map.controller.FrameBufferController;
+import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.input.TouchEventHandler;
 import org.mapsforge.map.input.TouchGestureDetector;
@@ -46,8 +46,9 @@ public class MapView extends View {
 		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel);
 		new FrameBufferController(this.frameBuffer, this.model);
 
-		this.layerManager = new LayerManager(this, this.model);
+		this.layerManager = new LayerManager(this, this.model.mapViewPosition);
 		this.layerManager.start();
+		new LayerManagerController(this.layerManager, this.model);
 
 		new MapViewController(this, this.model);
 
@@ -117,8 +118,5 @@ public class MapView extends View {
 	@Override
 	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
 		this.model.mapViewModel.setDimension(new Dimension(width, height));
-		if (width > 0 && height > 0) {
-			this.layerManager.redrawLayers();
-		}
 	}
 }

@@ -16,11 +16,11 @@ package org.mapsforge.map.scalebar;
 
 // TODO rename this
 public interface Adapter {
+	double getMeterRatio();
+
 	int[] getScaleBarValues();
 
 	int getScaleValue(int mapScaleValue);
 
 	String getUnitSymbol(int mapScaleValue);
-
-	double getMeterRatio();
 }

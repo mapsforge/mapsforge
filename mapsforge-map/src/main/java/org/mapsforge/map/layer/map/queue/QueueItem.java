@@ -17,8 +17,8 @@ package org.mapsforge.map.layer.map.queue;
 import org.mapsforge.core.model.Tile;
 
 class QueueItem {
-	final Tile tile;
 	double priority;
+	final Tile tile;
 
 	QueueItem(Tile tile) {
 		this.tile = tile;

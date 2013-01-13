@@ -12,25 +12,19 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.map.queue;
+package org.mapsforge.map.layer.map.download;
 
-import java.util.Collection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Tile;
 
-final class QueueItemScheduler {
-	private static double calculatePriority(QueueItem queueItem, MapPosition mapPosition) {
-		// TODO make this weighting function smarter
-		return Math.abs(queueItem.tile.zoomLevel - mapPosition.zoomLevel);
-	}
+public interface TileSource {
+	int getParallelRequestsLimit();
 
-	static void schedule(Collection<QueueItem> queueItems, MapPosition mapPosition) {
-		for (QueueItem queueItem : queueItems) {
-			queueItem.priority = calculatePriority(queueItem, mapPosition);
-		}
-	}
+	URL getTileUrl(Tile tile) throws MalformedURLException;
 
-	private QueueItemScheduler() {
-		throw new IllegalStateException();
-	}
+	byte getZoomLevelMax();
+
+	byte getZoomLevelMin();
 }

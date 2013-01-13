@@ -28,12 +28,12 @@ public class TouchEventHandler {
 		return motionEvent.getAction() & MotionEvent.ACTION_MASK;
 	}
 
-	private final List<TouchEventListener> touchEventListeners = new CopyOnWriteArrayList<TouchEventListener>();
 	private int activePointerId;
 	private Point lastPosition;
 	private final float mapMoveDelta;
 	private final MapViewPosition mapViewPosition;
 	private boolean moveThresholdReached;
+	private final List<TouchEventListener> touchEventListeners = new CopyOnWriteArrayList<TouchEventListener>();
 
 	public TouchEventHandler(MapViewPosition mapViewPosition, ViewConfiguration viewConfiguration) {
 		this.mapViewPosition = mapViewPosition;

@@ -22,15 +22,17 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.model.MapViewPosition;
 
 public class TileQueue {
+	private static final int QUEUE_CAPACITY = 128;
+
 	private final MapViewPosition mapViewPosition;
-	private boolean scheduleNeeded;
 	private final List<QueueItem> queueItems = new LinkedList<QueueItem>();
+	private boolean scheduleNeeded;
 
 	public TileQueue(MapViewPosition mapViewPosition) {
 		this.mapViewPosition = mapViewPosition;
 	}
 
-	public synchronized void insert(Tile tile) {
+	public synchronized void add(Tile tile) {
 		QueueItem queueItem = new QueueItem(tile);
 		if (!this.queueItems.contains(queueItem)) {
 			this.queueItems.add(queueItem);
@@ -38,17 +40,33 @@ public class TileQueue {
 		}
 	}
 
+	/**
+	 * Returns the most important entry from this queue. The method blocks while this queue is empty.
+	 */
 	public synchronized Tile remove() throws InterruptedException {
 		while (this.queueItems.isEmpty()) {
 			this.wait();
 		}
 
 		if (this.scheduleNeeded) {
-			QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition());
-			Collections.sort(this.queueItems, QueueItemComparator.INSTANCE);
+			schedule();
 			this.scheduleNeeded = false;
 		}
 
 		return this.queueItems.remove(0).tile;
+	}
+
+	private void schedule() {
+		QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition());
+		Collections.sort(this.queueItems, QueueItemComparator.INSTANCE);
+		trimToSize();
+	}
+
+	private void trimToSize() {
+		int queueSize = this.queueItems.size();
+
+		while (queueSize > QUEUE_CAPACITY) {
+			this.queueItems.remove(--queueSize);
+		}
 	}
 }

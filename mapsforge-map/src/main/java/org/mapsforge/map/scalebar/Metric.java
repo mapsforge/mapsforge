@@ -25,6 +25,11 @@ public final class Metric implements Adapter {
 	}
 
 	@Override
+	public double getMeterRatio() {
+		return 1;
+	}
+
+	@Override
 	public int[] getScaleBarValues() {
 		return SCALE_BAR_VALUES;
 	}
@@ -43,10 +48,5 @@ public final class Metric implements Adapter {
 			return "m";
 		}
 		return "km";
-	}
-
-	@Override
-	public double getMeterRatio() {
-		return 1;
 	}
 }

@@ -58,13 +58,13 @@ public class MapScaleBar {
 		return paint;
 	}
 
+	private Adapter adapter = Metric.INSTANCE;
 	private MapPosition lastMapPosition;
 	private final Bitmap mapScaleBitmap;
 	private final Canvas mapScaleCanvas;
 	private final MapViewPosition mapViewPosition;
 	private boolean redrawNeeded;
 	private boolean visible;
-	private Adapter adapter = Metric.INSTANCE;
 
 	public MapScaleBar(MapViewPosition mapViewPosition) {
 		this.mapViewPosition = mapViewPosition;
@@ -72,8 +72,21 @@ public class MapScaleBar {
 		this.mapScaleCanvas = new Canvas(this.mapScaleBitmap);
 	}
 
+	public void draw(Canvas canvas) {
+		if (!this.visible) {
+			return;
+		}
+
+		int top = canvas.getHeight() - BITMAP_HEIGHT - MARGIN_BOTTOM;
+		canvas.drawBitmap(this.mapScaleBitmap, MARGIN_LEFT, top, null);
+	}
+
 	public Adapter getAdapter() {
 		return this.adapter;
+	}
+
+	public boolean isVisible() {
+		return this.visible;
 	}
 
 	public void setAdapter(Adapter adapter) {
@@ -82,10 +95,6 @@ public class MapScaleBar {
 			throw new IllegalArgumentException("adapter must not be null");
 		}
 		this.adapter = adapter;
-	}
-
-	public boolean isVisible() {
-		return this.visible;
 	}
 
 	public void setVisible(boolean visible) {
@@ -135,15 +144,6 @@ public class MapScaleBar {
 
 		drawScaleText(scaleValue, unitSymbol, SCALE_TEXT_STROKE);
 		drawScaleText(scaleValue, unitSymbol, SCALE_TEXT);
-	}
-
-	public void draw(Canvas canvas) {
-		if (!this.visible) {
-			return;
-		}
-
-		int top = canvas.getHeight() - BITMAP_HEIGHT - MARGIN_BOTTOM;
-		canvas.drawBitmap(this.mapScaleBitmap, MARGIN_LEFT, top, null);
 	}
 
 	void redrawScaleBar() {
