@@ -16,6 +16,8 @@ package org.mapsforge.map;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
@@ -27,10 +29,12 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.util.Log;
+import android.graphics.Color;
 
 public class LayerManager extends PausableThread {
+	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
 	private static final int MILLISECONDS_PER_FRAME = 50;
 
 	private static BoundingBox getBoundingBox(MapPosition mapPosition, Canvas canvas) {
@@ -54,15 +58,19 @@ public class LayerManager extends PausableThread {
 		return new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
 	}
 
-	private static Point getCanvasPosition(MapPosition mapPosition, int width, int height) {
+	private static Point getCanvasPosition(MapPosition mapPosition, Canvas canvas) {
 		GeoPoint centerPoint = mapPosition.geoPoint;
 		byte zoomLevel = mapPosition.zoomLevel;
 
-		double pixelX = MercatorProjection.longitudeToPixelX(centerPoint.longitude, zoomLevel) - width / 2;
-		double pixelY = MercatorProjection.latitudeToPixelY(centerPoint.latitude, zoomLevel) - height / 2;
+		int halfCanvasWidth = canvas.getWidth() / 2;
+		int halfCanvasHeight = canvas.getHeight() / 2;
+
+		double pixelX = MercatorProjection.longitudeToPixelX(centerPoint.longitude, zoomLevel) - halfCanvasWidth;
+		double pixelY = MercatorProjection.latitudeToPixelY(centerPoint.latitude, zoomLevel) - halfCanvasHeight;
 		return new Point(pixelX, pixelY);
 	}
 
+	private final Canvas drawingCanvas;
 	private final List<Layer> layers = new CopyOnWriteArrayList<Layer>();
 	private final MapView mapView;
 	private final Model model;
@@ -71,6 +79,8 @@ public class LayerManager extends PausableThread {
 	public LayerManager(MapView mapView, Model model) {
 		this.mapView = mapView;
 		this.model = model;
+
+		this.drawingCanvas = new Canvas();
 	}
 
 	public List<Layer> getLayers() {
@@ -93,19 +103,22 @@ public class LayerManager extends PausableThread {
 
 	@Override
 	protected void doWork() throws InterruptedException {
-		long timeBefore = System.nanoTime();
+		long startTime = System.nanoTime();
 		this.redrawNeeded = false;
 
 		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
-		Canvas canvas = frameBuffer.getDrawingCanvas();
-		if (canvas != null) {
+		Bitmap bitmap = frameBuffer.getDrawingBitmap();
+		if (bitmap != null) {
+			bitmap.eraseColor(Color.WHITE);
+			this.drawingCanvas.setBitmap(bitmap);
+
 			MapPosition mapPosition = this.model.mapViewPosition.getMapPosition();
-			BoundingBox boundingBox = getBoundingBox(mapPosition, canvas);
-			Point canvasPosition = getCanvasPosition(mapPosition, canvas.getWidth(), canvas.getHeight());
+			BoundingBox boundingBox = getBoundingBox(mapPosition, this.drawingCanvas);
+			Point canvasPosition = getCanvasPosition(mapPosition, this.drawingCanvas);
 
 			for (Layer layer : this.getLayers()) {
 				if (layer.isVisible()) {
-					layer.draw(boundingBox, mapPosition.zoomLevel, canvas, canvasPosition);
+					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, canvasPosition);
 				}
 			}
 
@@ -113,9 +126,11 @@ public class LayerManager extends PausableThread {
 			this.mapView.invalidateOnUiThread();
 		}
 
-		long timeSleep = MILLISECONDS_PER_FRAME - (System.nanoTime() - timeBefore);
-		Log.i("osm", "timeSleep: " + timeSleep);
+		long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;
+		long timeSleep = MILLISECONDS_PER_FRAME - elapsedMilliseconds;
+
 		if (timeSleep > 1 && !isInterrupted()) {
+			LOGGER.log(Level.INFO, "sleeping (ms): " + timeSleep);
 			sleep(timeSleep);
 		}
 	}

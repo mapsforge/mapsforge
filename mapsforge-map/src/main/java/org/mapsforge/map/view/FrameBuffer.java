@@ -20,21 +20,18 @@ import org.mapsforge.map.model.FrameBufferModel;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 
 public class FrameBuffer {
 	private Bitmap bitmap1;
 	private Bitmap bitmap2;
 	private Dimension dimension;
-	private final Canvas drawingCanvas;
 	private final FrameBufferModel frameBufferModel;
 	private final Matrix matrix;
 
 	public FrameBuffer(FrameBufferModel frameBufferModel) {
 		this.frameBufferModel = frameBufferModel;
 
-		this.drawingCanvas = new Canvas();
 		this.matrix = new Matrix();
 	}
 
@@ -68,17 +65,14 @@ public class FrameBuffer {
 		this.bitmap1 = this.bitmap2;
 		this.bitmap2 = bitmapTemp;
 
-		this.bitmap2.eraseColor(Color.TRANSPARENT);
-		this.drawingCanvas.setBitmap(this.bitmap2);
-
 		this.frameBufferModel.setMapPosition(frameMapPosition);
 	}
 
-	public synchronized Canvas getDrawingCanvas() {
-		if (this.bitmap1 != null) {
-			return this.drawingCanvas;
-		}
-		return null;
+	/**
+	 * @return the bitmap of the second frame to draw on (may be null).
+	 */
+	public synchronized Bitmap getDrawingBitmap() {
+		return this.bitmap2;
 	}
 
 	public synchronized void setDimension(Dimension dimension) {
@@ -87,7 +81,6 @@ public class FrameBuffer {
 		if (dimension.width > 0 && dimension.height > 0) {
 			this.bitmap1 = Bitmap.createBitmap(dimension.width, dimension.height, Bitmap.Config.RGB_565);
 			this.bitmap2 = Bitmap.createBitmap(dimension.width, dimension.height, Bitmap.Config.RGB_565);
-			this.drawingCanvas.setBitmap(this.bitmap2);
 		} else {
 			this.bitmap1 = null;
 			this.bitmap2 = null;

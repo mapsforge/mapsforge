@@ -53,11 +53,11 @@ public final class TileGridLayer extends Layer {
 		float pixelX2 = (float) (MercatorProjection.tileXToPixelX(tileRight) - canvasPosition.x + Tile.TILE_SIZE);
 		float pixelY2 = (float) (MercatorProjection.tileYToPixelY(tileBottom) - canvasPosition.y + Tile.TILE_SIZE);
 
-		for (float lineX = pixelX1; lineX <= pixelX2; lineX += Tile.TILE_SIZE) {
+		for (float lineX = pixelX1; lineX <= pixelX2 + 1; lineX += Tile.TILE_SIZE) {
 			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, PAINT);
 		}
 
-		for (float lineY = pixelY1; lineY <= pixelY2; lineY += Tile.TILE_SIZE) {
+		for (float lineY = pixelY1; lineY <= pixelY2 + 1; lineY += Tile.TILE_SIZE) {
 			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, PAINT);
 		}
 	}
