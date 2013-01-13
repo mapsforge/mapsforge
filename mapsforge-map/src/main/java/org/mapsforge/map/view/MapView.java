@@ -12,11 +12,15 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map;
+package org.mapsforge.map.view;
 
+import org.mapsforge.core.model.Dimension;
+import org.mapsforge.map.LayerManager;
+import org.mapsforge.map.controller.FrameBufferController;
+import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.input.TouchEventHandler;
 import org.mapsforge.map.input.TouchGestureDetector;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
 
 import android.content.Context;
@@ -28,25 +32,32 @@ import android.view.ViewConfiguration;
 
 public class MapView extends View {
 	private final FpsCounter fpsCounter = new FpsCounter();
-	private final FrameBuffer frameBuffer = new FrameBuffer();
-	private final LayerManager layerManager = new LayerManager(this);
+	private final FrameBuffer frameBuffer;
+	private final LayerManager layerManager;
 	private final MapScaleBar mapScaleBar;
-	private final MapViewPosition mapViewPosition = new MapViewPosition();
+	private final Model model;
 	private final TouchEventHandler touchEventHandler;
 
 	public MapView(Context context) {
 		super(context);
 
+		this.model = new Model();
+
+		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel);
+		new FrameBufferController(this.frameBuffer, this.model);
+
+		this.layerManager = new LayerManager(this, this.model);
 		this.layerManager.start();
 
+		new MapViewController(this, this.model);
+
 		ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
-		TouchGestureDetector touchGestureDetector = new TouchGestureDetector(this.mapViewPosition, viewConfiguration);
-		this.touchEventHandler = new TouchEventHandler(this.mapViewPosition, viewConfiguration);
+		TouchGestureDetector touchGestureDetector = new TouchGestureDetector(this.model.mapViewPosition,
+				viewConfiguration);
+		this.touchEventHandler = new TouchEventHandler(this.model.mapViewPosition, viewConfiguration);
 		this.touchEventHandler.addListener(touchGestureDetector);
 
-		this.mapViewPosition.addObserver(new MapViewPositionObserver(this));
-
-		this.mapScaleBar = new MapScaleBar(this.mapViewPosition);
+		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition);
 	}
 
 	public void destroy() {
@@ -72,8 +83,8 @@ public class MapView extends View {
 		return this.mapScaleBar;
 	}
 
-	public MapViewPosition getMapViewPosition() {
-		return this.mapViewPosition;
+	public Model getModel() {
+		return this.model;
 	}
 
 	/**
@@ -105,7 +116,7 @@ public class MapView extends View {
 
 	@Override
 	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-		this.frameBuffer.changeSize(width, height);
+		this.model.mapViewModel.setDimension(new Dimension(width, height));
 		if (width > 0 && height > 0) {
 			this.layerManager.redrawLayers();
 		}

@@ -14,11 +14,8 @@
  */
 package org.mapsforge.map.model;
 
-class DummyObserver implements Observer {
-	int callbacks;
-
-	@Override
-	public void onChange() {
-		++this.callbacks;
-	}
+public class Model {
+	public final FrameBufferModel frameBufferModel = new FrameBufferModel();
+	public final MapViewModel mapViewModel = new MapViewModel();
+	public final MapViewPosition mapViewPosition = new MapViewPosition();
 }

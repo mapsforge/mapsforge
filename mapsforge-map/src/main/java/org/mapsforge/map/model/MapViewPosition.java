@@ -20,6 +20,8 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.model.common.Observable;
+import org.mapsforge.map.model.common.Persistable;
 
 public class MapViewPosition extends Observable implements Persistable {
 	private static final String LATITUDE = "latitude";
@@ -178,9 +180,6 @@ public class MapViewPosition extends Observable implements Persistable {
 
 	/**
 	 * Sets the new center position and zoom level of the map.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if the zoom level is negative.
 	 */
 	public void setMapPosition(MapPosition mapPosition) {
 		synchronized (this) {
@@ -197,6 +196,9 @@ public class MapViewPosition extends Observable implements Persistable {
 	 *             if the zoom level is negative.
 	 */
 	public void setZoomLevel(byte zoomLevel) {
+		if (zoomLevel < 0) {
+			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
+		}
 		synchronized (this) {
 			setZoomLevelInternal(zoomLevel);
 		}
@@ -208,6 +210,9 @@ public class MapViewPosition extends Observable implements Persistable {
 			throw new IllegalArgumentException("zoomLevelMax must not be negative: " + zoomLevelMax);
 		}
 		synchronized (this) {
+			if (zoomLevelMax < this.zoomLevelMin) {
+				throw new IllegalArgumentException("zoomLevelMax must be >= zoomLevelMin: " + zoomLevelMax);
+			}
 			this.zoomLevelMax = zoomLevelMax;
 		}
 		notifyObservers();
@@ -218,7 +223,20 @@ public class MapViewPosition extends Observable implements Persistable {
 			throw new IllegalArgumentException("zoomLevelMin must not be negative: " + zoomLevelMin);
 		}
 		synchronized (this) {
+			if (zoomLevelMin > this.zoomLevelMax) {
+				throw new IllegalArgumentException("zoomLevelMin must be <= zoomLevelMax: " + zoomLevelMin);
+			}
 			this.zoomLevelMin = zoomLevelMin;
+		}
+		notifyObservers();
+	}
+
+	/**
+	 * Changes the current zoom level by the given value if possible.
+	 */
+	public void zoom(byte zoomLevelDiff) {
+		synchronized (this) {
+			setZoomLevelInternal(getZoomLevel() + zoomLevelDiff);
 		}
 		notifyObservers();
 	}
@@ -227,26 +245,14 @@ public class MapViewPosition extends Observable implements Persistable {
 	 * Increases the current zoom level by one if possible.
 	 */
 	public void zoomIn() {
-		synchronized (this) {
-			byte currentZoomLevel = getZoomLevel();
-			if (currentZoomLevel < Byte.MAX_VALUE) {
-				setZoomLevelInternal((byte) (currentZoomLevel + 1));
-			}
-		}
-		notifyObservers();
+		zoom((byte) 1);
 	}
 
 	/**
 	 * Decreases the current zoom level by one if possible.
 	 */
 	public void zoomOut() {
-		synchronized (this) {
-			byte currentZoomLevel = getZoomLevel();
-			if (currentZoomLevel > 0) {
-				setZoomLevelInternal((byte) (currentZoomLevel - 1));
-			}
-		}
-		notifyObservers();
+		zoom((byte) -1);
 	}
 
 	private void setCenterInternal(GeoPoint geoPoint) {
@@ -260,10 +266,7 @@ public class MapViewPosition extends Observable implements Persistable {
 		}
 	}
 
-	private void setZoomLevelInternal(byte zoomLevel) {
-		if (zoomLevel < 0) {
-			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
-		}
+	private void setZoomLevelInternal(int zoomLevel) {
 		this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
 	}
 }

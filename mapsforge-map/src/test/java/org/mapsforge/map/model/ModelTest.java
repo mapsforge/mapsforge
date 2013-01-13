@@ -12,26 +12,17 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.map.queue;
+package org.mapsforge.map.model;
 
-import java.io.Serializable;
-import java.util.Comparator;
+import org.junit.Assert;
+import org.junit.Test;
 
-final class QueueItemComparator implements Comparator<QueueItem>, Serializable {
-	private static final long serialVersionUID = 1L;
-	static final QueueItemComparator INSTANCE = new QueueItemComparator();
-
-	private QueueItemComparator() {
-		// do nothing
-	}
-
-	@Override
-	public int compare(QueueItem queueItem1, QueueItem queueItem2) {
-		if (queueItem1.priority < queueItem2.priority) {
-			return 1;
-		} else if (queueItem1.priority > queueItem2.priority) {
-			return -1;
-		}
-		return 0;
+public class ModelTest {
+	@Test
+	public void modelTest() {
+		Model model = new Model();
+		Assert.assertNotNull(model.frameBufferModel);
+		Assert.assertNotNull(model.mapViewModel);
+		Assert.assertNotNull(model.mapViewPosition);
 	}
 }

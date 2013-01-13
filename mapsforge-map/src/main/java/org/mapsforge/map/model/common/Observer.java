@@ -12,26 +12,13 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.map.queue;
+package org.mapsforge.map.model.common;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
-final class QueueItemComparator implements Comparator<QueueItem>, Serializable {
-	private static final long serialVersionUID = 1L;
-	static final QueueItemComparator INSTANCE = new QueueItemComparator();
-
-	private QueueItemComparator() {
-		// do nothing
-	}
-
-	@Override
-	public int compare(QueueItem queueItem1, QueueItem queueItem2) {
-		if (queueItem1.priority < queueItem2.priority) {
-			return 1;
-		} else if (queueItem1.priority > queueItem2.priority) {
-			return -1;
-		}
-		return 0;
-	}
+public interface Observer {
+	/**
+	 * Called whenever the observed object has been changed.
+	 * <p>
+	 * Time-consuming operations should be performed in a separate thread.
+	 */
+	void onChange();
 }

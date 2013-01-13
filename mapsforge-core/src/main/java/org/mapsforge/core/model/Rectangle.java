@@ -14,11 +14,14 @@
  */
 package org.mapsforge.core.model;
 
+import java.io.Serializable;
+
 /**
  * A Rectangle represents an immutable set of four double coordinates.
  */
-// TODO: implement equals() and hashCode() and write unit tests
-public class Rectangle {
+public class Rectangle implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	public final double bottom;
 	public final double left;
 	public final double right;
@@ -42,6 +45,26 @@ public class Rectangle {
 	 */
 	public boolean contains(Point point) {
 		return this.left <= point.x && this.right >= point.x && this.top <= point.y && this.bottom >= point.y;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof Rectangle)) {
+			return false;
+		}
+		Rectangle other = (Rectangle) obj;
+		if (Double.doubleToLongBits(this.left) != Double.doubleToLongBits(other.left)) {
+			return false;
+		} else if (Double.doubleToLongBits(this.top) != Double.doubleToLongBits(other.top)) {
+			return false;
+		} else if (Double.doubleToLongBits(this.right) != Double.doubleToLongBits(other.right)) {
+			return false;
+		} else if (Double.doubleToLongBits(this.bottom) != Double.doubleToLongBits(other.bottom)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -71,6 +94,22 @@ public class Rectangle {
 
 	public double getWidth() {
 		return this.right - this.left;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(this.left);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.top);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.right);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(this.bottom);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
 	}
 
 	/**

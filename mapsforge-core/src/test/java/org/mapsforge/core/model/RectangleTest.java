@@ -14,6 +14,8 @@
  */
 package org.mapsforge.core.model;
 
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -42,6 +44,19 @@ public class RectangleTest {
 
 		Assert.assertFalse(rectangle.contains(new Point(0, 0)));
 		Assert.assertFalse(rectangle.contains(new Point(4, 4)));
+	}
+
+	@Test
+	public void equalsTest() {
+		Rectangle rectangle1 = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle2 = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle3 = new Rectangle(0, 0, 0, 0);
+
+		TestUtils.equalsTest(rectangle1, rectangle2);
+
+		Assert.assertNotEquals(rectangle1, rectangle3);
+		Assert.assertNotEquals(rectangle3, rectangle1);
+		Assert.assertNotEquals(rectangle1, new Object());
 	}
 
 	@Test
@@ -121,6 +136,12 @@ public class RectangleTest {
 
 		assertNoIntersection(rectangle1, rectangle6);
 		assertNoIntersection(rectangle1, rectangle7);
+	}
+
+	@Test
+	public void serializeTest() throws IOException, ClassNotFoundException {
+		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		TestUtils.serializeTest(rectangle);
 	}
 
 	@Test

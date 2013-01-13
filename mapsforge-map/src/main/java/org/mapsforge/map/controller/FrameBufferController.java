@@ -1,0 +1,84 @@
+/*
+ * Copyright 2010, 2011, 2012 mapsforge.org
+ *
+ * This program is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.mapsforge.map.controller;
+
+import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.model.Model;
+import org.mapsforge.map.model.common.Observer;
+import org.mapsforge.map.view.FrameBuffer;
+
+public class FrameBufferController implements Observer {
+	private static Point getPixel(GeoPoint geoPoint, byte zoomLevel) {
+		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel);
+		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel);
+		return new Point(pixelX, pixelY);
+	}
+
+	private final FrameBuffer frameBuffer;
+	private Dimension lastMapViewDimension;
+	private final Model model;
+
+	public FrameBufferController(FrameBuffer frameBuffer, Model model) {
+		this.frameBuffer = frameBuffer;
+		this.model = model;
+
+		model.frameBufferModel.addObserver(this);
+		model.mapViewModel.addObserver(this);
+		model.mapViewPosition.addObserver(this);
+	}
+
+	@Override
+	public void onChange() {
+		Dimension mapViewDimension = this.model.mapViewModel.getDimension();
+		if (mapViewDimension != null) {
+			if (!mapViewDimension.equals(this.lastMapViewDimension)) {
+				this.frameBuffer.setDimension(calculateFrameBufferDimension(mapViewDimension));
+				this.lastMapViewDimension = mapViewDimension;
+			}
+
+			synchronized (this.frameBuffer) {
+				MapPosition mapPositionFrameBuffer = this.model.frameBufferModel.getMapPosition();
+				if (mapPositionFrameBuffer != null) {
+					adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension);
+				}
+			}
+		}
+	}
+
+	private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension) {
+		MapPosition mapPosition = this.model.mapViewPosition.getMapPosition();
+
+		Point pointFrameBuffer = getPixel(mapPositionFrameBuffer.geoPoint, mapPosition.zoomLevel);
+		Point pointMapPosition = getPixel(mapPosition.geoPoint, mapPosition.zoomLevel);
+		float diffX = (float) (pointFrameBuffer.x - pointMapPosition.x);
+		float diffY = (float) (pointFrameBuffer.y - pointMapPosition.y);
+
+		int zoomLevelDiff = mapPosition.zoomLevel - mapPositionFrameBuffer.zoomLevel;
+		float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
+
+		this.frameBuffer.adjustMatrix(diffX, diffY, scaleFactor, mapViewDimension);
+	}
+
+	private Dimension calculateFrameBufferDimension(Dimension mapViewDimension) {
+		double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
+		int width = (int) (mapViewDimension.width * overdrawFactor);
+		int height = (int) (mapViewDimension.height * overdrawFactor);
+		return new Dimension(width, height);
+	}
+}

@@ -12,32 +12,28 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map;
+package org.mapsforge.map.controller;
 
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.model.Observer;
+import org.mapsforge.map.LayerManager;
+import org.mapsforge.map.model.Model;
+import org.mapsforge.map.model.common.Observer;
+import org.mapsforge.map.view.MapView;
 
-class MapViewPositionObserver implements Observer {
-	private final FrameBuffer frameBuffer;
-	private MapPosition lastMapPosition;
+public class MapViewController implements Observer {
+	private final LayerManager layerManager;
 	private final MapView mapView;
-	private final MapViewPosition mapViewPosition;
 
-	MapViewPositionObserver(MapView mapView) {
+	public MapViewController(MapView mapView, Model model) {
 		this.mapView = mapView;
 
-		this.frameBuffer = mapView.getFrameBuffer();
-		this.mapViewPosition = mapView.getMapViewPosition();
-		this.lastMapPosition = this.mapViewPosition.getMapPosition();
+		model.mapViewPosition.addObserver(this);
+
+		this.layerManager = mapView.getLayerManager();
 	}
 
 	@Override
 	public void onChange() {
-		MapPosition mapPosition = this.mapViewPosition.getMapPosition();
-		this.frameBuffer.adjustMatrix(this.lastMapPosition, mapPosition);
-		this.lastMapPosition = mapPosition;
 		this.mapView.invalidateOnUiThread();
-		this.mapView.getLayerManager().redrawLayers();
+		this.layerManager.redrawLayers();
 	}
 }

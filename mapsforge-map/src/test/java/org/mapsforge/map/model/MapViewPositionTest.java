@@ -20,40 +20,9 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.model.common.DummyObserver;
 
 public class MapViewPositionTest {
-	private static void verifyAddObserverInvalid(MapViewPosition mapViewPosition, Observer observer) {
-		try {
-			mapViewPosition.addObserver(observer);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
-
-	private static void verifyRemoveObserverInvalid(MapViewPosition mapViewPosition, Observer observer) {
-		try {
-			mapViewPosition.removeObserver(observer);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
-
-	@Test
-	public void addRemoveObserverTest() {
-		DummyObserver dummyObserver = new DummyObserver();
-		MapViewPosition mapViewPosition = new MapViewPosition();
-
-		mapViewPosition.addObserver(dummyObserver);
-		verifyAddObserverInvalid(mapViewPosition, null);
-		verifyAddObserverInvalid(mapViewPosition, dummyObserver);
-
-		mapViewPosition.removeObserver(dummyObserver);
-		verifyRemoveObserverInvalid(mapViewPosition, null);
-		verifyRemoveObserverInvalid(mapViewPosition, dummyObserver);
-	}
-
 	@Test
 	public void mapLimitTest() {
 		MapViewPosition mapViewPosition = new MapViewPosition();
@@ -85,28 +54,29 @@ public class MapViewPositionTest {
 	}
 
 	@Test
-	public void ObserverTest() {
+	public void observerTest() {
 		DummyObserver dummyObserver = new DummyObserver();
 		MapViewPosition mapViewPosition = new MapViewPosition();
 		mapViewPosition.addObserver(dummyObserver);
+		Assert.assertEquals(0, dummyObserver.getCallbacks());
 
 		mapViewPosition.setCenter(new GeoPoint(0, 0));
-		Assert.assertEquals(1, dummyObserver.callbacks);
+		Assert.assertEquals(1, dummyObserver.getCallbacks());
 
 		mapViewPosition.setMapLimit(new BoundingBox(0, 0, 0, 0));
-		Assert.assertEquals(2, dummyObserver.callbacks);
+		Assert.assertEquals(2, dummyObserver.getCallbacks());
 
 		mapViewPosition.setMapPosition(new MapPosition(new GeoPoint(0, 0), (byte) 0));
-		Assert.assertEquals(3, dummyObserver.callbacks);
+		Assert.assertEquals(3, dummyObserver.getCallbacks());
 
 		mapViewPosition.setZoomLevel((byte) 0);
-		Assert.assertEquals(4, dummyObserver.callbacks);
+		Assert.assertEquals(4, dummyObserver.getCallbacks());
 
 		mapViewPosition.setZoomLevelMax((byte) 0);
-		Assert.assertEquals(5, dummyObserver.callbacks);
+		Assert.assertEquals(5, dummyObserver.getCallbacks());
 
 		mapViewPosition.setZoomLevelMin((byte) 0);
-		Assert.assertEquals(6, dummyObserver.callbacks);
+		Assert.assertEquals(6, dummyObserver.getCallbacks());
 	}
 
 	@Test
@@ -139,6 +109,27 @@ public class MapViewPositionTest {
 
 		try {
 			mapViewPosition.setZoomLevelMax((byte) -1);
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
+	@Test
+	public void zoomLevelMinMaxTest() {
+		MapViewPosition mapViewPosition = new MapViewPosition();
+		mapViewPosition.setZoomLevelMin((byte) 1);
+		mapViewPosition.setZoomLevelMax((byte) 2);
+
+		try {
+			mapViewPosition.setZoomLevelMin((byte) 3);
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+
+		try {
+			mapViewPosition.setZoomLevelMax((byte) 0);
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
@@ -179,6 +170,30 @@ public class MapViewPositionTest {
 		mapViewPosition.setZoomLevel((byte) 0);
 		Assert.assertEquals(0, mapViewPosition.getZoomLevel());
 		mapViewPosition.zoomOut();
+		Assert.assertEquals(0, mapViewPosition.getZoomLevel());
+	}
+
+	@Test
+	public void zoomTest() {
+		MapViewPosition mapViewPosition = new MapViewPosition();
+		Assert.assertEquals(0, mapViewPosition.getZoomLevel());
+
+		mapViewPosition.zoom((byte) 1);
+		Assert.assertEquals(1, mapViewPosition.getZoomLevel());
+
+		mapViewPosition.zoom((byte) -1);
+		Assert.assertEquals(0, mapViewPosition.getZoomLevel());
+
+		mapViewPosition.zoom((byte) 5);
+		Assert.assertEquals(5, mapViewPosition.getZoomLevel());
+
+		mapViewPosition.zoom((byte) -2);
+		Assert.assertEquals(3, mapViewPosition.getZoomLevel());
+
+		mapViewPosition.zoom(Byte.MAX_VALUE);
+		Assert.assertEquals(Byte.MAX_VALUE, mapViewPosition.getZoomLevel());
+
+		mapViewPosition.zoom(Byte.MIN_VALUE);
 		Assert.assertEquals(0, mapViewPosition.getZoomLevel());
 	}
 }

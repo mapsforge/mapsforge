@@ -23,6 +23,9 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.model.Model;
+import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.MapView;
 
 import android.graphics.Canvas;
 import android.os.SystemClock;
@@ -63,10 +66,12 @@ public class LayerManager extends PausableThread {
 
 	private final List<Layer> layers = new CopyOnWriteArrayList<Layer>();
 	private final MapView mapView;
+	private final Model model;
 	private boolean redrawNeeded;
 
-	public LayerManager(MapView mapView) {
+	public LayerManager(MapView mapView, Model model) {
 		this.mapView = mapView;
+		this.model = model;
 	}
 
 	public List<Layer> getLayers() {
@@ -95,17 +100,17 @@ public class LayerManager extends PausableThread {
 		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
 		Canvas canvas = frameBuffer.getDrawingCanvas();
 		if (canvas != null) {
-			MapPosition mapPositionBefore = this.mapView.getMapViewPosition().getMapPosition();
-			BoundingBox boundingBox = getBoundingBox(mapPositionBefore, canvas);
-			Point canvasPosition = getCanvasPosition(mapPositionBefore, canvas.getWidth(), canvas.getHeight());
+			MapPosition mapPosition = this.model.mapViewPosition.getMapPosition();
+			BoundingBox boundingBox = getBoundingBox(mapPosition, canvas);
+			Point canvasPosition = getCanvasPosition(mapPosition, canvas.getWidth(), canvas.getHeight());
 
 			for (Layer layer : this.getLayers()) {
 				if (layer.isVisible()) {
-					layer.draw(boundingBox, mapPositionBefore.zoomLevel, canvas, canvasPosition);
+					layer.draw(boundingBox, mapPosition.zoomLevel, canvas, canvasPosition);
 				}
 			}
 
-			frameBuffer.drawFrame(mapPositionBefore, this.mapView.getMapViewPosition());
+			frameBuffer.frameFinished(mapPosition);
 			this.mapView.invalidateOnUiThread();
 		}
 

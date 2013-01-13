@@ -12,13 +12,17 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.model;
+package org.mapsforge.map.model.common;
 
-public interface Observer {
-	/**
-	 * Called whenever the observed object has been changed.
-	 * <p>
-	 * Time-consuming operations should be performed in a separate thread.
-	 */
-	void onChange();
+public class DummyObserver implements Observer {
+	private int callbacks;
+
+	public int getCallbacks() {
+		return this.callbacks;
+	}
+
+	@Override
+	public void onChange() {
+		++this.callbacks;
+	}
 }
