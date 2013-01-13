@@ -24,6 +24,12 @@ import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.FrameBuffer;
 
 public class FrameBufferController implements Observer {
+	private static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
+		int width = (int) (mapViewDimension.width * overdrawFactor);
+		int height = (int) (mapViewDimension.height * overdrawFactor);
+		return new Dimension(width, height);
+	}
+
 	private static Point getPixel(GeoPoint geoPoint, byte zoomLevel) {
 		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel);
 		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel);
@@ -32,6 +38,7 @@ public class FrameBufferController implements Observer {
 
 	private final FrameBuffer frameBuffer;
 	private Dimension lastMapViewDimension;
+	private double lastOverdrawFactor;
 	private final Model model;
 
 	public FrameBufferController(FrameBuffer frameBuffer, Model model) {
@@ -47,9 +54,11 @@ public class FrameBufferController implements Observer {
 	public void onChange() {
 		Dimension mapViewDimension = this.model.mapViewModel.getDimension();
 		if (mapViewDimension != null) {
-			if (!mapViewDimension.equals(this.lastMapViewDimension)) {
-				this.frameBuffer.setDimension(calculateFrameBufferDimension(mapViewDimension));
+			double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
+			if (dimensionChangeNeeded(mapViewDimension, overdrawFactor)) {
+				this.frameBuffer.setDimension(calculateFrameBufferDimension(mapViewDimension, overdrawFactor));
 				this.lastMapViewDimension = mapViewDimension;
+				this.lastOverdrawFactor = overdrawFactor;
 			}
 
 			synchronized (this.frameBuffer) {
@@ -75,10 +84,12 @@ public class FrameBufferController implements Observer {
 		this.frameBuffer.adjustMatrix(diffX, diffY, scaleFactor, mapViewDimension);
 	}
 
-	private Dimension calculateFrameBufferDimension(Dimension mapViewDimension) {
-		double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
-		int width = (int) (mapViewDimension.width * overdrawFactor);
-		int height = (int) (mapViewDimension.height * overdrawFactor);
-		return new Dimension(width, height);
+	private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {
+		if (Double.compare(overdrawFactor, this.lastOverdrawFactor) != 0) {
+			return true;
+		} else if (!mapViewDimension.equals(this.lastMapViewDimension)) {
+			return true;
+		}
+		return false;
 	}
 }

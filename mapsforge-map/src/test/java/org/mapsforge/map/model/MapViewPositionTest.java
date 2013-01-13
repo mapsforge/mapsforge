@@ -23,6 +23,33 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.DummyObserver;
 
 public class MapViewPositionTest {
+	private static void verifyInvalidSetZoomLevel(MapViewPosition mapViewPosition, byte zoomLevel) {
+		try {
+			mapViewPosition.setZoomLevel(zoomLevel);
+			Assert.fail("zoomLevel: " + zoomLevel);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
+	private static void verifyInvalidSetZoomLevelMax(MapViewPosition mapViewPosition, byte zoomLevelMax) {
+		try {
+			mapViewPosition.setZoomLevelMax(zoomLevelMax);
+			Assert.fail("zoomLevelMax: " + zoomLevelMax);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
+	private static void verifyInvalidSetZoomLevelMin(MapViewPosition mapViewPosition, byte zoomLevelMin) {
+		try {
+			mapViewPosition.setZoomLevelMin(zoomLevelMin);
+			Assert.fail("zoomLevelMin: " + zoomLevelMin);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
 	@Test
 	public void mapLimitTest() {
 		MapViewPosition mapViewPosition = new MapViewPosition();
@@ -107,12 +134,7 @@ public class MapViewPositionTest {
 		mapViewPosition.setZoomLevel((byte) 1);
 		Assert.assertEquals(0, mapViewPosition.getZoomLevel());
 
-		try {
-			mapViewPosition.setZoomLevelMax((byte) -1);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
+		verifyInvalidSetZoomLevelMax(mapViewPosition, (byte) -1);
 	}
 
 	@Test
@@ -121,19 +143,8 @@ public class MapViewPositionTest {
 		mapViewPosition.setZoomLevelMin((byte) 1);
 		mapViewPosition.setZoomLevelMax((byte) 2);
 
-		try {
-			mapViewPosition.setZoomLevelMin((byte) 3);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-
-		try {
-			mapViewPosition.setZoomLevelMax((byte) 0);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
+		verifyInvalidSetZoomLevelMin(mapViewPosition, (byte) 3);
+		verifyInvalidSetZoomLevelMax(mapViewPosition, (byte) 0);
 	}
 
 	@Test
@@ -151,12 +162,13 @@ public class MapViewPositionTest {
 		mapViewPosition.setZoomLevel((byte) 0);
 		Assert.assertEquals(1, mapViewPosition.getZoomLevel());
 
-		try {
-			mapViewPosition.setZoomLevelMin((byte) -1);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
+		verifyInvalidSetZoomLevelMin(mapViewPosition, (byte) -1);
+	}
+
+	@Test
+	public void zoomLevelTest() {
+		MapViewPosition mapViewPosition = new MapViewPosition();
+		verifyInvalidSetZoomLevel(mapViewPosition, (byte) -1);
 	}
 
 	@Test

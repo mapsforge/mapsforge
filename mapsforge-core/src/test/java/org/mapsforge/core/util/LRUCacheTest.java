@@ -29,6 +29,15 @@ public class LRUCacheTest {
 		return new LRUCache<String, String>(capacity);
 	}
 
+	private static void verifyInvalidCapacity(int capacity) {
+		try {
+			createLRUCache(capacity);
+			Assert.fail("capacity: " + capacity);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
 	@Test
 	public void lruCacheTest() {
 		LRUCache<String, String> lruCache = createLRUCache(2);
@@ -63,11 +72,6 @@ public class LRUCacheTest {
 
 	@Test
 	public void lruCacheWithNegativeCapacityTest() {
-		try {
-			createLRUCache(-1);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
+		verifyInvalidCapacity(-1);
 	}
 }

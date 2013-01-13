@@ -22,6 +22,16 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.common.DummyObserver;
 
 public class FrameBufferModelTest {
+	private static void verifyInvalidOverdrawFactor(int overdrawFactor) {
+		FrameBufferModel frameBufferModel = new FrameBufferModel();
+		try {
+			frameBufferModel.setOverdrawFactor(overdrawFactor);
+			Assert.fail("overdrawFactor: " + overdrawFactor);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
 	@Test
 	public void dimensionTest() {
 		FrameBufferModel frameBufferModel = new FrameBufferModel();
@@ -64,5 +74,8 @@ public class FrameBufferModelTest {
 
 		frameBufferModel.setOverdrawFactor(2);
 		Assert.assertEquals(2, frameBufferModel.getOverdrawFactor(), 0);
+
+		verifyInvalidOverdrawFactor(0);
+		verifyInvalidOverdrawFactor(-1);
 	}
 }

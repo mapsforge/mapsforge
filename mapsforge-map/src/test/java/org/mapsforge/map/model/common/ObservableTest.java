@@ -22,7 +22,7 @@ public class ObservableTest {
 	private static void verifyAddObserverInvalid(Observable observable, Observer observer) {
 		try {
 			observable.addObserver(observer);
-			Assert.fail();
+			Assert.fail("observer: " + observer);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}
@@ -31,7 +31,7 @@ public class ObservableTest {
 	private static void verifyRemoveObserverInvalid(Observable observable, Observer observer) {
 		try {
 			observable.removeObserver(observer);
-			Assert.fail();
+			Assert.fail("observer: " + observer);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}

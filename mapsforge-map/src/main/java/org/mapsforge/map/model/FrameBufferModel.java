@@ -56,6 +56,9 @@ public class FrameBufferModel extends Observable {
 	}
 
 	public void setOverdrawFactor(double overdrawFactor) {
+		if (overdrawFactor <= 0) {
+			throw new IllegalArgumentException("overdrawFactor must be > 0: " + overdrawFactor);
+		}
 		synchronized (this) {
 			this.overdrawFactor = overdrawFactor;
 		}

@@ -23,6 +23,15 @@ public class MercatorProjectionTest {
 	private static final int ZOOM_LEVEL_MAX = 30;
 	private static final int ZOOM_LEVEL_MIN = 0;
 
+	private static void verifyInvalidGetMapSize(byte zoomLevel) {
+		try {
+			MercatorProjection.getMapSize(zoomLevel);
+			Assert.fail("zoomLevel: " + zoomLevel);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
 	@Test
 	public void getMapSizeTest() {
 		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
@@ -30,12 +39,7 @@ public class MercatorProjectionTest {
 			Assert.assertEquals(Tile.TILE_SIZE * factor, MercatorProjection.getMapSize(zoomLevel));
 		}
 
-		try {
-			MercatorProjection.getMapSize((byte) -1);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
+		verifyInvalidGetMapSize((byte) -1);
 	}
 
 	@Test

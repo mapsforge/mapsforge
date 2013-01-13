@@ -29,7 +29,7 @@ public class DimensionTest {
 	private static void verifyInvalid(int width, int height) {
 		try {
 			createDimension(width, height);
-			Assert.fail();
+			Assert.fail("width: " + width + ", height: " + height);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}

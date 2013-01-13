@@ -28,7 +28,6 @@ import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
 import android.graphics.Canvas;
-import android.os.SystemClock;
 import android.util.Log;
 
 public class LayerManager extends PausableThread {
@@ -94,7 +93,7 @@ public class LayerManager extends PausableThread {
 
 	@Override
 	protected void doWork() throws InterruptedException {
-		long timeBefore = SystemClock.uptimeMillis();
+		long timeBefore = System.nanoTime();
 		this.redrawNeeded = false;
 
 		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
@@ -114,7 +113,7 @@ public class LayerManager extends PausableThread {
 			this.mapView.invalidateOnUiThread();
 		}
 
-		long timeSleep = MILLISECONDS_PER_FRAME - (SystemClock.uptimeMillis() - timeBefore);
+		long timeSleep = MILLISECONDS_PER_FRAME - (System.nanoTime() - timeBefore);
 		Log.i("osm", "timeSleep: " + timeSleep);
 		if (timeSleep > 1 && !isInterrupted()) {
 			sleep(timeSleep);

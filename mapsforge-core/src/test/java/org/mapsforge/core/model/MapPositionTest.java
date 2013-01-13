@@ -31,7 +31,7 @@ public class MapPositionTest {
 	private static void verifyBadConstructor(GeoPoint geoPoint, byte zoomLevel) {
 		try {
 			invokeConstructor(geoPoint, zoomLevel);
-			Assert.fail();
+			Assert.fail("geoPoint: " + geoPoint + ", zoomLevel: " + zoomLevel);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}
