@@ -145,6 +145,9 @@ public class DatabaseRenderer implements RenderCallback {
 
 		XmlRenderTheme jobTheme = mapGeneratorJob.jobParameters.jobTheme;
 		if (!jobTheme.equals(this.previousJobTheme)) {
+			if (this.renderTheme != null) {
+				this.renderTheme.destroy();
+			}
 			this.renderTheme = getRenderTheme(jobTheme);
 			if (this.renderTheme == null) {
 				this.previousJobTheme = null;
@@ -400,5 +403,12 @@ public class DatabaseRenderer implements RenderCallback {
 	private void setScaleStrokeWidth(byte zoomLevel) {
 		int zoomLevelDiff = Math.max(zoomLevel - STROKE_MIN_ZOOM_LEVEL, 0);
 		this.renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff));
+	}
+
+	public void destroy() {
+		if (this.renderTheme != null) {
+			this.renderTheme.destroy();
+			this.renderTheme = null;
+		}
 	}
 }

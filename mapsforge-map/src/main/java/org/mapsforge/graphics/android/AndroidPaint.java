@@ -31,6 +31,9 @@ import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 
 class AndroidPaint implements Paint {
+
+	private org.mapsforge.map.graphics.Bitmap bitmap;
+
 	private static int getStyle(org.mapsforge.map.graphics.FontStyle fontStyle) {
 		switch (fontStyle) {
 			case BOLD:
@@ -93,7 +96,7 @@ class AndroidPaint implements Paint {
 		if (bitmap == null) {
 			return;
 		}
-
+		this.bitmap = bitmap;
 		android.graphics.Bitmap androidBitmap = android.graphics.Bitmap.createBitmap(bitmap.getPixels(),
 				bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
 		Shader shader = new BitmapShader(androidBitmap, TileMode.REPEAT, TileMode.REPEAT);
@@ -143,5 +146,13 @@ class AndroidPaint implements Paint {
 	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
 		Typeface typeface = Typeface.create(getTypeface(fontFamily), getStyle(fontStyle));
 		this.paint.setTypeface(typeface);
+	}
+
+	@Override
+	public void destroy() {
+		if (this.bitmap != null) {
+			this.paint.setShader(null);
+			this.bitmap.destroy();
+		}
 	}
 }

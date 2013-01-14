@@ -38,7 +38,8 @@ public class Area implements RenderInstruction {
 
 	@Override
 	public void destroy() {
-		// do nothing
+		this.fill.destroy();
+		this.stroke.destroy();
 	}
 
 	@Override

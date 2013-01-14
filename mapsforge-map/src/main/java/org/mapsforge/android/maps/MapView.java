@@ -71,7 +71,6 @@ public class MapView extends ViewGroup {
 	 * Default render theme of the MapView.
 	 */
 	public static final InternalRenderTheme DEFAULT_RENDER_THEME = InternalRenderTheme.OSMARENDER;
-
 	private static final float DEFAULT_TEXT_SCALE = 1;
 	private static final int DEFAULT_TILE_CACHE_SIZE_FILE_SYSTEM = 100;
 	private static final int DEFAULT_TILE_CACHE_SIZE_IN_MEMORY = 20;
@@ -601,6 +600,7 @@ public class MapView extends ViewGroup {
 		this.mapScaleBar.destroy();
 		this.inMemoryTileCache.destroy();
 		this.fileSystemTileCache.destroy();
+		this.databaseRenderer.destroy();
 
 		this.mapDatabase.closeFile();
 	}

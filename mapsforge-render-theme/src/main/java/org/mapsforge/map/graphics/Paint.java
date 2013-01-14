@@ -38,4 +38,6 @@ public interface Paint {
 	void setTextSize(float textSize);
 
 	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
+
+	void destroy();
 }
