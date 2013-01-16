@@ -156,6 +156,9 @@ public class DatabaseRenderer implements RenderCallback {
 			createWayLists();
 			this.previousJobTheme = jobTheme;
 			this.previousZoomLevel = Byte.MIN_VALUE;
+			// invalidate the previousTextScale so that textScale from jobParameters will
+			// be applied next time
+			this.previousTextScale = -1;
 		}
 
 		byte zoomLevel = this.currentTile.zoomLevel;
