@@ -39,6 +39,41 @@ public class TileTest {
 	}
 
 	@Test
+	public void getParentTest() {
+		Tile rootTile = new Tile(0, 0, (byte) 0);
+		Assert.assertNull(rootTile.getParent());
+
+		Assert.assertEquals(rootTile, new Tile(0, 0, (byte) 1).getParent());
+		Assert.assertEquals(rootTile, new Tile(1, 0, (byte) 1).getParent());
+		Assert.assertEquals(rootTile, new Tile(0, 1, (byte) 1).getParent());
+		Assert.assertEquals(rootTile, new Tile(1, 1, (byte) 1).getParent());
+	}
+
+	@Test
+	public void getShiftXTest() {
+		Tile tile0 = new Tile(0, 0, (byte) 0);
+		Tile tile1 = new Tile(0, 1, (byte) 1);
+		Tile tile2 = new Tile(1, 2, (byte) 2);
+
+		Assert.assertEquals(0, tile0.getShiftX(tile0));
+		Assert.assertEquals(0, tile1.getShiftX(tile0));
+		Assert.assertEquals(1, tile2.getShiftX(tile0));
+		Assert.assertEquals(1, tile2.getShiftX(tile1));
+	}
+
+	@Test
+	public void getShiftYTest() {
+		Tile tile0 = new Tile(0, 0, (byte) 0);
+		Tile tile1 = new Tile(0, 1, (byte) 1);
+		Tile tile2 = new Tile(1, 2, (byte) 2);
+
+		Assert.assertEquals(0, tile0.getShiftY(tile0));
+		Assert.assertEquals(1, tile1.getShiftY(tile0));
+		Assert.assertEquals(2, tile2.getShiftY(tile0));
+		Assert.assertEquals(0, tile2.getShiftY(tile1));
+	}
+
+	@Test
 	public void getterTest() {
 		Tile tile = new Tile(TILE_X, TILE_Y, ZOOM_LEVEL);
 

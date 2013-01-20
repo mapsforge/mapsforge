@@ -25,14 +25,16 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.PausableThread;
-import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.controller.layer.Layer;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
+import org.mapsforge.map.viewinterfaces.MapViewInterface;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
-public class LayerManager extends PausableThread {
+public class LayerManager extends PausableThread implements LayerManagerInterface {
 	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
 	private static final int MILLISECONDS_PER_FRAME = 50;
 
@@ -71,12 +73,12 @@ public class LayerManager extends PausableThread {
 
 	private final Canvas drawingCanvas;
 	private final List<Layer> layers;
-	private final MapView mapView;
+	private final MapViewInterface mapViewInterface;
 	private final MapViewPosition mapViewPosition;
 	private boolean redrawNeeded;
 
-	public LayerManager(MapView mapView, MapViewPosition mapViewPosition) {
-		this.mapView = mapView;
+	public LayerManager(MapViewInterface mapViewInterface, MapViewPosition mapViewPosition) {
+		this.mapViewInterface = mapViewInterface;
 		this.mapViewPosition = mapViewPosition;
 
 		this.drawingCanvas = new Canvas();
@@ -90,6 +92,7 @@ public class LayerManager extends PausableThread {
 	/**
 	 * Requests an asynchronous redrawing of all layers.
 	 */
+	@Override
 	public void redrawLayers() {
 		this.redrawNeeded = true;
 		synchronized (this) {
@@ -109,7 +112,7 @@ public class LayerManager extends PausableThread {
 		long startTime = System.nanoTime();
 		this.redrawNeeded = false;
 
-		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
+		FrameBuffer frameBuffer = this.mapViewInterface.getFrameBuffer();
 		Bitmap bitmap = frameBuffer.getDrawingBitmap();
 		if (bitmap != null) {
 			bitmap.eraseColor(Color.WHITE);
@@ -126,7 +129,7 @@ public class LayerManager extends PausableThread {
 			}
 
 			frameBuffer.frameFinished(mapPosition);
-			this.mapView.invalidateOnUiThread();
+			this.mapViewInterface.repaint();
 		}
 
 		long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;

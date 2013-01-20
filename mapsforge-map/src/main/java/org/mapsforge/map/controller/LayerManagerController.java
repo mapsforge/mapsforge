@@ -16,13 +16,13 @@ package org.mapsforge.map.controller;
 
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.view.LayerManager;
+import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 
 public class LayerManagerController implements Observer {
-	private final LayerManager layerManager;
+	private final LayerManagerInterface layerManagerInterface;
 
-	public LayerManagerController(LayerManager layerManager, Model model) {
-		this.layerManager = layerManager;
+	public LayerManagerController(LayerManagerInterface layerManagerInterface, Model model) {
+		this.layerManagerInterface = layerManagerInterface;
 
 		model.mapViewModel.addObserver(this);
 		model.mapViewPosition.addObserver(this);
@@ -30,6 +30,6 @@ public class LayerManagerController implements Observer {
 
 	@Override
 	public void onChange() {
-		this.layerManager.redrawLayers();
+		this.layerManagerInterface.redrawLayers();
 	}
 }

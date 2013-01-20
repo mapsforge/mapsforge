@@ -12,23 +12,31 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.map.controller.layer.map.queue;
 
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.mapsforge.core.model.Tile;
 
-public class MapViewController implements Observer {
-	private final MapViewInterface mapViewInterface;
+class QueueItem {
+	double priority;
+	final Tile tile;
 
-	public MapViewController(MapViewInterface mapViewInterface, Model model) {
-		this.mapViewInterface = mapViewInterface;
-
-		model.mapViewPosition.addObserver(this);
+	QueueItem(Tile tile) {
+		this.tile = tile;
 	}
 
 	@Override
-	public void onChange() {
-		this.mapViewInterface.repaint();
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof QueueItem)) {
+			return false;
+		}
+		QueueItem other = (QueueItem) obj;
+		return this.tile.equals(other.tile);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.tile.hashCode();
 	}
 }

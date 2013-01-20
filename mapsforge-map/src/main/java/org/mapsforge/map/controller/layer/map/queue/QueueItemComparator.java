@@ -12,23 +12,26 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.map.controller.layer.map.queue;
 
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import java.io.Serializable;
+import java.util.Comparator;
 
-public class MapViewController implements Observer {
-	private final MapViewInterface mapViewInterface;
+final class QueueItemComparator implements Comparator<QueueItem>, Serializable {
+	private static final long serialVersionUID = 1L;
+	static final QueueItemComparator INSTANCE = new QueueItemComparator();
 
-	public MapViewController(MapViewInterface mapViewInterface, Model model) {
-		this.mapViewInterface = mapViewInterface;
-
-		model.mapViewPosition.addObserver(this);
+	private QueueItemComparator() {
+		// do nothing
 	}
 
 	@Override
-	public void onChange() {
-		this.mapViewInterface.repaint();
+	public int compare(QueueItem queueItem1, QueueItem queueItem2) {
+		if (queueItem1.priority < queueItem2.priority) {
+			return -1;
+		} else if (queueItem1.priority > queueItem2.priority) {
+			return 1;
+		}
+		return 0;
 	}
 }

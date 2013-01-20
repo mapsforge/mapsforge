@@ -50,8 +50,18 @@ public class Tile implements Serializable {
 	 *            the Y number of the tile.
 	 * @param zoomLevel
 	 *            the zoom level of the tile.
+	 * @throws IllegalArgumentException
+	 *             if any of the parameters is negative.
 	 */
 	public Tile(long tileX, long tileY, byte zoomLevel) {
+		if (tileX < 0) {
+			throw new IllegalArgumentException("tileX must not be negative: " + tileX);
+		} else if (tileY < 0) {
+			throw new IllegalArgumentException("tileY must not be negative: " + tileY);
+		} else if (zoomLevel < 0) {
+			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
+		}
+
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.zoomLevel = zoomLevel;
@@ -73,6 +83,33 @@ public class Tile implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @return the parent tile of this tile or null, if the zoom level of this tile is 0.
+	 */
+	public Tile getParent() {
+		if (this.zoomLevel == 0) {
+			return null;
+		}
+
+		return new Tile(this.tileX / 2, this.tileY / 2, (byte) (this.zoomLevel - 1));
+	}
+
+	public long getShiftX(Tile otherTile) {
+		if (this.equals(otherTile)) {
+			return 0;
+		}
+
+		return this.tileX % 2 + 2 * getParent().getShiftX(otherTile);
+	}
+
+	public long getShiftY(Tile otherTile) {
+		if (this.equals(otherTile)) {
+			return 0;
+		}
+
+		return this.tileY % 2 + 2 * getParent().getShiftY(otherTile);
 	}
 
 	@Override

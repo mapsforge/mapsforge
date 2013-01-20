@@ -21,7 +21,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.viewinterfaces.FrameBufferInterface;
 
 public class FrameBufferController implements Observer {
 	private static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
@@ -36,13 +36,13 @@ public class FrameBufferController implements Observer {
 		return new Point(pixelX, pixelY);
 	}
 
-	private final FrameBuffer frameBuffer;
+	private final FrameBufferInterface frameBufferInterface;
 	private Dimension lastMapViewDimension;
 	private double lastOverdrawFactor;
 	private final Model model;
 
-	public FrameBufferController(FrameBuffer frameBuffer, Model model) {
-		this.frameBuffer = frameBuffer;
+	public FrameBufferController(FrameBufferInterface frameBufferInterface, Model model) {
+		this.frameBufferInterface = frameBufferInterface;
 		this.model = model;
 
 		model.frameBufferModel.addObserver(this);
@@ -56,12 +56,12 @@ public class FrameBufferController implements Observer {
 		if (mapViewDimension != null) {
 			double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
 			if (dimensionChangeNeeded(mapViewDimension, overdrawFactor)) {
-				this.frameBuffer.setDimension(calculateFrameBufferDimension(mapViewDimension, overdrawFactor));
+				this.frameBufferInterface.setDimension(calculateFrameBufferDimension(mapViewDimension, overdrawFactor));
 				this.lastMapViewDimension = mapViewDimension;
 				this.lastOverdrawFactor = overdrawFactor;
 			}
 
-			synchronized (this.frameBuffer) {
+			synchronized (this.frameBufferInterface) {
 				MapPosition mapPositionFrameBuffer = this.model.frameBufferModel.getMapPosition();
 				if (mapPositionFrameBuffer != null) {
 					adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension);
@@ -81,7 +81,7 @@ public class FrameBufferController implements Observer {
 		int zoomLevelDiff = mapPosition.zoomLevel - mapPositionFrameBuffer.zoomLevel;
 		float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
 
-		this.frameBuffer.adjustMatrix(diffX, diffY, scaleFactor, mapViewDimension);
+		this.frameBufferInterface.adjustMatrix(diffX, diffY, scaleFactor, mapViewDimension);
 	}
 
 	private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {

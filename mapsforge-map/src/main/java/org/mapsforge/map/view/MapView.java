@@ -18,10 +18,11 @@ import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
-import org.mapsforge.map.input.TouchEventHandler;
-import org.mapsforge.map.input.TouchGestureDetector;
+import org.mapsforge.map.controller.input.TouchEventHandler;
+import org.mapsforge.map.controller.input.TouchGestureDetector;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.viewinterfaces.MapViewInterface;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -30,7 +31,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-public class MapView extends View {
+public class MapView extends View implements MapViewInterface {
 	private final FpsCounter fpsCounter = new FpsCounter();
 	private final FrameBuffer frameBuffer;
 	private final LayerManager layerManager;
@@ -69,9 +70,7 @@ public class MapView extends View {
 		return this.fpsCounter;
 	}
 
-	/**
-	 * @return the FrameBuffer used in this MapView.
-	 */
+	@Override
 	public FrameBuffer getFrameBuffer() {
 		return this.frameBuffer;
 	}
@@ -88,17 +87,6 @@ public class MapView extends View {
 		return this.model;
 	}
 
-	/**
-	 * Calls either {@link #invalidate()} or {@link #postInvalidate()}, depending on the current thread.
-	 */
-	public void invalidateOnUiThread() {
-		if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
-			invalidate();
-		} else {
-			postInvalidate();
-		}
-	}
-
 	@Override
 	public boolean onTouchEvent(MotionEvent motionEvent) {
 		if (!isClickable()) {
@@ -106,6 +94,15 @@ public class MapView extends View {
 		}
 
 		return this.touchEventHandler.onTouchEvent(motionEvent);
+	}
+
+	@Override
+	public void repaint() {
+		if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+			invalidate();
+		} else {
+			postInvalidate();
+		}
 	}
 
 	@Override

@@ -12,23 +12,17 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.map.controller.input;
 
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.mapsforge.core.model.Point;
 
-public class MapViewController implements Observer {
-	private final MapViewInterface mapViewInterface;
+/**
+ * Time-consuming operations should be performed in a separate thread.
+ */
+public interface TouchEventListener {
+	void onActionUp(Point point, long eventTime, boolean moveThresholdReached);
 
-	public MapViewController(MapViewInterface mapViewInterface, Model model) {
-		this.mapViewInterface = mapViewInterface;
+	void onPointerDown(long eventTime);
 
-		model.mapViewPosition.addObserver(this);
-	}
-
-	@Override
-	public void onChange() {
-		this.mapViewInterface.repaint();
-	}
+	void onPointerUp(long eventTime);
 }

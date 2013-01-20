@@ -12,23 +12,18 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.map.viewinterfaces;
 
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.mapsforge.map.view.FrameBuffer;
 
-public class MapViewController implements Observer {
-	private final MapViewInterface mapViewInterface;
+public interface MapViewInterface {
+	/**
+	 * @return the FrameBuffer used in this MapView.
+	 */
+	FrameBuffer getFrameBuffer();
 
-	public MapViewController(MapViewInterface mapViewInterface, Model model) {
-		this.mapViewInterface = mapViewInterface;
-
-		model.mapViewPosition.addObserver(this);
-	}
-
-	@Override
-	public void onChange() {
-		this.mapViewInterface.repaint();
-	}
+	/**
+	 * Requests a redrawing as soon as possible.
+	 */
+	void repaint();
 }

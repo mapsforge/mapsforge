@@ -17,12 +17,13 @@ package org.mapsforge.map.view;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.FrameBufferModel;
+import org.mapsforge.map.viewinterfaces.FrameBufferInterface;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 
-public class FrameBuffer {
+public class FrameBuffer implements FrameBufferInterface {
 	private Bitmap bitmap1;
 	private Bitmap bitmap2;
 	private Dimension dimension;
@@ -35,6 +36,7 @@ public class FrameBuffer {
 		this.matrix = new Matrix();
 	}
 
+	@Override
 	public synchronized void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension) {
 		if (this.dimension == null) {
 			return;
@@ -75,6 +77,7 @@ public class FrameBuffer {
 		return this.bitmap2;
 	}
 
+	@Override
 	public synchronized void setDimension(Dimension dimension) {
 		this.dimension = dimension;
 

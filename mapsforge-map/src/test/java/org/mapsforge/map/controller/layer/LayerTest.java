@@ -12,23 +12,29 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.map.controller.layer;
 
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Point;
 
-public class MapViewController implements Observer {
-	private final MapViewInterface mapViewInterface;
+import android.graphics.Canvas;
 
-	public MapViewController(MapViewInterface mapViewInterface, Model model) {
-		this.mapViewInterface = mapViewInterface;
-
-		model.mapViewPosition.addObserver(this);
+public class LayerTest {
+	static class DummyLayer extends Layer {
+		@Override
+		public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+			// do nothing
+		}
 	}
 
-	@Override
-	public void onChange() {
-		this.mapViewInterface.repaint();
+	@Test
+	public void visibleTest() {
+		Layer layer = new DummyLayer();
+		Assert.assertTrue(layer.isVisible());
+
+		layer.setVisible(false);
+		Assert.assertFalse(layer.isVisible());
 	}
 }

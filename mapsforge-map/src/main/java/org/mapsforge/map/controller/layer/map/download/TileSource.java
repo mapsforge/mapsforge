@@ -12,23 +12,19 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.map.controller.layer.map.download;
 
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-public class MapViewController implements Observer {
-	private final MapViewInterface mapViewInterface;
+import org.mapsforge.core.model.Tile;
 
-	public MapViewController(MapViewInterface mapViewInterface, Model model) {
-		this.mapViewInterface = mapViewInterface;
+public interface TileSource {
+	int getParallelRequestsLimit();
 
-		model.mapViewPosition.addObserver(this);
-	}
+	URL getTileUrl(Tile tile) throws MalformedURLException;
 
-	@Override
-	public void onChange() {
-		this.mapViewInterface.repaint();
-	}
+	byte getZoomLevelMax();
+
+	byte getZoomLevelMin();
 }

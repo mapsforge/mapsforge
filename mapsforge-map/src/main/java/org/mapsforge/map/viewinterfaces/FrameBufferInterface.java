@@ -12,23 +12,12 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.map.viewinterfaces;
 
-import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.mapsforge.core.model.Dimension;
 
-public class MapViewController implements Observer {
-	private final MapViewInterface mapViewInterface;
+public interface FrameBufferInterface {
+	void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension);
 
-	public MapViewController(MapViewInterface mapViewInterface, Model model) {
-		this.mapViewInterface = mapViewInterface;
-
-		model.mapViewPosition.addObserver(this);
-	}
-
-	@Override
-	public void onChange() {
-		this.mapViewInterface.repaint();
-	}
+	void setDimension(Dimension dimension);
 }
