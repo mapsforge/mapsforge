@@ -54,8 +54,7 @@ public class MapView extends View implements MapViewInterface {
 		new MapViewController(this, this.model);
 
 		ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
-		TouchGestureDetector touchGestureDetector = new TouchGestureDetector(this.model.mapViewPosition,
-				viewConfiguration);
+		TouchGestureDetector touchGestureDetector = new TouchGestureDetector(this.model, viewConfiguration);
 		this.touchEventHandler = new TouchEventHandler(this.model.mapViewPosition, viewConfiguration);
 		this.touchEventHandler.addListener(touchGestureDetector);
 

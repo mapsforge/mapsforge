@@ -236,7 +236,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	 */
 	public void zoom(byte zoomLevelDiff) {
 		synchronized (this) {
-			setZoomLevelInternal(getZoomLevel() + zoomLevelDiff);
+			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
 		}
 		notifyObservers();
 	}

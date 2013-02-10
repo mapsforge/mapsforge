@@ -61,14 +61,19 @@ final class TestUtils {
 	}
 
 	static void serializeTest(Object objectToSerialize) throws IOException, ClassNotFoundException {
-		File file = File.createTempFile("object", ".ser");
-		file.deleteOnExit();
-		Assert.assertTrue(file.exists());
-		Assert.assertEquals(0, file.length());
+		File file = new File("object.ser");
+		try {
+			Assert.assertTrue(file.createNewFile());
+			Assert.assertEquals(0, file.length());
 
-		serializeObject(objectToSerialize, file);
-		Object deserializedObject = deserializeObject(file);
-		TestUtils.equalsTest(objectToSerialize, deserializedObject);
+			serializeObject(objectToSerialize, file);
+			Object deserializedObject = deserializeObject(file);
+			TestUtils.equalsTest(objectToSerialize, deserializedObject);
+		} finally {
+			if (file.exists() && !file.delete()) {
+				throw new IOException("could not delete file: " + file);
+			}
+		}
 	}
 
 	private TestUtils() {

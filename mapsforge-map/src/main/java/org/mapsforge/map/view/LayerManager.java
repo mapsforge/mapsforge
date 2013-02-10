@@ -25,7 +25,7 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.PausableThread;
-import org.mapsforge.map.controller.layer.Layer;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 import org.mapsforge.map.viewinterfaces.MapViewInterface;

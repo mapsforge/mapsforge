@@ -16,18 +16,20 @@ package org.mapsforge.map.controller.input;
 
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.Model;
 
 import android.view.ViewConfiguration;
 
 public class TouchGestureDetector implements TouchEventListener {
 	private final float doubleTapSlop;
+
 	private final int gestureTimeout;
 	private Point lastActionUpPoint;
 	private long lastEventTime;
 	private final MapViewPosition mapViewPosition;
 
-	public TouchGestureDetector(MapViewPosition mapViewPosition, ViewConfiguration viewConfiguration) {
-		this.mapViewPosition = mapViewPosition;
+	public TouchGestureDetector(Model model, ViewConfiguration viewConfiguration) {
+		this.mapViewPosition = model.mapViewPosition;
 		this.doubleTapSlop = viewConfiguration.getScaledDoubleTapSlop();
 		this.gestureTimeout = ViewConfiguration.getDoubleTapTimeout();
 	}
@@ -41,8 +43,8 @@ public class TouchGestureDetector implements TouchEventListener {
 			long eventTimeDiff = eventTime - this.lastEventTime;
 
 			if (eventTimeDiff < this.gestureTimeout && this.lastActionUpPoint.distance(point) < this.doubleTapSlop) {
-				this.lastActionUpPoint = null;
 				this.mapViewPosition.zoomIn();
+				this.lastActionUpPoint = null;
 				return;
 			}
 		}
