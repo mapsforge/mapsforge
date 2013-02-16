@@ -25,6 +25,32 @@ public class TileTest {
 	private static final long TILE_Y = 2;
 	private static final byte ZOOM_LEVEL = 3;
 
+	private static Tile createTile(long tileX, long tileY, byte zoomLevel) {
+		return new Tile(tileX, tileY, zoomLevel);
+	}
+
+	private static void verifyInvalid(long tileX, long tileY, byte zoomLevel) {
+		try {
+			createTile(tileX, tileY, zoomLevel);
+			Assert.fail("tileX: " + tileX + ", tileY: " + tileY + ", zoomLevel: " + zoomLevel);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
+	@Test
+	public void constructorTest() {
+		createTile(0, 0, (byte) 0);
+		createTile(1, 1, (byte) 1);
+
+		verifyInvalid(-1, 0, (byte) 0);
+		verifyInvalid(0, -1, (byte) 0);
+		verifyInvalid(0, 0, (byte) -1);
+
+		verifyInvalid(1, 0, (byte) 0);
+		verifyInvalid(0, 2, (byte) 1);
+	}
+
 	@Test
 	public void equalsTest() {
 		Tile tile1 = new Tile(TILE_X, TILE_Y, ZOOM_LEVEL);

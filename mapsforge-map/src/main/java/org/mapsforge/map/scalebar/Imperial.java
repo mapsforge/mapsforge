@@ -36,18 +36,10 @@ public final class Imperial implements Adapter {
 	}
 
 	@Override
-	public int getScaleValue(int mapScaleValue) {
+	public String getScaleText(int mapScaleValue) {
 		if (mapScaleValue < ONE_MILE) {
-			return mapScaleValue;
+			return mapScaleValue + " ft";
 		}
-		return mapScaleValue / ONE_MILE;
-	}
-
-	@Override
-	public String getUnitSymbol(int mapScaleValue) {
-		if (mapScaleValue < ONE_MILE) {
-			return "ft";
-		}
-		return "mi";
+		return (mapScaleValue / ONE_MILE) + " mi";
 	}
 }

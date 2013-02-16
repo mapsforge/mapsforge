@@ -15,8 +15,8 @@
 package org.mapsforge.map.layer.queue;
 
 class QueueItem<T extends Job> {
+	private double priority;
 	final T object;
-	double priority;
 
 	QueueItem(T object) {
 		this.object = object;
@@ -36,5 +36,23 @@ class QueueItem<T extends Job> {
 	@Override
 	public int hashCode() {
 		return this.object.hashCode();
+	}
+
+	/**
+	 * @return the current priority of this job, will always be a positive number including zero.
+	 */
+	double getPriority() {
+		return this.priority;
+	}
+
+	/**
+	 * @throws IllegalArgumentException
+	 *             if the given priority is negative or {@link Double#NaN}.
+	 */
+	void setPriority(double priority) {
+		if (priority < 0 || Double.isNaN(priority)) {
+			throw new IllegalArgumentException("invalid priority: " + priority);
+		}
+		this.priority = priority;
 	}
 }

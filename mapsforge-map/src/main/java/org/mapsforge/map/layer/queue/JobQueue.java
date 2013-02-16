@@ -59,6 +59,13 @@ public class JobQueue<T extends Job> {
 		return this.queueItems.remove(0).object;
 	}
 
+	/**
+	 * @return the current number of entries in this queue.
+	 */
+	public synchronized int size() {
+		return this.queueItems.size();
+	}
+
 	private void schedule() {
 		QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition());
 		Collections.sort(this.queueItems, QueueItemComparator.INSTANCE);

@@ -37,24 +37,24 @@ public class QueueItemSchedulerTest {
 		Tile tile0 = new Tile(0, 0, (byte) 0);
 		DownloadJob downloadJob = new DownloadJob(tile0, OpenStreetMapMapnik.create());
 		QueueItem<DownloadJob> queueItem = new QueueItem<DownloadJob>(downloadJob);
-		Assert.assertEquals(0, queueItem.priority, 0);
+		Assert.assertEquals(0, queueItem.getPriority(), 0);
 
 		MapPosition mapPosition = new MapPosition(new GeoPoint(0, 0), (byte) 0);
 		QueueItemScheduler.schedule(createCollection(queueItem), mapPosition);
-		Assert.assertEquals(0, queueItem.priority, 0);
+		Assert.assertEquals(0, queueItem.getPriority(), 0);
 
 		mapPosition = new MapPosition(new GeoPoint(0, 180), (byte) 0);
 		QueueItemScheduler.schedule(createCollection(queueItem), mapPosition);
 		int halfTileSize = Tile.TILE_SIZE / 2;
-		Assert.assertEquals(halfTileSize, queueItem.priority, 0);
+		Assert.assertEquals(halfTileSize, queueItem.getPriority(), 0);
 
 		mapPosition = new MapPosition(new GeoPoint(0, -180), (byte) 0);
 		QueueItemScheduler.schedule(createCollection(queueItem), mapPosition);
-		Assert.assertEquals(halfTileSize, queueItem.priority, 0);
+		Assert.assertEquals(halfTileSize, queueItem.getPriority(), 0);
 
 		mapPosition = new MapPosition(new GeoPoint(0, 0), (byte) 1);
 		QueueItemScheduler.schedule(createCollection(queueItem), mapPosition);
 		double expectedPriority = Math.hypot(halfTileSize, halfTileSize) + QueueItemScheduler.PENALTY_PER_ZOOM_LEVEL;
-		Assert.assertEquals(expectedPriority, queueItem.priority, 0);
+		Assert.assertEquals(expectedPriority, queueItem.getPriority(), 0);
 	}
 }

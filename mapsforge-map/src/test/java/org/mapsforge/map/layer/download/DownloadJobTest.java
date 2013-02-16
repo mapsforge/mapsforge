@@ -38,7 +38,7 @@ public class DownloadJobTest {
 
 	@Test
 	public void downloadJobTest() {
-		Tile tile = new Tile(0, 1, (byte) 2);
+		Tile tile = new Tile(0, 0, (byte) 0);
 		TileSource tileSource = OpenStreetMapMapnik.create();
 
 		DownloadJob downloadJob = createDownloadJob(tile, tileSource);
@@ -50,9 +50,10 @@ public class DownloadJobTest {
 
 	@Test
 	public void equalsTest() {
-		DownloadJob downloadJob1 = new DownloadJob(new Tile(0, 1, (byte) 2), OpenStreetMapMapnik.create());
-		DownloadJob downloadJob2 = new DownloadJob(new Tile(0, 1, (byte) 2), OpenStreetMapMapnik.create());
-		DownloadJob downloadJob3 = new DownloadJob(new Tile(0, 1, (byte) 2), OpenCycleMap.create());
+		Tile tile = new Tile(0, 0, (byte) 0);
+		DownloadJob downloadJob1 = new DownloadJob(tile, OpenStreetMapMapnik.create());
+		DownloadJob downloadJob2 = new DownloadJob(tile, OpenStreetMapMapnik.create());
+		DownloadJob downloadJob3 = new DownloadJob(tile, OpenCycleMap.create());
 
 		TestUtils.equalsTest(downloadJob1, downloadJob2);
 

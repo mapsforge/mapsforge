@@ -34,7 +34,7 @@ public class MapScaleBar {
 	private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
 	private static final int MARGIN_BOTTOM = 5;
 	private static final int MARGIN_LEFT = 5;
-	private static final Paint SCALE_BAR = createScaleBarPaint(Color.BLACK, 2);
+	private static final Paint SCALE_BAR = createScaleBarPaint(Color.BLACK, 3);
 	private static final Paint SCALE_BAR_STROKE = createScaleBarPaint(Color.WHITE, 5);
 	private static final Paint SCALE_TEXT = createTextPaint(Color.BLACK, 0);
 	private static final Paint SCALE_TEXT_STROKE = createTextPaint(Color.WHITE, 2);
@@ -54,12 +54,12 @@ public class MapScaleBar {
 		paint.setStrokeWidth(strokeWidth);
 		paint.setStyle(Style.STROKE);
 		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-		paint.setTextSize(18);
+		paint.setTextSize(20);
 		return paint;
 	}
 
-	private Adapter adapter = Metric.INSTANCE;
-	private MapPosition lastMapPosition;
+	private Adapter adapter;
+	private MapPosition mapPosition;
 	private final Bitmap mapScaleBitmap;
 	private final Canvas mapScaleCanvas;
 	private final MapViewPosition mapViewPosition;
@@ -70,12 +70,16 @@ public class MapScaleBar {
 		this.mapViewPosition = mapViewPosition;
 		this.mapScaleBitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
 		this.mapScaleCanvas = new Canvas(this.mapScaleBitmap);
+
+		this.adapter = Metric.INSTANCE;
 	}
 
 	public void draw(Canvas canvas) {
 		if (!this.visible) {
 			return;
 		}
+
+		redraw();
 
 		int top = canvas.getHeight() - BITMAP_HEIGHT - MARGIN_BOTTOM;
 		canvas.drawBitmap(this.mapScaleBitmap, MARGIN_LEFT, top, null);
@@ -91,7 +95,6 @@ public class MapScaleBar {
 
 	public void setAdapter(Adapter adapter) {
 		if (adapter == null) {
-			// TODO adjust adapter name once it has been renamed
 			throw new IllegalArgumentException("adapter must not be null");
 		}
 		this.adapter = adapter;
@@ -99,30 +102,6 @@ public class MapScaleBar {
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-	}
-
-	private void drawScaleBar(float scaleBarLength, Paint paint) {
-		this.mapScaleCanvas.drawLine(7, 25, scaleBarLength + 3, 25, paint);
-		this.mapScaleCanvas.drawLine(5, 10, 5, 40, paint);
-		this.mapScaleCanvas.drawLine(scaleBarLength + 5, 10, scaleBarLength + 5, 40, paint);
-	}
-
-	private void drawScaleText(int scaleValue, String unitSymbol, Paint paint) {
-		this.mapScaleCanvas.drawText(scaleValue + ' ' + unitSymbol, 12, 18, paint);
-	}
-
-	private boolean isRedrawNecessary() {
-		if (this.redrawNeeded || this.lastMapPosition == null) {
-			return true;
-		}
-
-		MapPosition currentMapPosition = this.mapViewPosition.getMapPosition();
-		if (currentMapPosition.zoomLevel != this.lastMapPosition.zoomLevel) {
-			return true;
-		}
-
-		double latitudeDiff = Math.abs(currentMapPosition.geoPoint.latitude - this.lastMapPosition.geoPoint.latitude);
-		return latitudeDiff > LATITUDE_REDRAW_THRESHOLD;
 	}
 
 	/**
@@ -133,27 +112,49 @@ public class MapScaleBar {
 	 * @param mapScaleValue
 	 *            the map scale value in meters.
 	 */
-	private void redrawMapScaleBitmap(float scaleBarLength, int mapScaleValue) {
+	private void draw(float scaleBarLength, int mapScaleValue) {
 		this.mapScaleBitmap.eraseColor(Color.TRANSPARENT);
 
 		drawScaleBar(scaleBarLength, SCALE_BAR_STROKE);
 		drawScaleBar(scaleBarLength, SCALE_BAR);
 
-		int scaleValue = this.adapter.getScaleValue(mapScaleValue);
-		String unitSymbol = this.adapter.getUnitSymbol(mapScaleValue);
-
-		drawScaleText(scaleValue, unitSymbol, SCALE_TEXT_STROKE);
-		drawScaleText(scaleValue, unitSymbol, SCALE_TEXT);
+		String scaleText = this.adapter.getScaleText(mapScaleValue);
+		drawScaleText(scaleText, SCALE_TEXT_STROKE);
+		drawScaleText(scaleText, SCALE_TEXT);
 	}
 
-	void redrawScaleBar() {
+	private void drawScaleBar(float scaleBarLength, Paint paint) {
+		this.mapScaleCanvas.drawLine(7, 25, scaleBarLength + 3, 25, paint);
+		this.mapScaleCanvas.drawLine(5, 10, 5, 40, paint);
+		this.mapScaleCanvas.drawLine(scaleBarLength + 5, 10, scaleBarLength + 5, 40, paint);
+	}
+
+	private void drawScaleText(String scaleText, Paint paint) {
+		this.mapScaleCanvas.drawText(scaleText, 12, 18, paint);
+	}
+
+	private boolean isRedrawNecessary() {
+		if (this.redrawNeeded || this.mapPosition == null) {
+			return true;
+		}
+
+		MapPosition currentMapPosition = this.mapViewPosition.getMapPosition();
+		if (currentMapPosition.zoomLevel != this.mapPosition.zoomLevel) {
+			return true;
+		}
+
+		double latitudeDiff = Math.abs(currentMapPosition.geoPoint.latitude - this.mapPosition.geoPoint.latitude);
+		return latitudeDiff > LATITUDE_REDRAW_THRESHOLD;
+	}
+
+	private void redraw() {
 		if (!isRedrawNecessary()) {
 			return;
 		}
 
-		this.lastMapPosition = this.mapViewPosition.getMapPosition();
-		double groundResolution = MercatorProjection.calculateGroundResolution(this.lastMapPosition.geoPoint.latitude,
-				this.lastMapPosition.zoomLevel);
+		this.mapPosition = this.mapViewPosition.getMapPosition();
+		double groundResolution = MercatorProjection.calculateGroundResolution(this.mapPosition.geoPoint.latitude,
+				this.mapPosition.zoomLevel);
 
 		groundResolution = groundResolution / this.adapter.getMeterRatio();
 		int[] scaleBarValues = this.adapter.getScaleBarValues();
@@ -169,7 +170,7 @@ public class MapScaleBar {
 			}
 		}
 
-		redrawMapScaleBitmap(scaleBarLength, mapScaleValue);
+		draw(scaleBarLength, mapScaleValue);
 		this.redrawNeeded = false;
 	}
 }

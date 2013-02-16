@@ -39,7 +39,7 @@ public class MapViewControllerTest {
 	public void mapViewControllerTest() {
 		DummyMapView dummyMapView = new DummyMapView();
 		Model model = new Model();
-		MapViewController mapViewController = new MapViewController(dummyMapView, model);
+		new MapViewController(dummyMapView, model);
 		Assert.assertEquals(0, dummyMapView.repaint);
 
 		model.mapViewPosition.setZoomLevel((byte) 1);

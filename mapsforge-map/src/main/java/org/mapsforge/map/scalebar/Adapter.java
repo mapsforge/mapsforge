@@ -20,7 +20,5 @@ public interface Adapter {
 
 	int[] getScaleBarValues();
 
-	int getScaleValue(int mapScaleValue);
-
-	String getUnitSymbol(int mapScaleValue);
+	String getScaleText(int mapScaleValue);
 }

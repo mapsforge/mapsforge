@@ -51,7 +51,7 @@ public class Tile implements Serializable {
 	 * @param zoomLevel
 	 *            the zoom level of the tile.
 	 * @throws IllegalArgumentException
-	 *             if any of the parameters is negative.
+	 *             if any of the parameters is invalid.
 	 */
 	public Tile(long tileX, long tileY, byte zoomLevel) {
 		if (tileX < 0) {
@@ -60,6 +60,13 @@ public class Tile implements Serializable {
 			throw new IllegalArgumentException("tileY must not be negative: " + tileY);
 		} else if (zoomLevel < 0) {
 			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
+		}
+
+		double maxTileNumber = Math.pow(2, zoomLevel) - 1;
+		if (tileX > maxTileNumber) {
+			throw new IllegalArgumentException("invalid tileX number: " + tileX);
+		} else if (tileY > maxTileNumber) {
+			throw new IllegalArgumentException("invalid tileY number: " + tileY);
 		}
 
 		this.tileX = tileX;

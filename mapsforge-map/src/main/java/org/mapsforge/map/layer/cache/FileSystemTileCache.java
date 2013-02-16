@@ -17,7 +17,6 @@ package org.mapsforge.map.layer.cache;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,21 +35,8 @@ import android.graphics.Bitmap;
  * A thread-safe cache for image files with a fixed size and LRU policy.
  */
 public class FileSystemTileCache<T extends Job> implements TileCache<T> {
-	private static final class ImageFileNameFilter implements FilenameFilter {
-		static final FilenameFilter INSTANCE = new ImageFileNameFilter();
-
-		private ImageFileNameFilter() {
-			// do nothing
-		}
-
-		@Override
-		public boolean accept(File directory, String fileName) {
-			return fileName.endsWith(IMAGE_FILE_NAME_EXTENSION);
-		}
-	}
-
-	private static final String IMAGE_FILE_NAME_EXTENSION = ".tile";
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
+	static final String IMAGE_FILE_NAME_EXTENSION = ".tile";
 
 	private static File checkDirectory(File file) {
 		if (!file.exists() && !file.mkdirs()) {

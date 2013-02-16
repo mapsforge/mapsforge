@@ -35,18 +35,10 @@ public final class Metric implements Adapter {
 	}
 
 	@Override
-	public int getScaleValue(int mapScaleValue) {
+	public String getScaleText(int mapScaleValue) {
 		if (mapScaleValue < ONE_KILOMETER) {
-			return mapScaleValue;
+			return mapScaleValue + " m";
 		}
-		return mapScaleValue / ONE_KILOMETER;
-	}
-
-	@Override
-	public String getUnitSymbol(int mapScaleValue) {
-		if (mapScaleValue < ONE_KILOMETER) {
-			return "m";
-		}
-		return "km";
+		return (mapScaleValue / ONE_KILOMETER) + " km";
 	}
 }

@@ -44,7 +44,7 @@ final class QueueItemScheduler {
 
 	static <T extends Job> void schedule(Collection<QueueItem<T>> queueItems, MapPosition mapPosition) {
 		for (QueueItem<T> queueItem : queueItems) {
-			queueItem.priority = calculatePriority(queueItem.object.tile, mapPosition);
+			queueItem.setPriority(calculatePriority(queueItem.object.tile, mapPosition));
 		}
 	}
 

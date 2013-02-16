@@ -12,26 +12,20 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.queue;
+package org.mapsforge.map.layer.cache;
 
-import java.io.Serializable;
-import java.util.Comparator;
+import java.io.File;
+import java.io.FilenameFilter;
 
-final class QueueItemComparator implements Comparator<QueueItem<?>>, Serializable {
-	private static final long serialVersionUID = 1L;
-	static final QueueItemComparator INSTANCE = new QueueItemComparator();
+final class ImageFileNameFilter implements FilenameFilter {
+	static final FilenameFilter INSTANCE = new ImageFileNameFilter();
 
-	private QueueItemComparator() {
+	private ImageFileNameFilter() {
 		// do nothing
 	}
 
 	@Override
-	public int compare(QueueItem<?> queueItem1, QueueItem<?> queueItem2) {
-		if (queueItem1.getPriority() < queueItem2.getPriority()) {
-			return -1;
-		} else if (queueItem1.getPriority() > queueItem2.getPriority()) {
-			return 1;
-		}
-		return 0;
+	public boolean accept(File directory, String fileName) {
+		return fileName.endsWith(FileSystemTileCache.IMAGE_FILE_NAME_EXTENSION);
 	}
 }
