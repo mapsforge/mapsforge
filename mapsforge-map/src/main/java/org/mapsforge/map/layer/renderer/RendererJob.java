@@ -32,8 +32,8 @@ public class RendererJob extends Job {
 			throw new IllegalArgumentException("mapFile must not be null");
 		} else if (xmlRenderTheme == null) {
 			throw new IllegalArgumentException("xmlRenderTheme must not be null");
-		} else if (textScale <= 0) {
-			throw new IllegalArgumentException("textScale must be positive: " + textScale);
+		} else if (textScale <= 0 || Float.isNaN(textScale)) {
+			throw new IllegalArgumentException("invalid textScale: " + textScale);
 		}
 
 		this.mapFile = mapFile;

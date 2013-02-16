@@ -18,12 +18,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.TestUtils;
-import org.mapsforge.map.layer.download.DownloadJob;
-import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 
 public class JobTest {
 	private static Job createJob(Tile tile) {
-		return new DownloadJob(tile, OpenStreetMapMapnik.create());
+		return new DummyJob(tile);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile) {
@@ -37,9 +35,9 @@ public class JobTest {
 
 	@Test
 	public void equalsTest() {
-		Job job1 = new DownloadJob(new Tile(0, 1, (byte) 2), OpenStreetMapMapnik.create());
-		Job job2 = new DownloadJob(new Tile(0, 1, (byte) 2), OpenStreetMapMapnik.create());
-		Job job3 = new DownloadJob(new Tile(0, 0, (byte) 0), OpenStreetMapMapnik.create());
+		Job job1 = new DummyJob(new Tile(0, 1, (byte) 2));
+		Job job2 = new DummyJob(new Tile(0, 1, (byte) 2));
+		Job job3 = new DummyJob(new Tile(0, 0, (byte) 0));
 
 		TestUtils.equalsTest(job1, job2);
 

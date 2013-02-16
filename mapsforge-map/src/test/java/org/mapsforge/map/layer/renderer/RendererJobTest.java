@@ -24,9 +24,42 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class RendererJobTest {
+	private static final String MAP_FILE = "map.file";
+
+	private static RendererJob create(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
+		return new RendererJob(tile, mapFile, xmlRenderTheme, textScale);
+	}
+
+	private static void verifyInvalidConstructor(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
+		try {
+			create(tile, mapFile, xmlRenderTheme, textScale);
+			Assert.fail("tile: " + tile + ", mapFile: " + mapFile + ", xmlRenderTheme: " + xmlRenderTheme
+					+ ", textScale: " + textScale);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
+	@Test
+	public void constructorTest() {
+		Tile tile = new Tile(0, 0, (byte) 0);
+		File mapFile = new File(MAP_FILE);
+		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
+
+		create(tile, mapFile, xmlRenderTheme, 1);
+
+		verifyInvalidConstructor(null, mapFile, xmlRenderTheme, 1);
+		verifyInvalidConstructor(tile, null, xmlRenderTheme, 1);
+		verifyInvalidConstructor(tile, mapFile, null, 1);
+		verifyInvalidConstructor(tile, mapFile, xmlRenderTheme, 0);
+		verifyInvalidConstructor(tile, mapFile, xmlRenderTheme, -1);
+		verifyInvalidConstructor(tile, mapFile, xmlRenderTheme, Float.NEGATIVE_INFINITY);
+		verifyInvalidConstructor(tile, mapFile, xmlRenderTheme, Float.NaN);
+	}
+
 	@Test
 	public void equalsTest() {
-		File mapFile = new File("foo");
+		File mapFile = new File(MAP_FILE);
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
 		RendererJob rendererJob1 = new RendererJob(new Tile(0, 1, (byte) 2), mapFile, xmlRenderTheme, 1);
