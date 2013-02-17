@@ -91,15 +91,6 @@ abstract class Rule {
 		}
 	}
 
-	void onDestroy() {
-		for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-			this.renderInstructions.get(i).destroy();
-		}
-		for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-			this.subRules.get(i).onDestroy();
-		}
-	}
-
 	void scaleStrokeWidth(float scaleFactor) {
 		for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
 			this.renderInstructions.get(i).scaleStrokeWidth(scaleFactor);

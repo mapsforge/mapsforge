@@ -35,11 +35,6 @@ public class LineSymbol implements RenderInstruction {
 	}
 
 	@Override
-	public void destroy() {
-		this.bitmap.destroy();
-	}
-
-	@Override
 	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
 		// do nothing
 	}

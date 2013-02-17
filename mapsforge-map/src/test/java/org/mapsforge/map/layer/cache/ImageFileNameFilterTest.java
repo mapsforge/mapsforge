@@ -12,32 +12,19 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.graphics;
+package org.mapsforge.map.layer.cache;
 
-import java.nio.ByteBuffer;
+import java.io.FilenameFilter;
 
-public interface Bitmap {
-	/**
-	 * @return a new bitmap with the dimensions and pixels of this bitmap. FIXME: is this method needed?
-	 */
-	Bitmap copy();
+import org.junit.Assert;
+import org.junit.Test;
 
-	void copyPixelsFromBuffer(ByteBuffer byteBuffer);
+public class ImageFileNameFilterTest {
+	@Test
+	public void acceptTest() {
+		FilenameFilter filenameFilter = ImageFileNameFilter.INSTANCE;
 
-	void copyPixelsToBuffer(ByteBuffer byteBuffer);
-
-	/**
-	 * @return the height of this bitmap in pixels.
-	 */
-	int getHeight();
-
-	/**
-	 * @return the color values of all pixels in this bitmap.
-	 */
-	int[] getPixels();
-
-	/**
-	 * @return the width of this bitmap in pixels.
-	 */
-	int getWidth();
+		Assert.assertFalse(filenameFilter.accept(null, "foo.bar"));
+		Assert.assertTrue(filenameFilter.accept(null, "foo" + FileSystemTileCache.FILE_EXTENSION));
+	}
 }

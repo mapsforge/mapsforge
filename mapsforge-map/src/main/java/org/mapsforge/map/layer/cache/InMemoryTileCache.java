@@ -15,9 +15,8 @@
 package org.mapsforge.map.layer.cache;
 
 import org.mapsforge.core.util.LRUCache;
+import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.queue.Job;
-
-import android.graphics.Bitmap;
 
 /**
  * A thread-safe cache for object images with a variable size and LRU policy.
@@ -46,7 +45,7 @@ public class InMemoryTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized Bitmap get(T key, Bitmap bitmap) {
+	public synchronized Bitmap get(T key) {
 		return this.lruCache.get(key);
 	}
 

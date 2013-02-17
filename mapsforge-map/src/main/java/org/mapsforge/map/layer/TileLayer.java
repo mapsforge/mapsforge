@@ -19,19 +19,18 @@ import java.util.ArrayList;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.graphics.android.AndroidGraphics;
+import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.MapViewPosition;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 public abstract class TileLayer<T extends Job> extends Layer {
 	private final TileCache<T> tileCache;
-	private final Bitmap tileCacheBitmap;
 	protected final JobQueue<T> jobQueue;
 
 	public TileLayer(TileCache<T> tileCache, MapViewPosition mapViewPosition) {
@@ -43,7 +42,6 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
 		this.tileCache = tileCache;
 		this.jobQueue = new JobQueue<T>(mapViewPosition);
-		this.tileCacheBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Config.ARGB_8888);
 	}
 
 	@Override
@@ -59,13 +57,14 @@ public abstract class TileLayer<T extends Job> extends Layer {
 			TilePosition tilePosition = tilePositions.get(i);
 			Point point = tilePosition.point;
 			Tile tile = tilePosition.tile;
-			Bitmap bitmap = this.tileCache.get(createJob(tile), this.tileCacheBitmap);
+			Bitmap bitmap = this.tileCache.get(createJob(tile));
 
 			if (bitmap == null) {
 				this.jobQueue.add(createJob(tile));
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
-				canvas.drawBitmap(bitmap, (float) point.x, (float) point.y, null);
+				android.graphics.Bitmap androidBitmap = AndroidGraphics.getAndroidBitmap(bitmap);
+				canvas.drawBitmap(androidBitmap, (float) point.x, (float) point.y, null);
 			}
 		}
 
@@ -75,7 +74,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	private void drawParentTileBitmap(Canvas canvas, Point point, Tile tile) {
 		Tile cachedParentTile = getCachedParentTile(tile, 4);
 		if (cachedParentTile != null) {
-			Bitmap bitmap = this.tileCache.get(createJob(cachedParentTile), this.tileCacheBitmap);
+			Bitmap bitmap = this.tileCache.get(createJob(cachedParentTile));
 			if (bitmap != null) {
 				long translateX = tile.getShiftX(cachedParentTile) * Tile.TILE_SIZE;
 				long translateY = tile.getShiftY(cachedParentTile) * Tile.TILE_SIZE;
@@ -85,7 +84,8 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				Matrix matrix = new Matrix();
 				matrix.setScale(scaleFactor, scaleFactor);
 				matrix.postTranslate((float) (point.x - translateX), (float) (point.y - translateY));
-				canvas.drawBitmap(bitmap, matrix, null);
+				android.graphics.Bitmap androidBitmap = AndroidGraphics.getAndroidBitmap(bitmap);
+				canvas.drawBitmap(androidBitmap, matrix, null);
 			}
 		}
 	}

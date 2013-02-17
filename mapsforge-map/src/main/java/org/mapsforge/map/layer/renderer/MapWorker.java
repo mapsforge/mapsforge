@@ -14,14 +14,11 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.PausableThread;
+import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
-
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 
 public class MapWorker extends PausableThread {
 	private final DatabaseRenderer databaseRenderer;
@@ -44,11 +41,10 @@ public class MapWorker extends PausableThread {
 	protected void doWork() throws InterruptedException {
 		RendererJob rendererJob = this.jobQueue.remove();
 
-		Bitmap tileBitmap = Bitmap.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE, Config.ARGB_8888);
-		boolean success = this.databaseRenderer.executeJob(rendererJob, tileBitmap);
+		Bitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
 
-		if (!isInterrupted() && success) {
-			this.tileCache.put(rendererJob, tileBitmap);
+		if (!isInterrupted() && bitmap != null) {
+			this.tileCache.put(rendererJob, bitmap);
 			this.layerManagerInterface.redrawLayers();
 		}
 	}

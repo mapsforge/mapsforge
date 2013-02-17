@@ -27,16 +27,16 @@ import java.util.logging.Logger;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.core.util.LRUCache;
+import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.queue.Job;
-
-import android.graphics.Bitmap;
+import org.mapsforge.map.rendertheme.GraphicAdapter;
 
 /**
  * A thread-safe cache for image files with a fixed size and LRU policy.
  */
 public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
-	static final String IMAGE_FILE_NAME_EXTENSION = ".tile";
+	static final String FILE_EXTENSION = ".tile";
 
 	private static File checkDirectory(File file) {
 		if (!file.exists() && !file.mkdirs()) {
@@ -54,6 +54,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	private final ByteBuffer byteBuffer;
 	private final File cacheDirectory;
 	private long cacheId;
+	private final GraphicAdapter graphicAdapter;
 	private final LRUCache<T, File> lruCache;
 
 	/**
@@ -64,9 +65,10 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
 	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory) {
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicAdapter graphicAdapter) {
 		this.lruCache = new FileLRUCache<T>(capacity);
 		this.cacheDirectory = checkDirectory(cacheDirectory);
+		this.graphicAdapter = graphicAdapter;
 
 		this.byteBuffer = ByteBuffer.allocate(Tile.TILE_SIZE * Tile.TILE_SIZE * 4);
 	}
@@ -91,7 +93,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized Bitmap get(T key, Bitmap bitmap) {
+	public synchronized Bitmap get(T key) {
 		File file = this.lruCache.get(key);
 		if (file == null) {
 			return null;
@@ -109,6 +111,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 			}
 
 			this.byteBuffer.rewind();
+			Bitmap bitmap = this.graphicAdapter.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
 			bitmap.copyPixelsFromBuffer(this.byteBuffer);
 			return bitmap;
 		} catch (IOException e) {
@@ -158,7 +161,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	private File getOutputFile() {
 		while (true) {
 			++this.cacheId;
-			File file = new File(this.cacheDirectory, this.cacheId + IMAGE_FILE_NAME_EXTENSION);
+			File file = new File(this.cacheDirectory, this.cacheId + FILE_EXTENSION);
 			if (!file.exists()) {
 				return file;
 			}

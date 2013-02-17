@@ -133,13 +133,10 @@ public class DatabaseRenderer implements RenderCallback {
 	/**
 	 * Called when a job needs to be executed.
 	 * 
-	 * @param mapGeneratorJob
+	 * @param rendererJob
 	 *            the job that should be executed.
-	 * @param bitmap
-	 *            the bitmap for the generated map object.
-	 * @return true if the job was executed successfully, false otherwise.
 	 */
-	public boolean executeJob(RendererJob rendererJob, android.graphics.Bitmap bitmap) {
+	public Bitmap executeJob(RendererJob rendererJob) {
 		this.currentRendererJob = rendererJob;
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
@@ -147,7 +144,7 @@ public class DatabaseRenderer implements RenderCallback {
 			this.renderTheme = getRenderTheme(jobTheme);
 			if (this.renderTheme == null) {
 				this.previousJobTheme = null;
-				return false;
+				return null;
 			}
 			createWayLists();
 			this.previousJobTheme = jobTheme;
@@ -173,7 +170,8 @@ public class DatabaseRenderer implements RenderCallback {
 
 		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile);
 
-		this.canvasRasterer.setCanvasBitmap(bitmap);
+		Bitmap bitmap = AndroidGraphics.INSTANCE.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
+		this.canvasRasterer.setCanvasBitmap(AndroidGraphics.getAndroidBitmap(bitmap));
 		this.canvasRasterer.fill(this.renderTheme.getMapBackground());
 		this.canvasRasterer.drawWays(this.ways);
 		this.canvasRasterer.drawSymbols(this.waySymbols);
@@ -184,7 +182,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 		clearLists();
 
-		return true;
+		return bitmap;
 	}
 
 	/**

@@ -15,52 +15,32 @@
 package org.mapsforge.map.layer.download;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.PausableThread;
+import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
+import org.mapsforge.map.rendertheme.GraphicAdapter;
 import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
-
 class TileDownloadThread extends PausableThread {
-	private static final BitmapFactory.Options BITMAP_FACTORY_OPTIONS = createBitmapFactoryOptions();
 	private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());
-	private static final int TIMEOUT_CONNECT = 5000;
-	private static final int TIMEOUT_READ = 10000;
 
-	private static BitmapFactory.Options createBitmapFactoryOptions() {
-		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
-		bitmapFactoryOptions.inPreferredConfig = Config.ARGB_8888;
-		return bitmapFactoryOptions;
-	}
-
-	private static URLConnection getUrlConnection(URL tileUrl) throws IOException {
-		URLConnection urlConnection = tileUrl.openConnection();
-		urlConnection.setConnectTimeout(TIMEOUT_CONNECT);
-		urlConnection.setReadTimeout(TIMEOUT_READ);
-		return urlConnection;
-	}
-
+	private final GraphicAdapter graphicAdapter;
 	private final JobQueue<DownloadJob> jobQueue;
 	private final LayerManagerInterface layerManagerInterface;
 	private final TileCache<DownloadJob> tileCache;
 
 	TileDownloadThread(TileCache<DownloadJob> tileCache, JobQueue<DownloadJob> jobQueue,
-			LayerManagerInterface layerManagerInterface) {
+			LayerManagerInterface layerManagerInterface, GraphicAdapter graphicAdapter) {
 		super();
 
 		this.tileCache = tileCache;
 		this.jobQueue = jobQueue;
 		this.layerManagerInterface = layerManagerInterface;
+		this.graphicAdapter = graphicAdapter;
 	}
 
 	@Override
@@ -68,18 +48,11 @@ class TileDownloadThread extends PausableThread {
 		DownloadJob downloadJob = this.jobQueue.remove();
 
 		try {
-			URL tileUrl = downloadJob.tileSource.getTileUrl(downloadJob.tile);
-			LOGGER.log(Level.INFO, "downloading: " + tileUrl.toExternalForm());
+			TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicAdapter);
+			Bitmap bitmap = tileDownloader.downloadImage();
 
-			URLConnection urlConnection = getUrlConnection(tileUrl);
-			InputStream inputStream = urlConnection.getInputStream();
-			try {
-				Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, BITMAP_FACTORY_OPTIONS);
-				this.tileCache.put(downloadJob, bitmap);
-				this.layerManagerInterface.redrawLayers();
-			} finally {
-				IOUtils.closeQuietly(inputStream);
-			}
+			this.tileCache.put(downloadJob, bitmap);
+			this.layerManagerInterface.redrawLayers();
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}

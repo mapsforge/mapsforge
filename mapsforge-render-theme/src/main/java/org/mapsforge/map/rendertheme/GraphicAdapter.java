@@ -24,6 +24,8 @@ public interface GraphicAdapter {
 		BLACK, CYAN, TRANSPARENT, WHITE;
 	}
 
+	Bitmap createBitmap(int width, int height);
+
 	Bitmap decodeStream(InputStream inputStream);
 
 	int getColor(Color color);

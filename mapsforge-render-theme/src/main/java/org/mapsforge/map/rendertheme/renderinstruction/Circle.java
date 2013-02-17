@@ -49,11 +49,6 @@ public class Circle implements RenderInstruction {
 	}
 
 	@Override
-	public void destroy() {
-		// do nothing
-	}
-
-	@Override
 	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
 		renderCallback.renderPointOfInterestCircle(this.renderRadius, this.fill, this.stroke, this.level);
 	}

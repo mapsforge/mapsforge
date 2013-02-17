@@ -37,11 +37,6 @@ public class Area implements RenderInstruction {
 	}
 
 	@Override
-	public void destroy() {
-		// do nothing
-	}
-
-	@Override
 	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
 		// do nothing
 	}

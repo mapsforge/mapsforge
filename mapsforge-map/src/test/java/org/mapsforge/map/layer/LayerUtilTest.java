@@ -12,32 +12,25 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.graphics;
+package org.mapsforge.map.layer;
 
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
-public interface Bitmap {
-	/**
-	 * @return a new bitmap with the dimensions and pixels of this bitmap. FIXME: is this method needed?
-	 */
-	Bitmap copy();
+import org.junit.Assert;
+import org.junit.Test;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Tile;
 
-	void copyPixelsFromBuffer(ByteBuffer byteBuffer);
+public class LayerUtilTest {
+	@Test
+	public void getTilePositionsTest() {
+		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
+		ArrayList<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, (byte) 0, new Point(0, 0));
+		Assert.assertEquals(1, tilePositions.size());
 
-	void copyPixelsToBuffer(ByteBuffer byteBuffer);
-
-	/**
-	 * @return the height of this bitmap in pixels.
-	 */
-	int getHeight();
-
-	/**
-	 * @return the color values of all pixels in this bitmap.
-	 */
-	int[] getPixels();
-
-	/**
-	 * @return the width of this bitmap in pixels.
-	 */
-	int getWidth();
+		TilePosition tilePosition = tilePositions.get(0);
+		Assert.assertEquals(new Tile(0, 0, (byte) 0), tilePosition.tile);
+		Assert.assertEquals(new Point(0, 0), tilePosition.point);
+	}
 }

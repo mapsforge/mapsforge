@@ -39,11 +39,6 @@ public class Caption implements RenderInstruction {
 	}
 
 	@Override
-	public void destroy() {
-		// do nothing
-	}
-
-	@Override
 	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
 		String caption = this.textKey.getValue(tags);
 		if (caption == null) {

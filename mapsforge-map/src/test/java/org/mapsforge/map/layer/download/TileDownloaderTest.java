@@ -1,0 +1,70 @@
+/*
+ * Copyright 2010, 2011, 2012 mapsforge.org
+ *
+ * This program is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.mapsforge.map.layer.download;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.HttpServerTest;
+import org.mapsforge.map.graphics.Bitmap;
+import org.mapsforge.map.layer.cache.DummyGraphicAdapter;
+import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
+import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.rendertheme.GraphicAdapter;
+
+public class TileDownloaderTest extends HttpServerTest {
+	private static final DummyGraphicAdapter GRAPHIC_ADAPTER = DummyGraphicAdapter.INSTANCE;
+
+	private static TileDownloader createTileDownloader(DownloadJob downloadJob, GraphicAdapter graphicAdapter) {
+		return new TileDownloader(downloadJob, graphicAdapter);
+	}
+
+	private static void verifyInvalidConstructor(DownloadJob downloadJob, GraphicAdapter graphicAdapter) {
+		try {
+			createTileDownloader(downloadJob, graphicAdapter);
+			Assert.fail("downloadJob: " + downloadJob + ", graphicAdapter: " + graphicAdapter);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
+	@Test
+	public void constructorTest() {
+		Tile tile = new Tile(0, 0, (byte) 0);
+		TileSource tileSource = new OpenStreetMapMapnik("localhost", getPort());
+		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
+		createTileDownloader(downloadJob, GRAPHIC_ADAPTER);
+
+		verifyInvalidConstructor(null, GRAPHIC_ADAPTER);
+		verifyInvalidConstructor(downloadJob, null);
+	}
+
+	@Test
+	public void downloadImageTest() throws IOException {
+		addFile("/0/0/0.png", new File("src/test/resources/0_0_0.png"));
+
+		Tile tile = new Tile(0, 0, (byte) 0);
+		TileSource tileSource = new OpenStreetMapMapnik("localhost", getPort());
+		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
+		TileDownloader tileDownloader = new TileDownloader(downloadJob, GRAPHIC_ADAPTER);
+		Bitmap bitmap = tileDownloader.downloadImage();
+
+		Assert.assertEquals(Tile.TILE_SIZE, bitmap.getWidth());
+		Assert.assertEquals(Tile.TILE_SIZE, bitmap.getHeight());
+	}
+}

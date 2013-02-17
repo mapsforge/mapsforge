@@ -12,39 +12,51 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.rendertheme.renderinstruction;
+package org.mapsforge.map.layer.cache;
 
-import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
 
-public class DummyGraphicAdapter implements GraphicAdapter {
-	@Override
-	public Bitmap createBitmap(int width, int height) {
-		return new DummyBitmap();
+class DummyBitmap implements Bitmap {
+	private final byte[] data;
+	private final int height;
+	private final int width;
+
+	DummyBitmap(int width, int height) {
+		this.width = width;
+		this.height = height;
+
+		this.data = new byte[width * height * 4];
 	}
 
 	@Override
-	public Bitmap decodeStream(InputStream inputStream) {
-		return new DummyBitmap();
+	public Bitmap copy() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int getColor(Color color) {
-		// TODO Auto-generated method stub
-		return 0;
+	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
+		System.arraycopy(byteBuffer.array(), 0, this.data, 0, byteBuffer.array().length);
 	}
 
 	@Override
-	public Paint getPaint() {
-		return new DummyPaint();
+	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
+		byteBuffer.put(this.data, 0, this.data.length);
 	}
 
 	@Override
-	public int parseColor(String colorString) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getHeight() {
+		return this.height;
+	}
+
+	@Override
+	public int[] getPixels() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getWidth() {
+		return this.width;
 	}
 }

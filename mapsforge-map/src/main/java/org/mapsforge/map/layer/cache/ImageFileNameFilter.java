@@ -26,6 +26,6 @@ final class ImageFileNameFilter implements FilenameFilter {
 
 	@Override
 	public boolean accept(File directory, String fileName) {
-		return fileName.endsWith(FileSystemTileCache.IMAGE_FILE_NAME_EXTENSION);
+		return fileName.endsWith(FileSystemTileCache.FILE_EXTENSION);
 	}
 }

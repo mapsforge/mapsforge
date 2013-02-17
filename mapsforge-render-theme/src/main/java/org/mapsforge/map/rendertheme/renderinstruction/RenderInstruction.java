@@ -24,11 +24,6 @@ import org.mapsforge.map.rendertheme.RenderCallback;
  */
 public interface RenderInstruction {
 	/**
-	 * Destroys this RenderInstruction and cleans up all its internal resources.
-	 */
-	void destroy();
-
-	/**
 	 * @param renderCallback
 	 *            a reference to the receiver of all render callbacks.
 	 * @param tags

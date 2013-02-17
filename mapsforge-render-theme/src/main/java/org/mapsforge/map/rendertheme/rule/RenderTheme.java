@@ -48,9 +48,6 @@ public class RenderTheme {
 	 */
 	public void destroy() {
 		this.matchingCache.clear();
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).onDestroy();
-		}
 	}
 
 	/**

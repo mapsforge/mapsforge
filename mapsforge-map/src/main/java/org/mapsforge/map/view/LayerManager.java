@@ -136,7 +136,9 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 		long timeSleep = MILLISECONDS_PER_FRAME - elapsedMilliseconds;
 
 		if (timeSleep > 1 && !isInterrupted()) {
-			LOGGER.log(Level.INFO, "sleeping (ms): " + timeSleep);
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.log(Level.FINE, "sleeping (ms): " + timeSleep);
+			}
 			sleep(timeSleep);
 		}
 	}

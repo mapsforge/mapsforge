@@ -14,12 +14,24 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
+import java.nio.ByteBuffer;
+
 import org.mapsforge.map.graphics.Bitmap;
 
 class DummyBitmap implements Bitmap {
 	@Override
-	public void destroy() {
-		// do nothing
+	public Bitmap copy() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

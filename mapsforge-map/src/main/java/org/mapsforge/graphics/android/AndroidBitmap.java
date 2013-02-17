@@ -15,21 +15,49 @@
 package org.mapsforge.graphics.android;
 
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import org.mapsforge.map.graphics.Bitmap;
 
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 
 class AndroidBitmap implements Bitmap {
+	private static final BitmapFactory.Options BITMAP_FACTORY_OPTIONS = createBitmapFactoryOptions();
+
+	private static BitmapFactory.Options createBitmapFactoryOptions() {
+		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
+		bitmapFactoryOptions.inPreferredConfig = Config.ARGB_8888;
+		return bitmapFactoryOptions;
+	}
+
 	final android.graphics.Bitmap bitmap;
 
+	private AndroidBitmap(android.graphics.Bitmap bitmap) {
+		this.bitmap = bitmap;
+	}
+
 	AndroidBitmap(InputStream inputStream) {
-		this.bitmap = BitmapFactory.decodeStream(inputStream);
+		this.bitmap = BitmapFactory.decodeStream(inputStream, null, BITMAP_FACTORY_OPTIONS);
+	}
+
+	AndroidBitmap(int width, int height) {
+		this.bitmap = android.graphics.Bitmap.createBitmap(width, height, Config.ARGB_8888);
 	}
 
 	@Override
-	public void destroy() {
-		this.bitmap.recycle();
+	public Bitmap copy() {
+		return new AndroidBitmap(this.bitmap.copy(this.bitmap.getConfig(), false));
+	}
+
+	@Override
+	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
+		this.bitmap.copyPixelsFromBuffer(byteBuffer);
+	}
+
+	@Override
+	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
+		this.bitmap.copyPixelsToBuffer(byteBuffer);
 	}
 
 	@Override

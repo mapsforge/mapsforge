@@ -36,6 +36,11 @@ public final class AndroidGraphics implements GraphicAdapter {
 	}
 
 	@Override
+	public Bitmap createBitmap(int width, int height) {
+		return new AndroidBitmap(width, height);
+	}
+
+	@Override
 	public Bitmap decodeStream(InputStream inputStream) {
 		return new AndroidBitmap(inputStream);
 	}
