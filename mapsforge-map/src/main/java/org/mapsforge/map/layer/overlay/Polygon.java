@@ -48,6 +48,8 @@ public class Polygon extends Layer {
 	 *            the initial {@code Paint} used to stroke this polygon (may be null).
 	 */
 	public Polygon(Paint paintFill, Paint paintStroke) {
+		super();
+
 		this.paintFill = paintFill;
 		this.paintStroke = paintStroke;
 	}

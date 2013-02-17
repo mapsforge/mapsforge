@@ -105,6 +105,8 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	 */
 	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Drawable drawable, Paint circleFill,
 			Paint circleStroke) {
+		super();
+
 		this.mapViewPosition = mapViewPosition;
 		this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		this.marker = new Marker(null, drawable);

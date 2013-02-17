@@ -26,7 +26,7 @@ import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.graphics.Paint;
 import org.mapsforge.map.rendertheme.GraphicAdapter;
 
-public class DummyGraphicAdapter implements GraphicAdapter {
+public final class DummyGraphicAdapter implements GraphicAdapter {
 	public static final DummyGraphicAdapter INSTANCE = new DummyGraphicAdapter();
 
 	private DummyGraphicAdapter() {

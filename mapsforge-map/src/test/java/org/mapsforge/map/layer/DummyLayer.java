@@ -14,16 +14,14 @@
  */
 package org.mapsforge.map.layer;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Point;
 
-public class LayerTest {
-	@Test
-	public void visibleTest() {
-		Layer layer = new DummyLayer();
-		Assert.assertTrue(layer.isVisible());
+import android.graphics.Canvas;
 
-		layer.setVisible(false);
-		Assert.assertFalse(layer.isVisible());
+class DummyLayer extends Layer {
+	@Override
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+		// do nothing
 	}
 }

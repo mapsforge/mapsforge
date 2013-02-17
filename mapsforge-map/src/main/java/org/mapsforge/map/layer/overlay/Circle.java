@@ -54,6 +54,8 @@ public class Circle extends Layer {
 	 *             if the given {@code radius} is negative.
 	 */
 	public Circle(GeoPoint geoPoint, float radius, Paint paintFill, Paint paintStroke) {
+		super();
+
 		this.geoPoint = geoPoint;
 		setRadiusInternal(radius);
 		this.paintFill = paintFill;

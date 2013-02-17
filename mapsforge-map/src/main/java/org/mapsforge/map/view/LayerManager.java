@@ -78,6 +78,8 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 	private boolean redrawNeeded;
 
 	public LayerManager(MapViewInterface mapViewInterface, MapViewPosition mapViewPosition) {
+		super();
+
 		this.mapViewInterface = mapViewInterface;
 		this.mapViewPosition = mapViewPosition;
 

@@ -41,6 +41,8 @@ public class Polyline extends Layer {
 	 *            the initial {@code Paint} used to stroke this polyline (may be null).
 	 */
 	public Polyline(Paint paintStroke) {
+		super();
+
 		this.paintStroke = paintStroke;
 	}
 

@@ -38,7 +38,7 @@ public final class TileGridLayer extends Layer {
 	}
 
 	private TileGridLayer() {
-		// do nothing
+		super();
 	}
 
 	@Override

@@ -18,11 +18,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class Observable {
+	private static final String OBSERVER_MUST_NOT_BE_NULL = "observer must not be null";
 	private final List<Observer> observers = new CopyOnWriteArrayList<Observer>();
 
 	public final void addObserver(Observer observer) {
 		if (observer == null) {
-			throw new IllegalArgumentException("observer must not be null");
+			throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
 		} else if (this.observers.contains(observer)) {
 			throw new IllegalArgumentException("observer is already registered: " + observer);
 		}
@@ -31,7 +32,7 @@ public abstract class Observable {
 
 	public final void removeObserver(Observer observer) {
 		if (observer == null) {
-			throw new IllegalArgumentException("observer must not be null");
+			throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
 		} else if (!this.observers.contains(observer)) {
 			throw new IllegalArgumentException("observer is not registered: " + observer);
 		}

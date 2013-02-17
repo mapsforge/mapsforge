@@ -31,11 +31,15 @@ import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.resource.FileResource;
 
-public abstract class HttpServerTest {
+public class HttpServerTest {
 	private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
 	private final File httpRoot = new File(TMP_DIR, getClass().getSimpleName() + System.currentTimeMillis());
 	private final Server server = new Server(0);
+
+	protected HttpServerTest() {
+		// do nothing
+	}
 
 	@After
 	public final void afterTest() throws Exception {

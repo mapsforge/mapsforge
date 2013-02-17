@@ -52,6 +52,8 @@ public class MapViewPosition extends Observable implements Persistable {
 	private byte zoomLevelMin;
 
 	public MapViewPosition() {
+		super();
+
 		this.zoomLevelMax = Byte.MAX_VALUE;
 	}
 

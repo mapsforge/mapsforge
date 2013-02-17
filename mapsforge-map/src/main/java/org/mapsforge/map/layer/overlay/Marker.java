@@ -67,6 +67,8 @@ public class Marker extends Layer {
 	 *            the initial {@code Drawable} of this marker (may be null).
 	 */
 	public Marker(GeoPoint geoPoint, Drawable drawable) {
+		super();
+
 		this.geoPoint = geoPoint;
 		this.drawable = drawable;
 	}

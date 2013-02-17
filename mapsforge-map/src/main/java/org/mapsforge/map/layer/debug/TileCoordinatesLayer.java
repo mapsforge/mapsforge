@@ -62,7 +62,7 @@ public final class TileCoordinatesLayer extends Layer {
 	}
 
 	private TileCoordinatesLayer() {
-		// do nothing
+		super();
 	}
 
 	@Override

@@ -16,7 +16,7 @@ package org.mapsforge.map.layer.queue;
 
 import org.mapsforge.core.model.Tile;
 
-public abstract class Job {
+public class Job {
 	public final Tile tile;
 
 	protected Job(Tile tile) {
