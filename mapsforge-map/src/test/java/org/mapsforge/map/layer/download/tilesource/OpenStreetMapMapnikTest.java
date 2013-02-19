@@ -24,13 +24,13 @@ import org.mapsforge.core.model.Tile;
 public class OpenStreetMapMapnikTest {
 	@Test
 	public void getParallelRequestsLimitTest() {
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		Assert.assertTrue(tileSource.getParallelRequestsLimit() > 0);
 	}
 
 	@Test
 	public void getTileUrlTest() throws MalformedURLException {
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 
 		URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2));
 		Assert.assertEquals("http://tile.openstreetmap.org:80/2/0/1.png", tileUrl.toExternalForm());
@@ -38,7 +38,7 @@ public class OpenStreetMapMapnikTest {
 
 	@Test
 	public void getZoomLevelTest() {
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		Assert.assertTrue(tileSource.getZoomLevelMin() < tileSource.getZoomLevelMax());
 	}
 }

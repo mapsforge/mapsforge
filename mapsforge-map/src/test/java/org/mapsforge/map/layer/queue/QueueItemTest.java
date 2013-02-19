@@ -18,16 +18,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.TestUtils;
-import org.mapsforge.map.layer.download.DownloadJob;
-import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
-import org.mapsforge.map.layer.download.tilesource.TileSource;
 
 public class QueueItemTest {
 	private static QueueItem<?> createTileDownloadJob(Tile tile) {
-		return new QueueItem<DownloadJob>(new DownloadJob(tile, OpenStreetMapMapnik.create()));
+		return new QueueItem<Job>(new Job(tile));
 	}
 
-	private static void verifyInvalidPriority(QueueItem<DownloadJob> queueItem, double priority) {
+	private static void verifyInvalidPriority(QueueItem<Job> queueItem, double priority) {
 		try {
 			queueItem.setPriority(priority);
 			Assert.fail("priority: " + priority);
@@ -40,11 +37,10 @@ public class QueueItemTest {
 	public void equalsTest() {
 		Tile tile1 = new Tile(1, 1, (byte) 1);
 		Tile tile2 = new Tile(2, 2, (byte) 2);
-		TileSource tileSource = OpenStreetMapMapnik.create();
 
-		QueueItem<DownloadJob> queueItem1 = new QueueItem<DownloadJob>(new DownloadJob(tile1, tileSource));
-		QueueItem<DownloadJob> queueItem2 = new QueueItem<DownloadJob>(new DownloadJob(tile1, tileSource));
-		QueueItem<DownloadJob> queueItem3 = new QueueItem<DownloadJob>(new DownloadJob(tile2, tileSource));
+		QueueItem<Job> queueItem1 = new QueueItem<Job>(new Job(tile1));
+		QueueItem<Job> queueItem2 = new QueueItem<Job>(new Job(tile1));
+		QueueItem<Job> queueItem3 = new QueueItem<Job>(new Job(tile2));
 
 		TestUtils.equalsTest(queueItem1, queueItem2);
 
@@ -66,8 +62,7 @@ public class QueueItemTest {
 	@Test
 	public void priorityTest() {
 		Tile tile = new Tile(0, 0, (byte) 0);
-		TileSource tileSource = OpenStreetMapMapnik.create();
-		QueueItem<DownloadJob> queueItem = new QueueItem<DownloadJob>(new DownloadJob(tile, tileSource));
+		QueueItem<Job> queueItem = new QueueItem<Job>(new Job(tile));
 		Assert.assertEquals(0, queueItem.getPriority(), 0);
 
 		queueItem.setPriority(42);

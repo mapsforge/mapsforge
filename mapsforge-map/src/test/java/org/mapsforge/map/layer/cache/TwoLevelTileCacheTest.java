@@ -32,7 +32,7 @@ public class TwoLevelTileCacheTest {
 		Assert.assertEquals(1, twoLevelTileCache.getCapacity());
 
 		Tile tile = new Tile(0, 0, (byte) 0);
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
 		Assert.assertFalse(tileCache1.containsKey(downloadJob));
 		Assert.assertFalse(tileCache2.containsKey(downloadJob));

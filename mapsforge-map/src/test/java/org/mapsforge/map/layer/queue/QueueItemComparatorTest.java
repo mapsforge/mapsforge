@@ -17,19 +17,15 @@ package org.mapsforge.map.layer.queue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.layer.download.DownloadJob;
-import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
-import org.mapsforge.map.layer.download.tilesource.TileSource;
 
 public class QueueItemComparatorTest {
 	@Test
 	public void compareTest() {
 		Tile tile1 = new Tile(0, 0, (byte) 1);
 		Tile tile2 = new Tile(0, 0, (byte) 2);
-		TileSource tileSource = OpenStreetMapMapnik.create();
 
-		QueueItem<?> queueItem1 = new QueueItem<DownloadJob>(new DownloadJob(tile1, tileSource));
-		QueueItem<?> queueItem2 = new QueueItem<DownloadJob>(new DownloadJob(tile2, tileSource));
+		QueueItem<?> queueItem1 = new QueueItem<Job>(new Job(tile1));
+		QueueItem<?> queueItem2 = new QueueItem<Job>(new Job(tile2));
 
 		QueueItemComparator queueItemComparator = QueueItemComparator.INSTANCE;
 		Assert.assertEquals(0, queueItemComparator.compare(queueItem1, queueItem2), 0);

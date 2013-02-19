@@ -20,19 +20,11 @@ import java.net.URL;
 import org.mapsforge.core.model.Tile;
 
 public class OpenCycleMap extends AbstractTileSource {
-	private static final String HOST_NAME = "tile.opencyclemap.org";
+	public static final OpenCycleMap INSTANCE = new OpenCycleMap("tile.opencyclemap.org", 80);
 	private static final int PARALLEL_REQUESTS_LIMIT = 8;
-	private static final int PORT = 80;
 	private static final String PROTOCOL = "http";
 	private static final int ZOOM_LEVEL_MAX = 18;
 	private static final int ZOOM_LEVEL_MIN = 0;
-
-	/**
-	 * Factory method to create a new {@link OpenCycleMap} instance with the default parameters.
-	 */
-	public static OpenCycleMap create() {
-		return new OpenCycleMap(HOST_NAME, PORT);
-	}
 
 	public OpenCycleMap(String hostName, int port) {
 		super(hostName, port);

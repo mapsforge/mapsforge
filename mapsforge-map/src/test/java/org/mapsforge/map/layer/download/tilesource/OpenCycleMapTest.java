@@ -24,13 +24,13 @@ import org.mapsforge.core.model.Tile;
 public class OpenCycleMapTest {
 	@Test
 	public void getParallelRequestsLimitTest() {
-		TileSource tileSource = OpenCycleMap.create();
+		TileSource tileSource = OpenCycleMap.INSTANCE;
 		Assert.assertTrue(tileSource.getParallelRequestsLimit() > 0);
 	}
 
 	@Test
 	public void getTileUrlTest() throws MalformedURLException {
-		TileSource tileSource = OpenCycleMap.create();
+		TileSource tileSource = OpenCycleMap.INSTANCE;
 
 		URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2));
 		Assert.assertEquals("http://tile.opencyclemap.org:80/cycle/2/0/1.png", tileUrl.toExternalForm());
@@ -38,7 +38,7 @@ public class OpenCycleMapTest {
 
 	@Test
 	public void getZoomLevelTest() {
-		TileSource tileSource = OpenCycleMap.create();
+		TileSource tileSource = OpenCycleMap.INSTANCE;
 		Assert.assertTrue(tileSource.getZoomLevelMin() < tileSource.getZoomLevelMax());
 	}
 }

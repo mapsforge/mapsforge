@@ -17,39 +17,35 @@ package org.mapsforge.map.layer.queue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.layer.download.DownloadJob;
-import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
-import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.model.MapViewPosition;
 
 public class JobQueueTest {
 	@Test
 	public void jobQueueTest() throws InterruptedException {
 		MapViewPosition mapViewPosition = new MapViewPosition();
-		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(mapViewPosition);
+		JobQueue<Job> jobQueue = new JobQueue<Job>(mapViewPosition);
 		Assert.assertEquals(0, jobQueue.size());
 
 		Tile tile1 = new Tile(0, 0, (byte) 1);
 		Tile tile2 = new Tile(0, 0, (byte) 0);
 		Tile tile3 = new Tile(0, 0, (byte) 2);
-		TileSource tileSource = OpenStreetMapMapnik.create();
 
-		DownloadJob downloadJob1 = new DownloadJob(tile1, tileSource);
-		DownloadJob downloadJob2 = new DownloadJob(tile2, tileSource);
-		DownloadJob downloadJob3 = new DownloadJob(tile3, tileSource);
-		jobQueue.add(downloadJob1);
-		jobQueue.add(downloadJob2);
-		jobQueue.add(downloadJob3);
+		Job job1 = new Job(tile1);
+		Job job2 = new Job(tile2);
+		Job job3 = new Job(tile3);
+		jobQueue.add(job1);
+		jobQueue.add(job2);
+		jobQueue.add(job3);
 		Assert.assertEquals(3, jobQueue.size());
 
-		jobQueue.add(downloadJob1);
+		jobQueue.add(job1);
 		Assert.assertEquals(3, jobQueue.size());
 
 		jobQueue.notifyWorkers();
 
-		Assert.assertEquals(downloadJob2, jobQueue.remove());
-		Assert.assertEquals(downloadJob1, jobQueue.remove());
-		Assert.assertEquals(downloadJob3, jobQueue.remove());
+		Assert.assertEquals(job2, jobQueue.remove());
+		Assert.assertEquals(job1, jobQueue.remove());
+		Assert.assertEquals(job3, jobQueue.remove());
 
 		Assert.assertEquals(0, jobQueue.size());
 	}

@@ -22,8 +22,6 @@ import org.junit.Test;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.layer.download.DownloadJob;
-import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 
 public class QueueItemSchedulerTest {
 	private static <T extends Job> Collection<QueueItem<T>> createCollection(QueueItem<T> queueItem) {
@@ -35,8 +33,8 @@ public class QueueItemSchedulerTest {
 	@Test
 	public void scheduleTest() {
 		Tile tile0 = new Tile(0, 0, (byte) 0);
-		DownloadJob downloadJob = new DownloadJob(tile0, OpenStreetMapMapnik.create());
-		QueueItem<DownloadJob> queueItem = new QueueItem<DownloadJob>(downloadJob);
+		Job job = new Job(tile0);
+		QueueItem<Job> queueItem = new QueueItem<Job>(job);
 		Assert.assertEquals(0, queueItem.getPriority(), 0);
 
 		MapPosition mapPosition = new MapPosition(new GeoPoint(0, 0), (byte) 0);

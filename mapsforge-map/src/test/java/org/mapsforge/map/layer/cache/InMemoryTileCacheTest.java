@@ -48,7 +48,7 @@ public class InMemoryTileCacheTest {
 
 		Tile tile1 = new Tile(1, 1, (byte) 1);
 		Tile tile2 = new Tile(2, 2, (byte) 2);
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		DownloadJob downloadJob1 = new DownloadJob(tile1, tileSource);
 		DownloadJob downloadJob2 = new DownloadJob(tile2, tileSource);
 
@@ -82,7 +82,7 @@ public class InMemoryTileCacheTest {
 	public void putTest() {
 		TileCache<DownloadJob> tileCache = new InMemoryTileCache<DownloadJob>(0);
 		verifyInvalidPut(tileCache, null, new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
-		verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), OpenStreetMapMapnik.create()), null);
+		verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), OpenStreetMapMapnik.INSTANCE), null);
 	}
 
 	@Test
@@ -91,7 +91,7 @@ public class InMemoryTileCacheTest {
 		Assert.assertEquals(0, inMemoryTileCache.getCapacity());
 
 		Tile tile1 = new Tile(1, 1, (byte) 1);
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		DownloadJob downloadJob1 = new DownloadJob(tile1, tileSource);
 
 		Bitmap bitmap1 = new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);

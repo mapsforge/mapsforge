@@ -21,7 +21,7 @@ import org.mapsforge.map.TestUtils;
 
 public class JobTest {
 	private static Job createJob(Tile tile) {
-		return new DummyJob(tile);
+		return new Job(tile);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile) {
@@ -35,9 +35,9 @@ public class JobTest {
 
 	@Test
 	public void equalsTest() {
-		Job job1 = new DummyJob(new Tile(0, 1, (byte) 2));
-		Job job2 = new DummyJob(new Tile(0, 1, (byte) 2));
-		Job job3 = new DummyJob(new Tile(0, 0, (byte) 0));
+		Job job1 = new Job(new Tile(0, 1, (byte) 2));
+		Job job2 = new Job(new Tile(0, 1, (byte) 2));
+		Job job3 = new Job(new Tile(0, 0, (byte) 0));
 
 		TestUtils.equalsTest(job1, job2);
 

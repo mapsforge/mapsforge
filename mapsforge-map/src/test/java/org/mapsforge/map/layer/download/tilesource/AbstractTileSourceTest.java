@@ -44,9 +44,9 @@ public class AbstractTileSourceTest {
 
 	@Test
 	public void equalsTest() {
-		AbstractTileSource abstractTileSource1 = OpenStreetMapMapnik.create();
-		AbstractTileSource abstractTileSource2 = OpenStreetMapMapnik.create();
-		AbstractTileSource abstractTileSource3 = OpenCycleMap.create();
+		AbstractTileSource abstractTileSource1 = OpenStreetMapMapnik.INSTANCE;
+		AbstractTileSource abstractTileSource2 = OpenStreetMapMapnik.INSTANCE;
+		AbstractTileSource abstractTileSource3 = OpenCycleMap.INSTANCE;
 
 		TestUtils.equalsTest(abstractTileSource1, abstractTileSource2);
 

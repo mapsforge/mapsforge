@@ -79,7 +79,7 @@ public class FileSystemTileCacheTest {
 	public void capacityZeroTest() {
 		TileCache<DownloadJob> tileCache = new FileSystemTileCache<DownloadJob>(0, this.cacheDirectory, GRAPHIC_ADAPTER);
 		Tile tile = new Tile(0, 0, (byte) 0);
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
 
 		Bitmap bitmap = new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -103,7 +103,7 @@ public class FileSystemTileCacheTest {
 		Assert.assertEquals(2, this.cacheDirectory.list().length);
 
 		Tile tile = new Tile(0, 0, (byte) 0);
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
 
 		Bitmap bitmap = new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -130,7 +130,7 @@ public class FileSystemTileCacheTest {
 
 		Tile tile1 = new Tile(0, 0, (byte) 1);
 		Tile tile2 = new Tile(0, 0, (byte) 2);
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		DownloadJob downloadJob1 = new DownloadJob(tile1, tileSource);
 		DownloadJob downloadJob2 = new DownloadJob(tile2, tileSource);
 
@@ -177,6 +177,6 @@ public class FileSystemTileCacheTest {
 	public void invalidPutTest() {
 		TileCache<DownloadJob> tileCache = new FileSystemTileCache<DownloadJob>(1, this.cacheDirectory, GRAPHIC_ADAPTER);
 		verifyInvalidPut(tileCache, null, new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
-		verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), OpenStreetMapMapnik.create()), null);
+		verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), OpenStreetMapMapnik.INSTANCE), null);
 	}
 }

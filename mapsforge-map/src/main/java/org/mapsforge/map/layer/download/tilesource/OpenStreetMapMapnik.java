@@ -20,19 +20,11 @@ import java.net.URL;
 import org.mapsforge.core.model.Tile;
 
 public class OpenStreetMapMapnik extends AbstractTileSource {
-	private static final String HOST_NAME = "tile.openstreetmap.org";
+	public static final OpenStreetMapMapnik INSTANCE = new OpenStreetMapMapnik("tile.openstreetmap.org", 80);
 	private static final int PARALLEL_REQUESTS_LIMIT = 8;
-	private static final int PORT = 80;
 	private static final String PROTOCOL = "http";
 	private static final int ZOOM_LEVEL_MAX = 18;
 	private static final int ZOOM_LEVEL_MIN = 0;
-
-	/**
-	 * Factory method to create a new {@link OpenStreetMapMapnik} instance with the default parameters.
-	 */
-	public static OpenStreetMapMapnik create() {
-		return new OpenStreetMapMapnik(HOST_NAME, PORT);
-	}
 
 	public OpenStreetMapMapnik(String hostName, int port) {
 		super(hostName, port);

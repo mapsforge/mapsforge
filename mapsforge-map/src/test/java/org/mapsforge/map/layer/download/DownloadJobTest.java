@@ -39,7 +39,7 @@ public class DownloadJobTest {
 	@Test
 	public void downloadJobTest() {
 		Tile tile = new Tile(0, 0, (byte) 0);
-		TileSource tileSource = OpenStreetMapMapnik.create();
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 
 		DownloadJob downloadJob = createDownloadJob(tile, tileSource);
 		Assert.assertEquals(tile, downloadJob.tile);
@@ -51,9 +51,9 @@ public class DownloadJobTest {
 	@Test
 	public void equalsTest() {
 		Tile tile = new Tile(0, 0, (byte) 0);
-		DownloadJob downloadJob1 = new DownloadJob(tile, OpenStreetMapMapnik.create());
-		DownloadJob downloadJob2 = new DownloadJob(tile, OpenStreetMapMapnik.create());
-		DownloadJob downloadJob3 = new DownloadJob(tile, OpenCycleMap.create());
+		DownloadJob downloadJob1 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
+		DownloadJob downloadJob2 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
+		DownloadJob downloadJob3 = new DownloadJob(tile, OpenCycleMap.INSTANCE);
 
 		TestUtils.equalsTest(downloadJob1, downloadJob2);
 
