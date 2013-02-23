@@ -24,17 +24,16 @@ public class MapWorker extends PausableThread {
 	private final DatabaseRenderer databaseRenderer;
 	private final JobQueue<RendererJob> jobQueue;
 	private final LayerManagerInterface layerManagerInterface;
-	private final TileCache<RendererJob> tileCache;
+	private final TileCache tileCache;
 
-	public MapWorker(TileCache<RendererJob> tileCache, JobQueue<RendererJob> jobQueue,
-			DatabaseRenderer databaseRenderer, LayerManagerInterface layerManagerInterface) {
+	public MapWorker(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer,
+			LayerManagerInterface layerManagerInterface) {
 		super();
 
 		this.tileCache = tileCache;
 		this.jobQueue = jobQueue;
 		this.databaseRenderer = databaseRenderer;
 		this.layerManagerInterface = layerManagerInterface;
-
 	}
 
 	@Override

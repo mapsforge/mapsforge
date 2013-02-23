@@ -14,15 +14,48 @@
  */
 package org.mapsforge.map.model;
 
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class ModelTest {
+	private final java.util.prefs.Preferences preferences = Preferences.userNodeForPackage(ModelTest.class);
+
+	@After
+	public void afterTest() throws BackingStoreException {
+		this.preferences.removeNode();
+	}
+
 	@Test
-	public void modelTest() {
+	public void constructorTest() {
 		Model model = new Model();
 		Assert.assertNotNull(model.frameBufferModel);
 		Assert.assertNotNull(model.mapViewModel);
 		Assert.assertNotNull(model.mapViewPosition);
+	}
+
+	@Test
+	public void saveAndInitTest() {
+		MapPosition mapPosition1 = new MapPosition(new GeoPoint(1, 1), (byte) 1);
+		MapPosition mapPosition2 = new MapPosition(new GeoPoint(2, 2), (byte) 2);
+
+		Model model = new Model();
+		model.mapViewPosition.setMapPosition(mapPosition1);
+		Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
+
+		PreferencesFacade preferencesFacade = new JavaPreferences(this.preferences);
+		model.save(preferencesFacade);
+
+		model.mapViewPosition.setMapPosition(mapPosition2);
+		Assert.assertEquals(mapPosition2, model.mapViewPosition.getMapPosition());
+
+		model.init(preferencesFacade);
+		Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
 	}
 }

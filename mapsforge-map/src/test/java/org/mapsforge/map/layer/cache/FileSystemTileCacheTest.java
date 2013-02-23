@@ -26,7 +26,11 @@ import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.download.DownloadJob;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class FileSystemTileCacheTest {
 	private static final GraphicAdapter GRAPHIC_ADAPTER = DummyGraphicAdapter.INSTANCE;
@@ -44,8 +48,8 @@ public class FileSystemTileCacheTest {
 		Assert.assertArrayEquals(byteBuffer1.array(), byteBuffer2.array());
 	}
 
-	private static TileCache<?> createNewTileCache(int capacity, File cacheDirectory) {
-		return new FileSystemTileCache<DownloadJob>(capacity, cacheDirectory, GRAPHIC_ADAPTER);
+	private static TileCache createNewTileCache(int capacity, File cacheDirectory) {
+		return new FileSystemTileCache(capacity, cacheDirectory, GRAPHIC_ADAPTER);
 	}
 
 	private static void verifyInvalidConstructor(int capacity, File cacheDirectory) {
@@ -57,10 +61,10 @@ public class FileSystemTileCacheTest {
 		}
 	}
 
-	private static void verifyInvalidPut(TileCache<DownloadJob> tileCache, DownloadJob downloadJob, Bitmap bitmap) {
+	private static void verifyInvalidPut(TileCache tileCache, Job job, Bitmap bitmap) {
 		try {
-			tileCache.put(downloadJob, bitmap);
-			Assert.fail("downloadJob: " + downloadJob + ", bitmap: " + bitmap);
+			tileCache.put(job, bitmap);
+			Assert.fail("job: " + job + ", bitmap: " + bitmap);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}
@@ -77,16 +81,16 @@ public class FileSystemTileCacheTest {
 
 	@Test
 	public void capacityZeroTest() {
-		TileCache<DownloadJob> tileCache = new FileSystemTileCache<DownloadJob>(0, this.cacheDirectory, GRAPHIC_ADAPTER);
+		TileCache tileCache = new FileSystemTileCache(0, this.cacheDirectory, GRAPHIC_ADAPTER);
 		Tile tile = new Tile(0, 0, (byte) 0);
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
+		Job job = new DownloadJob(tile, tileSource);
 
 		Bitmap bitmap = new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
-		tileCache.put(downloadJob, bitmap);
+		tileCache.put(job, bitmap);
 		Assert.assertEquals(0, this.cacheDirectory.list().length);
-		Assert.assertFalse(tileCache.containsKey(downloadJob));
-		Assert.assertNull(tileCache.get(downloadJob));
+		Assert.assertFalse(tileCache.containsKey(job));
+		Assert.assertNull(tileCache.get(job));
 
 		tileCache.destroy();
 	}
@@ -99,21 +103,21 @@ public class FileSystemTileCacheTest {
 		Assert.assertTrue(file1.createNewFile());
 		Assert.assertTrue(file2.createNewFile());
 
-		TileCache<DownloadJob> tileCache = new FileSystemTileCache<DownloadJob>(1, this.cacheDirectory, GRAPHIC_ADAPTER);
+		TileCache tileCache = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_ADAPTER);
 		Assert.assertEquals(2, this.cacheDirectory.list().length);
 
 		Tile tile = new Tile(0, 0, (byte) 0);
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
+		Job job = new DownloadJob(tile, tileSource);
 
 		Bitmap bitmap = new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
-		tileCache.put(downloadJob, bitmap);
+		tileCache.put(job, bitmap);
 		Assert.assertEquals(3, this.cacheDirectory.list().length);
 		Assert.assertTrue(file1.exists());
 		Assert.assertTrue(file2.exists());
 		Assert.assertTrue(new File(this.cacheDirectory, 3 + FileSystemTileCache.FILE_EXTENSION).exists());
 
-		assertEquals(bitmap, tileCache.get(downloadJob));
+		assertEquals(bitmap, tileCache.get(job));
 
 		tileCache.destroy();
 		Assert.assertEquals(0, this.cacheDirectory.list().length);
@@ -123,41 +127,43 @@ public class FileSystemTileCacheTest {
 	public void fileSystemTileCacheTest() {
 		Assert.assertFalse(this.cacheDirectory.exists());
 
-		TileCache<DownloadJob> tileCache = new FileSystemTileCache<DownloadJob>(1, this.cacheDirectory, GRAPHIC_ADAPTER);
+		TileCache tileCache = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_ADAPTER);
 		Assert.assertEquals(1, tileCache.getCapacity());
 		Assert.assertTrue(this.cacheDirectory.exists());
 		Assert.assertEquals(0, this.cacheDirectory.list().length);
 
-		Tile tile1 = new Tile(0, 0, (byte) 1);
-		Tile tile2 = new Tile(0, 0, (byte) 2);
+		Tile tile = new Tile(0, 0, (byte) 1);
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		DownloadJob downloadJob1 = new DownloadJob(tile1, tileSource);
-		DownloadJob downloadJob2 = new DownloadJob(tile2, tileSource);
+		File mapFile = new File("map.file");
+		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
-		Assert.assertFalse(tileCache.containsKey(downloadJob1));
-		Assert.assertFalse(tileCache.containsKey(downloadJob2));
-		Assert.assertNull(tileCache.get(downloadJob1));
-		Assert.assertNull(tileCache.get(downloadJob2));
+		Job job1 = new DownloadJob(tile, tileSource);
+		Job job2 = new RendererJob(tile, mapFile, xmlRenderTheme, 1);
+
+		Assert.assertFalse(tileCache.containsKey(job1));
+		Assert.assertFalse(tileCache.containsKey(job2));
+		Assert.assertNull(tileCache.get(job1));
+		Assert.assertNull(tileCache.get(job2));
 
 		Bitmap bitmap1 = new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
-		tileCache.put(downloadJob1, bitmap1);
-		Assert.assertTrue(tileCache.containsKey(downloadJob1));
-		Assert.assertFalse(tileCache.containsKey(downloadJob2));
-		assertEquals(bitmap1, tileCache.get(downloadJob1));
-		Assert.assertNull(tileCache.get(downloadJob2));
+		tileCache.put(job1, bitmap1);
+		Assert.assertTrue(tileCache.containsKey(job1));
+		Assert.assertFalse(tileCache.containsKey(job2));
+		assertEquals(bitmap1, tileCache.get(job1));
+		Assert.assertNull(tileCache.get(job2));
 
 		Bitmap bitmap2 = new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
-		tileCache.put(downloadJob2, bitmap2);
-		Assert.assertFalse(tileCache.containsKey(downloadJob1));
-		Assert.assertTrue(tileCache.containsKey(downloadJob2));
-		Assert.assertNull(tileCache.get(downloadJob1));
-		assertEquals(bitmap2, tileCache.get(downloadJob2));
+		tileCache.put(job2, bitmap2);
+		Assert.assertFalse(tileCache.containsKey(job1));
+		Assert.assertTrue(tileCache.containsKey(job2));
+		Assert.assertNull(tileCache.get(job1));
+		assertEquals(bitmap2, tileCache.get(job2));
 
 		tileCache.destroy();
-		Assert.assertFalse(tileCache.containsKey(downloadJob1));
-		Assert.assertFalse(tileCache.containsKey(downloadJob2));
-		Assert.assertNull(tileCache.get(downloadJob1));
-		Assert.assertNull(tileCache.get(downloadJob2));
+		Assert.assertFalse(tileCache.containsKey(job1));
+		Assert.assertFalse(tileCache.containsKey(job2));
+		Assert.assertNull(tileCache.get(job1));
+		Assert.assertNull(tileCache.get(job2));
 
 		Assert.assertTrue(this.cacheDirectory.exists());
 		Assert.assertEquals(0, this.cacheDirectory.list().length);
@@ -175,7 +181,7 @@ public class FileSystemTileCacheTest {
 
 	@Test
 	public void invalidPutTest() {
-		TileCache<DownloadJob> tileCache = new FileSystemTileCache<DownloadJob>(1, this.cacheDirectory, GRAPHIC_ADAPTER);
+		TileCache tileCache = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_ADAPTER);
 		verifyInvalidPut(tileCache, null, new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
 		verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), OpenStreetMapMapnik.INSTANCE), null);
 	}

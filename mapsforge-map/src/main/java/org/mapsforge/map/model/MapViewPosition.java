@@ -14,14 +14,13 @@
  */
 package org.mapsforge.map.model;
 
-import java.util.prefs.Preferences;
-
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Persistable;
+import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class MapViewPosition extends Observable implements Persistable {
 	private static final String LATITUDE = "latitude";
@@ -94,14 +93,14 @@ public class MapViewPosition extends Observable implements Persistable {
 	}
 
 	@Override
-	public synchronized void init(Preferences preferences) {
-		this.latitude = preferences.getDouble(LATITUDE, 0);
-		this.longitude = preferences.getDouble(LONGITUDE, 0);
+	public synchronized void init(PreferencesFacade preferencesFacade) {
+		this.latitude = preferencesFacade.getDouble(LATITUDE, 0);
+		this.longitude = preferencesFacade.getDouble(LONGITUDE, 0);
 
-		double maxLatitude = preferences.getDouble(LATITUDE_MAX, Double.NaN);
-		double minLatitude = preferences.getDouble(LATITUDE_MIN, Double.NaN);
-		double maxLongitude = preferences.getDouble(LONGITUDE_MAX, Double.NaN);
-		double minLongitude = preferences.getDouble(LONGITUDE_MIN, Double.NaN);
+		double maxLatitude = preferencesFacade.getDouble(LATITUDE_MAX, Double.NaN);
+		double minLatitude = preferencesFacade.getDouble(LATITUDE_MIN, Double.NaN);
+		double maxLongitude = preferencesFacade.getDouble(LONGITUDE_MAX, Double.NaN);
+		double minLongitude = preferencesFacade.getDouble(LONGITUDE_MIN, Double.NaN);
 
 		if (isNan(maxLatitude, minLatitude, maxLongitude, minLongitude)) {
 			this.mapLimit = null;
@@ -109,9 +108,9 @@ public class MapViewPosition extends Observable implements Persistable {
 			this.mapLimit = new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
 		}
 
-		this.zoomLevel = (byte) preferences.getInt(ZOOM_LEVEL, 0);
-		this.zoomLevelMax = (byte) preferences.getInt(ZOOM_LEVEL_MAX, Byte.MAX_VALUE);
-		this.zoomLevelMin = (byte) preferences.getInt(ZOOM_LEVEL_MIN, 0);
+		this.zoomLevel = preferencesFacade.getByte(ZOOM_LEVEL, (byte) 0);
+		this.zoomLevelMax = preferencesFacade.getByte(ZOOM_LEVEL_MAX, Byte.MAX_VALUE);
+		this.zoomLevelMin = preferencesFacade.getByte(ZOOM_LEVEL_MIN, (byte) 0);
 	}
 
 	/**
@@ -139,25 +138,25 @@ public class MapViewPosition extends Observable implements Persistable {
 	}
 
 	@Override
-	public synchronized void save(Preferences preferences) {
-		preferences.putDouble(LATITUDE, this.latitude);
-		preferences.putDouble(LONGITUDE, this.longitude);
+	public synchronized void save(PreferencesFacade preferencesFacade) {
+		preferencesFacade.putDouble(LATITUDE, this.latitude);
+		preferencesFacade.putDouble(LONGITUDE, this.longitude);
 
 		if (this.mapLimit == null) {
-			preferences.putDouble(LATITUDE_MAX, Double.NaN);
-			preferences.putDouble(LATITUDE_MIN, Double.NaN);
-			preferences.putDouble(LONGITUDE_MAX, Double.NaN);
-			preferences.putDouble(LONGITUDE_MIN, Double.NaN);
+			preferencesFacade.putDouble(LATITUDE_MAX, Double.NaN);
+			preferencesFacade.putDouble(LATITUDE_MIN, Double.NaN);
+			preferencesFacade.putDouble(LONGITUDE_MAX, Double.NaN);
+			preferencesFacade.putDouble(LONGITUDE_MIN, Double.NaN);
 		} else {
-			preferences.putDouble(LATITUDE_MAX, this.mapLimit.maxLatitude);
-			preferences.putDouble(LATITUDE_MIN, this.mapLimit.minLatitude);
-			preferences.putDouble(LONGITUDE_MAX, this.mapLimit.maxLongitude);
-			preferences.putDouble(LONGITUDE_MIN, this.mapLimit.minLongitude);
+			preferencesFacade.putDouble(LATITUDE_MAX, this.mapLimit.maxLatitude);
+			preferencesFacade.putDouble(LATITUDE_MIN, this.mapLimit.minLatitude);
+			preferencesFacade.putDouble(LONGITUDE_MAX, this.mapLimit.maxLongitude);
+			preferencesFacade.putDouble(LONGITUDE_MIN, this.mapLimit.minLongitude);
 		}
 
-		preferences.putInt(ZOOM_LEVEL, this.zoomLevel);
-		preferences.putInt(ZOOM_LEVEL_MAX, this.zoomLevelMax);
-		preferences.putInt(ZOOM_LEVEL_MIN, this.zoomLevelMin);
+		preferencesFacade.putInt(ZOOM_LEVEL, this.zoomLevel);
+		preferencesFacade.putInt(ZOOM_LEVEL_MAX, this.zoomLevelMax);
+		preferencesFacade.putInt(ZOOM_LEVEL_MIN, this.zoomLevelMin);
 	}
 
 	/**

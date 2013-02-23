@@ -269,7 +269,6 @@ class DependencyCache {
 
 					this.currentDependencyOnTile.addText(new Dependency<DependencyText>(toAdd, new Point(label.x,
 							label.y)));
-
 				}
 
 				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y - Tile.TILE_SIZE)));
@@ -915,17 +914,27 @@ class DependencyCache {
 	}
 
 	void removeSymbolsFromDrawnAreas(List<SymbolContainer> symbols) {
+		double maxTileNumber = Math.pow(2, this.currentTile.zoomLevel) - 1;
+
 		Tile lefttmp = null;
 		if (this.currentTile.tileX > 0) {
 			lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
 		}
-		Tile righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+
+		Tile righttmp = null;
+		if (this.currentTile.tileX < maxTileNumber) {
+			righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		}
 
 		Tile uptmp = null;
 		if (this.currentTile.tileY > 0) {
 			uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
 		}
-		Tile downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+
+		Tile downtmp = null;
+		if (this.currentTile.tileY < maxTileNumber) {
+			downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+		}
 
 		boolean up;
 		boolean left;
@@ -940,7 +949,12 @@ class DependencyCache {
 
 		left = this.tmp == null ? false : this.tmp.drawn;
 
-		this.tmp = this.dependencyTable.get(righttmp);
+		if (righttmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(righttmp);
+		}
+
 		right = this.tmp == null ? false : this.tmp.drawn;
 
 		if (uptmp == null) {
@@ -950,7 +964,11 @@ class DependencyCache {
 		}
 		up = this.tmp == null ? false : this.tmp.drawn;
 
-		this.tmp = this.dependencyTable.get(downtmp);
+		if (downtmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(downtmp);
+		}
 		down = this.tmp == null ? false : this.tmp.drawn;
 
 		SymbolContainer ref;

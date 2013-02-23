@@ -21,8 +21,8 @@ import org.mapsforge.map.layer.queue.Job;
 /**
  * A thread-safe cache for object images with a variable size and LRU policy.
  */
-public class InMemoryTileCache<T extends Job> implements TileCache<T> {
-	private LRUCache<T, Bitmap> lruCache;
+public class InMemoryTileCache implements TileCache {
+	private LRUCache<Job, Bitmap> lruCache;
 
 	/**
 	 * @param capacity
@@ -31,11 +31,11 @@ public class InMemoryTileCache<T extends Job> implements TileCache<T> {
 	 *             if the capacity is negative.
 	 */
 	public InMemoryTileCache(int capacity) {
-		this.lruCache = new LRUCache<T, Bitmap>(capacity);
+		this.lruCache = new LRUCache<Job, Bitmap>(capacity);
 	}
 
 	@Override
-	public synchronized boolean containsKey(T key) {
+	public synchronized boolean containsKey(Job key) {
 		return this.lruCache.containsKey(key);
 	}
 
@@ -45,7 +45,7 @@ public class InMemoryTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized Bitmap get(T key) {
+	public synchronized Bitmap get(Job key) {
 		return this.lruCache.get(key);
 	}
 
@@ -55,7 +55,7 @@ public class InMemoryTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized void put(T key, Bitmap bitmap) {
+	public synchronized void put(Job key, Bitmap bitmap) {
 		if (key == null) {
 			throw new IllegalArgumentException("key must not be null");
 		} else if (bitmap == null) {
@@ -75,7 +75,7 @@ public class InMemoryTileCache<T extends Job> implements TileCache<T> {
 	 *             if the capacity is negative.
 	 */
 	public synchronized void setCapacity(int capacity) {
-		LRUCache<T, Bitmap> lruCacheNew = new LRUCache<T, Bitmap>(capacity);
+		LRUCache<Job, Bitmap> lruCacheNew = new LRUCache<Job, Bitmap>(capacity);
 		lruCacheNew.putAll(this.lruCache);
 		this.lruCache = lruCacheNew;
 	}

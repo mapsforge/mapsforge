@@ -16,8 +16,8 @@ package org.mapsforge.map.controller;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.map.android.view.FrameBuffer;
 import org.mapsforge.map.model.Model;
-import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.viewinterfaces.MapViewInterface;
 
 public class MapViewControllerTest {

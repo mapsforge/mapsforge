@@ -17,7 +17,7 @@ package org.mapsforge.map.layer.renderer;
 import java.util.List;
 
 import org.mapsforge.core.model.Point;
-import org.mapsforge.graphics.android.AndroidGraphics;
+import org.mapsforge.map.android.graphics.AndroidGraphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

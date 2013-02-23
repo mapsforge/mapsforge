@@ -31,9 +31,9 @@ class TileDownloadThread extends PausableThread {
 	private final GraphicAdapter graphicAdapter;
 	private final JobQueue<DownloadJob> jobQueue;
 	private final LayerManagerInterface layerManagerInterface;
-	private final TileCache<DownloadJob> tileCache;
+	private final TileCache tileCache;
 
-	TileDownloadThread(TileCache<DownloadJob> tileCache, JobQueue<DownloadJob> jobQueue,
+	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue,
 			LayerManagerInterface layerManagerInterface, GraphicAdapter graphicAdapter) {
 		super();
 

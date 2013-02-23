@@ -33,7 +33,7 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 
 public class TileDownloadThreadTest extends HttpServerTest {
-	private static final int WAIT_TIME_MILLIS = 2000;
+	private static final int WAIT_TIME_MILLIS = 3000;
 
 	private static void awaitWaitingState(Thread thread) throws InterruptedException {
 		long startTime = System.nanoTime();
@@ -66,7 +66,7 @@ public class TileDownloadThreadTest extends HttpServerTest {
 	public void tileDownloadThreadTest() throws InterruptedException, IOException {
 		addFile("/0/0/0.png", new File("src/test/resources/0_0_0.png"));
 
-		TileCache<DownloadJob> tileCache = new InMemoryTileCache<DownloadJob>(1);
+		TileCache tileCache = new InMemoryTileCache(1);
 		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(new MapViewPosition());
 		LayerManagerInterface layerManagerInterface = new DummyLayerManagerInterface();
 

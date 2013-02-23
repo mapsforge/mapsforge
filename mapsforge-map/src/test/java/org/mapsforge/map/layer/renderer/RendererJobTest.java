@@ -62,9 +62,10 @@ public class RendererJobTest {
 		File mapFile = new File(MAP_FILE);
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
-		RendererJob rendererJob1 = new RendererJob(new Tile(0, 1, (byte) 2), mapFile, xmlRenderTheme, 1);
-		RendererJob rendererJob2 = new RendererJob(new Tile(0, 1, (byte) 2), mapFile, xmlRenderTheme, 1);
-		RendererJob rendererJob3 = new RendererJob(new Tile(0, 1, (byte) 2), mapFile, xmlRenderTheme, 2);
+		Tile tile = new Tile(0, 0, (byte) 0);
+		RendererJob rendererJob1 = new RendererJob(tile, mapFile, xmlRenderTheme, 1);
+		RendererJob rendererJob2 = new RendererJob(tile, mapFile, xmlRenderTheme, 1);
+		RendererJob rendererJob3 = new RendererJob(tile, mapFile, xmlRenderTheme, 2);
 
 		TestUtils.equalsTest(rendererJob1, rendererJob2);
 

@@ -15,7 +15,7 @@
 package org.mapsforge.map.layer.download;
 
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.graphics.android.AndroidGraphics;
+import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
@@ -28,7 +28,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private final TileDownloadThread[] tileDownloadThreads;
 	private final TileSource tileSource;
 
-	public TileDownloadLayer(TileCache<DownloadJob> tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
+	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
 			LayerManagerInterface layerManagerInterface) {
 		super(tileCache, mapViewPosition);
 

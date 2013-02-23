@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.viewinterfaces;
 
-import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.android.view.FrameBuffer;
 
 public interface MapViewInterface {
 	/**

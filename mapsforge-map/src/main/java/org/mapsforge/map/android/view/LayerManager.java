@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.view;
+package org.mapsforge.map.android.view;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

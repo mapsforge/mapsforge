@@ -14,8 +14,21 @@
  */
 package org.mapsforge.map.model;
 
-public class Model {
+import org.mapsforge.map.model.common.Persistable;
+import org.mapsforge.map.model.common.PreferencesFacade;
+
+public class Model implements Persistable {
 	public final FrameBufferModel frameBufferModel = new FrameBufferModel();
 	public final MapViewModel mapViewModel = new MapViewModel();
 	public final MapViewPosition mapViewPosition = new MapViewPosition();
+
+	@Override
+	public void init(PreferencesFacade preferencesFacade) {
+		this.mapViewPosition.init(preferencesFacade);
+	}
+
+	@Override
+	public void save(PreferencesFacade preferencesFacade) {
+		this.mapViewPosition.save(preferencesFacade);
+	}
 }

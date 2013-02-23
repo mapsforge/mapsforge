@@ -34,12 +34,12 @@ public class AbstractTileSourceTest {
 
 	@Test
 	public void constructorTest() {
-		create("foo", 0);
+		create("preferences", 0);
 
 		verifyInvalidConstructor(null, 0);
 		verifyInvalidConstructor("", 0);
-		verifyInvalidConstructor("foo", -1);
-		verifyInvalidConstructor("foo", Integer.MAX_VALUE);
+		verifyInvalidConstructor("preferences", -1);
+		verifyInvalidConstructor("preferences", Integer.MAX_VALUE);
 	}
 
 	@Test

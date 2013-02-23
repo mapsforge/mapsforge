@@ -34,7 +34,7 @@ import org.mapsforge.map.rendertheme.GraphicAdapter;
 /**
  * A thread-safe cache for image files with a fixed size and LRU policy.
  */
-public class FileSystemTileCache<T extends Job> implements TileCache<T> {
+public class FileSystemTileCache implements TileCache {
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 	static final String FILE_EXTENSION = ".tile";
 
@@ -55,7 +55,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	private final File cacheDirectory;
 	private long cacheId;
 	private final GraphicAdapter graphicAdapter;
-	private final LRUCache<T, File> lruCache;
+	private final LRUCache<Job, File> lruCache;
 
 	/**
 	 * @param capacity
@@ -66,7 +66,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	 *             if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicAdapter graphicAdapter) {
-		this.lruCache = new FileLRUCache<T>(capacity);
+		this.lruCache = new FileLRUCache<Job>(capacity);
 		this.cacheDirectory = checkDirectory(cacheDirectory);
 		this.graphicAdapter = graphicAdapter;
 
@@ -74,7 +74,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized boolean containsKey(T key) {
+	public synchronized boolean containsKey(Job key) {
 		return this.lruCache.containsKey(key);
 	}
 
@@ -93,7 +93,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized Bitmap get(T key) {
+	public synchronized Bitmap get(Job key) {
 		File file = this.lruCache.get(key);
 		if (file == null) {
 			return null;
@@ -129,7 +129,7 @@ public class FileSystemTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized void put(T key, Bitmap bitmap) {
+	public synchronized void put(Job key, Bitmap bitmap) {
 		if (key == null) {
 			throw new IllegalArgumentException("key must not be null");
 		} else if (bitmap == null) {

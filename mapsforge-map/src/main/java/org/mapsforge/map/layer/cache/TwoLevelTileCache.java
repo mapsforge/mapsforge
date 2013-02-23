@@ -17,17 +17,17 @@ package org.mapsforge.map.layer.cache;
 import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.queue.Job;
 
-public class TwoLevelTileCache<T extends Job> implements TileCache<T> {
-	private final TileCache<T> firstLevelTileCache;
-	private final TileCache<T> secondLevelTileCache;
+public class TwoLevelTileCache implements TileCache {
+	private final TileCache firstLevelTileCache;
+	private final TileCache secondLevelTileCache;
 
-	public TwoLevelTileCache(TileCache<T> firstLevelTileCache, TileCache<T> secondLevelTileCache) {
+	public TwoLevelTileCache(TileCache firstLevelTileCache, TileCache secondLevelTileCache) {
 		this.firstLevelTileCache = firstLevelTileCache;
 		this.secondLevelTileCache = secondLevelTileCache;
 	}
 
 	@Override
-	public synchronized boolean containsKey(T key) {
+	public synchronized boolean containsKey(Job key) {
 		return this.firstLevelTileCache.containsKey(key) || this.secondLevelTileCache.containsKey(key);
 	}
 
@@ -38,7 +38,7 @@ public class TwoLevelTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized Bitmap get(T key) {
+	public synchronized Bitmap get(Job key) {
 		Bitmap returnBitmap = this.firstLevelTileCache.get(key);
 		if (returnBitmap != null) {
 			return returnBitmap;
@@ -59,7 +59,7 @@ public class TwoLevelTileCache<T extends Job> implements TileCache<T> {
 	}
 
 	@Override
-	public synchronized void put(T key, Bitmap bitmap) {
+	public synchronized void put(Job key, Bitmap bitmap) {
 		this.secondLevelTileCache.put(key, bitmap);
 	}
 }

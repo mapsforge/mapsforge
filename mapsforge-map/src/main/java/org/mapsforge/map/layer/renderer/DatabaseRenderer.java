@@ -28,7 +28,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.graphics.android.AndroidGraphics;
+import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.graphics.Paint;
 import org.mapsforge.map.graphics.Style;

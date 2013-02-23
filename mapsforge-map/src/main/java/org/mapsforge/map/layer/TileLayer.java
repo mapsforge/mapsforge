@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.graphics.android.AndroidGraphics;
+import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
@@ -30,10 +30,10 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 
 public abstract class TileLayer<T extends Job> extends Layer {
-	private final TileCache<T> tileCache;
+	private final TileCache tileCache;
 	protected final JobQueue<T> jobQueue;
 
-	public TileLayer(TileCache<T> tileCache, MapViewPosition mapViewPosition) {
+	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
 		if (tileCache == null) {
 			throw new IllegalArgumentException("tileCache must not be null");
 		} else if (mapViewPosition == null) {

@@ -24,7 +24,7 @@ public class ImageFileNameFilterTest {
 	public void acceptTest() {
 		FilenameFilter filenameFilter = ImageFileNameFilter.INSTANCE;
 
-		Assert.assertFalse(filenameFilter.accept(null, "foo.bar"));
-		Assert.assertTrue(filenameFilter.accept(null, "foo" + FileSystemTileCache.FILE_EXTENSION));
+		Assert.assertFalse(filenameFilter.accept(null, "preferences.bar"));
+		Assert.assertTrue(filenameFilter.accept(null, "preferences" + FileSystemTileCache.FILE_EXTENSION));
 	}
 }

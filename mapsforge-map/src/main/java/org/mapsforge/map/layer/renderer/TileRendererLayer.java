@@ -31,7 +31,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private float textScale;
 	private XmlRenderTheme xmlRenderTheme;
 
-	public TileRendererLayer(TileCache<RendererJob> tileCache, MapViewPosition mapViewPosition,
+	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
 			LayerManagerInterface layerManagerInterface) {
 		super(tileCache, mapViewPosition);
 
@@ -47,6 +47,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	@Override
 	public void destroy() {
 		this.mapWorker.interrupt();
+		this.mapDatabase.closeFile();
 
 		super.destroy();
 	}

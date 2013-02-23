@@ -12,14 +12,14 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.view;
+package org.mapsforge.map.android.view;
 
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.map.android.input.TouchEventHandler;
+import org.mapsforge.map.android.input.TouchGestureDetector;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
-import org.mapsforge.map.controller.input.TouchEventHandler;
-import org.mapsforge.map.controller.input.TouchGestureDetector;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.viewinterfaces.MapViewInterface;
@@ -39,10 +39,10 @@ public class MapView extends View implements MapViewInterface {
 	private final Model model;
 	private final TouchEventHandler touchEventHandler;
 
-	public MapView(Context context) {
+	public MapView(Context context, Model model) {
 		super(context);
 
-		this.model = new Model();
+		this.model = model;
 
 		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel);
 		new FrameBufferController(this.frameBuffer, this.model);
@@ -80,10 +80,6 @@ public class MapView extends View implements MapViewInterface {
 
 	public MapScaleBar getMapScaleBar() {
 		return this.mapScaleBar;
-	}
-
-	public Model getModel() {
-		return this.model;
 	}
 
 	@Override

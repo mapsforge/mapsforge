@@ -20,14 +20,14 @@ import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.queue.Job;
 
 /**
- * Interface for object image caches.
+ * Interface for tile image caches.
  */
-public interface TileCache<T extends Job> {
+public interface TileCache {
 	/**
 	 * @return true if this cache contains an image for the given key, false otherwise.
 	 * @see Map#containsKey
 	 */
-	boolean containsKey(T key);
+	boolean containsKey(Job key);
 
 	/**
 	 * Destroys this cache.
@@ -38,7 +38,7 @@ public interface TileCache<T extends Job> {
 	 * @return the image for the given key or null, if this cache contains no image for the key.
 	 * @see Map#get
 	 */
-	Bitmap get(T key);
+	Bitmap get(Job key);
 
 	/**
 	 * @return the capacity of this cache.
@@ -50,5 +50,5 @@ public interface TileCache<T extends Job> {
 	 *             if any of the parameters is {@code null}.
 	 * @see Map#put
 	 */
-	void put(T key, Bitmap bitmap);
+	void put(Job key, Bitmap bitmap);
 }

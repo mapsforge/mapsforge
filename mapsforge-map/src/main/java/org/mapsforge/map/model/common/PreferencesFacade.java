@@ -14,8 +14,36 @@
  */
 package org.mapsforge.map.model.common;
 
-public interface Persistable {
-	void init(PreferencesFacade preferencesFacade);
+public interface PreferencesFacade {
+	void clear();
 
-	void save(PreferencesFacade preferencesFacade);
+	boolean getBoolean(String key, boolean defaultValue);
+
+	byte getByte(String key, byte defaultValue);
+
+	double getDouble(String key, double defaultValue);
+
+	float getFloat(String key, float defaultValue);
+
+	int getInt(String key, int defaultValue);
+
+	long getLong(String key, long defaultValue);
+
+	String getString(String key, String defaultValue);
+
+	void putBoolean(String key, boolean value);
+
+	void putByte(String key, byte value);
+
+	void putDouble(String key, double value);
+
+	void putFloat(String key, float value);
+
+	void putInt(String key, int value);
+
+	void putLong(String key, long value);
+
+	void putString(String key, String value);
+
+	void save();
 }
