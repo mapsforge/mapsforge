@@ -18,7 +18,7 @@ import org.mapsforge.map.android.view.FrameBuffer;
 import org.mapsforge.map.viewinterfaces.MapViewInterface;
 
 class DummyMapView implements MapViewInterface {
-	int repaint;
+	int repaintCounter;
 
 	@Override
 	public FrameBuffer getFrameBuffer() {
@@ -27,6 +27,6 @@ class DummyMapView implements MapViewInterface {
 
 	@Override
 	public void repaint() {
-		++this.repaint;
+		++this.repaintCounter;
 	}
 }

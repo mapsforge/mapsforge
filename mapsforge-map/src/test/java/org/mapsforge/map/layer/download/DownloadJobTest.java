@@ -14,6 +14,8 @@
  */
 package org.mapsforge.map.layer.download;
 
+import java.io.File;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
@@ -21,6 +23,9 @@ import org.mapsforge.map.TestUtils;
 import org.mapsforge.map.layer.download.tilesource.OpenCycleMap;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.renderer.RendererJob;
+import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class DownloadJobTest {
 	private static DownloadJob createDownloadJob(Tile tile, TileSource tileSource) {
@@ -60,5 +65,9 @@ public class DownloadJobTest {
 		Assert.assertNotEquals(downloadJob1, downloadJob3);
 		Assert.assertNotEquals(downloadJob3, downloadJob1);
 		Assert.assertNotEquals(downloadJob1, new Object());
+
+		File mapFile = new File("map.file");
+		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
+		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, xmlRenderTheme, 1));
 	}
 }

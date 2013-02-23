@@ -20,6 +20,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.TestUtils;
+import org.mapsforge.map.layer.download.DownloadJob;
+import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
+import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
@@ -72,5 +75,8 @@ public class RendererJobTest {
 		Assert.assertNotEquals(rendererJob1, rendererJob3);
 		Assert.assertNotEquals(rendererJob3, rendererJob1);
 		Assert.assertNotEquals(rendererJob1, new Object());
+
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+		Assert.assertNotEquals(rendererJob1, new DownloadJob(tile, tileSource));
 	}
 }
