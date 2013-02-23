@@ -16,7 +16,6 @@ package org.mapsforge.map.model.common;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mapsforge.map.model.MapViewPosition;
 
 public class ObservableTest {
 	private static void verifyAddObserverInvalid(Observable observable, Observer observer) {
@@ -40,7 +39,7 @@ public class ObservableTest {
 	@Test
 	public void addRemoveObserverTest() {
 		DummyObserver dummyObserver = new DummyObserver();
-		Observable observable = new MapViewPosition();
+		Observable observable = new Observable();
 
 		observable.addObserver(dummyObserver);
 		verifyAddObserverInvalid(observable, null);

@@ -17,9 +17,13 @@ package org.mapsforge.map.model.common;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class Observable {
+public class Observable {
 	private static final String OBSERVER_MUST_NOT_BE_NULL = "observer must not be null";
 	private final List<Observer> observers = new CopyOnWriteArrayList<Observer>();
+
+	protected Observable() {
+		// do nothing
+	}
 
 	public final void addObserver(Observer observer) {
 		if (observer == null) {

@@ -34,6 +34,8 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	protected final JobQueue<T> jobQueue;
 
 	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
+		super();
+
 		if (tileCache == null) {
 			throw new IllegalArgumentException("tileCache must not be null");
 		} else if (mapViewPosition == null) {

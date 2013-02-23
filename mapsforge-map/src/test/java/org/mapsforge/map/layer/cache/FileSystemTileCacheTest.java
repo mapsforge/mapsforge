@@ -36,7 +36,11 @@ public class FileSystemTileCacheTest {
 	private static final GraphicAdapter GRAPHIC_ADAPTER = DummyGraphicAdapter.INSTANCE;
 	private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
-	private static void assertEquals(Bitmap bitmap1, Bitmap bitmap2) {
+	private static TileCache createNewTileCache(int capacity, File cacheDirectory) {
+		return new FileSystemTileCache(capacity, cacheDirectory, GRAPHIC_ADAPTER);
+	}
+
+	private static void verifyEquals(Bitmap bitmap1, Bitmap bitmap2) {
 		Assert.assertEquals(bitmap1.getWidth(), bitmap2.getWidth());
 		Assert.assertEquals(bitmap1.getHeight(), bitmap2.getHeight());
 
@@ -46,10 +50,6 @@ public class FileSystemTileCacheTest {
 		bitmap2.copyPixelsToBuffer(byteBuffer2);
 
 		Assert.assertArrayEquals(byteBuffer1.array(), byteBuffer2.array());
-	}
-
-	private static TileCache createNewTileCache(int capacity, File cacheDirectory) {
-		return new FileSystemTileCache(capacity, cacheDirectory, GRAPHIC_ADAPTER);
 	}
 
 	private static void verifyInvalidConstructor(int capacity, File cacheDirectory) {
@@ -117,7 +117,7 @@ public class FileSystemTileCacheTest {
 		Assert.assertTrue(file2.exists());
 		Assert.assertTrue(new File(this.cacheDirectory, 3 + FileSystemTileCache.FILE_EXTENSION).exists());
 
-		assertEquals(bitmap, tileCache.get(job));
+		verifyEquals(bitmap, tileCache.get(job));
 
 		tileCache.destroy();
 		Assert.assertEquals(0, this.cacheDirectory.list().length);
@@ -149,7 +149,7 @@ public class FileSystemTileCacheTest {
 		tileCache.put(job1, bitmap1);
 		Assert.assertTrue(tileCache.containsKey(job1));
 		Assert.assertFalse(tileCache.containsKey(job2));
-		assertEquals(bitmap1, tileCache.get(job1));
+		verifyEquals(bitmap1, tileCache.get(job1));
 		Assert.assertNull(tileCache.get(job2));
 
 		Bitmap bitmap2 = new DummyBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -157,7 +157,7 @@ public class FileSystemTileCacheTest {
 		Assert.assertFalse(tileCache.containsKey(job1));
 		Assert.assertTrue(tileCache.containsKey(job2));
 		Assert.assertNull(tileCache.get(job1));
-		assertEquals(bitmap2, tileCache.get(job2));
+		verifyEquals(bitmap2, tileCache.get(job2));
 
 		tileCache.destroy();
 		Assert.assertFalse(tileCache.containsKey(job1));

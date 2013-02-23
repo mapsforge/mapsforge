@@ -24,6 +24,8 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 public class TouchEventHandler {
+	private static final String LISTENER_MUST_NOT_BE_NULL = "listener must not be null";
+
 	private static int getAction(MotionEvent motionEvent) {
 		return motionEvent.getAction() & MotionEvent.ACTION_MASK;
 	}
@@ -42,7 +44,7 @@ public class TouchEventHandler {
 
 	public void addListener(TouchEventListener touchEventListener) {
 		if (touchEventListener == null) {
-			throw new NullPointerException("listener must not be null");
+			throw new IllegalArgumentException(LISTENER_MUST_NOT_BE_NULL);
 		} else if (this.touchEventListeners.contains(touchEventListener)) {
 			throw new IllegalArgumentException("listener is already registered: " + touchEventListener);
 		}
@@ -83,7 +85,7 @@ public class TouchEventHandler {
 
 	public void removeListener(TouchEventListener touchEventListener) {
 		if (touchEventListener == null) {
-			throw new NullPointerException("listener must not be null");
+			throw new IllegalArgumentException(LISTENER_MUST_NOT_BE_NULL);
 		} else if (!this.touchEventListeners.contains(touchEventListener)) {
 			throw new IllegalArgumentException("listener is not registered: " + touchEventListener);
 		}
@@ -109,8 +111,6 @@ public class TouchEventHandler {
 		} else if (Math.abs(moveX) > this.mapMoveDelta || Math.abs(moveY) > this.mapMoveDelta) {
 			this.moveThresholdReached = true;
 			this.lastPosition = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
-		} else {
-			// the move threshold has not been reached yet
 		}
 
 		return true;

@@ -63,7 +63,7 @@ public class TileDownloadThreadTest extends HttpServerTest {
 	}
 
 	@Test
-	public void tileDownloadThreadTest() throws InterruptedException, IOException {
+	public void lifecycleTest() throws InterruptedException, IOException {
 		addFile("/0/0/0.png", new File("src/test/resources/0_0_0.png"));
 
 		TileCache tileCache = new InMemoryTileCache(1);

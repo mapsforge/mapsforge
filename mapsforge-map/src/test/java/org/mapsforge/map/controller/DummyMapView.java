@@ -14,19 +14,19 @@
  */
 package org.mapsforge.map.controller;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.mapsforge.map.model.Model;
+import org.mapsforge.map.android.view.FrameBuffer;
+import org.mapsforge.map.viewinterfaces.MapViewInterface;
 
-public class MapViewControllerTest {
-	@Test
-	public void repaintTest() {
-		DummyMapView dummyMapView = new DummyMapView();
-		Model model = new Model();
-		new MapViewController(dummyMapView, model);
-		Assert.assertEquals(0, dummyMapView.repaint);
+class DummyMapView implements MapViewInterface {
+	int repaint;
 
-		model.mapViewPosition.setZoomLevel((byte) 1);
-		Assert.assertEquals(1, dummyMapView.repaint);
+	@Override
+	public FrameBuffer getFrameBuffer() {
+		return null;
+	}
+
+	@Override
+	public void repaint() {
+		++this.repaint;
 	}
 }
