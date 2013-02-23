@@ -16,13 +16,13 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.util.Locale;
 
-import org.mapsforge.map.graphics.Align;
-import org.mapsforge.map.graphics.FontFamily;
-import org.mapsforge.map.graphics.FontStyle;
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.graphics.Style;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
-import org.mapsforge.map.rendertheme.GraphicAdapter.Color;
+import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicFactory.Color;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -46,18 +46,18 @@ public class CaptionBuilder {
 	final Paint stroke;
 	TextKey textKey;
 
-	public CaptionBuilder(GraphicAdapter graphicAdapter, String elementName, Attributes attributes) throws SAXException {
-		this.fill = graphicAdapter.getPaint();
-		this.fill.setColor(graphicAdapter.getColor(Color.BLACK));
+	public CaptionBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes) throws SAXException {
+		this.fill = graphicFactory.createPaint();
+		this.fill.setColor(graphicFactory.getColor(Color.BLACK));
 		this.fill.setStyle(Style.FILL);
 		this.fill.setTextAlign(Align.LEFT);
 
-		this.stroke = graphicAdapter.getPaint();
-		this.stroke.setColor(graphicAdapter.getColor(Color.BLACK));
+		this.stroke = graphicFactory.createPaint();
+		this.stroke.setColor(graphicFactory.getColor(Color.BLACK));
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setTextAlign(Align.LEFT);
 
-		extractValues(graphicAdapter, elementName, attributes);
+		extractValues(graphicFactory, elementName, attributes);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class CaptionBuilder {
 		return new Caption(this);
 	}
 
-	private void extractValues(GraphicAdapter graphicAdapter, String elementName, Attributes attributes)
+	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes)
 			throws SAXException {
 		FontFamily fontFamily = FontFamily.DEFAULT;
 		FontStyle fontStyle = FontStyle.NORMAL;
@@ -87,9 +87,9 @@ public class CaptionBuilder {
 			} else if (FONT_SIZE.equals(name)) {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (FILL.equals(name)) {
-				this.fill.setColor(graphicAdapter.parseColor(value));
+				this.fill.setColor(graphicFactory.parseColor(value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicAdapter.parseColor(value));
+				this.stroke.setColor(graphicFactory.parseColor(value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value));
 			} else {

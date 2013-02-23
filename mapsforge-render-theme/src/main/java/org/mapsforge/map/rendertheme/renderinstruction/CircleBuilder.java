@@ -14,10 +14,10 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.graphics.Style;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
-import org.mapsforge.map.rendertheme.GraphicAdapter.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicFactory.Color;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -39,19 +39,19 @@ public class CircleBuilder {
 	final Paint stroke;
 	float strokeWidth;
 
-	public CircleBuilder(GraphicAdapter graphicAdapter, String elementName, Attributes attributes, int level)
+	public CircleBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes, int level)
 			throws SAXException {
 		this.level = level;
 
-		this.fill = graphicAdapter.getPaint();
-		this.fill.setColor(graphicAdapter.getColor(Color.TRANSPARENT));
+		this.fill = graphicFactory.createPaint();
+		this.fill.setColor(graphicFactory.getColor(Color.TRANSPARENT));
 		this.fill.setStyle(Style.FILL);
 
-		this.stroke = graphicAdapter.getPaint();
-		this.stroke.setColor(graphicAdapter.getColor(Color.TRANSPARENT));
+		this.stroke = graphicFactory.createPaint();
+		this.stroke.setColor(graphicFactory.getColor(Color.TRANSPARENT));
 		this.stroke.setStyle(Style.STROKE);
 
-		extractValues(graphicAdapter, elementName, attributes);
+		extractValues(graphicFactory, elementName, attributes);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class CircleBuilder {
 		return new Circle(this);
 	}
 
-	private void extractValues(GraphicAdapter graphicAdapter, String elementName, Attributes attributes)
+	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes)
 			throws SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
@@ -72,9 +72,9 @@ public class CircleBuilder {
 			} else if (SCALE_RADIUS.equals(name)) {
 				this.scaleRadius = Boolean.parseBoolean(value);
 			} else if (FILL.equals(name)) {
-				this.fill.setColor(graphicAdapter.parseColor(value));
+				this.fill.setColor(graphicFactory.parseColor(value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicAdapter.parseColor(value));
+				this.stroke.setColor(graphicFactory.parseColor(value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else {

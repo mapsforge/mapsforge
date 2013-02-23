@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.layer.download;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
@@ -29,8 +29,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private final TileSource tileSource;
 
 	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
-			LayerManagerInterface layerManagerInterface) {
-		super(tileCache, mapViewPosition);
+			LayerManagerInterface layerManagerInterface, GraphicFactory graphicFactory) {
+		super(tileCache, mapViewPosition, graphicFactory);
 
 		if (tileSource == null) {
 			throw new IllegalArgumentException("tileSource must not be null");
@@ -44,7 +44,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
 		for (int i = 0; i < numberOfDownloadThreads; ++i) {
 			TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, this.jobQueue,
-					layerManagerInterface, AndroidGraphics.INSTANCE);
+					layerManagerInterface, graphicFactory);
 			tileDownloadThread.start();
 			this.tileDownloadThreads[i] = tileDownloadThread;
 		}

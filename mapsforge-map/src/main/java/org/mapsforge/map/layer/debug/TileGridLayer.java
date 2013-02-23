@@ -14,31 +14,32 @@
  */
 package org.mapsforge.map.layer.debug;
 
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicFactory.Color;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
-
-public final class TileGridLayer extends Layer {
-	public static final TileGridLayer INSTANCE = new TileGridLayer();
-	private static final Paint PAINT = createPaint();
-
-	private static Paint createPaint() {
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setColor(Color.BLACK);
+public class TileGridLayer extends Layer {
+	private static Paint createPaint(GraphicFactory graphicFactory) {
+		Paint paint = graphicFactory.createPaint();
+		paint.setColor(graphicFactory.getColor(Color.BLACK));
 		paint.setStrokeWidth(3);
 		paint.setStyle(Style.STROKE);
 		return paint;
 	}
 
-	private TileGridLayer() {
+	private final Paint paint;
+
+	public TileGridLayer(GraphicFactory graphicFactory) {
 		super();
+
+		this.paint = createPaint(graphicFactory);
 	}
 
 	@Override
@@ -54,11 +55,11 @@ public final class TileGridLayer extends Layer {
 		float pixelY2 = (float) (MercatorProjection.tileYToPixelY(tileBottom) - canvasPosition.y + Tile.TILE_SIZE);
 
 		for (float lineX = pixelX1; lineX <= pixelX2 + 1; lineX += Tile.TILE_SIZE) {
-			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, PAINT);
+			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paint);
 		}
 
 		for (float lineY = pixelY1; lineY <= pixelY2 + 1; lineY += Tile.TILE_SIZE) {
-			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, PAINT);
+			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, this.paint);
 		}
 	}
 }

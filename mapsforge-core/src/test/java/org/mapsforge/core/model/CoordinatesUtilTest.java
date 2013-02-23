@@ -15,7 +15,6 @@
 package org.mapsforge.core.model;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class CoordinatesUtilTest {

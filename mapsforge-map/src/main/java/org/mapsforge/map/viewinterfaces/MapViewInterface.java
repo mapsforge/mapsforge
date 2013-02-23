@@ -14,13 +14,11 @@
  */
 package org.mapsforge.map.viewinterfaces;
 
-import org.mapsforge.map.android.view.FrameBuffer;
-
 public interface MapViewInterface {
 	/**
 	 * @return the FrameBuffer used in this MapView.
 	 */
-	FrameBuffer getFrameBuffer();
+	FrameBufferInterface getFrameBufferInterface();
 
 	/**
 	 * Requests a redrawing as soon as possible.

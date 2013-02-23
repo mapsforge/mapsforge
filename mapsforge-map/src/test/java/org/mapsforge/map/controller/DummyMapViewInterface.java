@@ -12,8 +12,21 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.graphics;
+package org.mapsforge.map.controller;
 
-public enum FontStyle {
-	BOLD, BOLD_ITALIC, ITALIC, NORMAL;
+import org.mapsforge.map.android.view.FrameBuffer;
+import org.mapsforge.map.viewinterfaces.MapViewInterface;
+
+class DummyMapViewInterface implements MapViewInterface {
+	int repaintCounter;
+
+	@Override
+	public FrameBuffer getFrameBufferInterface() {
+		return null;
+	}
+
+	@Override
+	public void repaint() {
+		++this.repaintCounter;
+	}
 }

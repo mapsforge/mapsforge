@@ -14,14 +14,14 @@
  */
 package org.mapsforge.map.android.view;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.model.FrameBufferModel;
 import org.mapsforge.map.viewinterfaces.FrameBufferInterface;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
 
 public class FrameBuffer implements FrameBufferInterface {
 	private Bitmap bitmap1;
@@ -33,7 +33,7 @@ public class FrameBuffer implements FrameBufferInterface {
 	public FrameBuffer(FrameBufferModel frameBufferModel) {
 		this.frameBufferModel = frameBufferModel;
 
-		this.matrix = new Matrix();
+		this.matrix = AndroidGraphics.INSTANCE.createMatrix();
 	}
 
 	@Override
@@ -46,18 +46,18 @@ public class FrameBuffer implements FrameBufferInterface {
 		int pivotY = this.dimension.height / 2;
 
 		this.matrix.reset();
-		this.matrix.postScale(scaleFactor, scaleFactor, pivotX, pivotY);
-		this.matrix.postTranslate(diffX, diffY);
+		this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
+		this.matrix.translate(diffX, diffY);
 
 		// translate the FrameBuffer center to the MapView center
 		float dx = (this.dimension.width - mapViewDimension.width) / -2f;
 		float dy = (this.dimension.height - mapViewDimension.height) / -2f;
-		this.matrix.postTranslate(dx, dy);
+		this.matrix.translate(dx, dy);
 	}
 
 	public synchronized void draw(Canvas canvas) {
 		if (this.bitmap1 != null) {
-			canvas.drawBitmap(this.bitmap1, this.matrix, null);
+			canvas.drawBitmap(this.bitmap1, this.matrix);
 		}
 	}
 
@@ -82,8 +82,8 @@ public class FrameBuffer implements FrameBufferInterface {
 		this.dimension = dimension;
 
 		if (dimension.width > 0 && dimension.height > 0) {
-			this.bitmap1 = Bitmap.createBitmap(dimension.width, dimension.height, Bitmap.Config.RGB_565);
-			this.bitmap2 = Bitmap.createBitmap(dimension.width, dimension.height, Bitmap.Config.RGB_565);
+			this.bitmap1 = AndroidGraphics.INSTANCE.createBitmap(dimension.width, dimension.height);
+			this.bitmap2 = AndroidGraphics.INSTANCE.createBitmap(dimension.width, dimension.height);
 		} else {
 			this.bitmap1 = null;
 			this.bitmap2 = null;

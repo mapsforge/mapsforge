@@ -21,9 +21,8 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
-import org.mapsforge.map.rendertheme.renderinstruction.DummyGraphicAdapter;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.xml.sax.SAXException;
 
@@ -71,8 +70,8 @@ public class ExternalRenderThemeTest {
 
 	@Test
 	public void validRenderThemeFileTest() throws SAXException, ParserConfigurationException, IOException {
-		GraphicAdapter graphicAdapter = new DummyGraphicAdapter();
+		GraphicFactory graphicFactory = DummyGraphicFactory.INSTANCE;
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(EMPTY_RENDER_THEME_PATH));
-		Assert.assertNotNull(RenderThemeHandler.getRenderTheme(graphicAdapter, xmlRenderTheme));
+		Assert.assertNotNull(RenderThemeHandler.getRenderTheme(graphicFactory, xmlRenderTheme));
 	}
 }

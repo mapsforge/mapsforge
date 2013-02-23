@@ -15,9 +15,9 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.junit.Assert;
-
 import org.junit.Test;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.rendertheme.DummyGraphicFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -29,13 +29,13 @@ public class CircleBuilderTest {
 
 	@Test
 	public void buildTest() throws SAXException {
-		GraphicAdapter graphicAdapter = new DummyGraphicAdapter();
+		GraphicFactory graphicFactory = DummyGraphicFactory.INSTANCE;
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, CircleBuilder.RADIUS, null, String.valueOf(RADIUS));
 		attributesImpl.addAttribute(null, null, CircleBuilder.SCALE_RADIUS, null, String.valueOf(SCALE_RADIUS));
 		attributesImpl.addAttribute(null, null, CircleBuilder.STROKE_WIDTH, null, String.valueOf(STROKE_WIDTH));
 
-		CircleBuilder circleBuilder = new CircleBuilder(graphicAdapter, "circle", attributesImpl, LEVEL);
+		CircleBuilder circleBuilder = new CircleBuilder(graphicFactory, "circle", attributesImpl, LEVEL);
 
 		Assert.assertEquals(LEVEL, circleBuilder.level);
 		Assert.assertEquals(RADIUS, circleBuilder.radius.floatValue(), 0);

@@ -12,8 +12,24 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.graphics;
+package org.mapsforge.core.graphics;
 
-public enum FontFamily {
-	DEFAULT, DEFAULT_BOLD, MONOSPACE, SANS_SERIF, SERIF;
+public interface Canvas {
+	void drawBitmap(Bitmap bitmap, float left, float top);
+
+	void drawBitmap(Bitmap bitmap, Matrix matrix);
+
+	void drawCircle(float x, float y, float radius, Paint paint);
+
+	void drawLine(float x1, float y1, float x2, float y2, Paint paint);
+
+	void drawLines(float[] points, Paint paint);
+
+	void drawText(String text, float x, float y, Paint paint);
+
+	int getHeight();
+
+	int getWidth();
+
+	void setBitmap(Bitmap bitmap);
 }

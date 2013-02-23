@@ -14,10 +14,9 @@
  */
 package org.mapsforge.map.layer;
 
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
-
-import android.graphics.Canvas;
 
 public abstract class Layer {
 	private boolean visible = true;

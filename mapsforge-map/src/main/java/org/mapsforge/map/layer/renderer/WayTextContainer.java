@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.map.graphics.Paint;
+import org.mapsforge.core.graphics.Paint;
 
 class WayTextContainer {
 	final double[] coordinates;

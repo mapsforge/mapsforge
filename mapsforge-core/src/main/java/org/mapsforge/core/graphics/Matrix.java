@@ -12,8 +12,14 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.graphics;
+package org.mapsforge.core.graphics;
 
-public enum Style {
-	FILL, STROKE
+public interface Matrix {
+	void reset();
+
+	void scale(float scaleX, float scaleY);
+
+	void scale(float scaleX, float scaleY, float pivotX, float pivotY);
+
+	void translate(float translateX, float translateY);
 }

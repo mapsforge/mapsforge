@@ -23,21 +23,19 @@ import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphics;
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.graphics.Style;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.MapReadResult;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.reader.Way;
 import org.mapsforge.map.reader.header.MapFileInfo;
-import org.mapsforge.map.rendertheme.GraphicAdapter.Color;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderTheme;
@@ -51,7 +49,6 @@ public class DatabaseRenderer implements RenderCallback {
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
 	private static final byte LAYERS = 11;
 	private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
-	private static final Paint PAINT_WATER_TILE_HIGHTLIGHT = AndroidGraphics.INSTANCE.getPaint();
 	private static final double STROKE_INCREASE = 1.5;
 	private static final byte STROKE_MIN_ZOOM_LEVEL = 12;
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
@@ -125,9 +122,6 @@ public class DatabaseRenderer implements RenderCallback {
 		this.areaLabels = new ArrayList<PointTextContainer>(64);
 		this.waySymbols = new ArrayList<SymbolContainer>(64);
 		this.pointSymbols = new ArrayList<SymbolContainer>(64);
-
-		PAINT_WATER_TILE_HIGHTLIGHT.setStyle(Style.FILL);
-		PAINT_WATER_TILE_HIGHTLIGHT.setColor(AndroidGraphics.INSTANCE.getColor(Color.CYAN));
 	}
 
 	/**
@@ -171,7 +165,7 @@ public class DatabaseRenderer implements RenderCallback {
 		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile);
 
 		Bitmap bitmap = AndroidGraphics.INSTANCE.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
-		this.canvasRasterer.setCanvasBitmap(AndroidGraphics.getAndroidBitmap(bitmap));
+		this.canvasRasterer.setCanvasBitmap(AndroidGraphics.getBitmap(bitmap));
 		this.canvasRasterer.fill(this.renderTheme.getMapBackground());
 		this.canvasRasterer.drawWays(this.ways);
 		this.canvasRasterer.drawSymbols(this.waySymbols);

@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
 class DummyRenderCallback implements RenderCallback {

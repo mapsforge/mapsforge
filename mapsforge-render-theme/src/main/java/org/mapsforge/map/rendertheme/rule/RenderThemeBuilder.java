@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-import org.mapsforge.map.rendertheme.GraphicAdapter;
-import org.mapsforge.map.rendertheme.GraphicAdapter.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -38,13 +38,13 @@ public class RenderThemeBuilder {
 	float baseTextSize;
 	int mapBackground;
 
-	public RenderThemeBuilder(GraphicAdapter graphicAdapter, String elementName, Attributes attributes)
+	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes)
 			throws SAXException {
 		this.baseStrokeWidth = 1;
 		this.baseTextSize = 1;
-		this.mapBackground = graphicAdapter.getColor(Color.WHITE);
+		this.mapBackground = graphicFactory.getColor(Color.WHITE);
 
-		extractValues(graphicAdapter, elementName, attributes);
+		extractValues(graphicFactory, elementName, attributes);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class RenderThemeBuilder {
 		return new RenderTheme(this);
 	}
 
-	private void extractValues(GraphicAdapter graphicAdapter, String elementName, Attributes attributes)
+	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes)
 			throws SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
@@ -69,7 +69,7 @@ public class RenderThemeBuilder {
 			} else if (VERSION.equals(name)) {
 				this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
 			} else if (MAP_BACKGROUND.equals(name)) {
-				this.mapBackground = graphicAdapter.parseColor(value);
+				this.mapBackground = graphicFactory.parseColor(value);
 			} else if (BASE_STROKE_WIDTH.equals(name)) {
 				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (BASE_TEXT_SIZE.equals(name)) {

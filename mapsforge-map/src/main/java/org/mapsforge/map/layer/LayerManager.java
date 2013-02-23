@@ -12,27 +12,27 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.android.view;
+package org.mapsforge.map.layer;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.PausableThread;
-import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.viewinterfaces.FrameBufferInterface;
 import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 import org.mapsforge.map.viewinterfaces.MapViewInterface;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 
 public class LayerManager extends PausableThread implements LayerManagerInterface {
 	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
@@ -71,20 +71,23 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 		return new Point(pixelX, pixelY);
 	}
 
+	private final int backgroundColor;
 	private final Canvas drawingCanvas;
 	private final List<Layer> layers;
 	private final MapViewInterface mapViewInterface;
 	private final MapViewPosition mapViewPosition;
 	private boolean redrawNeeded;
 
-	public LayerManager(MapViewInterface mapViewInterface, MapViewPosition mapViewPosition) {
+	public LayerManager(MapViewInterface mapViewInterface, MapViewPosition mapViewPosition,
+			GraphicFactory graphicFactory) {
 		super();
 
 		this.mapViewInterface = mapViewInterface;
 		this.mapViewPosition = mapViewPosition;
 
-		this.drawingCanvas = new Canvas();
+		this.drawingCanvas = graphicFactory.createCanvas();
 		this.layers = new CopyOnWriteArrayList<Layer>();
+		this.backgroundColor = graphicFactory.getColor(Color.WHITE);
 	}
 
 	public List<Layer> getLayers() {
@@ -114,10 +117,10 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 		long startTime = System.nanoTime();
 		this.redrawNeeded = false;
 
-		FrameBuffer frameBuffer = this.mapViewInterface.getFrameBuffer();
-		Bitmap bitmap = frameBuffer.getDrawingBitmap();
+		FrameBufferInterface frameBufferInterface = this.mapViewInterface.getFrameBufferInterface();
+		Bitmap bitmap = frameBufferInterface.getDrawingBitmap();
 		if (bitmap != null) {
-			bitmap.eraseColor(Color.WHITE);
+			bitmap.fillColor(this.backgroundColor);
 			this.drawingCanvas.setBitmap(bitmap);
 
 			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
@@ -130,7 +133,7 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 				}
 			}
 
-			frameBuffer.frameFinished(mapPosition);
+			frameBufferInterface.frameFinished(mapPosition);
 			this.mapViewInterface.repaint();
 		}
 

@@ -16,9 +16,9 @@ package org.mapsforge.map.layer.renderer;
 
 import java.util.List;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
 
 final class WayDecorator {
 	/**

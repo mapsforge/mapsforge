@@ -15,9 +15,9 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.junit.Assert;
-
 import org.junit.Test;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.rendertheme.DummyGraphicFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -27,12 +27,12 @@ public class PathTextBuilderTest {
 
 	@Test
 	public void buildTest() throws SAXException {
-		GraphicAdapter graphicAdapter = new DummyGraphicAdapter();
+		GraphicFactory graphicFactory = DummyGraphicFactory.INSTANCE;
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, PathTextBuilder.FONT_SIZE, null, String.valueOf(FONT_SIZE));
 		attributesImpl.addAttribute(null, null, PathTextBuilder.K, null, K);
 
-		PathTextBuilder pathTextBuilder = new PathTextBuilder(graphicAdapter, "pathText", attributesImpl);
+		PathTextBuilder pathTextBuilder = new PathTextBuilder(graphicFactory, "pathText", attributesImpl);
 
 		Assert.assertEquals(FONT_SIZE, pathTextBuilder.fontSize, 0);
 		Assert.assertEquals(TextKey.getInstance(K), pathTextBuilder.textKey);

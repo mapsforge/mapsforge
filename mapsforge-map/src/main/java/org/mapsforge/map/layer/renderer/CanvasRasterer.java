@@ -53,12 +53,12 @@ class CanvasRasterer {
 			PointTextContainer pointTextContainer = pointTextContainers.get(index);
 
 			if (pointTextContainer.paintBack != null) {
-				Paint androidPaint = AndroidGraphics.getAndroidPaint(pointTextContainer.paintBack);
+				Paint androidPaint = AndroidGraphics.getPaint(pointTextContainer.paintBack);
 				this.canvas.drawText(pointTextContainer.text, (float) pointTextContainer.x,
 						(float) pointTextContainer.y, androidPaint);
 			}
 
-			Paint androidPaint = AndroidGraphics.getAndroidPaint(pointTextContainer.paintFront);
+			Paint androidPaint = AndroidGraphics.getPaint(pointTextContainer.paintFront);
 			this.canvas.drawText(pointTextContainer.text, (float) pointTextContainer.x, (float) pointTextContainer.y,
 					androidPaint);
 		}
@@ -79,7 +79,7 @@ class CanvasRasterer {
 				this.symbolMatrix.postTranslate((float) point.x, (float) point.y);
 			}
 
-			Bitmap androidBitmap = AndroidGraphics.getAndroidBitmap(symbolContainer.symbol);
+			Bitmap androidBitmap = AndroidGraphics.getBitmap(symbolContainer.symbol);
 			this.canvas.drawBitmap(androidBitmap, this.symbolMatrix, PAINT_BITMAP_FILTER);
 		}
 	}
@@ -95,7 +95,7 @@ class CanvasRasterer {
 				this.path.lineTo((float) textCoordinates[i], (float) textCoordinates[i + 1]);
 			}
 
-			Paint androidPaint = AndroidGraphics.getAndroidPaint(wayTextContainer.paint);
+			Paint androidPaint = AndroidGraphics.getPaint(wayTextContainer.paint);
 			this.canvas.drawTextOnPath(wayTextContainer.text, this.path, 0, 3, androidPaint);
 		}
 	}
@@ -139,7 +139,7 @@ class CanvasRasterer {
 							break;
 					}
 
-					Paint androidPaint = AndroidGraphics.getAndroidPaint(shapePaintContainer.paint);
+					Paint androidPaint = AndroidGraphics.getPaint(shapePaintContainer.paint);
 					this.canvas.drawPath(this.path, androidPaint);
 				}
 			}

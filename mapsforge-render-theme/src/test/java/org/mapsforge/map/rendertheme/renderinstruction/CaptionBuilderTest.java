@@ -15,9 +15,9 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.junit.Assert;
-
 import org.junit.Test;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.rendertheme.DummyGraphicFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -28,13 +28,13 @@ public class CaptionBuilderTest {
 
 	@Test
 	public void buildTest() throws SAXException {
-		GraphicAdapter graphicAdapter = new DummyGraphicAdapter();
+		GraphicFactory graphicFactory = DummyGraphicFactory.INSTANCE;
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, CaptionBuilder.DY, null, String.valueOf(DY));
 		attributesImpl.addAttribute(null, null, CaptionBuilder.FONT_SIZE, null, String.valueOf(FONT_SIZE));
 		attributesImpl.addAttribute(null, null, CaptionBuilder.K, null, K);
 
-		CaptionBuilder captionBuilder = new CaptionBuilder(graphicAdapter, "caption", attributesImpl);
+		CaptionBuilder captionBuilder = new CaptionBuilder(graphicFactory, "caption", attributesImpl);
 
 		Assert.assertEquals(DY, captionBuilder.dy, 0);
 		Assert.assertEquals(FONT_SIZE, captionBuilder.fontSize, 0);

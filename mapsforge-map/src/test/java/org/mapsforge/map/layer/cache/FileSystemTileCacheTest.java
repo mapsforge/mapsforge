@@ -21,19 +21,19 @@ import java.nio.ByteBuffer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.download.DownloadJob;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.renderer.RendererJob;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class FileSystemTileCacheTest {
-	private static final GraphicAdapter GRAPHIC_ADAPTER = DummyGraphicAdapter.INSTANCE;
+	private static final GraphicFactory GRAPHIC_ADAPTER = DummyGraphicFactory.INSTANCE;
 	private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
 	private static TileCache createNewTileCache(int capacity, File cacheDirectory) {

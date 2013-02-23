@@ -12,25 +12,30 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.renderer;
+package org.mapsforge.map.android.graphics;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.Point;
+import org.mapsforge.core.graphics.Matrix;
 
-class SymbolContainer {
-	final boolean alignCenter;
-	final Point point;
-	final float rotation;
-	final Bitmap symbol;
+class AndroidMatrix implements Matrix {
+	final android.graphics.Matrix matrix = new android.graphics.Matrix();
 
-	SymbolContainer(Bitmap symbol, Point point) {
-		this(symbol, point, false, 0);
+	@Override
+	public void reset() {
+		this.matrix.reset();
 	}
 
-	SymbolContainer(Bitmap symbol, Point point, boolean alignCenter, float rotation) {
-		this.symbol = symbol;
-		this.point = point;
-		this.alignCenter = alignCenter;
-		this.rotation = rotation;
+	@Override
+	public void scale(float scaleX, float scaleY) {
+		this.matrix.postScale(scaleX, scaleY);
+	}
+
+	@Override
+	public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
+		this.matrix.postScale(scaleX, scaleY, pivotX, pivotY);
+	}
+
+	@Override
+	public void translate(float translateX, float translateY) {
+		this.matrix.postTranslate(translateX, translateY);
 	}
 }

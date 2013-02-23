@@ -21,12 +21,12 @@ import org.mapsforge.map.model.Model;
 public class MapViewControllerTest {
 	@Test
 	public void repaintTest() {
-		DummyMapView dummyMapView = new DummyMapView();
+		DummyMapViewInterface dummyMapViewInterface = new DummyMapViewInterface();
 		Model model = new Model();
-		new MapViewController(dummyMapView, model);
-		Assert.assertEquals(0, dummyMapView.repaintCounter);
+		new MapViewController(dummyMapViewInterface, model);
+		Assert.assertEquals(0, dummyMapViewInterface.repaintCounter);
 
 		model.mapViewPosition.setZoomLevel((byte) 1);
-		Assert.assertEquals(1, dummyMapView.repaintCounter);
+		Assert.assertEquals(1, dummyMapViewInterface.repaintCounter);
 	}
 }

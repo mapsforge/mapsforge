@@ -17,9 +17,9 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.rendertheme.DummyGraphicFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -29,13 +29,13 @@ public class LineSymbolBuilderTest {
 
 	@Test
 	public void buildTest() throws IOException, SAXException {
-		GraphicAdapter graphicAdapter = new DummyGraphicAdapter();
+		GraphicFactory graphicFactory = DummyGraphicFactory.INSTANCE;
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, LineSymbolBuilder.ALIGN_CENTER, null, String.valueOf(ALIGN_CENTER));
 		attributesImpl.addAttribute(null, null, LineSymbolBuilder.REPEAT, null, String.valueOf(REPEAT));
 		attributesImpl.addAttribute(null, null, LineSymbolBuilder.SRC, null, "jar:symbols/atm.png");
 
-		LineSymbolBuilder lineSymbolBuilder = new LineSymbolBuilder(graphicAdapter, "lineSymbol", attributesImpl,
+		LineSymbolBuilder lineSymbolBuilder = new LineSymbolBuilder(graphicFactory, "lineSymbol", attributesImpl,
 				"/osmarender/");
 
 		Assert.assertEquals(ALIGN_CENTER, lineSymbolBuilder.alignCenter);

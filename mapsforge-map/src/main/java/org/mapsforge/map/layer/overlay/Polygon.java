@@ -17,24 +17,20 @@ package org.mapsforge.map.layer.overlay;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Path.FillType;
-
 /**
  * A {@code Polygon} draws a connected series of line segments specified by a list of {@link GeoPoint GeoPoints}. If the
  * first and the last {@code GeoPoint} are not equal, the {@code Polygon} will be closed automatically.
  * <p>
  * A {@code Polygon} holds two {@link Paint} objects to allow for different outline and filling. These paints define
- * drawing parameters such as color, stroke width, pattern and transparency. {@link Paint#setAntiAlias Anti-aliasing}
- * should be enabled to improve the overall drawing quality.
+ * drawing parameters such as color, stroke width, pattern and transparency.
  */
 public class Polygon extends Layer {
 	private final List<GeoPoint> geoPoints = new CopyOnWriteArrayList<GeoPoint>();
@@ -60,29 +56,31 @@ public class Polygon extends Layer {
 			return;
 		}
 
-		Path path = new Path();
-		path.setFillType(FillType.EVEN_ODD);
-		boolean firstGeoPoint = true;
+		float[] points = new float[this.geoPoints.size()];
+		float previousX = Float.NaN;
+		float previousY = Float.NaN;
+		int i = -1;
 
 		for (GeoPoint geoPoint : this.geoPoints) {
 			float x = (float) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
 			float y = (float) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
 
-			if (firstGeoPoint) {
-				firstGeoPoint = false;
-				path.moveTo(x, y);
-			} else {
-				path.lineTo(x, y);
+			if (Float.isNaN(previousX)) {
+				points[++i] = previousX;
+				points[++i] = previousY;
+				points[++i] = x;
+				points[++i] = y;
 			}
-		}
 
-		path.close();
+			previousX = x;
+			previousY = y;
+		}
 
 		if (this.paintStroke != null) {
-			canvas.drawPath(path, this.paintStroke);
+			canvas.drawLines(points, this.paintStroke);
 		}
 		if (this.paintFill != null) {
-			canvas.drawPath(path, this.paintFill);
+			canvas.drawLines(points, this.paintFill);
 		}
 	}
 

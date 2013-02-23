@@ -12,11 +12,8 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.graphics;
+package org.mapsforge.core.graphics;
 
-/**
- * Specifies the shape to be used for the endpoints of a line.
- */
-public enum Cap {
-	BUTT, ROUND, SQUARE;
+public enum FontStyle {
+	BOLD, BOLD_ITALIC, ITALIC, NORMAL;
 }

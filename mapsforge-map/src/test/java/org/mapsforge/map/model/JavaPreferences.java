@@ -27,7 +27,7 @@ class JavaPreferences implements PreferencesFacade {
 	}
 
 	@Override
-	public void clear() {
+	public synchronized void clear() {
 		try {
 			this.preferences.clear();
 		} catch (BackingStoreException e) {
@@ -36,12 +36,12 @@ class JavaPreferences implements PreferencesFacade {
 	}
 
 	@Override
-	public boolean getBoolean(String key, boolean defaultValue) {
+	public synchronized boolean getBoolean(String key, boolean defaultValue) {
 		return this.preferences.getBoolean(key, defaultValue);
 	}
 
 	@Override
-	public byte getByte(String key, byte defaultValue) {
+	public synchronized byte getByte(String key, byte defaultValue) {
 		int intValue = this.preferences.getInt(key, defaultValue);
 		if (intValue < Byte.MIN_VALUE || intValue > Byte.MAX_VALUE) {
 			throw new IllegalStateException("byte value out of range: " + intValue);
@@ -50,67 +50,67 @@ class JavaPreferences implements PreferencesFacade {
 	}
 
 	@Override
-	public double getDouble(String key, double defaultValue) {
+	public synchronized double getDouble(String key, double defaultValue) {
 		return this.preferences.getDouble(key, defaultValue);
 	}
 
 	@Override
-	public float getFloat(String key, float defaultValue) {
+	public synchronized float getFloat(String key, float defaultValue) {
 		return this.preferences.getFloat(key, defaultValue);
 	}
 
 	@Override
-	public int getInt(String key, int defaultValue) {
+	public synchronized int getInt(String key, int defaultValue) {
 		return this.preferences.getInt(key, defaultValue);
 	}
 
 	@Override
-	public long getLong(String key, long defaultValue) {
+	public synchronized long getLong(String key, long defaultValue) {
 		return this.preferences.getLong(key, defaultValue);
 	}
 
 	@Override
-	public String getString(String key, String defaultValue) {
+	public synchronized String getString(String key, String defaultValue) {
 		return this.preferences.get(key, defaultValue);
 	}
 
 	@Override
-	public void putBoolean(String key, boolean value) {
+	public synchronized void putBoolean(String key, boolean value) {
 		this.preferences.putBoolean(key, value);
 	}
 
 	@Override
-	public void putByte(String key, byte value) {
+	public synchronized void putByte(String key, byte value) {
 		this.preferences.putInt(key, value);
 	}
 
 	@Override
-	public void putDouble(String key, double value) {
+	public synchronized void putDouble(String key, double value) {
 		this.preferences.putDouble(key, value);
 	}
 
 	@Override
-	public void putFloat(String key, float value) {
+	public synchronized void putFloat(String key, float value) {
 		this.preferences.putFloat(key, value);
 	}
 
 	@Override
-	public void putInt(String key, int value) {
+	public synchronized void putInt(String key, int value) {
 		this.preferences.putInt(key, value);
 	}
 
 	@Override
-	public void putLong(String key, long value) {
+	public synchronized void putLong(String key, long value) {
 		this.preferences.putLong(key, value);
 	}
 
 	@Override
-	public void putString(String key, String value) {
+	public synchronized void putString(String key, String value) {
 		this.preferences.put(key, value);
 	}
 
 	@Override
-	public void save() {
+	public synchronized void save() {
 		try {
 			this.preferences.flush();
 		} catch (BackingStoreException e) {

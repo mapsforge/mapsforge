@@ -16,8 +16,8 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.util.List;
 
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.Tag;
-import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
 /**

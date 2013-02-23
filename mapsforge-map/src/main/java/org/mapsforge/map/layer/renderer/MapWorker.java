@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.map.PausableThread;
-import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.viewinterfaces.LayerManagerInterface;

@@ -12,25 +12,32 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.rendertheme;
+package org.mapsforge.core.graphics;
 
-import java.io.InputStream;
+public interface Paint {
+	int getColor();
 
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
+	int getTextHeight(String text);
 
-public interface GraphicAdapter {
-	public enum Color {
-		BLACK, CYAN, TRANSPARENT, WHITE;
-	}
+	int getTextWidth(String text);
 
-	Bitmap createBitmap(int width, int height);
+	void setAlpha(int alpha);
 
-	Bitmap decodeStream(InputStream inputStream);
+	void setBitmapShader(Bitmap bitmap);
 
-	int getColor(Color color);
+	void setColor(int color);
 
-	Paint getPaint();
+	void setDashPathEffect(float[] strokeDasharray);
 
-	int parseColor(String colorString);
+	void setStrokeCap(Cap cap);
+
+	void setStrokeWidth(float width);
+
+	void setStyle(Style style);
+
+	void setTextAlign(Align align);
+
+	void setTextSize(float textSize);
+
+	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
 }

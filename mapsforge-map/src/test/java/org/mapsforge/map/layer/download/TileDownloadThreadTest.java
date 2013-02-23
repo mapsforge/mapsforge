@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.HttpServerTest;
-import org.mapsforge.map.layer.cache.DummyGraphicAdapter;
+import org.mapsforge.map.layer.cache.DummyGraphicFactory;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
@@ -71,7 +71,7 @@ public class TileDownloadThreadTest extends HttpServerTest {
 		LayerManagerInterface layerManagerInterface = new DummyLayerManagerInterface();
 
 		TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, jobQueue, layerManagerInterface,
-				DummyGraphicAdapter.INSTANCE);
+				DummyGraphicFactory.INSTANCE);
 		try {
 			tileDownloadThread.start();
 			awaitWaitingState(tileDownloadThread);

@@ -12,15 +12,15 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.rendertheme.renderinstruction;
+package org.mapsforge.map.rendertheme;
 
-import org.mapsforge.map.graphics.Align;
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Cap;
-import org.mapsforge.map.graphics.FontFamily;
-import org.mapsforge.map.graphics.FontStyle;
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.graphics.Style;
+import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 
 class DummyPaint implements Paint {
 	@Override
@@ -39,47 +39,52 @@ class DummyPaint implements Paint {
 	}
 
 	@Override
+	public void setAlpha(int alpha) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void setBitmapShader(Bitmap bitmap) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void setColor(int color) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void setDashPathEffect(float[] strokeDasharray) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void setStrokeCap(Cap cap) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void setStrokeWidth(float width) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void setStyle(Style style) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void setTextAlign(Align align) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void setTextSize(float textSize) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 }

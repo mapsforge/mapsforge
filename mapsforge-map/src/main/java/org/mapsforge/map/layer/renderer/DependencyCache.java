@@ -20,10 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
 
 import android.graphics.Rect;
 

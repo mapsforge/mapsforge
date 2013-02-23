@@ -12,20 +12,23 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.overlay;
+package org.mapsforge.map.android.layer;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory.Color;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.layer.overlay.Circle;
+import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.model.MapViewPosition;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -50,15 +53,15 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	private static Paint getDefaultCircleFill() {
-		return getPaint(48, Color.BLUE, 0, Style.FILL);
+		return getPaint(48, AndroidGraphics.INSTANCE.getColor(Color.BLUE), 0, Style.FILL);
 	}
 
 	private static Paint getDefaultCircleStroke() {
-		return getPaint(160, Color.BLUE, 2, Style.STROKE);
+		return getPaint(160, AndroidGraphics.INSTANCE.getColor(Color.BLUE), 2, Style.STROKE);
 	}
 
 	private static Paint getPaint(int alpha, int color, int strokeWidth, Style style) {
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		Paint paint = AndroidGraphics.INSTANCE.createPaint();
 		paint.setColor(color);
 		paint.setAlpha(alpha);
 		paint.setStrokeWidth(strokeWidth);
@@ -76,40 +79,40 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	private boolean snapToLocationEnabled;
 
 	/**
-	 * Constructs a new {@code MyLocationOverlay} with the given drawable and the default circle paints.
+	 * Constructs a new {@code MyLocationOverlay} with the default circle paints.
 	 * 
 	 * @param context
 	 *            a reference to the application context.
 	 * @param mapViewPosition
 	 *            the {@code MapViewPosition} whose location will be updated.
-	 * @param drawable
-	 *            a drawable to display at the current location (might be null).
+	 * @param bitmap
+	 *            a bitmap to display at the current location (might be null).
 	 */
-	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Drawable drawable) {
-		this(context, mapViewPosition, drawable, getDefaultCircleFill(), getDefaultCircleStroke());
+	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Bitmap bitmap) {
+		this(context, mapViewPosition, bitmap, getDefaultCircleFill(), getDefaultCircleStroke());
 	}
 
 	/**
-	 * Constructs a new {@code MyLocationOverlay} with the given drawable and circle paints.
+	 * Constructs a new {@code MyLocationOverlay} with the given circle paints.
 	 * 
 	 * @param context
 	 *            a reference to the application context.
 	 * @param mapViewPosition
 	 *            the {@code MapViewPosition} whose location will be updated.
-	 * @param drawable
-	 *            a drawable to display at the current location (might be null).
+	 * @param bitmap
+	 *            a bitmap to display at the current location (might be null).
 	 * @param circleFill
 	 *            the {@code Paint} used to fill the circle that represents the current location (might be null).
 	 * @param circleStroke
 	 *            the {@code Paint} used to stroke the circle that represents the current location (might be null).
 	 */
-	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Drawable drawable, Paint circleFill,
+	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Bitmap bitmap, Paint circleFill,
 			Paint circleStroke) {
 		super();
 
 		this.mapViewPosition = mapViewPosition;
 		this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		this.marker = new Marker(null, drawable);
+		this.marker = new Marker(null, bitmap);
 		this.circle = new Circle(null, 0, circleFill, circleStroke);
 	}
 

@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.rendertheme;
 
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Paint;
 
 /**
  * Callback methods for rendering areas, ways and points of interest (POIs).

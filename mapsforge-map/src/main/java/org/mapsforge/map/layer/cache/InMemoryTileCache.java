@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.layer.cache;
 
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.util.LRUCache;
-import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.queue.Job;
 
 /**

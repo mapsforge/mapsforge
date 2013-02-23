@@ -12,21 +12,8 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.core.graphics;
 
-import org.mapsforge.map.android.view.FrameBuffer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
-
-class DummyMapView implements MapViewInterface {
-	int repaintCounter;
-
-	@Override
-	public FrameBuffer getFrameBuffer() {
-		return null;
-	}
-
-	@Override
-	public void repaint() {
-		++this.repaintCounter;
-	}
+public enum Align {
+	CENTER, LEFT, RIGHT;
 }

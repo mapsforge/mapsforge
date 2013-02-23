@@ -24,10 +24,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.map.rendertheme.DummyGraphicFactory;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.renderinstruction.DummyGraphicAdapter;
 import org.xml.sax.SAXException;
 
 public class RenderThemeTest {
@@ -40,7 +40,7 @@ public class RenderThemeTest {
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(pathname));
 
 		try {
-			RenderThemeHandler.getRenderTheme(new DummyGraphicAdapter(), xmlRenderTheme);
+			RenderThemeHandler.getRenderTheme(DummyGraphicFactory.INSTANCE, xmlRenderTheme);
 			Assert.fail();
 		} catch (SAXException e) {
 			Assert.assertTrue(true);
@@ -57,7 +57,7 @@ public class RenderThemeTest {
 	@Test
 	public void validRenderThemeTest() throws SAXException, ParserConfigurationException, IOException {
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(RENDER_THEME_PATH));
-		RenderTheme renderTheme = RenderThemeHandler.getRenderTheme(new DummyGraphicAdapter(), xmlRenderTheme);
+		RenderTheme renderTheme = RenderThemeHandler.getRenderTheme(DummyGraphicFactory.INSTANCE, xmlRenderTheme);
 
 		Assert.assertEquals(3, renderTheme.getLevels());
 

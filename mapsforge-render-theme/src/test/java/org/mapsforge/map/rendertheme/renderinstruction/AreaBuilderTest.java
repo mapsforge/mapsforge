@@ -17,9 +17,9 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.rendertheme.DummyGraphicFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -29,11 +29,11 @@ public class AreaBuilderTest {
 
 	@Test
 	public void buildTest() throws IOException, SAXException {
-		GraphicAdapter graphicAdapter = new DummyGraphicAdapter();
+		GraphicFactory graphicFactory = DummyGraphicFactory.INSTANCE;
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, AreaBuilder.STROKE_WIDTH, null, String.valueOf(STROKE_WIDTH));
 
-		AreaBuilder areaBuilder = new AreaBuilder(graphicAdapter, "area", attributesImpl, LEVEL, null);
+		AreaBuilder areaBuilder = new AreaBuilder(graphicFactory, "area", attributesImpl, LEVEL, null);
 
 		Assert.assertEquals(LEVEL, areaBuilder.level);
 		Assert.assertEquals(STROKE_WIDTH, areaBuilder.strokeWidth, 0);

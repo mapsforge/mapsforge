@@ -12,39 +12,40 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.rendertheme.renderinstruction;
+package org.mapsforge.map.rendertheme;
 
-import java.io.InputStream;
+import java.nio.ByteBuffer;
 
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.Bitmap;
 
-public class DummyGraphicAdapter implements GraphicAdapter {
+class DummyBitmap implements Bitmap {
 	@Override
-	public Bitmap createBitmap(int width, int height) {
-		return new DummyBitmap();
+	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Bitmap decodeStream(InputStream inputStream) {
-		return new DummyBitmap();
+	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int getColor(Color color) {
-		// TODO Auto-generated method stub
-		return 0;
+	public void fillColor(int color) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Paint getPaint() {
-		return new DummyPaint();
+	public int getHeight() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int parseColor(String colorString) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int[] getPixels() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getWidth() {
+		throw new UnsupportedOperationException();
 	}
 }

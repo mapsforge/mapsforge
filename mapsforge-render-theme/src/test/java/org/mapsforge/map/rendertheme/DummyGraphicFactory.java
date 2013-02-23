@@ -12,40 +12,55 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.rendertheme.renderinstruction;
+package org.mapsforge.map.rendertheme;
 
-import java.nio.ByteBuffer;
+import java.io.InputStream;
 
-import org.mapsforge.map.graphics.Bitmap;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
 
-class DummyBitmap implements Bitmap {
+public final class DummyGraphicFactory implements GraphicFactory {
+	public static final DummyGraphicFactory INSTANCE = new DummyGraphicFactory();
+
+	private DummyGraphicFactory() {
+		// do nothing
+	}
+
 	@Override
-	public Bitmap copy() {
+	public Bitmap createBitmap(InputStream inputStream) {
+		return new DummyBitmap();
+	}
+
+	@Override
+	public Bitmap createBitmap(int width, int height) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
+	public Canvas createCanvas() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
+	public Matrix createMatrix() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int getHeight() {
-		throw new UnsupportedOperationException();
+	public Paint createPaint() {
+		return new DummyPaint();
 	}
 
 	@Override
-	public int[] getPixels() {
-		throw new UnsupportedOperationException();
+	public int getColor(Color color) {
+		return color.ordinal();
 	}
 
 	@Override
-	public int getWidth() {
-		throw new UnsupportedOperationException();
+	public int parseColor(String colorString) {
+		return 0;
 	}
 }

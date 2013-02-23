@@ -22,24 +22,21 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
 
-public final class DummyGraphicAdapter implements GraphicAdapter {
-	public static final DummyGraphicAdapter INSTANCE = new DummyGraphicAdapter();
+public final class DummyGraphicFactory implements GraphicFactory {
+	public static final DummyGraphicFactory INSTANCE = new DummyGraphicFactory();
 
-	private DummyGraphicAdapter() {
+	private DummyGraphicFactory() {
 		// do nothing
 	}
 
 	@Override
-	public Bitmap createBitmap(int width, int height) {
-		return new DummyBitmap(width, height);
-	}
-
-	@Override
-	public Bitmap decodeStream(InputStream inputStream) {
+	public Bitmap createBitmap(InputStream inputStream) {
 		try {
 			BufferedImage bufferedImage = ImageIO.read(inputStream);
 			byte[] imageBytes = ((DataBufferByte) bufferedImage.getData().getDataBuffer()).getData();
@@ -52,12 +49,27 @@ public final class DummyGraphicAdapter implements GraphicAdapter {
 	}
 
 	@Override
-	public int getColor(Color color) {
+	public Bitmap createBitmap(int width, int height) {
+		return new DummyBitmap(width, height);
+	}
+
+	@Override
+	public Canvas createCanvas() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Paint getPaint() {
+	public Matrix createMatrix() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Paint createPaint() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getColor(Color color) {
 		throw new UnsupportedOperationException();
 	}
 

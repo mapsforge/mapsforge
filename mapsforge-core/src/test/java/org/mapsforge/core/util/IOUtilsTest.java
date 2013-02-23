@@ -14,26 +14,10 @@
  */
 package org.mapsforge.core.util;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class IOUtilsTest {
-	static class DummyCloseable implements Closeable {
-		boolean closed;
-
-		@Override
-		public void close() throws IOException {
-			if (this.closed) {
-				throw new IOException();
-			}
-			this.closed = true;
-		}
-	}
-
 	@Test
 	public void closeQuietlyTest() {
 		IOUtils.closeQuietly(null);

@@ -12,25 +12,26 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.renderer;
+package org.mapsforge.core.graphics;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.Point;
+import java.io.InputStream;
 
-class SymbolContainer {
-	final boolean alignCenter;
-	final Point point;
-	final float rotation;
-	final Bitmap symbol;
-
-	SymbolContainer(Bitmap symbol, Point point) {
-		this(symbol, point, false, 0);
+public interface GraphicFactory {
+	public enum Color {
+		BLACK, BLUE, TRANSPARENT, WHITE;
 	}
 
-	SymbolContainer(Bitmap symbol, Point point, boolean alignCenter, float rotation) {
-		this.symbol = symbol;
-		this.point = point;
-		this.alignCenter = alignCenter;
-		this.rotation = rotation;
-	}
+	Bitmap createBitmap(InputStream inputStream);
+
+	Bitmap createBitmap(int width, int height);
+
+	Canvas createCanvas();
+
+	Matrix createMatrix();
+
+	Paint createPaint();
+
+	int getColor(Color color);
+
+	int parseColor(String colorString);
 }

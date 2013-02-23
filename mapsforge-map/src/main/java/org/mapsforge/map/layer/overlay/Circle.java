@@ -14,6 +14,8 @@
  */
 package org.mapsforge.map.layer.overlay;
 
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
@@ -21,15 +23,11 @@ import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
 /**
  * A {@code Circle} consists of a center {@link GeoPoint} and a non-negative radius in meters.
  * <p>
  * A {@code Circle} holds two {@link Paint} objects to allow for different outline and filling. These paints define
- * drawing parameters such as color, stroke width, pattern and transparency. {@link Paint#setAntiAlias Anti-aliasing}
- * should be enabled to improve the drawing quality.
+ * drawing parameters such as color, stroke width, pattern and transparency.
  */
 public class Circle extends Layer {
 	private static double metersToPixels(double latitude, float meters, byte zoom) {

@@ -16,7 +16,7 @@ package org.mapsforge.map.layer.cache;
 
 import java.nio.ByteBuffer;
 
-import org.mapsforge.map.graphics.Bitmap;
+import org.mapsforge.core.graphics.Bitmap;
 
 class DummyBitmap implements Bitmap {
 	private final byte[] data;
@@ -31,11 +31,6 @@ class DummyBitmap implements Bitmap {
 	}
 
 	@Override
-	public Bitmap copy() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
 		System.arraycopy(byteBuffer.array(), 0, this.data, 0, byteBuffer.array().length);
 	}
@@ -43,6 +38,11 @@ class DummyBitmap implements Bitmap {
 	@Override
 	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
 		byteBuffer.put(this.data, 0, this.data.length);
+	}
+
+	@Override
+	public void fillColor(int color) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

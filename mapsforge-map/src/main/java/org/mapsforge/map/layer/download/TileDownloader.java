@@ -20,9 +20,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
 
 class TileDownloader {
 	private static final int TIMEOUT_CONNECT = 5000;
@@ -43,17 +43,17 @@ class TileDownloader {
 	}
 
 	private final DownloadJob downloadJob;
-	private final GraphicAdapter graphicAdapter;
+	private final GraphicFactory graphicFactory;
 
-	TileDownloader(DownloadJob downloadJob, GraphicAdapter graphicAdapter) {
+	TileDownloader(DownloadJob downloadJob, GraphicFactory graphicFactory) {
 		if (downloadJob == null) {
 			throw new IllegalArgumentException("downloadJob must not be null");
-		} else if (graphicAdapter == null) {
-			throw new IllegalArgumentException("graphicAdapter must not be null");
+		} else if (graphicFactory == null) {
+			throw new IllegalArgumentException("graphicFactory must not be null");
 		}
 
 		this.downloadJob = downloadJob;
-		this.graphicAdapter = graphicAdapter;
+		this.graphicFactory = graphicFactory;
 	}
 
 	Bitmap downloadImage() throws IOException {
@@ -62,7 +62,7 @@ class TileDownloader {
 		InputStream inputStream = getInputStream(urlConnection);
 
 		try {
-			return this.graphicAdapter.decodeStream(inputStream);
+			return this.graphicFactory.createBitmap(inputStream);
 		} finally {
 			IOUtils.closeQuietly(inputStream);
 		}

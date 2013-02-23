@@ -12,25 +12,29 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.renderer;
+package org.mapsforge.core.graphics;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.Point;
+import java.nio.ByteBuffer;
 
-class SymbolContainer {
-	final boolean alignCenter;
-	final Point point;
-	final float rotation;
-	final Bitmap symbol;
+public interface Bitmap {
+	void copyPixelsFromBuffer(ByteBuffer byteBuffer);
 
-	SymbolContainer(Bitmap symbol, Point point) {
-		this(symbol, point, false, 0);
-	}
+	void copyPixelsToBuffer(ByteBuffer byteBuffer);
 
-	SymbolContainer(Bitmap symbol, Point point, boolean alignCenter, float rotation) {
-		this.symbol = symbol;
-		this.point = point;
-		this.alignCenter = alignCenter;
-		this.rotation = rotation;
-	}
+	void fillColor(int color);
+
+	/**
+	 * @return the height of this bitmap in pixels.
+	 */
+	int getHeight();
+
+	/**
+	 * @return the color values of all pixels in this bitmap.
+	 */
+	int[] getPixels();
+
+	/**
+	 * @return the width of this bitmap in pixels.
+	 */
+	int getWidth();
 }

@@ -20,7 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.mapsforge.map.graphics.Bitmap;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.xml.sax.SAXException;
 
 public final class XmlUtils {
@@ -34,7 +35,7 @@ public final class XmlUtils {
 		}
 	}
 
-	public static Bitmap createBitmap(GraphicAdapter graphicAdapter, String relativePathPrefix, String src)
+	public static Bitmap createBitmap(GraphicFactory graphicFactory, String relativePathPrefix, String src)
 			throws IOException {
 		if (src == null || src.length() == 0) {
 			// no image source defined
@@ -42,7 +43,7 @@ public final class XmlUtils {
 		}
 
 		InputStream inputStream = createInputStream(relativePathPrefix, src);
-		Bitmap bitmap = graphicAdapter.decodeStream(inputStream);
+		Bitmap bitmap = graphicFactory.createBitmap(inputStream);
 		inputStream.close();
 		return bitmap;
 	}

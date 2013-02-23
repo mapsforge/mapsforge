@@ -16,6 +16,7 @@ package org.mapsforge.map.layer.renderer;
 
 import java.io.File;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -32,8 +33,8 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private XmlRenderTheme xmlRenderTheme;
 
 	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			LayerManagerInterface layerManagerInterface) {
-		super(tileCache, mapViewPosition);
+			LayerManagerInterface layerManagerInterface, GraphicFactory graphicFactory) {
+		super(tileCache, mapViewPosition, graphicFactory);
 
 		this.mapDatabase = new MapDatabase();
 		DatabaseRenderer databaseRenderer = new DatabaseRenderer(this.mapDatabase);

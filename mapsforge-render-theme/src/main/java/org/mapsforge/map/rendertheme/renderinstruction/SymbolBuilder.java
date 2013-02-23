@@ -16,8 +16,8 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.io.IOException;
 
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -30,9 +30,9 @@ public class SymbolBuilder {
 
 	Bitmap bitmap;
 
-	public SymbolBuilder(GraphicAdapter graphicAdapter, String elementName, Attributes attributes,
+	public SymbolBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes,
 			String relativePathPrefix) throws IOException, SAXException {
-		extractValues(graphicAdapter, elementName, attributes, relativePathPrefix);
+		extractValues(graphicFactory, elementName, attributes, relativePathPrefix);
 	}
 
 	/**
@@ -42,14 +42,14 @@ public class SymbolBuilder {
 		return new Symbol(this);
 	}
 
-	private void extractValues(GraphicAdapter graphicAdapter, String elementName, Attributes attributes,
+	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes,
 			String relativePathPrefix) throws IOException, SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				this.bitmap = XmlUtils.createBitmap(graphicAdapter, relativePathPrefix, value);
+				this.bitmap = XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value);
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}

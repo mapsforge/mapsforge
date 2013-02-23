@@ -12,18 +12,40 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.viewinterfaces;
+package org.mapsforge.map.controller;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.viewinterfaces.FrameBufferInterface;
 
-public interface FrameBufferInterface {
-	void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension);
+class DummyFrameBufferInterface implements FrameBufferInterface {
+	Dimension dimension;
+	float lastDiffX;
+	float lastDiffY;
+	Dimension lastMapViewDimension;
+	float lastScaleFactor;
 
-	void frameFinished(MapPosition mapPosition);
+	@Override
+	public void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension) {
+		this.lastDiffX = diffX;
+		this.lastDiffY = diffY;
+		this.lastScaleFactor = scaleFactor;
+		this.lastMapViewDimension = mapViewDimension;
+	}
 
-	Bitmap getDrawingBitmap();
+	@Override
+	public void frameFinished(MapPosition mapPosition) {
+		throw new UnsupportedOperationException();
+	}
 
-	void setDimension(Dimension dimension);
+	@Override
+	public Bitmap getDrawingBitmap() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setDimension(Dimension dimension) {
+		this.dimension = dimension;
+	}
 }

@@ -16,8 +16,8 @@ package org.mapsforge.map.layer.cache;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.download.DownloadJob;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;

@@ -17,20 +17,19 @@ package org.mapsforge.map.layer.overlay;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
 /**
  * A {@code Polyline} draws a connected series of line segments specified by a list of {@link GeoPoint GeoPoints}.
  * <p>
  * A {@code Polyline} holds a {@link Paint} object which defines drawing parameters such as color, stroke width, pattern
- * and transparency. {@link Paint#setAntiAlias Anti-aliasing} should be enabled to improve the overall drawing quality.
+ * and transparency.
  */
 public class Polyline extends Layer {
 	private final List<GeoPoint> geoPoints = new CopyOnWriteArrayList<GeoPoint>();

@@ -18,29 +18,29 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.PausableThread;
-import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
 import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 
 class TileDownloadThread extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());
 
-	private final GraphicAdapter graphicAdapter;
+	private final GraphicFactory graphicFactory;
 	private final JobQueue<DownloadJob> jobQueue;
 	private final LayerManagerInterface layerManagerInterface;
 	private final TileCache tileCache;
 
 	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue,
-			LayerManagerInterface layerManagerInterface, GraphicAdapter graphicAdapter) {
+			LayerManagerInterface layerManagerInterface, GraphicFactory graphicFactory) {
 		super();
 
 		this.tileCache = tileCache;
 		this.jobQueue = jobQueue;
 		this.layerManagerInterface = layerManagerInterface;
-		this.graphicAdapter = graphicAdapter;
+		this.graphicFactory = graphicFactory;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ class TileDownloadThread extends PausableThread {
 		DownloadJob downloadJob = this.jobQueue.remove();
 
 		try {
-			TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicAdapter);
+			TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicFactory);
 			Bitmap bitmap = tileDownloader.downloadImage();
 
 			this.tileCache.put(downloadJob, bitmap);

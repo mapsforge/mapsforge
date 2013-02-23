@@ -24,12 +24,12 @@ import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.core.util.LRUCache;
-import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.queue.Job;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
 
 /**
  * A thread-safe cache for image files with a fixed size and LRU policy.
@@ -54,7 +54,7 @@ public class FileSystemTileCache implements TileCache {
 	private final ByteBuffer byteBuffer;
 	private final File cacheDirectory;
 	private long cacheId;
-	private final GraphicAdapter graphicAdapter;
+	private final GraphicFactory graphicFactory;
 	private final LRUCache<Job, File> lruCache;
 
 	/**
@@ -65,10 +65,10 @@ public class FileSystemTileCache implements TileCache {
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
 	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicAdapter graphicAdapter) {
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
 		this.lruCache = new FileLRUCache<Job>(capacity);
 		this.cacheDirectory = checkDirectory(cacheDirectory);
-		this.graphicAdapter = graphicAdapter;
+		this.graphicFactory = graphicFactory;
 
 		this.byteBuffer = ByteBuffer.allocate(Tile.TILE_SIZE * Tile.TILE_SIZE * 4);
 	}
@@ -111,7 +111,7 @@ public class FileSystemTileCache implements TileCache {
 			}
 
 			this.byteBuffer.rewind();
-			Bitmap bitmap = this.graphicAdapter.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
+			Bitmap bitmap = this.graphicFactory.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
 			bitmap.copyPixelsFromBuffer(this.byteBuffer);
 			return bitmap;
 		} catch (IOException e) {

@@ -16,24 +16,24 @@ package org.mapsforge.map.layer;
 
 import java.util.ArrayList;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.android.graphics.AndroidGraphics;
-import org.mapsforge.map.graphics.Bitmap;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.MapViewPosition;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-
 public abstract class TileLayer<T extends Job> extends Layer {
+	private final Matrix matrix;
 	private final TileCache tileCache;
 	protected final JobQueue<T> jobQueue;
 
-	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
+	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
 		super();
 
 		if (tileCache == null) {
@@ -44,6 +44,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
 		this.tileCache = tileCache;
 		this.jobQueue = new JobQueue<T>(mapViewPosition);
+		this.matrix = graphicFactory.createMatrix();
 	}
 
 	@Override
@@ -65,8 +66,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.jobQueue.add(createJob(tile));
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
-				android.graphics.Bitmap androidBitmap = AndroidGraphics.getAndroidBitmap(bitmap);
-				canvas.drawBitmap(androidBitmap, (float) point.x, (float) point.y, null);
+				canvas.drawBitmap(bitmap, (float) point.x, (float) point.y);
 			}
 		}
 
@@ -83,11 +83,10 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				byte zoomLevelDiff = (byte) (tile.zoomLevel - cachedParentTile.zoomLevel);
 				float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
 
-				Matrix matrix = new Matrix();
-				matrix.setScale(scaleFactor, scaleFactor);
-				matrix.postTranslate((float) (point.x - translateX), (float) (point.y - translateY));
-				android.graphics.Bitmap androidBitmap = AndroidGraphics.getAndroidBitmap(bitmap);
-				canvas.drawBitmap(androidBitmap, matrix, null);
+				this.matrix.reset();
+				this.matrix.scale(scaleFactor, scaleFactor);
+				this.matrix.translate((float) (point.x - translateX), (float) (point.y - translateY));
+				canvas.drawBitmap(bitmap, this.matrix);
 			}
 		}
 	}

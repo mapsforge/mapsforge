@@ -19,25 +19,25 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.HttpServerTest;
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.layer.cache.DummyGraphicAdapter;
+import org.mapsforge.map.layer.cache.DummyGraphicFactory;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
 
 public class TileDownloaderTest extends HttpServerTest {
-	private static final DummyGraphicAdapter GRAPHIC_ADAPTER = DummyGraphicAdapter.INSTANCE;
+	private static final DummyGraphicFactory GRAPHIC_ADAPTER = DummyGraphicFactory.INSTANCE;
 
-	private static TileDownloader createTileDownloader(DownloadJob downloadJob, GraphicAdapter graphicAdapter) {
-		return new TileDownloader(downloadJob, graphicAdapter);
+	private static TileDownloader createTileDownloader(DownloadJob downloadJob, GraphicFactory graphicFactory) {
+		return new TileDownloader(downloadJob, graphicFactory);
 	}
 
-	private static void verifyInvalidConstructor(DownloadJob downloadJob, GraphicAdapter graphicAdapter) {
+	private static void verifyInvalidConstructor(DownloadJob downloadJob, GraphicFactory graphicFactory) {
 		try {
-			createTileDownloader(downloadJob, graphicAdapter);
-			Assert.fail("downloadJob: " + downloadJob + ", graphicAdapter: " + graphicAdapter);
+			createTileDownloader(downloadJob, graphicFactory);
+			Assert.fail("downloadJob: " + downloadJob + ", graphicAdapter: " + graphicFactory);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}

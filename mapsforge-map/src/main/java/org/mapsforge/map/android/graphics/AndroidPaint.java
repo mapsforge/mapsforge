@@ -14,12 +14,12 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import org.mapsforge.map.graphics.Align;
-import org.mapsforge.map.graphics.Cap;
-import org.mapsforge.map.graphics.FontFamily;
-import org.mapsforge.map.graphics.FontStyle;
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.graphics.Style;
+import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapShader;
@@ -31,7 +31,7 @@ import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 
 class AndroidPaint implements Paint {
-	private static int getStyle(org.mapsforge.map.graphics.FontStyle fontStyle) {
+	private static int getStyle(org.mapsforge.core.graphics.FontStyle fontStyle) {
 		switch (fontStyle) {
 			case BOLD:
 				return 1;
@@ -46,7 +46,7 @@ class AndroidPaint implements Paint {
 		throw new IllegalArgumentException("unknown font style: " + fontStyle);
 	}
 
-	private static Typeface getTypeface(org.mapsforge.map.graphics.FontFamily fontFamily) {
+	private static Typeface getTypeface(org.mapsforge.core.graphics.FontFamily fontFamily) {
 		switch (fontFamily) {
 			case DEFAULT:
 				return Typeface.DEFAULT;
@@ -63,11 +63,7 @@ class AndroidPaint implements Paint {
 		throw new IllegalArgumentException("unknown font family: " + fontFamily);
 	}
 
-	final android.graphics.Paint paint;
-
-	AndroidPaint() {
-		this.paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
-	}
+	final android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
 
 	@Override
 	public int getColor() {
@@ -89,7 +85,12 @@ class AndroidPaint implements Paint {
 	}
 
 	@Override
-	public void setBitmapShader(org.mapsforge.map.graphics.Bitmap bitmap) {
+	public void setAlpha(int alpha) {
+		this.paint.setAlpha(alpha);
+	}
+
+	@Override
+	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {
 		if (bitmap == null) {
 			return;
 		}
@@ -113,8 +114,7 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public void setStrokeCap(Cap cap) {
-		android.graphics.Paint.Cap androidCap = android.graphics.Paint.Cap.valueOf(cap.name());
-		this.paint.setStrokeCap(androidCap);
+		this.paint.setStrokeCap(android.graphics.Paint.Cap.valueOf(cap.name()));
 	}
 
 	@Override
@@ -124,14 +124,12 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public void setStyle(Style style) {
-		android.graphics.Paint.Style androidStyle = android.graphics.Paint.Style.valueOf(style.name());
-		this.paint.setStyle(androidStyle);
+		this.paint.setStyle(android.graphics.Paint.Style.valueOf(style.name()));
 	}
 
 	@Override
 	public void setTextAlign(Align align) {
-		android.graphics.Paint.Align androidAlign = android.graphics.Paint.Align.valueOf(align.name());
-		this.paint.setTextAlign(androidAlign);
+		this.paint.setTextAlign(android.graphics.Paint.Align.valueOf(align.name()));
 	}
 
 	@Override
@@ -141,7 +139,6 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
-		Typeface typeface = Typeface.create(getTypeface(fontFamily), getStyle(fontStyle));
-		this.paint.setTypeface(typeface);
+		this.paint.setTypeface(Typeface.create(getTypeface(fontFamily), getStyle(fontStyle)));
 	}
 }

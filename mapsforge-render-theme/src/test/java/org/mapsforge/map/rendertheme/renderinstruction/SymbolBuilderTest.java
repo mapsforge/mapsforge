@@ -17,20 +17,20 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Test;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.rendertheme.DummyGraphicFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class SymbolBuilderTest {
 	@Test
 	public void buildTest() throws IOException, SAXException {
-		GraphicAdapter graphicAdapter = new DummyGraphicAdapter();
+		GraphicFactory graphicFactory = DummyGraphicFactory.INSTANCE;
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, SymbolBuilder.SRC, null, "jar:symbols/atm.png");
 
-		SymbolBuilder symbolBuilder = new SymbolBuilder(graphicAdapter, "symbol", attributesImpl, "/osmarender/");
+		SymbolBuilder symbolBuilder = new SymbolBuilder(graphicFactory, "symbol", attributesImpl, "/osmarender/");
 
 		Assert.assertNotNull(symbolBuilder.build());
 	}

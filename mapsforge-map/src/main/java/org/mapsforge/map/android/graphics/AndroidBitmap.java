@@ -17,7 +17,7 @@ package org.mapsforge.map.android.graphics;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import org.mapsforge.map.graphics.Bitmap;
+import org.mapsforge.core.graphics.Bitmap;
 
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -33,7 +33,7 @@ class AndroidBitmap implements Bitmap {
 
 	final android.graphics.Bitmap bitmap;
 
-	private AndroidBitmap(android.graphics.Bitmap bitmap) {
+	AndroidBitmap(android.graphics.Bitmap bitmap) {
 		this.bitmap = bitmap;
 	}
 
@@ -46,11 +46,6 @@ class AndroidBitmap implements Bitmap {
 	}
 
 	@Override
-	public Bitmap copy() {
-		return new AndroidBitmap(this.bitmap.copy(this.bitmap.getConfig(), false));
-	}
-
-	@Override
 	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
 		this.bitmap.copyPixelsFromBuffer(byteBuffer);
 	}
@@ -58,6 +53,11 @@ class AndroidBitmap implements Bitmap {
 	@Override
 	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
 		this.bitmap.copyPixelsToBuffer(byteBuffer);
+	}
+
+	@Override
+	public void fillColor(int color) {
+		this.bitmap.eraseColor(color);
 	}
 
 	@Override

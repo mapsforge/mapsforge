@@ -16,18 +16,56 @@ package org.mapsforge.map.android.graphics;
 
 import java.io.InputStream;
 
-import org.mapsforge.map.graphics.Bitmap;
-import org.mapsforge.map.graphics.Paint;
-import org.mapsforge.map.rendertheme.GraphicAdapter;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
 
-public final class AndroidGraphics implements GraphicAdapter {
+import android.graphics.Bitmap.Config;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
+public final class AndroidGraphics implements GraphicFactory {
 	public static final AndroidGraphics INSTANCE = new AndroidGraphics();
 
-	public static android.graphics.Bitmap getAndroidBitmap(Bitmap bitmap) {
+	public static Bitmap convertToBitmap(Drawable drawable) {
+		android.graphics.Bitmap bitmap;
+		if (drawable instanceof BitmapDrawable) {
+			bitmap = ((BitmapDrawable) drawable).getBitmap();
+		} else {
+			int width = drawable.getIntrinsicWidth();
+			int height = drawable.getIntrinsicHeight();
+			bitmap = android.graphics.Bitmap.createBitmap(width, height, Config.ARGB_8888);
+			android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
+
+			Rect rect = drawable.getBounds();
+			drawable.setBounds(0, 0, width, height);
+			drawable.draw(canvas);
+			drawable.setBounds(rect);
+		}
+
+		return new AndroidBitmap(bitmap);
+	}
+
+	public static Canvas createCanvas(android.graphics.Canvas canvas) {
+		return new AndroidCanvas(canvas);
+	}
+
+	public static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
 		return ((AndroidBitmap) bitmap).bitmap;
 	}
 
-	public static android.graphics.Paint getAndroidPaint(Paint paint) {
+	public static android.graphics.Canvas getCanvas(Canvas canvas) {
+		return ((AndroidCanvas) canvas).canvas;
+	}
+
+	public static android.graphics.Matrix getMatrix(Matrix matrix) {
+		return ((AndroidMatrix) matrix).matrix;
+	}
+
+	public static android.graphics.Paint getPaint(Paint paint) {
 		return ((AndroidPaint) paint).paint;
 	}
 
@@ -36,13 +74,28 @@ public final class AndroidGraphics implements GraphicAdapter {
 	}
 
 	@Override
+	public Bitmap createBitmap(InputStream inputStream) {
+		return new AndroidBitmap(inputStream);
+	}
+
+	@Override
 	public Bitmap createBitmap(int width, int height) {
 		return new AndroidBitmap(width, height);
 	}
 
 	@Override
-	public Bitmap decodeStream(InputStream inputStream) {
-		return new AndroidBitmap(inputStream);
+	public Canvas createCanvas() {
+		return new AndroidCanvas();
+	}
+
+	@Override
+	public Matrix createMatrix() {
+		return new AndroidMatrix();
+	}
+
+	@Override
+	public Paint createPaint() {
+		return new AndroidPaint();
 	}
 
 	@Override
@@ -51,8 +104,8 @@ public final class AndroidGraphics implements GraphicAdapter {
 			case BLACK:
 				return android.graphics.Color.BLACK;
 
-			case CYAN:
-				return android.graphics.Color.CYAN;
+			case BLUE:
+				return android.graphics.Color.BLUE;
 
 			case TRANSPARENT:
 				return android.graphics.Color.TRANSPARENT;
@@ -62,11 +115,6 @@ public final class AndroidGraphics implements GraphicAdapter {
 		}
 
 		throw new IllegalArgumentException("unknown color value: " + color);
-	}
-
-	@Override
-	public Paint getPaint() {
-		return new AndroidPaint();
 	}
 
 	@Override
