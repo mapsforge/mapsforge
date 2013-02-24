@@ -12,51 +12,60 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.cache;
+package org.mapsforge.core.graphics;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 
-import org.mapsforge.core.graphics.Bitmap;
+class AwtBitmap implements Bitmap {
+	final BufferedImage bufferedImage;
 
-class DummyBitmap implements Bitmap {
-	private final byte[] data;
-	private final int height;
-	private final int width;
+	AwtBitmap(BufferedImage bufferedImage) {
+		this.bufferedImage = bufferedImage;
+	}
 
-	DummyBitmap(int width, int height) {
-		this.width = width;
-		this.height = height;
-
-		this.data = new byte[width * height * 4];
+	AwtBitmap(int width, int height) {
+		this.bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
 
 	@Override
 	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
-		System.arraycopy(byteBuffer.array(), 0, this.data, 0, byteBuffer.array().length);
+		int[] pixels = new int[byteBuffer.array().length / 4];
+		for (int i = 0; i < pixels.length; ++i) {
+			pixels[i] = byteBuffer.getInt();
+		}
+
+		this.bufferedImage.setRGB(0, 0, getWidth(), getHeight(), pixels, 0, getWidth());
 	}
 
 	@Override
 	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
-		byteBuffer.put(this.data, 0, this.data.length);
+		int[] pixels = getPixels();
+		for (int i = 0; i < pixels.length; ++i) {
+			byteBuffer.putInt(pixels[i]);
+		}
 	}
 
 	@Override
 	public void fillColor(int color) {
-		throw new UnsupportedOperationException();
+		Graphics2D graphics2D = this.bufferedImage.createGraphics();
+		graphics2D.setColor(new java.awt.Color(color));
+		graphics2D.fillRect(0, 0, getWidth(), getHeight());
 	}
 
 	@Override
 	public int getHeight() {
-		return this.height;
+		return this.bufferedImage.getHeight();
 	}
 
 	@Override
 	public int[] getPixels() {
-		throw new UnsupportedOperationException();
+		return this.bufferedImage.getRGB(0, 0, getWidth(), getHeight(), null, 0, getWidth());
 	}
 
 	@Override
 	public int getWidth() {
-		return this.width;
+		return this.bufferedImage.getWidth();
 	}
 }

@@ -17,10 +17,10 @@ package org.mapsforge.map.layer.debug;
 import java.util.ArrayList;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
@@ -32,7 +32,7 @@ import org.mapsforge.map.layer.TilePosition;
 public class TileCoordinatesLayer extends Layer {
 	private static Paint createPaint(GraphicFactory graphicFactory) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(graphicFactory.getColor(Color.BLACK));
+		paint.setColor(graphicFactory.createColor(Color.BLACK));
 		paint.setTypeface(FontFamily.DEFAULT_BOLD, FontStyle.BOLD);
 		paint.setTextSize(20);
 		return paint;
@@ -55,8 +55,8 @@ public class TileCoordinatesLayer extends Layer {
 	}
 
 	private void drawTileCoordinates(TilePosition tilePosition, Canvas canvas) {
-		float x = (float) tilePosition.point.x + 15;
-		float y = (float) tilePosition.point.y + 30;
+		int x = (int) tilePosition.point.x + 15;
+		int y = (int) tilePosition.point.y + 30;
 		Tile tile = tilePosition.tile;
 
 		StringBuilder stringBuilder = new StringBuilder();

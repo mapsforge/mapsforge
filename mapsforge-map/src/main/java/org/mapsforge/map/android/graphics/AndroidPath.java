@@ -12,26 +12,25 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.core.graphics;
+package org.mapsforge.map.android.graphics;
 
-import java.io.InputStream;
+import org.mapsforge.core.graphics.Path;
 
-public interface GraphicFactory {
-	Bitmap createBitmap(InputStream inputStream);
+class AndroidPath implements Path {
+	final android.graphics.Path path = new android.graphics.Path();
 
-	Bitmap createBitmap(int width, int height);
+	@Override
+	public boolean isEmpty() {
+		return this.path.isEmpty();
+	}
 
-	Canvas createCanvas();
+	@Override
+	public void lineTo(int x, int y) {
+		this.path.lineTo(x, y);
+	}
 
-	int createColor(Color color);
-
-	int createColor(int alpha, int red, int green, int blue);
-
-	int createColor(String colorString);
-
-	Matrix createMatrix();
-
-	Paint createPaint();
-
-	Path createPath();
+	@Override
+	public void moveTo(int x, int y) {
+		this.path.moveTo(x, y);
+	}
 }

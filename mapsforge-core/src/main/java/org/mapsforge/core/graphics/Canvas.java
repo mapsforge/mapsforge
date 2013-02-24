@@ -15,17 +15,17 @@
 package org.mapsforge.core.graphics;
 
 public interface Canvas {
-	void drawBitmap(Bitmap bitmap, float left, float top);
+	void drawBitmap(Bitmap bitmap, int left, int top);
 
 	void drawBitmap(Bitmap bitmap, Matrix matrix);
 
-	void drawCircle(float x, float y, float radius, Paint paint);
+	void drawCircle(int x, int y, int radius, Paint paint);
 
-	void drawLine(float x1, float y1, float x2, float y2, Paint paint);
+	void drawLine(int x1, int y1, int x2, int y2, Paint paint);
 
-	void drawLines(float[] points, Paint paint);
+	void drawPath(Path path, Paint paint);
 
-	void drawText(String text, float x, float y, Paint paint);
+	void drawText(String text, int x, int y, Paint paint);
 
 	int getHeight();
 

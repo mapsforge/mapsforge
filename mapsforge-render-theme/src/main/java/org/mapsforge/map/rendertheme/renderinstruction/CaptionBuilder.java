@@ -17,10 +17,10 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import java.util.Locale;
 
 import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.rendertheme.XmlUtils;
@@ -48,12 +48,12 @@ public class CaptionBuilder {
 
 	public CaptionBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes) throws SAXException {
 		this.fill = graphicFactory.createPaint();
-		this.fill.setColor(graphicFactory.getColor(Color.BLACK));
+		this.fill.setColor(graphicFactory.createColor(Color.BLACK));
 		this.fill.setStyle(Style.FILL);
 		this.fill.setTextAlign(Align.LEFT);
 
 		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(graphicFactory.getColor(Color.BLACK));
+		this.stroke.setColor(graphicFactory.createColor(Color.BLACK));
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setTextAlign(Align.LEFT);
 
@@ -87,9 +87,9 @@ public class CaptionBuilder {
 			} else if (FONT_SIZE.equals(name)) {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (FILL.equals(name)) {
-				this.fill.setColor(graphicFactory.parseColor(value));
+				this.fill.setColor(graphicFactory.createColor(value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicFactory.parseColor(value));
+				this.stroke.setColor(graphicFactory.createColor(value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value));
 			} else {

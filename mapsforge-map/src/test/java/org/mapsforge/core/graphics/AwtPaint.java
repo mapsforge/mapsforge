@@ -12,30 +12,26 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.rendertheme;
+package org.mapsforge.core.graphics;
 
-import org.mapsforge.core.graphics.Align;
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Cap;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+class AwtPaint implements Paint {
+	private Cap cap = Cap.BUTT;
+	private int color = 0;
+	private float strokeWidth;
 
-class DummyPaint implements Paint {
 	@Override
 	public int getColor() {
-		throw new UnsupportedOperationException();
+		return this.color;
 	}
 
 	@Override
 	public Cap getStrokeCap() {
-		throw new UnsupportedOperationException();
+		return this.cap;
 	}
 
 	@Override
 	public float getStrokeWidth() {
-		throw new UnsupportedOperationException();
+		return this.strokeWidth;
 	}
 
 	@Override
@@ -55,46 +51,46 @@ class DummyPaint implements Paint {
 
 	@Override
 	public void setBitmapShader(Bitmap bitmap) {
-		// do nothing
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setColor(int color) {
-		// do nothing
+		this.color = color;
 	}
 
 	@Override
 	public void setDashPathEffect(float[] strokeDasharray) {
-		// do nothing
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setStrokeCap(Cap cap) {
-		// do nothing
+		this.cap = cap;
 	}
 
 	@Override
 	public void setStrokeWidth(float strokeWidth) {
-		// do nothing
+		this.strokeWidth = strokeWidth;
 	}
 
 	@Override
 	public void setStyle(Style style) {
-		// do nothing
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setTextAlign(Align align) {
-		// do nothing
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setTextSize(float textSize) {
-		// do nothing
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
-		// do nothing
+		throw new UnsupportedOperationException();
 	}
 }

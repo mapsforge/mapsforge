@@ -14,24 +14,10 @@
  */
 package org.mapsforge.core.graphics;
 
-import java.io.InputStream;
+public interface Path {
+	boolean isEmpty();
 
-public interface GraphicFactory {
-	Bitmap createBitmap(InputStream inputStream);
+	void lineTo(int x, int y);
 
-	Bitmap createBitmap(int width, int height);
-
-	Canvas createCanvas();
-
-	int createColor(Color color);
-
-	int createColor(int alpha, int red, int green, int blue);
-
-	int createColor(String colorString);
-
-	Matrix createMatrix();
-
-	Paint createPaint();
-
-	Path createPath();
+	void moveTo(int x, int y);
 }

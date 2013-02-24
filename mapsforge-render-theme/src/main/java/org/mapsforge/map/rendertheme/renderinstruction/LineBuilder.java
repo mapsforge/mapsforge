@@ -19,8 +19,8 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.rendertheme.XmlUtils;
@@ -56,7 +56,7 @@ public class LineBuilder {
 		this.level = level;
 
 		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(graphicFactory.getColor(Color.BLACK));
+		this.stroke.setColor(graphicFactory.createColor(Color.BLACK));
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
 
@@ -79,7 +79,7 @@ public class LineBuilder {
 			if (SRC.equals(name)) {
 				this.stroke.setBitmapShader(XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicFactory.parseColor(value));
+				this.stroke.setColor(graphicFactory.createColor(value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (STROKE_DASHARRAY.equals(name)) {

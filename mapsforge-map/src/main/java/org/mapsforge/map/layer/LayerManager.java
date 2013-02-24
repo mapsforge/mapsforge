@@ -21,8 +21,8 @@ import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
@@ -87,7 +87,7 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 
 		this.drawingCanvas = graphicFactory.createCanvas();
 		this.layers = new CopyOnWriteArrayList<Layer>();
-		this.backgroundColor = graphicFactory.getColor(Color.WHITE);
+		this.backgroundColor = graphicFactory.createColor(Color.WHITE);
 	}
 
 	public List<Layer> getLayers() {

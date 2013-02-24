@@ -71,6 +71,16 @@ class AndroidPaint implements Paint {
 	}
 
 	@Override
+	public Cap getStrokeCap() {
+		return Cap.valueOf(this.paint.getStrokeCap().name());
+	}
+
+	@Override
+	public float getStrokeWidth() {
+		return this.paint.getStrokeWidth();
+	}
+
+	@Override
 	public int getTextHeight(String text) {
 		Rect rect = new Rect();
 		this.paint.getTextBounds(text, 0, text.length(), rect);
@@ -118,8 +128,8 @@ class AndroidPaint implements Paint {
 	}
 
 	@Override
-	public void setStrokeWidth(float width) {
-		this.paint.setStrokeWidth(width);
+	public void setStrokeWidth(float strokeWidth) {
+		this.paint.setStrokeWidth(strokeWidth);
 	}
 
 	@Override

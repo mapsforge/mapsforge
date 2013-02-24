@@ -66,7 +66,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.jobQueue.add(createJob(tile));
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
-				canvas.drawBitmap(bitmap, (float) point.x, (float) point.y);
+				canvas.drawBitmap(bitmap, (int) point.x, (int) point.y);
 			}
 		}
 

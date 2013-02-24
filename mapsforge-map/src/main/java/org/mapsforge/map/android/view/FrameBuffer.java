@@ -61,6 +61,7 @@ public class FrameBuffer implements FrameBufferInterface {
 		}
 	}
 
+	@Override
 	public synchronized void frameFinished(MapPosition frameMapPosition) {
 		// swap both bitmap references
 		Bitmap bitmapTemp = this.bitmap1;
@@ -73,6 +74,7 @@ public class FrameBuffer implements FrameBufferInterface {
 	/**
 	 * @return the bitmap of the second frame to draw on (may be null).
 	 */
+	@Override
 	public synchronized Bitmap getDrawingBitmap() {
 		return this.bitmap2;
 	}

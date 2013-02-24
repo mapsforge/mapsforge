@@ -18,6 +18,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
 
 class AndroidCanvas implements Canvas {
 	final android.graphics.Canvas canvas;
@@ -31,7 +32,7 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, float left, float top) {
+	public void drawBitmap(Bitmap bitmap, int left, int top) {
 		this.canvas.drawBitmap(AndroidGraphics.getBitmap(bitmap), left, top, null);
 	}
 
@@ -41,22 +42,22 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
-	public void drawCircle(float x, float y, float radius, Paint paint) {
+	public void drawCircle(int x, int y, int radius, Paint paint) {
 		this.canvas.drawCircle(x, y, radius, AndroidGraphics.getPaint(paint));
 	}
 
 	@Override
-	public void drawLine(float x1, float y1, float x2, float y2, Paint paint) {
+	public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
 		this.canvas.drawLine(x1, y1, x2, y2, AndroidGraphics.getPaint(paint));
 	}
 
 	@Override
-	public void drawLines(float[] points, Paint paint) {
-		this.canvas.drawLines(points, AndroidGraphics.getPaint(paint));
+	public void drawPath(Path path, Paint paint) {
+		this.canvas.drawPath(AndroidGraphics.getPath(path), AndroidGraphics.getPaint(paint));
 	}
 
 	@Override
-	public void drawText(String text, float x, float y, Paint paint) {
+	public void drawText(String text, int x, int y, Paint paint) {
 		this.canvas.drawText(text, x, y, AndroidGraphics.getPaint(paint));
 	}
 

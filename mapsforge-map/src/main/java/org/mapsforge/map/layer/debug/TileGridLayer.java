@@ -15,8 +15,8 @@
 package org.mapsforge.map.layer.debug;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
@@ -28,7 +28,7 @@ import org.mapsforge.map.layer.Layer;
 public class TileGridLayer extends Layer {
 	private static Paint createPaint(GraphicFactory graphicFactory) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(graphicFactory.getColor(Color.BLACK));
+		paint.setColor(graphicFactory.createColor(Color.BLACK));
 		paint.setStrokeWidth(3);
 		paint.setStyle(Style.STROKE);
 		return paint;
@@ -49,16 +49,16 @@ public class TileGridLayer extends Layer {
 		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
 		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
 
-		float pixelX1 = (float) (MercatorProjection.tileXToPixelX(tileLeft) - canvasPosition.x);
-		float pixelY1 = (float) (MercatorProjection.tileYToPixelY(tileTop) - canvasPosition.y);
-		float pixelX2 = (float) (MercatorProjection.tileXToPixelX(tileRight) - canvasPosition.x + Tile.TILE_SIZE);
-		float pixelY2 = (float) (MercatorProjection.tileYToPixelY(tileBottom) - canvasPosition.y + Tile.TILE_SIZE);
+		int pixelX1 = (int) (MercatorProjection.tileXToPixelX(tileLeft) - canvasPosition.x);
+		int pixelY1 = (int) (MercatorProjection.tileYToPixelY(tileTop) - canvasPosition.y);
+		int pixelX2 = (int) (MercatorProjection.tileXToPixelX(tileRight) - canvasPosition.x + Tile.TILE_SIZE);
+		int pixelY2 = (int) (MercatorProjection.tileYToPixelY(tileBottom) - canvasPosition.y + Tile.TILE_SIZE);
 
-		for (float lineX = pixelX1; lineX <= pixelX2 + 1; lineX += Tile.TILE_SIZE) {
+		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += Tile.TILE_SIZE) {
 			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paint);
 		}
 
-		for (float lineY = pixelY1; lineY <= pixelY2 + 1; lineY += Tile.TILE_SIZE) {
+		for (int lineY = pixelY1; lineY <= pixelY2 + 1; lineY += Tile.TILE_SIZE) {
 			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, this.paint);
 		}
 	}

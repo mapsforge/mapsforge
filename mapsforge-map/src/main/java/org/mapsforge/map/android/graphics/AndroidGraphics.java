@@ -18,9 +18,11 @@ import java.io.InputStream;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
 
 import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
@@ -69,6 +71,10 @@ public final class AndroidGraphics implements GraphicFactory {
 		return ((AndroidPaint) paint).paint;
 	}
 
+	public static android.graphics.Path getPath(Path path) {
+		return ((AndroidPath) path).path;
+	}
+
 	private AndroidGraphics() {
 		// do nothing
 	}
@@ -89,6 +95,41 @@ public final class AndroidGraphics implements GraphicFactory {
 	}
 
 	@Override
+	public int createColor(Color color) {
+		switch (color) {
+			case BLACK:
+				return android.graphics.Color.BLACK;
+
+			case BLUE:
+				return android.graphics.Color.BLUE;
+
+			case GREEN:
+				return android.graphics.Color.GREEN;
+
+			case RED:
+				return android.graphics.Color.RED;
+
+			case TRANSPARENT:
+				return android.graphics.Color.TRANSPARENT;
+
+			case WHITE:
+				return android.graphics.Color.WHITE;
+		}
+
+		throw new IllegalArgumentException("unknown color: " + color);
+	}
+
+	@Override
+	public int createColor(int alpha, int red, int green, int blue) {
+		return android.graphics.Color.argb(alpha, red, green, blue);
+	}
+
+	@Override
+	public int createColor(String colorString) {
+		return android.graphics.Color.parseColor(colorString);
+	}
+
+	@Override
 	public Matrix createMatrix() {
 		return new AndroidMatrix();
 	}
@@ -99,26 +140,7 @@ public final class AndroidGraphics implements GraphicFactory {
 	}
 
 	@Override
-	public int getColor(Color color) {
-		switch (color) {
-			case BLACK:
-				return android.graphics.Color.BLACK;
-
-			case BLUE:
-				return android.graphics.Color.BLUE;
-
-			case TRANSPARENT:
-				return android.graphics.Color.TRANSPARENT;
-
-			case WHITE:
-				return android.graphics.Color.WHITE;
-		}
-
-		throw new IllegalArgumentException("unknown color value: " + color);
-	}
-
-	@Override
-	public int parseColor(String colorString) {
-		return android.graphics.Color.parseColor(colorString);
+	public Path createPath() {
+		return new AndroidPath();
 	}
 }

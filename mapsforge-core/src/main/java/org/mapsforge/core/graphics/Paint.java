@@ -17,6 +17,10 @@ package org.mapsforge.core.graphics;
 public interface Paint {
 	int getColor();
 
+	Cap getStrokeCap();
+
+	float getStrokeWidth();
+
 	int getTextHeight(String text);
 
 	int getTextWidth(String text);
@@ -31,7 +35,7 @@ public interface Paint {
 
 	void setStrokeCap(Cap cap);
 
-	void setStrokeWidth(float width);
+	void setStrokeWidth(float strokeWidth);
 
 	void setStyle(Style style);
 

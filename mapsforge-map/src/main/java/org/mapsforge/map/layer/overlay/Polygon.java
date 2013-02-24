@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
@@ -34,6 +36,7 @@ import org.mapsforge.map.layer.Layer;
  */
 public class Polygon extends Layer {
 	private final List<GeoPoint> geoPoints = new CopyOnWriteArrayList<GeoPoint>();
+	private final GraphicFactory graphicFactory;
 	private Paint paintFill;
 	private Paint paintStroke;
 
@@ -43,11 +46,12 @@ public class Polygon extends Layer {
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this polygon (may be null).
 	 */
-	public Polygon(Paint paintFill, Paint paintStroke) {
+	public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory) {
 		super();
 
 		this.paintFill = paintFill;
 		this.paintStroke = paintStroke;
+		this.graphicFactory = graphicFactory;
 	}
 
 	@Override
@@ -56,31 +60,23 @@ public class Polygon extends Layer {
 			return;
 		}
 
-		float[] points = new float[this.geoPoints.size()];
-		float previousX = Float.NaN;
-		float previousY = Float.NaN;
-		int i = -1;
-
+		Path path = this.graphicFactory.createPath();
 		for (GeoPoint geoPoint : this.geoPoints) {
-			float x = (float) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
-			float y = (float) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
+			int x = (int) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
+			int y = (int) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
 
-			if (Float.isNaN(previousX)) {
-				points[++i] = previousX;
-				points[++i] = previousY;
-				points[++i] = x;
-				points[++i] = y;
+			if (path.isEmpty()) {
+				path.moveTo(x, y);
+			} else {
+				path.lineTo(x, y);
 			}
-
-			previousX = x;
-			previousY = y;
 		}
 
 		if (this.paintStroke != null) {
-			canvas.drawLines(points, this.paintStroke);
+			canvas.drawPath(path, this.paintStroke);
 		}
 		if (this.paintFill != null) {
-			canvas.drawLines(points, this.paintFill);
+			canvas.drawPath(path, this.paintFill);
 		}
 	}
 

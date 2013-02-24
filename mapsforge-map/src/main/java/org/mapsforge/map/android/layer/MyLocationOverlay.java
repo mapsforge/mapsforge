@@ -16,7 +16,7 @@ package org.mapsforge.map.android.layer;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
@@ -53,11 +53,11 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	private static Paint getDefaultCircleFill() {
-		return getPaint(48, AndroidGraphics.INSTANCE.getColor(Color.BLUE), 0, Style.FILL);
+		return getPaint(48, AndroidGraphics.INSTANCE.createColor(Color.BLUE), 0, Style.FILL);
 	}
 
 	private static Paint getDefaultCircleStroke() {
-		return getPaint(160, AndroidGraphics.INSTANCE.getColor(Color.BLUE), 2, Style.STROKE);
+		return getPaint(160, AndroidGraphics.INSTANCE.createColor(Color.BLUE), 2, Style.STROKE);
 	}
 
 	private static Paint getPaint(int alpha, int color, int strokeWidth, Style style) {

@@ -12,53 +12,79 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.rendertheme;
+package org.mapsforge.core.graphics;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
+import javax.imageio.ImageIO;
 
-public final class DummyGraphicFactory implements GraphicFactory {
-	public static final DummyGraphicFactory INSTANCE = new DummyGraphicFactory();
+public final class AwtGraphicFactory implements GraphicFactory {
+	public static final AwtGraphicFactory INSTANCE = new AwtGraphicFactory();
+	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
-	private DummyGraphicFactory() {
+	public static BufferedImage getBufferedImage(Bitmap bitmap) {
+		return ((AwtBitmap) bitmap).bufferedImage;
+	}
+
+	private AwtGraphicFactory() {
 		// do nothing
 	}
 
 	@Override
 	public Bitmap createBitmap(InputStream inputStream) {
-		return new DummyBitmap();
+		try {
+			BufferedImage bufferedImage = ImageIO.read(inputStream);
+			return new AwtBitmap(bufferedImage);
+		} catch (IOException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	@Override
 	public Bitmap createBitmap(int width, int height) {
-		throw new UnsupportedOperationException();
+		return new AwtBitmap(width, height);
 	}
 
 	@Override
 	public Canvas createCanvas() {
-		throw new UnsupportedOperationException();
+		return new AwtCanvas();
 	}
 
 	@Override
 	public int createColor(Color color) {
-		return color.ordinal();
+		switch (color) {
+			case BLACK:
+				return java.awt.Color.BLACK.getRGB();
+
+			case BLUE:
+				return java.awt.Color.BLUE.getRGB();
+
+			case GREEN:
+				return java.awt.Color.GREEN.getRGB();
+
+			case RED:
+				return java.awt.Color.RED.getRGB();
+
+			case TRANSPARENT:
+				return TRANSPARENT.getRGB();
+
+			case WHITE:
+				return java.awt.Color.WHITE.getRGB();
+		}
+
+		throw new IllegalArgumentException("unknown color: " + color);
 	}
 
 	@Override
 	public int createColor(int alpha, int red, int green, int blue) {
-		return 0;
+		return new java.awt.Color(alpha, red, green, blue).getRGB();
 	}
 
 	@Override
 	public int createColor(String colorString) {
-		return 0;
+		return java.awt.Color.decode(colorString).getRGB();
 	}
 
 	@Override
@@ -68,7 +94,7 @@ public final class DummyGraphicFactory implements GraphicFactory {
 
 	@Override
 	public Paint createPaint() {
-		return new DummyPaint();
+		return new AwtPaint();
 	}
 
 	@Override

@@ -19,16 +19,16 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.core.graphics.AwtGraphicFactory;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.HttpServerTest;
-import org.mapsforge.map.layer.cache.DummyGraphicFactory;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 
 public class TileDownloaderTest extends HttpServerTest {
-	private static final DummyGraphicFactory GRAPHIC_ADAPTER = DummyGraphicFactory.INSTANCE;
+	private static final AwtGraphicFactory GRAPHIC_ADAPTER = AwtGraphicFactory.INSTANCE;
 
 	private static TileDownloader createTileDownloader(DownloadJob downloadJob, GraphicFactory graphicFactory) {
 		return new TileDownloader(downloadJob, graphicFactory);

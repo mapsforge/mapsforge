@@ -14,24 +14,6 @@
  */
 package org.mapsforge.core.graphics;
 
-import java.io.InputStream;
-
-public interface GraphicFactory {
-	Bitmap createBitmap(InputStream inputStream);
-
-	Bitmap createBitmap(int width, int height);
-
-	Canvas createCanvas();
-
-	int createColor(Color color);
-
-	int createColor(int alpha, int red, int green, int blue);
-
-	int createColor(String colorString);
-
-	Matrix createMatrix();
-
-	Paint createPaint();
-
-	Path createPath();
+public enum Color {
+	BLACK, BLUE, GREEN, RED, TRANSPARENT, WHITE;
 }

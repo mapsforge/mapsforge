@@ -18,7 +18,6 @@ import java.io.IOException;
 
 import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.rendertheme.XmlUtils;
@@ -44,12 +43,12 @@ public class AreaBuilder {
 		this.level = level;
 
 		this.fill = graphicFactory.createPaint();
-		this.fill.setColor(graphicFactory.getColor(Color.BLACK));
+		this.fill.setColor(graphicFactory.createColor(255, 0, 0, 0));
 		this.fill.setStyle(Style.FILL);
 		this.fill.setStrokeCap(Cap.ROUND);
 
 		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(graphicFactory.getColor(Color.TRANSPARENT));
+		this.stroke.setColor(graphicFactory.createColor(0, 0, 0, 0));
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
 
@@ -72,9 +71,9 @@ public class AreaBuilder {
 			if (SRC.equals(name)) {
 				this.fill.setBitmapShader(XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value));
 			} else if (FILL.equals(name)) {
-				this.fill.setColor(graphicFactory.parseColor(value));
+				this.fill.setColor(graphicFactory.createColor(value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicFactory.parseColor(value));
+				this.stroke.setColor(graphicFactory.createColor(value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else {

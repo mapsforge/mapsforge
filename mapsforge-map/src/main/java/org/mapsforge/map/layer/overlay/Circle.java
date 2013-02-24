@@ -49,7 +49,7 @@ public class Circle extends Layer {
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this circle (may be null).
 	 * @throws IllegalArgumentException
-	 *             if the given {@code radius} is negative.
+	 *             if the given {@code radius} is negative or {@link Float#NaN}.
 	 */
 	public Circle(GeoPoint geoPoint, float radius, Paint paintFill, Paint paintStroke) {
 		super();
@@ -68,9 +68,9 @@ public class Circle extends Layer {
 
 		double latitude = this.geoPoint.latitude;
 		double longitude = this.geoPoint.longitude;
-		float pixelX = (float) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - canvasPosition.x);
-		float pixelY = (float) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - canvasPosition.y);
-		float radiusInPixel = (float) metersToPixels(latitude, this.radius, zoomLevel);
+		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - canvasPosition.x);
+		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - canvasPosition.y);
+		int radiusInPixel = (int) metersToPixels(latitude, this.radius, zoomLevel);
 
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
 		if (!canvasRectangle.intersectsCircle(pixelX, pixelY, radiusInPixel)) {
@@ -141,15 +141,15 @@ public class Circle extends Layer {
 	 * @param radius
 	 *            the new non-negative radius of this circle in meters.
 	 * @throws IllegalArgumentException
-	 *             if the given {@code radius} is negative.
+	 *             if the given {@code radius} is negative or {@link Float#NaN}.
 	 */
 	public synchronized void setRadius(float radius) {
 		setRadiusInternal(radius);
 	}
 
 	private void setRadiusInternal(float radius) {
-		if (radius < 0) {
-			throw new IllegalArgumentException("radius must not be negative: " + radius);
+		if (radius < 0 || Float.isNaN(radius)) {
+			throw new IllegalArgumentException("invalid radius: " + radius);
 		}
 		this.radius = radius;
 	}

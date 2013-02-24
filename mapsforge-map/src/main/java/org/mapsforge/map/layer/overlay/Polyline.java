@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.layer.overlay;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -51,16 +52,17 @@ public class Polyline extends Layer {
 			return;
 		}
 
-		float previousX = Float.NaN;
-		float previousY = Float.NaN;
+		Iterator<GeoPoint> iterator = this.geoPoints.iterator();
+		GeoPoint geoPoint = iterator.next();
+		int previousX = (int) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
+		int previousY = (int) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
 
-		for (GeoPoint geoPoint : this.geoPoints) {
-			float x = (float) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
-			float y = (float) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
+		while (iterator.hasNext()) {
+			geoPoint = iterator.next();
+			int x = (int) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
+			int y = (int) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
 
-			if (!Float.isNaN(previousX)) {
-				canvas.drawLine(previousX, previousY, x, y, this.paintStroke);
-			}
+			canvas.drawLine(previousX, previousY, x, y, this.paintStroke);
 
 			previousX = x;
 			previousY = y;

@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -42,7 +42,7 @@ public class RenderThemeBuilder {
 			throws SAXException {
 		this.baseStrokeWidth = 1;
 		this.baseTextSize = 1;
-		this.mapBackground = graphicFactory.getColor(Color.WHITE);
+		this.mapBackground = graphicFactory.createColor(Color.WHITE);
 
 		extractValues(graphicFactory, elementName, attributes);
 	}
@@ -69,7 +69,7 @@ public class RenderThemeBuilder {
 			} else if (VERSION.equals(name)) {
 				this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
 			} else if (MAP_BACKGROUND.equals(name)) {
-				this.mapBackground = graphicFactory.parseColor(value);
+				this.mapBackground = graphicFactory.createColor(value);
 			} else if (BASE_STROKE_WIDTH.equals(name)) {
 				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (BASE_TEXT_SIZE.equals(name)) {

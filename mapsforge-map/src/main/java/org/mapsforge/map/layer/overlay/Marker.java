@@ -49,10 +49,10 @@ public class Marker extends Layer {
 			return;
 		}
 
-		double left = MercatorProjection.longitudeToPixelX(this.geoPoint.longitude, zoomLevel) - canvasPosition.x;
-		double top = MercatorProjection.latitudeToPixelY(this.geoPoint.latitude, zoomLevel) - canvasPosition.y;
-		double right = left + this.bitmap.getWidth();
-		double bottom = top + this.bitmap.getHeight();
+		int left = (int) (MercatorProjection.longitudeToPixelX(this.geoPoint.longitude, zoomLevel) - canvasPosition.x);
+		int top = (int) (MercatorProjection.latitudeToPixelY(this.geoPoint.latitude, zoomLevel) - canvasPosition.y);
+		int right = left + this.bitmap.getWidth();
+		int bottom = top + this.bitmap.getHeight();
 
 		Rectangle bitmapRectangle = new Rectangle(left, top, right, bottom);
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -60,7 +60,7 @@ public class Marker extends Layer {
 			return;
 		}
 
-		canvas.drawBitmap(this.bitmap, (float) left, (float) top);
+		canvas.drawBitmap(this.bitmap, left, top);
 	}
 
 	/**
