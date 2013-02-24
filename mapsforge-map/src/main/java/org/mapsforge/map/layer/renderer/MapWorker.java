@@ -16,24 +16,24 @@ package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.map.PausableThread;
+import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
-import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 
 public class MapWorker extends PausableThread {
 	private final DatabaseRenderer databaseRenderer;
 	private final JobQueue<RendererJob> jobQueue;
-	private final LayerManagerInterface layerManagerInterface;
+	private final LayerManager layerManager;
 	private final TileCache tileCache;
 
 	public MapWorker(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer,
-			LayerManagerInterface layerManagerInterface) {
+			LayerManager layerManager) {
 		super();
 
 		this.tileCache = tileCache;
 		this.jobQueue = jobQueue;
 		this.databaseRenderer = databaseRenderer;
-		this.layerManagerInterface = layerManagerInterface;
+		this.layerManager = layerManager;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class MapWorker extends PausableThread {
 
 		if (!isInterrupted() && bitmap != null) {
 			this.tileCache.put(rendererJob, bitmap);
-			this.layerManagerInterface.redrawLayers();
+			this.layerManager.redrawLayers();
 		}
 	}
 

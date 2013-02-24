@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicFactory.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.GeoPoint;
@@ -18,10 +18,7 @@ import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
-import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
-import org.mapsforge.map.layer.download.TileDownloadLayer;
-import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.overlay.Polyline;
@@ -55,6 +52,7 @@ public class Rewrite extends Activity {
 				GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(new File("/storage/emulated/0/germany.map"));
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
+		tileRendererLayer.setTextScale(1.5f);
 		return tileRendererLayer;
 	}
 
@@ -67,7 +65,7 @@ public class Rewrite extends Activity {
 		GeoPoint geoPoint2 = new GeoPoint(52, 13);
 		GeoPoint geoPoint3 = new GeoPoint(10, 10);
 
-		Polyline polyline = new Polyline(createPaint(AndroidGraphics.INSTANCE.getColor(Color.BLUE), 8, Style.STROKE));
+		Polyline polyline = new Polyline(createPaint(AndroidGraphics.INSTANCE.createColor(Color.BLUE), 8, Style.STROKE));
 		List<GeoPoint> geoPoints = polyline.getGeoPoints();
 		geoPoints.add(geoPoint1);
 		geoPoints.add(geoPoint2);
@@ -75,7 +73,7 @@ public class Rewrite extends Activity {
 
 		Marker marker1 = createMarker(R.drawable.marker_red, geoPoint1);
 
-		Circle circle = new Circle(geoPoint3, 30000, createPaint(AndroidGraphics.INSTANCE.getColor(Color.WHITE), 0,
+		Circle circle = new Circle(geoPoint3, 30000, createPaint(AndroidGraphics.INSTANCE.createColor(Color.WHITE), 0,
 				Style.FILL), null);
 
 		layers.add(polyline);
@@ -86,7 +84,7 @@ public class Rewrite extends Activity {
 	private Marker createMarker(int resourceIdentifier, GeoPoint geoPoint) {
 		Drawable drawable = getResources().getDrawable(resourceIdentifier);
 		Bitmap bitmap = AndroidGraphics.convertToBitmap(drawable);
-		return new Marker(geoPoint, bitmap);
+		return new Marker(geoPoint, bitmap, -bitmap.getWidth() / 2, -bitmap.getHeight());
 	}
 
 	private TileCache createTileCache() {
@@ -116,14 +114,14 @@ public class Rewrite extends Activity {
 		TileCache tileCache = createTileCache();
 		MapViewPosition mapViewPosition = this.model.mapViewPosition;
 
-		// layers.add(createTileRendererLayer(tileCache, mapViewPosition, layerManager));
+		layers.add(createTileRendererLayer(tileCache, mapViewPosition, layerManager));
 
 		// layers.add(new TileDownloadLayer(tileCache, mapViewPosition, OpenCycleMap.INSTANCE, layerManager,
 		// GRAPHIC_FACTORY));
-		layers.add(new TileDownloadLayer(tileCache, mapViewPosition, OpenStreetMapMapnik.INSTANCE, layerManager,
-				GRAPHIC_FACTORY));
+		// layers.add(new TileDownloadLayer(tileCache, mapViewPosition, OpenStreetMapMapnik.INSTANCE, layerManager,
+		// GRAPHIC_FACTORY));
 		layers.add(new TileGridLayer(GRAPHIC_FACTORY));
-		layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
+		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
 		addOverlayLayers(layers);
 
 		setContentView(this.mapView);

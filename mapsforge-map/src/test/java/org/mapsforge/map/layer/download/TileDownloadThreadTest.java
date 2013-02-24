@@ -24,15 +24,18 @@ import org.junit.Test;
 import org.mapsforge.core.graphics.AwtGraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.HttpServerTest;
+import org.mapsforge.map.controller.DummyMapView;
+import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
+import org.mapsforge.map.view.MapView;
 
 public class TileDownloadThreadTest extends HttpServerTest {
+	private static final AwtGraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final int WAIT_TIME_MILLIS = 3000;
 
 	private static void awaitWaitingState(Thread thread) throws InterruptedException {
@@ -66,12 +69,14 @@ public class TileDownloadThreadTest extends HttpServerTest {
 	public void lifecycleTest() throws InterruptedException, IOException {
 		addFile("/0/0/0.png", new File("src/test/resources/0_0_0.png"));
 
+		MapView mapView = new DummyMapView();
+		MapViewPosition mapViewPosition = new MapViewPosition();
 		TileCache tileCache = new InMemoryTileCache(1);
-		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(new MapViewPosition());
-		LayerManagerInterface layerManagerInterface = new DummyLayerManagerInterface();
+		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(mapViewPosition);
+		LayerManager layerManager = new LayerManager(mapView, mapViewPosition, GRAPHIC_FACTORY);
 
-		TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, jobQueue, layerManagerInterface,
-				AwtGraphicFactory.INSTANCE);
+		TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, jobQueue, layerManager,
+				GRAPHIC_FACTORY);
 		try {
 			tileDownloadThread.start();
 			awaitWaitingState(tileDownloadThread);

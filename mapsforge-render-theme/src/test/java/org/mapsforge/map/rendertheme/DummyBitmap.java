@@ -40,11 +40,6 @@ class DummyBitmap implements Bitmap {
 	}
 
 	@Override
-	public int[] getPixels() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public int getWidth() {
 		throw new UnsupportedOperationException();
 	}

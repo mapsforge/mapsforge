@@ -55,23 +55,19 @@ public final class AndroidGraphics implements GraphicFactory {
 		return new AndroidCanvas(canvas);
 	}
 
-	public static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
+	static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
 		return ((AndroidBitmap) bitmap).bitmap;
 	}
 
-	public static android.graphics.Canvas getCanvas(Canvas canvas) {
-		return ((AndroidCanvas) canvas).canvas;
-	}
-
-	public static android.graphics.Matrix getMatrix(Matrix matrix) {
+	static android.graphics.Matrix getMatrix(Matrix matrix) {
 		return ((AndroidMatrix) matrix).matrix;
 	}
 
-	public static android.graphics.Paint getPaint(Paint paint) {
+	static android.graphics.Paint getPaint(Paint paint) {
 		return ((AndroidPaint) paint).paint;
 	}
 
-	public static android.graphics.Path getPath(Path path) {
+	static android.graphics.Path getPath(Path path) {
 		return ((AndroidPath) path).path;
 	}
 
@@ -99,19 +95,14 @@ public final class AndroidGraphics implements GraphicFactory {
 		switch (color) {
 			case BLACK:
 				return android.graphics.Color.BLACK;
-
 			case BLUE:
 				return android.graphics.Color.BLUE;
-
 			case GREEN:
 				return android.graphics.Color.GREEN;
-
 			case RED:
 				return android.graphics.Color.RED;
-
 			case TRANSPARENT:
 				return android.graphics.Color.TRANSPARENT;
-
 			case WHITE:
 				return android.graphics.Color.WHITE;
 		}

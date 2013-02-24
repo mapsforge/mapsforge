@@ -62,19 +62,14 @@ public class TouchEventHandler {
 		switch (action) {
 			case MotionEvent.ACTION_DOWN:
 				return onActionDown(motionEvent);
-
 			case MotionEvent.ACTION_MOVE:
 				return onActionMove(motionEvent);
-
 			case MotionEvent.ACTION_POINTER_DOWN:
 				return onActionPointerDown(motionEvent);
-
 			case MotionEvent.ACTION_POINTER_UP:
 				return onActionPointerUp(motionEvent);
-
 			case MotionEvent.ACTION_UP:
 				return onActionUp(motionEvent);
-
 			case MotionEvent.ACTION_CANCEL:
 				return true;
 		}

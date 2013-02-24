@@ -16,19 +16,19 @@ package org.mapsforge.map.controller;
 
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.mapsforge.map.view.MapView;
 
 public class MapViewController implements Observer {
-	private final MapViewInterface mapViewInterface;
+	private final MapView mapView;
 
-	public MapViewController(MapViewInterface mapViewInterface, Model model) {
-		this.mapViewInterface = mapViewInterface;
+	public MapViewController(MapView mapView, Model model) {
+		this.mapView = mapView;
 
 		model.mapViewPosition.addObserver(this);
 	}
 
 	@Override
 	public void onChange() {
-		this.mapViewInterface.repaint();
+		this.mapView.repaint();
 	}
 }

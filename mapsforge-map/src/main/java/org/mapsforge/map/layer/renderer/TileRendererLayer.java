@@ -18,12 +18,12 @@ import java.io.File;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 
 public class TileRendererLayer extends TileLayer<RendererJob> {
 	private final MapDatabase mapDatabase;
@@ -32,14 +32,14 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private float textScale;
 	private XmlRenderTheme xmlRenderTheme;
 
-	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			LayerManagerInterface layerManagerInterface, GraphicFactory graphicFactory) {
+	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager,
+			GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory);
 
 		this.mapDatabase = new MapDatabase();
-		DatabaseRenderer databaseRenderer = new DatabaseRenderer(this.mapDatabase);
+		DatabaseRenderer databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory);
 
-		this.mapWorker = new MapWorker(tileCache, this.jobQueue, databaseRenderer, layerManagerInterface);
+		this.mapWorker = new MapWorker(tileCache, this.jobQueue, databaseRenderer, layerManager);
 		this.mapWorker.start();
 
 		this.textScale = 1;

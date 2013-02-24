@@ -21,25 +21,25 @@ import java.util.logging.Logger;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.PausableThread;
+import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
-import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
 
 class TileDownloadThread extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());
 
 	private final GraphicFactory graphicFactory;
 	private final JobQueue<DownloadJob> jobQueue;
-	private final LayerManagerInterface layerManagerInterface;
+	private final LayerManager layerManager;
 	private final TileCache tileCache;
 
-	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue,
-			LayerManagerInterface layerManagerInterface, GraphicFactory graphicFactory) {
+	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, LayerManager layerManager,
+			GraphicFactory graphicFactory) {
 		super();
 
 		this.tileCache = tileCache;
 		this.jobQueue = jobQueue;
-		this.layerManagerInterface = layerManagerInterface;
+		this.layerManager = layerManager;
 		this.graphicFactory = graphicFactory;
 	}
 
@@ -52,7 +52,7 @@ class TileDownloadThread extends PausableThread {
 			Bitmap bitmap = tileDownloader.downloadImage();
 
 			this.tileCache.put(downloadJob, bitmap);
-			this.layerManagerInterface.redrawLayers();
+			this.layerManager.redrawLayers();
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}

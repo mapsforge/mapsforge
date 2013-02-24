@@ -21,16 +21,27 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapShader;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
-import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 
 class AndroidPaint implements Paint {
+	private static android.graphics.Paint.Cap getAndroidCap(Cap cap) {
+		switch (cap) {
+			case BUTT:
+				return android.graphics.Paint.Cap.BUTT;
+			case ROUND:
+				return android.graphics.Paint.Cap.ROUND;
+			case SQUARE:
+				return android.graphics.Paint.Cap.SQUARE;
+		}
+
+		throw new IllegalArgumentException("unknown cap: " + cap);
+	}
+
 	private static int getStyle(org.mapsforge.core.graphics.FontStyle fontStyle) {
 		switch (fontStyle) {
 			case BOLD:
@@ -72,7 +83,17 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public Cap getStrokeCap() {
-		return Cap.valueOf(this.paint.getStrokeCap().name());
+		android.graphics.Paint.Cap cap = this.paint.getStrokeCap();
+		switch (cap) {
+			case BUTT:
+				return Cap.BUTT;
+			case ROUND:
+				return Cap.ROUND;
+			case SQUARE:
+				return Cap.SQUARE;
+		}
+
+		throw new IllegalStateException("unknown cap: " + cap);
 	}
 
 	@Override
@@ -105,10 +126,7 @@ class AndroidPaint implements Paint {
 			return;
 		}
 
-		android.graphics.Bitmap androidBitmap = android.graphics.Bitmap.createBitmap(bitmap.getPixels(),
-				bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
-		Shader shader = new BitmapShader(androidBitmap, TileMode.REPEAT, TileMode.REPEAT);
-		this.paint.setShader(shader);
+		this.paint.setShader(new BitmapShader(AndroidGraphics.getBitmap(bitmap), TileMode.REPEAT, TileMode.REPEAT));
 	}
 
 	@Override
@@ -124,7 +142,7 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public void setStrokeCap(Cap cap) {
-		this.paint.setStrokeCap(android.graphics.Paint.Cap.valueOf(cap.name()));
+		this.paint.setStrokeCap(getAndroidCap(cap));
 	}
 
 	@Override

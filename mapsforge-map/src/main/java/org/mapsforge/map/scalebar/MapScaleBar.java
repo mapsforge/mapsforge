@@ -14,16 +14,18 @@
  */
 package org.mapsforge.map.scalebar;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.MapViewPosition;
-
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.Typeface;
 
 /**
  * A MapScaleBar displays the ratio of a distance on the map to the corresponding distance on the ground.
@@ -34,44 +36,33 @@ public class MapScaleBar {
 	private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
 	private static final int MARGIN_BOTTOM = 5;
 	private static final int MARGIN_LEFT = 5;
-	private static final Paint SCALE_BAR = createScaleBarPaint(Color.BLACK, 3);
-	private static final Paint SCALE_BAR_STROKE = createScaleBarPaint(Color.WHITE, 5);
-	private static final Paint SCALE_TEXT = createTextPaint(Color.BLACK, 0);
-	private static final Paint SCALE_TEXT_STROKE = createTextPaint(Color.WHITE, 2);
-
-	private static Paint createScaleBarPaint(int color, float strokeWidth) {
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setColor(color);
-		paint.setStrokeWidth(strokeWidth);
-		paint.setStyle(Style.STROKE);
-		paint.setStrokeCap(Paint.Cap.SQUARE);
-		return paint;
-	}
-
-	private static Paint createTextPaint(int color, float strokeWidth) {
-		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paint.setColor(color);
-		paint.setStrokeWidth(strokeWidth);
-		paint.setStyle(Style.STROKE);
-		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-		paint.setTextSize(20);
-		return paint;
-	}
 
 	private Adapter adapter;
+	private final GraphicFactory graphicFactory;
 	private MapPosition mapPosition;
 	private final Bitmap mapScaleBitmap;
 	private final Canvas mapScaleCanvas;
 	private final MapViewPosition mapViewPosition;
+	private final Paint paintScaleBar;
+	private final Paint paintScaleBarStroke;
+	private final Paint paintScaleText;
+	private final Paint paintScaleTextStroke;
 	private boolean redrawNeeded;
 	private boolean visible;
 
-	public MapScaleBar(MapViewPosition mapViewPosition) {
+	public MapScaleBar(MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
 		this.mapViewPosition = mapViewPosition;
-		this.mapScaleBitmap = Bitmap.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT, Bitmap.Config.ARGB_8888);
-		this.mapScaleCanvas = new Canvas(this.mapScaleBitmap);
+		this.graphicFactory = graphicFactory;
 
+		this.mapScaleBitmap = graphicFactory.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT);
+		this.mapScaleCanvas = graphicFactory.createCanvas();
+		this.mapScaleCanvas.setBitmap(this.mapScaleBitmap);
 		this.adapter = Metric.INSTANCE;
+
+		this.paintScaleBar = createScaleBarPaint(Color.BLACK, 3);
+		this.paintScaleBarStroke = createScaleBarPaint(Color.WHITE, 5);
+		this.paintScaleText = createTextPaint(Color.BLACK, 0);
+		this.paintScaleTextStroke = createTextPaint(Color.WHITE, 2);
 	}
 
 	public void draw(Canvas canvas) {
@@ -82,7 +73,7 @@ public class MapScaleBar {
 		redraw();
 
 		int top = canvas.getHeight() - BITMAP_HEIGHT - MARGIN_BOTTOM;
-		canvas.drawBitmap(this.mapScaleBitmap, MARGIN_LEFT, top, null);
+		canvas.drawBitmap(this.mapScaleBitmap, MARGIN_LEFT, top);
 	}
 
 	public Adapter getAdapter() {
@@ -104,6 +95,25 @@ public class MapScaleBar {
 		this.visible = visible;
 	}
 
+	private Paint createScaleBarPaint(Color color, float strokeWidth) {
+		Paint paint = this.graphicFactory.createPaint();
+		paint.setColor(this.graphicFactory.createColor(color));
+		paint.setStrokeWidth(strokeWidth);
+		paint.setStyle(Style.STROKE);
+		paint.setStrokeCap(Cap.SQUARE);
+		return paint;
+	}
+
+	private Paint createTextPaint(Color color, float strokeWidth) {
+		Paint paint = this.graphicFactory.createPaint();
+		paint.setColor(this.graphicFactory.createColor(color));
+		paint.setStrokeWidth(strokeWidth);
+		paint.setStyle(Style.STROKE);
+		paint.setTypeface(FontFamily.DEFAULT_BOLD, FontStyle.BOLD);
+		paint.setTextSize(20);
+		return paint;
+	}
+
 	/**
 	 * Redraws the map scale bitmap with the given parameters.
 	 * 
@@ -112,18 +122,18 @@ public class MapScaleBar {
 	 * @param mapScaleValue
 	 *            the map scale value in meters.
 	 */
-	private void draw(float scaleBarLength, int mapScaleValue) {
-		this.mapScaleBitmap.eraseColor(Color.TRANSPARENT);
+	private void draw(int scaleBarLength, int mapScaleValue) {
+		this.mapScaleBitmap.fillColor(this.graphicFactory.createColor(Color.TRANSPARENT));
 
-		drawScaleBar(scaleBarLength, SCALE_BAR_STROKE);
-		drawScaleBar(scaleBarLength, SCALE_BAR);
+		drawScaleBar(scaleBarLength, this.paintScaleBarStroke);
+		drawScaleBar(scaleBarLength, this.paintScaleBar);
 
 		String scaleText = this.adapter.getScaleText(mapScaleValue);
-		drawScaleText(scaleText, SCALE_TEXT_STROKE);
-		drawScaleText(scaleText, SCALE_TEXT);
+		drawScaleText(scaleText, this.paintScaleTextStroke);
+		drawScaleText(scaleText, this.paintScaleText);
 	}
 
-	private void drawScaleBar(float scaleBarLength, Paint paint) {
+	private void drawScaleBar(int scaleBarLength, Paint paint) {
 		this.mapScaleCanvas.drawLine(7, 25, scaleBarLength + 3, 25, paint);
 		this.mapScaleCanvas.drawLine(5, 10, 5, 40, paint);
 		this.mapScaleCanvas.drawLine(scaleBarLength + 5, 10, scaleBarLength + 5, 40, paint);
@@ -159,12 +169,12 @@ public class MapScaleBar {
 		groundResolution = groundResolution / this.adapter.getMeterRatio();
 		int[] scaleBarValues = this.adapter.getScaleBarValues();
 
-		float scaleBarLength = 0;
+		int scaleBarLength = 0;
 		int mapScaleValue = 0;
 
 		for (int i = 0; i < scaleBarValues.length; ++i) {
 			mapScaleValue = scaleBarValues[i];
-			scaleBarLength = mapScaleValue / (float) groundResolution;
+			scaleBarLength = (int) (mapScaleValue / groundResolution);
 			if (scaleBarLength < (BITMAP_WIDTH - 10)) {
 				break;
 			}

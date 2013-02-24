@@ -12,16 +12,25 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.viewinterfaces;
+package org.mapsforge.core.graphics;
 
-public interface MapViewInterface {
-	/**
-	 * @return the FrameBuffer used in this MapView.
-	 */
-	FrameBufferInterface getFrameBufferInterface();
+import java.awt.Polygon;
 
-	/**
-	 * Requests a redrawing as soon as possible.
-	 */
-	void repaint();
+class AwtPath implements Path {
+	final Polygon polygon = new Polygon();
+
+	@Override
+	public void addPoint(int x, int y) {
+		this.polygon.addPoint(x, y);
+	}
+
+	@Override
+	public void clear() {
+		this.polygon.reset();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.polygon.npoints == 0;
+	}
 }

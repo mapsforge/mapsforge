@@ -15,11 +15,10 @@
 package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.graphics.Paint;
-
-import android.graphics.Rect;
+import org.mapsforge.core.model.Rectangle;
 
 class PointTextContainer {
-	final Rect boundary;
+	final Rectangle boundary;
 	final Paint paintBack;
 	final Paint paintFront;
 	SymbolContainer symbol;
@@ -46,7 +45,7 @@ class PointTextContainer {
 		this.paintFront = paintFront;
 		this.paintBack = null;
 
-		this.boundary = new Rect(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
+		this.boundary = new Rectangle(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
 	}
 
 	/**
@@ -73,9 +72,9 @@ class PointTextContainer {
 		if (paintBack != null) {
 			paintBack.getTextHeight(text);
 			paintBack.getTextWidth(text);
-			this.boundary = new Rect(0, 0, paintBack.getTextWidth(text), paintBack.getTextHeight(text));
+			this.boundary = new Rectangle(0, 0, paintBack.getTextWidth(text), paintBack.getTextHeight(text));
 		} else {
-			this.boundary = new Rect(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
+			this.boundary = new Rectangle(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
 		}
 	}
 
@@ -105,9 +104,9 @@ class PointTextContainer {
 		this.symbol = symbol;
 
 		if (paintBack != null) {
-			this.boundary = new Rect(0, 0, paintBack.getTextWidth(text), paintBack.getTextHeight(text));
+			this.boundary = new Rectangle(0, 0, paintBack.getTextWidth(text), paintBack.getTextHeight(text));
 		} else {
-			this.boundary = new Rect(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
+			this.boundary = new Rectangle(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
 		}
 	}
 }

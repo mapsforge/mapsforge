@@ -17,12 +17,18 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.graphics.Paint;
 
 class WayTextContainer {
-	final double[] coordinates;
 	final Paint paint;
 	final String text;
+	final int x1;
+	final int x2;
+	final int y1;
+	final int y2;
 
-	WayTextContainer(double[] coordinates, String text, Paint paint) {
-		this.coordinates = coordinates;
+	WayTextContainer(int x1, int y1, int x2, int y2, String text, Paint paint) {
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
 		this.text = text;
 		this.paint = paint;
 	}

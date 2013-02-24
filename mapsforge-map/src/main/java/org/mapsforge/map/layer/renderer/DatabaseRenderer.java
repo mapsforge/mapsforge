@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
@@ -111,9 +112,10 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDatabase mapDatabase) {
+	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory) {
 		this.mapDatabase = mapDatabase;
-		this.canvasRasterer = new CanvasRasterer();
+
+		this.canvasRasterer = new CanvasRasterer(graphicFactory);
 		this.labelPlacement = new LabelPlacement();
 
 		this.ways = new ArrayList<List<List<ShapePaintContainer>>>(LAYERS);
@@ -165,7 +167,7 @@ public class DatabaseRenderer implements RenderCallback {
 		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile);
 
 		Bitmap bitmap = AndroidGraphics.INSTANCE.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
-		this.canvasRasterer.setCanvasBitmap(AndroidGraphics.getBitmap(bitmap));
+		this.canvasRasterer.setCanvasBitmap(bitmap);
 		this.canvasRasterer.fill(this.renderTheme.getMapBackground());
 		this.canvasRasterer.drawWays(this.ways);
 		this.canvasRasterer.drawSymbols(this.waySymbols);

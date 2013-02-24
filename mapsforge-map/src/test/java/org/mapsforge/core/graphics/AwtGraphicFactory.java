@@ -14,6 +14,7 @@
  */
 package org.mapsforge.core.graphics;
 
+import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +25,12 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	public static final AwtGraphicFactory INSTANCE = new AwtGraphicFactory();
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
-	public static BufferedImage getBufferedImage(Bitmap bitmap) {
+	static BufferedImage getBufferedImage(Bitmap bitmap) {
 		return ((AwtBitmap) bitmap).bufferedImage;
+	}
+
+	static Polygon getPolygon(Path path) {
+		return ((AwtPath) path).polygon;
 	}
 
 	private AwtGraphicFactory() {
@@ -57,19 +62,14 @@ public final class AwtGraphicFactory implements GraphicFactory {
 		switch (color) {
 			case BLACK:
 				return java.awt.Color.BLACK.getRGB();
-
 			case BLUE:
 				return java.awt.Color.BLUE.getRGB();
-
 			case GREEN:
 				return java.awt.Color.GREEN.getRGB();
-
 			case RED:
 				return java.awt.Color.RED.getRGB();
-
 			case TRANSPARENT:
 				return TRANSPARENT.getRGB();
-
 			case WHITE:
 				return java.awt.Color.WHITE.getRGB();
 		}
@@ -99,6 +99,6 @@ public final class AwtGraphicFactory implements GraphicFactory {
 
 	@Override
 	public Path createPath() {
-		throw new UnsupportedOperationException();
+		return new AwtPath();
 	}
 }

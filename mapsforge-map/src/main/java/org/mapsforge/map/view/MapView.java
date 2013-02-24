@@ -12,18 +12,16 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.viewinterfaces;
+package org.mapsforge.map.view;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.Dimension;
-import org.mapsforge.core.model.MapPosition;
+public interface MapView {
+	/**
+	 * @return the FrameBuffer used in this MapView.
+	 */
+	FrameBuffer getFrameBuffer();
 
-public interface FrameBufferInterface {
-	void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension);
-
-	void frameFinished(MapPosition mapPosition);
-
-	Bitmap getDrawingBitmap();
-
-	void setDimension(Dimension dimension);
+	/**
+	 * Requests a redrawing as soon as possible.
+	 */
+	void repaint();
 }

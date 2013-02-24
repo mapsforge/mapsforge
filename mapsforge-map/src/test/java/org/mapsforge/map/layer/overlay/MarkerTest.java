@@ -33,14 +33,14 @@ public class MarkerTest {
 		GeoPoint geoPoint = new GeoPoint(0, 0);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
-		Marker marker = new Marker(geoPoint, bitmap);
+		Marker marker = new Marker(geoPoint, bitmap, 0, 0);
 		Assert.assertEquals(geoPoint, marker.getGeoPoint());
 		Assert.assertEquals(bitmap, marker.getBitmap());
 	}
 
 	@Test
 	public void drawTest() {
-		Marker marker = new Marker(null, null);
+		Marker marker = new Marker(null, null, 0, 0);
 
 		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
 		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
@@ -60,7 +60,7 @@ public class MarkerTest {
 		GeoPoint geoPoint = new GeoPoint(0, 0);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
-		Marker marker = new Marker(null, null);
+		Marker marker = new Marker(null, null, 0, 0);
 		Assert.assertNull(marker.getGeoPoint());
 		Assert.assertNull(marker.getBitmap());
 

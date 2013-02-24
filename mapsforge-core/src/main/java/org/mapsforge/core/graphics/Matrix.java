@@ -17,6 +17,10 @@ package org.mapsforge.core.graphics;
 public interface Matrix {
 	void reset();
 
+	void rotate(float degrees);
+
+	void rotate(float degrees, int pivotX, int pivotY);
+
 	void scale(float scaleX, float scaleY);
 
 	void scale(float scaleX, float scaleY, float pivotX, float pivotY);

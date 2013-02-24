@@ -25,6 +25,17 @@ class AndroidMatrix implements Matrix {
 	}
 
 	@Override
+	public void rotate(float degrees) {
+		this.matrix.postRotate(degrees);
+
+	}
+
+	@Override
+	public void rotate(float degrees, int pivotX, int pivotY) {
+		this.matrix.postRotate(degrees, pivotX, pivotY);
+	}
+
+	@Override
 	public void scale(float scaleX, float scaleY) {
 		this.matrix.postScale(scaleX, scaleY);
 	}

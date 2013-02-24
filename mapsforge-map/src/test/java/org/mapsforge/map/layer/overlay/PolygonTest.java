@@ -27,49 +27,56 @@ import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
-public class PolylineTest {
+public class PolygonTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	@Test
 	public void constructorTest() {
+		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
-		Polyline polyline = new Polyline(paintStroke);
-		Assert.assertTrue(polyline.getGeoPoints().isEmpty());
-		Assert.assertEquals(paintStroke, polyline.getPaintStroke());
+		Polygon polygon = new Polygon(paintFill, paintStroke, GRAPHIC_FACTORY);
+		Assert.assertTrue(polygon.getGeoPoints().isEmpty());
+		Assert.assertEquals(paintFill, polygon.getPaintFill());
+		Assert.assertEquals(paintStroke, polygon.getPaintStroke());
 	}
 
 	@Test
 	public void drawTest() {
-		Polyline polyline = new Polyline(null);
+		Polygon polygon = new Polygon(null, null, GRAPHIC_FACTORY);
 
 		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
 		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
 		Point point = new Point(0, 0);
-		polyline.draw(boundingBox, (byte) 0, canvas, point);
+		polygon.draw(boundingBox, (byte) 0, canvas, point);
 
-		polyline.getGeoPoints().add(new GeoPoint(0, 0));
-		polyline.getGeoPoints().add(new GeoPoint(1, 1));
-		polyline.draw(boundingBox, (byte) 0, canvas, point);
+		polygon.getGeoPoints().add(new GeoPoint(0, 0));
+		polygon.getGeoPoints().add(new GeoPoint(1, 1));
+		polygon.draw(boundingBox, (byte) 0, canvas, point);
 
-		polyline.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-		polyline.draw(boundingBox, (byte) 0, canvas, point);
+		polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
+		polygon.setPaintStroke(GRAPHIC_FACTORY.createPaint());
+		polygon.draw(boundingBox, (byte) 0, canvas, point);
 	}
 
 	@Test
 	public void setterTest() {
 		GeoPoint geoPoint = new GeoPoint(0, 0);
+		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
-		Polyline polyline = new Polyline(null);
-		Assert.assertTrue(polyline.getGeoPoints().isEmpty());
-		Assert.assertNull(polyline.getPaintStroke());
+		Polygon polygon = new Polygon(null, null, GRAPHIC_FACTORY);
+		Assert.assertTrue(polygon.getGeoPoints().isEmpty());
+		Assert.assertNull(polygon.getPaintFill());
+		Assert.assertNull(polygon.getPaintStroke());
 
-		polyline.getGeoPoints().add(geoPoint);
-		Assert.assertEquals(Arrays.asList(geoPoint), polyline.getGeoPoints());
+		polygon.getGeoPoints().add(geoPoint);
+		Assert.assertEquals(Arrays.asList(geoPoint), polygon.getGeoPoints());
 
-		polyline.setPaintStroke(paintStroke);
-		Assert.assertEquals(paintStroke, polyline.getPaintStroke());
+		polygon.setPaintFill(paintFill);
+		polygon.setPaintStroke(paintStroke);
+		Assert.assertEquals(paintFill, polygon.getPaintFill());
+		Assert.assertEquals(paintStroke, polygon.getPaintStroke());
 	}
 }

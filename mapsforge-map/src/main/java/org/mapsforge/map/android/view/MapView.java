@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.android.view;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.android.input.TouchEventHandler;
@@ -24,7 +25,8 @@ import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.mapsforge.map.view.FpsCounter;
+import org.mapsforge.map.view.FrameBuffer;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -33,8 +35,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-public class MapView extends View implements MapViewInterface {
-	private final FpsCounter fpsCounter = new FpsCounter();
+public class MapView extends View implements org.mapsforge.map.view.MapView {
+	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphics.INSTANCE;
+
+	private final FpsCounter fpsCounter;
 	private final FrameBuffer frameBuffer;
 	private final LayerManager layerManager;
 	private final MapScaleBar mapScaleBar;
@@ -46,10 +50,11 @@ public class MapView extends View implements MapViewInterface {
 
 		this.model = model;
 
-		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel);
+		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
+		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, GRAPHIC_FACTORY);
 		new FrameBufferController(this.frameBuffer, this.model);
 
-		this.layerManager = new LayerManager(this, this.model.mapViewPosition, AndroidGraphics.INSTANCE);
+		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
 		this.layerManager.start();
 		new LayerManagerController(this.layerManager, this.model);
 
@@ -60,7 +65,7 @@ public class MapView extends View implements MapViewInterface {
 		this.touchEventHandler = new TouchEventHandler(this.model.mapViewPosition, viewConfiguration);
 		this.touchEventHandler.addListener(touchGestureDetector);
 
-		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition);
+		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, GRAPHIC_FACTORY);
 	}
 
 	public void destroy() {
@@ -72,7 +77,7 @@ public class MapView extends View implements MapViewInterface {
 	}
 
 	@Override
-	public FrameBuffer getFrameBufferInterface() {
+	public FrameBuffer getFrameBuffer() {
 		return this.frameBuffer;
 	}
 
@@ -103,8 +108,10 @@ public class MapView extends View implements MapViewInterface {
 	}
 
 	@Override
-	protected void onDraw(Canvas canvas) {
-		this.frameBuffer.draw(AndroidGraphics.createCanvas(canvas));
+	protected void onDraw(Canvas androidCanvas) {
+		org.mapsforge.core.graphics.Canvas canvas = AndroidGraphics.createCanvas(androidCanvas);
+
+		this.frameBuffer.draw(canvas);
 		this.mapScaleBar.draw(canvas);
 		this.fpsCounter.draw(canvas);
 	}

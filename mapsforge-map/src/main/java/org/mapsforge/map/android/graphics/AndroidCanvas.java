@@ -24,7 +24,7 @@ class AndroidCanvas implements Canvas {
 	final android.graphics.Canvas canvas;
 
 	AndroidCanvas() {
-		this(new android.graphics.Canvas());
+		this.canvas = new android.graphics.Canvas();
 	}
 
 	AndroidCanvas(android.graphics.Canvas canvas) {
@@ -59,6 +59,19 @@ class AndroidCanvas implements Canvas {
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
 		this.canvas.drawText(text, x, y, AndroidGraphics.getPaint(paint));
+	}
+
+	@Override
+	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
+		android.graphics.Path path = new android.graphics.Path();
+		path.moveTo(x1, y1);
+		path.lineTo(x2, y2);
+		this.canvas.drawTextOnPath(text, path, 0, 3, AndroidGraphics.getPaint(paint));
+	}
+
+	@Override
+	public void fillColor(int color) {
+		this.canvas.drawColor(color);
 	}
 
 	@Override

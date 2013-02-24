@@ -14,14 +14,14 @@
  */
 package org.mapsforge.map.controller;
 
-import org.mapsforge.map.android.view.FrameBuffer;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.MapView;
 
-class DummyMapViewInterface implements MapViewInterface {
-	int repaintCounter;
+public class DummyMapView implements MapView {
+	public int repaintCounter;
 
 	@Override
-	public FrameBuffer getFrameBufferInterface() {
+	public FrameBuffer getFrameBuffer() {
 		return null;
 	}
 

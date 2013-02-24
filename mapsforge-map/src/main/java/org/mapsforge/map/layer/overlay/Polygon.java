@@ -61,15 +61,11 @@ public class Polygon extends Layer {
 		}
 
 		Path path = this.graphicFactory.createPath();
+
 		for (GeoPoint geoPoint : this.geoPoints) {
 			int x = (int) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
 			int y = (int) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
-
-			if (path.isEmpty()) {
-				path.moveTo(x, y);
-			} else {
-				path.lineTo(x, y);
-			}
+			path.addPoint(x, y);
 		}
 
 		if (this.paintStroke != null) {

@@ -29,9 +29,9 @@ public class Rectangle implements Serializable {
 
 	public Rectangle(double left, double top, double right, double bottom) {
 		if (left > right) {
-			throw new IllegalArgumentException("left must be <= right: " + left + " " + right);
+			throw new IllegalArgumentException("left: " + left + ", right: " + right);
 		} else if (top > bottom) {
-			throw new IllegalArgumentException("top must be <= bottom: " + top + " " + bottom);
+			throw new IllegalArgumentException("top: " + top + ", bottom: " + bottom);
 		}
 
 		this.left = left;

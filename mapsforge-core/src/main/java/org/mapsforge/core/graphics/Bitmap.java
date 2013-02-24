@@ -29,11 +29,6 @@ public interface Bitmap {
 	int getHeight();
 
 	/**
-	 * @return the color values of all pixels in this bitmap.
-	 */
-	int[] getPixels();
-
-	/**
 	 * @return the width of this bitmap in pixels.
 	 */
 	int getWidth();

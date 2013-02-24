@@ -16,36 +16,22 @@ package org.mapsforge.map.layer.renderer;
 
 import java.util.List;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.map.android.graphics.AndroidGraphics;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-
-/**
- * A CanvasRasterer uses a Canvas for drawing.
- * 
- * @see <a href="http://developer.android.com/reference/android/graphics/Canvas.html">Canvas</a>
- */
 class CanvasRasterer {
-	private static final android.graphics.Paint PAINT_BITMAP_FILTER = createAndroidPaint();
-
-	private static android.graphics.Paint createAndroidPaint() {
-		return new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
-	}
-
 	private final Canvas canvas;
 	private final Path path;
 	private final Matrix symbolMatrix;
 
-	CanvasRasterer() {
-		this.canvas = new Canvas();
-		this.symbolMatrix = new Matrix();
-		this.path = new Path();
-		this.path.setFillType(Path.FillType.EVEN_ODD);
+	CanvasRasterer(GraphicFactory graphicFactory) {
+		this.canvas = graphicFactory.createCanvas();
+		this.symbolMatrix = graphicFactory.createMatrix();
+		this.path = graphicFactory.createPath();
 	}
 
 	void drawNodes(List<PointTextContainer> pointTextContainers) {
@@ -53,14 +39,12 @@ class CanvasRasterer {
 			PointTextContainer pointTextContainer = pointTextContainers.get(index);
 
 			if (pointTextContainer.paintBack != null) {
-				Paint androidPaint = AndroidGraphics.getPaint(pointTextContainer.paintBack);
-				this.canvas.drawText(pointTextContainer.text, (float) pointTextContainer.x,
-						(float) pointTextContainer.y, androidPaint);
+				this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
+						pointTextContainer.paintBack);
 			}
 
-			Paint androidPaint = AndroidGraphics.getPaint(pointTextContainer.paintFront);
-			this.canvas.drawText(pointTextContainer.text, (float) pointTextContainer.x, (float) pointTextContainer.y,
-					androidPaint);
+			this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
+					pointTextContainer.paintFront);
 		}
 	}
 
@@ -69,34 +53,27 @@ class CanvasRasterer {
 			SymbolContainer symbolContainer = symbolContainers.get(index);
 
 			Point point = symbolContainer.point;
+			this.symbolMatrix.reset();
+
 			if (symbolContainer.alignCenter) {
 				int pivotX = symbolContainer.symbol.getWidth() / 2;
 				int pivotY = symbolContainer.symbol.getHeight() / 2;
-				this.symbolMatrix.setRotate(symbolContainer.rotation, pivotX, pivotY);
-				this.symbolMatrix.postTranslate((float) (point.x - pivotX), (float) (point.y - pivotY));
+				this.symbolMatrix.rotate(symbolContainer.rotation, pivotX, pivotY);
+				this.symbolMatrix.translate((float) (point.x - pivotX), (float) (point.y - pivotY));
 			} else {
-				this.symbolMatrix.setRotate(symbolContainer.rotation);
-				this.symbolMatrix.postTranslate((float) point.x, (float) point.y);
+				this.symbolMatrix.rotate(symbolContainer.rotation);
+				this.symbolMatrix.translate((float) point.x, (float) point.y);
 			}
 
-			Bitmap androidBitmap = AndroidGraphics.getBitmap(symbolContainer.symbol);
-			this.canvas.drawBitmap(androidBitmap, this.symbolMatrix, PAINT_BITMAP_FILTER);
+			this.canvas.drawBitmap(symbolContainer.symbol, this.symbolMatrix);
 		}
 	}
 
 	void drawWayNames(List<WayTextContainer> wayTextContainers) {
 		for (int index = wayTextContainers.size() - 1; index >= 0; --index) {
 			WayTextContainer wayTextContainer = wayTextContainers.get(index);
-			this.path.rewind();
-
-			double[] textCoordinates = wayTextContainer.coordinates;
-			this.path.moveTo((float) textCoordinates[0], (float) textCoordinates[1]);
-			for (int i = 2; i < textCoordinates.length; i += 2) {
-				this.path.lineTo((float) textCoordinates[i], (float) textCoordinates[i + 1]);
-			}
-
-			Paint androidPaint = AndroidGraphics.getPaint(wayTextContainer.paint);
-			this.canvas.drawTextOnPath(wayTextContainer.text, this.path, 0, 3, androidPaint);
+			this.canvas.drawTextRotated(wayTextContainer.text, wayTextContainer.x1, wayTextContainer.y1,
+					wayTextContainer.x2, wayTextContainer.y2, wayTextContainer.paint);
 		}
 	}
 
@@ -111,14 +88,15 @@ class CanvasRasterer {
 
 				for (int index = wayList.size() - 1; index >= 0; --index) {
 					ShapePaintContainer shapePaintContainer = wayList.get(index);
-					this.path.rewind();
+					this.path.clear();
 
 					switch (shapePaintContainer.shapeContainer.getShapeType()) {
 						case CIRCLE:
 							CircleContainer circleContainer = (CircleContainer) shapePaintContainer.shapeContainer;
 							Point point = circleContainer.point;
-							this.path.addCircle((float) point.x, (float) point.y, circleContainer.radius,
-									Path.Direction.CCW);
+
+							this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius,
+									shapePaintContainer.paint);
 							break;
 
 						case WAY:
@@ -129,25 +107,24 @@ class CanvasRasterer {
 								Point[] points = coordinates[j];
 								if (points.length >= 2) {
 									Point immutablePoint = points[0];
-									this.path.moveTo((float) immutablePoint.x, (float) immutablePoint.y);
+									this.path.addPoint((int) immutablePoint.x, (int) immutablePoint.y);
 									for (int i = 1; i < points.length; ++i) {
 										immutablePoint = points[i];
-										this.path.lineTo((float) immutablePoint.x, (float) immutablePoint.y);
+										this.path.addPoint((int) immutablePoint.x, (int) immutablePoint.y);
 									}
 								}
 							}
 							break;
 					}
 
-					Paint androidPaint = AndroidGraphics.getPaint(shapePaintContainer.paint);
-					this.canvas.drawPath(this.path, androidPaint);
+					this.canvas.drawPath(this.path, shapePaintContainer.paint);
 				}
 			}
 		}
 	}
 
 	void fill(int color) {
-		this.canvas.drawColor(color);
+		this.canvas.fillColor(color);
 	}
 
 	void setCanvasBitmap(Bitmap bitmap) {

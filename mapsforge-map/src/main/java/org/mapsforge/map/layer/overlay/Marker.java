@@ -28,6 +28,8 @@ import org.mapsforge.map.layer.Layer;
  */
 public class Marker extends Layer {
 	private Bitmap bitmap;
+	private final int dx;
+	private final int dy;
 	private GeoPoint geoPoint;
 
 	/**
@@ -36,11 +38,13 @@ public class Marker extends Layer {
 	 * @param bitmap
 	 *            the initial {@code Bitmap} of this marker (may be null).
 	 */
-	public Marker(GeoPoint geoPoint, Bitmap bitmap) {
+	public Marker(GeoPoint geoPoint, Bitmap bitmap, int dx, int dy) {
 		super();
 
 		this.geoPoint = geoPoint;
 		this.bitmap = bitmap;
+		this.dx = dx;
+		this.dy = dy;
 	}
 
 	@Override
@@ -49,8 +53,8 @@ public class Marker extends Layer {
 			return;
 		}
 
-		int left = (int) (MercatorProjection.longitudeToPixelX(this.geoPoint.longitude, zoomLevel) - canvasPosition.x);
-		int top = (int) (MercatorProjection.latitudeToPixelY(this.geoPoint.latitude, zoomLevel) - canvasPosition.y);
+		int left = (int) (MercatorProjection.longitudeToPixelX(this.geoPoint.longitude, zoomLevel) - canvasPosition.x + this.dx);
+		int top = (int) (MercatorProjection.latitudeToPixelY(this.geoPoint.latitude, zoomLevel) - canvasPosition.y + this.dy);
 		int right = left + this.bitmap.getWidth();
 		int bottom = top + this.bitmap.getHeight();
 

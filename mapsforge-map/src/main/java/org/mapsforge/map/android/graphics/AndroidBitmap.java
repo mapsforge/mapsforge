@@ -66,15 +66,6 @@ class AndroidBitmap implements Bitmap {
 	}
 
 	@Override
-	public int[] getPixels() {
-		int width = getWidth();
-		int height = getHeight();
-		int[] colors = new int[width * height];
-		this.bitmap.getPixels(colors, 0, width, 0, 0, width, height);
-		return colors;
-	}
-
-	@Override
 	public int getWidth() {
 		return this.bitmap.getWidth();
 	}

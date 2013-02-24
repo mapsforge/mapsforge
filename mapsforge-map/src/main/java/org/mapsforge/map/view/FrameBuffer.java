@@ -12,31 +12,31 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.android.view;
+package org.mapsforge.map.view;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.model.FrameBufferModel;
-import org.mapsforge.map.viewinterfaces.FrameBufferInterface;
 
-public class FrameBuffer implements FrameBufferInterface {
+public class FrameBuffer {
 	private Bitmap bitmap1;
 	private Bitmap bitmap2;
 	private Dimension dimension;
 	private final FrameBufferModel frameBufferModel;
+	private final GraphicFactory graphicFactory;
 	private final Matrix matrix;
 
-	public FrameBuffer(FrameBufferModel frameBufferModel) {
+	public FrameBuffer(FrameBufferModel frameBufferModel, GraphicFactory graphicFactory) {
 		this.frameBufferModel = frameBufferModel;
+		this.graphicFactory = graphicFactory;
 
-		this.matrix = AndroidGraphics.INSTANCE.createMatrix();
+		this.matrix = graphicFactory.createMatrix();
 	}
 
-	@Override
 	public synchronized void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension) {
 		if (this.dimension == null) {
 			return;
@@ -61,7 +61,6 @@ public class FrameBuffer implements FrameBufferInterface {
 		}
 	}
 
-	@Override
 	public synchronized void frameFinished(MapPosition frameMapPosition) {
 		// swap both bitmap references
 		Bitmap bitmapTemp = this.bitmap1;
@@ -74,18 +73,16 @@ public class FrameBuffer implements FrameBufferInterface {
 	/**
 	 * @return the bitmap of the second frame to draw on (may be null).
 	 */
-	@Override
 	public synchronized Bitmap getDrawingBitmap() {
 		return this.bitmap2;
 	}
 
-	@Override
 	public synchronized void setDimension(Dimension dimension) {
 		this.dimension = dimension;
 
 		if (dimension.width > 0 && dimension.height > 0) {
-			this.bitmap1 = AndroidGraphics.INSTANCE.createBitmap(dimension.width, dimension.height);
-			this.bitmap2 = AndroidGraphics.INSTANCE.createBitmap(dimension.width, dimension.height);
+			this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
+			this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
 		} else {
 			this.bitmap1 = null;
 			this.bitmap2 = null;

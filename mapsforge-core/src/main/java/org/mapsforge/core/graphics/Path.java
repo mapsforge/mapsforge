@@ -15,9 +15,9 @@
 package org.mapsforge.core.graphics;
 
 public interface Path {
+	void addPoint(int x, int y);
+
+	void clear();
+
 	boolean isEmpty();
-
-	void lineTo(int x, int y);
-
-	void moveTo(int x, int y);
 }

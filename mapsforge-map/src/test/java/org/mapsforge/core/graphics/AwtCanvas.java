@@ -24,10 +24,8 @@ class AwtCanvas implements Canvas {
 		switch (cap) {
 			case BUTT:
 				return BasicStroke.CAP_BUTT;
-
 			case ROUND:
 				return BasicStroke.CAP_ROUND;
-
 			case SQUARE:
 				return BasicStroke.CAP_SQUARE;
 		}
@@ -67,12 +65,25 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawPath(Path path, Paint paint) {
-		throw new UnsupportedOperationException();
+		setPaintAttributes(paint);
+		this.graphics2D.drawPolygon(AwtGraphicFactory.getPolygon(path));
 	}
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
+		setPaintAttributes(paint);
+		this.graphics2D.drawString(text, x, y);
+	}
+
+	@Override
+	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void fillColor(int color) {
+		this.graphics2D.setColor(new java.awt.Color(color));
+		this.graphics2D.fillRect(0, 0, getWidth(), getHeight());
 	}
 
 	@Override

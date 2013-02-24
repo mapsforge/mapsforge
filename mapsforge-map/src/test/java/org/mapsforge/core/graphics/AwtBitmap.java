@@ -41,7 +41,7 @@ class AwtBitmap implements Bitmap {
 
 	@Override
 	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
-		int[] pixels = getPixels();
+		int[] pixels = this.bufferedImage.getRGB(0, 0, getWidth(), getHeight(), null, 0, getWidth());
 		for (int i = 0; i < pixels.length; ++i) {
 			byteBuffer.putInt(pixels[i]);
 		}
@@ -57,11 +57,6 @@ class AwtBitmap implements Bitmap {
 	@Override
 	public int getHeight() {
 		return this.bufferedImage.getHeight();
-	}
-
-	@Override
-	public int[] getPixels() {
-		return this.bufferedImage.getRGB(0, 0, getWidth(), getHeight(), null, 0, getWidth());
 	}
 
 	@Override

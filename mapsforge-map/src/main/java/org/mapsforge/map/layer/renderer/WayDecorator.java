@@ -123,22 +123,27 @@ final class WayDecorator {
 			if (skipPixels > 0) {
 				skipPixels -= segmentLengthInPixel;
 			} else if (segmentLengthInPixel > wayNameWidth) {
-				double[] wayNamePath = new double[4];
+				int x1;
+				int x2;
+				int y1;
+				int y2;
+
 				// check to prevent inverted way names
 				if (previousX <= currentX) {
-					wayNamePath[0] = previousX;
-					wayNamePath[1] = previousY;
-					wayNamePath[2] = currentX;
-					wayNamePath[3] = currentY;
+					x1 = (int) previousX;
+					y1 = (int) previousY;
+					x2 = (int) currentX;
+					y2 = (int) currentY;
 				} else {
-					wayNamePath[0] = currentX;
-					wayNamePath[1] = currentY;
-					wayNamePath[2] = previousX;
-					wayNamePath[3] = previousY;
+					x1 = (int) currentX;
+					y1 = (int) currentY;
+					x2 = (int) previousX;
+					y2 = (int) previousY;
 				}
-				wayNames.add(new WayTextContainer(wayNamePath, textKey, fill));
+
+				wayNames.add(new WayTextContainer(x1, y1, x2, y2, textKey, fill));
 				if (stroke != null) {
-					wayNames.add(new WayTextContainer(wayNamePath, textKey, stroke));
+					wayNames.add(new WayTextContainer(x1, y1, x2, y2, textKey, stroke));
 				}
 
 				skipPixels = DISTANCE_BETWEEN_WAY_NAMES;

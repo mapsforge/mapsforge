@@ -17,20 +17,29 @@ package org.mapsforge.map.android.graphics;
 import org.mapsforge.core.graphics.Path;
 
 class AndroidPath implements Path {
-	final android.graphics.Path path = new android.graphics.Path();
+	final android.graphics.Path path;
+
+	AndroidPath() {
+		this.path = new android.graphics.Path();
+		this.path.setFillType(android.graphics.Path.FillType.EVEN_ODD);
+	}
+
+	@Override
+	public void addPoint(int x, int y) {
+		if (isEmpty()) {
+			this.path.moveTo(x, y);
+		} else {
+			this.path.lineTo(x, y);
+		}
+	}
+
+	@Override
+	public void clear() {
+		this.path.rewind();
+	}
 
 	@Override
 	public boolean isEmpty() {
 		return this.path.isEmpty();
-	}
-
-	@Override
-	public void lineTo(int x, int y) {
-		this.path.lineTo(x, y);
-	}
-
-	@Override
-	public void moveTo(int x, int y) {
-		this.path.moveTo(x, y);
 	}
 }

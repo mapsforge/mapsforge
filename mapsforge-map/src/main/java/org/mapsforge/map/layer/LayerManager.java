@@ -30,11 +30,10 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.PausableThread;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.viewinterfaces.FrameBufferInterface;
-import org.mapsforge.map.viewinterfaces.LayerManagerInterface;
-import org.mapsforge.map.viewinterfaces.MapViewInterface;
+import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.MapView;
 
-public class LayerManager extends PausableThread implements LayerManagerInterface {
+public class LayerManager extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
 	private static final int MILLISECONDS_PER_FRAME = 50;
 
@@ -74,15 +73,14 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 	private final int backgroundColor;
 	private final Canvas drawingCanvas;
 	private final List<Layer> layers;
-	private final MapViewInterface mapViewInterface;
+	private final MapView mapView;
 	private final MapViewPosition mapViewPosition;
 	private boolean redrawNeeded;
 
-	public LayerManager(MapViewInterface mapViewInterface, MapViewPosition mapViewPosition,
-			GraphicFactory graphicFactory) {
+	public LayerManager(MapView mapView, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
 		super();
 
-		this.mapViewInterface = mapViewInterface;
+		this.mapView = mapView;
 		this.mapViewPosition = mapViewPosition;
 
 		this.drawingCanvas = graphicFactory.createCanvas();
@@ -97,7 +95,6 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 	/**
 	 * Requests an asynchronous redrawing of all layers.
 	 */
-	@Override
 	public void redrawLayers() {
 		this.redrawNeeded = true;
 		synchronized (this) {
@@ -117,8 +114,8 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 		long startTime = System.nanoTime();
 		this.redrawNeeded = false;
 
-		FrameBufferInterface frameBufferInterface = this.mapViewInterface.getFrameBufferInterface();
-		Bitmap bitmap = frameBufferInterface.getDrawingBitmap();
+		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
+		Bitmap bitmap = frameBuffer.getDrawingBitmap();
 		if (bitmap != null) {
 			bitmap.fillColor(this.backgroundColor);
 			this.drawingCanvas.setBitmap(bitmap);
@@ -133,8 +130,8 @@ public class LayerManager extends PausableThread implements LayerManagerInterfac
 				}
 			}
 
-			frameBufferInterface.frameFinished(mapPosition);
-			this.mapViewInterface.repaint();
+			frameBuffer.frameFinished(mapPosition);
+			this.mapView.repaint();
 		}
 
 		long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;

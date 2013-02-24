@@ -116,7 +116,7 @@ public class AndroidPreferences implements PreferencesFacade {
 	@Override
 	public synchronized void save() {
 		if (this.editor != null) {
-			this.editor.commit();
+			this.editor.apply();
 			this.editor = null;
 		}
 	}
