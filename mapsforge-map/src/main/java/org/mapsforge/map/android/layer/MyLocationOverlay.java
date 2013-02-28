@@ -112,11 +112,7 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 
 		this.mapViewPosition = mapViewPosition;
 		this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		if (bitmap == null) {
-			this.marker = new Marker(null, bitmap, 0, 0);
-		} else {
-			this.marker = new Marker(null, bitmap, -bitmap.getWidth() / 2, -bitmap.getHeight() / 2);
-		}
+		this.marker = new Marker(null, bitmap, 0, 0);
 		this.circle = new Circle(null, 0, circleFill, circleStroke);
 	}
 

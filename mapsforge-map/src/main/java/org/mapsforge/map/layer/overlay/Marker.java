@@ -37,14 +37,18 @@ public class Marker extends Layer {
 	 *            the initial geographical coordinates of this marker (may be null).
 	 * @param bitmap
 	 *            the initial {@code Bitmap} of this marker (may be null).
+	 * @param dx
+	 *            the horizontal marker offset.
+	 * @param dy
+	 *            the vertical marker offset.
 	 */
 	public Marker(GeoPoint geoPoint, Bitmap bitmap, int dx, int dy) {
 		super();
 
 		this.geoPoint = geoPoint;
 		this.bitmap = bitmap;
-		this.dx = dx;
-		this.dy = dy;
+		this.dx = dx - (bitmap.getWidth() / 2);
+		this.dy = dy - (bitmap.getHeight() / 2);
 	}
 
 	@Override

@@ -84,7 +84,7 @@ public class Rewrite extends Activity {
 	private Marker createMarker(int resourceIdentifier, GeoPoint geoPoint) {
 		Drawable drawable = getResources().getDrawable(resourceIdentifier);
 		Bitmap bitmap = AndroidGraphics.convertToBitmap(drawable);
-		return new Marker(geoPoint, bitmap, -bitmap.getWidth() / 2, -bitmap.getHeight());
+		return new Marker(geoPoint, bitmap, 0, 0);
 	}
 
 	private TileCache createTileCache() {
