@@ -19,16 +19,16 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mapsforge.core.graphics.AwtGraphicFactory;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.HttpServerTest;
+import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 
 public class TileDownloaderTest extends HttpServerTest {
-	private static final AwtGraphicFactory GRAPHIC_ADAPTER = AwtGraphicFactory.INSTANCE;
+	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	private static TileDownloader createTileDownloader(DownloadJob downloadJob, GraphicFactory graphicFactory) {
 		return new TileDownloader(downloadJob, graphicFactory);
@@ -48,9 +48,9 @@ public class TileDownloaderTest extends HttpServerTest {
 		Tile tile = new Tile(0, 0, (byte) 0);
 		TileSource tileSource = new OpenStreetMapMapnik("localhost", getPort());
 		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
-		createTileDownloader(downloadJob, GRAPHIC_ADAPTER);
+		createTileDownloader(downloadJob, GRAPHIC_FACTORY);
 
-		verifyInvalidConstructor(null, GRAPHIC_ADAPTER);
+		verifyInvalidConstructor(null, GRAPHIC_FACTORY);
 		verifyInvalidConstructor(downloadJob, null);
 	}
 
@@ -61,7 +61,7 @@ public class TileDownloaderTest extends HttpServerTest {
 		Tile tile = new Tile(0, 0, (byte) 0);
 		TileSource tileSource = new OpenStreetMapMapnik("localhost", getPort());
 		DownloadJob downloadJob = new DownloadJob(tile, tileSource);
-		TileDownloader tileDownloader = new TileDownloader(downloadJob, GRAPHIC_ADAPTER);
+		TileDownloader tileDownloader = new TileDownloader(downloadJob, GRAPHIC_FACTORY);
 		Bitmap bitmap = tileDownloader.downloadImage();
 
 		Assert.assertEquals(Tile.TILE_SIZE, bitmap.getWidth());

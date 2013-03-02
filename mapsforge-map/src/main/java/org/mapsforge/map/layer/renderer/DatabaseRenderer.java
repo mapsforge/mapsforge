@@ -31,7 +31,6 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.MapReadResult;
 import org.mapsforge.map.reader.PointOfInterest;
@@ -56,19 +55,6 @@ public class DatabaseRenderer implements RenderCallback {
 	private static final Point[][] WATER_TILE_COORDINATES = getTilePixelCoordinates();
 	private static final byte ZOOM_MAX = 22;
 
-	private static RenderTheme getRenderTheme(XmlRenderTheme jobTheme) {
-		try {
-			return RenderThemeHandler.getRenderTheme(AndroidGraphics.INSTANCE, jobTheme);
-		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-		} catch (SAXException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-		}
-		return null;
-	}
-
 	private static Point[][] getTilePixelCoordinates() {
 		Point point1 = new Point(0, 0);
 		Point point2 = new Point(Tile.TILE_SIZE, 0);
@@ -92,6 +78,7 @@ public class DatabaseRenderer implements RenderCallback {
 	private Point[][] coordinates;
 	private RendererJob currentRendererJob;
 	private List<List<ShapePaintContainer>> drawingLayers;
+	private final GraphicFactory graphicFactory;
 	private final LabelPlacement labelPlacement;
 	private final MapDatabase mapDatabase;
 	private List<PointTextContainer> nodes;
@@ -114,6 +101,7 @@ public class DatabaseRenderer implements RenderCallback {
 	 */
 	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory) {
 		this.mapDatabase = mapDatabase;
+		this.graphicFactory = graphicFactory;
 
 		this.canvasRasterer = new CanvasRasterer(graphicFactory);
 		this.labelPlacement = new LabelPlacement();
@@ -166,7 +154,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile);
 
-		Bitmap bitmap = AndroidGraphics.INSTANCE.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
+		Bitmap bitmap = this.graphicFactory.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
 		this.canvasRasterer.setCanvasBitmap(bitmap);
 		this.canvasRasterer.fill(this.renderTheme.getMapBackground());
 		this.canvasRasterer.drawWays(this.ways);
@@ -305,6 +293,19 @@ public class DatabaseRenderer implements RenderCallback {
 			}
 			this.ways.add(innerWayList);
 		}
+	}
+
+	private RenderTheme getRenderTheme(XmlRenderTheme jobTheme) {
+		try {
+			return RenderThemeHandler.getRenderTheme(this.graphicFactory, jobTheme);
+		} catch (ParserConfigurationException e) {
+			LOGGER.log(Level.SEVERE, null, e);
+		} catch (SAXException e) {
+			LOGGER.log(Level.SEVERE, null, e);
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, null, e);
+		}
+		return null;
 	}
 
 	private void processReadMapData(MapReadResult mapReadResult) {

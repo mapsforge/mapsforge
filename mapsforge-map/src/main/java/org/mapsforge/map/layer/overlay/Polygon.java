@@ -35,8 +35,8 @@ import org.mapsforge.map.layer.Layer;
  * drawing parameters such as color, stroke width, pattern and transparency.
  */
 public class Polygon extends Layer {
-	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
 	private final GraphicFactory graphicFactory;
+	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
 	private Paint paintFill;
 	private Paint paintStroke;
 

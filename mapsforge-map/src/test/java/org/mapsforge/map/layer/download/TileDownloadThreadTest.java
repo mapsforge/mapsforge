@@ -21,9 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mapsforge.core.graphics.AwtGraphicFactory;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.HttpServerTest;
+import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.DummyMapView;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
@@ -35,7 +36,7 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.view.MapView;
 
 public class TileDownloadThreadTest extends HttpServerTest {
-	private static final AwtGraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final int WAIT_TIME_MILLIS = 3000;
 
 	private static void awaitWaitingState(Thread thread) throws InterruptedException {

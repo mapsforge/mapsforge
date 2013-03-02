@@ -24,14 +24,14 @@ import org.mapsforge.core.model.Tag;
  */
 public class Way {
 	/**
-	 * The geographical coordinates of the way nodes.
-	 */
-	public final LatLong[][] latLongs;
-
-	/**
 	 * The position of the area label (may be null).
 	 */
 	public final LatLong labelPosition;
+
+	/**
+	 * The geographical coordinates of the way nodes.
+	 */
+	public final LatLong[][] latLongs;
 
 	/**
 	 * The layer of this way + 5 (to avoid negative values).
