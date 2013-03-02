@@ -15,7 +15,7 @@
 package org.mapsforge.map.model;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.Observable;
@@ -59,8 +59,8 @@ public class MapViewPosition extends Observable implements Persistable {
 	/**
 	 * @return the current center position of the map.
 	 */
-	public synchronized GeoPoint getCenter() {
-		return new GeoPoint(this.latitude, this.longitude);
+	public synchronized LatLong getCenter() {
+		return new LatLong(this.latitude, this.longitude);
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class MapViewPosition extends Observable implements Persistable {
 
 			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, this.zoomLevel);
 			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, this.zoomLevel);
-			setCenterInternal(new GeoPoint(newLatitude, newLongitude));
+			setCenterInternal(new LatLong(newLatitude, newLongitude));
 		}
 		notifyObservers();
 	}
@@ -162,9 +162,9 @@ public class MapViewPosition extends Observable implements Persistable {
 	/**
 	 * Sets the new center position of the map.
 	 */
-	public void setCenter(GeoPoint geoPoint) {
+	public void setCenter(LatLong latLong) {
 		synchronized (this) {
-			setCenterInternal(geoPoint);
+			setCenterInternal(latLong);
 		}
 		notifyObservers();
 	}
@@ -184,7 +184,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	 */
 	public void setMapPosition(MapPosition mapPosition) {
 		synchronized (this) {
-			setCenterInternal(mapPosition.geoPoint);
+			setCenterInternal(mapPosition.latLong);
 			setZoomLevelInternal(mapPosition.zoomLevel);
 		}
 		notifyObservers();
@@ -256,13 +256,13 @@ public class MapViewPosition extends Observable implements Persistable {
 		zoom((byte) -1);
 	}
 
-	private void setCenterInternal(GeoPoint geoPoint) {
+	private void setCenterInternal(LatLong latLong) {
 		if (this.mapLimit == null) {
-			this.latitude = geoPoint.latitude;
-			this.longitude = geoPoint.longitude;
+			this.latitude = latLong.latitude;
+			this.longitude = latLong.longitude;
 		} else {
-			this.latitude = Math.max(Math.min(geoPoint.latitude, this.mapLimit.maxLatitude), this.mapLimit.minLatitude);
-			this.longitude = Math.max(Math.min(geoPoint.longitude, this.mapLimit.maxLongitude),
+			this.latitude = Math.max(Math.min(latLong.latitude, this.mapLimit.maxLatitude), this.mapLimit.minLatitude);
+			this.longitude = Math.max(Math.min(latLong.longitude, this.mapLimit.maxLongitude),
 					this.mapLimit.minLongitude);
 		}
 	}

@@ -21,20 +21,20 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
 public class CircleTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
-	private static Circle createCircle(GeoPoint geoPoint, float radius, Paint paintFill, Paint paintStroke) {
-		return new Circle(geoPoint, radius, paintFill, paintStroke);
+	private static Circle createCircle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
+		return new Circle(latLong, radius, paintFill, paintStroke);
 	}
 
-	private static void verifyInvalidRadius(GeoPoint geoPoint, float radius, Paint paintFill, Paint paintStroke) {
+	private static void verifyInvalidRadius(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
 		try {
-			createCircle(geoPoint, radius, paintFill, paintStroke);
+			createCircle(latLong, radius, paintFill, paintStroke);
 			Assert.fail();
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
@@ -43,19 +43,19 @@ public class CircleTest {
 
 	@Test
 	public void constructorTest() {
-		GeoPoint geoPoint = new GeoPoint(0, 0);
+		LatLong latLong = new LatLong(0, 0);
 		int radius = 3;
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
-		Circle circle = new Circle(geoPoint, radius, paintFill, paintStroke);
-		Assert.assertEquals(geoPoint, circle.getGeoPoint());
+		Circle circle = new Circle(latLong, radius, paintFill, paintStroke);
+		Assert.assertEquals(latLong, circle.getLatLong());
 		Assert.assertEquals(radius, circle.getRadius(), 0);
 		Assert.assertEquals(paintFill, circle.getPaintFill());
 		Assert.assertEquals(paintStroke, circle.getPaintStroke());
 
-		verifyInvalidRadius(geoPoint, -1, paintFill, paintStroke);
-		verifyInvalidRadius(geoPoint, Float.NaN, paintFill, paintStroke);
+		verifyInvalidRadius(latLong, -1, paintFill, paintStroke);
+		verifyInvalidRadius(latLong, Float.NaN, paintFill, paintStroke);
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class CircleTest {
 		Point point = new Point(0, 0);
 		circle.draw(boundingBox, (byte) 0, canvas, point);
 
-		circle.setGeoPoint(new GeoPoint(0, 0));
+		circle.setLatLong(new LatLong(0, 0));
 		circle.draw(boundingBox, (byte) 0, canvas, point);
 
 		circle.setRadius(1);
@@ -83,18 +83,18 @@ public class CircleTest {
 
 	@Test
 	public void setterTest() {
-		GeoPoint geoPoint = new GeoPoint(1, 2);
+		LatLong latLong = new LatLong(1, 2);
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Circle circle = new Circle(null, 0, null, null);
-		Assert.assertNull(circle.getGeoPoint());
+		Assert.assertNull(circle.getLatLong());
 		Assert.assertEquals(0, circle.getRadius(), 0);
 		Assert.assertNull(circle.getPaintFill());
 		Assert.assertNull(circle.getPaintStroke());
 
-		circle.setGeoPoint(geoPoint);
-		Assert.assertEquals(geoPoint, circle.getGeoPoint());
+		circle.setLatLong(latLong);
+		Assert.assertEquals(latLong, circle.getLatLong());
 
 		circle.setRadius(1);
 		Assert.assertEquals(1, circle.getRadius(), 0);

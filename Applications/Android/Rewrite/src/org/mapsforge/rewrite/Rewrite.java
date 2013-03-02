@@ -8,7 +8,7 @@ import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.AndroidPreferences;
 import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.android.view.MapView;
@@ -61,19 +61,19 @@ public class Rewrite extends Activity {
 	private PreferencesFacade preferencesFacade;
 
 	private void addOverlayLayers(List<Layer> layers) {
-		GeoPoint geoPoint1 = new GeoPoint(0, 0);
-		GeoPoint geoPoint2 = new GeoPoint(52, 13);
-		GeoPoint geoPoint3 = new GeoPoint(10, 10);
+		LatLong latLong1 = new LatLong(0, 0);
+		LatLong latLong2 = new LatLong(52, 13);
+		LatLong latLong3 = new LatLong(10, 10);
 
 		Polyline polyline = new Polyline(createPaint(AndroidGraphics.INSTANCE.createColor(Color.BLUE), 8, Style.STROKE));
-		List<GeoPoint> geoPoints = polyline.getGeoPoints();
-		geoPoints.add(geoPoint1);
-		geoPoints.add(geoPoint2);
-		geoPoints.add(geoPoint3);
+		List<LatLong> latLongs = polyline.getLatLongs();
+		latLongs.add(latLong1);
+		latLongs.add(latLong2);
+		latLongs.add(latLong3);
 
-		Marker marker1 = createMarker(R.drawable.marker_red, geoPoint1);
+		Marker marker1 = createMarker(R.drawable.marker_red, latLong1);
 
-		Circle circle = new Circle(geoPoint3, 30000, createPaint(AndroidGraphics.INSTANCE.createColor(Color.WHITE), 0,
+		Circle circle = new Circle(latLong3, 30000, createPaint(AndroidGraphics.INSTANCE.createColor(Color.WHITE), 0,
 				Style.FILL), null);
 
 		layers.add(polyline);
@@ -81,10 +81,10 @@ public class Rewrite extends Activity {
 		layers.add(marker1);
 	}
 
-	private Marker createMarker(int resourceIdentifier, GeoPoint geoPoint) {
+	private Marker createMarker(int resourceIdentifier, LatLong latLong) {
 		Drawable drawable = getResources().getDrawable(resourceIdentifier);
 		Bitmap bitmap = AndroidGraphics.convertToBitmap(drawable);
-		return new Marker(geoPoint, bitmap, 0, -bitmap.getHeight() / 2);
+		return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2);
 	}
 
 	private TileCache createTileCache() {

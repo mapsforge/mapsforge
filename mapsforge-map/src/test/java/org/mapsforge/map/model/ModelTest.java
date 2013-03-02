@@ -20,7 +20,7 @@ import java.util.prefs.Preferences;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
@@ -42,8 +42,8 @@ public class ModelTest {
 
 	@Test
 	public void saveAndInitTest() {
-		MapPosition mapPosition1 = new MapPosition(new GeoPoint(1, 1), (byte) 1);
-		MapPosition mapPosition2 = new MapPosition(new GeoPoint(2, 2), (byte) 2);
+		MapPosition mapPosition1 = new MapPosition(new LatLong(1, 1), (byte) 1);
+		MapPosition mapPosition2 = new MapPosition(new LatLong(2, 2), (byte) 2);
 
 		Model model = new Model();
 		model.mapViewPosition.setMapPosition(mapPosition1);

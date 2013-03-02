@@ -26,7 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
@@ -184,7 +184,7 @@ public class DatabaseRenderer implements RenderCallback {
 	/**
 	 * @return the start point (may be null).
 	 */
-	public GeoPoint getStartPoint() {
+	public LatLong getStartPoint() {
 		if (this.mapDatabase != null && this.mapDatabase.hasOpenFile()) {
 			MapFileInfo mapFileInfo = this.mapDatabase.getMapFileInfo();
 			if (mapFileInfo.startPosition != null) {
@@ -327,7 +327,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 	private void renderPointOfInterest(PointOfInterest pointOfInterest) {
 		this.drawingLayers = this.ways.get(getValidLayer(pointOfInterest.layer));
-		this.poiPosition = scaleGeoPoint(pointOfInterest.position);
+		this.poiPosition = scaleLatLong(pointOfInterest.position);
 		this.renderTheme.matchNode(this, pointOfInterest.tags, this.currentRendererJob.tile.zoomLevel);
 	}
 
@@ -342,13 +342,13 @@ public class DatabaseRenderer implements RenderCallback {
 		this.drawingLayers = this.ways.get(getValidLayer(way.layer));
 		// TODO what about the label position?
 
-		GeoPoint[][] geoPoints = way.geoPoints;
-		this.coordinates = new Point[geoPoints.length][];
+		LatLong[][] latLongs = way.latLongs;
+		this.coordinates = new Point[latLongs.length][];
 		for (int i = 0; i < this.coordinates.length; ++i) {
-			this.coordinates[i] = new Point[geoPoints[i].length];
+			this.coordinates[i] = new Point[latLongs[i].length];
 
 			for (int j = 0; j < this.coordinates[i].length; ++j) {
-				this.coordinates[i][j] = scaleGeoPoint(geoPoints[i][j]);
+				this.coordinates[i][j] = scaleLatLong(latLongs[i][j]);
 			}
 		}
 		this.shapeContainer = new WayContainer(this.coordinates);
@@ -361,17 +361,16 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	/**
-	 * Converts the given GeoPoint into XY coordinates on the current object.
+	 * Converts the given LatLong into XY coordinates on the current object.
 	 * 
-	 * @param geoPoint
-	 *            the GeoPoint to convert.
+	 * @param latLong
+	 *            the LatLong to convert.
 	 * @return the XY coordinates on the current object.
 	 */
-	private Point scaleGeoPoint(GeoPoint geoPoint) {
-		double pixelX = MercatorProjection
-				.longitudeToPixelX(geoPoint.longitude, this.currentRendererJob.tile.zoomLevel)
+	private Point scaleLatLong(LatLong latLong) {
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel)
 				- MercatorProjection.tileXToPixelX(this.currentRendererJob.tile.tileX);
-		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, this.currentRendererJob.tile.zoomLevel)
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel)
 				- MercatorProjection.tileYToPixelY(this.currentRendererJob.tile.tileY);
 
 		return new Point((float) pixelX, (float) pixelY);

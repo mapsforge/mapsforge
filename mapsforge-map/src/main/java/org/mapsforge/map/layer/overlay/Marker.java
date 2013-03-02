@@ -17,7 +17,7 @@ package org.mapsforge.map.layer.overlay;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.MercatorProjection;
@@ -30,10 +30,10 @@ public class Marker extends Layer {
 	private Bitmap bitmap;
 	private final int dx;
 	private final int dy;
-	private GeoPoint geoPoint;
+	private LatLong latLong;
 
 	/**
-	 * @param geoPoint
+	 * @param latLong
 	 *            the initial geographical coordinates of this marker (may be null).
 	 * @param bitmap
 	 *            the initial {@code Bitmap} of this marker (may be null).
@@ -42,10 +42,10 @@ public class Marker extends Layer {
 	 * @param dy
 	 *            the vertical marker offset.
 	 */
-	public Marker(GeoPoint geoPoint, Bitmap bitmap, int dx, int dy) {
+	public Marker(LatLong latLong, Bitmap bitmap, int dx, int dy) {
 		super();
 
-		this.geoPoint = geoPoint;
+		this.latLong = latLong;
 		this.bitmap = bitmap;
 		this.dx = dx;
 		this.dy = dy;
@@ -53,12 +53,12 @@ public class Marker extends Layer {
 
 	@Override
 	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
-		if (this.geoPoint == null || this.bitmap == null) {
+		if (this.latLong == null || this.bitmap == null) {
 			return;
 		}
 
-		double pixelX = MercatorProjection.longitudeToPixelX(this.geoPoint.longitude, zoomLevel);
-		double pixelY = MercatorProjection.latitudeToPixelY(this.geoPoint.latitude, zoomLevel);
+		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, zoomLevel);
+		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, zoomLevel);
 
 		int left = (int) (pixelX - canvasPosition.x + this.dx - (this.bitmap.getWidth() / 2));
 		int top = (int) (pixelY - canvasPosition.y + this.dy - (this.bitmap.getHeight() / 2));
@@ -84,8 +84,8 @@ public class Marker extends Layer {
 	/**
 	 * @return the geographical coordinates of this marker (may be null).
 	 */
-	public synchronized GeoPoint getGeoPoint() {
-		return this.geoPoint;
+	public synchronized LatLong getLatLong() {
+		return this.latLong;
 	}
 
 	/**
@@ -97,10 +97,10 @@ public class Marker extends Layer {
 	}
 
 	/**
-	 * @param geoPoint
+	 * @param latLong
 	 *            the new geographical coordinates of this marker (may be null).
 	 */
-	public synchronized void setGeoPoint(GeoPoint geoPoint) {
-		this.geoPoint = geoPoint;
+	public synchronized void setLatLong(LatLong latLong) {
+		this.latLong = latLong;
 	}
 }

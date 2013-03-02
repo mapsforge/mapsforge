@@ -24,7 +24,7 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
@@ -38,8 +38,8 @@ public class LayerManager extends PausableThread {
 	private static final int MILLISECONDS_PER_FRAME = 50;
 
 	private static BoundingBox getBoundingBox(MapPosition mapPosition, Canvas canvas) {
-		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.geoPoint.longitude, mapPosition.zoomLevel);
-		double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.geoPoint.latitude, mapPosition.zoomLevel);
+		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.latLong.longitude, mapPosition.zoomLevel);
+		double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.latLong.latitude, mapPosition.zoomLevel);
 
 		int halfCanvasWidth = canvas.getWidth() / 2;
 		int halfCanvasHeight = canvas.getHeight() / 2;
@@ -59,7 +59,7 @@ public class LayerManager extends PausableThread {
 	}
 
 	private static Point getCanvasPosition(MapPosition mapPosition, Canvas canvas) {
-		GeoPoint centerPoint = mapPosition.geoPoint;
+		LatLong centerPoint = mapPosition.latLong;
 		byte zoomLevel = mapPosition.zoomLevel;
 
 		int halfCanvasWidth = canvas.getWidth() / 2;

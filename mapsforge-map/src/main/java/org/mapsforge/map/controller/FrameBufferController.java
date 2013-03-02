@@ -15,7 +15,7 @@
 package org.mapsforge.map.controller;
 
 import org.mapsforge.core.model.Dimension;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
@@ -30,9 +30,9 @@ public class FrameBufferController implements Observer {
 		return new Dimension(width, height);
 	}
 
-	private static Point getPixel(GeoPoint geoPoint, byte zoomLevel) {
-		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel);
-		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel);
+	private static Point getPixel(LatLong latLong, byte zoomLevel) {
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel);
 		return new Point(pixelX, pixelY);
 	}
 
@@ -73,8 +73,8 @@ public class FrameBufferController implements Observer {
 	private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension) {
 		MapPosition mapPosition = this.model.mapViewPosition.getMapPosition();
 
-		Point pointFrameBuffer = getPixel(mapPositionFrameBuffer.geoPoint, mapPosition.zoomLevel);
-		Point pointMapPosition = getPixel(mapPosition.geoPoint, mapPosition.zoomLevel);
+		Point pointFrameBuffer = getPixel(mapPositionFrameBuffer.latLong, mapPosition.zoomLevel);
+		Point pointMapPosition = getPixel(mapPosition.latLong, mapPosition.zoomLevel);
 		float diffX = (float) (pointFrameBuffer.x - pointMapPosition.x);
 		float diffY = (float) (pointFrameBuffer.y - pointMapPosition.y);
 

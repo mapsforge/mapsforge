@@ -153,7 +153,7 @@ public class MapScaleBar {
 			return true;
 		}
 
-		double latitudeDiff = Math.abs(currentMapPosition.geoPoint.latitude - this.mapPosition.geoPoint.latitude);
+		double latitudeDiff = Math.abs(currentMapPosition.latLong.latitude - this.mapPosition.latLong.latitude);
 		return latitudeDiff > LATITUDE_REDRAW_THRESHOLD;
 	}
 
@@ -163,7 +163,7 @@ public class MapScaleBar {
 		}
 
 		this.mapPosition = this.mapViewPosition.getMapPosition();
-		double groundResolution = MercatorProjection.calculateGroundResolution(this.mapPosition.geoPoint.latitude,
+		double groundResolution = MercatorProjection.calculateGroundResolution(this.mapPosition.latLong.latitude,
 				this.mapPosition.zoomLevel);
 
 		groundResolution = groundResolution / this.adapter.getMeterRatio();

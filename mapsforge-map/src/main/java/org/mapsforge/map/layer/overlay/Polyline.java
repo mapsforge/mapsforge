@@ -21,19 +21,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
 /**
- * A {@code Polyline} draws a connected series of line segments specified by a list of {@link GeoPoint GeoPoints}.
+ * A {@code Polyline} draws a connected series of line segments specified by a list of {@link LatLong LatLongs}.
  * <p>
  * A {@code Polyline} holds a {@link Paint} object which defines drawing parameters such as color, stroke width, pattern
  * and transparency.
  */
 public class Polyline extends Layer {
-	private final List<GeoPoint> geoPoints = new CopyOnWriteArrayList<GeoPoint>();
+	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
 	private Paint paintStroke;
 
 	/**
@@ -48,19 +48,19 @@ public class Polyline extends Layer {
 
 	@Override
 	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
-		if (this.geoPoints.isEmpty() || this.paintStroke == null) {
+		if (this.latLongs.isEmpty() || this.paintStroke == null) {
 			return;
 		}
 
-		Iterator<GeoPoint> iterator = this.geoPoints.iterator();
-		GeoPoint geoPoint = iterator.next();
-		int previousX = (int) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
-		int previousY = (int) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
+		Iterator<LatLong> iterator = this.latLongs.iterator();
+		LatLong latLong = iterator.next();
+		int previousX = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
+		int previousY = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
 
 		while (iterator.hasNext()) {
-			geoPoint = iterator.next();
-			int x = (int) (MercatorProjection.longitudeToPixelX(geoPoint.longitude, zoomLevel) - canvasPosition.x);
-			int y = (int) (MercatorProjection.latitudeToPixelY(geoPoint.latitude, zoomLevel) - canvasPosition.y);
+			latLong = iterator.next();
+			int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
+			int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
 
 			canvas.drawLine(previousX, previousY, x, y, this.paintStroke);
 
@@ -70,10 +70,10 @@ public class Polyline extends Layer {
 	}
 
 	/**
-	 * @return a thread-safe list of GeoPoints in this polyline.
+	 * @return a thread-safe list of LatLongs in this polyline.
 	 */
-	public List<GeoPoint> getGeoPoints() {
-		return this.geoPoints;
+	public List<LatLong> getLatLongs() {
+		return this.latLongs;
 	}
 
 	/**

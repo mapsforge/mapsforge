@@ -18,7 +18,7 @@ import java.io.File;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
@@ -30,18 +30,18 @@ public class MapDatabaseWithDataTest {
 	private static final byte ZOOM_LEVEL_MAX = 11;
 	private static final int ZOOM_LEVEL_MIN = 6;
 
-	private static void assertGeoPointsEquals(GeoPoint[][] geoPoints1, GeoPoint[][] geoPoints2) {
-		Assert.assertEquals(geoPoints1.length, geoPoints2.length);
+	private static void assertLatLongsEquals(LatLong[][] latLongs1, LatLong[][] latLongs2) {
+		Assert.assertEquals(latLongs1.length, latLongs2.length);
 
-		for (int i = 0; i < geoPoints1.length; ++i) {
-			Assert.assertEquals(geoPoints1[i].length, geoPoints2[i].length);
+		for (int i = 0; i < latLongs1.length; ++i) {
+			Assert.assertEquals(latLongs1[i].length, latLongs2[i].length);
 
-			for (int j = 0; j < geoPoints1[i].length; ++j) {
-				GeoPoint geoPoint1 = geoPoints1[i][j];
-				GeoPoint geoPoint2 = geoPoints2[i][j];
+			for (int j = 0; j < latLongs1[i].length; ++j) {
+				LatLong latLong1 = latLongs1[i][j];
+				LatLong latLong2 = latLongs2[i][j];
 
-				Assert.assertEquals(geoPoint1.latitude, geoPoint2.latitude, 0.000001);
-				Assert.assertEquals(geoPoint1.longitude, geoPoint2.longitude, 0.000001);
+				Assert.assertEquals(latLong1.latitude, latLong2.latitude, 0.000001);
+				Assert.assertEquals(latLong1.longitude, latLong2.longitude, 0.000001);
 			}
 		}
 	}
@@ -61,12 +61,12 @@ public class MapDatabaseWithDataTest {
 		Assert.assertEquals(4, way.layer);
 		Assert.assertNull(way.labelPosition);
 
-		GeoPoint geoPoint1 = new GeoPoint(0.00, 0.00);
-		GeoPoint geoPoint2 = new GeoPoint(0.04, 0.08);
-		GeoPoint geoPoint3 = new GeoPoint(0.08, 0.00);
-		GeoPoint[][] geoPointsExpected = new GeoPoint[][] { { geoPoint1, geoPoint2, geoPoint3 } };
+		LatLong latLong1 = new LatLong(0.00, 0.00);
+		LatLong latLong2 = new LatLong(0.04, 0.08);
+		LatLong latLong3 = new LatLong(0.08, 0.00);
+		LatLong[][] latLongsExpected = new LatLong[][] { { latLong1, latLong2, latLong3 } };
 
-		assertGeoPointsEquals(geoPointsExpected, way.geoPoints);
+		assertLatLongsEquals(latLongsExpected, way.latLongs);
 		Assert.assertEquals(3, way.tags.size());
 		Assert.assertTrue(way.tags.contains(new Tag("highway=motorway")));
 		Assert.assertTrue(way.tags.contains(new Tag("name=ÄÖÜ")));

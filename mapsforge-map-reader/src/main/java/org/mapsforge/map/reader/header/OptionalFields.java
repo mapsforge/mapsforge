@@ -15,7 +15,7 @@
 package org.mapsforge.map.reader.header;
 
 import org.mapsforge.core.model.CoordinatesUtil;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.reader.ReadBuffer;
 
 final class OptionalFields {
@@ -79,7 +79,7 @@ final class OptionalFields {
 	final boolean hasStartZoomLevel;
 	final boolean isDebugFile;
 	String languagePreference;
-	GeoPoint startPosition;
+	LatLong startPosition;
 	Byte startZoomLevel;
 
 	private OptionalFields(byte flags) {
@@ -107,7 +107,7 @@ final class OptionalFields {
 			double mapStartLatitude = CoordinatesUtil.microdegreesToDegrees(readBuffer.readInt());
 			double mapStartLongitude = CoordinatesUtil.microdegreesToDegrees(readBuffer.readInt());
 			try {
-				this.startPosition = new GeoPoint(mapStartLatitude, mapStartLongitude);
+				this.startPosition = new LatLong(mapStartLatitude, mapStartLongitude);
 			} catch (IllegalArgumentException e) {
 				return new FileOpenResult(e.getMessage());
 			}

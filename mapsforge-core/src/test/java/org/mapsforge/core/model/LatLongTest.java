@@ -19,7 +19,7 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class GeoPointTest {
+public class LatLongTest {
 	private static final String DELIMITER = ",";
 	private static final String GEO_POINT_TO_STRING = "latitude=1.0, longitude=2.0";
 	private static final double LATITUDE = 1.0;
@@ -27,7 +27,7 @@ public class GeoPointTest {
 
 	private static void verifyInvalid(String string) {
 		try {
-			GeoPoint.fromString(string);
+			LatLong.fromString(string);
 			Assert.fail(string);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
@@ -36,33 +36,33 @@ public class GeoPointTest {
 
 	@Test
 	public void compareToTest() {
-		GeoPoint geoPoint1 = new GeoPoint(LATITUDE, LONGITUDE);
-		GeoPoint geoPoint2 = new GeoPoint(LATITUDE, LONGITUDE);
-		GeoPoint geoPoint3 = new GeoPoint(0, 0);
+		LatLong latLong1 = new LatLong(LATITUDE, LONGITUDE);
+		LatLong latLong2 = new LatLong(LATITUDE, LONGITUDE);
+		LatLong latLong3 = new LatLong(0, 0);
 
-		Assert.assertEquals(0, geoPoint1.compareTo(geoPoint2));
-		Assert.assertNotEquals(0, geoPoint1.compareTo(geoPoint3));
-		Assert.assertNotEquals(0, geoPoint3.compareTo(geoPoint1));
+		Assert.assertEquals(0, latLong1.compareTo(latLong2));
+		Assert.assertNotEquals(0, latLong1.compareTo(latLong3));
+		Assert.assertNotEquals(0, latLong3.compareTo(latLong1));
 	}
 
 	@Test
 	public void equalsTest() {
-		GeoPoint geoPoint1 = new GeoPoint(LATITUDE, LONGITUDE);
-		GeoPoint geoPoint2 = new GeoPoint(LATITUDE, LONGITUDE);
-		GeoPoint geoPoint3 = new GeoPoint(0, 0);
+		LatLong latLong1 = new LatLong(LATITUDE, LONGITUDE);
+		LatLong latLong2 = new LatLong(LATITUDE, LONGITUDE);
+		LatLong latLong3 = new LatLong(0, 0);
 
-		TestUtils.equalsTest(geoPoint1, geoPoint2);
+		TestUtils.equalsTest(latLong1, latLong2);
 
-		Assert.assertNotEquals(geoPoint1, geoPoint3);
-		Assert.assertNotEquals(geoPoint3, geoPoint1);
-		Assert.assertNotEquals(geoPoint1, new Object());
+		Assert.assertNotEquals(latLong1, latLong3);
+		Assert.assertNotEquals(latLong3, latLong1);
+		Assert.assertNotEquals(latLong1, new Object());
 	}
 
 	@Test
 	public void fieldsTest() {
-		GeoPoint geoPoint = new GeoPoint(LATITUDE, LONGITUDE);
-		Assert.assertEquals(LATITUDE, geoPoint.latitude, 0);
-		Assert.assertEquals(LONGITUDE, geoPoint.longitude, 0);
+		LatLong latLong = new LatLong(LATITUDE, LONGITUDE);
+		Assert.assertEquals(LATITUDE, latLong.latitude, 0);
+		Assert.assertEquals(LONGITUDE, latLong.longitude, 0);
 	}
 
 	@Test
@@ -87,20 +87,20 @@ public class GeoPointTest {
 
 	@Test
 	public void fromStringValidTest() {
-		GeoPoint geoPoint = GeoPoint.fromString(LATITUDE + DELIMITER + LONGITUDE);
-		Assert.assertEquals(LATITUDE, geoPoint.latitude, 0);
-		Assert.assertEquals(LONGITUDE, geoPoint.longitude, 0);
+		LatLong latLong = LatLong.fromString(LATITUDE + DELIMITER + LONGITUDE);
+		Assert.assertEquals(LATITUDE, latLong.latitude, 0);
+		Assert.assertEquals(LONGITUDE, latLong.longitude, 0);
 	}
 
 	@Test
 	public void serializeTest() throws IOException, ClassNotFoundException {
-		GeoPoint geoPoint = new GeoPoint(LATITUDE, LONGITUDE);
-		TestUtils.serializeTest(geoPoint);
+		LatLong latLong = new LatLong(LATITUDE, LONGITUDE);
+		TestUtils.serializeTest(latLong);
 	}
 
 	@Test
 	public void toStringTest() {
-		GeoPoint geoPoint = new GeoPoint(LATITUDE, LONGITUDE);
-		Assert.assertEquals(GEO_POINT_TO_STRING, geoPoint.toString());
+		LatLong latLong = new LatLong(LATITUDE, LONGITUDE);
+		Assert.assertEquals(GEO_POINT_TO_STRING, latLong.toString());
 	}
 }

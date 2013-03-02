@@ -18,7 +18,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.writer.OSMTagMapping;
 
 /**
@@ -49,7 +49,7 @@ public class MapWriterConfiguration {
 
 	private EncodingChoice encodingChoice;
 
-	private GeoPoint mapStartPosition;
+	private LatLong mapStartPosition;
 	private int mapStartZoomLevel;
 
 	private String preferredLanguage;
@@ -294,7 +294,7 @@ public class MapWriterConfiguration {
 	/**
 	 * @return the mapStartPosition
 	 */
-	public GeoPoint getMapStartPosition() {
+	public LatLong getMapStartPosition() {
 		return this.mapStartPosition;
 	}
 
@@ -302,7 +302,7 @@ public class MapWriterConfiguration {
 	 * @param mapStartPosition
 	 *            the mapStartPosition to set
 	 */
-	public void setMapStartPosition(GeoPoint mapStartPosition) {
+	public void setMapStartPosition(LatLong mapStartPosition) {
 		this.mapStartPosition = mapStartPosition;
 	}
 
@@ -421,7 +421,7 @@ public class MapWriterConfiguration {
 	 */
 	public void addMapStartPosition(String position) {
 		if (position != null) {
-			setMapStartPosition(GeoPoint.fromString(position));
+			setMapStartPosition(LatLong.fromString(position));
 		}
 	}
 

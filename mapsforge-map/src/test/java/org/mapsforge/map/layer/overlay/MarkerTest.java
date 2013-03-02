@@ -21,7 +21,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
@@ -30,11 +30,11 @@ public class MarkerTest {
 
 	@Test
 	public void constructorTest() {
-		GeoPoint geoPoint = new GeoPoint(0, 0);
+		LatLong latLong = new LatLong(0, 0);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
-		Marker marker = new Marker(geoPoint, bitmap, 0, 0);
-		Assert.assertEquals(geoPoint, marker.getGeoPoint());
+		Marker marker = new Marker(latLong, bitmap, 0, 0);
+		Assert.assertEquals(latLong, marker.getLatLong());
 		Assert.assertEquals(bitmap, marker.getBitmap());
 	}
 
@@ -48,7 +48,7 @@ public class MarkerTest {
 		Point point = new Point(0, 0);
 		marker.draw(boundingBox, (byte) 0, canvas, point);
 
-		marker.setGeoPoint(new GeoPoint(0, 0));
+		marker.setLatLong(new LatLong(0, 0));
 		marker.draw(boundingBox, (byte) 0, canvas, point);
 
 		marker.setBitmap(GRAPHIC_FACTORY.createBitmap(10, 20));
@@ -57,15 +57,15 @@ public class MarkerTest {
 
 	@Test
 	public void setterTest() {
-		GeoPoint geoPoint = new GeoPoint(0, 0);
+		LatLong latLong = new LatLong(0, 0);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
 		Marker marker = new Marker(null, null, 0, 0);
-		Assert.assertNull(marker.getGeoPoint());
+		Assert.assertNull(marker.getLatLong());
 		Assert.assertNull(marker.getBitmap());
 
-		marker.setGeoPoint(geoPoint);
-		Assert.assertEquals(geoPoint, marker.getGeoPoint());
+		marker.setLatLong(latLong);
+		Assert.assertEquals(latLong, marker.getLatLong());
 
 		marker.setBitmap(bitmap);
 		Assert.assertEquals(bitmap, marker.getBitmap());

@@ -23,7 +23,7 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
@@ -35,7 +35,7 @@ public class PolylineTest {
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Polyline polyline = new Polyline(paintStroke);
-		Assert.assertTrue(polyline.getGeoPoints().isEmpty());
+		Assert.assertTrue(polyline.getLatLongs().isEmpty());
 		Assert.assertEquals(paintStroke, polyline.getPaintStroke());
 	}
 
@@ -49,8 +49,8 @@ public class PolylineTest {
 		Point point = new Point(0, 0);
 		polyline.draw(boundingBox, (byte) 0, canvas, point);
 
-		polyline.getGeoPoints().add(new GeoPoint(0, 0));
-		polyline.getGeoPoints().add(new GeoPoint(1, 1));
+		polyline.getLatLongs().add(new LatLong(0, 0));
+		polyline.getLatLongs().add(new LatLong(1, 1));
 		polyline.draw(boundingBox, (byte) 0, canvas, point);
 
 		polyline.setPaintStroke(GRAPHIC_FACTORY.createPaint());
@@ -59,15 +59,15 @@ public class PolylineTest {
 
 	@Test
 	public void setterTest() {
-		GeoPoint geoPoint = new GeoPoint(0, 0);
+		LatLong latLong = new LatLong(0, 0);
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Polyline polyline = new Polyline(null);
-		Assert.assertTrue(polyline.getGeoPoints().isEmpty());
+		Assert.assertTrue(polyline.getLatLongs().isEmpty());
 		Assert.assertNull(polyline.getPaintStroke());
 
-		polyline.getGeoPoints().add(geoPoint);
-		Assert.assertEquals(Arrays.asList(geoPoint), polyline.getGeoPoints());
+		polyline.getLatLongs().add(latLong);
+		Assert.assertEquals(Arrays.asList(latLong), polyline.getLatLongs());
 
 		polyline.setPaintStroke(paintStroke);
 		Assert.assertEquals(paintStroke, polyline.getPaintStroke());

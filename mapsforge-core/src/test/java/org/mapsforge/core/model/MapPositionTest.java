@@ -20,18 +20,18 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MapPositionTest {
-	private static final GeoPoint GEO_POINT = new GeoPoint(1.0, 2.0);
-	private static final String MAP_POSITION_TO_STRING = "geoPoint=latitude=1.0, longitude=2.0, zoomLevel=3";
+	private static final LatLong GEO_POINT = new LatLong(1.0, 2.0);
+	private static final String MAP_POSITION_TO_STRING = "latLong=latitude=1.0, longitude=2.0, zoomLevel=3";
 	private static final byte ZOOM_LEVEL = 3;
 
-	private static MapPosition invokeConstructor(GeoPoint geoPoint, byte zoomLevel) {
-		return new MapPosition(geoPoint, zoomLevel);
+	private static MapPosition invokeConstructor(LatLong latLong, byte zoomLevel) {
+		return new MapPosition(latLong, zoomLevel);
 	}
 
-	private static void verifyBadConstructor(GeoPoint geoPoint, byte zoomLevel) {
+	private static void verifyBadConstructor(LatLong latLong, byte zoomLevel) {
 		try {
-			invokeConstructor(geoPoint, zoomLevel);
-			Assert.fail("geoPoint: " + geoPoint + ", zoomLevel: " + zoomLevel);
+			invokeConstructor(latLong, zoomLevel);
+			Assert.fail("latLong: " + latLong + ", zoomLevel: " + zoomLevel);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}
@@ -59,7 +59,7 @@ public class MapPositionTest {
 	@Test
 	public void fieldsTest() {
 		MapPosition mapPosition = new MapPosition(GEO_POINT, ZOOM_LEVEL);
-		Assert.assertEquals(GEO_POINT, mapPosition.geoPoint);
+		Assert.assertEquals(GEO_POINT, mapPosition.latLong);
 		Assert.assertEquals(ZOOM_LEVEL, mapPosition.zoomLevel);
 	}
 

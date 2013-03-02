@@ -31,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.model.CoordinatesUtil;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.writer.model.Encoding;
 import org.mapsforge.map.writer.model.MapWriterConfiguration;
@@ -250,7 +250,7 @@ public final class MapFileWriter {
 		containerHeaderBuffer.put(infoByteOptmizationParams(configuration));
 
 		// MAP START POSITION
-		GeoPoint mapStartPosition = configuration.getMapStartPosition();
+		LatLong mapStartPosition = configuration.getMapStartPosition();
 		if (mapStartPosition != null) {
 			containerHeaderBuffer.putInt(CoordinatesUtil.degreesToMicrodegrees(mapStartPosition.latitude));
 			containerHeaderBuffer.putInt(CoordinatesUtil.degreesToMicrodegrees(mapStartPosition.longitude));
@@ -778,12 +778,12 @@ public final class MapFileWriter {
 		// in case the polygon covers multiple tiles, we compute the centroid of the unclipped polygon
 		// if the computed centroid is within the current tile, we add it as label position
 		// this way, we can make sure that a label position is attached only once to a clipped polygon
-		GeoPoint centroidCoordinate = null;
+		LatLong centroidCoordinate = null;
 		if (configuration.isLabelPosition() && way.isPolygon()
 				&& !GeoUtils.coveredByTile(originalGeometry, tile, configuration.getBboxEnlargement())) {
 			Point centroidPoint = originalGeometry.getCentroid();
 			if (GeoUtils.coveredByTile(centroidPoint, tile, configuration.getBboxEnlargement())) {
-				centroidCoordinate = new GeoPoint(centroidPoint.getY(), centroidPoint.getX());
+				centroidCoordinate = new LatLong(centroidPoint.getY(), centroidPoint.getX());
 			}
 		}
 
@@ -903,10 +903,10 @@ public final class MapFileWriter {
 	private static class WayPreprocessingResult {
 		final TDWay way;
 		final List<WayDataBlock> wayDataBlocks;
-		final GeoPoint labelPosition;
+		final LatLong labelPosition;
 		final short subtileMask;
 
-		WayPreprocessingResult(TDWay way, List<WayDataBlock> wayDataBlocks, GeoPoint labelPosition, short subtileMask) {
+		WayPreprocessingResult(TDWay way, List<WayDataBlock> wayDataBlocks, LatLong labelPosition, short subtileMask) {
 			super();
 			this.way = way;
 			this.wayDataBlocks = wayDataBlocks;
@@ -922,7 +922,7 @@ public final class MapFileWriter {
 			return this.wayDataBlocks;
 		}
 
-		GeoPoint getLabelPosition() {
+		LatLong getLabelPosition() {
 			return this.labelPosition;
 		}
 
@@ -1045,12 +1045,12 @@ public final class MapFileWriter {
 			// in case the polygon covers multiple tiles, we compute the centroid of the unclipped polygon
 			// if the computed centroid is within the current tile, we add it as label position
 			// this way, we can make sure that a label position is attached only once to a clipped polygon
-			GeoPoint centroidCoordinate = null;
+			LatLong centroidCoordinate = null;
 			if (this.configuration.isLabelPosition() && this.way.isPolygon()
 					&& !GeoUtils.coveredByTile(originalGeometry, this.tile, this.configuration.getBboxEnlargement())) {
 				Point centroidPoint = originalGeometry.getCentroid();
 				if (GeoUtils.coveredByTile(centroidPoint, this.tile, this.configuration.getBboxEnlargement())) {
-					centroidCoordinate = new GeoPoint(centroidPoint.getY(), centroidPoint.getX());
+					centroidCoordinate = new LatLong(centroidPoint.getY(), centroidPoint.getX());
 				}
 			}
 

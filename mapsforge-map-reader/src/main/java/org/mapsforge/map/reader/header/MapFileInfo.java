@@ -15,7 +15,7 @@
 package org.mapsforge.map.reader.header;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.map.reader.MapDatabase;
 
@@ -83,7 +83,7 @@ public class MapFileInfo {
 	/**
 	 * The map start position from the file header (may be null).
 	 */
-	public final GeoPoint startPosition;
+	public final LatLong startPosition;
 
 	/**
 	 * The map start zoom level from the file header (may be null).

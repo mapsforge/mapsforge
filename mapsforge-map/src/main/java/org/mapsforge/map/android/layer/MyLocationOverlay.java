@@ -20,7 +20,7 @@ import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphics;
 import org.mapsforge.map.layer.Layer;
@@ -46,10 +46,10 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	/**
 	 * @param location
 	 *            the location whose geographical coordinates should be converted.
-	 * @return a new GeoPoint with the geographical coordinates taken from the given location.
+	 * @return a new LatLong with the geographical coordinates taken from the given location.
 	 */
-	public static GeoPoint locationToGeoPoint(Location location) {
-		return new GeoPoint(location.getLatitude(), location.getLongitude());
+	public static LatLong locationToLatLong(Location location) {
+		return new LatLong(location.getLatitude(), location.getLongitude());
 	}
 
 	private static Paint getDefaultCircleFill() {
@@ -186,14 +186,14 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 		synchronized (this) {
 			this.lastLocation = location;
 
-			GeoPoint geoPoint = locationToGeoPoint(location);
-			this.marker.setGeoPoint(geoPoint);
-			this.circle.setGeoPoint(geoPoint);
+			LatLong latLong = locationToLatLong(location);
+			this.marker.setLatLong(latLong);
+			this.circle.setLatLong(latLong);
 			this.circle.setRadius(location.getAccuracy());
 
 			if (this.centerAtNextFix || this.snapToLocationEnabled) {
 				this.centerAtNextFix = false;
-				this.mapViewPosition.setCenter(geoPoint);
+				this.mapViewPosition.setCenter(latLong);
 			}
 		}
 	}

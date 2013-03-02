@@ -23,7 +23,7 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
@@ -36,7 +36,7 @@ public class PolygonTest {
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Polygon polygon = new Polygon(paintFill, paintStroke, GRAPHIC_FACTORY);
-		Assert.assertTrue(polygon.getGeoPoints().isEmpty());
+		Assert.assertTrue(polygon.getLatLongs().isEmpty());
 		Assert.assertEquals(paintFill, polygon.getPaintFill());
 		Assert.assertEquals(paintStroke, polygon.getPaintStroke());
 	}
@@ -51,8 +51,8 @@ public class PolygonTest {
 		Point point = new Point(0, 0);
 		polygon.draw(boundingBox, (byte) 0, canvas, point);
 
-		polygon.getGeoPoints().add(new GeoPoint(0, 0));
-		polygon.getGeoPoints().add(new GeoPoint(1, 1));
+		polygon.getLatLongs().add(new LatLong(0, 0));
+		polygon.getLatLongs().add(new LatLong(1, 1));
 		polygon.draw(boundingBox, (byte) 0, canvas, point);
 
 		polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
@@ -62,17 +62,17 @@ public class PolygonTest {
 
 	@Test
 	public void setterTest() {
-		GeoPoint geoPoint = new GeoPoint(0, 0);
+		LatLong latLong = new LatLong(0, 0);
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Polygon polygon = new Polygon(null, null, GRAPHIC_FACTORY);
-		Assert.assertTrue(polygon.getGeoPoints().isEmpty());
+		Assert.assertTrue(polygon.getLatLongs().isEmpty());
 		Assert.assertNull(polygon.getPaintFill());
 		Assert.assertNull(polygon.getPaintStroke());
 
-		polygon.getGeoPoints().add(geoPoint);
-		Assert.assertEquals(Arrays.asList(geoPoint), polygon.getGeoPoints());
+		polygon.getLatLongs().add(latLong);
+		Assert.assertEquals(Arrays.asList(latLong), polygon.getLatLongs());
 
 		polygon.setPaintFill(paintFill);
 		polygon.setPaintStroke(paintStroke);

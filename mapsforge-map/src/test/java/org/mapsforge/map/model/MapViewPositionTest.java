@@ -17,7 +17,7 @@ package org.mapsforge.map.model;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.DummyObserver;
@@ -55,17 +55,17 @@ public class MapViewPositionTest {
 		MapViewPosition mapViewPosition = new MapViewPosition();
 		Assert.assertNull(mapViewPosition.getMapLimit());
 
-		GeoPoint geoPoint = new GeoPoint(10, 20);
-		mapViewPosition.setCenter(geoPoint);
-		Assert.assertEquals(geoPoint, mapViewPosition.getCenter());
+		LatLong latLong = new LatLong(10, 20);
+		mapViewPosition.setCenter(latLong);
+		Assert.assertEquals(latLong, mapViewPosition.getCenter());
 
 		BoundingBox boundingBox = new BoundingBox(1, 2, 3, 4);
 		mapViewPosition.setMapLimit(boundingBox);
 		Assert.assertEquals(boundingBox, mapViewPosition.getMapLimit());
-		Assert.assertEquals(geoPoint, mapViewPosition.getCenter());
+		Assert.assertEquals(latLong, mapViewPosition.getCenter());
 
-		mapViewPosition.setCenter(geoPoint);
-		Assert.assertEquals(new GeoPoint(3, 4), mapViewPosition.getCenter());
+		mapViewPosition.setCenter(latLong);
+		Assert.assertEquals(new LatLong(3, 4), mapViewPosition.getCenter());
 	}
 
 	@Test
@@ -75,8 +75,8 @@ public class MapViewPositionTest {
 
 		MapPosition mapPosition = mapViewPosition.getMapPosition();
 
-		Assert.assertEquals(0, mapPosition.geoPoint.latitude, 0);
-		Assert.assertEquals(1, mapPosition.geoPoint.longitude, 1.0E-14);
+		Assert.assertEquals(0, mapPosition.latLong.latitude, 0);
+		Assert.assertEquals(1, mapPosition.latLong.longitude, 1.0E-14);
 		Assert.assertEquals(0, mapPosition.zoomLevel);
 	}
 
@@ -87,13 +87,13 @@ public class MapViewPositionTest {
 		mapViewPosition.addObserver(dummyObserver);
 		Assert.assertEquals(0, dummyObserver.getCallbacks());
 
-		mapViewPosition.setCenter(new GeoPoint(0, 0));
+		mapViewPosition.setCenter(new LatLong(0, 0));
 		Assert.assertEquals(1, dummyObserver.getCallbacks());
 
 		mapViewPosition.setMapLimit(new BoundingBox(0, 0, 0, 0));
 		Assert.assertEquals(2, dummyObserver.getCallbacks());
 
-		mapViewPosition.setMapPosition(new MapPosition(new GeoPoint(0, 0), (byte) 0));
+		mapViewPosition.setMapPosition(new MapPosition(new LatLong(0, 0), (byte) 0));
 		Assert.assertEquals(3, dummyObserver.getCallbacks());
 
 		mapViewPosition.setZoomLevel((byte) 0);

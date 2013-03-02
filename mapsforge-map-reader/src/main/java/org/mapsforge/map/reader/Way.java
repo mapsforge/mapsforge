@@ -16,7 +16,7 @@ package org.mapsforge.map.reader;
 
 import java.util.List;
 
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
 /**
@@ -26,12 +26,12 @@ public class Way {
 	/**
 	 * The geographical coordinates of the way nodes.
 	 */
-	public final GeoPoint[][] geoPoints;
+	public final LatLong[][] latLongs;
 
 	/**
 	 * The position of the area label (may be null).
 	 */
-	public final GeoPoint labelPosition;
+	public final LatLong labelPosition;
 
 	/**
 	 * The layer of this way + 5 (to avoid negative values).
@@ -43,10 +43,10 @@ public class Way {
 	 */
 	public final List<Tag> tags;
 
-	Way(byte layer, List<Tag> tags, GeoPoint[][] geoPoints, GeoPoint labelPosition) {
+	Way(byte layer, List<Tag> tags, LatLong[][] latLongs, LatLong labelPosition) {
 		this.layer = layer;
 		this.tags = tags;
-		this.geoPoints = geoPoints;
+		this.latLongs = latLongs;
 		this.labelPosition = labelPosition;
 	}
 }

@@ -17,25 +17,25 @@ package org.mapsforge.core.model;
 import java.io.Serializable;
 
 /**
- * A GeoPoint represents an immutable pair of latitude and longitude coordinates.
+ * A LatLong represents an immutable pair of latitude and longitude coordinates.
  */
-public class GeoPoint implements Comparable<GeoPoint>, Serializable {
+public class LatLong implements Comparable<LatLong>, Serializable {
 	private static final double EQUATORIAL_RADIUS = 6378137.0;
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Creates a new GeoPoint from a comma-separated string of coordinates in the order latitude, longitude. All
+	 * Creates a new LatLong from a comma-separated string of coordinates in the order latitude, longitude. All
 	 * coordinate values must be in degrees.
 	 * 
-	 * @param geoPointString
-	 *            the string that describes the GeoPoint.
-	 * @return a new GeoPoint with the given coordinates.
+	 * @param latLongString
+	 *            the string that describes the LatLong.
+	 * @return a new LatLong with the given coordinates.
 	 * @throws IllegalArgumentException
-	 *             if the string cannot be parsed or describes an invalid GeoPoint.
+	 *             if the string cannot be parsed or describes an invalid LatLong.
 	 */
-	public static GeoPoint fromString(String geoPointString) {
-		double[] coordinates = CoordinatesUtil.parseCoordinateString(geoPointString, 2);
-		return new GeoPoint(coordinates[0], coordinates[1]);
+	public static LatLong fromString(String latLongString) {
+		double[] coordinates = CoordinatesUtil.parseCoordinateString(latLongString, 2);
+		return new LatLong(coordinates[0], coordinates[1]);
 	}
 
 	/**
@@ -63,12 +63,12 @@ public class GeoPoint implements Comparable<GeoPoint>, Serializable {
 	}
 
 	/**
-	 * The latitude coordinate of this GeoPoint in degrees.
+	 * The latitude coordinate of this LatLong in degrees.
 	 */
 	public final double latitude;
 
 	/**
-	 * The longitude coordinate of this GeoPoint in degrees.
+	 * The longitude coordinate of this LatLong in degrees.
 	 */
 	public final double longitude;
 
@@ -80,7 +80,7 @@ public class GeoPoint implements Comparable<GeoPoint>, Serializable {
 	 * @throws IllegalArgumentException
 	 *             if a coordinate is invalid.
 	 */
-	public GeoPoint(double latitude, double longitude) {
+	public LatLong(double latitude, double longitude) {
 		CoordinatesUtil.validateLatitude(latitude);
 		CoordinatesUtil.validateLongitude(longitude);
 
@@ -89,14 +89,14 @@ public class GeoPoint implements Comparable<GeoPoint>, Serializable {
 	}
 
 	@Override
-	public int compareTo(GeoPoint geoPoint) {
-		if (this.longitude > geoPoint.longitude) {
+	public int compareTo(LatLong latLong) {
+		if (this.longitude > latLong.longitude) {
 			return 1;
-		} else if (this.longitude < geoPoint.longitude) {
+		} else if (this.longitude < latLong.longitude) {
 			return -1;
-		} else if (this.latitude > geoPoint.latitude) {
+		} else if (this.latitude > latLong.latitude) {
 			return 1;
-		} else if (this.latitude < geoPoint.latitude) {
+		} else if (this.latitude < latLong.latitude) {
 			return -1;
 		}
 		return 0;
@@ -106,10 +106,10 @@ public class GeoPoint implements Comparable<GeoPoint>, Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
-		} else if (!(obj instanceof GeoPoint)) {
+		} else if (!(obj instanceof LatLong)) {
 			return false;
 		}
-		GeoPoint other = (GeoPoint) obj;
+		LatLong other = (LatLong) obj;
 		if (Double.doubleToLongBits(this.latitude) != Double.doubleToLongBits(other.latitude)) {
 			return false;
 		} else if (Double.doubleToLongBits(this.longitude) != Double.doubleToLongBits(other.longitude)) {

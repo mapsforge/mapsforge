@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.model.CoordinatesUtil;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.writer.model.TDNode;
 import org.mapsforge.map.writer.model.TDWay;
@@ -123,14 +123,14 @@ public final class GeoUtils {
 	}
 
 	/**
-	 * @param geoPoint
+	 * @param latLong
 	 *            the point
 	 * @param tile
 	 *            the tile
 	 * @return true if the point is located in the given tile
 	 */
-	public static boolean pointInTile(GeoPoint geoPoint, TileCoordinate tile) {
-		if (geoPoint == null || tile == null) {
+	public static boolean pointInTile(LatLong latLong, TileCoordinate tile) {
+		if (latLong == null || tile == null) {
 			return false;
 		}
 
@@ -138,8 +138,8 @@ public final class GeoUtils {
 		double lon2 = MercatorProjection.tileXToLongitude(tile.getX() + 1, tile.getZoomlevel());
 		double lat1 = MercatorProjection.tileYToLatitude(tile.getY(), tile.getZoomlevel());
 		double lat2 = MercatorProjection.tileYToLatitude(tile.getY() + 1, tile.getZoomlevel());
-		return geoPoint.latitude <= lat1 && geoPoint.latitude >= lat2 && geoPoint.longitude >= lon1
-				&& geoPoint.longitude <= lon2;
+		return latLong.latitude <= lat1 && latLong.latitude >= lat2 && latLong.longitude >= lon1
+				&& latLong.longitude <= lon2;
 	}
 
 	// *********** PREPROCESSING OF WAYS **************
@@ -269,10 +269,10 @@ public final class GeoUtils {
 	 *            the JTS {@link Geometry} object
 	 * @return the centroid of the given geometry
 	 */
-	public static GeoPoint computeCentroid(Geometry geometry) {
+	public static LatLong computeCentroid(Geometry geometry) {
 		Point centroid = geometry.getCentroid();
 		if (centroid != null) {
-			return new GeoPoint(centroid.getCoordinate().y, centroid.getCoordinate().x);
+			return new LatLong(centroid.getCoordinate().y, centroid.getCoordinate().x);
 		}
 
 		return null;
@@ -441,7 +441,7 @@ public final class GeoUtils {
 		ArrayList<Integer> result = new ArrayList<Integer>();
 
 		for (int j = 0; j < jtsCoords.length; j++) {
-			GeoPoint geoCoord = new GeoPoint(jtsCoords[j].y, jtsCoords[j].x);
+			LatLong geoCoord = new LatLong(jtsCoords[j].y, jtsCoords[j].x);
 			result.add(Integer.valueOf(CoordinatesUtil.degreesToMicrodegrees(geoCoord.latitude)));
 			result.add(Integer.valueOf(CoordinatesUtil.degreesToMicrodegrees(geoCoord.longitude)));
 		}
@@ -456,8 +456,8 @@ public final class GeoUtils {
 
 		double[] epsilons = new double[2];
 
-		epsilons[0] = GeoPoint.latitudeDistance(enlargementInPixel);
-		epsilons[1] = GeoPoint.longitudeDistance(enlargementInPixel, lat);
+		epsilons[0] = LatLong.latitudeDistance(enlargementInPixel);
+		epsilons[1] = LatLong.longitudeDistance(enlargementInPixel, lat);
 
 		return epsilons;
 	}
@@ -469,8 +469,8 @@ public final class GeoUtils {
 
 		double[] epsilons = new double[2];
 		double lat = MercatorProjection.tileYToLatitude(tileY, zoom);
-		epsilons[0] = GeoPoint.latitudeDistance(enlargementInMeter);
-		epsilons[1] = GeoPoint.longitudeDistance(enlargementInMeter, lat);
+		epsilons[0] = LatLong.latitudeDistance(enlargementInMeter);
+		epsilons[1] = LatLong.longitudeDistance(enlargementInMeter, lat);
 
 		return epsilons;
 	}

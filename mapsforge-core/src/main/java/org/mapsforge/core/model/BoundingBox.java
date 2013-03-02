@@ -88,13 +88,13 @@ public class BoundingBox implements Serializable {
 	}
 
 	/**
-	 * @param geoPoint
-	 *            the GeoPoint whose coordinates should be checked.
-	 * @return true if this BoundingBox contains the given GeoPoint, false otherwise.
+	 * @param latLong
+	 *            the LatLong whose coordinates should be checked.
+	 * @return true if this BoundingBox contains the given LatLong, false otherwise.
 	 */
-	public boolean contains(GeoPoint geoPoint) {
-		return this.minLatitude <= geoPoint.latitude && this.maxLatitude >= geoPoint.latitude
-				&& this.minLongitude <= geoPoint.longitude && this.maxLongitude >= geoPoint.longitude;
+	public boolean contains(LatLong latLong) {
+		return this.minLatitude <= latLong.latitude && this.maxLatitude >= latLong.latitude
+				&& this.minLongitude <= latLong.longitude && this.maxLongitude >= latLong.longitude;
 	}
 
 	@Override
@@ -118,12 +118,12 @@ public class BoundingBox implements Serializable {
 	}
 
 	/**
-	 * @return a new GeoPoint at the horizontal and vertical center of this BoundingBox.
+	 * @return a new LatLong at the horizontal and vertical center of this BoundingBox.
 	 */
-	public GeoPoint getCenterPoint() {
+	public LatLong getCenterPoint() {
 		double latitudeOffset = (this.maxLatitude - this.minLatitude) / 2;
 		double longitudeOffset = (this.maxLongitude - this.minLongitude) / 2;
-		return new GeoPoint(this.minLatitude + latitudeOffset, this.minLongitude + longitudeOffset);
+		return new LatLong(this.minLatitude + latitudeOffset, this.minLongitude + longitudeOffset);
 	}
 
 	/**

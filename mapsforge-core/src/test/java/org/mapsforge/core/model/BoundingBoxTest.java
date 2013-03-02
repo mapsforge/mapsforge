@@ -49,15 +49,15 @@ public class BoundingBoxTest {
 	@Test
 	public void containsTest() {
 		BoundingBox boundingBox = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		GeoPoint geoPoint1 = new GeoPoint(MIN_LATITUDE, MIN_LONGITUDE);
-		GeoPoint geoPoint2 = new GeoPoint(MAX_LATITUDE, MAX_LONGITUDE);
-		GeoPoint geoPoint3 = new GeoPoint(MIN_LONGITUDE, MIN_LONGITUDE);
-		GeoPoint geoPoint4 = new GeoPoint(MAX_LATITUDE, MAX_LATITUDE);
+		LatLong latLong1 = new LatLong(MIN_LATITUDE, MIN_LONGITUDE);
+		LatLong latLong2 = new LatLong(MAX_LATITUDE, MAX_LONGITUDE);
+		LatLong latLong3 = new LatLong(MIN_LONGITUDE, MIN_LONGITUDE);
+		LatLong latLong4 = new LatLong(MAX_LATITUDE, MAX_LATITUDE);
 
-		Assert.assertTrue(boundingBox.contains(geoPoint1));
-		Assert.assertTrue(boundingBox.contains(geoPoint2));
-		Assert.assertFalse(boundingBox.contains(geoPoint3));
-		Assert.assertFalse(boundingBox.contains(geoPoint4));
+		Assert.assertTrue(boundingBox.contains(latLong1));
+		Assert.assertTrue(boundingBox.contains(latLong2));
+		Assert.assertFalse(boundingBox.contains(latLong3));
+		Assert.assertFalse(boundingBox.contains(latLong4));
 	}
 
 	@Test
@@ -118,7 +118,7 @@ public class BoundingBoxTest {
 	@Test
 	public void getCenterPointTest() {
 		BoundingBox boundingBox = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		GeoPoint centerPoint = boundingBox.getCenterPoint();
+		LatLong centerPoint = boundingBox.getCenterPoint();
 		Assert.assertEquals((MIN_LATITUDE + MAX_LATITUDE) / 2, centerPoint.latitude, 0);
 		Assert.assertEquals((MIN_LONGITUDE + MAX_LONGITUDE) / 2, centerPoint.longitude, 0);
 	}

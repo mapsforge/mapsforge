@@ -17,14 +17,14 @@ package org.mapsforge.map.layer.overlay;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
 /**
- * A {@code Circle} consists of a center {@link GeoPoint} and a non-negative radius in meters.
+ * A {@code Circle} consists of a center {@link LatLong} and a non-negative radius in meters.
  * <p>
  * A {@code Circle} holds two {@link Paint} objects to allow for different outline and filling. These paints define
  * drawing parameters such as color, stroke width, pattern and transparency.
@@ -34,13 +34,13 @@ public class Circle extends Layer {
 		return meters / MercatorProjection.calculateGroundResolution(latitude, zoom);
 	}
 
-	private GeoPoint geoPoint;
+	private LatLong latLong;
 	private Paint paintFill;
 	private Paint paintStroke;
 	private float radius;
 
 	/**
-	 * @param geoPoint
+	 * @param latLong
 	 *            the initial center point of this circle (may be null).
 	 * @param radius
 	 *            the initial non-negative radius of this circle in meters.
@@ -51,10 +51,10 @@ public class Circle extends Layer {
 	 * @throws IllegalArgumentException
 	 *             if the given {@code radius} is negative or {@link Float#NaN}.
 	 */
-	public Circle(GeoPoint geoPoint, float radius, Paint paintFill, Paint paintStroke) {
+	public Circle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
 		super();
 
-		this.geoPoint = geoPoint;
+		this.latLong = latLong;
 		setRadiusInternal(radius);
 		this.paintFill = paintFill;
 		this.paintStroke = paintStroke;
@@ -62,12 +62,12 @@ public class Circle extends Layer {
 
 	@Override
 	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
-		if (this.geoPoint == null || (this.paintStroke == null && this.paintFill == null)) {
+		if (this.latLong == null || (this.paintStroke == null && this.paintFill == null)) {
 			return;
 		}
 
-		double latitude = this.geoPoint.latitude;
-		double longitude = this.geoPoint.longitude;
+		double latitude = this.latLong.latitude;
+		double longitude = this.latLong.longitude;
 		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - canvasPosition.x);
 		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - canvasPosition.y);
 		int radiusInPixel = (int) metersToPixels(latitude, this.radius, zoomLevel);
@@ -88,8 +88,8 @@ public class Circle extends Layer {
 	/**
 	 * @return the center point of this circle (may be null).
 	 */
-	public synchronized GeoPoint getGeoPoint() {
-		return this.geoPoint;
+	public synchronized LatLong getLatLong() {
+		return this.latLong;
 	}
 
 	/**
@@ -114,11 +114,11 @@ public class Circle extends Layer {
 	}
 
 	/**
-	 * @param geoPoint
+	 * @param latLong
 	 *            the new center point of this circle (may be null).
 	 */
-	public synchronized void setGeoPoint(GeoPoint geoPoint) {
-		this.geoPoint = geoPoint;
+	public synchronized void setLatLong(LatLong latLong) {
+		this.latLong = latLong;
 	}
 
 	/**

@@ -17,7 +17,7 @@ package org.mapsforge.map.model;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Dimension;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.common.DummyObserver;
 
@@ -46,8 +46,8 @@ public class FrameBufferModelTest {
 		FrameBufferModel frameBufferModel = new FrameBufferModel();
 		Assert.assertNull(frameBufferModel.getMapPosition());
 
-		frameBufferModel.setMapPosition(new MapPosition(new GeoPoint(0, 0), (byte) 0));
-		Assert.assertEquals(new MapPosition(new GeoPoint(0, 0), (byte) 0), frameBufferModel.getMapPosition());
+		frameBufferModel.setMapPosition(new MapPosition(new LatLong(0, 0), (byte) 0));
+		Assert.assertEquals(new MapPosition(new LatLong(0, 0), (byte) 0), frameBufferModel.getMapPosition());
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class FrameBufferModelTest {
 		frameBufferModel.setDimension(new Dimension(0, 0));
 		Assert.assertEquals(1, dummyObserver.getCallbacks());
 
-		frameBufferModel.setMapPosition(new MapPosition(new GeoPoint(0, 0), (byte) 0));
+		frameBufferModel.setMapPosition(new MapPosition(new LatLong(0, 0), (byte) 0));
 		Assert.assertEquals(2, dummyObserver.getCallbacks());
 
 		frameBufferModel.setOverdrawFactor(1);
