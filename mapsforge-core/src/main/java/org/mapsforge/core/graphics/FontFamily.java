@@ -15,5 +15,5 @@
 package org.mapsforge.core.graphics;
 
 public enum FontFamily {
-	DEFAULT, DEFAULT_BOLD, MONOSPACE, SANS_SERIF, SERIF;
+	DEFAULT, MONOSPACE, SANS_SERIF, SERIF;
 }

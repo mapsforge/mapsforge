@@ -12,25 +12,18 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.renderer;
+package org.mapsforge.map.awt.view;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.Point;
+import java.awt.Dimension;
 
-class SymbolContainer {
-	final boolean alignCenter;
-	final Point point;
-	final Bitmap symbol;
-	final float theta;
+import javax.swing.JFrame;
 
-	SymbolContainer(Bitmap symbol, Point point) {
-		this(symbol, point, false, 0);
-	}
+public class MainFrame extends JFrame {
+	private static final long serialVersionUID = 1L;
 
-	SymbolContainer(Bitmap symbol, Point point, boolean alignCenter, float theta) {
-		this.symbol = symbol;
-		this.point = point;
-		this.alignCenter = alignCenter;
-		this.theta = theta;
+	public MainFrame() {
+		super("MapViewer");
+
+		setSize(new Dimension(800, 600));
 	}
 }

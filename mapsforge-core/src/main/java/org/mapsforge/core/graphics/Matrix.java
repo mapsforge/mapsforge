@@ -17,9 +17,17 @@ package org.mapsforge.core.graphics;
 public interface Matrix {
 	void reset();
 
-	void rotate(float degrees);
+	/**
+	 * @param theta
+	 *            an angle measured in radians.
+	 */
+	void rotate(float theta);
 
-	void rotate(float degrees, int pivotX, int pivotY);
+	/**
+	 * @param theta
+	 *            an angle measured in radians.
+	 */
+	void rotate(float theta, float pivotX, float pivotY);
 
 	void scale(float scaleX, float scaleY);
 

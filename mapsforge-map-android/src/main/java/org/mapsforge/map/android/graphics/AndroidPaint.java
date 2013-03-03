@@ -42,7 +42,7 @@ class AndroidPaint implements Paint {
 		throw new IllegalArgumentException("unknown cap: " + cap);
 	}
 
-	private static int getStyle(org.mapsforge.core.graphics.FontStyle fontStyle) {
+	private static int getFontStyle(org.mapsforge.core.graphics.FontStyle fontStyle) {
 		switch (fontStyle) {
 			case BOLD:
 				return 1;
@@ -61,8 +61,6 @@ class AndroidPaint implements Paint {
 		switch (fontFamily) {
 			case DEFAULT:
 				return Typeface.DEFAULT;
-			case DEFAULT_BOLD:
-				return Typeface.DEFAULT_BOLD;
 			case MONOSPACE:
 				return Typeface.MONOSPACE;
 			case SANS_SERIF:
@@ -167,6 +165,6 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
-		this.paint.setTypeface(Typeface.create(getTypeface(fontFamily), getStyle(fontStyle)));
+		this.paint.setTypeface(Typeface.create(getTypeface(fontFamily), getFontStyle(fontStyle)));
 	}
 }

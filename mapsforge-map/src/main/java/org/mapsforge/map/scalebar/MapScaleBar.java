@@ -109,7 +109,7 @@ public class MapScaleBar {
 		paint.setColor(this.graphicFactory.createColor(color));
 		paint.setStrokeWidth(strokeWidth);
 		paint.setStyle(Style.STROKE);
-		paint.setTypeface(FontFamily.DEFAULT_BOLD, FontStyle.BOLD);
+		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 		paint.setTextSize(20);
 		return paint;
 	}

@@ -35,7 +35,6 @@
 	<xs:simpleType name="fontFamily">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="default" />
-			<xs:enumeration value="default_bold" />
 			<xs:enumeration value="monospace" />
 			<xs:enumeration value="sans_serif" />
 			<xs:enumeration value="serif" />

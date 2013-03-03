@@ -47,7 +47,7 @@ final class WayDecorator {
 		// draw the symbol on each way segment
 		float segmentLengthRemaining;
 		float segmentSkipPercentage;
-		float symbolAngle;
+		float theta;
 		for (int i = 1; i < coordinates[0].length; ++i) {
 			// get the current way point coordinates
 			double currentX = coordinates[0][i].x;
@@ -66,10 +66,10 @@ final class WayDecorator {
 				// move the previous point forward towards the current point
 				previousX += diffX * segmentSkipPercentage;
 				previousY += diffY * segmentSkipPercentage;
-				symbolAngle = (float) Math.toDegrees(Math.atan2(currentY - previousY, currentX - previousX));
+				theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
 
 				Point point = new Point(previousX, previousY);
-				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, symbolAngle));
+				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, theta));
 
 				// check if the symbol should only be rendered once
 				if (!repeatSymbol) {

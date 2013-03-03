@@ -18,7 +18,6 @@ import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
-import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.overlay.Polyline;
@@ -120,7 +119,7 @@ public class Rewrite extends Activity {
 		// GRAPHIC_FACTORY));
 		// layers.add(new TileDownloadLayer(tileCache, mapViewPosition, OpenStreetMapMapnik.INSTANCE, layerManager,
 		// GRAPHIC_FACTORY));
-		layers.add(new TileGridLayer(GRAPHIC_FACTORY));
+		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
 		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
 		addOverlayLayers(layers);
 

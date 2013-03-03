@@ -81,6 +81,7 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 		return this.frameBuffer;
 	}
 
+	@Override
 	public LayerManager getLayerManager() {
 		return this.layerManager;
 	}

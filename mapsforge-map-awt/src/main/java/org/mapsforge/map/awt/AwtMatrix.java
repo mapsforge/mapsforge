@@ -12,41 +12,43 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.android.graphics;
+package org.mapsforge.map.awt;
+
+import java.awt.geom.AffineTransform;
 
 import org.mapsforge.core.graphics.Matrix;
 
-class AndroidMatrix implements Matrix {
-	final android.graphics.Matrix matrix = new android.graphics.Matrix();
+public class AwtMatrix implements Matrix {
+	final AffineTransform affineTransform = new AffineTransform();
 
 	@Override
 	public void reset() {
-		this.matrix.reset();
+		this.affineTransform.setToIdentity();
 	}
 
 	@Override
 	public void rotate(float theta) {
-		this.matrix.preRotate((float) Math.toDegrees(theta));
-
+		this.affineTransform.rotate(theta);
 	}
 
 	@Override
 	public void rotate(float theta, float pivotX, float pivotY) {
-		this.matrix.preRotate((float) Math.toDegrees(theta), pivotX, pivotY);
+		this.affineTransform.rotate(theta, pivotX, pivotY);
 	}
 
 	@Override
 	public void scale(float scaleX, float scaleY) {
-		this.matrix.preScale(scaleX, scaleY);
+		this.affineTransform.scale(scaleX, scaleY);
 	}
 
 	@Override
 	public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-		this.matrix.preScale(scaleX, scaleY, pivotX, pivotY);
+		// TODO fix this
+		this.affineTransform.scale(scaleX, scaleY);
 	}
 
 	@Override
 	public void translate(float translateX, float translateY) {
-		this.matrix.preTranslate(translateX, translateY);
+		this.affineTransform.translate(translateX, translateY);
 	}
 }

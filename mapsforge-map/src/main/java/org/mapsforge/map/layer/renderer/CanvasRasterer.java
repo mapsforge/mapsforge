@@ -58,11 +58,11 @@ class CanvasRasterer {
 			if (symbolContainer.alignCenter) {
 				int pivotX = symbolContainer.symbol.getWidth() / 2;
 				int pivotY = symbolContainer.symbol.getHeight() / 2;
-				this.symbolMatrix.rotate(symbolContainer.rotation, pivotX, pivotY);
 				this.symbolMatrix.translate((float) (point.x - pivotX), (float) (point.y - pivotY));
+				this.symbolMatrix.rotate(symbolContainer.theta, pivotX, pivotY);
 			} else {
-				this.symbolMatrix.rotate(symbolContainer.rotation);
 				this.symbolMatrix.translate((float) point.x, (float) point.y);
+				this.symbolMatrix.rotate(symbolContainer.theta);
 			}
 
 			this.canvas.drawBitmap(symbolContainer.symbol, this.symbolMatrix);

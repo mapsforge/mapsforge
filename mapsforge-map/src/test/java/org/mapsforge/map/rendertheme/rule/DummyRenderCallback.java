@@ -21,46 +21,46 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 class DummyRenderCallback implements RenderCallback {
 	@Override
 	public void renderArea(Paint fill, Paint stroke, int level) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void renderAreaSymbol(Bitmap symbol) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void renderPointOfInterestCaption(String caption, float verticalOffset, Paint fill, Paint stroke) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void renderPointOfInterestCircle(float radius, Paint fill, Paint stroke, int level) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void renderPointOfInterestSymbol(Bitmap symbol) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void renderWay(Paint stroke, int level) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void renderWaySymbol(Bitmap symbol, boolean alignCenter, boolean repeat) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
 	public void renderWayText(String text, Paint fill, Paint stroke) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 }

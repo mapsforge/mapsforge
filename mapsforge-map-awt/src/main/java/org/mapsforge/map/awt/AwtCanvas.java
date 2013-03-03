@@ -16,7 +16,11 @@ package org.mapsforge.map.awt;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.TexturePaint;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -25,6 +29,7 @@ import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.Style;
 
 class AwtCanvas implements Canvas {
 	private static int getCap(Cap cap) {
@@ -48,6 +53,13 @@ class AwtCanvas implements Canvas {
 	private BufferedImage bufferedImage;
 	private Graphics2D graphics2D;
 
+	AwtCanvas() {
+	}
+
+	AwtCanvas(Graphics2D graphics2D) {
+		this.graphics2D = graphics2D;
+	}
+
 	@Override
 	public void drawBitmap(Bitmap bitmap, int left, int top) {
 		this.graphics2D.drawImage(AwtGraphicFactory.getBufferedImage(bitmap), left, top, null);
@@ -55,7 +67,8 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-		throw new UnsupportedOperationException();
+		this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
+				AwtGraphicFactory.getAffineTransform(matrix));
 	}
 
 	@Override
@@ -72,19 +85,47 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawPath(Path path, Paint paint) {
+		// FIXME do not send empty paths to the canvas
+		if (path.isEmpty()) {
+			return;
+		}
 		setPaintAttributes(paint);
-		this.graphics2D.drawPolygon(AwtGraphicFactory.getPolygon(path));
+
+		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
+		if (awtPaint.bitmap != null) {
+			Rectangle rectangle = new Rectangle(0, 0, awtPaint.bitmap.getWidth(), awtPaint.bitmap.getHeight());
+			TexturePaint texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(awtPaint.bitmap), rectangle);
+			this.graphics2D.setPaint(texturePaint);
+		}
+
+		Style style = awtPaint.style;
+		switch (style) {
+			case FILL:
+				this.graphics2D.fillPolygon(AwtGraphicFactory.getPolygon(path));
+				return;
+
+			case STROKE:
+				this.graphics2D.drawPolygon(AwtGraphicFactory.getPolygon(path));
+				return;
+		}
+
+		throw new IllegalArgumentException("unknown style: " + style);
 	}
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
 		setPaintAttributes(paint);
+		this.graphics2D.setFont(AwtGraphicFactory.getAwtPaint(paint).font);
 		this.graphics2D.drawString(text, x, y);
 	}
 
 	@Override
 	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
-		throw new UnsupportedOperationException();
+		double theta = Math.atan2(y1 - y2, x1 - x2);
+		AffineTransform affineTransform = this.graphics2D.getTransform();
+		this.graphics2D.rotate(theta, x1, y1);
+		drawText(text, x1, y1, paint);
+		this.graphics2D.setTransform(affineTransform);
 	}
 
 	@Override
@@ -111,6 +152,8 @@ class AwtCanvas implements Canvas {
 		} else {
 			this.bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
 			this.graphics2D = this.bufferedImage.createGraphics();
+			this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			this.graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		}
 	}
 

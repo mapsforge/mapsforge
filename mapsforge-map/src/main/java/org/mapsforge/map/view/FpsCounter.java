@@ -35,7 +35,7 @@ public class FpsCounter {
 		paint.setColor(graphicFactory.createColor(Color.BLACK));
 		paint.setStrokeWidth(0);
 		paint.setStyle(Style.STROKE);
-		paint.setTypeface(FontFamily.DEFAULT_BOLD, FontStyle.BOLD);
+		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 		paint.setTextSize(25);
 		return paint;
 	}

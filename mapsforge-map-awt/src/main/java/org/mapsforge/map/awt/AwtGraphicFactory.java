@@ -15,6 +15,7 @@
 package org.mapsforge.map.awt;
 
 import java.awt.Polygon;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,18 @@ import org.mapsforge.core.graphics.Path;
 public final class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
+
+	public static Canvas createCanvas(java.awt.Graphics2D graphics2D) {
+		return new AwtCanvas(graphics2D);
+	}
+
+	static AffineTransform getAffineTransform(Matrix matrix) {
+		return ((AwtMatrix) matrix).affineTransform;
+	}
+
+	static AwtPaint getAwtPaint(Paint paint) {
+		return ((AwtPaint) paint);
+	}
 
 	static BufferedImage getBufferedImage(Bitmap bitmap) {
 		return ((AwtBitmap) bitmap).bufferedImage;
@@ -92,19 +105,13 @@ public final class AwtGraphicFactory implements GraphicFactory {
 
 	@Override
 	public int createColor(String colorString) {
-		// FIXME this is wrong
-		if (colorString.charAt(0) != '#') {
-			colorString = "#" + colorString;
-		}
-		if (colorString.length() == 9) {
-			colorString = "#" + colorString.substring(3);
-		}
-		return java.awt.Color.decode(colorString).getRGB();
+		long parseLong = Long.parseLong(colorString.substring(1), 16);
+		return new java.awt.Color((int) parseLong, true).getRGB();
 	}
 
 	@Override
 	public Matrix createMatrix() {
-		throw new UnsupportedOperationException();
+		return new AwtMatrix();
 	}
 
 	@Override

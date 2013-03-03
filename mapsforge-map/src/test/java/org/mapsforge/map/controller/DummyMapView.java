@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.controller;
 
+import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
@@ -22,6 +23,11 @@ public class DummyMapView implements MapView {
 
 	@Override
 	public FrameBuffer getFrameBuffer() {
+		return null;
+	}
+
+	@Override
+	public LayerManager getLayerManager() {
 		return null;
 	}
 

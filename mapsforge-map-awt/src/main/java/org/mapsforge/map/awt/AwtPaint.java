@@ -14,6 +14,10 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.image.BufferedImage;
+
 import org.mapsforge.core.graphics.Align;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
@@ -24,16 +28,53 @@ import org.mapsforge.core.graphics.Style;
 
 // TODO check default values
 class AwtPaint implements Paint {
+	private static String getFontName(FontFamily fontFamily) {
+		switch (fontFamily) {
+			case MONOSPACE:
+				return Font.MONOSPACED;
+
+			case DEFAULT:
+				return null;
+
+			case SANS_SERIF:
+				return Font.SANS_SERIF;
+
+			case SERIF:
+				return Font.SERIF;
+		}
+
+		throw new IllegalArgumentException("unknown fontFamily: " + fontFamily);
+	}
+
+	private static int getFontStyle(FontStyle fontStyle) {
+		switch (fontStyle) {
+			case BOLD:
+				return Font.BOLD;
+
+			case BOLD_ITALIC:
+				return Font.BOLD | Font.ITALIC;
+
+			case ITALIC:
+				return Font.ITALIC;
+
+			case NORMAL:
+				return Font.PLAIN;
+		}
+
+		throw new IllegalArgumentException("unknown fontStyle: " + fontStyle);
+	}
+
 	private Align align = Align.LEFT;
-	private Bitmap bitmap;
 	private Cap cap = Cap.BUTT;
 	private int color = 0;
-	private FontFamily fontFamily;
-	private FontStyle fontStyle;
+	private String fontName;
+	private int fontStyle;
 	private float[] strokeDasharray;
 	private float strokeWidth;
-	private Style style = Style.FILL;
 	private float textSize;
+	Bitmap bitmap;
+	Font font;
+	Style style = Style.FILL;
 
 	@Override
 	public int getColor() {
@@ -52,12 +93,16 @@ class AwtPaint implements Paint {
 
 	@Override
 	public int getTextHeight(String text) {
-		throw new UnsupportedOperationException();
+		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
+		return fontMetrics.getHeight();
 	}
 
 	@Override
 	public int getTextWidth(String text) {
-		throw new UnsupportedOperationException();
+		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
+		return fontMetrics.stringWidth(text);
 	}
 
 	@Override
@@ -103,11 +148,21 @@ class AwtPaint implements Paint {
 	@Override
 	public void setTextSize(float textSize) {
 		this.textSize = textSize;
+		createFont();
 	}
 
 	@Override
 	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
-		this.fontFamily = fontFamily;
-		this.fontStyle = fontStyle;
+		this.fontName = getFontName(fontFamily);
+		this.fontStyle = getFontStyle(fontStyle);
+		createFont();
+	}
+
+	private void createFont() {
+		if (this.textSize > 0) {
+			this.font = new Font(this.fontName, this.fontStyle, (int) this.textSize);
+		} else {
+			this.font = null;
+		}
 	}
 }
