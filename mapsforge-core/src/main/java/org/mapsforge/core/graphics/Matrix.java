@@ -31,7 +31,5 @@ public interface Matrix {
 
 	void scale(float scaleX, float scaleY);
 
-	void scale(float scaleX, float scaleY, float pivotX, float pivotY);
-
 	void translate(float translateX, float translateY);
 }

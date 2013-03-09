@@ -27,7 +27,6 @@ class AndroidMatrix implements Matrix {
 	@Override
 	public void rotate(float theta) {
 		this.matrix.preRotate((float) Math.toDegrees(theta));
-
 	}
 
 	@Override
@@ -38,11 +37,6 @@ class AndroidMatrix implements Matrix {
 	@Override
 	public void scale(float scaleX, float scaleY) {
 		this.matrix.preScale(scaleX, scaleY);
-	}
-
-	@Override
-	public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-		this.matrix.preScale(scaleX, scaleY, pivotX, pivotY);
 	}
 
 	@Override

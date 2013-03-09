@@ -55,6 +55,10 @@ public class FrameBufferModel extends Observable {
 		notifyObservers();
 	}
 
+	/**
+	 * @throws IllegalArgumentException
+	 *             if the {@code overdrawFactor} is less or equal zero.
+	 */
 	public void setOverdrawFactor(double overdrawFactor) {
 		if (overdrawFactor <= 0) {
 			throw new IllegalArgumentException("overdrawFactor must be > 0: " + overdrawFactor);

@@ -84,8 +84,8 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
 
 				this.matrix.reset();
-				this.matrix.scale(scaleFactor, scaleFactor);
 				this.matrix.translate((float) (point.x - translateX), (float) (point.y - translateY));
+				this.matrix.scale(scaleFactor, scaleFactor);
 				canvas.drawBitmap(bitmap, this.matrix);
 			}
 		}

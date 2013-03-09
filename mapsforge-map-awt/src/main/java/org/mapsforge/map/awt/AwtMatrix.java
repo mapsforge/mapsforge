@@ -42,12 +42,6 @@ public class AwtMatrix implements Matrix {
 	}
 
 	@Override
-	public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-		// TODO fix this
-		this.affineTransform.scale(scaleX, scaleY);
-	}
-
-	@Override
 	public void translate(float translateX, float translateY) {
 		this.affineTransform.translate(translateX, translateY);
 	}
