@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.awt.util.JavaPreferences;
+import org.mapsforge.map.model.common.JavaUtilPreferences;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class ModelTest {
@@ -50,7 +50,7 @@ public class ModelTest {
 		model.mapViewPosition.setMapPosition(mapPosition1);
 		Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
 
-		PreferencesFacade preferencesFacade = new JavaPreferences(this.preferences);
+		PreferencesFacade preferencesFacade = new JavaUtilPreferences(this.preferences);
 		model.save(preferencesFacade);
 
 		model.mapViewPosition.setMapPosition(mapPosition2);

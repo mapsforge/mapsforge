@@ -29,6 +29,7 @@
 		<module>mapsforge-map-awt</module>
 		<module>mapsforge-map-reader</module>
 		<module>mapsforge-map-writer</module>
+		<module>SwingMapViewer</module>
 	</modules>
 
 	<scm>

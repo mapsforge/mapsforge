@@ -12,17 +12,17 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.awt.util;
+package org.mapsforge.map.model.common;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import org.mapsforge.map.model.common.PreferencesFacade;
 
-public class JavaPreferences implements PreferencesFacade {
+public class JavaUtilPreferences implements PreferencesFacade {
 	private final Preferences preferences;
 
-	public JavaPreferences(Preferences preferences) {
+	public JavaUtilPreferences(Preferences preferences) {
 		this.preferences = preferences;
 	}
 

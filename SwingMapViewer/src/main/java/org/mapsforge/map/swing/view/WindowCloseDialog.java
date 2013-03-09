@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.awt.view;
+package org.mapsforge.map.swing.view;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -21,8 +21,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
-import org.mapsforge.map.awt.util.JavaPreferences;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class WindowCloseDialog extends WindowAdapter {
 	private static final String MESSAGE = "Are you sure you want to exit the application?";
@@ -30,9 +30,9 @@ public class WindowCloseDialog extends WindowAdapter {
 
 	private final JFrame jFrame;
 	private final Model model;
-	private final JavaPreferences preferencesFacade;
+	private final PreferencesFacade preferencesFacade;
 
-	public WindowCloseDialog(JFrame jFrame, Model model, JavaPreferences preferencesFacade) {
+	public WindowCloseDialog(JFrame jFrame, Model model, PreferencesFacade preferencesFacade) {
 		super();
 
 		this.jFrame = jFrame;

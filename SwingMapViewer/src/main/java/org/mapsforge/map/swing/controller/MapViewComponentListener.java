@@ -12,14 +12,14 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.awt.controller;
+package org.mapsforge.map.swing.controller;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import org.mapsforge.map.awt.view.MapView;
 import org.mapsforge.map.model.MapViewModel;
+import org.mapsforge.map.swing.view.MapView;
 
 public class MapViewComponentListener implements ComponentListener {
 	private final MapView mapView;

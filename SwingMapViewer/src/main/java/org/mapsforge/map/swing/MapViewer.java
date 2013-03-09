@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.awt;
+package org.mapsforge.map.swing;
 
 import java.awt.Component;
 import java.io.File;
@@ -20,12 +20,7 @@ import java.util.List;
 import java.util.prefs.Preferences;
 
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.map.awt.controller.MapViewComponentListener;
-import org.mapsforge.map.awt.controller.MouseEventListener;
-import org.mapsforge.map.awt.util.JavaPreferences;
-import org.mapsforge.map.awt.view.MainFrame;
-import org.mapsforge.map.awt.view.MapView;
-import org.mapsforge.map.awt.view.WindowCloseDialog;
+import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
@@ -38,14 +33,21 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.model.common.JavaUtilPreferences;
+import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.swing.controller.MapViewComponentListener;
+import org.mapsforge.map.swing.controller.MouseEventListener;
+import org.mapsforge.map.swing.view.MainFrame;
+import org.mapsforge.map.swing.view.MapView;
+import org.mapsforge.map.swing.view.WindowCloseDialog;
 
 public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	public static void main(String[] args) {
 		Model model = new Model();
-		JavaPreferences preferencesFacade = new JavaPreferences(Preferences.userNodeForPackage(MapViewer.class));
+		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		model.init(preferencesFacade);
 
 		MainFrame mainFrame = new MainFrame();
