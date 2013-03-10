@@ -16,15 +16,15 @@ package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.model.Point;
 
-class WayContainer implements ShapeContainer {
+class PolylineContainer implements ShapeContainer {
 	final Point[][] coordinates;
 
-	WayContainer(Point[][] coordinates) {
+	PolylineContainer(Point[][] coordinates) {
 		this.coordinates = coordinates;
 	}
 
 	@Override
 	public ShapeType getShapeType() {
-		return ShapeType.WAY;
+		return ShapeType.POLYLINE;
 	}
 }

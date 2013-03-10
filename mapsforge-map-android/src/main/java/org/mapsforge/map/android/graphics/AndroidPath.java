@@ -25,21 +25,17 @@ class AndroidPath implements Path {
 	}
 
 	@Override
-	public void addPoint(int x, int y) {
-		if (isEmpty()) {
-			this.path.moveTo(x, y);
-		} else {
-			this.path.lineTo(x, y);
-		}
-	}
-
-	@Override
 	public void clear() {
 		this.path.rewind();
 	}
 
 	@Override
-	public boolean isEmpty() {
-		return this.path.isEmpty();
+	public void lineTo(int x, int y) {
+		this.path.lineTo(x, y);
+	}
+
+	@Override
+	public void moveTo(int x, int y) {
+		this.path.moveTo(x, y);
 	}
 }

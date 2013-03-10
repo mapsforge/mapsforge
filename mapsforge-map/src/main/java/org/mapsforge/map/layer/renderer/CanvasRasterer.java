@@ -87,37 +87,7 @@ class CanvasRasterer {
 				List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
 				for (int index = wayList.size() - 1; index >= 0; --index) {
-					ShapePaintContainer shapePaintContainer = wayList.get(index);
-					this.path.clear();
-
-					switch (shapePaintContainer.shapeContainer.getShapeType()) {
-						case CIRCLE:
-							CircleContainer circleContainer = (CircleContainer) shapePaintContainer.shapeContainer;
-							Point point = circleContainer.point;
-
-							this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius,
-									shapePaintContainer.paint);
-							break;
-
-						case WAY:
-							WayContainer wayContainer = (WayContainer) shapePaintContainer.shapeContainer;
-							Point[][] coordinates = wayContainer.coordinates;
-							for (int j = 0; j < coordinates.length; ++j) {
-								// make sure that the coordinates sequence is not empty
-								Point[] points = coordinates[j];
-								if (points.length >= 2) {
-									Point immutablePoint = points[0];
-									this.path.addPoint((int) immutablePoint.x, (int) immutablePoint.y);
-									for (int i = 1; i < points.length; ++i) {
-										immutablePoint = points[i];
-										this.path.addPoint((int) immutablePoint.x, (int) immutablePoint.y);
-									}
-								}
-							}
-							break;
-					}
-
-					this.canvas.drawPath(this.path, shapePaintContainer.paint);
+					drawShapePaintContainer(wayList.get(index));
 				}
 			}
 		}
@@ -129,5 +99,43 @@ class CanvasRasterer {
 
 	void setCanvasBitmap(Bitmap bitmap) {
 		this.canvas.setBitmap(bitmap);
+	}
+
+	private void drawCircleContainer(ShapePaintContainer shapePaintContainer) {
+		CircleContainer circleContainer = (CircleContainer) shapePaintContainer.shapeContainer;
+		Point point = circleContainer.point;
+		this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
+	}
+
+	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates) {
+		this.path.clear();
+
+		for (int j = 0; j < coordinates.length; ++j) {
+			Point[] points = coordinates[j];
+			if (points.length >= 2) {
+				Point point = points[0];
+				this.path.moveTo((int) point.x, (int) point.y);
+				for (int i = 1; i < points.length; ++i) {
+					point = points[i];
+					this.path.lineTo((int) point.x, (int) point.y);
+				}
+			}
+		}
+
+		this.canvas.drawPath(this.path, shapePaintContainer.paint);
+	}
+
+	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
+		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
+		switch (shapeType) {
+			case CIRCLE:
+				drawCircleContainer(shapePaintContainer);
+				return;
+
+			case POLYLINE:
+				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
+				drawPath(shapePaintContainer, polylineContainer.coordinates);
+				return;
+		}
 	}
 }

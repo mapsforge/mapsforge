@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.layer.overlay;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -56,16 +57,23 @@ public class Polygon extends Layer {
 
 	@Override
 	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
-		if (this.latLongs.isEmpty() || (this.paintStroke == null && this.paintFill == null)) {
+		if (this.latLongs.size() < 2 || (this.paintStroke == null && this.paintFill == null)) {
 			return;
 		}
 
-		Path path = this.graphicFactory.createPath();
+		Iterator<LatLong> iterator = this.latLongs.iterator();
 
-		for (LatLong latLong : this.latLongs) {
-			int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
-			int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
-			path.addPoint(x, y);
+		Path path = this.graphicFactory.createPath();
+		LatLong latLong = iterator.next();
+		int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
+		int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
+		path.moveTo(x, y);
+
+		while (iterator.hasNext()) {
+			latLong = iterator.next();
+			x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
+			y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
+			path.lineTo(x, y);
 		}
 
 		if (this.paintStroke != null) {

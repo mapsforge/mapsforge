@@ -335,7 +335,7 @@ public class DatabaseRenderer implements RenderCallback {
 	private void renderWaterBackground() {
 		this.drawingLayers = this.ways.get(0);
 		this.coordinates = WATER_TILE_COORDINATES;
-		this.shapeContainer = new WayContainer(this.coordinates);
+		this.shapeContainer = new PolylineContainer(this.coordinates);
 		this.renderTheme.matchClosedWay(this, Arrays.asList(TAG_NATURAL_WATER), this.currentRendererJob.tile.zoomLevel);
 	}
 
@@ -352,7 +352,7 @@ public class DatabaseRenderer implements RenderCallback {
 				this.coordinates[i][j] = scaleLatLong(latLongs[i][j]);
 			}
 		}
-		this.shapeContainer = new WayContainer(this.coordinates);
+		this.shapeContainer = new PolylineContainer(this.coordinates);
 
 		if (GeometryUtils.isClosedWay(this.coordinates[0])) {
 			this.renderTheme.matchClosedWay(this, way.tags, this.currentRendererJob.tile.zoomLevel);

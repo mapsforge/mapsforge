@@ -14,7 +14,6 @@
  */
 package org.mapsforge.map.awt;
 
-import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -46,12 +45,12 @@ public final class AwtGraphicFactory implements GraphicFactory {
 		return ((AwtPaint) paint);
 	}
 
-	static BufferedImage getBufferedImage(Bitmap bitmap) {
-		return ((AwtBitmap) bitmap).bufferedImage;
+	static AwtPath getAwtPath(Path path) {
+		return ((AwtPath) path);
 	}
 
-	static Polygon getPolygon(Path path) {
-		return ((AwtPath) path).polygon;
+	static BufferedImage getBufferedImage(Bitmap bitmap) {
+		return ((AwtBitmap) bitmap).bufferedImage;
 	}
 
 	private AwtGraphicFactory() {

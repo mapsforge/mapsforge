@@ -14,25 +14,25 @@
  */
 package org.mapsforge.map.awt;
 
-import java.awt.Polygon;
+import java.awt.geom.Path2D;
 
 import org.mapsforge.core.graphics.Path;
 
 class AwtPath implements Path {
-	final Polygon polygon = new Polygon();
-
-	@Override
-	public void addPoint(int x, int y) {
-		this.polygon.addPoint(x, y);
-	}
+	final Path2D path2D = new Path2D.Float();
 
 	@Override
 	public void clear() {
-		this.polygon.reset();
+		this.path2D.reset();
 	}
 
 	@Override
-	public boolean isEmpty() {
-		return this.polygon.npoints == 0;
+	public void lineTo(int x, int y) {
+		this.path2D.lineTo(x, y);
+	}
+
+	@Override
+	public void moveTo(int x, int y) {
+		this.path2D.moveTo(x, y);
 	}
 }

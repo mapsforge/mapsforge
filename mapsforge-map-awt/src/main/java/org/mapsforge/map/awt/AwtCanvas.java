@@ -85,10 +85,6 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawPath(Path path, Paint paint) {
-		// FIXME do not send empty paths to the canvas
-		if (path.isEmpty()) {
-			return;
-		}
 		setPaintAttributes(paint);
 
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
@@ -98,14 +94,15 @@ class AwtCanvas implements Canvas {
 			this.graphics2D.setPaint(texturePaint);
 		}
 
+		AwtPath awtPath = AwtGraphicFactory.getAwtPath(path);
 		Style style = awtPaint.style;
 		switch (style) {
 			case FILL:
-				this.graphics2D.fillPolygon(AwtGraphicFactory.getPolygon(path));
+				this.graphics2D.fill(awtPath.path2D);
 				return;
 
 			case STROKE:
-				this.graphics2D.drawPolygon(AwtGraphicFactory.getPolygon(path));
+				this.graphics2D.draw(awtPath.path2D);
 				return;
 		}
 
@@ -121,10 +118,17 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
-		double theta = Math.atan2(y1 - y2, x1 - x2);
 		AffineTransform affineTransform = this.graphics2D.getTransform();
+
+		double theta = Math.atan2(y2 - y1, x2 - x1);
 		this.graphics2D.rotate(theta, x1, y1);
-		drawText(text, x1, y1, paint);
+
+		double lineLength = Math.hypot(x2 - x1, y2 - y1);
+		int textWidth = paint.getTextWidth(text);
+		int dx = (int) (lineLength - textWidth) / 2;
+		int xy = paint.getTextHeight(text) / 3;
+		drawText(text, x1 + dx, y1 + xy, paint);
+
 		this.graphics2D.setTransform(affineTransform);
 	}
 
