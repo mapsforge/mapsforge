@@ -75,31 +75,6 @@ class AndroidPaint implements Paint {
 	final android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
 
 	@Override
-	public int getColor() {
-		return this.paint.getColor();
-	}
-
-	@Override
-	public Cap getStrokeCap() {
-		android.graphics.Paint.Cap cap = this.paint.getStrokeCap();
-		switch (cap) {
-			case BUTT:
-				return Cap.BUTT;
-			case ROUND:
-				return Cap.ROUND;
-			case SQUARE:
-				return Cap.SQUARE;
-		}
-
-		throw new IllegalStateException("unknown cap: " + cap);
-	}
-
-	@Override
-	public float getStrokeWidth() {
-		return this.paint.getStrokeWidth();
-	}
-
-	@Override
 	public int getTextHeight(String text) {
 		Rect rect = new Rect();
 		this.paint.getTextBounds(text, 0, text.length(), rect);

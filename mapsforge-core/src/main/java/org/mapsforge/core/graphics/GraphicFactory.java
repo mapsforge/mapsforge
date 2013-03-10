@@ -25,8 +25,6 @@ public interface GraphicFactory {
 
 	int createColor(Color color);
 
-	int createColor(int alpha, int red, int green, int blue);
-
 	/**
 	 * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
 	 */

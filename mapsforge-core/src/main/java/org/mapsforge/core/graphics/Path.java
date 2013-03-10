@@ -20,4 +20,6 @@ public interface Path {
 	void lineTo(int x, int y);
 
 	void moveTo(int x, int y);
+
+	void setFillRule(FillRule fillRule);
 }

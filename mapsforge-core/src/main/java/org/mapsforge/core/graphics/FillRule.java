@@ -14,32 +14,6 @@
  */
 package org.mapsforge.core.graphics;
 
-public interface Canvas {
-	void drawBitmap(Bitmap bitmap, int left, int top);
-
-	void drawBitmap(Bitmap bitmap, Matrix matrix);
-
-	/**
-	 * @param x
-	 *            the horizontal center coordinate of the circle.
-	 * @param y
-	 *            the vertical center coordinate of the circle.
-	 */
-	void drawCircle(int x, int y, int radius, Paint paint);
-
-	void drawLine(int x1, int y1, int x2, int y2, Paint paint);
-
-	void drawPath(Path path, Paint paint);
-
-	void drawText(String text, int x, int y, Paint paint);
-
-	void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint);
-
-	void fillColor(int color);
-
-	int getHeight();
-
-	int getWidth();
-
-	void setBitmap(Bitmap bitmap);
+public enum FillRule {
+	EVEN_ODD, NON_ZERO;
 }

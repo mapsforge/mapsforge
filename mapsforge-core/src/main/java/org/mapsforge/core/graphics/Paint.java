@@ -15,12 +15,6 @@
 package org.mapsforge.core.graphics;
 
 public interface Paint {
-	int getColor();
-
-	Cap getStrokeCap();
-
-	float getStrokeWidth();
-
 	int getTextHeight(String text);
 
 	int getTextWidth(String text);

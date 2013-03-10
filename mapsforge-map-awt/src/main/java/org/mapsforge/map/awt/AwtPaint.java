@@ -14,8 +14,11 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 
 import org.mapsforge.core.graphics.Align;
@@ -28,6 +31,19 @@ import org.mapsforge.core.graphics.Style;
 
 // TODO check default values
 class AwtPaint implements Paint {
+	private static int getCap(Cap cap) {
+		switch (cap) {
+			case BUTT:
+				return BasicStroke.CAP_BUTT;
+			case ROUND:
+				return BasicStroke.CAP_ROUND;
+			case SQUARE:
+				return BasicStroke.CAP_SQUARE;
+		}
+
+		throw new IllegalArgumentException("unknown cap: " + cap);
+	}
+
 	private static String getFontName(FontFamily fontFamily) {
 		switch (fontFamily) {
 			case MONOSPACE:
@@ -65,31 +81,17 @@ class AwtPaint implements Paint {
 	}
 
 	Bitmap bitmap;
+	Color color;
 	Font font;
+	Stroke stroke;
+	float[] strokeDasharray;
+	float strokeWidth;
 	Style style = Style.FILL;
 	private Align align = Align.LEFT;
-	private Cap cap = Cap.BUTT;
-	private int color = 0;
+	private int cap;
 	private String fontName;
 	private int fontStyle;
-	private float[] strokeDasharray;
-	private float strokeWidth;
 	private float textSize;
-
-	@Override
-	public int getColor() {
-		return this.color;
-	}
-
-	@Override
-	public Cap getStrokeCap() {
-		return this.cap;
-	}
-
-	@Override
-	public float getStrokeWidth() {
-		return this.strokeWidth;
-	}
 
 	@Override
 	public int getTextHeight(String text) {
@@ -117,22 +119,25 @@ class AwtPaint implements Paint {
 
 	@Override
 	public void setColor(int color) {
-		this.color = color;
+		this.color = new Color(color);
 	}
 
 	@Override
 	public void setDashPathEffect(float[] strokeDasharray) {
 		this.strokeDasharray = strokeDasharray;
+		createStroke();
 	}
 
 	@Override
 	public void setStrokeCap(Cap cap) {
-		this.cap = cap;
+		this.cap = getCap(cap);
+		createStroke();
 	}
 
 	@Override
 	public void setStrokeWidth(float strokeWidth) {
 		this.strokeWidth = strokeWidth;
+		createStroke();
 	}
 
 	@Override
@@ -164,5 +169,9 @@ class AwtPaint implements Paint {
 		} else {
 			this.font = null;
 		}
+	}
+
+	private void createStroke() {
+		this.stroke = new BasicStroke(this.strokeWidth, this.cap, BasicStroke.JOIN_ROUND, 0, this.strokeDasharray, 0);
 	}
 }

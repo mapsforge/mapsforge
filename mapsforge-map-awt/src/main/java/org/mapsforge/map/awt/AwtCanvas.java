@@ -14,42 +14,21 @@
  */
 package org.mapsforge.map.awt;
 
-import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.Style;
 
 class AwtCanvas implements Canvas {
-	private static int getCap(Cap cap) {
-		switch (cap) {
-			case BUTT:
-				return BasicStroke.CAP_BUTT;
-			case ROUND:
-				return BasicStroke.CAP_ROUND;
-			case SQUARE:
-				return BasicStroke.CAP_SQUARE;
-		}
-
-		throw new IllegalArgumentException("unknown cap: " + cap);
-	}
-
-	private static Stroke getStroke(Paint paint) {
-		int cap = getCap(paint.getStrokeCap());
-		return new BasicStroke(paint.getStrokeWidth(), cap, BasicStroke.JOIN_ROUND);
-	}
-
 	private BufferedImage bufferedImage;
 	private Graphics2D graphics2D;
 
@@ -73,21 +52,34 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawCircle(int x, int y, int radius, Paint paint) {
-		setPaintAttributes(paint);
-		this.graphics2D.drawOval(x, y, radius, radius);
+		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
+		setColorAndStroke(awtPaint);
+		Style style = awtPaint.style;
+		int doubleRadius = radius * 2;
+		switch (style) {
+			case FILL:
+				this.graphics2D.fillOval(x - radius, y - radius, doubleRadius, doubleRadius);
+				return;
+
+			case STROKE:
+				this.graphics2D.drawOval(x - radius, y - radius, doubleRadius, doubleRadius);
+				return;
+		}
+
+		throw new IllegalArgumentException("unknown style: " + style);
 	}
 
 	@Override
 	public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
-		setPaintAttributes(paint);
+		setColorAndStroke(AwtGraphicFactory.getAwtPaint(paint));
 		this.graphics2D.drawLine(x1, y1, x2, y2);
 	}
 
 	@Override
 	public void drawPath(Path path, Paint paint) {
-		setPaintAttributes(paint);
-
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
+		setColorAndStroke(awtPaint);
+
 		if (awtPaint.bitmap != null) {
 			Rectangle rectangle = new Rectangle(0, 0, awtPaint.bitmap.getWidth(), awtPaint.bitmap.getHeight());
 			TexturePaint texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(awtPaint.bitmap), rectangle);
@@ -111,8 +103,9 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
-		setPaintAttributes(paint);
-		this.graphics2D.setFont(AwtGraphicFactory.getAwtPaint(paint).font);
+		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
+		this.graphics2D.setColor(awtPaint.color);
+		this.graphics2D.setFont(awtPaint.font);
 		this.graphics2D.drawString(text, x, y);
 	}
 
@@ -161,8 +154,12 @@ class AwtCanvas implements Canvas {
 		}
 	}
 
-	private void setPaintAttributes(Paint paint) {
-		this.graphics2D.setColor(new java.awt.Color(paint.getColor()));
-		this.graphics2D.setStroke(getStroke(paint));
+	private void setColorAndStroke(AwtPaint awtPaint) {
+		this.graphics2D.setColor(awtPaint.color);
+		if (awtPaint.stroke == null) {
+			// this.graphics2D.setColor(Color.CYAN);
+		} else {
+			this.graphics2D.setStroke(awtPaint.stroke);
+		}
 	}
 }

@@ -16,9 +16,21 @@ package org.mapsforge.map.awt;
 
 import java.awt.geom.Path2D;
 
+import org.mapsforge.core.graphics.FillRule;
 import org.mapsforge.core.graphics.Path;
 
 class AwtPath implements Path {
+	private static int getWindingRule(FillRule fillRule) {
+		switch (fillRule) {
+			case EVEN_ODD:
+				return Path2D.WIND_EVEN_ODD;
+			case NON_ZERO:
+				return Path2D.WIND_NON_ZERO;
+		}
+
+		throw new IllegalArgumentException("unknown fill rule:" + fillRule);
+	}
+
 	final Path2D path2D = new Path2D.Float();
 
 	@Override
@@ -34,5 +46,10 @@ class AwtPath implements Path {
 	@Override
 	public void moveTo(int x, int y) {
 		this.path2D.moveTo(x, y);
+	}
+
+	@Override
+	public void setFillRule(FillRule fillRule) {
+		this.path2D.setWindingRule(getWindingRule(fillRule));
 	}
 }

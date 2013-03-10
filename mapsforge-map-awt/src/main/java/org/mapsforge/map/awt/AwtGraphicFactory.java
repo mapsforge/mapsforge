@@ -98,11 +98,6 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public int createColor(int alpha, int red, int green, int blue) {
-		return new java.awt.Color(alpha, red, green, blue).getRGB();
-	}
-
-	@Override
 	public int createColor(String colorString) {
 		long parseLong = Long.parseLong(colorString.substring(1), 16);
 		return new java.awt.Color((int) parseLong, true).getRGB();

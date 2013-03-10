@@ -14,15 +14,24 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import org.mapsforge.core.graphics.FillRule;
 import org.mapsforge.core.graphics.Path;
 
-class AndroidPath implements Path {
-	final android.graphics.Path path;
+import android.graphics.Path.FillType;
 
-	AndroidPath() {
-		this.path = new android.graphics.Path();
-		this.path.setFillType(android.graphics.Path.FillType.EVEN_ODD);
+class AndroidPath implements Path {
+	private static FillType getWindingRule(FillRule fillRule) {
+		switch (fillRule) {
+			case EVEN_ODD:
+				return FillType.EVEN_ODD;
+			case NON_ZERO:
+				return FillType.WINDING;
+		}
+
+		throw new IllegalArgumentException("unknown fill rule:" + fillRule);
 	}
+
+	final android.graphics.Path path = new android.graphics.Path();
 
 	@Override
 	public void clear() {
@@ -37,5 +46,10 @@ class AndroidPath implements Path {
 	@Override
 	public void moveTo(int x, int y) {
 		this.path.moveTo(x, y);
+	}
+
+	@Override
+	public void setFillRule(FillRule fillRule) {
+		this.path.setFillType(getWindingRule(fillRule));
 	}
 }

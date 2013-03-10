@@ -111,11 +111,6 @@ public final class AndroidGraphics implements GraphicFactory {
 	}
 
 	@Override
-	public int createColor(int alpha, int red, int green, int blue) {
-		return android.graphics.Color.argb(alpha, red, green, blue);
-	}
-
-	@Override
 	public int createColor(String colorString) {
 		return android.graphics.Color.parseColor(colorString);
 	}
