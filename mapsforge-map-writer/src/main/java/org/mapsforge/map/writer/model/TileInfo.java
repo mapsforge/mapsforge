@@ -28,12 +28,6 @@ import java.util.logging.Logger;
  * @author bross
  */
 public final class TileInfo {
-	private static final Logger LOGGER = Logger.getLogger(TileInfo.class.getName());
-
-	private static final String OCEAN_TILES_FILE = "oceantiles_12.dat";
-
-	private static final byte SEA = 0x2;
-
 	/**
 	 * The zoom level for which the tile info is valid.
 	 */
@@ -41,10 +35,23 @@ public final class TileInfo {
 
 	private static final byte BITMASK = 0x3;
 
-	// 4096 * 4096 / 4 (2 bits for each tile)
-	private static final int N_BYTES = 0x400000;
+	private static final Logger LOGGER = Logger.getLogger(TileInfo.class.getName());
+
 	// 4096 * 4096 = number of tiles on zoom level 12
 	private static final int N_BITS = 0x1000000;
+
+	// 4096 * 4096 / 4 (2 bits for each tile)
+	private static final int N_BYTES = 0x400000;
+
+	private static final String OCEAN_TILES_FILE = "oceantiles_12.dat";
+	private static final byte SEA = 0x2;
+
+	/**
+	 * @return the singleton which encapsulates the oceantile_12.dat information
+	 */
+	public static TileInfo getInstance() {
+		return new TileInfo(OCEAN_TILES_FILE);
+	}
 
 	private final BitSet seaTileInfo = new BitSet(N_BITS);
 
@@ -73,13 +80,6 @@ public final class TileInfo {
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "error loading tile info from file " + strInputFile);
 		}
-	}
-
-	/**
-	 * @return the singleton which encapsulates the oceantile_12.dat information
-	 */
-	public static TileInfo getInstance() {
-		return new TileInfo(OCEAN_TILES_FILE);
 	}
 
 	/**

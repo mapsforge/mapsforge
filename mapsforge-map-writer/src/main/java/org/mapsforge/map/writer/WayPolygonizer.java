@@ -35,13 +35,73 @@ import com.vividsolutions.jts.geom.Polygon;
 //TODO could be implemented more efficiently with graphs: each line string is an edge, use an undirected graph and search for strongly connected components
 
 class WayPolygonizer {
+	class PolygonMergeException extends Exception {
+		private static final long serialVersionUID = 1L;
+	}
+
 	private static final int MIN_NODES_POLYGON = 4;
+
+	private static boolean isClosedPolygon(Deque<TDWay> currentPolygonSegments) {
+		TDWay c1Start = currentPolygonSegments.getFirst();
+		TDWay c1End = currentPolygonSegments.getLast();
+
+		long startFirst = c1Start.isReversedInRelation() ? c1Start.getWayNodes()[c1Start.getWayNodes().length - 1]
+				.getId() : c1Start.getWayNodes()[0].getId();
+
+		long endLast = c1End.isReversedInRelation() ? c1End.getWayNodes()[0].getId() : c1End.getWayNodes()[c1End
+				.getWayNodes().length - 1].getId();
+
+		return startFirst == endLast;
+	}
+
+	private static boolean isClosedPolygon(TDWay way) {
+		TDNode[] waynodes = way.getWayNodes();
+		return waynodes[0].getId() == waynodes[waynodes.length - 1].getId();
+	}
+
+	private static Coordinate[] toCoordinates(Collection<TDWay> linestrings) {
+		Coordinate[][] temp = new Coordinate[linestrings.size()][];
+		int i = 0;
+		int n = 0;
+		for (TDWay tdWay : linestrings) {
+			temp[i] = JTSUtils.toCoordinates(tdWay);
+			n += temp[i].length;
+			++i;
+		}
+		Coordinate[] res = new Coordinate[n];
+		int pos = 0;
+		for (i = 0; i < temp.length; i++) {
+			System.arraycopy(temp[i], 0, res, pos, temp[i].length);
+			pos += temp[i].length;
+		}
+		return res;
+	}
+
+	private List<TDWay> dangling;
+
 	private final GeometryFactory geometryFactory = new GeometryFactory();
 
-	private List<Deque<TDWay>> polygons;
-	private List<TDWay> dangling;
 	private List<TDWay> illegal;
+
 	private Map<Integer, List<Integer>> outerToInner;
+
+	private List<Deque<TDWay>> polygons;
+
+	List<TDWay> getDangling() {
+		return this.dangling;
+	}
+
+	List<TDWay> getIllegal() {
+		return this.illegal;
+	}
+
+	Map<Integer, List<Integer>> getOuterToInner() {
+		return this.outerToInner;
+	}
+
+	List<Deque<TDWay>> getPolygons() {
+		return this.polygons;
+	}
 
 	/**
 	 * Tries to merge ways to closed polygons. The ordering of waynodes is preserved during the merge process.
@@ -149,7 +209,6 @@ class WayPolygonizer {
 					it.remove();
 					// add way to end of current polygon
 					currentPolygonSegments.offerLast(current);
-
 				}
 			}
 
@@ -171,12 +230,16 @@ class WayPolygonizer {
 				}
 
 				startNewPolygon = true;
-
 			}
 
 			// if we are here, the polygon is not yet closed, but there are also some ungrouped ways
 			// which may be merge-able in the next iteration
 		}
+	}
+
+	void polygonizeAndRelate(TDWay[] ways) {
+		mergePolygons(ways);
+		relatePolygons();
 	}
 
 	void relatePolygons() {
@@ -227,68 +290,6 @@ class WayPolygonizer {
 			if (!this.outerToInner.containsKey(Integer.valueOf(k)) && !inner.contains(Integer.valueOf(k))) {
 				this.outerToInner.put(Integer.valueOf(k), null);
 			}
-
 		}
-	}
-
-	void polygonizeAndRelate(TDWay[] ways) {
-		mergePolygons(ways);
-		relatePolygons();
-	}
-
-	List<Deque<TDWay>> getPolygons() {
-		return this.polygons;
-	}
-
-	List<TDWay> getDangling() {
-		return this.dangling;
-	}
-
-	List<TDWay> getIllegal() {
-		return this.illegal;
-	}
-
-	Map<Integer, List<Integer>> getOuterToInner() {
-		return this.outerToInner;
-	}
-
-	private static boolean isClosedPolygon(Deque<TDWay> currentPolygonSegments) {
-		TDWay c1Start = currentPolygonSegments.getFirst();
-		TDWay c1End = currentPolygonSegments.getLast();
-
-		long startFirst = c1Start.isReversedInRelation() ? c1Start.getWayNodes()[c1Start.getWayNodes().length - 1]
-				.getId() : c1Start.getWayNodes()[0].getId();
-
-		long endLast = c1End.isReversedInRelation() ? c1End.getWayNodes()[0].getId() : c1End.getWayNodes()[c1End
-				.getWayNodes().length - 1].getId();
-
-		return startFirst == endLast;
-	}
-
-	private static boolean isClosedPolygon(TDWay way) {
-		TDNode[] waynodes = way.getWayNodes();
-		return waynodes[0].getId() == waynodes[waynodes.length - 1].getId();
-	}
-
-	private static Coordinate[] toCoordinates(Collection<TDWay> linestrings) {
-		Coordinate[][] temp = new Coordinate[linestrings.size()][];
-		int i = 0;
-		int n = 0;
-		for (TDWay tdWay : linestrings) {
-			temp[i] = JTSUtils.toCoordinates(tdWay);
-			n += temp[i].length;
-			++i;
-		}
-		Coordinate[] res = new Coordinate[n];
-		int pos = 0;
-		for (i = 0; i < temp.length; i++) {
-			System.arraycopy(temp[i], 0, res, pos, temp[i].length);
-			pos += temp[i].length;
-		}
-		return res;
-	}
-
-	class PolygonMergeException extends Exception {
-		private static final long serialVersionUID = 1L;
 	}
 }

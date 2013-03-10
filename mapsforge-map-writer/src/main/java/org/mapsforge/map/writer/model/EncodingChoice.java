@@ -25,13 +25,13 @@ public enum EncodingChoice {
 	 */
 	AUTO,
 	/**
-	 * SINGLE.
-	 */
-	SINGLE,
-	/**
 	 * DOUBLE.
 	 */
-	DOUBLE;
+	DOUBLE,
+	/**
+	 * SINGLE.
+	 */
+	SINGLE;
 
 	/**
 	 * Reads preferred encoding from a String.

@@ -49,23 +49,6 @@ public class FrameBuffer {
 		this.matrix.translate(diffX, diffY);
 	}
 
-	private void centerFrameBufferToMapView(Dimension mapViewDimension) {
-		float dx = (this.dimension.width - mapViewDimension.width) / -2f;
-		float dy = (this.dimension.height - mapViewDimension.height) / -2f;
-		this.matrix.translate(dx, dy);
-	}
-
-	private void scale(float scaleFactor) {
-		if (scaleFactor != 1) {
-			// the pivot point is the coordinate which remains unchanged by the translation
-			float pivotScaleFactor = scaleFactor - 1;
-			float pivotX = (this.dimension.width / -2f) * pivotScaleFactor;
-			float pivotY = (this.dimension.height / -2f) * pivotScaleFactor;
-			this.matrix.translate(pivotX, pivotY);
-			this.matrix.scale(scaleFactor, scaleFactor);
-		}
-	}
-
 	public synchronized void draw(Canvas canvas) {
 		if (this.bitmap1 != null) {
 			canvas.drawBitmap(this.bitmap1, this.matrix);
@@ -97,6 +80,23 @@ public class FrameBuffer {
 		} else {
 			this.bitmap1 = null;
 			this.bitmap2 = null;
+		}
+	}
+
+	private void centerFrameBufferToMapView(Dimension mapViewDimension) {
+		float dx = (this.dimension.width - mapViewDimension.width) / -2f;
+		float dy = (this.dimension.height - mapViewDimension.height) / -2f;
+		this.matrix.translate(dx, dy);
+	}
+
+	private void scale(float scaleFactor) {
+		if (scaleFactor != 1) {
+			// the pivot point is the coordinate which remains unchanged by the translation
+			float pivotScaleFactor = scaleFactor - 1;
+			float pivotX = (this.dimension.width / -2f) * pivotScaleFactor;
+			float pivotY = (this.dimension.height / -2f) * pivotScaleFactor;
+			this.matrix.translate(pivotX, pivotY);
+			this.matrix.scale(scaleFactor, scaleFactor);
 		}
 	}
 }

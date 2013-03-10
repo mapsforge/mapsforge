@@ -36,14 +36,6 @@ public class HDTileData extends TileData {
 		this.ways = new TLongArrayList();
 	}
 
-	final TLongArrayList getPois() {
-		return this.pois;
-	}
-
-	final TLongArrayList getWays() {
-		return this.ways;
-	}
-
 	@Override
 	public final void addPOI(TDNode poi) {
 		this.pois.add(poi.getId());
@@ -62,5 +54,13 @@ public class HDTileData extends TileData {
 	@Override
 	public Map<Byte, List<TDWay>> waysByZoomlevel(byte minValidZoomlevel, byte maxValidZoomlevel) {
 		throw new UnsupportedOperationException(HDTileData.class.getName() + "does not support this operation");
+	}
+
+	final TLongArrayList getPois() {
+		return this.pois;
+	}
+
+	final TLongArrayList getWays() {
+		return this.ways;
 	}
 }

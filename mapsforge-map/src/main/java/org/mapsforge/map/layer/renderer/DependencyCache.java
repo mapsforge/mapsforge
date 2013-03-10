@@ -92,8 +92,8 @@ class DependencyCache {
 	 * The class holds the data for a symbol with dependencies on other tiles.
 	 */
 	private static class DependencySymbol {
-		private final List<Tile> tiles;
 		final Bitmap symbol;
+		private final List<Tile> tiles;
 
 		/**
 		 * Creates a symbol dependency element for the dependency cache.
@@ -151,24 +151,338 @@ class DependencyCache {
 		}
 	}
 
-	private DependencyOnTile currentDependencyOnTile;
-	private Tile currentTile;
-
 	/**
 	 * Hash table, that connects the Tiles with their entries in the dependency cache.
 	 */
 	final Map<Tile, DependencyOnTile> dependencyTable;
 	Dependency<DependencyText> depLabel;
+
 	Rectangle rect1;
 	Rectangle rect2;
 	SymbolContainer smb;
 	DependencyOnTile tmp;
+	private DependencyOnTile currentDependencyOnTile;
+	private Tile currentTile;
 
 	/**
 	 * Constructor for this class, that creates a hashtable for the dependencies.
 	 */
 	DependencyCache() {
 		this.dependencyTable = new Hashtable<Tile, DependencyOnTile>(60);
+	}
+
+	/**
+	 * This method fills the entries in the dependency cache of the tiles, if their dependencies.
+	 * 
+	 * @param labels
+	 *            current labels, that will be displayed.
+	 * @param symbols
+	 *            current symbols, that will be displayed.
+	 * @param areaLabels
+	 *            current areaLabels, that will be displayed.
+	 */
+	void fillDependencyOnTile(List<PointTextContainer> labels, List<SymbolContainer> symbols,
+			List<PointTextContainer> areaLabels) {
+		this.currentDependencyOnTile.drawn = true;
+
+		if ((!labels.isEmpty()) || (!symbols.isEmpty()) || (!areaLabels.isEmpty())) {
+			fillDependencyOnTile2(labels, symbols, areaLabels);
+		}
+
+		if (this.currentDependencyOnTile.labels != null) {
+			addLabelsFromDependencyOnTile(labels);
+		}
+		if (this.currentDependencyOnTile.symbols != null) {
+			addSymbolsFromDependencyOnTile(symbols);
+		}
+	}
+
+	/**
+	 * This method must be called, before the dependencies will be handled correctly. Because it sets the actual Tile
+	 * and looks if it has already dependencies.
+	 */
+	void generateTileAndDependencyOnTile(Tile tile) {
+		this.currentTile = new Tile(tile.tileX, tile.tileY, tile.zoomLevel);
+		this.currentDependencyOnTile = this.dependencyTable.get(this.currentTile);
+
+		if (this.currentDependencyOnTile == null) {
+			this.dependencyTable.put(this.currentTile, new DependencyOnTile());
+			this.currentDependencyOnTile = this.dependencyTable.get(this.currentTile);
+		}
+	}
+
+	/**
+	 * Removes the are labels from the actual list, that would be rendered in a Tile that has already be drawn.
+	 * 
+	 * @param areaLabels
+	 *            current area Labels, that will be displayed
+	 */
+	void removeAreaLabelsInAlreadyDrawnAreas(List<PointTextContainer> areaLabels) {
+		Tile lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		Tile righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		Tile uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
+		Tile downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+
+		boolean up;
+		boolean left;
+		boolean right;
+		boolean down;
+
+		this.tmp = this.dependencyTable.get(lefttmp);
+		left = this.tmp == null ? false : this.tmp.drawn;
+
+		this.tmp = this.dependencyTable.get(righttmp);
+		right = this.tmp == null ? false : this.tmp.drawn;
+
+		this.tmp = this.dependencyTable.get(uptmp);
+		up = this.tmp == null ? false : this.tmp.drawn;
+
+		this.tmp = this.dependencyTable.get(downtmp);
+		down = this.tmp == null ? false : this.tmp.drawn;
+
+		PointTextContainer label;
+
+		for (int i = 0; i < areaLabels.size(); i++) {
+			label = areaLabels.get(i);
+
+			if (up && label.y - label.boundary.getHeight() < 0.0f) {
+				areaLabels.remove(i);
+				i--;
+				continue;
+			}
+
+			if (down && label.y > Tile.TILE_SIZE) {
+				areaLabels.remove(i);
+				i--;
+				continue;
+			}
+			if (left && label.x < 0.0f) {
+				areaLabels.remove(i);
+				i--;
+				continue;
+			}
+			if (right && label.x + label.boundary.getWidth() > Tile.TILE_SIZE) {
+				areaLabels.remove(i);
+				i--;
+				continue;
+			}
+		}
+	}
+
+	/**
+	 * Removes all objects that overlaps with the objects from the dependency cache.
+	 * 
+	 * @param labels
+	 *            labels from the current object
+	 * @param areaLabels
+	 *            area labels from the current object
+	 * @param symbols
+	 *            symbols from the current object
+	 */
+	void removeOverlappingObjectsWithDependencyOnTile(List<PointTextContainer> labels,
+			List<PointTextContainer> areaLabels, List<SymbolContainer> symbols) {
+		if (this.currentDependencyOnTile.labels != null && this.currentDependencyOnTile.labels.size() != 0) {
+			removeOverlappingLabelsWithDependencyLabels(labels);
+			removeOverlappingSymbolsWithDependencyLabels(symbols);
+			removeOverlappingAreaLabelsWithDependencyLabels(areaLabels);
+		}
+
+		if (this.currentDependencyOnTile.symbols != null && this.currentDependencyOnTile.symbols.size() != 0) {
+			removeOverlappingSymbolsWithDepencySymbols(symbols, 2);
+			removeOverlappingAreaLabelsWithDependencySymbols(areaLabels);
+		}
+	}
+
+	/**
+	 * When the LabelPlacement class generates potential label positions for an POI, there should be no possible
+	 * positions, that collide with existing symbols or labels in the dependency Cache. This class implements this
+	 * functionality.
+	 * 
+	 * @param refPos
+	 *            possible label positions form the two or four point Greedy
+	 */
+	void removeReferencePointsFromDependencyCache(LabelPlacement.ReferencePosition[] refPos) {
+		Tile lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		Tile righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		Tile uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
+		Tile downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+
+		boolean up;
+		boolean left;
+		boolean right;
+		boolean down;
+
+		this.tmp = this.dependencyTable.get(lefttmp);
+		left = this.tmp == null ? false : this.tmp.drawn;
+
+		this.tmp = this.dependencyTable.get(righttmp);
+		right = this.tmp == null ? false : this.tmp.drawn;
+
+		this.tmp = this.dependencyTable.get(uptmp);
+		up = this.tmp == null ? false : this.tmp.drawn;
+
+		this.tmp = this.dependencyTable.get(downtmp);
+		down = this.tmp == null ? false : this.tmp.drawn;
+
+		LabelPlacement.ReferencePosition ref;
+
+		for (int i = 0; i < refPos.length; i++) {
+			ref = refPos[i];
+
+			if (ref == null) {
+				continue;
+			}
+
+			if (up && ref.y - ref.height < 0) {
+				refPos[i] = null;
+				continue;
+			}
+
+			if (down && ref.y >= Tile.TILE_SIZE) {
+				refPos[i] = null;
+				continue;
+			}
+
+			if (left && ref.x < 0) {
+				refPos[i] = null;
+				continue;
+			}
+
+			if (right && ref.x + ref.width > Tile.TILE_SIZE) {
+				refPos[i] = null;
+			}
+		}
+
+		// removes all Reverence Points that intersects with Labels from the Dependency Cache
+
+		int dis = 2;
+		if (this.currentDependencyOnTile != null) {
+			if (this.currentDependencyOnTile.labels != null) {
+				for (int i = 0; i < this.currentDependencyOnTile.labels.size(); i++) {
+					this.depLabel = this.currentDependencyOnTile.labels.get(i);
+					this.rect1 = new Rectangle((int) this.depLabel.point.x - dis,
+							(int) (this.depLabel.point.y - this.depLabel.value.boundary.getHeight()) - dis,
+							(int) (this.depLabel.point.x + this.depLabel.value.boundary.getWidth() + dis),
+							(int) (this.depLabel.point.y + dis));
+
+					for (int y = 0; y < refPos.length; y++) {
+						if (refPos[y] != null) {
+							this.rect2 = new Rectangle((int) refPos[y].x, (int) (refPos[y].y - refPos[y].height),
+									(int) (refPos[y].x + refPos[y].width), (int) (refPos[y].y));
+
+							if (this.rect2.intersects(this.rect1)) {
+								refPos[y] = null;
+							}
+						}
+					}
+				}
+			}
+			if (this.currentDependencyOnTile.symbols != null) {
+				for (Dependency<DependencySymbol> symbols2 : this.currentDependencyOnTile.symbols) {
+					this.rect1 = new Rectangle((int) symbols2.point.x, (int) (symbols2.point.y),
+							(int) (symbols2.point.x + symbols2.value.symbol.getWidth()),
+							(int) (symbols2.point.y + symbols2.value.symbol.getHeight()));
+
+					for (int y = 0; y < refPos.length; y++) {
+						if (refPos[y] != null) {
+							this.rect2 = new Rectangle((int) refPos[y].x, (int) (refPos[y].y - refPos[y].height),
+									(int) (refPos[y].x + refPos[y].width), (int) (refPos[y].y));
+
+							if (this.rect2.intersects(this.rect1)) {
+								refPos[y] = null;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void removeSymbolsFromDrawnAreas(List<SymbolContainer> symbols) {
+		double maxTileNumber = Math.pow(2, this.currentTile.zoomLevel) - 1;
+
+		Tile lefttmp = null;
+		if (this.currentTile.tileX > 0) {
+			lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		}
+
+		Tile righttmp = null;
+		if (this.currentTile.tileX < maxTileNumber) {
+			righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		}
+
+		Tile uptmp = null;
+		if (this.currentTile.tileY > 0) {
+			uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
+		}
+
+		Tile downtmp = null;
+		if (this.currentTile.tileY < maxTileNumber) {
+			downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+		}
+
+		boolean up;
+		boolean left;
+		boolean right;
+		boolean down;
+
+		if (lefttmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(lefttmp);
+		}
+
+		left = this.tmp == null ? false : this.tmp.drawn;
+
+		if (righttmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(righttmp);
+		}
+
+		right = this.tmp == null ? false : this.tmp.drawn;
+
+		if (uptmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(uptmp);
+		}
+		up = this.tmp == null ? false : this.tmp.drawn;
+
+		if (downtmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(downtmp);
+		}
+		down = this.tmp == null ? false : this.tmp.drawn;
+
+		SymbolContainer ref;
+
+		for (int i = 0; i < symbols.size(); i++) {
+			ref = symbols.get(i);
+
+			if (up && ref.point.y < 0) {
+				symbols.remove(i);
+				i--;
+				continue;
+			}
+
+			if (down && ref.point.y + ref.symbol.getHeight() > Tile.TILE_SIZE) {
+				symbols.remove(i);
+				i--;
+				continue;
+			}
+			if (left && ref.point.x < 0) {
+				symbols.remove(i);
+				i--;
+				continue;
+			}
+			if (right && ref.point.x + ref.symbol.getWidth() > Tile.TILE_SIZE) {
+				symbols.remove(i);
+				i--;
+				continue;
+			}
+		}
 	}
 
 	private void addLabelsFromDependencyOnTile(List<PointTextContainer> labels) {
@@ -675,320 +989,6 @@ class DependencyCache {
 					symbols.remove(x);
 					x--;
 				}
-			}
-		}
-	}
-
-	/**
-	 * This method fills the entries in the dependency cache of the tiles, if their dependencies.
-	 * 
-	 * @param labels
-	 *            current labels, that will be displayed.
-	 * @param symbols
-	 *            current symbols, that will be displayed.
-	 * @param areaLabels
-	 *            current areaLabels, that will be displayed.
-	 */
-	void fillDependencyOnTile(List<PointTextContainer> labels, List<SymbolContainer> symbols,
-			List<PointTextContainer> areaLabels) {
-		this.currentDependencyOnTile.drawn = true;
-
-		if ((!labels.isEmpty()) || (!symbols.isEmpty()) || (!areaLabels.isEmpty())) {
-			fillDependencyOnTile2(labels, symbols, areaLabels);
-		}
-
-		if (this.currentDependencyOnTile.labels != null) {
-			addLabelsFromDependencyOnTile(labels);
-		}
-		if (this.currentDependencyOnTile.symbols != null) {
-			addSymbolsFromDependencyOnTile(symbols);
-		}
-	}
-
-	/**
-	 * This method must be called, before the dependencies will be handled correctly. Because it sets the actual Tile
-	 * and looks if it has already dependencies.
-	 */
-	void generateTileAndDependencyOnTile(Tile tile) {
-		this.currentTile = new Tile(tile.tileX, tile.tileY, tile.zoomLevel);
-		this.currentDependencyOnTile = this.dependencyTable.get(this.currentTile);
-
-		if (this.currentDependencyOnTile == null) {
-			this.dependencyTable.put(this.currentTile, new DependencyOnTile());
-			this.currentDependencyOnTile = this.dependencyTable.get(this.currentTile);
-		}
-	}
-
-	/**
-	 * Removes the are labels from the actual list, that would be rendered in a Tile that has already be drawn.
-	 * 
-	 * @param areaLabels
-	 *            current area Labels, that will be displayed
-	 */
-	void removeAreaLabelsInAlreadyDrawnAreas(List<PointTextContainer> areaLabels) {
-		Tile lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		Tile righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		Tile uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
-		Tile downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
-
-		boolean up;
-		boolean left;
-		boolean right;
-		boolean down;
-
-		this.tmp = this.dependencyTable.get(lefttmp);
-		left = this.tmp == null ? false : this.tmp.drawn;
-
-		this.tmp = this.dependencyTable.get(righttmp);
-		right = this.tmp == null ? false : this.tmp.drawn;
-
-		this.tmp = this.dependencyTable.get(uptmp);
-		up = this.tmp == null ? false : this.tmp.drawn;
-
-		this.tmp = this.dependencyTable.get(downtmp);
-		down = this.tmp == null ? false : this.tmp.drawn;
-
-		PointTextContainer label;
-
-		for (int i = 0; i < areaLabels.size(); i++) {
-			label = areaLabels.get(i);
-
-			if (up && label.y - label.boundary.getHeight() < 0.0f) {
-				areaLabels.remove(i);
-				i--;
-				continue;
-			}
-
-			if (down && label.y > Tile.TILE_SIZE) {
-				areaLabels.remove(i);
-				i--;
-				continue;
-			}
-			if (left && label.x < 0.0f) {
-				areaLabels.remove(i);
-				i--;
-				continue;
-			}
-			if (right && label.x + label.boundary.getWidth() > Tile.TILE_SIZE) {
-				areaLabels.remove(i);
-				i--;
-				continue;
-			}
-		}
-	}
-
-	/**
-	 * Removes all objects that overlaps with the objects from the dependency cache.
-	 * 
-	 * @param labels
-	 *            labels from the current object
-	 * @param areaLabels
-	 *            area labels from the current object
-	 * @param symbols
-	 *            symbols from the current object
-	 */
-	void removeOverlappingObjectsWithDependencyOnTile(List<PointTextContainer> labels,
-			List<PointTextContainer> areaLabels, List<SymbolContainer> symbols) {
-		if (this.currentDependencyOnTile.labels != null && this.currentDependencyOnTile.labels.size() != 0) {
-			removeOverlappingLabelsWithDependencyLabels(labels);
-			removeOverlappingSymbolsWithDependencyLabels(symbols);
-			removeOverlappingAreaLabelsWithDependencyLabels(areaLabels);
-		}
-
-		if (this.currentDependencyOnTile.symbols != null && this.currentDependencyOnTile.symbols.size() != 0) {
-			removeOverlappingSymbolsWithDepencySymbols(symbols, 2);
-			removeOverlappingAreaLabelsWithDependencySymbols(areaLabels);
-		}
-	}
-
-	/**
-	 * When the LabelPlacement class generates potential label positions for an POI, there should be no possible
-	 * positions, that collide with existing symbols or labels in the dependency Cache. This class implements this
-	 * functionality.
-	 * 
-	 * @param refPos
-	 *            possible label positions form the two or four point Greedy
-	 */
-	void removeReferencePointsFromDependencyCache(LabelPlacement.ReferencePosition[] refPos) {
-		Tile lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		Tile righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		Tile uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
-		Tile downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
-
-		boolean up;
-		boolean left;
-		boolean right;
-		boolean down;
-
-		this.tmp = this.dependencyTable.get(lefttmp);
-		left = this.tmp == null ? false : this.tmp.drawn;
-
-		this.tmp = this.dependencyTable.get(righttmp);
-		right = this.tmp == null ? false : this.tmp.drawn;
-
-		this.tmp = this.dependencyTable.get(uptmp);
-		up = this.tmp == null ? false : this.tmp.drawn;
-
-		this.tmp = this.dependencyTable.get(downtmp);
-		down = this.tmp == null ? false : this.tmp.drawn;
-
-		LabelPlacement.ReferencePosition ref;
-
-		for (int i = 0; i < refPos.length; i++) {
-			ref = refPos[i];
-
-			if (ref == null) {
-				continue;
-			}
-
-			if (up && ref.y - ref.height < 0) {
-				refPos[i] = null;
-				continue;
-			}
-
-			if (down && ref.y >= Tile.TILE_SIZE) {
-				refPos[i] = null;
-				continue;
-			}
-
-			if (left && ref.x < 0) {
-				refPos[i] = null;
-				continue;
-			}
-
-			if (right && ref.x + ref.width > Tile.TILE_SIZE) {
-				refPos[i] = null;
-			}
-		}
-
-		// removes all Reverence Points that intersects with Labels from the Dependency Cache
-
-		int dis = 2;
-		if (this.currentDependencyOnTile != null) {
-			if (this.currentDependencyOnTile.labels != null) {
-				for (int i = 0; i < this.currentDependencyOnTile.labels.size(); i++) {
-					this.depLabel = this.currentDependencyOnTile.labels.get(i);
-					this.rect1 = new Rectangle((int) this.depLabel.point.x - dis,
-							(int) (this.depLabel.point.y - this.depLabel.value.boundary.getHeight()) - dis,
-							(int) (this.depLabel.point.x + this.depLabel.value.boundary.getWidth() + dis),
-							(int) (this.depLabel.point.y + dis));
-
-					for (int y = 0; y < refPos.length; y++) {
-						if (refPos[y] != null) {
-							this.rect2 = new Rectangle((int) refPos[y].x, (int) (refPos[y].y - refPos[y].height),
-									(int) (refPos[y].x + refPos[y].width), (int) (refPos[y].y));
-
-							if (this.rect2.intersects(this.rect1)) {
-								refPos[y] = null;
-							}
-						}
-					}
-				}
-			}
-			if (this.currentDependencyOnTile.symbols != null) {
-				for (Dependency<DependencySymbol> symbols2 : this.currentDependencyOnTile.symbols) {
-					this.rect1 = new Rectangle((int) symbols2.point.x, (int) (symbols2.point.y),
-							(int) (symbols2.point.x + symbols2.value.symbol.getWidth()),
-							(int) (symbols2.point.y + symbols2.value.symbol.getHeight()));
-
-					for (int y = 0; y < refPos.length; y++) {
-						if (refPos[y] != null) {
-							this.rect2 = new Rectangle((int) refPos[y].x, (int) (refPos[y].y - refPos[y].height),
-									(int) (refPos[y].x + refPos[y].width), (int) (refPos[y].y));
-
-							if (this.rect2.intersects(this.rect1)) {
-								refPos[y] = null;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	void removeSymbolsFromDrawnAreas(List<SymbolContainer> symbols) {
-		double maxTileNumber = Math.pow(2, this.currentTile.zoomLevel) - 1;
-
-		Tile lefttmp = null;
-		if (this.currentTile.tileX > 0) {
-			lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		}
-
-		Tile righttmp = null;
-		if (this.currentTile.tileX < maxTileNumber) {
-			righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		}
-
-		Tile uptmp = null;
-		if (this.currentTile.tileY > 0) {
-			uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
-		}
-
-		Tile downtmp = null;
-		if (this.currentTile.tileY < maxTileNumber) {
-			downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
-		}
-
-		boolean up;
-		boolean left;
-		boolean right;
-		boolean down;
-
-		if (lefttmp == null) {
-			this.tmp = null;
-		} else {
-			this.tmp = this.dependencyTable.get(lefttmp);
-		}
-
-		left = this.tmp == null ? false : this.tmp.drawn;
-
-		if (righttmp == null) {
-			this.tmp = null;
-		} else {
-			this.tmp = this.dependencyTable.get(righttmp);
-		}
-
-		right = this.tmp == null ? false : this.tmp.drawn;
-
-		if (uptmp == null) {
-			this.tmp = null;
-		} else {
-			this.tmp = this.dependencyTable.get(uptmp);
-		}
-		up = this.tmp == null ? false : this.tmp.drawn;
-
-		if (downtmp == null) {
-			this.tmp = null;
-		} else {
-			this.tmp = this.dependencyTable.get(downtmp);
-		}
-		down = this.tmp == null ? false : this.tmp.drawn;
-
-		SymbolContainer ref;
-
-		for (int i = 0; i < symbols.size(); i++) {
-			ref = symbols.get(i);
-
-			if (up && ref.point.y < 0) {
-				symbols.remove(i);
-				i--;
-				continue;
-			}
-
-			if (down && ref.point.y + ref.symbol.getHeight() > Tile.TILE_SIZE) {
-				symbols.remove(i);
-				i--;
-				continue;
-			}
-			if (left && ref.point.x < 0) {
-				symbols.remove(i);
-				i--;
-				continue;
-			}
-			if (right && ref.point.x + ref.symbol.getWidth() > Tile.TILE_SIZE) {
-				symbols.remove(i);
-				i--;
-				continue;
 			}
 		}
 	}

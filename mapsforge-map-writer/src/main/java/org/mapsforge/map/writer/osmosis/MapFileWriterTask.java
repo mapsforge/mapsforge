@@ -46,8 +46,8 @@ public class MapFileWriterTask implements Sink {
 
 	// Accounting
 	private int amountOfNodesProcessed = 0;
-	private int amountOfWaysProcessed = 0;
 	private int amountOfRelationsProcessed = 0;
+	private int amountOfWaysProcessed = 0;
 
 	private final MapWriterConfiguration configuration;
 	private TileBasedDataProcessor tileBasedGeoObjectStore;
@@ -79,15 +79,6 @@ public class MapFileWriterTask implements Sink {
 				this.tileBasedGeoObjectStore = HDTileBasedDataProcessor.newInstance(configuration);
 			}
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.openstreetmap.osmosis.core.task.v0_6.Initializable#initialize(java.util.Map)
-	 */
-	@Override
-	public void initialize(Map<String, Object> metadata) {
-		// nothing to do here
 	}
 
 	@Override
@@ -122,11 +113,13 @@ public class MapFileWriterTask implements Sink {
 						.pow(1024, 2))) + "MB");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.openstreetmap.osmosis.core.task.v0_6.Initializable#initialize(java.util.Map)
+	 */
 	@Override
-	public final void release() {
-		if (this.tileBasedGeoObjectStore != null) {
-			this.tileBasedGeoObjectStore.release();
-		}
+	public void initialize(Map<String, Object> metadata) {
+		// nothing to do here
 	}
 
 	@Override
@@ -187,6 +180,13 @@ public class MapFileWriterTask implements Sink {
 				this.amountOfRelationsProcessed++;
 				entity = null;
 				break;
+		}
+	}
+
+	@Override
+	public final void release() {
+		if (this.tileBasedGeoObjectStore != null) {
+			this.tileBasedGeoObjectStore.release();
 		}
 	}
 }

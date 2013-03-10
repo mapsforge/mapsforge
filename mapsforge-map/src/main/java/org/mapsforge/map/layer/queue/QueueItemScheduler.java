@@ -24,6 +24,12 @@ import org.mapsforge.core.util.MercatorProjection;
 final class QueueItemScheduler {
 	static final double PENALTY_PER_ZOOM_LEVEL = 10 * Tile.TILE_SIZE;
 
+	static <T extends Job> void schedule(Collection<QueueItem<T>> queueItems, MapPosition mapPosition) {
+		for (QueueItem<T> queueItem : queueItems) {
+			queueItem.setPriority(calculatePriority(queueItem.object.tile, mapPosition));
+		}
+	}
+
 	private static double calculatePriority(Tile tile, MapPosition mapPosition) {
 		double tileLatitude = MercatorProjection.tileYToLatitude(tile.tileY, tile.zoomLevel);
 		double tileLongitude = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
@@ -40,12 +46,6 @@ final class QueueItemScheduler {
 		int diffZoom = Math.abs(tile.zoomLevel - mapPosition.zoomLevel);
 
 		return diffPixel + PENALTY_PER_ZOOM_LEVEL * diffZoom;
-	}
-
-	static <T extends Job> void schedule(Collection<QueueItem<T>> queueItems, MapPosition mapPosition) {
-		for (QueueItem<T> queueItem : queueItems) {
-			queueItem.setPriority(calculatePriority(queueItem.object.tile, mapPosition));
-		}
 	}
 
 	private QueueItemScheduler() {

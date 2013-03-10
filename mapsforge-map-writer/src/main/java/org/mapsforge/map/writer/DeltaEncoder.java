@@ -27,9 +27,6 @@ import org.mapsforge.map.writer.model.WayDataBlock;
  * @author bross
  */
 public final class DeltaEncoder {
-	private DeltaEncoder() {
-	}
-
 	/**
 	 * Encodes a list of WayDataBlock objects with the given encoding scheme.
 	 * 
@@ -82,27 +79,6 @@ public final class DeltaEncoder {
 					sum += mSimulateSerialization(list);
 				}
 			}
-		}
-		return sum;
-	}
-
-	private static List<Integer> mEncode(List<Integer> list, Encoding encoding) {
-		switch (encoding) {
-			case DELTA:
-				return deltaEncode(list);
-			case DOUBLE_DELTA:
-				return doubleDeltaEncode(list);
-			case NONE:
-				return list;
-		}
-
-		throw new IllegalArgumentException("unknown encoding value: " + encoding);
-	}
-
-	private static int mSimulateSerialization(List<Integer> list) {
-		int sum = 0;
-		for (Integer coordinate : list) {
-			sum += Serializer.getVariableByteSigned(coordinate.intValue()).length;
 		}
 		return sum;
 	}
@@ -175,5 +151,29 @@ public final class DeltaEncoder {
 		}
 
 		return result;
+	}
+
+	private static List<Integer> mEncode(List<Integer> list, Encoding encoding) {
+		switch (encoding) {
+			case DELTA:
+				return deltaEncode(list);
+			case DOUBLE_DELTA:
+				return doubleDeltaEncode(list);
+			case NONE:
+				return list;
+		}
+
+		throw new IllegalArgumentException("unknown encoding value: " + encoding);
+	}
+
+	private static int mSimulateSerialization(List<Integer> list) {
+		int sum = 0;
+		for (Integer coordinate : list) {
+			sum += Serializer.getVariableByteSigned(coordinate.intValue()).length;
+		}
+		return sum;
+	}
+
+	private DeltaEncoder() {
 	}
 }

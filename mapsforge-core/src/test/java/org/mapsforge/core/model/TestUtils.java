@@ -25,6 +25,31 @@ import org.junit.Assert;
 import org.mapsforge.core.util.IOUtils;
 
 final class TestUtils {
+	static void equalsTest(Object object1, Object object2) {
+		Assert.assertEquals(object1, object1);
+		Assert.assertEquals(object2, object2);
+
+		Assert.assertEquals(object1.hashCode(), object2.hashCode());
+		Assert.assertEquals(object1, object2);
+		Assert.assertEquals(object2, object1);
+	}
+
+	static void serializeTest(Object objectToSerialize) throws IOException, ClassNotFoundException {
+		File file = new File("object.ser");
+		try {
+			Assert.assertTrue(file.createNewFile());
+			Assert.assertEquals(0, file.length());
+
+			serializeObject(objectToSerialize, file);
+			Object deserializedObject = deserializeObject(file);
+			TestUtils.equalsTest(objectToSerialize, deserializedObject);
+		} finally {
+			if (file.exists() && !file.delete()) {
+				throw new IOException("could not delete file: " + file);
+			}
+		}
+	}
+
 	private static Object deserializeObject(File file) throws IOException, ClassNotFoundException {
 		FileInputStream fileInputStream = null;
 		ObjectInputStream objectInputStream = null;
@@ -48,31 +73,6 @@ final class TestUtils {
 		} finally {
 			IOUtils.closeQuietly(objectOutputStream);
 			IOUtils.closeQuietly(fileOutputStream);
-		}
-	}
-
-	static void equalsTest(Object object1, Object object2) {
-		Assert.assertEquals(object1, object1);
-		Assert.assertEquals(object2, object2);
-
-		Assert.assertEquals(object1.hashCode(), object2.hashCode());
-		Assert.assertEquals(object1, object2);
-		Assert.assertEquals(object2, object1);
-	}
-
-	static void serializeTest(Object objectToSerialize) throws IOException, ClassNotFoundException {
-		File file = new File("object.ser");
-		try {
-			Assert.assertTrue(file.createNewFile());
-			Assert.assertEquals(0, file.length());
-
-			serializeObject(objectToSerialize, file);
-			Object deserializedObject = deserializeObject(file);
-			TestUtils.equalsTest(objectToSerialize, deserializedObject);
-		} finally {
-			if (file.exists() && !file.delete()) {
-				throw new IOException("could not delete file: " + file);
-			}
 		}
 	}
 

@@ -18,9 +18,9 @@ package org.mapsforge.map.writer.model;
  * @author bross
  */
 public class TileGridLayout {
-	private final TileCoordinate upperLeft;
 	private final int amountTilesHorizontal;
 	private final int amountTilesVertical;
+	private final TileCoordinate upperLeft;
 
 	/**
 	 * Constructor.
@@ -40,13 +40,6 @@ public class TileGridLayout {
 	}
 
 	/**
-	 * @return the upperLeft
-	 */
-	public TileCoordinate getUpperLeft() {
-		return this.upperLeft;
-	}
-
-	/**
 	 * @return the amountTilesHorizontal
 	 */
 	public int getAmountTilesHorizontal() {
@@ -58,5 +51,12 @@ public class TileGridLayout {
 	 */
 	public int getAmountTilesVertical() {
 		return this.amountTilesVertical;
+	}
+
+	/**
+	 * @return the upperLeft
+	 */
+	public TileCoordinate getUpperLeft() {
+		return this.upperLeft;
 	}
 }

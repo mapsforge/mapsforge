@@ -45,9 +45,21 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Way;
  * @author bross
  */
 public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor {
-	private final TLongObjectHashMap<TDNode> nodes;
+	/**
+	 * Creates a new instance of a {@link RAMTileBasedDataProcessor}.
+	 * 
+	 * @param configuration
+	 *            the configuration
+	 * @return a new instance of a {@link RAMTileBasedDataProcessor}
+	 */
+	public static RAMTileBasedDataProcessor newInstance(MapWriterConfiguration configuration) {
+		return new RAMTileBasedDataProcessor(configuration);
+	}
+
 	final TLongObjectHashMap<TDWay> ways;
 	private final TLongObjectHashMap<TDRelation> multipolygons;
+
+	private final TLongObjectHashMap<TDNode> nodes;
 
 	private final RAMTileData[][][] tileData;
 
@@ -64,42 +76,19 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 		}
 	}
 
-	/**
-	 * Creates a new instance of a {@link RAMTileBasedDataProcessor}.
-	 * 
-	 * @param configuration
-	 *            the configuration
-	 * @return a new instance of a {@link RAMTileBasedDataProcessor}
-	 */
-	public static RAMTileBasedDataProcessor newInstance(MapWriterConfiguration configuration) {
-		return new RAMTileBasedDataProcessor(configuration);
-	}
-
-	@Override
-	public TDNode getNode(long id) {
-		return this.nodes.get(id);
-	}
-
-	@Override
-	public TDWay getWay(long id) {
-		return this.ways.get(id);
-	}
-
-	@Override
-	public BoundingBox getBoundingBox() {
-		return this.boundingbox;
-	}
-
-	@Override
-	public ZoomIntervalConfiguration getZoomIntervalConfiguration() {
-		return this.zoomIntervalConfiguration;
-	}
-
 	@Override
 	public void addNode(Node node) {
 		TDNode tdNode = TDNode.fromNode(node, this.preferredLanguage);
 		this.nodes.put(tdNode.getId(), tdNode);
 		addPOI(tdNode);
+	}
+
+	@Override
+	public void addRelation(Relation relation) {
+		TDRelation tdRelation = TDRelation.fromRelation(relation, this, this.preferredLanguage);
+		if (tdRelation != null) {
+			this.multipolygons.put(relation.getId(), tdRelation);
+		}
 	}
 
 	@Override
@@ -126,14 +115,6 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 	}
 
 	@Override
-	public void addRelation(Relation relation) {
-		TDRelation tdRelation = TDRelation.fromRelation(relation, this, this.preferredLanguage);
-		if (tdRelation != null) {
-			this.multipolygons.put(relation.getId(), tdRelation);
-		}
-	}
-
-	@Override
 	public void complete() {
 		// Polygonize multipolygon
 		RelationHandler relationHandler = new RelationHandler();
@@ -147,27 +128,8 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 	}
 
 	@Override
-	public TileData getTile(int zoom, int tileX, int tileY) {
-		return getTileImpl(zoom, tileX, tileY);
-	}
-
-	@Override
-	protected RAMTileData getTileImpl(int zoom, int tileX, int tileY) {
-		int tileCoordinateXIndex = tileX - this.tileGridLayouts[zoom].getUpperLeft().getX();
-		int tileCoordinateYIndex = tileY - this.tileGridLayouts[zoom].getUpperLeft().getY();
-		// check for valid range
-		if (tileCoordinateXIndex < 0 || tileCoordinateYIndex < 0 || this.tileData[zoom].length <= tileCoordinateXIndex
-				|| this.tileData[zoom][tileCoordinateXIndex].length <= tileCoordinateYIndex) {
-			return null;
-		}
-
-		RAMTileData td = this.tileData[zoom][tileCoordinateXIndex][tileCoordinateYIndex];
-		if (td == null) {
-			td = new RAMTileData();
-			this.tileData[zoom][tileCoordinateXIndex][tileCoordinateYIndex] = td;
-		}
-
-		return td;
+	public BoundingBox getBoundingBox() {
+		return this.boundingbox;
 	}
 
 	@Override
@@ -197,17 +159,71 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 	}
 
 	@Override
-	public void release() {
-		// nothing to do here
-	}
-
-	@Override
 	public List<TDWay> getInnerWaysOfMultipolygon(long outerWayID) {
 		TLongArrayList innerwayIDs = this.outerToInnerMapping.get(outerWayID);
 		if (innerwayIDs == null) {
 			return null;
 		}
 		return getInnerWaysOfMultipolygon(innerwayIDs.toArray());
+	}
+
+	@Override
+	public TDNode getNode(long id) {
+		return this.nodes.get(id);
+	}
+
+	@Override
+	public TileData getTile(int zoom, int tileX, int tileY) {
+		return getTileImpl(zoom, tileX, tileY);
+	}
+
+	@Override
+	public TDWay getWay(long id) {
+		return this.ways.get(id);
+	}
+
+	@Override
+	public ZoomIntervalConfiguration getZoomIntervalConfiguration() {
+		return this.zoomIntervalConfiguration;
+	}
+
+	@Override
+	public void release() {
+		// nothing to do here
+	}
+
+	@Override
+	protected RAMTileData getTileImpl(int zoom, int tileX, int tileY) {
+		int tileCoordinateXIndex = tileX - this.tileGridLayouts[zoom].getUpperLeft().getX();
+		int tileCoordinateYIndex = tileY - this.tileGridLayouts[zoom].getUpperLeft().getY();
+		// check for valid range
+		if (tileCoordinateXIndex < 0 || tileCoordinateYIndex < 0 || this.tileData[zoom].length <= tileCoordinateXIndex
+				|| this.tileData[zoom][tileCoordinateXIndex].length <= tileCoordinateYIndex) {
+			return null;
+		}
+
+		RAMTileData td = this.tileData[zoom][tileCoordinateXIndex][tileCoordinateYIndex];
+		if (td == null) {
+			td = new RAMTileData();
+			this.tileData[zoom][tileCoordinateXIndex][tileCoordinateYIndex] = td;
+		}
+
+		return td;
+	}
+
+	@Override
+	protected void handleAdditionalRelationTags(TDWay virtualWay, TDRelation relation) {
+		// nothing to do here
+	}
+
+	@Override
+	protected void handleVirtualInnerWay(TDWay virtualWay) {
+		this.ways.put(virtualWay.getId(), virtualWay);
+	}
+
+	@Override
+	protected void handleVirtualOuterWay(TDWay virtualWay) {
+		// nothing to do here
 	}
 
 	private List<TDWay> getInnerWaysOfMultipolygon(long[] innerWayIDs) {
@@ -224,20 +240,5 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 		}
 
 		return res;
-	}
-
-	@Override
-	protected void handleVirtualOuterWay(TDWay virtualWay) {
-		// nothing to do here
-	}
-
-	@Override
-	protected void handleAdditionalRelationTags(TDWay virtualWay, TDRelation relation) {
-		// nothing to do here
-	}
-
-	@Override
-	protected void handleVirtualInnerWay(TDWay virtualWay) {
-		this.ways.put(virtualWay.getId(), virtualWay);
 	}
 }

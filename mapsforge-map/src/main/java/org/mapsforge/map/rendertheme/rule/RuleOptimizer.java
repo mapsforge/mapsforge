@@ -20,32 +20,6 @@ import java.util.logging.Logger;
 final class RuleOptimizer {
 	private static final Logger LOGGER = Logger.getLogger(RuleOptimizer.class.getName());
 
-	private static AttributeMatcher optimizeKeyMatcher(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
-		for (int i = 0, n = ruleStack.size(); i < n; ++i) {
-			if (ruleStack.get(i) instanceof PositiveRule) {
-				PositiveRule positiveRule = (PositiveRule) ruleStack.get(i);
-				if (positiveRule.keyMatcher.isCoveredBy(attributeMatcher)) {
-					return AnyMatcher.INSTANCE;
-				}
-			}
-		}
-
-		return attributeMatcher;
-	}
-
-	private static AttributeMatcher optimizeValueMatcher(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
-		for (int i = 0, n = ruleStack.size(); i < n; ++i) {
-			if (ruleStack.get(i) instanceof PositiveRule) {
-				PositiveRule positiveRule = (PositiveRule) ruleStack.get(i);
-				if (positiveRule.valueMatcher.isCoveredBy(attributeMatcher)) {
-					return AnyMatcher.INSTANCE;
-				}
-			}
-		}
-
-		return attributeMatcher;
-	}
-
 	static AttributeMatcher optimize(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
 		if (attributeMatcher instanceof AnyMatcher || attributeMatcher instanceof NegativeMatcher) {
 			return attributeMatcher;
@@ -89,6 +63,32 @@ final class RuleOptimizer {
 		}
 
 		return elementMatcher;
+	}
+
+	private static AttributeMatcher optimizeKeyMatcher(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
+		for (int i = 0, n = ruleStack.size(); i < n; ++i) {
+			if (ruleStack.get(i) instanceof PositiveRule) {
+				PositiveRule positiveRule = (PositiveRule) ruleStack.get(i);
+				if (positiveRule.keyMatcher.isCoveredBy(attributeMatcher)) {
+					return AnyMatcher.INSTANCE;
+				}
+			}
+		}
+
+		return attributeMatcher;
+	}
+
+	private static AttributeMatcher optimizeValueMatcher(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
+		for (int i = 0, n = ruleStack.size(); i < n; ++i) {
+			if (ruleStack.get(i) instanceof PositiveRule) {
+				PositiveRule positiveRule = (PositiveRule) ruleStack.get(i);
+				if (positiveRule.valueMatcher.isCoveredBy(attributeMatcher)) {
+					return AnyMatcher.INSTANCE;
+				}
+			}
+		}
+
+		return attributeMatcher;
 	}
 
 	private RuleOptimizer() {

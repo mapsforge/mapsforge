@@ -23,9 +23,9 @@ import java.util.List;
  * @author sahin
  */
 public class WayDataBlock {
-	private final List<Integer> outerWay;
-	private final List<List<Integer>> innerWays;
 	private final Encoding encoding;
+	private final List<List<Integer>> innerWays;
+	private final List<Integer> outerWay;
 
 	/**
 	 * Creates a WayDataBlock in which way coordinates are not encoded.
@@ -57,10 +57,10 @@ public class WayDataBlock {
 	}
 
 	/**
-	 * @return the outerWay
+	 * @return the encoding
 	 */
-	public List<Integer> getOuterWay() {
-		return this.outerWay;
+	public Encoding getEncoding() {
+		return this.encoding;
 	}
 
 	/**
@@ -71,9 +71,9 @@ public class WayDataBlock {
 	}
 
 	/**
-	 * @return the encoding
+	 * @return the outerWay
 	 */
-	public Encoding getEncoding() {
-		return this.encoding;
+	public List<Integer> getOuterWay() {
+		return this.outerWay;
 	}
 }

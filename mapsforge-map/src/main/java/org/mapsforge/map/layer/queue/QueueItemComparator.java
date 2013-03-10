@@ -18,8 +18,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 final class QueueItemComparator implements Comparator<QueueItem<?>>, Serializable {
-	private static final long serialVersionUID = 1L;
 	static final QueueItemComparator INSTANCE = new QueueItemComparator();
+	private static final long serialVersionUID = 1L;
 
 	private QueueItemComparator() {
 		// do nothing

@@ -64,6 +64,9 @@ class AwtPaint implements Paint {
 		throw new IllegalArgumentException("unknown fontStyle: " + fontStyle);
 	}
 
+	Bitmap bitmap;
+	Font font;
+	Style style = Style.FILL;
 	private Align align = Align.LEFT;
 	private Cap cap = Cap.BUTT;
 	private int color = 0;
@@ -72,9 +75,6 @@ class AwtPaint implements Paint {
 	private float[] strokeDasharray;
 	private float strokeWidth;
 	private float textSize;
-	Bitmap bitmap;
-	Font font;
-	Style style = Style.FILL;
 
 	@Override
 	public int getColor() {

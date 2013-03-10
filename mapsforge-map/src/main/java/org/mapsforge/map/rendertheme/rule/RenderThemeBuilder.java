@@ -33,10 +33,10 @@ public class RenderThemeBuilder {
 	private static final String XMLNS_XSI = "xmlns:xsi";
 	private static final String XSI_SCHEMALOCATION = "xsi:schemaLocation";
 
-	private Integer version;
 	float baseStrokeWidth;
 	float baseTextSize;
 	int mapBackground;
+	private Integer version;
 
 	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes)
 			throws SAXException {

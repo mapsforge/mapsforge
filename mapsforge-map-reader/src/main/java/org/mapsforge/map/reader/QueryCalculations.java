@@ -18,6 +18,69 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.reader.header.SubFileParameter;
 
 final class QueryCalculations {
+	static void calculateBaseTiles(QueryParameters queryParameters, Tile tile, SubFileParameter subFileParameter) {
+		if (tile.zoomLevel < subFileParameter.baseZoomLevel) {
+			// calculate the XY numbers of the upper left and lower right sub-tiles
+			int zoomLevelDifference = subFileParameter.baseZoomLevel - tile.zoomLevel;
+			queryParameters.fromBaseTileX = tile.tileX << zoomLevelDifference;
+			queryParameters.fromBaseTileY = tile.tileY << zoomLevelDifference;
+			queryParameters.toBaseTileX = queryParameters.fromBaseTileX + (1 << zoomLevelDifference) - 1;
+			queryParameters.toBaseTileY = queryParameters.fromBaseTileY + (1 << zoomLevelDifference) - 1;
+			queryParameters.useTileBitmask = false;
+		} else if (tile.zoomLevel > subFileParameter.baseZoomLevel) {
+			// calculate the XY numbers of the parent base tile
+			int zoomLevelDifference = tile.zoomLevel - subFileParameter.baseZoomLevel;
+			queryParameters.fromBaseTileX = tile.tileX >>> zoomLevelDifference;
+			queryParameters.fromBaseTileY = tile.tileY >>> zoomLevelDifference;
+			queryParameters.toBaseTileX = queryParameters.fromBaseTileX;
+			queryParameters.toBaseTileY = queryParameters.fromBaseTileY;
+			queryParameters.useTileBitmask = true;
+			queryParameters.queryTileBitmask = calculateTileBitmask(tile, zoomLevelDifference);
+		} else {
+			// use the tile XY numbers of the requested tile
+			queryParameters.fromBaseTileX = tile.tileX;
+			queryParameters.fromBaseTileY = tile.tileY;
+			queryParameters.toBaseTileX = queryParameters.fromBaseTileX;
+			queryParameters.toBaseTileY = queryParameters.fromBaseTileY;
+			queryParameters.useTileBitmask = false;
+		}
+	}
+
+	static void calculateBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter) {
+		// calculate the blocks in the file which need to be read
+		queryParameters.fromBlockX = Math.max(queryParameters.fromBaseTileX - subFileParameter.boundaryTileLeft, 0);
+		queryParameters.fromBlockY = Math.max(queryParameters.fromBaseTileY - subFileParameter.boundaryTileTop, 0);
+		queryParameters.toBlockX = Math.min(queryParameters.toBaseTileX - subFileParameter.boundaryTileLeft,
+				subFileParameter.blocksWidth - 1);
+		queryParameters.toBlockY = Math.min(queryParameters.toBaseTileY - subFileParameter.boundaryTileTop,
+				subFileParameter.blocksHeight - 1);
+	}
+
+	static int calculateTileBitmask(Tile tile, int zoomLevelDifference) {
+		if (zoomLevelDifference == 1) {
+			return getFirstLevelTileBitmask(tile);
+		}
+
+		// calculate the XY numbers of the second level sub-tile
+		long subtileX = tile.tileX >>> (zoomLevelDifference - 2);
+		long subtileY = tile.tileY >>> (zoomLevelDifference - 2);
+
+		// calculate the XY numbers of the parent tile
+		long parentTileX = subtileX >>> 1;
+		long parentTileY = subtileY >>> 1;
+
+		// determine the correct bitmask for all 16 sub-tiles
+		if (parentTileX % 2 == 0 && parentTileY % 2 == 0) {
+			return getSecondLevelTileBitmaskUpperLeft(subtileX, subtileY);
+		} else if (parentTileX % 2 == 1 && parentTileY % 2 == 0) {
+			return getSecondLevelTileBitmaskUpperRight(subtileX, subtileY);
+		} else if (parentTileX % 2 == 0 && parentTileY % 2 == 1) {
+			return getSecondLevelTileBitmaskLowerLeft(subtileX, subtileY);
+		} else {
+			return getSecondLevelTileBitmaskLowerRight(subtileX, subtileY);
+		}
+	}
+
 	private static int getFirstLevelTileBitmask(Tile tile) {
 		if (tile.tileX % 2 == 0 && tile.tileY % 2 == 0) {
 			// upper left quadrant
@@ -95,69 +158,6 @@ final class QueryCalculations {
 		} else {
 			// lower right sub-tile
 			return 0x100;
-		}
-	}
-
-	static void calculateBaseTiles(QueryParameters queryParameters, Tile tile, SubFileParameter subFileParameter) {
-		if (tile.zoomLevel < subFileParameter.baseZoomLevel) {
-			// calculate the XY numbers of the upper left and lower right sub-tiles
-			int zoomLevelDifference = subFileParameter.baseZoomLevel - tile.zoomLevel;
-			queryParameters.fromBaseTileX = tile.tileX << zoomLevelDifference;
-			queryParameters.fromBaseTileY = tile.tileY << zoomLevelDifference;
-			queryParameters.toBaseTileX = queryParameters.fromBaseTileX + (1 << zoomLevelDifference) - 1;
-			queryParameters.toBaseTileY = queryParameters.fromBaseTileY + (1 << zoomLevelDifference) - 1;
-			queryParameters.useTileBitmask = false;
-		} else if (tile.zoomLevel > subFileParameter.baseZoomLevel) {
-			// calculate the XY numbers of the parent base tile
-			int zoomLevelDifference = tile.zoomLevel - subFileParameter.baseZoomLevel;
-			queryParameters.fromBaseTileX = tile.tileX >>> zoomLevelDifference;
-			queryParameters.fromBaseTileY = tile.tileY >>> zoomLevelDifference;
-			queryParameters.toBaseTileX = queryParameters.fromBaseTileX;
-			queryParameters.toBaseTileY = queryParameters.fromBaseTileY;
-			queryParameters.useTileBitmask = true;
-			queryParameters.queryTileBitmask = calculateTileBitmask(tile, zoomLevelDifference);
-		} else {
-			// use the tile XY numbers of the requested tile
-			queryParameters.fromBaseTileX = tile.tileX;
-			queryParameters.fromBaseTileY = tile.tileY;
-			queryParameters.toBaseTileX = queryParameters.fromBaseTileX;
-			queryParameters.toBaseTileY = queryParameters.fromBaseTileY;
-			queryParameters.useTileBitmask = false;
-		}
-	}
-
-	static void calculateBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter) {
-		// calculate the blocks in the file which need to be read
-		queryParameters.fromBlockX = Math.max(queryParameters.fromBaseTileX - subFileParameter.boundaryTileLeft, 0);
-		queryParameters.fromBlockY = Math.max(queryParameters.fromBaseTileY - subFileParameter.boundaryTileTop, 0);
-		queryParameters.toBlockX = Math.min(queryParameters.toBaseTileX - subFileParameter.boundaryTileLeft,
-				subFileParameter.blocksWidth - 1);
-		queryParameters.toBlockY = Math.min(queryParameters.toBaseTileY - subFileParameter.boundaryTileTop,
-				subFileParameter.blocksHeight - 1);
-	}
-
-	static int calculateTileBitmask(Tile tile, int zoomLevelDifference) {
-		if (zoomLevelDifference == 1) {
-			return getFirstLevelTileBitmask(tile);
-		}
-
-		// calculate the XY numbers of the second level sub-tile
-		long subtileX = tile.tileX >>> (zoomLevelDifference - 2);
-		long subtileY = tile.tileY >>> (zoomLevelDifference - 2);
-
-		// calculate the XY numbers of the parent tile
-		long parentTileX = subtileX >>> 1;
-		long parentTileY = subtileY >>> 1;
-
-		// determine the correct bitmask for all 16 sub-tiles
-		if (parentTileX % 2 == 0 && parentTileY % 2 == 0) {
-			return getSecondLevelTileBitmaskUpperLeft(subtileX, subtileY);
-		} else if (parentTileX % 2 == 1 && parentTileY % 2 == 0) {
-			return getSecondLevelTileBitmaskUpperRight(subtileX, subtileY);
-		} else if (parentTileX % 2 == 0 && parentTileY % 2 == 1) {
-			return getSecondLevelTileBitmaskLowerLeft(subtileX, subtileY);
-		} else {
-			return getSecondLevelTileBitmaskLowerRight(subtileX, subtileY);
 		}
 	}
 

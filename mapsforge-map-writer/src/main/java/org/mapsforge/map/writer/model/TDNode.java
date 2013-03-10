@@ -28,17 +28,8 @@ public class TDNode {
 	// private static final Logger LOGGER = Logger.getLogger(TDNode.class.getName());
 
 	private static final byte ZOOM_HOUSENUMBER = (byte) 18;
+
 	// private static final byte ZOOM_NAME = (byte) 16;
-
-	private final long id;
-	private final int latitude;
-	private final int longitude;
-
-	private final short elevation;
-	private final String houseNumber;
-	private final byte layer;
-	private final String name;
-	private short[] tags;
 
 	/**
 	 * Constructs a new TDNode from a given osmosis node entity. Checks the validity of the entity.
@@ -57,6 +48,17 @@ public class TDNode {
 				CoordinatesUtil.degreesToMicrodegrees(node.getLongitude()), ster.getElevation(), ster.getLayer(),
 				ster.getHousenumber(), ster.getName(), knownWayTags);
 	}
+
+	private final short elevation;
+	private final String houseNumber;
+
+	private final long id;
+	private final int latitude;
+	private final byte layer;
+	private final int longitude;
+	private final String name;
+
+	private short[] tags;
 
 	/**
 	 * @param id
@@ -114,60 +116,22 @@ public class TDNode {
 		this.tags = tags;
 	}
 
-	/**
-	 * @return true if the node represents a POI
-	 */
-	public boolean isPOI() {
-		return this.houseNumber != null || this.elevation != 0 || this.tags.length > 0;
-	}
-
-	/**
-	 * @return the zoom level on which the node appears first
-	 */
-	public byte getZoomAppear() {
-		if (this.tags == null || this.tags.length == 0) {
-			if (this.houseNumber != null) {
-				return ZOOM_HOUSENUMBER;
-			}
-			return Byte.MAX_VALUE;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
 		}
-		return OSMTagMapping.getInstance().getZoomAppearPOI(this.tags);
-	}
-
-	/**
-	 * @return the id
-	 */
-	public long getId() {
-		return this.id;
-	}
-
-	/**
-	 * @return the tags
-	 */
-	public short[] getTags() {
-		return this.tags;
-	}
-
-	/**
-	 * @param tags
-	 *            the tags to set
-	 */
-	public void setTags(short[] tags) {
-		this.tags = tags;
-	}
-
-	/**
-	 * @return the latitude
-	 */
-	public int getLatitude() {
-		return this.latitude;
-	}
-
-	/**
-	 * @return the longitude
-	 */
-	public int getLongitude() {
-		return this.longitude;
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		TDNode other = (TDNode) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -185,6 +149,20 @@ public class TDNode {
 	}
 
 	/**
+	 * @return the id
+	 */
+	public long getId() {
+		return this.id;
+	}
+
+	/**
+	 * @return the latitude
+	 */
+	public int getLatitude() {
+		return this.latitude;
+	}
+
+	/**
 	 * @return the layer
 	 */
 	public byte getLayer() {
@@ -192,10 +170,37 @@ public class TDNode {
 	}
 
 	/**
+	 * @return the longitude
+	 */
+	public int getLongitude() {
+		return this.longitude;
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return this.name;
+	}
+
+	/**
+	 * @return the tags
+	 */
+	public short[] getTags() {
+		return this.tags;
+	}
+
+	/**
+	 * @return the zoom level on which the node appears first
+	 */
+	public byte getZoomAppear() {
+		if (this.tags == null || this.tags.length == 0) {
+			if (this.houseNumber != null) {
+				return ZOOM_HOUSENUMBER;
+			}
+			return Byte.MAX_VALUE;
+		}
+		return OSMTagMapping.getInstance().getZoomAppearPOI(this.tags);
 	}
 
 	@Override
@@ -206,22 +211,19 @@ public class TDNode {
 		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		TDNode other = (TDNode) obj;
-		if (this.id != other.id) {
-			return false;
-		}
-		return true;
+	/**
+	 * @return true if the node represents a POI
+	 */
+	public boolean isPOI() {
+		return this.houseNumber != null || this.elevation != 0 || this.tags.length > 0;
+	}
+
+	/**
+	 * @param tags
+	 *            the tags to set
+	 */
+	public void setTags(short[] tags) {
+		this.tags = tags;
 	}
 
 	@Override

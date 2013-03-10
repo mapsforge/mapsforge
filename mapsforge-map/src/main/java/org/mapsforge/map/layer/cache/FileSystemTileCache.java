@@ -35,8 +35,8 @@ import org.mapsforge.map.layer.queue.Job;
  * A thread-safe cache for image files with a fixed size and LRU policy.
  */
 public class FileSystemTileCache implements TileCache {
-	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 	static final String FILE_EXTENSION = ".tile";
+	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 
 	private static File checkDirectory(File file) {
 		if (!file.exists() && !file.mkdirs()) {

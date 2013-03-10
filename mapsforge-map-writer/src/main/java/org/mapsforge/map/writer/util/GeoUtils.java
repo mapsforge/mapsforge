@@ -50,8 +50,10 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
  * @author bross
  */
 public final class GeoUtils {
-	private GeoUtils() {
-	}
+	/**
+	 * The minimum amount of coordinates (lat/lon counted separately) required for a valid closed polygon.
+	 */
+	public static final int MIN_COORDINATES_POLYGON = 8;
 
 	// private static final double DOUGLAS_PEUCKER_SIMPLIFICATION_TOLERANCE = 0.0000188;
 	// private static final double DOUGLAS_PEUCKER_SIMPLIFICATION_TOLERANCE = 0.00003;
@@ -60,19 +62,116 @@ public final class GeoUtils {
 	 */
 	public static final int MIN_NODES_POLYGON = 4;
 
-	/**
-	 * The minimum amount of coordinates (lat/lon counted separately) required for a valid closed polygon.
-	 */
-	public static final int MIN_COORDINATES_POLYGON = 8;
-	private static final byte SUBTILE_ZOOMLEVEL_DIFFERENCE = 2;
 	private static final double[] EPSILON_ZERO = new double[] { 0, 0 };
+	// JTS
+	private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 	private static final Logger LOGGER = Logger.getLogger(GeoUtils.class.getName());
+	private static final byte SUBTILE_ZOOMLEVEL_DIFFERENCE = 2;
 
 	private static final int[] TILE_BITMASK_VALUES = new int[] { 32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128,
 			64, 32, 16, 8, 4, 2, 1 };
 
-	// JTS
-	private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+	/**
+	 * Clips a geometry to a tile.
+	 * 
+	 * @param way
+	 *            the way
+	 * @param geometry
+	 *            the geometry
+	 * @param tileCoordinate
+	 *            the tile coordinate
+	 * @param enlargementInMeters
+	 *            the bounding box buffer
+	 * @return the clipped geometry
+	 */
+	public static Geometry clipToTile(TDWay way, Geometry geometry, TileCoordinate tileCoordinate,
+			int enlargementInMeters) {
+		// clip geometry?
+		Geometry tileBBJTS = null;
+		Geometry ret = null;
+
+		// create tile bounding box
+		tileBBJTS = tileToJTSGeometry(tileCoordinate.getX(), tileCoordinate.getY(), tileCoordinate.getZoomlevel(),
+				enlargementInMeters);
+
+		// clip the polygon/ring by intersection with the bounding box of the tile
+		// may throw a TopologyException
+		try {
+			// geometry = OverlayOp.overlayOp(tileBBJTS, geometry, OverlayOp.INTERSECTION);
+			ret = tileBBJTS.intersection(geometry);
+		} catch (TopologyException e) {
+			LOGGER.log(Level.FINE, "JTS cannot clip way, not storing it in data file: " + way.getId(), e);
+			way.setInvalid(true);
+			return null;
+		}
+		return ret;
+	}
+
+	/**
+	 * A tile on zoom level <i>z</i> has exactly 16 sub tiles on zoom level <i>z+2</i>. For each of these 16 sub tiles
+	 * it is analyzed if the given way needs to be included. The result is represented as a 16 bit short value. Each bit
+	 * represents one of the 16 sub tiles. A bit is set to 1 if the sub tile needs to include the way. Representation is
+	 * row-wise.
+	 * 
+	 * @param geometry
+	 *            the geometry which is analyzed
+	 * @param tile
+	 *            the tile which is split into 16 sub tiles
+	 * @param enlargementInMeter
+	 *            amount of pixels that is used to enlarge the bounding box of the way and the tiles in the mapping
+	 *            process
+	 * @return a 16 bit short value that represents the information which of the sub tiles needs to include the way
+	 */
+	public static short computeBitmask(final Geometry geometry, final TileCoordinate tile, final int enlargementInMeter) {
+		List<TileCoordinate> subtiles = tile
+				.translateToZoomLevel((byte) (tile.getZoomlevel() + SUBTILE_ZOOMLEVEL_DIFFERENCE));
+
+		short bitmask = 0;
+		int tileCounter = 0;
+		for (TileCoordinate subtile : subtiles) {
+			Geometry bbox = tileToJTSGeometry(subtile.getX(), subtile.getY(), subtile.getZoomlevel(),
+					enlargementInMeter);
+			if (bbox.intersects(geometry)) {
+				bitmask |= TILE_BITMASK_VALUES[tileCounter];
+			}
+			tileCounter++;
+		}
+		return bitmask;
+	}
+
+	/**
+	 * @param geometry
+	 *            the JTS {@link Geometry} object
+	 * @return the centroid of the given geometry
+	 */
+	public static LatLong computeCentroid(Geometry geometry) {
+		Point centroid = geometry.getCentroid();
+		if (centroid != null) {
+			return new LatLong(centroid.getCoordinate().y, centroid.getCoordinate().x);
+		}
+
+		return null;
+	}
+
+	// *********** PREPROCESSING OF WAYS **************
+
+	/**
+	 * @param geometry
+	 *            a JTS {@link Geometry} object representing the OSM entity
+	 * @param tile
+	 *            the tile
+	 * @param enlargementInMeter
+	 *            the enlargement of the tile in meters
+	 * @return true, if the geometry is covered completely by this tile
+	 */
+	public static boolean coveredByTile(final Geometry geometry, final TileCoordinate tile, final int enlargementInMeter) {
+		Geometry bbox = tileToJTSGeometry(tile.getX(), tile.getY(), tile.getZoomlevel(), enlargementInMeter);
+		if (bbox.covers(geometry)) {
+			return true;
+		}
+
+		return false;
+	}
 
 	// **************** WAY OR POI IN TILE *****************
 	/**
@@ -142,44 +241,6 @@ public final class GeoUtils {
 				&& latLong.longitude <= lon2;
 	}
 
-	// *********** PREPROCESSING OF WAYS **************
-
-	/**
-	 * Clips a geometry to a tile.
-	 * 
-	 * @param way
-	 *            the way
-	 * @param geometry
-	 *            the geometry
-	 * @param tileCoordinate
-	 *            the tile coordinate
-	 * @param enlargementInMeters
-	 *            the bounding box buffer
-	 * @return the clipped geometry
-	 */
-	public static Geometry clipToTile(TDWay way, Geometry geometry, TileCoordinate tileCoordinate,
-			int enlargementInMeters) {
-		// clip geometry?
-		Geometry tileBBJTS = null;
-		Geometry ret = null;
-
-		// create tile bounding box
-		tileBBJTS = tileToJTSGeometry(tileCoordinate.getX(), tileCoordinate.getY(), tileCoordinate.getZoomlevel(),
-				enlargementInMeters);
-
-		// clip the polygon/ring by intersection with the bounding box of the tile
-		// may throw a TopologyException
-		try {
-			// geometry = OverlayOp.overlayOp(tileBBJTS, geometry, OverlayOp.INTERSECTION);
-			ret = tileBBJTS.intersection(geometry);
-		} catch (TopologyException e) {
-			LOGGER.log(Level.FINE, "JTS cannot clip way, not storing it in data file: " + way.getId(), e);
-			way.setInvalid(true);
-			return null;
-		}
-		return ret;
-	}
-
 	/**
 	 * Simplifies a geometry using the Douglas Peucker algorithm.
 	 * 
@@ -213,121 +274,6 @@ public final class GeoUtils {
 
 		return ret;
 	}
-
-	/**
-	 * A tile on zoom level <i>z</i> has exactly 16 sub tiles on zoom level <i>z+2</i>. For each of these 16 sub tiles
-	 * it is analyzed if the given way needs to be included. The result is represented as a 16 bit short value. Each bit
-	 * represents one of the 16 sub tiles. A bit is set to 1 if the sub tile needs to include the way. Representation is
-	 * row-wise.
-	 * 
-	 * @param geometry
-	 *            the geometry which is analyzed
-	 * @param tile
-	 *            the tile which is split into 16 sub tiles
-	 * @param enlargementInMeter
-	 *            amount of pixels that is used to enlarge the bounding box of the way and the tiles in the mapping
-	 *            process
-	 * @return a 16 bit short value that represents the information which of the sub tiles needs to include the way
-	 */
-	public static short computeBitmask(final Geometry geometry, final TileCoordinate tile, final int enlargementInMeter) {
-		List<TileCoordinate> subtiles = tile
-				.translateToZoomLevel((byte) (tile.getZoomlevel() + SUBTILE_ZOOMLEVEL_DIFFERENCE));
-
-		short bitmask = 0;
-		int tileCounter = 0;
-		for (TileCoordinate subtile : subtiles) {
-			Geometry bbox = tileToJTSGeometry(subtile.getX(), subtile.getY(), subtile.getZoomlevel(),
-					enlargementInMeter);
-			if (bbox.intersects(geometry)) {
-				bitmask |= TILE_BITMASK_VALUES[tileCounter];
-			}
-			tileCounter++;
-		}
-		return bitmask;
-	}
-
-	/**
-	 * @param geometry
-	 *            a JTS {@link Geometry} object representing the OSM entity
-	 * @param tile
-	 *            the tile
-	 * @param enlargementInMeter
-	 *            the enlargement of the tile in meters
-	 * @return true, if the geometry is covered completely by this tile
-	 */
-	public static boolean coveredByTile(final Geometry geometry, final TileCoordinate tile, final int enlargementInMeter) {
-		Geometry bbox = tileToJTSGeometry(tile.getX(), tile.getY(), tile.getZoomlevel(), enlargementInMeter);
-		if (bbox.covers(geometry)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param geometry
-	 *            the JTS {@link Geometry} object
-	 * @return the centroid of the given geometry
-	 */
-	public static LatLong computeCentroid(Geometry geometry) {
-		Point centroid = geometry.getCentroid();
-		if (centroid != null) {
-			return new LatLong(centroid.getCoordinate().y, centroid.getCoordinate().x);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Convert a JTS Geometry to a WayDataBlock list.
-	 * 
-	 * @param geometry
-	 *            a geometry object which should be converted
-	 * @return a list of WayBlocks which you can use to save the way.
-	 */
-	public static List<WayDataBlock> toWayDataBlockList(Geometry geometry) {
-		List<WayDataBlock> res = new ArrayList<WayDataBlock>();
-		if (geometry instanceof MultiPolygon) {
-			MultiPolygon mp = (MultiPolygon) geometry;
-			for (int i = 0; i < mp.getNumGeometries(); i++) {
-				Polygon p = (Polygon) mp.getGeometryN(i);
-				List<Integer> outer = toCoordinateList(p.getExteriorRing());
-				List<List<Integer>> inner = new ArrayList<List<Integer>>();
-				for (int j = 0; j < p.getNumInteriorRing(); j++) {
-					inner.add(toCoordinateList(p.getInteriorRingN(j)));
-				}
-				res.add(new WayDataBlock(outer, inner));
-			}
-		} else if (geometry instanceof Polygon) {
-			Polygon p = (Polygon) geometry;
-			List<Integer> outer = toCoordinateList(p.getExteriorRing());
-			List<List<Integer>> inner = new ArrayList<List<Integer>>();
-			for (int i = 0; i < p.getNumInteriorRing(); i++) {
-				inner.add(toCoordinateList(p.getInteriorRingN(i)));
-			}
-			res.add(new WayDataBlock(outer, inner));
-		} else if (geometry instanceof MultiLineString) {
-			MultiLineString ml = (MultiLineString) geometry;
-			for (int i = 0; i < ml.getNumGeometries(); i++) {
-				LineString l = (LineString) ml.getGeometryN(i);
-				res.add(new WayDataBlock(toCoordinateList(l), null));
-			}
-		} else if (geometry instanceof LinearRing || geometry instanceof LineString) {
-			res.add(new WayDataBlock(toCoordinateList(geometry), null));
-		} else if (geometry instanceof GeometryCollection) {
-			GeometryCollection gc = (GeometryCollection) geometry;
-			for (int i = 0; i < gc.getNumGeometries(); i++) {
-				List<WayDataBlock> recursiveResult = toWayDataBlockList(gc.getGeometryN(i));
-				for (WayDataBlock wayDataBlock : recursiveResult) {
-					res.add(wayDataBlock);
-				}
-			}
-		}
-
-		return res;
-	}
-
-	// **************** JTS CONVERSIONS *********************
 
 	/**
 	 * Converts a way with potential inner ways to a JTS geometry.
@@ -384,10 +330,141 @@ public final class GeoUtils {
 						.createLinearRing(outerPolygon.getExteriorRing().getCoordinates());
 				wayGeometry = new Polygon(exterior, holes, GEOMETRY_FACTORY);
 			}
-
 		}
 
 		return wayGeometry;
+	}
+
+	/**
+	 * Convert a JTS Geometry to a WayDataBlock list.
+	 * 
+	 * @param geometry
+	 *            a geometry object which should be converted
+	 * @return a list of WayBlocks which you can use to save the way.
+	 */
+	public static List<WayDataBlock> toWayDataBlockList(Geometry geometry) {
+		List<WayDataBlock> res = new ArrayList<WayDataBlock>();
+		if (geometry instanceof MultiPolygon) {
+			MultiPolygon mp = (MultiPolygon) geometry;
+			for (int i = 0; i < mp.getNumGeometries(); i++) {
+				Polygon p = (Polygon) mp.getGeometryN(i);
+				List<Integer> outer = toCoordinateList(p.getExteriorRing());
+				List<List<Integer>> inner = new ArrayList<List<Integer>>();
+				for (int j = 0; j < p.getNumInteriorRing(); j++) {
+					inner.add(toCoordinateList(p.getInteriorRingN(j)));
+				}
+				res.add(new WayDataBlock(outer, inner));
+			}
+		} else if (geometry instanceof Polygon) {
+			Polygon p = (Polygon) geometry;
+			List<Integer> outer = toCoordinateList(p.getExteriorRing());
+			List<List<Integer>> inner = new ArrayList<List<Integer>>();
+			for (int i = 0; i < p.getNumInteriorRing(); i++) {
+				inner.add(toCoordinateList(p.getInteriorRingN(i)));
+			}
+			res.add(new WayDataBlock(outer, inner));
+		} else if (geometry instanceof MultiLineString) {
+			MultiLineString ml = (MultiLineString) geometry;
+			for (int i = 0; i < ml.getNumGeometries(); i++) {
+				LineString l = (LineString) ml.getGeometryN(i);
+				res.add(new WayDataBlock(toCoordinateList(l), null));
+			}
+		} else if (geometry instanceof LinearRing || geometry instanceof LineString) {
+			res.add(new WayDataBlock(toCoordinateList(geometry), null));
+		} else if (geometry instanceof GeometryCollection) {
+			GeometryCollection gc = (GeometryCollection) geometry;
+			for (int i = 0; i < gc.getNumGeometries(); i++) {
+				List<WayDataBlock> recursiveResult = toWayDataBlockList(gc.getGeometryN(i));
+				for (WayDataBlock wayDataBlock : recursiveResult) {
+					res.add(wayDataBlock);
+				}
+			}
+		}
+
+		return res;
+	}
+
+	// **************** JTS CONVERSIONS *********************
+
+	private static double[] bufferInDegrees(long tileY, byte zoom, int enlargementInMeter) {
+		if (enlargementInMeter == 0) {
+			return EPSILON_ZERO;
+		}
+
+		double[] epsilons = new double[2];
+		double lat = MercatorProjection.tileYToLatitude(tileY, zoom);
+		epsilons[0] = LatLong.latitudeDistance(enlargementInMeter);
+		epsilons[1] = LatLong.longitudeDistance(enlargementInMeter, lat);
+
+		return epsilons;
+	}
+
+	private static double[] computeTileEnlargement(double lat, int enlargementInPixel) {
+		if (enlargementInPixel == 0) {
+			return EPSILON_ZERO;
+		}
+
+		double[] epsilons = new double[2];
+
+		epsilons[0] = LatLong.latitudeDistance(enlargementInPixel);
+		epsilons[1] = LatLong.longitudeDistance(enlargementInPixel, lat);
+
+		return epsilons;
+	}
+
+	private static TileCoordinate[] getWayBoundingBox(final TDWay way, byte zoomlevel, int enlargementInPixel) {
+		double maxx = Double.NEGATIVE_INFINITY, maxy = Double.NEGATIVE_INFINITY, minx = Double.POSITIVE_INFINITY, miny = Double.POSITIVE_INFINITY;
+		for (TDNode coordinate : way.getWayNodes()) {
+			maxy = Math.max(maxy, CoordinatesUtil.microdegreesToDegrees(coordinate.getLatitude()));
+			miny = Math.min(miny, CoordinatesUtil.microdegreesToDegrees(coordinate.getLatitude()));
+			maxx = Math.max(maxx, CoordinatesUtil.microdegreesToDegrees(coordinate.getLongitude()));
+			minx = Math.min(minx, CoordinatesUtil.microdegreesToDegrees(coordinate.getLongitude()));
+		}
+
+		double[] epsilonsTopLeft = computeTileEnlargement(maxy, enlargementInPixel);
+		double[] epsilonsBottomRight = computeTileEnlargement(miny, enlargementInPixel);
+
+		TileCoordinate[] bbox = new TileCoordinate[2];
+		bbox[0] = new TileCoordinate((int) MercatorProjection.longitudeToTileX(minx - epsilonsTopLeft[1], zoomlevel),
+				(int) MercatorProjection.latitudeToTileY(maxy + epsilonsTopLeft[0], zoomlevel), zoomlevel);
+		bbox[1] = new TileCoordinate(
+				(int) MercatorProjection.longitudeToTileX(maxx + epsilonsBottomRight[1], zoomlevel),
+				(int) MercatorProjection.latitudeToTileY(miny - epsilonsBottomRight[0], zoomlevel), zoomlevel);
+
+		return bbox;
+	}
+
+	private static Geometry tileToJTSGeometry(long tileX, long tileY, byte zoom, int enlargementInMeter) {
+		double minLat = MercatorProjection.tileYToLatitude(tileY + 1, zoom);
+		double maxLat = MercatorProjection.tileYToLatitude(tileY, zoom);
+		double minLon = MercatorProjection.tileXToLongitude(tileX, zoom);
+		double maxLon = MercatorProjection.tileXToLongitude(tileX + 1, zoom);
+
+		double[] epsilons = bufferInDegrees(tileY, zoom, enlargementInMeter);
+
+		minLon -= epsilons[1];
+		minLat -= epsilons[0];
+		maxLon += epsilons[1];
+		maxLat += epsilons[0];
+
+		Coordinate bottomLeft = new Coordinate(minLon, minLat);
+		Coordinate topRight = new Coordinate(maxLon, maxLat);
+
+		return GEOMETRY_FACTORY.createLineString(new Coordinate[] { bottomLeft, topRight }).getEnvelope();
+	}
+
+	private static List<Integer> toCoordinateList(Geometry jtsGeometry) {
+		Coordinate[] jtsCoords = jtsGeometry.getCoordinates();
+
+		ArrayList<Integer> result = new ArrayList<Integer>();
+
+		for (int j = 0; j < jtsCoords.length; j++) {
+			LatLong geoCoord = new LatLong(jtsCoords[j].y, jtsCoords[j].x);
+			result.add(Integer.valueOf(CoordinatesUtil.degreesToMicrodegrees(geoCoord.latitude)));
+			result.add(Integer.valueOf(CoordinatesUtil.degreesToMicrodegrees(geoCoord.longitude)));
+		}
+
+		return result;
 	}
 
 	/**
@@ -435,84 +512,6 @@ public final class GeoUtils {
 		return res;
 	}
 
-	private static List<Integer> toCoordinateList(Geometry jtsGeometry) {
-		Coordinate[] jtsCoords = jtsGeometry.getCoordinates();
-
-		ArrayList<Integer> result = new ArrayList<Integer>();
-
-		for (int j = 0; j < jtsCoords.length; j++) {
-			LatLong geoCoord = new LatLong(jtsCoords[j].y, jtsCoords[j].x);
-			result.add(Integer.valueOf(CoordinatesUtil.degreesToMicrodegrees(geoCoord.latitude)));
-			result.add(Integer.valueOf(CoordinatesUtil.degreesToMicrodegrees(geoCoord.longitude)));
-		}
-
-		return result;
-	}
-
-	private static double[] computeTileEnlargement(double lat, int enlargementInPixel) {
-		if (enlargementInPixel == 0) {
-			return EPSILON_ZERO;
-		}
-
-		double[] epsilons = new double[2];
-
-		epsilons[0] = LatLong.latitudeDistance(enlargementInPixel);
-		epsilons[1] = LatLong.longitudeDistance(enlargementInPixel, lat);
-
-		return epsilons;
-	}
-
-	private static double[] bufferInDegrees(long tileY, byte zoom, int enlargementInMeter) {
-		if (enlargementInMeter == 0) {
-			return EPSILON_ZERO;
-		}
-
-		double[] epsilons = new double[2];
-		double lat = MercatorProjection.tileYToLatitude(tileY, zoom);
-		epsilons[0] = LatLong.latitudeDistance(enlargementInMeter);
-		epsilons[1] = LatLong.longitudeDistance(enlargementInMeter, lat);
-
-		return epsilons;
-	}
-
-	private static Geometry tileToJTSGeometry(long tileX, long tileY, byte zoom, int enlargementInMeter) {
-		double minLat = MercatorProjection.tileYToLatitude(tileY + 1, zoom);
-		double maxLat = MercatorProjection.tileYToLatitude(tileY, zoom);
-		double minLon = MercatorProjection.tileXToLongitude(tileX, zoom);
-		double maxLon = MercatorProjection.tileXToLongitude(tileX + 1, zoom);
-
-		double[] epsilons = bufferInDegrees(tileY, zoom, enlargementInMeter);
-
-		minLon -= epsilons[1];
-		minLat -= epsilons[0];
-		maxLon += epsilons[1];
-		maxLat += epsilons[0];
-
-		Coordinate bottomLeft = new Coordinate(minLon, minLat);
-		Coordinate topRight = new Coordinate(maxLon, maxLat);
-
-		return GEOMETRY_FACTORY.createLineString(new Coordinate[] { bottomLeft, topRight }).getEnvelope();
-	}
-
-	private static TileCoordinate[] getWayBoundingBox(final TDWay way, byte zoomlevel, int enlargementInPixel) {
-		double maxx = Double.NEGATIVE_INFINITY, maxy = Double.NEGATIVE_INFINITY, minx = Double.POSITIVE_INFINITY, miny = Double.POSITIVE_INFINITY;
-		for (TDNode coordinate : way.getWayNodes()) {
-			maxy = Math.max(maxy, CoordinatesUtil.microdegreesToDegrees(coordinate.getLatitude()));
-			miny = Math.min(miny, CoordinatesUtil.microdegreesToDegrees(coordinate.getLatitude()));
-			maxx = Math.max(maxx, CoordinatesUtil.microdegreesToDegrees(coordinate.getLongitude()));
-			minx = Math.min(minx, CoordinatesUtil.microdegreesToDegrees(coordinate.getLongitude()));
-		}
-
-		double[] epsilonsTopLeft = computeTileEnlargement(maxy, enlargementInPixel);
-		double[] epsilonsBottomRight = computeTileEnlargement(miny, enlargementInPixel);
-
-		TileCoordinate[] bbox = new TileCoordinate[2];
-		bbox[0] = new TileCoordinate((int) MercatorProjection.longitudeToTileX(minx - epsilonsTopLeft[1], zoomlevel),
-				(int) MercatorProjection.latitudeToTileY(maxy + epsilonsTopLeft[0], zoomlevel), zoomlevel);
-		bbox[1] = new TileCoordinate(
-				(int) MercatorProjection.longitudeToTileX(maxx + epsilonsBottomRight[1], zoomlevel),
-				(int) MercatorProjection.latitudeToTileY(miny - epsilonsBottomRight[0], zoomlevel), zoomlevel);
-
-		return bbox;
+	private GeoUtils() {
 	}
 }

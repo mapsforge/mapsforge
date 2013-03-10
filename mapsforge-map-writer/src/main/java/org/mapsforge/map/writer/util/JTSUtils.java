@@ -24,15 +24,6 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @author bross
  */
 public final class JTSUtils {
-	private JTSUtils() {
-		throw new IllegalStateException();
-	}
-
-	private static Coordinate toCoordinate(int latitude, int longitude) {
-		return new Coordinate(CoordinatesUtil.microdegreesToDegrees(longitude),
-				CoordinatesUtil.microdegreesToDegrees(latitude));
-	}
-
 	/**
 	 * Translates a {@link TDNode} object to a JTS {@link Coordinate}.
 	 * 
@@ -63,5 +54,14 @@ public final class JTSUtils {
 			}
 		}
 		return coordinates;
+	}
+
+	private static Coordinate toCoordinate(int latitude, int longitude) {
+		return new Coordinate(CoordinatesUtil.microdegreesToDegrees(longitude),
+				CoordinatesUtil.microdegreesToDegrees(latitude));
+	}
+
+	private JTSUtils() {
+		throw new IllegalStateException();
 	}
 }

@@ -18,11 +18,11 @@ package org.mapsforge.map.writer.model;
  * @author bross
  */
 public class SpecialTagExtractionResult {
-	private final String name;
-	private final String ref;
+	private final short elevation;
 	private final String housenumber;
 	private final byte layer;
-	private final short elevation;
+	private final String name;
+	private final String ref;
 	private final String type;
 
 	/**
@@ -51,17 +51,10 @@ public class SpecialTagExtractionResult {
 	}
 
 	/**
-	 * @return the name
+	 * @return the elevation
 	 */
-	public final String getName() {
-		return this.name;
-	}
-
-	/**
-	 * @return the ref
-	 */
-	public final String getRef() {
-		return this.ref;
+	public final short getElevation() {
+		return this.elevation;
 	}
 
 	/**
@@ -79,10 +72,17 @@ public class SpecialTagExtractionResult {
 	}
 
 	/**
-	 * @return the elevation
+	 * @return the name
 	 */
-	public final short getElevation() {
-		return this.elevation;
+	public final String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @return the ref
+	 */
+	public final String getRef() {
+		return this.ref;
 	}
 
 	/**

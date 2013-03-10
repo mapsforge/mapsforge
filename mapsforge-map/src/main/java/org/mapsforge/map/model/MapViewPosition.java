@@ -154,9 +154,9 @@ public class MapViewPosition extends Observable implements Persistable {
 			preferencesFacade.putDouble(LONGITUDE_MIN, this.mapLimit.minLongitude);
 		}
 
-		preferencesFacade.putInt(ZOOM_LEVEL, this.zoomLevel);
-		preferencesFacade.putInt(ZOOM_LEVEL_MAX, this.zoomLevelMax);
-		preferencesFacade.putInt(ZOOM_LEVEL_MIN, this.zoomLevelMin);
+		preferencesFacade.putByte(ZOOM_LEVEL, this.zoomLevel);
+		preferencesFacade.putByte(ZOOM_LEVEL_MAX, this.zoomLevelMax);
+		preferencesFacade.putByte(ZOOM_LEVEL_MIN, this.zoomLevelMin);
 	}
 
 	/**

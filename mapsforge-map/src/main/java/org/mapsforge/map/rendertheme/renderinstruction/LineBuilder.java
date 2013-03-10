@@ -31,12 +31,12 @@ import org.xml.sax.SAXException;
  * A builder for {@link Line} instances.
  */
 public class LineBuilder {
-	private static final Pattern SPLIT_PATTERN = Pattern.compile(",");
 	static final String SRC = "src";
 	static final String STROKE = "stroke";
 	static final String STROKE_DASHARRAY = "stroke-dasharray";
 	static final String STROKE_LINECAP = "stroke-linecap";
 	static final String STROKE_WIDTH = "stroke-width";
+	private static final Pattern SPLIT_PATTERN = Pattern.compile(",");
 
 	private static float[] parseFloatArray(String name, String dashString) throws SAXException {
 		String[] dashEntries = SPLIT_PATTERN.split(dashString);

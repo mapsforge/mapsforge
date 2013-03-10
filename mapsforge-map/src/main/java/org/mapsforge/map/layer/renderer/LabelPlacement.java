@@ -51,8 +51,8 @@ class LabelPlacement {
 	}
 
 	static final class ReferencePositionHeightComparator implements Comparator<ReferencePosition>, Serializable {
-		private static final long serialVersionUID = 1L;
 		static final ReferencePositionHeightComparator INSTANCE = new ReferencePositionHeightComparator();
+		private static final long serialVersionUID = 1L;
 
 		private ReferencePositionHeightComparator() {
 			// do nothing
@@ -72,8 +72,8 @@ class LabelPlacement {
 	}
 
 	static final class ReferencePositionWidthComparator implements Comparator<ReferencePosition>, Serializable {
-		private static final long serialVersionUID = 1L;
 		static final ReferencePositionWidthComparator INSTANCE = new ReferencePositionWidthComparator();
+		private static final long serialVersionUID = 1L;
 
 		private ReferencePositionWidthComparator() {
 			// do nothing
@@ -94,8 +94,8 @@ class LabelPlacement {
 	}
 
 	static final class ReferencePositionXComparator implements Comparator<ReferencePosition>, Serializable {
-		private static final long serialVersionUID = 1L;
 		static final ReferencePositionXComparator INSTANCE = new ReferencePositionXComparator();
+		private static final long serialVersionUID = 1L;
 
 		private ReferencePositionXComparator() {
 			// do nothing
@@ -116,8 +116,8 @@ class LabelPlacement {
 	}
 
 	static final class ReferencePositionYComparator implements Comparator<ReferencePosition>, Serializable {
-		private static final long serialVersionUID = 1L;
 		static final ReferencePositionYComparator INSTANCE = new ReferencePositionYComparator();
+		private static final long serialVersionUID = 1L;
 
 		private ReferencePositionYComparator() {
 			// do nothing
@@ -151,6 +151,78 @@ class LabelPlacement {
 
 	LabelPlacement() {
 		this.dependencyCache = new DependencyCache();
+	}
+
+	/**
+	 * The inputs are all the label and symbol objects of the current object. The output is overlap free label and
+	 * symbol placement with the greedy strategy. The placement model is either the two fixed point or the four fixed
+	 * point model.
+	 * 
+	 * @param labels
+	 *            labels from the current object.
+	 * @param symbols
+	 *            symbols of the current object.
+	 * @param areaLabels
+	 *            area labels from the current object.
+	 * @param cT
+	 *            current object with the x,y- coordinates and the zoom level.
+	 * @return the processed list of labels.
+	 */
+	List<PointTextContainer> placeLabels(List<PointTextContainer> labels, List<SymbolContainer> symbols,
+			List<PointTextContainer> areaLabels, Tile cT) {
+		List<PointTextContainer> returnLabels = labels;
+		this.dependencyCache.generateTileAndDependencyOnTile(cT);
+
+		preprocessAreaLabels(areaLabels);
+
+		preprocessLabels(returnLabels);
+
+		preprocessSymbols(symbols);
+
+		removeEmptySymbolReferences(returnLabels, symbols);
+
+		removeOverlappingSymbolsWithAreaLabels(symbols, areaLabels);
+
+		this.dependencyCache.removeOverlappingObjectsWithDependencyOnTile(returnLabels, areaLabels, symbols);
+
+		if (!returnLabels.isEmpty()) {
+			returnLabels = processFourPointGreedy(returnLabels, symbols, areaLabels);
+		}
+
+		this.dependencyCache.fillDependencyOnTile(returnLabels, symbols, areaLabels);
+
+		return returnLabels;
+	}
+
+	/**
+	 * This method removes all the Symbols, that overlap each other. So that the output is collision free.
+	 * 
+	 * @param symbols
+	 *            symbols from the actual object
+	 */
+	void removeOverlappingSymbols(List<SymbolContainer> symbols) {
+		int dis = SYMBOL_DISTANCE_TO_SYMBOL;
+
+		for (int x = 0; x < symbols.size(); x++) {
+			this.symbolContainer = symbols.get(x);
+			this.rect1 = new Rectangle((int) this.symbolContainer.point.x - dis, (int) this.symbolContainer.point.y
+					- dis, (int) this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth() + dis,
+					(int) this.symbolContainer.point.y + this.symbolContainer.symbol.getHeight() + dis);
+
+			for (int y = x + 1; y < symbols.size(); y++) {
+				if (y != x) {
+					this.symbolContainer = symbols.get(y);
+					this.rect2 = new Rectangle((int) this.symbolContainer.point.x, (int) this.symbolContainer.point.y,
+							(int) this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth(),
+							(int) this.symbolContainer.point.y + this.symbolContainer.symbol.getHeight());
+
+					if (this.rect2.intersects(this.rect1)) {
+						symbols.remove(y);
+						y--;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -519,78 +591,6 @@ class LabelPlacement {
 				if (this.rect1.intersects(this.rect2)) {
 					symbols.remove(y);
 					y--;
-				}
-			}
-		}
-	}
-
-	/**
-	 * The inputs are all the label and symbol objects of the current object. The output is overlap free label and
-	 * symbol placement with the greedy strategy. The placement model is either the two fixed point or the four fixed
-	 * point model.
-	 * 
-	 * @param labels
-	 *            labels from the current object.
-	 * @param symbols
-	 *            symbols of the current object.
-	 * @param areaLabels
-	 *            area labels from the current object.
-	 * @param cT
-	 *            current object with the x,y- coordinates and the zoom level.
-	 * @return the processed list of labels.
-	 */
-	List<PointTextContainer> placeLabels(List<PointTextContainer> labels, List<SymbolContainer> symbols,
-			List<PointTextContainer> areaLabels, Tile cT) {
-		List<PointTextContainer> returnLabels = labels;
-		this.dependencyCache.generateTileAndDependencyOnTile(cT);
-
-		preprocessAreaLabels(areaLabels);
-
-		preprocessLabels(returnLabels);
-
-		preprocessSymbols(symbols);
-
-		removeEmptySymbolReferences(returnLabels, symbols);
-
-		removeOverlappingSymbolsWithAreaLabels(symbols, areaLabels);
-
-		this.dependencyCache.removeOverlappingObjectsWithDependencyOnTile(returnLabels, areaLabels, symbols);
-
-		if (!returnLabels.isEmpty()) {
-			returnLabels = processFourPointGreedy(returnLabels, symbols, areaLabels);
-		}
-
-		this.dependencyCache.fillDependencyOnTile(returnLabels, symbols, areaLabels);
-
-		return returnLabels;
-	}
-
-	/**
-	 * This method removes all the Symbols, that overlap each other. So that the output is collision free.
-	 * 
-	 * @param symbols
-	 *            symbols from the actual object
-	 */
-	void removeOverlappingSymbols(List<SymbolContainer> symbols) {
-		int dis = SYMBOL_DISTANCE_TO_SYMBOL;
-
-		for (int x = 0; x < symbols.size(); x++) {
-			this.symbolContainer = symbols.get(x);
-			this.rect1 = new Rectangle((int) this.symbolContainer.point.x - dis, (int) this.symbolContainer.point.y
-					- dis, (int) this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth() + dis,
-					(int) this.symbolContainer.point.y + this.symbolContainer.symbol.getHeight() + dis);
-
-			for (int y = x + 1; y < symbols.size(); y++) {
-				if (y != x) {
-					this.symbolContainer = symbols.get(y);
-					this.rect2 = new Rectangle((int) this.symbolContainer.point.x, (int) this.symbolContainer.point.y,
-							(int) this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth(),
-							(int) this.symbolContainer.point.y + this.symbolContainer.symbol.getHeight());
-
-					if (this.rect2.intersects(this.rect1)) {
-						symbols.remove(y);
-						y--;
-					}
 				}
 			}
 		}

@@ -33,11 +33,11 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
-import org.mapsforge.map.model.common.JavaUtilPreferences;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.swing.controller.MapViewComponentListener;
 import org.mapsforge.map.swing.controller.MouseEventListener;
+import org.mapsforge.map.swing.util.JavaUtilPreferences;
 import org.mapsforge.map.swing.view.MainFrame;
 import org.mapsforge.map.swing.view.MapView;
 import org.mapsforge.map.swing.view.WindowCloseDialog;
@@ -85,7 +85,6 @@ public final class MapViewer {
 
 	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition,
 			LayerManager layerManager) {
-
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, layerManager, GRAPHIC_FACTORY);
 	}

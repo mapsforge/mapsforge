@@ -33,13 +33,53 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
  * @author bross
  */
 public final class OSMUtils {
-	private OSMUtils() {
-	}
-
 	private static final Logger LOGGER = Logger.getLogger(OSMUtils.class.getName());
 
-	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-z]{2})");
 	private static final int MAX_ELEVATION = 9000;
+
+	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-z]{2})");
+
+	/**
+	 * Extracts known POI tags and returns their ids.
+	 * 
+	 * @param entity
+	 *            the node
+	 * @return the ids of the identified tags
+	 */
+	public static short[] extractKnownPOITags(Entity entity) {
+		TShortArrayList currentTags = new TShortArrayList();
+		OSMTagMapping mapping = OSMTagMapping.getInstance();
+		if (entity.getTags() != null) {
+			for (Tag tag : entity.getTags()) {
+				OSMTag wayTag = mapping.getPoiTag(tag.getKey(), tag.getValue());
+				if (wayTag != null) {
+					currentTags.add(wayTag.getId());
+				}
+			}
+		}
+		return currentTags.toArray();
+	}
+
+	/**
+	 * Extracts known way tags and returns their ids.
+	 * 
+	 * @param entity
+	 *            the way
+	 * @return the ids of the identified tags
+	 */
+	public static short[] extractKnownWayTags(Entity entity) {
+		TShortArrayList currentTags = new TShortArrayList();
+		OSMTagMapping mapping = OSMTagMapping.getInstance();
+		if (entity.getTags() != null) {
+			for (Tag tag : entity.getTags()) {
+				OSMTag wayTag = mapping.getWayTag(tag.getKey(), tag.getValue());
+				if (wayTag != null) {
+					currentTags.add(wayTag.getId());
+				}
+			}
+		}
+		return currentTags.toArray();
+	}
 
 	/**
 	 * Extracts special fields and returns their values as an array of strings.
@@ -95,7 +135,6 @@ public final class OSMUtils {
 						LOGGER.finest("could not parse elevation information to double type: " + tag.getValue()
 								+ "\t entity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
 					}
-
 				} else if ("type".equals(key)) {
 					relationType = tag.getValue();
 				} else if (preferredLanguage != null && !foundPreferredLanguageName) {
@@ -114,45 +153,6 @@ public final class OSMUtils {
 		return new SpecialTagExtractionResult(name, ref, housenumber, layer, elevation, relationType);
 	}
 
-	/**
-	 * Extracts known way tags and returns their ids.
-	 * 
-	 * @param entity
-	 *            the way
-	 * @return the ids of the identified tags
-	 */
-	public static short[] extractKnownWayTags(Entity entity) {
-		TShortArrayList currentTags = new TShortArrayList();
-		OSMTagMapping mapping = OSMTagMapping.getInstance();
-		if (entity.getTags() != null) {
-			for (Tag tag : entity.getTags()) {
-				OSMTag wayTag = mapping.getWayTag(tag.getKey(), tag.getValue());
-				if (wayTag != null) {
-					currentTags.add(wayTag.getId());
-				}
-			}
-		}
-		return currentTags.toArray();
-	}
-
-	/**
-	 * Extracts known POI tags and returns their ids.
-	 * 
-	 * @param entity
-	 *            the node
-	 * @return the ids of the identified tags
-	 */
-	public static short[] extractKnownPOITags(Entity entity) {
-		TShortArrayList currentTags = new TShortArrayList();
-		OSMTagMapping mapping = OSMTagMapping.getInstance();
-		if (entity.getTags() != null) {
-			for (Tag tag : entity.getTags()) {
-				OSMTag wayTag = mapping.getPoiTag(tag.getKey(), tag.getValue());
-				if (wayTag != null) {
-					currentTags.add(wayTag.getId());
-				}
-			}
-		}
-		return currentTags.toArray();
+	private OSMUtils() {
 	}
 }

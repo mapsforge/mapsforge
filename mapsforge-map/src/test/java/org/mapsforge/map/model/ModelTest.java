@@ -14,25 +14,13 @@
  */
 package org.mapsforge.map.model;
 
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
-
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.model.common.JavaUtilPreferences;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class ModelTest {
-	private final java.util.prefs.Preferences preferences = Preferences.userNodeForPackage(ModelTest.class);
-
-	@After
-	public void afterTest() throws BackingStoreException {
-		this.preferences.removeNode();
-	}
-
 	@Test
 	public void constructorTest() {
 		Model model = new Model();
@@ -50,7 +38,7 @@ public class ModelTest {
 		model.mapViewPosition.setMapPosition(mapPosition1);
 		Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
 
-		PreferencesFacade preferencesFacade = new JavaUtilPreferences(this.preferences);
+		PreferencesFacade preferencesFacade = new DummyPreferencesFacade();
 		model.save(preferencesFacade);
 
 		model.mapViewPosition.setMapPosition(mapPosition2);

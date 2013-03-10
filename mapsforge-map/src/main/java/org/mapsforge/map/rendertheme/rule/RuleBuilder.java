@@ -91,6 +91,10 @@ public class RuleBuilder {
 		return attributeMatcher;
 	}
 
+	ClosedMatcher closedMatcher;
+	ElementMatcher elementMatcher;
+	byte zoomMax;
+	byte zoomMin;
 	private Closed closed;
 	private Element element;
 	private List<String> keyList;
@@ -98,10 +102,6 @@ public class RuleBuilder {
 	private final Stack<Rule> ruleStack;
 	private List<String> valueList;
 	private String values;
-	ClosedMatcher closedMatcher;
-	ElementMatcher elementMatcher;
-	byte zoomMax;
-	byte zoomMin;
 
 	public RuleBuilder(String elementName, Attributes attributes, Stack<Rule> ruleStack) throws SAXException {
 		this.ruleStack = ruleStack;

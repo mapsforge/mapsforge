@@ -29,9 +29,9 @@ import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.MapViewPosition;
 
 public abstract class TileLayer<T extends Job> extends Layer {
+	protected final JobQueue<T> jobQueue;
 	private final Matrix matrix;
 	private final TileCache tileCache;
-	protected final JobQueue<T> jobQueue;
 
 	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
 		super();
@@ -73,6 +73,8 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		this.jobQueue.notifyWorkers();
 	}
 
+	protected abstract T createJob(Tile tile);
+
 	private void drawParentTileBitmap(Canvas canvas, Point point, Tile tile) {
 		Tile cachedParentTile = getCachedParentTile(tile, 4);
 		if (cachedParentTile != null) {
@@ -108,6 +110,4 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
 		return getCachedParentTile(parentTile, level - 1);
 	}
-
-	protected abstract T createJob(Tile tile);
 }

@@ -132,6 +132,21 @@ public class RenderTheme {
 		}
 	}
 
+	void addRule(Rule rule) {
+		this.rulesList.add(rule);
+	}
+
+	void complete() {
+		this.rulesList.trimToSize();
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+			this.rulesList.get(i).onComplete();
+		}
+	}
+
+	void setLevels(int levels) {
+		this.levels = levels;
+	}
+
 	private void matchWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel, Closed closed) {
 		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(tags, zoomLevel, closed);
 
@@ -151,20 +166,5 @@ public class RenderTheme {
 		}
 
 		this.matchingCache.put(matchingCacheKey, matchingList);
-	}
-
-	void addRule(Rule rule) {
-		this.rulesList.add(rule);
-	}
-
-	void complete() {
-		this.rulesList.trimToSize();
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).onComplete();
-		}
-	}
-
-	void setLevels(int levels) {
-		this.levels = levels;
 	}
 }

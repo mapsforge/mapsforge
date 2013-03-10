@@ -15,8 +15,8 @@
 package org.mapsforge.map.layer.queue;
 
 class QueueItem<T extends Job> {
-	private double priority;
 	final T object;
+	private double priority;
 
 	QueueItem(T object) {
 		this.object = object;

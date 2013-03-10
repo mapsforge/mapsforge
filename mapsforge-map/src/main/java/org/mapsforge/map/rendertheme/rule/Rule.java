@@ -27,12 +27,12 @@ abstract class Rule {
 	static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<List<String>, AttributeMatcher>();
 	static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<List<String>, AttributeMatcher>();
 
-	private final ArrayList<RenderInstruction> renderInstructions;
-	private final ArrayList<Rule> subRules;
 	final ClosedMatcher closedMatcher;
 	final ElementMatcher elementMatcher;
 	final byte zoomMax;
 	final byte zoomMin;
+	private final ArrayList<RenderInstruction> renderInstructions;
+	private final ArrayList<Rule> subRules;
 
 	Rule(RuleBuilder ruleBuilder) {
 		this.closedMatcher = ruleBuilder.closedMatcher;

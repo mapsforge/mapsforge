@@ -71,6 +71,34 @@ public class WayPolygonizerTest {
 	}
 
 	@Test
+	public void testClosedAndUnclosedPolygonWithDangling() {
+		TDWay[] testWays = new TDWay[] { this.ways[0], this.ways[1], this.ways[2], this.ways[3], this.ways[4] };
+		this.polygonizer.mergePolygons(testWays);
+		List<Deque<TDWay>> polygons = this.polygonizer.getPolygons();
+		Assert.assertEquals(2, polygons.size());
+
+		Deque<TDWay> p1 = polygons.get(0);
+		Deque<TDWay> p2 = polygons.get(1);
+		if (p1.size() == 3) {
+			Deque<TDWay> temp = p1;
+			p1 = p2;
+			p2 = temp;
+		}
+
+		Assert.assertEquals(1, p1.size());
+		Assert.assertEquals(3, p2.size());
+
+		Assert.assertTrue(p1.contains(this.ways[0]));
+		Assert.assertTrue(p2.contains(this.ways[1]));
+		Assert.assertTrue(p2.contains(this.ways[2]));
+		Assert.assertTrue(p2.contains(this.ways[3]));
+
+		Assert.assertEquals(1, this.polygonizer.getDangling().size());
+		Assert.assertEquals(this.ways[4], this.polygonizer.getDangling().get(0));
+		Assert.assertTrue(this.polygonizer.getIllegal().size() == 0);
+	}
+
+	@Test
 	public void testSingleClosedPolygon() {
 		TDWay[] testWays = new TDWay[] { this.ways[0] };
 		this.polygonizer.mergePolygons(testWays);
@@ -100,34 +128,6 @@ public class WayPolygonizerTest {
 		Assert.assertTrue(polygons.get(0).contains(this.ways[3]));
 
 		Assert.assertTrue(this.polygonizer.getDangling().size() == 0);
-		Assert.assertTrue(this.polygonizer.getIllegal().size() == 0);
-	}
-
-	@Test
-	public void testClosedAndUnclosedPolygonWithDangling() {
-		TDWay[] testWays = new TDWay[] { this.ways[0], this.ways[1], this.ways[2], this.ways[3], this.ways[4] };
-		this.polygonizer.mergePolygons(testWays);
-		List<Deque<TDWay>> polygons = this.polygonizer.getPolygons();
-		Assert.assertEquals(2, polygons.size());
-
-		Deque<TDWay> p1 = polygons.get(0);
-		Deque<TDWay> p2 = polygons.get(1);
-		if (p1.size() == 3) {
-			Deque<TDWay> temp = p1;
-			p1 = p2;
-			p2 = temp;
-		}
-
-		Assert.assertEquals(1, p1.size());
-		Assert.assertEquals(3, p2.size());
-
-		Assert.assertTrue(p1.contains(this.ways[0]));
-		Assert.assertTrue(p2.contains(this.ways[1]));
-		Assert.assertTrue(p2.contains(this.ways[2]));
-		Assert.assertTrue(p2.contains(this.ways[3]));
-
-		Assert.assertEquals(1, this.polygonizer.getDangling().size());
-		Assert.assertEquals(this.ways[4], this.polygonizer.getDangling().get(0));
 		Assert.assertTrue(this.polygonizer.getIllegal().size() == 0);
 	}
 }

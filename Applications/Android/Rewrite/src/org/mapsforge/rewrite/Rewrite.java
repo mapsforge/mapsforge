@@ -59,40 +59,6 @@ public class Rewrite extends Activity {
 	private final Model model = new Model();
 	private PreferencesFacade preferencesFacade;
 
-	private void addOverlayLayers(List<Layer> layers) {
-		LatLong latLong1 = new LatLong(0, 0);
-		LatLong latLong2 = new LatLong(52, 13);
-		LatLong latLong3 = new LatLong(10, 10);
-
-		Polyline polyline = new Polyline(createPaint(AndroidGraphics.INSTANCE.createColor(Color.BLUE), 8, Style.STROKE));
-		List<LatLong> latLongs = polyline.getLatLongs();
-		latLongs.add(latLong1);
-		latLongs.add(latLong2);
-		latLongs.add(latLong3);
-
-		Marker marker1 = createMarker(R.drawable.marker_red, latLong1);
-
-		Circle circle = new Circle(latLong3, 30000, createPaint(AndroidGraphics.INSTANCE.createColor(Color.WHITE), 0,
-				Style.FILL), null);
-
-		layers.add(polyline);
-		layers.add(circle);
-		layers.add(marker1);
-	}
-
-	private Marker createMarker(int resourceIdentifier, LatLong latLong) {
-		Drawable drawable = getResources().getDrawable(resourceIdentifier);
-		Bitmap bitmap = AndroidGraphics.convertToBitmap(drawable);
-		return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2);
-	}
-
-	private TileCache createTileCache() {
-		TileCache firstLevelTileCache = new InMemoryTileCache(32);
-		File cacheDirectory = getDir("tile_cache", MODE_PRIVATE);
-		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, AndroidGraphics.INSTANCE);
-		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
@@ -139,5 +105,39 @@ public class Rewrite extends Activity {
 
 		this.model.save(this.preferencesFacade);
 		this.preferencesFacade.save();
+	}
+
+	private void addOverlayLayers(List<Layer> layers) {
+		LatLong latLong1 = new LatLong(0, 0);
+		LatLong latLong2 = new LatLong(52, 13);
+		LatLong latLong3 = new LatLong(10, 10);
+
+		Polyline polyline = new Polyline(createPaint(AndroidGraphics.INSTANCE.createColor(Color.BLUE), 8, Style.STROKE));
+		List<LatLong> latLongs = polyline.getLatLongs();
+		latLongs.add(latLong1);
+		latLongs.add(latLong2);
+		latLongs.add(latLong3);
+
+		Marker marker1 = createMarker(R.drawable.marker_red, latLong1);
+
+		Circle circle = new Circle(latLong3, 30000, createPaint(AndroidGraphics.INSTANCE.createColor(Color.WHITE), 0,
+				Style.FILL), null);
+
+		layers.add(polyline);
+		layers.add(circle);
+		layers.add(marker1);
+	}
+
+	private Marker createMarker(int resourceIdentifier, LatLong latLong) {
+		Drawable drawable = getResources().getDrawable(resourceIdentifier);
+		Bitmap bitmap = AndroidGraphics.convertToBitmap(drawable);
+		return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2);
+	}
+
+	private TileCache createTileCache() {
+		TileCache firstLevelTileCache = new InMemoryTileCache(32);
+		File cacheDirectory = getDir("tile_cache", MODE_PRIVATE);
+		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, AndroidGraphics.INSTANCE);
+		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}
 }
