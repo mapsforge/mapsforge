@@ -31,6 +31,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
@@ -49,7 +50,7 @@ public class Rewrite extends Activity {
 			LayerManager layerManager) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, layerManager,
 				GRAPHIC_FACTORY);
-		tileRendererLayer.setMapFile(new File("/storage/emulated/0/germany.map"));
+		tileRendererLayer.setMapFile(new File(Environment.getExternalStorageDirectory(), "germany.map"));
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		tileRendererLayer.setTextScale(1.5f);
 		return tileRendererLayer;

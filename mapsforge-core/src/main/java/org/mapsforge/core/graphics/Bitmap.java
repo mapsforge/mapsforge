@@ -14,14 +14,11 @@
  */
 package org.mapsforge.core.graphics;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public interface Bitmap {
-	void copyPixelsFromBuffer(ByteBuffer byteBuffer);
-
-	void copyPixelsToBuffer(ByteBuffer byteBuffer);
-
-	void fillColor(int color);
+	void compress(OutputStream outputStream) throws IOException;
 
 	/**
 	 * @return the height of this bitmap in pixels.

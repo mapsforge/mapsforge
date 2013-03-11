@@ -117,8 +117,8 @@ public class LayerManager extends PausableThread {
 		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
 		Bitmap bitmap = frameBuffer.getDrawingBitmap();
 		if (bitmap != null) {
-			bitmap.fillColor(this.backgroundColor);
 			this.drawingCanvas.setBitmap(bitmap);
+			this.drawingCanvas.fillColor(this.backgroundColor);
 
 			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
 			BoundingBox boundingBox = getBoundingBox(mapPosition, this.drawingCanvas);

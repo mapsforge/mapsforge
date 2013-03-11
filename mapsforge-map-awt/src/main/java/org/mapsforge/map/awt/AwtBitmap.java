@@ -14,17 +14,20 @@
  */
 package org.mapsforge.map.awt;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.imageio.ImageIO;
 
 import org.mapsforge.core.graphics.Bitmap;
 
 class AwtBitmap implements Bitmap {
 	final BufferedImage bufferedImage;
 
-	AwtBitmap(BufferedImage bufferedImage) {
-		this.bufferedImage = bufferedImage;
+	AwtBitmap(InputStream inputStream) throws IOException {
+		this.bufferedImage = ImageIO.read(inputStream);
 	}
 
 	AwtBitmap(int width, int height) {
@@ -32,28 +35,8 @@ class AwtBitmap implements Bitmap {
 	}
 
 	@Override
-	public void copyPixelsFromBuffer(ByteBuffer byteBuffer) {
-		int[] pixels = new int[byteBuffer.array().length / 4];
-		for (int i = 0; i < pixels.length; ++i) {
-			pixels[i] = byteBuffer.getInt();
-		}
-
-		this.bufferedImage.setRGB(0, 0, getWidth(), getHeight(), pixels, 0, getWidth());
-	}
-
-	@Override
-	public void copyPixelsToBuffer(ByteBuffer byteBuffer) {
-		int[] pixels = this.bufferedImage.getRGB(0, 0, getWidth(), getHeight(), null, 0, getWidth());
-		for (int i = 0; i < pixels.length; ++i) {
-			byteBuffer.putInt(pixels[i]);
-		}
-	}
-
-	@Override
-	public void fillColor(int color) {
-		Graphics2D graphics2D = this.bufferedImage.createGraphics();
-		graphics2D.setColor(new java.awt.Color(color));
-		graphics2D.fillRect(0, 0, getWidth(), getHeight());
+	public void compress(OutputStream outputStream) throws IOException {
+		ImageIO.write(this.bufferedImage, "png", outputStream);
 	}
 
 	@Override

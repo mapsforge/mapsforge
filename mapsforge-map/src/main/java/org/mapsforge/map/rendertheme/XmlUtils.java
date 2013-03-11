@@ -43,9 +43,11 @@ public final class XmlUtils {
 		}
 
 		InputStream inputStream = createInputStream(relativePathPrefix, src);
-		Bitmap bitmap = graphicFactory.createBitmap(inputStream);
-		inputStream.close();
-		return bitmap;
+		try {
+			return graphicFactory.createBitmap(inputStream);
+		} finally {
+			inputStream.close();
+		}
 	}
 
 	public static SAXException createSAXException(String element, String name, String value, int attributeIndex) {

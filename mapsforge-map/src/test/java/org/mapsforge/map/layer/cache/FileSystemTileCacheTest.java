@@ -16,7 +16,6 @@ package org.mapsforge.map.layer.cache;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -44,13 +43,6 @@ public class FileSystemTileCacheTest {
 	private static void verifyEquals(Bitmap bitmap1, Bitmap bitmap2) {
 		Assert.assertEquals(bitmap1.getWidth(), bitmap2.getWidth());
 		Assert.assertEquals(bitmap1.getHeight(), bitmap2.getHeight());
-
-		ByteBuffer byteBuffer1 = ByteBuffer.allocate(bitmap1.getWidth() * bitmap1.getHeight() * 4);
-		ByteBuffer byteBuffer2 = ByteBuffer.allocate(bitmap2.getWidth() * bitmap2.getHeight() * 4);
-		bitmap1.copyPixelsToBuffer(byteBuffer1);
-		bitmap2.copyPixelsToBuffer(byteBuffer2);
-
-		Assert.assertArrayEquals(byteBuffer1.array(), byteBuffer2.array());
 	}
 
 	private static void verifyInvalidConstructor(int capacity, File cacheDirectory) {

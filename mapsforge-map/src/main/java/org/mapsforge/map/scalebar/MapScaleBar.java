@@ -123,7 +123,7 @@ public class MapScaleBar {
 	 *            the map scale value in meters.
 	 */
 	private void draw(int scaleBarLength, int mapScaleValue) {
-		this.mapScaleBitmap.fillColor(this.graphicFactory.createColor(Color.TRANSPARENT));
+		this.mapScaleCanvas.fillColor(this.graphicFactory.createColor(Color.TRANSPARENT));
 
 		drawScaleBar(scaleBarLength, this.paintScaleBarStroke);
 		drawScaleBar(scaleBarLength, this.paintScaleBar);

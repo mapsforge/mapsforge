@@ -14,10 +14,11 @@
  */
 package org.mapsforge.core.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public interface GraphicFactory {
-	Bitmap createBitmap(InputStream inputStream);
+	Bitmap createBitmap(InputStream inputStream) throws IOException;
 
 	Bitmap createBitmap(int width, int height);
 

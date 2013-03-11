@@ -19,8 +19,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.imageio.ImageIO;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
@@ -58,13 +56,8 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public Bitmap createBitmap(InputStream inputStream) {
-		try {
-			BufferedImage bufferedImage = ImageIO.read(inputStream);
-			return new AwtBitmap(bufferedImage);
-		} catch (IOException e) {
-			throw new IllegalStateException(e);
-		}
+	public Bitmap createBitmap(InputStream inputStream) throws IOException {
+		return new AwtBitmap(inputStream);
 	}
 
 	@Override

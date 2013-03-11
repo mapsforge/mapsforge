@@ -20,13 +20,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.queue.Job;
@@ -51,7 +49,6 @@ public class FileSystemTileCache implements TileCache {
 		return file;
 	}
 
-	private final ByteBuffer byteBuffer;
 	private final File cacheDirectory;
 	private long cacheId;
 	private final GraphicFactory graphicFactory;
@@ -69,8 +66,6 @@ public class FileSystemTileCache implements TileCache {
 		this.lruCache = new FileLRUCache<Job>(capacity);
 		this.cacheDirectory = checkDirectory(cacheDirectory);
 		this.graphicFactory = graphicFactory;
-
-		this.byteBuffer = ByteBuffer.allocate(Tile.TILE_SIZE * Tile.TILE_SIZE * 4);
 	}
 
 	@Override
@@ -101,19 +96,8 @@ public class FileSystemTileCache implements TileCache {
 
 		InputStream inputStream = null;
 		try {
-			byte[] bytesArray = this.byteBuffer.array();
 			inputStream = new FileInputStream(file);
-			int bytesRead = inputStream.read(bytesArray);
-			if (bytesRead != file.length()) {
-				this.lruCache.remove(key);
-				LOGGER.log(Level.SEVERE, "could not read file: " + file);
-				return null;
-			}
-
-			this.byteBuffer.rewind();
-			Bitmap bitmap = this.graphicFactory.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
-			bitmap.copyPixelsFromBuffer(this.byteBuffer);
-			return bitmap;
+			return this.graphicFactory.createBitmap(inputStream);
 		} catch (IOException e) {
 			this.lruCache.remove(key);
 			LOGGER.log(Level.SEVERE, null, e);
@@ -143,13 +127,8 @@ public class FileSystemTileCache implements TileCache {
 		OutputStream outputStream = null;
 		try {
 			File file = getOutputFile();
-
-			this.byteBuffer.rewind();
-			bitmap.copyPixelsToBuffer(this.byteBuffer);
-
 			outputStream = new FileOutputStream(file);
-			outputStream.write(this.byteBuffer.array(), 0, this.byteBuffer.position());
-
+			bitmap.compress(outputStream);
 			this.lruCache.put(key, file);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, null, e);

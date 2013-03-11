@@ -18,7 +18,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
 
 import org.mapsforge.core.graphics.Align;
@@ -80,17 +82,17 @@ class AwtPaint implements Paint {
 		throw new IllegalArgumentException("unknown fontStyle: " + fontStyle);
 	}
 
-	Bitmap bitmap;
 	Color color;
 	Font font;
 	Stroke stroke;
-	float[] strokeDasharray;
-	float strokeWidth;
 	Style style = Style.FILL;
+	TexturePaint texturePaint;
 	private Align align = Align.LEFT;
 	private int cap;
 	private String fontName;
 	private int fontStyle;
+	private float[] strokeDasharray;
+	private float strokeWidth;
 	private float textSize;
 
 	@Override
@@ -114,7 +116,8 @@ class AwtPaint implements Paint {
 
 	@Override
 	public void setBitmapShader(Bitmap bitmap) {
-		this.bitmap = bitmap;
+		Rectangle rectangle = new Rectangle(0, 0, bitmap.getWidth(), bitmap.getHeight());
+		this.texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(bitmap), rectangle);
 	}
 
 	@Override

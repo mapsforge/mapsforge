@@ -162,7 +162,7 @@
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="rule" type="tns:rule" />
 		</xs:sequence>
-		<xs:attribute name="version" type="xs:positiveInteger" use="required" />
+		<xs:attribute name="version" type="xs:positiveInteger" fixed="3" />
 		<xs:attribute name="map-background" type="tns:color" use="optional" default="#ffffff" />
 		<xs:attribute name="base-stroke-width" type="tns:nonNegativeFloat" use="optional" default="1" />
 		<xs:attribute name="base-text-size" type="tns:nonNegativeFloat" use="optional" default="1" />

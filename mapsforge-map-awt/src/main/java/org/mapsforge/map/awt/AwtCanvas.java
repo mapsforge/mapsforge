@@ -15,9 +15,7 @@
 package org.mapsforge.map.awt;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.TexturePaint;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -79,12 +77,7 @@ class AwtCanvas implements Canvas {
 	public void drawPath(Path path, Paint paint) {
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
 		setColorAndStroke(awtPaint);
-
-		if (awtPaint.bitmap != null) {
-			Rectangle rectangle = new Rectangle(0, 0, awtPaint.bitmap.getWidth(), awtPaint.bitmap.getHeight());
-			TexturePaint texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(awtPaint.bitmap), rectangle);
-			this.graphics2D.setPaint(texturePaint);
-		}
+		this.graphics2D.setPaint(awtPaint.texturePaint);
 
 		AwtPath awtPath = AwtGraphicFactory.getAwtPath(path);
 		Style style = awtPaint.style;
