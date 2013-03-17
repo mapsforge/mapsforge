@@ -97,7 +97,7 @@ public class MapScaleBar {
 
 	private Paint createScaleBarPaint(Color color, float strokeWidth) {
 		Paint paint = this.graphicFactory.createPaint();
-		paint.setColor(this.graphicFactory.createColor(color));
+		paint.setColor(color);
 		paint.setStrokeWidth(strokeWidth);
 		paint.setStyle(Style.STROKE);
 		paint.setStrokeCap(Cap.SQUARE);
@@ -106,7 +106,7 @@ public class MapScaleBar {
 
 	private Paint createTextPaint(Color color, float strokeWidth) {
 		Paint paint = this.graphicFactory.createPaint();
-		paint.setColor(this.graphicFactory.createColor(color));
+		paint.setColor(color);
 		paint.setStrokeWidth(strokeWidth);
 		paint.setStyle(Style.STROKE);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
@@ -123,7 +123,7 @@ public class MapScaleBar {
 	 *            the map scale value in meters.
 	 */
 	private void draw(int scaleBarLength, int mapScaleValue) {
-		this.mapScaleCanvas.fillColor(this.graphicFactory.createColor(Color.TRANSPARENT));
+		this.mapScaleCanvas.fillColor(Color.TRANSPARENT);
 
 		drawScaleBar(scaleBarLength, this.paintScaleBarStroke);
 		drawScaleBar(scaleBarLength, this.paintScaleBar);

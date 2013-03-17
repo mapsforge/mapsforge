@@ -64,6 +64,21 @@ public final class XmlUtils {
 		return new SAXException(stringBuilder.toString());
 	}
 
+	/**
+	 * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
+	 */
+	public static int getColor(GraphicFactory graphicFactory, String colorString) {
+		if (colorString.isEmpty() || colorString.charAt(0) != '#') {
+			throw new IllegalArgumentException("unsupported color format: " + colorString);
+		} else if (colorString.length() == 7) {
+			return getColor(graphicFactory, colorString, 255, 1);
+		} else if (colorString.length() == 9) {
+			return getColor(graphicFactory, colorString, Integer.parseInt(colorString.substring(1, 3), 16), 3);
+		} else {
+			throw new IllegalArgumentException("unsupported color format: " + colorString);
+		}
+	}
+
 	public static byte parseNonNegativeByte(String name, String value) throws SAXException {
 		byte parsedByte = Byte.parseByte(value);
 		checkForNegativeValue(name, parsedByte);
@@ -116,6 +131,14 @@ public final class XmlUtils {
 			return name;
 		}
 		return relativePathPrefix + name;
+	}
+
+	private static int getColor(GraphicFactory graphicFactory, String colorString, int alpha, int rgbStartIndex) {
+		int red = Integer.parseInt(colorString.substring(rgbStartIndex, rgbStartIndex + 2), 16);
+		int green = Integer.parseInt(colorString.substring(rgbStartIndex + 2, rgbStartIndex + 4), 16);
+		int blue = Integer.parseInt(colorString.substring(rgbStartIndex + 4, rgbStartIndex + 6), 16);
+
+		return graphicFactory.createColor(alpha, red, green, blue);
 	}
 
 	private static File getFile(String parentPath, String pathName) {

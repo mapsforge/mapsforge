@@ -44,12 +44,12 @@ public class AreaBuilder {
 		this.level = level;
 
 		this.fill = graphicFactory.createPaint();
-		this.fill.setColor(graphicFactory.createColor(Color.BLACK));
+		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
 		this.fill.setStrokeCap(Cap.ROUND);
 
 		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(graphicFactory.createColor(Color.BLACK));
+		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
 
@@ -72,9 +72,9 @@ public class AreaBuilder {
 			if (SRC.equals(name)) {
 				this.fill.setBitmapShader(XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value));
 			} else if (FILL.equals(name)) {
-				this.fill.setColor(graphicFactory.createColor(value));
+				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicFactory.createColor(value));
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else {

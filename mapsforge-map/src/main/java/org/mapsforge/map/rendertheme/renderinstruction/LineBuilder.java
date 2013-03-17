@@ -56,7 +56,7 @@ public class LineBuilder {
 		this.level = level;
 
 		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(graphicFactory.createColor(Color.BLACK));
+		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
 
@@ -79,7 +79,7 @@ public class LineBuilder {
 			if (SRC.equals(name)) {
 				this.stroke.setBitmapShader(XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicFactory.createColor(value));
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (STROKE_DASHARRAY.equals(name)) {

@@ -14,14 +14,18 @@
  */
 package org.mapsforge.map.layer.cache;
 
+import java.util.logging.Logger;
+
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.queue.Job;
 
 /**
- * A thread-safe cache for object images with a variable size and LRU policy.
+ * A thread-safe cache for tile images with a variable size and LRU policy.
  */
 public class InMemoryTileCache implements TileCache {
+	private static final Logger LOGGER = Logger.getLogger(InMemoryTileCache.class.getName());
+
 	private LRUCache<Job, Bitmap> lruCache;
 
 	/**
@@ -62,7 +66,9 @@ public class InMemoryTileCache implements TileCache {
 			throw new IllegalArgumentException("bitmap must not be null");
 		}
 
-		this.lruCache.put(key, bitmap);
+		if (this.lruCache.put(key, bitmap) != null) {
+			LOGGER.warning("overwriting cached entry: " + key);
+		}
 	}
 
 	/**

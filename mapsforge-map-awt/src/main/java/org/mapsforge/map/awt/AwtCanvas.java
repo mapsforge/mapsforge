@@ -16,11 +16,13 @@ package org.mapsforge.map.awt;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -35,6 +37,7 @@ class AwtCanvas implements Canvas {
 
 	AwtCanvas(Graphics2D graphics2D) {
 		this.graphics2D = graphics2D;
+		enableAntiAliasing();
 	}
 
 	@Override
@@ -52,8 +55,9 @@ class AwtCanvas implements Canvas {
 	public void drawCircle(int x, int y, int radius, Paint paint) {
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
 		setColorAndStroke(awtPaint);
-		Style style = awtPaint.style;
 		int doubleRadius = radius * 2;
+
+		Style style = awtPaint.style;
 		switch (style) {
 			case FILL:
 				this.graphics2D.fillOval(x - radius, y - radius, doubleRadius, doubleRadius);
@@ -76,10 +80,11 @@ class AwtCanvas implements Canvas {
 	@Override
 	public void drawPath(Path path, Paint paint) {
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
+		AwtPath awtPath = AwtGraphicFactory.getAwtPath(path);
+
 		setColorAndStroke(awtPaint);
 		this.graphics2D.setPaint(awtPaint.texturePaint);
 
-		AwtPath awtPath = AwtGraphicFactory.getAwtPath(path);
 		Style style = awtPaint.style;
 		switch (style) {
 			case FILL:
@@ -97,9 +102,18 @@ class AwtCanvas implements Canvas {
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
-		this.graphics2D.setColor(awtPaint.color);
-		this.graphics2D.setFont(awtPaint.font);
-		this.graphics2D.drawString(text, x, y);
+
+		if (awtPaint.stroke == null) {
+			this.graphics2D.setColor(awtPaint.color);
+			this.graphics2D.setFont(awtPaint.font);
+			this.graphics2D.drawString(text, x, y);
+		} else {
+			setColorAndStroke(awtPaint);
+			TextLayout textLayout = new TextLayout(text, awtPaint.font, this.graphics2D.getFontRenderContext());
+			AffineTransform affineTransform = new AffineTransform();
+			affineTransform.translate(x, y);
+			this.graphics2D.draw(textLayout.getOutline(affineTransform));
+		}
 	}
 
 	@Override
@@ -119,9 +133,13 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
+	public void fillColor(Color color) {
+		fillColor(AwtGraphicFactory.getColor(color));
+	}
+
+	@Override
 	public void fillColor(int color) {
-		this.graphics2D.setColor(new java.awt.Color(color));
-		this.graphics2D.fillRect(0, 0, getWidth(), getHeight());
+		fillColor(new java.awt.Color(color));
 	}
 
 	@Override
@@ -135,6 +153,11 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
+	public void resetClip() {
+		this.graphics2D.setClip(null);
+	}
+
+	@Override
 	public void setBitmap(Bitmap bitmap) {
 		if (bitmap == null) {
 			this.bufferedImage = null;
@@ -142,16 +165,29 @@ class AwtCanvas implements Canvas {
 		} else {
 			this.bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
 			this.graphics2D = this.bufferedImage.createGraphics();
-			this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			enableAntiAliasing();
 			this.graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			this.graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		}
+	}
+
+	@Override
+	public void setClip(int left, int top, int width, int height) {
+		this.graphics2D.setClip(left, top, width, height);
+	}
+
+	private void enableAntiAliasing() {
+		this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	}
+
+	private void fillColor(java.awt.Color color) {
+		this.graphics2D.setColor(color);
+		this.graphics2D.fillRect(0, 0, getWidth(), getHeight());
 	}
 
 	private void setColorAndStroke(AwtPaint awtPaint) {
 		this.graphics2D.setColor(awtPaint.color);
-		if (awtPaint.stroke == null) {
-			// this.graphics2D.setColor(Color.CYAN);
-		} else {
+		if (awtPaint.stroke != null) {
 			this.graphics2D.setStroke(awtPaint.stroke);
 		}
 	}

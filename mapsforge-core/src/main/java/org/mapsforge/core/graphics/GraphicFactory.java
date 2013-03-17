@@ -26,10 +26,7 @@ public interface GraphicFactory {
 
 	int createColor(Color color);
 
-	/**
-	 * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
-	 */
-	int createColor(String colorString);
+	int createColor(int alpha, int red, int green, int blue);
 
 	Matrix createMatrix();
 

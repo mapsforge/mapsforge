@@ -59,6 +59,25 @@ public final class AndroidGraphics implements GraphicFactory {
 		return ((AndroidBitmap) bitmap).bitmap;
 	}
 
+	static int getColor(Color color) {
+		switch (color) {
+			case BLACK:
+				return android.graphics.Color.BLACK;
+			case BLUE:
+				return android.graphics.Color.BLUE;
+			case GREEN:
+				return android.graphics.Color.GREEN;
+			case RED:
+				return android.graphics.Color.RED;
+			case TRANSPARENT:
+				return android.graphics.Color.TRANSPARENT;
+			case WHITE:
+				return android.graphics.Color.WHITE;
+		}
+
+		throw new IllegalArgumentException("unknown color: " + color);
+	}
+
 	static android.graphics.Matrix getMatrix(Matrix matrix) {
 		return ((AndroidMatrix) matrix).matrix;
 	}
@@ -92,27 +111,12 @@ public final class AndroidGraphics implements GraphicFactory {
 
 	@Override
 	public int createColor(Color color) {
-		switch (color) {
-			case BLACK:
-				return android.graphics.Color.BLACK;
-			case BLUE:
-				return android.graphics.Color.BLUE;
-			case GREEN:
-				return android.graphics.Color.GREEN;
-			case RED:
-				return android.graphics.Color.RED;
-			case TRANSPARENT:
-				return android.graphics.Color.TRANSPARENT;
-			case WHITE:
-				return android.graphics.Color.WHITE;
-		}
-
-		throw new IllegalArgumentException("unknown color: " + color);
+		return getColor(color);
 	}
 
 	@Override
-	public int createColor(String colorString) {
-		return android.graphics.Color.parseColor(colorString);
+	public int createColor(int alpha, int red, int green, int blue) {
+		return android.graphics.Color.argb(alpha, red, green, blue);
 	}
 
 	@Override

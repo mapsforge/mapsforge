@@ -59,6 +59,7 @@ public final class MapViewer {
 
 	private static Component createMapView(Model model) {
 		MapView mapView = new MapView(model);
+		mapView.getFpsCounter().setVisible(true);
 		mapView.addComponentListener(new MapViewComponentListener(mapView, model.mapViewModel));
 
 		MouseEventListener mouseEventListener = new MouseEventListener(model);
@@ -72,6 +73,8 @@ public final class MapViewer {
 
 		// layers.add(createTileDownloadLayer(tileCache, model.mapViewPosition, layerManager));
 		layers.add(createTileRendererLayer(tileCache, model.mapViewPosition, layerManager));
+		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
+		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
 
 		return mapView;
 	}

@@ -45,16 +45,16 @@ class TileDownloadThread extends PausableThread {
 
 	@Override
 	protected void doWork() throws InterruptedException {
-		DownloadJob downloadJob = this.jobQueue.remove();
+		DownloadJob downloadJob = this.jobQueue.get();
 
 		try {
-			TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicFactory);
-			Bitmap bitmap = tileDownloader.downloadImage();
-
-			this.tileCache.put(downloadJob, bitmap);
-			this.layerManager.redrawLayers();
+			if (!this.tileCache.containsKey(downloadJob)) {
+				downloadTile(downloadJob);
+			}
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		} finally {
+			this.jobQueue.remove(downloadJob);
 		}
 	}
 
@@ -66,5 +66,15 @@ class TileDownloadThread extends PausableThread {
 	@Override
 	protected boolean hasWork() {
 		return true;
+	}
+
+	private void downloadTile(DownloadJob downloadJob) throws IOException {
+		TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicFactory);
+		Bitmap bitmap = tileDownloader.downloadImage();
+
+		if (!isInterrupted() && bitmap != null) {
+			this.tileCache.put(downloadJob, bitmap);
+			this.layerManager.redrawLayers();
+		}
 	}
 }

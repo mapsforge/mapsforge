@@ -31,8 +31,8 @@ public final class LayerUtil {
 		int initialCapacity = (int) ((tileRight - tileLeft + 1) * (tileBottom - tileTop + 1));
 		ArrayList<TilePosition> tilePositions = new ArrayList<TilePosition>(initialCapacity);
 
-		for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
-			for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
+		for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
+			for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
 				double pixelX = MercatorProjection.tileXToPixelX(tileX) - canvasPosition.x;
 				double pixelY = MercatorProjection.tileYToPixelY(tileY) - canvasPosition.y;
 

@@ -16,6 +16,7 @@ package org.mapsforge.map.android.graphics;
 
 import org.mapsforge.core.graphics.Align;
 import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Paint;
@@ -23,12 +24,26 @@ import org.mapsforge.core.graphics.Style;
 
 import android.graphics.BitmapShader;
 import android.graphics.DashPathEffect;
+import android.graphics.Paint.Join;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 
 class AndroidPaint implements Paint {
+	private static android.graphics.Paint.Align getAndroidAlign(Align align) {
+		switch (align) {
+			case CENTER:
+				return android.graphics.Paint.Align.CENTER;
+			case LEFT:
+				return android.graphics.Paint.Align.LEFT;
+			case RIGHT:
+				return android.graphics.Paint.Align.RIGHT;
+		}
+
+		throw new IllegalArgumentException("unknown align: " + align);
+	}
+
 	private static android.graphics.Paint.Cap getAndroidCap(Cap cap) {
 		switch (cap) {
 			case BUTT:
@@ -42,16 +57,27 @@ class AndroidPaint implements Paint {
 		throw new IllegalArgumentException("unknown cap: " + cap);
 	}
 
-	private static int getFontStyle(org.mapsforge.core.graphics.FontStyle fontStyle) {
+	private static android.graphics.Paint.Style getAndroidStyle(Style style) {
+		switch (style) {
+			case FILL:
+				return android.graphics.Paint.Style.FILL;
+			case STROKE:
+				return android.graphics.Paint.Style.STROKE;
+		}
+
+		throw new IllegalArgumentException("unknown style: " + style);
+	}
+
+	private static int getFontStyle(FontStyle fontStyle) {
 		switch (fontStyle) {
 			case BOLD:
-				return 1;
+				return Typeface.BOLD;
 			case BOLD_ITALIC:
-				return 3;
+				return Typeface.BOLD_ITALIC;
 			case ITALIC:
-				return 2;
+				return Typeface.ITALIC;
 			case NORMAL:
-				return 0;
+				return Typeface.NORMAL;
 		}
 
 		throw new IllegalArgumentException("unknown font style: " + fontStyle);
@@ -72,7 +98,14 @@ class AndroidPaint implements Paint {
 		throw new IllegalArgumentException("unknown font family: " + fontFamily);
 	}
 
-	final android.graphics.Paint paint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+	final android.graphics.Paint paint = new android.graphics.Paint();
+
+	AndroidPaint() {
+		this.paint.setAntiAlias(true);
+		this.paint.setStrokeCap(getAndroidCap(Cap.ROUND));
+		this.paint.setStrokeJoin(Join.ROUND);
+		this.paint.setStyle(getAndroidStyle(Style.FILL));
+	}
 
 	@Override
 	public int getTextHeight(String text) {
@@ -103,6 +136,11 @@ class AndroidPaint implements Paint {
 	}
 
 	@Override
+	public void setColor(Color color) {
+		this.paint.setColor(AndroidGraphics.getColor(color));
+	}
+
+	@Override
 	public void setColor(int color) {
 		this.paint.setColor(color);
 	}
@@ -125,12 +163,12 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public void setStyle(Style style) {
-		this.paint.setStyle(android.graphics.Paint.Style.valueOf(style.name()));
+		this.paint.setStyle(getAndroidStyle(style));
 	}
 
 	@Override
 	public void setTextAlign(Align align) {
-		this.paint.setTextAlign(android.graphics.Paint.Align.valueOf(align.name()));
+		this.paint.setTextAlign(getAndroidAlign(align));
 	}
 
 	@Override

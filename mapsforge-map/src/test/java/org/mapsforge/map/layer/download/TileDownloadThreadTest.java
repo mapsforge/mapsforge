@@ -67,7 +67,39 @@ public class TileDownloadThreadTest extends HttpServerTest {
 	}
 
 	@Test
-	public void lifecycleTest() throws InterruptedException, IOException {
+	public void cachedTileDownloadTest() throws InterruptedException {
+		MapView mapView = new DummyMapView();
+		MapViewPosition mapViewPosition = new MapViewPosition();
+		TileCache tileCache = new InMemoryTileCache(1);
+		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(mapViewPosition);
+		LayerManager layerManager = new LayerManager(mapView, mapViewPosition, GRAPHIC_FACTORY);
+
+		TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, jobQueue, layerManager,
+				GRAPHIC_FACTORY);
+		try {
+			tileDownloadThread.start();
+			awaitWaitingState(tileDownloadThread);
+
+			Tile tile = new Tile(0, 0, (byte) 0);
+			TileSource tileSource = new InvalidTileSource();
+			DownloadJob downloadJob = new DownloadJob(tile, tileSource);
+			Assert.assertFalse(tileCache.containsKey(downloadJob));
+
+			tileCache.put(downloadJob, GRAPHIC_FACTORY.createBitmap(1, 1));
+			Assert.assertTrue(tileCache.containsKey(downloadJob));
+
+			jobQueue.add(downloadJob);
+			jobQueue.notifyWorkers();
+
+			awaitWaitingState(tileDownloadThread);
+		} finally {
+			tileDownloadThread.interrupt();
+			tileDownloadThread.join(WAIT_TIME_MILLIS);
+		}
+	}
+
+	@Test
+	public void newTileDownloadTest() throws InterruptedException, IOException {
 		addFile("/0/0/0.png", new File("src/test/resources/0_0_0.png"));
 
 		MapView mapView = new DummyMapView();
@@ -84,7 +116,6 @@ public class TileDownloadThreadTest extends HttpServerTest {
 
 			Tile tile = new Tile(0, 0, (byte) 0);
 			TileSource tileSource = new OpenStreetMapMapnik("localhost", getPort());
-
 			DownloadJob downloadJob = new DownloadJob(tile, tileSource);
 			Assert.assertFalse(tileCache.containsKey(downloadJob));
 

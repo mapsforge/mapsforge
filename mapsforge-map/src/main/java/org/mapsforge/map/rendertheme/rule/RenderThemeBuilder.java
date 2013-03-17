@@ -69,7 +69,7 @@ public class RenderThemeBuilder {
 			} else if (VERSION.equals(name)) {
 				this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
 			} else if (MAP_BACKGROUND.equals(name)) {
-				this.mapBackground = graphicFactory.createColor(value);
+				this.mapBackground = XmlUtils.getColor(graphicFactory, value);
 			} else if (BASE_STROKE_WIDTH.equals(name)) {
 				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (BASE_TEXT_SIZE.equals(name)) {

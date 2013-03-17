@@ -38,13 +38,14 @@ public class MapWorker extends PausableThread {
 
 	@Override
 	protected void doWork() throws InterruptedException {
-		RendererJob rendererJob = this.jobQueue.remove();
+		RendererJob rendererJob = this.jobQueue.get();
 
-		Bitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
-
-		if (!isInterrupted() && bitmap != null) {
-			this.tileCache.put(rendererJob, bitmap);
-			this.layerManager.redrawLayers();
+		try {
+			if (!this.tileCache.containsKey(rendererJob)) {
+				renderTile(rendererJob);
+			}
+		} finally {
+			this.jobQueue.remove(rendererJob);
 		}
 	}
 
@@ -56,5 +57,14 @@ public class MapWorker extends PausableThread {
 	@Override
 	protected boolean hasWork() {
 		return true;
+	}
+
+	private void renderTile(RendererJob rendererJob) {
+		Bitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
+
+		if (!isInterrupted() && bitmap != null) {
+			this.tileCache.put(rendererJob, bitmap);
+			this.layerManager.redrawLayers();
+		}
 	}
 }

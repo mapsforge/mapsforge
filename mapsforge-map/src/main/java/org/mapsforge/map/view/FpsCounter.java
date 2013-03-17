@@ -22,7 +22,6 @@ import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
 
 /**
  * An FPS counter measures the drawing frame rate.
@@ -32,9 +31,7 @@ public class FpsCounter {
 
 	private static Paint createPaint(GraphicFactory graphicFactory) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(graphicFactory.createColor(Color.BLACK));
-		paint.setStrokeWidth(0);
-		paint.setStyle(Style.STROKE);
+		paint.setColor(Color.BLACK);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 		paint.setTextSize(25);
 		return paint;

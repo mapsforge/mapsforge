@@ -129,7 +129,9 @@ public class FileSystemTileCache implements TileCache {
 			File file = getOutputFile();
 			outputStream = new FileOutputStream(file);
 			bitmap.compress(outputStream);
-			this.lruCache.put(key, file);
+			if (this.lruCache.put(key, file) != null) {
+				LOGGER.warning("overwriting cached entry: " + key);
+			}
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 		} finally {

@@ -88,7 +88,7 @@ public class Rewrite extends Activity {
 		// GRAPHIC_FACTORY));
 		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
 		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
-		addOverlayLayers(layers);
+		// addOverlayLayers(layers);
 
 		setContentView(this.mapView);
 	}

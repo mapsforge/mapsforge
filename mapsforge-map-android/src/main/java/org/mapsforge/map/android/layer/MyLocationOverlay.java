@@ -53,14 +53,14 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	private static Paint getDefaultCircleFill() {
-		return getPaint(48, AndroidGraphics.INSTANCE.createColor(Color.BLUE), 0, Style.FILL);
+		return getPaint(48, Color.BLUE, 0, Style.FILL);
 	}
 
 	private static Paint getDefaultCircleStroke() {
-		return getPaint(160, AndroidGraphics.INSTANCE.createColor(Color.BLUE), 2, Style.STROKE);
+		return getPaint(160, Color.BLUE, 2, Style.STROKE);
 	}
 
-	private static Paint getPaint(int alpha, int color, int strokeWidth, Style style) {
+	private static Paint getPaint(int alpha, Color color, int strokeWidth, Style style) {
 		Paint paint = AndroidGraphics.INSTANCE.createPaint();
 		paint.setColor(color);
 		paint.setAlpha(alpha);

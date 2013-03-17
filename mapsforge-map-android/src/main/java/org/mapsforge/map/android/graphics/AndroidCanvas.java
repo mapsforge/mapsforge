@@ -16,15 +16,22 @@ package org.mapsforge.map.android.graphics;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 
+import android.graphics.Region;
+
 class AndroidCanvas implements Canvas {
 	final android.graphics.Canvas canvas;
+	private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
 
 	AndroidCanvas() {
 		this.canvas = new android.graphics.Canvas();
+
+		this.bitmapPaint.setAntiAlias(true);
+		this.bitmapPaint.setFilterBitmap(true);
 	}
 
 	AndroidCanvas(android.graphics.Canvas canvas) {
@@ -38,7 +45,7 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-		this.canvas.drawBitmap(AndroidGraphics.getBitmap(bitmap), AndroidGraphics.getMatrix(matrix), null);
+		this.canvas.drawBitmap(AndroidGraphics.getBitmap(bitmap), AndroidGraphics.getMatrix(matrix), this.bitmapPaint);
 	}
 
 	@Override
@@ -70,6 +77,11 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
+	public void fillColor(Color color) {
+		this.canvas.drawColor(AndroidGraphics.getColor(color));
+	}
+
+	@Override
 	public void fillColor(int color) {
 		this.canvas.drawColor(color);
 	}
@@ -85,7 +97,17 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
+	public void resetClip() {
+		this.canvas.clipRect(0, 0, getWidth(), getHeight(), Region.Op.REPLACE);
+	}
+
+	@Override
 	public void setBitmap(Bitmap bitmap) {
 		this.canvas.setBitmap(AndroidGraphics.getBitmap(bitmap));
+	}
+
+	@Override
+	public void setClip(int left, int top, int width, int height) {
+		this.canvas.clipRect(left, top, left + width, top + height, Region.Op.REPLACE);
 	}
 }

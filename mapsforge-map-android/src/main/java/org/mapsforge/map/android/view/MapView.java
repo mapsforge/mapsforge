@@ -72,6 +72,7 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 		this.layerManager.interrupt();
 	}
 
+	@Override
 	public FpsCounter getFpsCounter() {
 		return this.fpsCounter;
 	}

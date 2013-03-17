@@ -70,7 +70,6 @@ public class LayerManager extends PausableThread {
 		return new Point(pixelX, pixelY);
 	}
 
-	private final int backgroundColor;
 	private final Canvas drawingCanvas;
 	private final List<Layer> layers;
 	private final MapView mapView;
@@ -85,7 +84,6 @@ public class LayerManager extends PausableThread {
 
 		this.drawingCanvas = graphicFactory.createCanvas();
 		this.layers = new CopyOnWriteArrayList<Layer>();
-		this.backgroundColor = graphicFactory.createColor(Color.WHITE);
 	}
 
 	public List<Layer> getLayers() {
@@ -118,7 +116,7 @@ public class LayerManager extends PausableThread {
 		Bitmap bitmap = frameBuffer.getDrawingBitmap();
 		if (bitmap != null) {
 			this.drawingCanvas.setBitmap(bitmap);
-			this.drawingCanvas.fillColor(this.backgroundColor);
+			this.drawingCanvas.fillColor(Color.WHITE);
 
 			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
 			BoundingBox boundingBox = getBoundingBox(mapPosition, this.drawingCanvas);

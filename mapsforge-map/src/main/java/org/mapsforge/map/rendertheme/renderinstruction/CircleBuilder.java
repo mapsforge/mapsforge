@@ -44,11 +44,11 @@ public class CircleBuilder {
 		this.level = level;
 
 		this.fill = graphicFactory.createPaint();
-		this.fill.setColor(graphicFactory.createColor(Color.TRANSPARENT));
+		this.fill.setColor(Color.TRANSPARENT);
 		this.fill.setStyle(Style.FILL);
 
 		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(graphicFactory.createColor(Color.TRANSPARENT));
+		this.stroke.setColor(Color.TRANSPARENT);
 		this.stroke.setStyle(Style.STROKE);
 
 		extractValues(graphicFactory, elementName, attributes);
@@ -72,9 +72,9 @@ public class CircleBuilder {
 			} else if (SCALE_RADIUS.equals(name)) {
 				this.scaleRadius = Boolean.parseBoolean(value);
 			} else if (FILL.equals(name)) {
-				this.fill.setColor(graphicFactory.createColor(value));
+				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicFactory.createColor(value));
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else {

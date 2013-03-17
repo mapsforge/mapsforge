@@ -32,7 +32,7 @@ import org.mapsforge.map.layer.TilePosition;
 public class TileCoordinatesLayer extends Layer {
 	private static Paint createPaint(GraphicFactory graphicFactory) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(graphicFactory.createColor(Color.BLACK));
+		paint.setColor(Color.BLACK);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 		paint.setTextSize(20);
 		return paint;

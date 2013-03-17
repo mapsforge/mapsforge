@@ -28,8 +28,8 @@ import org.mapsforge.map.layer.Layer;
 public class TileGridLayer extends Layer {
 	private static Paint createPaint(GraphicFactory graphicFactory) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(graphicFactory.createColor(Color.BLACK));
-		paint.setStrokeWidth(3);
+		paint.setColor(Color.BLACK);
+		paint.setStrokeWidth(2);
 		paint.setStyle(Style.STROKE);
 		return paint;
 	}

@@ -19,6 +19,9 @@
 	</xs:simpleType>
 
 	<xs:simpleType name="color">
+		<xs:annotation>
+			<xs:documentation>Supported formats are #RRGGBB and #AARRGGBB.</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:pattern value="#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})" />
 		</xs:restriction>

@@ -51,6 +51,25 @@ public final class AwtGraphicFactory implements GraphicFactory {
 		return ((AwtBitmap) bitmap).bufferedImage;
 	}
 
+	static java.awt.Color getColor(Color color) {
+		switch (color) {
+			case BLACK:
+				return java.awt.Color.BLACK;
+			case BLUE:
+				return java.awt.Color.BLUE;
+			case GREEN:
+				return java.awt.Color.GREEN;
+			case RED:
+				return java.awt.Color.RED;
+			case TRANSPARENT:
+				return TRANSPARENT;
+			case WHITE:
+				return java.awt.Color.WHITE;
+		}
+
+		throw new IllegalArgumentException("unknown color: " + color);
+	}
+
 	private AwtGraphicFactory() {
 		// do nothing
 	}
@@ -72,28 +91,12 @@ public final class AwtGraphicFactory implements GraphicFactory {
 
 	@Override
 	public int createColor(Color color) {
-		switch (color) {
-			case BLACK:
-				return java.awt.Color.BLACK.getRGB();
-			case BLUE:
-				return java.awt.Color.BLUE.getRGB();
-			case GREEN:
-				return java.awt.Color.GREEN.getRGB();
-			case RED:
-				return java.awt.Color.RED.getRGB();
-			case TRANSPARENT:
-				return TRANSPARENT.getRGB();
-			case WHITE:
-				return java.awt.Color.WHITE.getRGB();
-		}
-
-		throw new IllegalArgumentException("unknown color: " + color);
+		return getColor(color).getRGB();
 	}
 
 	@Override
-	public int createColor(String colorString) {
-		long parseLong = Long.parseLong(colorString.substring(1), 16);
-		return new java.awt.Color((int) parseLong, true).getRGB();
+	public int createColor(int alpha, int red, int green, int blue) {
+		return new java.awt.Color(red, green, blue, alpha).getRGB();
 	}
 
 	@Override

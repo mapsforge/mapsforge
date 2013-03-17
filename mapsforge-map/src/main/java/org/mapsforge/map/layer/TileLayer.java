@@ -66,7 +66,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.jobQueue.add(createJob(tile));
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
-				canvas.drawBitmap(bitmap, (int) point.x, (int) point.y);
+				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y));
 			}
 		}
 
@@ -85,10 +85,16 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				byte zoomLevelDiff = (byte) (tile.zoomLevel - cachedParentTile.zoomLevel);
 				float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
 
+				int x = (int) Math.round(point.x);
+				int y = (int) Math.round(point.y);
+
 				this.matrix.reset();
-				this.matrix.translate((float) (point.x - translateX), (float) (point.y - translateY));
+				this.matrix.translate(x - translateX, y - translateY);
 				this.matrix.scale(scaleFactor, scaleFactor);
+
+				canvas.setClip(x, y, Tile.TILE_SIZE, Tile.TILE_SIZE);
 				canvas.drawBitmap(bitmap, this.matrix);
+				canvas.resetClip();
 			}
 		}
 	}

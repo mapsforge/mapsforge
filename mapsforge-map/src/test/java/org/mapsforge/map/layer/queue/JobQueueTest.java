@@ -20,6 +20,15 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.model.MapViewPosition;
 
 public class JobQueueTest {
+	private static void verifyInvalidRemove(JobQueue<Job> jobQueue, Job job) {
+		try {
+			jobQueue.remove(job);
+			Assert.fail("job: " + job);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
 	@Test
 	public void jobQueueTest() throws InterruptedException {
 		MapViewPosition mapViewPosition = new MapViewPosition();
@@ -43,10 +52,18 @@ public class JobQueueTest {
 
 		jobQueue.notifyWorkers();
 
-		Assert.assertEquals(job2, jobQueue.remove());
-		Assert.assertEquals(job1, jobQueue.remove());
-		Assert.assertEquals(job3, jobQueue.remove());
+		Assert.assertEquals(job2, jobQueue.get());
+		Assert.assertEquals(job1, jobQueue.get());
+		Assert.assertEquals(job3, jobQueue.get());
 
 		Assert.assertEquals(0, jobQueue.size());
+
+		jobQueue.remove(job1);
+		jobQueue.remove(job2);
+		jobQueue.remove(job3);
+
+		verifyInvalidRemove(jobQueue, job1);
+		verifyInvalidRemove(jobQueue, job2);
+		verifyInvalidRemove(jobQueue, job3);
 	}
 }

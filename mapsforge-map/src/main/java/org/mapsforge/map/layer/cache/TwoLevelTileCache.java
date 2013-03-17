@@ -27,39 +27,61 @@ public class TwoLevelTileCache implements TileCache {
 	}
 
 	@Override
-	public synchronized boolean containsKey(Job key) {
-		return this.firstLevelTileCache.containsKey(key) || this.secondLevelTileCache.containsKey(key);
-	}
-
-	@Override
-	public synchronized void destroy() {
-		this.firstLevelTileCache.destroy();
-		this.secondLevelTileCache.destroy();
-	}
-
-	@Override
-	public synchronized Bitmap get(Job key) {
-		Bitmap returnBitmap = this.firstLevelTileCache.get(key);
-		if (returnBitmap != null) {
-			return returnBitmap;
+	public boolean containsKey(Job key) {
+		synchronized (this.firstLevelTileCache) {
+			if (this.firstLevelTileCache.containsKey(key)) {
+				return true;
+			}
 		}
 
-		returnBitmap = this.secondLevelTileCache.get(key);
-		if (returnBitmap != null) {
-			this.firstLevelTileCache.put(key, returnBitmap);
-			return returnBitmap;
+		synchronized (this.secondLevelTileCache) {
+			return this.secondLevelTileCache.containsKey(key);
 		}
-
-		return null;
 	}
 
 	@Override
-	public synchronized int getCapacity() {
-		return Math.max(this.firstLevelTileCache.getCapacity(), this.secondLevelTileCache.getCapacity());
+	public void destroy() {
+		synchronized (this.firstLevelTileCache) {
+			synchronized (this.secondLevelTileCache) {
+				this.firstLevelTileCache.destroy();
+				this.secondLevelTileCache.destroy();
+			}
+		}
 	}
 
 	@Override
-	public synchronized void put(Job key, Bitmap bitmap) {
-		this.secondLevelTileCache.put(key, bitmap);
+	public Bitmap get(Job key) {
+		synchronized (this.firstLevelTileCache) {
+			Bitmap returnBitmap = this.firstLevelTileCache.get(key);
+			if (returnBitmap != null) {
+				return returnBitmap;
+			}
+
+			synchronized (this.secondLevelTileCache) {
+				returnBitmap = this.secondLevelTileCache.get(key);
+				if (returnBitmap != null) {
+					this.firstLevelTileCache.put(key, returnBitmap);
+					return returnBitmap;
+				}
+
+				return null;
+			}
+		}
+	}
+
+	@Override
+	public int getCapacity() {
+		synchronized (this.firstLevelTileCache) {
+			synchronized (this.secondLevelTileCache) {
+				return Math.max(this.firstLevelTileCache.getCapacity(), this.secondLevelTileCache.getCapacity());
+			}
+		}
+	}
+
+	@Override
+	public void put(Job key, Bitmap bitmap) {
+		synchronized (this.secondLevelTileCache) {
+			this.secondLevelTileCache.put(key, bitmap);
+		}
 	}
 }

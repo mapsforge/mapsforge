@@ -14,7 +14,10 @@
  */
 package org.mapsforge.map.layer.download;
 
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.TileLayer;
@@ -57,6 +60,15 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		}
 
 		super.destroy();
+	}
+
+	@Override
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+		if (zoomLevel < this.tileSource.getZoomLevelMin() || zoomLevel > this.tileSource.getZoomLevelMax()) {
+			return;
+		}
+
+		super.draw(boundingBox, zoomLevel, canvas, canvasPosition);
 	}
 
 	@Override

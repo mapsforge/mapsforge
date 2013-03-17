@@ -17,6 +17,8 @@ package org.mapsforge.map.view;
 import org.mapsforge.map.layer.LayerManager;
 
 public interface MapView {
+	FpsCounter getFpsCounter();
+
 	/**
 	 * @return the FrameBuffer used in this MapView.
 	 */

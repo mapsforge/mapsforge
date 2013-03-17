@@ -47,12 +47,12 @@ public class PathTextBuilder {
 	public PathTextBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes)
 			throws SAXException {
 		this.fill = graphicFactory.createPaint();
-		this.fill.setColor(graphicFactory.createColor(Color.BLACK));
+		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
 		this.fill.setTextAlign(Align.CENTER);
 
 		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(graphicFactory.createColor(Color.BLACK));
+		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setTextAlign(Align.CENTER);
 
@@ -84,9 +84,9 @@ public class PathTextBuilder {
 			} else if (FONT_SIZE.equals(name)) {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (FILL.equals(name)) {
-				this.fill.setColor(graphicFactory.createColor(value));
+				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(graphicFactory.createColor(value));
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value));
 			} else {

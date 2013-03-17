@@ -45,8 +45,8 @@ public class FrameBuffer {
 		this.matrix.reset();
 
 		centerFrameBufferToMapView(mapViewDimension);
-		scale(scaleFactor);
 		this.matrix.translate(diffX, diffY);
+		scale(scaleFactor);
 	}
 
 	public synchronized void draw(Canvas canvas) {

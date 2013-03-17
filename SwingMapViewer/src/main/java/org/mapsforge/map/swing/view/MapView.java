@@ -18,6 +18,7 @@ import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
@@ -25,18 +26,21 @@ import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
 public class MapView extends Container implements org.mapsforge.map.view.MapView {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final long serialVersionUID = 1L;
 
+	private final FpsCounter fpsCounter;
 	private final FrameBuffer frameBuffer;
 	private final LayerManager layerManager;
 
 	public MapView(Model model) {
 		super();
 
+		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
 		this.frameBuffer = new FrameBuffer(model.frameBufferModel, GRAPHIC_FACTORY);
 		new FrameBufferController(this.frameBuffer, model);
 
@@ -45,6 +49,11 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		new LayerManagerController(this.layerManager, model);
 
 		new MapViewController(this, model);
+	}
+
+	@Override
+	public FpsCounter getFpsCounter() {
+		return this.fpsCounter;
 	}
 
 	@Override
@@ -59,12 +68,10 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 	@Override
 	public void paint(Graphics graphics) {
-		if (graphics instanceof Graphics2D) {
-			this.frameBuffer.draw(AwtGraphicFactory.createCanvas((Graphics2D) graphics));
-		} else {
-			throw new IllegalArgumentException("unexpected type: " + graphics);
-		}
-
 		super.paint(graphics);
+
+		Canvas canvas = AwtGraphicFactory.createCanvas((Graphics2D) graphics);
+		this.frameBuffer.draw(canvas);
+		this.fpsCounter.draw(canvas);
 	}
 }

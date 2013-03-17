@@ -35,11 +35,17 @@ public interface Canvas {
 
 	void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint);
 
+	void fillColor(Color color);
+
 	void fillColor(int color);
 
 	int getHeight();
 
 	int getWidth();
 
+	void resetClip();
+
 	void setBitmap(Bitmap bitmap);
+
+	void setClip(int left, int top, int width, int height);
 }

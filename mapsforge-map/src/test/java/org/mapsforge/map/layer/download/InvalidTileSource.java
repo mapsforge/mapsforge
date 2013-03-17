@@ -12,38 +12,31 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.core.graphics;
+package org.mapsforge.map.layer.download;
 
-public interface Paint {
-	int getTextHeight(String text);
+import java.net.URL;
 
-	int getTextWidth(String text);
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.download.tilesource.TileSource;
 
-	void setAlpha(int alpha);
+class InvalidTileSource implements TileSource {
+	@Override
+	public int getParallelRequestsLimit() {
+		throw new AssertionError();
+	}
 
-	void setBitmapShader(Bitmap bitmap);
+	@Override
+	public URL getTileUrl(Tile tile) {
+		throw new AssertionError();
+	}
 
-	void setColor(Color color);
+	@Override
+	public byte getZoomLevelMax() {
+		throw new AssertionError();
+	}
 
-	void setColor(int color);
-
-	void setDashPathEffect(float[] strokeDasharray);
-
-	/**
-	 * The default value is {@link Cap#ROUND}.
-	 */
-	void setStrokeCap(Cap cap);
-
-	void setStrokeWidth(float strokeWidth);
-
-	/**
-	 * The default value is {@link Style#FILL}.
-	 */
-	void setStyle(Style style);
-
-	void setTextAlign(Align align);
-
-	void setTextSize(float textSize);
-
-	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
+	@Override
+	public byte getZoomLevelMin() {
+		throw new AssertionError();
+	}
 }

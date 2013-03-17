@@ -23,6 +23,7 @@ import org.mapsforge.map.model.MapViewPosition;
 public class JobQueue<T extends Job> {
 	private static final int QUEUE_CAPACITY = 128;
 
+	private final List<T> assignedJobs = new LinkedList<T>();
 	private final MapViewPosition mapViewPosition;
 	private final List<QueueItem<T>> queueItems = new LinkedList<QueueItem<T>>();
 	private boolean scheduleNeeded;
@@ -31,22 +32,20 @@ public class JobQueue<T extends Job> {
 		this.mapViewPosition = mapViewPosition;
 	}
 
-	public synchronized void add(T tile) {
-		QueueItem<T> queueItem = new QueueItem<T>(tile);
-		if (!this.queueItems.contains(queueItem)) {
-			this.queueItems.add(queueItem);
-			this.scheduleNeeded = true;
+	public synchronized void add(T job) {
+		if (!this.assignedJobs.contains(job)) {
+			QueueItem<T> queueItem = new QueueItem<T>(job);
+			if (!this.queueItems.contains(queueItem)) {
+				this.queueItems.add(queueItem);
+				this.scheduleNeeded = true;
+			}
 		}
-	}
-
-	public synchronized void notifyWorkers() {
-		this.notifyAll();
 	}
 
 	/**
 	 * Returns the most important entry from this queue. The method blocks while this queue is empty.
 	 */
-	public synchronized T remove() throws InterruptedException {
+	public synchronized T get() throws InterruptedException {
 		while (this.queueItems.isEmpty()) {
 			this.wait();
 		}
@@ -56,7 +55,19 @@ public class JobQueue<T extends Job> {
 			schedule();
 		}
 
-		return this.queueItems.remove(0).object;
+		T job = this.queueItems.remove(0).object;
+		this.assignedJobs.add(job);
+		return job;
+	}
+
+	public synchronized void notifyWorkers() {
+		this.notifyAll();
+	}
+
+	public synchronized void remove(T job) {
+		if (!this.assignedJobs.remove(job)) {
+			throw new IllegalArgumentException("job not assigned: " + job);
+		}
 	}
 
 	/**

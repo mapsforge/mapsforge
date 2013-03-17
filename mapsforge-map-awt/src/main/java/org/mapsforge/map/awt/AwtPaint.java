@@ -15,7 +15,6 @@
 package org.mapsforge.map.awt;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Rectangle;
@@ -26,12 +25,12 @@ import java.awt.image.BufferedImage;
 import org.mapsforge.core.graphics.Align;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 
-// TODO check default values
 class AwtPaint implements Paint {
 	private static int getCap(Cap cap) {
 		switch (cap) {
@@ -50,13 +49,10 @@ class AwtPaint implements Paint {
 		switch (fontFamily) {
 			case MONOSPACE:
 				return Font.MONOSPACED;
-
 			case DEFAULT:
 				return null;
-
 			case SANS_SERIF:
 				return Font.SANS_SERIF;
-
 			case SERIF:
 				return Font.SERIF;
 		}
@@ -68,13 +64,10 @@ class AwtPaint implements Paint {
 		switch (fontStyle) {
 			case BOLD:
 				return Font.BOLD;
-
 			case BOLD_ITALIC:
 				return Font.BOLD | Font.ITALIC;
-
 			case ITALIC:
 				return Font.ITALIC;
-
 			case NORMAL:
 				return Font.PLAIN;
 		}
@@ -82,18 +75,23 @@ class AwtPaint implements Paint {
 		throw new IllegalArgumentException("unknown fontStyle: " + fontStyle);
 	}
 
-	Color color;
+	java.awt.Color color;
 	Font font;
 	Stroke stroke;
-	Style style = Style.FILL;
+	Style style;
 	TexturePaint texturePaint;
-	private Align align = Align.LEFT;
+	private Align align;
 	private int cap;
 	private String fontName;
 	private int fontStyle;
 	private float[] strokeDasharray;
 	private float strokeWidth;
 	private float textSize;
+
+	AwtPaint() {
+		this.cap = getCap(Cap.ROUND);
+		this.style = Style.FILL;
+	}
 
 	@Override
 	public int getTextHeight(String text) {
@@ -121,8 +119,13 @@ class AwtPaint implements Paint {
 	}
 
 	@Override
+	public void setColor(Color color) {
+		this.color = AwtGraphicFactory.getColor(color);
+	}
+
+	@Override
 	public void setColor(int color) {
-		this.color = new Color(color);
+		this.color = new java.awt.Color(color);
 	}
 
 	@Override
