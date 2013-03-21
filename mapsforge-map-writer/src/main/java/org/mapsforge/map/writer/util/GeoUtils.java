@@ -261,7 +261,7 @@ public final class GeoUtils {
 		// compute maximal absolute latitude (so that we don't need to care if we
 		// are on northern or southern hemisphere)
 		double latMax = Math.max(Math.abs(bbox.getMaxY()), Math.abs(bbox.getMinY()));
-		double deltaLat = MercatorProjection.deltaLat(simplificationFactor, latMax, zoomlevel);
+		double deltaLat = deltaLat(simplificationFactor, latMax, zoomlevel);
 
 		try {
 			ret = TopologyPreservingSimplifier.simplify(geometry, deltaLat);
@@ -273,6 +273,14 @@ public final class GeoUtils {
 		}
 
 		return ret;
+	}
+
+	// Computes the amount of latitude degrees for a given distance in pixel at a given zoom level.
+	private static double deltaLat(double deltaPixel, double lat, byte zoom) {
+		double pixelY = MercatorProjection.latitudeToPixelY(lat, zoom);
+		double lat2 = MercatorProjection.pixelYToLatitude(pixelY + deltaPixel, zoom);
+
+		return Math.abs(lat2 - lat);
 	}
 
 	/**
