@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.writer.util;
 
-import org.mapsforge.core.model.CoordinatesUtil;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.writer.model.TDNode;
 import org.mapsforge.map.writer.model.TDWay;
 
@@ -57,8 +57,8 @@ public final class JTSUtils {
 	}
 
 	private static Coordinate toCoordinate(int latitude, int longitude) {
-		return new Coordinate(CoordinatesUtil.microdegreesToDegrees(longitude),
-				CoordinatesUtil.microdegreesToDegrees(latitude));
+		return new Coordinate(LatLongUtils.microdegreesToDegrees(longitude),
+				LatLongUtils.microdegreesToDegrees(latitude));
 	}
 
 	private JTSUtils() {

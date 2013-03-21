@@ -30,8 +30,8 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.model.CoordinatesUtil;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.writer.model.Encoding;
 import org.mapsforge.map.writer.model.MapWriterConfiguration;
@@ -56,6 +56,7 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+
 
 /**
  * Writes the binary file format for mapsforge maps.
@@ -633,10 +634,10 @@ public final class MapFileWriter {
 			int firstWayStartLon = wpr.getWayDataBlocks().get(0).getOuterWay().get(1).intValue();
 
 			wayBuffer
-					.put(Serializer.getVariableByteSigned(CoordinatesUtil.degreesToMicrodegrees(wpr.getLabelPosition().latitude)
+					.put(Serializer.getVariableByteSigned(LatLongUtils.degreesToMicrodegrees(wpr.getLabelPosition().latitude)
 							- firstWayStartLat));
 			wayBuffer
-					.put(Serializer.getVariableByteSigned(CoordinatesUtil.degreesToMicrodegrees(wpr.getLabelPosition().longitude)
+					.put(Serializer.getVariableByteSigned(LatLongUtils.degreesToMicrodegrees(wpr.getLabelPosition().longitude)
 							- firstWayStartLon));
 		}
 
@@ -704,12 +705,10 @@ public final class MapFileWriter {
 		containerHeaderBuffer.putLong(System.currentTimeMillis());
 
 		// BOUNDING BOX
-		containerHeaderBuffer.putInt(CoordinatesUtil.degreesToMicrodegrees(dataProcessor.getBoundingBox().minLatitude));
-		containerHeaderBuffer
-				.putInt(CoordinatesUtil.degreesToMicrodegrees(dataProcessor.getBoundingBox().minLongitude));
-		containerHeaderBuffer.putInt(CoordinatesUtil.degreesToMicrodegrees(dataProcessor.getBoundingBox().maxLatitude));
-		containerHeaderBuffer
-				.putInt(CoordinatesUtil.degreesToMicrodegrees(dataProcessor.getBoundingBox().maxLongitude));
+		containerHeaderBuffer.putInt(LatLongUtils.degreesToMicrodegrees(dataProcessor.getBoundingBox().minLatitude));
+		containerHeaderBuffer.putInt(LatLongUtils.degreesToMicrodegrees(dataProcessor.getBoundingBox().minLongitude));
+		containerHeaderBuffer.putInt(LatLongUtils.degreesToMicrodegrees(dataProcessor.getBoundingBox().maxLatitude));
+		containerHeaderBuffer.putInt(LatLongUtils.degreesToMicrodegrees(dataProcessor.getBoundingBox().maxLongitude));
 
 		// TILE SIZE
 		containerHeaderBuffer.putShort((short) Constants.DEFAULT_TILE_SIZE);
@@ -725,8 +724,8 @@ public final class MapFileWriter {
 		// MAP START POSITION
 		LatLong mapStartPosition = configuration.getMapStartPosition();
 		if (mapStartPosition != null) {
-			containerHeaderBuffer.putInt(CoordinatesUtil.degreesToMicrodegrees(mapStartPosition.latitude));
-			containerHeaderBuffer.putInt(CoordinatesUtil.degreesToMicrodegrees(mapStartPosition.longitude));
+			containerHeaderBuffer.putInt(LatLongUtils.degreesToMicrodegrees(mapStartPosition.latitude));
+			containerHeaderBuffer.putInt(LatLongUtils.degreesToMicrodegrees(mapStartPosition.longitude));
 		}
 
 		// MAP START ZOOM
@@ -835,9 +834,9 @@ public final class MapFileWriter {
 		final TileData currentTile = dataProcessor.getTile(zoomIntervalIndex, tileCoordinate.getX(),
 				tileCoordinate.getY());
 
-		final int currentTileLat = CoordinatesUtil.degreesToMicrodegrees(MercatorProjection.tileYToLatitude(
+		final int currentTileLat = LatLongUtils.degreesToMicrodegrees(MercatorProjection.tileYToLatitude(
 				tileCoordinate.getY(), tileCoordinate.getZoomlevel()));
-		final int currentTileLon = CoordinatesUtil.degreesToMicrodegrees(MercatorProjection.tileXToLongitude(
+		final int currentTileLon = LatLongUtils.degreesToMicrodegrees(MercatorProjection.tileXToLongitude(
 				tileCoordinate.getX(), tileCoordinate.getZoomlevel()));
 
 		final byte minZoomCurrentInterval = dataProcessor.getZoomIntervalConfiguration().getMinZoom(zoomIntervalIndex);

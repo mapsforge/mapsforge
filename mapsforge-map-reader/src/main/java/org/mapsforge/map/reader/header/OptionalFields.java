@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.reader.header;
 
-import org.mapsforge.core.model.CoordinatesUtil;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.reader.ReadBuffer;
 
 final class OptionalFields {
@@ -104,8 +104,8 @@ final class OptionalFields {
 
 	private FileOpenResult readMapStartPosition(ReadBuffer readBuffer) {
 		if (this.hasStartPosition) {
-			double mapStartLatitude = CoordinatesUtil.microdegreesToDegrees(readBuffer.readInt());
-			double mapStartLongitude = CoordinatesUtil.microdegreesToDegrees(readBuffer.readInt());
+			double mapStartLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
+			double mapStartLongitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
 			try {
 				this.startPosition = new LatLong(mapStartLatitude, mapStartLongitude);
 			} catch (IllegalArgumentException e) {

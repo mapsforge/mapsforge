@@ -20,19 +20,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class LatLongTest {
-	private static final String DELIMITER = ",";
 	private static final String GEO_POINT_TO_STRING = "latitude=1.0, longitude=2.0";
 	private static final double LATITUDE = 1.0;
 	private static final double LONGITUDE = 2.0;
-
-	private static void verifyInvalid(String string) {
-		try {
-			LatLong.fromString(string);
-			Assert.fail(string);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
 
 	@Test
 	public void compareToTest() {
@@ -61,33 +51,6 @@ public class LatLongTest {
 	@Test
 	public void fieldsTest() {
 		LatLong latLong = new LatLong(LATITUDE, LONGITUDE);
-		Assert.assertEquals(LATITUDE, latLong.latitude, 0);
-		Assert.assertEquals(LONGITUDE, latLong.longitude, 0);
-	}
-
-	@Test
-	public void fromStringInvalidTest() {
-		// invalid strings
-		verifyInvalid("1,2,3");
-		verifyInvalid("1,,2");
-		verifyInvalid(",1,2");
-		verifyInvalid("1,2,");
-		verifyInvalid("1,a");
-		verifyInvalid("1,");
-		verifyInvalid("1");
-		verifyInvalid("foo");
-		verifyInvalid("");
-
-		// invalid coordinates
-		verifyInvalid("1,-181");
-		verifyInvalid("1,181");
-		verifyInvalid("-91,2");
-		verifyInvalid("91,2");
-	}
-
-	@Test
-	public void fromStringValidTest() {
-		LatLong latLong = LatLong.fromString(LATITUDE + DELIMITER + LONGITUDE);
 		Assert.assertEquals(LATITUDE, latLong.latitude, 0);
 		Assert.assertEquals(LONGITUDE, latLong.longitude, 0);
 	}

@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.model.CoordinatesUtil;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.writer.model.TDNode;
 import org.mapsforge.map.writer.model.TDWay;
@@ -393,8 +393,8 @@ public final class GeoUtils {
 
 		double[] epsilons = new double[2];
 		double lat = MercatorProjection.tileYToLatitude(tileY, zoom);
-		epsilons[0] = LatLong.latitudeDistance(enlargementInMeter);
-		epsilons[1] = LatLong.longitudeDistance(enlargementInMeter, lat);
+		epsilons[0] = LatLongUtils.latitudeDistance(enlargementInMeter);
+		epsilons[1] = LatLongUtils.longitudeDistance(enlargementInMeter, lat);
 
 		return epsilons;
 	}
@@ -406,8 +406,8 @@ public final class GeoUtils {
 
 		double[] epsilons = new double[2];
 
-		epsilons[0] = LatLong.latitudeDistance(enlargementInPixel);
-		epsilons[1] = LatLong.longitudeDistance(enlargementInPixel, lat);
+		epsilons[0] = LatLongUtils.latitudeDistance(enlargementInPixel);
+		epsilons[1] = LatLongUtils.longitudeDistance(enlargementInPixel, lat);
 
 		return epsilons;
 	}
@@ -415,10 +415,10 @@ public final class GeoUtils {
 	private static TileCoordinate[] getWayBoundingBox(final TDWay way, byte zoomlevel, int enlargementInPixel) {
 		double maxx = Double.NEGATIVE_INFINITY, maxy = Double.NEGATIVE_INFINITY, minx = Double.POSITIVE_INFINITY, miny = Double.POSITIVE_INFINITY;
 		for (TDNode coordinate : way.getWayNodes()) {
-			maxy = Math.max(maxy, CoordinatesUtil.microdegreesToDegrees(coordinate.getLatitude()));
-			miny = Math.min(miny, CoordinatesUtil.microdegreesToDegrees(coordinate.getLatitude()));
-			maxx = Math.max(maxx, CoordinatesUtil.microdegreesToDegrees(coordinate.getLongitude()));
-			minx = Math.min(minx, CoordinatesUtil.microdegreesToDegrees(coordinate.getLongitude()));
+			maxy = Math.max(maxy, LatLongUtils.microdegreesToDegrees(coordinate.getLatitude()));
+			miny = Math.min(miny, LatLongUtils.microdegreesToDegrees(coordinate.getLatitude()));
+			maxx = Math.max(maxx, LatLongUtils.microdegreesToDegrees(coordinate.getLongitude()));
+			minx = Math.min(minx, LatLongUtils.microdegreesToDegrees(coordinate.getLongitude()));
 		}
 
 		double[] epsilonsTopLeft = computeTileEnlargement(maxy, enlargementInPixel);
@@ -460,8 +460,8 @@ public final class GeoUtils {
 
 		for (int j = 0; j < jtsCoords.length; j++) {
 			LatLong geoCoord = new LatLong(jtsCoords[j].y, jtsCoords[j].x);
-			result.add(Integer.valueOf(CoordinatesUtil.degreesToMicrodegrees(geoCoord.latitude)));
-			result.add(Integer.valueOf(CoordinatesUtil.degreesToMicrodegrees(geoCoord.longitude)));
+			result.add(Integer.valueOf(LatLongUtils.degreesToMicrodegrees(geoCoord.latitude)));
+			result.add(Integer.valueOf(LatLongUtils.degreesToMicrodegrees(geoCoord.longitude)));
 		}
 
 		return result;
@@ -486,8 +486,8 @@ public final class GeoUtils {
 		Coordinate[] coordinates = new Coordinate[way.getWayNodes().length];
 		for (int i = 0; i < coordinates.length; i++) {
 			TDNode currentNode = way.getWayNodes()[i];
-			coordinates[i] = new Coordinate(CoordinatesUtil.microdegreesToDegrees(currentNode.getLongitude()),
-					CoordinatesUtil.microdegreesToDegrees(currentNode.getLatitude()));
+			coordinates[i] = new Coordinate(LatLongUtils.microdegreesToDegrees(currentNode.getLongitude()),
+					LatLongUtils.microdegreesToDegrees(currentNode.getLatitude()));
 		}
 
 		Geometry res = null;

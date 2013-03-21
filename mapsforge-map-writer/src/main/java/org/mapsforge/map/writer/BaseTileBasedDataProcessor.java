@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.CoordinatesUtil;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.writer.model.MapWriterConfiguration;
 import org.mapsforge.map.writer.model.NodeResolver;
@@ -346,10 +346,10 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 			// is POI seen in a zoom interval?
 			if (minZoomLevel <= this.zoomIntervalConfiguration.getMaxZoom(i)) {
 				long tileCoordinateX = MercatorProjection.longitudeToTileX(
-						CoordinatesUtil.microdegreesToDegrees(poi.getLongitude()),
+						LatLongUtils.microdegreesToDegrees(poi.getLongitude()),
 						this.zoomIntervalConfiguration.getBaseZoom(i));
 				long tileCoordinateY = MercatorProjection.latitudeToTileY(
-						CoordinatesUtil.microdegreesToDegrees(poi.getLatitude()),
+						LatLongUtils.microdegreesToDegrees(poi.getLatitude()),
 						this.zoomIntervalConfiguration.getBaseZoom(i));
 				TileData tileData = getTileImpl(i, (int) tileCoordinateX, (int) tileCoordinateY);
 				if (tileData != null) {

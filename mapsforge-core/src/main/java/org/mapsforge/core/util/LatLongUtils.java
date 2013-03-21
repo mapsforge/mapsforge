@@ -12,16 +12,18 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.core.model;
+package org.mapsforge.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.mapsforge.core.model.LatLong;
+
 /**
- * A utility class to convert, parse and validate geographical coordinates.
+ * A utility class to convert, parse and validate geographical latitude/longitude coordinates.
  */
-public final class CoordinatesUtil {
+public final class LatLongUtils {
 	/**
 	 * Maximum possible latitude coordinate.
 	 */
@@ -47,6 +49,12 @@ public final class CoordinatesUtil {
 	 */
 	private static final double CONVERSION_FACTOR = 1000000.0;
 
+	/**
+	 * The equatorial radius as defined by the <a href="http://en.wikipedia.org/wiki/World_Geodetic_System">WGS84
+	 * ellipsoid</a>. WGS84 is the reference coordinate system used by the Global Positioning System.
+	 */
+	public static final double EQUATORIAL_RADIUS = 6378137.0;
+
 	private static final String DELIMITER = ",";
 
 	/**
@@ -69,6 +77,21 @@ public final class CoordinatesUtil {
 	 */
 	public static double microdegreesToDegrees(int coordinate) {
 		return coordinate / CONVERSION_FACTOR;
+	}
+
+	/**
+	 * Creates a new LatLong from a comma-separated string of coordinates in the order latitude, longitude. All
+	 * coordinate values must be in degrees.
+	 * 
+	 * @param latLongString
+	 *            the string that describes the LatLong.
+	 * @return a new LatLong with the given coordinates.
+	 * @throws IllegalArgumentException
+	 *             if the string cannot be parsed or describes an invalid LatLong.
+	 */
+	public static LatLong fromString(String latLongString) {
+		double[] coordinates = parseCoordinateString(latLongString, 2);
+		return new LatLong(coordinates[0], coordinates[1]);
 	}
 
 	/**
@@ -134,7 +157,31 @@ public final class CoordinatesUtil {
 		}
 	}
 
-	private CoordinatesUtil() {
+	/**
+	 * Calculates the amount of degrees of latitude for a given distance in meters.
+	 * 
+	 * @param meters
+	 *            distance in meters
+	 * @return latitude degrees
+	 */
+	public static double latitudeDistance(int meters) {
+		return (meters * 360) / (2 * Math.PI * EQUATORIAL_RADIUS);
+	}
+
+	/**
+	 * Calculates the amount of degrees of longitude for a given distance in meters.
+	 * 
+	 * @param meters
+	 *            distance in meters
+	 * @param latitude
+	 *            the latitude at which the calculation should be performed
+	 * @return longitude degrees
+	 */
+	public static double longitudeDistance(int meters, double latitude) {
+		return (meters * 360) / (2 * Math.PI * EQUATORIAL_RADIUS * Math.cos(Math.toRadians(latitude)));
+	}
+
+	private LatLongUtils() {
 		throw new IllegalStateException();
 	}
 }

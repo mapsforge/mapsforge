@@ -16,7 +16,6 @@ package org.mapsforge.core.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mapsforge.core.model.CoordinatesUtil;
 import org.mapsforge.core.model.Tile;
 
 public class MercatorProjectionTest {
@@ -60,14 +59,14 @@ public class MercatorProjectionTest {
 	@Test
 	public void longitudeToPixelXTest() {
 		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
-			double pixelX = MercatorProjection.longitudeToPixelX(CoordinatesUtil.LONGITUDE_MIN, zoomLevel);
+			double pixelX = MercatorProjection.longitudeToPixelX(LatLongUtils.LONGITUDE_MIN, zoomLevel);
 			Assert.assertEquals(0, pixelX, 0);
 
 			long mapSize = MercatorProjection.getMapSize(zoomLevel);
 			pixelX = MercatorProjection.longitudeToPixelX(0, zoomLevel);
 			Assert.assertEquals(mapSize / 2, pixelX, 0);
 
-			pixelX = MercatorProjection.longitudeToPixelX(CoordinatesUtil.LONGITUDE_MAX, zoomLevel);
+			pixelX = MercatorProjection.longitudeToPixelX(LatLongUtils.LONGITUDE_MAX, zoomLevel);
 			Assert.assertEquals(mapSize, pixelX, 0);
 		}
 	}
@@ -76,14 +75,14 @@ public class MercatorProjectionTest {
 	public void pixelXToLongitudeTest() {
 		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
 			double longitude = MercatorProjection.pixelXToLongitude(0, zoomLevel);
-			Assert.assertEquals(CoordinatesUtil.LONGITUDE_MIN, longitude, 0);
+			Assert.assertEquals(LatLongUtils.LONGITUDE_MIN, longitude, 0);
 
 			long mapSize = MercatorProjection.getMapSize(zoomLevel);
 			longitude = MercatorProjection.pixelXToLongitude(mapSize / 2, zoomLevel);
 			Assert.assertEquals(0, longitude, 0);
 
 			longitude = MercatorProjection.pixelXToLongitude(mapSize, zoomLevel);
-			Assert.assertEquals(CoordinatesUtil.LONGITUDE_MAX, longitude, 0);
+			Assert.assertEquals(LatLongUtils.LONGITUDE_MAX, longitude, 0);
 		}
 	}
 
@@ -120,11 +119,11 @@ public class MercatorProjectionTest {
 	public void tileXToLongitudeTest() {
 		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
 			double longitude = MercatorProjection.tileXToLongitude(0, zoomLevel);
-			Assert.assertEquals(CoordinatesUtil.LONGITUDE_MIN, longitude, 0);
+			Assert.assertEquals(LatLongUtils.LONGITUDE_MIN, longitude, 0);
 
 			long tileX = MercatorProjection.getMapSize(zoomLevel) / Tile.TILE_SIZE;
 			longitude = MercatorProjection.tileXToLongitude(tileX, zoomLevel);
-			Assert.assertEquals(CoordinatesUtil.LONGITUDE_MAX, longitude, 0);
+			Assert.assertEquals(LatLongUtils.LONGITUDE_MAX, longitude, 0);
 		}
 	}
 

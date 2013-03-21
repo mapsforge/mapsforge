@@ -16,6 +16,8 @@ package org.mapsforge.core.model;
 
 import java.io.Serializable;
 
+import org.mapsforge.core.util.LatLongUtils;
+
 /**
  * A BoundingBox represents an immutable set of two latitude and two longitude coordinates.
  */
@@ -33,7 +35,7 @@ public class BoundingBox implements Serializable {
 	 *             if the string cannot be parsed or describes an invalid BoundingBox.
 	 */
 	public static BoundingBox fromString(String boundingBoxString) {
-		double[] coordinates = CoordinatesUtil.parseCoordinateString(boundingBoxString, 4);
+		double[] coordinates = LatLongUtils.parseCoordinateString(boundingBoxString, 4);
 		return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
 	}
 
@@ -70,10 +72,10 @@ public class BoundingBox implements Serializable {
 	 *             if a coordinate is invalid.
 	 */
 	public BoundingBox(double minLatitude, double minLongitude, double maxLatitude, double maxLongitude) {
-		CoordinatesUtil.validateLatitude(minLatitude);
-		CoordinatesUtil.validateLongitude(minLongitude);
-		CoordinatesUtil.validateLatitude(maxLatitude);
-		CoordinatesUtil.validateLongitude(maxLongitude);
+		LatLongUtils.validateLatitude(minLatitude);
+		LatLongUtils.validateLongitude(minLongitude);
+		LatLongUtils.validateLatitude(maxLatitude);
+		LatLongUtils.validateLongitude(maxLongitude);
 
 		if (minLatitude > maxLatitude) {
 			throw new IllegalArgumentException("invalid latitude range: " + minLatitude + ' ' + maxLatitude);
