@@ -10,9 +10,12 @@
 
 	<groupId>org.mapsforge</groupId>
 	<artifactId>mapsforge</artifactId>
-	<version>0.3.1-SNAPSHOT</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<url>http://mapsforge.org</url>
+	<name>mapsforge</name>
+	<description>The mapsforge project provides free and open software for OpenStreetMap-based applications.
+	    Currently, we offer a library for ad-hoc map rendering on Android devices.</description>
 
 	<licenses>
 		<license>
@@ -48,7 +51,7 @@
 		<developer>
 			<id>jjbross</id>
 			<name>Jürgen Broß</name>
-			<email>juergen.bross@fu-berlin.de</email>
+			<email>jjbross@gmail.com</email>
 		</developer>
 	</developers>
 
@@ -264,8 +267,51 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+	  <profile>
+	    <id>release-sign-artifacts</id>
+	    <activation>
+	      <property>
+	        <name>performRelease</name>
+	        <value>true</value>
+	      </property>
+	    </activation>
+	    <build>
+	      <plugins>
+	        <plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+	          <artifactId>maven-gpg-plugin</artifactId>
+	          <version>1.4</version>
+	          <executions>
+	            <execution>
+	              <id>sign-artifacts</id>
+	              <phase>verify</phase>
+	              <goals>
+	                <goal>sign</goal>
+	              </goals>
+	            </execution>
+	          </executions>
+	        </plugin>
+	      </plugins>
+	    </build>
+	  </profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>

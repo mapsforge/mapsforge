@@ -17,9 +17,9 @@ package org.mapsforge.map.reader.header;
 import java.io.IOException;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.CoordinatesUtil;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.reader.ReadBuffer;
 
 final class RequiredFields {
@@ -49,10 +49,10 @@ final class RequiredFields {
 	private static final int SUPPORTED_FILE_VERSION = 3;
 
 	static FileOpenResult readBoundingBox(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
-		double minLatitude = CoordinatesUtil.microdegreesToDegrees(readBuffer.readInt());
-		double minLongitude = CoordinatesUtil.microdegreesToDegrees(readBuffer.readInt());
-		double maxLatitude = CoordinatesUtil.microdegreesToDegrees(readBuffer.readInt());
-		double maxLongitude = CoordinatesUtil.microdegreesToDegrees(readBuffer.readInt());
+		double minLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
+		double minLongitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
+		double maxLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
+		double maxLongitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
 
 		try {
 			mapFileInfoBuilder.boundingBox = new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);

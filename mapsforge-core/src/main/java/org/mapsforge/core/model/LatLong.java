@@ -16,51 +16,13 @@ package org.mapsforge.core.model;
 
 import java.io.Serializable;
 
+import org.mapsforge.core.util.LatLongUtils;
+
 /**
  * A LatLong represents an immutable pair of latitude and longitude coordinates.
  */
 public class LatLong implements Comparable<LatLong>, Serializable {
-	private static final double EQUATORIAL_RADIUS = 6378137.0;
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Creates a new LatLong from a comma-separated string of coordinates in the order latitude, longitude. All
-	 * coordinate values must be in degrees.
-	 * 
-	 * @param latLongString
-	 *            the string that describes the LatLong.
-	 * @return a new LatLong with the given coordinates.
-	 * @throws IllegalArgumentException
-	 *             if the string cannot be parsed or describes an invalid LatLong.
-	 */
-	public static LatLong fromString(String latLongString) {
-		double[] coordinates = CoordinatesUtil.parseCoordinateString(latLongString, 2);
-		return new LatLong(coordinates[0], coordinates[1]);
-	}
-
-	/**
-	 * Calculates the amount of degrees of latitude for a given distance in meters.
-	 * 
-	 * @param meters
-	 *            distance in meters
-	 * @return latitude degrees
-	 */
-	public static double latitudeDistance(int meters) {
-		return (meters * 360) / (2 * Math.PI * EQUATORIAL_RADIUS);
-	}
-
-	/**
-	 * Calculates the amount of degrees of longitude for a given distance in meters.
-	 * 
-	 * @param meters
-	 *            distance in meters
-	 * @param latitude
-	 *            the latitude at which the calculation should be performed
-	 * @return longitude degrees
-	 */
-	public static double longitudeDistance(int meters, double latitude) {
-		return (meters * 360) / (2 * Math.PI * EQUATORIAL_RADIUS * Math.cos(Math.toRadians(latitude)));
-	}
 
 	/**
 	 * The latitude coordinate of this LatLong in degrees.
@@ -81,8 +43,8 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 	 *             if a coordinate is invalid.
 	 */
 	public LatLong(double latitude, double longitude) {
-		CoordinatesUtil.validateLatitude(latitude);
-		CoordinatesUtil.validateLongitude(longitude);
+		LatLongUtils.validateLatitude(latitude);
+		LatLongUtils.validateLongitude(longitude);
 
 		this.latitude = latitude;
 		this.longitude = longitude;

@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.writer.OSMTagMapping;
 
 /**
@@ -88,7 +89,7 @@ public class MapWriterConfiguration {
 	 */
 	public void addMapStartPosition(String position) {
 		if (position != null) {
-			setMapStartPosition(LatLong.fromString(position));
+			setMapStartPosition(LatLongUtils.fromString(position));
 		}
 	}
 

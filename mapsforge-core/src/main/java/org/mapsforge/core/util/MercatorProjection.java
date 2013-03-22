@@ -50,24 +50,6 @@ public final class MercatorProjection {
 	}
 
 	/**
-	 * Computes the amount of latitude degrees for a given distance in pixel at a given zoom level.
-	 * 
-	 * @param deltaPixel
-	 *            the delta in pixel
-	 * @param lat
-	 *            the latitude
-	 * @param zoom
-	 *            the zoom level
-	 * @return the delta in degrees
-	 */
-	public static double deltaLat(double deltaPixel, double lat, byte zoom) {
-		double pixelY = latitudeToPixelY(lat, zoom);
-		double lat2 = pixelYToLatitude(pixelY + deltaPixel, zoom);
-
-		return Math.abs(lat2 - lat);
-	}
-
-	/**
 	 * @param zoomLevel
 	 *            the zoom level for which the size of the world map should be returned.
 	 * @return the horizontal and vertical size of the map in pixel at the given zoom level.
