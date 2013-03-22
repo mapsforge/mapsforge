@@ -545,7 +545,9 @@ public class MapDatabase {
 
 				try {
 					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter);
-					mapReadResultBuilder.add(poiWayBundle);
+					if (poiWayBundle != null) {
+						mapReadResultBuilder.add(poiWayBundle);
+					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					LOGGER.log(Level.SEVERE, null, e);
 				}
