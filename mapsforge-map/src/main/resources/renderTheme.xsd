@@ -61,7 +61,7 @@
 
 	<xs:simpleType name="src">
 		<xs:restriction base="xs:string">
-			<xs:pattern value="(jar|file)\:.+" />
+			<xs:pattern value="(jar|file):.+" />
 		</xs:restriction>
 	</xs:simpleType>
 
