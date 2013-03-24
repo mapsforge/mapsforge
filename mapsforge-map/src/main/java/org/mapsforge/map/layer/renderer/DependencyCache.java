@@ -218,27 +218,55 @@ class DependencyCache {
 	 *            current area Labels, that will be displayed
 	 */
 	void removeAreaLabelsInAlreadyDrawnAreas(List<PointTextContainer> areaLabels) {
-		Tile lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		Tile righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		Tile uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
-		Tile downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+		double maxTileNumber = Math.pow(2, this.currentTile.zoomLevel) - 1;
 
-		boolean up;
-		boolean left;
-		boolean right;
-		boolean down;
+		Tile lefttmp = null;
+		if (this.currentTile.tileX > 0) {
+			lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		}
 
-		this.tmp = this.dependencyTable.get(lefttmp);
-		left = this.tmp == null ? false : this.tmp.drawn;
+		Tile righttmp = null;
+		if (this.currentTile.tileX < maxTileNumber) {
+			righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		}
 
-		this.tmp = this.dependencyTable.get(righttmp);
-		right = this.tmp == null ? false : this.tmp.drawn;
+		Tile uptmp = null;
+		if (this.currentTile.tileY > 0) {
+			uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
+		}
 
-		this.tmp = this.dependencyTable.get(uptmp);
-		up = this.tmp == null ? false : this.tmp.drawn;
+		Tile downtmp = null;
+		if (this.currentTile.tileY < maxTileNumber) {
+			downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+		}
 
-		this.tmp = this.dependencyTable.get(downtmp);
-		down = this.tmp == null ? false : this.tmp.drawn;
+		if (lefttmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(lefttmp);
+		}
+		boolean left = this.tmp == null ? false : this.tmp.drawn;
+
+		if (righttmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(righttmp);
+		}
+		boolean right = this.tmp == null ? false : this.tmp.drawn;
+
+		if (uptmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(uptmp);
+		}
+		boolean up = this.tmp == null ? false : this.tmp.drawn;
+
+		if (downtmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(downtmp);
+		}
+		boolean down = this.tmp == null ? false : this.tmp.drawn;
 
 		PointTextContainer label;
 
@@ -302,27 +330,55 @@ class DependencyCache {
 	 *            possible label positions form the two or four point Greedy
 	 */
 	void removeReferencePointsFromDependencyCache(LabelPlacement.ReferencePosition[] refPos) {
-		Tile lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		Tile righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
-		Tile uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
-		Tile downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+		double maxTileNumber = Math.pow(2, this.currentTile.zoomLevel) - 1;
 
-		boolean up;
-		boolean left;
-		boolean right;
-		boolean down;
+		Tile lefttmp = null;
+		if (this.currentTile.tileX > 0) {
+			lefttmp = new Tile(this.currentTile.tileX - 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		}
 
-		this.tmp = this.dependencyTable.get(lefttmp);
-		left = this.tmp == null ? false : this.tmp.drawn;
+		Tile righttmp = null;
+		if (this.currentTile.tileX < maxTileNumber) {
+			righttmp = new Tile(this.currentTile.tileX + 1, this.currentTile.tileY, this.currentTile.zoomLevel);
+		}
 
-		this.tmp = this.dependencyTable.get(righttmp);
-		right = this.tmp == null ? false : this.tmp.drawn;
+		Tile uptmp = null;
+		if (this.currentTile.tileY > 0) {
+			uptmp = new Tile(this.currentTile.tileX, this.currentTile.tileY - 1, this.currentTile.zoomLevel);
+		}
 
-		this.tmp = this.dependencyTable.get(uptmp);
-		up = this.tmp == null ? false : this.tmp.drawn;
+		Tile downtmp = null;
+		if (this.currentTile.tileY < maxTileNumber) {
+			downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
+		}
 
-		this.tmp = this.dependencyTable.get(downtmp);
-		down = this.tmp == null ? false : this.tmp.drawn;
+		if (lefttmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(lefttmp);
+		}
+		boolean left = this.tmp == null ? false : this.tmp.drawn;
+
+		if (righttmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(righttmp);
+		}
+		boolean right = this.tmp == null ? false : this.tmp.drawn;
+
+		if (uptmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(uptmp);
+		}
+		boolean up = this.tmp == null ? false : this.tmp.drawn;
+
+		if (downtmp == null) {
+			this.tmp = null;
+		} else {
+			this.tmp = this.dependencyTable.get(downtmp);
+		}
+		boolean down = this.tmp == null ? false : this.tmp.drawn;
 
 		LabelPlacement.ReferencePosition ref;
 
@@ -421,40 +477,33 @@ class DependencyCache {
 			downtmp = new Tile(this.currentTile.tileX, this.currentTile.tileY + 1, this.currentTile.zoomLevel);
 		}
 
-		boolean up;
-		boolean left;
-		boolean right;
-		boolean down;
-
 		if (lefttmp == null) {
 			this.tmp = null;
 		} else {
 			this.tmp = this.dependencyTable.get(lefttmp);
 		}
-
-		left = this.tmp == null ? false : this.tmp.drawn;
+		boolean left = this.tmp == null ? false : this.tmp.drawn;
 
 		if (righttmp == null) {
 			this.tmp = null;
 		} else {
 			this.tmp = this.dependencyTable.get(righttmp);
 		}
-
-		right = this.tmp == null ? false : this.tmp.drawn;
+		boolean right = this.tmp == null ? false : this.tmp.drawn;
 
 		if (uptmp == null) {
 			this.tmp = null;
 		} else {
 			this.tmp = this.dependencyTable.get(uptmp);
 		}
-		up = this.tmp == null ? false : this.tmp.drawn;
+		boolean up = this.tmp == null ? false : this.tmp.drawn;
 
 		if (downtmp == null) {
 			this.tmp = null;
 		} else {
 			this.tmp = this.dependencyTable.get(downtmp);
 		}
-		down = this.tmp == null ? false : this.tmp.drawn;
+		boolean down = this.tmp == null ? false : this.tmp.drawn;
 
 		SymbolContainer ref;
 
