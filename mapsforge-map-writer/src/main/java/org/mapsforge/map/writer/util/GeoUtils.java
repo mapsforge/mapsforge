@@ -86,7 +86,6 @@ public final class GeoUtils {
 	 */
 	public static Geometry clipToTile(TDWay way, Geometry geometry, TileCoordinate tileCoordinate,
 			int enlargementInMeters) {
-		// clip geometry?
 		Geometry tileBBJTS = null;
 		Geometry ret = null;
 
@@ -94,15 +93,27 @@ public final class GeoUtils {
 		tileBBJTS = tileToJTSGeometry(tileCoordinate.getX(), tileCoordinate.getY(), tileCoordinate.getZoomlevel(),
 				enlargementInMeters);
 
-		// clip the polygon/ring by intersection with the bounding box of the tile
+		// clip the geometry by intersection with the bounding box of the tile
 		// may throw a TopologyException
 		try {
-			// geometry = OverlayOp.overlayOp(tileBBJTS, geometry, OverlayOp.INTERSECTION);
 			ret = tileBBJTS.intersection(geometry);
+			// according to Ludwig (see issue332) valid polygons may become invalid by clipping (at least
+			// in the Python shapely library
+			// we need to investigate this more closely and write approriate test cases
+			// for now, I check whether the resulting polygon is valid and if not try to repair it
+			if ((ret instanceof Polygon || ret instanceof MultiPolygon) && !ret.isValid()) {
+				LOGGER.log(Level.WARNING, "clipped way is not valid, trying to repair it: " + way.getId());
+				ret = JTSUtils.repairInvalidPolygon(ret);
+				if (ret == null) {
+					way.setInvalid(true);
+					LOGGER.log(Level.WARNING, "could not repait invalid polygon: " + way.getId());
+				}
+			}
 		} catch (TopologyException e) {
-			LOGGER.log(Level.FINE, "JTS cannot clip way, not storing it in data file: " + way.getId(), e);
+			LOGGER.log(Level.WARNING, "JTS cannot clip way, not storing it in data file: " + way.getId(), e);
 			way.setInvalid(true);
 			return null;
+
 		}
 		return ret;
 	}
@@ -195,8 +206,9 @@ public final class GeoUtils {
 		}
 
 		HashSet<TileCoordinate> matchedTiles = new HashSet<TileCoordinate>();
-		Geometry wayGeometry = toJTSGeometry(way, !way.isForcePolygonLine());
+		Geometry wayGeometry = JTSUtils.toJTSGeometry(way);
 		if (wayGeometry == null) {
+			way.setInvalid(true);
 			LOGGER.fine("unable to create geometry from way: " + way.getId());
 			return matchedTiles;
 		}
@@ -281,66 +293,6 @@ public final class GeoUtils {
 		double lat2 = MercatorProjection.pixelYToLatitude(pixelY + deltaPixel, zoom);
 
 		return Math.abs(lat2 - lat);
-	}
-
-	/**
-	 * Converts a way with potential inner ways to a JTS geometry.
-	 * 
-	 * @param way
-	 *            the way
-	 * @param innerWays
-	 *            the inner ways or null
-	 * @return the JTS geometry
-	 */
-	public static Geometry toJtsGeometry(TDWay way, List<TDWay> innerWays) {
-		Geometry wayGeometry = toJTSGeometry(way, !way.isForcePolygonLine());
-		if (wayGeometry == null) {
-			return null;
-		}
-
-		if (innerWays != null) {
-			List<LinearRing> innerWayGeometries = new ArrayList<LinearRing>();
-			if (!(wayGeometry instanceof Polygon)) {
-				LOGGER.warning("outer way of multi polygon is not a polygon, skipping it: " + way.getId());
-				return null;
-			}
-			Polygon outerPolygon = (Polygon) wayGeometry;
-
-			for (TDWay innerWay : innerWays) {
-				// in order to build the polygon with holes, we want to create
-				// linear rings of the inner ways
-				Geometry innerWayGeometry = toJTSGeometry(innerWay, false);
-				if (innerWayGeometry == null) {
-					continue;
-				}
-
-				if (!(innerWayGeometry instanceof LinearRing)) {
-					LOGGER.warning("inner way of multi polygon is not a polygon, skipping it, inner id: "
-							+ innerWay.getId() + ", outer id: " + way.getId());
-					continue;
-				}
-
-				LinearRing innerRing = (LinearRing) innerWayGeometry;
-
-				// check if inner way is completely contained in outer way
-				if (outerPolygon.covers(innerRing)) {
-					innerWayGeometries.add(innerRing);
-				} else {
-					LOGGER.warning("inner way is not contained in outer way, skipping inner way, inner id: "
-							+ innerWay.getId() + ", outer id: " + way.getId());
-				}
-			}
-
-			if (!innerWayGeometries.isEmpty()) {
-				// make wayGeometry a new Polygon that contains inner ways as holes
-				LinearRing[] holes = innerWayGeometries.toArray(new LinearRing[innerWayGeometries.size()]);
-				LinearRing exterior = GEOMETRY_FACTORY
-						.createLinearRing(outerPolygon.getExteriorRing().getCoordinates());
-				wayGeometry = new Polygon(exterior, holes, GEOMETRY_FACTORY);
-			}
-		}
-
-		return wayGeometry;
 	}
 
 	/**
@@ -473,51 +425,6 @@ public final class GeoUtils {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Internal conversion method to convert our internal data structure for ways to geometry objects in JTS. It will
-	 * care about ways and polygons and will create the right JTS onjects.
-	 * 
-	 * @param way
-	 *            TDway which will be converted. Null if we were not able to convert the way to a Geometry object.
-	 * @param area
-	 *            true, if the way represents an area, i.e. a polygon instead of a linear ring
-	 * @return return Converted way as JTS object.
-	 */
-	private static Geometry toJTSGeometry(TDWay way, boolean area) {
-		if (way.getWayNodes().length < 2) {
-			LOGGER.fine("way has fewer than 2 nodes: " + way.getId());
-			return null;
-		}
-
-		Coordinate[] coordinates = new Coordinate[way.getWayNodes().length];
-		for (int i = 0; i < coordinates.length; i++) {
-			TDNode currentNode = way.getWayNodes()[i];
-			coordinates[i] = new Coordinate(LatLongUtils.microdegreesToDegrees(currentNode.getLongitude()),
-					LatLongUtils.microdegreesToDegrees(currentNode.getLatitude()));
-		}
-
-		Geometry res = null;
-
-		try {
-			// check for closed polygon
-			if (way.isPolygon()) {
-				if (area) {
-					// polygon
-					res = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
-				} else {
-					// linear ring
-					res = GEOMETRY_FACTORY.createLinearRing(coordinates);
-				}
-			} else {
-				res = GEOMETRY_FACTORY.createLineString(coordinates);
-			}
-		} catch (TopologyException e) {
-			LOGGER.log(Level.FINE, "error creating JTS geometry from way: " + way.getId(), e);
-			return null;
-		}
-		return res;
 	}
 
 	private GeoUtils() {

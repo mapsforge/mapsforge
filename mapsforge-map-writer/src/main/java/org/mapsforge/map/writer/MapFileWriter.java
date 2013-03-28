@@ -46,6 +46,7 @@ import org.mapsforge.map.writer.model.WayDataBlock;
 import org.mapsforge.map.writer.model.ZoomIntervalConfiguration;
 import org.mapsforge.map.writer.util.Constants;
 import org.mapsforge.map.writer.util.GeoUtils;
+import org.mapsforge.map.writer.util.JTSUtils;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -53,10 +54,9 @@ import com.google.common.cache.CacheStats;
 import com.google.common.cache.LoadingCache;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-
 
 /**
  * Writes the binary file format for mapsforge maps.
@@ -78,8 +78,9 @@ public final class MapFileWriter {
 				throw new Exception("way is known to be invalid: " + way.getId());
 			}
 			List<TDWay> innerWaysOfMultipolygon = this.datastore.getInnerWaysOfMultipolygon(way.getId());
-			Geometry geometry = GeoUtils.toJtsGeometry(way, innerWaysOfMultipolygon);
+			Geometry geometry = JTSUtils.toJtsGeometry(way, innerWaysOfMultipolygon);
 			if (geometry == null) {
+				way.setInvalid(true);
 				throw new Exception("cannot create geometry for way with id: " + way.getId());
 			}
 			return geometry;
@@ -140,8 +141,8 @@ public final class MapFileWriter {
 			}
 
 			Geometry processedGeometry = originalGeometry;
-			if ((originalGeometry instanceof Polygon || originalGeometry instanceof LinearRing)
-					&& this.configuration.isPolygonClipping() || originalGeometry instanceof LineString
+			if (originalGeometry instanceof Polygon && this.configuration.isPolygonClipping()
+					|| (originalGeometry instanceof LineString || originalGeometry instanceof MultiLineString)
 					&& this.configuration.isWayClipping()) {
 				processedGeometry = GeoUtils.clipToTile(this.way, originalGeometry, this.tile,
 						this.configuration.getBboxEnlargement());
@@ -179,7 +180,7 @@ public final class MapFileWriter {
 			// if the computed centroid is within the current tile, we add it as label position
 			// this way, we can make sure that a label position is attached only once to a clipped polygon
 			LatLong centroidCoordinate = null;
-			if (this.configuration.isLabelPosition() && this.way.isPolygon()
+			if (this.configuration.isLabelPosition() && this.way.isValidClosedLine()
 					&& !GeoUtils.coveredByTile(originalGeometry, this.tile, this.configuration.getBboxEnlargement())) {
 				Point centroidPoint = originalGeometry.getCentroid();
 				if (GeoUtils.coveredByTile(centroidPoint, this.tile, this.configuration.getBboxEnlargement())) {
@@ -460,96 +461,6 @@ public final class MapFileWriter {
 		short tagAmount = way.getTags() == null ? 0 : (short) way.getTags().length;
 
 		return (byte) (layer << BYTES_INT | tagAmount);
-	}
-
-	static WayPreprocessingResult preprocessWay(TDWay way, TileCoordinate tile, byte maxZoomInterval,
-			TileBasedDataProcessor dataStore, MapWriterConfiguration configuration) {
-		// TODO more sophisticated clipping of polygons needed
-		// we have a problem when clipping polygons which border needs to be
-		// rendered
-		// the problem does not occur with polygons that do not have a border
-		// imagine an administrative border, such a polygon is not filled, but its
-		// border is rendered
-		// in case the polygon spans multiple base zoom tiles, clipping
-		// introduces connections between
-		// nodes that haven't existed before (exactly at the borders of a base
-		// tile)
-		// in case of filled polygons we do not care about these connections
-		// polygons that represent a border must be clipped as simple ways and
-		// not as polygons
-
-		List<TDWay> innerways = dataStore.getInnerWaysOfMultipolygon(way.getId());
-		Geometry originalGeometry = GeoUtils.toJtsGeometry(way, innerways);
-		if (originalGeometry == null) {
-			return null;
-		}
-
-		Geometry processedGeometry = originalGeometry;
-		if ((originalGeometry instanceof Polygon || originalGeometry instanceof LinearRing)
-				&& configuration.isPolygonClipping() || originalGeometry instanceof LineString
-				&& configuration.isWayClipping()) {
-			processedGeometry = GeoUtils.clipToTile(way, originalGeometry, tile, configuration.getBboxEnlargement());
-			if (processedGeometry == null) {
-				return null;
-			}
-		}
-
-		// TODO is this the right place to simplify, or is it better before clipping?
-		if (configuration.getSimplification() > 0 && tile.getZoomlevel() <= Constants.MAX_SIMPLIFICATION_BASE_ZOOM) {
-			processedGeometry = GeoUtils.simplifyGeometry(way, processedGeometry, maxZoomInterval,
-					configuration.getSimplification());
-			if (processedGeometry == null) {
-				return null;
-			}
-		}
-
-		List<WayDataBlock> blocks = GeoUtils.toWayDataBlockList(processedGeometry);
-		if (blocks == null) {
-			return null;
-		}
-		if (blocks.isEmpty()) {
-			LOGGER.finer("empty list of way data blocks after preprocessing way: " + way.getId());
-			return null;
-		}
-		short subtileMask = GeoUtils.computeBitmask(processedGeometry, tile, configuration.getBboxEnlargement());
-
-		// check if the original polygon is completely contained in the current tile
-		// in that case we do not try to compute a label position
-		// this is left to the renderer for more flexibility
-
-		// in case the polygon covers multiple tiles, we compute the centroid of the unclipped polygon
-		// if the computed centroid is within the current tile, we add it as label position
-		// this way, we can make sure that a label position is attached only once to a clipped polygon
-		LatLong centroidCoordinate = null;
-		if (configuration.isLabelPosition() && way.isPolygon()
-				&& !GeoUtils.coveredByTile(originalGeometry, tile, configuration.getBboxEnlargement())) {
-			Point centroidPoint = originalGeometry.getCentroid();
-			if (GeoUtils.coveredByTile(centroidPoint, tile, configuration.getBboxEnlargement())) {
-				centroidCoordinate = new LatLong(centroidPoint.getY(), centroidPoint.getX());
-			}
-		}
-
-		switch (configuration.getEncodingChoice()) {
-			case SINGLE:
-				blocks = DeltaEncoder.encode(blocks, Encoding.DELTA);
-				break;
-			case DOUBLE:
-				blocks = DeltaEncoder.encode(blocks, Encoding.DOUBLE_DELTA);
-				break;
-			case AUTO:
-				List<WayDataBlock> blocksDelta = DeltaEncoder.encode(blocks, Encoding.DELTA);
-				List<WayDataBlock> blocksDoubleDelta = DeltaEncoder.encode(blocks, Encoding.DOUBLE_DELTA);
-				int simDelta = DeltaEncoder.simulateSerialization(blocksDelta);
-				int simDoubleDelta = DeltaEncoder.simulateSerialization(blocksDoubleDelta);
-				if (simDelta <= simDoubleDelta) {
-					blocks = blocksDelta;
-				} else {
-					blocks = blocksDoubleDelta;
-				}
-				break;
-		}
-
-		return new WayPreprocessingResult(way, blocks, centroidCoordinate, subtileMask);
 	}
 
 	static void processPOI(TDNode poi, int currentTileLat, int currentTileLon, boolean debugStrings,
