@@ -60,8 +60,11 @@ public class Marker extends Layer {
 		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, zoomLevel);
 		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, zoomLevel);
 
-		int left = (int) (pixelX - canvasPosition.x + this.dx - (this.bitmap.getWidth() / 2));
-		int top = (int) (pixelY - canvasPosition.y + this.dy - (this.bitmap.getHeight() / 2));
+		int halfBitmapWidth = this.bitmap.getWidth() / 2;
+		int halfBitmapHeight = this.bitmap.getHeight() / 2;
+
+		int left = (int) (pixelX - canvasPosition.x - halfBitmapWidth + this.dx);
+		int top = (int) (pixelY - canvasPosition.y - halfBitmapHeight + this.dy);
 		int right = left + this.bitmap.getWidth();
 		int bottom = top + this.bitmap.getHeight();
 

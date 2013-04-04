@@ -46,10 +46,13 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		int numberOfDownloadThreads = Math.min(tileSource.getParallelRequestsLimit(), DOWNLOAD_THREADS_MAX);
 		this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
 		for (int i = 0; i < numberOfDownloadThreads; ++i) {
-			TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, this.jobQueue, layerManager,
-					graphicFactory);
+			this.tileDownloadThreads[i] = new TileDownloadThread(tileCache, this.jobQueue, layerManager, graphicFactory);
+		}
+	}
+
+	public void start() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
 			tileDownloadThread.start();
-			this.tileDownloadThreads[i] = tileDownloadThread;
 		}
 	}
 

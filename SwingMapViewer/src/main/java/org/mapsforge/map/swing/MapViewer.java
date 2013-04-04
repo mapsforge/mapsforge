@@ -89,7 +89,10 @@ public final class MapViewer {
 	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition,
 			LayerManager layerManager) {
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, layerManager, GRAPHIC_FACTORY);
+		TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource,
+				layerManager, GRAPHIC_FACTORY);
+		tileDownloadLayer.start();
+		return tileDownloadLayer;
 	}
 
 	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
