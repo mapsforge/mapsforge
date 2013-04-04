@@ -23,7 +23,7 @@ public class MapViewControllerTest {
 	public void repaintTest() {
 		DummyMapView dummyMapView = new DummyMapView();
 		Model model = new Model();
-		new MapViewController(dummyMapView, model);
+		MapViewController.create(dummyMapView, model);
 		Assert.assertEquals(0, dummyMapView.repaintCounter);
 
 		model.mapViewPosition.setZoomLevel((byte) 1);

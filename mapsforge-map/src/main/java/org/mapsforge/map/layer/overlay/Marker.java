@@ -52,7 +52,7 @@ public class Marker extends Layer {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (this.latLong == null || this.bitmap == null) {
 			return;
 		}
@@ -63,8 +63,8 @@ public class Marker extends Layer {
 		int halfBitmapWidth = this.bitmap.getWidth() / 2;
 		int halfBitmapHeight = this.bitmap.getHeight() / 2;
 
-		int left = (int) (pixelX - canvasPosition.x - halfBitmapWidth + this.dx);
-		int top = (int) (pixelY - canvasPosition.y - halfBitmapHeight + this.dy);
+		int left = (int) (pixelX - topLeftPoint.x - halfBitmapWidth + this.dx);
+		int top = (int) (pixelY - topLeftPoint.y - halfBitmapHeight + this.dy);
 		int right = left + this.bitmap.getWidth();
 		int bottom = top + this.bitmap.getHeight();
 

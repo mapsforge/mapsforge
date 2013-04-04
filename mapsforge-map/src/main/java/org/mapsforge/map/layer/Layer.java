@@ -34,10 +34,10 @@ public abstract class Layer {
 	 *            the zoom level at which this {@code Layer} should draw itself.
 	 * @param canvas
 	 *            the canvas on which this {@code Layer} should draw itself.
-	 * @param canvasPosition
+	 * @param topLeftPoint
 	 *            the top-left pixel position of the canvas relative to the top-left map position.
 	 */
-	public abstract void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition);
+	public abstract void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint);
 
 	/**
 	 * @return true if this {@code Layer} is currently visible, false otherwise. The default value is true.

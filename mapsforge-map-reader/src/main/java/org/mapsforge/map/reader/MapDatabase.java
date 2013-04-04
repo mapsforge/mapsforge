@@ -382,8 +382,7 @@ public class MapDatabase {
 			wayNodeLatitude = wayNodeLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the way node longitude offset (VBE-S)
-			wayNodeLongitude = wayNodeLongitude
-					+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
 		}
@@ -595,12 +594,10 @@ public class MapDatabase {
 			}
 
 			// get the POI latitude offset (VBE-S)
-			double latitude = this.tileLatitude
-					+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double latitude = this.tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the POI longitude offset (VBE-S)
-			double longitude = this.tileLongitude
-					+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double longitude = this.tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the special byte which encodes multiple flags
 			byte specialByte = this.readBuffer.readByte();
@@ -802,12 +799,10 @@ public class MapDatabase {
 	private LatLong readOptionalLabelPosition(boolean featureLabelPosition) {
 		if (featureLabelPosition) {
 			// get the label position latitude offset (VBE-S)
-			double latitude = this.tileLatitude
-					+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double latitude = this.tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the label position longitude offset (VBE-S)
-			double longitude = this.tileLongitude
-					+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double longitude = this.tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			return new LatLong(latitude, longitude);
 		}

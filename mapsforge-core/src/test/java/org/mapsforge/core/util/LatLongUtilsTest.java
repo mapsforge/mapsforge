@@ -19,11 +19,20 @@ import org.junit.Test;
 import org.mapsforge.core.model.LatLong;
 
 public class LatLongUtilsTest {
+	private static final double DEGREES = 123.456789;
 	private static final String DELIMITER = ",";
 	private static final double LATITUDE = 1.0;
 	private static final double LONGITUDE = 2.0;
-	private static final double DEGREES = 123.456789;
 	private static final int MICRO_DEGREES = 123456789;
+
+	private static void verifyInvalid(String string) {
+		try {
+			LatLongUtils.fromString(string);
+			Assert.fail(string);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
 
 	private static void verifyInvalidLatitude(double latitude) {
 		try {
@@ -47,41 +56,6 @@ public class LatLongUtilsTest {
 	public void doubleToIntTest() {
 		int microdegrees = LatLongUtils.degreesToMicrodegrees(DEGREES);
 		Assert.assertEquals(MICRO_DEGREES, microdegrees);
-	}
-
-	@Test
-	public void intToDoubleTest() {
-		double degrees = LatLongUtils.microdegreesToDegrees(MICRO_DEGREES);
-		Assert.assertEquals(DEGREES, degrees, 0);
-	}
-
-	@Test
-	public void validateLatitudeTest() {
-		LatLongUtils.validateLatitude(LatLongUtils.LATITUDE_MAX);
-		LatLongUtils.validateLatitude(LatLongUtils.LATITUDE_MIN);
-
-		verifyInvalidLatitude(Double.NaN);
-		verifyInvalidLatitude(Math.nextAfter(LatLongUtils.LATITUDE_MAX, Double.POSITIVE_INFINITY));
-		verifyInvalidLatitude(Math.nextAfter(LatLongUtils.LATITUDE_MIN, Double.NEGATIVE_INFINITY));
-	}
-
-	@Test
-	public void validateLongitudeTest() {
-		LatLongUtils.validateLongitude(LatLongUtils.LONGITUDE_MAX);
-		LatLongUtils.validateLongitude(LatLongUtils.LONGITUDE_MIN);
-
-		verifyInvalidLongitude(Double.NaN);
-		verifyInvalidLongitude(Math.nextAfter(LatLongUtils.LONGITUDE_MAX, Double.POSITIVE_INFINITY));
-		verifyInvalidLongitude(Math.nextAfter(LatLongUtils.LONGITUDE_MIN, Double.NEGATIVE_INFINITY));
-	}
-
-	private static void verifyInvalid(String string) {
-		try {
-			LatLongUtils.fromString(string);
-			Assert.fail(string);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
 	}
 
 	@Test
@@ -109,5 +83,31 @@ public class LatLongUtilsTest {
 		LatLong latLong = LatLongUtils.fromString(LATITUDE + DELIMITER + LONGITUDE);
 		Assert.assertEquals(LATITUDE, latLong.latitude, 0);
 		Assert.assertEquals(LONGITUDE, latLong.longitude, 0);
+	}
+
+	@Test
+	public void intToDoubleTest() {
+		double degrees = LatLongUtils.microdegreesToDegrees(MICRO_DEGREES);
+		Assert.assertEquals(DEGREES, degrees, 0);
+	}
+
+	@Test
+	public void validateLatitudeTest() {
+		LatLongUtils.validateLatitude(LatLongUtils.LATITUDE_MAX);
+		LatLongUtils.validateLatitude(LatLongUtils.LATITUDE_MIN);
+
+		verifyInvalidLatitude(Double.NaN);
+		verifyInvalidLatitude(Math.nextAfter(LatLongUtils.LATITUDE_MAX, Double.POSITIVE_INFINITY));
+		verifyInvalidLatitude(Math.nextAfter(LatLongUtils.LATITUDE_MIN, Double.NEGATIVE_INFINITY));
+	}
+
+	@Test
+	public void validateLongitudeTest() {
+		LatLongUtils.validateLongitude(LatLongUtils.LONGITUDE_MAX);
+		LatLongUtils.validateLongitude(LatLongUtils.LONGITUDE_MIN);
+
+		verifyInvalidLongitude(Double.NaN);
+		verifyInvalidLongitude(Math.nextAfter(LatLongUtils.LONGITUDE_MAX, Double.POSITIVE_INFINITY));
+		verifyInvalidLongitude(Math.nextAfter(LatLongUtils.LONGITUDE_MIN, Double.NEGATIVE_INFINITY));
 	}
 }

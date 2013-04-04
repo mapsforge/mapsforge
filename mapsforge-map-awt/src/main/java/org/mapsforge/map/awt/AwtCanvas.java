@@ -27,6 +27,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Dimension;
 
 class AwtCanvas implements Canvas {
 	private static final String UNKNOWN_STYLE = "unknown style: ";
@@ -143,6 +144,11 @@ class AwtCanvas implements Canvas {
 	@Override
 	public void fillColor(int color) {
 		fillColor(new java.awt.Color(color));
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return new Dimension(getWidth(), getHeight());
 	}
 
 	@Override

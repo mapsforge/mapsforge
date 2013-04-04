@@ -20,10 +20,10 @@ import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.map.PausableThread;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
+import org.mapsforge.map.util.PausableThread;
 
 class TileDownloadThread extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());

@@ -50,12 +50,6 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		}
 	}
 
-	public void start() {
-		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-			tileDownloadThread.start();
-		}
-	}
-
 	@Override
 	public void destroy() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
@@ -66,12 +60,18 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (zoomLevel < this.tileSource.getZoomLevelMin() || zoomLevel > this.tileSource.getZoomLevelMax()) {
 			return;
 		}
 
-		super.draw(boundingBox, zoomLevel, canvas, canvasPosition);
+		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+	}
+
+	public void start() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.start();
+		}
 	}
 
 	@Override

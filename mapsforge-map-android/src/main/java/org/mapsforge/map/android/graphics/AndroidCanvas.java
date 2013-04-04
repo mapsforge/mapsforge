@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.model.Dimension;
 
 import android.graphics.Region;
 
@@ -84,6 +85,11 @@ class AndroidCanvas implements Canvas {
 	@Override
 	public void fillColor(int color) {
 		this.canvas.drawColor(color);
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return new Dimension(getWidth(), getHeight());
 	}
 
 	@Override

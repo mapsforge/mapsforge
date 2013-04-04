@@ -22,7 +22,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 
 public final class LayerUtil {
-	public static ArrayList<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Point canvasPosition) {
+	public static ArrayList<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Point topLeftPoint) {
 		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
 		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
 		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
@@ -33,8 +33,8 @@ public final class LayerUtil {
 
 		for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
 			for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
-				double pixelX = MercatorProjection.tileXToPixelX(tileX) - canvasPosition.x;
-				double pixelY = MercatorProjection.tileYToPixelY(tileY) - canvasPosition.y;
+				double pixelX = MercatorProjection.tileXToPixelX(tileX) - topLeftPoint.x;
+				double pixelY = MercatorProjection.tileYToPixelY(tileY) - topLeftPoint.y;
 
 				tilePositions.add(new TilePosition(new Tile(tileX, tileY, zoomLevel), new Point(pixelX, pixelY)));
 			}

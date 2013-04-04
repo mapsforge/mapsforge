@@ -56,7 +56,7 @@ public class Polygon extends Layer {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (this.latLongs.size() < 2 || (this.paintStroke == null && this.paintFill == null)) {
 			return;
 		}
@@ -65,14 +65,14 @@ public class Polygon extends Layer {
 
 		Path path = this.graphicFactory.createPath();
 		LatLong latLong = iterator.next();
-		int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
-		int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
+		int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
+		int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
 		path.moveTo(x, y);
 
 		while (iterator.hasNext()) {
 			latLong = iterator.next();
-			x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
-			y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
+			x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
+			y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
 			path.lineTo(x, y);
 		}
 

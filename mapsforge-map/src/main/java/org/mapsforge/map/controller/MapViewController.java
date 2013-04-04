@@ -18,13 +18,19 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.MapView;
 
-public class MapViewController implements Observer {
+public final class MapViewController implements Observer {
+	public static MapViewController create(MapView mapView, Model model) {
+		MapViewController mapViewController = new MapViewController(mapView);
+
+		model.mapViewPosition.addObserver(mapViewController);
+
+		return mapViewController;
+	}
+
 	private final MapView mapView;
 
-	public MapViewController(MapView mapView, Model model) {
+	private MapViewController(MapView mapView) {
 		this.mapView = mapView;
-
-		model.mapViewPosition.addObserver(this);
 	}
 
 	@Override
