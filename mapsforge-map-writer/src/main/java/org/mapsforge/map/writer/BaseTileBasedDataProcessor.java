@@ -395,20 +395,16 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 	}
 
 	protected void countWayTags(short[] tags) {
-		if (tags == null) {
-			return;
-		}
-		for (short tag : tags) {
-			this.histogramWayTags.adjustOrPutValue(tag, 1, 1);
+		if (tags != null) {
+			for (short tag : tags) {
+				this.histogramWayTags.adjustOrPutValue(tag, 1, 1);
+			}
 		}
 	}
 
 	protected void countWayTags(TDWay way) {
-		if (way == null || way.getTags() == null) {
-			return;
-		}
-		for (short tag : way.getTags()) {
-			this.histogramWayTags.adjustOrPutValue(tag, 1, 1);
+		if (way != null) {
+			countWayTags(way.getTags());
 		}
 	}
 
