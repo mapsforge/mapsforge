@@ -287,14 +287,6 @@ public final class GeoUtils {
 		return ret;
 	}
 
-	// Computes the amount of latitude degrees for a given distance in pixel at a given zoom level.
-	private static double deltaLat(double deltaPixel, double lat, byte zoom) {
-		double pixelY = MercatorProjection.latitudeToPixelY(lat, zoom);
-		double lat2 = MercatorProjection.pixelYToLatitude(pixelY + deltaPixel, zoom);
-
-		return Math.abs(lat2 - lat);
-	}
-
 	/**
 	 * Convert a JTS Geometry to a WayDataBlock list.
 	 * 
@@ -344,8 +336,6 @@ public final class GeoUtils {
 		return res;
 	}
 
-	// **************** JTS CONVERSIONS *********************
-
 	private static double[] bufferInDegrees(long tileY, byte zoom, int enlargementInMeter) {
 		if (enlargementInMeter == 0) {
 			return EPSILON_ZERO;
@@ -359,6 +349,8 @@ public final class GeoUtils {
 		return epsilons;
 	}
 
+	// **************** JTS CONVERSIONS *********************
+
 	private static double[] computeTileEnlargement(double lat, int enlargementInPixel) {
 		if (enlargementInPixel == 0) {
 			return EPSILON_ZERO;
@@ -370,6 +362,14 @@ public final class GeoUtils {
 		epsilons[1] = LatLongUtils.longitudeDistance(enlargementInPixel, lat);
 
 		return epsilons;
+	}
+
+	// Computes the amount of latitude degrees for a given distance in pixel at a given zoom level.
+	private static double deltaLat(double deltaPixel, double lat, byte zoom) {
+		double pixelY = MercatorProjection.latitudeToPixelY(lat, zoom);
+		double lat2 = MercatorProjection.pixelYToLatitude(pixelY + deltaPixel, zoom);
+
+		return Math.abs(lat2 - lat);
 	}
 
 	private static TileCoordinate[] getWayBoundingBox(final TDWay way, byte zoomlevel, int enlargementInPixel) {

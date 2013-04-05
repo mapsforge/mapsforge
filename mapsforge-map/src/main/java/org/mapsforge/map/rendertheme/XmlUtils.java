@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 public final class XmlUtils {
 	private static final String PREFIX_FILE = "file:";
 	private static final String PREFIX_JAR = "jar:";
+	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
 
 	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
 			throws SAXException {
@@ -69,13 +70,13 @@ public final class XmlUtils {
 	 */
 	public static int getColor(GraphicFactory graphicFactory, String colorString) {
 		if (colorString.isEmpty() || colorString.charAt(0) != '#') {
-			throw new IllegalArgumentException("unsupported color format: " + colorString);
+			throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
 		} else if (colorString.length() == 7) {
 			return getColor(graphicFactory, colorString, 255, 1);
 		} else if (colorString.length() == 9) {
 			return getColor(graphicFactory, colorString, Integer.parseInt(colorString.substring(1, 3), 16), 3);
 		} else {
-			throw new IllegalArgumentException("unsupported color format: " + colorString);
+			throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
 		}
 	}
 

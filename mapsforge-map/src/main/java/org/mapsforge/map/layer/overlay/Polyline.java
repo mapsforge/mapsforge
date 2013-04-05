@@ -47,20 +47,20 @@ public class Polyline extends Layer {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (this.latLongs.isEmpty() || this.paintStroke == null) {
 			return;
 		}
 
 		Iterator<LatLong> iterator = this.latLongs.iterator();
 		LatLong latLong = iterator.next();
-		int previousX = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
-		int previousY = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
+		int previousX = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
+		int previousY = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
 
 		while (iterator.hasNext()) {
 			latLong = iterator.next();
-			int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - canvasPosition.x);
-			int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - canvasPosition.y);
+			int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
+			int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
 
 			canvas.drawLine(previousX, previousY, x, y, this.paintStroke);
 

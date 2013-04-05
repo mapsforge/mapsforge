@@ -12,21 +12,31 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.controller;
+package org.mapsforge.map.layer.renderer;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.mapsforge.map.model.Model;
+import org.mapsforge.map.reader.MapDatabase;
 
-public class MapViewControllerTest {
-	@Test
-	public void repaintTest() {
-		DummyMapView dummyMapView = new DummyMapView();
-		Model model = new Model();
-		MapViewController.create(dummyMapView, model);
-		Assert.assertEquals(0, dummyMapView.repaintCounter);
+class DestroyThread extends Thread {
+	private final MapDatabase mapDatabase;
+	private final Thread thread;
 
-		model.mapViewPosition.setZoomLevel((byte) 1);
-		Assert.assertEquals(1, dummyMapView.repaintCounter);
+	DestroyThread(Thread thread, MapDatabase mapDatabase) {
+		super();
+
+		this.thread = thread;
+		this.mapDatabase = mapDatabase;
+	}
+
+	@Override
+	public void run() {
+		try {
+			this.thread.interrupt();
+			this.thread.join();
+		} catch (InterruptedException e) {
+			// restore the interrupted status
+			interrupt();
+		} finally {
+			this.mapDatabase.closeFile();
+		}
 	}
 }

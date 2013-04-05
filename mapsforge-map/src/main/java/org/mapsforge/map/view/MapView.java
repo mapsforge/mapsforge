@@ -14,9 +14,14 @@
  */
 package org.mapsforge.map.view;
 
+import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.layer.LayerManager;
 
 public interface MapView {
+	void destroy();
+
+	Dimension getDimension();
+
 	FpsCounter getFpsCounter();
 
 	/**

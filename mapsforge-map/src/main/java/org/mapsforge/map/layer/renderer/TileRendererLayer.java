@@ -47,9 +47,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	@Override
 	public void destroy() {
-		this.mapWorker.interrupt();
-		this.mapDatabase.closeFile();
-
+		new DestroyThread(this.mapWorker, this.mapDatabase).start();
 		super.destroy();
 	}
 

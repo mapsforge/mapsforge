@@ -61,15 +61,15 @@ public class Circle extends Layer {
 	}
 
 	@Override
-	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (this.latLong == null || (this.paintStroke == null && this.paintFill == null)) {
 			return;
 		}
 
 		double latitude = this.latLong.latitude;
 		double longitude = this.latLong.longitude;
-		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - canvasPosition.x);
-		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - canvasPosition.y);
+		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - topLeftPoint.x);
+		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - topLeftPoint.y);
 		int radiusInPixel = (int) metersToPixels(latitude, this.radius, zoomLevel);
 
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());

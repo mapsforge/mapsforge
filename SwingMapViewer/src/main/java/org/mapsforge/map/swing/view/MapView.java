@@ -20,6 +20,7 @@ import java.awt.Graphics2D;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
@@ -42,13 +43,23 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
 		this.frameBuffer = new FrameBuffer(model.frameBufferModel, GRAPHIC_FACTORY);
-		new FrameBufferController(this.frameBuffer, model);
+		FrameBufferController.create(this.frameBuffer, model);
 
 		this.layerManager = new LayerManager(this, model.mapViewPosition, GRAPHIC_FACTORY);
 		this.layerManager.start();
-		new LayerManagerController(this.layerManager, model);
+		LayerManagerController.create(this.layerManager, model);
 
-		new MapViewController(this, model);
+		MapViewController.create(this, model);
+	}
+
+	@Override
+	public void destroy() {
+		this.layerManager.interrupt();
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return new Dimension(getWidth(), getHeight());
 	}
 
 	@Override

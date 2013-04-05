@@ -52,13 +52,13 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 
 		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
 		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, GRAPHIC_FACTORY);
-		new FrameBufferController(this.frameBuffer, this.model);
+		FrameBufferController.create(this.frameBuffer, this.model);
 
 		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
 		this.layerManager.start();
-		new LayerManagerController(this.layerManager, this.model);
+		LayerManagerController.create(this.layerManager, this.model);
 
-		new MapViewController(this, this.model);
+		MapViewController.create(this, this.model);
 
 		ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
 		TouchGestureDetector touchGestureDetector = new TouchGestureDetector(this.model, viewConfiguration);
@@ -68,8 +68,14 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, GRAPHIC_FACTORY);
 	}
 
+	@Override
 	public void destroy() {
 		this.layerManager.interrupt();
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return new Dimension(getWidth(), getHeight());
 	}
 
 	@Override

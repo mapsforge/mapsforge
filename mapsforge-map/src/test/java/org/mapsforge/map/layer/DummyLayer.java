@@ -20,7 +20,7 @@ import org.mapsforge.core.model.Point;
 
 class DummyLayer extends Layer {
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		// do nothing
 	}
 }

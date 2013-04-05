@@ -136,7 +136,7 @@ public class Rewrite extends Activity {
 	}
 
 	private TileCache createTileCache() {
-		TileCache firstLevelTileCache = new InMemoryTileCache(32);
+		TileCache firstLevelTileCache = new InMemoryTileCache(64);
 		File cacheDirectory = getDir("tile_cache", MODE_PRIVATE);
 		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, AndroidGraphics.INSTANCE);
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);

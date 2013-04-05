@@ -27,12 +27,16 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Dimension;
 
 class AwtCanvas implements Canvas {
+	private static final String UNKNOWN_STYLE = "unknown style: ";
+
 	private BufferedImage bufferedImage;
 	private Graphics2D graphics2D;
 
 	AwtCanvas() {
+		// do nothing
 	}
 
 	AwtCanvas(Graphics2D graphics2D) {
@@ -68,7 +72,7 @@ class AwtCanvas implements Canvas {
 				return;
 		}
 
-		throw new IllegalArgumentException("unknown style: " + style);
+		throw new IllegalArgumentException(UNKNOWN_STYLE + style);
 	}
 
 	@Override
@@ -96,7 +100,7 @@ class AwtCanvas implements Canvas {
 				return;
 		}
 
-		throw new IllegalArgumentException("unknown style: " + style);
+		throw new IllegalArgumentException(UNKNOWN_STYLE + style);
 	}
 
 	@Override
@@ -140,6 +144,11 @@ class AwtCanvas implements Canvas {
 	@Override
 	public void fillColor(int color) {
 		fillColor(new java.awt.Color(color));
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return new Dimension(getWidth(), getHeight());
 	}
 
 	@Override

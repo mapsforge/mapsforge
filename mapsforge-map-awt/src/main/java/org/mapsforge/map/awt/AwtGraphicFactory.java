@@ -40,11 +40,11 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	static AwtPaint getAwtPaint(Paint paint) {
-		return ((AwtPaint) paint);
+		return (AwtPaint) paint;
 	}
 
 	static AwtPath getAwtPath(Path path) {
-		return ((AwtPath) path);
+		return (AwtPath) path;
 	}
 
 	static BufferedImage getBufferedImage(Bitmap bitmap) {

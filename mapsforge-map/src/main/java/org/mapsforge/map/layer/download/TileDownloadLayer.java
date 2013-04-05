@@ -46,10 +46,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		int numberOfDownloadThreads = Math.min(tileSource.getParallelRequestsLimit(), DOWNLOAD_THREADS_MAX);
 		this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
 		for (int i = 0; i < numberOfDownloadThreads; ++i) {
-			TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, this.jobQueue, layerManager,
-					graphicFactory);
-			tileDownloadThread.start();
-			this.tileDownloadThreads[i] = tileDownloadThread;
+			this.tileDownloadThreads[i] = new TileDownloadThread(tileCache, this.jobQueue, layerManager, graphicFactory);
 		}
 	}
 
@@ -63,12 +60,18 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	}
 
 	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point canvasPosition) {
+	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (zoomLevel < this.tileSource.getZoomLevelMin() || zoomLevel > this.tileSource.getZoomLevelMax()) {
 			return;
 		}
 
-		super.draw(boundingBox, zoomLevel, canvas, canvasPosition);
+		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+	}
+
+	public void start() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.start();
+		}
 	}
 
 	@Override

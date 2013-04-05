@@ -24,51 +24,18 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.PausableThread;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.util.MapPositionUtil;
+import org.mapsforge.map.util.PausableThread;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
 public class LayerManager extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
 	private static final int MILLISECONDS_PER_FRAME = 50;
-
-	private static BoundingBox getBoundingBox(MapPosition mapPosition, Canvas canvas) {
-		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.latLong.longitude, mapPosition.zoomLevel);
-		double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.latLong.latitude, mapPosition.zoomLevel);
-
-		int halfCanvasWidth = canvas.getWidth() / 2;
-		int halfCanvasHeight = canvas.getHeight() / 2;
-		long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel);
-
-		double pixelXMin = Math.max(0, pixelX - halfCanvasWidth);
-		double pixelYMin = Math.max(0, pixelY - halfCanvasHeight);
-		double pixelXMax = Math.min(mapSize, pixelX + halfCanvasWidth);
-		double pixelYMax = Math.min(mapSize, pixelY + halfCanvasHeight);
-
-		double minLatitude = MercatorProjection.pixelYToLatitude(pixelYMax, mapPosition.zoomLevel);
-		double minLongitude = MercatorProjection.pixelXToLongitude(pixelXMin, mapPosition.zoomLevel);
-		double maxLatitude = MercatorProjection.pixelYToLatitude(pixelYMin, mapPosition.zoomLevel);
-		double maxLongitude = MercatorProjection.pixelXToLongitude(pixelXMax, mapPosition.zoomLevel);
-
-		return new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
-	}
-
-	private static Point getCanvasPosition(MapPosition mapPosition, Canvas canvas) {
-		LatLong centerPoint = mapPosition.latLong;
-		byte zoomLevel = mapPosition.zoomLevel;
-
-		int halfCanvasWidth = canvas.getWidth() / 2;
-		int halfCanvasHeight = canvas.getHeight() / 2;
-
-		double pixelX = MercatorProjection.longitudeToPixelX(centerPoint.longitude, zoomLevel) - halfCanvasWidth;
-		double pixelY = MercatorProjection.latitudeToPixelY(centerPoint.latitude, zoomLevel) - halfCanvasHeight;
-		return new Point(pixelX, pixelY);
-	}
 
 	private final Canvas drawingCanvas;
 	private final List<Layer> layers;
@@ -119,12 +86,13 @@ public class LayerManager extends PausableThread {
 			this.drawingCanvas.fillColor(Color.WHITE);
 
 			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
-			BoundingBox boundingBox = getBoundingBox(mapPosition, this.drawingCanvas);
-			Point canvasPosition = getCanvasPosition(mapPosition, this.drawingCanvas);
+			Dimension canvasDimension = this.drawingCanvas.getDimension();
+			BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension);
+			Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension);
 
 			for (Layer layer : this.getLayers()) {
 				if (layer.isVisible()) {
-					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, canvasPosition);
+					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint);
 				}
 			}
 

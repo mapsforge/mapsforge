@@ -14,6 +14,8 @@
  */
 package org.mapsforge.core.graphics;
 
+import org.mapsforge.core.model.Dimension;
+
 public interface Canvas {
 	void drawBitmap(Bitmap bitmap, int left, int top);
 
@@ -38,6 +40,8 @@ public interface Canvas {
 	void fillColor(Color color);
 
 	void fillColor(int color);
+
+	Dimension getDimension();
 
 	int getHeight();
 

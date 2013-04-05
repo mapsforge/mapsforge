@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.controller;
 
+import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
@@ -21,6 +22,16 @@ import org.mapsforge.map.view.MapView;
 
 public class DummyMapView implements MapView {
 	public int repaintCounter;
+
+	@Override
+	public void destroy() {
+		// do nothing
+	}
+
+	@Override
+	public Dimension getDimension() {
+		return null;
+	}
 
 	@Override
 	public FpsCounter getFpsCounter() {

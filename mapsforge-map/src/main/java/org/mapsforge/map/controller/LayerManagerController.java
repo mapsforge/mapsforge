@@ -18,14 +18,20 @@ import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 
-public class LayerManagerController implements Observer {
+public final class LayerManagerController implements Observer {
+	public static LayerManagerController create(LayerManager layerManager, Model model) {
+		LayerManagerController layerManagerController = new LayerManagerController(layerManager);
+
+		model.mapViewModel.addObserver(layerManagerController);
+		model.mapViewPosition.addObserver(layerManagerController);
+
+		return layerManagerController;
+	}
+
 	private final LayerManager layerManager;
 
-	public LayerManagerController(LayerManager layerManager, Model model) {
+	private LayerManagerController(LayerManager layerManager) {
 		this.layerManager = layerManager;
-
-		model.mapViewModel.addObserver(this);
-		model.mapViewPosition.addObserver(this);
 	}
 
 	@Override

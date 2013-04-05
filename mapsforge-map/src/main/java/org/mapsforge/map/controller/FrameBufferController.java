@@ -23,7 +23,17 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.FrameBuffer;
 
-public class FrameBufferController implements Observer {
+public final class FrameBufferController implements Observer {
+	public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
+		FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
+
+		model.frameBufferModel.addObserver(frameBufferController);
+		model.mapViewModel.addObserver(frameBufferController);
+		model.mapViewPosition.addObserver(frameBufferController);
+
+		return frameBufferController;
+	}
+
 	private static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
 		int width = (int) (mapViewDimension.width * overdrawFactor);
 		int height = (int) (mapViewDimension.height * overdrawFactor);
@@ -41,13 +51,9 @@ public class FrameBufferController implements Observer {
 	private double lastOverdrawFactor;
 	private final Model model;
 
-	public FrameBufferController(FrameBuffer frameBuffer, Model model) {
+	private FrameBufferController(FrameBuffer frameBuffer, Model model) {
 		this.frameBuffer = frameBuffer;
 		this.model = model;
-
-		model.frameBufferModel.addObserver(this);
-		model.mapViewModel.addObserver(this);
-		model.mapViewPosition.addObserver(this);
 	}
 
 	@Override
