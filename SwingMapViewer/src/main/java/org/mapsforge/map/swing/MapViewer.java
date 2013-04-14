@@ -14,7 +14,6 @@
  */
 package org.mapsforge.map.swing;
 
-import java.awt.Component;
 import java.io.File;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -46,35 +45,39 @@ public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	public static void main(String[] args) {
-		Model model = new Model();
+		MapView mapView = createMapView();
+		addLayers(mapView);
+
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
+		Model model = mapView.getModel();
 		model.init(preferencesFacade);
 
 		MainFrame mainFrame = new MainFrame();
+		mainFrame.add(mapView);
 		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, model, preferencesFacade));
-		mainFrame.add(createMapView(model));
-
 		mainFrame.setVisible(true);
 	}
 
-	private static Component createMapView(Model model) {
-		MapView mapView = new MapView(model);
-		mapView.getFpsCounter().setVisible(true);
-		mapView.addComponentListener(new MapViewComponentListener(mapView, model.mapViewModel));
-
-		MouseEventListener mouseEventListener = new MouseEventListener(model);
-		mapView.addMouseListener(mouseEventListener);
-		mapView.addMouseMotionListener(mouseEventListener);
-		mapView.addMouseWheelListener(mouseEventListener);
-
+	private static void addLayers(MapView mapView) {
 		LayerManager layerManager = mapView.getLayerManager();
 		List<Layer> layers = layerManager.getLayers();
 		TileCache tileCache = createTileCache();
 
-		// layers.add(createTileDownloadLayer(tileCache, model.mapViewPosition, layerManager));
-		layers.add(createTileRendererLayer(tileCache, model.mapViewPosition, layerManager));
+		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition, layerManager));
+		layers.add(createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition, layerManager));
 		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
 		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
+	}
+
+	private static MapView createMapView() {
+		MapView mapView = new MapView();
+		mapView.getFpsCounter().setVisible(true);
+		mapView.addComponentListener(new MapViewComponentListener(mapView, mapView.getModel().mapViewModel));
+
+		MouseEventListener mouseEventListener = new MouseEventListener(mapView.getModel());
+		mapView.addMouseListener(mouseEventListener);
+		mapView.addMouseMotionListener(mouseEventListener);
+		mapView.addMouseWheelListener(mouseEventListener);
 
 		return mapView;
 	}

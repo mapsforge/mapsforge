@@ -28,7 +28,6 @@ public class ReadBuffer {
 	 */
 	static final int MAXIMUM_BUFFER_SIZE = 2500000;
 	private static final String CHARSET_UTF8 = "UTF-8";
-
 	private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
 
 	private byte[] bufferData;

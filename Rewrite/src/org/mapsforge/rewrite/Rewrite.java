@@ -23,7 +23,6 @@ import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.overlay.Polyline;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
@@ -57,7 +56,6 @@ public class Rewrite extends Activity {
 	}
 
 	private MapView mapView;
-	private final Model model = new Model();
 	private PreferencesFacade preferencesFacade;
 
 	@Override
@@ -68,8 +66,8 @@ public class Rewrite extends Activity {
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		this.preferencesFacade = new AndroidPreferences(sharedPreferences);
-		this.model.init(this.preferencesFacade);
-		this.mapView = new MapView(this, this.model);
+		this.mapView = new MapView(this);
+		this.mapView.getModel().init(this.preferencesFacade);
 		this.mapView.setClickable(true);
 		this.mapView.getFpsCounter().setVisible(true);
 		this.mapView.getMapScaleBar().setVisible(true);
@@ -78,7 +76,7 @@ public class Rewrite extends Activity {
 		List<Layer> layers = layerManager.getLayers();
 
 		TileCache tileCache = createTileCache();
-		MapViewPosition mapViewPosition = this.model.mapViewPosition;
+		MapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
 
 		layers.add(createTileRendererLayer(tileCache, mapViewPosition, layerManager));
 
@@ -104,7 +102,7 @@ public class Rewrite extends Activity {
 	protected void onPause() {
 		super.onPause();
 
-		this.model.save(this.preferencesFacade);
+		this.mapView.getModel().save(this.preferencesFacade);
 		this.preferencesFacade.save();
 	}
 

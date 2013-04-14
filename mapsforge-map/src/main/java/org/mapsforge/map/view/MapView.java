@@ -16,6 +16,7 @@ package org.mapsforge.map.view;
 
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.model.Model;
 
 public interface MapView {
 	void destroy();
@@ -30,6 +31,8 @@ public interface MapView {
 	FrameBuffer getFrameBuffer();
 
 	LayerManager getLayerManager();
+
+	Model getModel();
 
 	/**
 	 * Requests a redrawing as soon as possible.

@@ -37,19 +37,22 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	private final FpsCounter fpsCounter;
 	private final FrameBuffer frameBuffer;
 	private final LayerManager layerManager;
+	private final Model model;
 
-	public MapView(Model model) {
+	public MapView() {
 		super();
 
+		this.model = new Model();
+
 		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
-		this.frameBuffer = new FrameBuffer(model.frameBufferModel, GRAPHIC_FACTORY);
-		FrameBufferController.create(this.frameBuffer, model);
+		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, GRAPHIC_FACTORY);
+		FrameBufferController.create(this.frameBuffer, this.model);
 
-		this.layerManager = new LayerManager(this, model.mapViewPosition, GRAPHIC_FACTORY);
+		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
 		this.layerManager.start();
-		LayerManagerController.create(this.layerManager, model);
+		LayerManagerController.create(this.layerManager, this.model);
 
-		MapViewController.create(this, model);
+		MapViewController.create(this, this.model);
 	}
 
 	@Override
@@ -75,6 +78,11 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	@Override
 	public LayerManager getLayerManager() {
 		return this.layerManager;
+	}
+
+	@Override
+	public Model getModel() {
+		return this.model;
 	}
 
 	@Override

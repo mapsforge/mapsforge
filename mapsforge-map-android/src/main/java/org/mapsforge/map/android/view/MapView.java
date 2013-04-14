@@ -31,6 +31,7 @@ import org.mapsforge.map.view.FrameBuffer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Looper;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -45,10 +46,14 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 	private final Model model;
 	private final TouchEventHandler touchEventHandler;
 
-	public MapView(Context context, Model model) {
-		super(context);
+	public MapView(Context context) {
+		this(context, null);
+	}
 
-		this.model = model;
+	public MapView(Context context, AttributeSet attributeSet) {
+		super(context, attributeSet);
+
+		this.model = new Model();
 
 		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
 		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, GRAPHIC_FACTORY);
@@ -95,6 +100,11 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 
 	public MapScaleBar getMapScaleBar() {
 		return this.mapScaleBar;
+	}
+
+	@Override
+	public Model getModel() {
+		return this.model;
 	}
 
 	@Override
