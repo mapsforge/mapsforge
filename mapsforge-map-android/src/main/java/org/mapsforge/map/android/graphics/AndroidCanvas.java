@@ -41,32 +41,32 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, int left, int top) {
-		this.canvas.drawBitmap(AndroidGraphics.getBitmap(bitmap), left, top, null);
+		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, null);
 	}
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-		this.canvas.drawBitmap(AndroidGraphics.getBitmap(bitmap), AndroidGraphics.getMatrix(matrix), this.bitmapPaint);
+		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), this.bitmapPaint);
 	}
 
 	@Override
 	public void drawCircle(int x, int y, int radius, Paint paint) {
-		this.canvas.drawCircle(x, y, radius, AndroidGraphics.getPaint(paint));
+		this.canvas.drawCircle(x, y, radius, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
-		this.canvas.drawLine(x1, y1, x2, y2, AndroidGraphics.getPaint(paint));
+		this.canvas.drawLine(x1, y1, x2, y2, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawPath(Path path, Paint paint) {
-		this.canvas.drawPath(AndroidGraphics.getPath(path), AndroidGraphics.getPaint(paint));
+		this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
-		this.canvas.drawText(text, x, y, AndroidGraphics.getPaint(paint));
+		this.canvas.drawText(text, x, y, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
@@ -74,12 +74,12 @@ class AndroidCanvas implements Canvas {
 		android.graphics.Path path = new android.graphics.Path();
 		path.moveTo(x1, y1);
 		path.lineTo(x2, y2);
-		this.canvas.drawTextOnPath(text, path, 0, 3, AndroidGraphics.getPaint(paint));
+		this.canvas.drawTextOnPath(text, path, 0, 3, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void fillColor(Color color) {
-		this.canvas.drawColor(AndroidGraphics.getColor(color));
+		this.canvas.drawColor(AndroidGraphicFactory.getColor(color));
 	}
 
 	@Override
@@ -109,7 +109,7 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void setBitmap(Bitmap bitmap) {
-		this.canvas.setBitmap(AndroidGraphics.getBitmap(bitmap));
+		this.canvas.setBitmap(AndroidGraphicFactory.getBitmap(bitmap));
 	}
 
 	@Override

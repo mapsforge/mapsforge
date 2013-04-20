@@ -16,7 +16,7 @@ package org.mapsforge.map.android.view;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Dimension;
-import org.mapsforge.map.android.graphics.AndroidGraphics;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.TouchEventHandler;
 import org.mapsforge.map.android.input.TouchGestureDetector;
 import org.mapsforge.map.controller.FrameBufferController;
@@ -37,7 +37,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 public class MapView extends View implements org.mapsforge.map.view.MapView {
-	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphics.INSTANCE;
+	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
 
 	private final FpsCounter fpsCounter;
 	private final FrameBuffer frameBuffer;
@@ -127,7 +127,7 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 
 	@Override
 	protected void onDraw(Canvas androidCanvas) {
-		org.mapsforge.core.graphics.Canvas canvas = AndroidGraphics.createCanvas(androidCanvas);
+		org.mapsforge.core.graphics.Canvas canvas = AndroidGraphicFactory.createCanvas(androidCanvas);
 
 		this.frameBuffer.draw(canvas);
 		this.mapScaleBar.draw(canvas);

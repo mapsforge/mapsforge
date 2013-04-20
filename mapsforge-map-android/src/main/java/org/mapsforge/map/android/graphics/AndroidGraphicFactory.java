@@ -29,8 +29,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-public final class AndroidGraphics implements GraphicFactory {
-	public static final GraphicFactory INSTANCE = new AndroidGraphics();
+public final class AndroidGraphicFactory implements GraphicFactory {
+	public static final GraphicFactory INSTANCE = new AndroidGraphicFactory();
 
 	public static Bitmap convertToBitmap(Drawable drawable) {
 		android.graphics.Bitmap bitmap;
@@ -90,7 +90,7 @@ public final class AndroidGraphics implements GraphicFactory {
 		return ((AndroidPath) path).path;
 	}
 
-	private AndroidGraphics() {
+	private AndroidGraphicFactory() {
 		// do nothing
 	}
 

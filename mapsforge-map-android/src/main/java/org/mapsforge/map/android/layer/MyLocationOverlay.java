@@ -22,7 +22,7 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.map.android.graphics.AndroidGraphics;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.Marker;
@@ -61,7 +61,7 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	private static Paint getPaint(int alpha, Color color, int strokeWidth, Style style) {
-		Paint paint = AndroidGraphics.INSTANCE.createPaint();
+		Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
 		paint.setColor(color);
 		paint.setAlpha(alpha);
 		paint.setStrokeWidth(strokeWidth);

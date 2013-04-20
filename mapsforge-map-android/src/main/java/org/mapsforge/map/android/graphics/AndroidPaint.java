@@ -132,12 +132,12 @@ class AndroidPaint implements Paint {
 			return;
 		}
 
-		this.paint.setShader(new BitmapShader(AndroidGraphics.getBitmap(bitmap), TileMode.REPEAT, TileMode.REPEAT));
+		this.paint.setShader(new BitmapShader(AndroidGraphicFactory.getBitmap(bitmap), TileMode.REPEAT, TileMode.REPEAT));
 	}
 
 	@Override
 	public void setColor(Color color) {
-		this.paint.setColor(AndroidGraphics.getColor(color));
+		this.paint.setColor(AndroidGraphicFactory.getColor(color));
 	}
 
 	@Override

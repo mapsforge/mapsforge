@@ -10,7 +10,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.AndroidPreferences;
-import org.mapsforge.map.android.graphics.AndroidGraphics;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
@@ -35,10 +35,10 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 public class Rewrite extends Activity {
-	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphics.INSTANCE;
+	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
 
 	private static Paint createPaint(int color, int strokeWidth, Style style) {
-		Paint paint = AndroidGraphics.INSTANCE.createPaint();
+		Paint paint = GRAPHIC_FACTORY.createPaint();
 		paint.setColor(color);
 		paint.setStrokeWidth(strokeWidth);
 		paint.setStyle(style);
@@ -111,7 +111,7 @@ public class Rewrite extends Activity {
 		LatLong latLong2 = new LatLong(52, 13);
 		LatLong latLong3 = new LatLong(10, 10);
 
-		Polyline polyline = new Polyline(createPaint(AndroidGraphics.INSTANCE.createColor(Color.BLUE), 8, Style.STROKE));
+		Polyline polyline = new Polyline(createPaint(GRAPHIC_FACTORY.createColor(Color.BLUE), 8, Style.STROKE));
 		List<LatLong> latLongs = polyline.getLatLongs();
 		latLongs.add(latLong1);
 		latLongs.add(latLong2);
@@ -119,8 +119,8 @@ public class Rewrite extends Activity {
 
 		Marker marker1 = createMarker(R.drawable.marker_red, latLong1);
 
-		Circle circle = new Circle(latLong3, 30000, createPaint(AndroidGraphics.INSTANCE.createColor(Color.WHITE), 0,
-				Style.FILL), null);
+		Circle circle = new Circle(latLong3, 30000,
+				createPaint(GRAPHIC_FACTORY.createColor(Color.WHITE), 0, Style.FILL), null);
 
 		layers.add(polyline);
 		layers.add(circle);
@@ -129,14 +129,14 @@ public class Rewrite extends Activity {
 
 	private Marker createMarker(int resourceIdentifier, LatLong latLong) {
 		Drawable drawable = getResources().getDrawable(resourceIdentifier);
-		Bitmap bitmap = AndroidGraphics.convertToBitmap(drawable);
+		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
 		return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2);
 	}
 
 	private TileCache createTileCache() {
 		TileCache firstLevelTileCache = new InMemoryTileCache(64);
 		File cacheDirectory = getDir("tile_cache", MODE_PRIVATE);
-		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, AndroidGraphics.INSTANCE);
+		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}
 }
