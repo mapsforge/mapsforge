@@ -49,13 +49,14 @@ public class DimensionTest {
 	public void equalsTest() {
 		Dimension dimension1 = new Dimension(1, 2);
 		Dimension dimension2 = new Dimension(1, 2);
-		Dimension dimension3 = new Dimension(0, 0);
+		Dimension dimension3 = new Dimension(1, 1);
+		Dimension dimension4 = new Dimension(2, 2);
 
 		TestUtils.equalsTest(dimension1, dimension2);
 
-		Assert.assertNotEquals(dimension1, dimension3);
-		Assert.assertNotEquals(dimension3, dimension1);
-		Assert.assertNotEquals(dimension1, new Object());
+		TestUtils.notEqualsTest(dimension1, dimension3);
+		TestUtils.notEqualsTest(dimension1, dimension4);
+		TestUtils.notEqualsTest(dimension1, new Object());
 	}
 
 	@Test

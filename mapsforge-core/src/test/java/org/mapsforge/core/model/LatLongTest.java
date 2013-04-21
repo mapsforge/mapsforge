@@ -28,24 +28,27 @@ public class LatLongTest {
 	public void compareToTest() {
 		LatLong latLong1 = new LatLong(LATITUDE, LONGITUDE);
 		LatLong latLong2 = new LatLong(LATITUDE, LONGITUDE);
-		LatLong latLong3 = new LatLong(0, 0);
+		LatLong latLong3 = new LatLong(LATITUDE, LATITUDE);
+		LatLong latLong4 = new LatLong(LONGITUDE, LONGITUDE);
 
 		Assert.assertEquals(0, latLong1.compareTo(latLong2));
-		Assert.assertNotEquals(0, latLong1.compareTo(latLong3));
-		Assert.assertNotEquals(0, latLong3.compareTo(latLong1));
+
+		TestUtils.notCompareToTest(latLong1, latLong3);
+		TestUtils.notCompareToTest(latLong1, latLong4);
 	}
 
 	@Test
 	public void equalsTest() {
 		LatLong latLong1 = new LatLong(LATITUDE, LONGITUDE);
 		LatLong latLong2 = new LatLong(LATITUDE, LONGITUDE);
-		LatLong latLong3 = new LatLong(0, 0);
+		LatLong latLong3 = new LatLong(LATITUDE, LATITUDE);
+		LatLong latLong4 = new LatLong(LONGITUDE, LONGITUDE);
 
 		TestUtils.equalsTest(latLong1, latLong2);
 
-		Assert.assertNotEquals(latLong1, latLong3);
-		Assert.assertNotEquals(latLong3, latLong1);
-		Assert.assertNotEquals(latLong1, new Object());
+		TestUtils.notEqualsTest(latLong1, latLong3);
+		TestUtils.notEqualsTest(latLong1, latLong4);
+		TestUtils.notEqualsTest(latLong1, new Object());
 	}
 
 	@Test

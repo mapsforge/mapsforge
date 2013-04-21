@@ -50,13 +50,18 @@ public class RectangleTest {
 	public void equalsTest() {
 		Rectangle rectangle1 = new Rectangle(1, 2, 3, 4);
 		Rectangle rectangle2 = new Rectangle(1, 2, 3, 4);
-		Rectangle rectangle3 = new Rectangle(0, 0, 0, 0);
+		Rectangle rectangle3 = new Rectangle(3, 2, 3, 4);
+		Rectangle rectangle4 = new Rectangle(1, 4, 3, 4);
+		Rectangle rectangle5 = new Rectangle(1, 2, 1, 4);
+		Rectangle rectangle6 = new Rectangle(1, 2, 3, 2);
 
 		TestUtils.equalsTest(rectangle1, rectangle2);
 
-		Assert.assertNotEquals(rectangle1, rectangle3);
-		Assert.assertNotEquals(rectangle3, rectangle1);
-		Assert.assertNotEquals(rectangle1, new Object());
+		TestUtils.notEqualsTest(rectangle1, rectangle3);
+		TestUtils.notEqualsTest(rectangle1, rectangle4);
+		TestUtils.notEqualsTest(rectangle1, rectangle5);
+		TestUtils.notEqualsTest(rectangle1, rectangle6);
+		TestUtils.notEqualsTest(rectangle1, new Object());
 	}
 
 	@Test

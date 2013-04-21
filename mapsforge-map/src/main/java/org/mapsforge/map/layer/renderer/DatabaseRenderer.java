@@ -370,9 +370,9 @@ public class DatabaseRenderer implements RenderCallback {
 	 */
 	private Point scaleLatLong(LatLong latLong) {
 		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel)
-				- MercatorProjection.tileXToPixelX(this.currentRendererJob.tile.tileX);
+				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX);
 		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel)
-				- MercatorProjection.tileYToPixelY(this.currentRendererJob.tile.tileY);
+				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY);
 
 		return new Point((float) pixelX, (float) pixelY);
 	}

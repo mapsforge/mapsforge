@@ -21,9 +21,6 @@ import org.junit.Test;
 
 public class TileTest {
 	private static final String TILE_TO_STRING = "tileX=1, tileY=2, zoomLevel=3";
-	private static final long TILE_X = 1;
-	private static final long TILE_Y = 2;
-	private static final byte ZOOM_LEVEL = 3;
 
 	private static Tile createTile(long tileX, long tileY, byte zoomLevel) {
 		return new Tile(tileX, tileY, zoomLevel);
@@ -62,15 +59,18 @@ public class TileTest {
 
 	@Test
 	public void equalsTest() {
-		Tile tile1 = new Tile(TILE_X, TILE_Y, ZOOM_LEVEL);
-		Tile tile2 = new Tile(TILE_X, TILE_Y, ZOOM_LEVEL);
-		Tile tile3 = new Tile(TILE_X, TILE_X, ZOOM_LEVEL);
+		Tile tile1 = new Tile(1, 2, (byte) 3);
+		Tile tile2 = new Tile(1, 2, (byte) 3);
+		Tile tile3 = new Tile(1, 1, (byte) 3);
+		Tile tile4 = new Tile(2, 2, (byte) 3);
+		Tile tile5 = new Tile(1, 2, (byte) 4);
 
 		TestUtils.equalsTest(tile1, tile2);
 
-		Assert.assertNotEquals(tile1, tile3);
-		Assert.assertNotEquals(tile3, tile1);
-		Assert.assertNotEquals(tile1, new Object());
+		TestUtils.notEqualsTest(tile1, tile3);
+		TestUtils.notEqualsTest(tile1, tile4);
+		TestUtils.notEqualsTest(tile1, tile5);
+		TestUtils.notEqualsTest(tile1, new Object());
 	}
 
 	@Test
@@ -124,22 +124,22 @@ public class TileTest {
 
 	@Test
 	public void getterTest() {
-		Tile tile = new Tile(TILE_X, TILE_Y, ZOOM_LEVEL);
+		Tile tile = new Tile(1, 2, (byte) 3);
 
-		Assert.assertEquals(TILE_X, tile.tileX);
-		Assert.assertEquals(TILE_Y, tile.tileY);
-		Assert.assertEquals(ZOOM_LEVEL, tile.zoomLevel);
+		Assert.assertEquals(1, tile.tileX);
+		Assert.assertEquals(2, tile.tileY);
+		Assert.assertEquals(3, tile.zoomLevel);
 	}
 
 	@Test
 	public void serializeTest() throws IOException, ClassNotFoundException {
-		Tile tile = new Tile(TILE_X, TILE_Y, ZOOM_LEVEL);
+		Tile tile = new Tile(1, 2, (byte) 3);
 		TestUtils.serializeTest(tile);
 	}
 
 	@Test
 	public void toStringTest() {
-		Tile tile = new Tile(TILE_X, TILE_Y, ZOOM_LEVEL);
+		Tile tile = new Tile(1, 2, (byte) 3);
 		Assert.assertEquals(TILE_TO_STRING, tile.toString());
 	}
 }

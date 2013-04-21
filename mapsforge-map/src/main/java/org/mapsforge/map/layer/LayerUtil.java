@@ -33,8 +33,8 @@ public final class LayerUtil {
 
 		for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
 			for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
-				double pixelX = MercatorProjection.tileXToPixelX(tileX) - topLeftPoint.x;
-				double pixelY = MercatorProjection.tileYToPixelY(tileY) - topLeftPoint.y;
+				double pixelX = MercatorProjection.tileToPixel(tileX) - topLeftPoint.x;
+				double pixelY = MercatorProjection.tileToPixel(tileY) - topLeftPoint.y;
 
 				tilePositions.add(new TilePosition(new Tile(tileX, tileY, zoomLevel), new Point(pixelX, pixelY)));
 			}

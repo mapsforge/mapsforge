@@ -34,6 +34,16 @@ final class TestUtils {
 		Assert.assertEquals(object2, object1);
 	}
 
+	static <T extends Comparable<T>> void notCompareToTest(T comparable1, T comparable2) {
+		Assert.assertNotEquals(0, comparable1.compareTo(comparable2));
+		Assert.assertNotEquals(0, comparable2.compareTo(comparable1));
+	}
+
+	static void notEqualsTest(Object object1, Object object2) {
+		Assert.assertNotEquals(object1, object2);
+		Assert.assertNotEquals(object2, object1);
+	}
+
 	static void serializeTest(Object objectToSerialize) throws IOException, ClassNotFoundException {
 		File file = new File("object.ser");
 		try {

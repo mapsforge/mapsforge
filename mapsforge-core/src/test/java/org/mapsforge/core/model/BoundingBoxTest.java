@@ -64,13 +64,18 @@ public class BoundingBoxTest {
 	public void equalsTest() {
 		BoundingBox boundingBox1 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
 		BoundingBox boundingBox2 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		BoundingBox boundingBox3 = new BoundingBox(0, 0, 0, 0);
+		BoundingBox boundingBox3 = new BoundingBox(MAX_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox4 = new BoundingBox(MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox5 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox6 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MIN_LONGITUDE);
 
 		TestUtils.equalsTest(boundingBox1, boundingBox2);
 
-		Assert.assertNotEquals(boundingBox1, boundingBox3);
-		Assert.assertNotEquals(boundingBox3, boundingBox1);
-		Assert.assertNotEquals(boundingBox1, new Object());
+		TestUtils.notEqualsTest(boundingBox1, boundingBox3);
+		TestUtils.notEqualsTest(boundingBox1, boundingBox4);
+		TestUtils.notEqualsTest(boundingBox1, boundingBox5);
+		TestUtils.notEqualsTest(boundingBox1, boundingBox6);
+		TestUtils.notEqualsTest(boundingBox1, new Object());
 	}
 
 	@Test
