@@ -32,9 +32,30 @@ public class RectangleTest {
 		Assert.assertFalse(rectangle2.intersects(rectangle1));
 	}
 
+	private static Rectangle create(double left, double top, double right, double bottom) {
+		return new Rectangle(left, top, right, bottom);
+	}
+
+	private static void verifyInvalidConstructor(double left, double top, double right, double bottom) {
+		try {
+			create(left, top, right, bottom);
+			Assert.fail("left: " + left + ", top: " + top + ", right: " + right + ", bottom: " + bottom);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
+	@Test
+	public void constructorTest() {
+		create(1, 2, 3, 4);
+
+		verifyInvalidConstructor(1, 2, 0, 4);
+		verifyInvalidConstructor(1, 2, 3, 0);
+	}
+
 	@Test
 	public void containsTest() {
-		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle = create(1, 2, 3, 4);
 
 		Assert.assertTrue(rectangle.contains(new Point(1, 2)));
 		Assert.assertTrue(rectangle.contains(new Point(1, 4)));
@@ -43,17 +64,19 @@ public class RectangleTest {
 		Assert.assertTrue(rectangle.contains(new Point(2, 3)));
 
 		Assert.assertFalse(rectangle.contains(new Point(0, 0)));
+		Assert.assertFalse(rectangle.contains(new Point(1, 1)));
 		Assert.assertFalse(rectangle.contains(new Point(4, 4)));
+		Assert.assertFalse(rectangle.contains(new Point(5, 5)));
 	}
 
 	@Test
 	public void equalsTest() {
-		Rectangle rectangle1 = new Rectangle(1, 2, 3, 4);
-		Rectangle rectangle2 = new Rectangle(1, 2, 3, 4);
-		Rectangle rectangle3 = new Rectangle(3, 2, 3, 4);
-		Rectangle rectangle4 = new Rectangle(1, 4, 3, 4);
-		Rectangle rectangle5 = new Rectangle(1, 2, 1, 4);
-		Rectangle rectangle6 = new Rectangle(1, 2, 3, 2);
+		Rectangle rectangle1 = create(1, 2, 3, 4);
+		Rectangle rectangle2 = create(1, 2, 3, 4);
+		Rectangle rectangle3 = create(3, 2, 3, 4);
+		Rectangle rectangle4 = create(1, 4, 3, 4);
+		Rectangle rectangle5 = create(1, 2, 1, 4);
+		Rectangle rectangle6 = create(1, 2, 3, 2);
 
 		TestUtils.equalsTest(rectangle1, rectangle2);
 
@@ -66,37 +89,37 @@ public class RectangleTest {
 
 	@Test
 	public void getCenterTest() {
-		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle = create(1, 2, 3, 4);
 		Assert.assertEquals(new Point(2, 3), rectangle.getCenter());
 	}
 
 	@Test
 	public void getCenterXTest() {
-		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle = create(1, 2, 3, 4);
 		Assert.assertEquals(2, rectangle.getCenterX(), 0);
 	}
 
 	@Test
 	public void getCenterYTest() {
-		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle = create(1, 2, 3, 4);
 		Assert.assertEquals(3, rectangle.getCenterY(), 0);
 	}
 
 	@Test
 	public void getHeightTest() {
-		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle = create(1, 2, 3, 4);
 		Assert.assertEquals(2, rectangle.getHeight(), 0);
 	}
 
 	@Test
 	public void getWidthTest() {
-		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle = create(1, 2, 3, 4);
 		Assert.assertEquals(2, rectangle.getWidth(), 0);
 	}
 
 	@Test
 	public void intersectsCircleTest() {
-		Rectangle rectangle1 = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle1 = create(1, 2, 3, 4);
 
 		Assert.assertTrue(rectangle1.intersectsCircle(1, 2, 0));
 		Assert.assertTrue(rectangle1.intersectsCircle(1, 2, 1));
@@ -125,13 +148,13 @@ public class RectangleTest {
 
 	@Test
 	public void intersectsTest() {
-		Rectangle rectangle1 = new Rectangle(1, 2, 3, 4);
-		Rectangle rectangle2 = new Rectangle(1, 2, 3, 4);
-		Rectangle rectangle3 = new Rectangle(3, 4, 3, 4);
-		Rectangle rectangle4 = new Rectangle(0, 0, 3, 4);
-		Rectangle rectangle5 = new Rectangle(0, 0, 5, 5);
-		Rectangle rectangle6 = new Rectangle(5, 5, 6, 6);
-		Rectangle rectangle7 = new Rectangle(1, 0, 3, 1);
+		Rectangle rectangle1 = create(1, 2, 3, 4);
+		Rectangle rectangle2 = create(1, 2, 3, 4);
+		Rectangle rectangle3 = create(3, 4, 3, 4);
+		Rectangle rectangle4 = create(0, 0, 3, 4);
+		Rectangle rectangle5 = create(0, 0, 5, 5);
+		Rectangle rectangle6 = create(5, 5, 6, 6);
+		Rectangle rectangle7 = create(1, 0, 3, 1);
 
 		assertIntersection(rectangle1, rectangle1);
 		assertIntersection(rectangle1, rectangle2);
@@ -145,13 +168,13 @@ public class RectangleTest {
 
 	@Test
 	public void serializeTest() throws IOException, ClassNotFoundException {
-		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle = create(1, 2, 3, 4);
 		TestUtils.serializeTest(rectangle);
 	}
 
 	@Test
 	public void toStringTest() {
-		Rectangle rectangle = new Rectangle(1, 2, 3, 4);
+		Rectangle rectangle = create(1, 2, 3, 4);
 		Assert.assertEquals(RECTANGLE_TO_STRING, rectangle.toString());
 	}
 }

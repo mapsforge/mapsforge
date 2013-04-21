@@ -58,11 +58,7 @@ public class MapPosition implements Serializable {
 			return false;
 		}
 		MapPosition other = (MapPosition) obj;
-		if (this.latLong == null) {
-			if (other.latLong != null) {
-				return false;
-			}
-		} else if (!this.latLong.equals(other.latLong)) {
+		if (!this.latLong.equals(other.latLong)) {
 			return false;
 		} else if (this.zoomLevel != other.zoomLevel) {
 			return false;
@@ -74,7 +70,7 @@ public class MapPosition implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.latLong == null) ? 0 : this.latLong.hashCode());
+		result = prime * result + this.latLong.hashCode();
 		result = prime * result + this.zoomLevel;
 		return result;
 	}
