@@ -55,7 +55,7 @@ public class InMemoryTileCache implements TileCache {
 
 	@Override
 	public synchronized int getCapacity() {
-		return this.lruCache.getCapacity();
+		return this.lruCache.capacity;
 	}
 
 	@Override

@@ -35,12 +35,15 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
 public class MockingUtils {
+	private static class MockTDNode extends TDNode {
 
-	private static final GeometryFactory geometryFactory = new GeometryFactory();
-	private static final String TEST_GEOMETRIES_RESOURCES_DIR = "src/test/resources/geometries";
+		public MockTDNode(double lat, double lon) {
+			super(0, LatLongUtils.degreesToMicrodegrees(lat), LatLongUtils.degreesToMicrodegrees(lon), (short) 0,
+					(byte) 0, null, null);
+		}
+	}
 
 	private static class MockTDWay extends TDWay {
-
 		private final boolean area;
 
 		public MockTDWay(TDNode[] wayNodes, boolean area) {
@@ -54,14 +57,8 @@ public class MockingUtils {
 		}
 	}
 
-	private static class MockTDNode extends TDNode {
-
-		public MockTDNode(double lat, double lon) {
-			super(0, LatLongUtils.degreesToMicrodegrees(lat), LatLongUtils.degreesToMicrodegrees(lon), (short) 0,
-					(byte) 0, null, null);
-		}
-
-	}
+	private static final GeometryFactory geometryFactory = new GeometryFactory();
+	private static final String TEST_GEOMETRIES_RESOURCES_DIR = "src/test/resources/geometries";
 
 	static Geometry readWKTFile(String wktFile) {
 		File f = new File(TEST_GEOMETRIES_RESOURCES_DIR, wktFile);
@@ -88,6 +85,21 @@ public class MockingUtils {
 		}
 	}
 
+	static List<TDWay> wktMultiLineStringToWays(String wktFile) {
+		Geometry geometry = readWKTFile(wktFile);
+		if (geometry == null || !(geometry instanceof MultiLineString)) {
+			return null;
+		}
+
+		MultiLineString mls = (MultiLineString) geometry;
+		List<TDWay> ret = new ArrayList<TDWay>();
+		for (int i = 0; i < mls.getNumGeometries(); i++) {
+			ret.add(fromLinestring((LineString) mls.getGeometryN(i), false));
+		}
+		return ret;
+
+	}
+
 	static List<TDWay> wktPolygonToWays(String wktFile) {
 		Geometry geometry = readWKTFile(wktFile);
 		if (geometry == null || !(geometry instanceof Polygon)) {
@@ -105,23 +117,8 @@ public class MockingUtils {
 
 	}
 
-	static List<TDWay> wktMultiLineStringToWays(String wktFile) {
-		Geometry geometry = readWKTFile(wktFile);
-		if (geometry == null || !(geometry instanceof MultiLineString)) {
-			return null;
-		}
-
-		MultiLineString mls = (MultiLineString) geometry;
-		List<TDWay> ret = new ArrayList<TDWay>();
-		for (int i = 0; i < mls.getNumGeometries(); i++) {
-			ret.add(fromLinestring((LineString) mls.getGeometryN(i), false));
-		}
-		return ret;
-
-	}
-
-	private static TDWay fromLinestring(LineString l, boolean area) {
-		return new MockTDWay(fromCoordinates(l.getCoordinates()), area);
+	private static TDNode fromCoordinate(Coordinate c) {
+		return new MockTDNode(c.y, c.x);
 	}
 
 	private static TDNode[] fromCoordinates(Coordinate[] coordinates) {
@@ -132,8 +129,8 @@ public class MockingUtils {
 		return nodes;
 	}
 
-	private static TDNode fromCoordinate(Coordinate c) {
-		return new MockTDNode(c.y, c.x);
+	private static TDWay fromLinestring(LineString l, boolean area) {
+		return new MockTDWay(fromCoordinates(l.getCoordinates()), area);
 	}
 
 }

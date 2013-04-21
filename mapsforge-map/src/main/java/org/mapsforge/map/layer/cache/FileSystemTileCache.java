@@ -109,7 +109,7 @@ public class FileSystemTileCache implements TileCache {
 
 	@Override
 	public synchronized int getCapacity() {
-		return this.lruCache.getCapacity();
+		return this.lruCache.capacity;
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class FileSystemTileCache implements TileCache {
 			throw new IllegalArgumentException("bitmap must not be null");
 		}
 
-		if (this.lruCache.getCapacity() == 0) {
+		if (this.lruCache.capacity == 0) {
 			return;
 		}
 

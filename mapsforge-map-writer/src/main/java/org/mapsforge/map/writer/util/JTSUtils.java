@@ -35,9 +35,8 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author bross
  */
 public final class JTSUtils {
-
-	private static final Logger LOGGER = Logger.getLogger(GeoUtils.class.getName());
 	private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+	private static final Logger LOGGER = Logger.getLogger(GeoUtils.class.getName());
 
 	/**
 	 * Translates a {@link TDNode} object to a JTS {@link Coordinate}.
@@ -69,11 +68,6 @@ public final class JTSUtils {
 			}
 		}
 		return coordinates;
-	}
-
-	private static Coordinate toCoordinate(int latitude, int longitude) {
-		return new Coordinate(LatLongUtils.microdegreesToDegrees(longitude),
-				LatLongUtils.microdegreesToDegrees(latitude));
 	}
 
 	/**
@@ -109,37 +103,6 @@ public final class JTSUtils {
 		return buildLineString(way);
 	}
 
-	/**
-	 * Internal conversion method to convert our internal data structure for ways to geometry objects in JTS. It will
-	 * care about ways and polygons and will create the right JTS objects.
-	 * 
-	 * @param way
-	 *            TDway which will be converted. Null if we were not able to convert the way to a Geometry object.
-	 * @return return Converted way as JTS object.
-	 */
-	static Geometry toJTSGeometry(TDWay way) {
-		return toJtsGeometry(way, null);
-
-	}
-
-	static Geometry repairInvalidPolygon(Geometry p) {
-		if (p instanceof Polygon || p instanceof MultiPolygon) {
-			// apply zero buffer trick
-			Geometry ret = p.buffer(0);
-			if (ret.getArea() > 0) {
-				return ret;
-			}
-			LOGGER.fine("unable to repair invalid polygon");
-			return null;
-		}
-		return p;
-	}
-
-	static Polygon buildPolygon(TDWay way) {
-		Coordinate[] coordinates = JTSUtils.toCoordinates(way);
-		return GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
-	}
-
 	static LinearRing buildLinearRing(TDWay way) {
 		Coordinate[] coordinates = JTSUtils.toCoordinates(way);
 		return GEOMETRY_FACTORY.createLinearRing(coordinates);
@@ -164,6 +127,11 @@ public final class JTSUtils {
 		}
 
 		return GEOMETRY_FACTORY.createMultiLineString(lineStrings.toArray(new LineString[lineStrings.size()]));
+	}
+
+	static Polygon buildPolygon(TDWay way) {
+		Coordinate[] coordinates = JTSUtils.toCoordinates(way);
+		return GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
 	}
 
 	static Polygon buildPolygon(TDWay outerWay, List<TDWay> innerWays) {
@@ -191,6 +159,37 @@ public final class JTSUtils {
 		}
 
 		return null;
+	}
+
+	static Geometry repairInvalidPolygon(Geometry p) {
+		if (p instanceof Polygon || p instanceof MultiPolygon) {
+			// apply zero buffer trick
+			Geometry ret = p.buffer(0);
+			if (ret.getArea() > 0) {
+				return ret;
+			}
+			LOGGER.fine("unable to repair invalid polygon");
+			return null;
+		}
+		return p;
+	}
+
+	/**
+	 * Internal conversion method to convert our internal data structure for ways to geometry objects in JTS. It will
+	 * care about ways and polygons and will create the right JTS objects.
+	 * 
+	 * @param way
+	 *            TDway which will be converted. Null if we were not able to convert the way to a Geometry object.
+	 * @return return Converted way as JTS object.
+	 */
+	static Geometry toJTSGeometry(TDWay way) {
+		return toJtsGeometry(way, null);
+
+	}
+
+	private static Coordinate toCoordinate(int latitude, int longitude) {
+		return new Coordinate(LatLongUtils.microdegreesToDegrees(longitude),
+				LatLongUtils.microdegreesToDegrees(latitude));
 	}
 
 	private JTSUtils() {

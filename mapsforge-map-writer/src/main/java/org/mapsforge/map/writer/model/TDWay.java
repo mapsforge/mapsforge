@@ -311,14 +311,6 @@ public class TDWay {
 	}
 
 	/**
-	 * @return true, if the way has at least 4 coordinates and the first and last coordinate are equal
-	 */
-	public boolean isValidClosedLine() {
-		return this.wayNodes != null && this.wayNodes.length >= GeoUtils.MIN_NODES_POLYGON
-				&& this.wayNodes[0].getId() == this.wayNodes[this.wayNodes.length - 1].getId();
-	}
-
-	/**
 	 * @return true, if the way is relevant for rendering
 	 */
 	public boolean isRenderRelevant() {
@@ -330,6 +322,14 @@ public class TDWay {
 	 */
 	public boolean isReversedInRelation() {
 		return this.reversedInRelation;
+	}
+
+	/**
+	 * @return true, if the way has at least 4 coordinates and the first and last coordinate are equal
+	 */
+	public boolean isValidClosedLine() {
+		return this.wayNodes != null && this.wayNodes.length >= GeoUtils.MIN_NODES_POLYGON
+				&& this.wayNodes[0].getId() == this.wayNodes[this.wayNodes.length - 1].getId();
 	}
 
 	/**

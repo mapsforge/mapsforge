@@ -57,6 +57,17 @@ public class MercatorProjectionTest {
 	}
 
 	@Test
+	public void latitudeToTileYTest() {
+		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
+			long tileY = MercatorProjection.latitudeToTileY(MercatorProjection.LATITUDE_MAX, zoomLevel);
+			Assert.assertEquals(0, tileY);
+
+			tileY = MercatorProjection.latitudeToTileY(MercatorProjection.LATITUDE_MIN, zoomLevel);
+			Assert.assertEquals(Tile.getMaxTileNumber(zoomLevel), tileY);
+		}
+	}
+
+	@Test
 	public void longitudeToPixelXTest() {
 		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
 			double pixelX = MercatorProjection.longitudeToPixelX(LatLongUtils.LONGITUDE_MIN, zoomLevel);
@@ -68,6 +79,17 @@ public class MercatorProjectionTest {
 
 			pixelX = MercatorProjection.longitudeToPixelX(LatLongUtils.LONGITUDE_MAX, zoomLevel);
 			Assert.assertEquals(mapSize, pixelX, 0);
+		}
+	}
+
+	@Test
+	public void longitudeToTileXTest() {
+		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
+			long tileX = MercatorProjection.longitudeToTileX(LatLongUtils.LONGITUDE_MIN, zoomLevel);
+			Assert.assertEquals(0, tileX);
+
+			tileX = MercatorProjection.longitudeToTileX(LatLongUtils.LONGITUDE_MAX, zoomLevel);
+			Assert.assertEquals(Tile.getMaxTileNumber(zoomLevel), tileX);
 		}
 	}
 

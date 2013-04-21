@@ -38,6 +38,15 @@ public class TileTest {
 		}
 	}
 
+	private static void verifyInvalidMaxTileNumber(byte zoomLevel) {
+		try {
+			Tile.getMaxTileNumber(zoomLevel);
+			Assert.fail("zoomLevel: " + zoomLevel);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
+
 	@Test
 	public void constructorTest() {
 		createTile(0, 0, (byte) 0);
@@ -62,6 +71,20 @@ public class TileTest {
 		Assert.assertNotEquals(tile1, tile3);
 		Assert.assertNotEquals(tile3, tile1);
 		Assert.assertNotEquals(tile1, new Object());
+	}
+
+	@Test
+	public void getMaxTileNumberTest() {
+		Assert.assertEquals(0, Tile.getMaxTileNumber((byte) 0));
+		Assert.assertEquals(1, Tile.getMaxTileNumber((byte) 1));
+		Assert.assertEquals(3, Tile.getMaxTileNumber((byte) 2));
+		Assert.assertEquals(7, Tile.getMaxTileNumber((byte) 3));
+		Assert.assertEquals(1023, Tile.getMaxTileNumber((byte) 10));
+		Assert.assertEquals(1048575, Tile.getMaxTileNumber((byte) 20));
+		Assert.assertEquals(1073741823, Tile.getMaxTileNumber((byte) 30));
+
+		verifyInvalidMaxTileNumber((byte) -1);
+		verifyInvalidMaxTileNumber(Byte.MIN_VALUE);
 	}
 
 	@Test

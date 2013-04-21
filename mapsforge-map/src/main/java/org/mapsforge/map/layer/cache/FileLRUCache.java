@@ -31,7 +31,7 @@ class FileLRUCache<T> extends LRUCache<T, File> {
 
 	@Override
 	protected boolean removeEldestEntry(Map.Entry<T, File> eldest) {
-		if (size() > getCapacity()) {
+		if (size() > this.capacity) {
 			remove(eldest.getKey());
 			File file = eldest.getValue();
 			if (file.exists() && !file.delete()) {

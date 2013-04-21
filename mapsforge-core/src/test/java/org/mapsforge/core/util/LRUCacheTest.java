@@ -26,7 +26,10 @@ public class LRUCacheTest {
 	private static final String VALUE3 = "bar3";
 
 	private static LRUCache<String, String> createLRUCache(int capacity) {
-		return new LRUCache<String, String>(capacity);
+		LRUCache<String, String> lruCache = new LRUCache<String, String>(capacity);
+		Assert.assertEquals(capacity, lruCache.capacity);
+
+		return lruCache;
 	}
 
 	private static void verifyInvalidCapacity(int capacity) {

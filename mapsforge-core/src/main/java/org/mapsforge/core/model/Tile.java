@@ -29,6 +29,18 @@ public class Tile implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * @return the maximum valid tile number for the given zoom level, 2<sup>zoomLevel</sup> -1.
+	 */
+	public static long getMaxTileNumber(byte zoomLevel) {
+		if (zoomLevel < 0) {
+			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
+		} else if (zoomLevel == 0) {
+			return 0;
+		}
+		return (2 << zoomLevel - 1) - 1;
+	}
+
+	/**
 	 * The X number of this tile.
 	 */
 	public final long tileX;
@@ -62,7 +74,7 @@ public class Tile implements Serializable {
 			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
 		}
 
-		double maxTileNumber = Math.pow(2, zoomLevel) - 1;
+		long maxTileNumber = getMaxTileNumber(zoomLevel);
 		if (tileX > maxTileNumber) {
 			throw new IllegalArgumentException("invalid tileX number: " + tileX);
 		} else if (tileY > maxTileNumber) {
