@@ -55,8 +55,12 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return new AndroidCanvas(canvas);
 	}
 
-	static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
+	public static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
 		return ((AndroidBitmap) bitmap).bitmap;
+	}
+
+	public static android.graphics.Canvas getCanvas(Canvas canvas) {
+		return ((AndroidCanvas) canvas).canvas;
 	}
 
 	static int getColor(Color color) {
