@@ -14,122 +14,68 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
-import org.mapsforge.android.maps.MapActivity;
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.overlay.Circle;
-import org.mapsforge.android.maps.overlay.ListOverlay;
-import org.mapsforge.android.maps.overlay.Marker;
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.android.maps.overlay.Polygon;
-import org.mapsforge.android.maps.overlay.PolygonalChain;
-import org.mapsforge.android.maps.overlay.Polyline;
-import org.mapsforge.core.model.GeoPoint;
-import org.mapsforge.map.reader.header.FileOpenResult;
-
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.Paint.Cap;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.Environment;
-import android.widget.Toast;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.overlay.Circle;
+import org.mapsforge.map.layer.overlay.Marker;
+import org.mapsforge.map.layer.overlay.Polygon;
+import org.mapsforge.map.layer.overlay.Polyline;
+import org.mapsforge.map.model.MapViewPosition;
 
 /**
- * An application which demonstrates how to use overlays.
+ * Basic map viewer with a few overlays added
+ * 
+ * @author Ludwig M Brinckmann
  */
-public class OverlayMapViewer extends MapActivity {
-	private static final GeoPoint BRANDENBURG_GATE = new GeoPoint(52.516273, 13.377725);
-	private static final GeoPoint CENTRAL_STATION = new GeoPoint(52.52498, 13.36962);
-	private static final File MAP_FILE = new File(Environment.getExternalStorageDirectory().getPath(), "berlin.map");
-	private static final GeoPoint VICTORY_COLUMN = new GeoPoint(52.514505, 13.350111);
-
-	private static Circle createCircle() {
-		Paint paintFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paintFill.setStyle(Paint.Style.FILL);
-		paintFill.setColor(Color.BLUE);
-		paintFill.setAlpha(64);
-
-		Paint paintStroke = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paintStroke.setStyle(Paint.Style.STROKE);
-		paintStroke.setColor(Color.BLUE);
-		paintStroke.setAlpha(128);
-		paintStroke.setStrokeWidth(3);
-
-		return new Circle(CENTRAL_STATION, 200, paintFill, paintStroke);
-	}
-
-	private static Polygon createPolygon() {
-		List<GeoPoint> geoPoints = Arrays.asList(VICTORY_COLUMN, CENTRAL_STATION, BRANDENBURG_GATE);
-		PolygonalChain polygonalChain = new PolygonalChain(geoPoints);
-
-		Paint paintFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paintFill.setStyle(Paint.Style.FILL);
-		paintFill.setColor(Color.YELLOW);
-		paintFill.setAlpha(96);
-		paintFill.setStrokeCap(Cap.ROUND);
-		paintFill.setStrokeJoin(Paint.Join.ROUND);
-
-		Paint paintStroke = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paintStroke.setStyle(Paint.Style.STROKE);
-		paintStroke.setColor(Color.GRAY);
-		paintStroke.setAlpha(192);
-		paintStroke.setStrokeWidth(5);
-		paintStroke.setStrokeCap(Cap.ROUND);
-		paintStroke.setStrokeJoin(Paint.Join.ROUND);
-
-		return new Polygon(Arrays.asList(polygonalChain), paintFill, paintStroke);
-	}
-
-	private static Polyline createPolyline() {
-		List<GeoPoint> geoPoints = Arrays.asList(BRANDENBURG_GATE, VICTORY_COLUMN);
-		PolygonalChain polygonalChain = new PolygonalChain(geoPoints);
-
-		Paint paintStroke = new Paint(Paint.ANTI_ALIAS_FLAG);
-		paintStroke.setStyle(Paint.Style.STROKE);
-		paintStroke.setColor(Color.MAGENTA);
-		paintStroke.setAlpha(128);
-		paintStroke.setStrokeWidth(7);
-		paintStroke.setPathEffect(new DashPathEffect(new float[] { 25, 15 }, 0));
-
-		return new Polyline(polygonalChain, paintStroke);
-	}
-
-	private Marker createMarker(int resourceIdentifier, GeoPoint geoPoint) {
-		Drawable drawable = getResources().getDrawable(resourceIdentifier);
-		return new Marker(geoPoint, Marker.boundCenterBottom(drawable));
-	}
+public class OverlayMapViewer extends BasicMapViewerXml {
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		MapView mapView = new MapView(this);
-		mapView.setClickable(true);
-		mapView.setBuiltInZoomControls(true);
-		FileOpenResult fileOpenResult = mapView.setMapFile(MAP_FILE);
-		if (!fileOpenResult.isSuccess()) {
-			Toast.makeText(this, fileOpenResult.getErrorMessage(), Toast.LENGTH_LONG).show();
-			finish();
-		}
-		setContentView(mapView);
+	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
+		super.addLayers(layerManager, tileCache, mapViewPosition);
 
-		Circle circle = createCircle();
-		Polygon polygon = createPolygon();
-		Polyline polyline = createPolyline();
-		Marker marker1 = createMarker(R.drawable.marker_red, VICTORY_COLUMN);
-		Marker marker2 = createMarker(R.drawable.marker_green, BRANDENBURG_GATE);
+		// we just add a few more overlays
+		addOverlayLayers(layerManager.getLayers());
+	}
 
-		ListOverlay listOverlay = new ListOverlay();
-		List<OverlayItem> overlayItems = listOverlay.getOverlayItems();
-		overlayItems.add(circle);
-		overlayItems.add(polygon);
-		overlayItems.add(polyline);
-		overlayItems.add(marker1);
-		overlayItems.add(marker2);
-		mapView.getOverlays().add(listOverlay);
+	protected void addOverlayLayers(List<Layer> layers) {
+		LatLong latLong1 = new LatLong(52.5, 13.4);
+		LatLong latLong2 = new LatLong(52.499, 13.402);
+		LatLong latLong3 = new LatLong(52.503, 13.399);
+		LatLong latLong4 = new LatLong(52.51, 13.401);
+		LatLong latLong5 = new LatLong(52.508, 13.408);
+
+		Polyline polyline = new Polyline(Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE), 8,
+				Style.STROKE));
+		List<LatLong> latLongs = polyline.getLatLongs();
+		latLongs.add(latLong1);
+		latLongs.add(latLong2);
+		latLongs.add(latLong3);
+
+		Paint paintFill = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 2, Style.STROKE);
+		Paint paintStroke = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2, Style.STROKE);
+		Polygon polygon = new Polygon(paintFill, paintStroke, AndroidGraphicFactory.INSTANCE);
+		latLongs = polygon.getLatLongs();
+		latLongs.add(latLong2);
+		latLongs.add(latLong3);
+		latLongs.add(latLong4);
+		latLongs.add(latLong5);
+
+		Marker marker1 = Utils.createMarker(this, R.drawable.marker_red, latLong1);
+
+		Circle circle = new Circle(latLong3, 300, Utils.createPaint(
+				AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0, Style.FILL), null);
+
+		layers.add(polyline);
+		layers.add(polygon);
+		layers.add(circle);
+		layers.add(marker1);
 	}
 }

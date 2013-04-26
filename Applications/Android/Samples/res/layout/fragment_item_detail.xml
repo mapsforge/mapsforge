@@ -1,0 +1,21 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/item_detail" 
+	android:layout_width="match_parent" 
+	android:layout_height="match_parent"
+	tools:context=".ItemDetailFragment">
+	<org.mapsforge.map.android.view.MapView android:id="@+id/mapView"
+		android:layout_width="fill_parent" android:layout_height="fill_parent" />
+	<TextView android:id="@+id/attribution" android:layout_width="fill_parent"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+		android:text="@string/copyright_osm"
+		android:textColor="#000"
+		android:textSize="4pt"
+		android:layout_marginBottom="1dip"
+		android:singleLine="true"
+		android:layout_height="10dip"
+		android:layout_marginLeft="5dip" 
+		android:visibility="visible"/>
+</RelativeLayout>
