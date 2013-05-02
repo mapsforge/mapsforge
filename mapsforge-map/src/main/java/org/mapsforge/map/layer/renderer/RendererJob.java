@@ -24,6 +24,7 @@ public class RendererJob extends Job {
 	public final File mapFile;
 	public final float textScale;
 	public final XmlRenderTheme xmlRenderTheme;
+	private final int hashCode;
 
 	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
 		super(tile);
@@ -39,6 +40,8 @@ public class RendererJob extends Job {
 		this.mapFile = mapFile;
 		this.xmlRenderTheme = xmlRenderTheme;
 		this.textScale = textScale;
+
+		this.hashCode = calculateHashCode();
 	}
 
 	@Override
@@ -63,6 +66,10 @@ public class RendererJob extends Job {
 
 	@Override
 	public int hashCode() {
+		return this.hashCode;
+	}
+
+	private int calculateHashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + this.mapFile.hashCode();

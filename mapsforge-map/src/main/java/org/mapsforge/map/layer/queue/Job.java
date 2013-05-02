@@ -35,10 +35,7 @@ public class Job {
 			return false;
 		}
 		Job other = (Job) obj;
-		if (!this.tile.equals(other.tile)) {
-			return false;
-		}
-		return true;
+		return this.tile.equals(other.tile);
 	}
 
 	@Override

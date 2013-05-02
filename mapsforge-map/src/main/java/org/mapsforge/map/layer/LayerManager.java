@@ -35,7 +35,7 @@ import org.mapsforge.map.view.MapView;
 
 public class LayerManager extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
-	private static final int MILLISECONDS_PER_FRAME = 50;
+	private static final int MILLISECONDS_PER_FRAME = 30;
 
 	private final Canvas drawingCanvas;
 	private final List<Layer> layers;
