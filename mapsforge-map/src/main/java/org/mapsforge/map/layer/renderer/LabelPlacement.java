@@ -195,37 +195,6 @@ class LabelPlacement {
 	}
 
 	/**
-	 * This method removes all the Symbols, that overlap each other. So that the output is collision free.
-	 * 
-	 * @param symbols
-	 *            symbols from the actual object
-	 */
-	void removeOverlappingSymbols(List<SymbolContainer> symbols) {
-		int dis = SYMBOL_DISTANCE_TO_SYMBOL;
-
-		for (int x = 0; x < symbols.size(); x++) {
-			this.symbolContainer = symbols.get(x);
-			this.rect1 = new Rectangle((int) this.symbolContainer.point.x - dis, (int) this.symbolContainer.point.y
-					- dis, (int) this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth() + dis,
-					(int) this.symbolContainer.point.y + this.symbolContainer.symbol.getHeight() + dis);
-
-			for (int y = x + 1; y < symbols.size(); y++) {
-				if (y != x) {
-					this.symbolContainer = symbols.get(y);
-					this.rect2 = new Rectangle((int) this.symbolContainer.point.x, (int) this.symbolContainer.point.y,
-							(int) this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth(),
-							(int) this.symbolContainer.point.y + this.symbolContainer.symbol.getHeight());
-
-					if (this.rect2.intersects(this.rect1)) {
-						symbols.remove(y);
-						y--;
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Centers the labels.
 	 * 
 	 * @param labels
@@ -557,6 +526,37 @@ class LabelPlacement {
 					if (this.rect1.intersects(this.rect2)) {
 						areaLabels.remove(y);
 
+						y--;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * This method removes all the Symbols, that overlap each other. So that the output is collision free.
+	 * 
+	 * @param symbols
+	 *            symbols from the actual object
+	 */
+	private void removeOverlappingSymbols(List<SymbolContainer> symbols) {
+		int dis = SYMBOL_DISTANCE_TO_SYMBOL;
+
+		for (int x = 0; x < symbols.size(); x++) {
+			this.symbolContainer = symbols.get(x);
+			this.rect1 = new Rectangle((int) this.symbolContainer.point.x - dis, (int) this.symbolContainer.point.y
+					- dis, (int) this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth() + dis,
+					(int) this.symbolContainer.point.y + this.symbolContainer.symbol.getHeight() + dis);
+
+			for (int y = x + 1; y < symbols.size(); y++) {
+				if (y != x) {
+					this.symbolContainer = symbols.get(y);
+					this.rect2 = new Rectangle((int) this.symbolContainer.point.x, (int) this.symbolContainer.point.y,
+							(int) this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth(),
+							(int) this.symbolContainer.point.y + this.symbolContainer.symbol.getHeight());
+
+					if (this.rect2.intersects(this.rect1)) {
+						symbols.remove(y);
 						y--;
 					}
 				}

@@ -76,9 +76,9 @@ public class Tile implements Serializable {
 
 		long maxTileNumber = getMaxTileNumber(zoomLevel);
 		if (tileX > maxTileNumber) {
-			throw new IllegalArgumentException("invalid tileX number: " + tileX);
+			throw new IllegalArgumentException("invalid tileX number on zoom level " + zoomLevel + ": " + tileX);
 		} else if (tileY > maxTileNumber) {
-			throw new IllegalArgumentException("invalid tileY number: " + tileY);
+			throw new IllegalArgumentException("invalid tileY number on zoom level " + zoomLevel + ": " + tileY);
 		}
 
 		this.tileX = tileX;

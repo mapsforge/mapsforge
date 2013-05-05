@@ -218,7 +218,7 @@ class DependencyCache {
 	 *            current area Labels, that will be displayed
 	 */
 	void removeAreaLabelsInAlreadyDrawnAreas(List<PointTextContainer> areaLabels) {
-		double maxTileNumber = Math.pow(2, this.currentTile.zoomLevel) - 1;
+		long maxTileNumber = Tile.getMaxTileNumber(this.currentTile.zoomLevel);
 
 		Tile lefttmp = null;
 		if (this.currentTile.tileX > 0) {
@@ -330,7 +330,7 @@ class DependencyCache {
 	 *            possible label positions form the two or four point Greedy
 	 */
 	void removeReferencePointsFromDependencyCache(LabelPlacement.ReferencePosition[] refPos) {
-		double maxTileNumber = Math.pow(2, this.currentTile.zoomLevel) - 1;
+		long maxTileNumber = Tile.getMaxTileNumber(this.currentTile.zoomLevel);
 
 		Tile lefttmp = null;
 		if (this.currentTile.tileX > 0) {
@@ -455,7 +455,7 @@ class DependencyCache {
 	}
 
 	void removeSymbolsFromDrawnAreas(List<SymbolContainer> symbols) {
-		double maxTileNumber = Math.pow(2, this.currentTile.zoomLevel) - 1;
+		long maxTileNumber = Tile.getMaxTileNumber(this.currentTile.zoomLevel);
 
 		Tile lefttmp = null;
 		if (this.currentTile.tileX > 0) {
