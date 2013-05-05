@@ -33,9 +33,11 @@ public class MarkerTest {
 		LatLong latLong = new LatLong(0, 0);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
-		Marker marker = new Marker(latLong, bitmap, 0, 0);
+		Marker marker = new Marker(latLong, bitmap, 1, 2);
 		Assert.assertEquals(latLong, marker.getLatLong());
 		Assert.assertEquals(bitmap, marker.getBitmap());
+		Assert.assertEquals(1, marker.getHorizontalOffset());
+		Assert.assertEquals(2, marker.getVerticalOffset());
 	}
 
 	@Test
@@ -63,11 +65,19 @@ public class MarkerTest {
 		Marker marker = new Marker(null, null, 0, 0);
 		Assert.assertNull(marker.getLatLong());
 		Assert.assertNull(marker.getBitmap());
+		Assert.assertEquals(0, marker.getHorizontalOffset());
+		Assert.assertEquals(0, marker.getVerticalOffset());
 
 		marker.setLatLong(latLong);
 		Assert.assertEquals(latLong, marker.getLatLong());
 
 		marker.setBitmap(bitmap);
 		Assert.assertEquals(bitmap, marker.getBitmap());
+
+		marker.setHorizontalOffset(-1);
+		Assert.assertEquals(-1, marker.getHorizontalOffset());
+
+		marker.setVerticalOffset(-2);
+		Assert.assertEquals(-2, marker.getVerticalOffset());
 	}
 }

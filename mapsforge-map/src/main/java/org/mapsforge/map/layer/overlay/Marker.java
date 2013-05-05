@@ -28,27 +28,27 @@ import org.mapsforge.map.layer.Layer;
  */
 public class Marker extends Layer {
 	private Bitmap bitmap;
-	private final int dx;
-	private final int dy;
+	private int horizontalOffset;
 	private LatLong latLong;
+	private int verticalOffset;
 
 	/**
 	 * @param latLong
 	 *            the initial geographical coordinates of this marker (may be null).
 	 * @param bitmap
 	 *            the initial {@code Bitmap} of this marker (may be null).
-	 * @param dx
+	 * @param horizontalOffset
 	 *            the horizontal marker offset.
-	 * @param dy
+	 * @param verticalOffset
 	 *            the vertical marker offset.
 	 */
-	public Marker(LatLong latLong, Bitmap bitmap, int dx, int dy) {
+	public Marker(LatLong latLong, Bitmap bitmap, int horizontalOffset, int verticalOffset) {
 		super();
 
 		this.latLong = latLong;
 		this.bitmap = bitmap;
-		this.dx = dx;
-		this.dy = dy;
+		this.horizontalOffset = horizontalOffset;
+		this.verticalOffset = verticalOffset;
 	}
 
 	@Override
@@ -63,8 +63,8 @@ public class Marker extends Layer {
 		int halfBitmapWidth = this.bitmap.getWidth() / 2;
 		int halfBitmapHeight = this.bitmap.getHeight() / 2;
 
-		int left = (int) (pixelX - topLeftPoint.x - halfBitmapWidth + this.dx);
-		int top = (int) (pixelY - topLeftPoint.y - halfBitmapHeight + this.dy);
+		int left = (int) (pixelX - topLeftPoint.x - halfBitmapWidth + this.horizontalOffset);
+		int top = (int) (pixelY - topLeftPoint.y - halfBitmapHeight + this.verticalOffset);
 		int right = left + this.bitmap.getWidth();
 		int bottom = top + this.bitmap.getHeight();
 
@@ -85,10 +85,24 @@ public class Marker extends Layer {
 	}
 
 	/**
+	 * @return the horizontal offset of this marker.
+	 */
+	public synchronized int getHorizontalOffset() {
+		return this.horizontalOffset;
+	}
+
+	/**
 	 * @return the geographical coordinates of this marker (may be null).
 	 */
 	public synchronized LatLong getLatLong() {
 		return this.latLong;
+	}
+
+	/**
+	 * @return the vertical offset of this marker.
+	 */
+	public synchronized int getVerticalOffset() {
+		return this.verticalOffset;
 	}
 
 	/**
@@ -100,10 +114,26 @@ public class Marker extends Layer {
 	}
 
 	/**
+	 * @param horizontalOffset
+	 *            the new horizontal offset of this marker.
+	 */
+	public synchronized void setHorizontalOffset(int horizontalOffset) {
+		this.horizontalOffset = horizontalOffset;
+	}
+
+	/**
 	 * @param latLong
 	 *            the new geographical coordinates of this marker (may be null).
 	 */
 	public synchronized void setLatLong(LatLong latLong) {
 		this.latLong = latLong;
+	}
+
+	/**
+	 * @param verticalOffset
+	 *            the new vertical offset of this marker.
+	 */
+	public synchronized void setVerticalOffset(int verticalOffset) {
+		this.verticalOffset = verticalOffset;
 	}
 }
