@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Dimension;
 
+import android.graphics.PorterDuff;
 import android.graphics.Region;
 
 class AndroidCanvas implements Canvas {
@@ -80,7 +81,7 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void fillColor(Color color) {
-		this.canvas.drawColor(AndroidGraphicFactory.getColor(color));
+		this.canvas.drawColor(AndroidGraphicFactory.getColor(color), PorterDuff.Mode.CLEAR);
 	}
 
 	@Override
