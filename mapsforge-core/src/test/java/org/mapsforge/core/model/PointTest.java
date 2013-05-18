@@ -64,6 +64,7 @@ public class PointTest {
 		TestUtils.notEqualsTest(point1, point3);
 		TestUtils.notEqualsTest(point1, point4);
 		TestUtils.notEqualsTest(point1, new Object());
+		TestUtils.notEqualsTest(point1, null);
 	}
 
 	@Test

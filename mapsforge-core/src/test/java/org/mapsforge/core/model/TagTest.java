@@ -44,6 +44,7 @@ public class TagTest {
 		TestUtils.notEqualsTest(tag1, tag3);
 		TestUtils.notEqualsTest(tag1, tag4);
 		TestUtils.notEqualsTest(tag1, new Object());
+		TestUtils.notEqualsTest(tag1, null);
 	}
 
 	@Test

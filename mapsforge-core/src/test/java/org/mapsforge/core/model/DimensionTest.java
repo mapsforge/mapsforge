@@ -57,6 +57,7 @@ public class DimensionTest {
 		TestUtils.notEqualsTest(dimension1, dimension3);
 		TestUtils.notEqualsTest(dimension1, dimension4);
 		TestUtils.notEqualsTest(dimension1, new Object());
+		TestUtils.notEqualsTest(dimension1, null);
 	}
 
 	@Test

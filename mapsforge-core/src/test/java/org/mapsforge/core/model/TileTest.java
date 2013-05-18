@@ -71,6 +71,7 @@ public class TileTest {
 		TestUtils.notEqualsTest(tile1, tile4);
 		TestUtils.notEqualsTest(tile1, tile5);
 		TestUtils.notEqualsTest(tile1, new Object());
+		TestUtils.notEqualsTest(tile1, null);
 	}
 
 	@Test

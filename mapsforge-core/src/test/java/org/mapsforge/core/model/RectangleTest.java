@@ -85,6 +85,7 @@ public class RectangleTest {
 		TestUtils.notEqualsTest(rectangle1, rectangle5);
 		TestUtils.notEqualsTest(rectangle1, rectangle6);
 		TestUtils.notEqualsTest(rectangle1, new Object());
+		TestUtils.notEqualsTest(rectangle1, null);
 	}
 
 	@Test

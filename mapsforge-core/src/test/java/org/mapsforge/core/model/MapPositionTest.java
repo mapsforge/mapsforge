@@ -53,6 +53,7 @@ public class MapPositionTest {
 		TestUtils.notEqualsTest(mapPosition1, mapPosition3);
 		TestUtils.notEqualsTest(mapPosition1, mapPosition4);
 		TestUtils.notEqualsTest(mapPosition1, new Object());
+		TestUtils.notEqualsTest(mapPosition1, null);
 	}
 
 	@Test

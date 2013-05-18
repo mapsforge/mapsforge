@@ -49,6 +49,7 @@ public class LatLongTest {
 		TestUtils.notEqualsTest(latLong1, latLong3);
 		TestUtils.notEqualsTest(latLong1, latLong4);
 		TestUtils.notEqualsTest(latLong1, new Object());
+		TestUtils.notEqualsTest(latLong1, null);
 	}
 
 	@Test

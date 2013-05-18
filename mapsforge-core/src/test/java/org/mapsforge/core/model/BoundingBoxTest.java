@@ -76,6 +76,7 @@ public class BoundingBoxTest {
 		TestUtils.notEqualsTest(boundingBox1, boundingBox5);
 		TestUtils.notEqualsTest(boundingBox1, boundingBox6);
 		TestUtils.notEqualsTest(boundingBox1, new Object());
+		TestUtils.notEqualsTest(boundingBox1, null);
 	}
 
 	@Test
