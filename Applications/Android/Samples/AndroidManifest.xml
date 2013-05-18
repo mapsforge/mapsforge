@@ -10,9 +10,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 	
-    
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="10"
         android:targetSdkVersion="17" />
 
     <application
@@ -77,5 +76,4 @@
                 android:value=".ItemListActivity" />
         </activity>
     </application>
-
 </manifest>

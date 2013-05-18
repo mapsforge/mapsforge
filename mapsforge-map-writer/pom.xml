@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.mapsforge</groupId>
@@ -10,6 +11,11 @@
 
 	<artifactId>mapsforge-map-writer</artifactId>
 	<packaging>jar</packaging>
+
+	<properties>
+		<mapfile.writer.version>${project.version}</mapfile.writer.version>
+		<rootDirectory>../</rootDirectory>
+	</properties>
 
 	<build>
 		<resources>
@@ -33,7 +39,9 @@
 						<configuration>
 							<target>
 								<echo message="Copying jar file to osmosis plugin dir" />
-								<copy overwrite="true" file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar" todir="${osmosis.plugin.dir}" />
+								<copy overwrite="true"
+									file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
+									todir="${osmosis.plugin.dir}" />
 							</target>
 						</configuration>
 						<goals>
@@ -118,10 +126,6 @@
 		</profile>
 	</profiles>
 
-	<properties>
-		<mapfile.writer.version>${project.version}</mapfile.writer.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.mapsforge</groupId>
@@ -157,7 +161,7 @@
 			<groupId>org.openstreetmap.osmosis</groupId>
 			<artifactId>osmosis-core</artifactId>
 			<version>0.43-RELEASE</version>
-			<scope>provided</scope>			
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
