@@ -32,7 +32,7 @@
 		<module>mapsforge-map-reader</module>
 		<module>mapsforge-map-writer</module>
 		<module>Rewrite</module>
-		<!-- <module>Applications/Android/Samples</module> -->
+		<module>Applications/Android/Samples</module>
 		<module>SwingMapViewer</module>
 	</modules>
 
@@ -82,14 +82,14 @@
 				<plugin>
 					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 					<artifactId>android-maven-plugin</artifactId>
-					<version>3.5.3</version>
+					<version>3.6.0</version>
 					<extensions>true</extensions>
 					<configuration>
 						<genDirectory>gen</genDirectory>
 						<genDirectoryAidl>gen</genDirectoryAidl>
 						<extractDuplicates>true</extractDuplicates>
 						<sdk>
-							<platform>10</platform>
+							<platform>16</platform>
 						</sdk>
 					</configuration>
 				</plugin>

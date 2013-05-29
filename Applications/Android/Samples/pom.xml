@@ -24,13 +24,51 @@
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 				<artifactId>android-maven-plugin</artifactId>
+				<configuration>
+					<dex>
+						<jvmArguments>
+							<jvmArgument>-Xmx512M</jvmArgument>
+						</jvmArguments>
+					</dex>
+				</configuration>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<useProjectReferences>false</useProjectReferences>
+					<buildOutputDirectory>bin/classes</buildOutputDirectory>
+					<additionalBuildcommands>
+						<buildcommand>com.android.ide.eclipse.adt.ResourceManagerBuilder</buildcommand>
+						<buildcommand>com.android.ide.eclipse.adt.PreCompilerBuilder</buildcommand>
+						<buildcommand>com.android.ide.eclipse.adt.ApkBuilder</buildcommand>
+						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+					</additionalBuildcommands>
+					<additionalProjectnatures>
+						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+						<projectnature>com.android.ide.eclipse.adt.AndroidNature</projectnature>
+					</additionalProjectnatures>
+					<classpathContainers>
+						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+						<classpathContainer>com.android.ide.eclipse.adt.ANDROID_FRAMEWORK</classpathContainer>
+						<classpathContainer>com.android.ide.eclipse.adt.LIBRARIES</classpathContainer>
+						<classpathContainer>com.android.ide.eclipse.adt.DEPENDENCIES</classpathContainer>
+					</classpathContainers>
+					<excludes>
+						<exclude>com.google.android:android</exclude>
+						<exclude>org.mapsforge:mapsforge-core</exclude>
+						<exclude>org.mapsforge:mapsforge-map</exclude>
+						<exclude>org.mapsforge:mapsforge-map-reader</exclude>
+						<exclude>org.apache.httpcomponents:httpclient</exclude>
+						<exclude>org.apache.httpcomponents:httpcore</exclude>
+						<exclude>commons-codec:commons-codec</exclude>
+						<exclude>commons-logging:commons-logging</exclude>
+						<exclude>org.json:json</exclude>
+						<exclude>org.khronos:opengl-api</exclude>
+						<exclude>xerces:xmlParserAPIs</exclude>
+						<exclude>xpp3:xpp3</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -40,14 +78,34 @@
 		<dependency>
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-map-android</artifactId>
+			<classifier>jar-with-dependencies</classifier>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.mapsforge</groupId>
+					<artifactId>mapsforge-map</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mapsforge</groupId>
+					<artifactId>mapsforge-map-reader</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mapsforge</groupId>
+					<artifactId>mapsforge-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
-			<version>2.3.3</version>
+			<version>4.1.1.4</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>support-v4</artifactId>
+			<version>r7</version>
 		</dependency>
 	</dependencies>
 </project>
