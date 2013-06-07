@@ -77,7 +77,7 @@ public class BasicMapViewer extends Activity {
 	}
 
 	protected MapPosition getInitialPosition() {
-		return new MapPosition(new LatLong(52.5, 13.4), (byte) 16);
+		return new MapPosition(new LatLong(52.517, 13.389), (byte) 14);
 	}
 
 	/**

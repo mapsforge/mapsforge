@@ -57,9 +57,6 @@
 					</classpathContainers>
 					<excludes>
 						<exclude>com.google.android:android</exclude>
-						<exclude>org.mapsforge:mapsforge-core</exclude>
-						<exclude>org.mapsforge:mapsforge-map</exclude>
-						<exclude>org.mapsforge:mapsforge-map-reader</exclude>
 						<exclude>org.apache.httpcomponents:httpclient</exclude>
 						<exclude>org.apache.httpcomponents:httpcore</exclude>
 						<exclude>commons-codec:commons-codec</exclude>
@@ -78,22 +75,7 @@
 		<dependency>
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-map-android</artifactId>
-			<classifier>jar-with-dependencies</classifier>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.mapsforge</groupId>
-					<artifactId>mapsforge-map</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mapsforge</groupId>
-					<artifactId>mapsforge-map-reader</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.mapsforge</groupId>
-					<artifactId>mapsforge-core</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -102,6 +84,7 @@
 			<version>4.1.1.4</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>support-v4</artifactId>

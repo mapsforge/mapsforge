@@ -154,13 +154,13 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>14.0</version>
+			<version>14.0.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openstreetmap.osmosis</groupId>
 			<artifactId>osmosis-core</artifactId>
-			<version>0.43-RELEASE</version>
+			<version>0.43.1</version>
 			<scope>provided</scope>
 		</dependency>
 
