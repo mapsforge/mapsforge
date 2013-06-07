@@ -14,9 +14,6 @@
  */
 package org.mapsforge.map.writer.model;
 
-/**
- * @author bross
- */
 public class TileGridLayout {
 	private final int amountTilesHorizontal;
 	private final int amountTilesVertical;

@@ -17,9 +17,6 @@ package org.mapsforge.map.writer.model;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author bross
- */
 public abstract class TileData {
 	/**
 	 * Add a POI to the tile.

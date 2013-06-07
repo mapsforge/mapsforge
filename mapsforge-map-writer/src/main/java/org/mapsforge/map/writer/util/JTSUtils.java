@@ -31,9 +31,6 @@ import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
-/**
- * @author bross
- */
 public final class JTSUtils {
 	private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 	private static final Logger LOGGER = Logger.getLogger(GeoUtils.class.getName());
@@ -135,7 +132,6 @@ public final class JTSUtils {
 	}
 
 	static Polygon buildPolygon(TDWay outerWay, List<TDWay> innerWays) {
-
 		if (innerWays == null || innerWays.isEmpty()) {
 			return buildPolygon(outerWay);
 		}
@@ -184,7 +180,6 @@ public final class JTSUtils {
 	 */
 	static Geometry toJTSGeometry(TDWay way) {
 		return toJtsGeometry(way, null);
-
 	}
 
 	private static Coordinate toCoordinate(int latitude, int longitude) {

@@ -22,8 +22,6 @@ import org.openstreetmap.osmosis.core.plugin.PluginLoader;
 
 /**
  * The Osmosis PluginLoader for the mapfile-writer osmosis plugin.
- * 
- * @author bross
  */
 public class MapFileWriterPluginLoader implements PluginLoader {
 	@Override

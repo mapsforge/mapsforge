@@ -17,8 +17,6 @@ package org.mapsforge.map.writer.model;
 /**
  * Represents the configuration of zoom intervals. A zoom interval is defined by a base zoom level, a minimum zoom level
  * and a maximum zoom level.
- * 
- * @author bross
  */
 public final class ZoomIntervalConfiguration {
 	/**

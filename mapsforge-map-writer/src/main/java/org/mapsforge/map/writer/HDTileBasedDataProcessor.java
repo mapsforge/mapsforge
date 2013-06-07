@@ -45,8 +45,6 @@ import org.openstreetmap.osmosis.core.store.SingleClassObjectSerializationFactor
 
 /**
  * A TileBasedDataStore that uses the hard disk as storage device for temporary data structures.
- * 
- * @author bross
  */
 public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 	/**

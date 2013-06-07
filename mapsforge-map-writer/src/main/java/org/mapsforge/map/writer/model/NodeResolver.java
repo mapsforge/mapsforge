@@ -16,8 +16,6 @@ package org.mapsforge.map.writer.model;
 
 /**
  * Resolves node entities.
- * 
- * @author bross
  */
 public interface NodeResolver {
 	/**

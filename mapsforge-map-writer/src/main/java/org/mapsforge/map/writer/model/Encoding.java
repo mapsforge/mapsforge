@@ -16,8 +16,6 @@ package org.mapsforge.map.writer.model;
 
 /**
  * Represents the encoding which is used to store lat/lon coordinates.
- * 
- * @author bross
  */
 public enum Encoding {
 	/**

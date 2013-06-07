@@ -19,8 +19,6 @@ import java.util.List;
 /**
  * Class to store a WayDataBlock. Each WayDataBlock can store one way and a list of corresponding inner ways. Simple
  * ways and simple polygons have zero inner ways while multi polygons have one or more inner ways.
- * 
- * @author sahin
  */
 public class WayDataBlock {
 	private final Encoding encoding;

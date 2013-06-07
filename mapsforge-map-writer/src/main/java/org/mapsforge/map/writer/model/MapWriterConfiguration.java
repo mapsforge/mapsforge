@@ -24,8 +24,6 @@ import org.mapsforge.map.writer.OSMTagMapping;
 
 /**
  * Configuration for the map file writer.
- * 
- * @author bross
  */
 public class MapWriterConfiguration {
 	private BoundingBox bboxConfiguration;

@@ -17,8 +17,6 @@ package org.mapsforge.map.writer.model;
 /**
  * Represents an OSM entity which is defined by a tag/value pair. Each OSM entity is attributed with the zoom level on
  * which it should appear first.
- * 
- * @author bross
  */
 public class OSMTag {
 	private static final String KEY_VALUE_SEPARATOR = "=";

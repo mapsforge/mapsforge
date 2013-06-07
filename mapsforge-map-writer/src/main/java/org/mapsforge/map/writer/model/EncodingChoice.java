@@ -16,8 +16,6 @@ package org.mapsforge.map.writer.model;
 
 /**
  * Represents preferred encoding.
- * 
- * @author bross
  */
 public enum EncodingChoice {
 	/**

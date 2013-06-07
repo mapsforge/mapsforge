@@ -16,8 +16,6 @@ package org.mapsforge.map.writer.util;
 
 /**
  * Defines some constants.
- * 
- * @author bross
  */
 public final class Constants {
 	/**

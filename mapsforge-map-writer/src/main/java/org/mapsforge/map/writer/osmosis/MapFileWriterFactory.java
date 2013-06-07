@@ -23,8 +23,6 @@ import org.openstreetmap.osmosis.core.pipeline.v0_6.SinkManager;
 
 /**
  * Factory for the mapfile writer osmosis plugin.
- * 
- * @author bross
  */
 class MapFileWriterFactory extends TaskManagerFactory {
 	private static final String PARAM_BBOX = "bbox";

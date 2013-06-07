@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 /**
  * Encapsulates the information given in the oceantiles_12.dat file. That is the information whether a given tile on
  * zoom level 12 is completely covered by water, land or is mixed.
- * 
- * @author bross
  */
 public final class TileInfo {
 	/**

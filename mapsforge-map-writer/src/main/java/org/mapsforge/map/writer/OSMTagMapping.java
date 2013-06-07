@@ -51,8 +51,6 @@ import org.xml.sax.SAXParseException;
 /**
  * Reorders and maps tag ids according to their frequency in the input data. Ids are remapped so that the most frequent
  * entities receive the lowest ids.
- * 
- * @author bross
  */
 public final class OSMTagMapping {
 	private class HistogramEntry implements Comparable<HistogramEntry> {

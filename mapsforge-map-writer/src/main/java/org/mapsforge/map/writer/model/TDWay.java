@@ -28,8 +28,6 @@ import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 
 /**
  * Represents an OSM way.
- * 
- * @author bross
  */
 public class TDWay {
 	// TODO these constants are not necessary anymore

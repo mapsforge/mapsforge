@@ -23,9 +23,6 @@ import org.mapsforge.map.writer.model.TDNode;
 import org.mapsforge.map.writer.model.TDWay;
 import org.mapsforge.map.writer.model.TileData;
 
-/**
- * @author bross
- */
 public class HDTileData extends TileData {
 	private final TLongArrayList pois;
 	private final TLongArrayList ways;

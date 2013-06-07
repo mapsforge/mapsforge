@@ -46,8 +46,6 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 
 /**
  * Provides utility functions for the maps preprocessing.
- * 
- * @author bross
  */
 public final class GeoUtils {
 	/**
@@ -113,7 +111,6 @@ public final class GeoUtils {
 			LOGGER.log(Level.WARNING, "JTS cannot clip way, not storing it in data file: " + way.getId(), e);
 			way.setInvalid(true);
 			return null;
-
 		}
 		return ret;
 	}

@@ -23,8 +23,6 @@ import org.mapsforge.map.writer.model.WayDataBlock;
 
 /**
  * Provides delta or double delta encoding of lists of integers.
- * 
- * @author bross
  */
 public final class DeltaEncoder {
 	/**

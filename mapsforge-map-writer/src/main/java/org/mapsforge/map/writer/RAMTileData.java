@@ -25,9 +25,6 @@ import org.mapsforge.map.writer.model.TDNode;
 import org.mapsforge.map.writer.model.TDWay;
 import org.mapsforge.map.writer.model.TileData;
 
-/**
- * @author bross
- */
 public class RAMTileData extends TileData {
 	private final Set<TDNode> pois;
 	private final Set<TDWay> ways;

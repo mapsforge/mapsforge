@@ -14,9 +14,6 @@
  */
 package org.mapsforge.map.writer.model;
 
-/**
- * @author bross
- */
 public class SpecialTagExtractionResult {
 	private final short elevation;
 	private final String housenumber;

@@ -38,8 +38,6 @@ import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
 /**
  * An Osmosis plugin that reads OpenStreetMap data and converts it to a mapsforge binary file.
- * 
- * @author bross
  */
 public class MapFileWriterTask implements Sink {
 	private static final Logger LOGGER = Logger.getLogger(MapFileWriterTask.class.getName());

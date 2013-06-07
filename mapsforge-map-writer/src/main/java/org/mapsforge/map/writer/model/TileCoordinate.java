@@ -19,8 +19,6 @@ import java.util.List;
 
 /**
  * Represents a coordinate in the tile space.
- * 
- * @author bross
  */
 public class TileCoordinate {
 	private final int x;

@@ -60,8 +60,6 @@ import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Writes the binary file format for mapsforge maps.
- * 
- * @author bross
  */
 public final class MapFileWriter {
 	private static class JTSGeometryCacheLoader extends CacheLoader<TDWay, Geometry> {

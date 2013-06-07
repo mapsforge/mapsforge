@@ -29,8 +29,6 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 
 /**
  * OpenStreetMap related utility methods.
- * 
- * @author bross
  */
 public final class OSMUtils {
 	private static final Logger LOGGER = Logger.getLogger(OSMUtils.class.getName());

@@ -27,8 +27,6 @@ import org.openstreetmap.osmosis.core.domain.v0_6.RelationMember;
 
 /**
  * Represents an OSM relation.
- * 
- * @author bross
  */
 public class TDRelation {
 	private static final Logger LOGGER = Logger.getLogger(TDRelation.class.getName());
