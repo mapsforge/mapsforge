@@ -16,7 +16,7 @@ package org.mapsforge.map.android.layer;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
@@ -40,6 +40,7 @@ import android.os.Bundle;
  * A thread-safe {@link Layer} implementation to display the current location.
  */
 public class MyLocationOverlay extends Layer implements LocationListener {
+	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
 	private static final int UPDATE_DISTANCE = 0;
 	private static final int UPDATE_INTERVAL = 1000;
 
@@ -53,17 +54,16 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	private static Paint getDefaultCircleFill() {
-		return getPaint(48, Color.BLUE, 0, Style.FILL);
+		return getPaint(GRAPHIC_FACTORY.createColor(48, 0, 0, 255), 0, Style.FILL);
 	}
 
 	private static Paint getDefaultCircleStroke() {
-		return getPaint(160, Color.BLUE, 2, Style.STROKE);
+		return getPaint(GRAPHIC_FACTORY.createColor(160, 0, 0, 255), 2, Style.STROKE);
 	}
 
-	private static Paint getPaint(int alpha, Color color, int strokeWidth, Style style) {
-		Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
+	private static Paint getPaint(int color, int strokeWidth, Style style) {
+		Paint paint = GRAPHIC_FACTORY.createPaint();
 		paint.setColor(color);
-		paint.setAlpha(alpha);
 		paint.setStrokeWidth(strokeWidth);
 		paint.setStyle(style);
 		return paint;
