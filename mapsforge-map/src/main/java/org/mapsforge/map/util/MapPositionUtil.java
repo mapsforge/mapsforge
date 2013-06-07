@@ -50,9 +50,9 @@ public final class MapPositionUtil {
 		int halfCanvasWidth = canvasDimension.width / 2;
 		int halfCanvasHeight = canvasDimension.height / 2;
 
-		double pixelX = MercatorProjection.longitudeToPixelX(centerPoint.longitude, zoomLevel) - halfCanvasWidth;
-		double pixelY = MercatorProjection.latitudeToPixelY(centerPoint.latitude, zoomLevel) - halfCanvasHeight;
-		return new Point(pixelX, pixelY);
+		double pixelX = Math.round(MercatorProjection.longitudeToPixelX(centerPoint.longitude, zoomLevel));
+		double pixelY = Math.round(MercatorProjection.latitudeToPixelY(centerPoint.latitude, zoomLevel));
+		return new Point((int) pixelX - halfCanvasWidth, (int) pixelY - halfCanvasHeight);
 	}
 
 	private MapPositionUtil() {
