@@ -34,14 +34,14 @@ public class PolylineTest {
 	public void constructorTest() {
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
-		Polyline polyline = new Polyline(paintStroke);
+		Polyline polyline = new Polyline(paintStroke, GRAPHIC_FACTORY);
 		Assert.assertTrue(polyline.getLatLongs().isEmpty());
 		Assert.assertEquals(paintStroke, polyline.getPaintStroke());
 	}
 
 	@Test
 	public void drawTest() {
-		Polyline polyline = new Polyline(null);
+		Polyline polyline = new Polyline(null, GRAPHIC_FACTORY);
 
 		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
 		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
@@ -62,7 +62,7 @@ public class PolylineTest {
 		LatLong latLong = new LatLong(0, 0);
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
-		Polyline polyline = new Polyline(null);
+		Polyline polyline = new Polyline(null, GRAPHIC_FACTORY);
 		Assert.assertTrue(polyline.getLatLongs().isEmpty());
 		Assert.assertNull(polyline.getPaintStroke());
 

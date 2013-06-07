@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
@@ -33,6 +35,7 @@ import org.mapsforge.map.layer.Layer;
  * and transparency.
  */
 public class Polyline extends Layer {
+	private final GraphicFactory graphicFactory;
 	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
 	private Paint paintStroke;
 
@@ -40,10 +43,11 @@ public class Polyline extends Layer {
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this polyline (may be null).
 	 */
-	public Polyline(Paint paintStroke) {
+	public Polyline(Paint paintStroke, GraphicFactory graphicFactory) {
 		super();
 
 		this.paintStroke = paintStroke;
+		this.graphicFactory = graphicFactory;
 	}
 
 	@Override
@@ -53,20 +57,26 @@ public class Polyline extends Layer {
 		}
 
 		Iterator<LatLong> iterator = this.latLongs.iterator();
+		if (!iterator.hasNext()) {
+			return;
+		}
+
 		LatLong latLong = iterator.next();
-		int previousX = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
-		int previousY = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
+		int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
+		int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
+
+		Path path = this.graphicFactory.createPath();
+		path.moveTo(x, y);
 
 		while (iterator.hasNext()) {
 			latLong = iterator.next();
-			int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
-			int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
+			x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
+			y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
 
-			canvas.drawLine(previousX, previousY, x, y, this.paintStroke);
-
-			previousX = x;
-			previousY = y;
+			path.lineTo(x, y);
 		}
+
+		canvas.drawPath(path, this.paintStroke);
 	}
 
 	/**
