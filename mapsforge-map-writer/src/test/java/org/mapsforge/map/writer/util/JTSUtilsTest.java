@@ -131,5 +131,4 @@ public class JTSUtilsTest {
 		Assert.isTrue(polygon.isValid());
 		Assert.equals(expected, polygon);
 	}
-
 }

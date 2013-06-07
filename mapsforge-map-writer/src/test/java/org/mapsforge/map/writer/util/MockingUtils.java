@@ -36,7 +36,6 @@ import com.vividsolutions.jts.io.WKTReader;
 
 public class MockingUtils {
 	private static class MockTDNode extends TDNode {
-
 		public MockTDNode(double lat, double lon) {
 			super(0, LatLongUtils.degreesToMicrodegrees(lat), LatLongUtils.degreesToMicrodegrees(lon), (short) 0,
 					(byte) 0, null, null);
@@ -97,7 +96,6 @@ public class MockingUtils {
 			ret.add(fromLinestring((LineString) mls.getGeometryN(i), false));
 		}
 		return ret;
-
 	}
 
 	static List<TDWay> wktPolygonToWays(String wktFile) {
@@ -114,7 +112,6 @@ public class MockingUtils {
 			ret.add(fromLinestring(polygon.getInteriorRingN(i), false));
 		}
 		return ret;
-
 	}
 
 	private static TDNode fromCoordinate(Coordinate c) {
@@ -132,5 +129,4 @@ public class MockingUtils {
 	private static TDWay fromLinestring(LineString l, boolean area) {
 		return new MockTDWay(fromCoordinates(l.getCoordinates()), area);
 	}
-
 }
