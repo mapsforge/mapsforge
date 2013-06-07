@@ -108,11 +108,6 @@ class AwtPaint implements Paint {
 	}
 
 	@Override
-	public void setAlpha(int alpha) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void setBitmapShader(Bitmap bitmap) {
 		Rectangle rectangle = new Rectangle(0, 0, bitmap.getWidth(), bitmap.getHeight());
 		this.texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(bitmap), rectangle);
@@ -178,6 +173,9 @@ class AwtPaint implements Paint {
 	}
 
 	private void createStroke() {
+		if (this.strokeWidth <= 0) {
+			return;
+		}
 		this.stroke = new BasicStroke(this.strokeWidth, this.cap, BasicStroke.JOIN_ROUND, 0, this.strokeDasharray, 0);
 	}
 }

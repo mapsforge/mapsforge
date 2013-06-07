@@ -122,11 +122,6 @@ class AndroidPaint implements Paint {
 	}
 
 	@Override
-	public void setAlpha(int alpha) {
-		this.paint.setAlpha(alpha);
-	}
-
-	@Override
 	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {
 		if (bitmap == null) {
 			return;

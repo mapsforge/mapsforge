@@ -19,8 +19,6 @@ public interface Paint {
 
 	int getTextWidth(String text);
 
-	void setAlpha(int alpha);
-
 	void setBitmapShader(Bitmap bitmap);
 
 	void setColor(Color color);
