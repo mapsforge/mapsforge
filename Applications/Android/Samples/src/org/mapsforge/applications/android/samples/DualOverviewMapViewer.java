@@ -50,7 +50,7 @@ public class DualOverviewMapViewer extends DualMapViewer {
 						DualOverviewMapViewer.this.mapView.getDimension());
 				Paint paintStroke = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 2,
 						Style.STROKE);
-				Polyline polygon = new Polyline(paintStroke);
+				Polyline polygon = new Polyline(paintStroke, AndroidGraphicFactory.INSTANCE);
 				polygon.getLatLongs().add(new LatLong(bbox.minLatitude, bbox.minLongitude));
 				polygon.getLatLongs().add(new LatLong(bbox.minLatitude, bbox.maxLongitude));
 				polygon.getLatLongs().add(new LatLong(bbox.maxLatitude, bbox.maxLongitude));

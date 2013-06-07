@@ -53,7 +53,7 @@ public class OverlayMapViewer extends BasicMapViewerXml {
 		LatLong latLong5 = new LatLong(52.508, 13.408);
 
 		Polyline polyline = new Polyline(Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE), 8,
-				Style.STROKE));
+				Style.STROKE), AndroidGraphicFactory.INSTANCE);
 		List<LatLong> latLongs = polyline.getLatLongs();
 		latLongs.add(latLong1);
 		latLongs.add(latLong2);
