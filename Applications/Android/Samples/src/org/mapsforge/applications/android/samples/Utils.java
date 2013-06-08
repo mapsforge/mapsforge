@@ -43,8 +43,6 @@ import android.view.View.MeasureSpec;
 
 /**
  * Utility functions that can be used across different mapsforge based activities
- * 
- * @author ludwig
  */
 public class Utils {
 	/**
