@@ -27,26 +27,6 @@ import android.widget.LinearLayout;
  */
 public class Samples extends Activity {
 
-	private Button createButton(final Class<?> clazz) {
-		return this.createButton(clazz, null);
-	}
-
-	private Button createButton(final Class<?> clazz, String text) {
-		Button button = new Button(this);
-		if (text == null) {
-			button.setText(clazz.getSimpleName());
-		} else {
-			button.setText(text);
-		}
-		button.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				startActivity(new Intent(Samples.this, clazz));
-			}
-		});
-		return button;
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,5 +46,25 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(BubbleOverlay.class, "Bubble Overlay"));
 		linearLayout.addView(createButton(ItemListActivity.class, "Fragments"));
 		// linearLayout.addView(createButton(OverlayBenchmark.class));
+	}
+
+	private Button createButton(final Class<?> clazz) {
+		return this.createButton(clazz, null);
+	}
+
+	private Button createButton(final Class<?> clazz, String text) {
+		Button button = new Button(this);
+		if (text == null) {
+			button.setText(clazz.getSimpleName());
+		} else {
+			button.setText(text);
+		}
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				startActivity(new Intent(Samples.this, clazz));
+			}
+		});
+		return button;
 	}
 }

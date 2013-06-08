@@ -20,23 +20,6 @@ import android.widget.ListView;
  * Activities containing this fragment MUST implement the {@link Callbacks} interface.
  */
 public class ItemListFragment extends ListFragment {
-
-	/**
-	 * The serialization (saved instance state) Bundle key representing the activated item position. Only used on
-	 * tablets.
-	 */
-	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-
-	/**
-	 * The fragment's current callback object, which is notified of list item clicks.
-	 */
-	private Callbacks mCallbacks = sDummyCallbacks;
-
-	/**
-	 * The current activated item position. Only used on tablets.
-	 */
-	private int mActivatedPosition = ListView.INVALID_POSITION;
-
 	/**
 	 * A callback interface that all activities containing this fragment must implement. This mechanism allows
 	 * activities to be notified of item selections.
@@ -45,7 +28,7 @@ public class ItemListFragment extends ListFragment {
 		/**
 		 * Callback for when an item has been selected.
 		 */
-		public void onItemSelected(String id);
+		void onItemSelected(String id);
 	}
 
 	/**
@@ -59,31 +42,27 @@ public class ItemListFragment extends ListFragment {
 	};
 
 	/**
+	 * The serialization (saved instance state) Bundle key representing the activated item position. Only used on
+	 * tablets.
+	 */
+	private static final String STATE_ACTIVATED_POSITION = "activated_position";
+
+	/**
+	 * The current activated item position. Only used on tablets.
+	 */
+	private int mActivatedPosition = AdapterView.INVALID_POSITION;
+
+	/**
+	 * The fragment's current callback object, which is notified of list item clicks.
+	 */
+	private Callbacks mCallbacks = sDummyCallbacks;
+
+	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the fragment (e.g. upon screen orientation
 	 * changes).
 	 */
 	public ItemListFragment() {
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		int layout = android.R.layout.simple_list_item_1;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			layout = android.R.layout.simple_list_item_activated_1;
-		}
-		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(), layout, android.R.id.text1,
-				DummyContent.ITEMS));
-	}
-
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-
-		// Restore the previously serialized activated item position.
-		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
-		}
+		super();
 	}
 
 	@Override
@@ -95,7 +74,18 @@ public class ItemListFragment extends ListFragment {
 			throw new IllegalStateException("Activity must implement fragment's callbacks.");
 		}
 
-		mCallbacks = (Callbacks) activity;
+		this.mCallbacks = (Callbacks) activity;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		int layout = android.R.layout.simple_list_item_1;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			layout = android.R.layout.simple_list_item_activated_1;
+		}
+		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(), layout, android.R.id.text1,
+				DummyContent.ITEMS));
 	}
 
 	@Override
@@ -112,15 +102,25 @@ public class ItemListFragment extends ListFragment {
 
 		// Notify the active callbacks interface (the activity, if the
 		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		this.mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (mActivatedPosition != AdapterView.INVALID_POSITION) {
+		if (this.mActivatedPosition != AdapterView.INVALID_POSITION) {
 			// Serialize and persist the activated item position.
 			outState.putInt(STATE_ACTIVATED_POSITION, this.mActivatedPosition);
+		}
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+
+		// Restore the previously serialized activated item position.
+		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+			setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
 		}
 	}
 

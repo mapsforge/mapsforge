@@ -27,10 +27,6 @@ class MapViewPositionObserver implements Observer {
 		observable.addObserver(this);
 	}
 
-	void removeObserver() {
-		this.observable.removeObserver(this);
-	}
-
 	@Override
 	public void onChange() {
 		setCenter();
@@ -48,5 +44,9 @@ class MapViewPositionObserver implements Observer {
 		if (this.observable.getZoomLevel() != this.observer.getZoomLevel()) {
 			this.observer.setZoomLevel(this.observable.getZoomLevel());
 		}
+	}
+
+	void removeObserver() {
+		this.observable.removeObserver(this);
 	}
 }

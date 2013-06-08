@@ -32,17 +32,6 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	private MapViewPositionObserver observer2;
 
 	@Override
-	protected void init() {
-		super.init();
-
-		// any position change in one view will be reflected in the other
-		this.observer1 = new MapViewPositionObserver(this.mapView.getModel().mapViewPosition,
-				this.mapView2.getModel().mapViewPosition);
-		this.observer2 = new MapViewPositionObserver(this.mapView2.getModel().mapViewPosition,
-				this.mapView.getModel().mapViewPosition);
-	}
-
-	@Override
 	protected void addSecondMapLayer(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		this.downloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, OpenStreetMapMapnik.INSTANCE,
 				layerManager, AndroidGraphicFactory.INSTANCE);
@@ -53,6 +42,17 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	protected int getLayoutId() {
 		// provides a layout with two mapViews
 		return R.layout.dualmapviewer;
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+
+		// any position change in one view will be reflected in the other
+		this.observer1 = new MapViewPositionObserver(this.mapView.getModel().mapViewPosition,
+				this.mapView2.getModel().mapViewPosition);
+		this.observer2 = new MapViewPositionObserver(this.mapView2.getModel().mapViewPosition,
+				this.mapView.getModel().mapViewPosition);
 	}
 
 	@Override

@@ -15,14 +15,36 @@ import org.mapsforge.core.model.LatLong;
 public class DummyContent {
 
 	/**
-	 * An array of sample (dummy) items.
+	 * A dummy item representing a piece of content.
 	 */
-	public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+	public static class DummyItem {
+		public String content;
+		public String id;
+		public LatLong location;
+		public String text;
+
+		public DummyItem(String id, String content, LatLong location, String text) {
+			this.id = id;
+			this.content = content;
+			this.location = location;
+			this.text = text;
+		}
+
+		@Override
+		public String toString() {
+			return this.content;
+		}
+	}
 
 	/**
 	 * A map of sample (dummy) items, by ID.
 	 */
 	public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+
+	/**
+	 * An array of sample (dummy) items.
+	 */
+	public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
 
 	static {
 		addItem(new DummyItem("1", "Brandenburger Tor", new LatLong(52.516, 13.378),
@@ -39,27 +61,5 @@ public class DummyContent {
 	private static void addItem(DummyItem item) {
 		ITEMS.add(item);
 		ITEM_MAP.put(item.id, item);
-	}
-
-	/**
-	 * A dummy item representing a piece of content.
-	 */
-	public static class DummyItem {
-		public String id;
-		public String content;
-		public LatLong location;
-		public String text;
-
-		public DummyItem(String id, String content, LatLong location, String text) {
-			this.id = id;
-			this.content = content;
-			this.location = location;
-			this.text = text;
-		}
-
-		@Override
-		public String toString() {
-			return content;
-		}
 	}
 }

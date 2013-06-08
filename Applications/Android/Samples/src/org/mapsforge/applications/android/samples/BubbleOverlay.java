@@ -33,12 +33,6 @@ import android.widget.TextView;
 public class BubbleOverlay extends BasicMapViewerXml {
 
 	@Override
-	protected void init() {
-		super.init();
-		this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
-	}
-
-	@Override
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		super.addLayers(layerManager, tileCache, mapViewPosition);
 		for (DummyContent.DummyItem item : DummyContent.ITEMS) {
@@ -52,5 +46,11 @@ public class BubbleOverlay extends BasicMapViewerXml {
 			Bitmap bitmap = Utils.viewToBitmap(this, bubbleView);
 			layerManager.getLayers().add(new Marker(item.location, bitmap, 0, -bitmap.getHeight() / 2));
 		}
+	}
+
+	@Override
+	protected void init() {
+		super.init();
+		this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
 	}
 }

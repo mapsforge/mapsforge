@@ -30,10 +30,9 @@ public class DownloadLayerViewer extends BasicMapViewerXml {
 	private TileDownloadLayer downloadLayer;
 
 	@Override
-	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
-		this.downloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, OpenStreetMapMapnik.INSTANCE,
-				layerManager, AndroidGraphicFactory.INSTANCE);
-		layerManager.getLayers().add(this.downloadLayer);
+	public void onPause() {
+		super.onPause();
+		this.downloadLayer.destroy();
 	}
 
 	@Override
@@ -43,9 +42,10 @@ public class DownloadLayerViewer extends BasicMapViewerXml {
 	}
 
 	@Override
-	public void onPause() {
-		super.onPause();
-		this.downloadLayer.destroy();
+	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
+		this.downloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, OpenStreetMapMapnik.INSTANCE,
+				layerManager, AndroidGraphicFactory.INSTANCE);
+		layerManager.getLayers().add(this.downloadLayer);
 	}
 
 }

@@ -48,38 +48,33 @@ import android.view.View.MeasureSpec;
  */
 public class Utils {
 	/**
-	 * creates a renderer for an OSM file
+	 * Compatibility method
 	 * 
-	 * @param tileCache
-	 *            the cache
-	 * @param mapViewPosition
-	 *            the position
-	 * @param layerManager
-	 *            the layer manager
-	 * @param mapFile
-	 *            the map file
-	 * @return the layer
+	 * @param a
+	 *            the current activity
 	 */
-	static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			LayerManager layerManager, File mapFile) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, layerManager,
-				AndroidGraphicFactory.INSTANCE);
-		tileRendererLayer.setMapFile(mapFile);
-		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
-		tileRendererLayer.setTextScale(1.5f);
-		return tileRendererLayer;
+	@TargetApi(11)
+	public static final void enableHome(Activity a) {
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// Show the Up button in the action bar.
+			a.getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 	}
 
 	/**
-	 * @param c
-	 *            the Android context
-	 * @return a new cache
+	 * Compatibility method
+	 * 
+	 * @param view
+	 *            the view to set the background on
+	 * @param background
+	 *            the background
 	 */
-	static TileCache createTileCache(Context c, String id) {
-		TileCache firstLevelTileCache = new InMemoryTileCache(32);
-		File cacheDirectory = c.getDir(id, Context.MODE_PRIVATE);
-		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, AndroidGraphicFactory.INSTANCE);
-		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
+	public static final void setBackground(View view, Drawable background) {
+		if (android.os.Build.VERSION.SDK_INT >= 16) {
+			view.setBackground(background);
+		} else {
+			view.setBackgroundDrawable(background);
+		}
 	}
 
 	/**
@@ -114,6 +109,41 @@ public class Utils {
 		return paint;
 	}
 
+	/**
+	 * @param c
+	 *            the Android context
+	 * @return a new cache
+	 */
+	static TileCache createTileCache(Context c, String id) {
+		TileCache firstLevelTileCache = new InMemoryTileCache(32);
+		File cacheDirectory = c.getDir(id, Context.MODE_PRIVATE);
+		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, AndroidGraphicFactory.INSTANCE);
+		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
+	}
+
+	/**
+	 * creates a renderer for an OSM file
+	 * 
+	 * @param tileCache
+	 *            the cache
+	 * @param mapViewPosition
+	 *            the position
+	 * @param layerManager
+	 *            the layer manager
+	 * @param mapFile
+	 *            the map file
+	 * @return the layer
+	 */
+	static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
+			LayerManager layerManager, File mapFile) {
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, layerManager,
+				AndroidGraphicFactory.INSTANCE);
+		tileRendererLayer.setMapFile(mapFile);
+		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
+		tileRendererLayer.setTextScale(1.5f);
+		return tileRendererLayer;
+	}
+
 	static Bitmap viewToBitmap(Context c, View view) {
 		view.measure(MeasureSpec.getSize(view.getMeasuredWidth()), MeasureSpec.getSize(view.getMeasuredHeight()));
 		view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
@@ -122,35 +152,5 @@ public class Utils {
 				.getDrawingCache()));
 		view.setDrawingCacheEnabled(false);
 		return AndroidGraphicFactory.convertToBitmap(drawable);
-	}
-
-	/**
-	 * Compatibility method
-	 * 
-	 * @param a
-	 *            the current activity
-	 */
-	@TargetApi(11)
-	public static final void enableHome(Activity a) {
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			// Show the Up button in the action bar.
-			a.getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-	}
-
-	/**
-	 * Compatibility method
-	 * 
-	 * @param view
-	 *            the view to set the background on
-	 * @param background
-	 *            the background
-	 */
-	public static final void setBackground(View view, Drawable background) {
-		if (android.os.Build.VERSION.SDK_INT >= 16) {
-			view.setBackground(background);
-		} else {
-			view.setBackgroundDrawable(background);
-		}
 	}
 }

@@ -39,34 +39,6 @@ public class BasicMapViewer extends Activity {
 	protected PreferencesFacade preferencesFacade;
 	protected TileCache tileCache;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		SharedPreferences sharedPreferences = this.getSharedPreferences(getPersistableId(), MODE_PRIVATE);
-		this.preferencesFacade = new AndroidPreferences(sharedPreferences);
-
-		init();
-	}
-
-	/**
-	 * initializes the map view, here from source
-	 */
-	protected void init() {
-
-		this.mapView = getMapView();
-
-		initializeMapView(this.mapView, this.preferencesFacade);
-
-		this.tileCache = createTileCache();
-
-		MapViewPosition mapViewPosition = this.initializePosition(this.mapView.getModel().mapViewPosition);
-
-		addLayers(this.mapView.getLayerManager(), this.tileCache, mapViewPosition);
-
-		setContentView();
-	}
-
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		layerManager.getLayers().add(
 				Utils.createTileRendererLayer(tileCache, mapViewPosition, layerManager, getMapFile()));
@@ -109,6 +81,24 @@ public class BasicMapViewer extends Activity {
 	}
 
 	/**
+	 * initializes the map view, here from source
+	 */
+	protected void init() {
+
+		this.mapView = getMapView();
+
+		initializeMapView(this.mapView, this.preferencesFacade);
+
+		this.tileCache = createTileCache();
+
+		MapViewPosition mapViewPosition = this.initializePosition(this.mapView.getModel().mapViewPosition);
+
+		addLayers(this.mapView.getLayerManager(), this.tileCache, mapViewPosition);
+
+		setContentView();
+	}
+
+	/**
 	 * initializes the map view
 	 * 
 	 * @param mapView
@@ -138,11 +128,14 @@ public class BasicMapViewer extends Activity {
 		return mapViewPosition;
 	}
 
-	/**
-	 * sets the content view if it has not been set already
-	 */
-	protected void setContentView() {
-		setContentView(this.mapView);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		SharedPreferences sharedPreferences = this.getSharedPreferences(getPersistableId(), MODE_PRIVATE);
+		this.preferencesFacade = new AndroidPreferences(sharedPreferences);
+
+		init();
 	}
 
 	@Override
@@ -157,6 +150,13 @@ public class BasicMapViewer extends Activity {
 		super.onPause();
 		this.mapView.getModel().save(this.preferencesFacade);
 		this.preferencesFacade.save();
+	}
+
+	/**
+	 * sets the content view if it has not been set already
+	 */
+	protected void setContentView() {
+		setContentView(this.mapView);
 	}
 
 }

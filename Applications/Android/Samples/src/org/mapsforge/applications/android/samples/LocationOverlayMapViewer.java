@@ -34,6 +34,20 @@ public class LocationOverlayMapViewer extends BasicMapViewerXml {
 	private MyLocationOverlay myLocationOverlay;
 
 	@Override
+	public void onPause() {
+		super.onPause();
+		// stop receiving location updates
+		this.myLocationOverlay.disableMyLocation();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		// register for location updates
+		this.myLocationOverlay.enableMyLocation(true);
+	}
+
+	@Override
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		super.addLayers(layerManager, tileCache, mapViewPosition);
 
@@ -46,20 +60,6 @@ public class LocationOverlayMapViewer extends BasicMapViewerXml {
 		this.myLocationOverlay.setSnapToLocationEnabled(true);
 
 		layerManager.getLayers().add(this.myLocationOverlay);
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		// register for location updates
-		this.myLocationOverlay.enableMyLocation(true);
-	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-		// stop receiving location updates
-		this.myLocationOverlay.disableMyLocation();
 	}
 
 }

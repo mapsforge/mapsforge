@@ -32,6 +32,12 @@ public class DualOverviewMapViewer extends DualMapViewer {
 	private MapViewPositionObserver observer;
 
 	@Override
+	protected int getLayoutId() {
+		// provides a layout with two mapViews
+		return R.layout.dualoverviewmapviewer;
+	}
+
+	@Override
 	protected void init() {
 		super.init();
 
@@ -68,12 +74,6 @@ public class DualOverviewMapViewer extends DualMapViewer {
 				// do not change zoom, the overview stays zoomed out
 			}
 		};
-	}
-
-	@Override
-	protected int getLayoutId() {
-		// provides a layout with two mapViews
-		return R.layout.dualoverviewmapviewer;
 	}
 
 	@Override

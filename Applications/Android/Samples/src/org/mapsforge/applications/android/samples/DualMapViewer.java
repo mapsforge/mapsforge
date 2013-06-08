@@ -29,8 +29,36 @@ import android.content.SharedPreferences;
 
 public class DualMapViewer extends BasicMapViewerXml {
 
-	MapView mapView2;
 	protected PreferencesFacade preferencesFacade2;
+	MapView mapView2;
+
+	/**
+	 * @param layerManager
+	 * @param tileCache
+	 * @param mapViewPosition
+	 */
+	protected void addSecondMapLayer(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
+		layerManager.getLayers().add(
+				Utils.createTileRendererLayer(tileCache, mapViewPosition, layerManager, getMapFile()));
+	}
+
+	/**
+	 * @return tilecache to use for second mapView
+	 */
+	protected TileCache createTileCache2() {
+		// no extra tile cache needed in this instance as map source is the same
+		return this.tileCache;
+	}
+
+	@Override
+	protected int getLayoutId() {
+		// provides a layout with two mapViews
+		return R.layout.dualmapviewer;
+	}
+
+	protected String getPersistableId2() {
+		return this.getPersistableId() + "-2";
+	}
 
 	@Override
 	protected void init() {
@@ -48,34 +76,6 @@ public class DualMapViewer extends BasicMapViewerXml {
 
 		addSecondMapLayer(this.mapView2.getLayerManager(), tileCache2, mapViewPosition2);
 
-	}
-
-	/**
-	 * @return tilecache to use for second mapView
-	 */
-	protected TileCache createTileCache2() {
-		// no extra tile cache needed in this instance as map source is the same
-		return this.tileCache;
-	}
-
-	/**
-	 * @param layerManager
-	 * @param tileCache
-	 * @param mapViewPosition
-	 */
-	protected void addSecondMapLayer(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
-		layerManager.getLayers().add(
-				Utils.createTileRendererLayer(tileCache, mapViewPosition, layerManager, getMapFile()));
-	}
-
-	@Override
-	protected int getLayoutId() {
-		// provides a layout with two mapViews
-		return R.layout.dualmapviewer;
-	}
-
-	protected String getPersistableId2() {
-		return this.getPersistableId() + "-2";
 	}
 
 	@Override
