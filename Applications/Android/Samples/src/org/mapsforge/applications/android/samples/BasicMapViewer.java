@@ -34,7 +34,6 @@ import android.os.Environment;
  * A simple application which demonstrates how to use a MapView.
  */
 public class BasicMapViewer extends Activity {
-
 	protected MapView mapView;
 	protected PreferencesFacade preferencesFacade;
 	protected TileCache tileCache;
@@ -103,8 +102,6 @@ public class BasicMapViewer extends Activity {
 	 * 
 	 * @param mapView
 	 *            the map view
-	 * @param persistableId
-	 *            the id
 	 */
 	protected void initializeMapView(MapView mapView, PreferencesFacade preferences) {
 		mapView.getModel().init(preferences);

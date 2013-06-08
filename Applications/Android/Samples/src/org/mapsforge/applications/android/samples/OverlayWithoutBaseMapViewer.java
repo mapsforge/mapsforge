@@ -20,11 +20,8 @@ import org.mapsforge.map.model.MapViewPosition;
 
 /**
  * Basic map viewer with a few overlays added
- * 
- * @author Ludwig M Brinckmann
  */
 public class OverlayWithoutBaseMapViewer extends OverlayMapViewer {
-
 	@Override
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		// just add few overlays to an empty map
@@ -36,5 +33,4 @@ public class OverlayWithoutBaseMapViewer extends OverlayMapViewer {
 		// do not need a tile cache here
 		return null;
 	}
-
 }

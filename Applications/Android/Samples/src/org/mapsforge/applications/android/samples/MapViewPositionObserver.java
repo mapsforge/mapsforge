@@ -18,8 +18,8 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.Observer;
 
 class MapViewPositionObserver implements Observer {
-	final private MapViewPosition observable;
-	final private MapViewPosition observer;
+	private final MapViewPosition observable;
+	private final MapViewPosition observer;
 
 	MapViewPositionObserver(MapViewPosition observable, MapViewPosition observer) {
 		this.observable = observable;

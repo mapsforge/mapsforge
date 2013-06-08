@@ -27,8 +27,6 @@ import android.widget.TextView;
 
 /**
  * Basic map viewer that shows bubbles with content at a few locations
- * 
- * @author Ludwig M Brinckmann
  */
 public class BubbleOverlay extends BasicMapViewerXml {
 
