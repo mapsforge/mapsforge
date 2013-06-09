@@ -24,9 +24,7 @@ import org.mapsforge.map.model.MapViewPosition;
 /**
  * Shows how to use a tile download layer
  */
-
 public class DownloadLayerViewer extends BasicMapViewerXml {
-
 	private TileDownloadLayer downloadLayer;
 
 	@Override
@@ -47,5 +45,4 @@ public class DownloadLayerViewer extends BasicMapViewerXml {
 				layerManager, AndroidGraphicFactory.INSTANCE);
 		layerManager.getLayers().add(this.downloadLayer);
 	}
-
 }

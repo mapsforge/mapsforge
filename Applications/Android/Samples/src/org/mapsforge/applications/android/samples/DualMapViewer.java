@@ -26,17 +26,10 @@ import android.content.SharedPreferences;
 /**
  * An activity with two independent MapViews
  */
-
 public class DualMapViewer extends BasicMapViewerXml {
-
 	protected PreferencesFacade preferencesFacade2;
 	MapView mapView2;
 
-	/**
-	 * @param layerManager
-	 * @param tileCache
-	 * @param mapViewPosition
-	 */
 	protected void addSecondMapLayer(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		layerManager.getLayers().add(
 				Utils.createTileRendererLayer(tileCache, mapViewPosition, layerManager, getMapFile()));
@@ -75,7 +68,6 @@ public class DualMapViewer extends BasicMapViewerXml {
 		MapViewPosition mapViewPosition2 = this.initializePosition(this.mapView2.getModel().mapViewPosition);
 
 		addSecondMapLayer(this.mapView2.getLayerManager(), tileCache2, mapViewPosition2);
-
 	}
 
 	@Override
@@ -90,5 +82,4 @@ public class DualMapViewer extends BasicMapViewerXml {
 		this.mapView2.getModel().save(this.preferencesFacade2);
 		this.preferencesFacade2.save();
 	}
-
 }

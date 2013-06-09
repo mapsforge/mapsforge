@@ -26,9 +26,7 @@ import org.mapsforge.map.util.MapPositionUtil;
 /**
  * An activity with a smaller mapview giving the position of the larger map view
  */
-
 public class DualOverviewMapViewer extends DualMapViewer {
-
 	private MapViewPositionObserver observer;
 
 	@Override
@@ -45,7 +43,6 @@ public class DualOverviewMapViewer extends DualMapViewer {
 
 		this.observer = new MapViewPositionObserver(this.mapView.getModel().mapViewPosition,
 				this.mapView2.getModel().mapViewPosition) {
-
 			Polyline lastLine;
 
 			@Override
@@ -81,5 +78,4 @@ public class DualOverviewMapViewer extends DualMapViewer {
 		super.onDestroy();
 		this.observer.removeObserver();
 	}
-
 }

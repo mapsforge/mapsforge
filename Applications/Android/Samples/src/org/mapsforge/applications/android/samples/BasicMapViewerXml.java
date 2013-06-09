@@ -17,11 +17,9 @@ package org.mapsforge.applications.android.samples;
 import org.mapsforge.map.android.view.MapView;
 
 /**
- * A simple application which demonstrates how to use a MapView by initalizing it from an xml layout resource.
+ * A simple application which demonstrates how to use a MapView by initializing it from an XML layout resource.
  */
-
 public class BasicMapViewerXml extends BasicMapViewer {
-
 	/**
 	 * @return the layout to be used
 	 */
@@ -40,5 +38,4 @@ public class BasicMapViewerXml extends BasicMapViewer {
 	protected void setContentView() {
 		// do not need to set content view, done in getMapView already
 	}
-
 }

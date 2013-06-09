@@ -32,11 +32,8 @@ import org.mapsforge.map.model.MapViewPosition;
 
 /**
  * Basic map viewer with a few overlays added
- * 
- * @author Ludwig M Brinckmann
  */
 public class OverlayMapViewer extends BasicMapViewerXml {
-
 	@Override
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		super.addLayers(layerManager, tileCache, mapViewPosition);

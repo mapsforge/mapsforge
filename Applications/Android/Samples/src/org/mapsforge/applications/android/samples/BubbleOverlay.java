@@ -29,7 +29,6 @@ import android.widget.TextView;
  * Basic map viewer that shows bubbles with content at a few locations
  */
 public class BubbleOverlay extends BasicMapViewerXml {
-
 	@Override
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		super.addLayers(layerManager, tileCache, mapViewPosition);

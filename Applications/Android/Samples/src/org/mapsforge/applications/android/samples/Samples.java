@@ -26,7 +26,6 @@ import android.widget.LinearLayout;
  * A simple start screen for the sample activities.
  */
 public class Samples extends Activity {
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

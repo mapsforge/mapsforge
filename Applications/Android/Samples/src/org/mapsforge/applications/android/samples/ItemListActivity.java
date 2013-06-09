@@ -33,7 +33,6 @@ import android.view.MenuItem;
  * selections.
  */
 public class ItemListActivity extends FragmentActivity implements ItemListFragment.Callbacks {
-
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet device.
 	 */
@@ -53,7 +52,6 @@ public class ItemListActivity extends FragmentActivity implements ItemListFragme
 			ItemDetailFragment fragment = new ItemDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container, fragment).commit();
-
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.

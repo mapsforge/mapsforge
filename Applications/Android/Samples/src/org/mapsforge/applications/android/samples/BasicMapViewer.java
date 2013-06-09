@@ -83,7 +83,6 @@ public class BasicMapViewer extends Activity {
 	 * initializes the map view, here from source
 	 */
 	protected void init() {
-
 		this.mapView = getMapView();
 
 		initializeMapView(this.mapView, this.preferencesFacade);
@@ -155,5 +154,4 @@ public class BasicMapViewer extends Activity {
 	protected void setContentView() {
 		setContentView(this.mapView);
 	}
-
 }

@@ -26,11 +26,8 @@ import android.graphics.drawable.Drawable;
 /**
  * MapViewer that shows current position. In the data directory of the Samples project is the file berlin.gpx that can
  * be loaded in the Android Monitor to simulate location data in the center of Berlin.
- * 
- * @author Ludwig M Brinckmann
  */
 public class LocationOverlayMapViewer extends BasicMapViewerXml {
-
 	private MyLocationOverlay myLocationOverlay;
 
 	@Override
@@ -61,5 +58,4 @@ public class LocationOverlayMapViewer extends BasicMapViewerXml {
 
 		layerManager.getLayers().add(this.myLocationOverlay);
 	}
-
 }

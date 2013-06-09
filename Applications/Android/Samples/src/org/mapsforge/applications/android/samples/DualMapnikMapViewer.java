@@ -24,9 +24,7 @@ import org.mapsforge.map.model.MapViewPosition;
 /**
  * An activity with two mapviews tied to each other
  */
-
 public class DualMapnikMapViewer extends DualMapViewer {
-
 	private TileDownloadLayer downloadLayer;
 	private MapViewPositionObserver observer1;
 	private MapViewPositionObserver observer2;
@@ -75,5 +73,4 @@ public class DualMapnikMapViewer extends DualMapViewer {
 		super.onResume();
 		this.downloadLayer.start();
 	}
-
 }

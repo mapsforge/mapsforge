@@ -25,11 +25,8 @@ import org.mapsforge.map.model.common.PreferencesFacade;
 
 /**
  * Viewer with tile grid and coordinates visible and frame counter displayed
- * 
- * @author Ludwig M Brinckmann
  */
 public class DiagnosticsMapViewer extends BasicMapViewerXml {
-
 	@Override
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		super.addLayers(layerManager, tileCache, mapViewPosition);
@@ -43,5 +40,4 @@ public class DiagnosticsMapViewer extends BasicMapViewerXml {
 		// turn on the frame counter display
 		mapView.getFpsCounter().setVisible(true);
 	}
-
 }

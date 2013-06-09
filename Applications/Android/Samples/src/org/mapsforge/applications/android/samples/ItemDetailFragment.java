@@ -75,8 +75,7 @@ public class ItemDetailFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_item_detail, container, false);
 
 		if (this.mItem != null) {
-
-			this.mapView = ((MapView) rootView.findViewById(R.id.mapView));
+			this.mapView = (MapView) rootView.findViewById(R.id.mapView);
 			this.mapView.setClickable(true);
 			this.mapView.getFpsCounter().setVisible(true);
 			this.mapView.getMapScaleBar().setVisible(true);
@@ -88,7 +87,6 @@ public class ItemDetailFragment extends Fragment {
 			mapViewPosition.setZoomLevel((byte) 16);
 			mapViewPosition.setCenter(this.mItem.location);
 			layers.add(Utils.createTileRendererLayer(this.tileCache, mapViewPosition, layerManager, getMapFile()));
-
 		}
 
 		return rootView;
@@ -109,5 +107,4 @@ public class ItemDetailFragment extends Fragment {
 	protected String getMapFileName() {
 		return "germany.map";
 	}
-
 }

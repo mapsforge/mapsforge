@@ -27,7 +27,6 @@ import android.view.MenuItem;
  * This activity is mostly just a 'shell' activity containing nothing more than a {@link ItemDetailFragment}.
  */
 public class ItemDetailActivity extends FragmentActivity {
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

@@ -44,7 +44,7 @@ import android.view.View.MeasureSpec;
 /**
  * Utility functions that can be used across different mapsforge based activities
  */
-public class Utils {
+public final class Utils {
 	/**
 	 * Compatibility method
 	 * 
@@ -52,7 +52,7 @@ public class Utils {
 	 *            the current activity
 	 */
 	@TargetApi(11)
-	public static final void enableHome(Activity a) {
+	public static void enableHome(Activity a) {
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			// Show the Up button in the action bar.
 			a.getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -67,7 +67,7 @@ public class Utils {
 	 * @param background
 	 *            the background
 	 */
-	public static final void setBackground(View view, Drawable background) {
+	public static void setBackground(View view, Drawable background) {
 		if (android.os.Build.VERSION.SDK_INT >= 16) {
 			view.setBackground(background);
 		} else {
@@ -150,5 +150,9 @@ public class Utils {
 				.getDrawingCache()));
 		view.setDrawingCacheEnabled(false);
 		return AndroidGraphicFactory.convertToBitmap(drawable);
+	}
+
+	private Utils() {
+		throw new IllegalStateException();
 	}
 }

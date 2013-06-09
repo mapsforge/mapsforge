@@ -27,15 +27,14 @@ import org.mapsforge.core.model.LatLong;
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class DummyContent {
-
 	/**
 	 * A dummy item representing a piece of content.
 	 */
 	public static class DummyItem {
-		public String content;
-		public String id;
-		public LatLong location;
-		public String text;
+		public final String content;
+		public final String id;
+		public final LatLong location;
+		public final String text;
 
 		public DummyItem(String id, String content, LatLong location, String text) {
 			this.id = id;
