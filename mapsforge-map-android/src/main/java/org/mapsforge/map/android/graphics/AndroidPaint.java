@@ -122,6 +122,11 @@ class AndroidPaint implements Paint {
 	}
 
 	@Override
+	public boolean isTransparent() {
+		return this.paint.getAlpha() == 0;
+	}
+
+	@Override
 	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {
 		if (bitmap == null) {
 			return;

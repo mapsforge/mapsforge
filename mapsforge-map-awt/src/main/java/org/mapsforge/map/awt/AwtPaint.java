@@ -90,6 +90,7 @@ class AwtPaint implements Paint {
 
 	AwtPaint() {
 		this.cap = getCap(Cap.ROUND);
+		this.color = java.awt.Color.BLACK;
 		this.style = Style.FILL;
 	}
 
@@ -105,6 +106,11 @@ class AwtPaint implements Paint {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
 		return fontMetrics.stringWidth(text);
+	}
+
+	@Override
+	public boolean isTransparent() {
+		return this.color.getAlpha() == 0;
 	}
 
 	@Override

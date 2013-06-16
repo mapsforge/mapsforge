@@ -57,6 +57,10 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawCircle(int x, int y, int radius, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
 		setColorAndStroke(awtPaint);
 		int doubleRadius = radius * 2;
@@ -77,12 +81,20 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		setColorAndStroke(AwtGraphicFactory.getAwtPaint(paint));
 		this.graphics2D.drawLine(x1, y1, x2, y2);
 	}
 
 	@Override
 	public void drawPath(Path path, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
 		AwtPath awtPath = AwtGraphicFactory.getAwtPath(path);
 
@@ -105,6 +117,10 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
 
 		if (awtPaint.stroke == null) {
@@ -122,6 +138,10 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		AffineTransform affineTransform = this.graphics2D.getTransform();
 
 		double theta = Math.atan2(y2 - y1, x2 - x1);

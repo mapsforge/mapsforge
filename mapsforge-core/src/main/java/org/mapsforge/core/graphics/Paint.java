@@ -19,6 +19,8 @@ public interface Paint {
 
 	int getTextWidth(String text);
 
+	boolean isTransparent();
+
 	void setBitmapShader(Bitmap bitmap);
 
 	void setColor(Color color);

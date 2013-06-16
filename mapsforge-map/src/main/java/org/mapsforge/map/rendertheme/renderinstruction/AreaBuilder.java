@@ -49,7 +49,7 @@ public class AreaBuilder {
 		this.fill.setStrokeCap(Cap.ROUND);
 
 		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(Color.BLACK);
+		this.stroke.setColor(Color.TRANSPARENT);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
 

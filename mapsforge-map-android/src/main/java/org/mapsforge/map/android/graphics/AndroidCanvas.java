@@ -53,26 +53,46 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void drawCircle(int x, int y, int radius, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		this.canvas.drawCircle(x, y, radius, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		this.canvas.drawLine(x1, y1, x2, y2, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawPath(Path path, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		this.canvas.drawText(text, x, y, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override
 	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+
 		android.graphics.Path path = new android.graphics.Path();
 		path.moveTo(x1, y1);
 		path.lineTo(x2, y2);
