@@ -14,6 +14,7 @@
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
+		<targetJdk>1.7</targetJdk>
 	</properties>
 
 	<dependencies>
@@ -21,6 +22,11 @@
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-core</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
 </project>

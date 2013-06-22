@@ -63,9 +63,9 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 
 	private RAMTileBasedDataProcessor(MapWriterConfiguration configuration) {
 		super(configuration);
-		this.nodes = new TLongObjectHashMap<TDNode>();
-		this.ways = new TLongObjectHashMap<TDWay>();
-		this.multipolygons = new TLongObjectHashMap<TDRelation>();
+		this.nodes = new TLongObjectHashMap<>();
+		this.ways = new TLongObjectHashMap<>();
+		this.multipolygons = new TLongObjectHashMap<>();
 		this.tileData = new RAMTileData[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()][][];
 		// compute number of tiles needed on each base zoom level
 		for (int i = 0; i < this.zoomIntervalConfiguration.getNumberOfZoomIntervals(); i++) {
@@ -141,7 +141,7 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 			return Collections.emptySet();
 		}
 
-		final Set<TDWay> res = new HashSet<TDWay>();
+		final Set<TDWay> res = new HashSet<>();
 		coastlines.forEach(new TLongProcedure() {
 			@Override
 			public boolean execute(long id) {
@@ -228,7 +228,7 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 		if (innerWayIDs == null) {
 			return Collections.emptyList();
 		}
-		List<TDWay> res = new ArrayList<TDWay>();
+		List<TDWay> res = new ArrayList<>();
 		for (long id : innerWayIDs) {
 			TDWay current = this.ways.get(id);
 			if (current == null) {

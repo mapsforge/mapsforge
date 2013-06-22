@@ -111,7 +111,7 @@ public final class JTSUtils {
 	}
 
 	static MultiLineString buildMultiLineString(TDWay outerWay, List<TDWay> innerWays) {
-		List<LineString> lineStrings = new ArrayList<LineString>();
+		List<LineString> lineStrings = new ArrayList<>();
 		// outer way geometry
 		lineStrings.add(buildLineString(outerWay));
 
@@ -140,7 +140,7 @@ public final class JTSUtils {
 		LinearRing outerRing = buildLinearRing(outerWay);
 
 		// inner rings
-		List<LinearRing> innerRings = new ArrayList<LinearRing>();
+		List<LinearRing> innerRings = new ArrayList<>();
 
 		for (TDWay innerWay : innerWays) {
 			// build linear ring

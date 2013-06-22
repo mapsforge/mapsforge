@@ -202,7 +202,7 @@ public final class GeoUtils {
 			return Collections.emptySet();
 		}
 
-		HashSet<TileCoordinate> matchedTiles = new HashSet<TileCoordinate>();
+		HashSet<TileCoordinate> matchedTiles = new HashSet<>();
 		Geometry wayGeometry = JTSUtils.toJTSGeometry(way);
 		if (wayGeometry == null) {
 			way.setInvalid(true);
@@ -292,13 +292,13 @@ public final class GeoUtils {
 	 * @return a list of WayBlocks which you can use to save the way.
 	 */
 	public static List<WayDataBlock> toWayDataBlockList(Geometry geometry) {
-		List<WayDataBlock> res = new ArrayList<WayDataBlock>();
+		List<WayDataBlock> res = new ArrayList<>();
 		if (geometry instanceof MultiPolygon) {
 			MultiPolygon mp = (MultiPolygon) geometry;
 			for (int i = 0; i < mp.getNumGeometries(); i++) {
 				Polygon p = (Polygon) mp.getGeometryN(i);
 				List<Integer> outer = toCoordinateList(p.getExteriorRing());
-				List<List<Integer>> inner = new ArrayList<List<Integer>>();
+				List<List<Integer>> inner = new ArrayList<>();
 				for (int j = 0; j < p.getNumInteriorRing(); j++) {
 					inner.add(toCoordinateList(p.getInteriorRingN(j)));
 				}
@@ -307,7 +307,7 @@ public final class GeoUtils {
 		} else if (geometry instanceof Polygon) {
 			Polygon p = (Polygon) geometry;
 			List<Integer> outer = toCoordinateList(p.getExteriorRing());
-			List<List<Integer>> inner = new ArrayList<List<Integer>>();
+			List<List<Integer>> inner = new ArrayList<>();
 			for (int i = 0; i < p.getNumInteriorRing(); i++) {
 				inner.add(toCoordinateList(p.getInteriorRingN(i)));
 			}
@@ -413,7 +413,7 @@ public final class GeoUtils {
 	private static List<Integer> toCoordinateList(Geometry jtsGeometry) {
 		Coordinate[] jtsCoords = jtsGeometry.getCoordinates();
 
-		ArrayList<Integer> result = new ArrayList<Integer>();
+		ArrayList<Integer> result = new ArrayList<>();
 
 		for (int j = 0; j < jtsCoords.length; j++) {
 			LatLong geoCoord = new LatLong(jtsCoords[j].y, jtsCoords[j].x);

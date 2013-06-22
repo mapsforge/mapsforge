@@ -15,6 +15,7 @@
 	<properties>
 		<mapfile.writer.version>${project.version}</mapfile.writer.version>
 		<rootDirectory>../</rootDirectory>
+		<targetJdk>1.7</targetJdk>
 	</properties>
 
 	<build>

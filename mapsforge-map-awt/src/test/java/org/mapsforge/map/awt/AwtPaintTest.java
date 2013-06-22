@@ -12,41 +12,25 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.core.graphics;
+package org.mapsforge.map.awt;
 
-public interface Paint {
-	int getTextHeight(String text);
+import org.junit.Assert;
+import org.junit.Test;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Paint;
 
-	int getTextWidth(String text);
+public class AwtPaintTest {
+	@Test
+	public void isTransparentTest() {
+		Paint paint = new AwtPaint();
+		Assert.assertFalse(paint.isTransparent());
 
-	boolean isTransparent();
+		paint.setColor(Color.TRANSPARENT);
+		Assert.assertTrue(paint.isTransparent());
 
-	void setBitmapShader(Bitmap bitmap);
-
-	void setColor(Color color);
-
-	/**
-	 * The default value is {@link Color#BLACK}.
-	 */
-	void setColor(int color);
-
-	void setDashPathEffect(float[] strokeDasharray);
-
-	/**
-	 * The default value is {@link Cap#ROUND}.
-	 */
-	void setStrokeCap(Cap cap);
-
-	void setStrokeWidth(float strokeWidth);
-
-	/**
-	 * The default value is {@link Style#FILL}.
-	 */
-	void setStyle(Style style);
-
-	void setTextAlign(Align align);
-
-	void setTextSize(float textSize);
-
-	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
+		Bitmap bitmap = AwtGraphicFactory.INSTANCE.createBitmap(1, 1);
+		paint.setBitmapShader(bitmap);
+		Assert.assertFalse(paint.isTransparent());
+	}
 }

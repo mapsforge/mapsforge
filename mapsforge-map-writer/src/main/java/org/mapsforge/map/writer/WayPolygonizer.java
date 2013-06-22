@@ -110,11 +110,11 @@ class WayPolygonizer {
 	 *            An array of ways that should be merged. Ways may be given in any order and may already be closed.
 	 */
 	void mergePolygons(TDWay[] ways) {
-		this.polygons = new ArrayList<Deque<TDWay>>();
-		this.dangling = new ArrayList<TDWay>();
-		this.illegal = new ArrayList<TDWay>();
+		this.polygons = new ArrayList<>();
+		this.dangling = new ArrayList<>();
+		this.illegal = new ArrayList<>();
 
-		Deque<TDWay> ungroupedWays = new ArrayDeque<TDWay>();
+		Deque<TDWay> ungroupedWays = new ArrayDeque<>();
 
 		// initially all ways are ungrouped
 		for (TDWay tdWay : ways) {
@@ -126,7 +126,7 @@ class WayPolygonizer {
 				if (tdWay.getWayNodes().length < MIN_NODES_POLYGON) {
 					this.illegal.add(tdWay);
 				} else {
-					Deque<TDWay> cluster = new ArrayDeque<TDWay>();
+					Deque<TDWay> cluster = new ArrayDeque<>();
 					cluster.add(tdWay);
 					this.polygons.add(cluster);
 				}
@@ -153,7 +153,7 @@ class WayPolygonizer {
 				// we start a new polygon either during first iteration or when
 				// the previous iterations merged ways to a closed polygon and there
 				// are still ungrouped ways left
-				Deque<TDWay> cluster = new ArrayDeque<TDWay>();
+				Deque<TDWay> cluster = new ArrayDeque<>();
 				// get the first way of the yet ungrouped ways and form a new group
 				cluster.add(ungroupedWays.removeFirst());
 				this.polygons.add(cluster);
@@ -243,7 +243,7 @@ class WayPolygonizer {
 	}
 
 	void relatePolygons() {
-		this.outerToInner = new HashMap<Integer, List<Integer>>();
+		this.outerToInner = new HashMap<>();
 		if (this.polygons.isEmpty()) {
 			return;
 		}
@@ -255,8 +255,8 @@ class WayPolygonizer {
 					this.geometryFactory.createLinearRing(toCoordinates(polygon)), null);
 		}
 
-		this.outerToInner = new HashMap<Integer, List<Integer>>();
-		HashSet<Integer> inner = new HashSet<Integer>();
+		this.outerToInner = new HashMap<>();
+		HashSet<Integer> inner = new HashSet<>();
 		for (int k = 0; k < polygonGeometries.length; k++) {
 			if (inner.contains(Integer.valueOf(k))) {
 				continue;
@@ -269,7 +269,7 @@ class WayPolygonizer {
 				if (polygonGeometries[k].covers(polygonGeometries[l])) {
 					List<Integer> inners = this.outerToInner.get(Integer.valueOf(k));
 					if (inners == null) {
-						inners = new ArrayList<Integer>();
+						inners = new ArrayList<>();
 						this.outerToInner.put(Integer.valueOf(k), inners);
 					}
 					inners.add(Integer.valueOf(l));
@@ -278,7 +278,7 @@ class WayPolygonizer {
 						&& polygonGeometries[l].covers(polygonGeometries[k])) {
 					List<Integer> inners = this.outerToInner.get(Integer.valueOf(l));
 					if (inners == null) {
-						inners = new ArrayList<Integer>();
+						inners = new ArrayList<>();
 						this.outerToInner.put(Integer.valueOf(l), inners);
 					}
 					inners.add(Integer.valueOf(k));

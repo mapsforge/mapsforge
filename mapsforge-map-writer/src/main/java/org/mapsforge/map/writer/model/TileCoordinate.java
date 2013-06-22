@@ -116,7 +116,7 @@ public class TileCoordinate {
 
 		int factor = (int) Math.pow(2, Math.abs(zoomlevelDistance));
 		if (zoomlevelDistance > 0) {
-			tiles = new ArrayList<TileCoordinate>((int) Math.pow(4, Math.abs(zoomlevelDistance)));
+			tiles = new ArrayList<>((int) Math.pow(4, Math.abs(zoomlevelDistance)));
 			int tileUpperLeftX = this.x * factor;
 			int tileUpperLeftY = this.y * factor;
 			for (int i = 0; i < factor; i++) {
@@ -125,7 +125,7 @@ public class TileCoordinate {
 				}
 			}
 		} else {
-			tiles = new ArrayList<TileCoordinate>(1);
+			tiles = new ArrayList<>(1);
 			tiles.add(new TileCoordinate(this.x / factor, this.y / factor, zoomlevelNew));
 		}
 		return tiles;

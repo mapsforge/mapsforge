@@ -31,8 +31,8 @@ public class RAMTileData extends TileData {
 
 	RAMTileData() {
 		super();
-		this.pois = new HashSet<TDNode>();
-		this.ways = new HashSet<TDWay>();
+		this.pois = new HashSet<>();
+		this.ways = new HashSet<>();
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class RAMTileData extends TileData {
 
 	@Override
 	public final Map<Byte, List<TDNode>> poisByZoomlevel(byte minValidZoomlevel, byte maxValidZoomlevel) {
-		HashMap<Byte, List<TDNode>> poisByZoomlevel = new HashMap<Byte, List<TDNode>>();
+		HashMap<Byte, List<TDNode>> poisByZoomlevel = new HashMap<>();
 		for (TDNode poi : this.pois) {
 			byte zoomlevel = poi.getZoomAppear();
 			if (zoomlevel > maxValidZoomlevel) {
@@ -58,7 +58,7 @@ public class RAMTileData extends TileData {
 			}
 			List<TDNode> group = poisByZoomlevel.get(Byte.valueOf(zoomlevel));
 			if (group == null) {
-				group = new ArrayList<TDNode>();
+				group = new ArrayList<>();
 			}
 			group.add(poi);
 			poisByZoomlevel.put(Byte.valueOf(zoomlevel), group);
@@ -69,7 +69,7 @@ public class RAMTileData extends TileData {
 
 	@Override
 	public final Map<Byte, List<TDWay>> waysByZoomlevel(byte minValidZoomlevel, byte maxValidZoomlevel) {
-		HashMap<Byte, List<TDWay>> waysByZoomlevel = new HashMap<Byte, List<TDWay>>();
+		HashMap<Byte, List<TDWay>> waysByZoomlevel = new HashMap<>();
 		for (TDWay way : this.ways) {
 			byte zoomlevel = way.getMinimumZoomLevel();
 			if (zoomlevel > maxValidZoomlevel) {
@@ -80,7 +80,7 @@ public class RAMTileData extends TileData {
 			}
 			List<TDWay> group = waysByZoomlevel.get(Byte.valueOf(zoomlevel));
 			if (group == null) {
-				group = new ArrayList<TDWay>();
+				group = new ArrayList<>();
 			}
 			group.add(way);
 			waysByZoomlevel.put(Byte.valueOf(zoomlevel), group);

@@ -123,7 +123,7 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public boolean isTransparent() {
-		return this.paint.getAlpha() == 0;
+		return this.paint.getShader() == null && this.paint.getAlpha() == 0;
 	}
 
 	@Override

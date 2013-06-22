@@ -26,7 +26,7 @@ public class DeltaEncoderTest {
 
 	@Before
 	public void setUp() {
-		this.mockCoordinates = new ArrayList<Integer>();
+		this.mockCoordinates = new ArrayList<>();
 
 		this.mockCoordinates.add(Integer.valueOf(52000000));
 		this.mockCoordinates.add(Integer.valueOf(13000000));

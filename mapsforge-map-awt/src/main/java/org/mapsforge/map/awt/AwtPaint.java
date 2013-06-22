@@ -110,7 +110,7 @@ class AwtPaint implements Paint {
 
 	@Override
 	public boolean isTransparent() {
-		return this.color.getAlpha() == 0;
+		return this.texturePaint == null && this.color.getAlpha() == 0;
 	}
 
 	@Override

@@ -116,7 +116,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 						continue;
 					}
 					// merge way nodes from outer way segments
-					List<TDNode> waynodeList = new ArrayList<TDNode>();
+					List<TDNode> waynodeList = new ArrayList<>();
 					for (TDWay outerSegment : outerPolygon) {
 						if (outerSegment.isReversedInRelation()) {
 							for (int i = outerSegment.getWayNodes().length - 1; i >= 0; i--) {
@@ -205,7 +205,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 							}
 						}
 					} else {
-						List<TDNode> waynodeList = new ArrayList<TDNode>();
+						List<TDNode> waynodeList = new ArrayList<>();
 						for (TDWay innerSegment : innerSegments) {
 							if (innerSegment.isReversedInRelation()) {
 								for (int i = innerSegment.getWayNodes().length - 1; i >= 0; i--) {
@@ -288,9 +288,9 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 		this.preferredLanguage = configuration.getPreferredLanguage();
 		this.skipInvalidRelations = configuration.isSkipInvalidRelations();
 
-		this.outerToInnerMapping = new TLongObjectHashMap<TLongArrayList>();
+		this.outerToInnerMapping = new TLongObjectHashMap<>();
 		this.innerWaysWithoutAdditionalTags = new TLongHashSet();
-		this.tilesToCoastlines = new HashMap<TileCoordinate, TLongHashSet>();
+		this.tilesToCoastlines = new HashMap<>();
 
 		this.countWays = new float[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()];
 		this.countWayTileFactor = new float[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()];

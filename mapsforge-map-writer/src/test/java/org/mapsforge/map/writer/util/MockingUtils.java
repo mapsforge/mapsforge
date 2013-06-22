@@ -91,7 +91,7 @@ public class MockingUtils {
 		}
 
 		MultiLineString mls = (MultiLineString) geometry;
-		List<TDWay> ret = new ArrayList<TDWay>();
+		List<TDWay> ret = new ArrayList<>();
 		for (int i = 0; i < mls.getNumGeometries(); i++) {
 			ret.add(fromLinestring((LineString) mls.getGeometryN(i), false));
 		}
@@ -105,7 +105,7 @@ public class MockingUtils {
 		}
 
 		Polygon polygon = (Polygon) geometry;
-		List<TDWay> ret = new ArrayList<TDWay>();
+		List<TDWay> ret = new ArrayList<>();
 		TDWay outer = fromLinestring(polygon.getExteriorRing(), true);
 		ret.add(outer);
 		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {

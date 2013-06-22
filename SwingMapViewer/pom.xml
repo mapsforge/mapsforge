@@ -14,6 +14,7 @@
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
+		<targetJdk>1.7</targetJdk>
 	</properties>
 
 	<build>

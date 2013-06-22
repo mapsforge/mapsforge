@@ -159,25 +159,25 @@ public final class OSMTagMapping {
 		return mapping;
 	}
 
-	private final Map<Short, OSMTag> idToPoiTag = new LinkedHashMap<Short, OSMTag>();
-	private final Map<Short, OSMTag> idToWayTag = new LinkedHashMap<Short, OSMTag>();
+	private final Map<Short, OSMTag> idToPoiTag = new LinkedHashMap<>();
+	private final Map<Short, OSMTag> idToWayTag = new LinkedHashMap<>();
 
-	private final Map<Short, Short> optimizedPoiIds = new LinkedHashMap<Short, Short>();
-	private final Map<Short, Short> optimizedWayIds = new LinkedHashMap<Short, Short>();
+	private final Map<Short, Short> optimizedPoiIds = new LinkedHashMap<>();
+	private final Map<Short, Short> optimizedWayIds = new LinkedHashMap<>();
 
 	private short poiID = 0;
 
-	private final Map<Short, Set<OSMTag>> poiZoomOverrides = new LinkedHashMap<Short, Set<OSMTag>>();
+	private final Map<Short, Set<OSMTag>> poiZoomOverrides = new LinkedHashMap<>();
 
 	// we use LinkedHashMaps as they guarantee to uphold the
 	// insertion order when iterating over the key or value "set"
-	private final Map<String, OSMTag> stringToPoiTag = new LinkedHashMap<String, OSMTag>();
+	private final Map<String, OSMTag> stringToPoiTag = new LinkedHashMap<>();
 
-	private final Map<String, OSMTag> stringToWayTag = new LinkedHashMap<String, OSMTag>();
+	private final Map<String, OSMTag> stringToWayTag = new LinkedHashMap<>();
 
 	private short wayID = 0;
 
-	private final Map<Short, Set<OSMTag>> wayZoomOverrides = new LinkedHashMap<Short, Set<OSMTag>>();
+	private final Map<Short, Set<OSMTag>> wayZoomOverrides = new LinkedHashMap<>();
 
 	private OSMTagMapping(URL tagConf) {
 		try {
@@ -193,8 +193,8 @@ public final class OSMTagMapping {
 			XPathExpression xe = xpath.compile(XPATH_EXPRESSION_DEFAULT_ZOOM);
 			defaultZoomAppear = Byte.parseByte((String) xe.evaluate(document, XPathConstants.STRING));
 
-			final HashMap<Short, Set<String>> tmpPoiZoomOverrides = new HashMap<Short, Set<String>>();
-			final HashMap<Short, Set<String>> tmpWayZoomOverrides = new HashMap<Short, Set<String>>();
+			final HashMap<Short, Set<String>> tmpPoiZoomOverrides = new HashMap<>();
+			final HashMap<Short, Set<String>> tmpWayZoomOverrides = new HashMap<>();
 
 			// ---- Get list of poi nodes ----
 			xe = xpath.compile(XPATH_EXPRESSION_POIS);
@@ -245,7 +245,7 @@ public final class OSMTagMapping {
 						String valueOverridden = overriddenNode.getAttributes().getNamedItem("value").getTextContent();
 						Set<String> s = tmpPoiZoomOverrides.get(Short.valueOf(this.poiID));
 						if (s == null) {
-							s = new HashSet<String>();
+							s = new HashSet<>();
 							tmpPoiZoomOverrides.put(Short.valueOf(this.poiID), s);
 						}
 						s.add(OSMTag.tagKey(keyOverridden, valueOverridden));
@@ -304,7 +304,7 @@ public final class OSMTagMapping {
 						String valueOverridden = overriddenNode.getAttributes().getNamedItem("value").getTextContent();
 						Set<String> s = tmpWayZoomOverrides.get(Short.valueOf(this.wayID));
 						if (s == null) {
-							s = new HashSet<String>();
+							s = new HashSet<>();
 							tmpWayZoomOverrides.put(Short.valueOf(this.wayID), s);
 						}
 						s.add(OSMTag.tagKey(keyOverridden, valueOverridden));
@@ -316,7 +316,7 @@ public final class OSMTagMapping {
 
 			// copy temporary values from zoom-override data sets
 			for (Entry<Short, Set<String>> entry : tmpPoiZoomOverrides.entrySet()) {
-				Set<OSMTag> overriddenTags = new HashSet<OSMTag>();
+				Set<OSMTag> overriddenTags = new HashSet<>();
 				for (String tagString : entry.getValue()) {
 					OSMTag tag = this.stringToPoiTag.get(tagString);
 					if (tag != null) {
@@ -329,7 +329,7 @@ public final class OSMTagMapping {
 			}
 
 			for (Entry<Short, Set<String>> entry : tmpWayZoomOverrides.entrySet()) {
-				Set<OSMTag> overriddenTags = new HashSet<OSMTag>();
+				Set<OSMTag> overriddenTags = new HashSet<>();
 				for (String tagString : entry.getValue()) {
 					OSMTag tag = this.stringToWayTag.get(tagString);
 					if (tag != null) {
@@ -516,7 +516,7 @@ public final class OSMTagMapping {
 	 */
 	public void optimizePoiOrdering(TShortIntHashMap histogram) {
 		this.optimizedPoiIds.clear();
-		final TreeSet<HistogramEntry> poiOrdering = new TreeSet<OSMTagMapping.HistogramEntry>();
+		final TreeSet<HistogramEntry> poiOrdering = new TreeSet<>();
 
 		histogram.forEachEntry(new TShortIntProcedure() {
 			@Override
@@ -544,7 +544,7 @@ public final class OSMTagMapping {
 	 */
 	public void optimizeWayOrdering(TShortIntHashMap histogram) {
 		this.optimizedWayIds.clear();
-		final TreeSet<HistogramEntry> wayOrdering = new TreeSet<OSMTagMapping.HistogramEntry>();
+		final TreeSet<HistogramEntry> wayOrdering = new TreeSet<>();
 
 		histogram.forEachEntry(new TShortIntProcedure() {
 			@Override

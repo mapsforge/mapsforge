@@ -784,7 +784,7 @@ public final class MapFileWriter {
 
 				List<TDWay> ways = waysByZoomlevel.get(Byte.valueOf(zoomlevel));
 				if (ways != null) {
-					List<WayPreprocessingCallable> callables = new ArrayList<MapFileWriter.WayPreprocessingCallable>();
+					List<WayPreprocessingCallable> callables = new ArrayList<>();
 					for (TDWay way : ways) {
 						if (!way.isInvalid()) {
 							callables.add(new WayPreprocessingCallable(way, tileCoordinate, maxZoomCurrentInterval,

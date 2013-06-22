@@ -44,13 +44,13 @@ public final class DeltaEncoder {
 			return blocks;
 		}
 
-		List<WayDataBlock> results = new ArrayList<WayDataBlock>();
+		List<WayDataBlock> results = new ArrayList<>();
 
 		for (WayDataBlock wayDataBlock : blocks) {
 			List<Integer> outer = mEncode(wayDataBlock.getOuterWay(), encoding);
 			List<List<Integer>> inner = null;
 			if (wayDataBlock.getInnerWays() != null) {
-				inner = new ArrayList<List<Integer>>();
+				inner = new ArrayList<>();
 				for (List<Integer> list : wayDataBlock.getInnerWays()) {
 					inner.add(mEncode(list, encoding));
 				}
@@ -85,7 +85,7 @@ public final class DeltaEncoder {
 		if (list == null) {
 			return null;
 		}
-		ArrayList<Integer> result = new ArrayList<Integer>();
+		ArrayList<Integer> result = new ArrayList<>();
 
 		if (list.isEmpty()) {
 			return result;
@@ -117,7 +117,7 @@ public final class DeltaEncoder {
 			return null;
 		}
 
-		ArrayList<Integer> result = new ArrayList<Integer>();
+		ArrayList<Integer> result = new ArrayList<>();
 		if (list.isEmpty()) {
 			return result;
 		}

@@ -73,16 +73,14 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 
 	private HDTileBasedDataProcessor(MapWriterConfiguration configuration) {
 		super(configuration);
-		this.indexedNodeStore = new IndexedObjectStore<Node>(new SingleClassObjectSerializationFactory(Node.class),
+		this.indexedNodeStore = new IndexedObjectStore<>(new SingleClassObjectSerializationFactory(Node.class),
 				"idxNodes");
-		this.indexedWayStore = new IndexedObjectStore<Way>(new SingleClassObjectSerializationFactory(Way.class),
-				"idxWays");
+		this.indexedWayStore = new IndexedObjectStore<>(new SingleClassObjectSerializationFactory(Way.class), "idxWays");
 		// indexedRelationStore = new IndexedObjectStore<Relation>(
 		// new SingleClassObjectSerializationFactory(
 		// Relation.class), "idxWays");
-		this.wayStore = new SimpleObjectStore<Way>(new SingleClassObjectSerializationFactory(Way.class), "heapWays",
-				true);
-		this.relationStore = new SimpleObjectStore<Relation>(new SingleClassObjectSerializationFactory(Relation.class),
+		this.wayStore = new SimpleObjectStore<>(new SingleClassObjectSerializationFactory(Way.class), "heapWays", true);
+		this.relationStore = new SimpleObjectStore<>(new SingleClassObjectSerializationFactory(Relation.class),
 				"heapRelations", true);
 
 		this.tileData = new HDTileData[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()][][];
@@ -90,8 +88,8 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 			this.tileData[i] = new HDTileData[this.tileGridLayouts[i].getAmountTilesHorizontal()][this.tileGridLayouts[i]
 					.getAmountTilesVertical()];
 		}
-		this.virtualWays = new TLongObjectHashMap<TDWay>();
-		this.additionalRelationTags = new TLongObjectHashMap<List<TDRelation>>();
+		this.virtualWays = new TLongObjectHashMap<>();
+		this.additionalRelationTags = new TLongObjectHashMap<>();
 	}
 
 	@Override
@@ -171,7 +169,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 		}
 
 		TLongIterator it = coastlines.iterator();
-		HashSet<TDWay> coastlinesAsTDWay = new HashSet<TDWay>(coastlines.size());
+		HashSet<TDWay> coastlinesAsTDWay = new HashSet<>(coastlines.size());
 		while (it.hasNext()) {
 			long id = it.next();
 			TDWay tdWay = null;
@@ -265,7 +263,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 	protected void handleAdditionalRelationTags(TDWay way, TDRelation relation) {
 		List<TDRelation> associatedRelations = this.additionalRelationTags.get(way.getId());
 		if (associatedRelations == null) {
-			associatedRelations = new ArrayList<TDRelation>();
+			associatedRelations = new ArrayList<>();
 			this.additionalRelationTags.put(way.getId(), associatedRelations);
 		}
 		associatedRelations.add(relation);
@@ -326,7 +324,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 		if (innerWayIDs == null) {
 			return Collections.emptyList();
 		}
-		List<TDWay> res = new ArrayList<TDWay>();
+		List<TDWay> res = new ArrayList<>();
 		for (long id : innerWayIDs) {
 			TDWay current = null;
 			try {

@@ -150,7 +150,7 @@
 							</file>
 							<file>
 								<name>.settings/org.eclipse.jdt.core.prefs</name>
-								<location>${rootDirectory}/eclipse-config/org.eclipse.jdt.core.prefs</location>
+								<location>${rootDirectory}/eclipse-config/org.eclipse.jdt.core.prefs-${targetJdk}</location>
 							</file>
 							<file>
 								<name>.settings/org.eclipse.jdt.ui.prefs</name>

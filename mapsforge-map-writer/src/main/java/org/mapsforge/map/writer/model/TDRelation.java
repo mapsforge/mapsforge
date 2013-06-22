@@ -64,7 +64,7 @@ public class TDRelation {
 		}
 
 		List<RelationMember> members = relation.getMembers();
-		List<TDWay> wayMembers = new ArrayList<TDWay>();
+		List<TDWay> wayMembers = new ArrayList<>();
 		for (RelationMember relationMember : members) {
 			if (relationMember.getMemberType() != EntityType.Way) {
 				continue;
