@@ -35,14 +35,14 @@ class DependencyCache {
 	/**
 	 * The class holds the data for a symbol with dependencies on other tiles.
 	 * 
-	 * @param <Type>
+	 * @param <T>
 	 *            only two types are reasonable. The DependencySymbol or DependencyText class.
 	 */
-	private static class Dependency<Type> {
+	private static class Dependency<T> {
 		final Point point;
-		final Type value;
+		final T value;
 
-		Dependency(Type value, Point point) {
+		Dependency(T value, Point point) {
 			this.value = value;
 			this.point = point;
 		}
@@ -309,13 +309,13 @@ class DependencyCache {
 	 */
 	void removeOverlappingObjectsWithDependencyOnTile(List<PointTextContainer> labels,
 			List<PointTextContainer> areaLabels, List<SymbolContainer> symbols) {
-		if (this.currentDependencyOnTile.labels != null && this.currentDependencyOnTile.labels.size() != 0) {
+		if (this.currentDependencyOnTile.labels != null && !this.currentDependencyOnTile.labels.isEmpty()) {
 			removeOverlappingLabelsWithDependencyLabels(labels);
 			removeOverlappingSymbolsWithDependencyLabels(symbols);
 			removeOverlappingAreaLabelsWithDependencyLabels(areaLabels);
 		}
 
-		if (this.currentDependencyOnTile.symbols != null && this.currentDependencyOnTile.symbols.size() != 0) {
+		if (this.currentDependencyOnTile.symbols != null && !this.currentDependencyOnTile.symbols.isEmpty()) {
 			removeOverlappingSymbolsWithDepencySymbols(symbols, 2);
 			removeOverlappingAreaLabelsWithDependencySymbols(areaLabels);
 		}

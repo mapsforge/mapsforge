@@ -35,18 +35,16 @@ class LabelPlacement {
 	static class ReferencePosition {
 		double height;
 		final int nodeNumber;
-		SymbolContainer symbol;
 		double width;
 		final double x;
 		final double y;
 
-		ReferencePosition(double x, double y, int nodeNumber, double width, double height, SymbolContainer symbol) {
+		ReferencePosition(double x, double y, int nodeNumber, double width, double height) {
 			this.x = x;
 			this.y = y;
 			this.nodeNumber = nodeNumber;
 			this.width = width;
 			this.height = height;
-			this.symbol = symbol;
 		}
 	}
 
@@ -270,23 +268,21 @@ class LabelPlacement {
 					// up
 					refPos[z * 4] = new ReferencePosition(tmp.x - tmp.boundary.getWidth() / 2, tmp.y
 							- tmp.symbol.symbol.getHeight() / 2 - dis, z, tmp.boundary.getWidth(),
-							tmp.boundary.getHeight(), tmp.symbol);
+							tmp.boundary.getHeight());
 					// down
 					refPos[z * 4 + 1] = new ReferencePosition(tmp.x - tmp.boundary.getWidth() / 2, tmp.y
 							+ tmp.symbol.symbol.getHeight() / 2 + tmp.boundary.getHeight() + dis, z,
-							tmp.boundary.getWidth(), tmp.boundary.getHeight(), tmp.symbol);
+							tmp.boundary.getWidth(), tmp.boundary.getHeight());
 					// left
 					refPos[z * 4 + 2] = new ReferencePosition(tmp.x - tmp.symbol.symbol.getWidth() / 2
 							- tmp.boundary.getWidth() - dis, tmp.y + tmp.boundary.getHeight() / 2, z,
-							tmp.boundary.getWidth(), tmp.boundary.getHeight(), tmp.symbol);
+							tmp.boundary.getWidth(), tmp.boundary.getHeight());
 					// right
 					refPos[z * 4 + 3] = new ReferencePosition(tmp.x + tmp.symbol.symbol.getWidth() / 2 + dis, tmp.y
-							+ tmp.boundary.getHeight() / 2 - 0.1f, z, tmp.boundary.getWidth(),
-							tmp.boundary.getHeight(), tmp.symbol);
+							+ tmp.boundary.getHeight() / 2 - 0.1f, z, tmp.boundary.getWidth(), tmp.boundary.getHeight());
 				} else {
 					refPos[z * 4] = new ReferencePosition(labels.get(z).x - ((labels.get(z).boundary.getWidth()) / 2),
-							labels.get(z).y, z, labels.get(z).boundary.getWidth(), labels.get(z).boundary.getHeight(),
-							null);
+							labels.get(z).y, z, labels.get(z).boundary.getWidth(), labels.get(z).boundary.getHeight());
 					refPos[z * 4 + 1] = null;
 					refPos[z * 4 + 2] = null;
 					refPos[z * 4 + 3] = null;

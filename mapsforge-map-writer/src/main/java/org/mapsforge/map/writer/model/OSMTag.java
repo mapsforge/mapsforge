@@ -84,16 +84,13 @@ public class OSMTag {
 
 	@Override
 	public final boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		} else if (!(obj instanceof OSMTag)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		OSMTag other = (OSMTag) obj;
-		if (this.id != other.id)
-			return false;
-		return true;
+		return this.id == other.id;
 	}
 
 	/**

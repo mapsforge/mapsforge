@@ -47,7 +47,7 @@ public class TDRelation {
 			return null;
 		}
 
-		if (relation.getMembers().size() == 0) {
+		if (relation.getMembers().isEmpty()) {
 			return null;
 		}
 
