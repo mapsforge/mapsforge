@@ -19,11 +19,8 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 
 public abstract class Layer {
+	private Redrawer assignedRedrawer;
 	private boolean visible = true;
-
-	public void destroy() {
-		// do nothing
-	}
 
 	/**
 	 * Draws this {@code Layer} on the given canvas.
@@ -47,9 +44,54 @@ public abstract class Layer {
 	}
 
 	/**
+	 * Requests an asynchronous redrawing of all layers.
+	 */
+	public final synchronized void requestRedraw() {
+		if (this.assignedRedrawer != null) {
+			this.assignedRedrawer.redrawLayers();
+		}
+	}
+
+	/**
 	 * Sets the visibility flag of this {@code Layer} to the given value.
 	 */
 	public final void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+
+	/**
+	 * Called each time this {@code Layer} is added to a {@link Layers} list.
+	 */
+	protected void onAdd() {
+		// do nothing
+	}
+
+	protected void onDestroy() {
+		// do nothing
+	}
+
+	/**
+	 * Called each time this {@code Layer} is removed from a {@link Layers} list.
+	 */
+	protected void onRemove() {
+		// do nothing
+	}
+
+	final synchronized void assign(Redrawer redrawer) {
+		if (this.assignedRedrawer != null) {
+			throw new IllegalStateException("layer already assigned");
+		}
+
+		this.assignedRedrawer = redrawer;
+		onAdd();
+	}
+
+	final synchronized void unassign() {
+		if (this.assignedRedrawer == null) {
+			throw new IllegalStateException("layer is not assigned");
+		}
+
+		this.assignedRedrawer = null;
+		onRemove();
 	}
 }

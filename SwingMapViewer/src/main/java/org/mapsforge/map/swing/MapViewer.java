@@ -15,13 +15,12 @@
 package org.mapsforge.map.swing;
 
 import java.io.File;
-import java.util.List;
 import java.util.prefs.Preferences;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -59,12 +58,11 @@ public final class MapViewer {
 	}
 
 	private static void addLayers(MapView mapView) {
-		LayerManager layerManager = mapView.getLayerManager();
-		List<Layer> layers = layerManager.getLayers();
+		Layers layers = mapView.getLayerManager().getLayers();
 		TileCache tileCache = createTileCache();
 
-		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition, layerManager));
-		layers.add(createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition, layerManager));
+		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
+		layers.add(createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition));
 		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
 		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
 	}
@@ -89,19 +87,16 @@ public final class MapViewer {
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}
 
-	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			LayerManager layerManager) {
+	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource,
-				layerManager, GRAPHIC_FACTORY);
+				GRAPHIC_FACTORY);
 		tileDownloadLayer.start();
 		return tileDownloadLayer;
 	}
 
-	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			LayerManager layerManager) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, layerManager,
-				GRAPHIC_FACTORY);
+	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(new File("../../../Desktop/germany.map"));
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;

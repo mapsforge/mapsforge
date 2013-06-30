@@ -31,8 +31,7 @@ public class DualMapViewer extends BasicMapViewerXml {
 	MapView mapView2;
 
 	protected void addSecondMapLayer(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
-		layerManager.getLayers().add(
-				Utils.createTileRendererLayer(tileCache, mapViewPosition, layerManager, getMapFile()));
+		layerManager.getLayers().add(Utils.createTileRendererLayer(tileCache, mapViewPosition, getMapFile()));
 	}
 
 	/**

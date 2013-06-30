@@ -25,15 +25,14 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.HttpServerTest;
 import org.mapsforge.map.awt.AwtGraphicFactory;
-import org.mapsforge.map.controller.DummyMapView;
-import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.DummyLayer;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.view.MapView;
 
 public class TileDownloadThreadTest extends HttpServerTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -68,14 +67,11 @@ public class TileDownloadThreadTest extends HttpServerTest {
 
 	@Test
 	public void cachedTileDownloadTest() throws InterruptedException {
-		MapView mapView = new DummyMapView();
-		MapViewPosition mapViewPosition = new MapViewPosition();
 		TileCache tileCache = new InMemoryTileCache(1);
-		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(mapViewPosition);
-		LayerManager layerManager = new LayerManager(mapView, mapViewPosition, GRAPHIC_FACTORY);
+		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(new MapViewPosition());
+		Layer layer = new DummyLayer();
 
-		TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, jobQueue, layerManager,
-				GRAPHIC_FACTORY);
+		TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, jobQueue, layer, GRAPHIC_FACTORY);
 		try {
 			tileDownloadThread.start();
 			awaitWaitingState(tileDownloadThread);
@@ -102,14 +98,11 @@ public class TileDownloadThreadTest extends HttpServerTest {
 	public void newTileDownloadTest() throws InterruptedException, IOException {
 		addFile("/0/0/0.png", new File("src/test/resources/0_0_0.png"));
 
-		MapView mapView = new DummyMapView();
-		MapViewPosition mapViewPosition = new MapViewPosition();
 		TileCache tileCache = new InMemoryTileCache(1);
-		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(mapViewPosition);
-		LayerManager layerManager = new LayerManager(mapView, mapViewPosition, GRAPHIC_FACTORY);
+		JobQueue<DownloadJob> jobQueue = new JobQueue<DownloadJob>(new MapViewPosition());
+		Layer layer = new DummyLayer();
 
-		TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, jobQueue, layerManager,
-				GRAPHIC_FACTORY);
+		TileDownloadThread tileDownloadThread = new TileDownloadThread(tileCache, jobQueue, layer, GRAPHIC_FACTORY);
 		try {
 			tileDownloadThread.start();
 			awaitWaitingState(tileDownloadThread);

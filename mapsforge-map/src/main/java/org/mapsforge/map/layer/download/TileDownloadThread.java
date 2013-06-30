@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.util.PausableThread;
@@ -30,16 +30,15 @@ class TileDownloadThread extends PausableThread {
 
 	private final GraphicFactory graphicFactory;
 	private final JobQueue<DownloadJob> jobQueue;
-	private final LayerManager layerManager;
+	private final Layer layer;
 	private final TileCache tileCache;
 
-	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, LayerManager layerManager,
-			GraphicFactory graphicFactory) {
+	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory) {
 		super();
 
 		this.tileCache = tileCache;
 		this.jobQueue = jobQueue;
-		this.layerManager = layerManager;
+		this.layer = layer;
 		this.graphicFactory = graphicFactory;
 	}
 
@@ -74,7 +73,7 @@ class TileDownloadThread extends PausableThread {
 
 		if (!isInterrupted() && bitmap != null) {
 			this.tileCache.put(downloadJob, bitmap);
-			this.layerManager.redrawLayers();
+			this.layer.requestRedraw();
 		}
 	}
 }

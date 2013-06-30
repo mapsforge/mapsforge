@@ -18,7 +18,6 @@ import java.io.File;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
@@ -32,23 +31,16 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private float textScale;
 	private XmlRenderTheme xmlRenderTheme;
 
-	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, LayerManager layerManager,
-			GraphicFactory graphicFactory) {
+	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory);
 
 		this.mapDatabase = new MapDatabase();
 		DatabaseRenderer databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory);
 
-		this.mapWorker = new MapWorker(tileCache, this.jobQueue, databaseRenderer, layerManager);
+		this.mapWorker = new MapWorker(tileCache, this.jobQueue, databaseRenderer, this);
 		this.mapWorker.start();
 
 		this.textScale = 1;
-	}
-
-	@Override
-	public void destroy() {
-		new DestroyThread(this.mapWorker, this.mapDatabase).start();
-		super.destroy();
 	}
 
 	public File getMapFile() {
@@ -80,5 +72,25 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	@Override
 	protected RendererJob createJob(Tile tile) {
 		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.textScale);
+	}
+
+	@Override
+	protected void onAdd() {
+		this.mapWorker.proceed();
+
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onDestroy() {
+		new DestroyThread(this.mapWorker, this.mapDatabase).start();
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onRemove() {
+		this.mapWorker.pause();
+
+		super.onDestroy();
 	}
 }

@@ -15,12 +15,11 @@
 package org.mapsforge.applications.android.samples;
 
 import java.io.File;
-import java.util.List;
 
 import org.mapsforge.applications.android.samples.dummy.DummyContent;
 import org.mapsforge.map.android.view.MapView;
-import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
 
@@ -40,13 +39,12 @@ public class ItemDetailFragment extends Fragment {
 	 * The fragment argument representing the item ID that this fragment represents.
 	 */
 	public static final String ARG_ITEM_ID = "item_id";
-	private MapView mapView;
 
 	/**
 	 * The dummy content this fragment is presenting.
 	 */
-	private DummyContent.DummyItem mItem;
-
+	private DummyContent.DummyItem dummyItem;
+	private MapView mapView;
 	private TileCache tileCache;
 
 	/**
@@ -65,7 +63,7 @@ public class ItemDetailFragment extends Fragment {
 			// Load the dummy content specified by the fragment
 			// arguments. In a real-world scenario, use a Loader
 			// to load content from a content provider.
-			this.mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+			this.dummyItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
 			this.tileCache = Utils.createTileCache(this.getActivity(), "fragments");
 		}
 	}
@@ -74,19 +72,19 @@ public class ItemDetailFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_item_detail, container, false);
 
-		if (this.mItem != null) {
+		if (this.dummyItem != null) {
 			this.mapView = (MapView) rootView.findViewById(R.id.mapView);
 			this.mapView.setClickable(true);
 			this.mapView.getFpsCounter().setVisible(true);
 			this.mapView.getMapScaleBar().setVisible(true);
 
 			LayerManager layerManager = this.mapView.getLayerManager();
-			List<Layer> layers = layerManager.getLayers();
+			Layers layers = layerManager.getLayers();
 
 			MapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
 			mapViewPosition.setZoomLevel((byte) 16);
-			mapViewPosition.setCenter(this.mItem.location);
-			layers.add(Utils.createTileRendererLayer(this.tileCache, mapViewPosition, layerManager, getMapFile()));
+			mapViewPosition.setCenter(this.dummyItem.location);
+			layers.add(Utils.createTileRendererLayer(this.tileCache, mapViewPosition, getMapFile()));
 		}
 
 		return rootView;

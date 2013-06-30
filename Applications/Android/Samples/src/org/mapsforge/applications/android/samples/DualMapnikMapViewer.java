@@ -15,6 +15,7 @@
 package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
@@ -22,7 +23,7 @@ import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.model.MapViewPosition;
 
 /**
- * An activity with two mapviews tied to each other
+ * An activity with two {@link MapView MapViews} tied to each other.
  */
 public class DualMapnikMapViewer extends DualMapViewer {
 	private TileDownloadLayer downloadLayer;
@@ -32,7 +33,7 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	@Override
 	protected void addSecondMapLayer(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		this.downloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, OpenStreetMapMapnik.INSTANCE,
-				layerManager, AndroidGraphicFactory.INSTANCE);
+				AndroidGraphicFactory.INSTANCE);
 		layerManager.getLayers().add(this.downloadLayer);
 	}
 
@@ -63,7 +64,6 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		this.downloadLayer.destroy();
 		this.mapView2.getModel().save(this.preferencesFacade);
 		this.preferencesFacade.save();
 	}

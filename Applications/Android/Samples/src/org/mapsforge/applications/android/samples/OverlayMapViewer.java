@@ -21,8 +21,8 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.Marker;
@@ -42,7 +42,7 @@ public class OverlayMapViewer extends BasicMapViewerXml {
 		addOverlayLayers(layerManager.getLayers());
 	}
 
-	protected void addOverlayLayers(List<Layer> layers) {
+	protected void addOverlayLayers(Layers layers) {
 		LatLong latLong1 = new LatLong(52.5, 13.4);
 		LatLong latLong2 = new LatLong(52.499, 13.402);
 		LatLong latLong3 = new LatLong(52.503, 13.399);

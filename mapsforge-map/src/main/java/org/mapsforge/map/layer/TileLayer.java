@@ -48,11 +48,6 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	}
 
 	@Override
-	public void destroy() {
-		this.tileCache.destroy();
-	}
-
-	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		ArrayList<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint);
 
@@ -74,6 +69,11 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	}
 
 	protected abstract T createJob(Tile tile);
+
+	@Override
+	protected void onDestroy() {
+		this.tileCache.destroy();
+	}
 
 	private void drawParentTileBitmap(Canvas canvas, Point point, Tile tile) {
 		Tile cachedParentTile = getCachedParentTile(tile, 4);

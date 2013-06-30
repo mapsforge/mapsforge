@@ -195,6 +195,8 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 				this.centerAtNextFix = false;
 				this.mapViewPosition.setCenter(latLong);
 			}
+
+			requestRedraw();
 		}
 	}
 

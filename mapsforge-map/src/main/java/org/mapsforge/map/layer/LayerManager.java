@@ -14,8 +14,6 @@
  */
 package org.mapsforge.map.layer;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,12 +31,12 @@ import org.mapsforge.map.util.PausableThread;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
-public class LayerManager extends PausableThread {
+public class LayerManager extends PausableThread implements Redrawer {
 	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
 	private static final int MILLISECONDS_PER_FRAME = 30;
 
 	private final Canvas drawingCanvas;
-	private final List<Layer> layers;
+	private final Layers layers;
 	private final MapView mapView;
 	private final MapViewPosition mapViewPosition;
 	private boolean redrawNeeded;
@@ -50,16 +48,14 @@ public class LayerManager extends PausableThread {
 		this.mapViewPosition = mapViewPosition;
 
 		this.drawingCanvas = graphicFactory.createCanvas();
-		this.layers = new CopyOnWriteArrayList<Layer>();
+		this.layers = new Layers(this);
 	}
 
-	public List<Layer> getLayers() {
+	public Layers getLayers() {
 		return this.layers;
 	}
 
-	/**
-	 * Requests an asynchronous redrawing of all layers.
-	 */
+	@Override
 	public void redrawLayers() {
 		this.redrawNeeded = true;
 		synchronized (this) {
@@ -69,8 +65,8 @@ public class LayerManager extends PausableThread {
 
 	@Override
 	protected void afterRun() {
-		for (Layer layer : this.getLayers()) {
-			layer.destroy();
+		for (Layer layer : this.layers) {
+			layer.onDestroy();
 		}
 	}
 
@@ -90,7 +86,7 @@ public class LayerManager extends PausableThread {
 			BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension);
 			Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension);
 
-			for (Layer layer : this.getLayers()) {
+			for (Layer layer : this.layers) {
 				if (layer.isVisible()) {
 					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint);
 				}

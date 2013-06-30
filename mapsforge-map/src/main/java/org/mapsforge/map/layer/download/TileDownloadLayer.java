@@ -19,7 +19,6 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
@@ -32,13 +31,11 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private final TileSource tileSource;
 
 	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
-			LayerManager layerManager, GraphicFactory graphicFactory) {
+			GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory);
 
 		if (tileSource == null) {
 			throw new IllegalArgumentException("tileSource must not be null");
-		} else if (layerManager == null) {
-			throw new IllegalArgumentException("layerManager must not be null");
 		}
 
 		this.tileSource = tileSource;
@@ -46,17 +43,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		int numberOfDownloadThreads = Math.min(tileSource.getParallelRequestsLimit(), DOWNLOAD_THREADS_MAX);
 		this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
 		for (int i = 0; i < numberOfDownloadThreads; ++i) {
-			this.tileDownloadThreads[i] = new TileDownloadThread(tileCache, this.jobQueue, layerManager, graphicFactory);
+			this.tileDownloadThreads[i] = new TileDownloadThread(tileCache, this.jobQueue, this, graphicFactory);
 		}
-	}
-
-	@Override
-	public void destroy() {
-		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-			tileDownloadThread.interrupt();
-		}
-
-		super.destroy();
 	}
 
 	@Override
@@ -77,5 +65,32 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	@Override
 	protected DownloadJob createJob(Tile tile) {
 		return new DownloadJob(tile, this.tileSource);
+	}
+
+	@Override
+	protected void onAdd() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.proceed();
+		}
+
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onDestroy() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.interrupt();
+		}
+
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onRemove() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.pause();
+		}
+
+		super.onDestroy();
 	}
 }

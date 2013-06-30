@@ -28,21 +28,10 @@ public class DownloadLayerViewer extends BasicMapViewerXml {
 	private TileDownloadLayer downloadLayer;
 
 	@Override
-	public void onPause() {
-		super.onPause();
-		this.downloadLayer.destroy();
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		this.downloadLayer.start();
-	}
-
-	@Override
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
 		this.downloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, OpenStreetMapMapnik.INSTANCE,
-				layerManager, AndroidGraphicFactory.INSTANCE);
+				AndroidGraphicFactory.INSTANCE);
+		this.downloadLayer.start();
 		layerManager.getLayers().add(this.downloadLayer);
 	}
 }

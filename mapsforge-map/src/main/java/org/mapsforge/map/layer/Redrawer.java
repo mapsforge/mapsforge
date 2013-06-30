@@ -14,26 +14,9 @@
  */
 package org.mapsforge.map.layer;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.Point;
-
-public class DummyLayer extends Layer {
-	public int onAddCalls;
-	public int onRemoveCalls;
-
-	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		// do nothing
-	}
-
-	@Override
-	public void onAdd() {
-		++this.onAddCalls;
-	}
-
-	@Override
-	public void onRemove() {
-		++this.onRemoveCalls;
-	}
+public interface Redrawer {
+	/**
+	 * Requests an asynchronous redrawing of all layers.
+	 */
+	void redrawLayers();
 }

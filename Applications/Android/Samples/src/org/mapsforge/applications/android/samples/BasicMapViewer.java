@@ -39,8 +39,7 @@ public class BasicMapViewer extends Activity {
 	protected TileCache tileCache;
 
 	protected void addLayers(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
-		layerManager.getLayers().add(
-				Utils.createTileRendererLayer(tileCache, mapViewPosition, layerManager, getMapFile()));
+		layerManager.getLayers().add(Utils.createTileRendererLayer(tileCache, mapViewPosition, getMapFile()));
 	}
 
 	protected TileCache createTileCache() {

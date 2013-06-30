@@ -22,7 +22,6 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -119,22 +118,8 @@ public final class Utils {
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}
 
-	/**
-	 * creates a renderer for an OSM file
-	 * 
-	 * @param tileCache
-	 *            the cache
-	 * @param mapViewPosition
-	 *            the position
-	 * @param layerManager
-	 *            the layer manager
-	 * @param mapFile
-	 *            the map file
-	 * @return the layer
-	 */
-	static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			LayerManager layerManager, File mapFile) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, layerManager,
+	static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, File mapFile) {
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition,
 				AndroidGraphicFactory.INSTANCE);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
