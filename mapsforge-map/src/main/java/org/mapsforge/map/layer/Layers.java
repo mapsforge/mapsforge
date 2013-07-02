@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.layer;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
@@ -23,6 +24,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * A thread-safe {@link Layer} list which does not allow {@code null} elements.
  */
 public class Layers implements Iterable<Layer>, RandomAccess {
+	private static void checkIsNull(Collection<Layer> layers) {
+		if (layers == null) {
+			throw new IllegalArgumentException("layers must not be null");
+		}
+
+		for (Layer layer : layers) {
+			checkIsNull(layer);
+		}
+	}
+
 	private static void checkIsNull(Layer layer) {
 		if (layer == null) {
 			throw new IllegalArgumentException("layer must not be null");
@@ -54,6 +65,17 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		checkIsNull(layer);
 		this.layersList.add(layer);
 		layer.assign(this.redrawer);
+	}
+
+	/**
+	 * @see List#addAll(Collection)
+	 */
+	public synchronized void addAll(Collection<Layer> layers) {
+		checkIsNull(layers);
+		this.layersList.addAll(layers);
+		for (Layer layer : layers) {
+			layer.assign(this.redrawer);
+		}
 	}
 
 	/**
