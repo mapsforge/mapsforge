@@ -73,7 +73,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 			tileDownloadThread.proceed();
 		}
 
-		super.onDestroy();
+		super.onAdd();
 	}
 
 	@Override
@@ -91,6 +91,6 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 			tileDownloadThread.pause();
 		}
 
-		super.onDestroy();
+		super.onRemove();
 	}
 }

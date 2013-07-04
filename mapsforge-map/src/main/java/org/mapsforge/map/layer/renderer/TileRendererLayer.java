@@ -78,7 +78,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	protected void onAdd() {
 		this.mapWorker.proceed();
 
-		super.onDestroy();
+		super.onAdd();
 	}
 
 	@Override
@@ -91,6 +91,6 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	protected void onRemove() {
 		this.mapWorker.pause();
 
-		super.onDestroy();
+		super.onRemove();
 	}
 }
