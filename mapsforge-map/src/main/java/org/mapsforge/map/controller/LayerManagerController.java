@@ -22,7 +22,7 @@ public final class LayerManagerController implements Observer {
 	public static LayerManagerController create(LayerManager layerManager, Model model) {
 		LayerManagerController layerManagerController = new LayerManagerController(layerManager);
 
-		model.mapViewModel.addObserver(layerManagerController);
+		model.mapViewDimension.addObserver(layerManagerController);
 		model.mapViewPosition.addObserver(layerManagerController);
 
 		return layerManagerController;

@@ -28,7 +28,7 @@ public final class FrameBufferController implements Observer {
 		FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
 
 		model.frameBufferModel.addObserver(frameBufferController);
-		model.mapViewModel.addObserver(frameBufferController);
+		model.mapViewDimension.addObserver(frameBufferController);
 		model.mapViewPosition.addObserver(frameBufferController);
 
 		return frameBufferController;
@@ -58,7 +58,7 @@ public final class FrameBufferController implements Observer {
 
 	@Override
 	public void onChange() {
-		Dimension mapViewDimension = this.model.mapViewModel.getDimension();
+		Dimension mapViewDimension = this.model.mapViewDimension.getDimension();
 		if (mapViewDimension != null) {
 			double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
 			if (dimensionChangeNeeded(mapViewDimension, overdrawFactor)) {

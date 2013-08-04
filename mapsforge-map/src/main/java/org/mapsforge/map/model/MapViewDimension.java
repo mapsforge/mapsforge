@@ -17,7 +17,7 @@ package org.mapsforge.map.model;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.model.common.Observable;
 
-public class MapViewModel extends Observable {
+public class MapViewDimension extends Observable {
 	private Dimension dimension;
 
 	/**

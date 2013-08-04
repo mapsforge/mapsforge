@@ -15,7 +15,7 @@
 package org.mapsforge.map.view;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
@@ -49,9 +49,9 @@ public class FrameBuffer {
 		scale(scaleFactor);
 	}
 
-	public synchronized void draw(Canvas canvas) {
+	public synchronized void draw(GraphicContext graphicContext) {
 		if (this.bitmap1 != null) {
-			canvas.drawBitmap(this.bitmap1, this.matrix);
+			graphicContext.drawBitmap(this.bitmap1, this.matrix);
 		}
 	}
 

@@ -69,8 +69,9 @@ public final class MapViewer {
 
 	private static MapView createMapView() {
 		MapView mapView = new MapView();
+		mapView.getMapScaleBar().setVisible(true);
 		mapView.getFpsCounter().setVisible(true);
-		mapView.addComponentListener(new MapViewComponentListener(mapView, mapView.getModel().mapViewModel));
+		mapView.addComponentListener(new MapViewComponentListener(mapView, mapView.getModel().mapViewDimension));
 
 		MouseEventListener mouseEventListener = new MouseEventListener(mapView.getModel());
 		mapView.addMouseListener(mouseEventListener);

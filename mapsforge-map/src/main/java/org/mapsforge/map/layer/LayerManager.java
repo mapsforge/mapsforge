@@ -79,7 +79,7 @@ public class LayerManager extends PausableThread implements Redrawer {
 		Bitmap bitmap = frameBuffer.getDrawingBitmap();
 		if (bitmap != null) {
 			this.drawingCanvas.setBitmap(bitmap);
-			this.drawingCanvas.fillColor(Color.WHITE);
+			this.drawingCanvas.fillColor(Color.TRANSPARENT);
 
 			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
 			Dimension canvasDimension = this.drawingCanvas.getDimension();

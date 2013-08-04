@@ -22,21 +22,21 @@ import org.mapsforge.map.model.common.DummyObserver;
 public class MapViewModelTest {
 	@Test
 	public void dimensionTest() {
-		MapViewModel mapViewModel = new MapViewModel();
-		Assert.assertNull(mapViewModel.getDimension());
+		MapViewDimension mapViewDimension = new MapViewDimension();
+		Assert.assertNull(mapViewDimension.getDimension());
 
-		mapViewModel.setDimension(new Dimension(0, 0));
-		Assert.assertEquals(new Dimension(0, 0), mapViewModel.getDimension());
+		mapViewDimension.setDimension(new Dimension(0, 0));
+		Assert.assertEquals(new Dimension(0, 0), mapViewDimension.getDimension());
 	}
 
 	@Test
 	public void observerTest() {
 		DummyObserver dummyObserver = new DummyObserver();
-		MapViewModel mapViewModel = new MapViewModel();
-		mapViewModel.addObserver(dummyObserver);
+		MapViewDimension mapViewDimension = new MapViewDimension();
+		mapViewDimension.addObserver(dummyObserver);
 		Assert.assertEquals(0, dummyObserver.getCallbacks());
 
-		mapViewModel.setDimension(new Dimension(0, 0));
+		mapViewDimension.setDimension(new Dimension(0, 0));
 		Assert.assertEquals(1, dummyObserver.getCallbacks());
 	}
 }

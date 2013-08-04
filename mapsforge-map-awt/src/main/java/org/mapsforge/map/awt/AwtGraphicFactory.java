@@ -14,6 +14,8 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.io.InputStream;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
@@ -31,8 +34,8 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
-	public static Canvas createCanvas(java.awt.Graphics2D graphics2D) {
-		return new AwtCanvas(graphics2D);
+	public static GraphicContext createGraphicContext(Graphics graphics) {
+		return new AwtCanvas((Graphics2D) graphics);
 	}
 
 	static AffineTransform getAffineTransform(Matrix matrix) {

@@ -20,11 +20,13 @@ import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.model.MapViewDimension;
 import org.mapsforge.map.model.MapViewPosition;
 
 /**
@@ -42,6 +44,7 @@ public class MapScaleBar {
 	private MapPosition mapPosition;
 	private final Bitmap mapScaleBitmap;
 	private final Canvas mapScaleCanvas;
+	private final MapViewDimension mapViewDimension;
 	private final MapViewPosition mapViewPosition;
 	private final Paint paintScaleBar;
 	private final Paint paintScaleBarStroke;
@@ -50,8 +53,9 @@ public class MapScaleBar {
 	private boolean redrawNeeded;
 	private boolean visible;
 
-	public MapScaleBar(MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
+	public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, GraphicFactory graphicFactory) {
 		this.mapViewPosition = mapViewPosition;
+		this.mapViewDimension = mapViewDimension;
 		this.graphicFactory = graphicFactory;
 
 		this.mapScaleBitmap = graphicFactory.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT);
@@ -65,15 +69,15 @@ public class MapScaleBar {
 		this.paintScaleTextStroke = createTextPaint(Color.WHITE, 2);
 	}
 
-	public void draw(Canvas canvas) {
+	public void draw(GraphicContext graphicContext) {
 		if (!this.visible) {
 			return;
 		}
 
 		redraw();
 
-		int top = canvas.getHeight() - BITMAP_HEIGHT - MARGIN_BOTTOM;
-		canvas.drawBitmap(this.mapScaleBitmap, MARGIN_LEFT, top);
+		int top = this.mapViewDimension.getDimension().height - BITMAP_HEIGHT - MARGIN_BOTTOM;
+		graphicContext.drawBitmap(this.mapScaleBitmap, MARGIN_LEFT, top);
 	}
 
 	public Adapter getAdapter() {

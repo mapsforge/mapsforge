@@ -25,7 +25,7 @@ public class ModelTest {
 	public void constructorTest() {
 		Model model = new Model();
 		Assert.assertNotNull(model.frameBufferModel);
-		Assert.assertNotNull(model.mapViewModel);
+		Assert.assertNotNull(model.mapViewDimension);
 		Assert.assertNotNull(model.mapViewPosition);
 	}
 

@@ -16,10 +16,10 @@ package org.mapsforge.map.view;
 
 import java.util.concurrent.TimeUnit;
 
-import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 
@@ -47,7 +47,7 @@ public class FpsCounter {
 		this.paint = createPaint(graphicFactory);
 	}
 
-	public void draw(Canvas canvas) {
+	public void draw(GraphicContext graphicContext) {
 		if (!this.visible) {
 			return;
 		}
@@ -60,7 +60,7 @@ public class FpsCounter {
 			this.frameCounter = 0;
 		}
 
-		canvas.drawText(this.fps, 20, 40, this.paint);
+		graphicContext.drawText(this.fps, 20, 40, this.paint);
 		++this.frameCounter;
 	}
 

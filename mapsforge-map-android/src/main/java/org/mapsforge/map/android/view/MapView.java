@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.android.view;
 
+import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -70,7 +71,7 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 		this.touchEventHandler = new TouchEventHandler(this.model.mapViewPosition, viewConfiguration);
 		this.touchEventHandler.addListener(touchGestureDetector);
 
-		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, GRAPHIC_FACTORY);
+		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY);
 	}
 
 	@Override
@@ -127,15 +128,14 @@ public class MapView extends View implements org.mapsforge.map.view.MapView {
 
 	@Override
 	protected void onDraw(Canvas androidCanvas) {
-		org.mapsforge.core.graphics.Canvas canvas = AndroidGraphicFactory.createCanvas(androidCanvas);
-
-		this.frameBuffer.draw(canvas);
-		this.mapScaleBar.draw(canvas);
-		this.fpsCounter.draw(canvas);
+		GraphicContext graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
+		this.frameBuffer.draw(graphicContext);
+		this.mapScaleBar.draw(graphicContext);
+		this.fpsCounter.draw(graphicContext);
 	}
 
 	@Override
 	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-		this.model.mapViewModel.setDimension(new Dimension(width, height));
+		this.model.mapViewDimension.setDimension(new Dimension(width, height));
 	}
 }
