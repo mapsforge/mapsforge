@@ -93,6 +93,7 @@ public class MapScaleBar {
 			throw new IllegalArgumentException("adapter must not be null");
 		}
 		this.adapter = adapter;
+		this.redrawNeeded = true;
 	}
 
 	public void setVisible(boolean visible) {
