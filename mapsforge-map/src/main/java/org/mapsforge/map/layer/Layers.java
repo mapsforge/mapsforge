@@ -79,6 +79,17 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	}
 
 	/**
+	 * @see List#addAll(int, Collection)
+	 */
+	public synchronized void allAll(int index, Collection<Layer> layers) {
+		checkIsNull(layers);
+		this.layersList.addAll(index, layers);
+		for (Layer layer : layers) {
+			layer.assign(this.redrawer);
+		}
+	}
+
+	/**
 	 * @see List#clear()
 	 */
 	public synchronized void clear() {
