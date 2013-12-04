@@ -6,17 +6,12 @@
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
 		<version>0.4.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>mapsforge-map-android</artifactId>
 	<packaging>apklib</packaging>
 
-	<properties>
-		<rootDirectory>../</rootDirectory>
-	</properties>
-
-	<build>
+	<build>		
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -79,7 +74,7 @@
 		<dependency>
 			<groupId>svg-android</groupId>
 			<artifactId>svg-android</artifactId>
-			<version>1.0.0</version>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>

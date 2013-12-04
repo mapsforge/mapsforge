@@ -31,8 +31,9 @@
 		<module>mapsforge-map-awt</module>
 		<module>mapsforge-map-reader</module>
 		<module>mapsforge-map-writer</module>
+		<module>svg-android</module>
 		<module>Applications/Android/Samples</module>
-		<module>SwingMapViewer</module>
+		<module>SwingMapViewer</module>		
 	</modules>
 
 	<scm>
@@ -72,7 +73,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<targetJdk>1.6</targetJdk>
+		<targetJdk>1.7</targetJdk>
 	</properties>
 
 	<build>
@@ -88,7 +89,7 @@
 						<genDirectoryAidl>gen</genDirectoryAidl>
 						<extractDuplicates>true</extractDuplicates>
 						<sdk>
-							<platform>16</platform>
+							<platform>19</platform>
 						</sdk>
 					</configuration>
 				</plugin>

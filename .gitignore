@@ -32,3 +32,4 @@ local.properties
 
 # OSX
 .DS_Store
+/svg-android/target/
