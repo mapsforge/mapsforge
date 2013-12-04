@@ -16,7 +16,7 @@ package org.mapsforge.map.layer.cache;
 
 import java.util.Map;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.queue.Job;
 
 /**
@@ -38,7 +38,7 @@ public interface TileCache {
 	 * @return the image for the given key or null, if this cache contains no image for the key.
 	 * @see Map#get
 	 */
-	Bitmap get(Job key);
+	TileBitmap get(Job key);
 
 	/**
 	 * @return the capacity of this cache.
@@ -50,5 +50,5 @@ public interface TileCache {
 	 *             if any of the parameters is {@code null}.
 	 * @see Map#put
 	 */
-	void put(Job key, Bitmap bitmap);
+	void put(Job key, TileBitmap bitmap);
 }

@@ -26,7 +26,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Region;
 
 class AndroidCanvas implements Canvas {
-	final android.graphics.Canvas canvas;
+	android.graphics.Canvas canvas;
 	private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
 
 	AndroidCanvas() {
@@ -38,6 +38,11 @@ class AndroidCanvas implements Canvas {
 
 	AndroidCanvas(android.graphics.Canvas canvas) {
 		this.canvas = canvas;
+	}
+
+	@Override
+	public void destroy() {
+		this.canvas = null;
 	}
 
 	@Override
@@ -56,7 +61,6 @@ class AndroidCanvas implements Canvas {
 		if (paint.isTransparent()) {
 			return;
 		}
-
 		this.canvas.drawCircle(x, y, radius, AndroidGraphicFactory.getPaint(paint));
 	}
 

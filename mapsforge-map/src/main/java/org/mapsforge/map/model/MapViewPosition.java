@@ -21,9 +21,66 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
+import org.mapsforge.map.util.PausableThread;
+
+import java.util.logging.Logger;
+
 
 public class MapViewPosition extends Observable implements Persistable {
-	private static final String LATITUDE = "latitude";
+
+    class ZoomAnimator extends PausableThread {
+
+        // debugging tip: for investigating what happens during the zoom animation
+        // just make the times longer for duration and frame length
+        private static final float DEFAULT_DURATION = 250f;
+        private static final int FRAME_LENGTH_IN_MS = 15;
+
+        private boolean executeAnimation;
+        private long timeStart;
+        double scaleDifference;
+        double startScaleFactor;
+
+        void startAnimation(double startScaleFactor, double targetScaleFactor) {
+            // TODO this is not properly synchronized
+            this.startScaleFactor = startScaleFactor;
+            this.scaleDifference = targetScaleFactor - this.startScaleFactor;
+            this.executeAnimation = true;
+            this.timeStart = System.currentTimeMillis();
+            synchronized (this) {
+                notify();
+            }
+        }
+
+        private double calculateScaleFactor(float percent) {
+            return this.startScaleFactor + this.scaleDifference * percent;
+        }
+
+        @Override
+        protected void doWork() throws InterruptedException {
+	        long timeElapsed = System.currentTimeMillis() - this.timeStart;
+	        if (timeElapsed >= DEFAULT_DURATION) {
+	            this.executeAnimation = false;
+	            MapViewPosition.this.setScaleFactor(calculateScaleFactor(1));
+	        } else {
+	            float timeElapsedRatio = timeElapsed / DEFAULT_DURATION;
+	            MapViewPosition.this.setScaleFactor(calculateScaleFactor(timeElapsedRatio));
+	        }
+	        sleep(FRAME_LENGTH_IN_MS);
+        }
+
+        @Override
+        protected ThreadPriority getThreadPriority() {
+            return ThreadPriority.ABOVE_NORMAL;
+        }
+
+        @Override
+        protected boolean hasWork() {
+            return this.executeAnimation;
+        }
+    }
+
+
+    private static final String LATITUDE = "latitude";
 	private static final String LATITUDE_MAX = "latitudeMax";
 	private static final String LATITUDE_MIN = "latitudeMin";
 	private static final String LONGITUDE = "longitude";
@@ -49,12 +106,24 @@ public class MapViewPosition extends Observable implements Persistable {
 	private byte zoomLevel;
 	private byte zoomLevelMax;
 	private byte zoomLevelMin;
+    private double scaleFactor;
+    private final ZoomAnimator zoomAnimator;
 
 	public MapViewPosition() {
 		super();
 
 		this.zoomLevelMax = Byte.MAX_VALUE;
+        this.zoomAnimator = new ZoomAnimator();
+        this.zoomAnimator.start();
+    }
+
+	public void destroy() {
+		this.zoomAnimator.interrupt();
 	}
+
+    public boolean animationInProgress() {
+        return this.scaleFactor != Math.pow(2, this.zoomLevel);
+    }
 
 	/**
 	 * @return the current center position of the map.
@@ -92,7 +161,12 @@ public class MapViewPosition extends Observable implements Persistable {
 		return this.zoomLevelMin;
 	}
 
-	@Override
+    public synchronized double getScaleFactor() {
+        return this.scaleFactor;
+    }
+
+
+    @Override
 	public synchronized void init(PreferencesFacade preferencesFacade) {
 		this.latitude = preferencesFacade.getDouble(LATITUDE, 0);
 		this.longitude = preferencesFacade.getDouble(LONGITUDE, 0);
@@ -111,6 +185,7 @@ public class MapViewPosition extends Observable implements Persistable {
 		this.zoomLevel = preferencesFacade.getByte(ZOOM_LEVEL, (byte) 0);
 		this.zoomLevelMax = preferencesFacade.getByte(ZOOM_LEVEL_MAX, Byte.MAX_VALUE);
 		this.zoomLevelMin = preferencesFacade.getByte(ZOOM_LEVEL_MIN, (byte) 0);
+        this.scaleFactor = Math.pow(2, this.zoomLevel);
 	}
 
 	/**
@@ -179,18 +254,35 @@ public class MapViewPosition extends Observable implements Persistable {
 		notifyObservers();
 	}
 
-	/**
-	 * Sets the new center position and zoom level of the map.
-	 */
-	public void setMapPosition(MapPosition mapPosition) {
-		synchronized (this) {
-			setCenterInternal(mapPosition.latLong);
-			setZoomLevelInternal(mapPosition.zoomLevel);
-		}
-		notifyObservers();
-	}
+    /**
+     * Sets the new center position and zoom level of the map.
+     */
+    public void setMapPosition(MapPosition mapPosition) {
+        synchronized (this) {
+            setCenterInternal(mapPosition.latLong);
+            setZoomLevelInternal(mapPosition.zoomLevel);
+        }
+        notifyObservers();
+    }
 
-	/**
+    /**
+     * Sets the new scale factor to be applied.
+     */
+    public void setScaleFactor(double scaleFactor) {
+        synchronized (this) {
+            this.scaleFactor = scaleFactor;
+        }
+        notifyObservers();
+    }
+
+    public void setScaleFactorAdjustment(double adjustment) {
+        synchronized (this) {
+            this.setScaleFactor(Math.pow(2, zoomLevel) * adjustment);
+        }
+        notifyObservers();
+    }
+
+    /**
 	 * Sets the new zoom level of the map.
 	 * 
 	 * @throws IllegalArgumentException
@@ -237,7 +329,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	 */
 	public void zoom(byte zoomLevelDiff) {
 		synchronized (this) {
-			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
+           setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
 		}
 		notifyObservers();
 	}
@@ -268,6 +360,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	}
 
 	private void setZoomLevelInternal(int zoomLevel) {
-		this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+        this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+        this.zoomAnimator.startAnimation(this.getScaleFactor(), Math.pow(2, zoomLevel));
 	}
 }

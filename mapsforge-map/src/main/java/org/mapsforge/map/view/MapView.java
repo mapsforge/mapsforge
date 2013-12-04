@@ -38,4 +38,5 @@ public interface MapView {
 	 * Requests a redrawing as soon as possible.
 	 */
 	void repaint();
+
 }

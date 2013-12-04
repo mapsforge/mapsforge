@@ -18,9 +18,11 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
+
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.util.PausableThread;
@@ -69,9 +71,10 @@ class TileDownloadThread extends PausableThread {
 
 	private void downloadTile(DownloadJob downloadJob) throws IOException {
 		TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicFactory);
-		Bitmap bitmap = tileDownloader.downloadImage();
+		TileBitmap bitmap = tileDownloader.downloadImage();
 
 		if (!isInterrupted() && bitmap != null) {
+			bitmap.scaleTo(Tile.TILE_SIZE, Tile.TILE_SIZE);
 			this.tileCache.put(downloadJob, bitmap);
 			this.layer.requestRedraw();
 		}

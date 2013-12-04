@@ -29,6 +29,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 
 	private final TileDownloadThread[] tileDownloadThreads;
 	private final TileSource tileSource;
+    private boolean started;
 
 	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
 			GraphicFactory graphicFactory) {
@@ -58,26 +59,27 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 
 	public void start() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-			tileDownloadThread.start();
-		}
-	}
+		    tileDownloadThread.start();
+        }
+        started = true;
+    }
 
 	@Override
 	protected DownloadJob createJob(Tile tile) {
 		return new DownloadJob(tile, this.tileSource);
 	}
 
-	@Override
-	protected void onAdd() {
+	public void onResume() {
+        if (!started) {
+            start();
+        }
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
 			tileDownloadThread.proceed();
 		}
-
-		super.onAdd();
 	}
 
 	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
 			tileDownloadThread.interrupt();
 		}
@@ -85,12 +87,9 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		super.onDestroy();
 	}
 
-	@Override
-	protected void onRemove() {
+	public void onPause() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
 			tileDownloadThread.pause();
 		}
-
-		super.onRemove();
-	}
+    }
 }

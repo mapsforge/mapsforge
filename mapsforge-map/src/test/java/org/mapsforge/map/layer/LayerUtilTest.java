@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.layer;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class LayerUtilTest {
 	@Test
 	public void getTilePositionsTest() {
 		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
-		ArrayList<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, (byte) 0, new Point(0, 0));
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, (byte) 0, new Point(0, 0));
 		Assert.assertEquals(1, tilePositions.size());
 
 		TilePosition tilePosition = tilePositions.get(0);

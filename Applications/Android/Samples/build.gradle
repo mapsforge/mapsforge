@@ -1,0 +1,26 @@
+apply plugin: 'android'
+
+dependencies {
+  compile project(":mapsforge-map-android")
+  compile files('libs/android-support-v4.jar')
+  instrumentTestCompile group: 'com.jayway.android.robotium', name: 'robotium-solo', version:'4.3.1'
+}
+
+
+android {
+
+  defaultConfig {
+    testPackageName "org.mapsforge.applications.android.samples.test"
+    testInstrumentationRunner "android.test.InstrumentationTestRunner"
+  }
+
+  sourceSets {
+    main {
+      java.srcDirs = ['src/main']
+    }
+    instrumentTest {
+      java.srcDirs = ['src/instrumentTest']
+    }
+  }
+}
+

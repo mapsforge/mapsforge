@@ -20,8 +20,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.CorruptedInputStream;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 
 class TileDownloader {
@@ -56,14 +57,19 @@ class TileDownloader {
 		this.graphicFactory = graphicFactory;
 	}
 
-	Bitmap downloadImage() throws IOException {
+	TileBitmap downloadImage() throws IOException {
 		URL url = this.downloadJob.tileSource.getTileUrl(this.downloadJob.tile);
 		URLConnection urlConnection = getURLConnection(url);
 		InputStream inputStream = getInputStream(urlConnection);
 
 		try {
-			return this.graphicFactory.createBitmap(inputStream);
-		} finally {
+			return this.graphicFactory.createTileBitmap(inputStream);
+        } catch (CorruptedInputStream e) {
+            // the creation of the tile bit map can fail at, at least on Android,
+            // when the connection is slow or busy, returning null here ensures that
+            // the tile will be downloaded again
+            return null;
+ 		} finally {
 			IOUtils.closeQuietly(inputStream);
 		}
 	}

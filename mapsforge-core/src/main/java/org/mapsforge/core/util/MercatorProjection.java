@@ -14,7 +14,9 @@
  */
 package org.mapsforge.core.util;
 
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.model.LatLong;
 
 /**
  * An implementation of the spherical Mercator projection.
@@ -107,6 +109,12 @@ public final class MercatorProjection {
 		return (longitude + 180) / 360 * mapSize;
 	}
 
+
+    public static Point getPixel(LatLong latLong, byte zoomLevel) {
+        double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel);
+        double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel);
+        return new Point(pixelX, pixelY);
+    }
 	/**
 	 * Converts a longitude coordinate (in degrees) to the tile X number at a certain zoom level.
 	 * 
@@ -138,6 +146,18 @@ public final class MercatorProjection {
 		}
 		return 360 * ((pixelX / mapSize) - 0.5);
 	}
+
+	/**
+	 * Get LatLong form Pixels.
+	 * 
+	 * @Author Stephan Brandt <stephan@contagt.com>
+	 * 
+	 * */
+	public static LatLong fromPixels(double pixelX, double pixelY, byte zoomLevel) {
+		return new LatLong(pixelYToLatitude(pixelY, zoomLevel), pixelXToLongitude(pixelX, zoomLevel));
+	}
+ 
+
 
 	/**
 	 * Converts a pixel X coordinate to the tile X number.

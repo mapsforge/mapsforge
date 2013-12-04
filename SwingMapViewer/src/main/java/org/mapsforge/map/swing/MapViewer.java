@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.prefs.Preferences;
 
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.Layers;
@@ -43,6 +45,10 @@ import org.mapsforge.map.swing.view.WindowCloseDialog;
 public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
+    /**
+     * Starts the mapviewer.
+     * @param args command line args: not required
+     */
 	public static void main(String[] args) {
 		MapView mapView = createMapView();
 		addLayers(mapView);
@@ -55,6 +61,8 @@ public final class MapViewer {
 		mainFrame.add(mapView);
 		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, model, preferencesFacade));
 		mainFrame.setVisible(true);
+		model.mapViewPosition.setMapPosition(new MapPosition(new LatLong(52.516, 13.378), (byte) 14));
+
 	}
 
 	private static void addLayers(MapView mapView) {
@@ -88,6 +96,7 @@ public final class MapViewer {
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}
 
+    @SuppressWarnings("unused")
 	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource,
@@ -96,9 +105,10 @@ public final class MapViewer {
 		return tileDownloadLayer;
 	}
 
+    @SuppressWarnings("unused")
 	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, GRAPHIC_FACTORY);
-		tileRendererLayer.setMapFile(new File("../../../Desktop/germany.map"));
+		tileRendererLayer.setMapFile(new File("../../germany.map"));
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
 	}

@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.layer.cache;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.queue.Job;
 
 public class TwoLevelTileCache implements TileCache {
@@ -50,9 +50,9 @@ public class TwoLevelTileCache implements TileCache {
 	}
 
 	@Override
-	public Bitmap get(Job key) {
+	public TileBitmap get(Job key) {
 		synchronized (this.firstLevelTileCache) {
-			Bitmap returnBitmap = this.firstLevelTileCache.get(key);
+			TileBitmap returnBitmap = this.firstLevelTileCache.get(key);
 			if (returnBitmap != null) {
 				return returnBitmap;
 			}
@@ -79,7 +79,7 @@ public class TwoLevelTileCache implements TileCache {
 	}
 
 	@Override
-	public void put(Job key, Bitmap bitmap) {
+	public void put(Job key, TileBitmap bitmap) {
 		synchronized (this.secondLevelTileCache) {
 			this.secondLevelTileCache.put(key, bitmap);
 		}

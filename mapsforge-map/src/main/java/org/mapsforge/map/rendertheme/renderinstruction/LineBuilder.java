@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -77,7 +78,11 @@ public class LineBuilder {
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				this.stroke.setBitmapShader(XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value));
+				Bitmap shaderBitmap = XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value);
+				if (shaderBitmap != null) {
+					this.stroke.setBitmapShader(shaderBitmap);
+					shaderBitmap.decrementRefCount();
+				}
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {

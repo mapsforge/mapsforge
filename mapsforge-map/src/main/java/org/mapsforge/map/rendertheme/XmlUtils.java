@@ -20,7 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.xml.sax.SAXException;
 
@@ -36,16 +36,23 @@ public final class XmlUtils {
 		}
 	}
 
-	public static Bitmap createBitmap(GraphicFactory graphicFactory, String relativePathPrefix, String src)
+	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, String relativePathPrefix, String src)
 			throws IOException {
 		if (src == null || src.length() == 0) {
 			// no image source defined
 			return null;
 		}
 
-		InputStream inputStream = createInputStream(relativePathPrefix, src);
+		InputStream inputStream = graphicFactory.platformSpecificSources(relativePathPrefix, src);
+		if (inputStream == null) {
+			inputStream = createInputStream(relativePathPrefix, src);
+		}
 		try {
-			return graphicFactory.createBitmap(inputStream);
+            String absoluteName = getAbsoluteName(relativePathPrefix, src);
+            if (src.endsWith(".svg")) {
+				return graphicFactory.renderSvg(inputStream, absoluteName.hashCode());
+			}
+			return graphicFactory.createResourceBitmap(inputStream, absoluteName.hashCode());
 		} finally {
 			inputStream.close();
 		}

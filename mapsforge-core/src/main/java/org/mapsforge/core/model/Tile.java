@@ -24,7 +24,7 @@ public class Tile implements Serializable {
 	/**
 	 * Width and height of a map tile in pixel.
 	 */
-	public static final int TILE_SIZE = 256;
+	public static int TILE_SIZE = 256; // NOPMD  -- will change later, keep for less change in files
 
 	private static final long serialVersionUID = 1L;
 

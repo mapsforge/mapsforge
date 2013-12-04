@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface GraphicFactory {
-	Bitmap createBitmap(InputStream inputStream) throws IOException;
 
 	Bitmap createBitmap(int width, int height);
 
@@ -33,4 +32,17 @@ public interface GraphicFactory {
 	Paint createPaint();
 
 	Path createPath();
+
+    ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
+
+	TileBitmap createTileBitmap();
+
+	TileBitmap createTileBitmap(InputStream inputStream) throws IOException;
+
+	float getScaleFactor();
+
+	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
+
+	ResourceBitmap renderSvg(InputStream inputStream, int hash);
+
 }

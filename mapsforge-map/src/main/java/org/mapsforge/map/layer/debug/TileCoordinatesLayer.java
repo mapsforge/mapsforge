@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.layer.debug;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
@@ -48,7 +48,7 @@ public class TileCoordinatesLayer extends Layer {
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		ArrayList<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint);
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint);
 		for (int i = tilePositions.size() - 1; i >= 0; --i) {
 			drawTileCoordinates(tilePositions.get(i), canvas);
 		}

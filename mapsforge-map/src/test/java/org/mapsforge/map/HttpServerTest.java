@@ -42,6 +42,7 @@ public class HttpServerTest {
 	}
 
 	@After
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public final void afterTest() throws Exception {
 		try {
 			this.server.stop();
@@ -52,6 +53,7 @@ public class HttpServerTest {
 	}
 
 	@Before
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
 	public final void beforeTest() throws Exception {
 		Assert.assertFalse(this.httpRoot.exists());
 		Assert.assertTrue(this.httpRoot.mkdirs());

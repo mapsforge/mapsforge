@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="20"
+   height="20"
+   style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none">
+  <path
+     d="m 18.15,10 c 0,-1 1.2,-3.6 1.6,-4 l -2,0 -2,2 -5,0 5,-8 -4,0 -6,8 c -2,0 -4,0.4 -5,1 -1,1 -1,1 0,2 1,0.6 3,1 5,1 l 6,8 4,0 -5,-8 4.6,0 2.4,2 2,0 c -0.4,-0.4 -1.6,-3 -1.6,-4 z"
+     id="path3662" />
+</svg>

@@ -36,13 +36,22 @@ class AwtMatrix implements Matrix {
 		this.affineTransform.rotate(theta, pivotX, pivotY);
 	}
 
-	@Override
-	public void scale(float scaleX, float scaleY) {
-		this.affineTransform.scale(scaleX, scaleY);
-	}
+    @Override
+    public void scale(float scaleX, float scaleY) {
+        this.affineTransform.scale(scaleX, scaleY);
+    }
+
+    @Override
+    public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
+	    this.affineTransform.translate(pivotX, pivotY);
+	    this.affineTransform.scale(scaleX, scaleY);
+	    this.affineTransform.translate(-pivotX, -pivotY);
+    }
 
 	@Override
 	public void translate(float translateX, float translateY) {
 		this.affineTransform.translate(translateX, translateY);
 	}
+
+
 }

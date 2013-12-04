@@ -66,7 +66,7 @@ public abstract class Layer {
 		// do nothing
 	}
 
-	protected void onDestroy() {
+	public void onDestroy() {
 		// do nothing
 	}
 

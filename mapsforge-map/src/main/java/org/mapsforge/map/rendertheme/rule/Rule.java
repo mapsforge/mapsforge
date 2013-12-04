@@ -31,8 +31,8 @@ abstract class Rule {
 	final ElementMatcher elementMatcher;
 	final byte zoomMax;
 	final byte zoomMin;
-	private final ArrayList<RenderInstruction> renderInstructions;
-	private final ArrayList<Rule> subRules;
+	private final ArrayList<RenderInstruction> renderInstructions; //NOPMD we need specific interface
+	private final ArrayList<Rule> subRules; //NOPMD we need specific interface
 
 	Rule(RuleBuilder ruleBuilder) {
 		this.closedMatcher = ruleBuilder.closedMatcher;
@@ -40,8 +40,8 @@ abstract class Rule {
 		this.zoomMax = ruleBuilder.zoomMax;
 		this.zoomMin = ruleBuilder.zoomMin;
 
-		this.renderInstructions = new ArrayList<RenderInstruction>(4);
-		this.subRules = new ArrayList<Rule>(4);
+		this.renderInstructions = new ArrayList<>(4);
+		this.subRules = new ArrayList<>(4);
 	}
 
 	void addRenderingInstruction(RenderInstruction renderInstruction) {
@@ -50,6 +50,15 @@ abstract class Rule {
 
 	void addSubRule(Rule rule) {
 		this.subRules.add(rule);
+	}
+
+	void destroy() {
+		for (RenderInstruction ri : this.renderInstructions) {
+			ri.destroy();
+		}
+		for (Rule sr : this.subRules) {
+			sr.destroy();
+		}
 	}
 
 	abstract boolean matchesNode(List<Tag> tags, byte zoomLevel);

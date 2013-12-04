@@ -18,8 +18,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * An LRUCache with a fixed size and an access-order policy. Old mappings are automatically removed from the cache when
- * new mappings are added. This implementation uses an {@link LinkedHashMap} internally.
+ * An LRUCache with a fixed size and an access-order policy. Old mappings are
+ * automatically removed from the cache when new mappings are added. This
+ * implementation uses an {@link LinkedHashMap} internally.
  * 
  * @param <K>
  *            the type of the map key, see {@link Map}.
@@ -32,7 +33,8 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
 
 	private static int calculateInitialCapacity(int capacity) {
 		if (capacity < 0) {
-			throw new IllegalArgumentException("capacity must not be negative: " + capacity);
+			throw new IllegalArgumentException(
+					"capacity must not be negative: " + capacity);
 		}
 		return (int) (capacity / LOAD_FACTOR) + 2;
 	}

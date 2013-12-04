@@ -29,6 +29,7 @@ import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
+import android.os.Build;
 
 class AndroidPaint implements Paint {
 	private static android.graphics.Paint.Align getAndroidAlign(Align align) {
@@ -131,7 +132,12 @@ class AndroidPaint implements Paint {
 		if (bitmap == null) {
 			return;
 		}
-
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			// there is an problem when bitmaps are recycled too early on honeycomb and up,
+			// where shaders are corrupted.
+			// incrementing the refcount stops the recycling, but leaks the bitmap.
+			//bitmap.incrementRefCount();
+		}
 		this.paint
 				.setShader(new BitmapShader(AndroidGraphicFactory.getBitmap(bitmap), TileMode.REPEAT, TileMode.REPEAT));
 	}

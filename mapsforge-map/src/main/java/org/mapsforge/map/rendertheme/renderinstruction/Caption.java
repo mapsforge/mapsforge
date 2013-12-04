@@ -39,6 +39,11 @@ public class Caption implements RenderInstruction {
 	}
 
 	@Override
+	public void destroy() {
+		// no-op
+	}
+
+	@Override
 	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
 		String caption = this.textKey.getValue(tags);
 		if (caption == null) {
@@ -66,4 +71,5 @@ public class Caption implements RenderInstruction {
 		this.fill.setTextSize(this.fontSize * scaleFactor);
 		this.stroke.setTextSize(this.fontSize * scaleFactor);
 	}
+
 }

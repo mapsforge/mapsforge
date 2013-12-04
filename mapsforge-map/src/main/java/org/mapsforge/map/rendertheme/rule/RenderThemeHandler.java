@@ -51,6 +51,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * SAX2 handler to parse XML render theme files.
  */
 public final class RenderThemeHandler extends DefaultHandler {
+
 	private static enum Element {
 		RENDER_THEME, RENDERING_INSTRUCTION, RULE;
 	}
@@ -69,8 +70,12 @@ public final class RenderThemeHandler extends DefaultHandler {
 		try {
 			inputStream = xmlRenderTheme.getRenderThemeAsStream();
 			xmlReader.parse(new InputSource(inputStream));
+			renderThemeHandler.renderTheme.incrementRefCount();
 			return renderThemeHandler.renderTheme;
 		} finally {
+			if (renderThemeHandler.renderTheme != null) {
+				renderThemeHandler.renderTheme.destroy();
+			}
 			IOUtils.closeQuietly(inputStream);
 		}
 	}

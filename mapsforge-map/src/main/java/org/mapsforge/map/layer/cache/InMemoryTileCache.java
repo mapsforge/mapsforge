@@ -14,11 +14,29 @@
  */
 package org.mapsforge.map.layer.cache;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.queue.Job;
+
+class BitmapLRUCache extends LRUCache<Job, TileBitmap> {
+	private static final long serialVersionUID = 1L;
+
+	public BitmapLRUCache(int capacity) {
+		super(capacity);
+	}
+
+	@Override
+	protected boolean removeEldestEntry(Map.Entry<Job, TileBitmap> eldest) {
+		if (size() > this.capacity) {
+			eldest.getValue().decrementRefCount();
+			return true;
+		}
+		return false;
+	}
+}
 
 /**
  * A thread-safe cache for tile images with a variable size and LRU policy.
@@ -26,7 +44,7 @@ import org.mapsforge.map.layer.queue.Job;
 public class InMemoryTileCache implements TileCache {
 	private static final Logger LOGGER = Logger.getLogger(InMemoryTileCache.class.getName());
 
-	private LRUCache<Job, Bitmap> lruCache;
+	private BitmapLRUCache lruCache;
 
 	/**
 	 * @param capacity
@@ -35,7 +53,7 @@ public class InMemoryTileCache implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public InMemoryTileCache(int capacity) {
-		this.lruCache = new LRUCache<Job, Bitmap>(capacity);
+		this.lruCache = new BitmapLRUCache(capacity);
 	}
 
 	@Override
@@ -45,12 +63,19 @@ public class InMemoryTileCache implements TileCache {
 
 	@Override
 	public synchronized void destroy() {
+		for (TileBitmap bitmap : this.lruCache.values()) {
+			bitmap.decrementRefCount();
+		}
 		this.lruCache.clear();
 	}
 
 	@Override
-	public synchronized Bitmap get(Job key) {
-		return this.lruCache.get(key);
+	public synchronized TileBitmap get(Job key) {
+		TileBitmap bitmap = this.lruCache.get(key);
+		if (bitmap != null) {
+			bitmap.incrementRefCount();
+		}
+		return bitmap;
 	}
 
 	@Override
@@ -59,16 +84,22 @@ public class InMemoryTileCache implements TileCache {
 	}
 
 	@Override
-	public synchronized void put(Job key, Bitmap bitmap) {
+	public synchronized void put(Job key, TileBitmap bitmap) {
 		if (key == null) {
 			throw new IllegalArgumentException("key must not be null");
 		} else if (bitmap == null) {
 			throw new IllegalArgumentException("bitmap must not be null");
 		}
 
+		TileBitmap old = this.lruCache.get(key);
+		if (old != null) {
+			old.decrementRefCount();
+		}
+
 		if (this.lruCache.put(key, bitmap) != null) {
 			LOGGER.warning("overwriting cached entry: " + key);
 		}
+		bitmap.incrementRefCount();
 	}
 
 	/**
@@ -81,7 +112,7 @@ public class InMemoryTileCache implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public synchronized void setCapacity(int capacity) {
-		LRUCache<Job, Bitmap> lruCacheNew = new LRUCache<Job, Bitmap>(capacity);
+		BitmapLRUCache lruCacheNew = new BitmapLRUCache(capacity);
 		lruCacheNew.putAll(this.lruCache);
 		this.lruCache = lruCacheNew;
 	}

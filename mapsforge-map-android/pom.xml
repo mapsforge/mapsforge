@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>mapsforge-map-android</artifactId>
-	<packaging>jar</packaging>
+	<packaging>apklib</packaging>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
@@ -19,20 +19,31 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<dex>
+						<jvmArguments>
+							<jvmArgument>-Xmx512M</jvmArgument>
+						</jvmArguments>
+					</dex>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
+						<phase>process-classes</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>run</goal>
 						</goals>
+						<configuration>
+							<tasks>
+								<delete dir="${project.basedir}/gen" />
+							</tasks>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -63,6 +74,12 @@
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-map</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>svg-android</groupId>
+			<artifactId>svg-android</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>

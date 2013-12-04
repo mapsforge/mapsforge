@@ -37,6 +37,11 @@ public class PathText implements RenderInstruction {
 	}
 
 	@Override
+	public void destroy() {
+		// no-op
+	}
+
+	@Override
 	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
 		// do nothing
 	}

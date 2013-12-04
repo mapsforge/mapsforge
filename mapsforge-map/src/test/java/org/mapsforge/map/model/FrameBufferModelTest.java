@@ -70,7 +70,7 @@ public class FrameBufferModelTest {
 	@Test
 	public void overdrawFactorTest() {
 		FrameBufferModel frameBufferModel = new FrameBufferModel();
-		Assert.assertEquals(1.5, frameBufferModel.getOverdrawFactor(), 0);
+		Assert.assertEquals(1.2, frameBufferModel.getOverdrawFactor(), 0);
 
 		frameBufferModel.setOverdrawFactor(2);
 		Assert.assertEquals(2, frameBufferModel.getOverdrawFactor(), 0);

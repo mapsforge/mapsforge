@@ -46,6 +46,11 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
+	public void destroy() {
+		// do nothing
+	}
+
+	@Override
 	public void drawBitmap(Bitmap bitmap, int left, int top) {
 		this.graphics2D.drawImage(AwtGraphicFactory.getBufferedImage(bitmap), left, top, null);
 	}

@@ -68,6 +68,7 @@ public class LayerManager extends PausableThread implements Redrawer {
 		for (Layer layer : this.layers) {
 			layer.onDestroy();
 		}
+		this.drawingCanvas.destroy();
 	}
 
 	@Override
@@ -92,8 +93,15 @@ public class LayerManager extends PausableThread implements Redrawer {
 				}
 			}
 
-			frameBuffer.frameFinished(mapPosition);
-			this.mapView.repaint();
+			if (!mapViewPosition.animationInProgress()) {
+				// this causes a lot of flickering when an animation
+				// is in progress
+				frameBuffer.frameFinished(mapPosition);
+				this.mapView.repaint();
+			} else {
+				// make sure that we redraw at the end
+				this.redrawNeeded = true;
+			}
 		}
 
 		long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;

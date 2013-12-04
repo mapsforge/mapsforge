@@ -14,17 +14,25 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.Bitmap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.util.PausableThread;
 
 public class MapWorker extends PausableThread {
+	private static final Logger LOGGER = Logger.getLogger(MapWorker.class.getName());
+
 	private final DatabaseRenderer databaseRenderer;
 	private final JobQueue<RendererJob> jobQueue;
 	private final Layer layer;
 	private final TileCache tileCache;
+	private final AtomicLong totalTime = new AtomicLong();
+	private final AtomicLong totalExecutions = new AtomicLong();
 
 	public MapWorker(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer, Layer layer) {
 		super();
@@ -59,11 +67,21 @@ public class MapWorker extends PausableThread {
 	}
 
 	private void renderTile(RendererJob rendererJob) {
-		Bitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
+		long start = System.currentTimeMillis();
+		TileBitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
+		long end = System.currentTimeMillis();
+		long te = this.totalExecutions.incrementAndGet();
+		long tt = this.totalTime.addAndGet(end - start);
+		if (te % 10 == 0) {
+			LOGGER.log(Level.SEVERE, "TIMING " + Long.toString(te) + " " + Double.toString(tt / te));
+		}
 
 		if (!isInterrupted() && bitmap != null) {
 			this.tileCache.put(rendererJob, bitmap);
 			this.layer.requestRedraw();
+		}
+		if (bitmap != null) {
+			bitmap.decrementRefCount();
 		}
 	}
 }

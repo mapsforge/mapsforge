@@ -26,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
@@ -46,6 +47,7 @@ import org.xml.sax.SAXException;
  * A DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
  */
 public class DatabaseRenderer implements RenderCallback {
+
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
 	private static final byte LAYERS = 11;
 	private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
@@ -79,6 +81,7 @@ public class DatabaseRenderer implements RenderCallback {
 	private RendererJob currentRendererJob;
 	private List<List<ShapePaintContainer>> drawingLayers;
 	private final GraphicFactory graphicFactory;
+
 	private final LabelPlacement labelPlacement;
 	private final MapDatabase mapDatabase;
 	private List<PointTextContainer> nodes;
@@ -114,13 +117,27 @@ public class DatabaseRenderer implements RenderCallback {
 		this.pointSymbols = new ArrayList<SymbolContainer>(64);
 	}
 
+	public void destroy() {
+		this.canvasRasterer.destroy();
+		// there is a chance that the renderer is being destroyed from the
+		// DestroyThread before the rendertheme has been completely created
+		// and assigned. If that happens bitmap memory held by the
+		// RenderThemeHandler
+		// will be leaked
+		if (this.renderTheme != null) {
+			this.renderTheme.destroy();
+		} else {
+			LOGGER.log(Level.SEVERE, "RENDERTHEME Could not destroy RenderTheme");
+		}
+	}
+
 	/**
 	 * Called when a job needs to be executed.
 	 * 
 	 * @param rendererJob
 	 *            the job that should be executed.
 	 */
-	public Bitmap executeJob(RendererJob rendererJob) {
+	public TileBitmap executeJob(RendererJob rendererJob) {
 		this.currentRendererJob = rendererJob;
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
@@ -154,7 +171,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile);
 
-		Bitmap bitmap = this.graphicFactory.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
+		TileBitmap bitmap = this.graphicFactory.createTileBitmap();
 		this.canvasRasterer.setCanvasBitmap(bitmap);
 		this.canvasRasterer.fill(this.renderTheme.getMapBackground());
 		this.canvasRasterer.drawWays(this.ways);
@@ -165,8 +182,11 @@ public class DatabaseRenderer implements RenderCallback {
 		this.canvasRasterer.drawNodes(this.areaLabels);
 
 		clearLists();
-
 		return bitmap;
+	}
+
+	public MapDatabase getMapDatabase() {
+		return this.mapDatabase;
 	}
 
 	/**

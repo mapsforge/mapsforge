@@ -116,6 +116,11 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 		this.circle = new Circle(null, 0, circleFill, circleStroke);
 	}
 
+	@Override
+	public void onDestroy() {
+		this.marker.onDestroy();
+	}
+
 	/**
 	 * Stops the receiving of location updates. Has no effect if location updates are already disabled.
 	 */

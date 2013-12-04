@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="20dip">
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="vertical">
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/latitude" android:textStyle="bold" android:textColor="#FFF" />
+		<EditText android:id="@+id/latitude" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:maxLength="9" android:inputType="numberSigned|numberDecimal" />
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/longitude" android:textStyle="bold" android:textColor="#FFF" />
+		<EditText android:id="@+id/longitude" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:maxLength="9" android:inputType="numberSigned|numberDecimal" />
+
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/zoomlevel" android:textStyle="bold" android:textColor="#FFF" />
+		<SeekBar android:id="@+id/zoomlevel" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+		<TextView android:id="@+id/zoomlevelValue" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:textStyle="bold" android:gravity="center_horizontal" />
+	</LinearLayout>
+</ScrollView>

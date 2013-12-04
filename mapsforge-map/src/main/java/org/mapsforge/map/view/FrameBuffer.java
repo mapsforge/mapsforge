@@ -22,7 +22,10 @@ import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.FrameBufferModel;
 
+import java.util.logging.Logger;
+
 public class FrameBuffer {
+
 	private Bitmap bitmap1;
 	private Bitmap bitmap2;
 	private Dimension dimension;
@@ -33,7 +36,6 @@ public class FrameBuffer {
 	public FrameBuffer(FrameBufferModel frameBufferModel, GraphicFactory graphicFactory) {
 		this.frameBufferModel = frameBufferModel;
 		this.graphicFactory = graphicFactory;
-
 		this.matrix = graphicFactory.createMatrix();
 	}
 
@@ -41,28 +43,33 @@ public class FrameBuffer {
 		if (this.dimension == null) {
 			return;
 		}
-
-		this.matrix.reset();
-
+ 		this.matrix.reset();
 		centerFrameBufferToMapView(mapViewDimension);
 		this.matrix.translate(diffX, diffY);
-		scale(scaleFactor);
+        scale(scaleFactor);
 	}
 
-	public synchronized void draw(GraphicContext graphicContext) {
+	public synchronized void destroy() {
+		destroyBitmaps();
+	}
+
+    public synchronized void draw(GraphicContext graphicContext) {
 		if (this.bitmap1 != null) {
-			graphicContext.drawBitmap(this.bitmap1, this.matrix);
+  	        graphicContext.drawBitmap(this.bitmap1, this.matrix);
 		}
 	}
 
-	public synchronized void frameFinished(MapPosition frameMapPosition) {
-		// swap both bitmap references
-		Bitmap bitmapTemp = this.bitmap1;
-		this.bitmap1 = this.bitmap2;
-		this.bitmap2 = bitmapTemp;
-
-		this.frameBufferModel.setMapPosition(frameMapPosition);
-	}
+	public void frameFinished(MapPosition frameMapPosition) {
+        synchronized (this) {
+            // swap both bitmap references
+            Bitmap bitmapTemp = this.bitmap1;
+            this.bitmap1 = this.bitmap2;
+            this.bitmap2 = bitmapTemp;
+        }
+        // taking this out of the synchronized region removes a deadlock potential
+        // at the small risk of an inconsistent zoom
+        this.frameBufferModel.setMapPosition(frameMapPosition);
+    }
 
 	/**
 	 * @return the bitmap of the second frame to draw on (may be null).
@@ -71,32 +78,48 @@ public class FrameBuffer {
 		return this.bitmap2;
 	}
 
+    public synchronized Dimension getDimension() {
+        return this.dimension;
+    }
+
+
 	public synchronized void setDimension(Dimension dimension) {
+		if (this.dimension != null && this.dimension.equals(dimension)) {
+			return;
+		}
 		this.dimension = dimension;
+
+        destroyBitmaps();
 
 		if (dimension.width > 0 && dimension.height > 0) {
 			this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
 			this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
-		} else {
-			this.bitmap1 = null;
-			this.bitmap2 = null;
 		}
 	}
 
-	private void centerFrameBufferToMapView(Dimension mapViewDimension) {
+    private void destroyBitmaps() {
+        if (this.bitmap1 != null) {
+            this.bitmap1.decrementRefCount();
+            this.bitmap1 = null;
+        }
+        if (this.bitmap2 != null) {
+            this.bitmap2.decrementRefCount();
+            this.bitmap2 = null;
+        }
+    }
+
+    private void centerFrameBufferToMapView(Dimension mapViewDimension) {
 		float dx = (this.dimension.width - mapViewDimension.width) / -2f;
 		float dy = (this.dimension.height - mapViewDimension.height) / -2f;
-		this.matrix.translate(dx, dy);
+        this.matrix.translate(dx, dy);
 	}
 
 	private void scale(float scaleFactor) {
 		if (scaleFactor != 1) {
-			// the pivot point is the coordinate which remains unchanged by the translation
-			float pivotScaleFactor = scaleFactor - 1;
-			float pivotX = (this.dimension.width / -2f) * pivotScaleFactor;
-			float pivotY = (this.dimension.height / -2f) * pivotScaleFactor;
-			this.matrix.translate(pivotX, pivotY);
-			this.matrix.scale(scaleFactor, scaleFactor);
-		}
+ 			float pivotX = this.dimension.width / 2;
+			float pivotY = this.dimension.height / 2;
+			this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
+        }
 	}
+
 }

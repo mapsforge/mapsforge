@@ -40,6 +40,16 @@ class AwtBitmap implements Bitmap {
 	}
 
 	@Override
+	public void incrementRefCount() {
+		// no-op
+	}
+
+	@Override
+	public void decrementRefCount() {
+		// no-op
+	}
+
+	@Override
 	public int getHeight() {
 		return this.bufferedImage.getHeight();
 	}
@@ -48,4 +58,10 @@ class AwtBitmap implements Bitmap {
 	public int getWidth() {
 		return this.bufferedImage.getWidth();
 	}
+
+	@Override
+	public void scaleTo(int width, int height) {
+		// TODO implement
+	}
+
 }

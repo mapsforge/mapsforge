@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme.xsd" version="3" map-background="#00000000">
+
+		<rule e="way" k="building" v="*">
+			<area fill="#f3d6b6" stroke="#6a5a8e" stroke-width="0.2" />
+
+			<rule e="way" k="*" v="*" zoom-min="17">
+				<caption k="name" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
+				<caption k="addr:housenumber" font-style="bold" font-size="10" fill="#606060" stroke="#ffffff" stroke-width="2.0" />
+			</rule>
+		</rule>
+</rendertheme>

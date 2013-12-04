@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.layer;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
@@ -49,7 +49,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		ArrayList<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint);
+	    List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint);
 
 		for (int i = tilePositions.size() - 1; i >= 0; --i) {
 			TilePosition tilePosition = tilePositions.get(i);
@@ -62,6 +62,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
 				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y));
+				bitmap.decrementRefCount();
 			}
 		}
 
@@ -71,7 +72,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	protected abstract T createJob(Tile tile);
 
 	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		this.tileCache.destroy();
 	}
 
@@ -95,6 +96,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				canvas.setClip(x, y, Tile.TILE_SIZE, Tile.TILE_SIZE);
 				canvas.drawBitmap(bitmap, this.matrix);
 				canvas.resetClip();
+				bitmap.decrementRefCount();
 			}
 		}
 	}

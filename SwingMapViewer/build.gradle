@@ -1,0 +1,10 @@
+dependencies {
+  compile project(":mapsforge-map-awt")
+}
+
+jar {
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }}
+  manifest {
+    attributes 'Main-Class': 'org.mapsforge.map.swing.MapViewer'
+  }
+}

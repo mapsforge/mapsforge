@@ -15,6 +15,7 @@
 package org.mapsforge.map.layer.renderer;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
@@ -22,10 +23,13 @@ import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class TileRendererLayer extends TileLayer<RendererJob> {
+
 	private final MapDatabase mapDatabase;
+	private final DatabaseRenderer databaseRenderer;
 	private File mapFile;
 	private final MapWorker mapWorker;
 	private float textScale;
@@ -35,7 +39,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		super(tileCache, mapViewPosition, graphicFactory);
 
 		this.mapDatabase = new MapDatabase();
-		DatabaseRenderer databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory);
+		this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory);
 
 		this.mapWorker = new MapWorker(tileCache, this.jobQueue, databaseRenderer, this);
 		this.mapWorker.start();
@@ -57,8 +61,10 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	public void setMapFile(File mapFile) {
 		this.mapFile = mapFile;
-		// TODO fix this
-		this.mapDatabase.openFile(mapFile);
+		FileOpenResult result = this.mapDatabase.openFile(mapFile);
+		if (!result.isSuccess()) {
+			throw new IllegalArgumentException(result.getErrorMessage());
+		}
 	}
 
 	public void setTextScale(float textScale) {
@@ -77,20 +83,18 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	@Override
 	protected void onAdd() {
 		this.mapWorker.proceed();
-
 		super.onAdd();
 	}
 
 	@Override
-	protected void onDestroy() {
-		new DestroyThread(this.mapWorker, this.mapDatabase).start();
+	public void onDestroy() {
+		new DestroyThread(this.mapWorker, this.mapDatabase, this.databaseRenderer).start();
 		super.onDestroy();
 	}
 
 	@Override
 	protected void onRemove() {
 		this.mapWorker.pause();
-
 		super.onRemove();
 	}
 }

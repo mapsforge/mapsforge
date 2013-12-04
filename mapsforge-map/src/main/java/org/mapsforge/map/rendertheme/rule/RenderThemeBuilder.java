@@ -33,15 +33,17 @@ public class RenderThemeBuilder {
 	private static final String XMLNS_XSI = "xmlns:xsi";
 	private static final String XSI_SCHEMALOCATION = "xsi:schemaLocation";
 
+	final float scaleFactor;
 	float baseStrokeWidth;
 	float baseTextSize;
 	int mapBackground;
 	private Integer version;
 
-	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes)
-			throws SAXException {
-		this.baseStrokeWidth = 1;
-		this.baseTextSize = 1;
+	public RenderThemeBuilder(GraphicFactory graphicFactory,
+			String elementName, Attributes attributes) throws SAXException {
+		this.scaleFactor = graphicFactory.getScaleFactor();
+		this.baseStrokeWidth = 1 * this.scaleFactor;
+		this.baseTextSize = 1 * this.scaleFactor;
 		this.mapBackground = graphicFactory.createColor(Color.WHITE);
 
 		extractValues(graphicFactory, elementName, attributes);
@@ -54,8 +56,8 @@ public class RenderThemeBuilder {
 		return new RenderTheme(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes)
-			throws SAXException {
+	private void extractValues(GraphicFactory graphicFactory,
+			String elementName, Attributes attributes) throws SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
@@ -67,13 +69,16 @@ public class RenderThemeBuilder {
 			} else if (XSI_SCHEMALOCATION.equals(name)) {
 				continue;
 			} else if (VERSION.equals(name)) {
-				this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
+				this.version = Integer.valueOf(XmlUtils
+						.parseNonNegativeInteger(name, value));
 			} else if (MAP_BACKGROUND.equals(name)) {
 				this.mapBackground = XmlUtils.getColor(graphicFactory, value);
 			} else if (BASE_STROKE_WIDTH.equals(name)) {
-				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
+				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name,
+						value) * this.scaleFactor;
 			} else if (BASE_TEXT_SIZE.equals(name)) {
-				this.baseTextSize = XmlUtils.parseNonNegativeFloat(name, value);
+				this.baseTextSize = XmlUtils.parseNonNegativeFloat(name, value)
+						* this.scaleFactor;
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}
@@ -86,7 +91,8 @@ public class RenderThemeBuilder {
 		XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
 
 		if (this.version.intValue() != RENDER_THEME_VERSION) {
-			throw new SAXException("unsupported render theme version: " + this.version);
+			throw new SAXException("unsupported render theme version: "
+					+ this.version);
 		}
 	}
 }

@@ -1,0 +1,7 @@
+dependencies {
+  compile project(":mapsforge-map")
+  compile project(":svg-android")
+}
+
+
+

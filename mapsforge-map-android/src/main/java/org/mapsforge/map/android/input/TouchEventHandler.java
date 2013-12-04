@@ -13,22 +13,54 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.mapsforge.map.android.input;
+ import java.util.List;
+ import java.util.concurrent.CopyOnWriteArrayList;
+ 
+ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+ import java.util.Timer;
+ import java.util.TimerTask;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+ import org.mapsforge.core.model.Point;
+ import org.mapsforge.map.android.view.MapView;
+ import org.mapsforge.map.android.input.ScaleListener;
+ import org.mapsforge.core.model.MapPosition;
+ import org.mapsforge.map.model.MapViewPosition;
+ import org.mapsforge.map.layer.overlay.Circle;
+ import org.mapsforge.core.util.MercatorProjection;
+ import org.mapsforge.core.model.Rectangle;
+ import org.mapsforge.core.graphics.Bitmap;
+ 
+ import org.mapsforge.core.model.LatLong;
+ 
+ import org.mapsforge.map.layer.Layer;
+ import org.mapsforge.map.layer.Layers;
+ import org.mapsforge.map.layer.LayerManager;
 
-import org.mapsforge.core.model.Point;
-import org.mapsforge.map.model.MapViewPosition;
+ import android.content.Context;
+ import android.view.MotionEvent;
+ import android.view.ViewConfiguration;
+ import android.util.Log;
+ import android.view.ScaleGestureDetector;
 
-import android.view.MotionEvent;
-import android.view.ViewConfiguration;
+ 
+ public class TouchEventHandler {
 
-public class TouchEventHandler {
-	private static final String LISTENER_MUST_NOT_BE_NULL = "listener must not be null";
+	private final String TAG = TouchEventHandler.class.getCanonicalName();
+ 	private static final String LISTENER_MUST_NOT_BE_NULL = "listener must not be null";
+	private MapView mapView = null;
+	private LayerManager layerManager = null;
+	private Layers layers = null;
+    private final ScaleGestureDetector scaleGestureDetector;
 
-	private static int getAction(MotionEvent motionEvent) {
-		return motionEvent.getAction() & MotionEvent.ACTION_MASK;
-	}
+    protected Timer singleTapActionTimer;
+	private Point previousTapPosition;
+ 	private long previousTapTime;
+ 	private long doubleTapTimeout = 25;
+	
+ 	private static int getAction(MotionEvent motionEvent) {
+ 		return motionEvent.getAction() & MotionEvent.ACTION_MASK;
+ 	}
 
 	private int activePointerId;
 	private Point lastPosition;
@@ -37,10 +69,15 @@ public class TouchEventHandler {
 	private boolean moveThresholdReached;
 	private final List<TouchEventListener> touchEventListeners = new CopyOnWriteArrayList<TouchEventListener>();
 
-	public TouchEventHandler(MapViewPosition mapViewPosition, ViewConfiguration viewConfiguration) {
-		this.mapViewPosition = mapViewPosition;
-		this.mapMoveDelta = viewConfiguration.getScaledTouchSlop();
-	}
+	public TouchEventHandler(Context context, MapView mapView, ViewConfiguration viewConfiguration) {
+		this.mapView = mapView;
+		this.layerManager = this.mapView.getLayerManager();
+		this.layers = this.layerManager.getLayers();
+		this.mapViewPosition = this.mapView.getModel().mapViewPosition;
+ 		this.mapMoveDelta = viewConfiguration.getScaledTouchSlop();
+        this.scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener(mapView.getModel().mapViewPosition));
+
+    }
 
 	public void addListener(TouchEventListener touchEventListener) {
 		if (touchEventListener == null) {
@@ -59,7 +96,12 @@ public class TouchEventHandler {
 	public boolean onTouchEvent(MotionEvent motionEvent) {
 		int action = getAction(motionEvent);
 
-		switch (action) {
+        // workaround for a bug in the ScaleGestureDetector, see Android issue #12976
+        if (action != MotionEvent.ACTION_MOVE || motionEvent.getPointerCount() > 1) {
+            this.scaleGestureDetector.onTouchEvent(motionEvent);
+        }
+
+        switch (action) {
 			case MotionEvent.ACTION_DOWN:
 				return onActionDown(motionEvent);
 			case MotionEvent.ACTION_MOVE:
@@ -87,16 +129,102 @@ public class TouchEventHandler {
 		this.touchEventListeners.remove(touchEventListener);
 	}
 
+	
+	private LatLong fromPixels(Point p) {
+		MapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
+		LatLong geoPoint = mapPosition.getMapPosition().latLong;
+		
+        double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
+        double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
+        
+        pixelX -= this.mapView.getWidth() >> 1;
+        pixelY -= this.mapView.getHeight() >> 1;
+        
+        LatLong l = new LatLong(MercatorProjection.pixelYToLatitude(pixelY + p.y, mapPosition.getZoomLevel()),
+                                MercatorProjection.pixelXToLongitude(pixelX + p.x, mapPosition.getZoomLevel()));
+                        
+        return l;
+	}
+	
+	public Point toPixels(LatLong in) {
+			if (this.mapView.getWidth() <= 0 || this.mapView.getHeight() <= 0) {
+					return null;
+			}
+
+			MapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
+
+			// calculate the pixel coordinates of the top left corner
+			LatLong geoPoint = mapPosition.getMapPosition().latLong;
+			double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
+			double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
+			pixelX -= this.mapView.getWidth() >> 1;
+			pixelY -= this.mapView.getHeight() >> 1;
+			return new Point((int) (MercatorProjection.longitudeToPixelX(in.longitude, mapPosition.getZoomLevel()) - pixelX), 
+							 (int) (MercatorProjection.latitudeToPixelY(in.latitude, mapPosition.getZoomLevel()) - pixelY));
+	}
+	
+	private LatLong getPosition(Layer ovl) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NullPointerException, ExceptionInInitializerError {
+		final Method getPosition = ovl.getClass().getMethod("getPosition");
+		return (LatLong)getPosition.invoke(ovl);
+	}
+	
+	
+	private Bitmap getBitmap(Layer ovl) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NullPointerException, ExceptionInInitializerError {
+		final Method getPosition = ovl.getClass().getMethod("getBitmap");
+		return (Bitmap)getPosition.invoke(ovl);
+	}
+
+
+
 	private boolean onActionDown(MotionEvent motionEvent) {
 		this.activePointerId = motionEvent.getPointerId(0);
 		this.lastPosition = new Point(motionEvent.getX(), motionEvent.getY());
 		this.moveThresholdReached = false;
+		synchronized (this.layerManager.getLayers()) {
+			for (int i = this.layers.size() - 1; i >= 0; --i) {
+				final Layer ovl = this.layers.get(i);
+				
+				try {
+					Point p = toPixels(getPosition(ovl));
+					Bitmap b = getBitmap(ovl);
+					Rectangle r = new Rectangle(p.x -  b.getWidth() / 2, p.y - b.getHeight() / 2, p.x + b.getWidth() / 2, p.y + b.getHeight() / 2);
+					if (!r.contains(this.lastPosition)) {
+						continue;
+					}
+					
+					final Method onTap;
+						onTap = ovl.getClass().getMethod("onTap");
+						Log.d(TAG, ovl.getClass().toString());
+						if (onTap != null) {
+							this.singleTapActionTimer = new Timer();
+							this.singleTapActionTimer.schedule(new TimerTask() {
+ 
+								@Override
+								public void run() {
+									try {
+										onTap.invoke(ovl);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}}, this.doubleTapTimeout+10L);
+							
+						}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					 //e.printStackTrace();
+				} 
+			}
+		}
 
 		return true;
 	}
 
 	private boolean onActionMove(MotionEvent motionEvent) {
-		int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
+        if (this.scaleGestureDetector.isInProgress()) {
+            return true;
+        }
+
+        int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
 
 		float moveX = (float) (motionEvent.getX(pointerIndex) - this.lastPosition.x);
 		float moveY = (float) (motionEvent.getY(pointerIndex) - this.lastPosition.y);

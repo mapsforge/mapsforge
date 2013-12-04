@@ -14,6 +14,8 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -23,14 +25,58 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.model.Tile;
 
+import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+
 
 public final class AndroidGraphicFactory implements GraphicFactory {
-	public static final GraphicFactory INSTANCE = new AndroidGraphicFactory();
+
+	// turn on for bitmap accounting
+	public static final boolean debugBitmaps = false;
+
+	// if true resourceBitmaps will be kept in the cache to avoid
+	// multiple loading
+	public static boolean keepResourceBitmaps = true;
+
+	// determines size of bitmaps used, RGB_565 is 2 bytes per pixel
+	// note that ARGB_8888 uses 4 bytes per pixel (with severe impact
+	// on memory use) and seems also to have buffer corruption
+	// problems
+	static public final Config bitmapConfig = Config.RGB_565;
+
+	public static AndroidGraphicFactory INSTANCE;
+
+	private static final String PREFIX_ASSETS = "assets:";
+	private final Application application;
+	private final int defaultTileSize = Tile.TILE_SIZE;
+	private final float scaleFactor;
+	private float userScaleFactor = 1.0f;
+
+	/**
+	 * return the byte usage per pixel of a bitmap based on its configuration.
+	 */
+	static public int getBytesPerPixel(Config config) {
+		if (config == Config.ARGB_8888) {
+			return 4;
+		} else if (config == Config.RGB_565) {
+			return 2;
+		} else if (config == Config.ARGB_4444) {
+			return 2;
+		} else if (config == Config.ALPHA_8) {
+			return 1;
+		}
+		return 1;
+	}
 
 	public static Bitmap convertToBitmap(Drawable drawable) {
 		android.graphics.Bitmap bitmap;
@@ -55,7 +101,11 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return new AndroidCanvas(canvas);
 	}
 
-	public static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
+	public static void createInstance(Application app) {
+		INSTANCE = new AndroidGraphicFactory(app);
+	}
+
+	static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
 		return ((AndroidBitmap) bitmap).bitmap;
 	}
 
@@ -94,13 +144,17 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return ((AndroidPath) path).path;
 	}
 
-	private AndroidGraphicFactory() {
-		// do nothing
+	private AndroidGraphicFactory(Application app) {
+		this.application = app;
+		DisplayMetrics metrics = new DisplayMetrics();
+		((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+		// we need to scale up proportionally to the scaledDensity otherwise the map display gets too small
+		this.scaleFactor = metrics.scaledDensity;
+		setTileSize();
 	}
 
-	@Override
-	public Bitmap createBitmap(InputStream inputStream) {
-		return new AndroidBitmap(inputStream);
+	private void setTileSize() {
+		Tile.TILE_SIZE = (int) (this.defaultTileSize * this.scaleFactor * this.userScaleFactor);
 	}
 
 	@Override
@@ -137,4 +191,53 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	public Path createPath() {
 		return new AndroidPath();
 	}
+
+    @Override
+    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) {
+        return new AndroidResourceBitmap(inputStream, hash);
+    }
+
+	@Override
+	public TileBitmap createTileBitmap() {
+		return new AndroidTileBitmap();
+	}
+
+	@Override
+	public TileBitmap createTileBitmap(InputStream inputStream) {
+		return new AndroidTileBitmap(inputStream);
+	}
+
+	@Override
+	public float getScaleFactor() {
+		return this.scaleFactor * this.userScaleFactor;
+	}
+
+	public float getUserScaleFactor() {
+		return this.userScaleFactor;
+	}
+
+	@Override
+	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
+		// this allows loading of resource bitmaps from the Andorid assets folder
+		if (src.startsWith(PREFIX_ASSETS)) {
+			String absoluteName = relativePathPrefix + src.substring(PREFIX_ASSETS.length());
+			InputStream inputStream = this.application.getAssets().open(absoluteName);
+			if (inputStream == null) {
+				throw new FileNotFoundException("resource not found: " + absoluteName);
+			}
+			return inputStream;
+		}
+		return null;
+	}
+
+	@Override
+	public ResourceBitmap renderSvg(InputStream inputStream, int hash) {
+		return new AndroidSvgBitmap(inputStream, hash, this.scaleFactor);
+	}
+
+	public void setUserScaleFactor(float scaleFactor) {
+		this.userScaleFactor = scaleFactor;
+		setTileSize();
+	}
+
 }

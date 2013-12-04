@@ -16,6 +16,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.io.IOException;
 
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -44,7 +45,7 @@ public class AreaBuilder {
 		this.level = level;
 
 		this.fill = graphicFactory.createPaint();
-		this.fill.setColor(Color.BLACK);
+		this.fill.setColor(Color.TRANSPARENT);
 		this.fill.setStyle(Style.FILL);
 		this.fill.setStrokeCap(Cap.ROUND);
 
@@ -70,7 +71,11 @@ public class AreaBuilder {
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				this.fill.setBitmapShader(XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value));
+				Bitmap shaderBitmap = XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value);
+				if (shaderBitmap != null) {
+					this.fill.setBitmapShader(shaderBitmap);
+					shaderBitmap.decrementRefCount();
+				}
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {

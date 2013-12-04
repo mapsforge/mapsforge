@@ -52,6 +52,13 @@ public class Marker extends Layer {
 	}
 
 	@Override
+	public void onDestroy() {
+		if (this.bitmap != null) {
+			this.bitmap.decrementRefCount();
+		}
+	}
+
+	@Override
 	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (this.latLong == null || this.bitmap == null) {
 			return;
@@ -76,6 +83,14 @@ public class Marker extends Layer {
 
 		canvas.drawBitmap(this.bitmap, left, top);
 	}
+
+	/**
+	 * @return Gets the LatLong Position of the Object
+	 */
+	public synchronized LatLong getPosition() {
+		return this.latLong;
+	}
+	
 
 	/**
 	 * @return the {@code Bitmap} of this marker (may be null).
@@ -110,6 +125,12 @@ public class Marker extends Layer {
 	 *            the new {@code Bitmap} of this marker (may be null).
 	 */
 	public synchronized void setBitmap(Bitmap bitmap) {
+		if (this.bitmap != null && this.bitmap.equals(bitmap)) {
+			return;
+		}
+		if (this.bitmap != null) {
+			this.bitmap.decrementRefCount();
+		}
 		this.bitmap = bitmap;
 	}
 

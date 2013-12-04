@@ -69,6 +69,11 @@ public class MapScaleBar {
 		this.paintScaleTextStroke = createTextPaint(Color.WHITE, 2);
 	}
 
+	public void destroy() {
+		this.mapScaleBitmap.decrementRefCount();
+		this.mapScaleCanvas.destroy();
+	}
+
 	public void draw(GraphicContext graphicContext) {
 		if (!this.visible) {
 			return;
