@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
  * A builder for {@link RenderTheme} instances.
  */
 public class RenderThemeBuilder {
+
 	private static final String BASE_STROKE_WIDTH = "base-stroke-width";
 	private static final String BASE_TEXT_SIZE = "base-text-size";
 	private static final String MAP_BACKGROUND = "map-background";
@@ -90,8 +91,11 @@ public class RenderThemeBuilder {
 	private void validate(String elementName) throws SAXException {
 		XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
 
-		if (this.version.intValue() != RENDER_THEME_VERSION) {
+		if (!XmlUtils.SUPPORT_OLDER_RENDERTHEMES && this.version != RENDER_THEME_VERSION) {
 			throw new SAXException("unsupported render theme version: "
+					+ this.version);
+		} else if (this.version > RENDER_THEME_VERSION) {
+			throw new SAXException("unsupported newer render theme version: "
 					+ this.version);
 		}
 	}

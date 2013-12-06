@@ -19,6 +19,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.rendertheme.XmlUtils;
+import org.mapsforge.map.rendertheme.rule.RenderThemeBuilder;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -28,6 +29,7 @@ import org.xml.sax.SAXException;
 public class CircleBuilder {
 	static final String FILL = "fill";
 	static final String RADIUS = "radius";
+	static final String R = "r";
 	static final String SCALE_RADIUS = "scale-radius";
 	static final String STROKE = "stroke";
 	static final String STROKE_WIDTH = "stroke-width";
@@ -67,7 +69,7 @@ public class CircleBuilder {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
-			if (RADIUS.equals(name)) {
+			if (RADIUS.equals(name) || (XmlUtils.SUPPORT_OLDER_RENDERTHEMES && R.equals(name))) {
 				this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value));
 			} else if (SCALE_RADIUS.equals(name)) {
 				this.scaleRadius = Boolean.parseBoolean(value);

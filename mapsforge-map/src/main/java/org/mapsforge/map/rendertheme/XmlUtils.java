@@ -27,7 +27,11 @@ import org.xml.sax.SAXException;
 public final class XmlUtils {
 	private static final String PREFIX_FILE = "file:";
 	private static final String PREFIX_JAR = "jar:";
+	private static final String PREFIX_JAR_V1 = "jar:/org/mapsforge/android/maps/rendertheme";
+
 	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
+
+	public static final boolean SUPPORT_OLDER_RENDERTHEMES = true;
 
 	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
 			throws SAXException {
@@ -48,7 +52,8 @@ public final class XmlUtils {
 			inputStream = createInputStream(relativePathPrefix, src);
 		}
 		try {
-            String absoluteName = getAbsoluteName(relativePathPrefix, src);
+			final String prefixJar = src.startsWith(PREFIX_JAR_V1) ? PREFIX_JAR_V1 : PREFIX_JAR;
+			String absoluteName = getAbsoluteName(relativePathPrefix, src.substring(prefixJar.length()));
             if (src.endsWith(".svg")) {
 				return graphicFactory.renderSvg(inputStream, absoluteName.hashCode());
 			}

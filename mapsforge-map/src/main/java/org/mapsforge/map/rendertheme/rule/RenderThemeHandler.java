@@ -26,6 +26,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlUtils;
 import org.mapsforge.map.rendertheme.renderinstruction.Area;
 import org.mapsforge.map.rendertheme.renderinstruction.AreaBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Caption;
@@ -154,7 +155,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 				this.currentRule.addRenderingInstruction(caption);
 			}
 
-			else if ("circle".equals(qName)) {
+			else if ("circle".equals(qName) || (XmlUtils.SUPPORT_OLDER_RENDERTHEMES && "c".equals(qName))) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Circle circle = new CircleBuilder(this.graphicFactory, qName, attributes, this.level++).build();
 				this.currentRule.addRenderingInstruction(circle);
