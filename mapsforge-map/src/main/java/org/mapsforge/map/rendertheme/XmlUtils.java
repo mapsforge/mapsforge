@@ -52,9 +52,8 @@ public final class XmlUtils {
 			inputStream = createInputStream(relativePathPrefix, src);
 		}
 		try {
-			final String prefixJar = src.startsWith(PREFIX_JAR_V1) ? PREFIX_JAR_V1 : PREFIX_JAR;
-			String absoluteName = getAbsoluteName(relativePathPrefix, src.substring(prefixJar.length()));
-            if (src.endsWith(".svg")) {
+			String absoluteName = getAbsoluteName(relativePathPrefix, src);
+			if (src.endsWith(".svg")) {
 				return graphicFactory.renderSvg(inputStream, absoluteName.hashCode());
 			}
 			return graphicFactory.createResourceBitmap(inputStream, absoluteName.hashCode());
@@ -117,8 +116,10 @@ public final class XmlUtils {
 	}
 
 	private static InputStream createInputStream(String relativePathPrefix, String src) throws FileNotFoundException {
+
 		if (src.startsWith(PREFIX_JAR)) {
-			String absoluteName = getAbsoluteName(relativePathPrefix, src.substring(PREFIX_JAR.length()));
+			final String prefixJar = src.startsWith(PREFIX_JAR_V1) ? PREFIX_JAR_V1 : PREFIX_JAR;
+			String absoluteName = getAbsoluteName(relativePathPrefix, src.substring(prefixJar.length()));
 			InputStream inputStream = XmlUtils.class.getResourceAsStream(absoluteName);
 			if (inputStream == null) {
 				throw new FileNotFoundException("resource not found: " + absoluteName);

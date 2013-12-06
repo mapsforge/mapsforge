@@ -155,7 +155,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 				this.currentRule.addRenderingInstruction(caption);
 			}
 
-			else if ("circle".equals(qName) || (XmlUtils.SUPPORT_OLDER_RENDERTHEMES && "c".equals(qName))) {
+			else if ("circle".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Circle circle = new CircleBuilder(this.graphicFactory, qName, attributes, this.level++).build();
 				this.currentRule.addRenderingInstruction(circle);
