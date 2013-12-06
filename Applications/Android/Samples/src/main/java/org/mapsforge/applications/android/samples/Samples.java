@@ -38,9 +38,11 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(BasicMapViewerXml.class));
 		linearLayout.addView(createButton(DiagnosticsMapViewer.class));
 		linearLayout.addView(createButton(RenderThemeMapViewer.class));
-		linearLayout.addView(createButton(AssetsRenderThemeMapViewer.class, "Rendertheme using Assets"));
+
+		linearLayout.addView(createButton(AssetsRenderThemeMapViewer.class, "Rendertheme using Android Assets"));
 		linearLayout.addView(createButton(SVGAssetsRenderThemeMapViewer.class, "Rendertheme using SVG files"));
-		linearLayout.addView(createButton(DownloadLayerViewer.class, "Download Mapnik"));
+		linearLayout.addView(createButton(RenderThemeChanger.class, "Automatically changing render themes"));
+		linearLayout.addView(createButton(DownloadLayerViewer.class, "Downloading Mapnik"));
 		linearLayout.addView(createButton(OverlayMapViewer.class));
 		linearLayout.addView(createButton(ZoomToBounds.class, "Zoom to Bounds"));
 		linearLayout.addView(createButton(OverlayWithoutBaseMapViewer.class, "Just Overlays, No Map"));

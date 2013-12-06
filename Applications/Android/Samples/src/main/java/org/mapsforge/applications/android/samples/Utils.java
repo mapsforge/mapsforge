@@ -138,15 +138,6 @@ public final class Utils {
         return (byte) new Double(Math.min(zoomX, zoomY)).intValue();
     }
 
-    static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, File mapFile) {
-        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition,
-                AndroidGraphicFactory.INSTANCE);
-        tileRendererLayer.setMapFile(mapFile);
-        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
-        tileRendererLayer.setTextScale(1.5f);
-        return tileRendererLayer;
-    }
-
     static Bitmap viewToBitmap(Context c, View view) {
         view.measure(MeasureSpec.getSize(view.getMeasuredWidth()), MeasureSpec.getSize(view.getMeasuredHeight()));
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
