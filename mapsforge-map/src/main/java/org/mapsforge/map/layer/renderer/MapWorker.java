@@ -31,8 +31,21 @@ public class MapWorker extends PausableThread {
 	private final JobQueue<RendererJob> jobQueue;
 	private final Layer layer;
 	private final TileCache tileCache;
-	private final AtomicLong totalTime = new AtomicLong();
-	private final AtomicLong totalExecutions = new AtomicLong();
+
+	private static final boolean debugTiming = false;
+
+	private final AtomicLong totalTime;
+	private final AtomicLong totalExecutions;
+
+	{
+		if (debugTiming) {
+			totalTime = new AtomicLong();
+			totalExecutions = new AtomicLong();
+		} else {
+			totalTime = null;
+			totalExecutions = null;
+		}
+	}
 
 	public MapWorker(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer, Layer layer) {
 		super();
@@ -67,13 +80,20 @@ public class MapWorker extends PausableThread {
 	}
 
 	private void renderTile(RendererJob rendererJob) {
-		long start = System.currentTimeMillis();
+		long start;
+		if (debugTiming) {
+			start = System.currentTimeMillis();
+		}
+
 		TileBitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
-		long end = System.currentTimeMillis();
-		long te = this.totalExecutions.incrementAndGet();
-		long tt = this.totalTime.addAndGet(end - start);
-		if (te % 10 == 0) {
-			LOGGER.log(Level.SEVERE, "TIMING " + Long.toString(te) + " " + Double.toString(tt / te));
+
+		if (debugTiming) {
+			long end = System.currentTimeMillis();
+			long te = this.totalExecutions.incrementAndGet();
+			long tt = this.totalTime.addAndGet(end - start);
+			if (te % 10 == 0) {
+				LOGGER.log(Level.INFO, "TIMING " + Long.toString(te) + " " + Double.toString(tt / te));
+			}
 		}
 
 		if (!isInterrupted() && bitmap != null) {
