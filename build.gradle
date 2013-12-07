@@ -3,7 +3,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.6.1'
+    classpath 'com.android.tools.build:gradle:0.6.+'
   }
 }
 
@@ -50,9 +50,6 @@ configure(filterProjects(project.javaprojects)) {
     testCompile group: 'junit', name: 'junit', version:"$jUnitVersion"
   }
   
-  // set java source encoding, otherwise some tests fail
-  [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
   checkstyle {
     showViolations = false  // turn on for reporting
     configFile = new File("config/checkstyle/checkstyle.xml")
