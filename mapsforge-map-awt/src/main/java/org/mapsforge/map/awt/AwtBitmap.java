@@ -64,4 +64,9 @@ class AwtBitmap implements Bitmap {
 		// TODO implement
 	}
 
+	@Override
+	public void setBackgroundColor(int color) {
+		// TODO implement
+	}
+
 }

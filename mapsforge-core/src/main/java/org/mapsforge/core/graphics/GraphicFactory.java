@@ -39,10 +39,13 @@ public interface GraphicFactory {
 
 	TileBitmap createTileBitmap(InputStream inputStream) throws IOException;
 
+	int getBackgroundColor();
+
 	float getScaleFactor();
 
 	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 
 	ResourceBitmap renderSvg(InputStream inputStream, int hash);
 
+	void setBackgroundColor(int color);
 }

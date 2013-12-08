@@ -155,6 +155,11 @@ public class AndroidBitmap implements Bitmap {
         }
     }
 
+	@Override
+	public void setBackgroundColor(int color) {
+		this.bitmap.eraseColor(color);
+	}
+
     @Override
     public String toString() {
         return super.toString() + " refCount " + Integer.toString(refCount.get());
@@ -201,13 +206,11 @@ public class AndroidBitmap implements Bitmap {
 			boolean reusable = byteCount <= candidate.getAllocationByteCount();
 			if (reusable) {
 				candidate.reconfigure(width, height, AndroidGraphicFactory.bitmapConfig);
-				candidate.eraseColor(0);
 			}
 			return reusable;
 		}
 
 		if (candidate.getWidth() == width && candidate.getHeight() == height) {
-			candidate.eraseColor(0);
 			return true;
 		}
 		return false;

@@ -116,6 +116,12 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
+	public int getBackgroundColor() {
+		return 0;
+	}
+
+
+	@Override
 	public float getScaleFactor() {
 		return 1.0f;
 	}
@@ -143,5 +149,10 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	@Override
 	public ResourceBitmap renderSvg(InputStream inputStream, int hash) {
 		return null;
+	}
+
+	@Override
+	public void setBackgroundColor(int color) {
+		// TODO
 	}
 }

@@ -54,6 +54,7 @@ public class FrameBuffer {
 	}
 
     public synchronized void draw(GraphicContext graphicContext) {
+	    graphicContext.fillColor(this.graphicFactory.getBackgroundColor());
 		if (this.bitmap1 != null) {
   	        graphicContext.drawBitmap(this.bitmap1, this.matrix);
 		}
@@ -65,6 +66,9 @@ public class FrameBuffer {
             Bitmap bitmapTemp = this.bitmap1;
             this.bitmap1 = this.bitmap2;
             this.bitmap2 = bitmapTemp;
+	        if (this.bitmap2 != null) {
+	            this.bitmap2.setBackgroundColor(this.graphicFactory.getBackgroundColor());
+	        }
         }
         // taking this out of the synchronized region removes a deadlock potential
         // at the small risk of an inconsistent zoom
@@ -93,7 +97,9 @@ public class FrameBuffer {
 
 		if (dimension.width > 0 && dimension.height > 0) {
 			this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
+			this.bitmap1.setBackgroundColor(this.graphicFactory.getBackgroundColor());
 			this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
+			this.bitmap2.setBackgroundColor(this.graphicFactory.getBackgroundColor());
 		}
 	}
 

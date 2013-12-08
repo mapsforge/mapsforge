@@ -35,4 +35,6 @@ public interface Bitmap {
 	int getWidth();
 
 	void scaleTo(int width, int height);
+
+	void setBackgroundColor(int color);
 }

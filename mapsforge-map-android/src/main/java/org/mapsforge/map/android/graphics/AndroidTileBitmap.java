@@ -88,6 +88,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		if (this.bitmap == null) {
 			this.bitmap = AndroidBitmap.createAndroidBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
 		}
+		this.bitmap.eraseColor(AndroidGraphicFactory.INSTANCE.getBackgroundColor());
         if (AndroidGraphicFactory.debugBitmaps) {
 		    tileInstances.incrementAndGet();
         }

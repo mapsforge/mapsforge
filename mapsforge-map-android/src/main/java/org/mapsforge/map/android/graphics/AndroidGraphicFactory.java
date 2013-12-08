@@ -53,6 +53,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	// on memory use) and seems also to have buffer corruption
 	// problems
 	static public final Config bitmapConfig = Config.RGB_565;
+	static final int DEFAULT_BACKGROUND_COLOR = android.graphics.Color.rgb(238, 238, 238);
 
 	public static AndroidGraphicFactory INSTANCE;
 
@@ -61,6 +62,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	private final int defaultTileSize = Tile.TILE_SIZE;
 	private final float scaleFactor;
 	private float userScaleFactor = 1.0f;
+	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	/**
 	 * return the byte usage per pixel of a bitmap based on its configuration.
@@ -136,7 +138,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return ((AndroidMatrix) matrix).matrix;
 	}
 
-	static android.graphics.Paint getPaint(Paint paint) {
+	public static android.graphics.Paint getPaint(Paint paint) {
 		return ((AndroidPaint) paint).paint;
 	}
 
@@ -208,6 +210,11 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
+	public int getBackgroundColor() {
+		return this.backgroundColor;
+	}
+
+	@Override
 	public float getScaleFactor() {
 		return this.scaleFactor * this.userScaleFactor;
 	}
@@ -233,6 +240,11 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	@Override
 	public ResourceBitmap renderSvg(InputStream inputStream, int hash) {
 		return new AndroidSvgBitmap(inputStream, hash, this.scaleFactor);
+	}
+
+	@Override
+	public void setBackgroundColor(int color) {
+		this.backgroundColor = color;
 	}
 
 	public void setUserScaleFactor(float scaleFactor) {
