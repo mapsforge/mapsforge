@@ -7,11 +7,16 @@ BUILDING
 * Gradle is now the build system. 
   * You will need Gradle 1.8 to build (1.9 does not work yet, a limitation of the Android plugin)
   * To build from scratch type 'gradle clean build'. 
-* You will need Android build tools 19 to build.
+* You will need Android build tools 19 to build. 
 * Android v9 (2.3) and up are supported.
   * I do not support 2.2 even though the changes are minimal, devices that old do not give a good experience
 * The language level is now Java 1.7 (this does run on older devices without problems)
-* I do not support the old maven build. If someone wants to produce the required fixes, please do so.
+* The maven build is now supported. 
+  * You will need maven 3.1.1 
+  * As Google somehow does not upload the official android jars you will need a hack to get them:
+    * Get the tool from https://github.com/mosabua/maven-android-sdk-deployer/ by running 'git clone https://github.com/mosabua/maven-android-sdk-deployer.git'
+    * change into the directory maven-android-sdk-developer
+    * install the jars for Android 19 by running 'mvn install -P 4.4'
 
 * I am currently only providing debug builds, including for the Sample app. This will change of course.
 
