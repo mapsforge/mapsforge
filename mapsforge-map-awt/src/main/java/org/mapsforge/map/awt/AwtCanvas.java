@@ -180,12 +180,12 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public int getHeight() {
-		return this.bufferedImage.getHeight();
+		return this.bufferedImage != null ? this.bufferedImage.getHeight() : 0;
 	}
 
 	@Override
 	public int getWidth() {
-		return this.bufferedImage.getWidth();
+		return this.bufferedImage != null ? this.bufferedImage.getWidth() : 0;
 	}
 
 	@Override
