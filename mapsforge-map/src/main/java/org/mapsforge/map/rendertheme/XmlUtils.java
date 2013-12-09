@@ -31,7 +31,7 @@ public final class XmlUtils {
 
 	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
 
-	public static final boolean SUPPORT_OLDER_RENDERTHEMES = true;
+	public static boolean SUPPORT_OLDER_RENDERTHEMES = true;
 
 	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
 			throws SAXException {
@@ -118,7 +118,12 @@ public final class XmlUtils {
 	private static InputStream createInputStream(String relativePathPrefix, String src) throws FileNotFoundException {
 
 		if (src.startsWith(PREFIX_JAR)) {
-			final String prefixJar = src.startsWith(PREFIX_JAR_V1) ? PREFIX_JAR_V1 : PREFIX_JAR;
+			final String prefixJar;
+			if (!SUPPORT_OLDER_RENDERTHEMES) {
+				prefixJar = PREFIX_JAR;
+			} else {
+				prefixJar = src.startsWith(PREFIX_JAR_V1) ? PREFIX_JAR_V1 : PREFIX_JAR;
+			}
 			String absoluteName = getAbsoluteName(relativePathPrefix, src.substring(prefixJar.length()));
 			InputStream inputStream = XmlUtils.class.getResourceAsStream(absoluteName);
 			if (inputStream == null) {
