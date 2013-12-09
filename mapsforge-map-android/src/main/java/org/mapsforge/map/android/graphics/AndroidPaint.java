@@ -141,7 +141,9 @@ class AndroidPaint implements Paint {
 			// where shaders are corrupted.
 			// incrementing the refcount stops the recycling, but leaks the bitmap.
 			//bitmap.incrementRefCount();
+			// TODO investigate if this still is a problem
 		}
+		this.paint.setColor(AndroidGraphicFactory.getColor(Color.WHITE));
 		this.paint
 				.setShader(new BitmapShader(AndroidGraphicFactory.getBitmap(bitmap), TileMode.REPEAT, TileMode.REPEAT));
 	}
