@@ -127,10 +127,6 @@ class AndroidPaint implements Paint {
 		return this.paint.getShader() == null && this.paint.getAlpha() == 0;
 	}
 
-	public float measureText(String text) {
-		return this.paint.measureText(text);
-	}
-
 	@Override
 	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {
 		if (bitmap == null) {
