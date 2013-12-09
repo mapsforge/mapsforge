@@ -48,7 +48,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
 		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, GRAPHIC_FACTORY);
-		this.frameBufferController = new FrameBufferController(this.frameBuffer, this.model);
+		this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
 		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
 		this.layerManager.start();

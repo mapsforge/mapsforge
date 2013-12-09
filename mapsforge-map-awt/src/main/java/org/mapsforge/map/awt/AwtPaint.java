@@ -125,7 +125,7 @@ class AwtPaint implements Paint {
 
 	@Override
 	public void setColor(int color) {
-		this.color = new java.awt.Color(color);
+		this.color = new java.awt.Color(color, true);
 	}
 
 	@Override

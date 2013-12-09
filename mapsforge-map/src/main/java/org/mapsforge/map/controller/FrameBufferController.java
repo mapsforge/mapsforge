@@ -34,6 +34,17 @@ public final class FrameBufferController implements Observer {
     private static boolean useSquareFrameBuffer = true;
 	private static float maxAspectRatio = 2;
 
+	public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
+		FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
+
+		model.frameBufferModel.addObserver(frameBufferController);
+		model.mapViewDimension.addObserver(frameBufferController);
+		model.mapViewPosition.addObserver(frameBufferController);
+
+		return frameBufferController;
+	}
+
+
 	private static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
 		int width = (int) (mapViewDimension.width * overdrawFactor);
 		int height = (int) (mapViewDimension.height * overdrawFactor);
@@ -52,12 +63,9 @@ public final class FrameBufferController implements Observer {
 	private double lastOverdrawFactor;
 	private final Model model;
 
-	public FrameBufferController(FrameBuffer frameBuffer, Model model) {
+	private FrameBufferController(FrameBuffer frameBuffer, Model model) {
 		this.frameBuffer = frameBuffer;
 		this.model = model;
-		this.model.frameBufferModel.addObserver(this);
-		this.model.mapViewDimension.addObserver(this);
-		this.model.mapViewPosition.addObserver(this);
 	}
 
 	public void destroy() {

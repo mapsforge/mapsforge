@@ -15,6 +15,7 @@
 package org.mapsforge.map.awt;
 
 import java.awt.AlphaComposite;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.TextLayout;
@@ -216,9 +217,11 @@ class AwtCanvas implements Canvas {
 	}
 
 	private void fillColor(java.awt.Color color) {
+		final Composite originalComposite = this.graphics2D.getComposite();
 		this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 		this.graphics2D.setColor(color);
 		this.graphics2D.fillRect(0, 0, getWidth(), getHeight());
+		this.graphics2D.setComposite(originalComposite);
 	}
 
 	private void setColorAndStroke(AwtPaint awtPaint) {
