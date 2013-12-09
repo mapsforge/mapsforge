@@ -70,7 +70,7 @@ public class Circle extends Layer {
 		double longitude = this.latLong.longitude;
 		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - topLeftPoint.x);
 		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - topLeftPoint.y);
-		int radiusInPixel = (int) metersToPixels(latitude, this.radius, zoomLevel);
+		int radiusInPixel = getRadiusInPixels(latitude, zoomLevel);
 
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
 		if (!canvasRectangle.intersectsCircle(pixelX, pixelY, radiusInPixel)) {
@@ -88,7 +88,8 @@ public class Circle extends Layer {
 	/**
 	 * @return the center point of this circle (may be null).
 	 */
-	public synchronized LatLong getLatLong() {
+	@Override
+	public synchronized LatLong getPosition() {
 		return this.latLong;
 	}
 
@@ -153,4 +154,9 @@ public class Circle extends Layer {
 		}
 		this.radius = radius;
 	}
+
+	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
+		return (int) metersToPixels(latitude, this.radius, zoomLevel);
+	}
+
 }

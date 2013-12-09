@@ -17,6 +17,9 @@ package org.mapsforge.map.layer;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.LatLong;
+
+import java.util.logging.Logger;
 
 public abstract class Layer {
 	private Redrawer assignedRedrawer;
@@ -94,4 +97,51 @@ public abstract class Layer {
 		this.assignedRedrawer = null;
 		onRemove();
 	}
+
+	/**
+	 * Gets the geographic position of this layer element, if it exists.
+	 * <p>
+	 * The default implementation of this method returns null.
+	 *
+	 * @return the geographic position of this layer element, null otherwise
+	 */
+	public LatLong getPosition() {
+		return null;
+	}
+
+	/**
+	 * Handles a long press event. A long press event is only triggered
+	 * if the map was not moved. A return value of true
+	 * indicates that the long press event has been handled by this overlay
+	 * and stops its propagation to other overlays.
+	 * <p>
+	 * The default implementation of this method does nothing and returns false.
+	 *
+	 * @param tapLatLong the geographic position of the long press.
+	 * @param layerXY the xy position of the layer element (if available)
+	 * @param tapXY the xy position of the tap
+	 * @return true if the long press event was handled, false otherwise.
+	 */
+	public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+		return false;
+	}
+
+	/**
+	 * Handles a tap event. A return value of true indicates that the tap event
+	 * has been handled by this overlay and
+	 * stops its propagation to other overlays.
+	 * <p>
+	 * The default implementation of this method does nothing and returns false.
+	 *
+	 * @param tapLatLong the the geographic position of the long press.
+	 * @param layerXY the xy position of the layer element (if available)
+	 * @param tapXY the xy position of the tap
+	 * @return true if the tap event was handled, false otherwise.
+	 */
+
+	public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+		return false;
+	}
+
+
 }

@@ -157,4 +157,14 @@ public class Marker extends Layer {
 	public synchronized void setVerticalOffset(int verticalOffset) {
 		this.verticalOffset = verticalOffset;
 	}
+
+	public boolean contains(Point center, Point point) {
+		Rectangle r = new Rectangle(
+				center.x - bitmap.getWidth() / 2 + this.horizontalOffset,
+				center.y - bitmap.getHeight() / 2 + this.verticalOffset,
+				center.x + bitmap.getWidth() / 2 + this.horizontalOffset,
+				center.y + bitmap.getHeight() / 2 + this.verticalOffset);
+		return r.contains(point);
+	}
+
 }

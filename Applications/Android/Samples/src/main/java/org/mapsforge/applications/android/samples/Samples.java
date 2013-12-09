@@ -44,6 +44,7 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(RenderThemeChanger.class, "Automatically changing render themes"));
 		linearLayout.addView(createButton(DownloadLayerViewer.class, "Downloading Mapnik"));
 		linearLayout.addView(createButton(OverlayMapViewer.class));
+		linearLayout.addView(createButton(LongPressAction.class, "Long Press Action"));
 		linearLayout.addView(createButton(ZoomToBounds.class, "Zoom to Bounds"));
 		linearLayout.addView(createButton(OverlayWithoutBaseMapViewer.class, "Just Overlays, No Map"));
 		linearLayout.addView(createButton(LocationOverlayMapViewer.class));

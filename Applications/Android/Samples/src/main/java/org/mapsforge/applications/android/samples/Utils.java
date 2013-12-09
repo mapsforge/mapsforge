@@ -20,12 +20,10 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.StatFs;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.view.WindowManager;
+
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
@@ -33,19 +31,14 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.cache.FileSystemTileCache;
-import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 import java.io.File;
@@ -114,8 +107,13 @@ public final class Utils {
         Drawable drawable = c.getResources().getDrawable(resourceIdentifier);
         Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
         return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {
-            public void onTap() {
-                Log.w("Tapp", "The Marker was touched with onTap: " + this.getLatLong().toString());
+	        @Override
+            public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {
+		        if (contains(viewPosition, tapPoint)) {
+                    Log.w("Tapp", "The Marker was touched with onTap: " + this.getLatLong().toString());
+		            return true;
+		        }
+		        return false;
             }
         };
     }

@@ -14,17 +14,21 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import android.util.Log;
+
 import java.util.List;
 
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.overlay.Circle;
+import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.overlay.Polygon;
 import org.mapsforge.map.layer.overlay.Polyline;
@@ -38,6 +42,7 @@ public class OverlayMapViewer extends BasicMapViewerXml {
 	protected LatLong latLong3 = new LatLong(52.503, 13.399);
 	protected LatLong latLong4 = new LatLong(52.51, 13.401);
 	protected LatLong latLong5 = new LatLong(52.508, 13.408);
+	protected LatLong latLong6 = new LatLong(52.515, 13.420);
 
 	@Override
 	protected void createLayers() {
@@ -70,9 +75,33 @@ public class OverlayMapViewer extends BasicMapViewerXml {
 		Circle circle = new Circle(latLong3, 300, Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0, Style.FILL), null);
 
+
+		FixedPixelCircle tappableCircle = new FixedPixelCircle(latLong6, 70, Utils.createPaint(
+				AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL), null){
+			@Override
+			public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {
+				if (this.contains(viewPosition, tapPoint)) {
+					Log.w("Tapp", "The Circle was tapped at " + geoPoint.toString());
+					return true;
+				}
+				return false;
+			}
+
+			@Override
+			public boolean onLongPress(LatLong geoPoint, Point viewPosition, Point tapPoint) {
+				if (this.contains(viewPosition, tapPoint)) {
+					Log.w("Tapp", "The Circle was long pressed at " + geoPoint.toString());
+					return true;
+				}
+				return false;
+			}
+		};
+
+
 		layers.add(polyline);
 		layers.add(polygon);
 		layers.add(circle);
 		layers.add(marker1);
+		layers.add(tappableCircle);
 	}
 }

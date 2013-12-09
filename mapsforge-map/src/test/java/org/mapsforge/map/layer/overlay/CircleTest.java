@@ -49,7 +49,7 @@ public class CircleTest {
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Circle circle = new Circle(latLong, radius, paintFill, paintStroke);
-		Assert.assertEquals(latLong, circle.getLatLong());
+		Assert.assertEquals(latLong, circle.getPosition());
 		Assert.assertEquals(radius, circle.getRadius(), 0);
 		Assert.assertEquals(paintFill, circle.getPaintFill());
 		Assert.assertEquals(paintStroke, circle.getPaintStroke());
@@ -88,13 +88,13 @@ public class CircleTest {
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Circle circle = new Circle(null, 0, null, null);
-		Assert.assertNull(circle.getLatLong());
+		Assert.assertNull(circle.getPosition());
 		Assert.assertEquals(0, circle.getRadius(), 0);
 		Assert.assertNull(circle.getPaintFill());
 		Assert.assertNull(circle.getPaintStroke());
 
 		circle.setLatLong(latLong);
-		Assert.assertEquals(latLong, circle.getLatLong());
+		Assert.assertEquals(latLong, circle.getPosition());
 
 		circle.setRadius(1);
 		Assert.assertEquals(1, circle.getRadius(), 0);
