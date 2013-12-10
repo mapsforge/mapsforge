@@ -361,6 +361,6 @@ public class MapViewPosition extends Observable implements Persistable {
 
 	private void setZoomLevelInternal(int zoomLevel) {
         this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
-        this.zoomAnimator.startAnimation(this.getScaleFactor(), Math.pow(2, zoomLevel));
+        this.zoomAnimator.startAnimation(this.getScaleFactor(), Math.pow(2, this.zoomLevel));
 	}
 }
