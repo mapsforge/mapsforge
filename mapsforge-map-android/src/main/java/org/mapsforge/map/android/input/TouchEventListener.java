@@ -15,14 +15,17 @@
 package org.mapsforge.map.android.input;
 
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.LatLong;
 
 /**
  * Time-consuming operations should be performed in a separate thread.
  */
 public interface TouchEventListener {
-	void onActionUp(Point point, long eventTime, boolean moveThresholdReached);
+	void onActionUp(LatLong latLong, Point point, long eventTime, boolean moveThresholdReached);
 
 	void onPointerDown(long eventTime);
 
 	void onPointerUp(long eventTime);
+
+	void onLongPress(LatLong latLong, Point xy);
 }

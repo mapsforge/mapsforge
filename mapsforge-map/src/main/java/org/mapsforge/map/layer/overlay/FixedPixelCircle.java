@@ -25,6 +25,8 @@ public class FixedPixelCircle extends Circle {
 	}
 
 	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
+		// TODO this needs to be scaled according to display resolution, but
+		// TODO here we do not have access to the AndroidGraphicFactory
 		return (int)this.getRadius();
 	}
 

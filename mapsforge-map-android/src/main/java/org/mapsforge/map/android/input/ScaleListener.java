@@ -17,7 +17,7 @@ package org.mapsforge.map.android.input;
 import org.mapsforge.map.model.MapViewPosition;
 import android.view.ScaleGestureDetector;
 
-class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
+public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
     private final MapViewPosition mapViewPosition;
     private float scaleFactorCumulative;
     private float scaleFactorApplied;
@@ -29,7 +29,7 @@ class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
      * @param mapViewPosition
      *            the MapViewPosition which should be scaled.
      */
-    ScaleListener(MapViewPosition mapViewPosition) {
+    public ScaleListener(MapViewPosition mapViewPosition) {
         this.mapViewPosition = mapViewPosition;
     }
 

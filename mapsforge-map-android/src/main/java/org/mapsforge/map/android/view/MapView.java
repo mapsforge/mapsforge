@@ -26,6 +26,7 @@ import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.android.input.ScaleListener;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
@@ -36,6 +37,7 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.ViewGroup;
 import android.view.ViewConfiguration;
 
@@ -75,9 +77,10 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         MapViewController.create(this, this.model);
 
         ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
-        TouchGestureDetector touchGestureDetector = new TouchGestureDetector(this.model, viewConfiguration);
-        this.touchEventHandler = new TouchEventHandler(context, this, viewConfiguration);
-        this.touchEventHandler.addListener(touchGestureDetector);
+	    ScaleGestureDetector sgd = new ScaleGestureDetector(context, new ScaleListener(this.getModel().mapViewPosition));
+	    TouchGestureDetector touchGestureDetector = new TouchGestureDetector(this, viewConfiguration);
+	    this.touchEventHandler = new TouchEventHandler(this, viewConfiguration, sgd);
+		this.touchEventHandler.addListener(touchGestureDetector);
         this.mapZoomControls = new MapZoomControls(context, this);
         this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY);
     }
