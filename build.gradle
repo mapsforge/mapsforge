@@ -63,7 +63,7 @@ configure(filterProjects(project.javaprojects)) {
 
 // Configuration for Android projects
 project.ext.androidlibraryprojects = ["svg-android", "mapsforge-map-android"]
-project.ext.androidapkprojects = ["Samples", "Samples_Test"] 
+project.ext.androidapkprojects = ["Samples"] 
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 
 // TODO get checkstyle and pmd working for android (right now it does not work out of the box, so better wait for official fix)
