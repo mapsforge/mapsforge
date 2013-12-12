@@ -76,7 +76,7 @@ public class OverlayMapViewer extends BasicMapViewerXml {
 				AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0, Style.FILL), null);
 
 
-		FixedPixelCircle tappableCircle = new FixedPixelCircle(latLong6, 70, Utils.createPaint(
+		FixedPixelCircle tappableCircle = new FixedPixelCircle(latLong6, 70 * AndroidGraphicFactory.INSTANCE.getScaleFactor(), Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL), null){
 			@Override
 			public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {
