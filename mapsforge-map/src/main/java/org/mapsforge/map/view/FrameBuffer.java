@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.view;
 
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -21,8 +22,6 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.FrameBufferModel;
-
-import java.util.logging.Logger;
 
 public class FrameBuffer {
 
@@ -39,14 +38,15 @@ public class FrameBuffer {
 		this.matrix = graphicFactory.createMatrix();
 	}
 
-	public synchronized void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension) {
+	public synchronized void adjustMatrix(double diffX, double diffY, float scaleFactor, Dimension mapViewDimension, double pivotDistanceX, double pivotDistanceY) {
 		if (this.dimension == null) {
 			return;
 		}
  		this.matrix.reset();
 		centerFrameBufferToMapView(mapViewDimension);
-		this.matrix.translate(diffX, diffY);
-        scale(scaleFactor);
+		this.matrix.translate((float) (diffX + pivotDistanceX), (float) (diffY + pivotDistanceY));
+
+		scale(scaleFactor, pivotDistanceX, pivotDistanceY);
 	}
 
 	public synchronized void destroy() {
@@ -120,10 +120,11 @@ public class FrameBuffer {
         this.matrix.translate(dx, dy);
 	}
 
-	private void scale(float scaleFactor) {
+	private void scale(float scaleFactor, double pivotDistanceX, double pivotDistanceY) {
 		if (scaleFactor != 1) {
- 			float pivotX = this.dimension.width / 2;
-			float pivotY = this.dimension.height / 2;
+			final Point center = this.dimension.getCenter();
+			float pivotX = (float)(pivotDistanceX + center.x);
+			float pivotY = (float)(pivotDistanceY + center.y);
 			this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
         }
 	}

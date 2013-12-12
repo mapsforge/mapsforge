@@ -21,9 +21,7 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.FrameBuffer;
-import org.mapsforge.map.view.MapView;
 
-import java.util.logging.Logger;
 
 public final class FrameBufferController implements Observer {
 
@@ -97,27 +95,39 @@ public final class FrameBufferController implements Observer {
         synchronized (this.model.mapViewPosition) {
             synchronized (this.frameBuffer) {
                 // we need resource ordering here to avoid deadlock
-                double scaleFactor = this.model.mapViewPosition.getScaleFactor();
                 MapPosition mapPositionFrameBuffer = this.model.frameBufferModel.getMapPosition();
                 if (mapPositionFrameBuffer != null) {
-                    adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor);
+	                double scaleFactor = this.model.mapViewPosition.getScaleFactor();
+	                Point pivotXY = this.model.mapViewPosition.getPivotXY();
+					adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor, pivotXY);
                 }
             }
         }
     }
 
 
-    private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension, double scaleFactor) {
+    private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension, double scaleFactor, Point pivotXY) {
         MapPosition mapPosition = this.model.mapViewPosition.getMapPosition();
 
         Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapPosition.zoomLevel);
         Point pointMapPosition = MercatorProjection.getPixel(mapPosition.latLong, mapPosition.zoomLevel);
-        float diffX = (float) (pointFrameBuffer.x - pointMapPosition.x);
-        float diffY = (float) (pointFrameBuffer.y - pointMapPosition.y);
+        double diffX = pointFrameBuffer.x - pointMapPosition.x;
+        double diffY = pointFrameBuffer.y - pointMapPosition.y;
+
+	    // we need to compute the pivot distance from the map center
+	    // as we will need to find the pivot point for the
+	    // frame buffer (which generally has not the same size as the
+	    // map view).
+	    double pivotDistanceX = 0d;
+	    double pivotDistanceY = 0d;
+	    if (pivotXY != null) {
+	        pivotDistanceX = pivotXY.x - pointMapPosition.x;
+	        pivotDistanceY = pivotXY.y - pointMapPosition.y;
+	    }
 
         float currentScaleFactor = (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
 
-        this.frameBuffer.adjustMatrix(diffX, diffY, currentScaleFactor, mapViewDimension);
+        this.frameBuffer.adjustMatrix(diffX, diffY, currentScaleFactor, mapViewDimension, pivotDistanceX, pivotDistanceY);
     }
 
     private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {

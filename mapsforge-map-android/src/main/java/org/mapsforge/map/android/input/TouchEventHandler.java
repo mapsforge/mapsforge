@@ -21,16 +21,13 @@ import android.view.ViewConfiguration;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.view.MapView;
-import org.mapsforge.map.model.MapViewPosition;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class TouchEventHandler {
-
 	private static final String LISTENER_MUST_NOT_BE_NULL = "listener must not be null";
 	private final MapView mapView;
 	private final ScaleGestureDetector scaleGestureDetector;
@@ -42,6 +39,7 @@ public class TouchEventHandler {
 	private Runnable onLongPress;
 	private boolean longPressConsumed;
 	private Point lastPosition;
+	private int lastNumberOfPointers;
 	private LatLong lastLatLong;
 	private boolean moveThresholdReached;
 	public TouchEventHandler(MapView mapView, ViewConfiguration viewConfiguration, ScaleGestureDetector sgd) {
@@ -106,45 +104,34 @@ public class TouchEventHandler {
 		this.touchEventListeners.remove(touchEventListener);
 	}
 
-	private LatLong fromPixels(Point p) {
-		MapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
-		LatLong geoPoint = mapPosition.getMapPosition().latLong;
-
-		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
-		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
-
-		pixelX -= this.mapView.getWidth() >> 1;
-		pixelY -= this.mapView.getHeight() >> 1;
-
-		LatLong l = new LatLong(MercatorProjection.pixelYToLatitude(pixelY + p.y, mapPosition.getZoomLevel()),
-				MercatorProjection.pixelXToLongitude(pixelX + p.x, mapPosition.getZoomLevel()));
-
-		return l;
-	}
-
 	private boolean onActionDown(MotionEvent motionEvent) {
 		this.activePointerId = motionEvent.getPointerId(0);
 		this.lastPosition = new Point(motionEvent.getX(), motionEvent.getY());
-		this.lastLatLong = fromPixels(this.lastPosition);
+		this.lastLatLong = this.mapView.fromPixels(this.lastPosition);
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		this.moveThresholdReached = false;
 
-		// set up a handler that will run after the long press interval expires,
-		// unless the operations is cancelled first
-		this.longPressInProgress = true;
-		this.longPressConsumed = false;
-		onLongPress = new Runnable() {
-			@Override
-			public void run() {
-				TouchEventHandler.this.longPressConsumed = true;
-				if (TouchEventHandler.this.longPressInProgress) {
-					for (TouchEventListener touchEventListener : TouchEventHandler.this.touchEventListeners) {
-						touchEventListener.onLongPress(TouchEventHandler.this.lastLatLong, TouchEventHandler.this.lastPosition);
+		if (this.lastNumberOfPointers == 1) {
+			// set up a handler that will run after the long press interval expires,
+			// unless the operations is cancelled first
+			this.longPressInProgress = true;
+			this.longPressConsumed = false;
+			onLongPress = new Runnable() {
+				@Override
+				public void run() {
+					TouchEventHandler.this.longPressConsumed = true;
+					if (TouchEventHandler.this.longPressInProgress) {
+						if (TouchEventHandler.this.lastNumberOfPointers == 1) {
+							for (TouchEventListener touchEventListener : TouchEventHandler.this.touchEventListeners) {
+								touchEventListener.onLongPress(TouchEventHandler.this.lastLatLong, TouchEventHandler.this.lastPosition);
+							}
+						}
+						TouchEventHandler.this.longPressInProgress = false;
 					}
-					TouchEventHandler.this.longPressInProgress = false;
 				}
-			}
-		};
-		this.longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout());
+			};
+			this.longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout());
+		}
 
 		return true;
 	}
@@ -155,6 +142,7 @@ public class TouchEventHandler {
 			return true;
 		}
 
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
 
 		float moveX = (float) (motionEvent.getX(pointerIndex) - this.lastPosition.x);
@@ -172,6 +160,9 @@ public class TouchEventHandler {
 	}
 
 	private boolean onActionPointerDown(MotionEvent motionEvent) {
+
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
+
 		long eventTime = motionEvent.getEventTime();
 
 		for (TouchEventListener touchEventListener : this.touchEventListeners) {
@@ -182,6 +173,8 @@ public class TouchEventHandler {
 	}
 
 	private boolean onActionPointerUp(MotionEvent motionEvent) {
+
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		// extract the index of the pointer that left the touch sensor
 		int pointerIndex = (motionEvent.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 
@@ -206,6 +199,8 @@ public class TouchEventHandler {
 	}
 
 	private boolean onActionUp(MotionEvent motionEvent) {
+
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		if (longPressConsumed) {
 			// the press was consumed by a long press action, and the up must
 			// not be handled anymore.

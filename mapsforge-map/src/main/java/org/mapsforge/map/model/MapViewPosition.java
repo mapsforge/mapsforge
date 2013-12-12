@@ -16,14 +16,13 @@ package org.mapsforge.map.model;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.util.PausableThread;
-
-import java.util.logging.Logger;
 
 
 public class MapViewPosition extends Observable implements Persistable {
@@ -61,6 +60,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	        if (timeElapsed >= DEFAULT_DURATION) {
 	            this.executeAnimation = false;
 	            MapViewPosition.this.setScaleFactor(calculateScaleFactor(1));
+		        MapViewPosition.this.setPivot(null);
 	        } else {
 	            float timeElapsedRatio = timeElapsed / DEFAULT_DURATION;
 	            MapViewPosition.this.setScaleFactor(calculateScaleFactor(timeElapsedRatio));
@@ -107,6 +107,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	private byte zoomLevelMax;
 	private byte zoomLevelMin;
     private double scaleFactor;
+	private LatLong pivot;
     private final ZoomAnimator zoomAnimator;
 
 	public MapViewPosition() {
@@ -144,6 +145,23 @@ public class MapViewPosition extends Observable implements Persistable {
 	 */
 	public synchronized MapPosition getMapPosition() {
 		return new MapPosition(getCenter(), this.zoomLevel);
+	}
+
+	/**
+	 * The pivot point is the point the map zooms around. If the map
+	 * zooms around its center null is returned, otherwise the
+	 * zoom-specific x/y pixel coordinates for the MercatorProjection
+	 * (note: not the x/y coordinates for the map view or the frame buffer,
+	 * the MapViewPosition knows nothing about them).
+	 *
+	 * @return the x/y coordinates of the map pivot point if set or null otherwise.
+	 */
+
+	public synchronized Point getPivotXY() {
+		if (this.pivot != null) {
+			return MercatorProjection.getPixel(this.pivot, getZoomLevel());
+		}
+		return null;
 	}
 
 	/**
@@ -197,6 +215,18 @@ public class MapViewPosition extends Observable implements Persistable {
 	 *            the amount of pixels to move this MapViewPosition vertically.
 	 */
 	public void moveCenter(double moveHorizontal, double moveVertical) {
+		this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte)0);
+	}
+
+	/**
+	 * Moves the center position of the map by the given amount of pixels.
+	 *
+	 * @param moveHorizontal
+	 *            the amount of pixels to move this MapViewPosition horizontally.
+	 * @param moveVertical
+	 *            the amount of pixels to move this MapViewPosition vertically.
+	 */
+	public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff) {
 		synchronized (this) {
 			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, this.zoomLevel) - moveHorizontal;
 			double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, this.zoomLevel) - moveVertical;
@@ -208,6 +238,7 @@ public class MapViewPosition extends Observable implements Persistable {
 			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, this.zoomLevel);
 			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, this.zoomLevel);
 			setCenterInternal(new LatLong(newLatitude, newLongitude));
+			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
 		}
 		notifyObservers();
 	}
@@ -260,12 +291,27 @@ public class MapViewPosition extends Observable implements Persistable {
     public void setMapPosition(MapPosition mapPosition) {
         synchronized (this) {
             setCenterInternal(mapPosition.latLong);
-            setZoomLevelInternal(mapPosition.zoomLevel);
+	        setZoomLevelInternal(mapPosition.zoomLevel);
         }
         notifyObservers();
     }
 
-    /**
+	/**
+	 * The pivot point is the point the map is scaled around when zooming. In
+	 * normal mode the pivot point is whatever the view center is (this is indicated
+	 * by setting the pivot to null), but when hand-zooming the pivot point can
+	 * be any point on the map. It is stored as lat/long and retrieved as
+	 * an x/y coordinate depending on the current zoom level.
+	 *
+	 * @param pivot lat/long of pivot point, null for map center
+	 */
+	public void setPivot(LatLong pivot) {
+		synchronized (this) {
+			this.pivot = pivot;
+		}
+	}
+
+	/**
      * Sets the new scale factor to be applied.
      */
     public void setScaleFactor(double scaleFactor) {
@@ -354,13 +400,13 @@ public class MapViewPosition extends Observable implements Persistable {
 			this.longitude = latLong.longitude;
 		} else {
 			this.latitude = Math.max(Math.min(latLong.latitude, this.mapLimit.maxLatitude), this.mapLimit.minLatitude);
-			this.longitude = Math.max(Math.min(latLong.longitude, this.mapLimit.maxLongitude),
-					this.mapLimit.minLongitude);
+			this.longitude = Math.max(Math.min(latLong.longitude, this.mapLimit.maxLongitude), this.mapLimit.minLongitude);
 		}
 	}
 
 	private void setZoomLevelInternal(int zoomLevel) {
-        this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
-        this.zoomAnimator.startAnimation(this.getScaleFactor(), Math.pow(2, this.zoomLevel));
+		this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+		this.zoomAnimator.startAnimation(this.getScaleFactor(), Math.pow(2, this.zoomLevel));
 	}
+
 }

@@ -16,6 +16,9 @@ package org.mapsforge.map.android.view;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.TouchEventHandler;
 import org.mapsforge.map.android.input.TouchGestureDetector;
@@ -25,6 +28,7 @@ import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.android.input.ScaleListener;
 import org.mapsforge.map.scalebar.MapScaleBar;
@@ -168,7 +172,23 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.mapZoomControls.onLayout(changed, left, top, right, bottom);
     }
 
-    /**
+	public LatLong fromPixels(Point p) {
+		MapViewPosition mapPosition = this.getModel().mapViewPosition;
+		LatLong geoPoint = mapPosition.getMapPosition().latLong;
+
+		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
+		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
+
+		pixelX -= this.getWidth() >> 1;
+		pixelY -= this.getHeight() >> 1;
+
+		LatLong l = new LatLong(MercatorProjection.pixelYToLatitude(pixelY + p.y, mapPosition.getZoomLevel()),
+				MercatorProjection.pixelXToLongitude(pixelX + p.x, mapPosition.getZoomLevel()));
+
+		return l;
+	}
+
+	/**
      * @return the zoom controls instance which is used in this MapView.
      */
     public MapZoomControls getMapZoomControls() {
@@ -198,6 +218,21 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+	public Point toPixels(LatLong in) {
+		if (in == null || this.getWidth() <= 0 || this.getHeight() <= 0) {
+			return null;
+		}
 
+		MapViewPosition mapPosition = this.getModel().mapViewPosition;
+
+		// calculate the pixel coordinates of the top left corner
+		LatLong geoPoint = mapPosition.getMapPosition().latLong;
+		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
+		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
+		pixelX -= this.getWidth() >> 1;
+		pixelY -= this.getHeight() >> 1;
+		return new Point((int) (MercatorProjection.longitudeToPixelX(in.longitude, mapPosition.getZoomLevel()) - pixelX),
+				(int) (MercatorProjection.latitudeToPixelY(in.latitude, mapPosition.getZoomLevel()) - pixelY));
+	}
 
 }

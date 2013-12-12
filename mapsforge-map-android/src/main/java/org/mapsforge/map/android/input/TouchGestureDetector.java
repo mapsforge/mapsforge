@@ -18,10 +18,10 @@ import android.view.ViewConfiguration;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.model.MapViewPosition;
+import android.util.Log;
 
 public class TouchGestureDetector implements TouchEventListener {
 	private final float doubleTapSlop;
@@ -46,7 +46,16 @@ public class TouchGestureDetector implements TouchEventListener {
 			long eventTimeDiff = eventTime - this.lastEventTime;
 
 			if (eventTimeDiff < this.gestureTimeout && this.lastActionUpPoint.distance(xy) < this.doubleTapSlop) {
-				this.mapView.getModel().mapViewPosition.zoomIn();
+
+				// handle a double tap, changes the mapview position
+				// so that the tap position remains stable within the view
+				Point center = this.mapView.getModel().mapViewDimension.getDimension().getCenter();
+				final byte zoomLevelDiff = 1;
+				double moveHorizontal = (center.x - xy.x) / Math.pow(2, zoomLevelDiff);
+				double moveVertical = (center.y - xy.y) / Math.pow(2, zoomLevelDiff);
+				this.mapView.getModel().mapViewPosition.setPivot(latLong);
+				this.mapView.getModel().mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
+
 				this.lastActionUpPoint = null;
 				return;
 			}
@@ -56,7 +65,7 @@ public class TouchGestureDetector implements TouchEventListener {
 
 		for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
 			final Layer ovl = this.mapView.getLayerManager().getLayers().get(i);
-			final Point layerXY = toPixels(ovl.getPosition());
+			final Point layerXY = this.mapView.toPixels(ovl.getPosition());
 			if (ovl.onTap(latLong, layerXY, xy)) {
 				break;
 			}
@@ -80,30 +89,13 @@ public class TouchGestureDetector implements TouchEventListener {
 
 	@Override
 	public void onLongPress(LatLong latLong, Point xy){
-		for (int i = mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-			final Layer ovl = mapView.getLayerManager().getLayers().get(i);
-			final Point layerXY = toPixels(ovl.getPosition());
+		for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
+			final Layer ovl = this.mapView.getLayerManager().getLayers().get(i);
+			final Point layerXY = this.mapView.toPixels(ovl.getPosition());
 			if (ovl.onLongPress(latLong, layerXY, xy)) {
 				break;
 			}
 		}
-	}
-
-	private Point toPixels(LatLong in) {
-		if (in == null || this.mapView.getWidth() <= 0 || this.mapView.getHeight() <= 0) {
-			return null;
-		}
-
-		MapViewPosition mapPosition = this.mapView.getModel().mapViewPosition;
-
-		// calculate the pixel coordinates of the top left corner
-		LatLong geoPoint = mapPosition.getMapPosition().latLong;
-		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
-		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
-		pixelX -= this.mapView.getWidth() >> 1;
-		pixelY -= this.mapView.getHeight() >> 1;
-		return new Point((int) (MercatorProjection.longitudeToPixelX(in.longitude, mapPosition.getZoomLevel()) - pixelX),
-				(int) (MercatorProjection.latitudeToPixelY(in.latitude, mapPosition.getZoomLevel()) - pixelY));
 	}
 
 }
