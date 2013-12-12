@@ -258,8 +258,8 @@ public class DatabaseRenderer implements RenderCallback {
 	@Override
 	public void renderPointOfInterestCircle(float radius, Paint fill, Paint stroke, int level) {
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
-		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), fill));
 		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), stroke));
+		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), fill));
 	}
 
 	@Override
