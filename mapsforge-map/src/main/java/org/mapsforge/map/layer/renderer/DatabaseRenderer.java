@@ -228,8 +228,8 @@ public class DatabaseRenderer implements RenderCallback {
 	@Override
 	public void renderArea(Paint fill, Paint stroke, int level) {
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
-		list.add(new ShapePaintContainer(this.shapeContainer, fill));
 		list.add(new ShapePaintContainer(this.shapeContainer, stroke));
+		list.add(new ShapePaintContainer(this.shapeContainer, fill));
 	}
 
 	@Override
