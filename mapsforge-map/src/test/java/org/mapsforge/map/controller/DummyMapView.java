@@ -45,6 +45,11 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
+	public int getHeight() {
+		return 0;
+	}
+
+	@Override
 	public LayerManager getLayerManager() {
 		return null;
 	}
@@ -52,6 +57,11 @@ public class DummyMapView implements MapView {
 	@Override
 	public Model getModel() {
 		return null;
+	}
+
+	@Override
+	public int getWidth() {
+		return 0;
 	}
 
 	@Override

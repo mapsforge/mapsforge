@@ -21,6 +21,7 @@ import android.view.ViewConfiguration;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.android.view.MapView;
 
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class TouchEventHandler {
 	private static final String LISTENER_MUST_NOT_BE_NULL = "listener must not be null";
 	private final MapView mapView;
+	private final MapViewProjection projection;
 	private final ScaleGestureDetector scaleGestureDetector;
 	private final float mapMoveDelta;
 	private final List<TouchEventListener> touchEventListeners = new CopyOnWriteArrayList<TouchEventListener>();
@@ -42,11 +44,14 @@ public class TouchEventHandler {
 	private int lastNumberOfPointers;
 	private LatLong lastLatLong;
 	private boolean moveThresholdReached;
+
+
 	public TouchEventHandler(MapView mapView, ViewConfiguration viewConfiguration, ScaleGestureDetector sgd) {
 		this.longPressHandler = new Handler();
 		this.mapView = mapView;
 		this.mapMoveDelta = viewConfiguration.getScaledTouchSlop();
 		this.scaleGestureDetector = sgd;
+		this.projection = new MapViewProjection(this.mapView);
 	}
 
 	private static int getAction(MotionEvent motionEvent) {
@@ -107,7 +112,7 @@ public class TouchEventHandler {
 	private boolean onActionDown(MotionEvent motionEvent) {
 		this.activePointerId = motionEvent.getPointerId(0);
 		this.lastPosition = new Point(motionEvent.getX(), motionEvent.getY());
-		this.lastLatLong = this.mapView.fromPixels(this.lastPosition);
+		this.lastLatLong = projection.fromPixels(this.lastPosition.x, this.lastPosition.y);
 		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		this.moveThresholdReached = false;
 

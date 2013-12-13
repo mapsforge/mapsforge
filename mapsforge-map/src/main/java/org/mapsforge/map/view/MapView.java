@@ -30,9 +30,13 @@ public interface MapView {
 	 */
 	FrameBuffer getFrameBuffer();
 
+	int getHeight();
+
 	LayerManager getLayerManager();
 
 	Model getModel();
+
+	int getWidth();
 
 	/**
 	 * Requests a redrawing as soon as possible.
