@@ -35,8 +35,6 @@ subprojects {
   }
 }	    	    
 
-
-
 // Configuration for all plain Java projects
 
 project.ext.javaprojects = ["mapsforge-core", "mapsforge-map-reader", "mapsforge-map", "mapsforge-map-awt", "mapsforge-map-writer", "SwingMapViewer"]
@@ -54,6 +52,9 @@ configure(filterProjects(project.javaprojects)) {
     showViolations = false  // turn on for reporting
     configFile = new File("config/checkstyle/checkstyle.xml")
   }
+
+  // set java source encoding, otherwise some tests fail
+  [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
   pmd {
     ruleSetFiles = files("../config/pmd/pmd_ruleset.xml") 
