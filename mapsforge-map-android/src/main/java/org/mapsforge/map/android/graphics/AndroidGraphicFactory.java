@@ -227,10 +227,10 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
 		// this allows loading of resource bitmaps from the Andorid assets folder
 		if (src.startsWith(PREFIX_ASSETS)) {
-			String absoluteName = relativePathPrefix + src.substring(PREFIX_ASSETS.length());
-			InputStream inputStream = this.application.getAssets().open(absoluteName);
+			String pathName = src.substring(PREFIX_ASSETS.length());
+			InputStream inputStream = this.application.getAssets().open(pathName);
 			if (inputStream == null) {
-				throw new FileNotFoundException("resource not found: " + absoluteName);
+				throw new FileNotFoundException("resource not found: " + pathName);
 			}
 			return inputStream;
 		}
