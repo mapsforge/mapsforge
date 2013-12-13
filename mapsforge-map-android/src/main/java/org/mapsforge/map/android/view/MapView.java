@@ -46,7 +46,10 @@ import android.view.ViewGroup;
 import android.view.ViewConfiguration;
 
 public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView {
-    private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
+
+	private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions";
+	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
+
 
     private final FpsCounter fpsCounter;
 	private final FrameBuffer frameBuffer;
@@ -97,7 +100,29 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.mapScaleBar.destroy();
     }
 
-    @Override
+	/**
+	 * Converts screen pixel location to geographic coordinates
+	 *
+	 * @param p the pixel coordinates
+	 * @return the geographic coordinates at the given point
+	 */
+	public LatLong fromPixels(Point p) {
+		MapViewPosition mapPosition = this.getModel().mapViewPosition;
+		LatLong geoPoint = mapPosition.getMapPosition().latLong;
+
+		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
+		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
+
+		pixelX -= this.getWidth() >> 1;
+		pixelY -= this.getHeight() >> 1;
+
+		LatLong l = new LatLong(MercatorProjection.pixelYToLatitude(pixelY + p.y, mapPosition.getZoomLevel()),
+				MercatorProjection.pixelXToLongitude(pixelX + p.x, mapPosition.getZoomLevel()));
+
+		return l;
+	}
+
+	@Override
     public Dimension getDimension() {
         return new Dimension(getWidth(), getHeight());
     }
@@ -117,7 +142,31 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         return this.layerManager;
     }
 
-    public MapScaleBar getMapScaleBar() {
+	/**
+	 * @return latitude span of the map view
+	 */
+	public double getLatitudeSpan() {
+		if (this.getWidth() > 0 && this.getHeight() > 0) {
+			LatLong top = this.fromPixels(new Point(0d, 0d));
+			LatLong bottom = fromPixels(new Point(0d, this.getHeight()));
+			return Math.abs(top.latitude - bottom.latitude);
+		}
+		throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
+	}
+
+	/**
+	 * @return longitude span of the map view
+	 */
+	public double getLongitudeSpan() {
+		if (this.getWidth() > 0 && this.getHeight() > 0) {
+			LatLong left = fromPixels(new Point(0d, 0d));
+			LatLong right = fromPixels(new Point(this.getWidth(), 0));
+			return Math.abs(left.longitude - right.longitude);
+		}
+		throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
+	}
+
+	public MapScaleBar getMapScaleBar() {
         return this.mapScaleBar;
     }
 
@@ -149,7 +198,30 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         }
     }
 
-    @Override
+	/**
+	 * Converts geographic coordinates to view x/y coordinates
+	 *
+	 * @param in the geographic coordinates
+	 * @return x/y view coordinates for the given location
+	 */
+	public Point toPixels(LatLong in) {
+		if (in == null || this.getWidth() <= 0 || this.getHeight() <= 0) {
+			return null;
+		}
+
+		MapViewPosition mapPosition = this.getModel().mapViewPosition;
+
+		// calculate the pixel coordinates of the top left corner
+		LatLong geoPoint = mapPosition.getMapPosition().latLong;
+		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
+		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
+		pixelX -= this.getWidth() >> 1;
+		pixelY -= this.getHeight() >> 1;
+		return new Point((int) (MercatorProjection.longitudeToPixelX(in.longitude, mapPosition.getZoomLevel()) - pixelX),
+				(int) (MercatorProjection.latitudeToPixelY(in.latitude, mapPosition.getZoomLevel()) - pixelY));
+	}
+
+	@Override
     protected void onDraw(Canvas androidCanvas) {
 	    org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
         this.frameBuffer.draw(graphicContext);
@@ -171,22 +243,6 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         this.mapZoomControls.onLayout(changed, left, top, right, bottom);
     }
-
-	public LatLong fromPixels(Point p) {
-		MapViewPosition mapPosition = this.getModel().mapViewPosition;
-		LatLong geoPoint = mapPosition.getMapPosition().latLong;
-
-		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
-		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
-
-		pixelX -= this.getWidth() >> 1;
-		pixelY -= this.getHeight() >> 1;
-
-		LatLong l = new LatLong(MercatorProjection.pixelYToLatitude(pixelY + p.y, mapPosition.getZoomLevel()),
-				MercatorProjection.pixelXToLongitude(pixelX + p.x, mapPosition.getZoomLevel()));
-
-		return l;
-	}
 
 	/**
      * @return the zoom controls instance which is used in this MapView.
@@ -218,21 +274,5 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-	public Point toPixels(LatLong in) {
-		if (in == null || this.getWidth() <= 0 || this.getHeight() <= 0) {
-			return null;
-		}
-
-		MapViewPosition mapPosition = this.getModel().mapViewPosition;
-
-		// calculate the pixel coordinates of the top left corner
-		LatLong geoPoint = mapPosition.getMapPosition().latLong;
-		double pixelX = MercatorProjection.longitudeToPixelX(geoPoint.longitude, mapPosition.getZoomLevel());
-		double pixelY = MercatorProjection.latitudeToPixelY(geoPoint.latitude, mapPosition.getZoomLevel());
-		pixelX -= this.getWidth() >> 1;
-		pixelY -= this.getHeight() >> 1;
-		return new Point((int) (MercatorProjection.longitudeToPixelX(in.longitude, mapPosition.getZoomLevel()) - pixelX),
-				(int) (MercatorProjection.latitudeToPixelY(in.latitude, mapPosition.getZoomLevel()) - pixelY));
-	}
 
 }

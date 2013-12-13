@@ -30,9 +30,6 @@ import org.mapsforge.map.layer.Layer;
  * drawing parameters such as color, stroke width, pattern and transparency.
  */
 public class Circle extends Layer {
-	private static double metersToPixels(double latitude, float meters, byte zoom) {
-		return meters / MercatorProjection.calculateGroundResolution(latitude, zoom);
-	}
 
 	private LatLong latLong;
 	private Paint paintFill;
@@ -156,7 +153,7 @@ public class Circle extends Layer {
 	}
 
 	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		return (int) metersToPixels(latitude, this.radius, zoomLevel);
+		return (int) MercatorProjection.metersToPixels(this.radius, latitude, zoomLevel);
 	}
 
 }

@@ -109,8 +109,23 @@ public final class MercatorProjection {
 		return (longitude + 180) / 360 * mapSize;
 	}
 
+	/**
+	 * Converts meters to pixels at latitude for zoom-level.
+	 *
+	 * @param meters
+	 *            the meters to convert
+	 * @param latitude
+	 *            the latitude for the conversion.
+	 * @param zoom
+	 *            the zoom level for the conversion.
+	 *
+	 * @return pixels that represent the meters at the given zoom-level and latitude.
+	 */
+	public static double metersToPixels(float meters, double latitude, byte zoom) {
+		return meters / MercatorProjection.calculateGroundResolution(latitude, zoom);
+	}
 
-    public static Point getPixel(LatLong latLong, byte zoomLevel) {
+	public static Point getPixel(LatLong latLong, byte zoomLevel) {
         double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel);
         double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel);
         return new Point(pixelX, pixelY);
