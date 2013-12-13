@@ -174,20 +174,22 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		final FileOpenResult result = mapDatabase.openFile(getMapFile());
 		if (result.isSuccess()) {
 			final MapFileInfo mapFileInfo = mapDatabase.getMapFileInfo();
-                        return new MapPosition(new LatLong(52.517037,13.38886), (byte) 5);
-			// return new MapPosition(mapFileInfo.startPosition, (byte) mapFileInfo.startZoomLevel);
+			if  (mapFileInfo != null) {
+				return new MapPosition(mapFileInfo.startPosition, (byte) mapFileInfo.startZoomLevel);
+			} else {
+				return new MapPosition(new LatLong(52.517037,13.38886), (byte) 12);
+			}
 		}
-		throw new IllegalArgumentException("Invalid Map File");
+		throw new IllegalArgumentException("Invalid Map File " + getMapFileName());
 	}
 
 	/**
 	 * @return a map file
 	 */
 	protected File getMapFile() {
-            
-		File file = new File(Environment.getExternalStorageDirectory(), this.getMapFileName());
-                Log.i("now", file.getAbsolutePath());
-                return file;
+        File file = new File(Environment.getExternalStorageDirectory(), this.getMapFileName());
+		Log.i("Map file is ", file.getAbsolutePath());
+		return file;
 	}
 
 	/**
