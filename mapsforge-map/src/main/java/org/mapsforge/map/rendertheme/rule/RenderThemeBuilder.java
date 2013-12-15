@@ -91,7 +91,7 @@ public class RenderThemeBuilder {
 	private void validate(String elementName) throws SAXException {
 		XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
 
-		if (!XmlUtils.SUPPORT_OLDER_RENDERTHEMES && this.version != RENDER_THEME_VERSION) {
+		if (!XmlUtils.supportOlderRenderThemes && this.version != RENDER_THEME_VERSION) {
 			throw new SAXException("unsupported render theme version: "
 					+ this.version);
 		} else if (this.version > RENDER_THEME_VERSION) {

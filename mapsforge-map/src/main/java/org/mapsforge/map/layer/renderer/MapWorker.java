@@ -26,19 +26,19 @@ import org.mapsforge.map.util.PausableThread;
 
 public class MapWorker extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(MapWorker.class.getName());
+	private static final boolean DEBUG_TIMING = false;
 
 	private final DatabaseRenderer databaseRenderer;
 	private final JobQueue<RendererJob> jobQueue;
 	private final Layer layer;
 	private final TileCache tileCache;
 
-	private static final boolean debugTiming = false;
 
 	private final AtomicLong totalTime;
 	private final AtomicLong totalExecutions;
 
 	{
-		if (debugTiming) {
+		if (DEBUG_TIMING) {
 			totalTime = new AtomicLong();
 			totalExecutions = new AtomicLong();
 		} else {
@@ -81,13 +81,13 @@ public class MapWorker extends PausableThread {
 
 	private void renderTile(RendererJob rendererJob) {
 		long start;
-		if (debugTiming) {
+		if (DEBUG_TIMING) {
 			start = System.currentTimeMillis();
 		}
 
 		TileBitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
 
-		if (debugTiming) {
+		if (DEBUG_TIMING) {
 			long end = System.currentTimeMillis();
 			long te = this.totalExecutions.incrementAndGet();
 			long tt = this.totalTime.addAndGet(end - start);

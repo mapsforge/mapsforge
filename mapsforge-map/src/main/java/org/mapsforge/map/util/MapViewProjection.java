@@ -30,7 +30,7 @@ public class MapViewProjection  {
 	}
 	
 	/**
-	 * Computes the geographic coordinates of a screen point
+	 * Computes the geographic coordinates of a screen point.
 	 *
 	 * @return the coordinates of the x/y point
 	 */
@@ -54,7 +54,7 @@ public class MapViewProjection  {
 	}
 
 	/**
-	 * Computes vertical extend of the map view
+	 * Computes vertical extend of the map view.
 	 *
 	 * @return the latitude span of the map in degrees
 	 */
@@ -68,7 +68,7 @@ public class MapViewProjection  {
 	}
 
 	/**
-	 * Computes horizontal extend of the map view
+	 * Computes horizontal extend of the map view.
 	 *
 	 * @return the longitude span of the map in degrees
 	 */
@@ -82,7 +82,7 @@ public class MapViewProjection  {
 	}
 
 	/**
-	 * Converts geographic coordinates to view x/y coordinates in the map view
+	 * Converts geographic coordinates to view x/y coordinates in the map view.
 	 *
 	 * @param in the geographic coordinates
 	 * @return x/y view coordinates for the given location

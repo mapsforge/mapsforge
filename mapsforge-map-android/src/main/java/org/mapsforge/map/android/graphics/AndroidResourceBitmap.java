@@ -21,7 +21,6 @@ import android.util.Pair;
 import org.mapsforge.core.graphics.ResourceBitmap;
 
 import java.io.InputStream;
-import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicInteger;

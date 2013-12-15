@@ -113,11 +113,11 @@ public class MercatorProjectionTest {
 
 	@Test
 	public void metersToPixelTest() {
-		Assert.assertTrue(MercatorProjection.metersToPixels(10, 10.0, (byte)1) < 1);
-		Assert.assertTrue(MercatorProjection.metersToPixels((int)(40 * 10e7), 10.0, (byte)1) > 1);
-		Assert.assertTrue(MercatorProjection.metersToPixels(10, 10.0, (byte)20) > 1);
-		Assert.assertTrue(MercatorProjection.metersToPixels(10, 89.0, (byte)1) < 1);
-		Assert.assertTrue(MercatorProjection.metersToPixels((int)(40 * 10e3), 50, (byte)10) > 1);
+		Assert.assertTrue(MercatorProjection.metersToPixels(10, 10.0, (byte) 1) < 1);
+		Assert.assertTrue(MercatorProjection.metersToPixels((int) (40 * 10e7), 10.0, (byte) 1) > 1);
+		Assert.assertTrue(MercatorProjection.metersToPixels(10, 10.0, (byte) 20) > 1);
+		Assert.assertTrue(MercatorProjection.metersToPixels(10, 89.0, (byte) 1) < 1);
+		Assert.assertTrue(MercatorProjection.metersToPixels((int) (40 * 10e3), 50, (byte) 10) > 1);
 	}
 
 

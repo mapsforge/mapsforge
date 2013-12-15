@@ -123,8 +123,8 @@ public class FrameBuffer {
 	private void scale(float scaleFactor, double pivotDistanceX, double pivotDistanceY) {
 		if (scaleFactor != 1) {
 			final Point center = this.dimension.getCenter();
-			float pivotX = (float)(pivotDistanceX + center.x);
-			float pivotY = (float)(pivotDistanceY + center.y);
+			float pivotX = (float) (pivotDistanceX + center.x);
+			float pivotY = (float) (pivotDistanceY + center.y);
 			this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
         }
 	}

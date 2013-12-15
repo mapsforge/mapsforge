@@ -215,7 +215,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	 *            the amount of pixels to move this MapViewPosition vertically.
 	 */
 	public void moveCenter(double moveHorizontal, double moveVertical) {
-		this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte)0);
+		this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0);
 	}
 
 	/**
@@ -283,30 +283,30 @@ public class MapViewPosition extends Observable implements Persistable {
 			@Override
 			public void run() {
 				final int totalSteps = 25;	// Define the Step Number
-				int sign_x = 1;	// Define the Sign for Horizontal Movement
-				int sign_y = 1;	// Define the Sign for Vertical Movement
+				int signX = 1;	// Define the Sign for Horizontal Movement
+				int signY = 1;	// Define the Sign for Vertical Movement
 
-				final double target_pixel_x = MercatorProjection.longitudeToPixelX(pos.longitude, getZoomLevel());
-				final double target_pixel_y = MercatorProjection.latitudeToPixelY(pos.latitude, getZoomLevel());
+				final double targetPixelX = MercatorProjection.longitudeToPixelX(pos.longitude, getZoomLevel());
+				final double targetPixelY = MercatorProjection.latitudeToPixelY(pos.latitude, getZoomLevel());
 
-				final double current_pixel_x = MercatorProjection.longitudeToPixelX(longitude, getZoomLevel());
-				final double current_pixel_y = MercatorProjection.latitudeToPixelY(latitude, getZoomLevel());
+				final double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, getZoomLevel());
+				final double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, getZoomLevel());
 
-				final double stepSize_x = Math.abs(target_pixel_x - current_pixel_x) / totalSteps;
-				final double stepSize_y = Math.abs(target_pixel_y - current_pixel_y) / totalSteps;
+				final double stepSizeX = Math.abs(targetPixelX - currentPixelX) / totalSteps;
+				final double stepSizeY = Math.abs(targetPixelY - currentPixelY) / totalSteps;
 
 				/* Check the Signs */
-				if (current_pixel_x < target_pixel_x) {
-					sign_x = -1;
+				if (currentPixelX < targetPixelX) {
+					signX = -1;
 				}
 
-				if (current_pixel_y < target_pixel_y) {
-					sign_y = -1;
+				if (currentPixelY < targetPixelY) {
+					signY = -1;
 				}
 
 				/* Compute Scroll */
 				for (int i = 0; i < totalSteps; i++) {
-					moveCenter((stepSize_x * sign_x), (stepSize_y * sign_y));
+					moveCenter(stepSizeX * signX, stepSizeY * signY);
 					try {
 						Thread.sleep(10);
 					} catch (InterruptedException e) {

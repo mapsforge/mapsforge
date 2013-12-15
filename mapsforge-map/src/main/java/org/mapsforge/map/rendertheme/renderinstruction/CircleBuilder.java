@@ -69,7 +69,7 @@ public class CircleBuilder {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
-			if (RADIUS.equals(name) || (XmlUtils.SUPPORT_OLDER_RENDERTHEMES && R.equals(name))) {
+			if (RADIUS.equals(name) || (XmlUtils.supportOlderRenderThemes && R.equals(name))) {
 				this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value));
 			} else if (SCALE_RADIUS.equals(name)) {
 				this.scaleRadius = Boolean.parseBoolean(value);

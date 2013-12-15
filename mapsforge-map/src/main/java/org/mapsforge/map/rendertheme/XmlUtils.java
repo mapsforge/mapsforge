@@ -31,7 +31,7 @@ public final class XmlUtils {
 
 	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
 
-	public static boolean SUPPORT_OLDER_RENDERTHEMES = true;
+	public static boolean supportOlderRenderThemes = true;
 
 	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
 			throws SAXException {
@@ -119,7 +119,7 @@ public final class XmlUtils {
 
 		if (src.startsWith(PREFIX_JAR)) {
 			final String prefixJar;
-			if (!SUPPORT_OLDER_RENDERTHEMES) {
+			if (!supportOlderRenderThemes) {
 				prefixJar = PREFIX_JAR;
 			} else {
 				prefixJar = src.startsWith(PREFIX_JAR_V1) ? PREFIX_JAR_V1 : PREFIX_JAR;
