@@ -276,6 +276,48 @@ public class MapViewPosition extends Observable implements Persistable {
 	}
 
 	/**
+	 * Start animating the map towards the given point.
+	 */
+	public void animateTo(final LatLong pos) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				final int totalSteps = 25;	// Define the Step Number
+				int sign_x = 1;	// Define the Sign for Horizontal Movement
+				int sign_y = 1;	// Define the Sign for Vertical Movement
+
+				final double target_pixel_x = MercatorProjection.longitudeToPixelX(pos.longitude, getZoomLevel());
+				final double target_pixel_y = MercatorProjection.latitudeToPixelY(pos.latitude, getZoomLevel());
+
+				final double current_pixel_x = MercatorProjection.longitudeToPixelX(longitude, getZoomLevel());
+				final double current_pixel_y = MercatorProjection.latitudeToPixelY(latitude, getZoomLevel());
+
+				final double stepSize_x = Math.abs(target_pixel_x - current_pixel_x) / totalSteps;
+				final double stepSize_y = Math.abs(target_pixel_y - current_pixel_y) / totalSteps;
+
+				/* Check the Signs */
+				if (current_pixel_x < target_pixel_x) {
+					sign_x = -1;
+				}
+
+				if (current_pixel_y < target_pixel_y) {
+					sign_y = -1;
+				}
+
+				/* Compute Scroll */
+				for (int i = 0; i < totalSteps; i++) {
+					moveCenter((stepSize_x * sign_x), (stepSize_y * sign_y));
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// Nothing to do...
+					}
+				}
+			}
+		}).start();
+	}
+
+	/**
 	 * Sets the new limit of the map (might be null).
 	 */
 	public void setMapLimit(BoundingBox mapLimit) {

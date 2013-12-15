@@ -42,7 +42,7 @@ public class LongPressAction extends BasicMapViewerXml {
 			@Override
 			public boolean onLongPress(LatLong tapLatLong, Point thisXY, Point tapXY) {
 				Log.i("Tapping", "long press at position " + tapLatLong.toString());
-				createCircle(tapLatLong);
+				LongPressAction.this.onLongPress(tapLatLong);
 				return true;
 			}
 		};
@@ -52,7 +52,7 @@ public class LongPressAction extends BasicMapViewerXml {
 	}
 
 
-	private void createCircle(LatLong position) {
+	protected void onLongPress(LatLong position) {
 		FixedPixelCircle tappableCircle = new FixedPixelCircle(position, circleSize, green, null){
 			@Override
 			public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {

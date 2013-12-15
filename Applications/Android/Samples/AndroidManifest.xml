@@ -57,7 +57,7 @@
         <activity
             android:name=".RenderThemeChanger"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Changing Renderthemes" />
+            android:label="Automatically changes between renderthemes on SDCard" />
         <activity
             android:name=".OverlayMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -65,7 +65,7 @@
         <activity
             android:name=".ZoomToBounds"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="ZoomToBounds" />
+            android:label="Zooms to map bounds of overlay" />
         <activity
             android:name=".OverlayWithoutBaseMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -73,7 +73,11 @@
         <activity
             android:name=".LongPressAction"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Map layer with long press" />
+            android:label="Create and delete circles with long press" />
+        <activity
+            android:name=".MoveAnimation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Long press triggers animation to point" />
         <activity
             android:name=".LocationOverlayMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -81,26 +85,26 @@
         <activity
             android:name=".BubbleOverlay"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="BubbleOverlay" />
+            android:label="Information bubbles" />
         <activity
             android:name=".DualMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="DualMapViewer" />
+            android:label="Show two maps at the same time" />
         <activity
             android:name=".DualMapnikMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="DualMapnikMapViewer" />
+            android:label="Show two maps linked in position movements" />
         <activity
             android:name=".DualOverviewMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="DualOverviewMapViewer" />
+            android:label="Show a little overview map at different zoom level" />
         <activity
             android:name=".StackedLayersMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="StackedLayersMapViewer" />
+            android:label="Multiple layers generated from same map" />
         <activity
             android:name=".ItemListActivity"
-            android:label="@string/title_item_list"
+            android:label="Fragments Item List"
             android:parentActivityName="org.mapsforge.applications.android.samples.Samples" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -109,7 +113,7 @@
         <activity
             android:name=".ItemDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_item_detail"
+            android:label="Fragments Item Details"
             android:parentActivityName=".ItemListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -117,7 +121,7 @@
         </activity>
         <activity
             android:name=".Settings"
-            android:label="@string/title_settings"
+            android:label="Settings"
             android:parentActivityName=".Samples" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
