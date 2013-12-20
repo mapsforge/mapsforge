@@ -74,7 +74,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 
 	private static final BitmapFactory.Options createTileBitmapFactoryOptions() {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
-		bitmapFactoryOptions.inPreferredConfig = Config.ARGB_8888;
+		bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.bitmapConfig;
 		if (org.mapsforge.map.android.util.AndroidUtil.honeyCombPlus) {
 			bitmapFactoryOptions.inMutable = true;
 			bitmapFactoryOptions.inSampleSize = 1; // not really sure why this is required, but otherwise decoding fails
@@ -88,7 +88,6 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		if (this.bitmap == null) {
 			this.bitmap = AndroidBitmap.createAndroidBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
 		}
-		this.bitmap.eraseColor(AndroidGraphicFactory.INSTANCE.getBackgroundColor());
         if (AndroidGraphicFactory.debugBitmaps) {
 		    tileInstances.incrementAndGet();
         }

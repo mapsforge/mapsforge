@@ -49,10 +49,12 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	public static boolean keepResourceBitmaps = true;
 
 	// determines size of bitmaps used, RGB_565 is 2 bytes per pixel
-	// note that ARGB_8888 uses 4 bytes per pixel (with severe impact
-	// on memory use) and seems also to have buffer corruption
-	// problems
-	static public final Config bitmapConfig = Config.RGB_565;
+	// while ARGB_8888 uses 4 bytes per pixel (with severe impact
+	// on memory use) and allows transparencies. Use ARGB_8888 whenever
+	// you have transparencies in any of the bitmaps. ARGB_4444 is deprecated
+	// and is much slower despite smaller size that ARGB_8888 as it
+	// passes through unoptimized path in the skia library.
+	static public final Config bitmapConfig = Config.ARGB_8888;
 	static final int DEFAULT_BACKGROUND_COLOR = android.graphics.Color.rgb(238, 238, 238);
 
 	public static AndroidGraphicFactory INSTANCE;
@@ -87,7 +89,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		} else {
 			int width = drawable.getIntrinsicWidth();
 			int height = drawable.getIntrinsicHeight();
-			bitmap = android.graphics.Bitmap.createBitmap(width, height, Config.ARGB_8888);
+			bitmap = android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.bitmapConfig);
 			android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
 
 			Rect rect = drawable.getBounds();
@@ -163,6 +165,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	public Bitmap createBitmap(int width, int height) {
 		return new AndroidBitmap(width, height);
 	}
+
 
 	@Override
 	public Canvas createCanvas() {

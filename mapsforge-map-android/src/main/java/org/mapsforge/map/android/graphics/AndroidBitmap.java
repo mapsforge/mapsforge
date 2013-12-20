@@ -15,7 +15,6 @@
 package org.mapsforge.map.android.graphics;
 
 import android.graphics.Bitmap.CompressFormat;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
@@ -57,7 +56,7 @@ public class AndroidBitmap implements Bitmap {
     }
 
 	protected static android.graphics.Bitmap createAndroidBitmap(int width, int height) {
-		return android.graphics.Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		return android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.bitmapConfig);
 	}
 
     protected android.graphics.Bitmap bitmap;
@@ -194,6 +193,8 @@ public class AndroidBitmap implements Bitmap {
 	}
 
 	protected boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height) {
+
+
 		if (false && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			// THIS SEEMS TO CAUSE LOTS OF SCREEN FLICKERING EVEN THOUGH
 			// OLD BITMAPS ARE ERASED
@@ -209,6 +210,7 @@ public class AndroidBitmap implements Bitmap {
 			}
 			return reusable;
 		}
+
 
 		if (candidate.getWidth() == width && candidate.getHeight() == height) {
 			return true;
