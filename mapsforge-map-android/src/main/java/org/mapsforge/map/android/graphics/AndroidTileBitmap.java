@@ -14,7 +14,7 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.graphics.Bitmap.Config;
+import android.annotation.TargetApi;
 import android.graphics.BitmapFactory;
 
 import org.mapsforge.core.graphics.TileBitmap;
@@ -71,7 +71,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		return bitmap;
 	}
 
-
+	@TargetApi(11)
 	private static final BitmapFactory.Options createTileBitmapFactoryOptions() {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 		bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.bitmapConfig;

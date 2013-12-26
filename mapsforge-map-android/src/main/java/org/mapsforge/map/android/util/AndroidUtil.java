@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.android.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Looper;
@@ -21,7 +22,6 @@ import android.os.StatFs;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-import android.graphics.Bitmap.Config;
 
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
@@ -120,6 +120,7 @@ public class AndroidUtil {
      * @return number of tiles that can be stored without running out of space
      */
     @SuppressWarnings("deprecation")
+    @TargetApi(18)
     public static long getAvailableCacheSlots(String directory, int fileSize) {
         StatFs statfs = new StatFs(directory);
         if (android.os.Build.VERSION.SDK_INT >= 18){

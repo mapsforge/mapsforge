@@ -271,7 +271,7 @@ public class MapZoomControls implements Observer {
 		this.zoomControls.measure(widthMeasureSpec, heightMeasureSpec);
 	}
 
-	public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+	public void layout(boolean changed, int left, int top, int right, int bottom) {
 		if (!changed && !this.gravityChanged) {
 			return;
 		}

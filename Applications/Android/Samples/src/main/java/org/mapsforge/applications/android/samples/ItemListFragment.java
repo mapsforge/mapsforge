@@ -16,6 +16,7 @@ package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.applications.android.samples.dummy.DummyContent;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
@@ -92,6 +93,7 @@ public class ItemListFragment extends ListFragment {
 	}
 
 	@Override
+	@TargetApi(11)
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		int layout = android.R.layout.simple_list_item_1;

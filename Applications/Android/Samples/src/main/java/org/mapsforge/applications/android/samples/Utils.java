@@ -70,6 +70,7 @@ public final class Utils {
      * @param view       the view to set the background on
      * @param background the background
      */
+    @TargetApi(16)
     public static void setBackground(View view, Drawable background) {
         if (android.os.Build.VERSION.SDK_INT >= 16) {
             view.setBackground(background);
@@ -133,7 +134,7 @@ public final class Utils {
         double dyMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, (byte) 0) / Tile.TILE_SIZE;
         double dyMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, (byte) 0) / Tile.TILE_SIZE;
         double zoomY = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dyMax - dyMin)) + dimension.height / Tile.TILE_SIZE);
-        return (byte) new Double(Math.min(zoomX, zoomY)).intValue();
+        return (byte) Double.valueOf(Math.min(zoomX, zoomY)).intValue();
     }
 
     static Bitmap viewToBitmap(Context c, View view) {

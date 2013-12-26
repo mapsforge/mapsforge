@@ -57,7 +57,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
                 return data.first;
             } else {
                 android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, AndroidBitmap.BITMAP_FACTORY_OPTIONS);
-                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, new Integer(1));
+                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
                 resourceBitmaps.put(hash, updated);
 	            if (AndroidGraphicFactory.debugBitmaps) {
 		            LOGGER.log(Level.INFO, "RESOURCE BITMAP CREATE " + hash);

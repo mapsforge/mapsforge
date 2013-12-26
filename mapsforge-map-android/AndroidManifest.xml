@@ -6,7 +6,8 @@
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="19" />
-    <application>
+    <application
+        android:allowBackup="true"
         android:label="mapsforge"
-    </application>
+    />
 </manifest>

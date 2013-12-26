@@ -48,7 +48,7 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
                         (int) Math.ceil(bitmapHeight), android.graphics.Bitmap.Config.ARGB_8888);
                 Canvas canvas = new Canvas(bitmap);
                 canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
-                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, new Integer(1));
+                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
                 resourceBitmaps.put(hash, updated);
 	            if (AndroidGraphicFactory.debugBitmaps) {
 		            rInstances.incrementAndGet();

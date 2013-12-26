@@ -168,7 +168,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        this.mapZoomControls.onLayout(changed, left, top, right, bottom);
+        this.mapZoomControls.layout(changed, left, top, right, bottom);
     }
 
 	/**
