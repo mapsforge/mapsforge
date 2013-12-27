@@ -42,6 +42,7 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(AssetsRenderThemeMapViewer.class, "Rendertheme using Android Assets"));
 		linearLayout.addView(createButton(SVGAssetsRenderThemeMapViewer.class, "Rendertheme using SVG files"));
 		linearLayout.addView(createButton(RenderThemeChanger.class, "Automatically changing render themes"));
+		linearLayout.addView(createButton(ChangingBitmaps.class, "Automatically changing bitmaps"));
 		linearLayout.addView(createButton(DownloadLayerViewer.class, "Downloading Mapnik"));
 		linearLayout.addView(createButton(OverlayMapViewer.class));
 		linearLayout.addView(createButton(LongPressAction.class, "Long Press Action"));

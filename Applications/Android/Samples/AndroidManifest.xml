@@ -79,6 +79,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Long press triggers animation to point" />
         <activity
+            android:name=".ChangingBitmaps"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Bitmaps automatically change" />
+        <activity
             android:name=".LocationOverlayMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="LocationOverlayMapViewer" />
