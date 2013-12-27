@@ -15,6 +15,7 @@
 package org.mapsforge.applications.android.samples;
 
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -29,39 +30,64 @@ import org.mapsforge.map.layer.overlay.Marker;
  */
 public class ChangingBitmaps extends BasicMapViewerXml {
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		final LatLong latLong = new LatLong(52.5, 13.4);
-		final Drawable drawableGreen = getResources().getDrawable(R.drawable.marker_green);
-		final Drawable drawableRed = getResources().getDrawable(R.drawable.marker_red);
-
-		final Bitmap bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableGreen);
-		final Bitmap bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableRed);
-		final Marker marker = new Marker(latLong, bitmapGreen, 0, -bitmapGreen.getHeight() / 2);
-		layerManagers.get(0).getLayers().add(marker);
-
-		final Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-			boolean markerIsGreen = true;
-			@Override
-			public void run() {
-				if (markerIsGreen) {
-					// since we want to keep the green bitmap around, we have to increment
-					// its ref count, otherwise it gets recycled automatically when it is
-					// replaced with the other colour.
-					bitmapGreen.incrementRefCount();
-					marker.setBitmap(bitmapRed);
-					markerIsGreen = false;
-				} else {
-					bitmapRed.incrementRefCount();
-					marker.setBitmap(bitmapGreen);
-					markerIsGreen = true;
-				}
-				layerManagers.get(0).redrawLayers();
-				handler.postDelayed(this, 2000);
+	final class BitmapChanger implements Runnable {
+		@Override
+		public void run() {
+			if (current != null) {
+				// since we want to keep the green bitmap around, we have to increment
+				// its ref count, otherwise it gets recycled automatically when it is
+				// replaced with the other colour.
+				current.incrementRefCount();
 			}
-		}, 2000);
-
+			if (current == bitmapGreen) {
+				marker.setBitmap(bitmapRed);
+				current = bitmapRed;
+			} else {
+				marker.setBitmap(bitmapGreen);
+				current = bitmapGreen;
+			}
+			layerManagers.get(0).redrawLayers();
+			handler.postDelayed(this, 2000);
+		}
 	}
+
+	final Handler handler = new Handler();
+	final LatLong latLong = new LatLong(52.5, 13.4);
+	Bitmap bitmapGreen;
+	Bitmap bitmapRed;
+	Bitmap current;
+	Marker marker;
+	BitmapChanger bitmapChanger;
+
+	@Override
+	public void onCreate(Bundle sis) {
+		super.onCreate(sis);
+		Drawable drawableGreen = getResources().getDrawable(R.drawable.marker_green);
+		Drawable drawableRed = getResources().getDrawable(R.drawable.marker_red);
+		bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableRed);
+		bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableGreen);
+		marker = new Marker(latLong, bitmapGreen, 0, -bitmapGreen.getHeight() / 2);
+	}
+
+	@Override
+	public void createLayers() {
+		super.createLayers();
+		layerManagers.get(0).getLayers().add(marker);
+		bitmapChanger = new BitmapChanger();
+		handler.post(bitmapChanger);
+	}
+
+	@Override
+	public void destroyLayers() {
+		handler.removeCallbacks(bitmapChanger);
+		super.destroyLayers();
+		// we need to decrement the ref count for the bitmap that is being kept
+		// stored and not in use, the other is automatically destroyed via the marker
+		if (current == bitmapGreen) {
+			bitmapRed.decrementRefCount();
+		} else {
+			bitmapGreen.decrementRefCount();
+		}
+	}
+
 }
