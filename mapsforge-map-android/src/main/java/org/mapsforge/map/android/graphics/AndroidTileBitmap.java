@@ -17,9 +17,9 @@ package org.mapsforge.map.android.graphics;
 import android.annotation.TargetApi;
 import android.graphics.BitmapFactory;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.graphics.CorruptedInputStream;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.IOUtils;
 
 import java.io.InputStream;
@@ -86,7 +86,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	AndroidTileBitmap() {
 		this.bitmap = getTileBitmapFromReusableSet();
 		if (this.bitmap == null) {
-			this.bitmap = AndroidBitmap.createAndroidBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE);
+			this.bitmap = AndroidBitmap.createAndroidBitmap(GraphicFactory.getTileSize(), GraphicFactory.getTileSize());
 		}
         if (AndroidGraphicFactory.debugBitmaps) {
 		    tileInstances.incrementAndGet();

@@ -21,10 +21,6 @@ import java.io.Serializable;
  * with their zoom level. The actual area that a tile covers on a map depends on the underlying map projection.
  */
 public class Tile implements Serializable {
-	/**
-	 * Width and height of a map tile in pixel.
-	 */
-	public static int TILE_SIZE = 256; // NOPMD  -- will change later, keep for less change in files
 
 	private static final long serialVersionUID = 1L;
 

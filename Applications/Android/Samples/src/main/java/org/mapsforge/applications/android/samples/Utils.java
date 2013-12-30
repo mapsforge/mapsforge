@@ -26,13 +26,13 @@ import android.view.View.MeasureSpec;
 
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -128,12 +128,13 @@ public final class Utils {
     }
 
     static byte zoomForBounds(Dimension dimension, BoundingBox boundingBox) {
-        double dxMax = MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, (byte) 0) / Tile.TILE_SIZE;
-        double dxMin = MercatorProjection.longitudeToPixelX(boundingBox.minLongitude, (byte) 0) / Tile.TILE_SIZE;
-        double zoomX = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dxMax - dxMin)) + dimension.width / Tile.TILE_SIZE);
-        double dyMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, (byte) 0) / Tile.TILE_SIZE;
-        double dyMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, (byte) 0) / Tile.TILE_SIZE;
-        double zoomY = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dyMax - dyMin)) + dimension.height / Tile.TILE_SIZE);
+
+        double dxMax = MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, (byte) 0) / GraphicFactory.getTileSize();
+        double dxMin = MercatorProjection.longitudeToPixelX(boundingBox.minLongitude, (byte) 0) / GraphicFactory.getTileSize();
+        double zoomX = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dxMax - dxMin)) + dimension.width / GraphicFactory.getTileSize());
+        double dyMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, (byte) 0) / GraphicFactory.getTileSize();
+        double dyMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, (byte) 0) / GraphicFactory.getTileSize();
+        double zoomY = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dyMax - dyMin)) + dimension.height / GraphicFactory.getTileSize());
         return (byte) Double.valueOf(Math.min(zoomX, zoomY)).intValue();
     }
 

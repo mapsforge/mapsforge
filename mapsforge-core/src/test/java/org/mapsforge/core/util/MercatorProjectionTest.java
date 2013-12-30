@@ -16,6 +16,7 @@ package org.mapsforge.core.util;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 
 public class MercatorProjectionTest {
@@ -53,7 +54,7 @@ public class MercatorProjectionTest {
 	public void getMapSizeTest() {
 		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
 			long factor = Math.round(Math.pow(2, zoomLevel));
-			Assert.assertEquals(Tile.TILE_SIZE * factor, MercatorProjection.getMapSize(zoomLevel));
+			Assert.assertEquals(GraphicFactory.getTileSize() * factor, MercatorProjection.getMapSize(zoomLevel));
 		}
 
 		verifyInvalidGetMapSize((byte) -1);
@@ -136,7 +137,7 @@ public class MercatorProjectionTest {
 		}
 
 		verifyInvalidPixelXToLongitude(-1, (byte) 0);
-		verifyInvalidPixelXToLongitude(Tile.TILE_SIZE + 1, (byte) 0);
+		verifyInvalidPixelXToLongitude(GraphicFactory.getTileSize() + 1, (byte) 0);
 	}
 
 	@Test
@@ -161,7 +162,7 @@ public class MercatorProjectionTest {
 		}
 
 		verifyInvalidPixelYToLatitude(-1, (byte) 0);
-		verifyInvalidPixelYToLatitude(Tile.TILE_SIZE + 1, (byte) 0);
+		verifyInvalidPixelYToLatitude(GraphicFactory.getTileSize() + 1, (byte) 0);
 	}
 
 	@Test
@@ -174,8 +175,8 @@ public class MercatorProjectionTest {
 	@Test
 	public void tileToPixelTest() {
 		Assert.assertEquals(0, MercatorProjection.tileToPixel(0));
-		Assert.assertEquals(Tile.TILE_SIZE, MercatorProjection.tileToPixel(1));
-		Assert.assertEquals(Tile.TILE_SIZE * 2, MercatorProjection.tileToPixel(2));
+		Assert.assertEquals(GraphicFactory.getTileSize(), MercatorProjection.tileToPixel(1));
+		Assert.assertEquals(GraphicFactory.getTileSize() * 2, MercatorProjection.tileToPixel(2));
 	}
 
 	@Test
@@ -184,7 +185,7 @@ public class MercatorProjectionTest {
 			double longitude = MercatorProjection.tileXToLongitude(0, zoomLevel);
 			Assert.assertEquals(LatLongUtils.LONGITUDE_MIN, longitude, 0);
 
-			long tileX = MercatorProjection.getMapSize(zoomLevel) / Tile.TILE_SIZE;
+			long tileX = MercatorProjection.getMapSize(zoomLevel) / GraphicFactory.getTileSize();
 			longitude = MercatorProjection.tileXToLongitude(tileX, zoomLevel);
 			Assert.assertEquals(LatLongUtils.LONGITUDE_MAX, longitude, 0);
 		}
@@ -196,7 +197,7 @@ public class MercatorProjectionTest {
 			double latitude = MercatorProjection.tileYToLatitude(0, zoomLevel);
 			Assert.assertEquals(MercatorProjection.LATITUDE_MAX, latitude, 0);
 
-			long tileY = MercatorProjection.getMapSize(zoomLevel) / Tile.TILE_SIZE;
+			long tileY = MercatorProjection.getMapSize(zoomLevel) / GraphicFactory.getTileSize();
 			latitude = MercatorProjection.tileYToLatitude(tileY, zoomLevel);
 			Assert.assertEquals(MercatorProjection.LATITUDE_MIN, latitude, 0);
 		}

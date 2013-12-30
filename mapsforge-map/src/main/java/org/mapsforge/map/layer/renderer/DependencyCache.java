@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
@@ -279,7 +280,7 @@ class DependencyCache {
 				continue;
 			}
 
-			if (down && label.y > Tile.TILE_SIZE) {
+			if (down && label.y > GraphicFactory.getTileSize()) {
 				areaLabels.remove(i);
 				i--;
 				continue;
@@ -289,7 +290,7 @@ class DependencyCache {
 				i--;
 				continue;
 			}
-			if (right && label.x + label.boundary.getWidth() > Tile.TILE_SIZE) {
+			if (right && label.x + label.boundary.getWidth() > GraphicFactory.getTileSize()) {
 				areaLabels.remove(i);
 				i--;
 				continue;
@@ -394,7 +395,7 @@ class DependencyCache {
 				continue;
 			}
 
-			if (down && ref.y >= Tile.TILE_SIZE) {
+			if (down && ref.y >= GraphicFactory.getTileSize()) {
 				refPos[i] = null;
 				continue;
 			}
@@ -404,7 +405,7 @@ class DependencyCache {
 				continue;
 			}
 
-			if (right && ref.x + ref.width > Tile.TILE_SIZE) {
+			if (right && ref.x + ref.width > GraphicFactory.getTileSize()) {
 				refPos[i] = null;
 			}
 		}
@@ -516,7 +517,7 @@ class DependencyCache {
 				continue;
 			}
 
-			if (down && ref.point.y + ref.symbol.getHeight() > Tile.TILE_SIZE) {
+			if (down && ref.point.y + ref.symbol.getHeight() > GraphicFactory.getTileSize()) {
 				symbols.remove(i);
 				i--;
 				continue;
@@ -526,7 +527,7 @@ class DependencyCache {
 				i--;
 				continue;
 			}
-			if (right && ref.point.x + ref.symbol.getWidth() > Tile.TILE_SIZE) {
+			if (right && ref.point.x + ref.symbol.getWidth() > GraphicFactory.getTileSize()) {
 				symbols.remove(i);
 				i--;
 				continue;
@@ -591,32 +592,32 @@ class DependencyCache {
 				this.currentDependencyOnTile
 						.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y)));
 
-				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y + Tile.TILE_SIZE)));
+				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y + GraphicFactory.getTileSize())));
 
 				toAdd.addTile(up);
 
 				if ((label.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 					linkedDep = this.dependencyTable.get(leftup);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + Tile.TILE_SIZE, label.y
-							+ Tile.TILE_SIZE)));
+					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + GraphicFactory.getTileSize(), label.y
+							+ GraphicFactory.getTileSize())));
 
 					toAdd.addTile(leftup);
 				}
 
-				if ((label.x + label.boundary.getWidth() > Tile.TILE_SIZE)
+				if ((label.x + label.boundary.getWidth() > GraphicFactory.getTileSize())
 						&& (!this.dependencyTable.get(rightup).drawn)) {
 					linkedDep = this.dependencyTable.get(rightup);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - Tile.TILE_SIZE, label.y
-							+ Tile.TILE_SIZE)));
+					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - GraphicFactory.getTileSize(), label.y
+							+ GraphicFactory.getTileSize())));
 
 					toAdd.addTile(rightup);
 				}
 			}
 
 			// down
-			if ((label.y > Tile.TILE_SIZE) && (!this.dependencyTable.get(down).drawn)) {
+			if ((label.y > GraphicFactory.getTileSize()) && (!this.dependencyTable.get(down).drawn)) {
 				linkedDep = this.dependencyTable.get(down);
 
 				if (toAdd == null) {
@@ -627,25 +628,25 @@ class DependencyCache {
 							label.y)));
 				}
 
-				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y - Tile.TILE_SIZE)));
+				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x, label.y - GraphicFactory.getTileSize())));
 
 				toAdd.addTile(down);
 
 				if ((label.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 					linkedDep = this.dependencyTable.get(leftdown);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + Tile.TILE_SIZE, label.y
-							- Tile.TILE_SIZE)));
+					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + GraphicFactory.getTileSize(), label.y
+							- GraphicFactory.getTileSize())));
 
 					toAdd.addTile(leftdown);
 				}
 
-				if ((label.x + label.boundary.getWidth() > Tile.TILE_SIZE)
+				if ((label.x + label.boundary.getWidth() > GraphicFactory.getTileSize())
 						&& (!this.dependencyTable.get(rightdown).drawn)) {
 					linkedDep = this.dependencyTable.get(rightdown);
 
-					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - Tile.TILE_SIZE, label.y
-							- Tile.TILE_SIZE)));
+					linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - GraphicFactory.getTileSize(), label.y
+							- GraphicFactory.getTileSize())));
 
 					toAdd.addTile(rightdown);
 				}
@@ -663,12 +664,12 @@ class DependencyCache {
 							label.y)));
 				}
 
-				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + Tile.TILE_SIZE, label.y)));
+				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + GraphicFactory.getTileSize(), label.y)));
 
 				toAdd.addTile(left);
 			}
 			// right
-			if ((label.x + label.boundary.getWidth() > Tile.TILE_SIZE) && (!this.dependencyTable.get(right).drawn)) {
+			if ((label.x + label.boundary.getWidth() > GraphicFactory.getTileSize()) && (!this.dependencyTable.get(right).drawn)) {
 				linkedDep = this.dependencyTable.get(right);
 
 				if (toAdd == null) {
@@ -679,7 +680,7 @@ class DependencyCache {
 							label.y)));
 				}
 
-				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - Tile.TILE_SIZE, label.y)));
+				linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - GraphicFactory.getTileSize(), label.y)));
 
 				toAdd.addTile(right);
 			}
@@ -697,31 +698,31 @@ class DependencyCache {
 							label.y)));
 
 					linkedDep.addText(new Dependency<DependencyText>(toAdd,
-							new Point(label.x, label.y + Tile.TILE_SIZE)));
+							new Point(label.x, label.y + GraphicFactory.getTileSize())));
 
 					toAdd.addTile(up);
 
 					if ((label.symbol.point.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 						linkedDep = this.dependencyTable.get(leftup);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + Tile.TILE_SIZE,
-								label.y + Tile.TILE_SIZE)));
+						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + GraphicFactory.getTileSize(),
+								label.y + GraphicFactory.getTileSize())));
 
 						toAdd.addTile(leftup);
 					}
 
-					if ((label.symbol.point.x + label.symbol.symbol.getWidth() > Tile.TILE_SIZE)
+					if ((label.symbol.point.x + label.symbol.symbol.getWidth() > GraphicFactory.getTileSize())
 							&& (!this.dependencyTable.get(rightup).drawn)) {
 						linkedDep = this.dependencyTable.get(rightup);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - Tile.TILE_SIZE,
-								label.y + Tile.TILE_SIZE)));
+						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - GraphicFactory.getTileSize(),
+								label.y + GraphicFactory.getTileSize())));
 
 						toAdd.addTile(rightup);
 					}
 				}
 
-				if ((label.symbol.point.y + label.symbol.symbol.getHeight() >= Tile.TILE_SIZE)
+				if ((label.symbol.point.y + label.symbol.symbol.getHeight() >= GraphicFactory.getTileSize())
 						&& (!this.dependencyTable.get(down).drawn)) {
 					linkedDep = this.dependencyTable.get(down);
 
@@ -734,25 +735,25 @@ class DependencyCache {
 					}
 
 					linkedDep.addText(new Dependency<DependencyText>(toAdd,
-							new Point(label.x, label.y + Tile.TILE_SIZE)));
+							new Point(label.x, label.y + GraphicFactory.getTileSize())));
 
 					toAdd.addTile(up);
 
 					if ((label.symbol.point.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 						linkedDep = this.dependencyTable.get(leftdown);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + Tile.TILE_SIZE,
-								label.y - Tile.TILE_SIZE)));
+						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x + GraphicFactory.getTileSize(),
+								label.y - GraphicFactory.getTileSize())));
 
 						toAdd.addTile(leftdown);
 					}
 
-					if ((label.symbol.point.x + label.symbol.symbol.getWidth() > Tile.TILE_SIZE)
+					if ((label.symbol.point.x + label.symbol.symbol.getWidth() > GraphicFactory.getTileSize())
 							&& (!this.dependencyTable.get(rightdown).drawn)) {
 						linkedDep = this.dependencyTable.get(rightdown);
 
-						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - Tile.TILE_SIZE,
-								label.y - Tile.TILE_SIZE)));
+						linkedDep.addText(new Dependency<DependencyText>(toAdd, new Point(label.x - GraphicFactory.getTileSize(),
+								label.y - GraphicFactory.getTileSize())));
 
 						toAdd.addTile(rightdown);
 					}
@@ -770,12 +771,12 @@ class DependencyCache {
 					}
 
 					linkedDep.addText(new Dependency<DependencyText>(toAdd,
-							new Point(label.x - Tile.TILE_SIZE, label.y)));
+							new Point(label.x - GraphicFactory.getTileSize(), label.y)));
 
 					toAdd.addTile(left);
 				}
 
-				if ((label.symbol.point.x + label.symbol.symbol.getWidth() >= Tile.TILE_SIZE)
+				if ((label.symbol.point.x + label.symbol.symbol.getWidth() >= GraphicFactory.getTileSize())
 						&& (!this.dependencyTable.get(right).drawn)) {
 					linkedDep = this.dependencyTable.get(right);
 
@@ -788,7 +789,7 @@ class DependencyCache {
 					}
 
 					linkedDep.addText(new Dependency<DependencyText>(toAdd,
-							new Point(label.x + Tile.TILE_SIZE, label.y)));
+							new Point(label.x + GraphicFactory.getTileSize(), label.y)));
 
 					toAdd.addTile(right);
 				}
@@ -851,29 +852,29 @@ class DependencyCache {
 						symbol.point.x, symbol.point.y)));
 
 				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y
-						+ Tile.TILE_SIZE)));
+						+ GraphicFactory.getTileSize())));
 				addSmb.addTile(up);
 
 				if ((symbol.point.x < 0.0f) && (!this.dependencyTable.get(leftup).drawn)) {
 					linkedDep = this.dependencyTable.get(leftup);
 
 					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x
-							+ Tile.TILE_SIZE, symbol.point.y + Tile.TILE_SIZE)));
+							+ GraphicFactory.getTileSize(), symbol.point.y + GraphicFactory.getTileSize())));
 					addSmb.addTile(leftup);
 				}
 
-				if ((symbol.point.x + symbol.symbol.getWidth() > Tile.TILE_SIZE)
+				if ((symbol.point.x + symbol.symbol.getWidth() > GraphicFactory.getTileSize())
 						&& (!this.dependencyTable.get(rightup).drawn)) {
 					linkedDep = this.dependencyTable.get(rightup);
 
 					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x
-							- Tile.TILE_SIZE, symbol.point.y + Tile.TILE_SIZE)));
+							- GraphicFactory.getTileSize(), symbol.point.y + GraphicFactory.getTileSize())));
 					addSmb.addTile(rightup);
 				}
 			}
 
 			// down
-			if ((symbol.point.y + symbol.symbol.getHeight() > Tile.TILE_SIZE)
+			if ((symbol.point.y + symbol.symbol.getHeight() > GraphicFactory.getTileSize())
 					&& (!this.dependencyTable.get(down).drawn)) {
 				linkedDep = this.dependencyTable.get(down);
 
@@ -884,23 +885,23 @@ class DependencyCache {
 				}
 
 				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x, symbol.point.y
-						- Tile.TILE_SIZE)));
+						- GraphicFactory.getTileSize())));
 				addSmb.addTile(down);
 
 				if ((symbol.point.x < 0.0f) && (!this.dependencyTable.get(leftdown).drawn)) {
 					linkedDep = this.dependencyTable.get(leftdown);
 
 					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x
-							+ Tile.TILE_SIZE, symbol.point.y - Tile.TILE_SIZE)));
+							+ GraphicFactory.getTileSize(), symbol.point.y - GraphicFactory.getTileSize())));
 					addSmb.addTile(leftdown);
 				}
 
-				if ((symbol.point.x + symbol.symbol.getWidth() > Tile.TILE_SIZE)
+				if ((symbol.point.x + symbol.symbol.getWidth() > GraphicFactory.getTileSize())
 						&& (!this.dependencyTable.get(rightdown).drawn)) {
 					linkedDep = this.dependencyTable.get(rightdown);
 
 					linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x
-							- Tile.TILE_SIZE, symbol.point.y - Tile.TILE_SIZE)));
+							- GraphicFactory.getTileSize(), symbol.point.y - GraphicFactory.getTileSize())));
 					addSmb.addTile(rightdown);
 				}
 			}
@@ -915,13 +916,13 @@ class DependencyCache {
 							symbol.point.x, symbol.point.y)));
 				}
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x + Tile.TILE_SIZE,
+				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x + GraphicFactory.getTileSize(),
 						symbol.point.y)));
 				addSmb.addTile(left);
 			}
 
 			// right
-			if ((symbol.point.x + symbol.symbol.getWidth() > Tile.TILE_SIZE)
+			if ((symbol.point.x + symbol.symbol.getWidth() > GraphicFactory.getTileSize())
 					&& (!this.dependencyTable.get(right).drawn)) {
 				linkedDep = this.dependencyTable.get(right);
 				if (addSmb == null) {
@@ -930,7 +931,7 @@ class DependencyCache {
 							symbol.point.x, symbol.point.y)));
 				}
 
-				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x - Tile.TILE_SIZE,
+				linkedDep.addSymbol(new Dependency<DependencySymbol>(addSmb, new Point(symbol.point.x - GraphicFactory.getTileSize(),
 						symbol.point.y)));
 				addSmb.addTile(right);
 			}

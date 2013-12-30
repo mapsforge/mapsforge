@@ -23,7 +23,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -99,7 +99,7 @@ public class AndroidUtil {
     public static int estimateSizeOfFileSystemCache(String cacheDirectoryName, int firstLevelSize) {
         // assumption on size of files in cache, on the large side as not to eat
         // up all free space, real average probably 50K compressed
-        final int tileCacheFileSize = 4 * Tile.TILE_SIZE * Tile.TILE_SIZE;
+        final int tileCacheFileSize = 4 * GraphicFactory.getTileSize() * GraphicFactory.getTileSize();
         final int maxCacheFiles = 2000; // arbitrary, probably too high
 
         // result cannot be bigger than maxCacheFiles
@@ -142,8 +142,8 @@ public class AndroidUtil {
         WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
 
-        return (int)(screenRatio * Math.ceil(1 + (display.getHeight()  * overdrawFactor / Tile.TILE_SIZE))
-                * Math.ceil(1 + (display.getWidth()  * overdrawFactor / Tile.TILE_SIZE)));
+        return (int)(screenRatio * Math.ceil(1 + (display.getHeight()  * overdrawFactor / GraphicFactory.getTileSize()))
+                * Math.ceil(1 + (display.getWidth()  * overdrawFactor / GraphicFactory.getTileSize())));
     }
 
 

@@ -30,7 +30,6 @@ import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.MapReadResult;
@@ -59,9 +58,9 @@ public class DatabaseRenderer implements RenderCallback {
 
 	private static Point[][] getTilePixelCoordinates() {
 		Point point1 = new Point(0, 0);
-		Point point2 = new Point(Tile.TILE_SIZE, 0);
-		Point point3 = new Point(Tile.TILE_SIZE, Tile.TILE_SIZE);
-		Point point4 = new Point(0, Tile.TILE_SIZE);
+		Point point2 = new Point(GraphicFactory.getTileSize(), 0);
+		Point point3 = new Point(GraphicFactory.getTileSize(), GraphicFactory.getTileSize());
+		Point point4 = new Point(0, GraphicFactory.getTileSize());
 		return new Point[][] { { point1, point2, point3, point4, point1 } };
 	}
 

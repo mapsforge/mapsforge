@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Tile;
@@ -43,7 +44,7 @@ public class QueueItemSchedulerTest {
 
 		mapPosition = new MapPosition(new LatLong(0, 180), (byte) 0);
 		QueueItemScheduler.schedule(createCollection(queueItem), mapPosition);
-		int halfTileSize = Tile.TILE_SIZE / 2;
+		int halfTileSize = GraphicFactory.getTileSize() / 2;
 		Assert.assertEquals(halfTileSize, queueItem.getPriority(), 0);
 
 		mapPosition = new MapPosition(new LatLong(0, -180), (byte) 0);

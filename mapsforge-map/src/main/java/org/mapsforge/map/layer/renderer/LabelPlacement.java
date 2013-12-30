@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 
@@ -425,11 +426,11 @@ class LabelPlacement {
 		for (int i = 0; i < areaLabels.size(); i++) {
 			this.label = areaLabels.get(i);
 
-			if (this.label.x > Tile.TILE_SIZE) {
+			if (this.label.x > GraphicFactory.getTileSize()) {
 				areaLabels.remove(i);
 
 				i--;
-			} else if (this.label.y - this.label.boundary.getHeight() > Tile.TILE_SIZE) {
+			} else if (this.label.y - this.label.boundary.getHeight() > GraphicFactory.getTileSize()) {
 				areaLabels.remove(i);
 
 				i--;
@@ -455,10 +456,10 @@ class LabelPlacement {
 		for (int i = 0; i < labels.size();) {
 			this.label = labels.get(i);
 
-			if (this.label.x - this.label.boundary.getWidth() / 2 > Tile.TILE_SIZE) {
+			if (this.label.x - this.label.boundary.getWidth() / 2 > GraphicFactory.getTileSize()) {
 				labels.remove(i);
 				this.label = null;
-			} else if (this.label.y - this.label.boundary.getHeight() > Tile.TILE_SIZE) {
+			} else if (this.label.y - this.label.boundary.getHeight() > GraphicFactory.getTileSize()) {
 				labels.remove(i);
 				this.label = null;
 			} else if ((this.label.x - this.label.boundary.getWidth() / 2 + this.label.boundary.getWidth()) < 0.0f) {
@@ -483,9 +484,9 @@ class LabelPlacement {
 		for (int i = 0; i < symbols.size();) {
 			this.symbolContainer = symbols.get(i);
 
-			if (this.symbolContainer.point.x > Tile.TILE_SIZE) {
+			if (this.symbolContainer.point.x > GraphicFactory.getTileSize()) {
 				symbols.remove(i);
-			} else if (this.symbolContainer.point.y > Tile.TILE_SIZE) {
+			} else if (this.symbolContainer.point.y > GraphicFactory.getTileSize()) {
 				symbols.remove(i);
 			} else if (this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth() < 0.0f) {
 				symbols.remove(i);

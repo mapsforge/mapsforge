@@ -21,7 +21,6 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
@@ -51,14 +50,14 @@ public class TileGridLayer extends Layer {
 
 		int pixelX1 = (int) (MercatorProjection.tileToPixel(tileLeft) - topLeftPoint.x);
 		int pixelY1 = (int) (MercatorProjection.tileToPixel(tileTop) - topLeftPoint.y);
-		int pixelX2 = (int) (MercatorProjection.tileToPixel(tileRight) - topLeftPoint.x + Tile.TILE_SIZE);
-		int pixelY2 = (int) (MercatorProjection.tileToPixel(tileBottom) - topLeftPoint.y + Tile.TILE_SIZE);
+		int pixelX2 = (int) (MercatorProjection.tileToPixel(tileRight) - topLeftPoint.x + GraphicFactory.getTileSize());
+		int pixelY2 = (int) (MercatorProjection.tileToPixel(tileBottom) - topLeftPoint.y + GraphicFactory.getTileSize());
 
-		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += Tile.TILE_SIZE) {
+		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += GraphicFactory.getTileSize()) {
 			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paint);
 		}
 
-		for (int lineY = pixelY1; lineY <= pixelY2 + 1; lineY += Tile.TILE_SIZE) {
+		for (int lineY = pixelY1; lineY <= pixelY2 + 1; lineY += GraphicFactory.getTileSize()) {
 			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, this.paint);
 		}
 	}

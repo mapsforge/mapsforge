@@ -33,7 +33,7 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 
-public final class AwtGraphicFactory implements GraphicFactory {
+public final class AwtGraphicFactory extends GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
@@ -115,17 +115,6 @@ public final class AwtGraphicFactory implements GraphicFactory {
 		return new AwtPath();
 	}
 
-	@Override
-	public int getBackgroundColor() {
-		return 0;
-	}
-
-
-	@Override
-	public float getScaleFactor() {
-		return 1.0f;
-	}
-
     @Override
     public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
         return new AwtResourceBitmap(inputStream);
@@ -151,8 +140,4 @@ public final class AwtGraphicFactory implements GraphicFactory {
 		return null;
 	}
 
-	@Override
-	public void setBackgroundColor(int color) {
-		// TODO
-	}
 }

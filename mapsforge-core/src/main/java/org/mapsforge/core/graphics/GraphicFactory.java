@@ -17,35 +17,78 @@ package org.mapsforge.core.graphics;
 import java.io.IOException;
 import java.io.InputStream;
 
-public interface GraphicFactory {
+public abstract class GraphicFactory {
 
-	Bitmap createBitmap(int width, int height);
+	/**
+	 * Default width and height of a map tile in pixel when no device or user scaling is applied.
+	 */
+	private static int defaultTileSize = 256;
+	private static int tileSize = defaultTileSize;
+	private static float deviceScaleFactor = 1f;
+	private static float userScaleFactor = 1f;
 
-	Canvas createCanvas();
+	private static int defaultBackgroundColour = 0xffeeeeee; // format AARRGGBB
+	private static int backgroundColor = defaultBackgroundColour;
 
-	int createColor(Color color);
+	public abstract Bitmap createBitmap(int width, int height);
 
-	int createColor(int alpha, int red, int green, int blue);
+	public abstract Canvas createCanvas();
 
-	Matrix createMatrix();
+	public abstract int createColor(Color color);
 
-	Paint createPaint();
+	public abstract int createColor(int alpha, int red, int green, int blue);
 
-	Path createPath();
+	public abstract Matrix createMatrix();
 
-    ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
+	public abstract Paint createPaint();
 
-	TileBitmap createTileBitmap();
+	public abstract Path createPath();
 
-	TileBitmap createTileBitmap(InputStream inputStream) throws IOException;
+	public abstract ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
 
-	int getBackgroundColor();
+	public abstract TileBitmap createTileBitmap();
 
-	float getScaleFactor();
+	public abstract TileBitmap createTileBitmap(InputStream inputStream) throws IOException;
 
-	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
+	public synchronized int getBackgroundColor() {
+		return this.backgroundColor;
+	}
 
-	ResourceBitmap renderSvg(InputStream inputStream, int hash);
+	public synchronized float getScaleFactor() {
+		return this.deviceScaleFactor * this.userScaleFactor;
+	}
 
-	void setBackgroundColor(int color);
+	public synchronized float getUserScaleFactor() {
+		return this.userScaleFactor;
+	}
+
+	/**
+	 * Width and height of a map tile in pixel after system and user scaling is applied.
+	 */
+	public static synchronized int getTileSize() {
+		return tileSize;
+	}
+
+	public abstract InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
+
+	public abstract ResourceBitmap renderSvg(InputStream inputStream, int hash);
+
+	public synchronized void setBackgroundColor(int color) {
+		this.backgroundColor = color;
+	}
+
+	public synchronized void setDeviceScaleFactor(float scaleFactor) {
+		deviceScaleFactor = scaleFactor;
+		setTileSize();
+	}
+
+	public synchronized void setUserScaleFactor(float scaleFactor) {
+		userScaleFactor = scaleFactor;
+		setTileSize();
+	}
+
+	private void setTileSize() {
+		tileSize = (int) (defaultTileSize * deviceScaleFactor * userScaleFactor);
+	}
+
 }

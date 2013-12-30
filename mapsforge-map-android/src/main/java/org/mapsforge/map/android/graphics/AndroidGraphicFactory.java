@@ -27,7 +27,6 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.model.Tile;
 
 import android.app.Application;
 import android.content.Context;
@@ -39,7 +38,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 
-public final class AndroidGraphicFactory implements GraphicFactory {
+public final class AndroidGraphicFactory extends GraphicFactory {
 
 	// turn on for bitmap accounting
 	public static final boolean debugBitmaps = false;
@@ -55,16 +54,11 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	// and is much slower despite smaller size that ARGB_8888 as it
 	// passes through unoptimized path in the skia library.
 	static public final Config bitmapConfig = Config.ARGB_8888;
-	static final int DEFAULT_BACKGROUND_COLOR = android.graphics.Color.rgb(238, 238, 238);
 
 	public static AndroidGraphicFactory INSTANCE;
 
 	private static final String PREFIX_ASSETS = "assets:";
 	private final Application application;
-	private final int defaultTileSize = Tile.TILE_SIZE;
-	private final float scaleFactor;
-	private float userScaleFactor = 1.0f;
-	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	/**
 	 * return the byte usage per pixel of a bitmap based on its configuration.
@@ -153,12 +147,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		DisplayMetrics metrics = new DisplayMetrics();
 		((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
 		// we need to scale up proportionally to the scaledDensity otherwise the map display gets too small
-		this.scaleFactor = metrics.scaledDensity;
-		setTileSize();
-	}
-
-	private void setTileSize() {
-		Tile.TILE_SIZE = (int) (this.defaultTileSize * this.scaleFactor * this.userScaleFactor);
+		setDeviceScaleFactor(metrics.scaledDensity);
 	}
 
 	@Override
@@ -213,20 +202,6 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public int getBackgroundColor() {
-		return this.backgroundColor;
-	}
-
-	@Override
-	public float getScaleFactor() {
-		return this.scaleFactor * this.userScaleFactor;
-	}
-
-	public float getUserScaleFactor() {
-		return this.userScaleFactor;
-	}
-
-	@Override
 	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
 		// this allows loading of resource bitmaps from the Andorid assets folder
 		if (src.startsWith(PREFIX_ASSETS)) {
@@ -242,17 +217,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
 	@Override
 	public ResourceBitmap renderSvg(InputStream inputStream, int hash) {
-		return new AndroidSvgBitmap(inputStream, hash, this.scaleFactor);
-	}
-
-	@Override
-	public void setBackgroundColor(int color) {
-		this.backgroundColor = color;
-	}
-
-	public void setUserScaleFactor(float scaleFactor) {
-		this.userScaleFactor = scaleFactor;
-		setTileSize();
+		return new AndroidSvgBitmap(inputStream, hash, this.getScaleFactor());
 	}
 
 }

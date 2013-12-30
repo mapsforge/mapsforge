@@ -24,7 +24,6 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 
 public class PolylineTest {
@@ -45,7 +44,7 @@ public class PolylineTest {
 
 		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
 		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
-		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
+		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(GraphicFactory.getTileSize(), GraphicFactory.getTileSize()));
 		Point point = new Point(0, 0);
 		polyline.draw(boundingBox, (byte) 0, canvas, point);
 

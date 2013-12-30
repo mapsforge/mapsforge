@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
 
 import org.mapsforge.map.layer.cache.TileCache;
@@ -74,7 +73,7 @@ class TileDownloadThread extends PausableThread {
 		TileBitmap bitmap = tileDownloader.downloadImage();
 
 		if (!isInterrupted() && bitmap != null) {
-			bitmap.scaleTo(Tile.TILE_SIZE, Tile.TILE_SIZE);
+			bitmap.scaleTo(GraphicFactory.getTileSize(), GraphicFactory.getTileSize());
 			this.tileCache.put(downloadJob, bitmap);
 			this.layer.requestRedraw();
 		}

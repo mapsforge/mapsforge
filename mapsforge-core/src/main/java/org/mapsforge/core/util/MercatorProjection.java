@@ -14,8 +14,8 @@
  */
 package org.mapsforge.core.util;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.model.LatLong;
 
 /**
@@ -62,7 +62,7 @@ public final class MercatorProjection {
 		if (zoomLevel < 0) {
 			throw new IllegalArgumentException("zoom level must not be negative: " + zoomLevel);
 		}
-		return (long) Tile.TILE_SIZE << zoomLevel;
+		return (long) GraphicFactory.getTileSize() << zoomLevel;
 	}
 
 	/**
@@ -184,7 +184,7 @@ public final class MercatorProjection {
 	 * @return the tile X number.
 	 */
 	public static long pixelXToTileX(double pixelX, byte zoomLevel) {
-		return (long) Math.min(Math.max(pixelX / Tile.TILE_SIZE, 0), Math.pow(2, zoomLevel) - 1);
+		return (long) Math.min(Math.max(pixelX / GraphicFactory.getTileSize(), 0), Math.pow(2, zoomLevel) - 1);
 	}
 
 	/**
@@ -217,7 +217,7 @@ public final class MercatorProjection {
 	 * @return the tile Y number.
 	 */
 	public static long pixelYToTileY(double pixelY, byte zoomLevel) {
-		return (long) Math.min(Math.max(pixelY / Tile.TILE_SIZE, 0), Math.pow(2, zoomLevel) - 1);
+		return (long) Math.min(Math.max(pixelY / GraphicFactory.getTileSize(), 0), Math.pow(2, zoomLevel) - 1);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public final class MercatorProjection {
 	 * @return the pixel coordinate for the given tile number.
 	 */
 	public static long tileToPixel(long tileNumber) {
-		return tileNumber * Tile.TILE_SIZE;
+		return tileNumber * GraphicFactory.getTileSize();
 	}
 
 	/**
@@ -239,7 +239,7 @@ public final class MercatorProjection {
 	 * @return the longitude value of the tile X number.
 	 */
 	public static double tileXToLongitude(long tileX, byte zoomLevel) {
-		return pixelXToLongitude(tileX * Tile.TILE_SIZE, zoomLevel);
+		return pixelXToLongitude(tileX * GraphicFactory.getTileSize(), zoomLevel);
 	}
 
 	/**
@@ -252,7 +252,7 @@ public final class MercatorProjection {
 	 * @return the latitude value of the tile Y number.
 	 */
 	public static double tileYToLatitude(long tileY, byte zoomLevel) {
-		return pixelYToLatitude(tileY * Tile.TILE_SIZE, zoomLevel);
+		return pixelYToLatitude(tileY * GraphicFactory.getTileSize(), zoomLevel);
 	}
 
 	private MercatorProjection() {

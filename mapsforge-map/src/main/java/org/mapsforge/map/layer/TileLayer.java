@@ -81,8 +81,8 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		if (cachedParentTile != null) {
 			Bitmap bitmap = this.tileCache.get(createJob(cachedParentTile));
 			if (bitmap != null) {
-				long translateX = tile.getShiftX(cachedParentTile) * Tile.TILE_SIZE;
-				long translateY = tile.getShiftY(cachedParentTile) * Tile.TILE_SIZE;
+				long translateX = tile.getShiftX(cachedParentTile) * GraphicFactory.getTileSize();
+				long translateY = tile.getShiftY(cachedParentTile) * GraphicFactory.getTileSize();
 				byte zoomLevelDiff = (byte) (tile.zoomLevel - cachedParentTile.zoomLevel);
 				float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
 
@@ -93,7 +93,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.matrix.translate(x - translateX, y - translateY);
 				this.matrix.scale(scaleFactor, scaleFactor);
 
-				canvas.setClip(x, y, Tile.TILE_SIZE, Tile.TILE_SIZE);
+				canvas.setClip(x, y, GraphicFactory.getTileSize(), GraphicFactory.getTileSize());
 				canvas.drawBitmap(bitmap, this.matrix);
 				canvas.resetClip();
 				bitmap.decrementRefCount();

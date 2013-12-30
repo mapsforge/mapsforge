@@ -16,13 +16,14 @@ package org.mapsforge.map.layer.queue;
 
 import java.util.Collection;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 
 final class QueueItemScheduler {
-	static final double PENALTY_PER_ZOOM_LEVEL = 10 * Tile.TILE_SIZE;
+	static final double PENALTY_PER_ZOOM_LEVEL = 10 * GraphicFactory.getTileSize();
 
 	static <T extends Job> void schedule(Collection<QueueItem<T>> queueItems, MapPosition mapPosition) {
 		for (QueueItem<T> queueItem : queueItems) {
@@ -34,7 +35,7 @@ final class QueueItemScheduler {
 		double tileLatitude = MercatorProjection.tileYToLatitude(tile.tileY, tile.zoomLevel);
 		double tileLongitude = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
 
-		int halfTileSize = Tile.TILE_SIZE / 2;
+		int halfTileSize = GraphicFactory.getTileSize() / 2;
 		double tilePixelX = MercatorProjection.longitudeToPixelX(tileLongitude, mapPosition.zoomLevel) + halfTileSize;
 		double tilePixelY = MercatorProjection.latitudeToPixelY(tileLatitude, mapPosition.zoomLevel) + halfTileSize;
 

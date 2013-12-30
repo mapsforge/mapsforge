@@ -17,13 +17,13 @@ package org.mapsforge.map.awt;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.model.Tile;
 
 public class AwtTileBitmap extends AwtBitmap implements TileBitmap {
 
 	AwtTileBitmap() {
-		super(Tile.TILE_SIZE, Tile.TILE_SIZE);
+		super(GraphicFactory.getTileSize(), GraphicFactory.getTileSize());
 	}
 
 	AwtTileBitmap(InputStream inputStream) throws IOException {
