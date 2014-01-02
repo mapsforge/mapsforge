@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,16 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.GraphicContext;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.graphics.*;
 
 public final class AwtGraphicFactory extends GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
@@ -78,7 +70,7 @@ public final class AwtGraphicFactory extends GraphicFactory {
 	}
 
 	private AwtGraphicFactory() {
-		// do nothing
+		deviceScaleFactor = 1.0f;
 	}
 
 	@Override
