@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -45,6 +46,10 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory);
 
 		this.textScale = 1;
+	}
+
+	public MapDatabase getMapDatabase() {
+		return mapDatabase;
 	}
 
 	public File getMapFile() {
