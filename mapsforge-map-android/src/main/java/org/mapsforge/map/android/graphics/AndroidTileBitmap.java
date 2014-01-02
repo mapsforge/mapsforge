@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,15 +16,16 @@
 package org.mapsforge.map.android.graphics;
 
 import android.annotation.TargetApi;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.graphics.CorruptedInputStream;
 import org.mapsforge.core.util.IOUtils;
 
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,6 +33,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * On Android, managing and recycling the memory for bitmaps is important, but varies significantly
+ * between versions: before Honeycomb (3.0), bitmaps require a call to recycle() to clear the
+ * memory, for higher versions it is possible to reuse the bitmap storage as long as it fits
+ * exactly.
+ * For older Android versions, bitmaps are recycled when no in use any more.
+ * For new Android versions, the bitmap memory gets stored as a SoftReference, so that the memory can
+ * get reclaimed if the GC so decides. For every new TileBitmap, it is attempted to reuse one of the
+ * older bitmaps from the cache, only if that fails, a new bitmap is allocated.
+ */
 
 public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 
@@ -43,28 +55,32 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 
 	private static final Logger LOGGER = Logger.getLogger(AndroidTileBitmap.class.getName());
 
-	private static Set<SoftReference<android.graphics.Bitmap>> reusableTileBitmaps = new HashSet<>();
+	// For modern Android versions, bitmap storage can be recycled. To support different tile
+	// sizes we have a hashmap that contains the caches by tileSize.
 
-	static android.graphics.Bitmap getTileBitmapFromReusableSet() {
+	private static HashMap<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<>();
+
+	static android.graphics.Bitmap getTileBitmapFromReusableSet(int tileSize) {
+		Set<SoftReference<Bitmap>> sizeSpecificSet = reusableTileBitmaps.get(tileSize);
+
+		if (sizeSpecificSet == null) {
+			return null;
+		}
 		android.graphics.Bitmap bitmap = null;
-
-		if (reusableTileBitmaps != null && !reusableTileBitmaps.isEmpty()) {
-			synchronized (reusableTileBitmaps) {
-				final Iterator<SoftReference<android.graphics.Bitmap>> iterator = reusableTileBitmaps.iterator();
-				android.graphics.Bitmap candidate;
-
-				while (iterator.hasNext()) {
-					candidate = iterator.next().get();
-					if (null != candidate && candidate.isMutable()) {
-						bitmap = candidate;
-						bitmap.eraseColor(0);
-						// Remove from reusable set so it can't be used again.
-						iterator.remove();
-						break;
-					} else {
-						// Remove from the set if the reference has been cleared.
-						iterator.remove();
-					}
+		synchronized (sizeSpecificSet) {
+			final Iterator<SoftReference<android.graphics.Bitmap>> iterator = sizeSpecificSet.iterator();
+			android.graphics.Bitmap candidate;
+			while (iterator.hasNext()) {
+				candidate = iterator.next().get();
+				if (null != candidate && candidate.isMutable()) {
+					bitmap = candidate;
+					bitmap.eraseColor(0);
+					// Remove from reusable set so it can't be used again.
+					iterator.remove();
+					break;
+				} else {
+					// Remove from the set if the reference has been cleared.
+					iterator.remove();
 				}
 			}
 		}
@@ -72,21 +88,21 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	}
 
 	@TargetApi(11)
-	private static final BitmapFactory.Options createTileBitmapFactoryOptions() {
+	private static final BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize) {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 		bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.bitmapConfig;
 		if (org.mapsforge.map.android.util.AndroidUtil.honeyCombPlus) {
 			bitmapFactoryOptions.inMutable = true;
 			bitmapFactoryOptions.inSampleSize = 1; // not really sure why this is required, but otherwise decoding fails
-			bitmapFactoryOptions.inBitmap = getTileBitmapFromReusableSet();
+			bitmapFactoryOptions.inBitmap = getTileBitmapFromReusableSet(tileSize);
 		}
 		return bitmapFactoryOptions;
 	}
 	
-	AndroidTileBitmap() {
-		this.bitmap = getTileBitmapFromReusableSet();
+	AndroidTileBitmap(int tileSize) {
+		this.bitmap = getTileBitmapFromReusableSet(tileSize);
 		if (this.bitmap == null) {
-			this.bitmap = AndroidBitmap.createAndroidBitmap(GraphicFactory.getTileSize(), GraphicFactory.getTileSize());
+			this.bitmap = AndroidBitmap.createAndroidBitmap(tileSize, tileSize);
 		}
         if (AndroidGraphicFactory.debugBitmaps) {
 		    tileInstances.incrementAndGet();
@@ -100,12 +116,12 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         by client classes. We do not catch it here to allow proper handling in the higher
         levels (like redownload or reload from file storage).
      */
-	AndroidTileBitmap(InputStream inputStream) {
+	AndroidTileBitmap(InputStream inputStream, int tileSize) {
         try {
             if (AndroidGraphicFactory.debugBitmaps) {
                 tileInstances.incrementAndGet();
             }
-            this.bitmap = BitmapFactory.decodeStream(inputStream, null, createTileBitmapFactoryOptions());
+            this.bitmap = BitmapFactory.decodeStream(inputStream, null, createTileBitmapFactoryOptions(tileSize));
 	        // somehow on Android the decode stream can succeed, but the bitmap remains invalid.
 	        // Asking for the width forces the bitmap to be fully loaded and a NullPointerException
 	        // is triggered if the stream is not readable,
@@ -138,8 +154,18 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	    if (this.bitmap != null) {
 		    // bitmap can be null if there is an error creating it
             if (org.mapsforge.map.android.util.AndroidUtil.honeyCombPlus) {
+	            final int tileSize = this.getHeight();
                 synchronized (reusableTileBitmaps) {
-                    reusableTileBitmaps.add(new SoftReference<android.graphics.Bitmap>(this.bitmap));
+	                if (!reusableTileBitmaps.containsKey(tileSize)) {
+		                // if the set specific to the tile size does not exist, create it. It will
+		                // never be destroyed, but the contained bitmaps will be recycled if memory
+		                // gets tight.
+		                reusableTileBitmaps.put(tileSize, new HashSet<SoftReference<Bitmap>>());
+	                }
+	                Set<SoftReference<Bitmap>> sizeSpecificSet = reusableTileBitmaps.get(tileSize);
+	                synchronized (sizeSpecificSet) {
+                        sizeSpecificSet.add(new SoftReference<>(this.bitmap));
+	                }
                 }
             } else {
                 this.bitmap.recycle();

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +15,8 @@
  */
 package org.mapsforge.map.layer;
 
+import org.mapsforge.map.model.DisplayModel;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +27,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * A thread-safe {@link Layer} list which does not allow {@code null} elements.
  */
 public class Layers implements Iterable<Layer>, RandomAccess {
+
 	private static void checkIsNull(Collection<Layer> layers) {
 		if (layers == null) {
 			throw new IllegalArgumentException("layers must not be null");
@@ -42,9 +46,11 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 
 	private final List<Layer> layersList;
 	private final Redrawer redrawer;
+	private final DisplayModel displayModel;
 
-	Layers(Redrawer redrawer) {
+	Layers(Redrawer redrawer, DisplayModel displayModel) {
 		this.redrawer = redrawer;
+		this.displayModel = displayModel;
 
 		this.layersList = new CopyOnWriteArrayList<Layer>();
 	}
@@ -54,6 +60,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	 */
 	public synchronized void add(int index, Layer layer) {
 		checkIsNull(layer);
+		layer.setDisplayModel(this.displayModel);
 		this.layersList.add(index, layer);
 		layer.assign(this.redrawer);
 	}
@@ -63,6 +70,8 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	 */
 	public synchronized void add(Layer layer) {
 		checkIsNull(layer);
+		layer.setDisplayModel(this.displayModel);
+
 		this.layersList.add(layer);
 		layer.assign(this.redrawer);
 	}
@@ -72,6 +81,9 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	 */
 	public synchronized void addAll(Collection<Layer> layers) {
 		checkIsNull(layers);
+		for (Layer layer : layers) {
+			layer.setDisplayModel(this.displayModel);
+		}
 		this.layersList.addAll(layers);
 		for (Layer layer : layers) {
 			layer.assign(this.redrawer);
@@ -85,6 +97,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		checkIsNull(layers);
 		this.layersList.addAll(index, layers);
 		for (Layer layer : layers) {
+			layer.setDisplayModel(this.displayModel);
 			layer.assign(this.redrawer);
 		}
 	}

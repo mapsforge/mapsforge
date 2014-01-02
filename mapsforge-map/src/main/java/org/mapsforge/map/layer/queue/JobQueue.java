@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 
 public class JobQueue<T extends Job> {
@@ -27,9 +29,11 @@ public class JobQueue<T extends Job> {
 	private final MapViewPosition mapViewPosition;
 	private final List<QueueItem<T>> queueItems = new LinkedList<QueueItem<T>>();
 	private boolean scheduleNeeded;
+	private final DisplayModel displayModel;
 
-	public JobQueue(MapViewPosition mapViewPosition) {
+	public JobQueue(MapViewPosition mapViewPosition, DisplayModel displayModel) {
 		this.mapViewPosition = mapViewPosition;
+		this.displayModel = displayModel;
 	}
 
 	public synchronized void add(T job) {
@@ -52,7 +56,7 @@ public class JobQueue<T extends Job> {
 
 		if (this.scheduleNeeded) {
 			this.scheduleNeeded = false;
-			schedule();
+			schedule(displayModel.getTileSize());
 		}
 
 		T job = this.queueItems.remove(0).object;
@@ -77,8 +81,8 @@ public class JobQueue<T extends Job> {
 		return this.queueItems.size();
 	}
 
-	private void schedule() {
-		QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition());
+	private void schedule(int tileSize) {
+		QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition(), tileSize);
 		Collections.sort(this.queueItems, QueueItemComparator.INSTANCE);
 		trimToSize();
 	}

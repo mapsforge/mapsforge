@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,7 +24,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -52,24 +52,26 @@ public class AndroidUtil {
      * approximation of the required size
      * @param c              the Android context
      * @param id             name for the storage directory
+     * @param tileSize       tile size
      * @param screenRatio    part of the screen the view takes up
      * @param overdraw       overdraw allowance
      * @return a new cache created on the external storage
      */
 
-    public static TileCache createTileCache(Context c, String id, float screenRatio, double overdraw) {
-        int cacheSize = (int) Math.round(AndroidUtil.getMinimumCacheSize(c,
+    public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
+        int cacheSize = (int) Math.round(AndroidUtil.getMinimumCacheSize(c, tileSize,
                 overdraw, screenRatio));
-        return createExternalStorageTileCache(c, id, cacheSize);
+        return createExternalStorageTileCache(c, id, cacheSize, tileSize);
     }
 
     /**
      * @param c              the Android context
      * @param id             name for the directory
      * @param firstLevelSize size of the first level cache
+     * @param tileSize       tile size
      * @return a new cache created on the external storage
      */
-    public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize) {
+    public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
 	    Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
 	    TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
         String cacheDirectoryName = c.getExternalCacheDir().getAbsolutePath() + File.separator + id;
@@ -77,7 +79,7 @@ public class AndroidUtil {
         if (!cacheDirectory.exists()) {
             cacheDirectory.mkdir();
         }
-        int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize);
+        int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
         if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
             try {
 	            Log.d("TILECACHE FILECACHE SIZE", Integer.toString(firstLevelSize));
@@ -94,12 +96,13 @@ public class AndroidUtil {
     /**
      * @param cacheDirectoryName where the file system tile cache will be located
      * @param firstLevelSize     size of the first level cache, no point cache being smaller
+     * @param tileSize       tile size
      * @return recommended number of files in FileSystemTileCache
      */
-    public static int estimateSizeOfFileSystemCache(String cacheDirectoryName, int firstLevelSize) {
+    public static int estimateSizeOfFileSystemCache(String cacheDirectoryName, int firstLevelSize, int tileSize) {
         // assumption on size of files in cache, on the large side as not to eat
         // up all free space, real average probably 50K compressed
-        final int tileCacheFileSize = 4 * GraphicFactory.getTileSize() * GraphicFactory.getTileSize();
+        final int tileCacheFileSize = 4 * tileSize * tileSize;
         final int maxCacheFiles = 2000; // arbitrary, probably too high
 
         // result cannot be bigger than maxCacheFiles
@@ -134,17 +137,17 @@ public class AndroidUtil {
      * Compute the minimum cache size for a view
      *
      * @param c the context.
+     * @param tileSize tile size
      * @param overdrawFactor the overdraw factor applied to the mapview.
      * @param screenRatio the part of the screen the view covers.
      * @return the minimum cache size for the view.
      */
-    public static int getMinimumCacheSize(Context c, double overdrawFactor, float screenRatio) {
+    public static int getMinimumCacheSize(Context c, int tileSize, double overdrawFactor, float screenRatio) {
         WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
 
-        return (int)(screenRatio * Math.ceil(1 + (display.getHeight()  * overdrawFactor / GraphicFactory.getTileSize()))
-                * Math.ceil(1 + (display.getWidth()  * overdrawFactor / GraphicFactory.getTileSize())));
+        return (int)(screenRatio * Math.ceil(1 + (display.getHeight()  * overdrawFactor / tileSize))
+                * Math.ceil(1 + (display.getWidth()  * overdrawFactor / tileSize)));
     }
-
 
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,13 +19,15 @@ import org.mapsforge.core.model.Tile;
 
 public class Job {
 	public final Tile tile;
+	public final int tileSize;
 
-	protected Job(Tile tile) {
+	protected Job(Tile tile, int tileSize) {
 		if (tile == null) {
 			throw new IllegalArgumentException("tile must not be null");
 		}
 
 		this.tile = tile;
+		this.tileSize = tileSize;
 	}
 
 	@Override
@@ -35,11 +38,14 @@ public class Job {
 			return false;
 		}
 		Job other = (Job) obj;
+		if (this.tileSize != other.tileSize) {
+			return false;
+		}
 		return this.tile.equals(other.tile);
 	}
 
 	@Override
 	public int hashCode() {
-		return this.tile.hashCode();
+		return 31 * this.tile.hashCode() + this.tileSize;
 	}
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -31,7 +33,7 @@ public class SymbolBuilderTest {
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, SymbolBuilder.SRC, null, "jar:symbols/atm.png");
 
-		SymbolBuilder symbolBuilder = new SymbolBuilder(GRAPHIC_FACTORY, "symbol", attributesImpl, "/osmarender/");
+		SymbolBuilder symbolBuilder = new SymbolBuilder(GRAPHIC_FACTORY, new DisplayModel(), "symbol", attributesImpl, "/osmarender/");
 
 		Assert.assertNotNull(symbolBuilder.build());
 	}

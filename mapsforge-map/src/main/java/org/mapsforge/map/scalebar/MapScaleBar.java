@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +27,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewDimension;
 import org.mapsforge.map.model.MapViewPosition;
 
@@ -40,7 +42,8 @@ public class MapScaleBar {
 	private static final int MARGIN_LEFT = 5;
 
 	private Adapter adapter;
-	private final GraphicFactory graphicFactory;
+	private final DisplayModel displayModel;
+	private GraphicFactory graphicFactory;
 	private MapPosition mapPosition;
 	private final Bitmap mapScaleBitmap;
 	private final Canvas mapScaleCanvas;
@@ -53,9 +56,10 @@ public class MapScaleBar {
 	private boolean redrawNeeded;
 	private boolean visible;
 
-	public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, GraphicFactory graphicFactory) {
+	public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, GraphicFactory graphicFactory, DisplayModel displayModel) {
 		this.mapViewPosition = mapViewPosition;
 		this.mapViewDimension = mapViewDimension;
+		this.displayModel = displayModel;
 		this.graphicFactory = graphicFactory;
 
 		this.mapScaleBitmap = graphicFactory.createBitmap(BITMAP_WIDTH, BITMAP_HEIGHT);
@@ -63,10 +67,10 @@ public class MapScaleBar {
 		this.mapScaleCanvas.setBitmap(this.mapScaleBitmap);
 		this.adapter = Metric.INSTANCE;
 
-		this.paintScaleBar = createScaleBarPaint(Color.BLACK, 3);
-		this.paintScaleBarStroke = createScaleBarPaint(Color.WHITE, 5);
-		this.paintScaleText = createTextPaint(Color.BLACK, 0);
-		this.paintScaleTextStroke = createTextPaint(Color.WHITE, 2);
+		this.paintScaleBar = createScaleBarPaint(Color.BLACK, 3, Style.FILL);
+		this.paintScaleBarStroke = createScaleBarPaint(Color.WHITE, 5, Style.STROKE);
+		this.paintScaleText = createTextPaint(Color.BLACK, 0, Style.FILL);
+		this.paintScaleTextStroke = createTextPaint(Color.WHITE, 2, Style.STROKE);
 	}
 
 	public void destroy() {
@@ -76,6 +80,10 @@ public class MapScaleBar {
 
 	public void draw(GraphicContext graphicContext) {
 		if (!this.visible) {
+			return;
+		}
+
+		if (this.mapViewDimension.getDimension() == null) {
 			return;
 		}
 
@@ -105,20 +113,20 @@ public class MapScaleBar {
 		this.visible = visible;
 	}
 
-	private Paint createScaleBarPaint(Color color, float strokeWidth) {
+	private Paint createScaleBarPaint(Color color, float strokeWidth, Style style) {
 		Paint paint = this.graphicFactory.createPaint();
 		paint.setColor(color);
 		paint.setStrokeWidth(strokeWidth);
-		paint.setStyle(Style.STROKE);
+		paint.setStyle(style);
 		paint.setStrokeCap(Cap.SQUARE);
 		return paint;
 	}
 
-	private Paint createTextPaint(Color color, float strokeWidth) {
+	private Paint createTextPaint(Color color, float strokeWidth, Style style) {
 		Paint paint = this.graphicFactory.createPaint();
 		paint.setColor(color);
 		paint.setStrokeWidth(strokeWidth);
-		paint.setStyle(Style.STROKE);
+		paint.setStyle(style);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 		paint.setTextSize(20);
 		return paint;
@@ -174,7 +182,7 @@ public class MapScaleBar {
 
 		this.mapPosition = this.mapViewPosition.getMapPosition();
 		double groundResolution = MercatorProjection.calculateGroundResolution(this.mapPosition.latLong.latitude,
-				this.mapPosition.zoomLevel);
+				this.mapPosition.zoomLevel, this.displayModel.getTileSize());
 
 		groundResolution = groundResolution / this.adapter.getMeterRatio();
 		int[] scaleBarValues = this.adapter.getScaleBarValues();

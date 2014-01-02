@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,24 +14,35 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import android.util.Log;
+
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
  * Viewer with tile grid and coordinates visible and frame counter displayed
  */
 public class DiagnosticsMapViewer extends BasicMapViewerXml {
+
+
 	@Override
 	protected void createLayers() {
 		super.createLayers();
-		this.layerManagers.get(0).getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE));
-		this.layerManagers.get(0).getLayers().add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE));
+		this.layerManagers.get(0).getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapViews.get(0).getModel().displayModel));
+		this.layerManagers.get(0).getLayers().add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapViews.get(0).getModel().displayModel));
 	}
+
 
 	@Override
 	protected void createMapViews() {
 		super.createMapViews();
-		this.mapView.getFpsCounter().setVisible(true);
+		for (MapView mapView : mapViews) {
+			mapView.getFpsCounter().setVisible(true);
+		}
 	}
 }

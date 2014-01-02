@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -34,20 +35,21 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	protected void createMapViewPositions() {
 		super.createMapViewPositions();
 		// any position change in one view will be reflected in the other
-		this.observer1 = new MapViewPositionObserver(this.mapViewPosition, this.mapViewPosition2);
-		this.observer2 = new MapViewPositionObserver(this.mapViewPosition2, this.mapViewPosition);
+		this.observer1 = new MapViewPositionObserver(this.mapViewPositions.get(0), this.mapViewPositions.get(1));
+		this.observer2 = new MapViewPositionObserver(this.mapViewPositions.get(1), this.mapViewPositions.get(0));
 	}
 
 	@Override
 	protected void createLayers2() {
-		this.downloadLayer = new TileDownloadLayer(this.tileCache2, this.mapViewPosition2,
+		this.downloadLayer = new TileDownloadLayer(this.tileCache2, this.mapViewPositions.get(1),
 				OpenStreetMapMapnik.INSTANCE, AndroidGraphicFactory.INSTANCE);
 		this.layerManagers.get(1).getLayers().add(this.downloadLayer);
 	}
 
 	@Override
 	protected TileCache createTileCache2() {
-		return AndroidUtil.createTileCache(this, getPersistableId2(), getScreenRatio2(), this.mapView2.getModel().frameBufferModel.getOverdrawFactor());
+		int tileSize = this.mapViews.get(1).getModel().displayModel.getTileSize();
+		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize, getScreenRatio2(), this.mapViews.get(1).getModel().frameBufferModel.getOverdrawFactor());
 	}
 
 	@Override
@@ -67,7 +69,7 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	protected void onPause() {
 		super.onPause();
         this.downloadLayer.onPause();
-		this.mapView2.getModel().save(this.preferencesFacade);
+		this.mapViews.get(1).getModel().save(this.preferencesFacade);
 		this.preferencesFacade.save();
 	}
 

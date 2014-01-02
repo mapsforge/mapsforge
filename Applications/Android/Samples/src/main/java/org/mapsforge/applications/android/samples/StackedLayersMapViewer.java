@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,19 +30,17 @@ import android.util.Log;
 public class StackedLayersMapViewer extends RenderThemeMapViewer {
 
 	protected TileCache tileCache2;
-	boolean haveSecond = true;
 
 	@Override
 	protected void createLayers() {
 		super.createLayers();
-		if (haveSecond)
 		try {
 
 			XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "", "renderthemes/onlybuildings.xml");
 			this.layerManagers
 					.get(0)
 					.getLayers()
-					.add(Utils.createTileRendererLayer(this.tileCache2, this.mapViewPosition,
+					.add(Utils.createTileRendererLayer(this.tileCache2, this.mapViewPositions.get(0),
 							getMapFile(), secondRenderTheme));
 
 		} catch (IOException e) {
@@ -54,7 +52,10 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 	@Override
 	protected void createTileCaches() {
 		super.createTileCaches();
-		this.tileCache2 = AndroidUtil.createTileCache(this, getPersistableId2(), this.getScreenRatio(), this.mapView.getModel().frameBufferModel.getOverdrawFactor());
+		this.tileCache2 = AndroidUtil.createTileCache(this, getPersistableId2(),
+				this.mapViews.get(0).getModel().displayModel.getTileSize(),
+				this.getScreenRatio(),
+				this.mapViews.get(0).getModel().frameBufferModel.getOverdrawFactor());
 	}
 
 	protected String getPersistableId2() {

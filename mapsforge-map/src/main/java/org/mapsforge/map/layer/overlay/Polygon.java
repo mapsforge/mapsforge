@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -65,14 +66,15 @@ public class Polygon extends Layer {
 
 		Path path = this.graphicFactory.createPath();
 		LatLong latLong = iterator.next();
-		int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
-		int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
+		int tileSize = displayModel.getTileSize();
+		int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - topLeftPoint.x);
+		int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - topLeftPoint.y);
 		path.moveTo(x, y);
 
 		while (iterator.hasNext()) {
 			latLong = iterator.next();
-			x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel) - topLeftPoint.x);
-			y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel) - topLeftPoint.y);
+			x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - topLeftPoint.x);
+			y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - topLeftPoint.y);
 			path.lineTo(x, y);
 		}
 

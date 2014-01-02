@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,6 +22,8 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.queue.JobQueue;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
@@ -31,18 +34,15 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private final MapDatabase mapDatabase;
 	private final DatabaseRenderer databaseRenderer;
 	private File mapFile;
-	private final MapWorker mapWorker;
+	private MapWorker mapWorker;
 	private float textScale;
 	private XmlRenderTheme xmlRenderTheme;
 
 	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
-		super(tileCache, mapViewPosition, graphicFactory);
+		super(tileCache, mapViewPosition, graphicFactory.createMatrix());
 
 		this.mapDatabase = new MapDatabase();
 		this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory);
-
-		this.mapWorker = new MapWorker(tileCache, this.jobQueue, databaseRenderer, this);
-		this.mapWorker.start();
 
 		this.textScale = 1;
 	}
@@ -57,6 +57,20 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	public XmlRenderTheme getXmlRenderTheme() {
 		return this.xmlRenderTheme;
+	}
+
+	@Override
+	public synchronized void setDisplayModel(DisplayModel displayModel) {
+		super.setDisplayModel(displayModel);
+		if (displayModel != null) {
+			this.mapWorker = new MapWorker(this.tileCache, this.jobQueue, this.databaseRenderer, this);
+			this.mapWorker.start();
+		} else {
+			// if we do not have a displayModel any more we can stop rendering.
+			if (this.mapWorker != null) {
+				this.mapWorker.interrupt();
+			}
+		}
 	}
 
 	public void setMapFile(File mapFile) {
@@ -77,7 +91,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	@Override
 	protected RendererJob createJob(Tile tile) {
-		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.textScale);
+		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale);
 	}
 
 	@Override

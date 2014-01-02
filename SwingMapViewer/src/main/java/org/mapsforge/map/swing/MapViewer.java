@@ -31,6 +31,7 @@ import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;

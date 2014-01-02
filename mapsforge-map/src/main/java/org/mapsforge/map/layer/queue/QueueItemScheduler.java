@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,30 +24,30 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 
 final class QueueItemScheduler {
-	static final double PENALTY_PER_ZOOM_LEVEL = 10 * GraphicFactory.getTileSize();
+	static final double PENALTY_PER_ZOOM_LEVEL = 10;
 
-	static <T extends Job> void schedule(Collection<QueueItem<T>> queueItems, MapPosition mapPosition) {
+	static <T extends Job> void schedule(Collection<QueueItem<T>> queueItems, MapPosition mapPosition, int tileSize) {
 		for (QueueItem<T> queueItem : queueItems) {
-			queueItem.setPriority(calculatePriority(queueItem.object.tile, mapPosition));
+			queueItem.setPriority(calculatePriority(queueItem.object.tile, mapPosition, tileSize));
 		}
 	}
 
-	private static double calculatePriority(Tile tile, MapPosition mapPosition) {
+	private static double calculatePriority(Tile tile, MapPosition mapPosition, int tileSize) {
 		double tileLatitude = MercatorProjection.tileYToLatitude(tile.tileY, tile.zoomLevel);
 		double tileLongitude = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
 
-		int halfTileSize = GraphicFactory.getTileSize() / 2;
-		double tilePixelX = MercatorProjection.longitudeToPixelX(tileLongitude, mapPosition.zoomLevel) + halfTileSize;
-		double tilePixelY = MercatorProjection.latitudeToPixelY(tileLatitude, mapPosition.zoomLevel) + halfTileSize;
+		int halfTileSize = tileSize / 2;
+		double tilePixelX = MercatorProjection.longitudeToPixelX(tileLongitude, mapPosition.zoomLevel, tileSize) + halfTileSize;
+		double tilePixelY = MercatorProjection.latitudeToPixelY(tileLatitude, mapPosition.zoomLevel, tileSize) + halfTileSize;
 
 		LatLong latLong = mapPosition.latLong;
-		double mapPixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapPosition.zoomLevel);
-		double mapPixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapPosition.zoomLevel);
+		double mapPixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapPosition.zoomLevel, tileSize);
+		double mapPixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapPosition.zoomLevel, tileSize);
 
 		double diffPixel = Math.hypot(tilePixelX - mapPixelX, tilePixelY - mapPixelY);
 		int diffZoom = Math.abs(tile.zoomLevel - mapPosition.zoomLevel);
 
-		return diffPixel + PENALTY_PER_ZOOM_LEVEL * diffZoom;
+		return diffPixel + PENALTY_PER_ZOOM_LEVEL * tileSize * diffZoom;
 	}
 
 	private QueueItemScheduler() {

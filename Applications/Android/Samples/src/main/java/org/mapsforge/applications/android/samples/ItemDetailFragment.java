@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -65,7 +66,6 @@ public class ItemDetailFragment extends Fragment {
 			// arguments. In a real-world scenario, use a Loader
 			// to load content from a content provider.
 			this.dummyItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-			this.tileCache = AndroidUtil.createTileCache(this.getActivity(), "fragments", 1.0f, 1.5);
 		}
 	}
 
@@ -84,6 +84,7 @@ public class ItemDetailFragment extends Fragment {
 
 			MapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
 			mapViewPosition.setZoomLevel((byte) 16);
+			this.tileCache = AndroidUtil.createTileCache(this.getActivity(), "fragments", this.mapView.getModel().displayModel.getTileSize(), 1.0f, 1.5);
 
 			mapViewPosition.setCenter(this.dummyItem.location);
 			layers.add(Utils.createTileRendererLayer(this.tileCache, mapViewPosition, getMapFile(), InternalRenderTheme.OSMARENDER));

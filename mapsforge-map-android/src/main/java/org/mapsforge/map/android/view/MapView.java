@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -41,11 +42,11 @@ import android.view.ScaleGestureDetector;
 import android.view.ViewGroup;
 import android.view.ViewConfiguration;
 
+
 public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView {
 
 	private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions";
 	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
-
 
     private final FpsCounter fpsCounter;
 	private final FrameBuffer frameBuffer;
@@ -70,7 +71,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.model = new Model();
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
-        this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, GRAPHIC_FACTORY);
+        this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
         this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
@@ -85,7 +86,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	    this.touchEventHandler = new TouchEventHandler(this, viewConfiguration, sgd);
 		this.touchEventHandler.addListener(touchGestureDetector);
         this.mapZoomControls = new MapZoomControls(context, this);
-        this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY);
+        this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY, this.model.displayModel);
     }
 
     @Override
@@ -125,7 +126,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         return this.model;
     }
 
-    @Override
+	@Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         if (!isClickable()) {
             return false;
@@ -150,14 +151,14 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 	@Override
     protected void onDraw(Canvas androidCanvas) {
-	    org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
-        this.frameBuffer.draw(graphicContext);
+		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
+		this.frameBuffer.draw(graphicContext);
         this.mapScaleBar.draw(graphicContext);
         this.fpsCounter.draw(graphicContext);
-	    graphicContext.destroy();
+		graphicContext.destroy();
     }
 
-    @Override
+	@Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         this.model.mapViewDimension.setDimension(new Dimension(width, height));
     }
@@ -166,7 +167,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.gestureDetector = gestureDetector;
     }
 
-    @Override
+	@Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         this.mapZoomControls.layout(changed, left, top, right, bottom);
     }

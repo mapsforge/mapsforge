@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,7 +27,8 @@ public class DownloadLayerViewer extends BasicMapViewerXml {
 
 	@Override
 	protected void createLayers() {
-		this.downloadLayer = new TileDownloadLayer(this.tileCache, this.mapViewPosition, OpenStreetMapMapnik.INSTANCE, AndroidGraphicFactory.INSTANCE);
+		this.downloadLayer = new TileDownloadLayer(this.tileCache, this.mapViewPositions.get(0),
+				OpenStreetMapMapnik.INSTANCE, AndroidGraphicFactory.INSTANCE);
 		this.layerManagers.get(0).getLayers().add(this.downloadLayer);
 	}
 

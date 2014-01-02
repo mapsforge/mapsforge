@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -146,8 +147,8 @@ public final class AndroidGraphicFactory extends GraphicFactory {
 		this.application = app;
 		DisplayMetrics metrics = new DisplayMetrics();
 		((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-		// we need to scale up proportionally to the scaledDensity otherwise the map display gets too small
-		setDeviceScaleFactor(metrics.scaledDensity);
+		// the scaledDensity is an approximate scale factor for the device
+		deviceScaleFactor = metrics.scaledDensity;
 	}
 
 	@Override
@@ -192,13 +193,13 @@ public final class AndroidGraphicFactory extends GraphicFactory {
     }
 
 	@Override
-	public TileBitmap createTileBitmap() {
-		return new AndroidTileBitmap();
+	public TileBitmap createTileBitmap(int tileSize) {
+		return new AndroidTileBitmap(tileSize);
 	}
 
 	@Override
-	public TileBitmap createTileBitmap(InputStream inputStream) {
-		return new AndroidTileBitmap(inputStream);
+	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize) {
+		return new AndroidTileBitmap(inputStream, tileSize);
 	}
 
 	@Override
@@ -216,8 +217,8 @@ public final class AndroidGraphicFactory extends GraphicFactory {
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, int hash) {
-		return new AndroidSvgBitmap(inputStream, hash, this.getScaleFactor());
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) {
+		return new AndroidSvgBitmap(inputStream, hash, scaleFactor);
 	}
 
 }

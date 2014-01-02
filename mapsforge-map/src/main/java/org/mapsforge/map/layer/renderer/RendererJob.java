@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,16 +19,18 @@ import java.io.File;
 
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class RendererJob extends Job {
+	public final DisplayModel displayModel;
 	public final File mapFile;
 	public final float textScale;
 	public final XmlRenderTheme xmlRenderTheme;
 	private final int hashCodeValue;
 
-	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
-		super(tile);
+	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel, float textScale) {
+		super(tile, displayModel.getTileSize());
 
 		if (mapFile == null) {
 			throw new IllegalArgumentException("mapFile must not be null");
@@ -37,6 +40,7 @@ public class RendererJob extends Job {
 			throw new IllegalArgumentException("invalid textScale: " + textScale);
 		}
 
+		this.displayModel = displayModel;
 		this.mapFile = mapFile;
 		this.xmlRenderTheme = xmlRenderTheme;
 		this.textScale = textScale;

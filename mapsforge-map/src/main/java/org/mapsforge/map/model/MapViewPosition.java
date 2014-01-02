@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -100,6 +101,7 @@ public class MapViewPosition extends Observable implements Persistable {
 		return false;
 	}
 
+	private final DisplayModel displayModel;
 	private double latitude;
 	private double longitude;
 	private BoundingBox mapLimit;
@@ -110,9 +112,9 @@ public class MapViewPosition extends Observable implements Persistable {
 	private LatLong pivot;
     private final ZoomAnimator zoomAnimator;
 
-	public MapViewPosition() {
+	public MapViewPosition(DisplayModel displayModel) {
 		super();
-
+		this.displayModel = displayModel;
 		this.zoomLevelMax = Byte.MAX_VALUE;
         this.zoomAnimator = new ZoomAnimator();
         this.zoomAnimator.start();
@@ -159,7 +161,7 @@ public class MapViewPosition extends Observable implements Persistable {
 
 	public synchronized Point getPivotXY() {
 		if (this.pivot != null) {
-			return MercatorProjection.getPixel(this.pivot, getZoomLevel());
+			return MercatorProjection.getPixel(this.pivot, getZoomLevel(), displayModel.getTileSize());
 		}
 		return null;
 	}
@@ -228,15 +230,16 @@ public class MapViewPosition extends Observable implements Persistable {
 	 */
 	public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff) {
 		synchronized (this) {
-			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, this.zoomLevel) - moveHorizontal;
-			double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, this.zoomLevel) - moveVertical;
+			int tileSize = this.displayModel.getTileSize();
+			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, this.zoomLevel, tileSize) - moveHorizontal;
+			double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, this.zoomLevel, tileSize) - moveVertical;
 
-			long mapSize = MercatorProjection.getMapSize(this.zoomLevel);
+			long mapSize = MercatorProjection.getMapSize(this.zoomLevel, tileSize);
 			pixelX = Math.min(Math.max(0, pixelX), mapSize);
 			pixelY = Math.min(Math.max(0, pixelY), mapSize);
 
-			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, this.zoomLevel);
-			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, this.zoomLevel);
+			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, this.zoomLevel, tileSize);
+			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, this.zoomLevel, tileSize);
 			setCenterInternal(new LatLong(newLatitude, newLongitude));
 			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
 		}
@@ -285,12 +288,13 @@ public class MapViewPosition extends Observable implements Persistable {
 				final int totalSteps = 25;	// Define the Step Number
 				int signX = 1;	// Define the Sign for Horizontal Movement
 				int signY = 1;	// Define the Sign for Vertical Movement
+				int tileSize = displayModel.getTileSize();
 
-				final double targetPixelX = MercatorProjection.longitudeToPixelX(pos.longitude, getZoomLevel());
-				final double targetPixelY = MercatorProjection.latitudeToPixelY(pos.latitude, getZoomLevel());
+				final double targetPixelX = MercatorProjection.longitudeToPixelX(pos.longitude, getZoomLevel(), tileSize);
+				final double targetPixelY = MercatorProjection.latitudeToPixelY(pos.latitude, getZoomLevel(), tileSize);
 
-				final double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, getZoomLevel());
-				final double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, getZoomLevel());
+				final double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, getZoomLevel(), tileSize);
+				final double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, getZoomLevel(), tileSize);
 
 				final double stepSizeX = Math.abs(targetPixelX - currentPixelX) / totalSteps;
 				final double stepSizeY = Math.abs(targetPixelY - currentPixelY) / totalSteps;

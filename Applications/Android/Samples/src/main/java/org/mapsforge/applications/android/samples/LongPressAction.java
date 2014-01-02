@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,11 +33,10 @@ public class LongPressAction extends BasicMapViewerXml {
 
 	private static final Paint green = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL);
 	private static final Paint red = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 0, Style.FILL);
-	private static float circleSize = 20 * AndroidGraphicFactory.INSTANCE.getScaleFactor();
 
 	@Override
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(this.tileCache, this.mapViewPosition,
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(this.tileCache, this.mapViewPositions.get(0),
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
 			@Override
 			public boolean onLongPress(LatLong tapLatLong, Point thisXY, Point tapXY) {
@@ -53,6 +52,7 @@ public class LongPressAction extends BasicMapViewerXml {
 
 
 	protected void onLongPress(LatLong position) {
+		float circleSize = 20 * this.mapViews.get(0).getModel().displayModel.getScaleFactor();
 		FixedPixelCircle tappableCircle = new FixedPixelCircle(position, circleSize, green, null){
 			@Override
 			public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {
@@ -68,8 +68,8 @@ public class LongPressAction extends BasicMapViewerXml {
 			public boolean onLongPress(LatLong geoPoint, Point viewPosition, Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
 					Log.w("Tapp", "The Circle was long pressed at " + geoPoint.toString());
-					LongPressAction.this.mapView.getLayerManager().getLayers().remove(this);
-					LongPressAction.this.mapView.getLayerManager().redrawLayers();
+					LongPressAction.this.mapViews.get(0).getLayerManager().getLayers().remove(this);
+					LongPressAction.this.mapViews.get(0).getLayerManager().redrawLayers();
 					return true;
 				}
 				return false;
@@ -83,7 +83,7 @@ public class LongPressAction extends BasicMapViewerXml {
 				}
 			}
 		};
-		this.mapView.getLayerManager().getLayers().add(tappableCircle);
+		this.mapViews.get(0).getLayerManager().getLayers().add(tappableCircle);
 		tappableCircle.requestRedraw();
 
 	}

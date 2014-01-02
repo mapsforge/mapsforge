@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -38,8 +38,9 @@ public class ZoomToBounds extends OverlayMapViewer {
 	    super.onWindowFocusChanged(hasFocus);
 	    if (hasFocus) {
 		BoundingBox bb = new BoundingBox(latLong2.latitude, latLong3.longitude, latLong3.latitude, latLong2.longitude);
-		Dimension dimension = this.mapView.getModel().mapViewDimension.getDimension();
-		this.mapView.getModel().mapViewPosition.setMapPosition(new MapPosition(bb.getCenterPoint(), Utils.zoomForBounds(dimension, bb)));
+		Dimension dimension = this.mapViews.get(0).getModel().mapViewDimension.getDimension();
+		this.mapViews.get(0).getModel().mapViewPosition.setMapPosition(new MapPosition(bb.getCenterPoint(),
+				Utils.zoomForBounds(dimension, bb, this.mapViews.get(0).getModel().displayModel.getTileSize())));
 	    }
 	}
 

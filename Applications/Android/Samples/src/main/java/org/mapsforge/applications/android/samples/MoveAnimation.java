@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,7 +24,7 @@ import org.mapsforge.core.model.LatLong;
 public class MoveAnimation extends LongPressAction{
 
 	protected void onLongPress(LatLong position) {
-		this.mapView.getModel().mapViewPosition.animateTo(position);
+		this.mapViews.get(0).getModel().mapViewPosition.animateTo(position);
 	}
 
 }

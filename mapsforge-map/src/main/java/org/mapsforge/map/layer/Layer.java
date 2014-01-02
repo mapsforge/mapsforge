@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,12 +19,12 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.LatLong;
-
-import java.util.logging.Logger;
+import org.mapsforge.map.model.DisplayModel;
 
 public abstract class Layer {
 	private Redrawer assignedRedrawer;
 	private boolean visible = true;
+	protected DisplayModel displayModel;
 
 	/**
 	 * Draws this {@code Layer} on the given canvas.
@@ -53,6 +54,16 @@ public abstract class Layer {
 		if (this.assignedRedrawer != null) {
 			this.assignedRedrawer.redrawLayers();
 		}
+	}
+
+	/**
+	 * The DisplayModel comes from a MapView, so is generally not known when the layer itself is
+	 * created. Maybe a better way would be to have a MapView as a parameter when creating a layer.
+	 *
+	 * @param displayModel the displayModel to use.
+	 */
+	public synchronized void setDisplayModel(DisplayModel displayModel) {
+		this.displayModel = displayModel;
 	}
 
 	/**

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +23,7 @@ import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -40,7 +42,7 @@ public class AreaBuilder {
 	final Paint stroke;
 	float strokeWidth;
 
-	public AreaBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes, int level,
+	public AreaBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes, int level,
 			String relativePathPrefix) throws IOException, SAXException {
 		this.level = level;
 
@@ -54,7 +56,7 @@ public class AreaBuilder {
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
 
-		extractValues(graphicFactory, elementName, attributes, relativePathPrefix);
+		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
 	}
 
 	/**
@@ -64,14 +66,14 @@ public class AreaBuilder {
 		return new Area(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes,
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes,
 			String relativePathPrefix) throws IOException, SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				Bitmap shaderBitmap = XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value);
+				Bitmap shaderBitmap = XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, value);
 				if (shaderBitmap != null) {
 					this.fill.setBitmapShader(shaderBitmap);
 					shaderBitmap.decrementRefCount();

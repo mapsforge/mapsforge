@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,12 +23,12 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.AndroidPreferences;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.graphics.AndroidBitmap;
 
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapDatabase;
@@ -59,8 +60,8 @@ import android.widget.TextView;
  * A simple application which demonstrates how to use a MapView.
  */
 public class BasicMapViewer extends Activity implements OnSharedPreferenceChangeListener {
-	protected MapView mapView;
-	protected MapViewPosition mapViewPosition;
+	protected Vector<MapView> mapViews = new Vector<>();
+	protected Vector<MapViewPosition> mapViewPositions = new Vector<>();
 	protected TileCache tileCache;
 	protected Vector<LayerManager> layerManagers = new Vector<LayerManager>();
 	protected PreferencesFacade preferencesFacade;
@@ -71,6 +72,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
@@ -79,6 +81,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		createMapViewPositions();
 		createLayerManagers();
 		createTileCaches();
+		createControls();
 	}
 
 	@Override
@@ -90,7 +93,9 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	@Override
 	protected void onPause() {
 		super.onPause();
-		this.mapView.getModel().save(this.preferencesFacade);
+		for (MapView mapView : mapViews) {
+			mapView.getModel().save(this.preferencesFacade);
+		}
 		this.preferencesFacade.save();
 	}
 
@@ -116,19 +121,25 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createMapViewPositions() {
-		this.mapViewPosition = initializePosition(this.mapView.getModel().mapViewPosition);
+		for (MapView mapView : mapViews) {
+			this.mapViewPositions.add(initializePosition(mapView.getModel().mapViewPosition));
+		}
 	}
 
 	protected void destroyMapViewPositions() {
-		this.mapViewPosition.destroy();
+		for (MapViewPosition mapViewPosition : mapViewPositions) {
+			mapViewPosition.destroy();
+		}
 	}
 
 	protected void createLayerManagers() {
-		this.layerManagers.add(this.mapView.getLayerManager());
+		for (MapView mapView : mapViews) {
+			this.layerManagers.add(mapView.getLayerManager());
+		}
 	}
 
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCache, this.mapViewPosition, getMapFile(), getRenderTheme());
+		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCache, this.mapViewPositions.get(0), getMapFile(), getRenderTheme());
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
 	}
 
@@ -142,25 +153,31 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createTileCaches() {
-		this.tileCache = AndroidUtil.createTileCache(this, getPersistableId(), this.getScreenRatio(), this.mapView.getModel().frameBufferModel.getOverdrawFactor());
+		this.tileCache = AndroidUtil.createTileCache(this, getPersistableId(), this.mapViews.get(0).getModel().displayModel.getTileSize(), this.getScreenRatio(), this.mapViews.get(0).getModel().frameBufferModel.getOverdrawFactor());
 	}
 
 	protected void destroyTileCaches() {
 		this.tileCache.destroy();
 	}
 
+	protected void createControls() {
+	}
+
 	protected void createMapViews() {
-		this.mapView = getMapView();
-		this.mapView.getModel().init(this.preferencesFacade);
-		this.mapView.setClickable(true);
-		this.mapView.getMapScaleBar().setVisible(true);
-		this.mapView.setBuiltInZoomControls(true);
-		this.mapView.getMapZoomControls().setZoomLevelMin((byte)10);
-		this.mapView.getMapZoomControls().setZoomLevelMax((byte)20);
+		MapView mapView = getMapView();
+		mapView.getModel().init(this.preferencesFacade);
+		mapView.setClickable(true);
+		mapView.getMapScaleBar().setVisible(true);
+		mapView.setBuiltInZoomControls(getZoomControls());
+		mapView.getMapZoomControls().setZoomLevelMin((byte)10);
+		mapView.getMapZoomControls().setZoomLevelMax((byte)20);
+		this.mapViews.add(mapView);
 	}
 
 	protected void destroyMapViews() {
-		this.mapView.destroy();
+		for (MapView mapView : mapViews) {
+			mapView.destroy();
+		}
 	}
 
 	protected void redrawLayers() {
@@ -220,6 +237,10 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		return 1.0f;
 	}
 
+	protected boolean getZoomControls() {
+		return true;
+	}
+
 	protected MapView getMapView() {
 		MapView mv = new MapView(this);
 		setContentView(mv);
@@ -269,6 +290,10 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		if (key.equals("scale")) {
 			destroyTileCaches();
+			for (MapView mapView : mapViews) {
+				mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
+			}
+			Log.d("SETTINGS", "Tilesize now " + mapViews.get(0).getModel().displayModel.getTileSize());
 			createTileCaches();
 			redrawLayers();
 		}
@@ -292,10 +317,10 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 								.toString());
 						double lon = Double.parseDouble(((EditText) view.findViewById(R.id.longitude)).getText()
 								.toString());
-						byte zoomLevel = (byte) ((((SeekBar) view.findViewById(R.id.zoomlevel)).getProgress()) + BasicMapViewer.this.mapViewPosition
+						byte zoomLevel = (byte) ((((SeekBar) view.findViewById(R.id.zoomlevel)).getProgress()) + BasicMapViewer.this.mapViewPositions.get(0)
 								.getZoomLevelMin());
 
-						BasicMapViewer.this.mapViewPosition.setMapPosition(new MapPosition(new LatLong(lat, lon),
+						BasicMapViewer.this.mapViewPositions.get(0).setMapPosition(new MapPosition(new LatLong(lat, lon),
 								zoomLevel));
 					}
 				});
@@ -309,7 +334,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	@Override
 	protected void onPrepareDialog(int id, final Dialog dialog) {
 		if (id == this.DIALOG_ENTER_COORDINATES) {
-			MapViewPosition currentPosition = BasicMapViewer.this.mapViewPosition;
+			MapViewPosition currentPosition = BasicMapViewer.this.mapViewPositions.get(0);
 			LatLong currentCenter = currentPosition.getCenter();
 			EditText editText = (EditText) dialog.findViewById(R.id.latitude);
 			editText.setText(Double.toString(currentCenter.latitude));
@@ -317,7 +342,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			editText.setText(Double.toString(currentCenter.longitude));
 			SeekBar zoomlevel = (SeekBar) dialog.findViewById(R.id.zoomlevel);
 			zoomlevel.setMax(currentPosition.getZoomLevelMax() - currentPosition.getZoomLevelMin());
-			zoomlevel.setProgress(BasicMapViewer.this.mapViewPosition.getZoomLevel()
+			zoomlevel.setProgress(BasicMapViewer.this.mapViewPositions.get(0).getZoomLevel()
 					- currentPosition.getZoomLevelMin());
 			final TextView textView = (TextView) dialog.findViewById(R.id.zoomlevelValue);
 			textView.setText(String.valueOf(zoomlevel.getProgress()));
@@ -346,6 +371,6 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	 * sets the content view if it has not been set already
 	 */
 	protected void setContentView() {
-		setContentView(this.mapView);
+		setContentView(this.mapViews.get(0));
 	}
 }

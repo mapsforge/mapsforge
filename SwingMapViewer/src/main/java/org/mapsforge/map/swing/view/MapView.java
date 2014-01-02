@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,6 +26,7 @@ import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.view.FpsCounter;
@@ -47,7 +49,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.model = new Model();
 
 		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
-		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, GRAPHIC_FACTORY);
+		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, new DisplayModel(), GRAPHIC_FACTORY);
 		this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
 		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
@@ -56,7 +58,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		MapViewController.create(this, this.model);
 
-		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY);
+		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY, new DisplayModel());
 	}
 
 	@Override

@@ -26,39 +26,42 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.queue.Job;
 
 public class TwoLevelTileCacheTest {
+	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	@Test
 	public void twoLevelTileCacheTest() {
-		TileCache tileCache1 = new InMemoryTileCache(1);
-		TileCache tileCache2 = new InMemoryTileCache(1);
-		TwoLevelTileCache twoLevelTileCache = new TwoLevelTileCache(tileCache1, tileCache2);
+		for (int tileSize : TILE_SIZES) {
+			TileCache tileCache1 = new InMemoryTileCache(1);
+			TileCache tileCache2 = new InMemoryTileCache(1);
+			TwoLevelTileCache twoLevelTileCache = new TwoLevelTileCache(tileCache1, tileCache2);
 
-		Assert.assertEquals(1, twoLevelTileCache.getCapacity());
+			Assert.assertEquals(1, twoLevelTileCache.getCapacity());
 
-		Tile tile = new Tile(0, 0, (byte) 0);
-		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		Job job = new DownloadJob(tile, tileSource);
-		Assert.assertFalse(tileCache1.containsKey(job));
-		Assert.assertFalse(tileCache2.containsKey(job));
-		Assert.assertFalse(twoLevelTileCache.containsKey(job));
+			Tile tile = new Tile(0, 0, (byte) 0);
+			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+			Job job = new DownloadJob(tile, tileSize, tileSource);
+			Assert.assertFalse(tileCache1.containsKey(job));
+			Assert.assertFalse(tileCache2.containsKey(job));
+			Assert.assertFalse(twoLevelTileCache.containsKey(job));
 
-		TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap();
-		twoLevelTileCache.put(job, bitmap);
-		//Assert.assertTrue(tileCache1.containsKey(job));
-		Assert.assertTrue(tileCache2.containsKey(job));
-		Assert.assertTrue(twoLevelTileCache.containsKey(job));
-		Assert.assertEquals(bitmap, twoLevelTileCache.get(job));
+			TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap(tileSize);
+			twoLevelTileCache.put(job, bitmap);
+			//Assert.assertTrue(tileCache1.containsKey(job));
+			Assert.assertTrue(tileCache2.containsKey(job));
+			Assert.assertTrue(twoLevelTileCache.containsKey(job));
+			Assert.assertEquals(bitmap, twoLevelTileCache.get(job));
 
-		Assert.assertTrue(tileCache1.containsKey(job));
-		Assert.assertTrue(tileCache2.containsKey(job));
-		Assert.assertTrue(twoLevelTileCache.containsKey(job));
-		Assert.assertEquals(bitmap, twoLevelTileCache.get(job));
+			Assert.assertTrue(tileCache1.containsKey(job));
+			Assert.assertTrue(tileCache2.containsKey(job));
+			Assert.assertTrue(twoLevelTileCache.containsKey(job));
+			Assert.assertEquals(bitmap, twoLevelTileCache.get(job));
 
-		twoLevelTileCache.destroy();
-		Assert.assertFalse(tileCache1.containsKey(job));
-		Assert.assertFalse(tileCache2.containsKey(job));
-		Assert.assertFalse(twoLevelTileCache.containsKey(job));
-		Assert.assertNull(twoLevelTileCache.get(job));
+			twoLevelTileCache.destroy();
+			Assert.assertFalse(tileCache1.containsKey(job));
+			Assert.assertFalse(tileCache2.containsKey(job));
+			Assert.assertFalse(twoLevelTileCache.containsKey(job));
+			Assert.assertNull(twoLevelTileCache.get(job));
+		}
 	}
 }

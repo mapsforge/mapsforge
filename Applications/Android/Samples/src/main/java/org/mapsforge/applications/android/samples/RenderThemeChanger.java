@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -70,15 +70,10 @@ public class RenderThemeChanger extends BasicMapViewer {
 
 
 	@Override
-	protected void onCreate(Bundle sis) {
-		super.onCreate(sis);
-		this.changerThread = new ChangerThread();
-	}
-
-	@Override
 	protected void createLayers() {
-		tileRendererLayer = Utils.createTileRendererLayer(this.tileCache, this.mapViewPosition, getMapFile(), getRenderTheme());
+		tileRendererLayer = Utils.createTileRendererLayer(this.tileCache, this.mapViewPositions.get(0), getMapFile(), getRenderTheme());
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		this.changerThread = new ChangerThread();
 		this.changerThread.start();
 	}
 
@@ -100,7 +95,7 @@ public class RenderThemeChanger extends BasicMapViewer {
 				layerManagers.get(0).getLayers().remove(tileRendererLayer);
 				tileRendererLayer.onDestroy();
 				tileCache.destroy(); // clear the cache
-				tileRendererLayer = Utils.createTileRendererLayer(tileCache, mapViewPosition, getMapFile(), nextRenderTheme);
+				tileRendererLayer = Utils.createTileRendererLayer(tileCache, mapViewPositions.get(0), getMapFile(), nextRenderTheme);
 				layerManagers.get(0).getLayers().add(tileRendererLayer);
 				layerManagers.get(0).redrawLayers();
 			} catch (FileNotFoundException e) {

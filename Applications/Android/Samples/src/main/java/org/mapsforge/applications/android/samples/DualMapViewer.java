@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013 - 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,18 +32,17 @@ import android.os.Environment;
  */
 public class DualMapViewer extends BasicMapViewerXml {
 
-	protected MapView mapView2;
 	protected PreferencesFacade preferencesFacade2;
 	protected TileCache tileCache2;
-	protected MapViewPosition mapViewPosition2;
 
     @Override
 	protected void createMapViews() {
 		super.createMapViews();
 		// second mapView is defined in layout
-		this.mapView2 = (MapView) this.findViewById(R.id.mapView2);
-		this.mapView2.getModel().init(this.preferencesFacade2);
-		this.mapView2.setClickable(true);
+		MapView mapView = (MapView) this.findViewById(R.id.mapView2);
+		mapView.getModel().init(this.preferencesFacade2);
+		mapView.setClickable(true);
+	    mapViews.add(mapView);
 	}
 
 	@Override
@@ -58,28 +58,11 @@ public class DualMapViewer extends BasicMapViewerXml {
 		this.tileCache2 = createTileCache2();
 	}
 
-	@Override
-	protected void createLayerManagers() {
-		super.createLayerManagers();
-		this.layerManagers.add(this.mapView2.getLayerManager());
-	}
-
-	@Override
-	protected void createMapViewPositions() {
-		super.createMapViewPositions();
-		this.mapViewPosition2 = this.initializePosition(this.mapView2.getModel().mapViewPosition);
-	}
 
 	@Override
 	protected void createLayers() {
 		super.createLayers();
 		createLayers2();
-	}
-
-	@Override
-	protected void destroyMapViewPositions() {
-		super.destroyMapViewPositions();
-		this.mapViewPosition2.destroy();
 	}
 
 
@@ -107,16 +90,10 @@ public class DualMapViewer extends BasicMapViewerXml {
 		return 0.5f;
 	}
 
-	@Override
-	protected void destroyMapViews() {
-		super.destroyMapViews();
-		this.mapView2.destroy();
-	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		this.mapView2.getModel().save(this.preferencesFacade2);
 		this.preferencesFacade2.save();
 	}
 
@@ -127,7 +104,7 @@ public class DualMapViewer extends BasicMapViewerXml {
 		this.layerManagers
 				.get(1)
 				.getLayers()
-				.add(Utils.createTileRendererLayer(this.tileCache2, this.mapViewPosition2,
+				.add(Utils.createTileRendererLayer(this.tileCache2, this.mapViewPositions.get(1),
 						getMapFile2(), getRenderTheme2()));
 	}
 

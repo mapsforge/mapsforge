@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,6 +24,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.model.DisplayModel;
 
 public class TileGridLayer extends Layer {
 	private static Paint createPaint(GraphicFactory graphicFactory) {
@@ -34,10 +36,12 @@ public class TileGridLayer extends Layer {
 	}
 
 	private final Paint paint;
+	private final DisplayModel displayModel;
 
-	public TileGridLayer(GraphicFactory graphicFactory) {
+	public TileGridLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
+		this.displayModel = displayModel;
 		this.paint = createPaint(graphicFactory);
 	}
 
@@ -48,16 +52,17 @@ public class TileGridLayer extends Layer {
 		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
 		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
 
-		int pixelX1 = (int) (MercatorProjection.tileToPixel(tileLeft) - topLeftPoint.x);
-		int pixelY1 = (int) (MercatorProjection.tileToPixel(tileTop) - topLeftPoint.y);
-		int pixelX2 = (int) (MercatorProjection.tileToPixel(tileRight) - topLeftPoint.x + GraphicFactory.getTileSize());
-		int pixelY2 = (int) (MercatorProjection.tileToPixel(tileBottom) - topLeftPoint.y + GraphicFactory.getTileSize());
+		int tileSize = this.displayModel.getTileSize();
+		int pixelX1 = (int) (MercatorProjection.tileToPixel(tileLeft, tileSize) - topLeftPoint.x);
+		int pixelY1 = (int) (MercatorProjection.tileToPixel(tileTop, tileSize) - topLeftPoint.y);
+		int pixelX2 = (int) (MercatorProjection.tileToPixel(tileRight, tileSize) - topLeftPoint.x + tileSize);
+		int pixelY2 = (int) (MercatorProjection.tileToPixel(tileBottom, tileSize) - topLeftPoint.y + tileSize);
 
-		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += GraphicFactory.getTileSize()) {
+		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += tileSize) {
 			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paint);
 		}
 
-		for (int lineY = pixelY1; lineY <= pixelY2 + 1; lineY += GraphicFactory.getTileSize()) {
+		for (int lineY = pixelY1; lineY <= pixelY2 + 1; lineY += tileSize) {
 			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, this.paint);
 		}
 	}

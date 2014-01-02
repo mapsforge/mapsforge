@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,6 +22,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
 public class FrameBuffer {
@@ -29,11 +31,13 @@ public class FrameBuffer {
 	private Bitmap bitmap2;
 	private Dimension dimension;
 	private final FrameBufferModel frameBufferModel;
+	private final DisplayModel displayModel;
 	private final GraphicFactory graphicFactory;
 	private final Matrix matrix;
 
-	public FrameBuffer(FrameBufferModel frameBufferModel, GraphicFactory graphicFactory) {
+	public FrameBuffer(FrameBufferModel frameBufferModel, DisplayModel displayModel, GraphicFactory graphicFactory) {
 		this.frameBufferModel = frameBufferModel;
+		this.displayModel = displayModel;
 		this.graphicFactory = graphicFactory;
 		this.matrix = graphicFactory.createMatrix();
 	}
@@ -54,7 +58,7 @@ public class FrameBuffer {
 	}
 
     public synchronized void draw(GraphicContext graphicContext) {
-	    graphicContext.fillColor(this.graphicFactory.getBackgroundColor());
+	    graphicContext.fillColor(this.displayModel.getBackgroundColor());
 		if (this.bitmap1 != null) {
   	        graphicContext.drawBitmap(this.bitmap1, this.matrix);
 		}
@@ -67,7 +71,7 @@ public class FrameBuffer {
             this.bitmap1 = this.bitmap2;
             this.bitmap2 = bitmapTemp;
 	        if (this.bitmap2 != null) {
-	            this.bitmap2.setBackgroundColor(this.graphicFactory.getBackgroundColor());
+	            this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
 	        }
         }
         // taking this out of the synchronized region removes a deadlock potential
@@ -97,9 +101,8 @@ public class FrameBuffer {
 
 		if (dimension.width > 0 && dimension.height > 0) {
 			this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
-			this.bitmap1.setBackgroundColor(this.graphicFactory.getBackgroundColor());
 			this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
-			this.bitmap2.setBackgroundColor(this.graphicFactory.getBackgroundColor());
+			this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
 		}
 	}
 

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -121,12 +122,12 @@ public final class AwtGraphicFactory extends GraphicFactory {
     }
 
     @Override
-	public TileBitmap createTileBitmap() {
-		return new AwtTileBitmap();
+	public TileBitmap createTileBitmap(int tileSize) {
+		return new AwtTileBitmap(tileSize);
 	}
 
 	@Override
-	public TileBitmap createTileBitmap(InputStream inputStream) throws IOException {
+	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize) throws IOException {
 		return new AwtTileBitmap(inputStream);
 	}
 
@@ -136,7 +137,7 @@ public final class AwtGraphicFactory extends GraphicFactory {
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, int hash) {
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) {
 		return null;
 	}
 

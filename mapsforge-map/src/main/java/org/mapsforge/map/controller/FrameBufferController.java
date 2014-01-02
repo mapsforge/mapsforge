@@ -38,6 +38,7 @@ public final class FrameBufferController implements Observer {
 		model.frameBufferModel.addObserver(frameBufferController);
 		model.mapViewDimension.addObserver(frameBufferController);
 		model.mapViewPosition.addObserver(frameBufferController);
+		model.displayModel.addObserver(frameBufferController);
 
 		return frameBufferController;
 	}
@@ -109,8 +110,8 @@ public final class FrameBufferController implements Observer {
     private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension, double scaleFactor, Point pivotXY) {
         MapPosition mapPosition = this.model.mapViewPosition.getMapPosition();
 
-        Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapPosition.zoomLevel);
-        Point pointMapPosition = MercatorProjection.getPixel(mapPosition.latLong, mapPosition.zoomLevel);
+        Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapPosition.zoomLevel, model.displayModel.getTileSize());
+        Point pointMapPosition = MercatorProjection.getPixel(mapPosition.latLong, mapPosition.zoomLevel, model.displayModel.getTileSize());
         double diffX = pointFrameBuffer.x - pointMapPosition.x;
         double diffY = pointFrameBuffer.y - pointMapPosition.y;
 

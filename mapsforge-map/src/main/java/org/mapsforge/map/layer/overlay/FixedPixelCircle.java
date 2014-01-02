@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,9 +41,7 @@ public class FixedPixelCircle extends Circle {
 	}
 
 	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		// TODO this needs to be scaled according to display resolution, but
-		// TODO here we do not have access to the AndroidGraphicFactory
-		return (int) this.getRadius();
+		return (int) (this.getRadius() * this.displayModel.getScaleFactor());
 	}
 
 	public boolean contains(Point center, Point point) {

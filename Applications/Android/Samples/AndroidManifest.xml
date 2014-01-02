@@ -15,7 +15,7 @@
     <application
         android:name=".SamplesApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="true"
+        android:hardwareAccelerated="false"
         android:label="Samples" >
 
         <activity
@@ -95,6 +95,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Show two maps at the same time" />
         <activity
+            android:name=".DualMapViewerWithDifferentDisplayModels"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Two views with different DisplayModels" />
+        <activity
             android:name=".DualMapnikMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Show two maps linked in position movements" />
@@ -131,6 +135,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Samples" />
         </activity>
+
     </application>
 
 </manifest>

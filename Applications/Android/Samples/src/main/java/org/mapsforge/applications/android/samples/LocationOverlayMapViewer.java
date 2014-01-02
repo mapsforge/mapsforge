@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,7 +37,7 @@ public class LocationOverlayMapViewer extends BasicMapViewerXml {
 		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
 
 		// create the overlay and tell it to follow the location
-		this.myLocationOverlay = new MyLocationOverlay(this, this.mapViewPosition, bitmap);
+		this.myLocationOverlay = new MyLocationOverlay(this, this.mapViewPositions.get(0), bitmap);
 		this.myLocationOverlay.setSnapToLocationEnabled(true);
 
 		this.layerManagers.get(0).getLayers().add(this.myLocationOverlay);

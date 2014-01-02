@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,8 +24,10 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
 public class MarkerTest {
+	private static final int[] TILE_SIZES = {256};
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	@Test
@@ -41,19 +44,22 @@ public class MarkerTest {
 
 	@Test
 	public void drawTest() {
-		Marker marker = new Marker(null, null, 0, 0);
+		for (int tileSize : TILE_SIZES) {
+			Marker marker = new Marker(null, null, 0, 0);
+			marker.setDisplayModel(new FixedTileSizeDisplayModel(tileSize));
 
-		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
-		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
-		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(GraphicFactory.getTileSize(), GraphicFactory.getTileSize()));
-		Point point = new Point(0, 0);
-		marker.draw(boundingBox, (byte) 0, canvas, point);
+			BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
+			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
+			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
+			Point point = new Point(0, 0);
+			marker.draw(boundingBox, (byte) 0, canvas, point);
 
-		marker.setLatLong(new LatLong(0, 0));
-		marker.draw(boundingBox, (byte) 0, canvas, point);
+			marker.setLatLong(new LatLong(0, 0));
+			marker.draw(boundingBox, (byte) 0, canvas, point);
 
-		marker.setBitmap(GRAPHIC_FACTORY.createBitmap(10, 20));
-		marker.draw(boundingBox, (byte) 0, canvas, point);
+			marker.setBitmap(GRAPHIC_FACTORY.createBitmap(10, 20));
+			marker.draw(boundingBox, (byte) 0, canvas, point);
+		}
 	}
 
 	@Test

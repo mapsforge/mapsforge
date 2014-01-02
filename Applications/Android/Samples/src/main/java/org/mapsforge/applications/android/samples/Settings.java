@@ -1,6 +1,7 @@
 /*
  * Copyright 2010 mapsforge.org
  * Copyright 2011 Applantation.com
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +18,7 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,11 +76,11 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		if (key.equals("scale")) {
-			float userScaleFactor = AndroidGraphicFactory.INSTANCE.getUserScaleFactor();
+			float userScaleFactor = DisplayModel.getDefaultUserScaleFactor();
 			float fs = Float.valueOf(preferences.getString("scale", Float.toString(userScaleFactor)));
 			Log.e("SAMPLES", "User ScaleFactor " + Float.toString(fs));
 			if (fs != userScaleFactor) {
-				AndroidGraphicFactory.INSTANCE.setUserScaleFactor(fs);
+				DisplayModel.setDefaultUserScaleFactor(fs);
 			}
 		}
 	}

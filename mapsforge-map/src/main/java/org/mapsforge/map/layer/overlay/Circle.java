@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -65,8 +66,9 @@ public class Circle extends Layer {
 
 		double latitude = this.latLong.latitude;
 		double longitude = this.latLong.longitude;
-		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - topLeftPoint.x);
-		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - topLeftPoint.y);
+		int tileSize = displayModel.getTileSize();
+		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel, tileSize) - topLeftPoint.x);
+		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel, tileSize) - topLeftPoint.y);
 		int radiusInPixel = getRadiusInPixels(latitude, zoomLevel);
 
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -153,7 +155,7 @@ public class Circle extends Layer {
 	}
 
 	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		return (int) MercatorProjection.metersToPixels(this.radius, latitude, zoomLevel);
+		return (int) MercatorProjection.metersToPixels(this.radius, latitude, zoomLevel, displayModel.getTileSize());
 	}
 
 }

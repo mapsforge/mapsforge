@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -29,7 +30,7 @@ public class BubbleOverlay extends BasicMapViewerXml {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		this.mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
+		this.mapViewPositions.get(0).setCenter(DummyContent.ITEMS.get(1).location);
 	}
 
 	@Override
@@ -51,6 +52,6 @@ public class BubbleOverlay extends BasicMapViewerXml {
 	@Override
 	protected void createMapViewPositions() {
 		super.createMapViewPositions();
-		this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
+		this.mapViews.get(0).getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
 	}
 }

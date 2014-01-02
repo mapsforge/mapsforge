@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.xml.sax.SAXException;
 
@@ -75,6 +77,6 @@ public class ExternalRenderThemeTest {
 	public void validRenderThemeFileTest() throws SAXException, ParserConfigurationException, IOException {
 		File renderThemeFile = new File(RESOURCE_FOLDER, "empty-render-theme.xml");
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(renderThemeFile);
-		Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, xmlRenderTheme));
+		Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
 	}
 }

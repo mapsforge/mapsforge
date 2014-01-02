@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -33,7 +35,7 @@ public class AreaBuilderTest {
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, AreaBuilder.STROKE_WIDTH, null, String.valueOf(STROKE_WIDTH));
 
-		AreaBuilder areaBuilder = new AreaBuilder(GRAPHIC_FACTORY, "area", attributesImpl, LEVEL, null);
+		AreaBuilder areaBuilder = new AreaBuilder(GRAPHIC_FACTORY, new DisplayModel(), "area", attributesImpl, LEVEL, null);
 
 		Assert.assertEquals(LEVEL, areaBuilder.level);
 		Assert.assertEquals(STROKE_WIDTH, areaBuilder.strokeWidth, 0);

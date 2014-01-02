@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,18 +34,19 @@ public class DualOverviewMapViewer extends DualMapViewer {
 	protected void createMapViewPositions() {
 		super.createMapViewPositions();
 
-		this.mapView2.getModel().mapViewPosition.setZoomLevel((byte) 12);
+		this.mapViews.get(1).getModel().mapViewPosition.setZoomLevel((byte) 12);
 
-		this.observer = new MapViewPositionObserver(this.mapView.getModel().mapViewPosition,
-				this.mapView2.getModel().mapViewPosition) {
+		this.observer = new MapViewPositionObserver(this.mapViews.get(0).getModel().mapViewPosition,
+				this.mapViews.get(1).getModel().mapViewPosition) {
 			Polyline lastLine;
 
 			@Override
 			protected void setCenter() {
 				super.setCenter();
 				BoundingBox bbox = MapPositionUtil.getBoundingBox(
-						DualOverviewMapViewer.this.mapView.getModel().mapViewPosition.getMapPosition(),
-						DualOverviewMapViewer.this.mapView.getDimension());
+						DualOverviewMapViewer.this.mapViews.get(0).getModel().mapViewPosition.getMapPosition(),
+						DualOverviewMapViewer.this.mapViews.get(0).getDimension(),
+						DualOverviewMapViewer.this.mapViews.get(0).getModel().displayModel.getTileSize());
 				Paint paintStroke = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 2,
 						Style.STROKE);
 				Polyline polygon = new Polyline(paintStroke, AndroidGraphicFactory.INSTANCE);
@@ -54,9 +56,9 @@ public class DualOverviewMapViewer extends DualMapViewer {
 				polygon.getLatLongs().add(new LatLong(bbox.maxLatitude, bbox.minLongitude));
 				polygon.getLatLongs().add(new LatLong(bbox.minLatitude, bbox.minLongitude));
 				if (this.lastLine != null) {
-					DualOverviewMapViewer.this.mapView2.getLayerManager().getLayers().remove(this.lastLine);
+					DualOverviewMapViewer.this.mapViews.get(1).getLayerManager().getLayers().remove(this.lastLine);
 				}
-				DualOverviewMapViewer.this.mapView2.getLayerManager().getLayers().add(polygon);
+				DualOverviewMapViewer.this.mapViews.get(1).getLayerManager().getLayers().add(polygon);
 				this.lastLine = polygon;
 			}
 

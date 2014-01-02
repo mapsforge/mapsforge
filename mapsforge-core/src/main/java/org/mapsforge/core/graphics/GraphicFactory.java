@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,16 +20,10 @@ import java.io.InputStream;
 
 public abstract class GraphicFactory {
 
-	/**
-	 * Default width and height of a map tile in pixel when no device or user scaling is applied.
-	 */
-	private static int defaultTileSize = 256;
-	private static int tileSize = defaultTileSize;
-	private static float deviceScaleFactor = 1f;
-	private static float userScaleFactor = 1f;
+	protected static float deviceScaleFactor;
 
-	private static int defaultBackgroundColour = 0xffeeeeee; // format AARRGGBB
-	private static int backgroundColor = defaultBackgroundColour;
+	public static final int DEFAULT_BACKGROUND_COLOR = 0xffeeeeee; // format AARRGGBB
+	public static final int DEFAULT_TILE_SIZE = 256;
 
 	public abstract Bitmap createBitmap(int width, int height);
 
@@ -46,49 +41,20 @@ public abstract class GraphicFactory {
 
 	public abstract ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
 
-	public abstract TileBitmap createTileBitmap();
+	public abstract TileBitmap createTileBitmap(int tileSize);
 
-	public abstract TileBitmap createTileBitmap(InputStream inputStream) throws IOException;
+	public abstract TileBitmap createTileBitmap(InputStream inputStream, int tileSize) throws IOException;
 
-	public synchronized int getBackgroundColor() {
-		return this.backgroundColor;
+	public static int getAlpha(int color) {
+		return (color >> 24) & 0xff;
 	}
 
-	public synchronized float getScaleFactor() {
-		return this.deviceScaleFactor * this.userScaleFactor;
-	}
-
-	public synchronized float getUserScaleFactor() {
-		return this.userScaleFactor;
-	}
-
-	/**
-	 * Width and height of a map tile in pixel after system and user scaling is applied.
-	 */
-	public static synchronized int getTileSize() {
-		return tileSize;
+	public static float getDeviceScaleFactor() {
+		return deviceScaleFactor;
 	}
 
 	public abstract InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 
-	public abstract ResourceBitmap renderSvg(InputStream inputStream, int hash);
-
-	public synchronized void setBackgroundColor(int color) {
-		this.backgroundColor = color;
-	}
-
-	public synchronized void setDeviceScaleFactor(float scaleFactor) {
-		deviceScaleFactor = scaleFactor;
-		setTileSize();
-	}
-
-	public synchronized void setUserScaleFactor(float scaleFactor) {
-		userScaleFactor = scaleFactor;
-		setTileSize();
-	}
-
-	private void setTileSize() {
-		tileSize = (int) (defaultTileSize * deviceScaleFactor * userScaleFactor);
-	}
+	public abstract ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash);
 
 }

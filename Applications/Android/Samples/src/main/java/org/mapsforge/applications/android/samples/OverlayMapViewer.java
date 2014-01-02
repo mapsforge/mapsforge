@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -76,7 +76,7 @@ public class OverlayMapViewer extends BasicMapViewerXml {
 				AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0, Style.FILL), null);
 
 
-		FixedPixelCircle tappableCircle = new FixedPixelCircle(latLong6, 70 * AndroidGraphicFactory.INSTANCE.getScaleFactor(), Utils.createPaint(
+		FixedPixelCircle tappableCircle = new FixedPixelCircle(latLong6, 70, Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL), null){
 			@Override
 			public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {

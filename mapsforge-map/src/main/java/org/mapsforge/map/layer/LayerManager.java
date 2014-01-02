@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -48,7 +49,7 @@ public class LayerManager extends PausableThread implements Redrawer {
 		this.mapViewPosition = mapViewPosition;
 
 		this.drawingCanvas = graphicFactory.createCanvas();
-		this.layers = new Layers(this);
+		this.layers = new Layers(this, mapView.getModel().displayModel);
 	}
 
 	public Layers getLayers() {
@@ -84,8 +85,9 @@ public class LayerManager extends PausableThread implements Redrawer {
 
 			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
 			Dimension canvasDimension = this.drawingCanvas.getDimension();
-			BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension);
-			Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension);
+			int tileSize = this.mapView.getModel().displayModel.getTileSize();
+			BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension, tileSize);
+			Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension, tileSize);
 
 			for (Layer layer : this.layers) {
 				if (layer.isVisible()) {

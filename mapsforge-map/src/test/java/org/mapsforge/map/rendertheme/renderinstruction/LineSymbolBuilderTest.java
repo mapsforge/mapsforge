@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -35,7 +37,7 @@ public class LineSymbolBuilderTest {
 		attributesImpl.addAttribute(null, null, LineSymbolBuilder.REPEAT, null, REPEAT.toString());
 		attributesImpl.addAttribute(null, null, LineSymbolBuilder.SRC, null, "jar:symbols/atm.png");
 
-		LineSymbolBuilder lineSymbolBuilder = new LineSymbolBuilder(GRAPHIC_FACTORY, "lineSymbol", attributesImpl,
+		LineSymbolBuilder lineSymbolBuilder = new LineSymbolBuilder(GRAPHIC_FACTORY, new DisplayModel(), "lineSymbol", attributesImpl,
 				"/osmarender/");
 
 		Assert.assertEquals(ALIGN_CENTER, Boolean.valueOf(lineSymbolBuilder.alignCenter));

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -52,7 +53,7 @@ public class MapViewPositionTest {
 
 	@Test
 	public void mapLimitTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		Assert.assertNull(mapViewPosition.getMapLimit());
 
 		LatLong latLong = new LatLong(10, 20);
@@ -70,8 +71,8 @@ public class MapViewPositionTest {
 
 	@Test
 	public void moveCenterTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
-		mapViewPosition.moveCenter(MercatorProjection.getMapSize((byte) 0) / -360d, 0);
+		MapViewPosition mapViewPosition = new MapViewPosition(new FixedTileSizeDisplayModel(256));
+		mapViewPosition.moveCenter(MercatorProjection.getMapSize((byte) 0, new FixedTileSizeDisplayModel(256).getTileSize()) / -360d, 0);
 
 		MapPosition mapPosition = mapViewPosition.getMapPosition();
 
@@ -83,7 +84,7 @@ public class MapViewPositionTest {
 	@Test
 	public void observerTest() {
 		DummyObserver dummyObserver = new DummyObserver();
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		mapViewPosition.addObserver(dummyObserver);
 		Assert.assertEquals(0, dummyObserver.getCallbacks());
 
@@ -108,7 +109,7 @@ public class MapViewPositionTest {
 
 	@Test
 	public void zoomInTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		Assert.assertEquals(0, mapViewPosition.getZoomLevel());
 		mapViewPosition.zoomIn();
 		Assert.assertEquals((byte) 1, mapViewPosition.getZoomLevel());
@@ -121,7 +122,7 @@ public class MapViewPositionTest {
 
 	@Test
 	public void zoomLevelMaxTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		Assert.assertEquals(Byte.MAX_VALUE, mapViewPosition.getZoomLevelMax());
 
 		mapViewPosition.setZoomLevel((byte) 1);
@@ -139,7 +140,7 @@ public class MapViewPositionTest {
 
 	@Test
 	public void zoomLevelMinMaxTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		mapViewPosition.setZoomLevelMin((byte) 1);
 		mapViewPosition.setZoomLevelMax((byte) 2);
 
@@ -149,7 +150,7 @@ public class MapViewPositionTest {
 
 	@Test
 	public void zoomLevelMinTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		Assert.assertEquals(0, mapViewPosition.getZoomLevelMin());
 
 		mapViewPosition.setZoomLevel((byte) 0);
@@ -167,13 +168,13 @@ public class MapViewPositionTest {
 
 	@Test
 	public void zoomLevelTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		verifyInvalidSetZoomLevel(mapViewPosition, (byte) -1);
 	}
 
 	@Test
 	public void zoomOutTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		mapViewPosition.setZoomLevel((byte) 1);
 		Assert.assertEquals(1, mapViewPosition.getZoomLevel());
 		mapViewPosition.zoomOut();
@@ -187,7 +188,7 @@ public class MapViewPositionTest {
 
 	@Test
 	public void zoomTest() {
-		MapViewPosition mapViewPosition = new MapViewPosition();
+		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		Assert.assertEquals(0, mapViewPosition.getZoomLevel());
 
 		mapViewPosition.zoom((byte) 1);

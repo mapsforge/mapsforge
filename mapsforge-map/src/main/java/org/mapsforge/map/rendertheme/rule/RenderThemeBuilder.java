@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +17,7 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -40,9 +42,9 @@ public class RenderThemeBuilder {
 	int mapBackground;
 	private Integer version;
 
-	public RenderThemeBuilder(GraphicFactory graphicFactory,
+	public RenderThemeBuilder(GraphicFactory graphicFactory, DisplayModel displayModel1,
 			String elementName, Attributes attributes) throws SAXException {
-		this.scaleFactor = graphicFactory.getScaleFactor();
+		this.scaleFactor = displayModel1.getScaleFactor();
 		this.baseStrokeWidth = 1 * this.scaleFactor;
 		this.baseTextSize = 1 * this.scaleFactor;
 		this.mapBackground = graphicFactory.createColor(Color.WHITE);

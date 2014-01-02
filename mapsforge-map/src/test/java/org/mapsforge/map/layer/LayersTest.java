@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +17,7 @@ package org.mapsforge.map.layer;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.map.model.DisplayModel;
 
 public class LayersTest {
 	static class DummyRedrawer implements Redrawer {
@@ -32,7 +34,7 @@ public class LayersTest {
 
 	@Test
 	public void callbackTest() {
-		Layers layers = new Layers(new DummyRedrawer());
+		Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
 
 		DummyLayer dummyLayer = new DummyLayer();
 		checkCallbacks(dummyLayer, 0, 0);
@@ -52,7 +54,7 @@ public class LayersTest {
 
 	@Test
 	public void isEmptyTest() {
-		Layers layers = new Layers(new DummyRedrawer());
+		Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
 		Assert.assertTrue(layers.isEmpty());
 
 		layers.add(new DummyLayer());
@@ -64,7 +66,7 @@ public class LayersTest {
 
 	@Test
 	public void sizeTest() {
-		Layers layers = new Layers(new DummyRedrawer());
+		Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
 		Assert.assertEquals(0, layers.size());
 
 		layers.add(new DummyLayer());

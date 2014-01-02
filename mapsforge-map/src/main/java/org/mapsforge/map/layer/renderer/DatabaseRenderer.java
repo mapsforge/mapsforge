@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,6 +32,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.MapReadResult;
 import org.mapsforge.map.reader.PointOfInterest;
@@ -53,14 +55,13 @@ public class DatabaseRenderer implements RenderCallback {
 	private static final double STROKE_INCREASE = 1.5;
 	private static final byte STROKE_MIN_ZOOM_LEVEL = 12;
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
-	private static final Point[][] WATER_TILE_COORDINATES = getTilePixelCoordinates();
 	private static final byte ZOOM_MAX = 22;
 
-	private static Point[][] getTilePixelCoordinates() {
+	private static Point[][] getTilePixelCoordinates(int tileSize) {
 		Point point1 = new Point(0, 0);
-		Point point2 = new Point(GraphicFactory.getTileSize(), 0);
-		Point point3 = new Point(GraphicFactory.getTileSize(), GraphicFactory.getTileSize());
-		Point point4 = new Point(0, GraphicFactory.getTileSize());
+		Point point2 = new Point(tileSize, 0);
+		Point point3 = new Point(tileSize, tileSize);
+		Point point4 = new Point(0, tileSize);
 		return new Point[][] { { point1, point2, point3, point4, point1 } };
 	}
 
@@ -141,7 +142,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
 		if (!jobTheme.equals(this.previousJobTheme)) {
-			this.renderTheme = getRenderTheme(jobTheme);
+			this.renderTheme = getRenderTheme(jobTheme, rendererJob.displayModel);
 			if (this.renderTheme == null) {
 				this.previousJobTheme = null;
 				return null;
@@ -168,11 +169,14 @@ public class DatabaseRenderer implements RenderCallback {
 			processReadMapData(mapReadResult);
 		}
 
-		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile);
+		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels,
+				rendererJob.tile, rendererJob.displayModel.getTileSize());
 
-		TileBitmap bitmap = this.graphicFactory.createTileBitmap();
+		TileBitmap bitmap = this.graphicFactory.createTileBitmap(rendererJob.displayModel.getTileSize());
 		this.canvasRasterer.setCanvasBitmap(bitmap);
-		this.canvasRasterer.fill(this.renderTheme.getMapBackground());
+		if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
+			this.canvasRasterer.fill(this.renderTheme.getMapBackground());
+		}
 		this.canvasRasterer.drawWays(this.ways);
 		this.canvasRasterer.drawSymbols(this.waySymbols);
 		this.canvasRasterer.drawSymbols(this.pointSymbols);
@@ -314,9 +318,9 @@ public class DatabaseRenderer implements RenderCallback {
 		}
 	}
 
-	private RenderTheme getRenderTheme(XmlRenderTheme jobTheme) {
+	private RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel) {
 		try {
-			return RenderThemeHandler.getRenderTheme(this.graphicFactory, jobTheme);
+			return RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, jobTheme);
 		} catch (ParserConfigurationException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 		} catch (SAXException e) {
@@ -347,13 +351,13 @@ public class DatabaseRenderer implements RenderCallback {
 
 	private void renderPointOfInterest(PointOfInterest pointOfInterest) {
 		this.drawingLayers = this.ways.get(getValidLayer(pointOfInterest.layer));
-		this.poiPosition = scaleLatLong(pointOfInterest.position);
+		this.poiPosition = scaleLatLong(pointOfInterest.position, this.currentRendererJob.displayModel.getTileSize());
 		this.renderTheme.matchNode(this, pointOfInterest.tags, this.currentRendererJob.tile.zoomLevel);
 	}
 
 	private void renderWaterBackground() {
 		this.drawingLayers = this.ways.get(0);
-		this.coordinates = WATER_TILE_COORDINATES;
+		this.coordinates = getTilePixelCoordinates(this.currentRendererJob.displayModel.getTileSize());
 		this.shapeContainer = new PolylineContainer(this.coordinates);
 		this.renderTheme.matchClosedWay(this, Arrays.asList(TAG_NATURAL_WATER), this.currentRendererJob.tile.zoomLevel);
 	}
@@ -368,7 +372,7 @@ public class DatabaseRenderer implements RenderCallback {
 			this.coordinates[i] = new Point[latLongs[i].length];
 
 			for (int j = 0; j < this.coordinates[i].length; ++j) {
-				this.coordinates[i][j] = scaleLatLong(latLongs[i][j]);
+				this.coordinates[i][j] = scaleLatLong(latLongs[i][j], this.currentRendererJob.displayModel.getTileSize());
 			}
 		}
 		this.shapeContainer = new PolylineContainer(this.coordinates);
@@ -387,11 +391,11 @@ public class DatabaseRenderer implements RenderCallback {
 	 *            the LatLong to convert.
 	 * @return the XY coordinates on the current object.
 	 */
-	private Point scaleLatLong(LatLong latLong) {
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel)
-				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel)
-				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY);
+	private Point scaleLatLong(LatLong latLong, int tileSize) {
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel, tileSize)
+				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel, tileSize)
+				- MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY, tileSize);
 
 		return new Point((float) pixelX, (float) pixelY);
 	}

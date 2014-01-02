@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +19,7 @@ import java.io.IOException;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -34,9 +36,9 @@ public class LineSymbolBuilder {
 	Bitmap bitmap;
 	boolean repeat;
 
-	public LineSymbolBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes,
+	public LineSymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes,
 			String relativePathPrefix) throws IOException, SAXException {
-		extractValues(graphicFactory, elementName, attributes, relativePathPrefix);
+		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
 	}
 
 	/**
@@ -46,14 +48,14 @@ public class LineSymbolBuilder {
 		return new LineSymbol(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes,
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes,
 			String relativePathPrefix) throws IOException, SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				this.bitmap = XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value);
+				this.bitmap = XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, value);
 			} else if (ALIGN_CENTER.equals(name)) {
 				this.alignCenter = Boolean.parseBoolean(value);
 			} else if (REPEAT.equals(name)) {

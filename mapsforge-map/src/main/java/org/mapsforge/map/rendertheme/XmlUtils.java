@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +23,7 @@ import java.io.InputStream;
 
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 
 public final class XmlUtils {
@@ -40,7 +42,7 @@ public final class XmlUtils {
 		}
 	}
 
-	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, String relativePathPrefix, String src)
+	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, String src)
 			throws IOException {
 		if (src == null || src.length() == 0) {
 			// no image source defined
@@ -54,7 +56,7 @@ public final class XmlUtils {
 		try {
 			String absoluteName = getAbsoluteName(relativePathPrefix, src);
 			if (src.endsWith(".svg")) {
-				return graphicFactory.renderSvg(inputStream, absoluteName.hashCode());
+				return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), absoluteName.hashCode());
 			}
 			return graphicFactory.createResourceBitmap(inputStream, absoluteName.hashCode());
 		} finally {

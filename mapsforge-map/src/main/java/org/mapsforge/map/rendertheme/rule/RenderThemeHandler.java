@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +15,7 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Stack;
@@ -25,8 +27,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.XmlUtils;
 import org.mapsforge.map.rendertheme.renderinstruction.Area;
 import org.mapsforge.map.rendertheme.renderinstruction.AreaBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Caption;
@@ -61,9 +63,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
 	private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
 
-	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, XmlRenderTheme xmlRenderTheme)
+	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel, XmlRenderTheme xmlRenderTheme)
 			throws SAXException, ParserConfigurationException, IOException {
-		RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory,
+		RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
 				xmlRenderTheme.getRelativePathPrefix());
 		XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		xmlReader.setContentHandler(renderThemeHandler);
@@ -84,14 +86,16 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private Rule currentRule;
 	private final Stack<Element> elementStack = new Stack<Element>();
 	private final GraphicFactory graphicFactory;
+	private final DisplayModel displayModel;
 	private int level;
 	private final String relativePathPrefix;
 	private RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
 
-	private RenderThemeHandler(GraphicFactory graphicFactory, String relativePathPrefix) {
+	private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix) {
 		super();
 		this.graphicFactory = graphicFactory;
+		this.displayModel = displayModel;
 		this.relativePathPrefix = relativePathPrefix;
 	}
 
@@ -129,7 +133,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 		try {
 			if ("rendertheme".equals(qName)) {
 				checkState(qName, Element.RENDER_THEME);
-				this.renderTheme = new RenderThemeBuilder(this.graphicFactory, qName, attributes).build();
+				this.renderTheme = new RenderThemeBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
 			}
 
 			else if (ELEMENT_NAME_RULE.equals(qName)) {
@@ -144,7 +148,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("area".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Area area = new AreaBuilder(this.graphicFactory, qName, attributes, this.level++,
+				Area area = new AreaBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
 						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(area);
 			}
@@ -163,14 +167,14 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("line".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Line line = new LineBuilder(this.graphicFactory, qName, attributes, this.level++,
+				Line line = new LineBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
 						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(line);
 			}
 
 			else if ("lineSymbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, qName, attributes,
+				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
 						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(lineSymbol);
 			}
@@ -183,7 +187,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("symbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Symbol symbol = new SymbolBuilder(this.graphicFactory, qName, attributes, this.relativePathPrefix)
+				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.relativePathPrefix)
 						.build();
 				this.currentRule.addRenderingInstruction(symbol);
 			}

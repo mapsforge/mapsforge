@@ -1,6 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -13,21 +12,22 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.awt;
+package org.mapsforge.map.model;
 
-import java.io.IOException;
-import java.io.InputStream;
+/**
+ * Dummy DisplayModel that always delivers a fixed tile size for testing.
+ */
 
-import org.mapsforge.core.graphics.TileBitmap;
+public class FixedTileSizeDisplayModel extends DisplayModel {
 
-public class AwtTileBitmap extends AwtBitmap implements TileBitmap {
+	private int tileSize;
 
-	AwtTileBitmap(int tileSize) {
-		super(tileSize, tileSize);
+	public FixedTileSizeDisplayModel(int tileSize) {
+		this.tileSize = tileSize;
 	}
 
-	AwtTileBitmap(InputStream inputStream) throws IOException {
-		super(inputStream);
+	@Override
+	public int getTileSize() {
+		return tileSize;
 	}
-
 }

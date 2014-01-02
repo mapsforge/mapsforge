@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,30 +23,28 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 
 public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private static final int DOWNLOAD_THREADS_MAX = 8;
 
-	private final TileDownloadThread[] tileDownloadThreads;
+	private TileDownloadThread[] tileDownloadThreads;
 	private final TileSource tileSource;
+	private final TileCache tileCache;
+	private final GraphicFactory graphicFactory;
     private boolean started;
 
 	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
 			GraphicFactory graphicFactory) {
-		super(tileCache, mapViewPosition, graphicFactory);
+		super(tileCache, mapViewPosition, graphicFactory.createMatrix());
 
 		if (tileSource == null) {
 			throw new IllegalArgumentException("tileSource must not be null");
 		}
-
+		this.tileCache = tileCache;
 		this.tileSource = tileSource;
-
-		int numberOfDownloadThreads = Math.min(tileSource.getParallelRequestsLimit(), DOWNLOAD_THREADS_MAX);
-		this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
-		for (int i = 0; i < numberOfDownloadThreads; ++i) {
-			this.tileDownloadThreads[i] = new TileDownloadThread(tileCache, this.jobQueue, this, graphicFactory);
-		}
+		this.graphicFactory = graphicFactory;
 	}
 
 	@Override
@@ -57,6 +56,25 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
 	}
 
+	@Override
+	public synchronized void setDisplayModel(DisplayModel displayModel) {
+		super.setDisplayModel(displayModel);
+		int numberOfDownloadThreads = Math.min(tileSource.getParallelRequestsLimit(), DOWNLOAD_THREADS_MAX);
+		if (this.displayModel != null) {
+			this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
+			for (int i = 0; i < numberOfDownloadThreads; ++i) {
+				this.tileDownloadThreads[i] = new TileDownloadThread(this.tileCache, this.jobQueue, this, this.graphicFactory, this.displayModel);
+			}
+		} else {
+			if (this.tileDownloadThreads != null) {
+				for (int i = 0; i < tileDownloadThreads.length; ++i) {
+					this.tileDownloadThreads[i].interrupt();
+				}
+			}
+		}
+
+	}
+
 	public void start() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
 		    tileDownloadThread.start();
@@ -66,7 +84,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 
 	@Override
 	protected DownloadJob createJob(Tile tile) {
-		return new DownloadJob(tile, this.tileSource);
+		return new DownloadJob(tile, this.displayModel.getTileSize(), this.tileSource);
 	}
 
 	public void onResume() {

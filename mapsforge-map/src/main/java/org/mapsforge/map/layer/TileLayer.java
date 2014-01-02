@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,7 +19,6 @@ import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
@@ -26,14 +26,16 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 
 public abstract class TileLayer<T extends Job> extends Layer {
-	protected final JobQueue<T> jobQueue;
+	protected JobQueue<T> jobQueue;
 	private final Matrix matrix;
-	private final TileCache tileCache;
+	private final MapViewPosition mapViewPosition;
+	protected final TileCache tileCache;
 
-	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
+	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix) {
 		super();
 
 		if (tileCache == null) {
@@ -43,13 +45,13 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		}
 
 		this.tileCache = tileCache;
-		this.jobQueue = new JobQueue<T>(mapViewPosition);
-		this.matrix = graphicFactory.createMatrix();
+		this.mapViewPosition = mapViewPosition;
+		this.matrix = matrix;
 	}
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-	    List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint);
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint, this.displayModel.getTileSize());
 
 		for (int i = tilePositions.size() - 1; i >= 0; --i) {
 			TilePosition tilePosition = tilePositions.get(i);
@@ -65,7 +67,6 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				bitmap.decrementRefCount();
 			}
 		}
-
 		this.jobQueue.notifyWorkers();
 	}
 
@@ -76,13 +77,24 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		this.tileCache.destroy();
 	}
 
+	@Override
+	public synchronized void setDisplayModel(DisplayModel displayModel) {
+		super.setDisplayModel(displayModel);
+		if (displayModel != null) {
+			this.jobQueue = new JobQueue<T>(this.mapViewPosition, this.displayModel);
+		} else {
+			this.jobQueue = null;
+		}
+	}
+
 	private void drawParentTileBitmap(Canvas canvas, Point point, Tile tile) {
 		Tile cachedParentTile = getCachedParentTile(tile, 4);
 		if (cachedParentTile != null) {
 			Bitmap bitmap = this.tileCache.get(createJob(cachedParentTile));
 			if (bitmap != null) {
-				long translateX = tile.getShiftX(cachedParentTile) * GraphicFactory.getTileSize();
-				long translateY = tile.getShiftY(cachedParentTile) * GraphicFactory.getTileSize();
+				int tileSize = this.displayModel.getTileSize();
+				long translateX = tile.getShiftX(cachedParentTile) * tileSize;
+				long translateY = tile.getShiftY(cachedParentTile) * tileSize;
 				byte zoomLevelDiff = (byte) (tile.zoomLevel - cachedParentTile.zoomLevel);
 				float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
 
@@ -93,7 +105,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.matrix.translate(x - translateX, y - translateY);
 				this.matrix.scale(scaleFactor, scaleFactor);
 
-				canvas.setClip(x, y, GraphicFactory.getTileSize(), GraphicFactory.getTileSize());
+				canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
 				canvas.drawBitmap(bitmap, this.matrix);
 				canvas.resetClip();
 				bitmap.decrementRefCount();

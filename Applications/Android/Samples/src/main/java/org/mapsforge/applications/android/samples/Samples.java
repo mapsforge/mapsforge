@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -51,10 +51,11 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(OverlayWithoutBaseMapViewer.class, "Just Overlays, No Map"));
 		linearLayout.addView(createButton(LocationOverlayMapViewer.class));
 		linearLayout.addView(createButton(DualMapViewer.class, "Dual MapDB"));
+		linearLayout.addView(createButton(DualMapViewerWithDifferentDisplayModels.class, "Dual Viewer with different DisplayModels"));
 		linearLayout.addView(createButton(DualMapnikMapViewer.class, "Tied MapViews MapDB/Mapnik"));
 		linearLayout.addView(createButton(DualOverviewMapViewer.class, "Overview Mapview"));
 		linearLayout.addView(createButton(BubbleOverlay.class, "Bubble Overlay"));
-		linearLayout.addView(createButton(ItemListActivity.class, "Fragments"));
+		linearLayout.addView(createButton(ItemListActivity.class, "Fragment List/View"));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class, "Stacked rendered tiles"));
 	}
 

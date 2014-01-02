@@ -23,6 +23,7 @@ import org.mapsforge.map.TestUtils;
 import org.mapsforge.map.layer.download.DownloadJob;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
@@ -30,7 +31,7 @@ public class RendererJobTest {
 	private static final String MAP_FILE = "map.file";
 
 	private static RendererJob create(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
-		return new RendererJob(tile, mapFile, xmlRenderTheme, textScale);
+		return new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), textScale);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
@@ -66,9 +67,10 @@ public class RendererJobTest {
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
 		Tile tile = new Tile(0, 0, (byte) 0);
-		RendererJob rendererJob1 = new RendererJob(tile, mapFile, xmlRenderTheme, 1);
-		RendererJob rendererJob2 = new RendererJob(tile, mapFile, xmlRenderTheme, 1);
-		RendererJob rendererJob3 = new RendererJob(tile, mapFile, xmlRenderTheme, 2);
+		DisplayModel displayModel = new DisplayModel();
+		RendererJob rendererJob1 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1);
+		RendererJob rendererJob2 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1);
+		RendererJob rendererJob3 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 2);
 
 		TestUtils.equalsTest(rendererJob1, rendererJob2);
 
@@ -77,6 +79,6 @@ public class RendererJobTest {
 		Assert.assertNotEquals(rendererJob1, new Object());
 
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		Assert.assertNotEquals(rendererJob1, new DownloadJob(tile, tileSource));
+		Assert.assertNotEquals(rendererJob1, new DownloadJob(tile, 1, tileSource));
 	}
 }

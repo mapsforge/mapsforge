@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -64,8 +65,9 @@ public class Marker extends Layer {
 			return;
 		}
 
-		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, zoomLevel);
-		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, zoomLevel);
+		int tileSize = this.displayModel.getTileSize();
+		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, zoomLevel, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, zoomLevel, tileSize);
 
 		int halfBitmapWidth = this.bitmap.getWidth() / 2;
 		int halfBitmapHeight = this.bitmap.getHeight() / 2;

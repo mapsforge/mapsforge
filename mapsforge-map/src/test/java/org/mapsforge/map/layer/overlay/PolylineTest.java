@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
 package org.mapsforge.map.layer.overlay;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,8 +27,10 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
 public class PolylineTest {
+	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	@Test
@@ -40,20 +44,23 @@ public class PolylineTest {
 
 	@Test
 	public void drawTest() {
-		Polyline polyline = new Polyline(null, GRAPHIC_FACTORY);
+		for (int tileSize : TILE_SIZES) {
+			Polyline polyline = new Polyline(null, GRAPHIC_FACTORY);
+			polyline.setDisplayModel(new FixedTileSizeDisplayModel(tileSize));
 
-		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
-		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
-		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(GraphicFactory.getTileSize(), GraphicFactory.getTileSize()));
-		Point point = new Point(0, 0);
-		polyline.draw(boundingBox, (byte) 0, canvas, point);
+			BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
+			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
+			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
+			Point point = new Point(0, 0);
+			polyline.draw(boundingBox, (byte) 0, canvas, point);
 
-		polyline.getLatLongs().add(new LatLong(0, 0));
-		polyline.getLatLongs().add(new LatLong(1, 1));
-		polyline.draw(boundingBox, (byte) 0, canvas, point);
+			polyline.getLatLongs().add(new LatLong(0, 0));
+			polyline.getLatLongs().add(new LatLong(1, 1));
+			polyline.draw(boundingBox, (byte) 0, canvas, point);
 
-		polyline.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-		polyline.draw(boundingBox, (byte) 0, canvas, point);
+			polyline.setPaintStroke(GRAPHIC_FACTORY.createPaint());
+			polyline.draw(boundingBox, (byte) 0, canvas, point);
+		}
 	}
 
 	@Test

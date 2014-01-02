@@ -80,14 +80,17 @@ public class ChangingBitmaps extends BasicMapViewerXml {
 	@Override
 	public void destroyLayers() {
 		handler.removeCallbacks(bitmapChanger);
+		// we need to increment the ref count here as otherwise the bitmap gets
+		// destroyed, but we might need to reuse it when this is only part of
+		// a pause/resume cycle.
+		current.incrementRefCount();
 		super.destroyLayers();
-		// we need to decrement the ref count for the bitmap that is being kept
-		// stored and not in use, the other is automatically destroyed via the marker
-		if (current == bitmapGreen) {
-			bitmapRed.decrementRefCount();
-		} else {
-			bitmapGreen.decrementRefCount();
-		}
 	}
 
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		bitmapRed.decrementRefCount();
+		bitmapGreen.decrementRefCount();
+	}
 }
