@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,12 +15,10 @@
  */
 package org.mapsforge.map.swing;
 
-import java.io.File;
-import java.util.prefs.Preferences;
-
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.Layers;
@@ -31,7 +30,6 @@ import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
@@ -43,6 +41,9 @@ import org.mapsforge.map.swing.view.MainFrame;
 import org.mapsforge.map.swing.view.MapView;
 import org.mapsforge.map.swing.view.WindowCloseDialog;
 
+import java.io.File;
+import java.util.prefs.Preferences;
+
 public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
@@ -52,7 +53,7 @@ public final class MapViewer {
      */
 	public static void main(String[] args) {
 		MapView mapView = createMapView();
-		addLayers(mapView);
+        BoundingBox boundingBox = addLayers(mapView);
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		Model model = mapView.getModel();
@@ -62,18 +63,21 @@ public final class MapViewer {
 		mainFrame.add(mapView);
 		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, model, preferencesFacade));
 		mainFrame.setVisible(true);
-		model.mapViewPosition.setMapPosition(new MapPosition(new LatLong(52.516, 13.378), (byte) 14));
-
+        byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
+        model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
 	}
 
-	private static void addLayers(MapView mapView) {
+	private static BoundingBox addLayers(MapView mapView) {
 		Layers layers = mapView.getLayerManager().getLayers();
 		TileCache tileCache = createTileCache();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
-		layers.add(createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition));
+        TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition);
+        BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
+        layers.add(tileRendererLayer);
 		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
 		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
+        return boundingBox;
 	}
 
 	private static MapView createMapView() {
@@ -107,7 +111,7 @@ public final class MapViewer {
 	}
 
     @SuppressWarnings("unused")
-	private static Layer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
+	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(new File("../../germany.map"));
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);

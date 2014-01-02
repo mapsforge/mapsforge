@@ -1,5 +1,6 @@
 /*
- * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,11 +20,10 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.overlay.Polyline;
 
@@ -40,7 +40,7 @@ public class ZoomToBounds extends OverlayMapViewer {
 		BoundingBox bb = new BoundingBox(latLong2.latitude, latLong3.longitude, latLong3.latitude, latLong2.longitude);
 		Dimension dimension = this.mapViews.get(0).getModel().mapViewDimension.getDimension();
 		this.mapViews.get(0).getModel().mapViewPosition.setMapPosition(new MapPosition(bb.getCenterPoint(),
-				Utils.zoomForBounds(dimension, bb, this.mapViews.get(0).getModel().displayModel.getTileSize())));
+				LatLongUtils.zoomForBounds(dimension, bb, this.mapViews.get(0).getModel().displayModel.getTileSize())));
 	    }
 	}
 
