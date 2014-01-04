@@ -98,7 +98,7 @@ public class FileSystemTileCache implements TileCache {
 		InputStream inputStream = null;
 		try {
 			inputStream = new FileInputStream(file);
-			return this.graphicFactory.createTileBitmap(inputStream, key.tileSize);
+			return this.graphicFactory.createTileBitmap(inputStream, key.tileSize, key.hasAlpha);
 		} catch (CorruptedInputStream e) {
             // this can happen, at least on Android, when the input stream
             // is somehow corrupted, returning null ensures it will be loaded

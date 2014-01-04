@@ -89,8 +89,8 @@ public final class Utils {
      * @return the layer
      */
     static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-                                                     File mapFile, XmlRenderTheme renderTheme) {
-        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition,
+                                                     File mapFile, XmlRenderTheme renderTheme, boolean hasAlpha) {
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, hasAlpha,
                 AndroidGraphicFactory.INSTANCE);
         tileRendererLayer.setMapFile(mapFile);
         tileRendererLayer.setXmlRenderTheme(renderTheme);

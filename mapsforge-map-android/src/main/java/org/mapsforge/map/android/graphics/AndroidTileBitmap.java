@@ -22,6 +22,7 @@ import android.graphics.BitmapFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.graphics.CorruptedInputStream;
 import org.mapsforge.core.util.IOUtils;
+import org.mapsforge.map.android.util.AndroidUtil;
 
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
@@ -56,25 +57,32 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	private static final Logger LOGGER = Logger.getLogger(AndroidTileBitmap.class.getName());
 
 	// For modern Android versions, bitmap storage can be recycled. To support different tile
-	// sizes we have a hashmap that contains the caches by tileSize.
+	// sizes we have a hashmap that contains the caches by tileSize/alpha
 
 	private static HashMap<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<>();
 
-	static android.graphics.Bitmap getTileBitmapFromReusableSet(int tileSize) {
-		Set<SoftReference<Bitmap>> sizeSpecificSet = reusableTileBitmaps.get(tileSize);
+	private static int composeHash(int tileSize, boolean isTransparent) {
+		if (isTransparent) {
+			return tileSize + 0x10000000;
+		}
+		return tileSize;
+	}
 
-		if (sizeSpecificSet == null) {
+	private static android.graphics.Bitmap getTileBitmapFromReusableSet(int tileSize, boolean isTransparent) {
+		int hash = composeHash(tileSize, isTransparent);
+		Set<SoftReference<Bitmap>> subSet = reusableTileBitmaps.get(hash);
+
+		if (subSet == null) {
 			return null;
 		}
 		android.graphics.Bitmap bitmap = null;
-		synchronized (sizeSpecificSet) {
-			final Iterator<SoftReference<android.graphics.Bitmap>> iterator = sizeSpecificSet.iterator();
+		synchronized (subSet) {
+			final Iterator<SoftReference<android.graphics.Bitmap>> iterator = subSet.iterator();
 			android.graphics.Bitmap candidate;
 			while (iterator.hasNext()) {
 				candidate = iterator.next().get();
 				if (null != candidate && candidate.isMutable()) {
 					bitmap = candidate;
-					bitmap.eraseColor(0);
 					// Remove from reusable set so it can't be used again.
 					iterator.remove();
 					break;
@@ -88,21 +96,28 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	}
 
 	@TargetApi(11)
-	private static final BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize) {
+	private static final BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent) {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
-		bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.bitmapConfig;
+		if (isTransparent) {
+			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.transparentBitmap;
+		} else {
+			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.nonTransparentBitmap;
+		}
 		if (org.mapsforge.map.android.util.AndroidUtil.honeyCombPlus) {
 			bitmapFactoryOptions.inMutable = true;
 			bitmapFactoryOptions.inSampleSize = 1; // not really sure why this is required, but otherwise decoding fails
-			bitmapFactoryOptions.inBitmap = getTileBitmapFromReusableSet(tileSize);
+			bitmapFactoryOptions.inBitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
 		}
 		return bitmapFactoryOptions;
 	}
 	
-	AndroidTileBitmap(int tileSize) {
-		this.bitmap = getTileBitmapFromReusableSet(tileSize);
+	AndroidTileBitmap(int tileSize, boolean isTransparent) {
+		if (AndroidUtil.honeyCombPlus) {
+			this.bitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
+		}
 		if (this.bitmap == null) {
-			this.bitmap = AndroidBitmap.createAndroidBitmap(tileSize, tileSize);
+			android.graphics.Bitmap.Config config = isTransparent ? AndroidGraphicFactory.transparentBitmap : AndroidGraphicFactory.nonTransparentBitmap;
+			this.bitmap = AndroidBitmap.createAndroidBitmap(tileSize, tileSize, config);
 		}
         if (AndroidGraphicFactory.debugBitmaps) {
 		    tileInstances.incrementAndGet();
@@ -116,12 +131,12 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         by client classes. We do not catch it here to allow proper handling in the higher
         levels (like redownload or reload from file storage).
      */
-	AndroidTileBitmap(InputStream inputStream, int tileSize) {
+	AndroidTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) {
         try {
             if (AndroidGraphicFactory.debugBitmaps) {
                 tileInstances.incrementAndGet();
             }
-            this.bitmap = BitmapFactory.decodeStream(inputStream, null, createTileBitmapFactoryOptions(tileSize));
+            this.bitmap = BitmapFactory.decodeStream(inputStream, null, createTileBitmapFactoryOptions(tileSize, isTransparent));
 	        // somehow on Android the decode stream can succeed, but the bitmap remains invalid.
 	        // Asking for the width forces the bitmap to be fully loaded and a NullPointerException
 	        // is triggered if the stream is not readable,
@@ -153,16 +168,17 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
     protected void destroyBitmap() {
 	    if (this.bitmap != null) {
 		    // bitmap can be null if there is an error creating it
-            if (org.mapsforge.map.android.util.AndroidUtil.honeyCombPlus) {
+            if (AndroidUtil.honeyCombPlus) {
 	            final int tileSize = this.getHeight();
-                synchronized (reusableTileBitmaps) {
-	                if (!reusableTileBitmaps.containsKey(tileSize)) {
+	            synchronized (reusableTileBitmaps) {
+	                int hash = composeHash(tileSize, this.bitmap.hasAlpha());
+	                if (!reusableTileBitmaps.containsKey(hash)) {
 		                // if the set specific to the tile size does not exist, create it. It will
 		                // never be destroyed, but the contained bitmaps will be recycled if memory
 		                // gets tight.
-		                reusableTileBitmaps.put(tileSize, new HashSet<SoftReference<Bitmap>>());
+		                reusableTileBitmaps.put(hash, new HashSet<SoftReference<Bitmap>>());
 	                }
-	                Set<SoftReference<Bitmap>> sizeSpecificSet = reusableTileBitmaps.get(tileSize);
+	                Set<SoftReference<Bitmap>> sizeSpecificSet = reusableTileBitmaps.get(hash);
 	                synchronized (sizeSpecificSet) {
                         sizeSpecificSet.add(new SoftReference<>(this.bitmap));
 	                }

@@ -31,7 +31,7 @@ public class RendererJobTest {
 	private static final String MAP_FILE = "map.file";
 
 	private static RendererJob create(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
-		return new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), textScale);
+		return new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), textScale, false);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
@@ -68,9 +68,9 @@ public class RendererJobTest {
 
 		Tile tile = new Tile(0, 0, (byte) 0);
 		DisplayModel displayModel = new DisplayModel();
-		RendererJob rendererJob1 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1);
-		RendererJob rendererJob2 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1);
-		RendererJob rendererJob3 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 2);
+		RendererJob rendererJob1 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1, false);
+		RendererJob rendererJob2 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1, false);
+		RendererJob rendererJob3 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 2, false);
 
 		TestUtils.equalsTest(rendererJob1, rendererJob2);
 

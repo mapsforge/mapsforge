@@ -53,7 +53,7 @@ class AndroidCanvas implements Canvas {
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
 		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix),
-				this.bitmapPaint);
+				null);
 	}
 
 	@Override

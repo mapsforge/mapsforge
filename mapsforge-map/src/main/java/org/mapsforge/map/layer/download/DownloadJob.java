@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,11 +23,7 @@ public class DownloadJob extends Job {
 	public final TileSource tileSource;
 
 	public DownloadJob(Tile tile, int tileSize, TileSource tileSource) {
-		super(tile, tileSize);
-
-		if (tileSource == null) {
-			throw new IllegalArgumentException("tileSource must not be null");
-		}
+		super(tile, tileSize, tileSource.hasAlpha());
 
 		this.tileSource = tileSource;
 	}

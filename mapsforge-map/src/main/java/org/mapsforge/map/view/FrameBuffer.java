@@ -34,6 +34,7 @@ public class FrameBuffer {
 	private final DisplayModel displayModel;
 	private final GraphicFactory graphicFactory;
 	private final Matrix matrix;
+	private final boolean isTransparent = false;
 
 	public FrameBuffer(FrameBufferModel frameBufferModel, DisplayModel displayModel, GraphicFactory graphicFactory) {
 		this.frameBufferModel = frameBufferModel;
@@ -100,9 +101,8 @@ public class FrameBuffer {
         destroyBitmaps();
 
 		if (dimension.width > 0 && dimension.height > 0) {
-			this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
-			this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
-			this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
+			this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height, isTransparent);
+			this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height, isTransparent);
 		}
 	}
 

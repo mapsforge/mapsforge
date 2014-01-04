@@ -45,7 +45,7 @@ public class TwoLevelTileCacheTest {
 			Assert.assertFalse(tileCache2.containsKey(job));
 			Assert.assertFalse(twoLevelTileCache.containsKey(job));
 
-			TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap(tileSize);
+			TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			twoLevelTileCache.put(job, bitmap);
 			//Assert.assertTrue(tileCache1.containsKey(job));
 			Assert.assertTrue(tileCache2.containsKey(job));

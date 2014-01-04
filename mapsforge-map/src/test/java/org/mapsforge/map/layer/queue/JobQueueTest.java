@@ -42,9 +42,9 @@ public class JobQueueTest {
 		Tile tile2 = new Tile(0, 0, (byte) 0);
 		Tile tile3 = new Tile(0, 0, (byte) 2);
 
-		Job job1 = new Job(tile1, 1);
-		Job job2 = new Job(tile2, 1);
-		Job job3 = new Job(tile3, 1);
+		Job job1 = new Job(tile1, 1, false);
+		Job job2 = new Job(tile2, 1, false);
+		Job job3 = new Job(tile3, 1, false);
 		jobQueue.add(job1);
 		jobQueue.add(job2);
 		jobQueue.add(job3);

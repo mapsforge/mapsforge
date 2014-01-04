@@ -105,7 +105,7 @@ public class DualMapViewer extends BasicMapViewerXml {
 				.get(1)
 				.getLayers()
 				.add(Utils.createTileRendererLayer(this.tileCache2, this.mapViewPositions.get(1),
-						getMapFile2(), getRenderTheme2()));
+						getMapFile2(), getRenderTheme2(), false));
 	}
 
 	/**

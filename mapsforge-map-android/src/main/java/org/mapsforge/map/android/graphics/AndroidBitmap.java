@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,8 +15,10 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.Config;
 import android.os.Build;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -46,17 +49,16 @@ public class AndroidBitmap implements Bitmap {
 	}
 
 	private static Set<SoftReference<android.graphics.Bitmap>> reusableBitmaps = new HashSet<>();
-	protected static final BitmapFactory.Options BITMAP_FACTORY_OPTIONS = createBitmapFactoryOptions();
     private AtomicInteger refCount = new AtomicInteger();
 
-    private static final BitmapFactory.Options createBitmapFactoryOptions() {
+    protected static final BitmapFactory.Options createBitmapFactoryOptions(Config config) {
         BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
-        bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.bitmapConfig;
+        bitmapFactoryOptions.inPreferredConfig = config;
         return bitmapFactoryOptions;
     }
 
-	protected static android.graphics.Bitmap createAndroidBitmap(int width, int height) {
-		return android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.bitmapConfig);
+	protected static android.graphics.Bitmap createAndroidBitmap(int width, int height, Config config) {
+		return android.graphics.Bitmap.createBitmap(width, height, config);
 	}
 
     protected android.graphics.Bitmap bitmap;
@@ -78,11 +80,11 @@ public class AndroidBitmap implements Bitmap {
         this.bitmap = bitmap;
     }
 
-    AndroidBitmap(int width, int height) {
+    AndroidBitmap(int width, int height, Config config) {
 	    this();
-	    this.bitmap = getBitmapFromReusableSet(width, height);
+	    this.bitmap = getBitmapFromReusableSet(width, height, config);
 	    if (this.bitmap == null) {
-            this.bitmap = createAndroidBitmap(width, height);
+            this.bitmap = createAndroidBitmap(width, height, config);
 	    }
     }
 
@@ -161,10 +163,21 @@ public class AndroidBitmap implements Bitmap {
 
     @Override
     public String toString() {
-        return super.toString() + " refCount " + Integer.toString(refCount.get());
+	    String info;
+	    if (this.bitmap != null) {
+		    if (this.bitmap.hasAlpha()) {
+			    info = " has alpha";
+		    } else {
+			    info = " no alpha";
+		    }
+	    } else {
+		    info = " is recycled";
+	    }
+        return super.toString() + " rC " + Integer.toString(refCount.get()) + info;
+
     }
 
-	protected android.graphics.Bitmap getBitmapFromReusableSet(int width, int height) {
+	protected android.graphics.Bitmap getBitmapFromReusableSet(int width, int height, Config config) {
 		android.graphics.Bitmap bitmap = null;
 
 		if (reusableBitmaps != null && !reusableBitmaps.isEmpty()) {
@@ -176,7 +189,7 @@ public class AndroidBitmap implements Bitmap {
 					candidate = iterator.next().get();
 					if (null != candidate && candidate.isMutable()) {
 						// Check to see it the item can be used for inBitmap.
-						if (canUseBitmap(candidate, width, height)) {
+						if (canUseBitmap(candidate, width, height, config)) {
 							bitmap = candidate;
 							// Remove from reusable set so it can't be used again.
 							iterator.remove();
@@ -192,8 +205,8 @@ public class AndroidBitmap implements Bitmap {
 		return bitmap;
 	}
 
-	protected boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height) {
-
+	@TargetApi(19)
+	protected boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height, Config config) {
 
 		if (false && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			// THIS SEEMS TO CAUSE LOTS OF SCREEN FLICKERING EVEN THOUGH
@@ -203,10 +216,10 @@ public class AndroidBitmap implements Bitmap {
 			// the new bitmap is smaller than the reusable bitmap candidate
 			// allocation byte count.
 			// But has to be reconfigured for new height and width
-			int byteCount = width * height * AndroidGraphicFactory.getBytesPerPixel(AndroidGraphicFactory.bitmapConfig);
+			int byteCount = width * height * AndroidGraphicFactory.getBytesPerPixel(config);
 			boolean reusable = byteCount <= candidate.getAllocationByteCount();
 			if (reusable) {
-				candidate.reconfigure(width, height, AndroidGraphicFactory.bitmapConfig);
+				candidate.reconfigure(width, height, config);
 			}
 			return reusable;
 		}

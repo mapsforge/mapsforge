@@ -41,7 +41,7 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 					.get(0)
 					.getLayers()
 					.add(Utils.createTileRendererLayer(this.tileCache2, this.mapViewPositions.get(0),
-							getMapFile(), secondRenderTheme));
+							getMapFile(), secondRenderTheme, true));
 
 		} catch (IOException e) {
 			Log.e("ERROR", "Rendertheme not found");

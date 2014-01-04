@@ -34,8 +34,9 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	private final Matrix matrix;
 	private final MapViewPosition mapViewPosition;
 	protected final TileCache tileCache;
+	protected final boolean isTransparent;
 
-	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix) {
+	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent) {
 		super();
 
 		if (tileCache == null) {
@@ -47,11 +48,16 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		this.tileCache = tileCache;
 		this.mapViewPosition = mapViewPosition;
 		this.matrix = matrix;
+		this.isTransparent = isTransparent;
 	}
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint, this.displayModel.getTileSize());
+
+		if (!isTransparent) {
+			canvas.fillColor(this.displayModel.getBackgroundColor());
+		}
 
 		for (int i = tilePositions.size() - 1; i >= 0; --i) {
 			TilePosition tilePosition = tilePositions.get(i);

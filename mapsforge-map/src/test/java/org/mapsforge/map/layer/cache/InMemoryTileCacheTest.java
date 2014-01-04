@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -66,21 +67,21 @@ public class InMemoryTileCacheTest {
 			XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
 			Job job1 = new DownloadJob(tile1, tileSize, tileSource);
-			Job job2 = new RendererJob(tile2, mapFile, xmlRenderTheme, new DisplayModel(), 1);
+			Job job2 = new RendererJob(tile2, mapFile, xmlRenderTheme, new DisplayModel(), 1, false);
 
 			Assert.assertFalse(tileCache.containsKey(job1));
 			Assert.assertFalse(tileCache.containsKey(job2));
 			Assert.assertNull(tileCache.get(job1));
 			Assert.assertNull(tileCache.get(job2));
 
-			TileBitmap bitmap1 = GRAPHIC_FACTORY.createTileBitmap(tileSize);
+			TileBitmap bitmap1 = GRAPHIC_FACTORY.createTileBitmap(tileSize, true);
 			tileCache.put(job1, bitmap1);
 			Assert.assertTrue(tileCache.containsKey(job1));
 			Assert.assertFalse(tileCache.containsKey(job2));
 			Assert.assertEquals(bitmap1, tileCache.get(job1));
 			Assert.assertNull(tileCache.get(job2));
 
-			TileBitmap bitmap2 = GRAPHIC_FACTORY.createTileBitmap(tileSize);
+			TileBitmap bitmap2 = GRAPHIC_FACTORY.createTileBitmap(tileSize, true);
 			tileCache.put(job2, bitmap2);
 			Assert.assertFalse(tileCache.containsKey(job1));
 			Assert.assertTrue(tileCache.containsKey(job2));
@@ -99,7 +100,7 @@ public class InMemoryTileCacheTest {
 	public void putTest() {
 		for (int tileSize : TILE_SIZES) {
 			TileCache tileCache = new InMemoryTileCache(0);
-			verifyInvalidPut(tileCache, null, GRAPHIC_FACTORY.createTileBitmap(tileSize));
+			verifyInvalidPut(tileCache, null, GRAPHIC_FACTORY.createTileBitmap(tileSize, true));
 			verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), tileSize, OpenStreetMapMapnik.INSTANCE), null);
 		}
 	}
@@ -114,7 +115,7 @@ public class InMemoryTileCacheTest {
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 			Job job1 = new DownloadJob(tile1, tileSize, tileSource);
 
-			TileBitmap bitmap1 = GRAPHIC_FACTORY.createTileBitmap(tileSize);
+			TileBitmap bitmap1 = GRAPHIC_FACTORY.createTileBitmap(tileSize, true);
 			inMemoryTileCache.put(job1, bitmap1);
 			Assert.assertFalse(inMemoryTileCache.containsKey(job1));
 
@@ -127,7 +128,7 @@ public class InMemoryTileCacheTest {
 			Tile tile2 = new Tile(2, 2, (byte) 2);
 			Job job2 = new DownloadJob(tile2, tileSize, tileSource);
 
-			inMemoryTileCache.put(job2, GRAPHIC_FACTORY.createTileBitmap(tileSize));
+			inMemoryTileCache.put(job2, GRAPHIC_FACTORY.createTileBitmap(tileSize, true));
 			Assert.assertFalse(inMemoryTileCache.containsKey(job1));
 			Assert.assertTrue(inMemoryTileCache.containsKey(job2));
 

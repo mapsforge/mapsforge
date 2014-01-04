@@ -79,6 +79,11 @@ public final class AwtGraphicFactory extends GraphicFactory {
 	}
 
 	@Override
+	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
+		return new AwtBitmap(width, height);
+	}
+
+	@Override
 	public Canvas createCanvas() {
 		return new AwtCanvas();
 	}
@@ -114,12 +119,12 @@ public final class AwtGraphicFactory extends GraphicFactory {
     }
 
     @Override
-	public TileBitmap createTileBitmap(int tileSize) {
+	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
 		return new AwtTileBitmap(tileSize);
 	}
 
 	@Override
-	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize) throws IOException {
+	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean hasAlpha) throws IOException {
 		return new AwtTileBitmap(inputStream);
 	}
 

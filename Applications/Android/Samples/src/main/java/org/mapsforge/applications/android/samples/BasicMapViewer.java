@@ -139,7 +139,8 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCache, this.mapViewPositions.get(0), getMapFile(), getRenderTheme());
+		TileRendererLayer tileRendererLayer =
+				Utils.createTileRendererLayer(this.tileCache, this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
 	}
 

@@ -39,7 +39,7 @@ public class QueueItemSchedulerTest {
 	public void scheduleTest() {
 		for (int tileSize : TILE_SIZES) {
 			Tile tile0 = new Tile(0, 0, (byte) 0);
-			Job job = new Job(tile0, tileSize);
+			Job job = new Job(tile0, tileSize, false);
 			QueueItem<Job> queueItem = new QueueItem<Job>(job);
 			Assert.assertEquals(0, queueItem.getPriority(), 0);
 

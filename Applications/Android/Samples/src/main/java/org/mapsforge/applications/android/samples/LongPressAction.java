@@ -36,7 +36,7 @@ public class LongPressAction extends BasicMapViewerXml {
 
 	@Override
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(this.tileCache, this.mapViewPositions.get(0),
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(this.tileCache, this.mapViewPositions.get(0), false,
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
 			@Override
 			public boolean onLongPress(LatLong tapLatLong, Point thisXY, Point tapXY) {

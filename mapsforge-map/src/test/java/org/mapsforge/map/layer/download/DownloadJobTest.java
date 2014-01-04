@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,7 +40,7 @@ public class DownloadJobTest {
 		try {
 			createDownloadJob(tile, tileSource);
 			Assert.fail("tile: " + tile + ", tileSource: " + tileSource);
-		} catch (IllegalArgumentException e) {
+		} catch (NullPointerException e) {
 			Assert.assertTrue(true);
 		}
 	}
@@ -71,6 +72,6 @@ public class DownloadJobTest {
 
 		File mapFile = new File("map.file");
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
-		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), 1));
+		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), 1, false));
 	}
 }

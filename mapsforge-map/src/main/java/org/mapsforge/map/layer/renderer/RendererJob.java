@@ -29,8 +29,8 @@ public class RendererJob extends Job {
 	public final XmlRenderTheme xmlRenderTheme;
 	private final int hashCodeValue;
 
-	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel, float textScale) {
-		super(tile, displayModel.getTileSize());
+	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel, float textScale, boolean isTransparent) {
+		super(tile, displayModel.getTileSize(), isTransparent);
 
 		if (mapFile == null) {
 			throw new IllegalArgumentException("mapFile must not be null");
@@ -63,6 +63,8 @@ public class RendererJob extends Job {
 		} else if (Float.floatToIntBits(this.textScale) != Float.floatToIntBits(other.textScale)) {
 			return false;
 		} else if (!this.xmlRenderTheme.equals(other.xmlRenderTheme)) {
+			return false;
+		} else if (!this.displayModel.equals(other.displayModel)) {
 			return false;
 		}
 		return true;

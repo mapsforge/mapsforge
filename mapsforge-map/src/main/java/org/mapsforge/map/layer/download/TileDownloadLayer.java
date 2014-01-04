@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -37,7 +37,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 
 	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
 			GraphicFactory graphicFactory) {
-		super(tileCache, mapViewPosition, graphicFactory.createMatrix());
+		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), tileSource.hasAlpha());
 
 		if (tileSource == null) {
 			throw new IllegalArgumentException("tileSource must not be null");

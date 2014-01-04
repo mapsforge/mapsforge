@@ -54,7 +54,8 @@ public final class AndroidGraphicFactory extends GraphicFactory {
 	// you have transparencies in any of the bitmaps. ARGB_4444 is deprecated
 	// and is much slower despite smaller size that ARGB_8888 as it
 	// passes through unoptimized path in the skia library.
-	static public final Config bitmapConfig = Config.ARGB_8888;
+	static public final Config transparentBitmap = Config.ARGB_8888;
+	static public final Config nonTransparentBitmap = Config.RGB_565;
 
 	public static AndroidGraphicFactory INSTANCE;
 
@@ -84,7 +85,7 @@ public final class AndroidGraphicFactory extends GraphicFactory {
 		} else {
 			int width = drawable.getIntrinsicWidth();
 			int height = drawable.getIntrinsicHeight();
-			bitmap = android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.bitmapConfig);
+			bitmap = android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.transparentBitmap);
 			android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
 
 			Rect rect = drawable.getBounds();
@@ -153,9 +154,16 @@ public final class AndroidGraphicFactory extends GraphicFactory {
 
 	@Override
 	public Bitmap createBitmap(int width, int height) {
-		return new AndroidBitmap(width, height);
+		return new AndroidBitmap(width, height, transparentBitmap);
 	}
 
+	@Override
+	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
+		if (isTransparent) {
+			return new AndroidBitmap(width, height, transparentBitmap);
+		}
+		return new AndroidBitmap(width, height, nonTransparentBitmap);
+	}
 
 	@Override
 	public Canvas createCanvas() {
@@ -193,13 +201,13 @@ public final class AndroidGraphicFactory extends GraphicFactory {
     }
 
 	@Override
-	public TileBitmap createTileBitmap(int tileSize) {
-		return new AndroidTileBitmap(tileSize);
+	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent) {
+		return new AndroidTileBitmap(tileSize, isTransparent);
 	}
 
 	@Override
-	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize) {
-		return new AndroidTileBitmap(inputStream, tileSize);
+	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) {
+		return new AndroidTileBitmap(inputStream, tileSize, isTransparent);
 	}
 
 	@Override

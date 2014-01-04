@@ -20,14 +20,16 @@ import org.mapsforge.core.model.Tile;
 public class Job {
 	public final Tile tile;
 	public final int tileSize;
+	public final boolean hasAlpha;
 
-	protected Job(Tile tile, int tileSize) {
+	protected Job(Tile tile, int tileSize, boolean hasAlpha) {
 		if (tile == null) {
 			throw new IllegalArgumentException("tile must not be null");
 		}
 
 		this.tile = tile;
 		this.tileSize = tileSize;
+		this.hasAlpha = hasAlpha;
 	}
 
 	@Override
@@ -39,6 +41,9 @@ public class Job {
 		}
 		Job other = (Job) obj;
 		if (this.tileSize != other.tileSize) {
+			return false;
+		}
+		if (this.hasAlpha != other.hasAlpha) {
 			return false;
 		}
 		return this.tile.equals(other.tile);

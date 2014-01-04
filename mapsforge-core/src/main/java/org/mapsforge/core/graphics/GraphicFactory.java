@@ -27,6 +27,8 @@ public abstract class GraphicFactory {
 
 	public abstract Bitmap createBitmap(int width, int height);
 
+	public abstract Bitmap createBitmap(int width, int height, boolean isTransparent);
+
 	public abstract Canvas createCanvas();
 
 	public abstract int createColor(Color color);
@@ -41,9 +43,9 @@ public abstract class GraphicFactory {
 
 	public abstract ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
 
-	public abstract TileBitmap createTileBitmap(int tileSize);
+	public abstract TileBitmap createTileBitmap(int tileSize, boolean isTransparent);
 
-	public abstract TileBitmap createTileBitmap(InputStream inputStream, int tileSize) throws IOException;
+	public abstract TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
 
 	public static int getAlpha(int color) {
 		return (color >> 24) & 0xff;

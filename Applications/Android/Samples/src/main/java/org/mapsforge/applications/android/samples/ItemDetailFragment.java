@@ -87,7 +87,7 @@ public class ItemDetailFragment extends Fragment {
 			this.tileCache = AndroidUtil.createTileCache(this.getActivity(), "fragments", this.mapView.getModel().displayModel.getTileSize(), 1.0f, 1.5);
 
 			mapViewPosition.setCenter(this.dummyItem.location);
-			layers.add(Utils.createTileRendererLayer(this.tileCache, mapViewPosition, getMapFile(), InternalRenderTheme.OSMARENDER));
+			layers.add(Utils.createTileRendererLayer(this.tileCache, mapViewPosition, getMapFile(), InternalRenderTheme.OSMARENDER, false));
 		}
 
 		return rootView;
