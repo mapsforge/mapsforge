@@ -41,8 +41,8 @@ public class MapScaleBar {
 	private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
 	private static final int MARGIN_BOTTOM = 5;
 	private static final int MARGIN_LEFT = 5;
-	private static final float STROKE_INTERNAL = 3;
-	private static final float STROKE_EXTERNAL = 5;
+	private static final float STROKE_INTERNAL = 2;
+	private static final float STROKE_EXTERNAL = 4;
 
 	private Adapter adapter;
 	private final DisplayModel displayModel;
@@ -71,8 +71,8 @@ public class MapScaleBar {
 		this.mapScaleCanvas.setBitmap(this.mapScaleBitmap);
 		this.adapter = Metric.INSTANCE;
 
-		this.paintScaleBar = createScaleBarPaint(Color.BLACK, 3, Style.FILL);
-		this.paintScaleBarStroke = createScaleBarPaint(Color.WHITE, 5, Style.STROKE);
+		this.paintScaleBar = createScaleBarPaint(Color.BLACK, STROKE_INTERNAL, Style.FILL);
+		this.paintScaleBarStroke = createScaleBarPaint(Color.WHITE, STROKE_EXTERNAL, Style.STROKE);
 		this.paintScaleText = createTextPaint(Color.BLACK, 0, Style.FILL);
 		this.paintScaleTextStroke = createTextPaint(Color.WHITE, 2, Style.STROKE);
 	}
@@ -132,7 +132,7 @@ public class MapScaleBar {
 		paint.setStrokeWidth(strokeWidth * this.displayModel.getScaleFactor());
 		paint.setStyle(style);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-		paint.setTextSize(20 * this.displayModel.getScaleFactor());
+		paint.setTextSize(16 * this.displayModel.getScaleFactor());
 		return paint;
 	}
 
