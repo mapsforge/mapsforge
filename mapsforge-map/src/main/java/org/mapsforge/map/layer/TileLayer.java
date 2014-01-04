@@ -55,6 +55,16 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint, this.displayModel.getTileSize());
 
+		// In a rotation situation it is possible that drawParentTileBitmap sets the
+		// clipping bounds to portrait, while the device is just being rotated into
+		// landscape: the result is a partially painted screen that only goes away
+		// after zooming (which has the effect of resetting the clip bounds if drawParentTileBitmap
+		// is called again).
+		// Always resetting the clip bounds here seems to avoid the problem,
+		// I assume that this is a pretty cheap operation, otherwise it would be better
+		// to hook this into the onConfigurationChanged call chain.
+		canvas.resetClip();
+
 		if (!isTransparent) {
 			canvas.fillColor(this.displayModel.getBackgroundColor());
 		}
