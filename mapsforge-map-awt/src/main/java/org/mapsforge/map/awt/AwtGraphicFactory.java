@@ -80,6 +80,9 @@ public final class AwtGraphicFactory extends GraphicFactory {
 
 	@Override
 	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
+		if (isTransparent) {
+			throw new UnsupportedOperationException("No transparencies in AWT implementation");
+		}
 		return new AwtBitmap(width, height);
 	}
 
