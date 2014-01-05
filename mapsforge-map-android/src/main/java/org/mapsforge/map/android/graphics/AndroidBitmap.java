@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -149,8 +150,13 @@ public class AndroidBitmap implements Bitmap {
     @Override
     public void scaleTo(int width, int height) {
         if (getWidth() != width || getHeight() != height) {
+	        // The effect of the filter argument to createScaledBitmap is not well documented in the
+	        // official android docs, but according to
+	        // http://stackoverflow.com/questions/2895065/what-does-the-filter-parameter-to-createscaledbitmap-do
+	        // passing true results in smoother edges, less pixellation.
+	        // If smoother corners improve the readability of map labels is perhaps debatable.
             android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(this.bitmap, width,
-                    height, false);
+                    height, true);
             destroy();
             this.bitmap = scaledBitmap;
         }
