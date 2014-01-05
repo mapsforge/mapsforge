@@ -50,11 +50,12 @@ public final class MapViewer {
 
     /**
      * Starts the mapviewer.
-     * @param args command line args: not required
+     * @param args command line args: optionally the name of the map file to load
      */
 	public static void main(String[] args) {
 		MapView mapView = createMapView();
-        BoundingBox boundingBox = addLayers(mapView);
+        String mapFileName = args.length > 0 ? args[0] : "../../germany.map";
+        BoundingBox boundingBox = addLayers(mapView, new File(mapFileName));
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		Model model = mapView.getModel();
@@ -68,12 +69,12 @@ public final class MapViewer {
         model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
 	}
 
-	private static BoundingBox addLayers(MapView mapView) {
+	private static BoundingBox addLayers(MapView mapView, File mapFile) {
 		Layers layers = mapView.getLayerManager().getLayers();
 		TileCache tileCache = createTileCache();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
-        TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition);
+        TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition, mapFile);
         BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
         layers.add(tileRendererLayer);
 		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
@@ -112,10 +113,10 @@ public final class MapViewer {
 	}
 
     @SuppressWarnings("unused")
-	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
+	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, File mapFile) {
 		boolean isTransparent = false;
 	    TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent, GRAPHIC_FACTORY);
-		tileRendererLayer.setMapFile(new File("../../germany.map"));
+		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
 	}
