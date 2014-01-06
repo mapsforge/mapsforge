@@ -196,7 +196,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 				throw new SAXException("unknown element: " + qName);
 			}
 		} catch (IOException e) {
-			LOGGER.warning("Rendertheme missing resource " + e.getMessage());
+			LOGGER.warning("Rendertheme missing or invalid resource " + e.getMessage());
 		}
 	}
 

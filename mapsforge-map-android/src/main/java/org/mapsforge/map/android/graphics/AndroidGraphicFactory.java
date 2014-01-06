@@ -225,7 +225,7 @@ public final class AndroidGraphicFactory extends GraphicFactory {
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) {
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException {
 		return new AndroidSvgBitmap(inputStream, hash, scaleFactor);
 	}
 

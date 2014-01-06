@@ -56,7 +56,11 @@ public final class XmlUtils {
 		try {
 			String absoluteName = getAbsoluteName(relativePathPrefix, src);
 			if (src.endsWith(".svg")) {
-				return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), absoluteName.hashCode());
+				try {
+					return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), absoluteName.hashCode());
+				} catch (IOException e) {
+					throw new IOException("SVG render failed " + src, e);
+				}
 			}
 			return graphicFactory.createResourceBitmap(inputStream, absoluteName.hashCode());
 		} finally {

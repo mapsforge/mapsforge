@@ -14,6 +14,7 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import android.graphics.Bitmap;
@@ -28,7 +29,7 @@ import com.applantation.android.svg.SVGParser;
 class AndroidSvgBitmap extends AndroidResourceBitmap {
 	static final float defaultSize = 200f;
 
-    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor) {
+    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor) throws IOException {
         synchronized (resourceBitmaps) {
             Pair<Bitmap, Integer> data = resourceBitmaps.get(hash);
             if (data != null) {
@@ -61,7 +62,7 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
         }
     }
 
-	AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor) {
+	AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor) throws IOException {
 		super(hash);
  		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor);
 	}

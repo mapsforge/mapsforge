@@ -57,6 +57,6 @@ public abstract class GraphicFactory {
 
 	public abstract InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 
-	public abstract ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash);
+	public abstract ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException;
 
 }
