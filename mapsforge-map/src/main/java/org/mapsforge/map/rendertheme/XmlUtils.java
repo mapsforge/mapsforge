@@ -135,7 +135,13 @@ public final class XmlUtils {
 		} else if (src.startsWith(PREFIX_FILE)) {
 			File file = getFile(relativePathPrefix, src.substring(PREFIX_FILE.length()));
 			if (!file.exists()) {
-				throw new FileNotFoundException("file does not exist: " + file.getAbsolutePath());
+				final String pathName = src.substring(PREFIX_FILE.length());
+				if (pathName.length() > 0 && pathName.charAt(0) == File.separatorChar) {
+					file = getFile(relativePathPrefix, pathName.substring(1));
+				}
+				if (!file.exists()) {
+					throw new FileNotFoundException("file does not exist: " + file.getAbsolutePath());
+				}
 			} else if (!file.isFile()) {
 				throw new FileNotFoundException("not a file: " + file.getAbsolutePath());
 			} else if (!file.canRead()) {
