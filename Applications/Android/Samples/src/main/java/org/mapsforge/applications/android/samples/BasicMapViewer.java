@@ -192,7 +192,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		final FileOpenResult result = mapDatabase.openFile(getMapFile());
 		if (result.isSuccess()) {
 			final MapFileInfo mapFileInfo = mapDatabase.getMapFileInfo();
-			if  (mapFileInfo != null) {
+			if  (mapFileInfo != null && mapFileInfo.startPosition != null) {
 				return new MapPosition(mapFileInfo.startPosition, (byte) mapFileInfo.startZoomLevel);
 			} else {
 				return new MapPosition(new LatLong(52.517037,13.38886), (byte) 12);
