@@ -39,12 +39,12 @@ class AndroidPath implements Path {
 	}
 
 	@Override
-	public void lineTo(int x, int y) {
+	public void lineTo(float x, float y) {
 		this.path.lineTo(x, y);
 	}
 
 	@Override
-	public void moveTo(int x, int y) {
+	public void moveTo(float x, float y) {
 		this.path.moveTo(x, y);
 	}
 

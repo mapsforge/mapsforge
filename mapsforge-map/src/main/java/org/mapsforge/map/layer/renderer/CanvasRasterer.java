@@ -131,7 +131,7 @@ class CanvasRasterer {
 			Point[] points = coordinates[j];
 			if (points.length >= 2) {
 				Point point = points[0];
-				this.path.moveTo((int) point.x, (int) point.y);
+				this.path.moveTo((float) point.x, (float) point.y);
 				for (int i = 1; i < points.length; ++i) {
 					point = points[i];
 					this.path.lineTo((int) point.x, (int) point.y);

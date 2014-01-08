@@ -64,16 +64,16 @@ public class Polyline extends Layer {
 
 		LatLong latLong = iterator.next();
 		int tileSize = displayModel.getTileSize();
-		int x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - topLeftPoint.x);
-		int y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - topLeftPoint.y);
+		float x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - topLeftPoint.x);
+		float y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - topLeftPoint.y);
 
 		Path path = this.graphicFactory.createPath();
 		path.moveTo(x, y);
 
 		while (iterator.hasNext()) {
 			latLong = iterator.next();
-			x = (int) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - topLeftPoint.x);
-			y = (int) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - topLeftPoint.y);
+			x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - topLeftPoint.x);
+			y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - topLeftPoint.y);
 
 			path.lineTo(x, y);
 		}
