@@ -671,7 +671,8 @@ public class MapDatabase {
 			if (numberOfWayNodes < 2 || numberOfWayNodes > MAXIMUM_WAY_NODES_SEQUENCE_LENGTH) {
 				LOGGER.warning("invalid number of way nodes: " + numberOfWayNodes);
 				logDebugSignatures();
-				return null;
+				wayCoordinates[coordinateBlock] = null;
+				continue;
 			}
 
 			// create the array which will store the current way segment

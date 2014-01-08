@@ -370,7 +370,9 @@ public class DatabaseRenderer implements RenderCallback {
 		this.coordinates = new Point[latLongs.length][];
 		for (int i = 0; i < this.coordinates.length; ++i) {
 			this.coordinates[i] = new Point[latLongs[i].length];
-
+			if (this.coordinates[i] == null) {
+				return;
+			}
 			for (int j = 0; j < this.coordinates[i].length; ++j) {
 				this.coordinates[i][j] = scaleLatLong(latLongs[i][j], this.currentRendererJob.displayModel.getTileSize());
 			}
