@@ -31,7 +31,7 @@ public class SamplesApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		AndroidGraphicFactory.createInstance(this);
-		Log.e("SAMPLES", "Device scale factor " + Float.toString(AndroidGraphicFactory.INSTANCE.getDeviceScaleFactor()));
+		Log.e("SAMPLES", "Device scale factor " + Float.toString(DisplayModel.getDeviceScaleFactor()));
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		float fs = Float.valueOf(preferences.getString("scale", Float.toString(DisplayModel.getDefaultUserScaleFactor())));
 		Log.e("SAMPLES", "User ScaleFactor " + Float.toString(fs));

@@ -31,11 +31,16 @@ import org.mapsforge.map.model.common.Observable;
  */
 
 public class DisplayModel extends Observable {
-	private static float defaultUserScaleFactor = 1f;
 
-	private int tileSize = GraphicFactory.DEFAULT_TILE_SIZE;
+	private static final int DEFAULT_BACKGROUND_COLOR = 0xffeeeeee; // format AARRGGBB
+	private static final int DEFAULT_TILE_SIZE = 256;
+
+	private static float defaultUserScaleFactor = 1f;
+	private static float deviceScaleFactor = 1f;
+
+	private int tileSize = DEFAULT_TILE_SIZE;
 	private float userScaleFactor = defaultUserScaleFactor;
-	private int backgroundColor = GraphicFactory.DEFAULT_BACKGROUND_COLOR;
+	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	public DisplayModel() {
 		this.setTileSize();
@@ -61,6 +66,15 @@ public class DisplayModel extends Observable {
 	}
 
 	/**
+	 * Returns the device scale factor.
+	 *
+	 * @return the device scale factor.
+	 */
+	public static synchronized float getDeviceScaleFactor() {
+		return deviceScaleFactor;
+	}
+
+	/**
 	 * Returns the background color.
 	 *
 	 * @return the background color.
@@ -75,7 +89,7 @@ public class DisplayModel extends Observable {
 	 * @return the combined device/user scale factor.
 	 */
 	public synchronized float getScaleFactor() {
-		return GraphicFactory.getDeviceScaleFactor() * this.userScaleFactor;
+		return deviceScaleFactor * this.userScaleFactor;
 	}
 
 	/**
@@ -104,6 +118,16 @@ public class DisplayModel extends Observable {
 	}
 
 	/**
+	 * Set the device scale factor.
+	 *
+	 * @param scaleFactor the device scale factor.
+	 */
+	public static synchronized void setDeviceScaleFactor(float scaleFactor)
+	{
+		deviceScaleFactor = scaleFactor;
+	}
+
+	/**
 	 * Set the user scale factor.
 	 *
 	 * @param scaleFactor the user scale factor to use.
@@ -114,7 +138,7 @@ public class DisplayModel extends Observable {
 	}
 
 	private void setTileSize() {
-		this.tileSize = (int) (GraphicFactory.DEFAULT_TILE_SIZE * GraphicFactory.getDeviceScaleFactor() * userScaleFactor);
+		this.tileSize = (int) (DEFAULT_TILE_SIZE * deviceScaleFactor * userScaleFactor);
 	}
 
 }

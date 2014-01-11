@@ -25,8 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.mapsforge.core.graphics.*;
+import org.mapsforge.map.model.DisplayModel;
 
-public final class AwtGraphicFactory extends GraphicFactory {
+public final class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
@@ -70,7 +71,7 @@ public final class AwtGraphicFactory extends GraphicFactory {
 	}
 
 	private AwtGraphicFactory() {
-		deviceScaleFactor = 1.0f;
+		DisplayModel.setDeviceScaleFactor(1.0f);
 	}
 
 	@Override

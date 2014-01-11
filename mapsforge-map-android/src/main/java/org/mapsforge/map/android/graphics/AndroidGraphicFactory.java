@@ -28,6 +28,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.map.model.DisplayModel;
 
 import android.app.Application;
 import android.content.Context;
@@ -39,7 +40,7 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 
-public final class AndroidGraphicFactory extends GraphicFactory {
+public final class AndroidGraphicFactory implements GraphicFactory {
 
 	// turn on for bitmap accounting
 	public static final boolean debugBitmaps = false;
@@ -149,7 +150,7 @@ public final class AndroidGraphicFactory extends GraphicFactory {
 		DisplayMetrics metrics = new DisplayMetrics();
 		((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
 		// the scaledDensity is an approximate scale factor for the device
-		deviceScaleFactor = metrics.scaledDensity;
+		DisplayModel.setDeviceScaleFactor(metrics.scaledDensity);
 	}
 
 	@Override

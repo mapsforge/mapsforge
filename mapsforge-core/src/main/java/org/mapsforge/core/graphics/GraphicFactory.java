@@ -18,45 +18,32 @@ package org.mapsforge.core.graphics;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class GraphicFactory {
+public interface GraphicFactory {
 
-	protected static float deviceScaleFactor;
+	Bitmap createBitmap(int width, int height);
 
-	public static final int DEFAULT_BACKGROUND_COLOR = 0xffeeeeee; // format AARRGGBB
-	public static final int DEFAULT_TILE_SIZE = 256;
+	Bitmap createBitmap(int width, int height, boolean isTransparent);
 
-	public abstract Bitmap createBitmap(int width, int height);
+	Canvas createCanvas();
 
-	public abstract Bitmap createBitmap(int width, int height, boolean isTransparent);
+	int createColor(Color color);
 
-	public abstract Canvas createCanvas();
+	int createColor(int alpha, int red, int green, int blue);
 
-	public abstract int createColor(Color color);
+	Matrix createMatrix();
 
-	public abstract int createColor(int alpha, int red, int green, int blue);
+	Paint createPaint();
 
-	public abstract Matrix createMatrix();
+	Path createPath();
 
-	public abstract Paint createPaint();
+	ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
 
-	public abstract Path createPath();
+	TileBitmap createTileBitmap(int tileSize, boolean isTransparent);
 
-	public abstract ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
+	TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
 
-	public abstract TileBitmap createTileBitmap(int tileSize, boolean isTransparent);
+	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 
-	public abstract TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
-
-	public static int getAlpha(int color) {
-		return (color >> 24) & 0xff;
-	}
-
-	public static float getDeviceScaleFactor() {
-		return deviceScaleFactor;
-	}
-
-	public abstract InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
-
-	public abstract ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException;
+	ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException;
 
 }

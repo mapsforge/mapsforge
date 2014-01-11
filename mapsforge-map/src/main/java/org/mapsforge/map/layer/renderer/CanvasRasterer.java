@@ -20,6 +20,7 @@ import java.util.List;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Point;
@@ -107,7 +108,7 @@ class CanvasRasterer {
 	}
 
 	void fill(int color) {
-		if (GraphicFactory.getAlpha(color) > 0) {
+		if (GraphicUtils.getAlpha(color) > 0) {
 			this.canvas.fillColor(color);
 		}
 	}
