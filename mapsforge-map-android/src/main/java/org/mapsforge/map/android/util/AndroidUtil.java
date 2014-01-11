@@ -59,7 +59,7 @@ public class AndroidUtil {
      */
 
     public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
-        int cacheSize = (int) Math.round(AndroidUtil.getMinimumCacheSize(c, tileSize,
+        int cacheSize = Math.round(AndroidUtil.getMinimumCacheSize(c, tileSize,
                 overdraw, screenRatio));
         return createExternalStorageTileCache(c, id, cacheSize, tileSize);
     }
@@ -129,9 +129,10 @@ public class AndroidUtil {
         if (android.os.Build.VERSION.SDK_INT >= 18){
             return statfs.getAvailableBytes() / fileSize;
         }
-        // problem is overflow with devices with large storage, so order is important here
-        int result = statfs.getAvailableBlocks() / (fileSize / statfs.getBlockSize());
-        return result;
+	    // problem is overflow with devices with large storage, so order is important here
+	    // additionally avoid division by zero in devices with a large block size
+	    int blocksPerFile = Math.max(fileSize / statfs.getBlockSize(), 1);
+	    return statfs.getAvailableBlocks() / blocksPerFile;
     }
     /**
      * Compute the minimum cache size for a view
