@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -369,10 +370,10 @@ public class DatabaseRenderer implements RenderCallback {
 		LatLong[][] latLongs = way.latLongs;
 		this.coordinates = new Point[latLongs.length][];
 		for (int i = 0; i < this.coordinates.length; ++i) {
-			this.coordinates[i] = new Point[latLongs[i].length];
-			if (this.coordinates[i] == null) {
+			if (latLongs[i] == null) {
 				return;
 			}
+			this.coordinates[i] = new Point[latLongs[i].length];
 			for (int j = 0; j < this.coordinates[i].length; ++j) {
 				this.coordinates[i][j] = scaleLatLong(latLongs[i][j], this.currentRendererJob.displayModel.getTileSize());
 			}
