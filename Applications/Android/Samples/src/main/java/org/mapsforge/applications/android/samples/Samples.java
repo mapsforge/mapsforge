@@ -15,7 +15,10 @@
 package org.mapsforge.applications.android.samples;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,6 +61,26 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(ItemListActivity.class, "Fragment List/View"));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class, "Stacked rendered tiles"));
 	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		final SharedPreferences preferences = getSharedPreferences("installation", Activity.MODE_PRIVATE);
+		final String accepted = "accepted";
+		if (!preferences.getBoolean(accepted, false)) {
+			final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Warning");
+			builder.setCancelable(true);
+			builder.setPositiveButton(R.string.startup_dontshowagain, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					preferences.edit().putBoolean(accepted, true).commit();
+				}
+			});
+			builder.setMessage(R.string.startup_message);
+			builder.create().show();
+		}
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

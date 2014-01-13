@@ -17,5 +17,8 @@
     <string name="preferences_scale_desc">Adjust scale of the map display</string>   
    
     <string name="dialog_location_title">Coordinates</string>
-    
+
+    <string name="startup_dontshowagain">Don\'t show again</string>
+    <string name="startup_message">To run this samples app, you need a map called germany.map installed on the sdcard.</string>
+
 </resources>
