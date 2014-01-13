@@ -831,20 +831,6 @@ public class MapDatabase {
 			cumulatedNumberOfPois += this.readBuffer.readUnsignedInt();
 			cumulatedNumberOfWays += this.readBuffer.readUnsignedInt();
 
-			if (cumulatedNumberOfPois < 0 || cumulatedNumberOfPois > MAXIMUM_ZOOM_TABLE_OBJECTS) {
-				LOGGER.warning("invalid cumulated number of POIs in row " + row + ' ' + cumulatedNumberOfPois);
-				if (this.mapFileHeader.getMapFileInfo().debugFile) {
-					LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
-				}
-				return null;
-			} else if (cumulatedNumberOfWays < 0 || cumulatedNumberOfWays > MAXIMUM_ZOOM_TABLE_OBJECTS) {
-				LOGGER.warning("invalid cumulated number of ways in row " + row + ' ' + cumulatedNumberOfWays);
-				if (this.mapFileHeader.getMapFileInfo().debugFile) {
-					LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
-				}
-				return null;
-			}
-
 			zoomTable[row][0] = cumulatedNumberOfPois;
 			zoomTable[row][1] = cumulatedNumberOfWays;
 		}
