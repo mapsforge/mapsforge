@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.mapsforge.core.graphics.*;
-import org.mapsforge.map.model.DisplayModel;
 
 public final class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
@@ -71,7 +70,6 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	private AwtGraphicFactory() {
-		DisplayModel.setDeviceScaleFactor(1.0f);
 	}
 
 	@Override
