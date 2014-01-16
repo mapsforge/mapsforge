@@ -104,9 +104,12 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.nonTransparentBitmap;
 		}
 		if (org.mapsforge.map.android.util.AndroidUtil.honeyCombPlus) {
-			bitmapFactoryOptions.inMutable = true;
-			bitmapFactoryOptions.inSampleSize = 1; // not really sure why this is required, but otherwise decoding fails
-			bitmapFactoryOptions.inBitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
+			android.graphics.Bitmap reusableBitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
+			if (reusableBitmap != null) {
+				bitmapFactoryOptions.inMutable = true;
+				bitmapFactoryOptions.inSampleSize = 1; // not really sure why this is required, but otherwise decoding fails
+				bitmapFactoryOptions.inBitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
+			}
 		}
 		return bitmapFactoryOptions;
 	}
