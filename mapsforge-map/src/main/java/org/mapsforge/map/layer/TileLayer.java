@@ -89,11 +89,6 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	protected abstract T createJob(Tile tile);
 
 	@Override
-	public void onDestroy() {
-		this.tileCache.destroy();
-	}
-
-	@Override
 	public synchronized void setDisplayModel(DisplayModel displayModel) {
 		super.setDisplayModel(displayModel);
 		if (displayModel != null) {

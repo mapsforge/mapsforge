@@ -63,6 +63,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		layer.setDisplayModel(this.displayModel);
 		this.layersList.add(index, layer);
 		layer.assign(this.redrawer);
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -74,6 +75,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 
 		this.layersList.add(layer);
 		layer.assign(this.redrawer);
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -88,6 +90,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		for (Layer layer : layers) {
 			layer.assign(this.redrawer);
 		}
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -100,6 +103,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 			layer.setDisplayModel(this.displayModel);
 			layer.assign(this.redrawer);
 		}
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -110,6 +114,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 			layer.unassign();
 		}
 		this.layersList.clear();
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -156,6 +161,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	public synchronized Layer remove(int index) {
 		Layer layer = this.layersList.remove(index);
 		layer.unassign();
+		this.redrawer.redrawLayers();
 		return layer;
 	}
 
@@ -166,6 +172,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		checkIsNull(layer);
 		if (this.layersList.remove(layer)) {
 			layer.unassign();
+			this.redrawer.redrawLayers();
 			return true;
 		}
 		return false;
