@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Christian Pesch
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,9 +17,13 @@
  */
 package org.mapsforge.map.swing;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.util.prefs.Preferences;
+
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.awt.AwtGraphicFactory;
@@ -43,9 +48,6 @@ import org.mapsforge.map.swing.view.MainFrame;
 import org.mapsforge.map.swing.view.MapView;
 import org.mapsforge.map.swing.view.WindowCloseDialog;
 
-import java.io.File;
-import java.util.prefs.Preferences;
-
 public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
@@ -56,10 +58,10 @@ public final class MapViewer {
 	public static void main(String[] args) {
 		MapView mapView = createMapView();
         String mapFileName = args.length > 0 ? args[0] : "../../germany.map";
-        BoundingBox boundingBox = addLayers(mapView, new File(mapFileName));
+        final BoundingBox boundingBox = addLayers(mapView, new File(mapFileName));
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
-		Model model = mapView.getModel();
+		final Model model = mapView.getModel();
 		model.init(preferencesFacade);
 
 		MainFrame mainFrame = new MainFrame();
@@ -67,14 +69,13 @@ public final class MapViewer {
 		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, model, preferencesFacade));
 		mainFrame.setVisible(true);
 
-		byte zoomLevel = 12;
-		if (model.mapViewDimension.getDimension() != null) {
-			// this is a fix for an apparent race condition where the update to the mapViewDimension that
-			// should be delivered through the MapViewComponentListener has not arrived yet. If the
-			// mapViewDimension is not set, it would result in a NPE
-			zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
-		}
-        model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
+		mainFrame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+				byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
+				model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
+			}
+		});
 	}
 
 	private static BoundingBox addLayers(MapView mapView, File mapFile) {
