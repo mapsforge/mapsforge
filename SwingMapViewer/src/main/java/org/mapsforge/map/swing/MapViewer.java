@@ -18,6 +18,7 @@ package org.mapsforge.map.swing;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.awt.AwtGraphicFactory;
@@ -65,7 +66,14 @@ public final class MapViewer {
 		mainFrame.add(mapView);
 		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, model, preferencesFacade));
 		mainFrame.setVisible(true);
-        byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
+
+		byte zoomLevel = 12;
+		if (model.mapViewDimension.getDimension() != null) {
+			// this is a fix for an apparent race condition where the update to the mapViewDimension that
+			// should be delivered through the MapViewComponentListener has not arrived yet. If the
+			// mapViewDimension is not set, it would result in a NPE
+			zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
+		}
         model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
 	}
 
