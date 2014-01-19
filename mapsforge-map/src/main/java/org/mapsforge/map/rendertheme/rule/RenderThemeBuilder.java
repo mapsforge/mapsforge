@@ -36,7 +36,6 @@ public class RenderThemeBuilder {
 	private static final String XMLNS_XSI = "xmlns:xsi";
 	private static final String XSI_SCHEMALOCATION = "xsi:schemaLocation";
 
-	final float scaleFactor;
 	float baseStrokeWidth;
 	float baseTextSize;
 	int mapBackground;
@@ -44,9 +43,8 @@ public class RenderThemeBuilder {
 
 	public RenderThemeBuilder(GraphicFactory graphicFactory, DisplayModel displayModel1,
 			String elementName, Attributes attributes) throws SAXException {
-		this.scaleFactor = displayModel1.getScaleFactor();
-		this.baseStrokeWidth = 1 * this.scaleFactor;
-		this.baseTextSize = 1 * this.scaleFactor;
+		this.baseStrokeWidth = 1f;
+		this.baseTextSize = 1f;
 		this.mapBackground = graphicFactory.createColor(Color.WHITE);
 
 		extractValues(graphicFactory, elementName, attributes);
@@ -77,11 +75,9 @@ public class RenderThemeBuilder {
 			} else if (MAP_BACKGROUND.equals(name)) {
 				this.mapBackground = XmlUtils.getColor(graphicFactory, value);
 			} else if (BASE_STROKE_WIDTH.equals(name)) {
-				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name,
-						value) * this.scaleFactor;
+				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (BASE_TEXT_SIZE.equals(name)) {
-				this.baseTextSize = XmlUtils.parseNonNegativeFloat(name, value)
-						* this.scaleFactor;
+				this.baseTextSize = XmlUtils.parseNonNegativeFloat(name, value);
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}

@@ -88,7 +88,7 @@ public class LineBuilder {
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
-				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
+				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (STROKE_DASHARRAY.equals(name)) {
 				float[] floatArray = parseFloatArray(name, value);
 				for (int f = 0; f < floatArray.length; ++f) {
