@@ -86,7 +86,7 @@ public class CaptionBuilder {
 			} else if (FONT_STYLE.equals(name)) {
 				fontStyle = FontStyle.valueOf(value.toUpperCase(Locale.ENGLISH));
 			} else if (FONT_SIZE.equals(name)) {
-				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value);
+				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {
