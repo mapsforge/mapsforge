@@ -90,7 +90,11 @@ public class LineBuilder {
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (STROKE_DASHARRAY.equals(name)) {
-				this.stroke.setDashPathEffect(parseFloatArray(name, value));
+				float[] floatArray = parseFloatArray(name, value);
+				for (int f = 0; f < floatArray.length; ++f) {
+					floatArray[f] = floatArray[f] * displayModel.getScaleFactor();
+				}
+				this.stroke.setDashPathEffect(floatArray);
 			} else if (STROKE_LINECAP.equals(name)) {
 				this.stroke.setStrokeCap(Cap.valueOf(value.toUpperCase(Locale.ENGLISH)));
 			} else {
