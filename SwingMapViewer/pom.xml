@@ -10,7 +10,6 @@
 	</parent>
 
 	<artifactId>SwingMapViewer</artifactId>
-	<packaging>jar</packaging>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>

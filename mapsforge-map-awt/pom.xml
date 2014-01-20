@@ -10,7 +10,6 @@
 	</parent>
 
 	<artifactId>mapsforge-map-awt</artifactId>
-	<packaging>jar</packaging>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
