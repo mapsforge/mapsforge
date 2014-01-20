@@ -64,34 +64,38 @@ public class AndroidUtil {
         return createExternalStorageTileCache(c, id, cacheSize, tileSize);
     }
 
-    /**
-     * @param c              the Android context
-     * @param id             name for the directory
-     * @param firstLevelSize size of the first level cache
-     * @param tileSize       tile size
-     * @return a new cache created on the external storage
-     */
-    public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
-	    Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
-	    TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
-        String cacheDirectoryName = c.getExternalCacheDir().getAbsolutePath() + File.separator + id;
-        File cacheDirectory = new File(cacheDirectoryName);
-        if (!cacheDirectory.exists()) {
-            cacheDirectory.mkdir();
-        }
-        int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
-        if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
-            try {
-	            Log.d("TILECACHE FILECACHE SIZE", Integer.toString(firstLevelSize));
-                TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
-                        org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE);
-                return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
-            } catch (IllegalArgumentException e) {
-                Log.w("TILECACHE", e.toString());
-            }
-        }
-        return firstLevelTileCache;
-    }
+	/**
+	 * @param c              the Android context
+	 * @param id             name for the directory
+	 * @param firstLevelSize size of the first level cache
+	 * @param tileSize       tile size
+	 * @return a new cache created on the external storage
+	 */
+	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
+		Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
+		TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
+		File cacheDir = c.getExternalCacheDir();
+		if (cacheDir != null) {
+			// cacheDir will be null if full
+			String cacheDirectoryName = cacheDir.getAbsolutePath() + File.separator + id;
+			File cacheDirectory = new File(cacheDirectoryName);
+			if (!cacheDirectory.exists()) {
+				cacheDirectory.mkdir();
+			}
+			int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
+			if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
+				try {
+					Log.d("TILECACHE FILECACHE SIZE", Integer.toString(firstLevelSize));
+					TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
+							org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE);
+					return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
+				} catch (IllegalArgumentException e) {
+					Log.w("TILECACHE", e.toString());
+				}
+			}
+		}
+		return firstLevelTileCache;
+	}
 
     /**
      * @param cacheDirectoryName where the file system tile cache will be located
