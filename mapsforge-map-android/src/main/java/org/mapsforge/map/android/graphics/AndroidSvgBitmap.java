@@ -29,7 +29,7 @@ import com.applantation.android.svg.SVGParser;
 class AndroidSvgBitmap extends AndroidResourceBitmap {
 	static final float defaultSize = 200f;
 
-    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor) throws IOException {
+    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height) throws IOException {
         synchronized (resourceBitmaps) {
             Pair<Bitmap, Integer> data = resourceBitmaps.get(hash);
             if (data != null) {
@@ -45,8 +45,15 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
                 float bitmapWidth = (float) (picture.getWidth() * scale);
                 float bitmapHeight = (float) (picture.getHeight() * scale);
 
+	            if (width != 0 && height != 0) {
+		            // TODO hack alert, if height and width are defined render bitmap to this size
+		            // hack for scaling SVG bitmaps to fixed multiples
+		            bitmapWidth = width;
+		            bitmapHeight = height;
+	            }
+
                 android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
-                        (int) Math.ceil(bitmapHeight), android.graphics.Bitmap.Config.ARGB_8888);
+                        (int) Math.ceil(bitmapHeight), AndroidGraphicFactory.transparentBitmap);
                 Canvas canvas = new Canvas(bitmap);
                 canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
                 Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
@@ -62,9 +69,9 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
         }
     }
 
-	AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor) throws IOException {
+	AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height) throws IOException {
 		super(hash);
- 		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor);
+ 		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor, width, height);
 	}
 
 }

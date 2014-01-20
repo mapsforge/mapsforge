@@ -136,7 +136,7 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) {
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int hash) {
 		return null;
 	}
 

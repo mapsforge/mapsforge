@@ -55,6 +55,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="SVGAssetsRenderThemeMapViewer" />
         <activity
+            android:name=".SVGTextures"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="SVG Textures" />
+        <activity
             android:name=".RenderThemeChanger"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Automatically changes between renderthemes on SDCard" />

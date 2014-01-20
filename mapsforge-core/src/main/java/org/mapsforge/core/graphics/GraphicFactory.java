@@ -44,6 +44,6 @@ public interface GraphicFactory {
 
 	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 
-	ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException;
+	ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int hash) throws IOException;
 
 }

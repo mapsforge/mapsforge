@@ -57,7 +57,14 @@ public final class XmlUtils {
 			String absoluteName = getAbsoluteName(relativePathPrefix, src);
 			if (src.endsWith(".svg")) {
 				try {
-					return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), absoluteName.hashCode());
+					if (src.contains("patterns")) {
+						// TODO revert out of this
+						// total hack for testing of scaling of SVG patterns, this requires some more API changes
+						// that I would like to avoid right now: all svg files in patterns folder are scaled up to
+						// the tile size multiple
+						return graphicFactory.renderSvg(inputStream, 0, displayModel.getTileSizeMultiple(), displayModel.getTileSizeMultiple(), absoluteName.hashCode());
+					}
+					return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), 0, 0, absoluteName.hashCode());
 				} catch (IOException e) {
 					throw new IOException("SVG render failed " + src, e);
 				}
