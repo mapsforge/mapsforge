@@ -99,6 +99,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Two views with different DisplayModels" />
         <activity
+            android:name=".DualMapViewerWithClampedTileSizes"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Clamping tile sizes to fixed multiples" />
+        <activity
             android:name=".DualMapnikMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Show two maps linked in position movements" />

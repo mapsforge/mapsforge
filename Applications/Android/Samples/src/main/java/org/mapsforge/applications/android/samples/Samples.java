@@ -55,6 +55,7 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(LocationOverlayMapViewer.class));
 		linearLayout.addView(createButton(DualMapViewer.class, "Dual MapDB"));
 		linearLayout.addView(createButton(DualMapViewerWithDifferentDisplayModels.class, "Dual Viewer with different DisplayModels"));
+		linearLayout.addView(createButton(DualMapViewerWithClampedTileSizes.class, "Dual Viewer with clamped tile sizes"));
 		linearLayout.addView(createButton(DualMapnikMapViewer.class, "Tied MapViews MapDB/Mapnik"));
 		linearLayout.addView(createButton(DualOverviewMapViewer.class, "Overview Mapview"));
 		linearLayout.addView(createButton(BubbleOverlay.class, "Bubble Overlay"));

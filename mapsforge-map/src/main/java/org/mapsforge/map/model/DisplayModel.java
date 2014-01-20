@@ -39,6 +39,7 @@ public class DisplayModel extends Observable {
 	private static float deviceScaleFactor = 1f;
 
 	private int tileSize = DEFAULT_TILE_SIZE;
+	private int tileSizeMultiple = 1;
 	private float userScaleFactor = defaultUserScaleFactor;
 	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
@@ -109,6 +110,13 @@ public class DisplayModel extends Observable {
 	}
 
 	/**
+	 * Gets the tile size multiple.
+	 */
+	public synchronized int getTileSizeMultiple() {
+		return this.tileSizeMultiple;
+	}
+
+	/**
 	 * Set the background color.
 	 *
 	 * @param color the color to use.
@@ -119,12 +127,23 @@ public class DisplayModel extends Observable {
 
 	/**
 	 * Set the device scale factor.
+	 * Note: setting the device scale factor will only have an effect on
+	 * DeviceModel instances the next time the tileSize is calculated for it.
 	 *
 	 * @param scaleFactor the device scale factor.
 	 */
-	public static synchronized void setDeviceScaleFactor(float scaleFactor)
-	{
+	public static synchronized void setDeviceScaleFactor(float scaleFactor) {
 		deviceScaleFactor = scaleFactor;
+	}
+
+	/**
+	 * Clamps the tile size to a multiple of the supplied value.
+	 *
+	 * @param multiple tile size multiple
+	 */
+	public synchronized void setTileSizeMultiple(int multiple) {
+		this.tileSizeMultiple = multiple;
+		setTileSize();
 	}
 
 	/**
@@ -138,7 +157,11 @@ public class DisplayModel extends Observable {
 	}
 
 	private void setTileSize() {
-		this.tileSize = (int) (DEFAULT_TILE_SIZE * deviceScaleFactor * userScaleFactor);
+		float temp = (DEFAULT_TILE_SIZE * deviceScaleFactor * userScaleFactor);
+		// this will clamp to the nearest multiple of the tileSizeMultiple
+		// and make sure we do not end up with 0
+		this.tileSize = Math.max(tileSizeMultiple,
+				(int) (Math.round(temp / this.tileSizeMultiple) * this.tileSizeMultiple));
 	}
 
 }
