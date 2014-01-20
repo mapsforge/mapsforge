@@ -18,6 +18,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -34,7 +35,7 @@ public class CaptionBuilderTest {
 		attributesImpl.addAttribute(null, null, CaptionBuilder.FONT_SIZE, null, String.valueOf(FONT_SIZE));
 		attributesImpl.addAttribute(null, null, CaptionBuilder.K, null, K);
 
-		CaptionBuilder captionBuilder = new CaptionBuilder(GRAPHIC_FACTORY, "caption", attributesImpl);
+		CaptionBuilder captionBuilder = new CaptionBuilder(GRAPHIC_FACTORY, new DisplayModel(), "caption", attributesImpl);
 
 		Assert.assertEquals(DY, captionBuilder.dy, 0);
 		Assert.assertEquals(FONT_SIZE, captionBuilder.fontSize, 0);

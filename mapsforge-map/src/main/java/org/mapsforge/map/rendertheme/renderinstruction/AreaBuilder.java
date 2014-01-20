@@ -83,7 +83,7 @@ public class AreaBuilder {
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
-				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
+				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}

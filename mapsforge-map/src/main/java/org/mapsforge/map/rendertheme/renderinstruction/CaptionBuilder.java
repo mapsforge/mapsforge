@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -46,7 +47,7 @@ public class CaptionBuilder {
 	final Paint stroke;
 	TextKey textKey;
 
-	public CaptionBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes) throws SAXException {
+	public CaptionBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes) throws SAXException {
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
@@ -57,7 +58,7 @@ public class CaptionBuilder {
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setTextAlign(Align.LEFT);
 
-		extractValues(graphicFactory, elementName, attributes);
+		extractValues(graphicFactory, displayModel, elementName, attributes);
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class CaptionBuilder {
 		return new Caption(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes)
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes)
 			throws SAXException {
 		FontFamily fontFamily = FontFamily.DEFAULT;
 		FontStyle fontStyle = FontStyle.NORMAL;
@@ -85,13 +86,13 @@ public class CaptionBuilder {
 			} else if (FONT_STYLE.equals(name)) {
 				fontStyle = FontStyle.valueOf(value.toUpperCase(Locale.ENGLISH));
 			} else if (FONT_SIZE.equals(name)) {
-				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value);
+				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
-				this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value));
+				this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}

@@ -155,13 +155,13 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("caption".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Caption caption = new CaptionBuilder(this.graphicFactory, qName, attributes).build();
+				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
 				this.currentRule.addRenderingInstruction(caption);
 			}
 
 			else if ("circle".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Circle circle = new CircleBuilder(this.graphicFactory, qName, attributes, this.level++).build();
+				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++).build();
 				this.currentRule.addRenderingInstruction(circle);
 			}
 
@@ -181,7 +181,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("pathText".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				PathText pathText = new PathTextBuilder(this.graphicFactory, qName, attributes).build();
+				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
 				this.currentRule.addRenderingInstruction(pathText);
 			}
 
