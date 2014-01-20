@@ -11,7 +11,11 @@
 	<artifactId>mapsforge-map-android</artifactId>
 	<packaging>apklib</packaging>
 
-	<build>		
+	<properties>
+		<rootDirectory>../</rootDirectory>
+	</properties>
+
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>

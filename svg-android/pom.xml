@@ -7,15 +7,21 @@
 		<artifactId>mapsforge</artifactId>
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
-        <groupId>svg-android</groupId>
+
+	<groupId>svg-android</groupId>
 	<artifactId>svg-android</artifactId>
-        <version>1.0</version>
-                
+	<version>1.0</version>
+
 	<packaging>jar</packaging>
+
+	<properties>
+		<rootDirectory>../</rootDirectory>
+	</properties>
 
 	<build>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -23,17 +29,18 @@
 			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
-		       <groupId>net.sf.kxml</groupId>
-		       <artifactId>kxml2</artifactId>
-		       <version>2.3.0</version>
-                </dependency>		                                                                   
-                <dependency>
-                        <groupId>com.google.android</groupId>
-                        <artifactId>android</artifactId>
-                        <version>4.1.1.4</version>
-                        <scope>provided</scope>
-                </dependency>
-		
+			<groupId>net.sf.kxml</groupId>
+			<artifactId>kxml2</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<version>4.1.1.4</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>
