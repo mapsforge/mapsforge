@@ -20,9 +20,10 @@ package org.mapsforge.map.model;
 
 public class FixedTileSizeDisplayModel extends DisplayModel {
 
-	private int tileSize;
+	private final int tileSize;
 
 	public FixedTileSizeDisplayModel(int tileSize) {
+		super();
 		this.tileSize = tileSize;
 	}
 

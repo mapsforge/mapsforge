@@ -34,11 +34,14 @@ public class MapWorker extends PausableThread {
 	private final Layer layer;
 	private final TileCache tileCache;
 
-
+	// for timing only
 	private final AtomicLong totalTime;
 	private final AtomicLong totalExecutions;
 
-	{
+
+	public MapWorker(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer, Layer layer) {
+		super();
+
 		if (DEBUG_TIMING) {
 			totalTime = new AtomicLong();
 			totalExecutions = new AtomicLong();
@@ -46,10 +49,6 @@ public class MapWorker extends PausableThread {
 			totalTime = null;
 			totalExecutions = null;
 		}
-	}
-
-	public MapWorker(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer, Layer layer) {
-		super();
 
 		this.tileCache = tileCache;
 		this.jobQueue = jobQueue;

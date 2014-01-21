@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.mapsforge.core.model.*;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
+
 
 /**
  * A utility class to convert, parse and validate geographical latitude/longitude coordinates.
@@ -133,11 +136,11 @@ public final class LatLongUtils {
     public static byte zoomForBounds(Dimension dimension, BoundingBox boundingBox, int tileSize) {
         double dxMax = MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, (byte) 0, tileSize) / tileSize;
         double dxMin = MercatorProjection.longitudeToPixelX(boundingBox.minLongitude, (byte) 0, tileSize) / tileSize;
-        double zoomX = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dxMax - dxMin)) + dimension.width / tileSize);
+        double zoomX = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dxMax - dxMin)) + (float) dimension.width / tileSize);
         double dyMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, (byte) 0, tileSize) / tileSize;
         double dyMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, (byte) 0, tileSize) / tileSize;
-        double zoomY = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dyMax - dyMin)) + dimension.height / tileSize);
-        return (byte) Double.valueOf(Math.min(zoomX, zoomY)).intValue();
+        double zoomY = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dyMax - dyMin)) + (float) dimension.height / tileSize);
+        return (byte) Math.min(zoomX, zoomY);
     }
 
 	/**

@@ -133,7 +133,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 		try {
 			if ("rendertheme".equals(qName)) {
 				checkState(qName, Element.RENDER_THEME);
-				this.renderTheme = new RenderThemeBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
+				this.renderTheme = new RenderThemeBuilder(this.graphicFactory, qName, attributes).build();
 			}
 
 			else if (ELEMENT_NAME_RULE.equals(qName)) {

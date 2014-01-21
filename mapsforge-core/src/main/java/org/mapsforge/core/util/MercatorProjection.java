@@ -172,7 +172,7 @@ public final class MercatorProjection {
 	/**
 	 * Get LatLong form Pixels.
 	 * 
-	 * @Author Stephan Brandt <stephan@contagt.com>
+	 * @author Stephan Brandt <stephan@contagt.com>
 	 * 
 	 * */
 	public static LatLong fromPixels(double pixelX, double pixelY, byte zoomLevel, int tileSize) {

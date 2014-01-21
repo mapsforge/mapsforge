@@ -39,7 +39,7 @@ public class Dimension implements Serializable {
 	 * @return the center point
 	 */
 	public Point getCenter() {
-		return new Point(this.width / 2, this.height / 2);
+		return new Point((float) this.width / 2, (float) this.height / 2);
 	}
 
 	@Override

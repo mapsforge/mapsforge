@@ -46,7 +46,7 @@ public class MapScaleBar {
 
 	private Adapter adapter;
 	private final DisplayModel displayModel;
-	private GraphicFactory graphicFactory;
+	private final GraphicFactory graphicFactory;
 	private MapPosition mapPosition;
 	private final Bitmap mapScaleBitmap;
 	private final Canvas mapScaleCanvas;

@@ -43,6 +43,7 @@ public class DisplayModel extends Observable {
 	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	public DisplayModel() {
+		super();
 		this.setTileSize();
 	}
 
@@ -122,8 +123,7 @@ public class DisplayModel extends Observable {
 	 *
 	 * @param scaleFactor the device scale factor.
 	 */
-	public static synchronized void setDeviceScaleFactor(float scaleFactor)
-	{
+	public static synchronized void setDeviceScaleFactor(float scaleFactor) {
 		deviceScaleFactor = scaleFactor;
 	}
 

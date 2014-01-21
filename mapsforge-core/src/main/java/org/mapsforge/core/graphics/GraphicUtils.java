@@ -16,9 +16,9 @@
 package org.mapsforge.core.graphics;
 
 /**
- * Utility classes for graphics operations
+ * Utility classes for graphics operations.
  */
-public class GraphicUtils {
+public final class GraphicUtils {
 
 	/**
 	 * @param color
@@ -27,5 +27,9 @@ public class GraphicUtils {
 	 */
 	public static int getAlpha(int color) {
 		return (color >> 24) & 0xff;
+	}
+
+	private GraphicUtils() {
+		// noop, just to make tools happy.
 	}
 }
