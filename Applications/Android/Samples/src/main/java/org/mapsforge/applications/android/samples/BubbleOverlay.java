@@ -1,5 +1,4 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -24,9 +23,12 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 /**
- * Basic map viewer that shows bubbles with content at a few locations
+ * Basic map viewer that shows bubbles with content at a few locations.
  */
 public class BubbleOverlay extends BasicMapViewerXml {
+
+	private Bitmap bubble;
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -44,8 +46,9 @@ public class BubbleOverlay extends BasicMapViewerXml {
 			bubbleView.setTextSize(15);
 			bubbleView.setTextColor(Color.BLACK);
 			bubbleView.setText(item.text);
-			Bitmap bitmap = Utils.viewToBitmap(this, bubbleView);
-			this.layerManagers.get(0).getLayers().add(new Marker(item.location, bitmap, 0, -bitmap.getHeight() / 2));
+			bubble = Utils.viewToBitmap(this, bubbleView);
+			bubble.incrementRefCount();
+			this.layerManagers.get(0).getLayers().add(new Marker(item.location, bubble, 0, -bubble.getHeight() / 2));
 		}
 	}
 
@@ -53,5 +56,10 @@ public class BubbleOverlay extends BasicMapViewerXml {
 	protected void createMapViewPositions() {
 		super.createMapViewPositions();
 		this.mapViews.get(0).getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
+	}
+
+	@Override
+	protected void destroyLayers() {
+		bubble.decrementRefCount();
 	}
 }
