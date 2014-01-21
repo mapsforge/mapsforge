@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,9 +15,8 @@
 package org.mapsforge.applications.android.samples;
 
 /**
- * Viewer that demonstrates the use of SVG based symbols in rendertheme file
+ * Viewer that demonstrates the use of SVG based symbols in rendertheme file.
  * 
- * @author Ludwig M Brinckmann
  */
 public class SVGAssetsRenderThemeMapViewer extends AssetsRenderThemeMapViewer {
 

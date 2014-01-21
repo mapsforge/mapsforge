@@ -45,9 +45,9 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	// turn on for bitmap accounting
 	public static final boolean debugBitmaps = false;
 
-	// if true resourceBitmaps will be kept in the cache to avoid
+	// if true RESOURCE_BITMAPS will be kept in the cache to avoid
 	// multiple loading
-	public static boolean keepResourceBitmaps = true;
+	static public final boolean KEEP_RESOURCE_BITMAPS = true;
 
 	// determines size of bitmaps used, RGB_565 is 2 bytes per pixel
 	// while ARGB_8888 uses 4 bytes per pixel (with severe impact
@@ -55,8 +55,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	// you have transparencies in any of the bitmaps. ARGB_4444 is deprecated
 	// and is much slower despite smaller size that ARGB_8888 as it
 	// passes through unoptimized path in the skia library.
-	static public final Config transparentBitmap = Config.ARGB_8888;
-	static public final Config nonTransparentBitmap = Config.RGB_565;
+	static public final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
+	static public final Config NON_TRANSPARENT_BITMAP = Config.RGB_565;
 
 	public static AndroidGraphicFactory INSTANCE;
 
@@ -86,7 +86,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		} else {
 			int width = drawable.getIntrinsicWidth();
 			int height = drawable.getIntrinsicHeight();
-			bitmap = android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.transparentBitmap);
+			bitmap = android.graphics.Bitmap.createBitmap(width, height, AndroidGraphicFactory.TRANSPARENT_BITMAP);
 			android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
 
 			Rect rect = drawable.getBounds();
@@ -155,15 +155,15 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
 	@Override
 	public Bitmap createBitmap(int width, int height) {
-		return new AndroidBitmap(width, height, transparentBitmap);
+		return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
 	}
 
 	@Override
 	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
 		if (isTransparent) {
-			return new AndroidBitmap(width, height, transparentBitmap);
+			return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
 		}
-		return new AndroidBitmap(width, height, nonTransparentBitmap);
+		return new AndroidBitmap(width, height, NON_TRANSPARENT_BITMAP);
 	}
 
 	@Override

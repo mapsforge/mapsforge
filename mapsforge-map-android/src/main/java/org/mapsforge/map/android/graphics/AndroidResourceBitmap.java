@@ -40,25 +40,25 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 	}
 
     protected static final Logger LOGGER = Logger.getLogger(AndroidResourceBitmap.class.getName());
-    protected static final HashMap<Integer, Pair<android.graphics.Bitmap, Integer>> resourceBitmaps =
+    protected static final HashMap<Integer, Pair<android.graphics.Bitmap, Integer>> RESOURCE_BITMAPS =
             new HashMap<>();
 
 
-	// if AndroidGraphicFactory.keepResourceBitmaps is set, the bitmaps are kept in
+	// if AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS is set, the bitmaps are kept in
 	// a dictionary for faster retrieval and are not deleted or recycled until
 	// clearBitmaps is called
 
     private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash) {
-        synchronized (resourceBitmaps) {
-            Pair<android.graphics.Bitmap, Integer> data = resourceBitmaps.get(hash);
+        synchronized (RESOURCE_BITMAPS) {
+            Pair<android.graphics.Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
             if (data != null) {
                 Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second + 1);
-                resourceBitmaps.put(hash, updated);
+                RESOURCE_BITMAPS.put(hash, updated);
                 return data.first;
             } else {
-                android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, createBitmapFactoryOptions(AndroidGraphicFactory.transparentBitmap));
+                android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, createBitmapFactoryOptions(AndroidGraphicFactory.TRANSPARENT_BITMAP));
                 Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
-                resourceBitmaps.put(hash, updated);
+                RESOURCE_BITMAPS.put(hash, updated);
 	            if (AndroidGraphicFactory.debugBitmaps) {
 		            LOGGER.log(Level.INFO, "RESOURCE BITMAP CREATE " + hash);
 		            rInstances.incrementAndGet();
@@ -66,7 +66,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 			            rBitmaps.add(hash);
 		            }
 		            LOGGER.log(Level.INFO, "RESOURCE BITMAP ACC COUNT " + rInstances.get() + " " + rBitmaps.size());
-		            LOGGER.log(Level.INFO, "RESOURCE BITMAP COUNT " + resourceBitmaps.size());
+		            LOGGER.log(Level.INFO, "RESOURCE BITMAP COUNT " + RESOURCE_BITMAPS.size());
 	            }
                 return bitmap;
             }
@@ -74,18 +74,18 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
     }
 
     private static boolean removeBitmap(int hash) {
-        if (AndroidGraphicFactory.keepResourceBitmaps) {
+        if (AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS) {
             return false;
         }
-        synchronized (resourceBitmaps) {
-            Pair<android.graphics.Bitmap, Integer> data = resourceBitmaps.get(hash);
+        synchronized (RESOURCE_BITMAPS) {
+            Pair<android.graphics.Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
             if (data != null) {
                 if (data.second.intValue() > 1) {
                     Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second - 1);
-                    resourceBitmaps.put(hash, updated);
+                    RESOURCE_BITMAPS.put(hash, updated);
                     return false;
                 }
-                resourceBitmaps.remove(hash);
+                RESOURCE_BITMAPS.remove(hash);
 	            if (AndroidGraphicFactory.debugBitmaps) {
 		            synchronized (rBitmaps) {
 			            LOGGER.log(Level.INFO, "RESOURCE BITMAP DELETE " + hash);
@@ -97,7 +97,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 			            }
 			            LOGGER.log(Level.INFO, "RESOURCE BITMAP ACC COUNT " + i + " " + rBitmaps.size());
 		            }
-		            LOGGER.log(Level.INFO, "RESOURCE BITMAP COUNT " + resourceBitmaps.size());
+		            LOGGER.log(Level.INFO, "RESOURCE BITMAP COUNT " + RESOURCE_BITMAPS.size());
 	            }
 	            return true;
             }
@@ -106,11 +106,11 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
     }
 
     public static void clearResourceBitmaps() {
-	    if (!AndroidGraphicFactory.keepResourceBitmaps) {
+	    if (!AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS) {
 		    return;
 	    }
-        synchronized (resourceBitmaps) {
-            for (Pair<android.graphics.Bitmap, Integer> p : resourceBitmaps.values()) {
+        synchronized (RESOURCE_BITMAPS) {
+            for (Pair<android.graphics.Bitmap, Integer> p : RESOURCE_BITMAPS.values()) {
                 p.first.recycle();
 	            if (AndroidGraphicFactory.debugBitmaps) {
 		            rInstances.decrementAndGet();
@@ -119,7 +119,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 	        if (AndroidGraphicFactory.debugBitmaps) {
 				rBitmaps.clear();
 	        }
-            resourceBitmaps.clear();
+            RESOURCE_BITMAPS.clear();
         }
     }
 

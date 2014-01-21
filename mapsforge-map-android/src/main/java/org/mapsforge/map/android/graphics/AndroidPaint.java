@@ -132,7 +132,7 @@ class AndroidPaint implements Paint {
 		if (bitmap == null) {
 			return;
 		}
-		if (!AndroidGraphicFactory.keepResourceBitmaps && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		if (!AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			// there is an problem when bitmaps are recycled too early on honeycomb and up,
 			// where shaders are corrupted. This problem does of course not arise if
 			// the bitmaps are cached for future use.

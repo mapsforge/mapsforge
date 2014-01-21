@@ -206,7 +206,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	 */
 	protected File getMapFile() {
         File file = new File(Environment.getExternalStorageDirectory(), this.getMapFileName());
-		Log.i("Map file is ", file.getAbsolutePath());
+		Log.i(SamplesApplication.TAG, "Map file is " + file.getAbsolutePath());
 		return file;
 	}
 
@@ -283,6 +283,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 				return true;
 			case R.id.menu_position_enter_coordinates:
 				showDialog(DIALOG_ENTER_COORDINATES);
+				break;
 		}
 		return false;
 	}
@@ -294,7 +295,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			for (MapView mapView : mapViews) {
 				mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
 			}
-			Log.d("SETTINGS", "Tilesize now " + mapViews.get(0).getModel().displayModel.getTileSize());
+			Log.d(SamplesApplication.TAG, "Tilesize now " + mapViews.get(0).getModel().displayModel.getTileSize());
 			createTileCaches();
 			redrawLayers();
 		}

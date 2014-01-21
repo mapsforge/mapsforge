@@ -85,12 +85,12 @@ public class RenderThemeChanger extends BasicMapViewer {
 
 	void changeRenderTheme() {
 		File[] renderThemes = Environment.getExternalStorageDirectory().listFiles(renderThemesFilter);
-		if (renderThemes.length > 0 ) {
+		if (renderThemes.length > 0) {
 			File nextTheme = renderThemes[iteration % renderThemes.length];
 			iteration += 1;
 			try {
 				XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(nextTheme);
-				Log.i("RENDERTHEME", "Loading new render theme " + nextTheme.getName());
+				Log.i(SamplesApplication.TAG, "Loading new render theme " + nextTheme.getName());
 				// there should really be a simpler way to just change the render theme safely
 				layerManagers.get(0).getLayers().remove(tileRendererLayer);
 				tileRendererLayer.onDestroy();
@@ -99,7 +99,7 @@ public class RenderThemeChanger extends BasicMapViewer {
 				layerManagers.get(0).getLayers().add(tileRendererLayer);
 				layerManagers.get(0).redrawLayers();
 			} catch (FileNotFoundException e) {
-				Log.i("RENDERTHEME", "Could not open file " + nextTheme.getName());
+				Log.i(SamplesApplication.TAG, "Could not open file " + nextTheme.getName());
 			}
 		}
 	}

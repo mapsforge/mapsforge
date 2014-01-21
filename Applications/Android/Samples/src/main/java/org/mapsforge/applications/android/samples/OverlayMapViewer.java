@@ -34,10 +34,11 @@ import org.mapsforge.map.layer.overlay.Polygon;
 import org.mapsforge.map.layer.overlay.Polyline;
 
 /**
- * Basic map viewer with a few overlays added
+ * Basic map viewer with a few overlays added.
  */
 public class OverlayMapViewer extends BasicMapViewerXml {
-       	protected LatLong latLong1 = new LatLong(52.5, 13.4);
+
+    protected LatLong latLong1 = new LatLong(52.5, 13.4);
 	protected LatLong latLong2 = new LatLong(52.499, 13.402);
 	protected LatLong latLong3 = new LatLong(52.503, 13.399);
 	protected LatLong latLong4 = new LatLong(52.51, 13.401);
@@ -77,11 +78,11 @@ public class OverlayMapViewer extends BasicMapViewerXml {
 
 
 		FixedPixelCircle tappableCircle = new FixedPixelCircle(latLong6, 70, Utils.createPaint(
-				AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL), null){
+				AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL), null) {
 			@Override
 			public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
-					Log.w("Tapp", "The Circle was tapped at " + geoPoint.toString());
+					Log.w(SamplesApplication.TAG, "The Circle was tapped at " + geoPoint.toString());
 					return true;
 				}
 				return false;
@@ -90,7 +91,7 @@ public class OverlayMapViewer extends BasicMapViewerXml {
 			@Override
 			public boolean onLongPress(LatLong geoPoint, Point viewPosition, Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
-					Log.w("Tapp", "The Circle was long pressed at " + geoPoint.toString());
+					Log.w(SamplesApplication.TAG, "The Circle was long pressed at " + geoPoint.toString());
 					return true;
 				}
 				return false;

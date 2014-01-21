@@ -27,20 +27,20 @@ import com.applantation.android.svg.SVG;
 import com.applantation.android.svg.SVGParser;
 
 class AndroidSvgBitmap extends AndroidResourceBitmap {
-	static final float defaultSize = 200f;
+	static final float DEFAULT_SIZE = 200f;
 
     private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height) throws IOException {
-        synchronized (resourceBitmaps) {
-            Pair<Bitmap, Integer> data = resourceBitmaps.get(hash);
+        synchronized (RESOURCE_BITMAPS) {
+            Pair<Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
             if (data != null) {
                 Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second + 1);
-                resourceBitmaps.put(hash, updated);
+                RESOURCE_BITMAPS.put(hash, updated);
                 return data.first;
             } else {
                 SVG svg = SVGParser.getSVGFromInputStream(inputStream);
                 Picture picture = svg.getPicture();
 
-                double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / defaultSize);
+                double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / DEFAULT_SIZE);
 
                 float bitmapWidth = (float) (picture.getWidth() * scale);
                 float bitmapHeight = (float) (picture.getHeight() * scale);
@@ -53,11 +53,11 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 	            }
 
                 android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
-                        (int) Math.ceil(bitmapHeight), AndroidGraphicFactory.transparentBitmap);
+                        (int) Math.ceil(bitmapHeight), AndroidGraphicFactory.TRANSPARENT_BITMAP);
                 Canvas canvas = new Canvas(bitmap);
                 canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
                 Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
-                resourceBitmaps.put(hash, updated);
+                RESOURCE_BITMAPS.put(hash, updated);
 	            if (AndroidGraphicFactory.debugBitmaps) {
 		            rInstances.incrementAndGet();
 		            synchronized (rBitmaps) {

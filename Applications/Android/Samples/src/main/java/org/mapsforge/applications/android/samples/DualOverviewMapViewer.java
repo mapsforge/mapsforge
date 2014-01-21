@@ -25,7 +25,7 @@ import org.mapsforge.map.layer.overlay.Polyline;
 import org.mapsforge.map.util.MapPositionUtil;
 
 /**
- * An activity with a smaller mapview giving the position of the larger map view
+ * An activity with a smaller mapview giving the position of the larger map view.
  */
 public class DualOverviewMapViewer extends DualMapViewer {
 	private MapViewPositionObserver observer;

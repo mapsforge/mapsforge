@@ -16,11 +16,9 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.annotation.TargetApi;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
-import android.os.Build;
 
 import org.mapsforge.core.graphics.Bitmap;
 
@@ -126,7 +124,7 @@ public class AndroidBitmap implements Bitmap {
 
 	protected void destroyBitmap() {
 		if (this.bitmap != null) {
-			if (org.mapsforge.map.android.util.AndroidUtil.honeyCombPlus) {
+			if (org.mapsforge.map.android.util.AndroidUtil.HONEYCOMB_PLUS) {
 				synchronized (reusableBitmaps) {
 					reusableBitmaps.add(new SoftReference<>(this.bitmap));
 				}
@@ -183,7 +181,7 @@ public class AndroidBitmap implements Bitmap {
 
     }
 
-	protected android.graphics.Bitmap getBitmapFromReusableSet(int width, int height, Config config) {
+	protected final android.graphics.Bitmap getBitmapFromReusableSet(int width, int height, Config config) {
 		android.graphics.Bitmap bitmap = null;
 
 		if (reusableBitmaps != null && !reusableBitmaps.isEmpty()) {
@@ -211,25 +209,7 @@ public class AndroidBitmap implements Bitmap {
 		return bitmap;
 	}
 
-	@TargetApi(19)
 	protected boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height, Config config) {
-
-		if (false && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			// THIS SEEMS TO CAUSE LOTS OF SCREEN FLICKERING EVEN THOUGH
-			// OLD BITMAPS ARE ERASED
-
-			// From Android 4.4 (KitKat) onward we can re-use if the byte size of
-			// the new bitmap is smaller than the reusable bitmap candidate
-			// allocation byte count.
-			// But has to be reconfigured for new height and width
-			int byteCount = width * height * AndroidGraphicFactory.getBytesPerPixel(config);
-			boolean reusable = byteCount <= candidate.getAllocationByteCount();
-			if (reusable) {
-				candidate.reconfigure(width, height, config);
-			}
-			return reusable;
-		}
-
 
 		if (candidate.getWidth() == width && candidate.getHeight() == height) {
 			return true;

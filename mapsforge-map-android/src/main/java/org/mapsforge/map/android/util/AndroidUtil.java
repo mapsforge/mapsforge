@@ -31,13 +31,13 @@ import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 
 import java.io.File;
 
-public class AndroidUtil {
+public final class AndroidUtil {
 
     private AndroidUtil() {
         // noop, for privacy
     }
 
-    public static final boolean honeyCombPlus = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    public static final boolean HONEYCOMB_PLUS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
     /**
      * @return true if the current thread is the UI thread, false otherwise.
@@ -49,7 +49,7 @@ public class AndroidUtil {
     /**
      * Utility function to create a two-level tile cache with the right size. When the cache
      * is created we do not actually know the size of the mapview, so the screenRatio is an
-     * approximation of the required size
+     * approximation of the required size.
      * @param c              the Android context
      * @param id             name for the storage directory
      * @param tileSize       tile size
@@ -79,18 +79,17 @@ public class AndroidUtil {
 			// cacheDir will be null if full
 			String cacheDirectoryName = cacheDir.getAbsolutePath() + File.separator + id;
 			File cacheDirectory = new File(cacheDirectoryName);
-			if (!cacheDirectory.exists()) {
-				cacheDirectory.mkdir();
-			}
-			int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
-			if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
-				try {
-					Log.d("TILECACHE FILECACHE SIZE", Integer.toString(firstLevelSize));
-					TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
-							org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE);
-					return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
-				} catch (IllegalArgumentException e) {
-					Log.w("TILECACHE", e.toString());
+			if (cacheDirectory.exists() || cacheDirectory.mkdir()) {
+				int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
+				if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
+					try {
+						Log.d("TILECACHE FILECACHE SIZE", Integer.toString(firstLevelSize));
+						TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
+								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE);
+						return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
+					} catch (IllegalArgumentException e) {
+						Log.w("TILECACHE", e.toString());
+					}
 				}
 			}
 		}
@@ -120,7 +119,7 @@ public class AndroidUtil {
     }
 
     /**
-     * Get the number of tiles that can be stored on the file system
+     * Get the number of tiles that can be stored on the file system.
      *
      * @param directory where the cache will reside
      * @param fileSize average size of tile to be cached
@@ -130,7 +129,7 @@ public class AndroidUtil {
     @TargetApi(18)
     public static long getAvailableCacheSlots(String directory, int fileSize) {
         StatFs statfs = new StatFs(directory);
-        if (android.os.Build.VERSION.SDK_INT >= 18){
+        if (android.os.Build.VERSION.SDK_INT >= 18) {
             return statfs.getAvailableBytes() / fileSize;
         }
 	    // problem is overflow with devices with large storage, so order is important here
@@ -139,7 +138,7 @@ public class AndroidUtil {
 	    return statfs.getAvailableBlocks() / blocksPerFile;
     }
     /**
-     * Compute the minimum cache size for a view
+     * Compute the minimum cache size for a view.
      *
      * @param c the context.
      * @param tileSize tile size
@@ -151,7 +150,7 @@ public class AndroidUtil {
         WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
 
-        return (int)(screenRatio * Math.ceil(1 + (display.getHeight()  * overdrawFactor / tileSize))
+        return (int) (screenRatio * Math.ceil(1 + (display.getHeight()  * overdrawFactor / tileSize))
                 * Math.ceil(1 + (display.getWidth()  * overdrawFactor / tileSize)));
     }
 

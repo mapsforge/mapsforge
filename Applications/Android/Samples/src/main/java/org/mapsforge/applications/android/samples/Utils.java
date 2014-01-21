@@ -26,14 +26,10 @@ import android.view.View.MeasureSpec;
 
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.overlay.Marker;
