@@ -63,7 +63,7 @@ public class MapPositionUtilTest {
 			Assert.assertEquals(expectedPoint, MapPositionUtil.getTopLeftPoint(mapPosition, canvas.getDimension(), tileSize));
 
 			mapPosition = new MapPosition(new LatLong(0, 90), (byte) 1);
-			expectedPoint = new Point(tileSize, tileSize / 2);
+			expectedPoint = new Point(tileSize, (float) tileSize / 2);
 			Assert.assertEquals(expectedPoint, MapPositionUtil.getTopLeftPoint(mapPosition, canvas.getDimension(), tileSize));
 		}
 	}

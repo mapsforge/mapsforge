@@ -17,7 +17,6 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -41,7 +40,7 @@ public class RenderThemeBuilder {
 	int mapBackground;
 	private Integer version;
 
-	public RenderThemeBuilder(GraphicFactory graphicFactory, DisplayModel displayModel1,
+	public RenderThemeBuilder(GraphicFactory graphicFactory,
 			String elementName, Attributes attributes) throws SAXException {
 		this.baseStrokeWidth = 1f;
 		this.baseTextSize = 1f;

@@ -55,7 +55,7 @@ public class FpsCounter {
 		long currentTime = System.nanoTime();
 		long elapsedTime = currentTime - this.lastTime;
 		if (elapsedTime > ONE_SECOND) {
-			this.fps = String.valueOf(Math.round((this.frameCounter * ONE_SECOND) / elapsedTime));
+			this.fps = String.valueOf(Math.round((float) (this.frameCounter * ONE_SECOND) / elapsedTime));
 			this.lastTime = currentTime;
 			this.frameCounter = 0;
 		}

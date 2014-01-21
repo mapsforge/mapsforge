@@ -53,7 +53,7 @@ public class Marker extends Layer {
 	}
 
 	@Override
-	public void onDestroy() {
+	public synchronized void onDestroy() {
 		if (this.bitmap != null) {
 			this.bitmap.decrementRefCount();
 		}
@@ -160,12 +160,12 @@ public class Marker extends Layer {
 		this.verticalOffset = verticalOffset;
 	}
 
-	public boolean contains(Point center, Point point) {
+	public synchronized boolean contains(Point center, Point point) {
 		Rectangle r = new Rectangle(
-				center.x - bitmap.getWidth() / 2 + this.horizontalOffset,
-				center.y - bitmap.getHeight() / 2 + this.verticalOffset,
-				center.x + bitmap.getWidth() / 2 + this.horizontalOffset,
-				center.y + bitmap.getHeight() / 2 + this.verticalOffset);
+				center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset,
+				center.y - (float) bitmap.getHeight() / 2 + this.verticalOffset,
+				center.x + (float) bitmap.getWidth() / 2 + this.horizontalOffset,
+				center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
 		return r.contains(point);
 	}
 

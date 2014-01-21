@@ -48,7 +48,7 @@ public final class FrameBufferController implements Observer {
 		int width = (int) (mapViewDimension.width * overdrawFactor);
 		int height = (int) (mapViewDimension.height * overdrawFactor);
         if (useSquareFrameBuffer) {
-	        float aspectRatio = mapViewDimension.width / mapViewDimension.height;
+	        float aspectRatio = ((float) mapViewDimension.width) / mapViewDimension.height;
 	        if (aspectRatio < maxAspectRatio && aspectRatio > maxAspectRatio / 1) {
                 width = Math.max(width, height);
                 height = width;

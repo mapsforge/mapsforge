@@ -44,6 +44,7 @@ public class DisplayModel extends Observable {
 	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
 
 	public DisplayModel() {
+		super();
 		this.setTileSize();
 	}
 

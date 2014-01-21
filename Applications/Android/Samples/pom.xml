@@ -12,7 +12,12 @@
 	<artifactId>Samples</artifactId>
 	<packaging>apk</packaging>
 
-	<build>                
+	<properties>
+		<rootDirectory>../../../</rootDirectory>
+		<targetJdk>1.7</targetJdk>
+	</properties>
+
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
@@ -24,7 +29,7 @@
 						</jvmArguments>
 					</dex>
 				</configuration>
-                                <extensions>true</extensions>
+				<extensions>true</extensions>
 			</plugin>
 
 			<plugin>
@@ -73,18 +78,19 @@
 			<version>${project.version}</version>
 		</dependency>
 
-                <dependency>
-                  <groupId>android</groupId>
-                  <artifactId>android</artifactId>
-                  <version>4.4.2_r2</version>
-                  <scope>provided</scope>
-                </dependency>
-                <dependency>
-                <groupId>com.jayway.android.robotium</groupId>
-                <artifactId>robotium-solo</artifactId>
-                <version>4.3.1</version>
-                <scope>test</scope>
-            </dependency>
+		<dependency>
+			<groupId>android</groupId>
+			<artifactId>android</artifactId>
+			<version>4.4.2_r2</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jayway.android.robotium</groupId>
+			<artifactId>robotium-solo</artifactId>
+			<version>5.0.1</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.android</groupId>

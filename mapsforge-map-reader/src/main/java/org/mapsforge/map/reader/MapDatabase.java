@@ -83,11 +83,6 @@ public class MapDatabase {
 	private static final int MAXIMUM_WAY_NODES_SEQUENCE_LENGTH = 8192;
 
 	/**
-	 * Maximum number of map objects in the zoom table which is considered as valid.
-	 */
-	private static final int MAXIMUM_ZOOM_TABLE_OBJECTS = 65536;
-
-	/**
 	 * Bitmask for the optional POI feature "elevation".
 	 */
 	private static final int POI_FEATURE_ELEVATION = 0x20;
@@ -410,9 +405,6 @@ public class MapDatabase {
 		}
 
 		int[][] zoomTable = readZoomTable(subFileParameter);
-		if (zoomTable == null) {
-			return null;
-		}
 		int zoomTableRow = queryParameters.queryZoomLevel - subFileParameter.zoomLevelMin;
 		int poisOnQueryZoomLevel = zoomTable[zoomTableRow][0];
 		int waysOnQueryZoomLevel = zoomTable[zoomTableRow][1];

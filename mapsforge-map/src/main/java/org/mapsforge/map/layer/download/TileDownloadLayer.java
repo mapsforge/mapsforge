@@ -39,9 +39,6 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 			GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), tileSource.hasAlpha());
 
-		if (tileSource == null) {
-			throw new IllegalArgumentException("tileSource must not be null");
-		}
 		this.tileCache = tileCache;
 		this.tileSource = tileSource;
 		this.graphicFactory = graphicFactory;
