@@ -90,7 +90,7 @@ public class TouchGestureDetector implements TouchEventListener {
 	}
 
 	@Override
-	public void onLongPress(LatLong latLong, Point xy){
+	public void onLongPress(LatLong latLong, Point xy) {
 		for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
 			final Layer ovl = this.mapView.getLayerManager().getLayers().get(i);
 			final Point layerXY = projection.toPixels(ovl.getPosition());

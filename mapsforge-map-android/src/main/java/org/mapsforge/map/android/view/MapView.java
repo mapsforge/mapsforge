@@ -45,7 +45,6 @@ import android.view.ViewConfiguration;
 
 public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView {
 
-	private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions";
 	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
 
     private final FpsCounter fpsCounter;

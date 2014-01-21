@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,14 +14,15 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
 /**
- * Viewer that utilizes a different rendertheme picked up from the Android apk assets folder
+ * Viewer that utilizes a different rendertheme picked up from the Android apk assets folder.
  * 
- * @author Ludwig M Brinckmann
  */
 public class RenderThemeMapViewer extends BasicMapViewerXml {
 
@@ -30,7 +31,7 @@ public class RenderThemeMapViewer extends BasicMapViewerXml {
 		try {
 			return new AssetsRenderTheme(this, getRenderThemePrefix(), getRenderThemeFile());
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(SamplesApplication.TAG, "Render theme failure " + e.toString());
 		}
 		return null;
 	}

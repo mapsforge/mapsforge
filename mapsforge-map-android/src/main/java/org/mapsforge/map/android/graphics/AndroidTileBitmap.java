@@ -99,11 +99,11 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	private static final BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent) {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 		if (isTransparent) {
-			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.transparentBitmap;
+			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.TRANSPARENT_BITMAP;
 		} else {
-			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.nonTransparentBitmap;
+			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
 		}
-		if (org.mapsforge.map.android.util.AndroidUtil.honeyCombPlus) {
+		if (org.mapsforge.map.android.util.AndroidUtil.HONEYCOMB_PLUS) {
 			android.graphics.Bitmap reusableBitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
 			if (reusableBitmap != null) {
 				bitmapFactoryOptions.inMutable = true;
@@ -115,11 +115,11 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	}
 	
 	AndroidTileBitmap(int tileSize, boolean isTransparent) {
-		if (AndroidUtil.honeyCombPlus) {
+		if (AndroidUtil.HONEYCOMB_PLUS) {
 			this.bitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
 		}
 		if (this.bitmap == null) {
-			android.graphics.Bitmap.Config config = isTransparent ? AndroidGraphicFactory.transparentBitmap : AndroidGraphicFactory.nonTransparentBitmap;
+			android.graphics.Bitmap.Config config = isTransparent ? AndroidGraphicFactory.TRANSPARENT_BITMAP : AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
 			this.bitmap = AndroidBitmap.createAndroidBitmap(tileSize, tileSize, config);
 		}
         if (AndroidGraphicFactory.debugBitmaps) {
@@ -171,7 +171,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
     protected void destroyBitmap() {
 	    if (this.bitmap != null) {
 		    // bitmap can be null if there is an error creating it
-            if (AndroidUtil.honeyCombPlus) {
+            if (AndroidUtil.HONEYCOMB_PLUS) {
 	            final int tileSize = this.getHeight();
 	            synchronized (reusableTileBitmaps) {
 	                int hash = composeHash(tileSize, this.bitmap.hasAlpha());
