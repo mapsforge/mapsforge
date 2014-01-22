@@ -20,7 +20,7 @@ import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 
 /**
- * Shows how to use a tile download layer
+ * Shows how to use a tile download layer.
  */
 public class DownloadLayerViewer extends BasicMapViewerXml {
 	private TileDownloadLayer downloadLayer;

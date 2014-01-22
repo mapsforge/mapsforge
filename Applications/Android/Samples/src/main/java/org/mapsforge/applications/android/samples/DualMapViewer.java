@@ -28,7 +28,7 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 
 /**
- * An activity with two independent MapViews
+ * An activity with two independent MapViews.
  */
 public class DualMapViewer extends BasicMapViewerXml {
 

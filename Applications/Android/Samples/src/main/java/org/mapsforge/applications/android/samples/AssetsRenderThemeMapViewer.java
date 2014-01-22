@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,7 +16,7 @@ package org.mapsforge.applications.android.samples;
 
 /**
  * Viewer that utilizes a different rendertheme picked up from the Android apk assets folder and symbols picked also
- * picked from assets
+ * picked from assets.
  * 
  * @author Ludwig M Brinckmann
  */

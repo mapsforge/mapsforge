@@ -33,9 +33,6 @@ import android.view.MenuItem;
  * Activity to edit the application preferences.
  */
 public class Settings extends PreferenceActivity implements OnSharedPreferenceChangeListener {
-
-	private final static String SETTING_SCALE = "scale";
-
 	SharedPreferences prefs;
 
 	@Override
@@ -77,9 +74,9 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-		if (SETTING_SCALE.equals(key)) {
+		if (SamplesApplication.SETTING_SCALE.equals(key)) {
 			float userScaleFactor = DisplayModel.getDefaultUserScaleFactor();
-			float fs = Float.valueOf(preferences.getString(SETTING_SCALE, Float.toString(userScaleFactor)));
+			float fs = Float.valueOf(preferences.getString(SamplesApplication.SETTING_SCALE, Float.toString(userScaleFactor)));
 			Log.e(SamplesApplication.TAG, "User ScaleFactor " + Float.toString(fs));
 			if (fs != userScaleFactor) {
 				DisplayModel.setDefaultUserScaleFactor(fs);

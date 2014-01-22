@@ -16,7 +16,7 @@
 package org.mapsforge.applications.android.samples;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
@@ -60,10 +60,10 @@ import android.widget.TextView;
  * A simple application which demonstrates how to use a MapView.
  */
 public class BasicMapViewer extends Activity implements OnSharedPreferenceChangeListener {
-	protected Vector<MapView> mapViews = new Vector<>();
-	protected Vector<MapViewPosition> mapViewPositions = new Vector<>();
+	protected ArrayList<MapView> mapViews = new ArrayList<>();
+	protected ArrayList<MapViewPosition> mapViewPositions = new ArrayList<>();
 	protected TileCache tileCache;
-	protected Vector<LayerManager> layerManagers = new Vector<LayerManager>();
+	protected ArrayList<LayerManager> layerManagers = new ArrayList<LayerManager>();
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
 
@@ -162,6 +162,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createControls() {
+		// time to create control elements
 	}
 
 	protected void createMapViews() {
@@ -169,9 +170,9 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		mapView.getModel().init(this.preferencesFacade);
 		mapView.setClickable(true);
 		mapView.getMapScaleBar().setVisible(true);
-		mapView.setBuiltInZoomControls(getZoomControls());
-		mapView.getMapZoomControls().setZoomLevelMin((byte)10);
-		mapView.getMapZoomControls().setZoomLevelMax((byte)20);
+		mapView.setBuiltInZoomControls(hasZoomControls());
+		mapView.getMapZoomControls().setZoomLevelMin((byte) 10);
+		mapView.getMapZoomControls().setZoomLevelMax((byte) 20);
 		this.mapViews.add(mapView);
 	}
 
@@ -195,7 +196,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			if  (mapFileInfo != null && mapFileInfo.startPosition != null) {
 				return new MapPosition(mapFileInfo.startPosition, (byte) mapFileInfo.startZoomLevel);
 			} else {
-				return new MapPosition(new LatLong(52.517037,13.38886), (byte) 12);
+				return new MapPosition(new LatLong(52.517037, 13.38886), (byte) 12);
 			}
 		}
 		throw new IllegalArgumentException("Invalid Map File " + getMapFileName());
@@ -238,7 +239,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		return 1.0f;
 	}
 
-	protected boolean getZoomControls() {
+	protected boolean hasZoomControls() {
 		return true;
 	}
 
@@ -249,7 +250,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	/**
-	 * initializes the map view position
+	 * initializes the map view position.
 	 * 
 	 * @param mvp
 	 *            the map view position to be set
@@ -290,7 +291,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-		if (key.equals("scale")) {
+		if (SamplesApplication.SETTING_SCALE.equals(key)) {
 			destroyTileCaches();
 			for (MapView mapView : mapViews) {
 				mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
@@ -370,7 +371,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	/**
-	 * sets the content view if it has not been set already
+	 * sets the content view if it has not been set already.
 	 */
 	protected void setContentView() {
 		setContentView(this.mapViews.get(0));
