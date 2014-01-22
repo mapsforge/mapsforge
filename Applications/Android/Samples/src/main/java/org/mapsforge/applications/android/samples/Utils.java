@@ -40,7 +40,7 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import java.io.File;
 
 /**
- * Utility functions that can be used across different mapsforge based activities
+ * Utility functions that can be used across different mapsforge based activities.
  */
 public final class Utils {
     private Utils() {
@@ -48,7 +48,7 @@ public final class Utils {
     }
 
     /**
-     * Compatibility method
+     * Compatibility method.
      *
      * @param a the current activity
      */
@@ -61,7 +61,7 @@ public final class Utils {
     }
 
     /**
-     * Compatibility method
+     * Compatibility method.
      *
      * @param view       the view to set the background on
      * @param background the background

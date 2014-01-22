@@ -27,7 +27,9 @@ import android.util.Log;
  */
 public class SamplesApplication extends Application {
 
+	public final static String SETTING_SCALE = "scale";
 	public static final String TAG = "SAMPLES APP";
+
 
 	@Override
 	public void onCreate() {

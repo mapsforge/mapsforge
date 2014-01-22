@@ -29,12 +29,12 @@ import org.mapsforge.map.layer.overlay.Polyline;
 
 
 /**
- * Basic map viewer with a few overlays added
+ * Basic map viewer with a few overlays added.
  */
 public class ZoomToBounds extends OverlayMapViewer {
 
 	@Override
-	public void onWindowFocusChanged (boolean hasFocus) {
+	public void onWindowFocusChanged(boolean hasFocus) {
 	    super.onWindowFocusChanged(hasFocus);
 	    if (hasFocus) {
 		BoundingBox bb = new BoundingBox(latLong2.latitude, latLong3.longitude, latLong3.latitude, latLong2.longitude);
@@ -44,6 +44,7 @@ public class ZoomToBounds extends OverlayMapViewer {
 	    }
 	}
 
+	@Override
 	protected void addOverlayLayers(Layers layers) {
 		Polyline polyline = new Polyline(Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE), 8,
 				Style.STROKE), AndroidGraphicFactory.INSTANCE);

@@ -25,7 +25,7 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
- * Viewer with tile grid and coordinates visible and frame counter displayed
+ * Viewer with tile grid and coordinates visible and frame counter displayed.
  */
 public class DiagnosticsMapViewer extends BasicMapViewerXml {
 

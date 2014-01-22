@@ -39,7 +39,7 @@ public class ChangingBitmaps extends BasicMapViewerXml {
 				// replaced with the other colour.
 				current.incrementRefCount();
 			}
-			if (current == bitmapGreen) {
+			if (bitmapGreen.equals(current)) {
 				marker.setBitmap(bitmapRed);
 				current = bitmapRed;
 			} else {
