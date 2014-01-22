@@ -1,7 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2012 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,15 +20,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 
 public final class XmlUtils {
-	private static final Logger LOGGER = Logger.getLogger(XmlUtils.class.getName());
 	private static final String PREFIX_FILE = "file:";
 	private static final String PREFIX_JAR = "jar:";
 	private static final String PREFIX_JAR_V1 = "jar:/org/mapsforge/android/maps/rendertheme";
@@ -89,15 +86,15 @@ public final class XmlUtils {
 	 * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
 	 */
 	public static int getColor(GraphicFactory graphicFactory, String colorString) {
-		if (!colorString.isEmpty() && colorString.charAt(0) == '#') {
-			if (colorString.length() == 7) {
-				return getColor(graphicFactory, colorString, 255, 1);
-			} else if (colorString.length() == 9) {
-				return getColor(graphicFactory, colorString, Integer.parseInt(colorString.substring(1, 3), 16), 3);
-			}
+		if (colorString.isEmpty() || colorString.charAt(0) != '#') {
+			throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
+		} else if (colorString.length() == 7) {
+			return getColor(graphicFactory, colorString, 255, 1);
+		} else if (colorString.length() == 9) {
+			return getColor(graphicFactory, colorString, Integer.parseInt(colorString.substring(1, 3), 16), 3);
+		} else {
+			throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
 		}
-		LOGGER.warning(UNSUPPORTED_COLOR_FORMAT + colorString);
-		return getColor(graphicFactory, "#000000", 255, 1);
 	}
 
 	public static byte parseNonNegativeByte(String name, String value) throws SAXException {
