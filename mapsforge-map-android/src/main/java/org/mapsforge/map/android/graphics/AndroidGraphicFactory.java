@@ -43,11 +43,11 @@ import android.view.WindowManager;
 public final class AndroidGraphicFactory implements GraphicFactory {
 
 	// turn on for bitmap accounting
-	public static final boolean debugBitmaps = false;
+	public static final boolean DEBUG_BITMAPS = false;
 
 	// if true RESOURCE_BITMAPS will be kept in the cache to avoid
 	// multiple loading
-	static public final boolean KEEP_RESOURCE_BITMAPS = true;
+	public static final boolean KEEP_RESOURCE_BITMAPS = true;
 
 	// determines size of bitmaps used, RGB_565 is 2 bytes per pixel
 	// while ARGB_8888 uses 4 bytes per pixel (with severe impact
@@ -55,8 +55,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	// you have transparencies in any of the bitmaps. ARGB_4444 is deprecated
 	// and is much slower despite smaller size that ARGB_8888 as it
 	// passes through unoptimized path in the skia library.
-	static public final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
-	static public final Config NON_TRANSPARENT_BITMAP = Config.RGB_565;
+	public static final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
+	public static final Config NON_TRANSPARENT_BITMAP = Config.RGB_565;
 
 	public static AndroidGraphicFactory INSTANCE;
 
