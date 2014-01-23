@@ -39,7 +39,7 @@ public class LocationOverlayMapViewer extends BasicMapViewerXml {
 		// create the overlay and tell it to follow the location
 		this.myLocationOverlay = new MyLocationOverlay(this, this.mapViewPositions.get(0), bitmap);
 		this.myLocationOverlay.setSnapToLocationEnabled(true);
-
 		this.layerManagers.get(0).getLayers().add(this.myLocationOverlay);
+		this.myLocationOverlay.enableMyLocation(true);
 	}
 }
