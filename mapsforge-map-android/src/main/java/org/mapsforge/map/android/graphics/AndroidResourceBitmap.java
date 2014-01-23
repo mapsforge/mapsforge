@@ -33,7 +33,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
     protected static AtomicInteger rInstances;
     protected static HashSet<Integer> rBitmaps;
 	static {
-		if (AndroidGraphicFactory.debugBitmaps) {
+		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			rInstances = new AtomicInteger();
 			rBitmaps = new HashSet<>();
 		}
@@ -59,7 +59,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
                 android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, createBitmapFactoryOptions(AndroidGraphicFactory.TRANSPARENT_BITMAP));
                 Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
                 RESOURCE_BITMAPS.put(hash, updated);
-	            if (AndroidGraphicFactory.debugBitmaps) {
+	            if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 		            LOGGER.log(Level.INFO, "RESOURCE BITMAP CREATE " + hash);
 		            rInstances.incrementAndGet();
 		            synchronized (rBitmaps) {
@@ -86,7 +86,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
                     return false;
                 }
                 RESOURCE_BITMAPS.remove(hash);
-	            if (AndroidGraphicFactory.debugBitmaps) {
+	            if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 		            synchronized (rBitmaps) {
 			            LOGGER.log(Level.INFO, "RESOURCE BITMAP DELETE " + hash);
 			            int i = rInstances.decrementAndGet();
@@ -112,11 +112,11 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
         synchronized (RESOURCE_BITMAPS) {
             for (Pair<android.graphics.Bitmap, Integer> p : RESOURCE_BITMAPS.values()) {
                 p.first.recycle();
-	            if (AndroidGraphicFactory.debugBitmaps) {
+	            if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 		            rInstances.decrementAndGet();
 	            }
             }
-	        if (AndroidGraphicFactory.debugBitmaps) {
+	        if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 				rBitmaps.clear();
 	        }
             RESOURCE_BITMAPS.clear();

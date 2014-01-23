@@ -49,7 +49,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 
 	private static AtomicInteger tileInstances;
 	static {
-		if (AndroidGraphicFactory.debugBitmaps) {
+		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			tileInstances = new AtomicInteger();
 		}
 	}
@@ -96,7 +96,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	}
 
 	@TargetApi(11)
-	private static final BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent) {
+	private BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent) {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 		if (isTransparent) {
 			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.TRANSPARENT_BITMAP;
@@ -122,7 +122,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 			android.graphics.Bitmap.Config config = isTransparent ? AndroidGraphicFactory.TRANSPARENT_BITMAP : AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
 			this.bitmap = AndroidBitmap.createAndroidBitmap(tileSize, tileSize, config);
 		}
-        if (AndroidGraphicFactory.debugBitmaps) {
+        if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 		    tileInstances.incrementAndGet();
         }
 	}
@@ -136,7 +136,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
      */
 	AndroidTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) {
         try {
-            if (AndroidGraphicFactory.debugBitmaps) {
+            if (AndroidGraphicFactory.DEBUG_BITMAPS) {
                 tileInstances.incrementAndGet();
             }
             this.bitmap = BitmapFactory.decodeStream(inputStream, null, createTileBitmapFactoryOptions(tileSize, isTransparent));
@@ -161,7 +161,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	@Override
 	protected void destroy() {
 		super.destroy();
-        if (AndroidGraphicFactory.debugBitmaps) {
+        if (AndroidGraphicFactory.DEBUG_BITMAPS) {
     		int i = tileInstances.decrementAndGet();
     		LOGGER.log(Level.INFO, "TILEBITMAP COUNT " + Integer.toString(i));
         }

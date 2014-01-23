@@ -22,7 +22,7 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import android.content.Context;
 
 /**
- * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder
+ * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder.
  */
 public class AssetsRenderTheme implements XmlRenderTheme {
 	private static final long serialVersionUID = 1L;

@@ -41,7 +41,7 @@ public class AndroidBitmap implements Bitmap {
 	private static AtomicInteger instances;
     private static List<AndroidBitmap> bitmaps;
 	static {
-		if (AndroidGraphicFactory.debugBitmaps) {
+		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			instances = new AtomicInteger();
 			bitmaps = new LinkedList<>();
 		}
@@ -63,7 +63,7 @@ public class AndroidBitmap implements Bitmap {
     protected android.graphics.Bitmap bitmap;
 
     protected AndroidBitmap() {
-        if (AndroidGraphicFactory.debugBitmaps) {
+        if (AndroidGraphicFactory.DEBUG_BITMAPS) {
             instances.incrementAndGet();
             synchronized (bitmaps) {
                 bitmaps.add(this);
@@ -107,7 +107,7 @@ public class AndroidBitmap implements Bitmap {
     }
 
     protected void destroy() {
-        if (AndroidGraphicFactory.debugBitmaps) {
+        if (AndroidGraphicFactory.DEBUG_BITMAPS) {
             synchronized (bitmaps) {
                 int i = instances.decrementAndGet();
                 if (bitmaps.contains(this)) {
@@ -209,7 +209,7 @@ public class AndroidBitmap implements Bitmap {
 		return bitmap;
 	}
 
-	protected boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height, Config config) {
+	protected final boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height, Config config) {
 
 		if (candidate.getWidth() == width && candidate.getHeight() == height) {
 			return true;
