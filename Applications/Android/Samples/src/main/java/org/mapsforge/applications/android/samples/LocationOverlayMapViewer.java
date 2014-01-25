@@ -40,6 +40,16 @@ public class LocationOverlayMapViewer extends BasicMapViewerXml {
 		this.myLocationOverlay = new MyLocationOverlay(this, this.mapViewPositions.get(0), bitmap);
 		this.myLocationOverlay.setSnapToLocationEnabled(true);
 		this.layerManagers.get(0).getLayers().add(this.myLocationOverlay);
+	}
+
+	public void onResume() {
+		super.onResume();
 		this.myLocationOverlay.enableMyLocation(true);
+	}
+
+	@Override
+	public void onPause() {
+		myLocationOverlay.disableMyLocation();
+		super.onPause();
 	}
 }
