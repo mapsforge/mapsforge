@@ -17,6 +17,7 @@ package org.mapsforge.map.android.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Looper;
 import android.os.StatFs;
@@ -146,12 +147,26 @@ public final class AndroidUtil {
      * @param screenRatio the part of the screen the view covers.
      * @return the minimum cache size for the view.
      */
+    @TargetApi(13)
     public static int getMinimumCacheSize(Context c, int tileSize, double overdrawFactor, float screenRatio) {
         WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
 
-        return (int) (screenRatio * Math.ceil(1 + (display.getHeight()  * overdrawFactor / tileSize))
-                * Math.ceil(1 + (display.getWidth()  * overdrawFactor / tileSize)));
+	    int height;
+	    int width;
+	    if (android.os.Build.VERSION.SDK_INT >= 13) {
+	        Point p = new Point();
+		    display.getSize(p);
+		    height = p.y;
+		    width = p.x;
+	    } else {
+		    // deprecated since Android 13
+		    height = display.getHeight();
+		    width = display.getWidth();
+	    }
+
+        return (int) (screenRatio * Math.ceil(1 + (height  * overdrawFactor / tileSize))
+                * Math.ceil(1 + (width  * overdrawFactor / tileSize)));
     }
 
 }
