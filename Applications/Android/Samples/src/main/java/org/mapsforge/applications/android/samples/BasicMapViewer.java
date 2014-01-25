@@ -67,7 +67,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
 
-	protected final int DIALOG_ENTER_COORDINATES = 2923878;
+	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -98,7 +98,7 @@ public class DualMapViewer extends BasicMapViewerXml {
 	}
 
 	/**
-	 * creates the layers for the second map view
+	 * creates the layers for the second map view.
 	 */
 	protected void createLayers2() {
 		this.layerManagers

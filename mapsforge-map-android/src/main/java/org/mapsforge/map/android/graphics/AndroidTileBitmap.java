@@ -115,6 +115,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	}
 	
 	AndroidTileBitmap(int tileSize, boolean isTransparent) {
+		super();
 		if (AndroidUtil.HONEYCOMB_PLUS) {
 			this.bitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
 		}
@@ -135,6 +136,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
         levels (like redownload or reload from file storage).
      */
 	AndroidTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) {
+		super();
         try {
             if (AndroidGraphicFactory.DEBUG_BITMAPS) {
                 tileInstances.incrementAndGet();
