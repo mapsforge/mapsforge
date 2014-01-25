@@ -163,6 +163,7 @@
 		<osm-tag key="highway" value="services" zoom-appear="14" />
 		<osm-tag key="highway" value="steps" zoom-appear="16" />
 		<osm-tag key="highway" value="tertiary" zoom-appear="12" />
+		<osm-tag key="highway" value="tertiary_link" zoom-appear="12" />
 		<osm-tag key="highway" value="track" zoom-appear="13" />
 		<osm-tag key="highway" value="trunk" zoom-appear="6" />
 		<osm-tag key="highway" value="trunk_link" zoom-appear="6" />
