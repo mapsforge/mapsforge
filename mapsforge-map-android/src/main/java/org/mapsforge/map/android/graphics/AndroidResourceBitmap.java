@@ -126,6 +126,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
     private final int hash; // the hash value is used to avoid multiple loading of the same resource
 
 	protected AndroidResourceBitmap(int hash) {
+		super();
 		this.hash = hash;
 	}
 

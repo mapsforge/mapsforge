@@ -52,7 +52,7 @@ public class LongPressAction extends BasicMapViewerXml {
 
 	protected void onLongPress(LatLong position) {
 		float circleSize = 20 * this.mapViews.get(0).getModel().displayModel.getScaleFactor();
-		FixedPixelCircle tappableCircle = new FixedPixelCircle(position, circleSize, GREEN, null){
+		FixedPixelCircle tappableCircle = new FixedPixelCircle(position, circleSize, GREEN, null) {
 			@Override
 			public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
