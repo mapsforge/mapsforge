@@ -22,7 +22,6 @@ import org.mapsforge.core.model.Point;
  * An implementation of the spherical Mercator projection.
  */
 public final class MercatorProjection {
-
 	/**
 	 * The circumference of the earth at the equator in meters.
 	 */
@@ -41,7 +40,7 @@ public final class MercatorProjection {
 	// from operations that require a tileSize parameter (which is effectively cancelled
 	// out). A shortcut version of those operations should be implemented and then this
 	// variable be removed.
-	private static int dummyTileSize = 256;
+	private static final int DUMMY_TILE_SIZE = 256;
 
 	/**
 	 * Calculates the distance on the ground that is represented by a single pixel on the map.
@@ -114,7 +113,7 @@ public final class MercatorProjection {
 	 * @return the tile Y number of the latitude value.
 	 */
 	public static long latitudeToTileY(double latitude, byte zoomLevel) {
-		return pixelYToTileY(latitudeToPixelY(latitude, zoomLevel, dummyTileSize), zoomLevel, dummyTileSize);
+		return pixelYToTileY(latitudeToPixelY(latitude, zoomLevel, DUMMY_TILE_SIZE), zoomLevel, DUMMY_TILE_SIZE);
 	}
 
 	/**
@@ -141,7 +140,7 @@ public final class MercatorProjection {
 	 * @return the tile X number of the longitude value.
 	 */
 	public static long longitudeToTileX(double longitude, byte zoomLevel) {
-		return pixelXToTileX(longitudeToPixelX(longitude, zoomLevel, dummyTileSize), zoomLevel, dummyTileSize);
+		return pixelXToTileX(longitudeToPixelX(longitude, zoomLevel, DUMMY_TILE_SIZE), zoomLevel, DUMMY_TILE_SIZE);
 	}
 
 	/**
@@ -243,7 +242,7 @@ public final class MercatorProjection {
 	 * @return the longitude value of the tile X number.
 	 */
 	public static double tileXToLongitude(long tileX, byte zoomLevel) {
-		return pixelXToLongitude(tileX * dummyTileSize, zoomLevel, dummyTileSize);
+		return pixelXToLongitude(tileX * DUMMY_TILE_SIZE, zoomLevel, DUMMY_TILE_SIZE);
 	}
 
 	/**
@@ -256,7 +255,7 @@ public final class MercatorProjection {
 	 * @return the latitude value of the tile Y number.
 	 */
 	public static double tileYToLatitude(long tileY, byte zoomLevel) {
-		return pixelYToLatitude(tileY * dummyTileSize, zoomLevel, dummyTileSize);
+		return pixelYToLatitude(tileY * DUMMY_TILE_SIZE, zoomLevel, DUMMY_TILE_SIZE);
 	}
 
 	private MercatorProjection() {

@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.CorruptedInputStream;
+import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.android.util.AndroidUtil;
@@ -120,7 +120,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 			this.bitmap = null; // need to null out to avoid recycling
 			IOUtils.closeQuietly(inputStream); // seems to improve memory usage
 			this.destroy();
-			throw new CorruptedInputStream("Corrupted bitmap input stream", e);
+			throw new CorruptedInputStreamException("Corrupted bitmap input stream", e);
 		}
 	}
 

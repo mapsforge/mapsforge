@@ -19,7 +19,6 @@ package org.mapsforge.core.graphics;
  * Utility classes for graphics operations.
  */
 public final class GraphicUtils {
-
 	/**
 	 * @param color
 	 *            color value in layout 0xAARRGGBB.

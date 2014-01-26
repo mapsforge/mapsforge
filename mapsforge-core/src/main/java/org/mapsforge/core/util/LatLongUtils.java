@@ -190,13 +190,13 @@ public final class LatLongUtils {
 	 * tile size.
 	 * 
 	 * @param dimension
-	 *            the {@link Dimension} of the view
+	 *            the {@link Dimension} of the view.
 	 * @param boundingBox
-	 *            the {@link BoundingBox} to display
+	 *            the {@link BoundingBox} to display.
 	 * @param tileSize
-	 *            the size of the tiles
+	 *            the size of the tiles.
 	 * @return the zoom level that allows to display the {@link BoundingBox} on a view with the {@link Dimension} and
-	 *         tile size
+	 *         tile size.
 	 */
 	public static byte zoomForBounds(Dimension dimension, BoundingBox boundingBox, int tileSize) {
 		double dxMax = MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, (byte) 0, tileSize) / tileSize;
