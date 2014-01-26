@@ -25,7 +25,8 @@ import org.mapsforge.map.layer.overlay.Polyline;
 import org.mapsforge.map.util.MapPositionUtil;
 
 /**
- * An activity with a smaller mapview giving the position of the larger map view.
+ * An activity with a smaller mapview giving the position of the larger map
+ * view.
  */
 public class DualOverviewMapViewer extends DualMapViewer {
 	private MapViewPositionObserver observer;
@@ -36,29 +37,44 @@ public class DualOverviewMapViewer extends DualMapViewer {
 
 		this.mapViews.get(1).getModel().mapViewPosition.setZoomLevel((byte) 12);
 
-		this.observer = new MapViewPositionObserver(this.mapViews.get(0).getModel().mapViewPosition,
+		this.observer = new MapViewPositionObserver(this.mapViews.get(0)
+				.getModel().mapViewPosition,
 				this.mapViews.get(1).getModel().mapViewPosition) {
 			Polyline lastLine;
 
 			@Override
 			protected void setCenter() {
 				super.setCenter();
-				BoundingBox bbox = MapPositionUtil.getBoundingBox(
-						DualOverviewMapViewer.this.mapViews.get(0).getModel().mapViewPosition.getMapPosition(),
-						DualOverviewMapViewer.this.mapViews.get(0).getDimension(),
-						DualOverviewMapViewer.this.mapViews.get(0).getModel().displayModel.getTileSize());
-				Paint paintStroke = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 2,
-						Style.STROKE);
-				Polyline polygon = new Polyline(paintStroke, AndroidGraphicFactory.INSTANCE);
-				polygon.getLatLongs().add(new LatLong(bbox.minLatitude, bbox.minLongitude));
-				polygon.getLatLongs().add(new LatLong(bbox.minLatitude, bbox.maxLongitude));
-				polygon.getLatLongs().add(new LatLong(bbox.maxLatitude, bbox.maxLongitude));
-				polygon.getLatLongs().add(new LatLong(bbox.maxLatitude, bbox.minLongitude));
-				polygon.getLatLongs().add(new LatLong(bbox.minLatitude, bbox.minLongitude));
+				BoundingBox bbox = MapPositionUtil
+						.getBoundingBox(DualOverviewMapViewer.this.mapViews
+								.get(0).getModel().mapViewPosition
+								.getMapPosition(),
+								DualOverviewMapViewer.this.mapViews.get(0)
+										.getDimension(),
+								DualOverviewMapViewer.this.mapViews.get(0)
+										.getModel().displayModel.getTileSize());
+				Paint paintStroke = Utils.createPaint(
+						AndroidGraphicFactory.INSTANCE.createColor(Color.RED),
+						2, Style.STROKE);
+				Polyline polygon = new Polyline(paintStroke,
+						AndroidGraphicFactory.INSTANCE);
+				polygon.getLatLongs().add(
+						new LatLong(bbox.minLatitude, bbox.minLongitude));
+				polygon.getLatLongs().add(
+						new LatLong(bbox.minLatitude, bbox.maxLongitude));
+				polygon.getLatLongs().add(
+						new LatLong(bbox.maxLatitude, bbox.maxLongitude));
+				polygon.getLatLongs().add(
+						new LatLong(bbox.maxLatitude, bbox.minLongitude));
+				polygon.getLatLongs().add(
+						new LatLong(bbox.minLatitude, bbox.minLongitude));
 				if (this.lastLine != null) {
-					DualOverviewMapViewer.this.mapViews.get(1).getLayerManager().getLayers().remove(this.lastLine);
+					DualOverviewMapViewer.this.mapViews.get(1)
+							.getLayerManager().getLayers()
+							.remove(this.lastLine);
 				}
-				DualOverviewMapViewer.this.mapViews.get(1).getLayerManager().getLayers().add(polygon);
+				DualOverviewMapViewer.this.mapViews.get(1).getLayerManager()
+						.getLayers().add(polygon);
 				this.lastLine = polygon;
 			}
 
@@ -70,14 +86,14 @@ public class DualOverviewMapViewer extends DualMapViewer {
 	}
 
 	@Override
-	protected int getLayoutId() {
-		// provides a layout with two mapViews
-		return R.layout.dualoverviewmapviewer;
-	}
-
-	@Override
 	protected void destroyMapViewPositions() {
 		super.destroyMapViewPositions();
 		this.observer.removeObserver();
+	}
+
+	@Override
+	protected int getLayoutId() {
+		// provides a layout with two mapViews
+		return R.layout.dualoverviewmapviewer;
 	}
 }

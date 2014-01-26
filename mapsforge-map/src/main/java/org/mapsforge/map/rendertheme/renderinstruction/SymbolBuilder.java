@@ -32,8 +32,8 @@ public class SymbolBuilder {
 
 	Bitmap bitmap;
 
-	public SymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes,
-			String relativePathPrefix) throws IOException, SAXException {
+	public SymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
 	}
 
@@ -44,8 +44,8 @@ public class SymbolBuilder {
 		return new Symbol(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes,
-			String relativePathPrefix) throws IOException, SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);

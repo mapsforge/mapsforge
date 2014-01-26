@@ -15,47 +15,49 @@
 package org.mapsforge.map.android.input;
 
 import org.mapsforge.map.model.MapViewPosition;
+
 import android.view.ScaleGestureDetector;
 
 public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
-    private final MapViewPosition mapViewPosition;
-    private float scaleFactorCumulative;
-    private float scaleFactorApplied;
-    private static float threshold = 0.05f;
+	private static float threshold = 0.05f;
+	private final MapViewPosition mapViewPosition;
+	private float scaleFactorApplied;
+	private float scaleFactorCumulative;
 
-    /**
-     * Creates a new ScaleListener for the given MapView.
-     *
-     * @param mapViewPosition
-     *            the MapViewPosition which should be scaled.
-     */
-    public ScaleListener(MapViewPosition mapViewPosition) {
-        this.mapViewPosition = mapViewPosition;
-    }
+	/**
+	 * Creates a new ScaleListener for the given MapView.
+	 * 
+	 * @param mapViewPosition
+	 *            the MapViewPosition which should be scaled.
+	 */
+	public ScaleListener(MapViewPosition mapViewPosition) {
+		this.mapViewPosition = mapViewPosition;
+	}
 
-    @Override
-    public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-        float scaleFactor = scaleGestureDetector.getScaleFactor();
-        this.scaleFactorCumulative *= scaleFactor;
-        if (this.scaleFactorCumulative < this.scaleFactorApplied - threshold || this.scaleFactorCumulative > this.scaleFactorApplied + threshold) {
-            // hysteresis to avoid flickering
-            this.mapViewPosition.setScaleFactorAdjustment(scaleFactorCumulative);
-            this.scaleFactorApplied = this.scaleFactorCumulative;
-        }
-        return true;
-    }
+	@Override
+	public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+		float scaleFactor = scaleGestureDetector.getScaleFactor();
+		this.scaleFactorCumulative *= scaleFactor;
+		if (this.scaleFactorCumulative < this.scaleFactorApplied - threshold
+				|| this.scaleFactorCumulative > this.scaleFactorApplied + threshold) {
+			// hysteresis to avoid flickering
+			this.mapViewPosition.setScaleFactorAdjustment(scaleFactorCumulative);
+			this.scaleFactorApplied = this.scaleFactorCumulative;
+		}
+		return true;
+	}
 
-    @Override
-    public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
-        this.scaleFactorCumulative = 1f;
-        this.scaleFactorApplied = 1f;
-        return true;
-    }
+	@Override
+	public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+		this.scaleFactorCumulative = 1f;
+		this.scaleFactorApplied = 1f;
+		return true;
+	}
 
-    @Override
-    public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
-        byte zoomLevelDiff = (byte) Math.round(Math.log(this.scaleFactorCumulative) / Math.log(2));
-        this.mapViewPosition.zoom(zoomLevelDiff);
-    }
+	@Override
+	public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+		byte zoomLevelDiff = (byte) Math.round(Math.log(this.scaleFactorCumulative) / Math.log(2));
+		this.mapViewPosition.zoom(zoomLevelDiff);
+	}
 
 }

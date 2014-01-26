@@ -16,9 +16,8 @@
 package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
@@ -32,24 +31,31 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	private MapViewPositionObserver observer2;
 
 	@Override
-	protected void createMapViewPositions() {
-		super.createMapViewPositions();
-		// any position change in one view will be reflected in the other
-		this.observer1 = new MapViewPositionObserver(this.mapViewPositions.get(0), this.mapViewPositions.get(1));
-		this.observer2 = new MapViewPositionObserver(this.mapViewPositions.get(1), this.mapViewPositions.get(0));
-	}
-
-	@Override
 	protected void createLayers2() {
-		this.downloadLayer = new TileDownloadLayer(this.tileCache2, this.mapViewPositions.get(1),
-				OpenStreetMapMapnik.INSTANCE, AndroidGraphicFactory.INSTANCE);
+		this.downloadLayer = new TileDownloadLayer(this.tileCache2,
+				this.mapViewPositions.get(1), OpenStreetMapMapnik.INSTANCE,
+				AndroidGraphicFactory.INSTANCE);
 		this.layerManagers.get(1).getLayers().add(this.downloadLayer);
 	}
 
 	@Override
+	protected void createMapViewPositions() {
+		super.createMapViewPositions();
+		// any position change in one view will be reflected in the other
+		this.observer1 = new MapViewPositionObserver(
+				this.mapViewPositions.get(0), this.mapViewPositions.get(1));
+		this.observer2 = new MapViewPositionObserver(
+				this.mapViewPositions.get(1), this.mapViewPositions.get(0));
+	}
+
+	@Override
 	protected TileCache createTileCache2() {
-		int tileSize = this.mapViews.get(1).getModel().displayModel.getTileSize();
-		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize, getScreenRatio2(), this.mapViews.get(1).getModel().frameBufferModel.getOverdrawFactor());
+		int tileSize = this.mapViews.get(1).getModel().displayModel
+				.getTileSize();
+		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
+				getScreenRatio2(),
+				this.mapViews.get(1).getModel().frameBufferModel
+						.getOverdrawFactor());
 	}
 
 	@Override
@@ -68,7 +74,7 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	@Override
 	protected void onPause() {
 		super.onPause();
-        this.downloadLayer.onPause();
+		this.downloadLayer.onPause();
 		this.mapViews.get(1).getModel().save(this.preferencesFacade);
 		this.preferencesFacade.save();
 	}

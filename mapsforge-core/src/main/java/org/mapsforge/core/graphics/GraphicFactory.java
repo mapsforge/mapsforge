@@ -38,9 +38,9 @@ public interface GraphicFactory {
 
 	ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
 
-	TileBitmap createTileBitmap(int tileSize, boolean isTransparent);
-
 	TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
+
+	TileBitmap createTileBitmap(int tileSize, boolean isTransparent);
 
 	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 

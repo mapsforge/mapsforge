@@ -39,15 +39,17 @@ import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-
 public final class AndroidGraphicFactory implements GraphicFactory {
 
 	// turn on for bitmap accounting
 	public static final boolean DEBUG_BITMAPS = false;
 
+	public static AndroidGraphicFactory INSTANCE;
+
 	// if true RESOURCE_BITMAPS will be kept in the cache to avoid
 	// multiple loading
 	public static final boolean KEEP_RESOURCE_BITMAPS = true;
+	public static final Config NON_TRANSPARENT_BITMAP = Config.RGB_565;
 
 	// determines size of bitmaps used, RGB_565 is 2 bytes per pixel
 	// while ARGB_8888 uses 4 bytes per pixel (with severe impact
@@ -56,28 +58,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	// and is much slower despite smaller size that ARGB_8888 as it
 	// passes through unoptimized path in the skia library.
 	public static final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
-	public static final Config NON_TRANSPARENT_BITMAP = Config.RGB_565;
-
-	public static AndroidGraphicFactory INSTANCE;
 
 	private static final String PREFIX_ASSETS = "assets:";
-	private final Application application;
-
-	/**
-	 * return the byte usage per pixel of a bitmap based on its configuration.
-	 */
-	static public int getBytesPerPixel(Config config) {
-		if (config == Config.ARGB_8888) {
-			return 4;
-		} else if (config == Config.RGB_565) {
-			return 2;
-		} else if (config == Config.ARGB_4444) {
-			return 2;
-		} else if (config == Config.ALPHA_8) {
-			return 1;
-		}
-		return 1;
-	}
 
 	public static Bitmap convertToBitmap(Drawable drawable) {
 		android.graphics.Bitmap bitmap;
@@ -106,12 +88,32 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		INSTANCE = new AndroidGraphicFactory(app);
 	}
 
-	static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
-		return ((AndroidBitmap) bitmap).bitmap;
+	/**
+	 * return the byte usage per pixel of a bitmap based on its configuration.
+	 */
+	static public int getBytesPerPixel(Config config) {
+		if (config == Config.ARGB_8888) {
+			return 4;
+		} else if (config == Config.RGB_565) {
+			return 2;
+		} else if (config == Config.ARGB_4444) {
+			return 2;
+		} else if (config == Config.ALPHA_8) {
+			return 1;
+		}
+		return 1;
 	}
 
 	public static android.graphics.Canvas getCanvas(Canvas canvas) {
 		return ((AndroidCanvas) canvas).canvas;
+	}
+
+	public static android.graphics.Paint getPaint(Paint paint) {
+		return ((AndroidPaint) paint).paint;
+	}
+
+	static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
+		return ((AndroidBitmap) bitmap).bitmap;
 	}
 
 	static int getColor(Color color) {
@@ -137,13 +139,11 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return ((AndroidMatrix) matrix).matrix;
 	}
 
-	public static android.graphics.Paint getPaint(Paint paint) {
-		return ((AndroidPaint) paint).paint;
-	}
-
 	static android.graphics.Path getPath(Path path) {
 		return ((AndroidPath) path).path;
 	}
+
+	private final Application application;
 
 	private AndroidGraphicFactory(Application app) {
 		this.application = app;
@@ -196,19 +196,19 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return new AndroidPath();
 	}
 
-    @Override
-    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) {
-        return new AndroidResourceBitmap(inputStream, hash);
-    }
-
 	@Override
-	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent) {
-		return new AndroidTileBitmap(tileSize, isTransparent);
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) {
+		return new AndroidResourceBitmap(inputStream, hash);
 	}
 
 	@Override
 	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) {
 		return new AndroidTileBitmap(inputStream, tileSize, isTransparent);
+	}
+
+	@Override
+	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent) {
+		return new AndroidTileBitmap(tileSize, isTransparent);
 	}
 
 	@Override

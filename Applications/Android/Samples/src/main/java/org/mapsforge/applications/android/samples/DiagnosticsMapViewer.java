@@ -14,29 +14,30 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import android.util.Log;
-
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
-import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
  * Viewer with tile grid and coordinates visible and frame counter displayed.
  */
 public class DiagnosticsMapViewer extends BasicMapViewerXml {
 
-
 	@Override
 	protected void createLayers() {
 		super.createLayers();
-		this.layerManagers.get(0).getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapViews.get(0).getModel().displayModel));
-		this.layerManagers.get(0).getLayers().add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapViews.get(0).getModel().displayModel));
+		this.layerManagers
+				.get(0)
+				.getLayers()
+				.add(new TileGridLayer(AndroidGraphicFactory.INSTANCE,
+						this.mapViews.get(0).getModel().displayModel));
+		this.layerManagers
+				.get(0)
+				.getLayers()
+				.add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE,
+						this.mapViews.get(0).getModel().displayModel));
 	}
-
 
 	@Override
 	protected void createMapViews() {

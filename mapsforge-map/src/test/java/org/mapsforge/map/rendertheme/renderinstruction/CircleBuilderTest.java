@@ -36,7 +36,8 @@ public class CircleBuilderTest {
 		attributesImpl.addAttribute(null, null, CircleBuilder.SCALE_RADIUS, null, SCALE_RADIUS.toString());
 		attributesImpl.addAttribute(null, null, CircleBuilder.STROKE_WIDTH, null, String.valueOf(STROKE_WIDTH));
 
-		CircleBuilder circleBuilder = new CircleBuilder(GRAPHIC_FACTORY, new DisplayModel(), "circle", attributesImpl, LEVEL);
+		CircleBuilder circleBuilder = new CircleBuilder(GRAPHIC_FACTORY, new DisplayModel(), "circle", attributesImpl,
+				LEVEL);
 
 		Assert.assertEquals(LEVEL, circleBuilder.level);
 		Assert.assertEquals(RADIUS, circleBuilder.radius.floatValue(), 0);

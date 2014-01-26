@@ -15,7 +15,6 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Stack;
@@ -63,8 +62,8 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
 	private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
 
-	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel, XmlRenderTheme xmlRenderTheme)
-			throws SAXException, ParserConfigurationException, IOException {
+	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
+			XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException {
 		RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
 				xmlRenderTheme.getRelativePathPrefix());
 		XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
@@ -84,9 +83,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 	}
 
 	private Rule currentRule;
+	private final DisplayModel displayModel;
 	private final Stack<Element> elementStack = new Stack<Element>();
 	private final GraphicFactory graphicFactory;
-	private final DisplayModel displayModel;
 	private int level;
 	private final String relativePathPrefix;
 	private RenderTheme renderTheme;
@@ -161,7 +160,8 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("circle".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++).build();
+				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes,
+						this.level++).build();
 				this.currentRule.addRenderingInstruction(circle);
 			}
 
@@ -174,21 +174,22 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("lineSymbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
-						this.relativePathPrefix).build();
+				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName,
+						attributes, this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(lineSymbol);
 			}
 
 			else if ("pathText".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
+				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes)
+						.build();
 				this.currentRule.addRenderingInstruction(pathText);
 			}
 
 			else if ("symbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.relativePathPrefix)
-						.build();
+				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
+						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(symbol);
 			}
 

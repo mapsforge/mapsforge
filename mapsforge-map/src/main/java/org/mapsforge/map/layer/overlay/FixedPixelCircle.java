@@ -40,12 +40,12 @@ public class FixedPixelCircle extends Circle {
 		super(latLong, radius, paintFill, paintStroke);
 	}
 
-	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		return (int) (this.getRadius() * this.displayModel.getScaleFactor());
-	}
-
 	public boolean contains(Point center, Point point) {
 		return center.distance(point) < this.getRadius();
+	}
+
+	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
+		return (int) (this.getRadius() * this.displayModel.getScaleFactor());
 	}
 
 }

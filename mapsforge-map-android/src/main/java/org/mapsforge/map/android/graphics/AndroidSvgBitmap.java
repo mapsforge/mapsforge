@@ -29,42 +29,45 @@ import com.applantation.android.svg.SVGParser;
 class AndroidSvgBitmap extends AndroidResourceBitmap {
 	static final float DEFAULT_SIZE = 200f;
 
-    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor) throws IOException {
-        synchronized (RESOURCE_BITMAPS) {
-            Pair<Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
-            if (data != null) {
-                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first, data.second + 1);
-                RESOURCE_BITMAPS.put(hash, updated);
-                return data.first;
-            } else {
-                SVG svg = SVGParser.getSVGFromInputStream(inputStream);
-                Picture picture = svg.getPicture();
+	private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor)
+			throws IOException {
+		synchronized (RESOURCE_BITMAPS) {
+			Pair<Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
+			if (data != null) {
+				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(data.first,
+						data.second + 1);
+				RESOURCE_BITMAPS.put(hash, updated);
+				return data.first;
+			} else {
+				SVG svg = SVGParser.getSVGFromInputStream(inputStream);
+				Picture picture = svg.getPicture();
 
-                double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / DEFAULT_SIZE);
+				double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / DEFAULT_SIZE);
 
-                float bitmapWidth = (float) (picture.getWidth() * scale);
-                float bitmapHeight = (float) (picture.getHeight() * scale);
+				float bitmapWidth = (float) (picture.getWidth() * scale);
+				float bitmapHeight = (float) (picture.getHeight() * scale);
 
-                android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
-                        (int) Math.ceil(bitmapHeight), android.graphics.Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(bitmap);
-                canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
-                Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap, Integer.valueOf(1));
-                RESOURCE_BITMAPS.put(hash, updated);
-	            if (AndroidGraphicFactory.DEBUG_BITMAPS) {
-		            rInstances.incrementAndGet();
-		            synchronized (rBitmaps) {
-			            rBitmaps.add(hash);
-		            }
-	            }
-	            return bitmap;
-            }
-        }
-    }
+				android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
+						(int) Math.ceil(bitmapHeight), android.graphics.Bitmap.Config.ARGB_8888);
+				Canvas canvas = new Canvas(bitmap);
+				canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
+				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
+						Integer.valueOf(1));
+				RESOURCE_BITMAPS.put(hash, updated);
+				if (AndroidGraphicFactory.DEBUG_BITMAPS) {
+					rInstances.incrementAndGet();
+					synchronized (rBitmaps) {
+						rBitmaps.add(hash);
+					}
+				}
+				return bitmap;
+			}
+		}
+	}
 
 	AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor) throws IOException {
 		super(hash);
- 		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor);
+		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor);
 	}
 
 }

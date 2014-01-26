@@ -24,8 +24,8 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.CorruptedInputStream;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
@@ -100,13 +100,13 @@ public class FileSystemTileCache implements TileCache {
 			inputStream = new FileInputStream(file);
 			return this.graphicFactory.createTileBitmap(inputStream, key.tileSize, key.hasAlpha);
 		} catch (CorruptedInputStream e) {
-            // this can happen, at least on Android, when the input stream
-            // is somehow corrupted, returning null ensures it will be loaded
-            // from another source
-            this.lruCache.remove(key.hashCode());
-            LOGGER.log(Level.WARNING, "input stream from file system cache invalid", e);
-            return null;
-        } catch (IOException e) {
+			// this can happen, at least on Android, when the input stream
+			// is somehow corrupted, returning null ensures it will be loaded
+			// from another source
+			this.lruCache.remove(key.hashCode());
+			LOGGER.log(Level.WARNING, "input stream from file system cache invalid", e);
+			return null;
+		} catch (IOException e) {
 			this.lruCache.remove(key.hashCode());
 			LOGGER.log(Level.SEVERE, null, e);
 			return null;

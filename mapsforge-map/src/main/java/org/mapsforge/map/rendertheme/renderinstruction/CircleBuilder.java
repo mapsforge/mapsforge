@@ -20,7 +20,6 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlUtils;
-import org.mapsforge.map.rendertheme.rule.RenderThemeBuilder;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -29,8 +28,8 @@ import org.xml.sax.SAXException;
  */
 public class CircleBuilder {
 	static final String FILL = "fill";
-	static final String RADIUS = "radius";
 	static final String R = "r";
+	static final String RADIUS = "radius";
 	static final String SCALE_RADIUS = "scale-radius";
 	static final String STROKE = "stroke";
 	static final String STROKE_WIDTH = "stroke-width";
@@ -42,8 +41,8 @@ public class CircleBuilder {
 	final Paint stroke;
 	float strokeWidth;
 
-	public CircleBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes, int level)
-			throws SAXException {
+	public CircleBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, int level) throws SAXException {
 		this.level = level;
 
 		this.fill = graphicFactory.createPaint();
@@ -64,8 +63,8 @@ public class CircleBuilder {
 		return new Circle(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes)
-			throws SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes) throws SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);

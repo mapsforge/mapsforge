@@ -14,6 +14,11 @@
  */
 package org.mapsforge.map.android.input;
 
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.common.Observer;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -23,10 +28,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ZoomControls;
-import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.android.view.MapView;
-import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.android.util.AndroidUtil;
 
 /**
  * A MapZoomControls instance displays buttons for zooming in and out in a map.
@@ -68,7 +69,7 @@ public class MapZoomControls implements Observer {
 
 		@Override
 		public void onClick(View view) {
-            this.mapViewPosition.zoomOut();
+			this.mapViewPosition.zoomOut();
 		}
 	}
 
@@ -103,16 +104,16 @@ public class MapZoomControls implements Observer {
 	private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
 
 	private boolean gravityChanged;
+	private final MapView mapView;
 	private boolean showMapZoomControls;
 	private final ZoomControls zoomControls;
 	private int zoomControlsGravity;
 	private final Handler zoomControlsHideHandler;
 	private byte zoomLevelMax;
 	private byte zoomLevelMin;
-    private final MapView mapView;
 
 	public MapZoomControls(Context context, final MapView mapView) {
-        this.mapView = mapView;
+		this.mapView = mapView;
 		this.zoomControls = new ZoomControls(context);
 		this.showMapZoomControls = true;
 		this.zoomLevelMax = DEFAULT_ZOOM_LEVEL_MAX;
@@ -127,6 +128,14 @@ public class MapZoomControls implements Observer {
 		int wrapContent = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 		LayoutParams layoutParams = new LayoutParams(wrapContent, wrapContent);
 		this.mapView.addView(this.zoomControls, layoutParams);
+	}
+
+	public int getMeasuredHeight() {
+		return this.zoomControls.getMeasuredHeight();
+	}
+
+	public int getMeasuredWidth() {
+		return this.zoomControls.getMeasuredWidth();
 	}
 
 	/**
@@ -158,6 +167,66 @@ public class MapZoomControls implements Observer {
 		return this.showMapZoomControls;
 	}
 
+	public void layout(boolean changed, int left, int top, int right, int bottom) {
+		if (!changed && !this.gravityChanged) {
+			return;
+		}
+
+		int zoomControlsWidth = this.zoomControls.getMeasuredWidth();
+		int zoomControlsHeight = this.zoomControls.getMeasuredHeight();
+
+		int positionLeft = calculatePositionLeft(left, right, zoomControlsWidth);
+		int positionTop = calculatePositionTop(top, bottom, zoomControlsHeight);
+		int positionRight = positionLeft + zoomControlsWidth;
+		int positionBottom = positionTop + zoomControlsHeight;
+
+		this.zoomControls.layout(positionLeft, positionTop, positionRight, positionBottom);
+		this.gravityChanged = false;
+	}
+
+	public void measure(int widthMeasureSpec, int heightMeasureSpec) {
+		this.zoomControls.measure(widthMeasureSpec, heightMeasureSpec);
+	}
+
+	public void onChange() {
+		this.onZoomLevelChange(this.mapView.getModel().mapViewPosition.getZoomLevel());
+	}
+
+	public void onMapViewTouchEvent(MotionEvent event) {
+		if (event.getPointerCount() > 1) {
+			// no multitouch
+			return;
+		}
+		if (this.showMapZoomControls) {
+			switch (event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					showZoomControls();
+					break;
+				case MotionEvent.ACTION_CANCEL:
+					showZoomControlsWithTimeout();
+					break;
+				case MotionEvent.ACTION_UP:
+					showZoomControlsWithTimeout();
+					break;
+			}
+		}
+	}
+
+	public void onZoomLevelChange(final int newZoomLevel) {
+		// to allow changing zoom level programmatically, i.e. not just
+		// by user interaction
+		if (AndroidUtil.currentThreadIsUiThread()) {
+			changeZoomControls(newZoomLevel);
+		} else {
+			this.mapView.post(new Runnable() {
+				@Override
+				public void run() {
+					changeZoomControls(newZoomLevel);
+				}
+			});
+		}
+	}
+
 	/**
 	 * @param showMapZoomControls
 	 *            true if the zoom controls should be visible, false otherwise.
@@ -184,9 +253,8 @@ public class MapZoomControls implements Observer {
 	/**
 	 * Sets the maximum zoom level of the map.
 	 * <p>
-	 * The maximum possible zoom level of the MapView depends also on other elements. For example,
-	 * downloading map tiles may only be possible up to a certain zoom level. Setting a higher maximum zoom level has no
-	 * effect in this case.
+	 * The maximum possible zoom level of the MapView depends also on other elements. For example, downloading map tiles
+	 * may only be possible up to a certain zoom level. Setting a higher maximum zoom level has no effect in this case.
 	 * 
 	 * @param zoomLevelMax
 	 *            the maximum zoom level.
@@ -247,6 +315,13 @@ public class MapZoomControls implements Observer {
 		throw new IllegalArgumentException("unknown vertical gravity: " + gravity);
 	}
 
+	private void changeZoomControls(int newZoomLevel) {
+		boolean zoomInEnabled = newZoomLevel < this.zoomLevelMax;
+		boolean zoomOutEnabled = newZoomLevel > this.zoomLevelMin;
+		this.zoomControls.setIsZoomInEnabled(zoomInEnabled);
+		this.zoomControls.setIsZoomOutEnabled(zoomOutEnabled);
+	}
+
 	private void showZoomControls() {
 		this.zoomControlsHideHandler.removeMessages(MSG_ZOOM_CONTROLS_HIDE);
 		if (this.zoomControls.getVisibility() != View.VISIBLE) {
@@ -257,80 +332,5 @@ public class MapZoomControls implements Observer {
 	private void showZoomControlsWithTimeout() {
 		showZoomControls();
 		this.zoomControlsHideHandler.sendEmptyMessageDelayed(MSG_ZOOM_CONTROLS_HIDE, ZOOM_CONTROLS_TIMEOUT);
-	}
-
-	public int getMeasuredHeight() {
-		return this.zoomControls.getMeasuredHeight();
-	}
-
-	public int getMeasuredWidth() {
-		return this.zoomControls.getMeasuredWidth();
-	}
-
-	public void measure(int widthMeasureSpec, int heightMeasureSpec) {
-		this.zoomControls.measure(widthMeasureSpec, heightMeasureSpec);
-	}
-
-	public void layout(boolean changed, int left, int top, int right, int bottom) {
-		if (!changed && !this.gravityChanged) {
-			return;
-		}
-
-		int zoomControlsWidth = this.zoomControls.getMeasuredWidth();
-		int zoomControlsHeight = this.zoomControls.getMeasuredHeight();
-
-		int positionLeft = calculatePositionLeft(left, right, zoomControlsWidth);
-		int positionTop = calculatePositionTop(top, bottom, zoomControlsHeight);
-		int positionRight = positionLeft + zoomControlsWidth;
-		int positionBottom = positionTop + zoomControlsHeight;
-
-		this.zoomControls.layout(positionLeft, positionTop, positionRight, positionBottom);
-		this.gravityChanged = false;
-	}
-
-	public void onMapViewTouchEvent(MotionEvent event) {
-        if (event.getPointerCount() > 1) {
-            // no multitouch
-            return;
-        }
-		if (this.showMapZoomControls) {
-			switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					showZoomControls();
-					break;
-				case MotionEvent.ACTION_CANCEL:
-					showZoomControlsWithTimeout();
-					break;
-				case MotionEvent.ACTION_UP:
-					showZoomControlsWithTimeout();
-					break;
-			}
-		}
-	}
-
-	public void onZoomLevelChange(final int newZoomLevel) {
-        // to allow changing zoom level programmatically, i.e. not just
-        // by user interaction
-        if (AndroidUtil.currentThreadIsUiThread()) {
-            changeZoomControls(newZoomLevel);
-        } else {
-            this.mapView.post(new Runnable() {
-                @Override
-                public void run() {
-                    changeZoomControls(newZoomLevel);
-                }
-            });
-        }
-    }
-
-    private void changeZoomControls(int newZoomLevel) {
-        boolean zoomInEnabled = newZoomLevel < this.zoomLevelMax;
-        boolean zoomOutEnabled = newZoomLevel > this.zoomLevelMin;
-        this.zoomControls.setIsZoomInEnabled(zoomInEnabled);
-        this.zoomControls.setIsZoomOutEnabled(zoomOutEnabled);
-    }
-
-	public void onChange() {
-		this.onZoomLevelChange(this.mapView.getModel().mapViewPosition.getZoomLevel());
 	}
 }

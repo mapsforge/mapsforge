@@ -15,8 +15,8 @@
 package org.mapsforge.applications.android.samples;
 
 /**
- * Viewer that utilizes a different rendertheme picked up from the Android apk assets folder and symbols picked also
- * picked from assets.
+ * Viewer that utilizes a different rendertheme picked up from the Android apk
+ * assets folder and symbols picked also picked from assets.
  * 
  * @author Ludwig M Brinckmann
  */

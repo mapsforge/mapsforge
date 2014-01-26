@@ -152,8 +152,8 @@ public final class MapFileWriter {
 			// TODO is this the right place to simplify, or is it better before clipping?
 			if (this.configuration.getSimplification() > 0
 					&& this.tile.getZoomlevel() <= Constants.MAX_SIMPLIFICATION_BASE_ZOOM) {
-				processedGeometry = GeoUtils.simplifyGeometry(this.way, processedGeometry, this.maxZoomInterval, tileSize,
-						this.configuration.getSimplification());
+				processedGeometry = GeoUtils.simplifyGeometry(this.way, processedGeometry, this.maxZoomInterval,
+						tileSize, this.configuration.getSimplification());
 				if (processedGeometry == null) {
 					return null;
 				}
@@ -315,9 +315,9 @@ public final class MapFileWriter {
 	private static final String PROJECTION = "Mercator";
 	private static final int SIZE_ZOOMINTERVAL_CONFIGURATION = 19;
 
-	private static final int tileSize = 256; // needed for optimal simplification, but set to constant here TODO
-
 	private static final TileInfo TILE_INFO = TileInfo.getInstance();
+
+	private static final int tileSize = 256; // needed for optimal simplification, but set to constant here TODO
 
 	private static final Charset UTF8_CHARSET = Charset.forName("utf8");
 

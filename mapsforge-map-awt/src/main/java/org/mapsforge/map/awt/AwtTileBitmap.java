@@ -22,12 +22,12 @@ import org.mapsforge.core.graphics.TileBitmap;
 
 public class AwtTileBitmap extends AwtBitmap implements TileBitmap {
 
-	AwtTileBitmap(int tileSize) {
-		super(tileSize, tileSize);
-	}
-
 	AwtTileBitmap(InputStream inputStream) throws IOException {
 		super(inputStream);
+	}
+
+	AwtTileBitmap(int tileSize) {
+		super(tileSize, tileSize);
 	}
 
 }

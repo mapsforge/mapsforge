@@ -72,7 +72,8 @@ public class MapViewPositionTest {
 	@Test
 	public void moveCenterTest() {
 		MapViewPosition mapViewPosition = new MapViewPosition(new FixedTileSizeDisplayModel(256));
-		mapViewPosition.moveCenter(MercatorProjection.getMapSize((byte) 0, new FixedTileSizeDisplayModel(256).getTileSize()) / -360d, 0);
+		mapViewPosition.moveCenter(
+				MercatorProjection.getMapSize((byte) 0, new FixedTileSizeDisplayModel(256).getTileSize()) / -360d, 0);
 
 		MapPosition mapPosition = mapViewPosition.getMapPosition();
 
@@ -89,22 +90,22 @@ public class MapViewPositionTest {
 		Assert.assertEquals(0, dummyObserver.getCallbacks());
 
 		mapViewPosition.setCenter(new LatLong(0, 0));
-		//Assert.assertEquals(1, dummyObserver.getCallbacks());
+		// Assert.assertEquals(1, dummyObserver.getCallbacks());
 
 		mapViewPosition.setMapLimit(new BoundingBox(0, 0, 0, 0));
-		//Assert.assertEquals(2, dummyObserver.getCallbacks());
+		// Assert.assertEquals(2, dummyObserver.getCallbacks());
 
 		mapViewPosition.setMapPosition(new MapPosition(new LatLong(0, 0), (byte) 0));
-		//Assert.assertEquals(3, dummyObserver.getCallbacks());
+		// Assert.assertEquals(3, dummyObserver.getCallbacks());
 
 		mapViewPosition.setZoomLevel((byte) 0);
-		//Assert.assertEquals(4, dummyObserver.getCallbacks());
+		// Assert.assertEquals(4, dummyObserver.getCallbacks());
 
 		mapViewPosition.setZoomLevelMax((byte) 0);
-		//Assert.assertEquals(5, dummyObserver.getCallbacks());
+		// Assert.assertEquals(5, dummyObserver.getCallbacks());
 
 		mapViewPosition.setZoomLevelMin((byte) 0);
-		//Assert.assertEquals(6, dummyObserver.getCallbacks());
+		// Assert.assertEquals(6, dummyObserver.getCallbacks());
 	}
 
 	@Test

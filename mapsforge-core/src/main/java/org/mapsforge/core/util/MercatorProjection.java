@@ -15,25 +15,18 @@
  */
 package org.mapsforge.core.util;
 
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 
 /**
  * An implementation of the spherical Mercator projection.
  */
 public final class MercatorProjection {
 
-	// TODO some operations actually do not rely on the tile size, but are composited
-	// from operations that require a tileSize parameter (which is effectively cancelled
-	// out). A shortcut version of those operations should be implemented and then this
-	// variable be removed.
-	private static int dummyTileSize = 256;
 	/**
 	 * The circumference of the earth at the equator in meters.
 	 */
 	public static final double EARTH_CIRCUMFERENCE = 40075016.686;
-
 	/**
 	 * Maximum possible latitude coordinate of the map.
 	 */
@@ -43,6 +36,12 @@ public final class MercatorProjection {
 	 * Minimum possible latitude coordinate of the map.
 	 */
 	public static final double LATITUDE_MIN = -LATITUDE_MAX;
+
+	// TODO some operations actually do not rely on the tile size, but are composited
+	// from operations that require a tileSize parameter (which is effectively cancelled
+	// out). A shortcut version of those operations should be implemented and then this
+	// variable be removed.
+	private static int dummyTileSize = 256;
 
 	/**
 	 * Calculates the distance on the ground that is represented by a single pixel on the map.
@@ -59,6 +58,16 @@ public final class MercatorProjection {
 	}
 
 	/**
+	 * Get LatLong form Pixels.
+	 * 
+	 * @author Stephan Brandt <stephan@contagt.com>
+	 */
+	public static LatLong fromPixels(double pixelX, double pixelY, byte zoomLevel, int tileSize) {
+		return new LatLong(pixelYToLatitude(pixelY, zoomLevel, tileSize),
+				pixelXToLongitude(pixelX, zoomLevel, tileSize));
+	}
+
+	/**
 	 * @param zoomLevel
 	 *            the zoom level for which the size of the world map should be returned.
 	 * @return the horizontal and vertical size of the map in pixel at the given zoom level.
@@ -70,6 +79,12 @@ public final class MercatorProjection {
 			throw new IllegalArgumentException("zoom level must not be negative: " + zoomLevel);
 		}
 		return (long) tileSize << zoomLevel;
+	}
+
+	public static Point getPixel(LatLong latLong, byte zoomLevel, int tileSize) {
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize);
+		return new Point(pixelX, pixelY);
 	}
 
 	/**
@@ -117,27 +132,6 @@ public final class MercatorProjection {
 	}
 
 	/**
-	 * Converts meters to pixels at latitude for zoom-level.
-	 *
-	 * @param meters
-	 *            the meters to convert
-	 * @param latitude
-	 *            the latitude for the conversion.
-	 * @param zoom
-	 *            the zoom level for the conversion.
-	 *
-	 * @return pixels that represent the meters at the given zoom-level and latitude.
-	 */
-	public static double metersToPixels(float meters, double latitude, byte zoom, int tileSize) {
-		return meters / MercatorProjection.calculateGroundResolution(latitude, zoom, tileSize);
-	}
-
-	public static Point getPixel(LatLong latLong, byte zoomLevel, int tileSize) {
-        double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize);
-        double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize);
-        return new Point(pixelX, pixelY);
-    }
-	/**
 	 * Converts a longitude coordinate (in degrees) to the tile X number at a certain zoom level.
 	 * 
 	 * @param longitude
@@ -148,6 +142,21 @@ public final class MercatorProjection {
 	 */
 	public static long longitudeToTileX(double longitude, byte zoomLevel) {
 		return pixelXToTileX(longitudeToPixelX(longitude, zoomLevel, dummyTileSize), zoomLevel, dummyTileSize);
+	}
+
+	/**
+	 * Converts meters to pixels at latitude for zoom-level.
+	 * 
+	 * @param meters
+	 *            the meters to convert
+	 * @param latitude
+	 *            the latitude for the conversion.
+	 * @param zoom
+	 *            the zoom level for the conversion.
+	 * @return pixels that represent the meters at the given zoom-level and latitude.
+	 */
+	public static double metersToPixels(float meters, double latitude, byte zoom, int tileSize) {
+		return meters / MercatorProjection.calculateGroundResolution(latitude, zoom, tileSize);
 	}
 
 	/**
@@ -168,18 +177,6 @@ public final class MercatorProjection {
 		}
 		return 360 * ((pixelX / mapSize) - 0.5);
 	}
-
-	/**
-	 * Get LatLong form Pixels.
-	 * 
-	 * @author Stephan Brandt <stephan@contagt.com>
-	 * 
-	 * */
-	public static LatLong fromPixels(double pixelX, double pixelY, byte zoomLevel, int tileSize) {
-		return new LatLong(pixelYToLatitude(pixelY, zoomLevel, tileSize), pixelXToLongitude(pixelX, zoomLevel, tileSize));
-	}
- 
-
 
 	/**
 	 * Converts a pixel X coordinate to the tile X number.

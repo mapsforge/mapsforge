@@ -42,17 +42,14 @@ class CanvasRasterer {
 
 	void drawNodes(List<PointTextContainer> pointTextContainers) {
 		for (int index = pointTextContainers.size() - 1; index >= 0; --index) {
-			PointTextContainer pointTextContainer = pointTextContainers
-					.get(index);
+			PointTextContainer pointTextContainer = pointTextContainers.get(index);
 
 			if (pointTextContainer.paintBack != null) {
-				this.canvas.drawText(pointTextContainer.text,
-						(int) pointTextContainer.x, (int) pointTextContainer.y,
+				this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
 						pointTextContainer.paintBack);
 			}
 
-			this.canvas.drawText(pointTextContainer.text,
-					(int) pointTextContainer.x, (int) pointTextContainer.y,
+			this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
 					pointTextContainer.paintFront);
 		}
 	}
@@ -67,8 +64,7 @@ class CanvasRasterer {
 			if (symbolContainer.alignCenter) {
 				int pivotX = symbolContainer.symbol.getWidth() / 2;
 				int pivotY = symbolContainer.symbol.getHeight() / 2;
-				this.symbolMatrix.translate((float) (point.x - pivotX),
-						(float) (point.y - pivotY));
+				this.symbolMatrix.translate((float) (point.x - pivotX), (float) (point.y - pivotY));
 				this.symbolMatrix.rotate(symbolContainer.theta, pivotX, pivotY);
 			} else {
 				this.symbolMatrix.translate((float) point.x, (float) point.y);
@@ -82,10 +78,8 @@ class CanvasRasterer {
 	void drawWayNames(List<WayTextContainer> wayTextContainers) {
 		for (int index = wayTextContainers.size() - 1; index >= 0; --index) {
 			WayTextContainer wayTextContainer = wayTextContainers.get(index);
-			this.canvas.drawTextRotated(wayTextContainer.text,
-					wayTextContainer.x1, wayTextContainer.y1,
-					wayTextContainer.x2, wayTextContainer.y2,
-					wayTextContainer.paint);
+			this.canvas.drawTextRotated(wayTextContainer.text, wayTextContainer.x1, wayTextContainer.y1,
+					wayTextContainer.x2, wayTextContainer.y2, wayTextContainer.paint);
 		}
 	}
 
@@ -93,12 +87,10 @@ class CanvasRasterer {
 		int levelsPerLayer = drawWays.get(0).size();
 
 		for (int layer = 0, layers = drawWays.size(); layer < layers; ++layer) {
-			List<List<ShapePaintContainer>> shapePaintContainers = drawWays
-					.get(layer);
+			List<List<ShapePaintContainer>> shapePaintContainers = drawWays.get(layer);
 
 			for (int level = 0; level < levelsPerLayer; ++level) {
-				List<ShapePaintContainer> wayList = shapePaintContainers
-						.get(level);
+				List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
 				for (int index = wayList.size() - 1; index >= 0; --index) {
 					drawShapePaintContainer(wayList.get(index));
@@ -120,12 +112,10 @@ class CanvasRasterer {
 	private void drawCircleContainer(ShapePaintContainer shapePaintContainer) {
 		CircleContainer circleContainer = (CircleContainer) shapePaintContainer.shapeContainer;
 		Point point = circleContainer.point;
-		this.canvas.drawCircle((int) point.x, (int) point.y,
-				(int) circleContainer.radius, shapePaintContainer.paint);
+		this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
 	}
 
-	private void drawPath(ShapePaintContainer shapePaintContainer,
-			Point[][] coordinates) {
+	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates) {
 		this.path.clear();
 
 		for (int j = 0; j < coordinates.length; ++j) {
@@ -146,14 +136,14 @@ class CanvasRasterer {
 	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
 		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
 		switch (shapeType) {
-		case CIRCLE:
-			drawCircleContainer(shapePaintContainer);
-			return;
+			case CIRCLE:
+				drawCircleContainer(shapePaintContainer);
+				return;
 
-		case POLYLINE:
-			PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-			drawPath(shapePaintContainer, polylineContainer.coordinates);
-			return;
+			case POLYLINE:
+				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
+				drawPath(shapePaintContainer, polylineContainer.coordinates);
+				return;
 		}
 	}
 }

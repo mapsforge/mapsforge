@@ -35,7 +35,8 @@ public class LineBuilderTest {
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, LineBuilder.STROKE_WIDTH, null, String.valueOf(STROKE_WIDTH));
 
-		LineBuilder lineBuilder = new LineBuilder(GRAPHIC_FACTORY, new DisplayModel(), "line", attributesImpl, LEVEL, null);
+		LineBuilder lineBuilder = new LineBuilder(GRAPHIC_FACTORY, new DisplayModel(), "line", attributesImpl, LEVEL,
+				null);
 
 		Assert.assertEquals(LEVEL, lineBuilder.level);
 		Assert.assertEquals(STROKE_WIDTH, lineBuilder.strokeWidth, 0);

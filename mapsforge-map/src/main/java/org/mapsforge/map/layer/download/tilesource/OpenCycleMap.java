@@ -62,6 +62,8 @@ public class OpenCycleMap extends AbstractTileSource {
 	}
 
 	@Override
-	public boolean hasAlpha() { return false; }
+	public boolean hasAlpha() {
+		return false;
+	}
 
 }

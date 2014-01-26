@@ -42,8 +42,8 @@ public class AreaBuilder {
 	final Paint stroke;
 	float strokeWidth;
 
-	public AreaBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes, int level,
-			String relativePathPrefix) throws IOException, SAXException {
+	public AreaBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, int level, String relativePathPrefix) throws IOException, SAXException {
 		this.level = level;
 
 		this.fill = graphicFactory.createPaint();
@@ -66,8 +66,8 @@ public class AreaBuilder {
 		return new Area(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes,
-			String relativePathPrefix) throws IOException, SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);

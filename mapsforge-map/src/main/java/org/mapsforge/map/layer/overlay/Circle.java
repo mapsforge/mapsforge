@@ -85,14 +85,6 @@ public class Circle extends Layer {
 	}
 
 	/**
-	 * @return the center point of this circle (may be null).
-	 */
-	@Override
-	public synchronized LatLong getPosition() {
-		return this.latLong;
-	}
-
-	/**
 	 * @return the {@code Paint} used to fill this circle (may be null).
 	 */
 	public synchronized Paint getPaintFill() {
@@ -104,6 +96,14 @@ public class Circle extends Layer {
 	 */
 	public synchronized Paint getPaintStroke() {
 		return this.paintStroke;
+	}
+
+	/**
+	 * @return the center point of this circle (may be null).
+	 */
+	@Override
+	public synchronized LatLong getPosition() {
+		return this.latLong;
 	}
 
 	/**
@@ -147,15 +147,15 @@ public class Circle extends Layer {
 		setRadiusInternal(radius);
 	}
 
+	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
+		return (int) MercatorProjection.metersToPixels(this.radius, latitude, zoomLevel, displayModel.getTileSize());
+	}
+
 	private void setRadiusInternal(float radius) {
 		if (radius < 0 || Float.isNaN(radius)) {
 			throw new IllegalArgumentException("invalid radius: " + radius);
 		}
 		this.radius = radius;
-	}
-
-	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		return (int) MercatorProjection.metersToPixels(this.radius, latitude, zoomLevel, displayModel.getTileSize());
 	}
 
 }

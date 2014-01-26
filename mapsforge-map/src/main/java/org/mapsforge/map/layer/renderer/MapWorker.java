@@ -26,18 +26,17 @@ import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.util.PausableThread;
 
 public class MapWorker extends PausableThread {
-	private static final Logger LOGGER = Logger.getLogger(MapWorker.class.getName());
 	private static final boolean DEBUG_TIMING = false;
+	private static final Logger LOGGER = Logger.getLogger(MapWorker.class.getName());
 
 	private final DatabaseRenderer databaseRenderer;
 	private final JobQueue<RendererJob> jobQueue;
 	private final Layer layer;
 	private final TileCache tileCache;
 
+	private final AtomicLong totalExecutions;
 	// for timing only
 	private final AtomicLong totalTime;
-	private final AtomicLong totalExecutions;
-
 
 	public MapWorker(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer, Layer layer) {
 		super();

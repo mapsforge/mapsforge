@@ -38,15 +38,11 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 
 /**
- * A thread-safe {@link Layer} implementation to display the current location.
- *
- * NOTE: This code really does not reflect Android best practice and used in production
- * leads to bad user experience (e.g. long time to first fix, excessive battery use,
- * non-compliance with the Android lifecycle...).
- *
- * Best use the new location services provided by Google Play Services.
- * Also note that MyLocationOverlay needs to be added to a view before requesting
- * location updates (otherwise no DisplayModel is set).
+ * A thread-safe {@link Layer} implementation to display the current location. NOTE: This code really does not reflect
+ * Android best practice and used in production leads to bad user experience (e.g. long time to first fix, excessive
+ * battery use, non-compliance with the Android lifecycle...). Best use the new location services provided by Google
+ * Play Services. Also note that MyLocationOverlay needs to be added to a view before requesting location updates
+ * (otherwise no DisplayModel is set).
  */
 public class MyLocationOverlay extends Layer implements LocationListener {
 	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
@@ -125,11 +121,6 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 		this.circle = new Circle(null, 0, circleFill, circleStroke);
 	}
 
-	@Override
-	public void onDestroy() {
-		this.marker.onDestroy();
-	}
-
 	/**
 	 * Stops the receiving of location updates. Has no effect if location updates are already disabled.
 	 */
@@ -195,6 +186,11 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	 */
 	public synchronized boolean isSnapToLocationEnabled() {
 		return this.snapToLocationEnabled;
+	}
+
+	@Override
+	public void onDestroy() {
+		this.marker.onDestroy();
 	}
 
 	@Override

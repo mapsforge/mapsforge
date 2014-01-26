@@ -15,15 +15,18 @@
 package org.mapsforge.applications.android.samples;
 
 import java.io.IOException;
+
+import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
+import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
+
 import android.util.Log;
 
 /**
- * An activity with two tile renderer layers stacked on top of each other using a partially transparent render theme to
- * show the lower layer. This will show as buildings on top of labels and other stuff, so the display is wrong, but
+ * An activity with two tile renderer layers stacked on top of each other using
+ * a partially transparent render theme to show the lower layer. This will show
+ * as buildings on top of labels and other stuff, so the display is wrong, but
  * that is intentional.
  */
 
@@ -36,12 +39,14 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 		super.createLayers();
 		try {
 
-			XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "", "renderthemes/onlybuildings.xml");
+			XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "",
+					"renderthemes/onlybuildings.xml");
 			this.layerManagers
 					.get(0)
 					.getLayers()
-					.add(Utils.createTileRendererLayer(this.tileCache2, this.mapViewPositions.get(0),
-							getMapFile(), secondRenderTheme, true));
+					.add(Utils.createTileRendererLayer(this.tileCache2,
+							this.mapViewPositions.get(0), getMapFile(),
+							secondRenderTheme, true));
 
 		} catch (IOException e) {
 			Log.e("ERROR", "Rendertheme not found");
@@ -52,20 +57,22 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 	@Override
 	protected void createTileCaches() {
 		super.createTileCaches();
-		this.tileCache2 = AndroidUtil.createTileCache(this, getPersistableId2(),
+		this.tileCache2 = AndroidUtil.createTileCache(this,
+				getPersistableId2(),
 				this.mapViews.get(0).getModel().displayModel.getTileSize(),
 				this.getScreenRatio(),
-				this.mapViews.get(0).getModel().frameBufferModel.getOverdrawFactor());
-	}
-
-	protected String getPersistableId2() {
-		return this.getPersistableId() + "-2";
+				this.mapViews.get(0).getModel().frameBufferModel
+						.getOverdrawFactor());
 	}
 
 	@Override
 	protected void destroyTileCaches() {
 		super.destroyTileCaches();
 		this.tileCache2.destroy();
+	}
+
+	protected String getPersistableId2() {
+		return this.getPersistableId() + "-2";
 	}
 
 }

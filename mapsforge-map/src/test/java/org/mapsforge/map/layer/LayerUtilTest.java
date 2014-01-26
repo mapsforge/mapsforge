@@ -24,13 +24,14 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
 public class LayerUtilTest {
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	@Test
 	public void getTilePositionsTest() {
 		for (int tileSize : TILE_SIZES) {
 			BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
-			List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, (byte) 0, new Point(0, 0), tileSize);
+			List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, (byte) 0, new Point(0, 0),
+					tileSize);
 			Assert.assertEquals(1, tilePositions.size());
 
 			TilePosition tilePosition = tilePositions.get(0);

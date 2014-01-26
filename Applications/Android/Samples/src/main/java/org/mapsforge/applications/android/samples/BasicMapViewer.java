@@ -21,9 +21,8 @@ import java.util.ArrayList;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.AndroidPreferences;
-import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.android.util.AndroidUtil;
-
+import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -59,77 +58,57 @@ import android.widget.TextView;
 /**
  * A simple application which demonstrates how to use a MapView.
  */
-public class BasicMapViewer extends Activity implements OnSharedPreferenceChangeListener {
-	protected ArrayList<MapView> mapViews = new ArrayList<>();
-	protected ArrayList<MapViewPosition> mapViewPositions = new ArrayList<>();
-	protected TileCache tileCache;
+public class BasicMapViewer extends Activity implements
+		OnSharedPreferenceChangeListener {
+	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
 	protected ArrayList<LayerManager> layerManagers = new ArrayList<LayerManager>();
+	protected ArrayList<MapViewPosition> mapViewPositions = new ArrayList<>();
+	protected ArrayList<MapView> mapViews = new ArrayList<>();
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
 
-	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
+	protected TileCache tileCache;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-		this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
-		createSharedPreferences();
-		createMapViews();
-		createMapViewPositions();
-		createLayerManagers();
-		createTileCaches();
-		createControls();
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.options_menu, menu);
+		return true;
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		createLayers();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		for (MapView mapView : mapViews) {
-			mapView.getModel().save(this.preferencesFacade);
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent intent;
+		switch (item.getItemId()) {
+		case R.id.menu_preferences:
+			intent = new Intent(this, Settings.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			startActivity(intent);
+			return true;
+		case R.id.menu_position_enter_coordinates:
+			showDialog(DIALOG_ENTER_COORDINATES);
+			break;
 		}
-		this.preferencesFacade.save();
+		return false;
 	}
 
 	@Override
-	protected void onStop() {
-		super.onStop();
-        destroyLayers();
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		destroyTileCaches();
-		destroyMapViewPositions();
-		destroyMapViews();
-		this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        org.mapsforge.map.android.graphics.AndroidResourceBitmap.clearResourceBitmaps();
-	}
-
-	protected void createSharedPreferences() {
-		SharedPreferences sp = this.getSharedPreferences(getPersistableId(), MODE_PRIVATE);
-		this.preferencesFacade = new AndroidPreferences(sp);
-	}
-
-	protected void createMapViewPositions() {
-		for (MapView mapView : mapViews) {
-			this.mapViewPositions.add(initializePosition(mapView.getModel().mapViewPosition));
+	public void onSharedPreferenceChanged(SharedPreferences preferences,
+			String key) {
+		if (SamplesApplication.SETTING_SCALE.equals(key)) {
+			destroyTileCaches();
+			for (MapView mapView : mapViews) {
+				mapView.getModel().displayModel.setUserScaleFactor(DisplayModel
+						.getDefaultUserScaleFactor());
+			}
+			Log.d(SamplesApplication.TAG, "Tilesize now "
+					+ mapViews.get(0).getModel().displayModel.getTileSize());
+			createTileCaches();
+			redrawLayers();
 		}
 	}
 
-	protected void destroyMapViewPositions() {
-		for (MapViewPosition mapViewPosition : mapViewPositions) {
-			mapViewPosition.destroy();
-		}
+	protected void createControls() {
+		// time to create control elements
 	}
 
 	protected void createLayerManagers() {
@@ -139,30 +118,17 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer =
-				Utils.createTileRendererLayer(this.tileCache, this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false);
+		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(
+				this.tileCache, this.mapViewPositions.get(0), getMapFile(),
+				getRenderTheme(), false);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
 	}
 
-	protected void destroyLayers() {
-		for (LayerManager layerManager : this.layerManagers) {
-			for (Layer layer : layerManager.getLayers()) {
-				layerManager.getLayers().remove(layer);
-				layer.onDestroy();
-			}
+	protected void createMapViewPositions() {
+		for (MapView mapView : mapViews) {
+			this.mapViewPositions
+					.add(initializePosition(mapView.getModel().mapViewPosition));
 		}
-	}
-
-	protected void createTileCaches() {
-		this.tileCache = AndroidUtil.createTileCache(this, getPersistableId(), this.mapViews.get(0).getModel().displayModel.getTileSize(), this.getScreenRatio(), this.mapViews.get(0).getModel().frameBufferModel.getOverdrawFactor());
-	}
-
-	protected void destroyTileCaches() {
-		this.tileCache.destroy();
-	}
-
-	protected void createControls() {
-		// time to create control elements
 	}
 
 	protected void createMapViews() {
@@ -176,16 +142,43 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		this.mapViews.add(mapView);
 	}
 
+	protected void createSharedPreferences() {
+		SharedPreferences sp = this.getSharedPreferences(getPersistableId(),
+				MODE_PRIVATE);
+		this.preferencesFacade = new AndroidPreferences(sp);
+	}
+
+	protected void createTileCaches() {
+		this.tileCache = AndroidUtil.createTileCache(this, getPersistableId(),
+				this.mapViews.get(0).getModel().displayModel.getTileSize(),
+				this.getScreenRatio(),
+				this.mapViews.get(0).getModel().frameBufferModel
+						.getOverdrawFactor());
+	}
+
+	protected void destroyLayers() {
+		for (LayerManager layerManager : this.layerManagers) {
+			for (Layer layer : layerManager.getLayers()) {
+				layerManager.getLayers().remove(layer);
+				layer.onDestroy();
+			}
+		}
+	}
+
+	protected void destroyMapViewPositions() {
+		for (MapViewPosition mapViewPosition : mapViewPositions) {
+			mapViewPosition.destroy();
+		}
+	}
+
 	protected void destroyMapViews() {
 		for (MapView mapView : mapViews) {
 			mapView.destroy();
 		}
 	}
 
-	protected void redrawLayers() {
-		for (LayerManager layerManager : this.layerManagers) {
-			layerManager.redrawLayers();
-		}
+	protected void destroyTileCaches() {
+		this.tileCache.destroy();
 	}
 
 	protected MapPosition getInitialPosition() {
@@ -193,20 +186,24 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		final FileOpenResult result = mapDatabase.openFile(getMapFile());
 		if (result.isSuccess()) {
 			final MapFileInfo mapFileInfo = mapDatabase.getMapFileInfo();
-			if  (mapFileInfo != null && mapFileInfo.startPosition != null) {
-				return new MapPosition(mapFileInfo.startPosition, (byte) mapFileInfo.startZoomLevel);
+			if (mapFileInfo != null && mapFileInfo.startPosition != null) {
+				return new MapPosition(mapFileInfo.startPosition,
+						(byte) mapFileInfo.startZoomLevel);
 			} else {
-				return new MapPosition(new LatLong(52.517037, 13.38886), (byte) 12);
+				return new MapPosition(new LatLong(52.517037, 13.38886),
+						(byte) 12);
 			}
 		}
-		throw new IllegalArgumentException("Invalid Map File " + getMapFileName());
+		throw new IllegalArgumentException("Invalid Map File "
+				+ getMapFileName());
 	}
 
 	/**
 	 * @return a map file
 	 */
 	protected File getMapFile() {
-        File file = new File(Environment.getExternalStorageDirectory(), this.getMapFileName());
+		File file = new File(Environment.getExternalStorageDirectory(),
+				this.getMapFileName());
 		Log.i(SamplesApplication.TAG, "Map file is " + file.getAbsolutePath());
 		return file;
 	}
@@ -216,6 +213,12 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	 */
 	protected String getMapFileName() {
 		return "germany.map";
+	}
+
+	protected MapView getMapView() {
+		MapView mv = new MapView(this);
+		setContentView(mv);
+		return mv;
 	}
 
 	/**
@@ -233,7 +236,8 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	/**
-	 * @return the screen ratio that the mapview takes up (for cache calculation)
+	 * @return the screen ratio that the mapview takes up (for cache
+	 *         calculation)
 	 */
 	protected float getScreenRatio() {
 		return 1.0f;
@@ -241,12 +245,6 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 
 	protected boolean hasZoomControls() {
 		return true;
-	}
-
-	protected MapView getMapView() {
-		MapView mv = new MapView(this);
-		setContentView(mv);
-		return mv;
 	}
 
 	/**
@@ -268,38 +266,19 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.options_menu, menu);
-		return true;
-	}
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent intent;
-		switch (item.getItemId()) {
-			case R.id.menu_preferences:
-				intent = new Intent(this, Settings.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-				startActivity(intent);
-				return true;
-			case R.id.menu_position_enter_coordinates:
-				showDialog(DIALOG_ENTER_COORDINATES);
-				break;
-		}
-		return false;
-	}
+		this.sharedPreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-		if (SamplesApplication.SETTING_SCALE.equals(key)) {
-			destroyTileCaches();
-			for (MapView mapView : mapViews) {
-				mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
-			}
-			Log.d(SamplesApplication.TAG, "Tilesize now " + mapViews.get(0).getModel().displayModel.getTileSize());
-			createTileCaches();
-			redrawLayers();
-		}
+		createSharedPreferences();
+		createMapViews();
+		createMapViewPositions();
+		createLayerManagers();
+		createTileCaches();
+		createControls();
 	}
 
 	@Deprecated
@@ -308,65 +287,116 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		LayoutInflater factory = LayoutInflater.from(this);
 		switch (id) {
-			case DIALOG_ENTER_COORDINATES:
-				builder.setIcon(android.R.drawable.ic_menu_mylocation);
-				builder.setTitle(R.string.dialog_location_title);
-				final View view = factory.inflate(R.layout.dialog_enter_coordinates, null);
-				builder.setView(view);
-				builder.setPositiveButton(R.string.okbutton, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						double lat = Double.parseDouble(((EditText) view.findViewById(R.id.latitude)).getText()
-								.toString());
-						double lon = Double.parseDouble(((EditText) view.findViewById(R.id.longitude)).getText()
-								.toString());
-						byte zoomLevel = (byte) ((((SeekBar) view.findViewById(R.id.zoomlevel)).getProgress()) + BasicMapViewer.this.mapViewPositions.get(0)
-								.getZoomLevelMin());
+		case DIALOG_ENTER_COORDINATES:
+			builder.setIcon(android.R.drawable.ic_menu_mylocation);
+			builder.setTitle(R.string.dialog_location_title);
+			final View view = factory.inflate(
+					R.layout.dialog_enter_coordinates, null);
+			builder.setView(view);
+			builder.setPositiveButton(R.string.okbutton,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							double lat = Double.parseDouble(((EditText) view
+									.findViewById(R.id.latitude)).getText()
+									.toString());
+							double lon = Double.parseDouble(((EditText) view
+									.findViewById(R.id.longitude)).getText()
+									.toString());
+							byte zoomLevel = (byte) ((((SeekBar) view
+									.findViewById(R.id.zoomlevel))
+									.getProgress()) + BasicMapViewer.this.mapViewPositions
+									.get(0).getZoomLevelMin());
 
-						BasicMapViewer.this.mapViewPositions.get(0).setMapPosition(new MapPosition(new LatLong(lat, lon),
-								zoomLevel));
-					}
-				});
-				builder.setNegativeButton(R.string.cancelbutton, null);
-				return builder.create();
+							BasicMapViewer.this.mapViewPositions.get(0)
+									.setMapPosition(
+											new MapPosition(new LatLong(lat,
+													lon), zoomLevel));
+						}
+					});
+			builder.setNegativeButton(R.string.cancelbutton, null);
+			return builder.create();
 		}
 		return null;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		destroyTileCaches();
+		destroyMapViewPositions();
+		destroyMapViews();
+		this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+		org.mapsforge.map.android.graphics.AndroidResourceBitmap
+				.clearResourceBitmaps();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		for (MapView mapView : mapViews) {
+			mapView.getModel().save(this.preferencesFacade);
+		}
+		this.preferencesFacade.save();
 	}
 
 	@Deprecated
 	@Override
 	protected void onPrepareDialog(int id, final Dialog dialog) {
 		if (id == this.DIALOG_ENTER_COORDINATES) {
-			MapViewPosition currentPosition = BasicMapViewer.this.mapViewPositions.get(0);
+			MapViewPosition currentPosition = BasicMapViewer.this.mapViewPositions
+					.get(0);
 			LatLong currentCenter = currentPosition.getCenter();
 			EditText editText = (EditText) dialog.findViewById(R.id.latitude);
 			editText.setText(Double.toString(currentCenter.latitude));
 			editText = (EditText) dialog.findViewById(R.id.longitude);
 			editText.setText(Double.toString(currentCenter.longitude));
 			SeekBar zoomlevel = (SeekBar) dialog.findViewById(R.id.zoomlevel);
-			zoomlevel.setMax(currentPosition.getZoomLevelMax() - currentPosition.getZoomLevelMin());
-			zoomlevel.setProgress(BasicMapViewer.this.mapViewPositions.get(0).getZoomLevel()
+			zoomlevel.setMax(currentPosition.getZoomLevelMax()
 					- currentPosition.getZoomLevelMin());
-			final TextView textView = (TextView) dialog.findViewById(R.id.zoomlevelValue);
+			zoomlevel.setProgress(BasicMapViewer.this.mapViewPositions.get(0)
+					.getZoomLevel() - currentPosition.getZoomLevelMin());
+			final TextView textView = (TextView) dialog
+					.findViewById(R.id.zoomlevelValue);
 			textView.setText(String.valueOf(zoomlevel.getProgress()));
-			zoomlevel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-					textView.setText(String.valueOf(progress));
-				}
+			zoomlevel
+					.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+						@Override
+						public void onProgressChanged(SeekBar seekBar,
+								int progress, boolean fromUser) {
+							textView.setText(String.valueOf(progress));
+						}
 
-				@Override
-				public void onStartTrackingTouch(SeekBar arg0) {
-					// nothing
-				}
+						@Override
+						public void onStartTrackingTouch(SeekBar arg0) {
+							// nothing
+						}
 
-				@Override
-				public void onStopTrackingTouch(SeekBar arg0) {
-					// nothing
-				}
-			});
+						@Override
+						public void onStopTrackingTouch(SeekBar arg0) {
+							// nothing
+						}
+					});
 		} else {
 			super.onPrepareDialog(id, dialog);
+		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		createLayers();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		destroyLayers();
+	}
+
+	protected void redrawLayers() {
+		for (LayerManager layerManager : this.layerManagers) {
+			layerManager.redrawLayers();
 		}
 	}
 

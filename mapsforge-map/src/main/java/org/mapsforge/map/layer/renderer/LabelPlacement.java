@@ -279,11 +279,13 @@ class LabelPlacement {
 							- tmp.boundary.getWidth() - dis, tmp.y + (float) tmp.boundary.getHeight() / 2, z,
 							tmp.boundary.getWidth(), tmp.boundary.getHeight());
 					// right
-					refPos[z * 4 + 3] = new ReferencePosition(tmp.x + (float) tmp.symbol.symbol.getWidth() / 2 + dis, tmp.y
-							+ (float) tmp.boundary.getHeight() / 2 - 0.1f, z, tmp.boundary.getWidth(), tmp.boundary.getHeight());
+					refPos[z * 4 + 3] = new ReferencePosition(tmp.x + (float) tmp.symbol.symbol.getWidth() / 2 + dis,
+							tmp.y + (float) tmp.boundary.getHeight() / 2 - 0.1f, z, tmp.boundary.getWidth(),
+							tmp.boundary.getHeight());
 				} else {
-					refPos[z * 4] = new ReferencePosition(labels.get(z).x - (((float) labels.get(z).boundary.getWidth()) / 2),
-							labels.get(z).y, z, labels.get(z).boundary.getWidth(), labels.get(z).boundary.getHeight());
+					refPos[z * 4] = new ReferencePosition(labels.get(z).x
+							- (((float) labels.get(z).boundary.getWidth()) / 2), labels.get(z).y, z,
+							labels.get(z).boundary.getWidth(), labels.get(z).boundary.getHeight());
 					refPos[z * 4 + 1] = null;
 					refPos[z * 4 + 2] = null;
 					refPos[z * 4 + 3] = null;

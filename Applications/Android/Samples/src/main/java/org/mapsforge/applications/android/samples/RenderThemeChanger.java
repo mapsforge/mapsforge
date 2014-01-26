@@ -14,27 +14,26 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import android.content.res.AssetManager;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.util.PausableThread;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
-import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 
 /**
- * Demonstration of changing render themes. This activity checks for .xml files on the
- * sdcard and loads them as render themes.
+ * Demonstration of changing render themes. This activity checks for .xml files
+ * on the sdcard and loads them as render themes.
  */
 public class RenderThemeChanger extends BasicMapViewer {
 
 	private class ChangerThread extends PausableThread {
-		private static final int ROTATION_TIME = 10000; //  milli secs to display a rendertheme
+		private static final int ROTATION_TIME = 10000; // milli secs to display
+														// a rendertheme
 
 		@Override
 		protected void doWork() throws InterruptedException {
@@ -43,21 +42,19 @@ public class RenderThemeChanger extends BasicMapViewer {
 		}
 
 		@Override
-		protected boolean hasWork() {
-			return true;
-		}
-
-		@Override
 		protected ThreadPriority getThreadPriority() {
 			return ThreadPriority.ABOVE_NORMAL;
 		}
 
+		@Override
+		protected boolean hasWork() {
+			return true;
+		}
+
 	}
 
-	private TileRendererLayer tileRendererLayer;
 	private ChangerThread changerThread;
 	private int iteration;
-
 	private FilenameFilter renderThemesFilter = new FilenameFilter() {
 		@Override
 		public boolean accept(File file, String s) {
@@ -68,10 +65,13 @@ public class RenderThemeChanger extends BasicMapViewer {
 		}
 	};
 
+	private TileRendererLayer tileRendererLayer;
 
 	@Override
 	protected void createLayers() {
-		tileRendererLayer = Utils.createTileRendererLayer(this.tileCache, this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false);
+		tileRendererLayer = Utils.createTileRendererLayer(this.tileCache,
+				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
+				false);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
 		this.changerThread = new ChangerThread();
 		this.changerThread.start();
@@ -84,22 +84,29 @@ public class RenderThemeChanger extends BasicMapViewer {
 	}
 
 	void changeRenderTheme() {
-		File[] renderThemes = Environment.getExternalStorageDirectory().listFiles(renderThemesFilter);
+		File[] renderThemes = Environment.getExternalStorageDirectory()
+				.listFiles(renderThemesFilter);
 		if (renderThemes.length > 0) {
 			File nextTheme = renderThemes[iteration % renderThemes.length];
 			iteration += 1;
 			try {
-				XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(nextTheme);
-				Log.i(SamplesApplication.TAG, "Loading new render theme " + nextTheme.getName());
-				// there should really be a simpler way to just change the render theme safely
+				XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(
+						nextTheme);
+				Log.i(SamplesApplication.TAG, "Loading new render theme "
+						+ nextTheme.getName());
+				// there should really be a simpler way to just change the
+				// render theme safely
 				layerManagers.get(0).getLayers().remove(tileRendererLayer);
 				tileRendererLayer.onDestroy();
 				tileCache.destroy(); // clear the cache
-				tileRendererLayer = Utils.createTileRendererLayer(tileCache, mapViewPositions.get(0), getMapFile(), nextRenderTheme, false);
+				tileRendererLayer = Utils.createTileRendererLayer(tileCache,
+						mapViewPositions.get(0), getMapFile(), nextRenderTheme,
+						false);
 				layerManagers.get(0).getLayers().add(tileRendererLayer);
 				layerManagers.get(0).redrawLayers();
 			} catch (FileNotFoundException e) {
-				Log.i(SamplesApplication.TAG, "Could not open file " + nextTheme.getName());
+				Log.i(SamplesApplication.TAG, "Could not open file "
+						+ nextTheme.getName());
 			}
 		}
 	}

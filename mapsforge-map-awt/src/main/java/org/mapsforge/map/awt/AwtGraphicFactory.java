@@ -124,19 +124,19 @@ public final class AwtGraphicFactory implements GraphicFactory {
 		return new AwtPath();
 	}
 
-    @Override
-    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-        return new AwtResourceBitmap(inputStream);
-    }
-
-    @Override
-	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
-		return new AwtTileBitmap(tileSize);
+	@Override
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
+		return new AwtResourceBitmap(inputStream);
 	}
 
 	@Override
 	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean hasAlpha) throws IOException {
 		return new AwtTileBitmap(inputStream);
+	}
+
+	@Override
+	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
+		return new AwtTileBitmap(tileSize);
 	}
 
 	@Override
