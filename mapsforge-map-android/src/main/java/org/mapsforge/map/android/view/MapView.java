@@ -131,10 +131,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
             return false;
         }
         this.mapZoomControls.onMapViewTouchEvent(motionEvent);
-        if (this.gestureDetector != null) {
-            if (this.gestureDetector.onTouchEvent(motionEvent)) {
-                return true;
-            }
+        if (this.gestureDetector != null && this.gestureDetector.onTouchEvent(motionEvent)) {
+            return true;
         }
         return this.touchEventHandler.onTouchEvent(motionEvent);
     }
