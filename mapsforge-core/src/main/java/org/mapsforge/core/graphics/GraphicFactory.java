@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface GraphicFactory {
-
 	Bitmap createBitmap(int width, int height);
 
 	Bitmap createBitmap(int width, int height, boolean isTransparent);
@@ -45,5 +44,4 @@ public interface GraphicFactory {
 	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 
 	ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException;
-
 }

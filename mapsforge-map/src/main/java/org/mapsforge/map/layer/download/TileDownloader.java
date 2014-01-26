@@ -21,7 +21,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
-import org.mapsforge.core.graphics.CorruptedInputStream;
+import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
@@ -66,7 +66,7 @@ class TileDownloader {
 		try {
 			return this.graphicFactory.createTileBitmap(inputStream, this.downloadJob.tileSize,
 					this.downloadJob.hasAlpha);
-		} catch (CorruptedInputStream e) {
+		} catch (CorruptedInputStreamException e) {
 			// the creation of the tile bit map can fail at, at least on Android,
 			// when the connection is slow or busy, returning null here ensures that
 			// the tile will be downloaded again

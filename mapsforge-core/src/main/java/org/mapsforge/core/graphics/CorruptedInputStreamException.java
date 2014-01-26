@@ -20,9 +20,10 @@ package org.mapsforge.core.graphics;
  * undocumented checked exceptions (should not, but it does). In the Android code base these exceptions are caught and
  * transformed into this CorruptedInputStream exception.
  */
+public class CorruptedInputStreamException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
 
-public class CorruptedInputStream extends RuntimeException {
-	public CorruptedInputStream(String detailMessage, Throwable throwable) {
+	public CorruptedInputStreamException(String detailMessage, Throwable throwable) {
 		super(detailMessage, throwable);
 	}
 }

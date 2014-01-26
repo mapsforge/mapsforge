@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.CorruptedInputStream;
+import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
@@ -99,7 +99,7 @@ public class FileSystemTileCache implements TileCache {
 		try {
 			inputStream = new FileInputStream(file);
 			return this.graphicFactory.createTileBitmap(inputStream, key.tileSize, key.hasAlpha);
-		} catch (CorruptedInputStream e) {
+		} catch (CorruptedInputStreamException e) {
 			// this can happen, at least on Android, when the input stream
 			// is somehow corrupted, returning null ensures it will be loaded
 			// from another source

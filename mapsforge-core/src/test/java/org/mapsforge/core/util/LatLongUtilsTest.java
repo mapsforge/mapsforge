@@ -115,6 +115,7 @@ public class LatLongUtilsTest {
 
 	@Test
 	public void zoomForBoundsTest() {
+		// TODO rewrite this unit tests to make it easier to understand
 		Dimension[] dimensions = { new Dimension(200, 300), new Dimension(500, 400), new Dimension(1000, 600),
 				new Dimension(3280, 1780), new Dimension(100, 200), new Dimension(500, 200) };
 		BoundingBox[] boundingBoxes = { new BoundingBox(12.2, 0, 34.3, 120), new BoundingBox(-30, 20, 30, 30),
@@ -130,10 +131,10 @@ public class LatLongUtilsTest {
 				3, 2, 2, 2, 2, 3, 2, 2, 2, 2, 5, 4, 4, 4, 4, 11, 10, 11, 10, 11, 14, 13, 13, 13, 13, 5, 4, 4, 4, 4 };
 
 		int i = 0;
-		for (Dimension d : dimensions) {
-			for (BoundingBox b : boundingBoxes) {
-				for (int t : tileSizes) {
-					Assert.assertEquals(results[i], LatLongUtils.zoomForBounds(d, b, t));
+		for (Dimension dimension : dimensions) {
+			for (BoundingBox boundingBox : boundingBoxes) {
+				for (int tileSize : tileSizes) {
+					Assert.assertEquals(results[i], LatLongUtils.zoomForBounds(dimension, boundingBox, tileSize));
 					++i;
 				}
 			}
