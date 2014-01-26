@@ -136,7 +136,7 @@ public final class LatLongUtils {
 	public static double[] parseCoordinateString(String coordinatesString, int numberOfCoordinates) {
 		StringTokenizer stringTokenizer = new StringTokenizer(coordinatesString, DELIMITER, true);
 		boolean isDelimiter = true;
-		List<String> tokens = new ArrayList<String>(numberOfCoordinates);
+		List<String> tokens = new ArrayList<>(numberOfCoordinates);
 
 		while (stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
