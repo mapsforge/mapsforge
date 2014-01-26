@@ -35,17 +35,16 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 
 public class AndroidBitmap implements Bitmap {
-
 	private static List<AndroidBitmap> bitmaps;
 
 	private static AtomicInteger instances;
 	private static final Logger LOGGER = Logger.getLogger(AndroidBitmap.class.getName());
-	private static Set<SoftReference<android.graphics.Bitmap>> reusableBitmaps = new HashSet<>();
+	private static Set<SoftReference<android.graphics.Bitmap>> reusableBitmaps = new HashSet<SoftReference<android.graphics.Bitmap>>();
 
 	static {
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			instances = new AtomicInteger();
-			bitmaps = new LinkedList<>();
+			bitmaps = new LinkedList<AndroidBitmap>();
 		}
 	}
 
@@ -60,7 +59,6 @@ public class AndroidBitmap implements Bitmap {
 	}
 
 	protected android.graphics.Bitmap bitmap;
-
 	private AtomicInteger refCount = new AtomicInteger();
 
 	protected AndroidBitmap() {
@@ -154,7 +152,6 @@ public class AndroidBitmap implements Bitmap {
 	}
 
 	protected final boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height, Config config) {
-
 		if (candidate.getWidth() == width && candidate.getHeight() == height) {
 			return true;
 		}
@@ -180,7 +177,7 @@ public class AndroidBitmap implements Bitmap {
 		if (this.bitmap != null) {
 			if (org.mapsforge.map.android.util.AndroidUtil.HONEYCOMB_PLUS) {
 				synchronized (reusableBitmaps) {
-					reusableBitmaps.add(new SoftReference<>(this.bitmap));
+					reusableBitmaps.add(new SoftReference<android.graphics.Bitmap>(this.bitmap));
 				}
 			} else {
 				this.bitmap.recycle();

@@ -27,17 +27,16 @@ import android.graphics.BitmapFactory;
 import android.util.Pair;
 
 public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitmap {
-
 	protected static final Logger LOGGER = Logger.getLogger(AndroidResourceBitmap.class.getName());
 	protected static HashSet<Integer> rBitmaps;
-	protected static final HashMap<Integer, Pair<android.graphics.Bitmap, Integer>> RESOURCE_BITMAPS = new HashMap<>();
+	protected static final HashMap<Integer, Pair<android.graphics.Bitmap, Integer>> RESOURCE_BITMAPS = new HashMap<Integer, Pair<android.graphics.Bitmap, Integer>>();
 
 	// used for debug bitmap accounting
 	protected static AtomicInteger rInstances;
 	static {
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			rInstances = new AtomicInteger();
-			rBitmaps = new HashSet<>();
+			rBitmaps = new HashSet<Integer>();
 		}
 	}
 

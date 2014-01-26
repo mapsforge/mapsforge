@@ -44,9 +44,8 @@ import android.graphics.BitmapFactory;
  */
 
 public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
-
 	private static final Logger LOGGER = Logger.getLogger(AndroidTileBitmap.class.getName());
-	private static HashMap<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<>();
+	private static HashMap<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<Integer, Set<SoftReference<Bitmap>>>();
 
 	private static AtomicInteger tileInstances;
 
@@ -165,7 +164,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 					}
 					Set<SoftReference<Bitmap>> sizeSpecificSet = reusableTileBitmaps.get(hash);
 					synchronized (sizeSpecificSet) {
-						sizeSpecificSet.add(new SoftReference<>(this.bitmap));
+						sizeSpecificSet.add(new SoftReference<Bitmap>(this.bitmap));
 					}
 				}
 			} else {
