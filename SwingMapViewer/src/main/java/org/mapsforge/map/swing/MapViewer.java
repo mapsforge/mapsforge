@@ -20,6 +20,7 @@ package org.mapsforge.map.swing;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Arrays;
 import java.util.prefs.Preferences;
 
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -52,15 +53,15 @@ public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	/**
-	 * Starts the mapviewer.
+	 * Starts the {@code MapViewer}.
 	 * 
 	 * @param args
-	 *            command line args: optionally the name of the map file to load
+	 *            command line args: expects the map file as first and only parameter.
 	 */
 	public static void main(String[] args) {
+		File mapFile = getMapFile(args);
 		MapView mapView = createMapView();
-		String mapFileName = args.length > 0 ? args[0] : "../../germany.map";
-		final BoundingBox boundingBox = addLayers(mapView, new File(mapFileName));
+		final BoundingBox boundingBox = addLayers(mapView, mapFile);
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		final Model model = mapView.getModel();
@@ -134,6 +135,25 @@ public final class MapViewer {
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
+	}
+
+	private static File getMapFile(String[] args) {
+		if (args.length == 0) {
+			throw new IllegalArgumentException("missing argument: <mapFile>");
+		} else if (args.length > 1) {
+			throw new IllegalArgumentException("too many arguments: " + Arrays.toString(args));
+		}
+
+		File mapFile = new File(args[0]);
+		if (!mapFile.exists()) {
+			throw new IllegalArgumentException("file does not exist: " + mapFile);
+		} else if (!mapFile.isFile()) {
+			throw new IllegalArgumentException("not a file: " + mapFile);
+		} else if (!mapFile.canRead()) {
+			throw new IllegalArgumentException("cannot read file: " + mapFile);
+		}
+
+		return mapFile;
 	}
 
 	private MapViewer() {
