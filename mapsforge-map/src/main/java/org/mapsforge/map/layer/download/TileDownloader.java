@@ -64,13 +64,14 @@ class TileDownloader {
 		InputStream inputStream = getInputStream(urlConnection);
 
 		try {
-			return this.graphicFactory.createTileBitmap(inputStream, this.downloadJob.tileSize, this.downloadJob.hasAlpha);
-        } catch (CorruptedInputStream e) {
-            // the creation of the tile bit map can fail at, at least on Android,
-            // when the connection is slow or busy, returning null here ensures that
-            // the tile will be downloaded again
-            return null;
- 		} finally {
+			return this.graphicFactory.createTileBitmap(inputStream, this.downloadJob.tileSize,
+					this.downloadJob.hasAlpha);
+		} catch (CorruptedInputStream e) {
+			// the creation of the tile bit map can fail at, at least on Android,
+			// when the connection is slow or busy, returning null here ensures that
+			// the tile will be downloaded again
+			return null;
+		} finally {
 			IOUtils.closeQuietly(inputStream);
 		}
 	}

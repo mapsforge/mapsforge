@@ -18,7 +18,6 @@ package org.mapsforge.map.layer.queue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 

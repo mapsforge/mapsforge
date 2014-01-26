@@ -27,8 +27,8 @@ import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
 public class CircleTest {
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	private static Circle createCircle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
 		return new Circle(latLong, radius, paintFill, paintStroke);

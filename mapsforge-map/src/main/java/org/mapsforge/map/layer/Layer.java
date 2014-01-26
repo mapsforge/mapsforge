@@ -17,14 +17,14 @@ package org.mapsforge.map.layer;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
 public abstract class Layer {
+	protected DisplayModel displayModel;
 	private Redrawer assignedRedrawer;
 	private boolean visible = true;
-	protected DisplayModel displayModel;
 
 	/**
 	 * Draws this {@code Layer} on the given canvas.
@@ -41,10 +41,62 @@ public abstract class Layer {
 	public abstract void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint);
 
 	/**
+	 * Gets the geographic position of this layer element, if it exists.
+	 * <p>
+	 * The default implementation of this method returns null.
+	 * 
+	 * @return the geographic position of this layer element, null otherwise
+	 */
+	public LatLong getPosition() {
+		return null;
+	}
+
+	/**
 	 * @return true if this {@code Layer} is currently visible, false otherwise. The default value is true.
 	 */
 	public final boolean isVisible() {
 		return this.visible;
+	}
+
+	public void onDestroy() {
+		// do nothing
+	}
+
+	/**
+	 * Handles a long press event. A long press event is only triggered if the map was not moved. A return value of true
+	 * indicates that the long press event has been handled by this overlay and stops its propagation to other overlays.
+	 * <p>
+	 * The default implementation of this method does nothing and returns false.
+	 * 
+	 * @param tapLatLong
+	 *            the geographic position of the long press.
+	 * @param layerXY
+	 *            the xy position of the layer element (if available)
+	 * @param tapXY
+	 *            the xy position of the tap
+	 * @return true if the long press event was handled, false otherwise.
+	 */
+	public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+		return false;
+	}
+
+	/**
+	 * Handles a tap event. A return value of true indicates that the tap event has been handled by this overlay and
+	 * stops its propagation to other overlays.
+	 * <p>
+	 * The default implementation of this method does nothing and returns false.
+	 * 
+	 * @param tapLatLong
+	 *            the the geographic position of the long press.
+	 * @param layerXY
+	 *            the xy position of the layer element (if available)
+	 * @param tapXY
+	 *            the xy position of the tap
+	 * @return true if the tap event was handled, false otherwise.
+	 */
+
+	public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+		return false;
 	}
 
 	/**
@@ -57,10 +109,11 @@ public abstract class Layer {
 	}
 
 	/**
-	 * The DisplayModel comes from a MapView, so is generally not known when the layer itself is
-	 * created. Maybe a better way would be to have a MapView as a parameter when creating a layer.
-	 *
-	 * @param displayModel the displayModel to use.
+	 * The DisplayModel comes from a MapView, so is generally not known when the layer itself is created. Maybe a better
+	 * way would be to have a MapView as a parameter when creating a layer.
+	 * 
+	 * @param displayModel
+	 *            the displayModel to use.
 	 */
 	public synchronized void setDisplayModel(DisplayModel displayModel) {
 		this.displayModel = displayModel;
@@ -77,10 +130,6 @@ public abstract class Layer {
 	 * Called each time this {@code Layer} is added to a {@link Layers} list.
 	 */
 	protected void onAdd() {
-		// do nothing
-	}
-
-	public void onDestroy() {
 		// do nothing
 	}
 
@@ -108,51 +157,5 @@ public abstract class Layer {
 		this.assignedRedrawer = null;
 		onRemove();
 	}
-
-	/**
-	 * Gets the geographic position of this layer element, if it exists.
-	 * <p>
-	 * The default implementation of this method returns null.
-	 *
-	 * @return the geographic position of this layer element, null otherwise
-	 */
-	public LatLong getPosition() {
-		return null;
-	}
-
-	/**
-	 * Handles a long press event. A long press event is only triggered
-	 * if the map was not moved. A return value of true
-	 * indicates that the long press event has been handled by this overlay
-	 * and stops its propagation to other overlays.
-	 * <p>
-	 * The default implementation of this method does nothing and returns false.
-	 *
-	 * @param tapLatLong the geographic position of the long press.
-	 * @param layerXY the xy position of the layer element (if available)
-	 * @param tapXY the xy position of the tap
-	 * @return true if the long press event was handled, false otherwise.
-	 */
-	public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
-		return false;
-	}
-
-	/**
-	 * Handles a tap event. A return value of true indicates that the tap event
-	 * has been handled by this overlay and
-	 * stops its propagation to other overlays.
-	 * <p>
-	 * The default implementation of this method does nothing and returns false.
-	 *
-	 * @param tapLatLong the the geographic position of the long press.
-	 * @param layerXY the xy position of the layer element (if available)
-	 * @param tapXY the xy position of the tap
-	 * @return true if the tap event was handled, false otherwise.
-	 */
-
-	public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-		return false;
-	}
-
 
 }

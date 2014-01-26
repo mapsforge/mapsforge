@@ -35,8 +35,8 @@ public class TileGridLayer extends Layer {
 		return paint;
 	}
 
-	private final Paint paint;
 	private final DisplayModel displayModel;
+	private final Paint paint;
 
 	public TileGridLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();

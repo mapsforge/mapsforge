@@ -36,8 +36,8 @@ public class LineSymbolBuilder {
 	Bitmap bitmap;
 	boolean repeat;
 
-	public LineSymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes,
-			String relativePathPrefix) throws IOException, SAXException {
+	public LineSymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
 	}
 
@@ -48,8 +48,8 @@ public class LineSymbolBuilder {
 		return new LineSymbol(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes,
-			String relativePathPrefix) throws IOException, SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);

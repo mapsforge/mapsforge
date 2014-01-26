@@ -19,11 +19,10 @@ import org.mapsforge.map.reader.MapDatabase;
 class DestroyThread extends Thread {
 
 	private final MapDatabase mapDatabase;
-	private final Thread thread;
 	private final DatabaseRenderer renderer;
+	private final Thread thread;
 
-	DestroyThread(Thread thread, MapDatabase mapDatabase,
-			DatabaseRenderer renderer) {
+	DestroyThread(Thread thread, MapDatabase mapDatabase, DatabaseRenderer renderer) {
 		super();
 
 		this.thread = thread;

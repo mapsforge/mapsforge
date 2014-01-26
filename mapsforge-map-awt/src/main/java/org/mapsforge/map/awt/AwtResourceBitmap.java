@@ -21,8 +21,8 @@ import org.mapsforge.core.graphics.ResourceBitmap;
 
 public class AwtResourceBitmap extends AwtBitmap implements ResourceBitmap {
 
-    AwtResourceBitmap(InputStream inputStream) throws IOException {
-        super(inputStream);
-    }
+	AwtResourceBitmap(InputStream inputStream) throws IOException {
+		super(inputStream);
+	}
 
 }

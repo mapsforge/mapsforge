@@ -19,10 +19,9 @@ import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 
 public class MercatorProjectionTest {
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 	private static final int ZOOM_LEVEL_MAX = 30;
 	private static final int ZOOM_LEVEL_MIN = 0;
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
-
 
 	private static void verifyInvalidGetMapSize(byte zoomLevel, int tileSize) {
 		try {
@@ -66,7 +65,8 @@ public class MercatorProjectionTest {
 	public void latitudeToPixelYTest() {
 		for (int tileSize : TILE_SIZES) {
 			for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
-				double pixelY = MercatorProjection.latitudeToPixelY(MercatorProjection.LATITUDE_MAX, zoomLevel, tileSize);
+				double pixelY = MercatorProjection.latitudeToPixelY(MercatorProjection.LATITUDE_MAX, zoomLevel,
+						tileSize);
 				Assert.assertEquals(0, pixelY, 0);
 
 				long mapSize = MercatorProjection.getMapSize(zoomLevel, tileSize);
@@ -128,7 +128,6 @@ public class MercatorProjectionTest {
 			Assert.assertTrue(MercatorProjection.metersToPixels((int) (40 * 10e3), 50, (byte) 10, tileSize) > 1);
 		}
 	}
-
 
 	@Test
 	public void pixelXToLongitudeTest() {

@@ -32,28 +32,9 @@ import android.view.MenuItem;
 /**
  * Activity to edit the application preferences.
  */
-public class Settings extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+public class Settings extends PreferenceActivity implements
+		OnSharedPreferenceChangeListener {
 	SharedPreferences prefs;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		Utils.enableHome(this);
-		addPreferencesFromResource(R.xml.preferences);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		this.prefs.registerOnSharedPreferenceChangeListener(this);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		this.prefs.unregisterOnSharedPreferenceChangeListener(this);
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -64,23 +45,47 @@ public class Settings extends PreferenceActivity implements OnSharedPreferenceCh
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 		switch (item.getItemId()) {
-			case android.R.id.home:
-				intent = new Intent(this, Samples.class);
-				startActivity(intent);
-				return true;
+		case android.R.id.home:
+			intent = new Intent(this, Samples.class);
+			startActivity(intent);
+			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+	public void onSharedPreferenceChanged(SharedPreferences preferences,
+			String key) {
 		if (SamplesApplication.SETTING_SCALE.equals(key)) {
 			float userScaleFactor = DisplayModel.getDefaultUserScaleFactor();
-			float fs = Float.valueOf(preferences.getString(SamplesApplication.SETTING_SCALE, Float.toString(userScaleFactor)));
-			Log.e(SamplesApplication.TAG, "User ScaleFactor " + Float.toString(fs));
+			float fs = Float.valueOf(preferences.getString(
+					SamplesApplication.SETTING_SCALE,
+					Float.toString(userScaleFactor)));
+			Log.e(SamplesApplication.TAG,
+					"User ScaleFactor " + Float.toString(fs));
 			if (fs != userScaleFactor) {
 				DisplayModel.setDefaultUserScaleFactor(fs);
 			}
 		}
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		Utils.enableHome(this);
+		addPreferencesFromResource(R.xml.preferences);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		this.prefs.unregisterOnSharedPreferenceChangeListener(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		this.prefs.registerOnSharedPreferenceChangeListener(this);
 	}
 }

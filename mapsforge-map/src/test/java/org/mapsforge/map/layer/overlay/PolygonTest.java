@@ -26,12 +26,11 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.awt.AwtGraphicFactory;
-import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
 public class PolygonTest {
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	@Test
 	public void constructorTest() {

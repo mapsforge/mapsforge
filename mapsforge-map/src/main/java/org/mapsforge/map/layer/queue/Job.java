@@ -18,9 +18,9 @@ package org.mapsforge.map.layer.queue;
 import org.mapsforge.core.model.Tile;
 
 public class Job {
+	public final boolean hasAlpha;
 	public final Tile tile;
 	public final int tileSize;
-	public final boolean hasAlpha;
 
 	protected Job(Tile tile, int tileSize, boolean hasAlpha) {
 		if (tile == null) {

@@ -21,7 +21,7 @@ import org.mapsforge.map.TestUtils;
 
 public class QueueItemTest {
 
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	private static QueueItem<?> createTileDownloadJob(Tile tile, int tileSize) {
 		return new QueueItem<Job>(new Job(tile, tileSize, false));

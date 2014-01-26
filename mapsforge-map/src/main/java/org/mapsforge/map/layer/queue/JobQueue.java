@@ -26,10 +26,10 @@ public class JobQueue<T extends Job> {
 	private static final int QUEUE_CAPACITY = 128;
 
 	private final List<T> assignedJobs = new LinkedList<T>();
+	private final DisplayModel displayModel;
 	private final MapViewPosition mapViewPosition;
 	private final List<QueueItem<T>> queueItems = new LinkedList<QueueItem<T>>();
 	private boolean scheduleNeeded;
-	private final DisplayModel displayModel;
 
 	public JobQueue(MapViewPosition mapViewPosition, DisplayModel displayModel) {
 		this.mapViewPosition = mapViewPosition;

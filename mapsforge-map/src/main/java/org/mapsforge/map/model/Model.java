@@ -19,9 +19,9 @@ import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class Model implements Persistable {
+	public final DisplayModel displayModel = new DisplayModel();
 	public final FrameBufferModel frameBufferModel = new FrameBufferModel();
 	public final MapViewDimension mapViewDimension = new MapViewDimension();
-	public final DisplayModel displayModel = new DisplayModel();
 	public final MapViewPosition mapViewPosition = new MapViewPosition(displayModel);
 
 	@Override

@@ -21,7 +21,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.view.MapView;
 
-public class MapViewProjection  {
+public class MapViewProjection {
 	private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions";
 
 	private final MapView mapView;
@@ -29,10 +29,10 @@ public class MapViewProjection  {
 	public MapViewProjection(MapView mapView) {
 		this.mapView = mapView;
 	}
-	
+
 	/**
 	 * Computes the geographic coordinates of a screen point.
-	 *
+	 * 
 	 * @return the coordinates of the x/y point
 	 */
 	public LatLong fromPixels(double x, double y) {
@@ -57,7 +57,7 @@ public class MapViewProjection  {
 
 	/**
 	 * Computes vertical extend of the map view.
-	 *
+	 * 
 	 * @return the latitude span of the map in degrees
 	 */
 	public double getLatitudeSpan() {
@@ -71,7 +71,7 @@ public class MapViewProjection  {
 
 	/**
 	 * Computes horizontal extend of the map view.
-	 *
+	 * 
 	 * @return the longitude span of the map in degrees
 	 */
 	public double getLongitudeSpan() {
@@ -85,8 +85,9 @@ public class MapViewProjection  {
 
 	/**
 	 * Converts geographic coordinates to view x/y coordinates in the map view.
-	 *
-	 * @param in the geographic coordinates
+	 * 
+	 * @param in
+	 *            the geographic coordinates
 	 * @return x/y view coordinates for the given location
 	 */
 	public Point toPixels(LatLong in) {

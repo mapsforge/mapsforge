@@ -37,8 +37,8 @@ public class LineSymbolBuilderTest {
 		attributesImpl.addAttribute(null, null, LineSymbolBuilder.REPEAT, null, REPEAT.toString());
 		attributesImpl.addAttribute(null, null, LineSymbolBuilder.SRC, null, "jar:symbols/atm.png");
 
-		LineSymbolBuilder lineSymbolBuilder = new LineSymbolBuilder(GRAPHIC_FACTORY, new DisplayModel(), "lineSymbol", attributesImpl,
-				"/osmarender/");
+		LineSymbolBuilder lineSymbolBuilder = new LineSymbolBuilder(GRAPHIC_FACTORY, new DisplayModel(), "lineSymbol",
+				attributesImpl, "/osmarender/");
 
 		Assert.assertEquals(ALIGN_CENTER, Boolean.valueOf(lineSymbolBuilder.alignCenter));
 		Assert.assertEquals(REPEAT, Boolean.valueOf(lineSymbolBuilder.repeat));

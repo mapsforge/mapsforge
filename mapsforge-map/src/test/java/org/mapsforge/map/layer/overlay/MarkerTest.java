@@ -27,8 +27,8 @@ import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
 public class MarkerTest {
-	private static final int[] TILE_SIZES = {256};
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final int[] TILE_SIZES = { 256 };
 
 	@Test
 	public void constructorTest() {

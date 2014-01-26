@@ -22,11 +22,23 @@ import org.mapsforge.map.android.layer.MyLocationOverlay;
 import android.graphics.drawable.Drawable;
 
 /**
- * MapViewer that shows current position. In the data directory of the Samples project is the file berlin.gpx that can
- * be loaded in the Android Monitor to simulate location data in the center of Berlin.
+ * MapViewer that shows current position. In the data directory of the Samples
+ * project is the file berlin.gpx that can be loaded in the Android Monitor to
+ * simulate location data in the center of Berlin.
  */
 public class LocationOverlayMapViewer extends BasicMapViewerXml {
 	private MyLocationOverlay myLocationOverlay;
+
+	@Override
+	public void onPause() {
+		myLocationOverlay.disableMyLocation();
+		super.onPause();
+	}
+
+	public void onResume() {
+		super.onResume();
+		this.myLocationOverlay.enableMyLocation(true);
+	}
 
 	@Override
 	protected void createLayers() {
@@ -37,9 +49,9 @@ public class LocationOverlayMapViewer extends BasicMapViewerXml {
 		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
 
 		// create the overlay and tell it to follow the location
-		this.myLocationOverlay = new MyLocationOverlay(this, this.mapViewPositions.get(0), bitmap);
+		this.myLocationOverlay = new MyLocationOverlay(this,
+				this.mapViewPositions.get(0), bitmap);
 		this.myLocationOverlay.setSnapToLocationEnabled(true);
 		this.layerManagers.get(0).getLayers().add(this.myLocationOverlay);
-		this.myLocationOverlay.enableMyLocation(true);
 	}
 }

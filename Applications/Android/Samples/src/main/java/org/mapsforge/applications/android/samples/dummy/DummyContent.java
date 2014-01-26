@@ -22,7 +22,8 @@ import java.util.Map;
 import org.mapsforge.core.model.LatLong;
 
 /**
- * Helper class for providing sample content for user interfaces created by Android template wizards.
+ * Helper class for providing sample content for user interfaces created by
+ * Android template wizards.
  * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
@@ -36,7 +37,8 @@ public class DummyContent {
 		public final LatLong location;
 		public final String text;
 
-		public DummyItem(String id, String content, LatLong location, String text) {
+		public DummyItem(String id, String content, LatLong location,
+				String text) {
 			this.id = id;
 			this.content = content;
 			this.location = location;
@@ -60,10 +62,10 @@ public class DummyContent {
 	public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
 
 	static {
-		addItem(new DummyItem("1", "Brandenburger Tor", new LatLong(52.516, 13.378),
-				"This is the famous Brandenburger Tor"));
-		addItem(new DummyItem("2", "Checkpoint Charlie", new LatLong(52.507, 13.390),
-				"This used to be the famous Checkpoint Charlie"));
+		addItem(new DummyItem("1", "Brandenburger Tor", new LatLong(52.516,
+				13.378), "This is the famous Brandenburger Tor"));
+		addItem(new DummyItem("2", "Checkpoint Charlie", new LatLong(52.507,
+				13.390), "This used to be the famous Checkpoint Charlie"));
 		addItem(new DummyItem(
 				"3",
 				"Savigny Platz",

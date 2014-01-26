@@ -30,17 +30,14 @@ public class BubbleOverlay extends BasicMapViewerXml {
 	private Bitmap bubble;
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		this.mapViewPositions.get(0).setCenter(DummyContent.ITEMS.get(1).location);
-	}
-
-	@Override
 	protected void createLayers() {
 		super.createLayers();
 		for (DummyContent.DummyItem item : DummyContent.ITEMS) {
 			TextView bubbleView = new TextView(this);
-			Utils.setBackground(bubbleView, getResources().getDrawable(R.drawable.balloon_overlay_unfocused));
+			Utils.setBackground(
+					bubbleView,
+					getResources().getDrawable(
+							R.drawable.balloon_overlay_unfocused));
 			bubbleView.setGravity(Gravity.CENTER);
 			bubbleView.setMaxEms(20);
 			bubbleView.setTextSize(15);
@@ -48,18 +45,30 @@ public class BubbleOverlay extends BasicMapViewerXml {
 			bubbleView.setText(item.text);
 			bubble = Utils.viewToBitmap(this, bubbleView);
 			bubble.incrementRefCount();
-			this.layerManagers.get(0).getLayers().add(new Marker(item.location, bubble, 0, -bubble.getHeight() / 2));
+			this.layerManagers
+					.get(0)
+					.getLayers()
+					.add(new Marker(item.location, bubble, 0, -bubble
+							.getHeight() / 2));
 		}
 	}
 
 	@Override
 	protected void createMapViewPositions() {
 		super.createMapViewPositions();
-		this.mapViews.get(0).getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
+		this.mapViews.get(0).getModel().mapViewPosition
+				.setCenter(DummyContent.ITEMS.get(1).location);
 	}
 
 	@Override
 	protected void destroyLayers() {
 		bubble.decrementRefCount();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		this.mapViewPositions.get(0).setCenter(
+				DummyContent.ITEMS.get(1).location);
 	}
 }

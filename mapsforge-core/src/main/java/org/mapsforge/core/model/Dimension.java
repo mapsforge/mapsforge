@@ -33,15 +33,6 @@ public class Dimension implements Serializable {
 		this.height = height;
 	}
 
-	/**
-	 * Gets the center point of the dimension.
-	 *
-	 * @return the center point
-	 */
-	public Point getCenter() {
-		return new Point((float) this.width / 2, (float) this.height / 2);
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -56,6 +47,15 @@ public class Dimension implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Gets the center point of the dimension.
+	 * 
+	 * @return the center point
+	 */
+	public Point getCenter() {
+		return new Point((float) this.width / 2, (float) this.height / 2);
 	}
 
 	@Override

@@ -45,8 +45,8 @@ public class PathTextBuilder {
 	final Paint stroke;
 	TextKey textKey;
 
-	public PathTextBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes)
-			throws SAXException {
+	public PathTextBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes) throws SAXException {
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
@@ -67,8 +67,8 @@ public class PathTextBuilder {
 		return new PathText(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes)
-			throws SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes) throws SAXException {
 		FontFamily fontFamily = FontFamily.DEFAULT;
 		FontStyle fontStyle = FontStyle.NORMAL;
 

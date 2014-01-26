@@ -55,6 +55,11 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 	}
 
 	@Override
+	public String getRelativePathPrefix() {
+		return this.relativePathPrefix;
+	}
+
+	@Override
 	public InputStream getRenderThemeAsStream() {
 		return this.inputStream;
 	}
@@ -66,10 +71,5 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 		result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
 		result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
 		return result;
-	}
-
-	@Override
-	public String getRelativePathPrefix() {
-		return this.relativePathPrefix;
 	}
 }

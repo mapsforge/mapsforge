@@ -35,7 +35,8 @@ public class AreaBuilderTest {
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, AreaBuilder.STROKE_WIDTH, null, String.valueOf(STROKE_WIDTH));
 
-		AreaBuilder areaBuilder = new AreaBuilder(GRAPHIC_FACTORY, new DisplayModel(), "area", attributesImpl, LEVEL, null);
+		AreaBuilder areaBuilder = new AreaBuilder(GRAPHIC_FACTORY, new DisplayModel(), "area", attributesImpl, LEVEL,
+				null);
 
 		Assert.assertEquals(LEVEL, areaBuilder.level);
 		Assert.assertEquals(STROKE_WIDTH, areaBuilder.strokeWidth, 0);

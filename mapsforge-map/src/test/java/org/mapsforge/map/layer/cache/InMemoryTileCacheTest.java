@@ -33,8 +33,8 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class InMemoryTileCacheTest {
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	private static void verifyInvalidCapacity(InMemoryTileCache inMemoryTileCache, int capacity) {
 		try {
@@ -101,7 +101,8 @@ public class InMemoryTileCacheTest {
 		for (int tileSize : TILE_SIZES) {
 			TileCache tileCache = new InMemoryTileCache(0);
 			verifyInvalidPut(tileCache, null, GRAPHIC_FACTORY.createTileBitmap(tileSize, true));
-			verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), tileSize, OpenStreetMapMapnik.INSTANCE), null);
+			verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), tileSize,
+					OpenStreetMapMapnik.INSTANCE), null);
 		}
 	}
 

@@ -29,7 +29,8 @@ public class RendererJob extends Job {
 	public final XmlRenderTheme xmlRenderTheme;
 	private final int hashCodeValue;
 
-	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel, float textScale, boolean isTransparent) {
+	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel,
+			float textScale, boolean isTransparent) {
 		super(tile, displayModel.getTileSize(), isTransparent);
 
 		if (mapFile == null) {

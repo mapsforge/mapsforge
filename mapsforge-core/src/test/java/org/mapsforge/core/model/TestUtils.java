@@ -46,7 +46,7 @@ final class TestUtils {
 
 	static void serializeTest(Object objectToSerialize) throws IOException, ClassNotFoundException {
 		File file = new File("object.ser");
-        boolean fileNotDeleted = false; // to keep PMD happy no throw in finally
+		boolean fileNotDeleted = false; // to keep PMD happy no throw in finally
 		try {
 			Assert.assertTrue(file.createNewFile());
 			Assert.assertEquals(0, file.length());
@@ -59,9 +59,9 @@ final class TestUtils {
 				fileNotDeleted = true;
 			}
 		}
-        if (fileNotDeleted) {
-            throw new IOException("could not delete file: " + file);
-        }
+		if (fileNotDeleted) {
+			throw new IOException("could not delete file: " + file);
+		}
 	}
 
 	private static Object deserializeObject(File file) throws IOException, ClassNotFoundException {

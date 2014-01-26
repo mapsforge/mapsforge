@@ -15,13 +15,13 @@
  */
 package org.mapsforge.map.layer;
 
-import org.mapsforge.map.model.DisplayModel;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.mapsforge.map.model.DisplayModel;
 
 /**
  * A thread-safe {@link Layer} list which does not allow {@code null} elements.
@@ -44,9 +44,9 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		}
 	}
 
+	private final DisplayModel displayModel;
 	private final List<Layer> layersList;
 	private final Redrawer redrawer;
-	private final DisplayModel displayModel;
 
 	Layers(Redrawer redrawer, DisplayModel displayModel) {
 		this.redrawer = redrawer;

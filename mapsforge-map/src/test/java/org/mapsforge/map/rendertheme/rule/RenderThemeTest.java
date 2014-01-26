@@ -58,7 +58,8 @@ public class RenderThemeTest {
 	@Test
 	public void validRenderThemeTest() throws SAXException, ParserConfigurationException, IOException {
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(RESOURCE_FOLDER, "test-render-theme.xml"));
-		RenderTheme renderTheme = RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
+		RenderTheme renderTheme = RenderThemeHandler
+				.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
 
 		Assert.assertEquals(3, renderTheme.getLevels());
 

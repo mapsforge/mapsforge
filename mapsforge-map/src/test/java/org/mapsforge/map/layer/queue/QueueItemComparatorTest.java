@@ -20,7 +20,7 @@ import org.mapsforge.core.model.Tile;
 
 public class QueueItemComparatorTest {
 
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	@Test
 	public void compareTest() {
