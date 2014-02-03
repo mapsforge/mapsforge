@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,7 +28,7 @@ import com.applantation.android.svg.SVG;
 import com.applantation.android.svg.SVGParser;
 
 class AndroidSvgBitmap extends AndroidResourceBitmap {
-	static final float DEFAULT_SIZE = 200f;
+	static final float DEFAULT_SIZE = 400f;
 
 	private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor)
 			throws IOException {
