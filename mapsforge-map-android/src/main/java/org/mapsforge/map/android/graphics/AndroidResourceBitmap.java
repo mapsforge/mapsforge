@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +16,7 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -62,7 +65,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 		}
 	}
 
-	private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash) {
+	private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash) throws IOException {
 		synchronized (RESOURCE_BITMAPS) {
 			Pair<android.graphics.Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
 			if (data != null) {
@@ -73,6 +76,9 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 			} else {
 				android.graphics.Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null,
 						createBitmapFactoryOptions(AndroidGraphicFactory.TRANSPARENT_BITMAP));
+				if (bitmap == null) {
+					throw new IOException("BitmapFactory failed to decodeStream");
+				}
 				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
 						Integer.valueOf(1));
 				RESOURCE_BITMAPS.put(hash, updated);
@@ -130,7 +136,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 		this.hash = hash;
 	}
 
-	AndroidResourceBitmap(InputStream inputStream, int hash) {
+	AndroidResourceBitmap(InputStream inputStream, int hash) throws IOException {
 		this(hash);
 		this.bitmap = getResourceBitmap(inputStream, hash);
 	}
