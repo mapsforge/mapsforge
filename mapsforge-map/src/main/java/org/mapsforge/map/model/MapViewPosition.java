@@ -31,23 +31,23 @@ public class MapViewPosition extends Observable implements Persistable {
 
 		// debugging tip: for investigating what happens during the zoom animation
 		// just make the times longer for duration and frame length
-		private static final float DEFAULT_DURATION = 250f;
+		private static final int DEFAULT_DURATION = 250;
 		private static final int FRAME_LENGTH_IN_MS = 15;
 
 		double scaleDifference;
 		double startScaleFactor;
 		private boolean executeAnimation;
+		private long timeEnd;
 		private long timeStart;
 
 		@Override
 		protected void doWork() throws InterruptedException {
-			long timeElapsed = System.currentTimeMillis() - this.timeStart;
-			if (timeElapsed >= DEFAULT_DURATION) {
+			if (System.currentTimeMillis() >= this.timeEnd) {
 				this.executeAnimation = false;
 				MapViewPosition.this.setScaleFactor(calculateScaleFactor(1));
 				MapViewPosition.this.setPivot(null);
 			} else {
-				float timeElapsedRatio = timeElapsed / DEFAULT_DURATION;
+				float timeElapsedRatio = (System.currentTimeMillis() - this.timeStart) / (1f * DEFAULT_DURATION);
 				MapViewPosition.this.setScaleFactor(calculateScaleFactor(timeElapsedRatio));
 			}
 			sleep(FRAME_LENGTH_IN_MS);
@@ -69,6 +69,7 @@ public class MapViewPosition extends Observable implements Persistable {
 			this.scaleDifference = targetScaleFactor - this.startScaleFactor;
 			this.executeAnimation = true;
 			this.timeStart = System.currentTimeMillis();
+			this.timeEnd = this.timeStart + DEFAULT_DURATION;
 			synchronized (this) {
 				notify();
 			}
@@ -163,7 +164,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	}
 
 	public boolean animationInProgress() {
-		return this.scaleFactor != Math.pow(2, this.zoomLevel);
+		return this.scaleFactor != MercatorProjection.zoomLevelToScaleFactor(this.zoomLevel);
 	}
 
 	public void destroy() {
@@ -192,16 +193,27 @@ public class MapViewPosition extends Observable implements Persistable {
 	}
 
 	/**
+	 * The pivot point is the point the map zooms around.
+	 *
+	 * @return the lat/long coordinates of the map pivot point if set or null otherwise.
+	 */
+
+	public synchronized LatLong getPivot() {
+		return this.pivot;
+	}
+
+	/**
 	 * The pivot point is the point the map zooms around. If the map zooms around its center null is returned, otherwise
 	 * the zoom-specific x/y pixel coordinates for the MercatorProjection (note: not the x/y coordinates for the map
 	 * view or the frame buffer, the MapViewPosition knows nothing about them).
-	 * 
+	 *
+	 * @param zoomLevel the zoomlevel to compute the x/y coordinates for
 	 * @return the x/y coordinates of the map pivot point if set or null otherwise.
 	 */
 
-	public synchronized Point getPivotXY() {
+	public synchronized Point getPivotXY(byte zoomLevel) {
 		if (this.pivot != null) {
-			return MercatorProjection.getPixel(this.pivot, getZoomLevel(), displayModel.getTileSize());
+			return MercatorProjection.getPixel(this.pivot, zoomLevel, displayModel.getTileSize());
 		}
 		return null;
 	}

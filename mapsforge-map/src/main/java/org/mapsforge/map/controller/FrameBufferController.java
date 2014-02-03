@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
 package org.mapsforge.map.controller;
 
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
@@ -99,39 +101,41 @@ public final class FrameBufferController implements Observer {
 				MapPosition mapPositionFrameBuffer = this.model.frameBufferModel.getMapPosition();
 				if (mapPositionFrameBuffer != null) {
 					double scaleFactor = this.model.mapViewPosition.getScaleFactor();
-					Point pivotXY = this.model.mapViewPosition.getPivotXY();
-					adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor, pivotXY);
+					LatLong pivot = this.model.mapViewPosition.getPivot();
+					adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor, pivot);
 				}
 			}
 		}
 	}
 
 	private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension,
-			double scaleFactor, Point pivotXY) {
-		MapPosition mapPosition = this.model.mapViewPosition.getMapPosition();
+			double scaleFactor, LatLong pivot) {
 
-		Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapPosition.zoomLevel,
+		MapPosition mapViewPosition = this.model.mapViewPosition.getMapPosition();
+
+		Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapPositionFrameBuffer.zoomLevel,
 				model.displayModel.getTileSize());
-		Point pointMapPosition = MercatorProjection.getPixel(mapPosition.latLong, mapPosition.zoomLevel,
+		Point pointMapPosition = MercatorProjection.getPixel(mapViewPosition.latLong, mapPositionFrameBuffer.zoomLevel,
 				model.displayModel.getTileSize());
+
 		double diffX = pointFrameBuffer.x - pointMapPosition.x;
 		double diffY = pointFrameBuffer.y - pointMapPosition.y;
-
 		// we need to compute the pivot distance from the map center
 		// as we will need to find the pivot point for the
 		// frame buffer (which generally has not the same size as the
 		// map view).
 		double pivotDistanceX = 0d;
 		double pivotDistanceY = 0d;
-		if (pivotXY != null) {
-			pivotDistanceX = pivotXY.x - pointMapPosition.x;
-			pivotDistanceY = pivotXY.y - pointMapPosition.y;
+		if (pivot != null) {
+			Point pivotXY = MercatorProjection.getPixel(pivot, mapPositionFrameBuffer.zoomLevel, this.model.displayModel.getTileSize());
+			pivotDistanceX = pivotXY.x - pointFrameBuffer.x;
+			pivotDistanceY = pivotXY.y - pointFrameBuffer.y;
 		}
 
 		float currentScaleFactor = (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
 
-		this.frameBuffer.adjustMatrix(diffX, diffY, currentScaleFactor, mapViewDimension, pivotDistanceX,
-				pivotDistanceY);
+		this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension, (float) pivotDistanceX,
+				(float) pivotDistanceY);
 	}
 
 	private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {

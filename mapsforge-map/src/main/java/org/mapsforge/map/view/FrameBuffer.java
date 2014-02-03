@@ -43,14 +43,18 @@ public class FrameBuffer {
 		this.matrix = graphicFactory.createMatrix();
 	}
 
-	public synchronized void adjustMatrix(double diffX, double diffY, float scaleFactor, Dimension mapViewDimension,
-			double pivotDistanceX, double pivotDistanceY) {
+	public synchronized void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
+			float pivotDistanceX, float pivotDistanceY) {
 		if (this.dimension == null) {
 			return;
 		}
 		this.matrix.reset();
 		centerFrameBufferToMapView(mapViewDimension);
-		this.matrix.translate((float) (diffX + pivotDistanceX), (float) (diffY + pivotDistanceY));
+		if (pivotDistanceX == 0 && pivotDistanceY == 0) {
+			// only translate the matrix if we are not zooming around a pivot,
+			// the translation happens only once the zoom is finished.
+			this.matrix.translate(diffX, diffY);
+		}
 
 		scale(scaleFactor, pivotDistanceX, pivotDistanceY);
 	}
@@ -123,7 +127,7 @@ public class FrameBuffer {
 		}
 	}
 
-	private void scale(float scaleFactor, double pivotDistanceX, double pivotDistanceY) {
+	private void scale(float scaleFactor, float pivotDistanceX, float pivotDistanceY) {
 		if (scaleFactor != 1) {
 			final Point center = this.dimension.getCenter();
 			float pivotX = (float) (pivotDistanceX + center.x);

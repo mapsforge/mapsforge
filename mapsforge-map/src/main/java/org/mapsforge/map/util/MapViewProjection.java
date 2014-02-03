@@ -40,7 +40,9 @@ public class MapViewProjection {
 			return null;
 		}
 
-		MapPosition mapPosition = this.mapView.getModel().mapViewPosition.getMapPosition();
+		// this uses the framebuffer position, the mapview position can be out of sync with
+		// what the user sees on the screen if an animation is in progress
+		MapPosition mapPosition = this.mapView.getModel().frameBufferModel.getMapPosition();
 
 		// calculate the pixel coordinates of the top left corner
 		LatLong latLong = mapPosition.latLong;
