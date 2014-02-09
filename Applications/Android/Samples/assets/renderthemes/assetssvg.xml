@@ -918,7 +918,7 @@
 			</rule>
 			<rule e="node" k="natural" v="peak" zoom-min="12">
 				<symbol src="assets:symbols/peak.svg" />
-				<caption k="ele" dy="20" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
+				<caption k="ele" dy="-15" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
 			<rule e="node" k="natural" v="tree" zoom-min="16">
 				<symbol src="assets:symbols/tree.svg" />
