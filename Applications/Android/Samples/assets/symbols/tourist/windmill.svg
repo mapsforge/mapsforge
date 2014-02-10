@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata10"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z" id="path1329" fill="#734A08" stroke="#eeeeee" stroke-width="3.408"/>
+ </g>
+ <path d="M 184.78155,542.01606 L 240.33221,215.29258 L 292.63713,183.97397 L 343.80161,216.12787 C 343.80161,216.12787 390.64574,547.32866 385.19959,544.67234 C 379.75344,542.01606 185.87079,546.00051 184.78155,542.01606 z" id="path3457" sodipodi:nodetypes="ccccsc" opacity=".5" fill="#ffffff" fill-rule="evenodd" stroke-width="14.07"/>
+ <path d="M 78.35819,96.82824 L 139.07109,40.013241 L 286.19495,240.60115 L 267.45324,258.73256 L 78.35819,96.82824 z" id="path4180" sodipodi:nodetypes="ccccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="24.6"/>
+ <path id="path4188" d="M 506.19495,96.82824 L 445.48205,40.013241 L 298.35819,240.60115 L 317.0999,258.73256 L 506.19495,96.82824 z" sodipodi:nodetypes="ccccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="24.6"/>
+ <path id="path4194" d="M 506.19495,421.91756 L 445.48205,478.73256 L 298.35819,278.14465 L 317.0999,260.01324 L 506.19495,421.91756 z" sodipodi:nodetypes="ccccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="24.6"/>
+ <path d="M 78.35819,421.91756 L 139.07109,478.73256 L 286.19495,278.14465 L 267.45324,260.01324 L 78.35819,421.91756 z" id="path4196" sodipodi:nodetypes="ccccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="24.6"/>
+</svg>

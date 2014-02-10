@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata10"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z" id="path1329" fill="#8E7409" stroke="#eeeeee" stroke-width="3.408"/>
+ </g>
+ <path id="path3758" d="m 317.84839,264.64087 -68.50394,63.41286" inkscape:connector-curvature="0" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="12.53"/>
+ <path d="m 267.37692,264.64087 68.50394,63.41286" id="path3768" inkscape:connector-curvature="0" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="12.53"/>
+ <path d="m 242.86852,327.87329 147.2311,119.26189" id="path3770" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="15.422"/>
+ <path id="path3772" d="M 342.01303,327.87329 194.78193,447.13518" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="15.422"/>
+ <path id="path3804" d="M 227.11443,94.807 C 132.92601,175.41717 35.59798,93.39278 35.59798,93.39278" inkscape:connector-curvature="0" opacity=".5" fill="none" stroke="#ffffff" stroke-width="17.205"/>
+ <path id="path3816" d="M 227.11443,166.807 C 132.92601,247.41717 35.59798,165.39278 35.59798,165.39278" inkscape:connector-curvature="0" opacity=".5" fill="none" stroke="#ffffff" stroke-width="17.205"/>
+ <path d="M 279.32799,216.33896 176.7767,487.87511" id="path6338" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="25"/>
+ <path inkscape:connector-curvature="0" id="path6340" d="M 304.7767,216.33896 407.32799,487.87511" sodipodi:nodetypes="cc" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="25"/>
+ <path sodipodi:nodetypes="cc" d="M 302.7767,214.33896 303.40411,68.68211" id="path6342" inkscape:connector-curvature="0" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="25"/>
+ <path inkscape:connector-curvature="0" id="path6344" d="M 280.7767,214.33896 281.40411,68.68211" sodipodi:nodetypes="cc" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="25"/>
+ <path inkscape:connector-curvature="0" id="path6346" d="m 220.26198,95.19683 145.65685,0.62741" sodipodi:nodetypes="cc" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="25"/>
+ <path sodipodi:nodetypes="cc" d="m 220.26198,163.19683 145.65685,0.62741" id="path6348" inkscape:connector-curvature="0" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="25"/>
+ <path inkscape:connector-curvature="0" d="m 355.59798,94.807 c 94.18842,80.61017 191.51645,-1.41422 191.51645,-1.41422" id="path6358" opacity=".5" fill="none" stroke="#ffffff" stroke-width="17.205"/>
+ <path inkscape:connector-curvature="0" d="m 355.59798,166.807 c 94.18842,80.61017 191.51645,-1.41422 191.51645,-1.41422" id="path6360" opacity=".5" fill="none" stroke="#ffffff" stroke-width="17.205"/>
+</svg>

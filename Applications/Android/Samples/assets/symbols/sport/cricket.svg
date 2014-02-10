@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <defs id="defs4">
+  <symbol viewBox="244.5 110 489 219.9" id="symbol-university">
+   <path id="path4460" d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z"/>
+   <path id="path4462" d="M94,176l-21,39" stroke-width="20" stroke="#000000" fill="none"/>
+   <path id="path4464" d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z"/>
+   <path id="path4466" d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24" stroke-width="20" stroke="#000000" ill="none"/>
+  </symbol>
+ </defs>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z " id="path1329" fill="#39AC39" stroke="#eee" stroke-width="3.408"/>
+ </g>
+ <path d="M 358.48228,147.56154 C 358.48198,137.21904 354.96758,128.50362 347.93878,121.41523 C 340.90938,114.32752 332.52738,110.78348 322.79228,110.78317 C 313.06808,110.78348 304.77948,114.32752 297.92668,121.41523 C 291.07338,128.50362 287.64688,137.21904 287.64688,147.56154 C 287.64688,157.89299 291.07338,166.60258 297.92668,173.69033 C 304.77948,180.77865 313.06808,184.32269 322.79228,184.32244 C 332.52738,184.32269 340.90938,180.77865 347.93878,173.69033 C 354.96758,166.60258 358.48198,157.89299 358.48228,147.56154 L 358.48228,147.56154 z" id="flowRoot2383" sodipodi:nodetypes="cssssssscc" fill="#ffffff"/>
+ <path d="M 393.88551,523.2209 L 393.88551,341.36634" id="path2392" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="52.719"/>
+ <path id="path3239" d="M 388.61032,350.66661 L 342.02648,226.89582" sodipodi:nodetypes="cc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="67.1"/>
+ <path id="path3241" d="M 246.62988,197.44284 L 283.46078,253.6139 L 351.03728,223.89244" sodipodi:nodetypes="ccc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="43.13"/>
+ <path d="M 247.50998,198.54508 L 232.22198,167.0923 L 239.74868,156.50255 L 172.30258,32.005971 L 161.07478,38.6348 L 155.28328,42.054137 L 144.03028,48.697999 L 207.94548,175.27914 L 220.35928,174.09607 L 237.42548,204.49892 L 243.53898,203.5386 L 247.50998,198.54508 z" id="path3243" sodipodi:nodetypes="cccccccccccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-width="4.313"/>
+ <path d="M 244.55028,358.58202 L 219.88358,358.58202" id="path3250" sodipodi:nodetypes="cc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+ <path d="M 217.72488,548.24339 L 217.88358,382.58202" id="path3256" sodipodi:nodetypes="cc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+ <path sodipodi:nodetypes="cc" id="path3262" d="M 257.72488,548.24339 L 257.88358,382.58202" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+ <path d="M 297.72488,548.24339 L 297.88358,382.58202" id="path3264" sodipodi:nodetypes="cc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+ <path sodipodi:nodetypes="cc" id="path3266" d="M 296.55028,358.58202 L 271.88358,358.58202" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+</svg>

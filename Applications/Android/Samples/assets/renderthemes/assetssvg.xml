@@ -138,23 +138,23 @@
 					<area src="assets:patterns/access-private.png" />
 				</rule>
 				<rule e="way" k="*" v="*" zoom-min="17">
-					<symbol src="assets:symbols/parking.svg" />
+					<symbol src="assets:symbols/transport/parking.svg" />
 				</rule>
 			</rule>
 			<rule e="way" k="amenity" v="fountain" closed="yes">
 				<area fill="#b5d6f1" stroke="#000080" stroke-width="0.15" />
 				<rule e="way" k="*" v="*" zoom-min="17">
-					<symbol src="assets:symbols/fountain.svg" />
+					<symbol src="assets:symbols/amenity/fountain.svg" />
 				</rule>
 			</rule>
 			<rule e="way" k="amenity" v="hospital" zoom-min="15">
-				<symbol src="assets:symbols/hospital.svg" />
+				<symbol src="assets:symbols/health/hospital.svg" />
 			</rule>
 			<rule e="way" k="amenity" v="theatre" zoom-min="17">
-				<symbol src="assets:symbols/theatre.svg" />
+				<symbol src="assets:symbols/tourist/theatre.svg" />
 			</rule>
 			<rule e="way" k="amenity" v="toilets" zoom-min="17">
-				<symbol src="assets:symbols/toilets.svg" />
+				<symbol src="assets:symbols/amenity/toilets.svg" />
 			</rule>
 
 			<rule e="way" k="*" v="*" zoom-min="17">
@@ -203,7 +203,7 @@
 			<rule e="way" k="leisure" v="playground|playing_fields|pitch|dog_park">
 				<area fill="#c7f1a3" stroke="#6fc18e" stroke-width="0.2" />
 				<rule e="way" k="*" v="playground" zoom-min="17">
-					<symbol src="assets:symbols/playground.svg" />
+					<symbol src="assets:symbols/amenity/playground.svg" />
 				</rule>
 			</rule>
 			<rule e="way" k="leisure" v="nature_reserve">
@@ -287,15 +287,24 @@
 		<!-- sport -->
 		<rule e="way" k="sport" v="*">
 			<rule e="way" k="sport" v="soccer" zoom-min="17">
-				<symbol src="assets:symbols/soccer-borderless.svg" />
+				<symbol src="assets:symbols/sport/soccer.svg" />
 			</rule>
-			<rule e="way" k="sport" v="swimming|canoe|diving|scuba_diving">
+			<rule e="way" k="sport" v="canoe">
 				<area fill="#b5d6f1" stroke="#6060ff" stroke-width="0.2" />
+				<symbol src="assets:symbols/sport/canoe.svg" />
+			</rule>
+			<rule e="way" k="sport" v="diving|scuba_diving">
+				<area fill="#b5d6f1" stroke="#6060ff" stroke-width="0.2" />
+				<symbol src="assets:symbols/sport/diving.svg" />
+			</rule>
+			<rule e="way" k="sport" v="swimming">
+				<area fill="#b5d6f1" stroke="#6060ff" stroke-width="0.2" />
+				<symbol src="assets:symbols/sport/swimming_indoor.svg" />
 			</rule>
 			<rule e="way" k="sport" v="tennis">
 				<area fill="#d18a6a" stroke="#b36c4c" stroke-width="0.2" />
 				<rule e="way" k="*" v="*" zoom-min="17">
-					<symbol src="assets:symbols/tennis.svg" />
+					<symbol src="assets:symbols/sport/tennis.svg" />
 				</rule>
 			</rule>
 		</rule>
@@ -305,9 +314,19 @@
 		<rule e="way" k="tourism" v="*">
 			<rule e="way" k="tourism" v="attraction">
 				<area fill="#f2caea" />
+				<symbol src="assets:symbols/tourist/attraction.svg" />
 			</rule>
-			<rule e="way" k="tourism" v="zoo|picnic_site|caravan_site|camp_site">
+			<rule e="way" k="tourism" v="caravan_site|camp_site">
 				<area fill="#c7f1a3" stroke="#6fc18e" stroke-width="0.2" />
+				<symbol src="assets:symbols/accommodation/camping.svg" />
+			</rule>
+			<rule e="way" k="tourism" v="picnic_site">
+				<area fill="#c7f1a3" stroke="#6fc18e" stroke-width="0.2" />
+				<symbol src="assets:symbols/tourist/picnic.svg" />
+			</rule>
+			<rule e="way" k="tourism" v="zoo">
+				<area fill="#c7f1a3" stroke="#6fc18e" stroke-width="0.2" />
+				<symbol src="assets:symbols/tourist/zoo.svg" />
 			</rule>
 
 			<rule e="way" k="*" v="*" zoom-min="16">
@@ -373,6 +392,7 @@
 			</rule>
 			<rule e="way" k="aeroway" v="terminal">
 				<area fill="#f3d6b6" stroke="#6a5a8e" stroke-width="0.2" />
+				<symbol src="assets:symbols/transport/airport_terminal.svg" />
 			</rule>
 			<rule e="way" k="aeroway" v="runway">
 				<line stroke="#000000" stroke-width="6.3" stroke-linecap="square" />
@@ -751,10 +771,10 @@
 		<!-- aeroway -->
 		<rule e="node" k="aeroway" v="*">
 			<rule e="node" k="aeroway" v="helipad" zoom-min="17">
-				<symbol src="assets:symbols/helipad.png" />
+				<symbol src="assets:symbols/transport/helicopter_pad.svg" />
 			</rule>
 			<rule e="node" k="aeroway" v="aerodrome|airport" zoom-max="13">
-				<symbol src="assets:symbols/airport.svg" />
+				<symbol src="assets:symbols/transport/airport.svg" />
 			</rule>
 		</rule>
 
@@ -762,99 +782,114 @@
 		<!-- amenity -->
 		<rule e="node" k="amenity" v="*">
 			<rule e="node" k="amenity" v="atm" zoom-min="17">
-				<symbol src="assets:symbols/atm.svg" />
+				<symbol src="assets:symbols/money/atm.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="bank" zoom-min="17">
-				<symbol src="assets:symbols/bank.svg" />
+				<symbol src="assets:symbols/money/bank.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="bench" zoom-min="17">
-				<symbol src="assets:symbols/bench.svg" />
+				<symbol src="assets:symbols/amenity/bench.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="bicycle_rental" zoom-min="17">
-				<symbol src="assets:symbols/bicycle_rental.svg" />
+				<symbol src="assets:symbols/shopping/bicycle.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="bus_station" zoom-min="17">
-				<symbol src="assets:symbols/bus_sta.svg" />
+				<symbol src="assets:symbols/transport/bus_station.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="cafe" zoom-min="17">
-				<symbol src="assets:symbols/cafe.svg" />
+				<symbol src="assets:symbols/food/cafe.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="cinema" zoom-min="17">
-				<symbol src="assets:symbols/cinema.svg" />
+				<symbol src="assets:symbols/tourist/cinema.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="drinking_water" zoom-min="17">
-				<symbol src="assets:symbols/drinking_water.svg" />
+				<symbol src="assets:symbols/food/drinkingtap.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="fast_food" zoom-min="17">
-				<symbol src="assets:symbols/fastfood.svg" />
+				<symbol src="assets:symbols/food/fastfood.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="fire_station" zoom-min="17">
-				<symbol src="assets:symbols/firebrigade.svg" />
+				<symbol src="assets:symbols/amenity/firestation.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="fountain" zoom-min="17">
-				<symbol src="assets:symbols/fountain.svg" />
+				<symbol src="assets:symbols/amenity/fountain.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="fuel" zoom-min="17">
-				<symbol src="assets:symbols/petrolStation.svg" />
+				<symbol src="assets:symbols/transport/fuel.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="hospital" zoom-min="15">
-				<symbol src="assets:symbols/hospital.svg" />
+				<symbol src="assets:symbols/health/hospital.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="kindergarten" zoom-min="17">
-				<symbol src="assets:symbols/kindergarten.svg" />
+				<symbol src="assets:symbols/education/nursery.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="library" zoom-min="17">
-				<symbol src="assets:symbols/library.svg" />
+				<symbol src="assets:symbols/amenity/library.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="parking" zoom-min="17">
-				<symbol src="assets:symbols/parking.svg" />
+				<symbol src="assets:symbols/transport/parking.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="pharmacy" zoom-min="17">
-				<symbol src="assets:symbols/pharmacy.svg" />
+				<symbol src="assets:symbols/health/pharmacy.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="place_of_worship" zoom-min="17">
 				<rule e="node" k="denomination|religion" v="jewish">
-					<symbol src="assets:symbols/synagogue.svg" />
+					<symbol src="assets:symbols/place_of_worship/jewish.svg" />
 				</rule>
 				<rule e="node" k="denomination|religion" v="muslim|moslem">
-					<symbol src="assets:symbols/mosque.svg" />
+					<symbol src="assets:symbols/place_of_worship/islamic.svg" />
 				</rule>
 				<rule e="node" k="denomination|religion" v="christian">
-					<symbol src="assets:symbols/church.svg" />
+					<symbol src="assets:symbols/place_of_worship/christian.svg" />
+				</rule>
+				<rule e="node" k="denomination|religion" v="hindu">
+					<symbol src="assets:symbols/place_of_worship/hindu.svg" />
+				</rule>
+				<rule e="node" k="denomination|religion" v="sikh">
+					<symbol src="assets:symbols/place_of_worship/sikh.svg" />
+				</rule>
+				<rule e="node" k="denomination|religion" v="jain">
+					<symbol src="assets:symbols/place_of_worship/jain.svg" />
+				</rule>
+				<rule e="node" k="denomination|religion" v="bahai">
+					<symbol src="assets:symbols/place_of_worship/bahai.svg" />
+				</rule>
+				<rule e="node" k="denomination|religion" v="buddhist">
+					<symbol src="assets:symbols/place_of_worship/buddhist.svg" />
 				</rule>
 			</rule>
 			<rule e="node" k="amenity" v="post_box" zoom-min="17">
-				<symbol src="assets:symbols/postbox.svg" />
+				<symbol src="assets:symbols/amenity/post_box.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="post_office" zoom-min="17">
-				<symbol src="assets:symbols/postoffice.svg" />
+				<symbol src="assets:symbols/amenity/post_office.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="pub|bar" zoom-min="17">
-				<symbol src="assets:symbols/pub.svg" />
+				<symbol src="assets:symbols/food/bar.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="recycling" zoom-min="17">
-				<symbol src="assets:symbols/recycling.svg" />
+				<symbol src="assets:symbols/amenity/recycling.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="restaurant" zoom-min="17">
-				<symbol src="assets:symbols/restaurant.svg" />
+				<symbol src="assets:symbols/food/restaurant.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="school" zoom-min="17">
-				<symbol src="assets:symbols/school.svg" />
+				<symbol src="assets:symbols/education/school.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="shelter" zoom-min="17">
-				<symbol src="assets:symbols/shelter.svg" />
+				<symbol src="assets:symbols/accommodation/shelter.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="telephone" zoom-min="17">
-				<symbol src="assets:symbols/telephone.svg" />
+				<symbol src="assets:symbols/amenity/telephone.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="theatre" zoom-min="17">
-				<symbol src="assets:symbols/theatre.svg" />
+				<symbol src="assets:symbols/tourist/theatre.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="toilets" zoom-min="17">
-				<symbol src="assets:symbols/toilets.svg" />
+				<symbol src="assets:symbols/amenity/toilets.svg" />
 			</rule>
 			<rule e="node" k="amenity" v="university|college" zoom-min="17">
-				<symbol src="assets:symbols/university.svg" />
+				<symbol src="assets:symbols/education/university.svg" />
 			</rule>
 
 			<rule e="node" k="*" v="*" zoom-min="17">
@@ -872,10 +907,10 @@
 		<!-- highway -->
 		<rule e="node" k="highway" v="*">
 			<rule e="node" k="highway" v="bus_stop" zoom-min="16">
-				<symbol src="assets:symbols/bus.svg" />
+				<symbol src="assets:symbols/transport/bus_stop.svg" />
 			</rule>
 			<rule e="node" k="highway" v="traffic_signals" zoom-min="17">
-				<symbol src="assets:symbols/traffic_signal.svg" />
+				<symbol src="assets:symbols/transport/traffic_lights.svg" />
 			</rule>
 			<rule e="node" k="highway" v="turning_circle">
 				<circle radius="1.4" scale-radius="true" fill="#ffffff" />
@@ -901,23 +936,23 @@
 
 		<!-- leisure -->
 		<rule e="node" k="leisure" v="playground" zoom-min="17">
-			<symbol src="assets:symbols/playground.svg" />
+			<symbol src="assets:symbols/sport/playground.svg" />
 		</rule>
 
 
 		<!-- man_made -->
 		<rule e="node" k="man_made" v="windmill" zoom-min="17">
-			<symbol src="assets:symbols/windmill.svg" />
+			<symbol src="assets:symbols/tourist/windmill.svg" />
 		</rule>
 
 
 		<!-- natural -->
 		<rule e="node" k="natural" v="*">
 			<rule e="node" k="natural" v="cave_entrance" zoom-min="15">
-				<symbol src="assets:symbols/cave_entrance.svg" />
+				<symbol src="assets:symbols/poi/cave.svg" />
 			</rule>
 			<rule e="node" k="natural" v="peak" zoom-min="12">
-				<symbol src="assets:symbols/peak.svg" />
+				<symbol src="assets:symbols/poi/peak.svg" />
 				<caption k="ele" dy="-15" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
 			<rule e="node" k="natural" v="tree" zoom-min="16">
@@ -975,13 +1010,13 @@
 		<!-- shop -->
 		<rule e="node" k="shop" v="*">
 			<rule e="node" k="shop" v="bakery" zoom-min="17">
-				<symbol src="assets:symbols/bakery.svg" />
+				<symbol src="assets:symbols/shopping/bakery.svg" />
 			</rule>
 			<rule e="node" k="shop" v="florist" zoom-min="17">
-				<symbol src="assets:symbols/florist.svg" />
+				<symbol src="assets:symbols/shopping/florist.svg" />
 			</rule>
 			<rule e="node" k="shop" v="supermarket|organic" zoom-min="17">
-				<symbol src="assets:symbols/supermarket.svg" />
+				<symbol src="assets:symbols/shopping/supermarket.svg" />
 			</rule>
 
 			<rule e="node" k="*" v="*" zoom-min="17">
@@ -993,22 +1028,22 @@
 		<!-- tourism -->
 		<rule e="node" k="tourism" v="*">
 			<rule e="node" k="tourism" v="alpine_hut" zoom-min="16">
-				<symbol src="assets:symbols/alpine_hut.svg" />
+				<symbol src="assets:symbols/accommodation/alpinehut.svg" />
 			</rule>
 			<rule e="node" k="tourism" v="camp_site" zoom-min="17">
-				<symbol src="assets:symbols/campSite.svg" />
+				<symbol src="assets:symbols/accommodation/camping.svg" />
 			</rule>
 			<rule e="node" k="tourism" v="hostel" zoom-min="17">
-				<symbol src="assets:symbols/hostel.svg" />
+				<symbol src="assets:symbols/accommodation/hostel.svg" />
 			</rule>
 			<rule e="node" k="tourism" v="hotel" zoom-min="17">
-				<symbol src="assets:symbols/hotel.svg" />
+				<symbol src="assets:symbols/accommodation/hotel.svg" />
 			</rule>
 			<rule e="node" k="tourism" v="information" zoom-min="17">
-				<symbol src="assets:symbols/information.svg" />
+				<symbol src="assets:symbols/tourist/information.svg" />
 			</rule>
 			<rule e="node" k="tourism" v="viewpoint" zoom-min="15">
-				<symbol src="assets:symbols/viewpoint.svg" />
+				<symbol src="assets:symbols/tourist/view_point.svg" />
 			</rule>
 
 			<rule e="node" k="*" v="*" zoom-min="17">
