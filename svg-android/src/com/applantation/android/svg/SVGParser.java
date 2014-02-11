@@ -37,23 +37,20 @@ import android.graphics.Typeface;
 import android.util.Base64;
 import android.util.Log;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import org.kxml2.io.*;
+import org.xmlpull.v1.*;
+
 
 /*
 
@@ -99,7 +96,7 @@ public class SVGParser {
 	 * @throws SVGParseException if there is an error while parsing.
 	 */
 	public static SVG getSVGFromInputStream(InputStream svgData) throws SVGParseException {
-		return SVGParser.parse(svgData, 0, 0, false, false, DPI);
+		return SVGParser.parse(svgData, 0, 0, false, true, DPI);
 	}
 
 	/**
@@ -315,29 +312,30 @@ public class SVGParser {
 		SVGHandler svgHandler = null;
 //		long start = System.currentTimeMillis();
 		try {
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp = spf.newSAXParser();
-			XMLReader xr = sp.getXMLReader();
+
 			final Picture picture = new Picture();
-			svgHandler = new SVGHandler(picture);
+
+			XmlPullParser xr = new KXmlParser();
+
+			svgHandler = new SVGHandler(xr, picture);
 			svgHandler.setColorSwap(searchColor, replaceColor);
 			svgHandler.setWhiteMode(whiteMode);
 			svgHandler.setDpi(dpi);
+
 			if (ignoreDefs) {
-			    xr.setContentHandler(svgHandler);
-  			    xr.parse(new InputSource(in));
+			    xr.setInput(new InputStreamReader(in));
+			    svgHandler.processSvg();	
 			} else {
-  			    CopyInputStream cin = new CopyInputStream(in);
+ 			    CopyInputStream cin = new CopyInputStream(in);
 
-			    IDHandler idHandler = new IDHandler();
-			    xr.setContentHandler(idHandler);
-
-			    ByteArrayInputStream svgData = cin.getCopy();
-			    xr.parse(new InputSource(cin.getCopy()));
+			    XmlPullParser ids = new KXmlParser(); 
+			    ids.setInput(new InputStreamReader(cin.getCopy()));
+			    IDHandler idHandler = new IDHandler(ids);
+			    idHandler.processIds();
 			    svgHandler.idXml = idHandler.idXml;
 
-			    xr.setContentHandler(svgHandler);
-   			    xr.parse(new InputSource(cin.getCopy()));
+			    xr.setInput(new InputStreamReader(cin.getCopy()));
+			    svgHandler.processSvg();	
 			}
 //			Log.i(TAG, "Parsing complete in " + (System.currentTimeMillis() - start) + " millis.");
 			SVG result = new SVG(picture, svgHandler.bounds);
@@ -844,21 +842,21 @@ public class SVGParser {
 		path.addArc(oval, (float) angleStart, (float) angleExtent);
 	}
 
-	private static NumberParse getNumberParseAttr(String name, Attributes attributes) {
-		int n = attributes.getLength();
+	private static NumberParse getNumberParseAttr(String name, XmlPullParser attributes) {
+		int n = attributes.getAttributeCount();
 		for (int i = 0; i < n; i++) {
-			if (attributes.getLocalName(i).equals(name)) {
-				return parseNumbers(attributes.getValue(i));
+			if (attributes.getAttributeName(i).equals(name)) {
+				return parseNumbers(attributes.getAttributeValue(i));
 			}
 		}
 		return null;
 	}
 
-	private static String getStringAttr(String name, Attributes attributes) {
-		int n = attributes.getLength();
+	private static String getStringAttr(String name, XmlPullParser attributes) {
+		int n = attributes.getAttributeCount();
 		for (int i = 0; i < n; i++) {
-			if (attributes.getLocalName(i).equals(name)) {
-				return attributes.getValue(i);
+			if (attributes.getAttributeName(i).equals(name)) {
+				return attributes.getAttributeValue(i);
 			}
 		}
 		return null;
@@ -989,9 +987,9 @@ public class SVGParser {
 
 	private static class Properties {
 		StyleSet styles = null;
-		Attributes atts;
+		XmlPullParser atts;
 
-		private Properties(Attributes atts) {
+		private Properties(XmlPullParser atts) {
 			this.atts = atts;
 			String styleAttr = getStringAttr("style", atts);
 			if (styleAttr != null) {
@@ -1061,7 +1059,33 @@ public class SVGParser {
 		}
 	}
 
-	private static class IDHandler extends DefaultHandler {
+	private static class IDHandler {
+		private XmlPullParser atts;
+
+		private IDHandler(XmlPullParser atts) {
+			this.atts = atts;
+		}
+
+		public void processIds() throws XmlPullParserException, IOException {
+			int eventType = atts.getEventType();
+			do {
+				if(eventType == XmlPullParser.START_DOCUMENT) {
+					// no op
+				} else if(eventType == XmlPullParser.END_DOCUMENT) {
+					// no op
+				} else if(eventType == XmlPullParser.START_TAG) {
+					startElement();
+				} else if(eventType == XmlPullParser.END_TAG) {
+					endElement();
+				} else if(eventType == XmlPullParser.TEXT) {
+					// not implemented
+				}
+				eventType = atts.next();
+			} while (eventType != XmlPullParser.END_DOCUMENT);
+		}
+
+
+
 		HashMap<String, String> idXml = new HashMap<String, String>();
 		class IdRecording {
 			String id;
@@ -1080,22 +1104,22 @@ public class SVGParser {
          * @param namespaceURI  (unused)
 		 * @param qName  (unused)
          */
-		private void appendElementString (StringBuilder sb, String namespaceURI, String localName, String qName, Attributes atts) {
+		private void appendElementString (StringBuilder sb, String namespaceURI, String localName, String qName, XmlPullParser atts) {
 			sb.append("<");
 			sb.append(localName);
-			for (int i = 0; i < atts.getLength(); i++) {
+			for (int i = 0; i < atts.getAttributeCount(); i++) {
 				sb.append(" ");
-				sb.append(atts.getQName(i));
+				sb.append(atts.getAttributeName(i));
 				sb.append("='");
-				sb.append(escape(atts.getValue(i)));
+				sb.append(escape(atts.getAttributeValue(i)));
 				sb.append("'");
 			}
 			sb.append(">");
 		}
 
-		@Override
-		public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
-			String id = atts.getValue("id");
+		public void startElement() {
+		       String localName = atts.getName();
+			String id = getStringAttr("id", atts);
 			if (id != null) {
 				IdRecording ir = new IdRecording(id);
 				idRecordingStack.push(ir);
@@ -1103,12 +1127,12 @@ public class SVGParser {
 			if (idRecordingStack.size() > 0){
 				IdRecording ir = idRecordingStack.lastElement();
 				ir.level++;
-				appendElementString(ir.sb, namespaceURI, localName, qName, atts);
+				appendElementString(ir.sb, atts.getNamespace(), localName, atts.getName(), atts);
 			}
 		}
 
-	@Override
-    public void endElement(String namespaceURI, String localName, String qName) {
+    public void endElement() {
+    	   String localName = atts.getName();
 			if (idRecordingStack.size() > 0){
 				IdRecording ir = idRecordingStack.lastElement();
 				ir.sb.append("</");
@@ -1123,15 +1147,18 @@ public class SVGParser {
 					if (idRecordingStack.size() > 0){
 						idRecordingStack.lastElement().sb.append(xml);
 					}
+					Log.w(TAG, xml);
 				}
 			}
 		}
 	}
 
-	private static class SVGHandler extends DefaultHandler {
+	private static class SVGHandler {
 		//public StringBuilder parsed = new StringBuilder();
 
 		HashMap<String, String> idXml = new HashMap<String, String>();
+
+		XmlPullParser atts;
 
 		Picture picture;
 		Canvas canvas;
@@ -1174,8 +1201,9 @@ public class SVGParser {
 
 		private boolean inDefsElement = false;
 
-		private SVGHandler(Picture picture) {
+		private SVGHandler(XmlPullParser atts, Picture picture) {
 			this.picture = picture;
+			this.atts = atts;
 			strokePaint = new Paint();
 			strokePaint.setAntiAlias(true);
 			strokePaint.setStyle(Paint.Style.STROKE);
@@ -1188,6 +1216,25 @@ public class SVGParser {
         this.dpi = dpi;
     }
 
+		public void processSvg() throws XmlPullParserException, IOException {
+			int eventType = atts.getEventType();
+			do {
+				if(eventType == XmlPullParser.START_DOCUMENT) {
+					// no op
+				} else if(eventType == XmlPullParser.END_DOCUMENT) {
+					// no op
+				} else if(eventType == XmlPullParser.START_TAG) {
+					startElement();
+				} else if(eventType == XmlPullParser.END_TAG) {
+					endElement();
+				} else if(eventType == XmlPullParser.TEXT) {
+					// not implemented
+				}
+				eventType = atts.next();
+			} while (eventType != XmlPullParser.END_DOCUMENT);
+		}
+
+
     public void setColorSwap(Integer searchColor, Integer replaceColor) {
 			this.searchColor = searchColor;
 			this.replaceColor = replaceColor;
@@ -1197,22 +1244,6 @@ public class SVGParser {
 			this.whiteMode = whiteMode;
 		}
 
-		@Override
-		public void startDocument() {
-			// Set up prior to parsing a doc
-		}
-
-		@Override
-		public void endDocument() {
-			// Clean up after parsing a doc
-			/*
-			String s = parsed.toString();
-			if (s.endsWith("</svg>")) {
-				s = s + "";
-				Log.d(TAG, s);
-			}
-			*/
-		}
 
 		private boolean doFill(Properties atts, HashMap<String, Shader> gradients) {
 			if ("none".equals(atts.getString("display"))) {
@@ -1268,11 +1299,11 @@ public class SVGParser {
 		}
 
 		// XXX not done yet
-		private boolean doText(Attributes atts, Paint paint) {
-			if ("none".equals(atts.getValue("display"))) {
+		private boolean doText(XmlPullParser atts, Paint paint) {
+			if ("none".equals(getStringAttr("display", atts))) {
 				return false;
 			}
-			if (atts.getValue("font-size") != null) {
+			if (getStringAttr("font-size", atts) != null) {
 				paint.setTextSize(getFloatAttr("font-size", atts, 10f));
 			}
 			Typeface typeface = setTypeFace(atts);
@@ -1354,7 +1385,7 @@ public class SVGParser {
 			}
 		}
 
-		private Gradient doGradient(boolean isLinear, Attributes atts) {
+		private Gradient doGradient(boolean isLinear, XmlPullParser atts) {
 			Gradient gradient = new Gradient();
 			gradient.id = getStringAttr("id", atts);
 			gradient.isLinear = isLinear;
@@ -1490,7 +1521,7 @@ public class SVGParser {
 		private final static Matrix IDENTITY_MATRIX = new Matrix();
 
 		// XXX could be more selective using save(flags)
-		private void pushTransform(Attributes atts) {
+		private void pushTransform(XmlPullParser atts) {
 			final String transform = getStringAttr("transform", atts);
 			final Matrix matrix = transform == null ? IDENTITY_MATRIX : parseTransform(transform);
 			pushed++;
@@ -1523,9 +1554,10 @@ public class SVGParser {
 	      }
 		}
 
-		@Override
-		public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
+		public void startElement() {
 			//appendElementString(parsed, namespaceURI, localName, qName, atts);
+
+		String localName = atts.getName();
 
 			// Log.d(TAG, localName + showAttributes(atts));
 			// Reset paint opacity
@@ -1600,10 +1632,10 @@ public class SVGParser {
 					gradient.colors.add(color);
 				}
 			} else if (localName.equals("use")) {
-				String href = atts.getValue("xlink:href");
-				String attTransform = atts.getValue("transform");
-				String attX = atts.getValue("x");
-				String attY = atts.getValue("y");
+				String href = getStringAttr("xlink:href", atts);
+				String attTransform = getStringAttr("transform", atts);
+				String attX = getStringAttr("x", atts);
+				String attY = getStringAttr("y", atts);
 
 				StringBuilder sb = new StringBuilder();
 				sb.append("<g");
@@ -1626,8 +1658,8 @@ public class SVGParser {
 					sb.append("'");
 				}
 
-				for (int i = 0; i < atts.getLength(); i++) {
-					String attrQName = atts.getQName(i);
+				for (int i = 0; i < atts.getAttributeCount(); i++) {
+					String attrQName = atts.getAttributeName(i);
 					if (!"x".equals(attrQName) && !"y".equals(attrQName) &&
 						!"width".equals(attrQName) && !"height".equals(attrQName) &&
 						!"xlink:href".equals(attrQName) && !"transform".equals(attrQName)) {
@@ -1635,7 +1667,7 @@ public class SVGParser {
 						sb.append(" ");
 						sb.append(attrQName);
 						sb.append("='");
-						sb.append(escape(atts.getValue(i)));
+						sb.append(escape(atts.getAttributeValue(i)));
 						sb.append("'");
 					}
 				}
@@ -1648,13 +1680,13 @@ public class SVGParser {
 
 				// Log.d(TAG, sb.toString());
 
-				InputSource is = new InputSource(new StringReader(sb.toString()));
+// TODO				InputSource is = new InputSource(new StringReader(sb.toString()));
 				try {
-					SAXParserFactory spf = SAXParserFactory.newInstance();
-					SAXParser sp = spf.newSAXParser();
-					XMLReader xr = sp.getXMLReader();
-					xr.setContentHandler(this);
-					xr.parse(is);
+//					SAXParserFactory spf = SAXParserFactory.newInstance();
+//					SAXParser sp = spf.newSAXParser();
+//					XMLReader xr = sp.getXMLReader();
+//					xr.setContentHandler(this);
+//					xr.parse(is);
 				} catch (Exception e) {
 					Log.d(TAG, sb.toString());
 				}
@@ -1850,15 +1882,14 @@ public class SVGParser {
 		}
 
 		@SuppressWarnings("unused")
-		private String showAttributes(Attributes a) {
+		private String showAttributes(XmlPullParser a) {
 			String result = "";
-			for(int i=0; i < a.getLength(); i++) {
-				result += " " + a.getLocalName(i) + "='" + a.getValue(i) + "'";
+			for(int i=0; i < a.getAttributeCount(); i++) {
+				result += " " + a.getAttributeName(i) + "='" + a.getAttributeValue(i) + "'";
 			}
 			return result;
 		}
 
-		@Override
 		public void characters(char ch[], int start, int length) {
 			// Log.i(TAG, new String(ch) + " " + start + "/" + length);
 			if (text != null) {
@@ -1866,8 +1897,9 @@ public class SVGParser {
 			}
 		}
 
-		@Override
-		public void endElement(String namespaceURI, String localName, String qName) {
+		public void endElement() {
+
+			String localName = atts.getName();
 			// Log.d("TAG", "tag: " + localName);
 			/*parsed.append("</");
 			parsed.append(localName);
@@ -1972,7 +2004,7 @@ public class SVGParser {
 			private boolean inText;
 			private int vAlign = 0;
 
-			public SvgText(Attributes atts) {
+			public SvgText(XmlPullParser atts) {
 				// Log.d(TAG, "text");
 				x = getFloatAttr("x", atts, 0f);
 				y = getFloatAttr("y", atts, 0f);
@@ -2035,7 +2067,7 @@ public class SVGParser {
 			}
 		}
 
-		private Align getTextAlign(Attributes atts) {
+		private Align getTextAlign(XmlPullParser atts) {
 			String align = getStringAttr("text-anchor", atts);
 			if (align == null) {
 				return null;
@@ -2049,7 +2081,7 @@ public class SVGParser {
 			}
 		}
 
-		private Typeface setTypeFace(Attributes atts) {
+		private Typeface setTypeFace(XmlPullParser atts) {
 			String face = getStringAttr("font-family", atts);
 			String style = getStringAttr("font-style", atts);
 			String weight = getStringAttr("font-weight", atts);
@@ -2069,11 +2101,11 @@ public class SVGParser {
 			return result;
 		}
 
-	    private Float getFloatAttr(String name, Attributes attributes) {
+	    private Float getFloatAttr(String name, XmlPullParser attributes) {
 		    return getFloatAttr(name, attributes, null);
 	    }
 
-	    private Float getFloatAttr(String name, Attributes attributes, Float defaultValue) {
+	    private Float getFloatAttr(String name, XmlPullParser attributes, Float defaultValue) {
 	        Float result = convertUnits(name, attributes, dpi);
 	        return result == null ? defaultValue : result;
 	    }
@@ -2083,7 +2115,7 @@ public class SVGParser {
 	     * @param value
 	     * @param dpi
 	     */
-	    private Float convertUnits(String name, Attributes atts, float dpi) {
+	    private Float convertUnits(String name, XmlPullParser atts, float dpi) {
 	      String value = getStringAttr(name, atts);
 	      if (value == null) {
 	        return null;
