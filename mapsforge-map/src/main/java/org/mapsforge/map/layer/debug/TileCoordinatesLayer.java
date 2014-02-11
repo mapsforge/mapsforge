@@ -24,6 +24,7 @@ import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
@@ -41,14 +42,25 @@ public class TileCoordinatesLayer extends Layer {
 		return paint;
 	}
 
+	private static Paint createPaintStroke(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		Paint paint = graphicFactory.createPaint();
+		paint.setColor(Color.WHITE);
+		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
+		paint.setTextSize(20 * displayModel.getScaleFactor());
+		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
+		paint.setStyle(Style.STROKE);
+		return paint;
+	}
+
 	private final DisplayModel displayModel;
-	private final Paint paint;
+	private final Paint paint, paintStroke;
 
 	public TileCoordinatesLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
 		this.displayModel = displayModel;
 		this.paint = createPaint(graphicFactory, displayModel);
+		this.paintStroke = createPaintStroke(graphicFactory, displayModel);
 	}
 
 	@Override
@@ -68,16 +80,22 @@ public class TileCoordinatesLayer extends Layer {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("X: ");
 		stringBuilder.append(tile.tileX);
-		canvas.drawText(stringBuilder.toString(), x, y, this.paint);
+		String text = stringBuilder.toString();
+		canvas.drawText(text, x, y, this.paintStroke);
+		canvas.drawText(text, x, y, this.paint);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Y: ");
 		stringBuilder.append(tile.tileY);
-		canvas.drawText(stringBuilder.toString(), x, (int) (y + 30 * displayModel.getScaleFactor()), this.paint);
+		text = stringBuilder.toString();
+		canvas.drawText(text, x, (int) (y + 30 * displayModel.getScaleFactor()), this.paintStroke);
+		canvas.drawText(text, x, (int) (y + 30 * displayModel.getScaleFactor()), this.paint);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Z: ");
 		stringBuilder.append(tile.zoomLevel);
-		canvas.drawText(stringBuilder.toString(), x, (int) (y + 60 * displayModel.getScaleFactor()), this.paint);
+		text = stringBuilder.toString();
+		canvas.drawText(text, x, (int) (y + 60 * displayModel.getScaleFactor()), this.paintStroke);
+		canvas.drawText(text, x, (int) (y + 60 * displayModel.getScaleFactor()), this.paint);
 	}
 }
