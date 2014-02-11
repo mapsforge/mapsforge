@@ -1560,7 +1560,13 @@ public class SVGParser {
 			if (localName.equals("svg")) {
 				int width = (int) Math.ceil(getFloatAttr("width", atts));
 				int height = (int) Math.ceil(getFloatAttr("height", atts));
+				NumberParse viewbox = getNumberParseAttr("viewBox", atts);
 				canvas = picture.beginRecording(width, height);
+				if (viewbox != null && viewbox.numbers != null && viewbox.numbers.size() == 4) {
+					float sx = width / (viewbox.numbers.get(2) - viewbox.numbers.get(0)) ;
+					float sy = height / (viewbox.numbers.get(3) - viewbox.numbers.get(1));
+					canvas.scale(sx, sy);
+				}
 			} else if (localName.equals("defs")) {
 				inDefsElement = true;
 			} else if (localName.equals("linearGradient")) {
