@@ -34,6 +34,8 @@ import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
+import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
+import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
@@ -51,6 +53,7 @@ import org.mapsforge.map.swing.view.WindowCloseDialog;
 
 public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final boolean SHOW_DEBUG_LAYERS = false;
 
 	/**
 	 * Starts the {@code MapViewer}.
@@ -91,8 +94,10 @@ public final class MapViewer {
 				mapFile);
 		BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
 		layers.add(tileRendererLayer);
-		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
-		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
+		if (SHOW_DEBUG_LAYERS) {
+			layers.add(new TileGridLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
+			layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
+		}
 		return boundingBox;
 	}
 
