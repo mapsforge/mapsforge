@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.mapsforge.applications.android.samples"
-          android:installLocation="auto"
-          android:versionCode="40"
-          android:versionName="0.4.0-SNAPSHOT" >
+          android:installLocation="auto">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-sdk
-        android:minSdkVersion="9"
-        android:targetSdkVersion="19" />
     <application
         android:name=".SamplesApplication"
         android:allowBackup="true"
