@@ -229,12 +229,14 @@ public class TouchEventHandler {
 
 		cancelLongPress();
 
-		int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
-		Point point = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
-		long eventTime = motionEvent.getEventTime();
+		if (this.lastLatLong != null) {
+			int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
+			Point point = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
+			long eventTime = motionEvent.getEventTime();
 
-		for (TouchEventListener touchEventListener : this.touchEventListeners) {
-			touchEventListener.onActionUp(this.lastLatLong, point, eventTime, this.moveThresholdReached);
+			for (TouchEventListener touchEventListener : this.touchEventListeners) {
+				touchEventListener.onActionUp(this.lastLatLong, point, eventTime, this.moveThresholdReached);
+			}
 		}
 
 		return true;
