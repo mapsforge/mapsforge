@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -120,7 +122,11 @@ public class TouchEventHandler {
 	private boolean onActionDown(MotionEvent motionEvent) {
 		this.activePointerId = motionEvent.getPointerId(0);
 		this.lastPosition = new Point(motionEvent.getX(), motionEvent.getY());
-		this.lastLatLong = projection.fromPixels(this.lastPosition.x, this.lastPosition.y);
+		try {
+			this.lastLatLong = projection.fromPixels(this.lastPosition.x, this.lastPosition.y);
+		} catch (IllegalArgumentException e) {
+			return true;
+		}
 		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		this.moveThresholdReached = false;
 
