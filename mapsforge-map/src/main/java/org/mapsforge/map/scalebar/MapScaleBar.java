@@ -215,4 +215,8 @@ public class MapScaleBar {
 		draw(scaleBarLength, mapScaleValue);
 		this.redrawNeeded = false;
 	}
+
+	public void redrawScaleBar() {
+		this.redrawNeeded = true;
+	}
 }
