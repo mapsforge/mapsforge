@@ -74,6 +74,7 @@ public class TileSizeChanger extends BasicMapViewer {
 			this.mapViews.get(0).getModel().displayModel.setFixedTileSize(tileSize);
 			iteration += 1;
 			tileCache.destroy(); // clear the cache
+			this.mapViews.get(0).getMapScaleBar().redrawScaleBar();
 			layerManagers.get(0).redrawLayers();
 		}
 	}
