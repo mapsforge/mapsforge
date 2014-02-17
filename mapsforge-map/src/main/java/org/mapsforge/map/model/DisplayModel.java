@@ -34,6 +34,8 @@ public class DisplayModel extends Observable {
 	private static float defaultUserScaleFactor = 1f;
 	private static float deviceScaleFactor = 1f;
 
+	private int fixedTileSize;
+
 	/**
 	 * Get the default scale factor for all newly created DisplayModels.
 	 * 
@@ -129,6 +131,17 @@ public class DisplayModel extends Observable {
 	}
 
 	/**
+	 * Forces the tile size to a fixed value
+	 *
+	 * @param tileSize
+	 *            the fixed tile size to use if != 0, if 0 the tile size will be calculated
+	 */
+	public void setFixedTileSize(int tileSize) {
+		this.fixedTileSize = tileSize;
+		setTileSize();
+	}
+
+	/**
 	 * Set the user scale factor.
 	 * 
 	 * @param scaleFactor
@@ -140,7 +153,11 @@ public class DisplayModel extends Observable {
 	}
 
 	private void setTileSize() {
-		this.tileSize = (int) (DEFAULT_TILE_SIZE * deviceScaleFactor * userScaleFactor);
+		if (this.fixedTileSize == 0) {
+			this.tileSize = (int) (DEFAULT_TILE_SIZE * deviceScaleFactor * userScaleFactor);
+		} else {
+			this.tileSize = this.fixedTileSize;
+		}
 	}
 
 }

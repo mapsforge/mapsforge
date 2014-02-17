@@ -90,6 +90,8 @@ public class Samples extends Activity {
 				"Rendertheme using SVG files"));
 		linearLayout.addView(createButton(RenderThemeChanger.class,
 				"Automatically changing render themes"));
+		linearLayout.addView(createButton(TileSizeChanger.class,
+				"Automatically changing tile sizes"));
 		linearLayout.addView(createButton(ChangingBitmaps.class,
 				"Automatically changing bitmaps"));
 		linearLayout.addView(createButton(DownloadLayerViewer.class,
