@@ -39,6 +39,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="DownloadLayerViewer" />
         <activity
+            android:name=".DownloadCustomLayerViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="DownloadCustomLayerViewer" />
+        <activity
             android:name=".DiagnosticsMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="DiagnosticsMapViewer" />
