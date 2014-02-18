@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
 package org.mapsforge.applications.android.samples;
 
 
+import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.util.PausableThread;
 
@@ -73,7 +75,10 @@ public class TileSizeChanger extends BasicMapViewer {
 			int tileSize = tileSizes[iteration % tileSizes.length];
 			this.mapViews.get(0).getModel().displayModel.setFixedTileSize(tileSize);
 			iteration += 1;
-			tileCache.destroy(); // clear the cache
+			// destroy and recreate the tile caches so that old storage is
+			// freed and a new tile cache is created based on the new tile size
+			destroyTileCaches();
+			createTileCaches();
 			this.mapViews.get(0).getMapScaleBar().redrawScaleBar();
 			layerManagers.get(0).redrawLayers();
 		}
