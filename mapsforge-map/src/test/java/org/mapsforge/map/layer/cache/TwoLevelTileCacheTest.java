@@ -26,8 +26,8 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.queue.Job;
 
 public class TwoLevelTileCacheTest {
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	@Test
 	public void twoLevelTileCacheTest() {
@@ -47,7 +47,7 @@ public class TwoLevelTileCacheTest {
 
 			TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			twoLevelTileCache.put(job, bitmap);
-			//Assert.assertTrue(tileCache1.containsKey(job));
+			// Assert.assertTrue(tileCache1.containsKey(job));
 			Assert.assertTrue(tileCache2.containsKey(job));
 			Assert.assertTrue(twoLevelTileCache.containsKey(job));
 			Assert.assertEquals(bitmap, twoLevelTileCache.get(job));

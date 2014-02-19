@@ -21,23 +21,6 @@ import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.queue.Job;
 
-class BitmapLRUCache extends LRUCache<Job, TileBitmap> {
-	private static final long serialVersionUID = 1L;
-
-	public BitmapLRUCache(int capacity) {
-		super(capacity);
-	}
-
-	@Override
-	protected boolean removeEldestEntry(Map.Entry<Job, TileBitmap> eldest) {
-		if (size() > this.capacity) {
-			eldest.getValue().decrementRefCount();
-			return true;
-		}
-		return false;
-	}
-}
-
 /**
  * A thread-safe cache for tile images with a variable size and LRU policy.
  */
@@ -115,5 +98,22 @@ public class InMemoryTileCache implements TileCache {
 		BitmapLRUCache lruCacheNew = new BitmapLRUCache(capacity);
 		lruCacheNew.putAll(this.lruCache);
 		this.lruCache = lruCacheNew;
+	}
+}
+
+class BitmapLRUCache extends LRUCache<Job, TileBitmap> {
+	private static final long serialVersionUID = 1L;
+
+	public BitmapLRUCache(int capacity) {
+		super(capacity);
+	}
+
+	@Override
+	protected boolean removeEldestEntry(Map.Entry<Job, TileBitmap> eldest) {
+		if (size() > this.capacity) {
+			eldest.getValue().decrementRefCount();
+			return true;
+		}
+		return false;
 	}
 }

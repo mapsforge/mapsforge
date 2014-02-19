@@ -890,7 +890,7 @@
 			<rule e="way" k="area" v="~|false|no">
 				<rule e="way" k="highway" v="*">
 					<rule e="way" k="oneway" v="yes|true" zoom-min="16">
-						<lineSymbol src="assets:symbols/oneway.png"
+						<lineSymbol src="assets:symbols/oneway.svg"
 							align-center="true" repeat="true" />
 					</rule>
 				</rule>
@@ -969,13 +969,13 @@
 			<line stroke="#202020" stroke-width="0.4" stroke-linecap="butt" />
 			<line stroke="#202020" stroke-width="4.0" stroke-dasharray="2,200" stroke-linecap="butt" />
 			<rule e="way" k="aerialway" v="cable_car">
-				<lineSymbol src="assets:symbols/cable_car.png" />
+				<lineSymbol src="assets:symbols/cable_car.svg" />
 			</rule>
 			<rule e="way" k="aerialway" v="chair_lift">
-				<lineSymbol src="assets:symbols/chair_lift_2.png" />
+				<lineSymbol src="assets:symbols/chair_lift.svg" />
 			</rule>
 			<rule e="way" k="aerialway" v="gondola">
-				<lineSymbol src="assets:symbols/gondola.png" />
+				<lineSymbol src="assets:symbols/gondola.svg" />
 			</rule>
 			<rule e="way" k="*" v="*" zoom-min="14">
 				<pathText k="name" font-style="bold" font-size="10" fill="#606060" stroke="#ffffff" stroke-width="2.0" />
@@ -1220,10 +1220,10 @@
 			</rule>
 			<rule e="node" k="natural" v="peak" zoom-min="12">
 				<symbol src="assets:symbols/peak.svg" />
-				<caption k="ele" dy="20" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
+				<caption k="ele" dy="-15" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
 			<rule e="node" k="natural" v="tree" zoom-min="16">
-				<symbol src="assets:symbols/tree.png" />
+				<symbol src="assets:symbols/tree.svg" />
 			</rule>
 			<rule e="node" k="natural" v="volcano" zoom-min="12">
 				<symbol src="assets:symbols/vulcan.svg" />

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,22 +28,22 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.model.DisplayModel;
 
 public class TileGridLayer extends Layer {
-	private static Paint createPaint(GraphicFactory graphicFactory) {
+	private static Paint createPaint(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
 		paint.setColor(Color.BLACK);
-		paint.setStrokeWidth(2);
+		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
 		paint.setStyle(Style.STROKE);
 		return paint;
 	}
 
-	private final Paint paint;
 	private final DisplayModel displayModel;
+	private final Paint paint;
 
 	public TileGridLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
 		this.displayModel = displayModel;
-		this.paint = createPaint(graphicFactory);
+		this.paint = createPaint(graphicFactory, displayModel);
 	}
 
 	@Override

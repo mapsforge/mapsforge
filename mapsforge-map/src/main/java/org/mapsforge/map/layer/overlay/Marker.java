@@ -52,11 +52,11 @@ public class Marker extends Layer {
 		this.verticalOffset = verticalOffset;
 	}
 
-	@Override
-	public synchronized void onDestroy() {
-		if (this.bitmap != null) {
-			this.bitmap.decrementRefCount();
-		}
+	public synchronized boolean contains(Point center, Point point) {
+		Rectangle r = new Rectangle(center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset, center.y
+				- (float) bitmap.getHeight() / 2 + this.verticalOffset, center.x + (float) bitmap.getWidth() / 2
+				+ this.horizontalOffset, center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
+		return r.contains(point);
 	}
 
 	@Override
@@ -87,14 +87,6 @@ public class Marker extends Layer {
 	}
 
 	/**
-	 * @return Gets the LatLong Position of the Object
-	 */
-	public synchronized LatLong getPosition() {
-		return this.latLong;
-	}
-	
-
-	/**
 	 * @return the {@code Bitmap} of this marker (may be null).
 	 */
 	public synchronized Bitmap getBitmap() {
@@ -116,10 +108,24 @@ public class Marker extends Layer {
 	}
 
 	/**
+	 * @return Gets the LatLong Position of the Object
+	 */
+	public synchronized LatLong getPosition() {
+		return this.latLong;
+	}
+
+	/**
 	 * @return the vertical offset of this marker.
 	 */
 	public synchronized int getVerticalOffset() {
 		return this.verticalOffset;
+	}
+
+	@Override
+	public synchronized void onDestroy() {
+		if (this.bitmap != null) {
+			this.bitmap.decrementRefCount();
+		}
 	}
 
 	/**
@@ -158,15 +164,6 @@ public class Marker extends Layer {
 	 */
 	public synchronized void setVerticalOffset(int verticalOffset) {
 		this.verticalOffset = verticalOffset;
-	}
-
-	public synchronized boolean contains(Point center, Point point) {
-		Rectangle r = new Rectangle(
-				center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset,
-				center.y - (float) bitmap.getHeight() / 2 + this.verticalOffset,
-				center.x + (float) bitmap.getWidth() / 2 + this.horizontalOffset,
-				center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
-		return r.contains(point);
 	}
 
 }

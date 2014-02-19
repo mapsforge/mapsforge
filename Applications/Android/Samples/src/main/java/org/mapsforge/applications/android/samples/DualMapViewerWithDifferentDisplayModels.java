@@ -15,11 +15,11 @@
 package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
 
 /**
- * Illustrates the ability to set different tile sizes and background colors to MapViews.
+ * Illustrates the ability to set different tile sizes and background colors to
+ * MapViews.
  */
 
 public class DualMapViewerWithDifferentDisplayModels extends DualMapViewer {
@@ -28,14 +28,19 @@ public class DualMapViewerWithDifferentDisplayModels extends DualMapViewer {
 	protected void createMapViews() {
 		super.createMapViews();
 		mapViews.get(1).getModel().displayModel.setUserScaleFactor(0.3f);
-		mapViews.get(1).getModel().displayModel.setBackgroundColor(0xffff0000); // red background
+		mapViews.get(1).getModel().displayModel.setBackgroundColor(0xffff0000); // red
+																				// background
 
 	}
 
 	@Override
 	protected TileCache createTileCache2() {
-		int tileSize = this.mapViews.get(1).getModel().displayModel.getTileSize();
-		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize, getScreenRatio2(), this.mapViews.get(1).getModel().frameBufferModel.getOverdrawFactor());
+		int tileSize = this.mapViews.get(1).getModel().displayModel
+				.getTileSize();
+		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
+				getScreenRatio2(),
+				this.mapViews.get(1).getModel().frameBufferModel
+						.getOverdrawFactor());
 	}
 
 	@Override

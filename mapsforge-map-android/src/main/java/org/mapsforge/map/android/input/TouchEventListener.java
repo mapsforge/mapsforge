@@ -14,8 +14,8 @@
  */
 package org.mapsforge.map.android.input;
 
-import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 
 /**
  * Time-consuming operations should be performed in a separate thread.
@@ -23,9 +23,9 @@ import org.mapsforge.core.model.LatLong;
 public interface TouchEventListener {
 	void onActionUp(LatLong latLong, Point point, long eventTime, boolean moveThresholdReached);
 
+	void onLongPress(LatLong latLong, Point xy);
+
 	void onPointerDown(long eventTime);
 
 	void onPointerUp(long eventTime);
-
-	void onLongPress(LatLong latLong, Point xy);
 }

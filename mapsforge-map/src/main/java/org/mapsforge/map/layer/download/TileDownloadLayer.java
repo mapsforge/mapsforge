@@ -29,11 +29,11 @@ import org.mapsforge.map.model.MapViewPosition;
 public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private static final int DOWNLOAD_THREADS_MAX = 8;
 
+	private final GraphicFactory graphicFactory;
+	private boolean started;
+	private final TileCache tileCache;
 	private TileDownloadThread[] tileDownloadThreads;
 	private final TileSource tileSource;
-	private final TileCache tileCache;
-	private final GraphicFactory graphicFactory;
-    private boolean started;
 
 	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
 			GraphicFactory graphicFactory) {
@@ -54,13 +54,38 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	}
 
 	@Override
+	public void onDestroy() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.interrupt();
+		}
+
+		super.onDestroy();
+	}
+
+	public void onPause() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.pause();
+		}
+	}
+
+	public void onResume() {
+		if (!started) {
+			start();
+		}
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.proceed();
+		}
+	}
+
+	@Override
 	public synchronized void setDisplayModel(DisplayModel displayModel) {
 		super.setDisplayModel(displayModel);
 		int numberOfDownloadThreads = Math.min(tileSource.getParallelRequestsLimit(), DOWNLOAD_THREADS_MAX);
 		if (this.displayModel != null) {
 			this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
 			for (int i = 0; i < numberOfDownloadThreads; ++i) {
-				this.tileDownloadThreads[i] = new TileDownloadThread(this.tileCache, this.jobQueue, this, this.graphicFactory, this.displayModel);
+				this.tileDownloadThreads[i] = new TileDownloadThread(this.tileCache, this.jobQueue, this,
+						this.graphicFactory, this.displayModel);
 			}
 		} else {
 			if (this.tileDownloadThreads != null) {
@@ -74,37 +99,13 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 
 	public void start() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-		    tileDownloadThread.start();
-        }
-        started = true;
-    }
+			tileDownloadThread.start();
+		}
+		started = true;
+	}
 
 	@Override
 	protected DownloadJob createJob(Tile tile) {
 		return new DownloadJob(tile, this.displayModel.getTileSize(), this.tileSource);
 	}
-
-	public void onResume() {
-        if (!started) {
-            start();
-        }
-		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-			tileDownloadThread.proceed();
-		}
-	}
-
-	@Override
-	public void onDestroy() {
-		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-			tileDownloadThread.interrupt();
-		}
-
-		super.onDestroy();
-	}
-
-	public void onPause() {
-		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-			tileDownloadThread.pause();
-		}
-    }
 }

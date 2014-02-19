@@ -22,10 +22,8 @@ import java.util.logging.Logger;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.Layer;
-
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
-import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.util.PausableThread;
 
@@ -33,12 +31,13 @@ class TileDownloadThread extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());
 
 	private final DisplayModel displayModel;
+	private final GraphicFactory graphicFactory;
 	private JobQueue<DownloadJob> jobQueue;
 	private final Layer layer;
 	private final TileCache tileCache;
-	private final GraphicFactory graphicFactory;
 
-	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory, DisplayModel displayModel) {
+	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory,
+			DisplayModel displayModel) {
 		super();
 
 		this.tileCache = tileCache;

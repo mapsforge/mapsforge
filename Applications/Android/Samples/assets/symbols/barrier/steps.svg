@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <defs id="defs22">
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="ArrowStart">
+   <path id="path3568" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="ArrowEnd">
+   <path id="path3565" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker2959">
+   <path id="path2626" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker2956">
+   <path id="path2623" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker3077">
+   <path id="path3298" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker3074">
+   <path id="path3295" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+ </defs>
+ <metadata id="metadata10"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z" id="path1329" fill="#666666" stroke="#eeeeee" stroke-width="3.408"/>
+ </g>
+ <g id="g7837" transform="matrix(1.3165145,0,0,1.3165145,-93.609169,-108.58088)">
+  <path d="m 156.21875,420.6875 0,74.03125 37,0 205.0625,0 37,0 0,-74.03125 -37,0 -205.0625,0 -37,0 z" id="path4403" color="#000000" stroke-width="74" fill="#ffffff"/>
+  <path sodipodi:nodetypes="ccccc" id="path7289" d="m 157.5,420.5 44.49999,-39.24999 187.75,0 L 433.99999,421 157.5,420.5 z" opacity=".2" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.7"/>
+ </g>
+ <g id="g7847" transform="matrix(0.9018774,0,0,0.9018774,29.019758,-50.908024)">
+  <path d="m 156.21875,420.6875 0,74.03125 37,0 205.0625,0 37,0 0,-74.03125 -37,0 -205.0625,0 -37,0 z" id="path7849" color="#000000" stroke-width="74" fill="#ffffff"/>
+  <path d="m 157.5,420.5 44.49999,-39.24999 187.75,0 L 433.99999,421 157.5,420.5 z" id="path7851" sodipodi:nodetypes="ccccc" opacity=".2" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.7"/>
+ </g>
+ <g id="g7853" transform="matrix(0.61088171,0,0,0.61088171,115.08174,-10.956045)">
+  <path d="m 156.21875,420.6875 0,74.03125 37,0 205.0625,0 37,0 0,-74.03125 -37,0 -205.0625,0 -37,0 z" id="path7855" color="#000000" stroke-width="74" fill="#ffffff"/>
+  <path d="m 157.5,420.5 44.49999,-39.24999 187.75,0 L 433.99999,421 157.5,420.5 z" id="path7857" sodipodi:nodetypes="ccccc" opacity=".2" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.7"/>
+ </g>
+ <g transform="matrix(0.41848412,0,0,0.41848412,171.98332,15.804992)" id="g7859">
+  <path d="m 156.21875,420.6875 0,74.03125 37,0 205.0625,0 37,0 0,-74.03125 -37,0 -205.0625,0 -37,0 z" id="path7861" color="#000000" stroke-width="74" fill="#ffffff"/>
+  <path sodipodi:nodetypes="ccccc" id="path7863" d="m 157.5,420.5 44.49999,-39.24999 187.75,0 L 433.99999,421 157.5,420.5 z" opacity=".2" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.7"/>
+ </g>
+ <g id="g7865" transform="matrix(0.28027175,0,0,0.28027175,212.85964,36.784637)">
+  <path d="m 156.21875,420.6875 0,74.03125 37,0 205.0625,0 37,0 0,-74.03125 -37,0 -205.0625,0 -37,0 z" id="path7867" color="#000000" stroke-width="74" fill="#ffffff"/>
+  <path d="m 157.5,420.5 44.49999,-39.24999 187.75,0 L 433.99999,421 157.5,420.5 z" id="path7869" sodipodi:nodetypes="ccccc" opacity=".2" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.7"/>
+ </g>
+</svg>

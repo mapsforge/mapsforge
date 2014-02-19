@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,19 +22,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 
 public final class XmlUtils {
+	public static boolean supportOlderRenderThemes = true;
 	private static final String PREFIX_FILE = "file:";
 	private static final String PREFIX_JAR = "jar:";
+
 	private static final String PREFIX_JAR_V1 = "jar:/org/mapsforge/android/maps/rendertheme";
 
 	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
-
-	public static boolean supportOlderRenderThemes = true;
 
 	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
 			throws SAXException {
@@ -42,8 +43,8 @@ public final class XmlUtils {
 		}
 	}
 
-	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, String src)
-			throws IOException {
+	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
+			String relativePathPrefix, String src) throws IOException {
 		if (src == null || src.length() == 0) {
 			// no image source defined
 			return null;
@@ -69,7 +70,11 @@ public final class XmlUtils {
 					throw new IOException("SVG render failed " + src, e);
 				}
 			}
-			return graphicFactory.createResourceBitmap(inputStream, absoluteName.hashCode());
+			try {
+				return graphicFactory.createResourceBitmap(inputStream, absoluteName.hashCode());
+			} catch (IOException e) {
+				throw new IOException("Reading bitmap file failed " + src, e);
+			}
 		} finally {
 			inputStream.close();
 		}

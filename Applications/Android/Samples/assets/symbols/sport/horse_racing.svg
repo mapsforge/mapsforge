@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <defs id="defs4">
+  <symbol id="symbol-university" viewBox="244.5 110 489 219.9">
+   <path d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z" id="path4460"/>
+   <path fill="none" stroke="#000000" stroke-width="20" d="M94,176l-21,39" id="path4462"/>
+   <path d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z" id="path4464"/>
+   <path ill="none" stroke="#000000" stroke-width="20" d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24" id="path4466"/>
+  </symbol>
+  <symbol viewBox="244.5 110 489 219.9" id="symbol9807">
+   <path id="path9809" d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z"/>
+   <path id="path9811" d="M94,176l-21,39" stroke-width="20" stroke="#000000" fill="none"/>
+   <path id="path9813" d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z"/>
+   <path id="path9815" d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24" stroke-width="20" stroke="#000000" ill="none"/>
+  </symbol>
+  <linearGradient id="linearGradient2936">
+   <stop id="stop2938" stop-color="#8acf6b"/>
+   <stop offset="1" id="stop2940" stop-color="#368912"/>
+  </linearGradient>
+  <linearGradient id="linearGradient2952">
+   <stop id="stop2954" stop-color="#c0d50d"/>
+   <stop offset="1" id="stop2956" stop-color="#eef2cd"/>
+  </linearGradient>
+  <marker inkscape:stockid="RazorWire" id="RazorWire" orient="auto">
+       style="overflow:visible"&gt;
+         <path id="path4286" transform="scale(0.8,0.8)" d="M 0.022727273,-0.74009011 L 0.022727273,0.69740989 L -7.7585227,3.0099099 L 10.678977,3.0099099 L 3.4914773,0.69740989 L 3.4914773,-0.74009011 L 10.741477,-2.8963401 L -7.7272727,-2.8963401 L 0.022727273,-0.74009011 z " fill="#808080" fill-rule="evenodd" stroke="#000000" stroke-width=".125"/></marker>
+  <marker inkscape:stockid="DiamondS" orient="auto" refY="0.0" refX="0.0" id="DiamondS">
+   <path id="path4202" d="M 0,-7.0710768 L -7.0710894,0 L 0,7.0710589 L 7.0710462,0 L 0,-7.0710768 z " transform="scale(0.2)" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="Arrow2Sstart" orient="auto" refY="0.0" refX="0.0" id="Arrow2Sstart">
+   <path id="path4146" d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z " transform="scale(0.3) translate(-2.3,0)" fill-rule="evenodd" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker inkscape:stockid="StopS" orient="auto" refY="0.0" refX="0.0" id="StopS">
+   <path id="path4229" d="M 0.0,5.65 L 0.0,-5.65" transform="scale(0.2)" fill="none" fill-rule="evenodd" stroke="#000000" fill-opacity=".75" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="InfiniteLineStart" id="InfiniteLineStart" orient="auto">
+   <g id="g4298" transform="translate(-13,0)">
+    <circle id="circle4300" r=".8" cx="3"/>
+    <circle id="circle4302" r=".8" cx="6.5"/>
+    <circle id="circle4304" r=".8" cx="10"/>
+   </g>
+  </marker>
+  <marker inkscape:stockid="CurveIn" orient="auto" refY="0.0" refX="0.0" id="CurveIn">
+   <path id="path4238" d="M 4.6254930,-5.0456926 C 1.8654930,-5.0456926 -0.37450702,-2.8056926 -0.37450702,-0.045692580 C -0.37450702,2.7143074 1.8654930,4.9543074 4.6254930,4.9543074" transform="scale(0.6)" fill="none" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="TriangleOutS" orient="auto" refY="0.0" refX="0.0" id="TriangleOutS">
+   <path id="path4220" d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z " transform="scale(0.2)" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="Arrow2Send" orient="auto" refY="0.0" refX="0.0" id="Arrow2Send">
+   <path id="path4149" d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z " transform="scale(0.3) rotate(180) translate(-2.3,0)" fill-rule="evenodd" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker inkscape:stockid="SemiCircleOut" orient="auto" refY="0.0" refX="0.0" id="SemiCircleOut">
+   <path id="path4235" d="M -2.5,-0.80913858 C -2.5,1.9508614 -4.7400000,4.1908614 -7.5,4.1908614 L -7.5,-5.8091386 C -4.7400000,-5.8091386 -2.5,-3.5691386 -2.5,-0.80913858 z " transform="scale(0.6) translate(7.125493,0.763446)" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="Arrow1Send" orient="auto" refY="0.0" refX="0.0" id="Arrow1Send">
+   <path id="path4131" d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " transform="scale(0.2) rotate(180) translate(6,0)" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="Arrow1Sstart" orient="auto" refY="0.0" refX="0.0" id="Arrow1Sstart">
+   <path id="path4128" d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " transform="scale(0.2) translate(6,0)" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="Tail" orient="auto" refY="0.0" refX="0.0" id="Tail">
+   <g id="g4152" transform="scale(-1.2)">
+    <path id="path4154" d="M -3.8048674,-3.9585227 L 0.54352094,0" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path id="path4156" d="M -1.2866832,-3.9585227 L 3.0617053,0" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path id="path4158" d="M 1.3053582,-3.9585227 L 5.6537466,0" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path id="path4160" d="M -3.8048674,4.1775838 L 0.54352094,0.21974226" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path id="path4162" d="M -1.2866832,4.1775838 L 3.0617053,0.21974226" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path id="path4164" d="M 1.3053582,4.1775838 L 5.6537466,0.21974226" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+   </g>
+  </marker>
+  <marker inkscape:stockid="Arrow1Lend" orient="auto" refY="0.0" refX="0.0" id="Arrow1Lend">
+   <path id="path4119" d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " transform="scale(0.8) rotate(180) translate(12.5,0)" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="TriangleOutL" orient="auto" refY="0.0" refX="0.0" id="TriangleOutL">
+   <path id="path4214" d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z " transform="scale(0.8)" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="Arrow1Mend" orient="auto" refY="0.0" refX="0.0" id="Arrow1Mend">
+   <path id="path4125" d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " transform="scale(0.4) rotate(180) translate(10,0)" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker inkscape:stockid="Arrow2Lend" orient="auto" refY="0.0" refX="0.0" id="Arrow2Lend">
+   <path id="path4137" d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z " transform="scale(1.1) rotate(180) translate(1,0)" fill-rule="evenodd" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <symbol id="symbol14628" viewBox="244.5 110 489 219.9">
+   <path d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z" id="path14630"/>
+   <path fill="none" stroke="#000000" stroke-width="20" d="M94,176l-21,39" id="path14632"/>
+   <path d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z" id="path14634"/>
+   <path ill="none" stroke="#000000" stroke-width="20" d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24" id="path14636"/>
+  </symbol>
+ </defs>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z " id="path1329" fill="#39AC39" stroke="#eee" stroke-width="3.408"/>
+ </g>
+ <path d="M 189.94991,330.64056 L 99.796168,393.69745 C 65.055202,433.05773 138.41533,431.98976 173.04608,450.44862 L 214.74219,469.36569 L 211.36143,437.83725 L 167.41148,406.30882 L 212.48835,359.64673 L 189.94991,330.64056 z" id="path2531" sodipodi:nodetypes="cccccccc" opacity=".75" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="5.736"/>
+ <path d="M 411.95349,354.60218 C 427.53318,399.27313 458.54084,484.29504 448.01498,513.5055 L 485.20341,512.24436 C 467.02602,459.69695 464.54679,407.14958 458.15727,354.60218 L 411.95349,354.60218 z" id="path2533" sodipodi:nodetypes="ccccc" opacity=".75" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="5.736"/>
+ <path d="M 133.75076,216.14284 C 154.64343,199.69815 248.9201,134.57554 259.43292,126.71515 C 270.13857,118.7106 274.94582,120.01914 282.39408,121.88121 L 350.0691,138.79997 C 395.06052,152.74185 360.87862,205.53135 331.94186,221.88313 C 328.36953,243.92643 344.86948,266.21631 395.99142,294.6942 L 331.94186,305.57054 C 329.9277,266.18532 265.07252,278.98392 263.05836,256.02276 L 299.31283,196.80712 C 282.03782,195.91498 268.25132,193.16988 250.97354,185.02442 C 201.74689,205.17939 177.28653,221.91166 145.83557,239.10401 L 133.75076,216.14284 z" id="path2535" sodipodi:nodetypes="czzzcccccccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="5.815"/>
+ <path d="M 171.84345,71.598257 L 227.54481,75.201163 L 222.10032,83.158503 L 170.16822,74.782368 L 171.84345,71.598257 z" id="path2540" sodipodi:nodetypes="ccccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="8.06"/>
+ <path d="M 224.84403,57.532557 C 212.4235,57.532557 201.88086,65.665848 198.28087,76.896011 L 252.65767,86.331428 C 252.66815,86.017486 252.69557,85.70058 252.69557,85.384088 C 252.69557,69.996123 240.23199,57.532557 224.84403,57.532557 z" id="path3469" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="14.307"/>
+ <path d="M 190.72752,92.469699 C 190.59579,93.511362 190.52202,94.563945 190.50008,95.636977 C 190.16251,112.14391 203.29877,125.82863 219.80569,126.1662 C 234.21802,126.46093 246.41682,116.50529 249.51836,102.98442 L 190.72752,92.469699 z" id="path3474" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="6.505"/>
+ <path d="M 213.61527,247.4055 L 331.94205,220.9216 C 386.0813,212.61908 413.97789,223.89532 432.23809,242.36094 C 503.49271,225.24005 532.30426,249.67989 556.19947,278.93393 L 540.692,299.61944 C 521.55196,273.02975 489.7413,247.95975 440.78801,258.07049 C 447.02511,290.2708 466.95687,316.26901 494.21878,338.38559 C 511.51017,380.20662 529.37602,441.70627 558.45331,476.93251 L 540.42257,504.67754 C 520.78077,458.29965 492.29946,390.72705 451.66519,364.48576 C 420.37458,355.58727 391.48459,347.55733 369.13046,321.9908 L 354.22318,317.1656 C 317.58485,351.00079 261.50619,362.80111 210.23449,363.60835 C 175.48126,400.28419 146.22128,451.77176 97.542329,513.5055 L 63.734674,498.37184 C 104.1679,466.95955 135.06525,397.9874 169.66532,353.51925 C 168.17473,298.18178 136.1674,249.81635 114.34352,234.71727 C 92.519652,219.61817 66.315415,251.10634 41.19624,254.97232 C 26.78701,257.23414 15.941583,236.38263 24.292414,225.96616 C 33.007304,215.09558 66.152282,177.00905 95.28848,161.64814 L 106.5577,132.64198 L 113.31922,160.38701 C 148.15793,183.09631 184.46554,199.23015 213.61527,247.4055 z" id="path2529" sodipodi:nodetypes="cccccccccccccccczczcccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="11.472"/>
+</svg>

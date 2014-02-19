@@ -33,7 +33,8 @@ public class PathTextBuilderTest {
 		attributesImpl.addAttribute(null, null, PathTextBuilder.FONT_SIZE, null, String.valueOf(FONT_SIZE));
 		attributesImpl.addAttribute(null, null, PathTextBuilder.K, null, K);
 
-		PathTextBuilder pathTextBuilder = new PathTextBuilder(GRAPHIC_FACTORY, new DisplayModel(), "pathText", attributesImpl);
+		PathTextBuilder pathTextBuilder = new PathTextBuilder(GRAPHIC_FACTORY, new DisplayModel(), "pathText",
+				attributesImpl);
 
 		Assert.assertEquals(FONT_SIZE, pathTextBuilder.fontSize, 0);
 		Assert.assertEquals(TextKey.getInstance(K), pathTextBuilder.textKey);

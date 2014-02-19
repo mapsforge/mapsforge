@@ -20,6 +20,7 @@ package org.mapsforge.map.swing;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Arrays;
 import java.util.prefs.Preferences;
 
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -33,6 +34,8 @@ import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
+import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
+import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
@@ -50,15 +53,18 @@ import org.mapsforge.map.swing.view.WindowCloseDialog;
 
 public final class MapViewer {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final boolean SHOW_DEBUG_LAYERS = false;
 
-    /**
-     * Starts the mapviewer.
-     * @param args command line args: optionally the name of the map file to load
-     */
+	/**
+	 * Starts the {@code MapViewer}.
+	 * 
+	 * @param args
+	 *            command line args: expects the map file as first and only parameter.
+	 */
 	public static void main(String[] args) {
+		File mapFile = getMapFile(args);
 		MapView mapView = createMapView();
-        String mapFileName = args.length > 0 ? args[0] : "../../germany.map";
-        final BoundingBox boundingBox = addLayers(mapView, new File(mapFileName));
+		final BoundingBox boundingBox = addLayers(mapView, mapFile);
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		final Model model = mapView.getModel();
@@ -72,7 +78,8 @@ public final class MapViewer {
 		mainFrame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
-				byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
+				byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox,
+						model.displayModel.getTileSize());
 				model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
 			}
 		});
@@ -83,12 +90,15 @@ public final class MapViewer {
 		TileCache tileCache = createTileCache();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
-        TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition, mapFile);
-        BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
-        layers.add(tileRendererLayer);
-		// layers.add(new TileGridLayer(GRAPHIC_FACTORY));
-		// layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY));
-        return boundingBox;
+		TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition,
+				mapFile);
+		BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
+		layers.add(tileRendererLayer);
+		if (SHOW_DEBUG_LAYERS) {
+			layers.add(new TileGridLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
+			layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
+		}
+		return boundingBox;
 	}
 
 	private static MapView createMapView() {
@@ -112,7 +122,7 @@ public final class MapViewer {
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}
 
-    @SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 		TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource,
@@ -121,13 +131,34 @@ public final class MapViewer {
 		return tileDownloadLayer;
 	}
 
-    @SuppressWarnings("unused")
-	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, File mapFile) {
+	@SuppressWarnings("unused")
+	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
+			File mapFile) {
 		boolean isTransparent = false;
-	    TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent, GRAPHIC_FACTORY);
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent,
+				GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
+	}
+
+	private static File getMapFile(String[] args) {
+		if (args.length == 0) {
+			throw new IllegalArgumentException("missing argument: <mapFile>");
+		} else if (args.length > 1) {
+			throw new IllegalArgumentException("too many arguments: " + Arrays.toString(args));
+		}
+
+		File mapFile = new File(args[0]);
+		if (!mapFile.exists()) {
+			throw new IllegalArgumentException("file does not exist: " + mapFile);
+		} else if (!mapFile.isFile()) {
+			throw new IllegalArgumentException("not a file: " + mapFile);
+		} else if (!mapFile.canRead()) {
+			throw new IllegalArgumentException("cannot read file: " + mapFile);
+		}
+
+		return mapFile;
 	}
 
 	private MapViewer() {

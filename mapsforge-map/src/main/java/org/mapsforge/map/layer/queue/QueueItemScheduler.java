@@ -17,7 +17,6 @@ package org.mapsforge.map.layer.queue;
 
 import java.util.Collection;
 
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Tile;
@@ -37,8 +36,10 @@ final class QueueItemScheduler {
 		double tileLongitude = MercatorProjection.tileXToLongitude(tile.tileX, tile.zoomLevel);
 
 		int halfTileSize = tileSize / 2;
-		double tilePixelX = MercatorProjection.longitudeToPixelX(tileLongitude, mapPosition.zoomLevel, tileSize) + halfTileSize;
-		double tilePixelY = MercatorProjection.latitudeToPixelY(tileLatitude, mapPosition.zoomLevel, tileSize) + halfTileSize;
+		double tilePixelX = MercatorProjection.longitudeToPixelX(tileLongitude, mapPosition.zoomLevel, tileSize)
+				+ halfTileSize;
+		double tilePixelY = MercatorProjection.latitudeToPixelY(tileLatitude, mapPosition.zoomLevel, tileSize)
+				+ halfTileSize;
 
 		LatLong latLong = mapPosition.latLong;
 		double mapPixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapPosition.zoomLevel, tileSize);

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,6 +29,9 @@ class AwtBitmap implements Bitmap {
 
 	AwtBitmap(InputStream inputStream) throws IOException {
 		this.bufferedImage = ImageIO.read(inputStream);
+		if (this.bufferedImage == null) {
+			throw new IOException("ImageIO filed to read inputStream");
+		}
 	}
 
 	AwtBitmap(int width, int height) {
@@ -37,11 +41,6 @@ class AwtBitmap implements Bitmap {
 	@Override
 	public void compress(OutputStream outputStream) throws IOException {
 		ImageIO.write(this.bufferedImage, "png", outputStream);
-	}
-
-	@Override
-	public void incrementRefCount() {
-		// no-op
 	}
 
 	@Override
@@ -57,6 +56,11 @@ class AwtBitmap implements Bitmap {
 	@Override
 	public int getWidth() {
 		return this.bufferedImage.getWidth();
+	}
+
+	@Override
+	public void incrementRefCount() {
+		// no-op
 	}
 
 	@Override

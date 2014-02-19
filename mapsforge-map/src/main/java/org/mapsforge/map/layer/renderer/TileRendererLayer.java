@@ -17,13 +17,11 @@
 package org.mapsforge.map.layer.renderer;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDatabase;
@@ -32,14 +30,15 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class TileRendererLayer extends TileLayer<RendererJob> {
 
-	private final MapDatabase mapDatabase;
 	private final DatabaseRenderer databaseRenderer;
+	private final MapDatabase mapDatabase;
 	private File mapFile;
 	private MapWorker mapWorker;
 	private float textScale;
 	private XmlRenderTheme xmlRenderTheme;
 
-	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, boolean isTransparent, GraphicFactory graphicFactory) {
+	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, boolean isTransparent,
+			GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
 		this.mapDatabase = new MapDatabase();
@@ -62,6 +61,12 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	public XmlRenderTheme getXmlRenderTheme() {
 		return this.xmlRenderTheme;
+	}
+
+	@Override
+	public void onDestroy() {
+		new DestroyThread(this.mapWorker, this.mapDatabase, this.databaseRenderer).start();
+		super.onDestroy();
 	}
 
 	@Override
@@ -96,19 +101,14 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	@Override
 	protected RendererJob createJob(Tile tile) {
-		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale, this.isTransparent);
+		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale,
+				this.isTransparent);
 	}
 
 	@Override
 	protected void onAdd() {
 		this.mapWorker.proceed();
 		super.onAdd();
-	}
-
-	@Override
-	public void onDestroy() {
-		new DestroyThread(this.mapWorker, this.mapDatabase, this.databaseRenderer).start();
-		super.onDestroy();
 	}
 
 	@Override

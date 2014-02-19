@@ -34,17 +34,17 @@ class AndroidMatrix implements Matrix {
 		this.matrix.preRotate((float) Math.toDegrees(theta), pivotX, pivotY);
 	}
 
-    @Override
-    public void scale(float scaleX, float scaleY) {
-        this.matrix.preScale(scaleX, scaleY);
-    }
+	@Override
+	public void scale(float scaleX, float scaleY) {
+		this.matrix.preScale(scaleX, scaleY);
+	}
 
-    @Override
-    public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-        this.matrix.preScale(scaleX, scaleY, pivotX, pivotY);
-    }
+	@Override
+	public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
+		this.matrix.preScale(scaleX, scaleY, pivotX, pivotY);
+	}
 
-    @Override
+	@Override
 	public void translate(float translateX, float translateY) {
 		this.matrix.preTranslate(translateX, translateY);
 	}

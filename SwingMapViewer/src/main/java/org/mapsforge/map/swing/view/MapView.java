@@ -58,7 +58,8 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		MapViewController.create(this, this.model);
 
-		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY, new DisplayModel());
+		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
+				new DisplayModel());
 	}
 
 	@Override

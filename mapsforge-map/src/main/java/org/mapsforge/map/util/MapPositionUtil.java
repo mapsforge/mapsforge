@@ -24,8 +24,10 @@ import org.mapsforge.core.util.MercatorProjection;
 
 public final class MapPositionUtil {
 	public static BoundingBox getBoundingBox(MapPosition mapPosition, Dimension canvasDimension, int tileSize) {
-		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.latLong.longitude, mapPosition.zoomLevel, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.latLong.latitude, mapPosition.zoomLevel, tileSize);
+		double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.latLong.longitude, mapPosition.zoomLevel,
+				tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.latLong.latitude, mapPosition.zoomLevel,
+				tileSize);
 
 		int halfCanvasWidth = canvasDimension.width / 2;
 		int halfCanvasHeight = canvasDimension.height / 2;

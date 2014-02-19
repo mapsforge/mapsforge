@@ -17,8 +17,6 @@ package org.mapsforge.map.rendertheme.rule;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.LRUCache;
@@ -31,13 +29,13 @@ import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 public class RenderTheme {
 	private static final int MATCHING_CACHE_SIZE = 512;
 
-	private final AtomicInteger refCount = new AtomicInteger();
 	private final float baseStrokeWidth;
 	private final float baseTextSize;
 	private int levels;
 	private final int mapBackground;
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> matchingCache;
-	private final ArrayList<Rule> rulesList; //NOPMD we need specific interface
+	private final AtomicInteger refCount = new AtomicInteger();
+	private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
 
 	RenderTheme(RenderThemeBuilder renderThemeBuilder) {
 		this.baseStrokeWidth = renderThemeBuilder.baseStrokeWidth;

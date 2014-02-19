@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -47,7 +48,8 @@ public class CaptionBuilder {
 	final Paint stroke;
 	TextKey textKey;
 
-	public CaptionBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes) throws SAXException {
+	public CaptionBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes) throws SAXException {
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
@@ -68,8 +70,8 @@ public class CaptionBuilder {
 		return new Caption(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, Attributes attributes)
-			throws SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes) throws SAXException {
 		FontFamily fontFamily = FontFamily.DEFAULT;
 		FontStyle fontStyle = FontStyle.NORMAL;
 
@@ -80,7 +82,7 @@ public class CaptionBuilder {
 			if (K.equals(name)) {
 				this.textKey = TextKey.getInstance(value);
 			} else if (DY.equals(name)) {
-				this.dy = Float.parseFloat(value);
+				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {
 				fontFamily = FontFamily.valueOf(value.toUpperCase(Locale.ENGLISH));
 			} else if (FONT_STYLE.equals(name)) {

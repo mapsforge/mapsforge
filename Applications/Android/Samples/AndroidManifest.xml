@@ -39,6 +39,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="DownloadLayerViewer" />
         <activity
+            android:name=".DownloadCustomLayerViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="DownloadCustomLayerViewer" />
+        <activity
             android:name=".DiagnosticsMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="DiagnosticsMapViewer" />
@@ -62,6 +66,10 @@
             android:name=".RenderThemeChanger"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Automatically changes between renderthemes on SDCard" />
+        <activity
+            android:name=".TileSizeChanger"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Automatically changes tile sizes" />
         <activity
             android:name=".OverlayMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"

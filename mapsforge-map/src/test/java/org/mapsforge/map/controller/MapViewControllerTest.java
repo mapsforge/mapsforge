@@ -27,7 +27,7 @@ public class MapViewControllerTest {
 		Assert.assertEquals(0, dummyMapView.repaintCounter);
 
 		model.mapViewPosition.setZoomLevel((byte) 1);
-        // this does not hold with zoom animation
-//		Assert.assertEquals(1, dummyMapView.repaintCounter);
+		// this does not hold with zoom animation
+		// Assert.assertEquals(1, dummyMapView.repaintCounter);
 	}
 }

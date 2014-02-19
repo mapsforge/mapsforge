@@ -23,23 +23,30 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
-
 /**
- * Demonstrates how to enable a LongPress on a layer, long press creates/removes circles,
- * tap on a circle toggles the colour.
- *
+ * Demonstrates how to enable a LongPress on a layer, long press creates/removes
+ * circles, tap on a circle toggles the colour.
+ * 
  */
 public class LongPressAction extends BasicMapViewerXml {
 
-	private static final Paint GREEN = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL);
-	private static final Paint RED = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 0, Style.FILL);
+	private static final Paint GREEN = Utils.createPaint(
+			AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0,
+			Style.FILL);
+	private static final Paint RED = Utils.createPaint(
+			AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 0,
+			Style.FILL);
 
 	@Override
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(this.tileCache, this.mapViewPositions.get(0), false,
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(
+				this.tileCache,
+				this.mapViewPositions.get(0),
+				false,
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
 			@Override
-			public boolean onLongPress(LatLong tapLatLong, Point thisXY, Point tapXY) {
+			public boolean onLongPress(LatLong tapLatLong, Point thisXY,
+					Point tapXY) {
 				LongPressAction.this.onLongPress(tapLatLong);
 				return true;
 			}
@@ -49,24 +56,30 @@ public class LongPressAction extends BasicMapViewerXml {
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
 	}
 
-
 	protected void onLongPress(LatLong position) {
-		float circleSize = 20 * this.mapViews.get(0).getModel().displayModel.getScaleFactor();
-		FixedPixelCircle tappableCircle = new FixedPixelCircle(position, circleSize, GREEN, null) {
+		float circleSize = 20 * this.mapViews.get(0).getModel().displayModel
+				.getScaleFactor();
+		FixedPixelCircle tappableCircle = new FixedPixelCircle(position,
+				circleSize, GREEN, null) {
 			@Override
-			public boolean onTap(LatLong geoPoint, Point viewPosition, Point tapPoint) {
+			public boolean onLongPress(LatLong geoPoint, Point viewPosition,
+					Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
-					toggleColor();
-					this.requestRedraw();
+					LongPressAction.this.mapViews.get(0).getLayerManager()
+							.getLayers().remove(this);
+					LongPressAction.this.mapViews.get(0).getLayerManager()
+							.redrawLayers();
 					return true;
 				}
 				return false;
 			}
+
 			@Override
-			public boolean onLongPress(LatLong geoPoint, Point viewPosition, Point tapPoint) {
+			public boolean onTap(LatLong geoPoint, Point viewPosition,
+					Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
-					LongPressAction.this.mapViews.get(0).getLayerManager().getLayers().remove(this);
-					LongPressAction.this.mapViews.get(0).getLayerManager().redrawLayers();
+					toggleColor();
+					this.requestRedraw();
 					return true;
 				}
 				return false;

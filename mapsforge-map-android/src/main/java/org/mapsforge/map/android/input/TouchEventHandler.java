@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,37 +16,41 @@
  */
 package org.mapsforge.map.android.input;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.util.MapViewProjection;
+
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ViewConfiguration;
 
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
-import org.mapsforge.map.util.MapViewProjection;
-import org.mapsforge.map.android.view.MapView;
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-
 public class TouchEventHandler {
 	private static final String LISTENER_MUST_NOT_BE_NULL = "listener must not be null";
-	private final MapView mapView;
-	private final MapViewProjection projection;
-	private final ScaleGestureDetector scaleGestureDetector;
-	private final float mapMoveDelta;
-	private final List<TouchEventListener> touchEventListeners = new CopyOnWriteArrayList<TouchEventListener>();
+
+	private static int getAction(MotionEvent motionEvent) {
+		return motionEvent.getAction() & MotionEvent.ACTION_MASK;
+	}
+
 	private int activePointerId;
+	private LatLong lastLatLong;
+	private int lastNumberOfPointers;
+	private Point lastPosition;
+	private boolean longPressConsumed;
 	private Handler longPressHandler;
 	private boolean longPressInProgress;
-	private Runnable onLongPress;
-	private boolean longPressConsumed;
-	private Point lastPosition;
-	private int lastNumberOfPointers;
-	private LatLong lastLatLong;
+	private final float mapMoveDelta;
+	private final MapView mapView;
 	private boolean moveThresholdReached;
+	private Runnable onLongPress;
+	private final MapViewProjection projection;
+	private final ScaleGestureDetector scaleGestureDetector;
 
+	private final List<TouchEventListener> touchEventListeners = new CopyOnWriteArrayList<TouchEventListener>();
 
 	public TouchEventHandler(MapView mapView, ViewConfiguration viewConfiguration, ScaleGestureDetector sgd) {
 		this.longPressHandler = new Handler();
@@ -52,10 +58,6 @@ public class TouchEventHandler {
 		this.mapMoveDelta = viewConfiguration.getScaledTouchSlop();
 		this.scaleGestureDetector = sgd;
 		this.projection = new MapViewProjection(this.mapView);
-	}
-
-	private static int getAction(MotionEvent motionEvent) {
-		return motionEvent.getAction() & MotionEvent.ACTION_MASK;
 	}
 
 	public void addListener(TouchEventListener touchEventListener) {
@@ -109,10 +111,22 @@ public class TouchEventHandler {
 		this.touchEventListeners.remove(touchEventListener);
 	}
 
+	private void cancelLongPress() {
+		this.longPressInProgress = false;
+		if (this.onLongPress != null) {
+			this.longPressHandler.removeCallbacks(onLongPress);
+			this.onLongPress = null;
+		}
+	}
+
 	private boolean onActionDown(MotionEvent motionEvent) {
 		this.activePointerId = motionEvent.getPointerId(0);
 		this.lastPosition = new Point(motionEvent.getX(), motionEvent.getY());
-		this.lastLatLong = projection.fromPixels(this.lastPosition.x, this.lastPosition.y);
+		try {
+			this.lastLatLong = projection.fromPixels(this.lastPosition.x, this.lastPosition.y);
+		} catch (IllegalArgumentException e) {
+			return true;
+		}
 		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		this.moveThresholdReached = false;
 
@@ -128,7 +142,8 @@ public class TouchEventHandler {
 					if (TouchEventHandler.this.longPressInProgress) {
 						if (TouchEventHandler.this.lastNumberOfPointers == 1) {
 							for (TouchEventListener touchEventListener : TouchEventHandler.this.touchEventListeners) {
-								touchEventListener.onLongPress(TouchEventHandler.this.lastLatLong, TouchEventHandler.this.lastPosition);
+								touchEventListener.onLongPress(TouchEventHandler.this.lastLatLong,
+										TouchEventHandler.this.lastPosition);
 							}
 						}
 						TouchEventHandler.this.longPressInProgress = false;
@@ -214,22 +229,16 @@ public class TouchEventHandler {
 
 		cancelLongPress();
 
-		int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
-		Point point = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
-		long eventTime = motionEvent.getEventTime();
+		if (this.lastLatLong != null) {
+			int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
+			Point point = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
+			long eventTime = motionEvent.getEventTime();
 
-		for (TouchEventListener touchEventListener : this.touchEventListeners) {
-			touchEventListener.onActionUp(this.lastLatLong, point, eventTime, this.moveThresholdReached);
+			for (TouchEventListener touchEventListener : this.touchEventListeners) {
+				touchEventListener.onActionUp(this.lastLatLong, point, eventTime, this.moveThresholdReached);
+			}
 		}
 
 		return true;
-	}
-
-	private void cancelLongPress() {
-		this.longPressInProgress = false;
-		if (this.onLongPress != null) {
-			this.longPressHandler.removeCallbacks(onLongPress);
-			this.onLongPress = null;
-		}
 	}
 }

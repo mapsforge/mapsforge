@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata10"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z" id="path1329" fill="#111111" stroke="#eeeeee" stroke-width="3.408"/>
+ </g>
+ <path d="M 465.793,62.574137 L 465.793,259.82351 L 109.79188,259.82351 L 109.79188,62.574132" id="rect9358" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="25"/>
+ <path d="M 412.59142,386.90464 L 159.9469,518.63119" id="path9895" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="15"/>
+ <path sodipodi:nodetypes="cz" id="path9928" d="M 408.76254,266.44053 L 428.78369,541.64865" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" fill-opacity=".75" stroke-linecap="round" stroke-width="30"/>
+ <path d="M 170.78369,266.44053 L 150.76254,541.64865" id="path5516" sodipodi:nodetypes="cz" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" fill-opacity=".75" stroke-linecap="round" stroke-width="30"/>
+ <path id="path5518" d="M 161.9469,386.90464 L 414.59142,518.63119" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="15"/>
+ <path id="path5520" d="M 407.50975,275.98631 L 165.75649,388.33632" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="15"/>
+ <path d="M 167.75649,275.98631 L 409.50975,388.33632" id="path5522" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="15"/>
+ <path d="M 257.53125,71.1875 C 234.13455,72.620079 213.87744,91.345986 189.75,86.5625 C 171.34371,83.063645 153.97598,68.866788 134.59375,75.21875 C 127.16974,77.001716 120.06208,79.81076 112.90625,82.4375 C 113.14309,92.315042 112.43762,103.53792 113.25,112.59375 C 129.81933,105.89592 149.34308,100.58888 166.34375,108.9375 C 180.55694,114.66261 196.23515,122.04477 211.59375,115.875 C 231.06299,109.62404 251.82282,96.9807 272.9375,104.21875 C 289.75487,109.27046 307.4194,119.58331 325.30527,113.06903 C 344.85489,107.50342 365.8397,98.805156 386.25,105.96875 C 405.10087,111.19323 425.00818,121.84269 444.625,114.375 C 448.03249,112.40802 455.32818,112.91022 455.625,108.5625 C 455.625,99.145833 455.625,89.729167 455.625,80.3125 C 440.36979,86.64272 422.77847,88.357891 407.15625,82.125 C 389.12995,76.236951 369.58936,68.061747 350.75723,75.118471 C 332.69221,80.361731 312.92676,88.727627 294.21875,81.21875 C 282.17163,77.501763 270.49407,70.83987 257.53125,71.1875 z" id="path121" fill="#ffffff" fill-rule="evenodd"/>
+ <rect id="rect7883" width="346.48" height="152.74" x="114.55" y="99.17" opacity=".25" fill="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="25" rx="20.09"/>
+</svg>

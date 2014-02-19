@@ -12,19 +12,27 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.mapsforge.map.swing;
 
-package org.mapsforge.core.graphics;
+import org.junit.Assert;
+import org.junit.Test;
 
-/**
- * At least on Android, loading graphic resources can fail because the input stream
- * is corrupted. This can result in undocumented checked exceptions (should not, but it does).
- * In the Android code base these exceptions are caught and transformed into this
- * CorruptedInputStream exception.
- */
+public class MapViewerTest {
+	private static void verifyInvalidArguments(String[] args) {
+		try {
+			MapViewer.main(args);
+			Assert.fail();
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
+	}
 
-public class CorruptedInputStream extends RuntimeException {
-    public CorruptedInputStream(String detailMessage, Throwable throwable) {
-        super(detailMessage, throwable);
-    }
+	@Test
+	public void mainTest() {
+		String[] args = new String[] {};
+		verifyInvalidArguments(args);
+
+		args = new String[] { "file/not/found.map" };
+		verifyInvalidArguments(args);
+	}
 }
-

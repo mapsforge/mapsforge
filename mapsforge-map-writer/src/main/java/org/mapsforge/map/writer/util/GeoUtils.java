@@ -263,7 +263,8 @@ public final class GeoUtils {
 	 *            the simplification factor
 	 * @return the simplified geometry
 	 */
-	public static Geometry simplifyGeometry(TDWay way, Geometry geometry, byte zoomlevel, int tileSize, double simplificationFactor) {
+	public static Geometry simplifyGeometry(TDWay way, Geometry geometry, byte zoomlevel, int tileSize,
+			double simplificationFactor) {
 		Geometry ret = null;
 
 		Envelope bbox = geometry.getEnvelopeInternal();

@@ -13,6 +13,7 @@
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
+		<targetJdk>1.6</targetJdk>
 	</properties>
 
 	<build>
@@ -27,24 +28,6 @@
 						</jvmArguments>
 					</dex>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<delete dir="${project.basedir}/gen" />
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

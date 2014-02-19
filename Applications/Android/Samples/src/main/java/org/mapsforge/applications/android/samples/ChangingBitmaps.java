@@ -14,19 +14,18 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.Handler;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.Marker;
 
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Handler;
 
 /**
- * A map viewer demonstrating changing bitmap drawables: every two seconds the view changes
- * the bitmap.
+ * A map viewer demonstrating changing bitmap drawables: every two seconds the
+ * view changes the bitmap.
  */
 public class ChangingBitmaps extends BasicMapViewerXml {
 
@@ -34,8 +33,10 @@ public class ChangingBitmaps extends BasicMapViewerXml {
 		@Override
 		public void run() {
 			if (current != null) {
-				// since we want to keep the green bitmap around, we have to increment
-				// its ref count, otherwise it gets recycled automatically when it is
+				// since we want to keep the green bitmap around, we have to
+				// increment
+				// its ref count, otherwise it gets recycled automatically when
+				// it is
 				// replaced with the other colour.
 				current.incrementRefCount();
 			}
@@ -51,23 +52,13 @@ public class ChangingBitmaps extends BasicMapViewerXml {
 		}
 	}
 
-	final Handler handler = new Handler();
-	final LatLong latLong = new LatLong(52.5, 13.4);
+	BitmapChanger bitmapChanger;
 	Bitmap bitmapGreen;
 	Bitmap bitmapRed;
 	Bitmap current;
+	final Handler handler = new Handler();
+	final LatLong latLong = new LatLong(52.5, 13.4);
 	Marker marker;
-	BitmapChanger bitmapChanger;
-
-	@Override
-	public void onCreate(Bundle sis) {
-		super.onCreate(sis);
-		Drawable drawableGreen = getResources().getDrawable(R.drawable.marker_green);
-		Drawable drawableRed = getResources().getDrawable(R.drawable.marker_red);
-		bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableRed);
-		bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableGreen);
-		marker = new Marker(latLong, bitmapGreen, 0, -bitmapGreen.getHeight() / 2);
-	}
 
 	@Override
 	public void createLayers() {
@@ -85,6 +76,19 @@ public class ChangingBitmaps extends BasicMapViewerXml {
 		// a pause/resume cycle.
 		current.incrementRefCount();
 		super.destroyLayers();
+	}
+
+	@Override
+	public void onCreate(Bundle sis) {
+		super.onCreate(sis);
+		Drawable drawableGreen = getResources().getDrawable(
+				R.drawable.marker_green);
+		Drawable drawableRed = getResources()
+				.getDrawable(R.drawable.marker_red);
+		bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableRed);
+		bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableGreen);
+		marker = new Marker(latLong, bitmapGreen, 0,
+				-bitmapGreen.getHeight() / 2);
 	}
 
 	@Override

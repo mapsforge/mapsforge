@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <defs id="defs4">
+  <symbol viewBox="244.5 110 489 219.9" id="symbol-university">
+   <path id="path4460" d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z"/>
+   <path id="path4462" d="M94,176l-21,39" stroke-width="20" stroke="#000000" fill="none"/>
+   <path id="path4464" d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z"/>
+   <path id="path4466" d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24" stroke-width="20" stroke="#000000" ill="none"/>
+  </symbol>
+  <marker id="Arrow2Lend" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="Arrow2Lend">
+   <path transform="scale(1.1) rotate(180) translate(1,0)" d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z " id="path4137" fill-rule="evenodd" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="Arrow1Mend" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="Arrow1Mend">
+   <path transform="scale(0.4) rotate(180) translate(10,0)" d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " id="path4125" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker id="TriangleOutL" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="TriangleOutL">
+   <path transform="scale(0.8)" d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z " id="path4214" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker id="Arrow1Lend" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="Arrow1Lend">
+   <path transform="scale(0.8) rotate(180) translate(12.5,0)" d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " id="path4119" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker id="Tail" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="Tail">
+   <g transform="scale(-1.2)" id="g4152">
+    <path d="M -3.8048674,-3.9585227 L 0.54352094,0" id="path4154" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path d="M -1.2866832,-3.9585227 L 3.0617053,0" id="path4156" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path d="M 1.3053582,-3.9585227 L 5.6537466,0" id="path4158" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path d="M -3.8048674,4.1775838 L 0.54352094,0.21974226" id="path4160" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path d="M -1.2866832,4.1775838 L 3.0617053,0.21974226" id="path4162" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+    <path d="M 1.3053582,4.1775838 L 5.6537466,0.21974226" id="path4164" fill="none" fill-rule="evenodd" stroke="#000000" stroke-linecap="round" stroke-width=".8"/>
+   </g>
+  </marker>
+  <marker id="Arrow1Sstart" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="Arrow1Sstart">
+   <path transform="scale(0.2) translate(6,0)" d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " id="path4128" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker id="Arrow1Send" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="Arrow1Send">
+   <path transform="scale(0.2) rotate(180) translate(6,0)" d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z " id="path4131" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker id="SemiCircleOut" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="SemiCircleOut">
+   <path transform="scale(0.6) translate(7.125493,0.763446)" d="M -2.5,-0.80913858 C -2.5,1.9508614 -4.7400000,4.1908614 -7.5,4.1908614 L -7.5,-5.8091386 C -4.7400000,-5.8091386 -2.5,-3.5691386 -2.5,-0.80913858 z " id="path4235" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker id="Arrow2Send" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="Arrow2Send">
+   <path transform="scale(0.3) rotate(180) translate(-2.3,0)" d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z " id="path4149" fill-rule="evenodd" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="TriangleOutS" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="TriangleOutS">
+   <path transform="scale(0.2)" d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z " id="path4220" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker id="CurveIn" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="CurveIn">
+   <path transform="scale(0.6)" d="M 4.6254930,-5.0456926 C 1.8654930,-5.0456926 -0.37450702,-2.8056926 -0.37450702,-0.045692580 C -0.37450702,2.7143074 1.8654930,4.9543074 4.6254930,4.9543074" id="path4238" fill="none" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker orient="auto" id="InfiniteLineStart" inkscape:stockid="InfiniteLineStart">
+   <g transform="translate(-13,0)" id="g4298">
+    <circle cx="3" r=".8" id="circle4300"/>
+    <circle cx="6.5" r=".8" id="circle4302"/>
+    <circle cx="10" r=".8" id="circle4304"/>
+   </g>
+  </marker>
+  <marker id="StopS" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="StopS">
+   <path transform="scale(0.2)" d="M 0.0,5.65 L 0.0,-5.65" id="path4229" fill="none" fill-rule="evenodd" stroke="#000000" fill-opacity=".75" stroke-width="1.25"/>
+  </marker>
+  <marker id="Arrow2Sstart" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="Arrow2Sstart">
+   <path transform="scale(0.3) translate(-2.3,0)" d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z " id="path4146" fill-rule="evenodd" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="DiamondS" refX="0.0" refY="0.0" orient="auto" inkscape:stockid="DiamondS">
+   <path transform="scale(0.2)" d="M 0,-7.0710768 L -7.0710894,0 L 0,7.0710589 L 7.0710462,0 L 0,-7.0710768 z " id="path4202" fill-rule="evenodd" stroke="#000000" stroke-width="1.25"/>
+  </marker>
+  <marker orient="auto" id="RazorWire" inkscape:stockid="RazorWire">
+       style="overflow:visible"&gt;
+         <path d="M 0.022727273,-0.74009011 L 0.022727273,0.69740989 L -7.7585227,3.0099099 L 10.678977,3.0099099 L 3.4914773,0.69740989 L 3.4914773,-0.74009011 L 10.741477,-2.8963401 L -7.7272727,-2.8963401 L 0.022727273,-0.74009011 z " transform="scale(0.8,0.8)" id="path4286" fill="#808080" fill-rule="evenodd" stroke="#000000" stroke-width=".125"/></marker>
+ </defs>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z " id="path1329" fill="#DA0092" stroke="#eee" stroke-width="3.408"/>
+ </g>
+ <path sodipodi:type="arc" id="path2207" sodipodi:cx="217.14285" sodipodi:cy="305.71429" sodipodi:rx="288.57144" sodipodi:ry="288.57144" d="M 505.71429,305.71429 A 288.57144,288.57144 0 1 1 -71.428589,305.71429 A 288.57144,288.57144 0 1 1 505.71429,305.71429 z" transform="matrix(0.7674698,0,0,0.7674698,122.86876,55.344305)" fill="none" stroke="#ffffff" stroke-width="25.14"/>
+ <rect transform="scale(-1,-1)" id="rect3180" width="351.49" height="79.4" x="-465.27" y="-329.67" fill="#ffffff" stroke="#ffffff" stroke-width="9.702"/>
+ <rect y="249.82" x="-465.72" height="79.4" width="351.49" id="rect3182" transform="matrix(0,-1,1,0,0,0)" fill="#ffffff" stroke="#ffffff" stroke-width="9.702"/>
+ <path transform="matrix(0.8891097,0,0,0.8891097,96.455544,18.15727)" d="M 505.71429,305.71429 A 288.57144,288.57144 0 1 1 -71.428589,305.71429 A 288.57144,288.57144 0 1 1 505.71429,305.71429 z" sodipodi:ry="288.57144" sodipodi:rx="288.57144" sodipodi:cy="305.71429" sodipodi:cx="217.14285" id="path2438" sodipodi:type="arc" fill="none" stroke="#ffffff" stroke-width="21.699"/>
+</svg>

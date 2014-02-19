@@ -20,14 +20,13 @@ import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Tile;
 
 public class QueueItemSchedulerTest {
 
-	private static final int[] TILE_SIZES = {256, 128, 376, 512, 100};
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	private static <T extends Job> Collection<QueueItem<T>> createCollection(QueueItem<T> queueItem) {
 		Collection<QueueItem<T>> queueItems = new ArrayList<QueueItem<T>>();
@@ -58,7 +57,8 @@ public class QueueItemSchedulerTest {
 
 			mapPosition = new MapPosition(new LatLong(0, 0), (byte) 1);
 			QueueItemScheduler.schedule(createCollection(queueItem), mapPosition, tileSize);
-			double expectedPriority = Math.hypot(halfTileSize, halfTileSize) + QueueItemScheduler.PENALTY_PER_ZOOM_LEVEL * tileSize;
+			double expectedPriority = Math.hypot(halfTileSize, halfTileSize)
+					+ QueueItemScheduler.PENALTY_PER_ZOOM_LEVEL * tileSize;
 			Assert.assertEquals(expectedPriority, queueItem.getPriority(), 0);
 		}
 	}

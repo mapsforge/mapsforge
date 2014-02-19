@@ -20,8 +20,6 @@ import java.io.OutputStream;
 public interface Bitmap {
 	void compress(OutputStream outputStream) throws IOException;
 
-	void incrementRefCount();
-
 	void decrementRefCount();
 
 	/**
@@ -33,6 +31,8 @@ public interface Bitmap {
 	 * @return the width of this bitmap in pixels.
 	 */
 	int getWidth();
+
+	void incrementRefCount();
 
 	void scaleTo(int width, int height);
 

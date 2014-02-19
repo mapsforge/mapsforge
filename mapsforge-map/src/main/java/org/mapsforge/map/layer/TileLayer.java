@@ -30,11 +30,11 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 
 public abstract class TileLayer<T extends Job> extends Layer {
-	protected JobQueue<T> jobQueue;
-	private final Matrix matrix;
-	private final MapViewPosition mapViewPosition;
-	protected final TileCache tileCache;
 	protected final boolean isTransparent;
+	protected JobQueue<T> jobQueue;
+	protected final TileCache tileCache;
+	private final MapViewPosition mapViewPosition;
+	private final Matrix matrix;
 
 	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent) {
 		super();
@@ -53,7 +53,8 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint, this.displayModel.getTileSize());
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
+				this.displayModel.getTileSize());
 
 		// In a rotation situation it is possible that drawParentTileBitmap sets the
 		// clipping bounds to portrait, while the device is just being rotated into
@@ -86,8 +87,6 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		this.jobQueue.notifyWorkers();
 	}
 
-	protected abstract T createJob(Tile tile);
-
 	@Override
 	public synchronized void setDisplayModel(DisplayModel displayModel) {
 		super.setDisplayModel(displayModel);
@@ -97,6 +96,8 @@ public abstract class TileLayer<T extends Job> extends Layer {
 			this.jobQueue = null;
 		}
 	}
+
+	protected abstract T createJob(Tile tile);
 
 	private void drawParentTileBitmap(Canvas canvas, Point point, Tile tile) {
 		Tile cachedParentTile = getCachedParentTile(tile, 4);

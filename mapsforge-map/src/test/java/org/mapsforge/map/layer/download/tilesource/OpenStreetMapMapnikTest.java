@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,7 +34,7 @@ public class OpenStreetMapMapnikTest {
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 
 		URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2));
-		Assert.assertEquals("http://tile.openstreetmap.org:80/2/0/1.png", tileUrl.toExternalForm());
+		Assert.assertTrue(tileUrl.toExternalForm().endsWith(".tile.openstreetmap.org:80/2/0/1.png"));
 	}
 
 	@Test

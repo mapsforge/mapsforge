@@ -20,12 +20,14 @@ import java.io.FileNotFoundException;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 
 /**
- * Combining an external render theme file with the jar-embedded resources of the internal osmarender style.
+ * Combining an external render theme file with the jar-embedded resources of
+ * the internal osmarender style.
  */
 
 class ExternalRenderThemeUsingJarResources extends ExternalRenderTheme {
 
-	public ExternalRenderThemeUsingJarResources(File renderThemeFile) throws FileNotFoundException {
+	public ExternalRenderThemeUsingJarResources(File renderThemeFile)
+			throws FileNotFoundException {
 		super(renderThemeFile);
 	}
 

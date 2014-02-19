@@ -33,7 +33,8 @@ public class SymbolBuilderTest {
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, SymbolBuilder.SRC, null, "jar:symbols/atm.png");
 
-		SymbolBuilder symbolBuilder = new SymbolBuilder(GRAPHIC_FACTORY, new DisplayModel(), "symbol", attributesImpl, "/osmarender/");
+		SymbolBuilder symbolBuilder = new SymbolBuilder(GRAPHIC_FACTORY, new DisplayModel(), "symbol", attributesImpl,
+				"/osmarender/");
 
 		Assert.assertNotNull(symbolBuilder.build());
 	}

@@ -14,14 +14,13 @@
  */
 package org.mapsforge.map.android.input;
 
-import android.view.ViewConfiguration;
-
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.util.MapViewProjection;
 
+import android.view.ViewConfiguration;
 
 public class TouchGestureDetector implements TouchEventListener {
 	private final float doubleTapSlop;
@@ -75,6 +74,17 @@ public class TouchGestureDetector implements TouchEventListener {
 	}
 
 	@Override
+	public void onLongPress(LatLong latLong, Point xy) {
+		for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
+			final Layer ovl = this.mapView.getLayerManager().getLayers().get(i);
+			final Point layerXY = projection.toPixels(ovl.getPosition());
+			if (ovl.onLongPress(latLong, layerXY, xy)) {
+				break;
+			}
+		}
+	}
+
+	@Override
 	public void onPointerDown(long eventTime) {
 		this.lastActionUpPoint = null;
 		this.lastEventTime = eventTime;
@@ -86,17 +96,6 @@ public class TouchGestureDetector implements TouchEventListener {
 		if (doubleTouchTime < this.gestureTimeout) {
 			this.lastActionUpPoint = null;
 			this.mapView.getModel().mapViewPosition.zoomOut();
-		}
-	}
-
-	@Override
-	public void onLongPress(LatLong latLong, Point xy) {
-		for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-			final Layer ovl = this.mapView.getLayerManager().getLayers().get(i);
-			final Point layerXY = projection.toPixels(ovl.getPosition());
-			if (ovl.onLongPress(latLong, layerXY, xy)) {
-				break;
-			}
 		}
 	}
 

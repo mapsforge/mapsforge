@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <defs id="defs22">
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="ArrowStart">
+   <path id="path3568" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="ArrowEnd">
+   <path id="path3565" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker2959">
+   <path id="path2626" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker2956">
+   <path id="path2623" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker3077">
+   <path id="path3298" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker3074">
+   <path id="path3295" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+ </defs>
+ <metadata id="metadata10"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z" id="path1329" fill="#666666" stroke="#eeeeee" stroke-width="3.408"/>
+ </g>
+ <path d="M 97.6875,138.375 C 92.456765,138.45674 87.300035,140.68383 83.65625,144.4375 C 80.012464,148.19118 77.926326,153.4254 78,158.65625 L 78,178.65625 L 78,187.5 L 68.6875,187.5 C 62.083592,187.4066 55.484286,190.0505 50.78125,194.6875 C 46.078213,199.3245 43.34375,205.89543 43.34375,212.5 C 43.34375,219.10457 46.078213,225.6755 50.78125,230.3125 C 55.484286,234.9495 62.083592,237.5934 68.6875,237.5 L 78,237.5 L 78,313.0625 L 68.6875,313.0625 C 62.083592,312.9691 55.484286,315.613 50.78125,320.25 C 46.078213,324.887 43.34375,331.45793 43.34375,338.0625 C 43.34375,344.66707 46.078213,351.238 50.78125,355.875 C 55.484286,360.512 62.083592,363.1559 68.6875,363.0625 L 78,363.0625 L 78,409.34375 L 78,429.34375 L 78,449.34375 L 118,449.34375 L 118,429.34375 L 118,409.34375 L 118,363.0625 L 212.3125,363.0625 L 212.3125,335 L 212.3125,334 L 212.3125,333 L 387.6875,333 L 387.6875,363.0625 L 474,363.0625 L 474,409.34375 L 474,429.34375 L 474,449.34375 L 514,449.34375 L 514,429.34375 L 514,409.34375 L 514,363.0625 L 520.4375,363.0625 C 527.04141,363.1559 533.64071,360.512 538.34375,355.875 C 543.04679,351.238 545.78125,344.66707 545.78125,338.0625 C 545.78125,331.45793 543.04679,324.887 538.34375,320.25 C 533.64071,315.613 527.04141,312.9691 520.4375,313.0625 L 514,313.0625 L 514,237.5 L 520.4375,237.5 C 527.04141,237.5934 533.64071,234.9495 538.34375,230.3125 C 543.04679,225.6755 545.78125,219.10457 545.78125,212.5 C 545.78125,205.89543 543.04679,199.3245 538.34375,194.6875 C 533.64071,190.0505 527.04141,187.4066 520.4375,187.5 L 514,187.5 L 514,178.65625 L 514,158.65625 C 514.07514,153.32123 511.9007,147.98864 508.125,144.21875 C 504.3493,140.44885 499.02239,138.29164 493.6875,138.375 C 488.45677,138.45674 483.30004,140.68383 479.65625,144.4375 C 476.01247,148.19118 473.92633,153.4254 474,158.65625 L 474,178.65625 L 474,187.5 L 118,187.5 L 118,178.65625 L 118,158.65625 C 118.07514,153.32123 115.9007,147.98864 112.125,144.21875 C 108.3493,140.44885 103.02239,138.29164 97.6875,138.375 z M 118,237.5 L 474,237.5 L 474,313.0625 L 118,313.0625 L 118,237.5 z" id="path2900" sodipodi:nodetypes="csccccsssccccsssccccccccccccccccccccccccsssccccsssccccsssccccccscccccc" opacity=".75" color="#000000" stroke-width="50" fill="#ffffff"/>
+ <path d="M 232,468 L 372,468" id="path4403" fill="none" stroke="#ffffff" stroke-linecap="square" stroke-width="50"/>
+ <path id="path4405" d="M 240.31579,386 L 359.68421,386" fill="none" stroke="#ffffff" stroke-width="50"/>
+</svg>

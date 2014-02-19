@@ -14,14 +14,16 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import android.util.Log;
-
 import java.io.IOException;
 
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
+
+import android.util.Log;
+
 /**
- * Viewer that utilizes a different rendertheme picked up from the Android apk assets folder.
+ * Viewer that utilizes a different rendertheme picked up from the Android apk
+ * assets folder.
  * 
  */
 public class RenderThemeMapViewer extends BasicMapViewerXml {
@@ -29,9 +31,11 @@ public class RenderThemeMapViewer extends BasicMapViewerXml {
 	@Override
 	protected XmlRenderTheme getRenderTheme() {
 		try {
-			return new AssetsRenderTheme(this, getRenderThemePrefix(), getRenderThemeFile());
+			return new AssetsRenderTheme(this, getRenderThemePrefix(),
+					getRenderThemeFile());
 		} catch (IOException e) {
-			Log.e(SamplesApplication.TAG, "Render theme failure " + e.toString());
+			Log.e(SamplesApplication.TAG,
+					"Render theme failure " + e.toString());
 		}
 		return null;
 	}
