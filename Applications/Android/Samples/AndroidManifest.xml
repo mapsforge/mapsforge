@@ -59,6 +59,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="SVGAssetsRenderThemeMapViewer" />
         <activity
+            android:name=".RenderTheme4"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="RenderTheme V4" />
+        <activity
             android:name=".SVGTextures"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="SVG Textures" />

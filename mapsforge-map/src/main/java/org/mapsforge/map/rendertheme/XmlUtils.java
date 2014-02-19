@@ -44,7 +44,7 @@ public final class XmlUtils {
 	}
 
 	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
-			String relativePathPrefix, String src) throws IOException {
+			String relativePathPrefix, String src, int width, int height) throws IOException {
 		if (src == null || src.length() == 0) {
 			// no image source defined
 			return null;
@@ -56,16 +56,12 @@ public final class XmlUtils {
 		}
 		try {
 			String absoluteName = getAbsoluteName(relativePathPrefix, src);
+			// we need to hash with the width/height included as the same symbol could be required
+			// in a different size and must be cached with a size-specific hash
+			int hash = new StringBuilder().append(absoluteName).append(width).append(height).toString().hashCode();
 			if (src.endsWith(".svg")) {
 				try {
-					if (src.contains("patterns")) {
-						// TODO revert out of this
-						// total hack for testing of scaling of SVG patterns, this requires some more API changes
-						// that I would like to avoid right now: all svg files in patterns folder are scaled up to
-						// the tile size multiple
-						return graphicFactory.renderSvg(inputStream, 0, displayModel.getTileSizeMultiple(), displayModel.getTileSizeMultiple(), absoluteName.hashCode());
-					}
-					return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), 0, 0, absoluteName.hashCode());
+					return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), width, height, hash);
 				} catch (IOException e) {
 					throw new IOException("SVG render failed " + src, e);
 				}

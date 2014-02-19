@@ -27,10 +27,7 @@ import org.xml.sax.SAXException;
 /**
  * A builder for {@link LineSymbol} instances.
  */
-public class LineSymbolBuilder {
-	static final String ALIGN_CENTER = "align-center";
-	static final String REPEAT = "repeat";
-	static final String SRC = "src";
+public class LineSymbolBuilder extends RenderInstructionBuilder {
 
 	boolean alignCenter;
 	Bitmap bitmap;
@@ -39,6 +36,10 @@ public class LineSymbolBuilder {
 	public LineSymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
+
+		this.bitmap = createBitmap(graphicFactory, displayModel, relativePathPrefix, src);
+		XmlUtils.checkMandatoryAttribute(this.elementName, SRC, this.bitmap);
+
 	}
 
 	/**
@@ -50,12 +51,15 @@ public class LineSymbolBuilder {
 
 	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
+
+		this.elementName = elementName;
+
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				this.bitmap = XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, value);
+				this.src = value;
 			} else if (ALIGN_CENTER.equals(name)) {
 				this.alignCenter = Boolean.parseBoolean(value);
 			} else if (REPEAT.equals(name)) {
@@ -65,6 +69,5 @@ public class LineSymbolBuilder {
 			}
 		}
 
-		XmlUtils.checkMandatoryAttribute(elementName, SRC, this.bitmap);
 	}
 }

@@ -49,8 +49,6 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 				float bitmapHeight = (float) (picture.getHeight() * scale);
 
 				if (width != 0 && height != 0) {
-					// TODO hack alert, if height and width are defined render bitmap to this size
-					// hack for scaling SVG bitmaps to fixed multiples
 					bitmapWidth = width;
 					bitmapHeight = height;
 				}

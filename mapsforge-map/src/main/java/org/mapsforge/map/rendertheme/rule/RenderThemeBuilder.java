@@ -29,7 +29,7 @@ public class RenderThemeBuilder {
 	private static final String BASE_STROKE_WIDTH = "base-stroke-width";
 	private static final String BASE_TEXT_SIZE = "base-text-size";
 	private static final String MAP_BACKGROUND = "map-background";
-	private static final int RENDER_THEME_VERSION = 3;
+	private static final int RENDER_THEME_VERSION = 4;
 	private static final String VERSION = "version";
 	private static final String XMLNS = "xmlns";
 	private static final String XMLNS_XSI = "xmlns:xsi";

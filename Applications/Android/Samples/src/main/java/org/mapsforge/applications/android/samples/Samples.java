@@ -32,7 +32,7 @@ import android.widget.LinearLayout;
  * A simple start screen for the sample activities.
  */
 public class Samples extends Activity {
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.options_menu, menu);
@@ -88,6 +88,8 @@ public class Samples extends Activity {
 				"Rendertheme using Android Assets"));
 		linearLayout.addView(createButton(SVGAssetsRenderThemeMapViewer.class,
 				"Rendertheme using SVG files"));
+		linearLayout.addView(createButton(RenderTheme4.class,
+				"Rendertheme V4"));
 		linearLayout.addView(createButton(SVGTextures.class, "SVG Textures"));
 		linearLayout.addView(createButton(RenderThemeChanger.class,
 				"Automatically changing render themes"));

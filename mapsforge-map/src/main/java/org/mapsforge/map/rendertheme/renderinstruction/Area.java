@@ -25,15 +25,21 @@ import org.mapsforge.map.rendertheme.RenderCallback;
  */
 public class Area implements RenderInstruction {
 	private final Paint fill;
+	private final float height;
 	private final int level;
+	private final RenderInstructionBuilder.ResourceScaling scaling;
 	private final Paint stroke;
 	private final float strokeWidth;
+	private final float width;
 
 	Area(AreaBuilder areaBuilder) {
 		this.fill = areaBuilder.fill;
+		this.height = areaBuilder.height;
 		this.level = areaBuilder.level;
+		this.scaling = areaBuilder.scaling;
 		this.stroke = areaBuilder.stroke;
 		this.strokeWidth = areaBuilder.strokeWidth;
+		this.width = areaBuilder.width;
 	}
 
 	@Override
