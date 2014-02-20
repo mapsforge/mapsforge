@@ -606,7 +606,7 @@
 					<rule e="way" k="highway" v="unclassified|residential|living_street">
 						<line stroke="#ffffff" stroke-width="1.35" />
 						<rule e="way" k="*" v="*" zoom-min="15">
-							<pathText k="name" font-style="bold" font-size="10" stroke="#ffffff" stroke-width="2.0" />
+							<pathText k="name" dy="-20" font-style="bold" font-size="10" stroke="#ffffff" stroke-width="2.0" />
 						</rule>
 					</rule>
 					<rule e="way" k="highway" v="byway">
@@ -648,13 +648,13 @@
 					<rule e="way" k="highway" v="secondary">
 						<line stroke="#fdbf6f" stroke-width="1.5" />
 						<rule e="way" k="*" v="*" zoom-min="14">
-							<pathText k="name" font-style="bold" font-size="10" stroke="#fdbf6f" stroke-width="2.0" />
+							<pathText k="name" dy="20" font-style="bold" font-size="10" stroke="#fdbf6f" stroke-width="2.0" />
 						</rule>
 					</rule>
 					<rule e="way" k="highway" v="primary">
 						<line stroke="#e46d71" stroke-width="1.5" />
 						<rule e="way" k="*" v="*" zoom-min="14">
-							<pathText k="name" font-style="bold" font-size="10" stroke="#e46d71" stroke-width="2.0" />
+							<pathText k="name" dy="20" font-style="bold" font-size="10" stroke="#e46d71" stroke-width="2.0" />
 							<pathText k="ref" font-style="bold" font-size="12" stroke="#ffffff" fill="#606060" stroke-width="2.0" />
 						</rule>
 					</rule>

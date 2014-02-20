@@ -60,7 +60,7 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderWayText(String text, Paint fill, Paint stroke) {
+	public void renderWayText(String text, float dy, Paint fill, Paint stroke) {
 		// do nothing
 	}
 }

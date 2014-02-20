@@ -31,15 +31,9 @@ import org.xml.sax.SAXException;
 /**
  * A builder for {@link PathText} instances.
  */
-public class PathTextBuilder {
-	static final String FILL = "fill";
-	static final String FONT_FAMILY = "font-family";
-	static final String FONT_SIZE = "font-size";
-	static final String FONT_STYLE = "font-style";
-	static final String K = "k";
-	static final String STROKE = "stroke";
-	static final String STROKE_WIDTH = "stroke-width";
+public class PathTextBuilder extends RenderInstructionBuilder {
 
+	float dy;
 	final Paint fill;
 	float fontSize;
 	final Paint stroke;
@@ -78,6 +72,8 @@ public class PathTextBuilder {
 
 			if (K.equals(name)) {
 				this.textKey = TextKey.getInstance(value);
+			} else if (DY.equals(name)) {
+				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {
 				fontFamily = FontFamily.valueOf(value.toUpperCase(Locale.ENGLISH));
 			} else if (FONT_STYLE.equals(name)) {

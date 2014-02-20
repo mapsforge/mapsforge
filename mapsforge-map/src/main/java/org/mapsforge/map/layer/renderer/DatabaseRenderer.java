@@ -288,8 +288,8 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderWayText(String textKey, Paint fill, Paint stroke) {
-		WayDecorator.renderText(textKey, fill, stroke, this.coordinates, this.wayNames);
+	public void renderWayText(String textKey, float dy, Paint fill, Paint stroke) {
+		WayDecorator.renderText(textKey, dy, fill, stroke, this.coordinates, this.wayNames);
 	}
 
 	private void clearLists() {

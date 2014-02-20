@@ -134,6 +134,7 @@
 
 	<xs:complexType name="pathText">
 		<xs:attribute name="k" type="tns:textKey" use="required" />
+		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
 		<xs:attribute name="font-style" type="tns:fontStyle" use="optional" default="normal" />
 		<xs:attribute name="font-size" type="tns:nonNegativeFloat" use="optional" default="0" />

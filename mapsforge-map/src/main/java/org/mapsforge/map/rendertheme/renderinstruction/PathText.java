@@ -24,12 +24,14 @@ import org.mapsforge.map.rendertheme.RenderCallback;
  * Represents a text along a polyline on the map.
  */
 public class PathText implements RenderInstruction {
+	private final float dy;
 	private final Paint fill;
 	private final float fontSize;
 	private final Paint stroke;
 	private final TextKey textKey;
 
 	PathText(PathTextBuilder pathTextBuilder) {
+		this.dy = pathTextBuilder.dy;
 		this.fill = pathTextBuilder.fill;
 		this.fontSize = pathTextBuilder.fontSize;
 		this.stroke = pathTextBuilder.stroke;
@@ -52,7 +54,7 @@ public class PathText implements RenderInstruction {
 		if (caption == null) {
 			return;
 		}
-		renderCallback.renderWayText(caption, this.fill, this.stroke);
+		renderCallback.renderWayText(caption, this.dy, this.fill, this.stroke);
 	}
 
 	@Override

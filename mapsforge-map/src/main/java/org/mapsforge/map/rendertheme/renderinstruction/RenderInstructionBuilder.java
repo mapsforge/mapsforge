@@ -22,9 +22,15 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import java.io.IOException;
 
 public class RenderInstructionBuilder {
+
 	static final String ALIGN_CENTER = "align-center";
 	static final String DEFAULT = "default";
+	static final String DY = "dy";
 	static final String FILL = "fill";
+	static final String FONT_FAMILY = "font-family";
+	static final String FONT_SIZE = "font-size";
+	static final String FONT_STYLE = "font-style";
+	static final String K = "k";
 	static final String REPEAT = "repeat";
 	static final String SIZE = "symbol-size";
 	static final String SRC = "src";

@@ -118,10 +118,12 @@ public interface RenderCallback {
 	 * 
 	 * @param text
 	 *            the text to be rendered.
+	 * @param dy
+	 *            the offset of the way text.
 	 * @param fill
 	 *            the paint to be used for rendering the text.
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
 	 */
-	void renderWayText(String text, Paint fill, Paint stroke);
+	void renderWayText(String text, float dy, Paint fill, Paint stroke);
 }
