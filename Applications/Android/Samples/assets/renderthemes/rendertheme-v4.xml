@@ -5,7 +5,7 @@
 	<!-- ways -->
 	<rule e="way" k="*" v="*">
 		<!-- landuse -->
-		<rule e="way" k="landuse" v="*">
+		<rule cat="landuse" e="way" k="landuse" v="*">
 			<rule e="way" k="landuse" v="military">
 				<area src="assets:patterns/military.png" stroke="#e4e4e4" stroke-width="0.2" />
 			</rule>
@@ -101,7 +101,7 @@
 
 
 		<!-- landuse -->
-		<rule e="way" k="landuse" v="*">
+		<rule cat="landuse" e="way" k="landuse" v="*">
 			<rule e="way" k="landuse" v="landfill|quarry">
 				<area fill="#e9dd72" stroke="#556b2f" stroke-width="0.2" />
 			</rule>
@@ -497,8 +497,10 @@
 
 
 		<!-- building -->
-		<rule e="way" k="building" v="*">
-			<rule e="way" k="*" v="*" zoom-min="17">
+		<rule cat="buildings" e="way" k="building" v="*">
+            <area fill="#f3d6b6" stroke="#6a5a8e" stroke-width="0.1" />
+
+            <rule e="way" k="*" v="*" zoom-min="17">
 				<caption k="name" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
 				<caption k="addr:housenumber" font-style="bold" font-size="10" fill="#606060" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
@@ -927,7 +929,7 @@
 
 
 		<!-- house numbers -->
-		<rule e="node" k="addr:housenumber" v="*" zoom-min="18">
+		<rule cat="buildings" e="node" k="addr:housenumber" v="*" zoom-min="18">
 			<caption k="addr:housenumber" font-style="bold" font-size="10" fill="#606060" stroke="#ffffff" stroke-width="2.0" />
 		</rule>
 

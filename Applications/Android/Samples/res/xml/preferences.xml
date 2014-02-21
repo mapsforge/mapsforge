@@ -9,4 +9,13 @@
             android:defaultValue="1.0"
             android:entries="@array/pref_scale_entries"
             android:entryValues="@array/pref_scale_values"/>
+    <PreferenceCategory android:title="Render Theme V4 Settings">
+        <CheckBoxPreference android:title="Show Buildings"
+                            android:key="buildings"
+                            android:defaultValue="false"/>
+        <CheckBoxPreference android:title="Show landuse"
+                            android:key="landuse"
+                            android:defaultValue="true"/>
+
+    </PreferenceCategory>
 </PreferenceScreen>

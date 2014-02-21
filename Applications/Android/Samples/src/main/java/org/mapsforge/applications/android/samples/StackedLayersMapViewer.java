@@ -40,7 +40,7 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 		try {
 
 			XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "",
-					"renderthemes/onlybuildings.xml");
+					"renderthemes/onlybuildings.xml", getCategories());
 			this.layerManagers
 					.get(0)
 					.getLayers()

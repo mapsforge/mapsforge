@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.mapsforge.map.rendertheme.XmlUtils;
@@ -29,6 +30,10 @@ import org.xml.sax.SAXException;
  * A builder for {@link Rule} instances.
  */
 public class RuleBuilder {
+
+	private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
+
+	private static final String CAT = "cat";
 	private static final String CLOSED = "closed";
 	private static final String E = "e";
 	private static final String K = "k";
@@ -91,6 +96,7 @@ public class RuleBuilder {
 		return attributeMatcher;
 	}
 
+	String cat;
 	ClosedMatcher closedMatcher;
 	ElementMatcher elementMatcher;
 	byte zoomMax;
@@ -142,6 +148,9 @@ public class RuleBuilder {
 				this.keys = value;
 			} else if (V.equals(name)) {
 				this.values = value;
+			} else if (CAT.equals(name)) {
+				LOGGER.warning("Rule " + elementName + " " + value);
+				this.cat = value;
 			} else if (CLOSED.equals(name)) {
 				this.closed = Closed.valueOf(value.toUpperCase(Locale.ENGLISH));
 			} else if (ZOOM_MIN.equals(name)) {

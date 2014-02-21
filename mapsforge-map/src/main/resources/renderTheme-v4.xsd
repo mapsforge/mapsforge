@@ -167,6 +167,7 @@
 		<xs:attribute name="e" type="tns:elementList" use="required" />
 		<xs:attribute name="k" type="xs:string" use="required" />
 		<xs:attribute name="v" type="xs:string" use="required" />
+		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="closed" type="tns:closed" use="optional" default="any" />
 		<xs:attribute name="zoom-min" type="xs:unsignedByte" use="optional" default="0" />
 		<xs:attribute name="zoom-max" type="xs:unsignedByte" use="optional" default="127" />

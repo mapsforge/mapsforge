@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Enumeration of all internal rendering themes.
@@ -35,6 +36,18 @@ public enum InternalRenderTheme implements XmlRenderTheme {
 		this.file = file;
 	}
 
+	/**
+	 * @return null: the internal render theme is v3 and does not support rendering of
+	 * categories.
+	 */
+	@Override
+	public List<String> getCategories() {
+		return null;
+	}
+
+	/**
+	 * @return the prefix for all relative resource paths.
+	 */
 	@Override
 	public String getRelativePathPrefix() {
 		return this.absolutePath;

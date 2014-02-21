@@ -17,6 +17,7 @@ package org.mapsforge.map.rendertheme.rule;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,7 +66,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
 			XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException {
 		RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
-				xmlRenderTheme.getRelativePathPrefix());
+				xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme.getCategories());
 		XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		xmlReader.setContentHandler(renderThemeHandler);
 		InputStream inputStream = null;
@@ -82,6 +83,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 		}
 	}
 
+	private final List<String> categories;
 	private Rule currentRule;
 	private final DisplayModel displayModel;
 	private final Stack<Element> elementStack = new Stack<Element>();
@@ -91,11 +93,19 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
 
-	private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix) {
+	private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, List<String> categories) {
 		super();
 		this.graphicFactory = graphicFactory;
 		this.displayModel = displayModel;
 		this.relativePathPrefix = relativePathPrefix;
+		this.categories = categories;
+		if (this.categories != null) {
+			StringBuilder sb = new StringBuilder();
+			for (String s : categories) {
+				sb.append(s).append(" ");
+			}
+			LOGGER.warning("Rule set " + sb.toString());
+		}
 	}
 
 	@Override
@@ -115,7 +125,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 		if (ELEMENT_NAME_RULE.equals(qName)) {
 			this.ruleStack.pop();
 			if (this.ruleStack.empty()) {
-				this.renderTheme.addRule(this.currentRule);
+				if (ruleIsVisible((this.currentRule))) {
+					this.renderTheme.addRule(this.currentRule);
+				}
 			} else {
 				this.currentRule = this.ruleStack.peek();
 			}
@@ -139,7 +151,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 				checkState(qName, Element.RULE);
 				Rule rule = new RuleBuilder(qName, attributes, this.ruleStack).build();
 				if (!this.ruleStack.empty()) {
-					this.currentRule.addSubRule(rule);
+					if (ruleIsVisible(rule)) {
+						this.currentRule.addSubRule(rule);
+					}
 				}
 				this.currentRule = rule;
 				this.ruleStack.push(this.currentRule);
@@ -234,5 +248,11 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private void checkState(String elementName, Element element) throws SAXException {
 		checkElement(elementName, element);
 		this.elementStack.push(element);
+	}
+
+	private boolean ruleIsVisible(Rule rule) {
+		// a rule is visible if categories is not set, the rule has not category or the
+		// categories contain this rule's category
+		return this.categories == null || rule.cat == null || this.categories.contains(rule.cat);
 	}
 }

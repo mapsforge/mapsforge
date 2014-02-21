@@ -14,21 +14,47 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import android.util.Log;
+import android.content.SharedPreferences;
 
-import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
-
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Example of the capabilities of RenderTheme version 4
  */
 public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 
-		@Override
+	protected final String BUILDINGS = "buildings";
+	protected final String LANDUSE = "landuse";
+
+	@Override
+	protected List<String> getCategories() {
+		// categories to render
+		List<String> categories = new ArrayList<>();
+		if (this.sharedPreferences.getBoolean(BUILDINGS, false)) {
+			categories.add(BUILDINGS);
+		}
+		if (this.sharedPreferences.getBoolean(LANDUSE, true)) {
+			categories.add(LANDUSE);
+		}
+		return categories;
+	}
+
+	@Override
 		protected String getRenderThemeFile() {
 			return "renderthemes/rendertheme-v4.xml";
 		}
+
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+		super.onSharedPreferenceChanged(preferences, key);
+
+		if (BUILDINGS.equals(key) || LANDUSE.equals(key)) {
+			// just start this new
+			startActivity(this.getIntent());
+			finish();
+		}
+	}
 
 }

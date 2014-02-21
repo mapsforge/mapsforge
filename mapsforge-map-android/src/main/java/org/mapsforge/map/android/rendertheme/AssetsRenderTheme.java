@@ -16,6 +16,8 @@ package org.mapsforge.map.android.rendertheme;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
@@ -28,13 +30,18 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 	private static final long serialVersionUID = 1L;
 
 	private final String assetName;
+	private final List<String> categories;
 	private final InputStream inputStream;
 	private final String relativePathPrefix;
 
-	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException {
+	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, List<String> categories) throws IOException {
 		this.assetName = fileName;
 		this.relativePathPrefix = relativePathPrefix;
 		this.inputStream = context.getAssets().open(this.assetName);
+		this.categories = categories;
+		if (this.categories != null) {
+			Collections.sort(this.categories);
+		}
 	}
 
 	@Override
@@ -51,7 +58,16 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 		if (this.relativePathPrefix != other.relativePathPrefix) {
 			return false;
 		}
+		if ((this.categories == null && other.categories != null) ||
+				(this.categories != null && (other.categories == null || !this.categories.equals(other.categories)))) {
+			return false;
+		}
 		return true;
+	}
+
+	@Override
+	public List<String> getCategories() {
+		return this.categories;
 	}
 
 	@Override
@@ -70,6 +86,9 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 		int result = 1;
 		result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
 		result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
+		if (this.categories != null) {
+			result = prime * result + (this.categories.hashCode());
+		}
 		return result;
 	}
 }

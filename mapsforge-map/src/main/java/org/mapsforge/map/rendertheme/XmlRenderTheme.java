@@ -16,11 +16,19 @@ package org.mapsforge.map.rendertheme;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Interface for a render theme which is defined in XML.
  */
 public interface XmlRenderTheme {
+
+	/**
+	 * @return a string list of categories that should be rendered, null if all should be
+	 * rendered (to support backward compatibility).
+	 */
+	List<String> getCategories();
+
 	/**
 	 * @return the prefix for all relative resource paths.
 	 */
