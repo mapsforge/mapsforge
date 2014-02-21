@@ -113,7 +113,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return ((AndroidPaint) paint).paint;
 	}
 
-	static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
+	public static android.graphics.Bitmap getBitmap(Bitmap bitmap) {
 		return ((AndroidBitmap) bitmap).bitmap;
 	}
 
