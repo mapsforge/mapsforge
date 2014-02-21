@@ -30,7 +30,7 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	@Override
 	protected List<String> getCategories() {
 		// categories to render
-		List<String> categories = new ArrayList<>();
+		List<String> categories = new ArrayList<String>();
 		if (this.sharedPreferences.getBoolean(BUILDINGS, false)) {
 			categories.add(BUILDINGS);
 		}
