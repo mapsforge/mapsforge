@@ -96,10 +96,12 @@ public interface RenderCallback {
 	 * 
 	 * @param stroke
 	 *            the paint to be used for rendering the way.
+	 * @param dy
+	 *            the offset of the way.
 	 * @param level
 	 *            the drawing level on which the way should be rendered.
 	 */
-	void renderWay(Paint stroke, int level);
+	void renderWay(Paint stroke, float dy, int level);
 
 	/**
 	 * Renders a way with the given symbol along the way path.

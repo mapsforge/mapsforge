@@ -24,11 +24,13 @@ import org.mapsforge.map.rendertheme.RenderCallback;
  * Represents a polyline on the map.
  */
 public class Line implements RenderInstruction {
+	private final float dy;
 	private final int level;
 	private final Paint stroke;
 	private final float strokeWidth;
 
 	Line(LineBuilder lineBuilder) {
+		this.dy = lineBuilder.dy;
 		this.level = lineBuilder.level;
 		this.stroke = lineBuilder.stroke;
 		this.strokeWidth = lineBuilder.strokeWidth;
@@ -46,7 +48,7 @@ public class Line implements RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderWay(this.stroke, this.level);
+		renderCallback.renderWay(this.stroke, this.dy, this.level);
 	}
 
 	@Override

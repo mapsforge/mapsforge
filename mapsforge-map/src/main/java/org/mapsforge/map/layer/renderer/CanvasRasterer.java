@@ -115,11 +115,16 @@ class CanvasRasterer {
 		this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
 	}
 
-	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates) {
+	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
 		this.path.clear();
 
 		for (int j = 0; j < coordinates.length; ++j) {
-			Point[] points = coordinates[j];
+			Point[] points;
+			if (dy != 0f) {
+				points = RendererUtils.parallelPath(coordinates[j], dy);
+			} else {
+				points = coordinates[j];
+			}
 			if (points.length >= 2) {
 				Point point = points[0];
 				this.path.moveTo((float) point.x, (float) point.y);
@@ -142,7 +147,7 @@ class CanvasRasterer {
 
 			case POLYLINE:
 				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-				drawPath(shapePaintContainer, polylineContainer.coordinates);
+				drawPath(shapePaintContainer, polylineContainer.coordinates, shapePaintContainer.dy);
 				return;
 		}
 	}

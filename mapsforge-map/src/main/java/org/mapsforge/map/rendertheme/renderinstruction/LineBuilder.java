@@ -45,6 +45,7 @@ public class LineBuilder extends RenderInstructionBuilder {
 		return dashIntervals;
 	}
 
+	float dy;
 	final int level;
 	final Paint stroke;
 	float strokeWidth;
@@ -83,6 +84,8 @@ public class LineBuilder extends RenderInstructionBuilder {
 
 			if (SRC.equals(name)) {
 				this.src = value;
+			} else if (DY.equals(name)) {
+				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {

@@ -41,9 +41,9 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	}
 
 	@Override
-		protected String getRenderThemeFile() {
-			return "renderthemes/rendertheme-v4.xml";
-		}
+	protected String getRenderThemeFile() {
+		return "renderthemes/rendertheme-v4.xml";
+	}
 
 
 	@Override

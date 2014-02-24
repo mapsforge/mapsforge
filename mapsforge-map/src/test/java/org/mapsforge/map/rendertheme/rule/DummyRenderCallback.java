@@ -50,7 +50,7 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderWay(Paint stroke, int level) {
+	public void renderWay(Paint stroke, float dy, int level) {
 		// do nothing
 	}
 

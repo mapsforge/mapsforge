@@ -457,6 +457,7 @@
 						</rule>
 						<rule e="way" k="highway" v="pedestrian|unclassified|residential|living_street">
 							<line stroke="#707070" stroke-width="1.5" />
+							<line dy="10" stroke="#0000FF" stroke-width="0.5" />
 						</rule>
 						<rule e="way" k="highway" v="tertiary|secondary_link|primary_link|trunk_link|motorway_link|secondary|primary|trunk">
 							<line stroke="#707070" stroke-width="1.8" stroke-linecap="butt" />
@@ -739,8 +740,6 @@
 			</rule>
 		</rule>
 
-
-
 		<!-- aerial ways -->
 		<rule e="way" k="aerialway" v="*">
 			<line stroke="#202020" stroke-width="0.4" stroke-linecap="butt" />
@@ -759,7 +758,62 @@
 			</rule>
 		</rule>
 
-		<!-- place -->
+        <!-- non-physical boundaries -->
+        <rule e="way" k="boundary" v="*">
+            <rule e="way" k="boundary" v="national_park">
+                <line stroke="#4ef94b" stroke-width="0.25" stroke-dasharray="15, 5, 5, 5" />
+            </rule>
+            <rule e="way" k="boundary" v="administrative">
+				<rule e="way" k="admin_level" v="*">
+					<rule e="way" k="admin_level" v="11">
+						<line stroke="#f9574b" stroke-width="0.1" stroke-dasharray="1, 5" />
+						<line dy="3" stroke="#f9574b" stroke-width="0.1" />
+					</rule>
+					<rule e="way" k="admin_level" v="10">
+						<line stroke="#f9574b" stroke-width="0.1" stroke-dasharray="5, 25" />
+						<line dy="3" stroke="#f9574b" stroke-width="0.1" />
+					</rule>
+					<rule e="way" k="admin_level" v="9">
+						<line stroke="#f9574b" stroke-width="0.1" stroke-dasharray="15, 15" />
+						<line dy="3" stroke="#f9574b" stroke-width="0.1" />
+				    </rule>
+				    <rule e="way" k="admin_level" v="8">
+						<line stroke="#f9574b" stroke-width="0.1" stroke-dasharray="15, 5, 5, 5" />
+						<line dy="3" stroke="#f9574b" stroke-width="0.1" />
+				    </rule>
+				    <rule e="way" k="admin_level" v="7">
+						<line stroke="#f9574b" stroke-width="0.1" />
+						<line dy="3" stroke="#f9574b" stroke-width="0.1" />
+					</rule>
+					<rule e="way" k="admin_level" v="6">
+						<line stroke="#f9574b" stroke-width="0.25" stroke-dasharray="5, 5" />
+						<line dy="3" stroke="#f9574b" stroke-width="0.1" />
+					</rule>
+					<rule e="way" k="admin_level" v="5">
+					    <line stroke="#f9574b" stroke-width="0.25" stroke-dasharray="15, 15" />
+						<line dy="3" stroke="#f9574b" stroke-width="0.1" />
+					</rule>
+					<rule e="way" k="admin_level" v="4">
+					    <line stroke="#f9574b" stroke-width="0.25" stroke-dasharray="15, 5, 5, 5" />
+					    <line dy="3" stroke="#f9574b" stroke-width="0.1" />
+					</rule>
+					<rule e="way" k="admin_level" v="3">
+						<line stroke="#f9574b" stroke-width="0.25" />
+					    <line dy="3" stroke="#f9574b" stroke-width="0.1" />
+					</rule>
+					<rule e="way" k="admin_level" v="2">
+					    <line stroke="#80ffff00" stroke-width="0.75" />
+						<line stroke="#f9574b" stroke-width="0.25" stroke-dasharray="15, 15" />
+					</rule>
+					<rule e="way" k="admin_level" v="1">
+					    <line stroke="#80ffff00" stroke-width="1.75" />
+						<line stroke="#f9574b" stroke-width="0.25" stroke-dasharray="15, 5, 5, 5" />
+					</rule>
+				</rule>
+			</rule>
+        </rule>
+
+        <!-- place -->
 		<rule e="way" k="place" v="locality" zoom-min="17">
 			<caption k="name" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
 		</rule>

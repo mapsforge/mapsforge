@@ -37,41 +37,6 @@ final class WayDecorator {
 	 */
 	private static final int SEGMENT_SAFETY_DISTANCE = 30;
 
-
-
-	/**
-	 * Computes a polyline with distance dy parallel to given coordinates.
-	 * http://objectmix.com/graphics/132987-draw-parallel-polyline-algorithm-needed.html
-	 */
-	static Point[] parallelPath(Point[][] coordinates, double dy) {
-		Point[] p = coordinates[0];
-		int n = p.length - 1;
-		Point[] u = new Point[n];
-		Point[] h = new Point[p.length];
-
-		// Generate an array U[] of unity vectors of each direction
-		for (int k = 0; k < n; ++k) {
-			double c = p[k + 1].x - p[k].x;
-			double s = p[k + 1].y - p[k].y;
-			double l = Math.sqrt(c * c + s * s);
-			u[k] = new Point(c / l, s / l);
-		}
-
-		// For the start point calculate the normal
-		h[0] = new Point(p[0].x - dy * u[0].y, p[0].y + dy * u[0].x);
-
-		// For 1 to N-1 calculate the intersection of the offset lines
-		for (int k = 1; k < n; k++) {
-			double l = dy / (1 + u[k].x * u[k - 1].x + u[k].y * u[k - 1].y);
-			h[k] = new Point(p[k].x - l * (u[k].y + u[k - 1].y), p[k].y + l * (u[k].x + u[k - 1].x));
-		}
-
-		// For the end point use the normal
-		h[n] = new Point(p[n].x - dy * u[n - 1].y, p[n].y + dy * u[n - 1].x);
-
-		return h;
-	}
-
 	static void renderSymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol, Point[][] coordinates,
 			List<SymbolContainer> waySymbols) {
 		int skipPixels = SEGMENT_SAFETY_DISTANCE;
@@ -145,7 +110,7 @@ final class WayDecorator {
 		if (dy == 0f) {
 			c = coordinates[0];
 		} else {
-			c = parallelPath(coordinates, dy);
+			c = RendererUtils.parallelPath(coordinates[0], dy);
 		}
 
 		// get the first way point coordinates

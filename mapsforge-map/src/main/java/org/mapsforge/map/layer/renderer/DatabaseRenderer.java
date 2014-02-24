@@ -278,8 +278,8 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderWay(Paint stroke, int level) {
-		this.drawingLayers.get(level).add(new ShapePaintContainer(this.shapeContainer, stroke));
+	public void renderWay(Paint stroke, float dy, int level) {
+		this.drawingLayers.get(level).add(new ShapePaintContainer(this.shapeContainer, stroke, dy));
 	}
 
 	@Override

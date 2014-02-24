@@ -120,6 +120,7 @@
 
 	<xs:complexType name="line">
 		<xs:attribute name="src" type="tns:src" use="optional" />
+		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
 		<xs:attribute name="stroke-dasharray" type="tns:strokeDasharray" use="optional" />
