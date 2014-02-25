@@ -408,12 +408,10 @@ public class SVGParser {
 			case '\n':
 			case '\t':
 			case ' ':
-			case ',':
-			case '-': {
+			case ',':{
 				String str = s.substring(p, i);
 				// Just keep moving if multiple whitespace
 				if (str.trim().length() > 0) {
-					//Util.debug("  Next: " + str);
 					Float f = Float.parseFloat(str);
 					numbers.add(f);
 					if (c == '-') {
