@@ -1045,7 +1045,12 @@
 			<rule e="node" k="tourism" v="viewpoint" zoom-min="15">
 				<symbol src="assets:symbols/tourist/view_point.svg" />
 			</rule>
-
+			<rule e="node" k="tourism" v="gallery|arts_centre" zoom-min="15">
+				<symbol src="assets:symbols/tourist/art_gallery.svg" />
+			</rule>
+			<rule e="node" k="tourism" v="museum" zoom-min="15">
+				<symbol src="assets:symbols/tourist/museum.svg" />
+			</rule>
 			<rule e="node" k="*" v="*" zoom-min="17">
 				<caption k="name" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
