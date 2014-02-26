@@ -28,6 +28,12 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	protected final String LANDUSE = "landuse";
 
 	@Override
+	protected void createMapViews() {
+		super.createMapViews();
+		this.mapViews.get(0).getModel().displayModel.setTileSizeMultiple(64);
+	}
+
+	@Override
 	protected List<String> getCategories() {
 		// categories to render
 		List<String> categories = new ArrayList<String>();
