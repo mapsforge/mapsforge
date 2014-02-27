@@ -12,4 +12,16 @@
  		<item>1.5</item>
  		<item>2</item>
  	</string-array>
+    <string-array name="pref_r4style_entries">
+        <item>Driving Mode</item>
+        <item>City Mode</item>
+        <item>Outdoor Mode</item>
+        <item>Show Everything</item>
+    </string-array>
+    <string-array name="pref_r4style_values" translatable="false">
+        <item>driving</item>
+        <item>city</item>
+        <item>outdoor</item>
+        <item>everything</item>
+    </string-array>
 </resources>

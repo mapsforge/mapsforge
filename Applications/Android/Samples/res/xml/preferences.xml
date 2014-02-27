@@ -9,13 +9,14 @@
             android:defaultValue="1.0"
             android:entries="@array/pref_scale_entries"
             android:entryValues="@array/pref_scale_values"/>
-    <PreferenceCategory android:title="Render Theme V4 Settings">
-        <CheckBoxPreference android:title="Show Buildings"
-                            android:key="buildings"
-                            android:defaultValue="false"/>
-        <CheckBoxPreference android:title="Show landuse"
-                            android:key="landuse"
-                            android:defaultValue="true"/>
-
+    <PreferenceCategory android:title="Map Style for Rendertheme V4">
+        <ListPreference
+            android:negativeButtonText="@string/cancelbutton"
+            android:title="Map Style"
+            android:summary="Choose the display style for the map"
+            android:key="r4theme"
+            android:defaultValue="outdoor"
+            android:entries="@array/pref_r4style_entries"
+            android:entryValues="@array/pref_r4style_values"/>
     </PreferenceCategory>
 </PreferenceScreen>

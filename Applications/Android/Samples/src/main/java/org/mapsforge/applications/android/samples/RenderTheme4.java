@@ -24,8 +24,11 @@ import java.util.List;
  */
 public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 
-	protected final String BUILDINGS = "buildings";
-	protected final String LANDUSE = "landuse";
+	protected final String THEMESTYLE = "r4theme";
+	protected final String OUTDOOR = "outdoor";
+	protected final String CITY = "city";
+	protected final String DRIVING = "driving";
+	protected final String EVERYTHING = "everything";
 
 	@Override
 	protected void createMapViews() {
@@ -36,12 +39,26 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	@Override
 	protected List<String> getCategories() {
 		// categories to render
-		List<String> categories = new ArrayList<String>();
-		if (this.sharedPreferences.getBoolean(BUILDINGS, false)) {
-			categories.add(BUILDINGS);
+		String themeStyle = this.sharedPreferences.getString(THEMESTYLE, "outdoor");
+
+		if (EVERYTHING.equals(themeStyle)) {
+			return null;
 		}
-		if (this.sharedPreferences.getBoolean(LANDUSE, true)) {
-			categories.add(LANDUSE);
+
+		List<String> categories = new ArrayList<String>();
+		if (OUTDOOR.equals(themeStyle)) {
+			categories.add("outdoor");
+			categories.add("natural");
+			categories.add("natural-labels");
+			categories.add("sport");
+		}
+		if (CITY.equals(themeStyle)) {
+			categories.add("buildings");
+			categories.add("shopping");
+			categories.add("tourism");
+		}
+		if (DRIVING.equals(themeStyle)) {
+			categories.add("transport");
 		}
 		return categories;
 	}
@@ -56,10 +73,10 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		super.onSharedPreferenceChanged(preferences, key);
 
-		if (BUILDINGS.equals(key) || LANDUSE.equals(key)) {
+		if (THEMESTYLE.equals(key)) {
 			// just start this new
-			startActivity(this.getIntent());
 			finish();
+			startActivity(this.getIntent());
 		}
 	}
 
