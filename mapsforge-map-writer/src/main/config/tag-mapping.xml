@@ -17,6 +17,7 @@
 	<pois>
 		<osm-tag key="amenity" value="atm" zoom-appear="17" />
 		<osm-tag key="amenity" value="bank" zoom-appear="17" />
+		<osm-tag key="amenity" value="bar" zoom-appear="17" />
 		<osm-tag key="amenity" value="bench" zoom-appear="17" />
 		<osm-tag key="amenity" value="bicycle_rental" zoom-appear="17" />
 		<osm-tag key="amenity" value="bus_station" zoom-appear="15" />
@@ -27,6 +28,7 @@
 		<osm-tag key="amenity" value="fountain" zoom-appear="17" />
 		<osm-tag key="amenity" value="fire_station" zoom-appear="17" />
 		<osm-tag key="amenity" value="fuel" zoom-appear="16" />
+		<osm-tag key="amenity" value="grave_yard" zoom-appear="15" />
 		<osm-tag key="amenity" value="hospital" zoom-appear="15" />
 		<osm-tag key="amenity" value="kindergarten" zoom-appear="17" />
 		<osm-tag key="amenity" value="library" zoom-appear="17" />
@@ -43,6 +45,7 @@
 		<osm-tag key="amenity" value="shelter" zoom-appear="16" />
 		<osm-tag key="amenity" value="telephone" zoom-appear="17" />
 		<osm-tag key="amenity" value="theatre" zoom-appear="17" />
+		<osm-tag key="amenity" value="townhall" zoom-appear="17" />
 		<osm-tag key="amenity" value="toilets" zoom-appear="17" />
 		<osm-tag key="amenity" value="university" zoom-appear="17" />
 
@@ -179,11 +182,14 @@
 
 		<osm-tag key="natural" value="beach" zoom-appear="10" />
 		<osm-tag key="natural" value="coastline" zoom-appear="0" />
+		<osm-tag key="natural" value="fell" zoom-appear="10" />
 		<osm-tag key="natural" value="glacier" zoom-appear="8" enabled="false"/>
+		<osm-tag key="natural" value="grassland" zoom-appear="10" />
 		<osm-tag key="natural" value="heath" zoom-appear="10" />
 		<osm-tag key="natural" value="land" zoom-appear="8" />
 		<osm-tag key="natural" value="marsh" zoom-appear="12" />
 		<osm-tag key="natural" value="scrub" zoom-appear="10" />
+		<osm-tag key="natural" value="scree" zoom-appear="10" />
 		<osm-tag key="natural" value="water" zoom-appear="8" />
 		<osm-tag key="natural" value="wetland" zoom-appear="12" />
 		<osm-tag key="natural" value="wood" zoom-appear="8" />
@@ -215,6 +221,7 @@
 		<osm-tag key="landuse" value="landfill" zoom-appear="12" />
 		<osm-tag key="landuse" value="meadow" zoom-appear="12" />
 		<osm-tag key="landuse" value="military" zoom-appear="10" />
+		<osm-tag key="landuse" value="orchard" zoom-appear="12" />
 		<osm-tag key="landuse" value="quarry" zoom-appear="10" />
 		<osm-tag key="landuse" value="railway" zoom-appear="10" />
 		<osm-tag key="landuse" value="recreation_ground" zoom-appear="10" />
@@ -247,6 +254,19 @@
 		<osm-tag key="sport" value="soccer" zoom-appear="12" />
 		<osm-tag key="sport" value="swimming" zoom-appear="12" />
 		<osm-tag key="sport" value="tennis" zoom-appear="12" />
+		<osm-tag key="sport" value="baseball" zoom-appear="12" />
+		<osm-tag key="sport" value="basketball" zoom-appear="12" />
+		<osm-tag key="sport" value="volleyball" zoom-appear="12" />
+		<osm-tag key="sport" value="skiing" zoom-appear="12" />
+		<osm-tag key="sport" value="shooting" zoom-appear="12" />
+		<osm-tag key="sport" value="cricket" zoom-appear="12" />
+		<osm-tag key="sport" value="boules" zoom-appear="12" />
+		<osm-tag key="sport" value="football" zoom-appear="12" />
+		<osm-tag key="sport" value="skating" zoom-appear="12" />
+		<osm-tag key="sport" value="climbing" zoom-appear="12" />
+		<osm-tag key="sport" value="equestrian" zoom-appear="12" />
+		<osm-tag key="sport" value="bowls" zoom-appear="12" />
+		<osm-tag key="sport" value="multi" zoom-appear="12" />
 
 	</ways>
 
@@ -299,6 +319,7 @@
 		<osm-tag key="building" value="cathedral" zoom-appear="15" />
 		<osm-tag key="building" value="chapel" zoom-appear="15" />
 		<osm-tag key="building" value="church" zoom-appear="15" />
+		<osm-tag key="building" value="civic" zoom-appear="15" />
 		<osm-tag key="building" value="commercial" zoom-appear="15" />
 		<osm-tag key="building" value="detached" zoom-appear="15" />
 		<osm-tag key="building" value="garage" zoom-appear="15" />
@@ -312,6 +333,7 @@
 		<osm-tag key="building" value="gym" zoom-appear="15" />
 		<osm-tag key="building" value="hangar" zoom-appear="15" />
 		<osm-tag key="building" value="hotel" zoom-appear="15" />
+		<osm-tag key="building" value="hospital" zoom-appear="15" />
 		<osm-tag key="building" value="house" zoom-appear="15" />
 		<osm-tag key="building" value="hut" zoom-appear="15" />
 		<osm-tag key="building" value="industrial" zoom-appear="15" />
@@ -323,11 +345,15 @@
 		<osm-tag key="building" value="office" zoom-appear="15" />
 		<osm-tag key="building" value="public" zoom-appear="15" />
 		<osm-tag key="building" value="residential" zoom-appear="15" />
+		<osm-tag key="building" value="Residential" zoom-appear="15" />
+		<osm-tag key="building" value="retail" zoom-appear="15" />
 		<osm-tag key="building" value="roof" zoom-appear="15" />
 		<osm-tag key="building" value="ruins" zoom-appear="15" />
 		<osm-tag key="building" value="school" zoom-appear="15" />
 		<osm-tag key="building" value="service" zoom-appear="15" />
+		<osm-tag key="building" value="semidetached_house" zoom-appear="15" />
 		<osm-tag key="building" value="shed" zoom-appear="15" />
+		<osm-tag key="building" value="shelter" zoom-appear="15" />
 		<osm-tag key="building" value="shop" zoom-appear="15" />
 		<osm-tag key="building" value="sports" zoom-appear="15" />
 		<osm-tag key="building" value="supermarket" zoom-appear="15" />
