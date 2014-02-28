@@ -70,7 +70,7 @@ public class CircleBuilder {
 			String value = attributes.getValue(i);
 
 			if (RADIUS.equals(name) || (XmlUtils.supportOlderRenderThemes && R.equals(name))) {
-				this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value));
+				this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value)) * displayModel.getScaleFactor();
 			} else if (SCALE_RADIUS.equals(name)) {
 				this.scaleRadius = Boolean.parseBoolean(value);
 			} else if (FILL.equals(name)) {

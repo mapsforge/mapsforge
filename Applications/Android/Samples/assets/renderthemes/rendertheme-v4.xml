@@ -745,7 +745,7 @@
     <rule cat="natural" e="any" k="*" v="*">
         <!-- natural -->
         <rule e="node" k="natural" v="tree" zoom-min="17">
-            <circle radius="2" scale-radius="true" fill="#bbd89a"/>
+            <circle radius="0.9" scale-radius="true" fill="#44bbd89a"/>
             <caption dy="-20" k="name" font-style="bold" font-size="12" fill="#228B22" stroke="#FFFFFF" stroke-width="2.0"/>
         </rule>
         <rule e="node" k="natural" v="cave_entrance" zoom-min="14">
