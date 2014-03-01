@@ -16,7 +16,9 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -210,6 +212,20 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	@Override
 	public TileBitmap createTileBitmap(int tileSize, boolean isTransparent) {
 		return new AndroidTileBitmap(tileSize, isTransparent);
+	}
+
+	/*
+	 * Android method accessible only via Context.
+	 */
+	public FileInputStream openFileInput (String name) throws FileNotFoundException {
+		return this.application.openFileInput(name);
+	}
+
+	/*
+	 * Android method accessible only via Context.
+	 */
+	public FileOutputStream openFileOutput (String name, int mode) throws FileNotFoundException {
+		return this.application.openFileOutput(name, mode);
 	}
 
 	@Override

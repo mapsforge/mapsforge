@@ -39,7 +39,12 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 						data.second + 1);
 				RESOURCE_BITMAPS.put(hash, updated);
 				return data.first;
-			} else {
+			}
+
+			android.graphics.Bitmap bitmap = AndroidSvgBitmapStore.get(hash);
+
+			if (bitmap == null) {
+				// not in any cache, so need to render svg
 				SVG svg = SVGParser.getSVGFromInputStream(inputStream);
 				Picture picture = svg.getPicture();
 
@@ -53,21 +58,27 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 					bitmapHeight = height;
 				}
 
-				android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
+				bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
 						(int) Math.ceil(bitmapHeight), AndroidGraphicFactory.TRANSPARENT_BITMAP);
 				Canvas canvas = new Canvas(bitmap);
 				canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
-				Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
-						Integer.valueOf(1));
-				RESOURCE_BITMAPS.put(hash, updated);
-				if (AndroidGraphicFactory.DEBUG_BITMAPS) {
-					rInstances.incrementAndGet();
-					synchronized (rBitmaps) {
-						rBitmaps.add(hash);
-					}
-				}
-				return bitmap;
+
+				// save to disk for faster future retrieval
+				AndroidSvgBitmapStore.put(hash, bitmap);
 			}
+
+			// save in in-memory cache
+			Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
+					Integer.valueOf(1));
+			RESOURCE_BITMAPS.put(hash, updated);
+
+			if (AndroidGraphicFactory.DEBUG_BITMAPS) {
+				rInstances.incrementAndGet();
+				synchronized (rBitmaps) {
+					rBitmaps.add(hash);
+				}
+			}
+			return bitmap;
 		}
 	}
 
