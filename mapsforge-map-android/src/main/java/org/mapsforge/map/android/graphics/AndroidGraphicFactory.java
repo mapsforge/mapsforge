@@ -214,6 +214,21 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return new AndroidTileBitmap(tileSize, isTransparent);
 	}
 
+
+	/*
+	 * Android method accessible only via Context.
+	 */
+	public boolean deleteFile(String name) {
+		return this.application.deleteFile(name);
+	}
+
+	/*
+	 * Android method accessible only via Context.
+	 */
+	public String[] fileList() {
+		return this.application.fileList();
+	}
+
 	/*
 	 * Android method accessible only via Context.
 	 */

@@ -4,7 +4,8 @@
     <string name="copyright_osm">Map data © OpenStreetMap contributors</string>
 
    	<string name="menu_preferences">Settings</string>
-   	<string name="menu_position_enter_coordinates">Map Position</string>
+    <string name="menu_position_enter_coordinates">Map Position</string>
+    <string name="menu_svgclear">Clear SVG icon cache</string>
 
 	<string name="cancelbutton">Cancel</string>
    	<string name="okbutton">OK</string>

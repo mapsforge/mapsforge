@@ -19,6 +19,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,6 +44,8 @@ import java.util.logging.Logger;
 public class AndroidSvgBitmapStore {
 
 	private static final Logger LOGGER = Logger.getLogger(AndroidSvgBitmapStore.class.getName());
+	private static final String SVG_PREFIX = "svg-";
+	private static final String SVG_SUFFIX = ".png";
 
 	private static class SvgStorer implements Runnable {
 		private Bitmap bitmap;
@@ -67,13 +70,22 @@ public class AndroidSvgBitmapStore {
 		}
 	}
 
+	public static void clear() {
+		String[] files = AndroidGraphicFactory.INSTANCE.fileList();
+		for (String file : files) {
+			if (file.startsWith(SVG_PREFIX) && file.endsWith(SVG_SUFFIX)) {
+				AndroidGraphicFactory.INSTANCE.deleteFile(file);
+			}
+		}
+	}
+
 	public static Bitmap get(int hash) {
 		String fileName = createFileName(hash);
 		try {
 			FileInputStream inputStream = AndroidGraphicFactory.INSTANCE.openFileInput(fileName);
 			return BitmapFactory.decodeStream(inputStream);
 		} catch (FileNotFoundException e) {
-			LOGGER.warning("SVG Failed to find file for svg bitmap " + fileName);
+			// ignore: file is not yet in cache
 		}
 		return null;
 	}
@@ -85,7 +97,7 @@ public class AndroidSvgBitmapStore {
 	}
 
 	private static String createFileName(int hash) {
-		StringBuilder sb = new StringBuilder().append("svg-").append(hash).append(".png");
+		StringBuilder sb = new StringBuilder().append(SVG_PREFIX).append(hash).append(SVG_SUFFIX);
 		return sb.toString();
 	}
 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.AndroidPreferences;
+import org.mapsforge.map.android.graphics.AndroidSvgBitmapStore;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
@@ -85,6 +86,9 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 				return true;
 			case R.id.menu_position_enter_coordinates:
 				showDialog(DIALOG_ENTER_COORDINATES);
+				break;
+			case R.id.menu_svgclear:
+				AndroidSvgBitmapStore.clear();
 				break;
 		}
 		return false;
