@@ -18,17 +18,14 @@ import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Example of the capabilities of RenderTheme version 4
  */
 public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 
-	protected final String THEMESTYLE = "r4theme";
-	protected final String OUTDOOR = "outdoor";
-	protected final String CITY = "city";
-	protected final String DRIVING = "driving";
-	protected final String EVERYTHING = "everything";
+	protected final String KEY_PREFIX = "r4_";
 
 	@Override
 	protected void createMapViews() {
@@ -38,28 +35,17 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 
 	@Override
 	protected List<String> getCategories() {
-		// categories to render
-		String themeStyle = this.sharedPreferences.getString(THEMESTYLE, "outdoor");
-
-		if (EVERYTHING.equals(themeStyle)) {
-			return null;
-		}
 
 		List<String> categories = new ArrayList<String>();
-		if (OUTDOOR.equals(themeStyle)) {
-			categories.add("outdoor");
-			categories.add("natural");
-			categories.add("natural-labels");
-			categories.add("sport");
+		Map<String, ?> preferences = this.sharedPreferences.getAll();
+		for (String key : preferences.keySet()) {
+			if (key.startsWith(KEY_PREFIX)) {
+				if (this.sharedPreferences.getBoolean(key, true)) {
+					categories.add(key.substring(KEY_PREFIX.length()));
+				}
+			}
 		}
-		if (CITY.equals(themeStyle)) {
-			categories.add("buildings");
-			categories.add("shopping");
-			categories.add("tourism");
-		}
-		if (DRIVING.equals(themeStyle)) {
-			categories.add("transport");
-		}
+
 		return categories;
 	}
 
@@ -73,10 +59,11 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		super.onSharedPreferenceChanged(preferences, key);
 
-		if (THEMESTYLE.equals(key)) {
-			// just start this new
-			finish();
-			startActivity(this.getIntent());
+		if (key.startsWith(KEY_PREFIX)) {
+			destroyLayers();
+			destroyTileCaches();
+			createTileCaches();
+			createLayers();
 		}
 	}
 

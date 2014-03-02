@@ -269,6 +269,13 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		super.onCreate(savedInstanceState);
 
 		this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		// problem that the first call to getAll() returns nothing, apparently the
+		// following two calls have to be made to read all the values correctly
+		// http://stackoverflow.com/questions/9310479/how-to-iterate-through-all-keys-of-shared-preferences
+		this.sharedPreferences.edit().clear();
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
+
 		this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
 		createSharedPreferences();
