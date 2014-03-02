@@ -94,7 +94,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.layerManager.interrupt();
 		this.frameBufferController.destroy();
 		this.frameBuffer.destroy();
-		this.mapScaleBar.destroy();
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.destroy();
+		}
 	}
 
 	@Override
@@ -124,7 +126,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 	@Override
 	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		this.mapScaleBar.destroy();
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.destroy();
+		}
 		this.mapScaleBar = mapScaleBar;
 	}
 
@@ -179,7 +183,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	protected void onDraw(Canvas androidCanvas) {
 		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
 		this.frameBuffer.draw(graphicContext);
-		this.mapScaleBar.draw(graphicContext);
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.draw(graphicContext);
+		}
 		this.fpsCounter.draw(graphicContext);
 		graphicContext.destroy();
 	}

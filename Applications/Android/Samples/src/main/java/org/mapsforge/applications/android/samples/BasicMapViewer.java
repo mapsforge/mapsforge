@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.AndroidPreferences;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.graphics.AndroidSvgBitmapStore;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
@@ -36,6 +37,10 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar;
+import org.mapsforge.map.scalebar.ImperialUnitAdapter;
+import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.scalebar.MetricUnitAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -105,10 +110,14 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			createTileCaches();
 			redrawLayers();
 		}
+		if (SamplesApplication.SETTING_SCALEBAR.equals(key)) {
+			setScaleBars();
+		}
+
 	}
 
 	protected void createControls() {
-		// time to create control elements
+		setScaleBars();
 	}
 
 	protected void createLayerManagers() {
@@ -380,5 +389,36 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	 */
 	protected void setContentView() {
 		setContentView(this.mapViews.get(0));
+	}
+
+	protected void setScaleBars() {
+		String value = this.sharedPreferences.getString(SamplesApplication.SETTING_SCALEBAR, "both");
+
+		for (MapView mapView : mapViews) {
+
+			// TODO the setting of the scale bars is somewhat clunky.
+			if (SamplesApplication.SETTING_SCALEBAR_NONE.equals(value)) {
+				mapView.setMapScaleBar(null);
+			} else {
+				MapScaleBar scalebar = mapView.getMapScaleBar();
+				if (scalebar == null) {
+					mapView.setMapScaleBar(new DefaultMapScaleBar(mapView.getModel().mapViewPosition, mapView.getModel().mapViewDimension,
+							AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel));
+					scalebar = mapView.getMapScaleBar();
+				}
+				if (scalebar instanceof DefaultMapScaleBar) {
+					if (SamplesApplication.SETTING_SCALEBAR_BOTH.equals(value)) {
+						((DefaultMapScaleBar) scalebar).displayMetricAndImperialScale(true);
+					} else {
+						((DefaultMapScaleBar) scalebar).displayMetricAndImperialScale(false);
+						if (SamplesApplication.SETTING_SCALEBAR_METRIC.equals(value)) {
+							scalebar.setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
+						} else if (SamplesApplication.SETTING_SCALEBAR_IMPERIAL.equals(value)) {
+							scalebar.setDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
+						}
+					}
+				}
+			}
+		}
 	}
 }

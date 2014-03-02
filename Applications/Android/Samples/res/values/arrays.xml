@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string-array name="pref_scale_entries">
- 		<item>Small</item>
- 		<item>Normal</item>
- 		<item>Large</item>
-		<item>Extra Large</item>
- 	</string-array>
-	<string-array name="pref_scale_values">
- 		<item>0.7</item>
- 		<item>1.0</item>
- 		<item>1.5</item>
- 		<item>2</item>
- 	</string-array>
+    <string-array name="pref_scale_entries">
+        <item>Small</item>
+        <item>Normal</item>
+        <item>Large</item>
+        <item>Extra Large</item>
+    </string-array>
+    <string-array name="pref_scale_values">
+        <item>0.7</item>
+        <item>1.0</item>
+        <item>1.5</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="pref_scalebar_entries">
+        <item>Metric</item>
+        <item>Imperial</item>
+        <item>Both Metric/Imperial</item>
+        <item>No Scale Bar</item>
+    </string-array>
+    <string-array name="pref_scalebar_values">
+        <item>metric</item>
+        <item>imperial</item>
+        <item>both</item>
+        <item>none</item>
+    </string-array>
     <string-array name="pref_r4style_entries">
         <item>Driving Mode</item>
         <item>City Mode</item>
