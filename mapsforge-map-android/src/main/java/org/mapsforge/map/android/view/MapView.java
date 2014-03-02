@@ -27,6 +27,7 @@ import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
@@ -50,7 +51,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	private final FrameBufferController frameBufferController;
 	private GestureDetector gestureDetector;
 	private final LayerManager layerManager;
-	private final MapScaleBar mapScaleBar;
+	private MapScaleBar mapScaleBar;
 	private final MapZoomControls mapZoomControls;
 	private final Model model;
 	private final TouchEventHandler touchEventHandler;
@@ -83,8 +84,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.touchEventHandler = new TouchEventHandler(this, viewConfiguration, sgd);
 		this.touchEventHandler.addListener(touchGestureDetector);
 		this.mapZoomControls = new MapZoomControls(context, this);
-		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
-				this.model.displayModel);
+		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
+				GRAPHIC_FACTORY, this.model.displayModel);
+		((DefaultMapScaleBar)this.mapScaleBar).displayMetricAndImperialScale(true);
 	}
 
 	@Override
@@ -115,8 +117,15 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		return this.layerManager;
 	}
 
+	@Override
 	public MapScaleBar getMapScaleBar() {
 		return this.mapScaleBar;
+	}
+
+	@Override
+	public void setMapScaleBar(MapScaleBar mapScaleBar) {
+		this.mapScaleBar.destroy();
+		this.mapScaleBar = mapScaleBar;
 	}
 
 	/**
@@ -154,7 +163,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 	/**
 	 * Sets the visibility of the zoom controls.
-	 *
+	 * 
 	 * @param showZoomControls
 	 *            true if the zoom controls should be visible, false otherwise.
 	 */

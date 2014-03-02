@@ -17,6 +17,7 @@ package org.mapsforge.map.view;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
 	void destroy();
@@ -24,6 +25,10 @@ public interface MapView {
 	Dimension getDimension();
 
 	FpsCounter getFpsCounter();
+
+	MapScaleBar getMapScaleBar();
+
+	void setMapScaleBar(MapScaleBar mapScaleBar);
 
 	/**
 	 * @return the FrameBuffer used in this MapView.
