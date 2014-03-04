@@ -150,7 +150,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
 		drawScaleText(canvas, scaleText1, scaleText2, this.paintScaleText, scale);
 	}
 
-	private static void drawScaleBar(Canvas canvas, int scaleBarLength1, int scaleBarLength2, Paint paint, float scale) {
+	private void drawScaleBar(Canvas canvas, int scaleBarLength1, int scaleBarLength2, Paint paint, float scale) {
 		final int maxScaleBarLength = (scaleBarLength1 <= scaleBarLength2) ? scaleBarLength2 : scaleBarLength1;
 		final float startX = (STROKE_EXTERNAL * scale - STROKE_INTERNAL * scale) * 0.5f + STROKE_INTERNAL * scale;
 		int stopX;
@@ -175,10 +175,10 @@ public class DefaultMapScaleBar extends MapScaleBar {
 		}
 	}
 
-	private static void drawScaleText(Canvas canvas, String scaleText1, String scaleText2, Paint paint, float scale) {
+	private void drawScaleText(Canvas canvas, String scaleText1, String scaleText2, Paint paint, float scale) {
 		canvas.drawText(scaleText1, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN),
-				Math.round((canvas.getHeight() * 0.5f - STROKE_EXTERNAL * scale) - TEXT_MARGIN), paint);
+				Math.round(canvas.getHeight() * 0.5f - STROKE_EXTERNAL * scale * 0.5f - TEXT_MARGIN), paint);
 		canvas.drawText(scaleText2, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN),
-				Math.round((canvas.getHeight() * 0.5f + STROKE_EXTERNAL * scale)  + TEXT_MARGIN + paint.getTextHeight(scaleText2)), paint);
+				Math.round(canvas.getHeight() * 0.5f + STROKE_EXTERNAL * scale * 0.5f  + TEXT_MARGIN + this.paintScaleTextStroke.getTextHeight(scaleText2)), paint);
 	}
 }
