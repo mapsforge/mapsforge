@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -97,14 +98,14 @@ class AwtPaint implements Paint {
 	public int getTextHeight(String text) {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
-		return fontMetrics.getHeight();
+		return (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getHeight();
 	}
 
 	@Override
 	public int getTextWidth(String text) {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
-		return fontMetrics.stringWidth(text);
+		return (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getWidth();
 	}
 
 	@Override
