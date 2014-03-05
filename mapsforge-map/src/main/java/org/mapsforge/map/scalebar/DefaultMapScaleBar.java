@@ -39,7 +39,8 @@ public class DefaultMapScaleBar extends MapScaleBar {
 	private static final float STROKE_EXTERNAL = 4;
 	private static final float STROKE_INTERNAL = 2;
 
-	private boolean displayMetricAndImperialScale;
+	public static enum ScaleBarMode { BOTH, IMPERIAL, METRIC };
+	private ScaleBarMode scaleBarMode;
 	private DistanceUnitAdapter secondaryDistanceUnitAdapter;
 
 	private final Paint paintScaleBar;
@@ -51,7 +52,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
 			GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super(mapViewPosition, mapViewDimension, displayModel, graphicFactory, BITMAP_WIDTH, BITMAP_HEIGHT);
 
-		this.displayMetricAndImperialScale = false;
+		this.scaleBarMode = ScaleBarMode.METRIC;
 		this.secondaryDistanceUnitAdapter = null;
 
 		this.paintScaleBar = createScaleBarPaint(Color.BLACK, STROKE_INTERNAL, Style.FILL);
@@ -60,48 +61,44 @@ public class DefaultMapScaleBar extends MapScaleBar {
 		this.paintScaleTextStroke = createTextPaint(Color.WHITE, 2, Style.STROKE);
 	}
 
-	/**
-	 * Makes sure the secondaryDistanceUnitAdapter is set to the opposite of distanceUnitAdapter.
-	 */
-	private void setSecondaryDistanceUnitAdapter() {
-		if (this.distanceUnitAdapter.getMeterRatio() == 1.0f) {
-			this.secondaryDistanceUnitAdapter = ImperialUnitAdapter.INSTANCE;
-		} else {
-			this.secondaryDistanceUnitAdapter = MetricUnitAdapter.INSTANCE;
-		}
-		this.redrawNeeded = true;
-	}
-
-	/**
-	 * request the display of both Metric and Imperial scales
-	 * 
-	 * @param display
-	 *            true if both scales should be displayed, false otherwise
-	 */
-	public void displayMetricAndImperialScale(boolean display) {
-		this.displayMetricAndImperialScale = display;
-
-		if (this.displayMetricAndImperialScale) {
-			if (this.secondaryDistanceUnitAdapter != null) {
-				if (this.secondaryDistanceUnitAdapter.getMeterRatio() == this.distanceUnitAdapter.getMeterRatio()) {
-					setSecondaryDistanceUnitAdapter();
-				}
-			} else {
-				setSecondaryDistanceUnitAdapter();
-			}
-		} else {
-			if (this.secondaryDistanceUnitAdapter != null) {
-				this.secondaryDistanceUnitAdapter = null;
-				this.redrawNeeded = true;
-			}
-		}
-	}
-
 	@Override
 	public void setDistanceUnitAdapter(DistanceUnitAdapter distanceUnitAdapter) {
 		super.setDistanceUnitAdapter(distanceUnitAdapter);
 
-		this.displayMetricAndImperialScale(this.displayMetricAndImperialScale);
+		if (this.scaleBarMode == ScaleBarMode.BOTH) {
+			if (this.distanceUnitAdapter instanceof MetricUnitAdapter)
+				this.secondaryDistanceUnitAdapter = ImperialUnitAdapter.INSTANCE;
+			else
+				this.secondaryDistanceUnitAdapter = MetricUnitAdapter.INSTANCE;
+			this.redrawNeeded = true;
+		}
+	}
+
+	public ScaleBarMode getScaleBarMode() {
+		return this.scaleBarMode;
+	}
+
+	public void setScaleBarMode(ScaleBarMode scaleBarMode) {
+		this.scaleBarMode = scaleBarMode;
+
+		switch (this.scaleBarMode) {
+		case BOTH:
+			if (this.distanceUnitAdapter instanceof MetricUnitAdapter)
+				this.secondaryDistanceUnitAdapter = ImperialUnitAdapter.INSTANCE;
+			else
+				this.secondaryDistanceUnitAdapter = MetricUnitAdapter.INSTANCE;
+			break;
+		case IMPERIAL:
+			this.distanceUnitAdapter = ImperialUnitAdapter.INSTANCE;
+			this.secondaryDistanceUnitAdapter = null;
+			break;
+		case METRIC:
+			this.distanceUnitAdapter = MetricUnitAdapter.INSTANCE;
+			this.secondaryDistanceUnitAdapter = null;
+			break;
+		}
+
+		this.redrawNeeded = true;
 	}
 
 	private Paint createScaleBarPaint(Color color, float strokeWidth, Style style) {
@@ -132,7 +129,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
 		ScaleBarLengthAndValue lengthAndValue = this.calculateScaleBarLengthAndValue();
 		ScaleBarLengthAndValue lengthAndValue2;
 
-		if (this.displayMetricAndImperialScale) {
+		if (this.scaleBarMode == ScaleBarMode.BOTH) {
 			lengthAndValue2 = this.calculateScaleBarLengthAndValue(this.secondaryDistanceUnitAdapter);
 		} else {
 			lengthAndValue2 = new ScaleBarLengthAndValue(0, 0);
@@ -143,7 +140,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
 		drawScaleBar(canvas, lengthAndValue.scaleBarLength, lengthAndValue2.scaleBarLength, this.paintScaleBar, scale);
 
 		String scaleText1 = this.distanceUnitAdapter.getScaleText(lengthAndValue.scaleBarValue);
-		String scaleText2 = (this.displayMetricAndImperialScale) ? this.secondaryDistanceUnitAdapter
+		String scaleText2 = this.scaleBarMode == ScaleBarMode.BOTH ? this.secondaryDistanceUnitAdapter
 				.getScaleText(lengthAndValue2.scaleBarValue) : "";
 
 		drawScaleText(canvas, scaleText1, scaleText2, this.paintScaleTextStroke, scale);

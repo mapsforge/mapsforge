@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,9 +40,8 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
-import org.mapsforge.map.scalebar.ImperialUnitAdapter;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
 import org.mapsforge.map.scalebar.MapScaleBar;
-import org.mapsforge.map.scalebar.MetricUnitAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -419,14 +419,11 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 				}
 				if (scalebar instanceof DefaultMapScaleBar) {
 					if (SamplesApplication.SETTING_SCALEBAR_BOTH.equals(value)) {
-						((DefaultMapScaleBar) scalebar).displayMetricAndImperialScale(true);
-					} else {
-						((DefaultMapScaleBar) scalebar).displayMetricAndImperialScale(false);
-						if (SamplesApplication.SETTING_SCALEBAR_METRIC.equals(value)) {
-							scalebar.setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
-						} else if (SamplesApplication.SETTING_SCALEBAR_IMPERIAL.equals(value)) {
-							scalebar.setDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
-						}
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.BOTH);
+					} else if (SamplesApplication.SETTING_SCALEBAR_METRIC.equals(value)) {
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.METRIC);
+					} else if (SamplesApplication.SETTING_SCALEBAR_IMPERIAL.equals(value)) {
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.IMPERIAL);
 					}
 				}
 			}
