@@ -177,16 +177,54 @@
 
 	<!-- rendertheme element -->
 	<xs:complexType name="rendertheme">
-		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="rule" type="tns:rule" />
-		</xs:sequence>
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:sequence minOccurs="0" maxOccurs="1">
+                <xs:element name="stylemenu" type="tns:stylemenu" />
+            </xs:sequence>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="rule" type="tns:rule" />
+            </xs:sequence>
+        </xs:sequence>
 		<xs:attribute name="version" type="xs:positiveInteger" fixed="4" />
 		<xs:attribute name="map-background" type="tns:color" use="optional" default="#ffffff" />
 		<xs:attribute name="base-stroke-width" type="tns:nonNegativeFloat" use="optional" default="1" />
 		<xs:attribute name="base-text-size" type="tns:nonNegativeFloat" use="optional" default="1" />
 	</xs:complexType>
 
+    <!-- style element -->
+    <xs:complexType name="style">
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="stylename" type="tns:stylename" />
+            </xs:sequence>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="stylecat" type="tns:stylecat" />
+            </xs:sequence>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required" />
+    </xs:complexType>
 
-	<!-- root element -->
+    <!-- stylename element -->
+    <xs:complexType name="stylecat">
+        <xs:attribute name="value" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <!-- stylemenu element -->
+    <xs:complexType name="stylemenu">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="style" type="tns:style" />
+        </xs:sequence>
+        <xs:attribute name="defaultvalue" type="xs:string" use="required" />
+        <xs:attribute name="defaultlang" type="xs:string" use="required" />
+        <xs:attribute name="id" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <!-- stylename element -->
+    <xs:complexType name="stylename">
+        <xs:attribute name="lang" type="xs:string" use="required" />
+        <xs:attribute name="value" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <!-- root element -->
 	<xs:element name="rendertheme" type="tns:rendertheme" />
 </xs:schema>

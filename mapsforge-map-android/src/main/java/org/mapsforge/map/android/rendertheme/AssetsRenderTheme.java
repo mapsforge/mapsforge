@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
 import android.content.Context;
 
@@ -32,9 +33,10 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 	private final String assetName;
 	private final List<String> categories;
 	private final InputStream inputStream;
+	private final XmlRenderThemeMenuCallback menuCallback;
 	private final String relativePathPrefix;
 
-	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, List<String> categories) throws IOException {
+	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, List<String> categories, XmlRenderThemeMenuCallback menuCallback) throws IOException {
 		this.assetName = fileName;
 		this.relativePathPrefix = relativePathPrefix;
 		this.inputStream = context.getAssets().open(this.assetName);
@@ -42,6 +44,7 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 		if (this.categories != null) {
 			Collections.sort(this.categories);
 		}
+		this.menuCallback = menuCallback;
 	}
 
 	@Override
@@ -68,6 +71,11 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 	@Override
 	public List<String> getCategories() {
 		return this.categories;
+	}
+
+	@Override
+	public XmlRenderThemeMenuCallback getMenuCallback() {
+		return this.menuCallback;
 	}
 
 	@Override

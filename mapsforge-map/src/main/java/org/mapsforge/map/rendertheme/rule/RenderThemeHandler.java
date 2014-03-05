@@ -29,6 +29,9 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenuEntry;
 import org.mapsforge.map.rendertheme.renderinstruction.Area;
 import org.mapsforge.map.rendertheme.renderinstruction.AreaBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Caption;
@@ -56,7 +59,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public final class RenderThemeHandler extends DefaultHandler {
 
 	private static enum Element {
-		RENDER_THEME, RENDERING_INSTRUCTION, RULE;
+		RENDER_THEME, RENDERING_INSTRUCTION, RULE, RENDERING_STYLE;
 	}
 
 	private static final String ELEMENT_NAME_RULE = "rule";
@@ -66,7 +69,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
 			XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException {
 		RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
-				xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme.getCategories());
+				xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme);
 		XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		xmlReader.setContentHandler(renderThemeHandler);
 		InputStream inputStream = null;
@@ -83,7 +86,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 		}
 	}
 
-	private final List<String> categories;
+	private List<String> categories;
 	private Rule currentRule;
 	private final DisplayModel displayModel;
 	private final Stack<Element> elementStack = new Stack<Element>();
@@ -92,20 +95,17 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private final String relativePathPrefix;
 	private RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
+	private final XmlRenderTheme xmlRenderTheme;
+	private XmlRenderThemeStyleMenu renderThemeStyleMenu;
+	private XmlRenderThemeStyleMenuEntry renderThemeStyleMenuEntry;
 
-	private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, List<String> categories) {
+	private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix,
+	                           XmlRenderTheme xmlRenderTheme) {
 		super();
 		this.graphicFactory = graphicFactory;
 		this.displayModel = displayModel;
 		this.relativePathPrefix = relativePathPrefix;
-		this.categories = categories;
-		if (this.categories != null) {
-			StringBuilder sb = new StringBuilder();
-			for (String s : categories) {
-				sb.append(s).append(" ");
-			}
-			LOGGER.warning("Rule set " + sb.toString());
-		}
+		this.xmlRenderTheme = xmlRenderTheme;
 	}
 
 	@Override
@@ -120,6 +120,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 	@Override
 	public void endElement(String uri, String localName, String qName) {
+
 		this.elementStack.pop();
 
 		if (ELEMENT_NAME_RULE.equals(qName)) {
@@ -132,6 +133,14 @@ public final class RenderThemeHandler extends DefaultHandler {
 				this.currentRule = this.ruleStack.peek();
 			}
 		}
+		else if ("style".equals(qName)) {
+			// when we are finished parsing the menu part of the file, we can get the
+			// categories to render from the initiator. This allows the creating action
+			// to select which of the menu options to choose
+			this.categories = this.xmlRenderTheme.getMenuCallback().getCategories(this.renderThemeStyleMenu);
+			return;
+		}
+
 	}
 
 	@Override
@@ -199,7 +208,23 @@ public final class RenderThemeHandler extends DefaultHandler {
 						.build();
 				this.currentRule.addRenderingInstruction(pathText);
 			}
-
+			else if ("style".equals(qName)) {
+				checkState(qName, Element.RENDERING_STYLE);
+				this.renderThemeStyleMenuEntry = this.renderThemeStyleMenu.createStyle(attributes.getValue("id"));
+			}
+			else if ("stylename".equals(qName)) {
+				checkState(qName, Element.RENDERING_STYLE);
+				this.renderThemeStyleMenuEntry.addTitle(attributes.getValue("lang"), attributes.getValue("value"));
+			}
+			else if ("stylemenu".equals(qName)) {
+				checkState(qName, Element.RENDERING_STYLE);
+				this.renderThemeStyleMenu = new XmlRenderThemeStyleMenu(
+						attributes.getValue("id"), attributes.getValue("defaultlang"), attributes.getValue("defaultvalue"));
+			}
+			else if ("stylecat".equals(qName)) {
+				checkState(qName, Element.RENDERING_STYLE);
+				this.renderThemeStyleMenuEntry.addCategory(attributes.getValue("value"));
+			}
 			else if ("symbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
@@ -239,6 +264,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 				if (this.elementStack.peek() != Element.RULE) {
 					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
 				}
+				return;
+
+			case RENDERING_STYLE:
 				return;
 		}
 

@@ -29,6 +29,8 @@ public interface XmlRenderTheme {
 	 */
 	List<String> getCategories();
 
+	XmlRenderThemeMenuCallback getMenuCallback();
+
 	/**
 	 * @return the prefix for all relative resource paths.
 	 */

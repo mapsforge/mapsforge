@@ -37,6 +37,7 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MapScaleBar;
@@ -71,8 +72,8 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	protected ArrayList<MapView> mapViews = new ArrayList<MapView>();
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
-
 	protected TileCache tileCache;
+	protected XmlRenderThemeStyleMenu renderthemeMenuStyle;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,6 +88,9 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			case R.id.menu_preferences:
 				intent = new Intent(this, Settings.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+				if (renderthemeMenuStyle != null) {
+					intent.putExtra(Settings.RENDERTHEME_MENU, renderthemeMenuStyle);
+				}
 				startActivity(intent);
 				return true;
 			case R.id.menu_position_enter_coordinates:

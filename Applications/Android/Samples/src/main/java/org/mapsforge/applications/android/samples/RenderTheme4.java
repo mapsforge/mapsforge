@@ -15,6 +15,10 @@
 package org.mapsforge.applications.android.samples;
 
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenuEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +29,6 @@ import java.util.Map;
  */
 public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 
-	protected final String KEY_PREFIX = "r4_";
-
 	@Override
 	protected void createMapViews() {
 		super.createMapViews();
@@ -34,19 +36,19 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	}
 
 	@Override
-	protected List<String> getCategories() {
+	public List<String> getCategories(XmlRenderThemeStyleMenu menuStyle) {
+		this.renderthemeMenuStyle = menuStyle;
+		String id = this.sharedPreferences.getString(this.renderthemeMenuStyle.getId(),
+				this.renderthemeMenuStyle.getDefaultValue());
 
-		List<String> categories = new ArrayList<String>();
-		Map<String, ?> preferences = this.sharedPreferences.getAll();
-		for (String key : preferences.keySet()) {
-			if (key.startsWith(KEY_PREFIX)) {
-				if (this.sharedPreferences.getBoolean(key, true)) {
-					categories.add(key.substring(KEY_PREFIX.length()));
-				}
-			}
+		XmlRenderThemeStyleMenuEntry style = this.renderthemeMenuStyle.getStyle(id);
+		if (style == null) {
+			Log.w("Rendertheme ", "Invalid style " + id);
+			return null;
 		}
+		Log.w("Rendertheme ", "Valid style " + id);
+		return style.getCategories();
 
-		return categories;
 	}
 
 	@Override
@@ -59,11 +61,13 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		super.onSharedPreferenceChanged(preferences, key);
 
-		if (key.startsWith(KEY_PREFIX)) {
-			destroyLayers();
-			destroyTileCaches();
-			createTileCaches();
-			createLayers();
+		if (this.renderthemeMenuStyle != null) {
+			if (key.equals(this.renderthemeMenuStyle.getId())) {
+				destroyLayers();
+				destroyTileCaches();
+				createTileCaches();
+				createLayers();
+			}
 		}
 	}
 

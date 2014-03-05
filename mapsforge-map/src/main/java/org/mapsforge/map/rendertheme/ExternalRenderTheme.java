@@ -29,7 +29,9 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 
 	private final List<String> categories;
 	private final long lastModifiedTime;
+	private final XmlRenderThemeMenuCallback menuCallback;
 	private final File renderThemeFile;
+
 
 	/**
 	 * @param renderThemeFile
@@ -38,7 +40,7 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 	 *             if the file does not exist or cannot be read.
 	 */
 	public ExternalRenderTheme(File renderThemeFile) throws FileNotFoundException {
-		this(renderThemeFile, null);
+		this(renderThemeFile, null, null);
 	}
 
 	/**
@@ -48,7 +50,7 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 	 * @throws FileNotFoundException
 	 *             if the file does not exist or cannot be read.
 	 */
-	public ExternalRenderTheme(File renderThemeFile, List<String> categories) throws FileNotFoundException {
+	public ExternalRenderTheme(File renderThemeFile, List<String> categories, XmlRenderThemeMenuCallback menuCallback) throws FileNotFoundException {
 		if (!renderThemeFile.exists()) {
 			throw new FileNotFoundException("file does not exist: " + renderThemeFile.getAbsolutePath());
 		} else if (!renderThemeFile.isFile()) {
@@ -67,6 +69,7 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 			throw new FileNotFoundException("cannot read last modified time: " + renderThemeFile.getAbsolutePath());
 		}
 		this.renderThemeFile = renderThemeFile;
+		this.menuCallback = menuCallback;
 	}
 
 	@Override
@@ -97,6 +100,11 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 	@Override
 	public List<String> getCategories() {
 		return this.categories;
+	}
+
+	@Override
+	public XmlRenderThemeMenuCallback getMenuCallback() {
+		return this.menuCallback;
 	}
 
 	@Override
