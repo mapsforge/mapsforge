@@ -76,6 +76,17 @@ configure(filterProjects(project.androidapkprojects)) {
 
 configure(filterProjects(project.androidlibraryprojects)) { 
   apply plugin: 'android-library'
+
+  android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
+      return; // Skip debug builds.
+    }
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
+  }
 }
 
 configure(filterProjects(project.androidprojects)) { 
@@ -106,6 +117,5 @@ configure(filterProjects(project.androidprojects)) {
       }
     }
   }
-
 } 
 
