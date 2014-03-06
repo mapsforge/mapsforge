@@ -15,24 +15,26 @@
 package org.mapsforge.map.rendertheme;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class XmlRenderThemeStyleMenuEntry implements Serializable {
-	private final List<String> categories;
+	private final Set<String> categories;
 	private final String defaultLanguage;
 	private final Map<String, String> descriptions;
 	private final String id;
 	private final Map<String, String> titles;
+	private final boolean visible;
 
-	XmlRenderThemeStyleMenuEntry(String id, String defaultLanguage) {
+	XmlRenderThemeStyleMenuEntry(String id, String defaultLanguage, boolean visible) {
 		this.defaultLanguage = defaultLanguage;
 		this.id = id;
 		this.titles = new HashMap<String, String>();
 		this.descriptions = new HashMap<String, String>();
-		this.categories = new ArrayList<String>();
+		this.categories = new HashSet<String>();
+		this.visible = visible;
 	}
 
 	public void addCategory(String category) {
@@ -43,7 +45,7 @@ public class XmlRenderThemeStyleMenuEntry implements Serializable {
 		titles.put(language, name);
 	}
 
-	public List<String> getCategories() {
+	public Set<String> getCategories() {
 		return this.categories;
 	}
 
@@ -53,5 +55,9 @@ public class XmlRenderThemeStyleMenuEntry implements Serializable {
 
 	public Map<String, String> getTitles() {
 		return this.titles;
+	}
+
+	public boolean isVisible() {
+		return this.visible;
 	}
 }

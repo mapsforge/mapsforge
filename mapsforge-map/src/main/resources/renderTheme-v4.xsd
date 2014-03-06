@@ -178,9 +178,7 @@
 	<!-- rendertheme element -->
 	<xs:complexType name="rendertheme">
         <xs:sequence minOccurs="0" maxOccurs="1">
-            <xs:sequence minOccurs="0" maxOccurs="1">
-                <xs:element name="stylemenu" type="tns:stylemenu" />
-            </xs:sequence>
+            <xs:element name="stylemenu" type="tns:stylemenu" />
             <xs:sequence minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="rule" type="tns:rule" />
             </xs:sequence>
@@ -202,6 +200,8 @@
             </xs:sequence>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="parent" type="xs:string" use="optional" />
+        <xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
     </xs:complexType>
 
     <!-- stylename element -->

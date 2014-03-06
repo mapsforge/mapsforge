@@ -31,19 +31,14 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 	private static final long serialVersionUID = 1L;
 
 	private final String assetName;
-	private final List<String> categories;
 	private final InputStream inputStream;
 	private final XmlRenderThemeMenuCallback menuCallback;
 	private final String relativePathPrefix;
 
-	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, List<String> categories, XmlRenderThemeMenuCallback menuCallback) throws IOException {
+	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) throws IOException {
 		this.assetName = fileName;
 		this.relativePathPrefix = relativePathPrefix;
 		this.inputStream = context.getAssets().open(this.assetName);
-		this.categories = categories;
-		if (this.categories != null) {
-			Collections.sort(this.categories);
-		}
 		this.menuCallback = menuCallback;
 	}
 
@@ -61,17 +56,9 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 		if (this.relativePathPrefix != other.relativePathPrefix) {
 			return false;
 		}
-		if ((this.categories == null && other.categories != null) ||
-				(this.categories != null && (other.categories == null || !this.categories.equals(other.categories)))) {
-			return false;
-		}
 		return true;
 	}
 
-	@Override
-	public List<String> getCategories() {
-		return this.categories;
-	}
 
 	@Override
 	public XmlRenderThemeMenuCallback getMenuCallback() {
@@ -94,9 +81,6 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 		int result = 1;
 		result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
 		result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
-		if (this.categories != null) {
-			result = prime * result + (this.categories.hashCode());
-		}
 		return result;
 	}
 }

@@ -15,7 +15,7 @@
 package org.mapsforge.applications.android.samples;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
@@ -32,18 +32,17 @@ import android.util.Log;
 public class RenderThemeMapViewer extends BasicMapViewerXml implements XmlRenderThemeMenuCallback {
 
 	@Override
-	public List<String> getCategories(XmlRenderThemeStyleMenu menuStyle) {
+	public Set<String> getCategories(XmlRenderThemeStyleMenu menuStyle) {
 		// in this case we ignore the render theme menu and just return
-		// some predefined categories.
-		return getCategories();
+		// null, meaning everything will be rendered.
+		return null;
 	}
 
 	@Override
 	protected XmlRenderTheme getRenderTheme() {
 		try {
 			return new AssetsRenderTheme(this, getRenderThemePrefix(),
-					getRenderThemeFile(), getCategories(),
-					this);
+					getRenderThemeFile(), this);
 		} catch (IOException e) {
 			Log.e(SamplesApplication.TAG,
 					"Render theme failure " + e.toString());
@@ -51,10 +50,6 @@ public class RenderThemeMapViewer extends BasicMapViewerXml implements XmlRender
 		return null;
 	}
 
-	protected List<String> getCategories() {
-		// render all categories
-		return null;
-	}
 
 	protected String getRenderThemeFile() {
 		return "renderthemes/driving.xml";

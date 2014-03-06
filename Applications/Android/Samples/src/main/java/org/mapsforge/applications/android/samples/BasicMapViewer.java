@@ -73,7 +73,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
 	protected TileCache tileCache;
-	protected XmlRenderThemeStyleMenu renderthemeMenuStyle;
+	protected XmlRenderThemeStyleMenu renderThemeStyleMenu;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,8 +88,8 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			case R.id.menu_preferences:
 				intent = new Intent(this, Settings.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-				if (renderthemeMenuStyle != null) {
-					intent.putExtra(Settings.RENDERTHEME_MENU, renderthemeMenuStyle);
+				if (renderThemeStyleMenu != null) {
+					intent.putExtra(Settings.RENDERTHEME_MENU, renderThemeStyleMenu);
 				}
 				startActivity(intent);
 				return true;

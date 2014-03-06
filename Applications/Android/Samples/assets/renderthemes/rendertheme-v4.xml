@@ -2,32 +2,33 @@
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme-v4.xsd" version="4" map-background="#F8F8F8">
 
     <stylemenu id="r4menu" defaultvalue="outdoor" defaultlang="en">
-        <style id="driving">
+        <style id="base" visible="false">
+            <stylecat value="roads"></stylecat>
+        </style>
+        <style id="driving" parent="base">
             <stylename lang="de" value="Auto"></stylename>
             <stylename lang="en" value="Driving"></stylename>
             <stylename lang="es" value="Coche"></stylename>
-            <stylecat value="roads"></stylecat>
-            <stylecat value="waterbodies"></stylecat>
+            <stylecat value="transport"></stylecat>
         </style>
-        <style id="outdoor">
+        <style id="outdoor" parent="base">
             <stylename lang="de" value="Outdoor"></stylename>
             <stylename lang="en" value="Outdoor"></stylename>
             <stylename lang="es" value="Driving"></stylename>
-            <stylecat value="roads"></stylecat>
             <stylecat value="waterbodies"></stylecat>
             <stylecat value="nature"></stylecat>
             <stylecat value="areas"></stylecat>
             <stylecat value="emergency"></stylecat>
             <stylecat value="accommodation"></stylecat>
         </style>
-        <style id="city">
+        <style id="city" parent="base">
             <stylename lang="de" value="Stadt"></stylename>
             <stylename lang="en" value="City"></stylename>
             <stylename lang="es" value="Ciudad"></stylename>
-            <stylecat value="roads"></stylecat>
             <stylecat value="buildings"></stylecat>
             <stylecat value="shopping"></stylecat>
             <stylecat value="amenities"></stylecat>
+            <stylecat value="public_transport"></stylecat>
         </style>
     </stylemenu>
 

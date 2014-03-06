@@ -20,9 +20,7 @@ import android.util.Log;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenuEntry;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Example of the capabilities of RenderTheme version 4
@@ -36,12 +34,12 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	}
 
 	@Override
-	public List<String> getCategories(XmlRenderThemeStyleMenu menuStyle) {
-		this.renderthemeMenuStyle = menuStyle;
-		String id = this.sharedPreferences.getString(this.renderthemeMenuStyle.getId(),
-				this.renderthemeMenuStyle.getDefaultValue());
+	public Set<String> getCategories(XmlRenderThemeStyleMenu menuStyle) {
+		this.renderThemeStyleMenu = menuStyle;
+		String id = this.sharedPreferences.getString(this.renderThemeStyleMenu.getId(),
+				this.renderThemeStyleMenu.getDefaultValue());
 
-		XmlRenderThemeStyleMenuEntry style = this.renderthemeMenuStyle.getStyle(id);
+		XmlRenderThemeStyleMenuEntry style = this.renderThemeStyleMenu.getStyle(id);
 		if (style == null) {
 			Log.w("Rendertheme ", "Invalid style " + id);
 			return null;
@@ -61,8 +59,8 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		super.onSharedPreferenceChanged(preferences, key);
 
-		if (this.renderthemeMenuStyle != null) {
-			if (key.equals(this.renderthemeMenuStyle.getId())) {
+		if (this.renderThemeStyleMenu != null) {
+			if (key.equals(this.renderThemeStyleMenu.getId())) {
 				destroyLayers();
 				destroyTileCaches();
 				createTileCaches();

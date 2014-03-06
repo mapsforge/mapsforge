@@ -17,7 +17,7 @@ package org.mapsforge.map.rendertheme.rule;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,7 +86,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 		}
 	}
 
-	private List<String> categories;
+	private Set<String> categories;
 	private Rule currentRule;
 	private final DisplayModel displayModel;
 	private final Stack<Element> elementStack = new Stack<Element>();
@@ -133,11 +133,14 @@ public final class RenderThemeHandler extends DefaultHandler {
 				this.currentRule = this.ruleStack.peek();
 			}
 		}
-		else if ("style".equals(qName)) {
+		else if ("stylemenu".equals(qName)) {
 			// when we are finished parsing the menu part of the file, we can get the
 			// categories to render from the initiator. This allows the creating action
 			// to select which of the menu options to choose
-			this.categories = this.xmlRenderTheme.getMenuCallback().getCategories(this.renderThemeStyleMenu);
+			if (null != this.xmlRenderTheme.getMenuCallback()) {
+				// if there is no callback, there is no menu, so we categories will be null
+				this.categories = this.xmlRenderTheme.getMenuCallback().getCategories(this.renderThemeStyleMenu);
+			}
 			return;
 		}
 
@@ -210,7 +213,20 @@ public final class RenderThemeHandler extends DefaultHandler {
 			}
 			else if ("style".equals(qName)) {
 				checkState(qName, Element.RENDERING_STYLE);
-				this.renderThemeStyleMenuEntry = this.renderThemeStyleMenu.createStyle(attributes.getValue("id"));
+				boolean visible = true;
+				if (null != attributes.getValue("visible")) {
+					visible = Boolean.valueOf(attributes.getValue("visible"));
+				}
+				this.renderThemeStyleMenuEntry = this.renderThemeStyleMenu.createStyle(attributes.getValue("id"), visible);
+				String parent = attributes.getValue("parent");
+				if (null != parent) {
+					XmlRenderThemeStyleMenuEntry parentEntry = this.renderThemeStyleMenu.getStyle(parent);
+					if (null != parentEntry) {
+						for (String cat : parentEntry.getCategories()) {
+							this.renderThemeStyleMenuEntry.addCategory(cat);
+						}
+					}
+				}
 			}
 			else if ("stylename".equals(qName)) {
 				checkState(qName, Element.RENDERING_STYLE);

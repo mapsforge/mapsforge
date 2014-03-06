@@ -37,8 +37,8 @@ public class XmlRenderThemeStyleMenu implements Serializable {
 		this.styles = new HashMap<String, XmlRenderThemeStyleMenuEntry>();
 	}
 
-	public XmlRenderThemeStyleMenuEntry createStyle(String id) {
-		XmlRenderThemeStyleMenuEntry style = new XmlRenderThemeStyleMenuEntry(id, this.defaultLanguage);
+	public XmlRenderThemeStyleMenuEntry createStyle(String id, boolean visible) {
+		XmlRenderThemeStyleMenuEntry style = new XmlRenderThemeStyleMenuEntry(id, this.defaultLanguage, visible);
 		this.styles.put(id, style);
 		return style;
 	}

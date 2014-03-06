@@ -36,15 +36,6 @@ public enum InternalRenderTheme implements XmlRenderTheme {
 		this.file = file;
 	}
 
-	/**
-	 * @return null: the internal render theme is v3 and does not support rendering of
-	 * categories.
-	 */
-	@Override
-	public List<String> getCategories() {
-		return null;
-	}
-
 	@Override
 	public XmlRenderThemeMenuCallback getMenuCallback() {
 		return null;

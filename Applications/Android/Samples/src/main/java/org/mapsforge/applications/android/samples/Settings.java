@@ -108,18 +108,28 @@ public class Settings extends PreferenceActivity implements
 
 			// build data structure for the ListPreference
 			Map<String, XmlRenderThemeStyleMenuEntry> styles = xmlStyleMenu.getStyles();
-			CharSequence[] entries = new CharSequence[styles.size()];
-			CharSequence[] values = new CharSequence[styles.size()];
+
+			int visibleStyles = 0;
+			for (XmlRenderThemeStyleMenuEntry style : styles.values()) {
+				if (style.isVisible()) {
+					++visibleStyles;
+				}
+			}
+
+					CharSequence[] entries = new CharSequence[visibleStyles];
+			CharSequence[] values = new CharSequence[visibleStyles];
 			int i = 0;
 			for (XmlRenderThemeStyleMenuEntry style : styles.values()) {
-				// build up the entries in the list
-				entries[i] = style.getTitles().get(language);
-				if (entries[i] == null) {
-					// if we cannot find the value for the user language, use default language
-					entries[i] = style.getTitles().get(xmlStyleMenu.getDefaultLanguage());
+				if (style.isVisible()) {
+					// build up the entries in the list
+					entries[i] = style.getTitles().get(language);
+					if (entries[i] == null) {
+						// if we cannot find the value for the user language, use default language
+						entries[i] = style.getTitles().get(xmlStyleMenu.getDefaultLanguage());
+					}
+					values[i] = style.getId();
+					++i;
 				}
-				values[i] = style.getId();
-				++i;
 			}
 
 			listPreference.setEntries(entries);

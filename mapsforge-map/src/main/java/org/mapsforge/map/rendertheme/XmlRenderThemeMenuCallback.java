@@ -15,7 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Interface callbacks in Rendertheme V4+ to create a settings menu on the fly.
@@ -25,6 +25,6 @@ public interface XmlRenderThemeMenuCallback {
 	/*
 	 * Called when the stylemenu section of the xml file has been parsed
 	 */
-	List<String> getCategories(XmlRenderThemeStyleMenu style);
+	Set<String> getCategories(XmlRenderThemeStyleMenu style);
 
 }

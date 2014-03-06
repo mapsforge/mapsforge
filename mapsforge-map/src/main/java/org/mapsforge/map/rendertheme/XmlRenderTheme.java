@@ -23,12 +23,6 @@ import java.util.List;
  */
 public interface XmlRenderTheme {
 
-	/**
-	 * @return a string list of categories that should be rendered, null if all should be
-	 * rendered (to support backward compatibility).
-	 */
-	List<String> getCategories();
-
 	XmlRenderThemeMenuCallback getMenuCallback();
 
 	/**

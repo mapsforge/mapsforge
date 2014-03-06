@@ -27,7 +27,6 @@ import java.util.List;
 public class ExternalRenderTheme implements XmlRenderTheme {
 	private static final long serialVersionUID = 1L;
 
-	private final List<String> categories;
 	private final long lastModifiedTime;
 	private final XmlRenderThemeMenuCallback menuCallback;
 	private final File renderThemeFile;
@@ -40,17 +39,16 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 	 *             if the file does not exist or cannot be read.
 	 */
 	public ExternalRenderTheme(File renderThemeFile) throws FileNotFoundException {
-		this(renderThemeFile, null, null);
+		this(renderThemeFile, null);
 	}
 
 	/**
 	 * @param renderThemeFile
 	 *            the XML render theme file.
-	 * @param categories the categories to render with this render theme.
 	 * @throws FileNotFoundException
 	 *             if the file does not exist or cannot be read.
 	 */
-	public ExternalRenderTheme(File renderThemeFile, List<String> categories, XmlRenderThemeMenuCallback menuCallback) throws FileNotFoundException {
+	public ExternalRenderTheme(File renderThemeFile, XmlRenderThemeMenuCallback menuCallback) throws FileNotFoundException {
 		if (!renderThemeFile.exists()) {
 			throw new FileNotFoundException("file does not exist: " + renderThemeFile.getAbsolutePath());
 		} else if (!renderThemeFile.isFile()) {
@@ -59,10 +57,6 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 			throw new FileNotFoundException("cannot read file: " + renderThemeFile.getAbsolutePath());
 		}
 
-		this.categories = categories;
-		if (this.categories != null) {
-			Collections.sort(this.categories);
-		}
 
 		this.lastModifiedTime = renderThemeFile.lastModified();
 		if (this.lastModifiedTime == 0L) {
@@ -90,16 +84,7 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 		} else if (!this.renderThemeFile.equals(other.renderThemeFile)) {
 			return false;
 		}
-		if ((this.categories == null && other.categories != null) ||
-				(this.categories != null && (other.categories == null || !this.categories.equals(other.categories)))) {
-			return false;
-		}
 		return true;
-	}
-
-	@Override
-	public List<String> getCategories() {
-		return this.categories;
 	}
 
 	@Override
@@ -123,9 +108,6 @@ public class ExternalRenderTheme implements XmlRenderTheme {
 		int result = 1;
 		result = prime * result + (int) (this.lastModifiedTime ^ (this.lastModifiedTime >>> 32));
 		result = prime * result + ((this.renderThemeFile == null) ? 0 : this.renderThemeFile.hashCode());
-		if (this.categories != null) {
-			result = prime * result + (this.categories.hashCode());
-		}
 		return result;
 	}
 }
