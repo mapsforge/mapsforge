@@ -15,9 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -25,22 +23,30 @@ import java.util.Map;
  */
 public class XmlRenderThemeStyleMenu implements Serializable {
 
+	private final Map<String, XmlRenderThemeStyleLayer> layers;
 	private final String defaultLanguage;
 	private final String defaultValue;
 	private final String id;
-	private final Map<String, XmlRenderThemeStyleMenuEntry> styles;
 
 	public XmlRenderThemeStyleMenu(String id, String defaultLanguage, String defaultValue) {
 		this.defaultLanguage = defaultLanguage;
 		this.defaultValue = defaultValue;
 		this.id = id;
-		this.styles = new HashMap<String, XmlRenderThemeStyleMenuEntry>();
+		this.layers = new LinkedHashMap<String, XmlRenderThemeStyleLayer>();
 	}
 
-	public XmlRenderThemeStyleMenuEntry createStyle(String id, boolean visible) {
-		XmlRenderThemeStyleMenuEntry style = new XmlRenderThemeStyleMenuEntry(id, this.defaultLanguage, visible);
-		this.styles.put(id, style);
+	public XmlRenderThemeStyleLayer createLayer(String id, boolean visible, boolean enabled) {
+		XmlRenderThemeStyleLayer style = new XmlRenderThemeStyleLayer(id, visible, enabled, this.defaultLanguage);
+		this.layers.put(id, style);
 		return style;
+	}
+
+	public XmlRenderThemeStyleLayer getLayer(String id) {
+		return this.layers.get(id);
+	}
+
+	public Map<String, XmlRenderThemeStyleLayer> getLayers() {
+		return this.layers;
 	}
 
 	public String getDefaultLanguage() {
@@ -55,11 +61,4 @@ public class XmlRenderThemeStyleMenu implements Serializable {
 		return this.id;
 	}
 
-	public XmlRenderThemeStyleMenuEntry getStyle(String id) {
-		return this.styles.get(id);
-	}
-
-	public Map<String, XmlRenderThemeStyleMenuEntry> getStyles() {
-		return this.styles;
-	}
 }

@@ -17,8 +17,8 @@ package org.mapsforge.applications.android.samples;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
-import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenuEntry;
 
 import java.util.Set;
 
@@ -39,14 +39,21 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 		String id = this.sharedPreferences.getString(this.renderThemeStyleMenu.getId(),
 				this.renderThemeStyleMenu.getDefaultValue());
 
-		XmlRenderThemeStyleMenuEntry style = this.renderThemeStyleMenu.getStyle(id);
-		if (style == null) {
+		XmlRenderThemeStyleLayer baseLayer = this.renderThemeStyleMenu.getLayer(id);
+		if (baseLayer == null) {
 			Log.w("Rendertheme ", "Invalid style " + id);
 			return null;
 		}
-		Log.w("Rendertheme ", "Valid style " + id);
-		return style.getCategories();
+		Set<String> result = baseLayer.getCategories();
 
+		// add the categories from overlays that are enabled
+		for (XmlRenderThemeStyleLayer overlay : baseLayer.getOverlays()) {
+			if (this.sharedPreferences.getBoolean(overlay.getId(), overlay.isEnabled())) {
+				result.addAll(overlay.getCategories());
+			}
+		}
+
+		return result;
 	}
 
 	@Override
@@ -58,15 +65,13 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		super.onSharedPreferenceChanged(preferences, key);
-
-		if (this.renderThemeStyleMenu != null) {
-			if (key.equals(this.renderThemeStyleMenu.getId())) {
-				destroyLayers();
-				destroyTileCaches();
-				createTileCaches();
-				createLayers();
-			}
-		}
+		// difficult to know which render theme options have changed since we
+		// do not know all the keys, so we just redraw the map whenever there
+		// is a change in the settings.
+		destroyLayers();
+		destroyTileCaches();
+		createTileCaches();
+		createLayers();
 	}
 
 }

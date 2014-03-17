@@ -59,11 +59,11 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-    <xs:simpleType name="scaling">
-        <xs:restriction base="xs:string">
-            <xs:pattern value="(default|tiling|size)" />
-        </xs:restriction>
-    </xs:simpleType>
+	<xs:simpleType name="scaling">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(default|tiling|size)" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:simpleType name="src">
 		<xs:restriction base="xs:string">
@@ -90,11 +90,10 @@
 	<!-- rendering instructions -->
 	<xs:complexType name="area">
 		<xs:attribute name="src" type="tns:src" use="optional" />
-        <xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
-        <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
-        <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
-
-        <xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
+		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
+		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#00000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
 	</xs:complexType>
@@ -110,12 +109,35 @@
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
 	</xs:complexType>
 
-	<xs:complexType name="circle">
+	<!-- style menu cat element -->
+	<xs:complexType name="cat">
+		<xs:attribute name="id" type="xs:string" use="required" />
+	</xs:complexType>
+
+    <xs:complexType name="circle">
 		<xs:attribute name="radius" type="tns:nonNegativeFloat" use="required" />
 		<xs:attribute name="scale-radius" type="xs:boolean" use="optional" default="false" />
 		<xs:attribute name="fill" type="tns:color" use="optional" default="#00000000" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#00000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
+	</xs:complexType>
+
+	<!-- style menu layer element -->
+	<xs:complexType name="layer">
+		<xs:sequence minOccurs="0" maxOccurs="1">
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="name" type="tns:name" />
+			</xs:sequence>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="cat" type="tns:cat" />
+			</xs:sequence>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="overlay" type="tns:overlay" />
+			</xs:sequence>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+		<xs:attribute name="parent" type="xs:string" use="optional" />
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
 	</xs:complexType>
 
 	<xs:complexType name="line">
@@ -131,6 +153,18 @@
 		<xs:attribute name="src" type="tns:src" use="required" />
 		<xs:attribute name="align-center" type="xs:boolean" use="optional" default="false" />
 		<xs:attribute name="repeat" type="xs:boolean" use="optional" default="false" />
+	</xs:complexType>
+
+	<!-- style menu name element -->
+	<xs:complexType name="name">
+		<xs:attribute name="lang" type="xs:string" use="required" />
+		<xs:attribute name="value" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<!-- style menu overlay element -->
+	<xs:complexType name="overlay">
+		<xs:attribute name="id" type="xs:string" use="required" />
+		<xs:attribute name="value" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="pathText">
@@ -189,40 +223,16 @@
 		<xs:attribute name="base-text-size" type="tns:nonNegativeFloat" use="optional" default="1" />
 	</xs:complexType>
 
-    <!-- style element -->
-    <xs:complexType name="style">
-        <xs:sequence minOccurs="0" maxOccurs="1">
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-                <xs:element name="stylename" type="tns:stylename" />
-            </xs:sequence>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
-                <xs:element name="stylecat" type="tns:stylecat" />
-            </xs:sequence>
-        </xs:sequence>
-        <xs:attribute name="id" type="xs:string" use="required" />
-        <xs:attribute name="parent" type="xs:string" use="optional" />
-        <xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
-    </xs:complexType>
-
-    <!-- stylename element -->
-    <xs:complexType name="stylecat">
-        <xs:attribute name="value" type="xs:string" use="required" />
-    </xs:complexType>
-
     <!-- stylemenu element -->
     <xs:complexType name="stylemenu">
-        <xs:sequence minOccurs="0" maxOccurs="unbounded">
-            <xs:element name="style" type="tns:style" />
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="style" type="tns:layer" />
+            </xs:sequence>
         </xs:sequence>
         <xs:attribute name="defaultvalue" type="xs:string" use="required" />
-        <xs:attribute name="defaultlang" type="xs:string" use="required" />
+        <xs:attribute name="defaultlang" type="xs:string" use="optional" />
         <xs:attribute name="id" type="xs:string" use="required" />
-    </xs:complexType>
-
-    <!-- stylename element -->
-    <xs:complexType name="stylename">
-        <xs:attribute name="lang" type="xs:string" use="required" />
-        <xs:attribute name="value" type="xs:string" use="required" />
     </xs:complexType>
 
     <!-- root element -->

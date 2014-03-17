@@ -2,34 +2,70 @@
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme-v4.xsd" version="4" map-background="#F8F8F8">
 
     <stylemenu id="r4menu" defaultvalue="outdoor" defaultlang="en">
-        <style id="base" visible="false">
-            <stylecat value="roads"></stylecat>
-        </style>
-        <style id="driving" parent="base">
-            <stylename lang="de" value="Auto"></stylename>
-            <stylename lang="en" value="Driving"></stylename>
-            <stylename lang="es" value="Coche"></stylename>
-            <stylecat value="transport"></stylecat>
-        </style>
-        <style id="outdoor" parent="base">
-            <stylename lang="de" value="Outdoor"></stylename>
-            <stylename lang="en" value="Outdoor"></stylename>
-            <stylename lang="es" value="Driving"></stylename>
-            <stylecat value="waterbodies"></stylecat>
-            <stylecat value="nature"></stylecat>
-            <stylecat value="areas"></stylecat>
-            <stylecat value="emergency"></stylecat>
-            <stylecat value="accommodation"></stylecat>
-        </style>
-        <style id="city" parent="base">
-            <stylename lang="de" value="Stadt"></stylename>
-            <stylename lang="en" value="City"></stylename>
-            <stylename lang="es" value="Ciudad"></stylename>
-            <stylecat value="buildings"></stylecat>
-            <stylecat value="shopping"></stylecat>
-            <stylecat value="amenities"></stylecat>
-            <stylecat value="public_transport"></stylecat>
-        </style>
+
+        <layer id="shopping">
+            <name lang="de" value="Shopping"/>
+            <name lang="en" value="Shopping"/>
+            <name lang="es" value="Shopping"/>
+            <cat id="shopping"/>
+            <cat id="amenities"/>
+        </layer>
+
+        <layer id="accommodation">
+            <name lang="de" value="Hotels etc"/>
+            <name lang="en" value="Accommodation"/>
+            <name lang="es" value="Hoteles"/>
+            <cat id="accommodation"/>
+        </layer>
+
+        <layer id="parking">
+            <name lang="de" value="Parkplätze"/>
+            <name lang="en" value="Parking"/>
+            <name lang="es" value="Parking"/>
+            <cat id="parking"/>
+        </layer>
+
+        <layer id="emergency">
+            <name lang="de" value="Notfall"/>
+            <name lang="en" value="Emergency"/>
+            <name lang="es" value="Emergencia"/>
+            <cat id="emergency"/>
+        </layer>
+
+
+        <layer id="base">
+            <cat id="roads"/>
+            <overlay id="emergency"/>
+        </layer>
+        
+        <layer id="driving" parent="base" visible="true">
+            <name lang="de" value="Auto"/>
+            <name lang="en" value="Driving"/>
+            <name lang="es" value="Coche"/>
+            <cat id="transport"/>
+            <overlay id="parking"/>
+        </layer>
+    
+        <layer id="outdoor" parent="base" visible="true">
+            <name lang="de" value="Outdoor"/>
+            <name lang="en" value="Outdoor"/>
+            <name lang="es" value="Driving"/>
+            <cat id="waterbodies"/>
+            <cat id="nature"/>
+            <cat id="areas"/>
+            <overlay id="accommodation"/>
+        </layer>
+    
+        <layer id="city" parent="driving" visible="true">
+            <name lang="de" value="Stadt"/>
+            <name lang="en" value="City"/>
+            <name lang="es" value="Ciudad"/>
+            <cat id="buildings"/>
+            <cat id="shopping"/>
+            <cat id="amenities"/>
+            <cat id="public_transport"/>
+            <overlay id="shopping" />
+        </layer>
     </stylemenu>
 
 <!-- landcover -->
@@ -243,7 +279,7 @@
 	<rule cat="tourism_poi" e="way" k="tourism" v="attraction" closed="no" zoom-min="14">
 		<line stroke="#40734A08" stroke-width="0.8"/>
 	</rule>
-	<rule cat="areas" e="way" k="amenity" v="parking">
+	<rule cat="parking" e="way" k="amenity" v="parking">
 		<area fill="#FFFFC0" stroke="#E9DD72" stroke-width="0.2"/>
 		<rule e="way" k="access" v="private">
 			<area src="assets:patterns/access-private.png"/>
@@ -1123,7 +1159,7 @@
 	</rule>
 
 	<!-- highway -->
-	<rule cat="traffic" e="any" k="*" v="*">
+	<rule cat="parking" e="any" k="*" v="*">
 		<rule e="any" k="amenity" v="parking" zoom-min="14">
 			<rule e="any" k="access" v="private">
 				<symbol src="assets:symbols/transport/parking_private2.svg"/>

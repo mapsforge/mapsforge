@@ -29,9 +29,8 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
-import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenuEntry;
 import org.mapsforge.map.rendertheme.renderinstruction.Area;
 import org.mapsforge.map.rendertheme.renderinstruction.AreaBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Caption;
@@ -97,7 +96,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
 	private final XmlRenderTheme xmlRenderTheme;
 	private XmlRenderThemeStyleMenu renderThemeStyleMenu;
-	private XmlRenderThemeStyleMenuEntry renderThemeStyleMenuEntry;
+	private XmlRenderThemeStyleLayer currentLayer;
 
 	private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix,
 	                           XmlRenderTheme xmlRenderTheme) {
@@ -184,11 +183,39 @@ public final class RenderThemeHandler extends DefaultHandler {
 				this.currentRule.addRenderingInstruction(caption);
 			}
 
+			else if ("cat".equals(qName)) {
+				checkState(qName, Element.RENDERING_STYLE);
+				this.currentLayer.addCategory(attributes.getValue("id"));
+			}
+
 			else if ("circle".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes,
 						this.level++).build();
 				this.currentRule.addRenderingInstruction(circle);
+			}
+
+			// rendertheme menu layer
+			else if ("layer".equals(qName)) {
+				checkState(qName, Element.RENDERING_STYLE);
+				boolean enabled = false;
+				if (attributes.getValue("enabled") != null) {
+					enabled = Boolean.valueOf(attributes.getValue("enabled"));
+				}
+				boolean visible = Boolean.valueOf(attributes.getValue("visible"));
+				this.currentLayer = this.renderThemeStyleMenu.createLayer(attributes.getValue("id"), visible, enabled);
+				String parent = attributes.getValue("parent");
+				if (null != parent) {
+					XmlRenderThemeStyleLayer parentEntry = this.renderThemeStyleMenu.getLayer(parent);
+					if (null != parentEntry) {
+						for (String cat : parentEntry.getCategories()) {
+							this.currentLayer.addCategory(cat);
+						}
+						for (XmlRenderThemeStyleLayer overlay : parentEntry.getOverlays()) {
+							this.currentLayer.addOverlay(overlay);
+						}
+					}
+				}
 			}
 
 			else if ("line".equals(qName)) {
@@ -205,42 +232,36 @@ public final class RenderThemeHandler extends DefaultHandler {
 				this.currentRule.addRenderingInstruction(lineSymbol);
 			}
 
+			// render theme menu name
+			else if ("name".equals(qName)) {
+				checkState(qName, Element.RENDERING_STYLE);
+				this.currentLayer.addTranslation(attributes.getValue("lang"), attributes.getValue("value"));
+			}
+
+			// render theme menu overlay
+			else if ("overlay".equals(qName)) {
+				checkState(qName, Element.RENDERING_STYLE);
+				XmlRenderThemeStyleLayer overlay = this.renderThemeStyleMenu.getLayer(attributes.getValue("id"));
+				if (overlay != null) {
+					this.currentLayer.addOverlay(overlay);
+				}
+			}
+
 			else if ("pathText".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes)
 						.build();
 				this.currentRule.addRenderingInstruction(pathText);
 			}
-			else if ("style".equals(qName)) {
-				checkState(qName, Element.RENDERING_STYLE);
-				boolean visible = true;
-				if (null != attributes.getValue("visible")) {
-					visible = Boolean.valueOf(attributes.getValue("visible"));
-				}
-				this.renderThemeStyleMenuEntry = this.renderThemeStyleMenu.createStyle(attributes.getValue("id"), visible);
-				String parent = attributes.getValue("parent");
-				if (null != parent) {
-					XmlRenderThemeStyleMenuEntry parentEntry = this.renderThemeStyleMenu.getStyle(parent);
-					if (null != parentEntry) {
-						for (String cat : parentEntry.getCategories()) {
-							this.renderThemeStyleMenuEntry.addCategory(cat);
-						}
-					}
-				}
-			}
-			else if ("stylename".equals(qName)) {
-				checkState(qName, Element.RENDERING_STYLE);
-				this.renderThemeStyleMenuEntry.addTitle(attributes.getValue("lang"), attributes.getValue("value"));
-			}
+
 			else if ("stylemenu".equals(qName)) {
 				checkState(qName, Element.RENDERING_STYLE);
-				this.renderThemeStyleMenu = new XmlRenderThemeStyleMenu(
-						attributes.getValue("id"), attributes.getValue("defaultlang"), attributes.getValue("defaultvalue"));
+
+				this.renderThemeStyleMenu =
+						new XmlRenderThemeStyleMenu(attributes.getValue("id"),
+								attributes.getValue("defaultlang"), attributes.getValue("defaultvalue"));
 			}
-			else if ("stylecat".equals(qName)) {
-				checkState(qName, Element.RENDERING_STYLE);
-				this.renderThemeStyleMenuEntry.addCategory(attributes.getValue("value"));
-			}
+
 			else if ("symbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,

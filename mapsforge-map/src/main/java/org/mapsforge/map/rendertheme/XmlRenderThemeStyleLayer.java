@@ -15,34 +15,43 @@
 package org.mapsforge.map.rendertheme;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class XmlRenderThemeStyleMenuEntry implements Serializable {
+public class XmlRenderThemeStyleLayer implements Serializable {
+
 	private final Set<String> categories;
 	private final String defaultLanguage;
-	private final Map<String, String> descriptions;
 	private final String id;
+	private final List<XmlRenderThemeStyleLayer> overlays;
 	private final Map<String, String> titles;
 	private final boolean visible;
+	private final boolean enabled;
 
-	XmlRenderThemeStyleMenuEntry(String id, String defaultLanguage, boolean visible) {
-		this.defaultLanguage = defaultLanguage;
+	XmlRenderThemeStyleLayer(String id, boolean visible, boolean enabled, String defaultLanguage) {
 		this.id = id;
 		this.titles = new HashMap<String, String>();
-		this.descriptions = new HashMap<String, String>();
-		this.categories = new HashSet<String>();
+		this.categories = new LinkedHashSet<>();
 		this.visible = visible;
+		this.defaultLanguage = defaultLanguage;
+		this.enabled = enabled;
+		this.overlays = new ArrayList<XmlRenderThemeStyleLayer>();
 	}
 
 	public void addCategory(String category) {
 		this.categories.add(category);
 	}
 
-	public void addTitle(String language, String name) {
-		titles.put(language, name);
+	public void addOverlay(XmlRenderThemeStyleLayer overlay) {
+		this.overlays.add(overlay);
+	}
+
+	public void addTranslation(String language, String name) {
+		this.titles.put(language, name);
 	}
 
 	public Set<String> getCategories() {
@@ -53,8 +62,24 @@ public class XmlRenderThemeStyleMenuEntry implements Serializable {
 		return this.id;
 	}
 
+	public List<XmlRenderThemeStyleLayer> getOverlays() {
+		return this.overlays;
+	}
+
+	public String getTitle(String language) {
+		String result = this.titles.get(language);
+		if (result == null) {
+			return this.titles.get(this.defaultLanguage);
+		}
+		return result;
+	}
+
 	public Map<String, String> getTitles() {
 		return this.titles;
+	}
+
+	public boolean isEnabled() {
+		return this.enabled;
 	}
 
 	public boolean isVisible() {
