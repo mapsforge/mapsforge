@@ -3,7 +3,7 @@ apply plugin: 'android'
 dependencies {
   compile project(":mapsforge-map-android")
   compile 'com.google.android:support-v4:r7'
-  instrumentTestCompile group: 'com.jayway.android.robotium', name: 'robotium-solo', version:'4.3.1'
+  androidTestCompile group: 'com.jayway.android.robotium', name: 'robotium-solo', version:'4.3.1'
 }
 
 
@@ -15,8 +15,8 @@ android {
   }
 
   sourceSets {
-    instrumentTest {
-      java.srcDirs = ['src/instrumentTest']
+    androidTest {
+      java.srcDirs = ['src/androidTest']
     }
   }
 }
