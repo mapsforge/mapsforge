@@ -30,7 +30,7 @@ import com.applantation.android.svg.SVGParser;
 class AndroidSvgBitmap extends AndroidResourceBitmap {
 	static final float DEFAULT_SIZE = 400f;
 
-	private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height)
+	private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height, int percent)
 			throws IOException {
 		synchronized (RESOURCE_BITMAPS) {
 			Pair<Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
@@ -58,6 +58,11 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 					bitmapHeight = height;
 				}
 
+				if (percent != 100) {
+					bitmapWidth *= percent / 100f;
+					bitmapHeight *= percent / 100f;
+				}
+
 				bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
 						(int) Math.ceil(bitmapHeight), AndroidGraphicFactory.TRANSPARENT_BITMAP);
 				Canvas canvas = new Canvas(bitmap);
@@ -82,9 +87,9 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 		}
 	}
 
-	AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height) throws IOException {
+	AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height, int percent) throws IOException {
 		super(hash);
- 		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor, width, height);
+ 		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor, width, height, percent);
 	}
 
 }

@@ -1162,10 +1162,10 @@
 	<rule cat="parking" e="any" k="*" v="*">
 		<rule e="any" k="amenity" v="parking" zoom-min="14">
 			<rule e="any" k="access" v="private">
-				<symbol src="assets:symbols/transport/parking_private2.svg"/>
+				<symbol src="assets:symbols/transport/parking_private2.svg" symbol-scaling="percent" symbol-percent="80"/>
 			</rule>
 			<rule e="any" k="*" v="*">
-				<symbol src="assets:symbols/transport/parking.svg"/>
+				<symbol src="assets:symbols/transport/parking.svg" symbol-scaling="percent" symbol-percent="80"/>
 			</rule>
 		</rule>
 		<rule e="node" k="highway" v="traffic_signals" zoom-min="17">

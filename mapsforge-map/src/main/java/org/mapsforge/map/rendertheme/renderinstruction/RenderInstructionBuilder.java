@@ -39,6 +39,7 @@ public class RenderInstructionBuilder {
 	static final String STROKE_LINECAP = "stroke-linecap";
 	static final String STROKE_WIDTH = "stroke-width";
 	static final String SYMBOL_HEIGHT = "symbol-height";
+	static final String SYMBOL_PERCENT = "symbol-percent";
 	static final String SYMBOL_SCALING = "symbol-scaling";
 	static final String SYMBOL_WIDTH = "symbol-width";
 	static final String TILE = "tile";
@@ -51,7 +52,8 @@ public class RenderInstructionBuilder {
 
 	String elementName;
 	float height;
-	ResourceScaling scaling;;
+	int percent = 100;
+	ResourceScaling scaling;
 	String src;
 	float width;
 
@@ -66,7 +68,7 @@ public class RenderInstructionBuilder {
 			this.height = displayModel.getTilingSize();
 		}
 
-		return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height);
+		return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height, percent);
 	}
 
 	protected ResourceScaling fromValue(String value) {

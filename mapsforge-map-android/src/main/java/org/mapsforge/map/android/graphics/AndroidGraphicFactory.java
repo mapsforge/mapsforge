@@ -258,8 +258,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int hash) throws IOException {
-		return new AndroidSvgBitmap(inputStream, hash, scaleFactor, width, height);
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+		return new AndroidSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
 	}
 
 }
