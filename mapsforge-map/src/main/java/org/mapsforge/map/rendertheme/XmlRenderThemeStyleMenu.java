@@ -19,7 +19,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- *
+ * Entry class for automatically building menus from rendertheme V4+ files.
+ * This class holds all the defined layers and allows to retrieve them by name
+ * or through iteration.
+ * This class is Serializable to be able to pass an instance of it through the
+ * Android Intent mechanism.
  */
 public class XmlRenderThemeStyleMenu implements Serializable {
 

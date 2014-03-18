@@ -31,8 +31,6 @@ import org.xml.sax.SAXException;
  */
 public class RuleBuilder {
 
-	private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
-
 	private static final String CAT = "cat";
 	private static final String CLOSED = "closed";
 	private static final String E = "e";
@@ -149,7 +147,6 @@ public class RuleBuilder {
 			} else if (V.equals(name)) {
 				this.values = value;
 			} else if (CAT.equals(name)) {
-				LOGGER.warning("Rule " + elementName + " " + value);
 				this.cat = value;
 			} else if (CLOSED.equals(name)) {
 				this.closed = Closed.valueOf(value.toUpperCase(Locale.ENGLISH));

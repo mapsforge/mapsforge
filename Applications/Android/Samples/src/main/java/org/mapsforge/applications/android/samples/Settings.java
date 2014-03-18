@@ -30,11 +30,9 @@ import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -76,8 +74,6 @@ public class Settings extends PreferenceActivity implements
 			float fs = Float.valueOf(preferences.getString(
 					SamplesApplication.SETTING_SCALE,
 					Float.toString(userScaleFactor)));
-			Log.e(SamplesApplication.TAG,
-					"User ScaleFactor " + Float.toString(fs));
 			if (fs != userScaleFactor) {
 				DisplayModel.setDefaultUserScaleFactor(fs);
 			}
