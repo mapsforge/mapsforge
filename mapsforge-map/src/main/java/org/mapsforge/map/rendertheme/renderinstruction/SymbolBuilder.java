@@ -58,6 +58,8 @@ public class SymbolBuilder extends RenderInstructionBuilder {
 
 			if (SRC.equals(name)) {
 				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (SYMBOL_HEIGHT.equals(name)) {
 				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else if (SYMBOL_PERCENT.equals(name)) {

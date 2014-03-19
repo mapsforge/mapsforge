@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,7 +24,7 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 /**
  * Represents a round area on the map.
  */
-public class Circle implements RenderInstruction {
+public class Circle extends RenderInstruction {
 	private final Paint fill;
 	private final int level;
 	private final float radius;
@@ -33,6 +34,7 @@ public class Circle implements RenderInstruction {
 	private final float strokeWidth;
 
 	Circle(CircleBuilder circleBuilder) {
+		super(circleBuilder.getCategory());
 		this.fill = circleBuilder.fill;
 		this.level = circleBuilder.level;
 		this.radius = circleBuilder.radius.floatValue();

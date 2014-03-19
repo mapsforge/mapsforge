@@ -35,6 +35,7 @@
 
         <layer id="base">
             <cat id="roads"/>
+            <cat id="waterbodies"/>
             <overlay id="emergency"/>
         </layer>
         
@@ -43,16 +44,17 @@
             <name lang="en" value="Driving"/>
             <name lang="es" value="Coche"/>
             <cat id="transport"/>
+            <cat id="redrivers"/>
             <overlay id="parking"/>
         </layer>
     
         <layer id="outdoor" parent="base" visible="true">
             <name lang="de" value="Outdoor"/>
             <name lang="en" value="Outdoor"/>
-            <name lang="es" value="Driving"/>
-            <cat id="waterbodies"/>
+            <name lang="es" value="Outdoor"/>
             <cat id="nature"/>
             <cat id="areas"/>
+            <cat id="bluerivers"/>
             <overlay id="accommodation"/>
         </layer>
     
@@ -160,7 +162,8 @@
 		<area src="assets:patterns/cemetery.png" stroke="#E4E4E4" stroke-width="0.2"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural|landuse" v="land|beach|sand|rock|fell|meadow|grassland|heath|marsh|wetland|scree|scrub|forest|wood" zoom-min="16">
-		<caption k="name" font-style="italic" font-family="serif" font-size="16" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
+        <caption cat="labels-big" k="name" font-style="italic" font-family="serif" font-size="20" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
+        <caption cat="labels-small" k="name" font-style="italic" font-family="serif" font-size="10" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse" v="landfill|quarry|vineyard|field|farm|farmland|orchard" zoom-min="16">
 		<caption k="name" font-style="italic" font-family="serif" font-size="16" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
@@ -233,7 +236,8 @@
 			<line stroke="#B3DDFF" stroke-width="1.1"/>
 		</rule>
 		<rule e="way" k="waterway" v="riverbank">
-			<area fill="#B3DDFF"/>
+			<area cat="redrivers" fill="#FF0000"/>
+			<area cat="bluerivers" fill="#B3DDFF"/>
 		</rule>
 		<rule e="way" k="waterway" v="river" zoom-min="12">
 			<pathText k="name" font-style="bold" font-size="14" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>

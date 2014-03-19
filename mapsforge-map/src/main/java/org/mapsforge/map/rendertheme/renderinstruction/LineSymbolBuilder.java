@@ -62,6 +62,8 @@ public class LineSymbolBuilder extends RenderInstructionBuilder {
 				this.src = value;
 			} else if (ALIGN_CENTER.equals(name)) {
 				this.alignCenter = Boolean.parseBoolean(value);
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (REPEAT.equals(name)) {
 				this.repeat = Boolean.parseBoolean(value);
 			} else {

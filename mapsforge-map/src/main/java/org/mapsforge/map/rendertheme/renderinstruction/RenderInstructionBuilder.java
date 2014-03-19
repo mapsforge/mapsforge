@@ -24,14 +24,17 @@ import java.io.IOException;
 public class RenderInstructionBuilder {
 
 	static final String ALIGN_CENTER = "align-center";
-	static final String DEFAULT = "default";
+	static final String CAT = "cat";
 	static final String DY = "dy";
 	static final String FILL = "fill";
 	static final String FONT_FAMILY = "font-family";
 	static final String FONT_SIZE = "font-size";
 	static final String FONT_STYLE = "font-style";
 	static final String K = "k";
+	static final String R = "r";
+	static final String RADIUS = "radius";
 	static final String REPEAT = "repeat";
+	static final String SCALE_RADIUS = "scale-radius";
 	static final String SIZE = "symbol-size";
 	static final String SRC = "src";
 	static final String STROKE = "stroke";
@@ -50,12 +53,17 @@ public class RenderInstructionBuilder {
 		TILE
 	}
 
+	String cat;
 	String elementName;
 	float height;
 	int percent = 100;
 	ResourceScaling scaling;
 	String src;
 	float width;
+
+	public String getCategory() {
+		return this.cat;
+	}
 
 	protected Bitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix, String src)
 		throws IOException {

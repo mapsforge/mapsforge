@@ -89,6 +89,7 @@
 
 	<!-- rendering instructions -->
 	<xs:complexType name="area">
+		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="src" type="tns:src" use="optional" />
 		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
 		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
@@ -100,6 +101,7 @@
 	</xs:complexType>
 
 	<xs:complexType name="caption">
+		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="k" type="tns:textKey" use="required" />
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
@@ -116,6 +118,7 @@
 	</xs:complexType>
 
     <xs:complexType name="circle">
+		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="radius" type="tns:nonNegativeFloat" use="required" />
 		<xs:attribute name="scale-radius" type="xs:boolean" use="optional" default="false" />
 		<xs:attribute name="fill" type="tns:color" use="optional" default="#00000000" />
@@ -142,6 +145,7 @@
 	</xs:complexType>
 
 	<xs:complexType name="line">
+		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="src" type="tns:src" use="optional" />
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
@@ -151,6 +155,7 @@
 	</xs:complexType>
 
 	<xs:complexType name="lineSymbol">
+		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="src" type="tns:src" use="required" />
 		<xs:attribute name="align-center" type="xs:boolean" use="optional" default="false" />
 		<xs:attribute name="repeat" type="xs:boolean" use="optional" default="false" />
@@ -168,6 +173,7 @@
 	</xs:complexType>
 
 	<xs:complexType name="pathText">
+		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="k" type="tns:textKey" use="required" />
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
@@ -179,6 +185,7 @@
 	</xs:complexType>
 
 	<xs:complexType name="symbol">
+        <xs:attribute name="cat" type="xs:string" use="optional" />
         <xs:attribute name="src" type="tns:src" use="required" />
         <xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />

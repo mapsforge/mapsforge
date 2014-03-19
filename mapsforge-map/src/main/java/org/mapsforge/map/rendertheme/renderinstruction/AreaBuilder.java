@@ -78,6 +78,8 @@ public class AreaBuilder extends RenderInstructionBuilder {
 
 			if (SRC.equals(name)) {
 				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {

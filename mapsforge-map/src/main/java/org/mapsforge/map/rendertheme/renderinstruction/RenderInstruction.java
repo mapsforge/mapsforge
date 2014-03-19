@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,9 +23,19 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 /**
  * A RenderInstruction is a basic graphical primitive to draw a map.
  */
-public interface RenderInstruction {
+public abstract class RenderInstruction {
 
-	void destroy();
+	private String category;
+
+	public RenderInstruction(String category) {
+		this.category = category;
+	}
+
+	public abstract void destroy();
+
+	public String getCategory() {
+		return this.category;
+	}
 
 	/**
 	 * @param renderCallback
@@ -32,7 +43,7 @@ public interface RenderInstruction {
 	 * @param tags
 	 *            the tags of the node.
 	 */
-	void renderNode(RenderCallback renderCallback, List<Tag> tags);
+	public abstract void renderNode(RenderCallback renderCallback, List<Tag> tags);
 
 	/**
 	 * @param renderCallback
@@ -40,7 +51,7 @@ public interface RenderInstruction {
 	 * @param tags
 	 *            the tags of the way.
 	 */
-	void renderWay(RenderCallback renderCallback, List<Tag> tags);
+	public abstract void renderWay(RenderCallback renderCallback, List<Tag> tags);
 
 	/**
 	 * Scales the stroke width of this RenderInstruction by the given factor.
@@ -48,7 +59,7 @@ public interface RenderInstruction {
 	 * @param scaleFactor
 	 *            the factor by which the stroke width should be scaled.
 	 */
-	void scaleStrokeWidth(float scaleFactor);
+	public abstract void scaleStrokeWidth(float scaleFactor);
 
 	/**
 	 * Scales the text size of this RenderInstruction by the given factor.
@@ -56,5 +67,5 @@ public interface RenderInstruction {
 	 * @param scaleFactor
 	 *            the factor by which the text size should be scaled.
 	 */
-	void scaleTextSize(float scaleFactor);
+	public abstract void scaleTextSize(float scaleFactor);
 }

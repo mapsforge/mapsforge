@@ -84,6 +84,8 @@ public class LineBuilder extends RenderInstructionBuilder {
 
 			if (SRC.equals(name)) {
 				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (STROKE.equals(name)) {

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 devemux86
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,15 +33,7 @@ import org.xml.sax.SAXException;
 /**
  * A builder for {@link Caption} instances.
  */
-public class CaptionBuilder {
-	static final String DY = "dy";
-	static final String FILL = "fill";
-	static final String FONT_FAMILY = "font-family";
-	static final String FONT_SIZE = "font-size";
-	static final String FONT_STYLE = "font-style";
-	static final String K = "k";
-	static final String STROKE = "stroke";
-	static final String STROKE_WIDTH = "stroke-width";
+public class CaptionBuilder extends RenderInstructionBuilder {
 
 	float dy;
 	final Paint fill;
@@ -81,6 +74,8 @@ public class CaptionBuilder {
 
 			if (K.equals(name)) {
 				this.textKey = TextKey.getInstance(value);
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {

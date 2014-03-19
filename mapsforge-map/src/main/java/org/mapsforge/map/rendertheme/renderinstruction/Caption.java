@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,7 +24,7 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 /**
  * Represents a text label on the map.
  */
-public class Caption implements RenderInstruction {
+public class Caption extends RenderInstruction {
 	private final float dy;
 	private final Paint fill;
 	private final float fontSize;
@@ -31,6 +32,7 @@ public class Caption implements RenderInstruction {
 	private final TextKey textKey;
 
 	Caption(CaptionBuilder captionBuilder) {
+		super(captionBuilder.getCategory());
 		this.dy = captionBuilder.dy;
 		this.fill = captionBuilder.fill;
 		this.fontSize = captionBuilder.fontSize;

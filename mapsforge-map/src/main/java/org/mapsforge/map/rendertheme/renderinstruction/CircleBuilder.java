@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,13 +27,7 @@ import org.xml.sax.SAXException;
 /**
  * A builder for {@link Circle} instances.
  */
-public class CircleBuilder {
-	static final String FILL = "fill";
-	static final String R = "r";
-	static final String RADIUS = "radius";
-	static final String SCALE_RADIUS = "scale-radius";
-	static final String STROKE = "stroke";
-	static final String STROKE_WIDTH = "stroke-width";
+public class CircleBuilder extends RenderInstructionBuilder{
 
 	final Paint fill;
 	final int level;
@@ -73,6 +68,8 @@ public class CircleBuilder {
 				this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value)) * displayModel.getScaleFactor();
 			} else if (SCALE_RADIUS.equals(name)) {
 				this.scaleRadius = Boolean.parseBoolean(value);
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {

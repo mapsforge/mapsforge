@@ -43,6 +43,7 @@ import org.mapsforge.map.rendertheme.renderinstruction.LineSymbol;
 import org.mapsforge.map.rendertheme.renderinstruction.LineSymbolBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.PathText;
 import org.mapsforge.map.rendertheme.renderinstruction.PathTextBuilder;
+import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.mapsforge.map.rendertheme.renderinstruction.Symbol;
 import org.mapsforge.map.rendertheme.renderinstruction.SymbolBuilder;
 import org.xml.sax.Attributes;
@@ -125,7 +126,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 		if (ELEMENT_NAME_RULE.equals(qName)) {
 			this.ruleStack.pop();
 			if (this.ruleStack.empty()) {
-				if (ruleIsVisible((this.currentRule))) {
+				if (isVisible((this.currentRule))) {
 					this.renderTheme.addRule(this.currentRule);
 				}
 			} else {
@@ -162,7 +163,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 				checkState(qName, Element.RULE);
 				Rule rule = new RuleBuilder(qName, attributes, this.ruleStack).build();
 				if (!this.ruleStack.empty()) {
-					if (ruleIsVisible(rule)) {
+					if (isVisible(rule)) {
 						this.currentRule.addSubRule(rule);
 					}
 				}
@@ -174,13 +175,17 @@ public final class RenderThemeHandler extends DefaultHandler {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Area area = new AreaBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
 						this.relativePathPrefix).build();
-				this.currentRule.addRenderingInstruction(area);
+				if (isVisible(area)) {
+					this.currentRule.addRenderingInstruction(area);
+				}
 			}
 
 			else if ("caption".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
-				this.currentRule.addRenderingInstruction(caption);
+				if (isVisible(caption)) {
+					this.currentRule.addRenderingInstruction(caption);
+				}
 			}
 
 			else if ("cat".equals(qName)) {
@@ -192,7 +197,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes,
 						this.level++).build();
-				this.currentRule.addRenderingInstruction(circle);
+				if (isVisible(circle)) {
+					this.currentRule.addRenderingInstruction(circle);
+				}
 			}
 
 			// rendertheme menu layer
@@ -222,14 +229,18 @@ public final class RenderThemeHandler extends DefaultHandler {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				Line line = new LineBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
 						this.relativePathPrefix).build();
-				this.currentRule.addRenderingInstruction(line);
+				if (isVisible(line)) {
+					this.currentRule.addRenderingInstruction(line);
+				}
 			}
 
 			else if ("lineSymbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName,
 						attributes, this.relativePathPrefix).build();
-				this.currentRule.addRenderingInstruction(lineSymbol);
+				if (isVisible(lineSymbol)) {
+					this.currentRule.addRenderingInstruction(lineSymbol);
+				}
 			}
 
 			// render theme menu name
@@ -251,7 +262,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
 				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes)
 						.build();
-				this.currentRule.addRenderingInstruction(pathText);
+				if (isVisible(pathText)) {
+					this.currentRule.addRenderingInstruction(pathText);
+				}
 			}
 
 			else if ("stylemenu".equals(qName)) {
@@ -315,7 +328,12 @@ public final class RenderThemeHandler extends DefaultHandler {
 		this.elementStack.push(element);
 	}
 
-	private boolean ruleIsVisible(Rule rule) {
+	private boolean isVisible(RenderInstruction renderInstruction) {
+		return this.categories == null || renderInstruction.getCategory() == null ||
+				this.categories.contains(renderInstruction.getCategory());
+	}
+
+	private boolean isVisible(Rule rule) {
 		// a rule is visible if categories is not set, the rule has not category or the
 		// categories contain this rule's category
 		return this.categories == null || rule.cat == null || this.categories.contains(rule.cat);
