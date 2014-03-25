@@ -619,6 +619,8 @@
 			</rule>
 			<rule e="way" k="highway" v="pedestrian">
 				<line stroke="#E3E3E3" stroke-width="1.3"/>
+                <lineSymbol src="assets:symbols/peak1.svg" dy="-12.5" align-center="true" repeat="true" repeat-gap="25" repeat-start="12.5"/>
+                <lineSymbol src="assets:symbols/volcano.svg" dy="-12.5" align-center="true" repeat="true" repeat-gap="25" repeat-start="25"/>
 			</rule>
 			<rule e="way" k="highway" v="unclassified|residential|living_street|road">
 				<line stroke="#FFFFFF" stroke-width="1.3"/>

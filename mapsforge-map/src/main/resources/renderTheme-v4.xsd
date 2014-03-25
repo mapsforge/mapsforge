@@ -156,9 +156,12 @@
 
 	<xs:complexType name="lineSymbol">
 		<xs:attribute name="cat" type="xs:string" use="optional" />
+		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="src" type="tns:src" use="required" />
 		<xs:attribute name="align-center" type="xs:boolean" use="optional" default="false" />
 		<xs:attribute name="repeat" type="xs:boolean" use="optional" default="false" />
+		<xs:attribute name="repeat-gap" type="xs:float" use="optional" default="200" />
+		<xs:attribute name="repeat-start" type="xs:float" use="optional" default="30" />
 	</xs:complexType>
 
 	<!-- style menu name element -->

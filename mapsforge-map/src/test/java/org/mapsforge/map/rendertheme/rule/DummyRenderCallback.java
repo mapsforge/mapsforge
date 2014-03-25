@@ -55,7 +55,7 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderWaySymbol(Bitmap symbol, boolean alignCenter, boolean repeat) {
+	public void renderWaySymbol(Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart) {
 		// do nothing
 	}
 

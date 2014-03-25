@@ -108,12 +108,19 @@ public interface RenderCallback {
 	 * 
 	 * @param symbol
 	 *            the symbol to be rendered.
+	 * @param dy
+	 *            the offset of the way.
 	 * @param alignCenter
 	 *            true if the symbol should be centered, false otherwise.
 	 * @param repeat
 	 *            true if the symbol should be repeated, false otherwise.
+	 * @param repeatGap
+	 *            distance between repetitions.
+	 * @param repeatStart
+	 *            offset from start.
 	 */
-	void renderWaySymbol(Bitmap symbol, boolean alignCenter, boolean repeat);
+	void renderWaySymbol(Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
+	                     float repeatGap, float repeatStart);
 
 	/**
 	 * Renders a way with the given text along the way path.

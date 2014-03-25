@@ -27,13 +27,19 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 public class LineSymbol extends RenderInstruction {
 	private final boolean alignCenter;
 	private final Bitmap bitmap;
+	private final float dy;
 	private final boolean repeat;
+	private final float repeatGap;
+	private final float repeatStart;
 
 	LineSymbol(LineSymbolBuilder lineSymbolBuilder) {
 		super(lineSymbolBuilder.getCategory());
 		this.alignCenter = lineSymbolBuilder.alignCenter;
 		this.bitmap = lineSymbolBuilder.bitmap;
+		this.dy = lineSymbolBuilder.dy;
 		this.repeat = lineSymbolBuilder.repeat;
+		this.repeatGap = lineSymbolBuilder.repeatGap;
+		this.repeatStart = lineSymbolBuilder.repeatStart;
 	}
 
 	@Override
@@ -48,7 +54,7 @@ public class LineSymbol extends RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderWaySymbol(this.bitmap, this.alignCenter, this.repeat);
+		renderCallback.renderWaySymbol(this.bitmap, this.dy, this.alignCenter, this.repeat, this.repeatGap, this.repeatStart);
 	}
 
 	@Override

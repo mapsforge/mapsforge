@@ -23,27 +23,25 @@ import org.mapsforge.core.model.Point;
 final class WayDecorator {
 
 	/**
-	 * Minimum distance in pixels before the symbol is repeated.
-	 */
-	private static final int DISTANCE_BETWEEN_SYMBOLS = 200;
-
-	/**
 	 * Minimum distance in pixels before the way name is repeated.
 	 */
 	private static final int DISTANCE_BETWEEN_WAY_NAMES = 500;
 
-	/**
-	 * Distance in pixels to skip from both ends of a segment.
-	 */
-	private static final int SEGMENT_SAFETY_DISTANCE = 30;
-
-	static void renderSymbol(Bitmap symbolBitmap, boolean alignCenter, boolean repeatSymbol, Point[][] coordinates,
+	static void renderSymbol(Bitmap symbolBitmap, float dy, boolean alignCenter,
+	                         boolean repeatSymbol, float repeatGap, float repeatStart, Point[][] coordinates,
 			List<SymbolContainer> waySymbols) {
-		int skipPixels = SEGMENT_SAFETY_DISTANCE;
+		int skipPixels = (int)repeatStart;
+
+		Point[] c;
+		if (dy == 0f) {
+			c = coordinates[0];
+		} else {
+			c = RendererUtils.parallelPath(coordinates[0], dy);
+		}
 
 		// get the first way point coordinates
-		double previousX = coordinates[0][0].x;
-		double previousY = coordinates[0][0].y;
+		double previousX = c[0].x;
+		double previousY = c[0].y;
 
 		// draw the symbol on each way segment
 		float segmentLengthRemaining;
@@ -51,8 +49,8 @@ final class WayDecorator {
 		float theta;
 		for (int i = 1; i < coordinates[0].length; ++i) {
 			// get the current way point coordinates
-			double currentX = coordinates[0][i].x;
-			double currentY = coordinates[0][i].y;
+			double currentX = c[i].x;
+			double currentY = c[i].y;
 
 			// calculate the length of the current segment (Euclidian distance)
 			double diffX = currentX - previousX;
@@ -60,7 +58,7 @@ final class WayDecorator {
 			double segmentLengthInPixel = Math.sqrt(diffX * diffX + diffY * diffY);
 			segmentLengthRemaining = (float) segmentLengthInPixel;
 
-			while (segmentLengthRemaining - skipPixels > SEGMENT_SAFETY_DISTANCE) {
+			while (segmentLengthRemaining - skipPixels > repeatStart) {
 				// calculate the percentage of the current segment to skip
 				segmentSkipPercentage = skipPixels / segmentLengthRemaining;
 
@@ -85,12 +83,12 @@ final class WayDecorator {
 				segmentLengthRemaining -= skipPixels;
 
 				// set the amount of pixels to skip before repeating the symbol
-				skipPixels = DISTANCE_BETWEEN_SYMBOLS;
+				skipPixels = (int)repeatGap;
 			}
 
 			skipPixels -= segmentLengthRemaining;
-			if (skipPixels < SEGMENT_SAFETY_DISTANCE) {
-				skipPixels = SEGMENT_SAFETY_DISTANCE;
+			if (skipPixels < repeatStart) {
+				skipPixels = (int)repeatStart;
 			}
 
 			// set the previous way point coordinates for the next loop
