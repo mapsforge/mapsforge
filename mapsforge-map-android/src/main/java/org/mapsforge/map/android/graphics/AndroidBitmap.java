@@ -35,16 +35,19 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 
 public class AndroidBitmap implements Bitmap {
-	private static List<AndroidBitmap> bitmaps;
+	private static final List<AndroidBitmap> bitmaps;
 
-	private static AtomicInteger instances;
+	private static final AtomicInteger instances;
 	private static final Logger LOGGER = Logger.getLogger(AndroidBitmap.class.getName());
-	private static Set<SoftReference<android.graphics.Bitmap>> reusableBitmaps = new HashSet<SoftReference<android.graphics.Bitmap>>();
+	private static final Set<SoftReference<android.graphics.Bitmap>> reusableBitmaps = new HashSet<SoftReference<android.graphics.Bitmap>>();
 
 	static {
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			instances = new AtomicInteger();
 			bitmaps = new LinkedList<AndroidBitmap>();
+		} else {
+			bitmaps = null;
+			instances = null;
 		}
 	}
 
