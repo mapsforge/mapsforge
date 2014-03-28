@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.model.DisplayModel;
@@ -58,6 +59,7 @@ public class LineBuilder extends RenderInstructionBuilder {
 		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
+		this.stroke.setStrokeJoin(Join.ROUND);
 
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
 
@@ -100,6 +102,8 @@ public class LineBuilder extends RenderInstructionBuilder {
 				this.stroke.setDashPathEffect(floatArray);
 			} else if (STROKE_LINECAP.equals(name)) {
 				this.stroke.setStrokeCap(Cap.valueOf(value.toUpperCase(Locale.ENGLISH)));
+			} else if (STROKE_LINEJOIN.equals(name)) {
+				this.stroke.setStrokeJoin(Join.valueOf(value.toUpperCase(Locale.ENGLISH)));
 			} else if (SYMBOL_HEIGHT.equals(name)) {
 				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else if (SYMBOL_SCALING.equals(name)) {

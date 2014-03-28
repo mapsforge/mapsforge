@@ -641,13 +641,13 @@
 				<line stroke="#FFEC8B" stroke-width="1.5"/>
 			</rule>
 			<rule e="way" k="highway" v="secondary">
-				<line stroke="#FFD700" stroke-width="1.5"/>
+				<line stroke="#FFD700" stroke-width="1.5" stroke-linejoin="bevel"/>
 			</rule>
 			<rule e="way" k="highway" v="primary">
-				<line stroke="#FFD700" stroke-width="1.5"/>
+				<line stroke="#FFD700" stroke-width="1.5" stroke-linejoin="miter"/>
 			</rule>
 			<rule e="way" k="highway" v="trunk">
-				<line stroke="#FFEC8B" stroke-width="1.5"/>
+				<line stroke="#FFEC8B" stroke-width="1.5" stroke-linejoin="round"/>
 			</rule>
 			<rule e="way" k="highway" v="motorway">
 				<line stroke="#FFFF00" stroke-width="1.7"/>

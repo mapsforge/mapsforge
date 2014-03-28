@@ -42,6 +42,7 @@ public class RenderInstructionBuilder {
 	static final String STROKE = "stroke";
 	static final String STROKE_DASHARRAY = "stroke-dasharray";
 	static final String STROKE_LINECAP = "stroke-linecap";
+	static final String STROKE_LINEJOIN = "stroke-linejoin";
 	static final String STROKE_WIDTH = "stroke-width";
 	static final String SYMBOL_HEIGHT = "symbol-height";
 	static final String SYMBOL_PERCENT = "symbol-percent";

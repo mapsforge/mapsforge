@@ -53,6 +53,14 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:simpleType name="linejoin">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="miter" />
+			<xs:enumeration value="round" />
+			<xs:enumeration value="bevel" />
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:simpleType name="nonNegativeFloat">
 		<xs:restriction base="xs:float">
 			<xs:minInclusive value="0" />
@@ -152,6 +160,7 @@
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
 		<xs:attribute name="stroke-dasharray" type="tns:strokeDasharray" use="optional" />
 		<xs:attribute name="stroke-linecap" type="tns:cap" use="optional" default="round" />
+		<xs:attribute name="stroke-linejoin" type="tns:linejoin" use="optional" default="round" />
 	</xs:complexType>
 
 	<xs:complexType name="lineSymbol">
