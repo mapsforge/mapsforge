@@ -205,6 +205,6 @@ class AwtPaint implements Paint {
 		if (this.strokeWidth <= 0) {
 			return;
 		}
-		this.stroke = new BasicStroke(this.strokeWidth, this.cap, this.join, 0, this.strokeDasharray, 0);
+		this.stroke = new BasicStroke(this.strokeWidth, this.cap, this.join, this.join == 0 ? 1.0f : 0, this.strokeDasharray, 0);
 	}
 }
