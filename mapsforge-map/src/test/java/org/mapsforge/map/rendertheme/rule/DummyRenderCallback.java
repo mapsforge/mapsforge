@@ -35,7 +35,7 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(String caption, float verticalOffset, Paint fill, Paint stroke) {
+	public void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke) {
 		// do nothing
 	}
 

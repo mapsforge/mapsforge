@@ -255,8 +255,8 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(String caption, float verticalOffset, Paint fill, Paint stroke) {
-		this.nodes.add(new PointTextContainer(caption, this.poiPosition.x, this.poiPosition.y + verticalOffset, fill,
+	public void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke) {
+		this.nodes.add(new PointTextContainer(caption, this.poiPosition.x + horizontalOffset, this.poiPosition.y + verticalOffset, fill,
 				stroke));
 	}
 

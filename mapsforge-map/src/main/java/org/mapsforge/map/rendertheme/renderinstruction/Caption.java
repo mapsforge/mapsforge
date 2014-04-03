@@ -51,7 +51,7 @@ public class Caption extends RenderInstruction {
 		if (caption == null) {
 			return;
 		}
-		renderCallback.renderPointOfInterestCaption(caption, this.dy, this.fill, this.stroke);
+		renderCallback.renderPointOfInterestCaption(caption, 0f, this.dy, this.fill, this.stroke);
 	}
 
 	@Override

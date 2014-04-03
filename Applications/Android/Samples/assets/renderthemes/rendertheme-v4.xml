@@ -974,10 +974,10 @@
 			</rule>
 		</rule>
 		<rule e="any" k="tourism" v="hostel" zoom-min="13">
-			<symbol src="assets:symbols/accommodation/hostel.svg"/>
+			<captioned-symbol src="assets:symbols/accommodation/hostel.svg" k="name" caption-position="above" gap="5" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="tourism|building" v="hotel|guest_house|motel" zoom-min="13">
-			<symbol src="assets:symbols/accommodation/hotel.svg"/>
+			<captioned-symbol src="assets:symbols/accommodation/hotel.svg" k="name" caption-position="below" gap="5" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="tourism" v="chalet" zoom-min="13">
 			<symbol src="assets:symbols/accommodation/chalet.svg"/>
@@ -1343,9 +1343,6 @@
 
 	<!-- names for POIs -->
 	<rule cat="amenities" e="any" k="amenity|leisure" v="bicycle_rental|slipway" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
-	</rule>
-	<rule cat="accommodation" e="any" k="tourism" v="hostel|hotel|motel|chalet|guest_house" zoom-min="18">
 		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 	</rule>
 	<rule cat="emergency" e="any" k="amenity" v="hospital|pharmacy|doctors|clinic" zoom-min="18">

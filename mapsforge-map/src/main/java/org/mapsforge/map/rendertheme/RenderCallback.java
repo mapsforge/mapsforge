@@ -60,6 +60,8 @@ public interface RenderCallback {
 	 * 
 	 * @param caption
 	 *            the text to be rendered.
+	 * @param horizontalOffset
+	 *            the horizontal offset of the caption.
 	 * @param verticalOffset
 	 *            the vertical offset of the caption.
 	 * @param fill
@@ -67,7 +69,7 @@ public interface RenderCallback {
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
 	 */
-	void renderPointOfInterestCaption(String caption, float verticalOffset, Paint fill, Paint stroke);
+	void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke);
 
 	/**
 	 * Renders a point of interest circle with the given parameters.
