@@ -35,8 +35,6 @@ import org.mapsforge.map.rendertheme.renderinstruction.Area;
 import org.mapsforge.map.rendertheme.renderinstruction.AreaBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Caption;
 import org.mapsforge.map.rendertheme.renderinstruction.CaptionBuilder;
-import org.mapsforge.map.rendertheme.renderinstruction.CaptionedSymbol;
-import org.mapsforge.map.rendertheme.renderinstruction.CaptionedSymbolBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Circle;
 import org.mapsforge.map.rendertheme.renderinstruction.CircleBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Line;
@@ -184,17 +182,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("caption".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
+				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes, relativePathPrefix).build();
 				if (isVisible(caption)) {
 					this.currentRule.addRenderingInstruction(caption);
-				}
-			}
-
-			else if ("captioned-symbol".equals(qName)) {
-				checkState(qName, Element.RENDERING_INSTRUCTION);
-				CaptionedSymbol captionedSymbol = new CaptionedSymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes, relativePathPrefix).build();
-				if (isVisible(captionedSymbol)) {
-					this.currentRule.addRenderingInstruction(captionedSymbol);
 				}
 			}
 

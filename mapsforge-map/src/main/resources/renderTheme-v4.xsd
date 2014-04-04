@@ -103,27 +103,6 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-
-	<!-- rendering instructions -->
- 	<xs:complexType name="captioned-symbol">
-		<xs:attribute name="cat" type="xs:string" use="optional" />
-		<xs:attribute name="src" type="tns:src" use="required" />
-		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
-		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
-		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
-		<xs:attribute name="k" type="tns:textKey" use="required" />
-		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
-		<xs:attribute name="caption-position" type="tns:captionPosition" use="optional" default="below" />
-		<xs:attribute name="gap" type="xs:float" use="optional" default="0" />
-		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
-		<xs:attribute name="font-style" type="tns:fontStyle" use="optional" default="normal" />
-		<xs:attribute name="font-size" type="tns:nonNegativeFloat" use="optional" default="0" />
-		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
-		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
-		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
-		<xs:attribute name="render-captionless" type="xs:boolean" use="optional" default="true" />
-    </xs:complexType>
-
  	<xs:complexType name="area">
 		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="src" type="tns:src" use="optional" />
@@ -146,6 +125,12 @@
 		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
+		<xs:attribute name="caption-position" type="tns:captionPosition" use="optional" default="below" />
+		<xs:attribute name="src" type="tns:src" use="required" />
+		<xs:attribute name="gap" type="xs:float" use="optional" default="0" />
+		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
+		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
 	</xs:complexType>
 
 	<!-- style menu cat element -->

@@ -15,24 +15,38 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.List;
-
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.CaptionPosition;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
+import java.util.List;
+
 /**
  * Represents a text label on the map.
+ *
+ * If a bitmap symbol is present the caption position is calculated relative to the bitmap, the
+ * center of which is at the point of the POI. The bitmap itself is never rendered.
+ *
  */
+
 public class Caption extends RenderInstruction {
+
+	private final Bitmap bitmap;
+	private final CaptionPosition captionPosition;
 	private final float dy;
 	private final Paint fill;
 	private final float fontSize;
+	private final float gap;
 	private final Paint stroke;
 	private final TextKey textKey;
 
 	Caption(CaptionBuilder captionBuilder) {
 		super(captionBuilder.getCategory());
+		this.bitmap = captionBuilder.bitmap;
+		this.captionPosition = captionBuilder.captionPosition;
+		this.gap = captionBuilder.gap;
 		this.dy = captionBuilder.dy;
 		this.fill = captionBuilder.fill;
 		this.fontSize = captionBuilder.fontSize;
@@ -51,7 +65,39 @@ public class Caption extends RenderInstruction {
 		if (caption == null) {
 			return;
 		}
-		renderCallback.renderPointOfInterestCaption(caption, 0f, this.dy, this.fill, this.stroke);
+
+		float horizontalOffset = 0f;
+		float verticalOffset = this.dy;
+
+		if (this.bitmap != null) {
+			// calculations if the position of the caption is relative to a symbol
+			float textHeight;
+			if (this.stroke != null) {
+				textHeight = this.stroke.getTextHeight(caption);
+			} else {
+				textHeight = this.fill.getTextHeight(caption);
+			}
+
+			if (CaptionPosition.RIGHT == this.captionPosition || CaptionPosition.LEFT == this.captionPosition) {
+				float textWidth;
+				if (this.stroke != null) {
+					textWidth = this.stroke.getTextWidth(caption) / 2f;
+				} else {
+					textWidth = this.fill.getTextWidth(caption) / 2f;
+				}
+				horizontalOffset = this.bitmap.getWidth() / 2f + this.gap + textWidth;
+				if (CaptionPosition.LEFT == this.captionPosition) {
+					horizontalOffset *= -1f;
+				}
+				verticalOffset = textHeight / 2f;
+			} else if (CaptionPosition.ABOVE == this.captionPosition) {
+				verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
+			} else if (CaptionPosition.BELOW == this.captionPosition) {
+				verticalOffset += this.bitmap.getHeight() / 2f + this.gap + textHeight;
+			}
+		}
+
+		renderCallback.renderPointOfInterestCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke);
 	}
 
 	@Override

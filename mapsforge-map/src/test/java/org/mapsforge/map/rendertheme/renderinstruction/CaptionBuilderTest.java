@@ -22,6 +22,8 @@ import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import java.io.IOException;
+
 public class CaptionBuilderTest {
 	private static final float DY = -2.2f;
 	private static final float FONT_SIZE = 3.3f;
@@ -29,14 +31,14 @@ public class CaptionBuilderTest {
 	private static final String K = "ele";
 
 	@Test
-	public void buildTest() throws SAXException {
+	public void buildTest() throws IOException, SAXException {
 		AttributesImpl attributesImpl = new AttributesImpl();
 		attributesImpl.addAttribute(null, null, CaptionBuilder.DY, null, String.valueOf(DY));
 		attributesImpl.addAttribute(null, null, CaptionBuilder.FONT_SIZE, null, String.valueOf(FONT_SIZE));
 		attributesImpl.addAttribute(null, null, CaptionBuilder.K, null, K);
 
 		CaptionBuilder captionBuilder = new CaptionBuilder(GRAPHIC_FACTORY, new DisplayModel(), "caption",
-				attributesImpl);
+				attributesImpl, "/osmarender/");
 
 		Assert.assertEquals(DY, captionBuilder.dy, 0);
 		Assert.assertEquals(FONT_SIZE, captionBuilder.fontSize, 0);

@@ -35,7 +35,6 @@ public class RenderInstructionBuilder {
 	static final String K = "k";
 	static final String R = "r";
 	static final String RADIUS = "radius";
-	static final String RENDER_CAPTIONLESS = "render-captionless";
 	static final String REPEAT = "repeat";
 	static final String REPEAT_GAP = "repeat-gap";
 	static final String REPEAT_START = "repeat-start";
