@@ -31,6 +31,7 @@ public class LineSymbol extends RenderInstruction {
 	private final boolean repeat;
 	private final float repeatGap;
 	private final float repeatStart;
+	private final boolean rotate;
 
 	LineSymbol(LineSymbolBuilder lineSymbolBuilder) {
 		super(lineSymbolBuilder.getCategory());
@@ -40,6 +41,7 @@ public class LineSymbol extends RenderInstruction {
 		this.repeat = lineSymbolBuilder.repeat;
 		this.repeatGap = lineSymbolBuilder.repeatGap;
 		this.repeatStart = lineSymbolBuilder.repeatStart;
+		this.rotate = lineSymbolBuilder.rotate;
 	}
 
 	@Override
@@ -54,7 +56,8 @@ public class LineSymbol extends RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderWaySymbol(this.bitmap, this.dy, this.alignCenter, this.repeat, this.repeatGap, this.repeatStart);
+		renderCallback.renderWaySymbol(this.bitmap, this.dy, this.alignCenter,
+				this.repeat, this.repeatGap, this.repeatStart, this.rotate);
 	}
 
 	@Override

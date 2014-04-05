@@ -38,9 +38,13 @@ public class LineSymbolBuilder extends RenderInstructionBuilder {
 	boolean repeat;
 	float repeatGap;
 	float repeatStart;
+	boolean rotate;
 
 	public LineSymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
+
+		this.rotate = true;
+
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
 
 		this.bitmap = createBitmap(graphicFactory, displayModel, relativePathPrefix, src);
@@ -80,6 +84,8 @@ public class LineSymbolBuilder extends RenderInstructionBuilder {
 				this.repeatGap = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (REPEAT_START.equals(name)) {
 				this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
+			} else if (ROTATE.equals(name)) {
+				this.rotate = Boolean.parseBoolean(value);
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}

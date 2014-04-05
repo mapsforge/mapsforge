@@ -127,7 +127,7 @@
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
 		<xs:attribute name="caption-position" type="tns:captionPosition" use="optional" default="below" />
 		<xs:attribute name="src" type="tns:src" use="required" />
-		<xs:attribute name="gap" type="xs:float" use="optional" default="0" />
+		<xs:attribute name="gap" type="xs:float" use="optional" default="5" />
 		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
 		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
 		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
@@ -184,6 +184,7 @@
 		<xs:attribute name="repeat" type="xs:boolean" use="optional" default="false" />
 		<xs:attribute name="repeat-gap" type="xs:float" use="optional" default="200" />
 		<xs:attribute name="repeat-start" type="xs:float" use="optional" default="30" />
+		<xs:attribute name="rotate" type="xs:boolean" use="optional" default="true" />
 	</xs:complexType>
 
 	<!-- style menu name element -->

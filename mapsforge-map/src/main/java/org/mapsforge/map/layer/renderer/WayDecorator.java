@@ -28,7 +28,8 @@ final class WayDecorator {
 	private static final int DISTANCE_BETWEEN_WAY_NAMES = 500;
 
 	static void renderSymbol(Bitmap symbolBitmap, float dy, boolean alignCenter,
-	                         boolean repeatSymbol, float repeatGap, float repeatStart, Point[][] coordinates,
+	                         boolean repeatSymbol, float repeatGap, float repeatStart,
+	                         boolean rotate, Point[][] coordinates,
 			List<SymbolContainer> waySymbols) {
 		int skipPixels = (int)repeatStart;
 
@@ -46,7 +47,7 @@ final class WayDecorator {
 		// draw the symbol on each way segment
 		float segmentLengthRemaining;
 		float segmentSkipPercentage;
-		float theta;
+		float theta = 0f;
 		for (int i = 1; i < coordinates[0].length; ++i) {
 			// get the current way point coordinates
 			double currentX = c[i].x;
@@ -65,8 +66,10 @@ final class WayDecorator {
 				// move the previous point forward towards the current point
 				previousX += diffX * segmentSkipPercentage;
 				previousY += diffY * segmentSkipPercentage;
-				theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
-
+				if (rotate) {
+					// if we do not rotate theta will be 0, which is correct
+					theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
+				}
 				Point point = new Point(previousX, previousY);
 				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, theta));
 

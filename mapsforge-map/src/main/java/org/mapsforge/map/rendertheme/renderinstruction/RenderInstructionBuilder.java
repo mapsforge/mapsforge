@@ -38,6 +38,7 @@ public class RenderInstructionBuilder {
 	static final String REPEAT = "repeat";
 	static final String REPEAT_GAP = "repeat-gap";
 	static final String REPEAT_START = "repeat-start";
+	static final String ROTATE = "rotate";
 	static final String SCALE_RADIUS = "scale-radius";
 	static final String SIZE = "symbol-size";
 	static final String SRC = "src";

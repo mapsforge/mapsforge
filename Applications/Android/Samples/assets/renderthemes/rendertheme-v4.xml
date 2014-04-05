@@ -812,13 +812,13 @@
 		<line stroke="#202020" stroke-width="0.4" stroke-linecap="butt"/>
 		<line stroke="#202020" stroke-width="4.0" stroke-dasharray="2,200" stroke-linecap="butt"/>
 		<rule e="way" k="aerialway" v="cable_car" zoom-min="15">
-			<lineSymbol src="assets:symbols/cable_car.svg" repeat="true"/>
+			<lineSymbol src="assets:symbols/cable_car.svg" repeat="true" rotate="false"/>
 		</rule>
 		<rule e="way" k="aerialway" v="chair_lift" zoom-min="15">
-			<lineSymbol src="assets:symbols/chair_lift.svg" repeat="true"/>
+			<lineSymbol src="assets:symbols/chair_lift.svg" repeat="true" rotate="false"/>
 		</rule>
 		<rule e="way" k="aerialway" v="gondola" zoom-min="15">
-			<lineSymbol src="assets:symbols/gondola.svg" repeat="true"/>
+			<lineSymbol src="assets:symbols/gondola.svg" repeat="true" rotate="false"/>
 		</rule>
 		<rule e="any" k="*" v="*" zoom-min="15">
 			<pathText k="name" font-style="bold" font-size="10" fill="#606060" stroke="#FFFFFF" stroke-width="2.0"/>
@@ -889,7 +889,7 @@
 		<rule e="node" k="natural" v="cave_entrance" zoom-min="14">
 			<symbol src="assets:symbols/poi/cave.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="16">
-				<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption src="assets:symbols/poi/cave.svg" k="name" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="node" k="natural" v="volcano" zoom-min="11">

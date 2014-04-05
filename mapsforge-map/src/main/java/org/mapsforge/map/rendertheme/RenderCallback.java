@@ -122,7 +122,7 @@ public interface RenderCallback {
 	 *            offset from start.
 	 */
 	void renderWaySymbol(Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
-	                     float repeatGap, float repeatStart);
+	                     float repeatGap, float repeatStart, boolean rotate);
 
 	/**
 	 * Renders a way with the given text along the way path.

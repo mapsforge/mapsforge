@@ -284,8 +284,8 @@ public class DatabaseRenderer implements RenderCallback {
 
 	@Override
 	public void renderWaySymbol(Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
-	                     float repeatGap, float repeatStart) {
-		WayDecorator.renderSymbol(symbol, dy, alignCenter, repeat, repeatGap, repeatStart, this.coordinates, this.waySymbols);
+	                     float repeatGap, float repeatStart, boolean rotate) {
+		WayDecorator.renderSymbol(symbol, dy, alignCenter, repeat, repeatGap, repeatStart, rotate, this.coordinates, this.waySymbols);
 	}
 
 	@Override
