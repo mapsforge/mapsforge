@@ -70,31 +70,8 @@ public class Caption extends RenderInstruction {
 		float verticalOffset = this.dy;
 
 		if (this.bitmap != null) {
-			// calculations if the position of the caption is relative to a symbol
-			float textHeight;
-			if (this.stroke != null) {
-				textHeight = this.stroke.getTextHeight(caption);
-			} else {
-				textHeight = this.fill.getTextHeight(caption);
-			}
-
-			if (CaptionPosition.RIGHT == this.captionPosition || CaptionPosition.LEFT == this.captionPosition) {
-				float textWidth;
-				if (this.stroke != null) {
-					textWidth = this.stroke.getTextWidth(caption) / 2f;
-				} else {
-					textWidth = this.fill.getTextWidth(caption) / 2f;
-				}
-				horizontalOffset = this.bitmap.getWidth() / 2f + this.gap + textWidth;
-				if (CaptionPosition.LEFT == this.captionPosition) {
-					horizontalOffset *= -1f;
-				}
-				verticalOffset = textHeight / 2f;
-			} else if (CaptionPosition.ABOVE == this.captionPosition) {
-				verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
-			} else if (CaptionPosition.BELOW == this.captionPosition) {
-				verticalOffset += this.bitmap.getHeight() / 2f + this.gap + textHeight;
-			}
+			horizontalOffset = computeHorizontalOffset(caption);
+			verticalOffset = computeVerticalOffset(caption);
 		}
 
 		renderCallback.renderPointOfInterestCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke);
@@ -106,7 +83,16 @@ public class Caption extends RenderInstruction {
 		if (caption == null) {
 			return;
 		}
-		renderCallback.renderAreaCaption(caption, this.dy, this.fill, this.stroke);
+
+		float horizontalOffset = 0f;
+		float verticalOffset = this.dy;
+
+		if (this.bitmap != null) {
+			horizontalOffset = computeHorizontalOffset(caption);
+			verticalOffset = computeVerticalOffset(caption);
+		}
+
+		renderCallback.renderAreaCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke);
 	}
 
 	@Override
@@ -118,6 +104,44 @@ public class Caption extends RenderInstruction {
 	public void scaleTextSize(float scaleFactor) {
 		this.fill.setTextSize(this.fontSize * scaleFactor);
 		this.stroke.setTextSize(this.fontSize * scaleFactor);
+	}
+
+	private float computeHorizontalOffset(String caption) {
+		float horizontalOffset = 0f;
+
+		if (CaptionPosition.RIGHT == this.captionPosition || CaptionPosition.LEFT == this.captionPosition) {
+			float textWidth;
+			if (this.stroke != null) {
+				textWidth = this.stroke.getTextWidth(caption) / 2f;
+			} else {
+				textWidth = this.fill.getTextWidth(caption) / 2f;
+			}
+			horizontalOffset = this.bitmap.getWidth() / 2f + this.gap + textWidth;
+			if (CaptionPosition.LEFT == this.captionPosition) {
+				horizontalOffset *= -1f;
+			}
+		}
+		return horizontalOffset;
+	}
+
+	private float computeVerticalOffset(String caption) {
+		float verticalOffset = this.dy;
+
+		float textHeight;
+		if (this.stroke != null) {
+			textHeight = this.stroke.getTextHeight(caption);
+		} else {
+			textHeight = this.fill.getTextHeight(caption);
+		}
+
+		if (CaptionPosition.RIGHT == this.captionPosition || CaptionPosition.LEFT == this.captionPosition) {
+			verticalOffset = textHeight / 2f;
+		} else if (CaptionPosition.ABOVE == this.captionPosition) {
+			verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
+		} else if (CaptionPosition.BELOW == this.captionPosition) {
+			verticalOffset += this.bitmap.getHeight() / 2f + this.gap + textHeight;
+		}
+		return verticalOffset;
 	}
 
 }

@@ -38,6 +38,8 @@ public interface RenderCallback {
 	 * 
 	 * @param caption
 	 *            the text to be rendered.
+	 * @param horizontalOffset
+	 *            the horizontal offset of the caption.
 	 * @param verticalOffset
 	 *            the vertical offset of the caption.
 	 * @param fill
@@ -45,7 +47,7 @@ public interface RenderCallback {
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
 	 */
-	void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke);
+	void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke);
 
 	/**
 	 * Renders an area symbol with the given bitmap.

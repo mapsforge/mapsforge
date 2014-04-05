@@ -238,9 +238,10 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke) {
+	public void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke) {
 		Point centerPosition = GeometryUtils.calculateCenterOfBoundingBox(this.coordinates[0]);
-		this.areaLabels.add(new PointTextContainer(caption, centerPosition.x, centerPosition.y, fill, stroke));
+		this.areaLabels.add(new PointTextContainer(caption, centerPosition.x + horizontalOffset,
+				centerPosition.y + verticalOffset, fill, stroke));
 	}
 
 	@Override

@@ -25,7 +25,7 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke) {
+	public void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke) {
 		// do nothing
 	}
 
