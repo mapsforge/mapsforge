@@ -24,6 +24,7 @@ import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.model.DisplayModel;
 
 class CanvasRasterer {
 	private final Canvas canvas;
@@ -40,17 +41,17 @@ class CanvasRasterer {
 		this.canvas.destroy();
 	}
 
-	void drawNodes(List<PointTextContainer> pointTextContainers) {
+	void drawNodes(List<PointTextContainer> pointTextContainers, DisplayModel displayModel) {
 		for (int index = pointTextContainers.size() - 1; index >= 0; --index) {
 			PointTextContainer pointTextContainer = pointTextContainers.get(index);
 
 			if (pointTextContainer.paintBack != null) {
 				this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
-						pointTextContainer.paintBack);
+						pointTextContainer.paintBack, pointTextContainer.position, displayModel.getMaxTextWidth());
 			}
 
 			this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
-					pointTextContainer.paintFront);
+					pointTextContainer.paintFront, pointTextContainer.position, displayModel.getMaxTextWidth());
 		}
 	}
 

@@ -10,7 +10,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:simpleType name="captionPosition">
+	<xs:simpleType name="position">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="below" />
 			<xs:enumeration value="above" />
@@ -125,13 +125,10 @@
 		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
-		<xs:attribute name="caption-position" type="tns:captionPosition" use="optional" default="below" />
-		<xs:attribute name="src" type="tns:src" use="required" />
-		<xs:attribute name="gap" type="xs:float" use="optional" default="5" />
-		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
-		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
-		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
-	</xs:complexType>
+		<xs:attribute name="position" type="tns:position" use="optional" default="below" />
+		<xs:attribute name="symbol-id" type="xs:string" use="optional" />
+
+    </xs:complexType>
 
 	<!-- style menu cat element -->
 	<xs:complexType name="cat">
@@ -211,12 +208,13 @@
 	</xs:complexType>
 
 	<xs:complexType name="symbol">
+		<xs:attribute name="id" type="xs:string" use="optional" />
 		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="src" type="tns:src" use="required" />
 		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
 		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
 		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
-	</xs:complexType>
+    </xs:complexType>
 
 <!-- rule elements -->
 	<xs:complexType name="rule">
@@ -244,8 +242,8 @@
 	<!-- rendertheme element -->
 	<xs:complexType name="rendertheme">
 		<xs:sequence minOccurs="0" maxOccurs="1">
-		    <xs:element name="stylemenu" type="tns:stylemenu" />
-		    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="stylemenu" type="tns:stylemenu" />
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="rule" type="tns:rule" />
 		    </xs:sequence>
 		</xs:sequence>
@@ -258,7 +256,7 @@
  	<!-- stylemenu element -->
  	<xs:complexType name="stylemenu">
 		<xs:sequence minOccurs="0" maxOccurs="1">
-		    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="style" type="tns:layer" />
 			</xs:sequence>
 		</xs:sequence>

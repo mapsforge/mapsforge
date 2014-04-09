@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class CaptionBuilderTest {
 	private static final float DY = -2.2f;
@@ -38,7 +39,7 @@ public class CaptionBuilderTest {
 		attributesImpl.addAttribute(null, null, CaptionBuilder.K, null, K);
 
 		CaptionBuilder captionBuilder = new CaptionBuilder(GRAPHIC_FACTORY, new DisplayModel(), "caption",
-				attributesImpl, "/osmarender/");
+				attributesImpl, new HashMap<String, Symbol>());
 
 		Assert.assertEquals(DY, captionBuilder.dy, 0);
 		Assert.assertEquals(FONT_SIZE, captionBuilder.fontSize, 0);

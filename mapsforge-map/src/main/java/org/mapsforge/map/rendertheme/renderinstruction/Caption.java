@@ -16,7 +16,7 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.CaptionPosition;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.map.rendertheme.RenderCallback;
@@ -34,7 +34,7 @@ import java.util.List;
 public class Caption extends RenderInstruction {
 
 	private final Bitmap bitmap;
-	private final CaptionPosition captionPosition;
+	private final Position position;
 	private final float dy;
 	private final Paint fill;
 	private final float fontSize;
@@ -45,7 +45,7 @@ public class Caption extends RenderInstruction {
 	Caption(CaptionBuilder captionBuilder) {
 		super(captionBuilder.getCategory());
 		this.bitmap = captionBuilder.bitmap;
-		this.captionPosition = captionBuilder.captionPosition;
+		this.position = captionBuilder.position;
 		this.gap = captionBuilder.gap;
 		this.dy = captionBuilder.dy;
 		this.fill = captionBuilder.fill;
@@ -74,7 +74,7 @@ public class Caption extends RenderInstruction {
 			verticalOffset = computeVerticalOffset(caption);
 		}
 
-		renderCallback.renderPointOfInterestCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke);
+		renderCallback.renderPointOfInterestCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke, this.position);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class Caption extends RenderInstruction {
 			verticalOffset = computeVerticalOffset(caption);
 		}
 
-		renderCallback.renderAreaCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke);
+		renderCallback.renderAreaCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke, this.position);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class Caption extends RenderInstruction {
 	private float computeHorizontalOffset(String caption) {
 		float horizontalOffset = 0f;
 
-		if (CaptionPosition.RIGHT == this.captionPosition || CaptionPosition.LEFT == this.captionPosition) {
+		if (Position.RIGHT == this.position || Position.LEFT == this.position) {
 			float textWidth;
 			if (this.stroke != null) {
 				textWidth = this.stroke.getTextWidth(caption) / 2f;
@@ -117,7 +117,7 @@ public class Caption extends RenderInstruction {
 				textWidth = this.fill.getTextWidth(caption) / 2f;
 			}
 			horizontalOffset = this.bitmap.getWidth() / 2f + this.gap + textWidth;
-			if (CaptionPosition.LEFT == this.captionPosition) {
+			if (Position.LEFT == this.position) {
 				horizontalOffset *= -1f;
 			}
 		}
@@ -134,11 +134,11 @@ public class Caption extends RenderInstruction {
 			textHeight = this.fill.getTextHeight(caption);
 		}
 
-		if (CaptionPosition.RIGHT == this.captionPosition || CaptionPosition.LEFT == this.captionPosition) {
+		if (Position.RIGHT == this.position || Position.LEFT == this.position) {
 			verticalOffset = textHeight / 2f;
-		} else if (CaptionPosition.ABOVE == this.captionPosition) {
+		} else if (Position.ABOVE == this.position) {
 			verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
-		} else if (CaptionPosition.BELOW == this.captionPosition) {
+		} else if (Position.BELOW == this.position) {
 			verticalOffset += this.bitmap.getHeight() / 2f + this.gap + textHeight;
 		}
 		return verticalOffset;

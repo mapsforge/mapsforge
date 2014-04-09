@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
@@ -25,7 +26,7 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke) {
+	public void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position) {
 		// do nothing
 	}
 
@@ -35,7 +36,7 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke) {
+	public void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position) {
 		// do nothing
 	}
 

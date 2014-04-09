@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
 
 /**
@@ -46,8 +47,11 @@ public interface RenderCallback {
 	 *            the paint to be used for rendering the text.
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
+	 * @param position
+	 *            an optional position for the caption (may be null).
 	 */
-	void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke);
+	void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset,
+	                       Paint fill, Paint stroke, Position position);
 
 	/**
 	 * Renders an area symbol with the given bitmap.
@@ -70,8 +74,12 @@ public interface RenderCallback {
 	 *            the paint to be used for rendering the text.
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
+	 * @param position
+	 *            an optional position for the caption (may be null).
+	 *
 	 */
-	void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke);
+	void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset,
+	                                  Paint fill, Paint stroke, Position position);
 
 	/**
 	 * Renders a point of interest circle with the given parameters.

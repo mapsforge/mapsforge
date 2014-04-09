@@ -699,13 +699,16 @@
 
 	<!-- aeroway symbols and captions -->
 	<rule cat="public_transport" e="node" k="aeroway" v="helipad" zoom-min="14">
-		<symbol src="assets:symbols/transport/helicopter_pad.svg"/>
+		<symbol id="helipad" src="assets:symbols/transport/helicopter_pad.svg"/>
+		<rule e="any" k="*" v="*" zoom-min="17">
+			<caption symbol-id="helipad" k="name" position="above" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+		</rule>
 	</rule>
 	<rule cat="public_transport" e="node" k="aeroway" v="aerodrome|airport" zoom-min="13">
-		<symbol src="assets:symbols/transport/airport.svg"/>
-	</rule>
-	<rule cat="public_transport" e="node" k="aeroway" v="*" zoom-min="17">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+		<symbol id="airport" src="assets:symbols/transport/airport.svg"/>
+		<rule e="any" k="*" v="*" zoom-min="17">
+			<caption symbol-id="airport" k="name" position="above" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+		</rule>
 	</rule>
 
 	<!-- ferry routes -->
@@ -882,42 +885,37 @@
 	
 	<!-- natural -->
 	<rule cat="nature" e="any" k="*" v="*">
-		<rule e="node" k="natural" v="tree" zoom-min="14">
-			<circle radius="1.3" scale-radius="true" fill="#008800"/>
-			<caption dy="-20" k="name" font-style="bold" font-size="12" fill="#228B22" stroke="#FFFFFF" stroke-width="2.0"/>
-		</rule>
 		<rule e="node" k="natural" v="cave_entrance" zoom-min="14">
-			<symbol src="assets:symbols/poi/cave.svg"/>
+			<symbol src="assets:symbols/poi/cave.svg" id="cave"/>
 			<rule e="any" k="*" v="*" zoom-min="16">
-				<caption src="assets:symbols/poi/cave.svg" k="name" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="cave" k="name" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="node" k="natural" v="volcano" zoom-min="11">
-			<symbol src="assets:symbols/volcano.svg"/>
-			<caption k="name" dy="-10" font-style="bold" font-size="14" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
+			<symbol id="volcano" src="assets:symbols/volcano.svg"/>
+			<caption k="name" symbol-id="volcano" position="above" font-style="bold" font-size="14" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
 			<rule e="any" k="*" v="*" zoom-min="14">
-				<caption k="ele" dy="22" font-style="bold" font-size="12" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="volcano" k="ele" font-style="bold" font-size="12" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="node" k="natural" v="peak" zoom-min="11">
-			<symbol src="assets:symbols/peak1.svg"/>
-			<caption src="assets:symbols/peak1.svg" caption-position="below" k="name" font-style="bold" font-size="14" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
+			<symbol id="peak" src="assets:symbols/peak1.svg"/>
+			<caption symbol-id="peak" position="below" k="name" font-style="bold" font-size="14" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
 			<rule e="any" k="*" v="*" zoom-min="14">
-				<caption src="assets:symbols/peak1.svg" caption-position="above" k="ele" font-style="bold" font-size="12" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="peak" position="above" k="ele" font-style="bold" font-size="12" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="mountain_pass" v="yes" zoom-min="14">
-			<symbol src="assets:symbols/poi/mountain_pass.svg"/>
-			<caption src="assets:symbols/poi/mountain_pass.svg" k="name" caption-position="below" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+			<symbol id="pass" src="assets:symbols/poi/mountain_pass.svg" />
 			<rule e="any" k="*" v="*" zoom-min="15">
-				<caption src="assets:symbols/poi/mountain_pass.svg" k="ele" caption-position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="pass" k="ele" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="natural" v="saddle" zoom-min="14">
-			<symbol src="assets:symbols/poi/mountain_pass.svg"/>
-			<caption src="assets:symbols/poi/mountain_pass.svg" k="name" caption-position="below" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+			<symbol id="saddle" src="assets:symbols/poi/mountain_pass.svg"/>
+			<caption symbol-id="saddle" k="name" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 			<rule e="any" k="*" v="*" zoom-min="15">
-				<caption src="assets:symbols/poi/mountain_pass.svg" k="ele" caption-position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="saddle" k="ele" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 	</rule>
@@ -925,21 +923,24 @@
 	<!-- emergency -->
 	<rule cat="emergency" e="any" k="*" v="*">
 		<rule e="any" k="amenity|building" v="hospital|clinic" zoom-min="13">
-			<symbol src="assets:symbols/health/hospital.svg"/>
+			<symbol id="hospital" src="assets:symbols/health/hospital.svg"/>
+			<caption symbol-id="hospital" k="name" position="above" font-style="bold" font-size="12" fill="#DA0092" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="amenity" v="pharmacy" zoom-min="13">
-			<symbol src="assets:symbols/health/pharmacy.svg"/>
+			<symbol id="pharmacy" src="assets:symbols/health/pharmacy.svg"/>
+			<caption symbol-id="pharmacy" k="name" position="above" font-style="bold" font-size="12" fill="#DA0092" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="amenity" v="doctors" zoom-min="14">
-			<symbol src="assets:symbols/health/doctors.svg"/>
+			<symbol id="doctors" src="assets:symbols/health/doctors.svg"/>
+			<caption symbol-id="doctors" k="name" position="above" font-style="bold" font-size="12" fill="#DA0092" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule  e="any" k="amenity|building" v="embassy" zoom-min="17">
-			<symbol src="assets:symbols/poi/embassy2.svg"/>
-			<caption src="assets:symbols/poi/embassy2.svg" k="name" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+			<symbol id="embassy" src="assets:symbols/poi/embassy2.svg"/>
+			<caption symbol-id="embassy" k="name" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="amenity" v="shelter" zoom-min="14">
-			<symbol src="assets:symbols/accommodation/shelter2.svg"/>	
-			<caption src="assets:symbols/accommodation/shelter2.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+			<symbol id="shelter" src="assets:symbols/accommodation/shelter2.svg"/>
+			<caption symbol-id="shelter" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="amenity" v="police" zoom-min="17">
 			<symbol src="assets:symbols/amenity/police2.svg"/>
@@ -952,44 +953,44 @@
 	<!-- accommodation -->
 	<rule cat="accommodation" e="any" k="*" v="*">
 		<rule e="any" k="tourism" v="alpine_hut" zoom-min="12">
-			<symbol src="assets:symbols/accommodation/alpinehut.svg"/>
-			<caption src="assets:symbols/accommodation/alpinehut.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
-			<caption src="assets:symbols/accommodation/alpinehut.svg" k="ele" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+			<symbol id="alpine-hut" src="assets:symbols/accommodation/alpinehut.svg"/>
+			<caption symbol-id="alpine-hut" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+			<caption symbol-id="alpine-hut" k="ele" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="tourism" v="camp_site" zoom-min="13">
-			<symbol src="assets:symbols/accommodation/camping.svg"/>
+			<symbol id="camping" src="assets:symbols/accommodation/camping.svg"/>
 			<rule e="node" k="*" v="*" zoom-min="15">
-				<caption src="assets:symbols/accommodation/camping.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="camping" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 			<rule e="way" k="*" v="*" zoom-min="16">
-				<caption src="assets:symbols/accommodation/camping.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="camping" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="tourism" v="caravan_site" zoom-min="13">
-			<symbol src="assets:symbols/accommodation/caravan_park.svg"/>
+			<symbol id="caravan-site" src="assets:symbols/accommodation/caravan_park.svg"/>
 			<rule e="node" k="*" v="*" zoom-min="15">
-				<caption src="assets:symbols/accommodation/caravan_park.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="caravan-site" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 			<rule e="way" k="*" v="*" zoom-min="16">
-				<caption src="assets:symbols/accommodation/caravan_park.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="caravan-site" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="tourism" v="hostel" zoom-min="13">
-			<symbol src="assets:symbols/accommodation/hostel.svg" />
+			<symbol id="hostel" src="assets:symbols/accommodation/hostel.svg" />
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption src="assets:symbols/accommodation/hostel.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2"/>
+				<caption symbol-id="hostel" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2"/>
 			</rule>
 		</rule>
 		<rule e="any" k="tourism|building" v="hotel|guest_house|motel" zoom-min="13">
-			<symbol src="assets:symbols/accommodation/hotel.svg" />
+			<symbol id="hotel" src="assets:symbols/accommodation/hotel.svg" />
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption src="assets:symbols/accommodation/hotel.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2"/>
+				<caption symbol-id="hotel" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2"/>
 			</rule>
 		</rule>
 		<rule e="any" k="tourism" v="chalet" zoom-min="13">
-			<symbol src="assets:symbols/accommodation/chalet.svg"/>
+			<symbol id="chalet" src="assets:symbols/accommodation/chalet.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption src="assets:symbols/accommodation/chalet.svg" caption-position="below" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2"/>
+				<caption symbol-id="chalet" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2"/>
 			</rule>
 		</rule>
 	</rule>
@@ -997,39 +998,39 @@
 	<!-- public transport -->
 	<rule cat="public_transport" e="any" k="*" v="*">
 		<rule e="any" k="railway" v="station" zoom-min="13">
-			<symbol src="assets:symbols/transport/train_station.svg"/>
+			<symbol id="train-station" src="assets:symbols/transport/train_station.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="15">
-				<caption src="assets:symbols/transport/train_station.svg" k="name" caption-position="below" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="train-station" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="building" v="train_station" zoom-min="13">
-			<symbol src="assets:symbols/transport/train_station.svg"/>
+			<symbol id="train-station2" src="assets:symbols/transport/train_station.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="15">
-				<caption src="assets:symbols/transport/train_station.svg" k="name" caption-position="below" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="train-station2" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="node" k="station" v="light_rail|subway" zoom-min="14">
-			<symbol src="assets:symbols/transport/train_station.svg"/>
+			<symbol id="train-station3" src="assets:symbols/transport/train_station.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="16">
-				<caption src="assets:symbols/transport/train_station.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="train-station3" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="node" k="railway" v="halt|tram_stop" zoom-min="14">
-			<symbol src="assets:symbols/transport/tram_stop.svg"/>
+			<symbol id="tram-stop" src="assets:symbols/transport/tram_stop.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="16">
-				<caption src="assets:symbols/transport/tram_stop.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="tram-stop" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="bus_station" zoom-min="13">
-			<symbol src="assets:symbols/transport/bus_station.svg"/>
+			<symbol id="bus-station" src="assets:symbols/transport/bus_station.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="15">
-				<caption src="assets:symbols/transport/bus_station.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="bus-station" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="node" k="highway" v="bus_stop" zoom-min="14">
-			<symbol src="assets:symbols/transport/bus_stop2.svg"/>
+			<symbol id="bus-stop" src="assets:symbols/transport/bus_stop2.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="16">
-				<caption src="assets:symbols/transport/bus_stop2.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="bus-stop" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 	</rule>
@@ -1037,9 +1038,9 @@
 	<!-- food -->
 	<rule cat="food" e="any" k="*" v="*">
 		<rule e="any" k="amenity" v="restaurant" zoom-min="14">
-			<symbol src="assets:symbols/food/restaurant.svg"/>
+			<symbol id="restaurant" src="assets:symbols/food/restaurant.svg"/>
 			<rule e="node" k="*" v="*" zoom-min="16">
-				<caption src="assets:symbols/food/restaurant.svg" k="name" font-size="12" font-style="bold" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="restaurant" k="name" font-size="12" font-style="bold" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="fast_food" zoom-min="15">
@@ -1068,15 +1069,15 @@
 			<symbol src="assets:symbols/shopping/bakery.svg"/>
 		</rule>
 		<rule e="any" k="amenity" v="fuel" zoom-min="13">
-			<symbol src="assets:symbols/transport/fuel.svg"/>
+			<symbol id="fuel" src="assets:symbols/transport/fuel.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">			
-				<caption src="assets:symbols/transport/fuel.svg" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="fuel" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>			
 		</rule>
 		<rule e="any" k="amenity" v="marketplace" zoom-min="15">
-			<symbol src="assets:symbols/shopping/marketplace.svg"/>
+			<symbol id="marketplace" src="assets:symbols/shopping/marketplace.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption src="assets:symbols/shopping/marketplace.svg" k="name" font-style="bold" font-size="12" fill="#AC39AC" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="marketplace" k="name" font-style="bold" font-size="12" fill="#AC39AC" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="shop" v="doityourself|hardware|houseware" zoom-min="16">
@@ -1120,10 +1121,16 @@
 			<symbol src="assets:symbols/amenity/bench.svg"/>
 		</rule>
 		<rule e="any" k="amenity" v="atm" zoom-min="15">
-			<symbol src="assets:symbols/money/atm2.svg"/>
+			<symbol id="atm" src="assets:symbols/money/atm2.svg"/>
+			<rule e="any" k="*" v="*" zoom-min="18">
+				<caption symbol-id="atm" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="bank" zoom-min="15">
-			<symbol src="assets:symbols/money/bank2.svg"/>
+			<symbol id="bank" src="assets:symbols/money/bank2.svg"/>
+			<rule e="any" k="*" v="*" zoom-min="18">
+			    <caption symbol-id="bank" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="post_box" zoom-min="15">
 			<symbol src="assets:symbols/amenity/post_box.svg"/>
@@ -1152,31 +1159,34 @@
 			<symbol src="assets:symbols/transport/rental_bicycle.svg"/>
 		</rule>
 		<rule e="any" k="leisure" v="playground" zoom-min="16">
-			<symbol src="assets:symbols/amenity/playground.svg"/>
+			<symbol id="playground" src="assets:symbols/amenity/playground.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption src="assets:symbols/amenity/playground.svg" k="name" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="playground" k="name" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="kindergarten" zoom-min="17">
-			<symbol src="assets:symbols/education/nursery2.svg"/>
+			<symbol id="nursery" src="assets:symbols/education/nursery2.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption src="assets:symbols/education/nursery2.svg" k="name" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="nursery" k="name" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity|building" v="library" zoom-min="17">
-			<symbol src="assets:symbols/amenity/library2.svg"/>
+			<symbol id="library" src="assets:symbols/amenity/library2.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption src="assets:symbols/amenity/library2.svg" k="name" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="library" k="name" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity|building" v="school" zoom-min="17">
-			<symbol src="assets:symbols/education/school.svg"/>
+			<symbol id="school" src="assets:symbols/education/school.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption src="assets:symbols/education/school.svg" k="name" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="school" k="name" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="theatre" zoom-min="17">
-			<symbol src="assets:symbols/tourist/theatre.svg"/>
+			<symbol id="theatre" src="assets:symbols/tourist/theatre.svg"/>
+			<rule e="any" k="*" v="*" zoom-min="18">
+				<caption symbol-id="theatre" k="name" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
+			</rule>
 		</rule>
 		<rule e="any" k="amenity|building" v="university|college" zoom-min="17">
 			<symbol src="assets:symbols/education/university.svg"/>
@@ -1203,15 +1213,15 @@
 	<!-- tourism & POI -->
 	<rule cat="tourism_poi" e="any" k="*" v="*">	
 		<rule e="node" k="tourism" v="viewpoint" zoom-min="15">
-			<symbol src="assets:symbols/tourist/view_point.svg"/>
+			<symbol id="viewpoint" src="assets:symbols/tourist/view_point.svg"/>
 			<rule e="any" k="natural" v="~" zoom-min="17">
-				<caption src="assets:symbols/tourist/view_point.svg" k="name" font-size="12" font-style="bold" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
-				<caption src="assets:symbols/tourist/view_point.svg" k="ele" caption-position="above" font-size="12" font-style="bold" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="viewpoint" k="name" font-size="12" font-style="bold" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="viewpoint" k="ele" position="above" font-size="12" font-style="bold" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="tourism" v="attraction" zoom-min="15">
-			<caption src="assets:symbols/tourist/attraction.svg" k="name" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
-			<symbol src="assets:symbols/tourist/attraction.svg"/>
+			<symbol id="attraction" src="assets:symbols/tourist/attraction.svg"/>
+			<caption symbol-id="attraction" k="name" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="tourism" v="information" zoom-min="16">
 			<symbol src="assets:symbols/tourist/information.svg"/>
@@ -1220,8 +1230,8 @@
 			<symbol src="assets:symbols/tourist/zoo.svg"/>
 		</rule>
 		<rule e="any" k="tourism|building" v="museum" zoom-min="16">
-			<symbol src="assets:symbols/tourist/museum.svg"/>
-			<caption src="assets:symbols/tourist/museum.svg" k="name" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
+			<symbol id="museum" src="assets:symbols/tourist/museum.svg"/>
+			<caption symbol-id="museum" k="name" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="historic|building" v="castle" zoom-min="14">
 			<symbol src="assets:symbols/tourist/castle2.svg"/>
@@ -1239,15 +1249,15 @@
 			<symbol src="assets:symbols/tourist/archaeological2.svg"/>
 		</rule>
 		<rule e="any" k="historic|building" v="ruins|castle|monument" zoom-min="17">
-			<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#734a08" stroke="#FFFFFF" stroke-width="2.0"/>
+			<caption symbol-id="museum" k="name" position="above" font-style="bold" font-size="12" fill="#734a08" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="node" k="man_made" v="windmill" zoom-min="14">
 			<symbol src="assets:symbols/tourist/windmill.svg"/>
 		</rule>
 		<rule e="node" k="man_made" v="lighthouse" zoom-min="14">
-			<symbol src="assets:symbols/transport/lighthouse.svg"/>
+			<symbol id="lighthouse" src="assets:symbols/transport/lighthouse.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="lighthouse" k="name" position="above" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="building" v="church|cathedral|chapel" zoom-min="14">
@@ -1255,34 +1265,64 @@
 		</rule>
 		<rule e="any" k="amenity" v="place_of_worship" zoom-min="14">
 			<rule e="any" k="religion" v="bahai">
-				<symbol src="assets:symbols/place_of_worship/bahai3.svg"/>
+				<symbol id="bahai" src="assets:symbols/place_of_worship/bahai3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="bahai" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+			    </rule>
 			</rule>
 			<rule e="any" k="religion" v="buddhist">
-				<symbol src="assets:symbols/place_of_worship/buddhist3.svg"/>
+				<symbol id="buddhist" src="assets:symbols/place_of_worship/buddhist3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="buddhist" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="christian">
-				<symbol src="assets:symbols/place_of_worship/christian3.svg"/>
+				<symbol id="christian" src="assets:symbols/place_of_worship/christian3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="christian" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="hindu">
-				<symbol src="assets:symbols/place_of_worship/hindu3.svg"/>
+				<symbol id="hindu" src="assets:symbols/place_of_worship/hindu3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="hindu" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="jain">
-				<symbol src="assets:symbols/place_of_worship/jain3.svg"/>
+				<symbol id="jain" src="assets:symbols/place_of_worship/jain3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="jain" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="jewish">
-				<symbol src="assets:symbols/place_of_worship/jewish3.svg"/>
+				<symbol id="jewish" src="assets:symbols/place_of_worship/jewish3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					caption symbol-id="jewish" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="muslim">
-				<symbol src="assets:symbols/place_of_worship/islamic3.svg"/>
+				<symbol id="muslim" src="assets:symbols/place_of_worship/islamic3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="muslim" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="shinto">
-				<symbol src="assets:symbols/place_of_worship/shinto3.svg"/>
+				<symbol id="shinto" src="assets:symbols/place_of_worship/shinto3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="shinto" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="sikh">
-				<symbol src="assets:symbols/place_of_worship/sikh3.svg"/>
+				<symbol id="sikh" src="assets:symbols/place_of_worship/sikh3.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="sikh" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="~|*">
-				<symbol src="assets:symbols/place_of_worship/unknown.svg"/>
+				<symbol id="religion-unknown" src="assets:symbols/place_of_worship/unknown.svg"/>
+				<rule e="any" k="*" v="*" zoom-min="18">
+					<caption symbol-id="religion-unknown" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				</rule>
 			</rule>
 		</rule>
 	</rule>
@@ -1364,42 +1404,27 @@
 	</rule>
 
 	<!-- names for POIs -->
-	<rule cat="amenities" e="any" k="amenity|leisure" v="bicycle_rental|slipway" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
-	</rule>
-	<rule cat="emergency" e="any" k="amenity" v="hospital|pharmacy|doctors|clinic" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#DA0092" stroke="#FFFFFF" stroke-width="2.0"/>
-	</rule>
 	<rule cat="food" e="any" k="amenity" v="restaurant|fast_food|biergarten|cafe|pub|bar" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
-	</rule>
-	<rule cat="emergency" e="any" k="amenity" v="police|fire_station" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
+		<caption symbol-id="restaurant" k="name" position="above" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
 	</rule>
 	<rule cat="tourism_poi" e="any" k="tourism|amenity|man_made|leisure|historic" v="information|zoo|memorial|windmill" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
+		<caption k="name" position="above" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
 	</rule>
-	<rule cat="amenities" e="any" k="tourism|amenity|leisure" v="drinking_water|picnic_site|toilets|bench|post_office|fountain|cinema|library|theatre|playground" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
-	</rule>
-	<rule cat="tourism_poi" e="any" k="amenity" v="place_of_worship" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
-	</rule>
-	<rule cat="amenities" e="any" k="amenity" v="atm|bank" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+	<rule cat="amenities" e="any" k="tourism|amenity|leisure" v="drinking_water|picnic_site|toilets|bench|post_office|fountain|cinema|library|playground" zoom-min="18">
+		<caption k="name" position="above" font-style="bold" font-size="12" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
 	</rule>
 	<rule cat="sports" e="any" k="sport|leisure|amenity" v="swimming|water_park|soccer|tennis|golf|golf_course|shooting|stadium" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
+		<caption k="name" position="above" font-style="bold" font-size="12" fill="#39AC39" stroke="#FFFFFF" stroke-width="2.0"/>
 	</rule>
 
 	<rule cat="shopping" e="any" k="shop" v="*" zoom-min="18">
-		<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#AC39AC" stroke="#FFFFFF" stroke-width="2.0"/>
+		<caption k="name" position="above" font-style="bold" font-size="12" fill="#AC39AC" stroke="#FFFFFF" stroke-width="2.0"/>
 	</rule>
 
 	<!-- building captions -->
 	<rule cat="buildings" e="any" k="*" v="*">
 		<rule e="any" k="building" v="*" zoom-min="18">
-			<caption k="name" dy="-20" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+			<caption k="name" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="addr:housenumber" v="*" zoom-min="19">
 			<caption k="addr:housenumber" font-style="bold" font-size="10" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>

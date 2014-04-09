@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
@@ -125,6 +126,11 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
+		this.drawText(text, x, y, paint, null, Integer.MAX_VALUE);
+	}
+
+	@Override
+	public void drawText(String text, int x, int y, Paint paint, Position position, int maxWidth) {
 		if (paint.isTransparent()) {
 			return;
 		}

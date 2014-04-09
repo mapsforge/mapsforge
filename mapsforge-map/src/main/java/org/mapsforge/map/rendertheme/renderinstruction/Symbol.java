@@ -26,15 +26,25 @@ import org.mapsforge.map.rendertheme.RenderCallback;
  */
 public class Symbol extends RenderInstruction {
 	private final Bitmap bitmap;
+	private final String id;
 
 	Symbol(SymbolBuilder symbolBuilder) {
 		super(symbolBuilder.getCategory());
 		this.bitmap = symbolBuilder.bitmap;
+		this.id = symbolBuilder.id;
 	}
 
 	@Override
 	public void destroy() {
 		this.bitmap.decrementRefCount();
+	}
+
+	public Bitmap getBitmap() {
+		return this.bitmap;
+	}
+
+	public String getId() {
+		return this.id;
 	}
 
 	@Override

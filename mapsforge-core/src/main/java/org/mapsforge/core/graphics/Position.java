@@ -14,6 +14,6 @@
  */
 package org.mapsforge.core.graphics;
 
-public enum CaptionPosition {
+public enum Position {
 	BELOW, ABOVE, LEFT, RIGHT;
 }

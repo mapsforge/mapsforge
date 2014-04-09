@@ -18,7 +18,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.mapsforge.core.graphics.Align;
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.CaptionPosition;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
@@ -30,29 +30,28 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 /**
  * A builder for {@link org.mapsforge.map.rendertheme.renderinstruction.Caption} instances.
  */
 public class CaptionBuilder extends RenderInstructionBuilder {
 
-
 	public final static float DEFAULT_GAP = 5f;
 
 	Bitmap bitmap;
-	CaptionPosition captionPosition;
+	Position position;
 	float dy;
 	final Paint fill;
 	float fontSize;
 	float gap;
 	final Paint stroke;
+	String symbolId;
 	TextKey textKey;
 
 	public CaptionBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-	                            Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
+	                            Attributes attributes, HashMap<String, Symbol> symbols) throws SAXException {
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
@@ -63,13 +62,16 @@ public class CaptionBuilder extends RenderInstructionBuilder {
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setTextAlign(Align.LEFT);
 
-		this.gap = DEFAULT_GAP;
-		this.captionPosition = CaptionPosition.BELOW;
+		this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
+		this.position = Position.BELOW;
 
 		extractValues(graphicFactory, displayModel, elementName, attributes);
 
-		if (this.src != null) {
-			this.bitmap = createBitmap(graphicFactory, displayModel, relativePathPrefix, src);
+		if (this.symbolId != null) {
+			Symbol symbol = symbols.get(this.symbolId);
+			if (symbol != null) {
+				this.bitmap = symbol.getBitmap();
+			}
 		}
 
 	}
@@ -92,20 +94,10 @@ public class CaptionBuilder extends RenderInstructionBuilder {
 
 			if (K.equals(name)) {
 				this.textKey = TextKey.getInstance(value);
-			} else if (SRC.equals(name)) {
-				this.src = value;
-			} else if (CAPTION_POSITION.equals(name)) {
-				this.captionPosition = CaptionPosition.valueOf(value.toUpperCase(Locale.ENGLISH));
+			} else if (POSITION.equals(name)) {
+				this.position = Position.valueOf(value.toUpperCase(Locale.ENGLISH));
 			} else if (CAT.equals(name)) {
 				this.cat = value;
-			} else if (SYMBOL_HEIGHT.equals(name)) {
-				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
-			} else if (SYMBOL_PERCENT.equals(name)) {
-				this.percent = XmlUtils.parseNonNegativeInteger(name, value);
-			} else if (SYMBOL_SCALING.equals(name)) {
-				this.scaling = fromValue(value);
-			} else if (SYMBOL_WIDTH.equals(name)) {
-				this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {
@@ -116,12 +108,12 @@ public class CaptionBuilder extends RenderInstructionBuilder {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
-			} else if (GAP.equals(name)) {
-				this.gap = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
+			} else if (SYMBOL_ID.equals(name)) {
+				this.symbolId = value;
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}

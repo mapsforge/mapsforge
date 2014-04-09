@@ -17,6 +17,7 @@ package org.mapsforge.map.rendertheme.rule;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -95,6 +96,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private final String relativePathPrefix;
 	private RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
+	private HashMap<String, Symbol> symbols = new HashMap<String, Symbol>();
 	private final XmlRenderTheme xmlRenderTheme;
 	private XmlRenderThemeStyleMenu renderThemeStyleMenu;
 	private XmlRenderThemeStyleLayer currentLayer;
@@ -182,7 +184,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("caption".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes, relativePathPrefix).build();
+				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes, symbols).build();
 				if (isVisible(caption)) {
 					this.currentRule.addRenderingInstruction(caption);
 				}
@@ -280,6 +282,10 @@ public final class RenderThemeHandler extends DefaultHandler {
 				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
 						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(symbol);
+				String symbolId = symbol.getId();
+				if (symbolId != null) {
+					this.symbols.put(symbolId, symbol);
+				}
 			}
 
 			else {

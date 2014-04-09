@@ -30,9 +30,12 @@ public class DisplayModel extends Observable {
 
 	private static final int DEFAULT_BACKGROUND_COLOR = 0xffeeeeee; // format AARRGGBB
 	private static final int DEFAULT_TILE_SIZE = 256;
+	private static final float MAX_TEXT_WIDTH_FACTOR = 0.7f;
+	private static final int DEFAULT_MAX_TEXT_WIDTH = (int) (DEFAULT_TILE_SIZE * MAX_TEXT_WIDTH_FACTOR);
 
 	private static float defaultUserScaleFactor = 1f;
 	private static float deviceScaleFactor = 1f;
+
 
 	/**
 	 * Get the default scale factor for all newly created DisplayModels.
@@ -77,6 +80,7 @@ public class DisplayModel extends Observable {
 
 	private int fixedTileSize;
 
+	private int maxTextWidth = DEFAULT_MAX_TEXT_WIDTH;
 	private int tileSize = DEFAULT_TILE_SIZE;
 	private int tileSizeMultiple = 1;
 
@@ -94,6 +98,15 @@ public class DisplayModel extends Observable {
 	 */
 	public synchronized int getBackgroundColor() {
 		return backgroundColor;
+	}
+
+	/**
+	 * Returns the maximum width of text beyond which the text is broken into lines.
+	 *
+	 * @return the maximum text width
+	 */
+	public int getMaxTextWidth() {
+		return maxTextWidth;
 	}
 
 	/**
@@ -193,6 +206,7 @@ public class DisplayModel extends Observable {
 		} else {
 			this.tileSize = this.fixedTileSize;
 		}
+		this.maxTextWidth = (int) (this.tileSize * MAX_TEXT_WIDTH_FACTOR);
 	}
 
 }

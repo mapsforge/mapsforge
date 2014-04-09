@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.TileBitmap;
@@ -171,7 +172,7 @@ public class DatabaseRenderer implements RenderCallback {
 		}
 
 		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile,
-				rendererJob.displayModel.getTileSize());
+				rendererJob.displayModel);
 
 		TileBitmap bitmap = this.graphicFactory.createTileBitmap(rendererJob.displayModel.getTileSize(),
 				rendererJob.hasAlpha);
@@ -183,8 +184,8 @@ public class DatabaseRenderer implements RenderCallback {
 		this.canvasRasterer.drawSymbols(this.waySymbols);
 		this.canvasRasterer.drawSymbols(this.pointSymbols);
 		this.canvasRasterer.drawWayNames(this.wayNames);
-		this.canvasRasterer.drawNodes(this.nodes);
-		this.canvasRasterer.drawNodes(this.areaLabels);
+		this.canvasRasterer.drawNodes(this.nodes, rendererJob.displayModel);
+		this.canvasRasterer.drawNodes(this.areaLabels, rendererJob.displayModel);
 
 		clearLists();
 		return bitmap;
@@ -238,10 +239,10 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke) {
+	public void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position) {
 		Point centerPosition = GeometryUtils.calculateCenterOfBoundingBox(this.coordinates[0]);
 		this.areaLabels.add(new PointTextContainer(caption, centerPosition.x + horizontalOffset,
-				centerPosition.y + verticalOffset, fill, stroke));
+				centerPosition.y + verticalOffset, fill, stroke, position));
 	}
 
 	@Override
@@ -256,9 +257,10 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke) {
+	public void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset,
+	                                         Paint fill, Paint stroke, Position position) {
 		this.nodes.add(new PointTextContainer(caption, this.poiPosition.x + horizontalOffset, this.poiPosition.y + verticalOffset, fill,
-				stroke));
+				stroke, position));
 	}
 
 	@Override

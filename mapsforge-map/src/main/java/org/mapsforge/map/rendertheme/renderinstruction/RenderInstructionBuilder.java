@@ -24,15 +24,15 @@ import java.io.IOException;
 public class RenderInstructionBuilder {
 
 	static final String ALIGN_CENTER = "align-center";
-	static final String CAPTION_POSITION = "caption-position";
 	static final String CAT = "cat";
 	static final String DY = "dy";
 	static final String FILL = "fill";
 	static final String FONT_FAMILY = "font-family";
 	static final String FONT_SIZE = "font-size";
 	static final String FONT_STYLE = "font-style";
-	static final String GAP = "gap";
+	static final String ID = "id";
 	static final String K = "k";
+	static final String POSITION = "position";
 	static final String R = "r";
 	static final String RADIUS = "radius";
 	static final String REPEAT = "repeat";
@@ -48,6 +48,7 @@ public class RenderInstructionBuilder {
 	static final String STROKE_LINEJOIN = "stroke-linejoin";
 	static final String STROKE_WIDTH = "stroke-width";
 	static final String SYMBOL_HEIGHT = "symbol-height";
+	static final String SYMBOL_ID = "symbol-id";
 	static final String SYMBOL_PERCENT = "symbol-percent";
 	static final String SYMBOL_SCALING = "symbol-scaling";
 	static final String SYMBOL_WIDTH = "symbol-width";

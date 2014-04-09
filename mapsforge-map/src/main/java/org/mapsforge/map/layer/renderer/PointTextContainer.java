@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,15 +15,20 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.map.model.DisplayModel;
 
 class PointTextContainer {
-	final Rectangle boundary;
+
 	final Paint paintBack;
 	final Paint paintFront;
+	final Position position;
 	SymbolContainer symbol;
 	final String text;
+	final int textHeight;
+	final int textWidth;
 	double x;
 	double y;
 
@@ -38,14 +44,8 @@ class PointTextContainer {
 	 * @param paintFront
 	 *            the paintFront for the point.
 	 */
-	PointTextContainer(String text, double x, double y, Paint paintFront) {
-		this.text = text;
-		this.x = x;
-		this.y = y;
-		this.paintFront = paintFront;
-		this.paintBack = null;
-
-		this.boundary = new Rectangle(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
+	PointTextContainer(String text, double x, double y, Paint paintFront, Position position) {
+		this(text, x, y, paintFront, null, null, position);
 	}
 
 	/**
@@ -62,20 +62,8 @@ class PointTextContainer {
 	 * @param paintBack
 	 *            the paintBack for the point.
 	 */
-	PointTextContainer(String text, double x, double y, Paint paintFront, Paint paintBack) {
-		this.text = text;
-		this.x = x;
-		this.y = y;
-		this.paintFront = paintFront;
-		this.paintBack = paintBack;
-
-		if (paintBack != null) {
-			paintBack.getTextHeight(text);
-			paintBack.getTextWidth(text);
-			this.boundary = new Rectangle(0, 0, paintBack.getTextWidth(text), paintBack.getTextHeight(text));
-		} else {
-			this.boundary = new Rectangle(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
-		}
+	PointTextContainer(String text, double x, double y, Paint paintFront, Paint paintBack, Position position) {
+		this(text, x, y, paintFront, paintBack, null, position);
 	}
 
 	/**
@@ -95,18 +83,29 @@ class PointTextContainer {
 	 * @param symbol
 	 *            the connected Symbol.
 	 */
-	PointTextContainer(String text, double x, double y, Paint paintFront, Paint paintBack, SymbolContainer symbol) {
+	PointTextContainer(String text, double x, double y, Paint paintFront, Paint paintBack, SymbolContainer symbol, Position position) {
 		this.text = text;
+		this.symbol = symbol;
 		this.x = x;
 		this.y = y;
 		this.paintFront = paintFront;
 		this.paintBack = paintBack;
-		this.symbol = symbol;
-
+		this.position = position;
 		if (paintBack != null) {
-			this.boundary = new Rectangle(0, 0, paintBack.getTextWidth(text), paintBack.getTextHeight(text));
+			this.textWidth = paintBack.getTextWidth(text);
+			this.textHeight = paintBack.getTextHeight(text);
 		} else {
-			this.boundary = new Rectangle(0, 0, paintFront.getTextWidth(text), paintFront.getTextHeight(text));
+			this.textWidth = paintFront.getTextWidth(text);
+			this.textHeight = paintFront.getTextHeight(text);
 		}
+	}
+
+	Rectangle getBoundary(DisplayModel displayModel) {
+		int lines = this.textWidth / displayModel.getMaxTextWidth() + 1;
+
+		if (lines > 1) {
+			return new Rectangle(0, 0, displayModel.getMaxTextWidth(), this.textHeight);
+		}
+		return new Rectangle(0, 0, this.textWidth, this.textHeight);
 	}
 }
