@@ -32,9 +32,9 @@ public interface GraphicContext {
 
 	void drawPath(Path path, Paint paint);
 
-	void drawText(String text, int x, int y, Paint paint);
+	void drawPointTextContainer(PointTextContainer ptc, int maxTextWidth);
 
-	void drawText(String text, int x, int y, Paint paint, Position position, int maxWidth);
+	void drawText(String text, int x, int y, Paint paint);
 
 	void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint);
 

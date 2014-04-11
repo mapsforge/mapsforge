@@ -26,9 +26,11 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.PointTextContainer;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;

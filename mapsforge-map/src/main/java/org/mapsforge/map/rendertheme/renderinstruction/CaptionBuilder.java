@@ -63,7 +63,6 @@ public class CaptionBuilder extends RenderInstructionBuilder {
 		this.stroke.setTextAlign(Align.LEFT);
 
 		this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
-		this.position = Position.BELOW;
 
 		extractValues(graphicFactory, displayModel, elementName, attributes);
 
@@ -71,6 +70,15 @@ public class CaptionBuilder extends RenderInstructionBuilder {
 			Symbol symbol = symbols.get(this.symbolId);
 			if (symbol != null) {
 				this.bitmap = symbol.getBitmap();
+			}
+		}
+
+		if (position == null) {
+			// sensible defaults: below if symbol is present, center if not
+			if (this.bitmap == null) {
+				this.position = Position.CENTER;
+			} else {
+				this.position = Position.BELOW;
 			}
 		}
 

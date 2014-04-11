@@ -17,6 +17,7 @@ package org.mapsforge.map.android.graphics;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.PointTextContainer;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Matrix;
@@ -88,20 +89,13 @@ class AndroidCanvas implements Canvas {
 		this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
 	}
 
-	@Override
-	public void drawText(String text, int x, int y, Paint paint) {
-		this.drawText(text, x, y, paint, null, Integer.MAX_VALUE);
-	}
-
-
-	@Override
-	public void drawText(String text, int x, int y, Paint paint, Position position, int maxWidth) {
-		if (paint.isTransparent()) {
+	public void drawPointTextContainer(PointTextContainer ptc, int maxWidth) {
+		if (ptc.paintFront.isTransparent() && ptc.paintBack.isTransparent()) {
 			return;
 		}
 
-		int textWidth = paint.getTextWidth(text);
-		int textHeight = paint.getTextHeight(text);
+		int textWidth = ptc.paintFront.getTextWidth(ptc.text);
+		int textHeight = ptc.paintFront.getTextHeight(ptc.text);
 
 		if (textWidth > maxWidth) {
 
@@ -115,33 +109,60 @@ class AndroidCanvas implements Canvas {
 			// This code currently does not play that well with the LabelPlacement algorithm.
 			// The best way to disable it is to make the maxWidth really wide.
 
-			TextPaint textPaint = new TextPaint(AndroidGraphicFactory.getPaint(paint));
+			TextPaint frontTextPaint = new TextPaint(AndroidGraphicFactory.getPaint(ptc.paintFront));
+			TextPaint backTextPaint = null;
+			if (ptc.paintBack != null) {
+				backTextPaint = new TextPaint(AndroidGraphicFactory.getPaint(ptc.paintBack));
+			}
 			Layout.Alignment alignment = Layout.Alignment.ALIGN_CENTER;
 
-			if (Position.LEFT == position) {
+			if (Position.LEFT == ptc.position) {
 				alignment = Layout.Alignment.ALIGN_OPPOSITE;
-			} else if (Position.RIGHT == position) {
+			} else if (Position.RIGHT == ptc.position) {
 				alignment = Layout.Alignment.ALIGN_NORMAL;
 			}
 
-			StaticLayout sl = new StaticLayout(text, textPaint, maxWidth, alignment, 1, 0, false);
-			this.canvas.save();
-			if (position == null) {
-				this.canvas.translate(x, y - sl.getHeight() / 2f);
-			} else if (Position.BELOW == position) {
-				this.canvas.translate(x, y - textHeight);
-			} else if (Position.ABOVE == position) {
-				this.canvas.translate(x, y - sl.getHeight());
-			} else if (Position.LEFT == position) {
-				this.canvas.translate(x, y - sl.getHeight() / 2f - textHeight / 2f);
-			} else if (Position.RIGHT == position) {
-				this.canvas.translate(x, y - sl.getHeight() / 2f - textHeight / 2f);
+			StaticLayout frontLayout = new StaticLayout(ptc.text, frontTextPaint, maxWidth, alignment, 1, 0, false);
+			StaticLayout backLayout = null;
+			if (ptc.paintBack != null) {
+				backLayout = new StaticLayout(ptc.text, backTextPaint, maxWidth, alignment, 1, 0, false);
 			}
-			sl.draw(this.canvas);
+
+			this.canvas.save();
+			if (Position.CENTER == ptc.position) {
+				this.canvas.translate((float) ptc.x, (float) ptc.y - frontLayout.getHeight() / 2f);
+			} else if (Position.BELOW == ptc.position) {
+				this.canvas.translate((float) ptc.x, (float) ptc.y - textHeight);
+			} else if (Position.ABOVE == ptc.position) {
+				this.canvas.translate((float) ptc.x, (float) ptc.y - frontLayout.getHeight());
+			} else if (Position.LEFT == ptc.position) {
+				this.canvas.translate((float) ptc.x, (float) ptc.y - frontLayout.getHeight() / 2f - textHeight / 2f);
+			} else if (Position.RIGHT == ptc.position) {
+				this.canvas.translate((float) ptc.x, (float) ptc.y - frontLayout.getHeight() / 2f - textHeight / 2f);
+			} else {
+				throw new IllegalArgumentException("No position for drawing PointTextContainer");
+			}
+			if (backLayout != null) {
+				backLayout.draw(this.canvas);
+			}
+			frontLayout.draw(this.canvas);
 			this.canvas.restore();
 		} else {
-			this.canvas.drawText(text, x, y, AndroidGraphicFactory.getPaint(paint));
+			if (ptc.paintBack != null) {
+				this.canvas.drawText(ptc.text, (float) ptc.x, (float) ptc.y, AndroidGraphicFactory.getPaint(ptc.paintBack));
+			}
+			this.canvas.drawText(ptc.text, (float) ptc.x, (float) ptc.y, AndroidGraphicFactory.getPaint(ptc.paintFront));
 		}
+
+	}
+
+
+	@Override
+	public void drawText(String text, int x, int y, Paint paint) {
+		if (paint.isTransparent()) {
+			return;
+		}
+		this.canvas.drawText(text, x, y, AndroidGraphicFactory.getPaint(paint));
 	}
 
 	@Override

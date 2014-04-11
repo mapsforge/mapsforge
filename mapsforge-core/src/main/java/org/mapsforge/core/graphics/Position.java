@@ -15,5 +15,5 @@
 package org.mapsforge.core.graphics;
 
 public enum Position {
-	BELOW, ABOVE, LEFT, RIGHT;
+	CENTER, BELOW, ABOVE, LEFT, RIGHT;
 }

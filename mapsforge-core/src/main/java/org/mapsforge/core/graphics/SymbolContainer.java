@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,22 +13,21 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.renderer;
+package org.mapsforge.core.graphics;
 
-import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.Point;
 
-class SymbolContainer {
-	final boolean alignCenter;
-	final Point point;
-	final Bitmap symbol;
-	final float theta;
+public class SymbolContainer {
+	public final boolean alignCenter;
+	public final Point point;
+	public Bitmap symbol;
+	public final float theta;
 
-	SymbolContainer(Bitmap symbol, Point point) {
+	public SymbolContainer(Bitmap symbol, Point point) {
 		this(symbol, point, false, 0);
 	}
 
-	SymbolContainer(Bitmap symbol, Point point, boolean alignCenter, float theta) {
+	public SymbolContainer(Bitmap symbol, Point point, boolean alignCenter, float theta) {
 		this.symbol = symbol;
 		this.point = point;
 		this.alignCenter = alignCenter;

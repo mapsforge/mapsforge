@@ -23,6 +23,8 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.PointTextContainer;
+import org.mapsforge.core.graphics.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
@@ -45,13 +47,8 @@ class CanvasRasterer {
 		for (int index = pointTextContainers.size() - 1; index >= 0; --index) {
 			PointTextContainer pointTextContainer = pointTextContainers.get(index);
 
-			if (pointTextContainer.paintBack != null) {
-				this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
-						pointTextContainer.paintBack, pointTextContainer.position, displayModel.getMaxTextWidth());
-			}
+			this.canvas.drawPointTextContainer(pointTextContainer, displayModel.getMaxTextWidth());
 
-			this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
-					pointTextContainer.paintFront, pointTextContainer.position, displayModel.getMaxTextWidth());
 		}
 	}
 

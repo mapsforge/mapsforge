@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import org.mapsforge.core.graphics.PointTextContainer;
+import org.mapsforge.core.graphics.SymbolContainer;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.model.DisplayModel;
@@ -200,15 +202,15 @@ class LabelPlacement {
 	 * @param labels
 	 *            labels to center
 	 */
-	private void centerLabels(List<PointTextContainer> labels, DisplayModel displayModel) {
+	private void centerLabels(List<PointTextContainer> labels, int maxTextWidth) {
 		for (int i = 0; i < labels.size(); i++) {
 			this.label = labels.get(i);
-			this.label.x = this.label.x - this.label.getBoundary(displayModel).getWidth() / 2;
+			this.label.x = this.label.x - this.label.getBoundary(maxTextWidth).getWidth() / 2;
 		}
 	}
 
 	private void preprocessAreaLabels(List<PointTextContainer> areaLabels, DisplayModel displayModel) {
-		centerLabels(areaLabels, displayModel);
+		centerLabels(areaLabels, displayModel.getMaxTextWidth());
 
 		removeOutOfTileAreaLabels(areaLabels, displayModel);
 
@@ -260,7 +262,7 @@ class LabelPlacement {
 
 		PointTextContainer tmp;
 		int dis = START_DISTANCE_TO_SYMBOLS;
-
+		int maxTextWidth = displayModel.getMaxTextWidth();
 		// creates the reference positions
 		for (int z = 0; z < labels.size(); z++) {
 			if (labels.get(z) != null) {
@@ -268,25 +270,25 @@ class LabelPlacement {
 					tmp = labels.get(z);
 
 					// up
-					refPos[z * 4] = new ReferencePosition(tmp.x - (float) tmp.getBoundary(displayModel).getWidth() / 2, tmp.y
-							- (float) tmp.symbol.symbol.getHeight() / 2 - dis, z, tmp.getBoundary(displayModel).getWidth(),
-							tmp.getBoundary(displayModel).getHeight());
+					refPos[z * 4] = new ReferencePosition(tmp.x - (float) tmp.getBoundary(maxTextWidth).getWidth() / 2, tmp.y
+							- (float) tmp.symbol.symbol.getHeight() / 2 - dis, z, tmp.getBoundary(maxTextWidth).getWidth(),
+							tmp.getBoundary(maxTextWidth).getHeight());
 					// down
-					refPos[z * 4 + 1] = new ReferencePosition(tmp.x - (float) tmp.getBoundary(displayModel).getWidth() / 2, tmp.y
-							+ (float) tmp.symbol.symbol.getHeight() / 2 + (float) tmp.getBoundary(displayModel).getHeight() + dis, z,
-							tmp.getBoundary(displayModel).getWidth(), tmp.getBoundary(displayModel).getHeight());
+					refPos[z * 4 + 1] = new ReferencePosition(tmp.x - (float) tmp.getBoundary(maxTextWidth).getWidth() / 2, tmp.y
+							+ (float) tmp.symbol.symbol.getHeight() / 2 + (float) tmp.getBoundary(maxTextWidth).getHeight() + dis, z,
+							tmp.getBoundary(maxTextWidth).getWidth(), tmp.getBoundary(maxTextWidth).getHeight());
 					// left
 					refPos[z * 4 + 2] = new ReferencePosition(tmp.x - (float) tmp.symbol.symbol.getWidth() / 2
-							- tmp.getBoundary(displayModel).getWidth() - dis, tmp.y + (float) tmp.getBoundary(displayModel).getHeight() / 2, z,
-							tmp.getBoundary(displayModel).getWidth(), tmp.getBoundary(displayModel).getHeight());
+							- tmp.getBoundary(maxTextWidth).getWidth() - dis, tmp.y + (float) tmp.getBoundary(maxTextWidth).getHeight() / 2, z,
+							tmp.getBoundary(maxTextWidth).getWidth(), tmp.getBoundary(maxTextWidth).getHeight());
 					// right
 					refPos[z * 4 + 3] = new ReferencePosition(tmp.x + (float) tmp.symbol.symbol.getWidth() / 2 + dis,
-							tmp.y + (float) tmp.getBoundary(displayModel).getHeight() / 2 - 0.1f, z, tmp.getBoundary(displayModel).getWidth(),
-							tmp.getBoundary(displayModel).getHeight());
+							tmp.y + (float) tmp.getBoundary(maxTextWidth).getHeight() / 2 - 0.1f, z, tmp.getBoundary(maxTextWidth).getWidth(),
+							tmp.getBoundary(maxTextWidth).getHeight());
 				} else {
 					refPos[z * 4] = new ReferencePosition(labels.get(z).x
-							- (((float) labels.get(z).getBoundary(displayModel).getWidth()) / 2), labels.get(z).y, z,
-							labels.get(z).getBoundary(displayModel).getWidth(), labels.get(z).getBoundary(displayModel).getHeight());
+							- (((float) labels.get(z).getBoundary(maxTextWidth).getWidth()) / 2), labels.get(z).y, z,
+							labels.get(z).getBoundary(maxTextWidth).getWidth(), labels.get(z).getBoundary(maxTextWidth).getHeight());
 					refPos[z * 4 + 1] = null;
 					refPos[z * 4 + 2] = null;
 					refPos[z * 4 + 3] = null;
@@ -400,8 +402,8 @@ class LabelPlacement {
 		distance = LABEL_DISTANCE_TO_LABEL;
 
 		for (PointTextContainer areaLabel : areaLabels) {
-			this.rect1 = new Rectangle((int) areaLabel.x - distance, (int) areaLabel.y - areaLabel.getBoundary(displayModel).getHeight()
-					- distance, (int) areaLabel.x + areaLabel.getBoundary(displayModel).getWidth() + distance, (int) areaLabel.y
+			this.rect1 = new Rectangle((int) areaLabel.x - distance, (int) areaLabel.y - areaLabel.getBoundary(displayModel.getMaxTextWidth()).getHeight()
+					- distance, (int) areaLabel.x + areaLabel.getBoundary(displayModel.getMaxTextWidth()).getWidth() + distance, (int) areaLabel.y
 					+ distance);
 
 			for (int y = 0; y < refPos.length; y++) {
@@ -433,15 +435,15 @@ class LabelPlacement {
 				areaLabels.remove(i);
 
 				i--;
-			} else if (this.label.y - this.label.getBoundary(displayModel).getHeight() > displayModel.getTileSize()) {
+			} else if (this.label.y - this.label.getBoundary(displayModel.getMaxTextWidth()).getHeight() > displayModel.getTileSize()) {
 				areaLabels.remove(i);
 
 				i--;
-			} else if (this.label.x + this.label.getBoundary(displayModel).getWidth() < 0.0f) {
+			} else if (this.label.x + this.label.getBoundary(displayModel.getMaxTextWidth()).getWidth() < 0.0f) {
 				areaLabels.remove(i);
 
 				i--;
-			} else if (this.label.y + this.label.getBoundary(displayModel).getHeight() < 0.0f) {
+			} else if (this.label.y + this.label.getBoundary(displayModel.getMaxTextWidth()).getHeight() < 0.0f) {
 				areaLabels.remove(i);
 
 				i--;
@@ -459,13 +461,13 @@ class LabelPlacement {
 		for (int i = 0; i < labels.size();) {
 			this.label = labels.get(i);
 
-			if (this.label.x - this.label.getBoundary(displayModel).getWidth() / 2 > displayModel.getTileSize()) {
+			if (this.label.x - this.label.getBoundary(displayModel.getMaxTextWidth()).getWidth() / 2 > displayModel.getTileSize()) {
 				labels.remove(i);
 				this.label = null;
-			} else if (this.label.y - this.label.getBoundary(displayModel).getHeight() > displayModel.getTileSize()) {
+			} else if (this.label.y - this.label.getBoundary(displayModel.getMaxTextWidth()).getHeight() > displayModel.getTileSize()) {
 				labels.remove(i);
 				this.label = null;
-			} else if ((this.label.x - this.label.getBoundary(displayModel).getWidth() / 2 + this.label.getBoundary(displayModel).getWidth()) < 0.0f) {
+			} else if ((this.label.x - this.label.getBoundary(displayModel.getMaxTextWidth()).getWidth() / 2 + this.label.getBoundary(displayModel.getMaxTextWidth()).getWidth()) < 0.0f) {
 				labels.remove(i);
 				this.label = null;
 			} else if (this.label.y < 0.0f) {
@@ -513,15 +515,15 @@ class LabelPlacement {
 		for (int x = 0; x < areaLabels.size(); x++) {
 			this.label = areaLabels.get(x);
 			this.rect1 = new Rectangle((int) this.label.x - dis, (int) this.label.y - dis,
-					(int) (this.label.x + this.label.getBoundary(displayModel).getWidth()) + dis, (int) (this.label.y
-							+ this.label.getBoundary(displayModel).getHeight() + dis));
+					(int) (this.label.x + this.label.getBoundary(displayModel.getMaxTextWidth()).getWidth()) + dis, (int) (this.label.y
+							+ this.label.getBoundary(displayModel.getMaxTextWidth()).getHeight() + dis));
 
 			for (int y = x + 1; y < areaLabels.size(); y++) {
 				if (y != x) {
 					this.label = areaLabels.get(y);
 					this.rect2 = new Rectangle((int) this.label.x, (int) this.label.y,
-							(int) (this.label.x + this.label.getBoundary(displayModel).getWidth()),
-							(int) (this.label.y + this.label.getBoundary(displayModel).getHeight()));
+							(int) (this.label.x + this.label.getBoundary(displayModel.getMaxTextWidth()).getWidth()),
+							(int) (this.label.y + this.label.getBoundary(displayModel.getMaxTextWidth()).getHeight()));
 
 					if (this.rect1.intersects(this.rect2)) {
 						areaLabels.remove(y);
@@ -578,8 +580,8 @@ class LabelPlacement {
 		for (int x = 0; x < pTC.size(); x++) {
 			this.label = pTC.get(x);
 
-			this.rect1 = new Rectangle((int) this.label.x - dis, (int) (this.label.y - this.label.getBoundary(displayModel).getHeight())
-					- dis, (int) (this.label.x + this.label.getBoundary(displayModel).getWidth() + dis), (int) (this.label.y + dis));
+			this.rect1 = new Rectangle((int) this.label.x - dis, (int) (this.label.y - this.label.getBoundary(displayModel.getMaxTextWidth()).getHeight())
+					- dis, (int) (this.label.x + this.label.getBoundary(displayModel.getMaxTextWidth()).getWidth() + dis), (int) (this.label.y + dis));
 
 			for (int y = 0; y < symbols.size(); y++) {
 				this.symbolContainer = symbols.get(y);

@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.SymbolContainer;
 import org.mapsforge.core.model.Point;
 
 final class WayDecorator {

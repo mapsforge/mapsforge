@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.PointTextContainer;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Matrix;
@@ -124,13 +125,15 @@ class AwtCanvas implements Canvas {
 		throw new IllegalArgumentException(UNKNOWN_STYLE + style);
 	}
 
-	@Override
-	public void drawText(String text, int x, int y, Paint paint) {
-		this.drawText(text, x, y, paint, null, Integer.MAX_VALUE);
+	public void drawPointTextContainer(PointTextContainer ptc, int maxWidth) {
+		if (ptc.paintBack != null) {
+			drawText(ptc.text, (int) ptc.x, (int) ptc.y, ptc.paintBack);
+		}
+		drawText(ptc.text, (int) ptc.x, (int) ptc.y, ptc.paintFront);
 	}
 
 	@Override
-	public void drawText(String text, int x, int y, Paint paint, Position position, int maxWidth) {
+	public void drawText(String text, int x, int y, Paint paint) {
 		if (paint.isTransparent()) {
 			return;
 		}
