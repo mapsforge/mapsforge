@@ -30,8 +30,8 @@ public class DisplayModel extends Observable {
 
 	private static final int DEFAULT_BACKGROUND_COLOR = 0xffeeeeee; // format AARRGGBB
 	private static final int DEFAULT_TILE_SIZE = 256;
-	private static final float MAX_TEXT_WIDTH_FACTOR = 0.7f;
-	private static final int DEFAULT_MAX_TEXT_WIDTH = (int) (DEFAULT_TILE_SIZE * MAX_TEXT_WIDTH_FACTOR);
+	private static final float DEFAULT_MAX_TEXT_WIDTH_FACTOR = 0.7f;
+	private static final int DEFAULT_MAX_TEXT_WIDTH = (int) (DEFAULT_TILE_SIZE * DEFAULT_MAX_TEXT_WIDTH_FACTOR);
 
 	private static float defaultUserScaleFactor = 1f;
 	private static float deviceScaleFactor = 1f;
@@ -81,6 +81,7 @@ public class DisplayModel extends Observable {
 	private int fixedTileSize;
 
 	private int maxTextWidth = DEFAULT_MAX_TEXT_WIDTH;
+	private float maxTextWidthFactor = DEFAULT_MAX_TEXT_WIDTH_FACTOR;
 	private int tileSize = DEFAULT_TILE_SIZE;
 	private int tileSizeMultiple = 1;
 
@@ -176,6 +177,17 @@ public class DisplayModel extends Observable {
 	}
 
 	/**
+	 * Sets the factor to compute the maxTextWidth
+	 *
+	 * @param maxTextWidthFactor
+	 *              to compute maxTextWidth
+	 */
+	public void setMaxTextWidthFactor(float maxTextWidthFactor) {
+		this.maxTextWidthFactor = maxTextWidthFactor;
+		this.setMaxTextWidth();
+	}
+
+	/**
 	 * Clamps the tile size to a multiple of the supplied value.
 	 *
 	 * @param multiple tile size multiple
@@ -196,6 +208,10 @@ public class DisplayModel extends Observable {
 		setTileSize();
 	}
 
+	private void setMaxTextWidth() {
+		this.maxTextWidth = (int) (this.tileSize * maxTextWidthFactor);
+	}
+
 	private void setTileSize() {
 		if (this.fixedTileSize == 0) {
 			float temp = (DEFAULT_TILE_SIZE * deviceScaleFactor * userScaleFactor);
@@ -206,7 +222,7 @@ public class DisplayModel extends Observable {
 		} else {
 			this.tileSize = this.fixedTileSize;
 		}
-		this.maxTextWidth = (int) (this.tileSize * MAX_TEXT_WIDTH_FACTOR);
+		this.setMaxTextWidth();
 	}
 
 }
