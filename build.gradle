@@ -3,7 +3,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.8.+'
+    classpath 'com.android.tools.build:gradle:0.9.+'
   }
 }
 
@@ -14,8 +14,8 @@ def filterProjects(filter) {
 
 allprojects {
   group = 'org.mapsforge'
-  version = '0.4.0'
-  ext.androidBuildVersionTools = "19.0.1"
+  version = '0.5.0'
+  ext.androidBuildVersionTools = "19.0.3"
   ext.jUnitVersion = "4.11"
   description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 }
@@ -76,6 +76,17 @@ configure(filterProjects(project.androidapkprojects)) {
 
 configure(filterProjects(project.androidlibraryprojects)) { 
   apply plugin: 'android-library'
+
+  android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
+      return; // Skip debug builds.
+    }
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
+  }
 }
 
 configure(filterProjects(project.androidprojects)) { 
@@ -106,6 +117,5 @@ configure(filterProjects(project.androidprojects)) {
       }
     }
   }
-
 } 
 
