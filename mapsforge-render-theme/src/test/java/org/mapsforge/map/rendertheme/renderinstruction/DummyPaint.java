@@ -82,9 +82,4 @@ class DummyPaint implements Paint {
 	public void setTypeface(FontFamily fontFamily, FontStyle fontStyle) {
 		// TODO Auto-generated method stub
 	}
-
-	@Override
-	public void destroy() {
-		// no-op
-	}
 }

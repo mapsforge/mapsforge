@@ -15,7 +15,6 @@
 package org.mapsforge.android.maps.overlay;
 
 import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.PausableThread;
@@ -32,22 +31,25 @@ import android.graphics.Point;
 public class OverlayController extends PausableThread {
 	private static final String THREAD_NAME = OverlayController.class.getSimpleName();
 
-	private final ReentrantReadWriteLock sizeChange = new ReentrantReadWriteLock();
+	private static void recycleBitmap(Bitmap bitmap) {
+		if (bitmap != null) {
+			bitmap.recycle();
+		}
+	}
 
 	private Bitmap bitmap1;
 	private Bitmap bitmap2;
 	private boolean changeSizeNeeded;
-	private int width;
-	private int height;
 	private final MapView mapView;
 	private final Matrix matrix;
-	private Canvas overlayCanvas;
+	private final Canvas overlayCanvas;
 	private boolean redrawNeeded;
 
 	public OverlayController(MapView mapView) {
 		super();
 		this.mapView = mapView;
 		this.matrix = new Matrix();
+		this.overlayCanvas = new Canvas();
 		this.changeSizeNeeded = true;
 	}
 
@@ -125,28 +127,14 @@ public class OverlayController extends PausableThread {
 	}
 
 	private boolean changeSize() {
+		recycleBitmaps();
 
-		int newWidth = this.mapView.getWidth();
-		int newHeight = this.mapView.getHeight();
+		int width = this.mapView.getWidth();
+		int height = this.mapView.getHeight();
 
-		// size will only be changed if the view has been laid out (so width/height >0) and
-		// when the size is not the same as the size requested before (this stops duplicate
-		// requests)
-		if (newWidth > 0 && newHeight > 0) {
-			if (this.width == newWidth && this.height == newHeight) {
-				this.changeSizeNeeded = false;
-				this.redrawNeeded = false;
-				return false;
-			}
-
-			recycleBitmaps();
-
-			this.width = newWidth;
-			this.height = newHeight;
-
-			this.bitmap1 = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
-			this.bitmap2 = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
-
+		if (width > 0 && height > 0) {
+			this.bitmap1 = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+			this.bitmap2 = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 			this.changeSizeNeeded = false;
 			this.redrawNeeded = true;
 			return true;
@@ -156,50 +144,26 @@ public class OverlayController extends PausableThread {
 	}
 
 	private void checkRedraw() {
-		// can draw concurrently unless size is being changed
-		this.sizeChange.readLock().lock();
-		try {
-			if (this.redrawNeeded) {
-				this.redrawNeeded = false;
-				redraw();
-			}
-		} finally {
-			this.sizeChange.readLock().unlock();
+		if (this.redrawNeeded) {
+			this.redrawNeeded = false;
+			redraw();
 		}
 	}
 
 	private boolean checkSize() {
-		// write lock to stop all threads using the overlay bitmap
-		this.sizeChange.writeLock().lock();
-		try {
-			if (this.changeSizeNeeded) {
-				return changeSize();
-			}
-			return true;
-		} finally {
-			this.sizeChange.writeLock().unlock();
+		if (this.changeSizeNeeded) {
+			return changeSize();
 		}
+
+		return true;
 	}
 
 	private void recycleBitmaps() {
-		if (this.bitmap1 != null) {
-			this.bitmap1.recycle();
-			this.bitmap1 = null;
-		}
-		if (this.bitmap2 != null) {
-			this.bitmap2.recycle();
-			this.bitmap2 = null;
-		}
-		// the overlay canvas needs to be set to null,
-		// otherwise bitmaps may not be recycled immediately.
-		// see: https://code.google.com/p/android/issues/detail?id=8488
-		this.overlayCanvas = null;
+		recycleBitmap(this.bitmap1);
+		recycleBitmap(this.bitmap2);
 	}
 
 	private void redraw() {
-		if (this.overlayCanvas == null) {
-			this.overlayCanvas = new Canvas();
-		}
 		this.bitmap2.eraseColor(Color.TRANSPARENT);
 		this.overlayCanvas.setBitmap(this.bitmap2);
 
@@ -235,7 +199,7 @@ public class OverlayController extends PausableThread {
 
 	@Override
 	protected void afterRun() {
-		this.recycleBitmaps();
+		recycleBitmaps();
 	}
 
 	@Override

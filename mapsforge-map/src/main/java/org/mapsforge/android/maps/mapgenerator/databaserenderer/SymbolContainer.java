@@ -33,8 +33,4 @@ class SymbolContainer {
 		this.alignCenter = alignCenter;
 		this.rotation = rotation;
 	}
-
-	void destroy() {
-		this.symbol.destroy();
-	}
 }

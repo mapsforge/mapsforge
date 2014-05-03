@@ -36,7 +36,7 @@ public class Line implements RenderInstruction {
 
 	@Override
 	public void destroy() {
-		this.stroke.destroy();
+		// do nothing
 	}
 
 	@Override

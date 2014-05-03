@@ -37,7 +37,7 @@ public class FrameBuffer {
 	private final MapView mapView;
 	private Bitmap mapViewBitmap1;
 	private Bitmap mapViewBitmap2;
-	private Canvas mapViewCanvas;
+	private final Canvas mapViewCanvas;
 	private final Matrix matrix;
 	private int width;
 
@@ -159,9 +159,6 @@ public class FrameBuffer {
 		if (this.mapViewBitmap2 != null) {
 			this.mapViewBitmap2.recycle();
 		}
-		// nulling out the canvas is essential to getting the bitmaps
-		// recycled
-		this.mapViewCanvas = null;
 	}
 
 	synchronized void draw(Canvas canvas) {
@@ -171,8 +168,6 @@ public class FrameBuffer {
 	}
 
 	synchronized void onSizeChanged() {
-		this.destroy();
-		this.mapViewCanvas = new Canvas();
 		this.width = this.mapView.getWidth();
 		this.height = this.mapView.getHeight();
 		this.mapViewBitmap1 = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.RGB_565);
