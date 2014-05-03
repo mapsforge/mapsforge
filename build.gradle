@@ -14,7 +14,7 @@ def filterProjects(filter) {
 
 allprojects {
   group = 'org.mapsforge'
-  version = '0.5.0'
+  version = '0.5.0-dev'
   ext.androidBuildVersionTools = "19.0.3"
   ext.jUnitVersion = "4.11"
   description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
