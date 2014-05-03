@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,7 +16,7 @@ package org.mapsforge.map.reader;
 
 import java.util.List;
 
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
 /**
@@ -31,14 +31,14 @@ public class PointOfInterest {
 	/**
 	 * The position of this POI.
 	 */
-	public final GeoPoint position;
+	public final LatLong position;
 
 	/**
 	 * The tags of this POI.
 	 */
 	public final List<Tag> tags;
 
-	PointOfInterest(byte layer, List<Tag> tags, GeoPoint position) {
+	PointOfInterest(byte layer, List<Tag> tags, LatLong position) {
 		this.layer = layer;
 		this.tags = tags;
 		this.position = position;

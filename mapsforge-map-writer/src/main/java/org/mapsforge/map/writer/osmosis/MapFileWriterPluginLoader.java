@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,14 +22,12 @@ import org.openstreetmap.osmosis.core.plugin.PluginLoader;
 
 /**
  * The Osmosis PluginLoader for the mapfile-writer osmosis plugin.
- * 
- * @author bross
  */
 public class MapFileWriterPluginLoader implements PluginLoader {
 	@Override
 	public Map<String, TaskManagerFactory> loadTaskFactories() {
 		MapFileWriterFactory mapFileWriterFactory = new MapFileWriterFactory();
-		HashMap<String, TaskManagerFactory> map = new HashMap<String, TaskManagerFactory>();
+		HashMap<String, TaskManagerFactory> map = new HashMap<>();
 		map.put("mapfile-writer", mapFileWriterFactory);
 		map.put("mw", mapFileWriterFactory);
 		return map;

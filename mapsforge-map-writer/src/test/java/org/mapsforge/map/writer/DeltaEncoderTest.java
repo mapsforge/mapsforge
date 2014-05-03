@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +26,7 @@ public class DeltaEncoderTest {
 
 	@Before
 	public void setUp() {
-		this.mockCoordinates = new ArrayList<Integer>();
+		this.mockCoordinates = new ArrayList<>();
 
 		this.mockCoordinates.add(Integer.valueOf(52000000));
 		this.mockCoordinates.add(Integer.valueOf(13000000));

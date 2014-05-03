@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,8 +19,6 @@ import java.util.List;
 
 /**
  * Represents a coordinate in the tile space.
- * 
- * @author bross
  */
 public class TileCoordinate {
 	private final int x;
@@ -42,67 +40,6 @@ public class TileCoordinate {
 		this.x = x;
 		this.y = y;
 		this.zoomlevel = zoomlevel;
-	}
-
-	/**
-	 * @return the x
-	 */
-	public int getX() {
-		return this.x;
-	}
-
-	/**
-	 * @return the y
-	 */
-	public int getY() {
-		return this.y;
-	}
-
-	/**
-	 * @return the zoomlevel
-	 */
-	public byte getZoomlevel() {
-		return this.zoomlevel;
-	}
-
-	/**
-	 * Computes which tile on a lower zoom level covers this given tile or which tiles on a higher zoom level together
-	 * cover this tile.
-	 * 
-	 * @param zoomlevelNew
-	 *            the zoom level
-	 * @return a list of tiles (represented by tile coordinates) which cover this tile
-	 */
-	public List<TileCoordinate> translateToZoomLevel(byte zoomlevelNew) {
-		List<TileCoordinate> tiles = null;
-		int zoomlevelDistance = zoomlevelNew - this.zoomlevel;
-
-		int factor = (int) Math.pow(2, Math.abs(zoomlevelDistance));
-		if (zoomlevelDistance > 0) {
-			tiles = new ArrayList<TileCoordinate>((int) Math.pow(4, Math.abs(zoomlevelDistance)));
-			int tileUpperLeftX = this.x * factor;
-			int tileUpperLeftY = this.y * factor;
-			for (int i = 0; i < factor; i++) {
-				for (int j = 0; j < factor; j++) {
-					tiles.add(new TileCoordinate(tileUpperLeftX + j, tileUpperLeftY + i, zoomlevelNew));
-				}
-			}
-
-		} else {
-			tiles = new ArrayList<TileCoordinate>(1);
-			tiles.add(new TileCoordinate(this.x / factor, this.y / factor, zoomlevelNew));
-		}
-		return tiles;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + this.x;
-		result = prime * result + this.y;
-		result = prime * result + this.zoomlevel;
-		return result;
 	}
 
 	@Override
@@ -129,8 +66,68 @@ public class TileCoordinate {
 		return true;
 	}
 
+	/**
+	 * @return the x
+	 */
+	public int getX() {
+		return this.x;
+	}
+
+	/**
+	 * @return the y
+	 */
+	public int getY() {
+		return this.y;
+	}
+
+	/**
+	 * @return the zoomlevel
+	 */
+	public byte getZoomlevel() {
+		return this.zoomlevel;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.x;
+		result = prime * result + this.y;
+		result = prime * result + this.zoomlevel;
+		return result;
+	}
+
 	@Override
 	public String toString() {
 		return "TileCoordinate [x=" + this.x + ", y=" + this.y + ", zoomlevel=" + this.zoomlevel + "]";
+	}
+
+	/**
+	 * Computes which tile on a lower zoom level covers this given tile or which tiles on a higher zoom level together
+	 * cover this tile.
+	 * 
+	 * @param zoomlevelNew
+	 *            the zoom level
+	 * @return a list of tiles (represented by tile coordinates) which cover this tile
+	 */
+	public List<TileCoordinate> translateToZoomLevel(byte zoomlevelNew) {
+		List<TileCoordinate> tiles = null;
+		int zoomlevelDistance = zoomlevelNew - this.zoomlevel;
+
+		int factor = (int) Math.pow(2, Math.abs(zoomlevelDistance));
+		if (zoomlevelDistance > 0) {
+			tiles = new ArrayList<>((int) Math.pow(4, Math.abs(zoomlevelDistance)));
+			int tileUpperLeftX = this.x * factor;
+			int tileUpperLeftY = this.y * factor;
+			for (int i = 0; i < factor; i++) {
+				for (int j = 0; j < factor; j++) {
+					tiles.add(new TileCoordinate(tileUpperLeftX + j, tileUpperLeftY + i, zoomlevelNew));
+				}
+			}
+		} else {
+			tiles = new ArrayList<>(1);
+			tiles.add(new TileCoordinate(this.x / factor, this.y / factor, zoomlevelNew));
+		}
+		return tiles;
 	}
 }

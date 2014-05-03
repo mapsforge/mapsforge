@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,13 +23,12 @@ import java.util.logging.Logger;
  * Reads from a {@link RandomAccessFile} into a buffer and decodes the data.
  */
 public class ReadBuffer {
-	private static final String CHARSET_UTF8 = "UTF-8";
-	private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
-
 	/**
 	 * Maximum buffer size which is supported by this implementation.
 	 */
 	static final int MAXIMUM_BUFFER_SIZE = 2500000;
+	private static final String CHARSET_UTF8 = "UTF-8";
+	private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
 
 	private byte[] bufferData;
 	private int bufferPosition;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,94 +14,71 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import java.io.File;
+import org.mapsforge.map.android.AndroidPreferences;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.common.PreferencesFacade;
 
-import org.mapsforge.android.maps.MapActivity;
-import org.mapsforge.android.maps.MapScaleBar;
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.map.reader.header.FileOpenResult;
-
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.os.Environment;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.content.SharedPreferences;
 
 /**
- * An application which demonstrates how to use two MapView instances at the same time.
+ * An activity with two independent MapViews
  */
-public class DualMapViewer extends MapActivity {
-	private static final File MAP_FILE = new File(Environment.getExternalStorageDirectory().getPath(), "berlin.map");
+public class DualMapViewer extends BasicMapViewerXml {
+	protected PreferencesFacade preferencesFacade2;
+	MapView mapView2;
 
-	private MapView mapView1;
-	private MapView mapView2;
+	protected void addSecondMapLayer(LayerManager layerManager, TileCache tileCache, MapViewPosition mapViewPosition) {
+		layerManager.getLayers().add(Utils.createTileRendererLayer(tileCache, mapViewPosition, getMapFile()));
+	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			finish();
-			return true;
-		}
-		// forward the event to both MapViews for simultaneous movement
-		return this.mapView1.onKeyDown(keyCode, event) | this.mapView2.onKeyDown(keyCode, event);
+	/**
+	 * @return tilecache to use for second mapView
+	 */
+	protected TileCache createTileCache2() {
+		// no extra tile cache needed in this instance as map source is the same
+		return this.tileCache;
 	}
 
 	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		// forward the event to both MapViews for simultaneous movement
-		return this.mapView1.onKeyUp(keyCode, event) | this.mapView2.onKeyUp(keyCode, event);
+	protected int getLayoutId() {
+		// provides a layout with two mapViews
+		return R.layout.dualmapviewer;
+	}
+
+	protected String getPersistableId2() {
+		return this.getPersistableId() + "-2";
 	}
 
 	@Override
-	public boolean onTrackballEvent(MotionEvent event) {
-		// forward the event to both MapViews for simultaneous movement
-		return this.mapView1.onTrackballEvent(event) | this.mapView2.onTrackballEvent(event);
-	}
+	protected void init() {
+		super.init();
 
-	private MapView createMapView(boolean imperialUnits) {
-		MapView mapView = new MapView(this);
-		mapView.setClickable(true);
-		mapView.setBuiltInZoomControls(true);
-		mapView.getMapMover().setMoveSpeedFactor(1);
+		SharedPreferences sharedPreferences = this.getSharedPreferences(getPersistableId2(), MODE_PRIVATE);
+		this.preferencesFacade2 = new AndroidPreferences(sharedPreferences);
 
-		MapScaleBar mapScaleBar = mapView.getMapScaleBar();
-		mapScaleBar.setImperialUnits(imperialUnits);
-		mapScaleBar.setShowMapScaleBar(true);
+		// second mapView
+		this.mapView2 = (MapView) this.findViewById(R.id.mapView2);
+		initializeMapView(this.mapView2, this.preferencesFacade2);
 
-		FileOpenResult fileOpenResult = mapView.setMapFile(MAP_FILE);
-		if (!fileOpenResult.isSuccess()) {
-			Toast.makeText(this, fileOpenResult.getErrorMessage(), Toast.LENGTH_LONG).show();
-			finish();
-		}
+		TileCache tileCache2 = createTileCache2();
+		MapViewPosition mapViewPosition2 = this.initializePosition(this.mapView2.getModel().mapViewPosition);
 
-		return mapView;
+		addSecondMapLayer(this.mapView2.getLayerManager(), tileCache2, mapViewPosition2);
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		this.mapView1 = createMapView(false);
-		this.mapView2 = createMapView(true);
+	protected void onDestroy() {
+		super.onDestroy();
+		this.mapView2.destroy();
+	}
 
-		// create a LineaLayout that contains both MapViews
-		LinearLayout linearLayout = new LinearLayout(this);
-
-		// if the device orientation is portrait, change the orientation to vertical
-		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-			linearLayout.setOrientation(LinearLayout.VERTICAL);
-		}
-
-		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-		this.mapView1.setLayoutParams(layoutParams);
-		this.mapView2.setLayoutParams(layoutParams);
-
-		// add both MapViews to the LinearLayout
-		linearLayout.addView(this.mapView1);
-		linearLayout.addView(this.mapView2);
-		setContentView(linearLayout);
+	@Override
+	protected void onPause() {
+		super.onPause();
+		this.mapView2.getModel().save(this.preferencesFacade2);
+		this.preferencesFacade2.save();
 	}
 }

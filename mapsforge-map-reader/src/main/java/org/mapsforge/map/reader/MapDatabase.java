@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.model.CoordinatesUtil;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileHeader;
@@ -330,27 +330,27 @@ public class MapDatabase {
 		}
 	}
 
-	private void decodeWayNodesDoubleDelta(GeoPoint[] waySegment) {
+	private void decodeWayNodesDoubleDelta(LatLong[] waySegment) {
 		// get the first way node latitude offset (VBE-S)
 		double wayNodeLatitude = this.tileLatitude
-				+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// get the first way node longitude offset (VBE-S)
 		double wayNodeLongitude = this.tileLongitude
-				+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// store the first way node
-		waySegment[0] = new GeoPoint(wayNodeLatitude, wayNodeLongitude);
+		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
 
 		double previousSingleDeltaLatitude = 0;
 		double previousSingleDeltaLongitude = 0;
 
 		for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
 			// get the way node latitude double-delta offset (VBE-S)
-			double doubleDeltaLatitude = CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double doubleDeltaLatitude = LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the way node longitude double-delta offset (VBE-S)
-			double doubleDeltaLongitude = CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double doubleDeltaLongitude = LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			double singleDeltaLatitude = doubleDeltaLatitude + previousSingleDeltaLatitude;
 			double singleDeltaLongitude = doubleDeltaLongitude + previousSingleDeltaLongitude;
@@ -358,34 +358,33 @@ public class MapDatabase {
 			wayNodeLatitude = wayNodeLatitude + singleDeltaLatitude;
 			wayNodeLongitude = wayNodeLongitude + singleDeltaLongitude;
 
-			waySegment[wayNodesIndex] = new GeoPoint(wayNodeLatitude, wayNodeLongitude);
+			waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
 
 			previousSingleDeltaLatitude = singleDeltaLatitude;
 			previousSingleDeltaLongitude = singleDeltaLongitude;
 		}
 	}
 
-	private void decodeWayNodesSingleDelta(GeoPoint[] waySegment) {
+	private void decodeWayNodesSingleDelta(LatLong[] waySegment) {
 		// get the first way node latitude single-delta offset (VBE-S)
 		double wayNodeLatitude = this.tileLatitude
-				+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// get the first way node longitude single-delta offset (VBE-S)
 		double wayNodeLongitude = this.tileLongitude
-				+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// store the first way node
-		waySegment[0] = new GeoPoint(wayNodeLatitude, wayNodeLongitude);
+		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
 
 		for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
 			// get the way node latitude offset (VBE-S)
-			wayNodeLatitude = wayNodeLatitude + CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			wayNodeLatitude = wayNodeLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the way node longitude offset (VBE-S)
-			wayNodeLongitude = wayNodeLongitude
-					+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
-			waySegment[wayNodesIndex] = new GeoPoint(wayNodeLatitude, wayNodeLongitude);
+			waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
 		}
 	}
 
@@ -545,7 +544,9 @@ public class MapDatabase {
 
 				try {
 					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter);
-					mapReadResultBuilder.add(poiWayBundle);
+					if (poiWayBundle != null) {
+						mapReadResultBuilder.add(poiWayBundle);
+					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					LOGGER.log(Level.SEVERE, null, e);
 				}
@@ -593,12 +594,10 @@ public class MapDatabase {
 			}
 
 			// get the POI latitude offset (VBE-S)
-			double latitude = this.tileLatitude
-					+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double latitude = this.tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the POI longitude offset (VBE-S)
-			double longitude = this.tileLongitude
-					+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double longitude = this.tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the special byte which encodes multiple flags
 			byte specialByte = this.readBuffer.readByte();
@@ -647,13 +646,13 @@ public class MapDatabase {
 				tags.add(new Tag(TAG_KEY_ELE, Integer.toString(this.readBuffer.readSignedInt())));
 			}
 
-			pois.add(new PointOfInterest(layer, tags, new GeoPoint(latitude, longitude)));
+			pois.add(new PointOfInterest(layer, tags, new LatLong(latitude, longitude)));
 		}
 
 		return pois;
 	}
 
-	private GeoPoint[][] processWayDataBlock(boolean doubleDeltaEncoding) {
+	private LatLong[][] processWayDataBlock(boolean doubleDeltaEncoding) {
 		// get and check the number of way coordinate blocks (VBE-U)
 		int numberOfWayCoordinateBlocks = this.readBuffer.readUnsignedInt();
 		if (numberOfWayCoordinateBlocks < 1 || numberOfWayCoordinateBlocks > Short.MAX_VALUE) {
@@ -663,7 +662,7 @@ public class MapDatabase {
 		}
 
 		// create the array which will store the different way coordinate blocks
-		GeoPoint[][] wayCoordinates = new GeoPoint[numberOfWayCoordinateBlocks][];
+		LatLong[][] wayCoordinates = new LatLong[numberOfWayCoordinateBlocks][];
 
 		// read the way coordinate blocks
 		for (int coordinateBlock = 0; coordinateBlock < numberOfWayCoordinateBlocks; ++coordinateBlock) {
@@ -676,7 +675,7 @@ public class MapDatabase {
 			}
 
 			// create the array which will store the current way segment
-			GeoPoint[] waySegment = new GeoPoint[numberOfWayNodes];
+			LatLong[] waySegment = new LatLong[numberOfWayNodes];
 
 			if (doubleDeltaEncoding) {
 				decodeWayNodesDoubleDelta(waySegment);
@@ -775,7 +774,7 @@ public class MapDatabase {
 				tags.add(new Tag(TAG_KEY_REF, this.readBuffer.readUTF8EncodedString()));
 			}
 
-			GeoPoint labelPosition = readOptionalLabelPosition(featureLabelPosition);
+			LatLong labelPosition = readOptionalLabelPosition(featureLabelPosition);
 
 			int wayDataBlocks = readOptionalWayDataBlocksByte(featureWayDataBlocksByte);
 			if (wayDataBlocks < 1) {
@@ -785,7 +784,7 @@ public class MapDatabase {
 			}
 
 			for (int wayDataBlock = 0; wayDataBlock < wayDataBlocks; ++wayDataBlock) {
-				GeoPoint[][] wayNodes = processWayDataBlock(featureWayDoubleDeltaEncoding);
+				LatLong[][] wayNodes = processWayDataBlock(featureWayDoubleDeltaEncoding);
 				if (wayNodes == null) {
 					return null;
 				}
@@ -797,17 +796,15 @@ public class MapDatabase {
 		return ways;
 	}
 
-	private GeoPoint readOptionalLabelPosition(boolean featureLabelPosition) {
+	private LatLong readOptionalLabelPosition(boolean featureLabelPosition) {
 		if (featureLabelPosition) {
 			// get the label position latitude offset (VBE-S)
-			double latitude = this.tileLatitude
-					+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double latitude = this.tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the label position longitude offset (VBE-S)
-			double longitude = this.tileLongitude
-					+ CoordinatesUtil.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double longitude = this.tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
-			return new GeoPoint(latitude, longitude);
+			return new LatLong(latitude, longitude);
 		}
 
 		return null;

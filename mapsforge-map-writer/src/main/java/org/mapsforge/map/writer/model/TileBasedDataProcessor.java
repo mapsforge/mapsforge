@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,33 +25,8 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 /**
  * A TileBasedDataStore allows tile based access to OpenStreetMap geo data. POIs and ways are mapped to tiles on
  * configured base zoom levels.
- * 
- * @author bross
  */
 public interface TileBasedDataProcessor {
-	/**
-	 * Get the bounding box that describes this TileBasedDataStore.
-	 * 
-	 * @return The bounding box that defines the area that is covered by the data store.
-	 */
-	BoundingBox getBoundingBox();
-
-	/**
-	 * Get the layout of a grid on the given zoom interval specification.
-	 * 
-	 * @param zoomIntervalIndex
-	 *            the index of the zoom interval
-	 * @return the layout of the grid for the given zoom interval
-	 */
-	TileGridLayout getTileGridLayout(int zoomIntervalIndex);
-
-	/**
-	 * Get the zoom interval configuration of the data store.
-	 * 
-	 * @return the underlying zoom interval configuration
-	 */
-	ZoomIntervalConfiguration getZoomIntervalConfiguration();
-
 	/**
 	 * Add a node to the data store. No association with a tile is performed.
 	 * 
@@ -59,6 +34,14 @@ public interface TileBasedDataProcessor {
 	 *            the node
 	 */
 	void addNode(Node node);
+
+	/**
+	 * Add a relation to the data store.
+	 * 
+	 * @param relation
+	 *            the relation
+	 */
+	void addRelation(Relation relation);
 
 	/**
 	 * Add a way to the data store.
@@ -69,12 +52,33 @@ public interface TileBasedDataProcessor {
 	void addWay(Way way);
 
 	/**
-	 * Add a relation to the data store.
-	 * 
-	 * @param relation
-	 *            the relation
+	 * Complete the data store, e.g. build indexes or similar.
 	 */
-	void addRelation(Relation relation);
+	void complete();
+
+	/**
+	 * Retrieve the total amount of tiles cumulated over all base zoom levels that is needed to represent the underlying
+	 * bounding box of this tile data store.
+	 * 
+	 * @return total amount of tiles
+	 */
+	long cumulatedNumberOfTiles();
+
+	/**
+	 * Get the bounding box that describes this TileBasedDataStore.
+	 * 
+	 * @return The bounding box that defines the area that is covered by the data store.
+	 */
+	BoundingBox getBoundingBox();
+
+	/**
+	 * Retrieve all coastlines that cross the given tile.
+	 * 
+	 * @param tc
+	 *            the coordinate of the tile
+	 * @return all coastlines that cross the tile, an empty set if no coastlines cross
+	 */
+	Set<TDWay> getCoastLines(TileCoordinate tc);
 
 	/**
 	 * Retrieve the all the inner ways that are associated with an outer way that represents a multipolygon.
@@ -99,26 +103,20 @@ public interface TileBasedDataProcessor {
 	TileData getTile(int baseZoomIndex, int tileCoordinateX, int tileCoordinateY);
 
 	/**
-	 * Retrieve the total amount of tiles cumulated over all base zoom levels that is needed to represent the underlying
-	 * bounding box of this tile data store.
+	 * Get the layout of a grid on the given zoom interval specification.
 	 * 
-	 * @return total amount of tiles
+	 * @param zoomIntervalIndex
+	 *            the index of the zoom interval
+	 * @return the layout of the grid for the given zoom interval
 	 */
-	long cumulatedNumberOfTiles();
+	TileGridLayout getTileGridLayout(int zoomIntervalIndex);
 
 	/**
-	 * Retrieve all coastlines that cross the given tile.
+	 * Get the zoom interval configuration of the data store.
 	 * 
-	 * @param tc
-	 *            the coordinate of the tile
-	 * @return all coastlines that cross the tile, an empty set if no coastlines cross
+	 * @return the underlying zoom interval configuration
 	 */
-	Set<TDWay> getCoastLines(TileCoordinate tc);
-
-	/**
-	 * Complete the data store, e.g. build indexes or similar.
-	 */
-	void complete();
+	ZoomIntervalConfiguration getZoomIntervalConfiguration();
 
 	/**
 	 * Release all acquired resources, e.g. delete any temporary files.

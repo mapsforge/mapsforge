@@ -265,14 +265,20 @@
 
 	<!-- PUBLIC TRANSPORT -->
 	<ways>
-		<osm-tag key="route" value="ferry" zoom-appear="12" />
+		<osm-tag key="railway" value="disused" zoom-appear="15" />
+		<osm-tag key="railway" value="funicular" zoom-appear="12" />
 		<osm-tag key="railway" value="light_rail" zoom-appear="12" />
+		<osm-tag key="railway" value="miniature" zoom-appear="14" />
+		<osm-tag key="railway" value="monorail" zoom-appear="14" />
 		<osm-tag key="railway" value="narrow_gauge" zoom-appear="14" />
 		<osm-tag key="railway" value="platform" zoom-appear="14" />
+		<osm-tag key="railway" value="preserved" zoom-appear="14" />
 		<osm-tag key="railway" value="rail" zoom-appear="10" />
 		<osm-tag key="railway" value="station" zoom-appear="14" />
 		<osm-tag key="railway" value="subway" zoom-appear="15" />
 		<osm-tag key="railway" value="tram" zoom-appear="15" />
+
+		<osm-tag key="route" value="ferry" zoom-appear="12" />
 	</ways>
 
 	<!-- BUILDINGS -->

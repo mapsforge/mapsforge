@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,18 +20,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MapPositionTest {
-	private static final GeoPoint GEO_POINT = new GeoPoint(1.0, 2.0);
-	private static final String MAP_POSITION_TO_STRING = "geoPoint=latitude=1.0, longitude=2.0, zoomLevel=3";
-	private static final byte ZOOM_LEVEL = 3;
+	private static final String MAP_POSITION_TO_STRING = "latLong=latitude=1.0, longitude=2.0, zoomLevel=3";
 
-	private static MapPosition invokeConstructor(GeoPoint geoPoint, byte zoomLevel) {
-		return new MapPosition(geoPoint, zoomLevel);
+	private static MapPosition invokeConstructor(LatLong latLong, byte zoomLevel) {
+		return new MapPosition(latLong, zoomLevel);
 	}
 
-	private static void verifyBadConstructor(GeoPoint geoPoint, byte zoomLevel) {
+	private static void verifyBadConstructor(LatLong latLong, byte zoomLevel) {
 		try {
-			invokeConstructor(geoPoint, zoomLevel);
-			Assert.fail();
+			invokeConstructor(latLong, zoomLevel);
+			Assert.fail("latLong: " + latLong + ", zoomLevel: " + zoomLevel);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}
@@ -39,39 +37,41 @@ public class MapPositionTest {
 
 	@Test
 	public void badConstructorTest() {
-		verifyBadConstructor(GEO_POINT, (byte) -1);
+		verifyBadConstructor(new LatLong(1.0, 2.0), (byte) -1);
 		verifyBadConstructor(null, (byte) 0);
 	}
 
 	@Test
 	public void equalsTest() {
-		MapPosition mapPosition1 = new MapPosition(GEO_POINT, ZOOM_LEVEL);
-		MapPosition mapPosition2 = new MapPosition(GEO_POINT, ZOOM_LEVEL);
-		MapPosition mapPosition3 = new MapPosition(GEO_POINT, (byte) 0);
+		MapPosition mapPosition1 = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+		MapPosition mapPosition2 = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+		MapPosition mapPosition3 = new MapPosition(new LatLong(1.0, 2.0), (byte) 0);
+		MapPosition mapPosition4 = new MapPosition(new LatLong(0, 0), (byte) 3);
 
 		TestUtils.equalsTest(mapPosition1, mapPosition2);
 
-		Assert.assertNotEquals(mapPosition1, mapPosition3);
-		Assert.assertNotEquals(mapPosition3, mapPosition1);
-		Assert.assertNotEquals(mapPosition1, new Object());
+		TestUtils.notEqualsTest(mapPosition1, mapPosition3);
+		TestUtils.notEqualsTest(mapPosition1, mapPosition4);
+		TestUtils.notEqualsTest(mapPosition1, new Object());
+		TestUtils.notEqualsTest(mapPosition1, null);
 	}
 
 	@Test
 	public void fieldsTest() {
-		MapPosition mapPosition = new MapPosition(GEO_POINT, ZOOM_LEVEL);
-		Assert.assertEquals(GEO_POINT, mapPosition.geoPoint);
-		Assert.assertEquals(ZOOM_LEVEL, mapPosition.zoomLevel);
+		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+		Assert.assertEquals(new LatLong(1.0, 2.0), mapPosition.latLong);
+		Assert.assertEquals(3, mapPosition.zoomLevel);
 	}
 
 	@Test
 	public void serializeTest() throws IOException, ClassNotFoundException {
-		MapPosition mapPosition = new MapPosition(GEO_POINT, ZOOM_LEVEL);
+		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
 		TestUtils.serializeTest(mapPosition);
 	}
 
 	@Test
 	public void toStringTest() {
-		MapPosition mapPosition = new MapPosition(GEO_POINT, ZOOM_LEVEL);
+		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
 		Assert.assertEquals(MAP_POSITION_TO_STRING, mapPosition.toString());
 	}
 }

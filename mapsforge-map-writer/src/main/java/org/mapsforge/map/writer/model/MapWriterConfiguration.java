@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,349 +18,98 @@ import java.io.File;
 import java.net.MalformedURLException;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.writer.OSMTagMapping;
 
 /**
  * Configuration for the map file writer.
- * 
- * @author bross
  */
 public class MapWriterConfiguration {
-	private File outputFile;
-	private OSMTagMapping tagMapping;
-	private String dataProcessorType;
-
 	private BoundingBox bboxConfiguration;
-	private ZoomIntervalConfiguration zoomIntervalConfiguration;
+	private int bboxEnlargement;
+	private String comment;
 
+	private String dataProcessorType;
 	private long date;
-	private int fileSpecificationVersion;
-	private String writerVersion;
 
 	private boolean debugStrings;
-	private boolean polygonClipping;
-	private boolean wayClipping;
+	private EncodingChoice encodingChoice;
+	private int fileSpecificationVersion;
+
 	private boolean labelPosition;
+	private LatLong mapStartPosition;
+	private int mapStartZoomLevel;
+	private File outputFile;
+	private boolean polygonClipping;
+	private String preferredLanguage;
+
 	private double simplification;
-	private int bboxEnlargement;
 
 	private boolean skipInvalidRelations;
 
-	private EncodingChoice encodingChoice;
+	private OSMTagMapping tagMapping;
+	private boolean wayClipping;
 
-	private GeoPoint mapStartPosition;
-	private int mapStartZoomLevel;
-
-	private String preferredLanguage;
-	private String comment;
+	private String writerVersion;
+	private ZoomIntervalConfiguration zoomIntervalConfiguration;
 
 	/**
-	 * @return the outputFile
+	 * Convenience method.
+	 * 
+	 * @param bbox
+	 *            the bounding box specification in format minLat, minLon, maxLat, maxLon in exactly this order as
+	 *            degrees
 	 */
-	public File getOutputFile() {
-		return this.outputFile;
-	}
-
-	/**
-	 * @param outputFile
-	 *            the outputFile to set
-	 */
-	public void setOutputFile(File outputFile) {
-		this.outputFile = outputFile;
-	}
-
-	/**
-	 * @return the tagMapping
-	 */
-	public OSMTagMapping getTagMapping() {
-		return this.tagMapping;
-	}
-
-	/**
-	 * @return the dataProcessorType
-	 */
-	public String getDataProcessorType() {
-		return this.dataProcessorType;
-	}
-
-	/**
-	 * @param dataProcessorType
-	 *            the dataProcessorType to set
-	 */
-	public void setDataProcessorType(String dataProcessorType) {
-		this.dataProcessorType = dataProcessorType;
-	}
-
-	/**
-	 * @return the bboxConfiguration
-	 */
-	public BoundingBox getBboxConfiguration() {
-		return this.bboxConfiguration;
-	}
-
-	/**
-	 * @param bboxConfiguration
-	 *            the bboxConfiguration to set
-	 */
-	public void setBboxConfiguration(BoundingBox bboxConfiguration) {
-		this.bboxConfiguration = bboxConfiguration;
-	}
-
-	/**
-	 * @return the zoomIntervalConfiguration
-	 */
-	public ZoomIntervalConfiguration getZoomIntervalConfiguration() {
-		return this.zoomIntervalConfiguration;
-	}
-
-	/**
-	 * @param zoomIntervalConfiguration
-	 *            the zoomIntervalConfiguration to set
-	 */
-	public void setZoomIntervalConfiguration(ZoomIntervalConfiguration zoomIntervalConfiguration) {
-		this.zoomIntervalConfiguration = zoomIntervalConfiguration;
-	}
-
-	/**
-	 * @return the bboxEnlargement
-	 */
-	public int getBboxEnlargement() {
-		return this.bboxEnlargement;
-	}
-
-	/**
-	 * @param bboxEnlargement
-	 *            the bboxEnlargement to set
-	 */
-	public void setBboxEnlargement(int bboxEnlargement) {
-		this.bboxEnlargement = bboxEnlargement;
-	}
-
-	/**
-	 * @return the date
-	 */
-	public long getDate() {
-		return this.date;
-	}
-
-	/**
-	 * @param date
-	 *            the date to set
-	 */
-	public void setDate(long date) {
-		this.date = date;
-	}
-
-	/**
-	 * @return the fileSpecificationVersion
-	 */
-	public int getFileSpecificationVersion() {
-		return this.fileSpecificationVersion;
-	}
-
-	/**
-	 * @param fileSpecificationVersion
-	 *            the fileSpecificationVersion to set
-	 */
-	public void setFileSpecificationVersion(int fileSpecificationVersion) {
-		this.fileSpecificationVersion = fileSpecificationVersion;
-	}
-
-	/**
-	 * @return the writerVersion
-	 */
-	public String getWriterVersion() {
-		return this.writerVersion;
-	}
-
-	/**
-	 * @param writerVersion
-	 *            the writerVersion to set
-	 */
-	public void setWriterVersion(String writerVersion) {
-		this.writerVersion = writerVersion;
-	}
-
-	/**
-	 * @return the debugStrings
-	 */
-	public boolean isDebugStrings() {
-		return this.debugStrings;
-	}
-
-	/**
-	 * @param debugStrings
-	 *            the debugStrings to set
-	 */
-	public void setDebugStrings(boolean debugStrings) {
-		this.debugStrings = debugStrings;
-	}
-
-	/**
-	 * @return the polygonClipping
-	 */
-	public boolean isPolygonClipping() {
-		return this.polygonClipping;
-	}
-
-	/**
-	 * @param polygonClipping
-	 *            the polygonClipping to set
-	 */
-	public void setPolygonClipping(boolean polygonClipping) {
-		this.polygonClipping = polygonClipping;
-	}
-
-	/**
-	 * @return the wayClipping
-	 */
-	public boolean isWayClipping() {
-		return this.wayClipping;
-	}
-
-	/**
-	 * @param wayClipping
-	 *            the wayClipping to set
-	 */
-	public void setWayClipping(boolean wayClipping) {
-		this.wayClipping = wayClipping;
-	}
-
-	/**
-	 * @return the labelPosition
-	 */
-	public boolean isLabelPosition() {
-		return this.labelPosition;
-	}
-
-	/**
-	 * @param labelPosition
-	 *            the labelPosition to set
-	 */
-	public void setLabelPosition(boolean labelPosition) {
-		this.labelPosition = labelPosition;
-	}
-
-	/**
-	 * @return the simplification
-	 */
-	public double getSimplification() {
-		return this.simplification;
-	}
-
-	/**
-	 * @param simplification
-	 *            the simplification to set
-	 */
-	public void setSimplification(double simplification) {
-		if (simplification < 0) {
-			throw new RuntimeException("simplification must be >= 0");
+	public void addBboxConfiguration(String bbox) {
+		if (bbox != null) {
+			setBboxConfiguration(org.mapsforge.core.model.BoundingBox.fromString(bbox));
 		}
-
-		this.simplification = simplification;
-	}
-
-	/**
-	 * @return the skipInvalidRelations
-	 */
-	public boolean isSkipInvalidRelations() {
-		return this.skipInvalidRelations;
-	}
-
-	/**
-	 * @param skipInvalidRelations
-	 *            the skipInvalidRelations to set
-	 */
-	public void setSkipInvalidRelations(boolean skipInvalidRelations) {
-		this.skipInvalidRelations = skipInvalidRelations;
-	}
-
-	/**
-	 * @return the encodingChoice
-	 */
-	public EncodingChoice getEncodingChoice() {
-		return this.encodingChoice;
-	}
-
-	/**
-	 * @param encodingChoice
-	 *            the encodingChoice to set
-	 */
-	public void setEncodingChoice(EncodingChoice encodingChoice) {
-		this.encodingChoice = encodingChoice;
-	}
-
-	/**
-	 * @return the mapStartPosition
-	 */
-	public GeoPoint getMapStartPosition() {
-		return this.mapStartPosition;
-	}
-
-	/**
-	 * @param mapStartPosition
-	 *            the mapStartPosition to set
-	 */
-	public void setMapStartPosition(GeoPoint mapStartPosition) {
-		this.mapStartPosition = mapStartPosition;
-	}
-
-	/**
-	 * @return the mapStartZoomLevel
-	 */
-	public int getMapStartZoomLevel() {
-		return this.mapStartZoomLevel;
 	}
 
 	/**
 	 * Convenience method.
 	 * 
-	 * @return true if map start zoom level is set
+	 * @param encoding
+	 *            the choice for the encoding, either auto, single or double are valid parameters
 	 */
-	public boolean hasMapStartZoomLevel() {
-		return getMapStartZoomLevel() >= 0;
-	}
-
-	/**
-	 * @param mapStartZoomLevel
-	 *            the mapStartZoomLevel to set
-	 */
-	public void setMapStartZoomLevel(int mapStartZoomLevel) {
-		this.mapStartZoomLevel = mapStartZoomLevel;
-	}
-
-	/**
-	 * @return the preferredLanguage
-	 */
-	public String getPreferredLanguage() {
-		return this.preferredLanguage;
-	}
-
-	/**
-	 * @param preferredLanguage
-	 *            the preferredLanguage to set
-	 */
-	public void setPreferredLanguage(String preferredLanguage) {
-		if (preferredLanguage != null && !preferredLanguage.isEmpty()) {
-			this.preferredLanguage = preferredLanguage;
+	public void addEncodingChoice(String encoding) {
+		if (encoding != null) {
+			setEncodingChoice(EncodingChoice.fromString(encoding));
 		}
 	}
 
 	/**
-	 * @return the comment
+	 * Convenience method.
+	 * 
+	 * @param position
+	 *            the map start position in format latitude, longitude
 	 */
-	public String getComment() {
-		return this.comment;
+	public void addMapStartPosition(String position) {
+		if (position != null) {
+			setMapStartPosition(LatLongUtils.fromString(position));
+		}
 	}
 
 	/**
-	 * @param comment
-	 *            the comment to set
+	 * Convenience method.
+	 * 
+	 * @param zoom
+	 *            the map start zoom level
 	 */
-	public void setComment(String comment) {
-		if (comment != null && !comment.isEmpty()) {
-			this.comment = comment;
+	public void addMapStartZoom(String zoom) {
+		if (zoom != null) {
+			try {
+				int intZoom = Integer.parseInt(zoom);
+				if (intZoom < 0 || intZoom > 21) {
+					throw new IllegalArgumentException("not a valid map start zoom: " + zoom);
+				}
+				setMapStartZoomLevel(intZoom);
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("not a valid map start zoom: " + zoom, e);
+			}
+		} else {
+			setMapStartZoomLevel(-1);
 		}
 	}
 
@@ -382,6 +131,169 @@ public class MapWriterConfiguration {
 
 			setOutputFile(f);
 		}
+	}
+
+	/**
+	 * Convenience method.
+	 * 
+	 * @param zoomIntervalConfiguaration
+	 *            the zoom interval configuration
+	 */
+	public void addZoomIntervalConfiguration(String zoomIntervalConfiguaration) {
+		if (zoomIntervalConfiguaration != null) {
+			setZoomIntervalConfiguration(ZoomIntervalConfiguration.fromString(zoomIntervalConfiguaration));
+		} else {
+			setZoomIntervalConfiguration(ZoomIntervalConfiguration.getStandardConfiguration());
+		}
+	}
+
+	/**
+	 * @return the bboxConfiguration
+	 */
+	public BoundingBox getBboxConfiguration() {
+		return this.bboxConfiguration;
+	}
+
+	/**
+	 * @return the bboxEnlargement
+	 */
+	public int getBboxEnlargement() {
+		return this.bboxEnlargement;
+	}
+
+	/**
+	 * @return the comment
+	 */
+	public String getComment() {
+		return this.comment;
+	}
+
+	/**
+	 * @return the dataProcessorType
+	 */
+	public String getDataProcessorType() {
+		return this.dataProcessorType;
+	}
+
+	/**
+	 * @return the date
+	 */
+	public long getDate() {
+		return this.date;
+	}
+
+	/**
+	 * @return the encodingChoice
+	 */
+	public EncodingChoice getEncodingChoice() {
+		return this.encodingChoice;
+	}
+
+	/**
+	 * @return the fileSpecificationVersion
+	 */
+	public int getFileSpecificationVersion() {
+		return this.fileSpecificationVersion;
+	}
+
+	/**
+	 * @return the mapStartPosition
+	 */
+	public LatLong getMapStartPosition() {
+		return this.mapStartPosition;
+	}
+
+	/**
+	 * @return the mapStartZoomLevel
+	 */
+	public int getMapStartZoomLevel() {
+		return this.mapStartZoomLevel;
+	}
+
+	/**
+	 * @return the outputFile
+	 */
+	public File getOutputFile() {
+		return this.outputFile;
+	}
+
+	/**
+	 * @return the preferredLanguage
+	 */
+	public String getPreferredLanguage() {
+		return this.preferredLanguage;
+	}
+
+	/**
+	 * @return the simplification
+	 */
+	public double getSimplification() {
+		return this.simplification;
+	}
+
+	/**
+	 * @return the tagMapping
+	 */
+	public OSMTagMapping getTagMapping() {
+		return this.tagMapping;
+	}
+
+	/**
+	 * @return the writerVersion
+	 */
+	public String getWriterVersion() {
+		return this.writerVersion;
+	}
+
+	/**
+	 * @return the zoomIntervalConfiguration
+	 */
+	public ZoomIntervalConfiguration getZoomIntervalConfiguration() {
+		return this.zoomIntervalConfiguration;
+	}
+
+	/**
+	 * Convenience method.
+	 * 
+	 * @return true if map start zoom level is set
+	 */
+	public boolean hasMapStartZoomLevel() {
+		return getMapStartZoomLevel() >= 0;
+	}
+
+	/**
+	 * @return the debugStrings
+	 */
+	public boolean isDebugStrings() {
+		return this.debugStrings;
+	}
+
+	/**
+	 * @return the labelPosition
+	 */
+	public boolean isLabelPosition() {
+		return this.labelPosition;
+	}
+
+	/**
+	 * @return the polygonClipping
+	 */
+	public boolean isPolygonClipping() {
+		return this.polygonClipping;
+	}
+
+	/**
+	 * @return the skipInvalidRelations
+	 */
+	public boolean isSkipInvalidRelations() {
+		return this.skipInvalidRelations;
+	}
+
+	/**
+	 * @return the wayClipping
+	 */
+	public boolean isWayClipping() {
+		return this.wayClipping;
 	}
 
 	/**
@@ -414,76 +326,163 @@ public class MapWriterConfiguration {
 	}
 
 	/**
-	 * Convenience method.
-	 * 
-	 * @param position
-	 *            the map start position in format latitude, longitude
+	 * @param bboxConfiguration
+	 *            the bboxConfiguration to set
 	 */
-	public void addMapStartPosition(String position) {
-		if (position != null) {
-			setMapStartPosition(GeoPoint.fromString(position));
+	public void setBboxConfiguration(BoundingBox bboxConfiguration) {
+		this.bboxConfiguration = bboxConfiguration;
+	}
+
+	/**
+	 * @param bboxEnlargement
+	 *            the bboxEnlargement to set
+	 */
+	public void setBboxEnlargement(int bboxEnlargement) {
+		this.bboxEnlargement = bboxEnlargement;
+	}
+
+	/**
+	 * @param comment
+	 *            the comment to set
+	 */
+	public void setComment(String comment) {
+		if (comment != null && !comment.isEmpty()) {
+			this.comment = comment;
 		}
 	}
 
 	/**
-	 * Convenience method.
-	 * 
-	 * @param zoom
-	 *            the map start zoom level
+	 * @param dataProcessorType
+	 *            the dataProcessorType to set
 	 */
-	public void addMapStartZoom(String zoom) {
-		if (zoom != null) {
-			try {
-				int intZoom = Integer.parseInt(zoom);
-				if (intZoom < 0 || intZoom > 21) {
-					throw new IllegalArgumentException("not a valid map start zoom: " + zoom);
-				}
-				setMapStartZoomLevel(intZoom);
-			} catch (NumberFormatException e) {
-				throw new IllegalArgumentException("not a valid map start zoom: " + zoom, e);
-			}
-		} else {
-			setMapStartZoomLevel(-1);
+	public void setDataProcessorType(String dataProcessorType) {
+		this.dataProcessorType = dataProcessorType;
+	}
+
+	/**
+	 * @param date
+	 *            the date to set
+	 */
+	public void setDate(long date) {
+		this.date = date;
+	}
+
+	/**
+	 * @param debugStrings
+	 *            the debugStrings to set
+	 */
+	public void setDebugStrings(boolean debugStrings) {
+		this.debugStrings = debugStrings;
+	}
+
+	/**
+	 * @param encodingChoice
+	 *            the encodingChoice to set
+	 */
+	public void setEncodingChoice(EncodingChoice encodingChoice) {
+		this.encodingChoice = encodingChoice;
+	}
+
+	/**
+	 * @param fileSpecificationVersion
+	 *            the fileSpecificationVersion to set
+	 */
+	public void setFileSpecificationVersion(int fileSpecificationVersion) {
+		this.fileSpecificationVersion = fileSpecificationVersion;
+	}
+
+	/**
+	 * @param labelPosition
+	 *            the labelPosition to set
+	 */
+	public void setLabelPosition(boolean labelPosition) {
+		this.labelPosition = labelPosition;
+	}
+
+	/**
+	 * @param mapStartPosition
+	 *            the mapStartPosition to set
+	 */
+	public void setMapStartPosition(LatLong mapStartPosition) {
+		this.mapStartPosition = mapStartPosition;
+	}
+
+	/**
+	 * @param mapStartZoomLevel
+	 *            the mapStartZoomLevel to set
+	 */
+	public void setMapStartZoomLevel(int mapStartZoomLevel) {
+		this.mapStartZoomLevel = mapStartZoomLevel;
+	}
+
+	/**
+	 * @param outputFile
+	 *            the outputFile to set
+	 */
+	public void setOutputFile(File outputFile) {
+		this.outputFile = outputFile;
+	}
+
+	/**
+	 * @param polygonClipping
+	 *            the polygonClipping to set
+	 */
+	public void setPolygonClipping(boolean polygonClipping) {
+		this.polygonClipping = polygonClipping;
+	}
+
+	/**
+	 * @param preferredLanguage
+	 *            the preferredLanguage to set
+	 */
+	public void setPreferredLanguage(String preferredLanguage) {
+		if (preferredLanguage != null && !preferredLanguage.isEmpty()) {
+			this.preferredLanguage = preferredLanguage;
 		}
 	}
 
 	/**
-	 * Convenience method.
-	 * 
-	 * @param bbox
-	 *            the bounding box specification in format minLat, minLon, maxLat, maxLon in exactly this order as
-	 *            degrees
+	 * @param simplification
+	 *            the simplification to set
 	 */
-	public void addBboxConfiguration(String bbox) {
-		if (bbox != null) {
-			setBboxConfiguration(org.mapsforge.core.model.BoundingBox.fromString(bbox));
+	public void setSimplification(double simplification) {
+		if (simplification < 0) {
+			throw new RuntimeException("simplification must be >= 0");
 		}
+
+		this.simplification = simplification;
 	}
 
 	/**
-	 * Convenience method.
-	 * 
-	 * @param zoomIntervalConfiguaration
-	 *            the zoom interval configuration
+	 * @param skipInvalidRelations
+	 *            the skipInvalidRelations to set
 	 */
-	public void addZoomIntervalConfiguration(String zoomIntervalConfiguaration) {
-		if (zoomIntervalConfiguaration != null) {
-			setZoomIntervalConfiguration(ZoomIntervalConfiguration.fromString(zoomIntervalConfiguaration));
-		} else {
-			setZoomIntervalConfiguration(ZoomIntervalConfiguration.getStandardConfiguration());
-		}
+	public void setSkipInvalidRelations(boolean skipInvalidRelations) {
+		this.skipInvalidRelations = skipInvalidRelations;
 	}
 
 	/**
-	 * Convenience method.
-	 * 
-	 * @param encoding
-	 *            the choice for the encoding, either auto, single or double are valid parameters
+	 * @param wayClipping
+	 *            the wayClipping to set
 	 */
-	public void addEncodingChoice(String encoding) {
-		if (encoding != null) {
-			setEncodingChoice(EncodingChoice.fromString(encoding));
-		}
+	public void setWayClipping(boolean wayClipping) {
+		this.wayClipping = wayClipping;
+	}
+
+	/**
+	 * @param writerVersion
+	 *            the writerVersion to set
+	 */
+	public void setWriterVersion(String writerVersion) {
+		this.writerVersion = writerVersion;
+	}
+
+	/**
+	 * @param zoomIntervalConfiguration
+	 *            the zoomIntervalConfiguration to set
+	 */
+	public void setZoomIntervalConfiguration(ZoomIntervalConfiguration zoomIntervalConfiguration) {
+		this.zoomIntervalConfiguration = zoomIntervalConfiguration;
 	}
 
 	/**

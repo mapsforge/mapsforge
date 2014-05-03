@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -37,7 +37,7 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
 		return (int) (capacity / LOAD_FACTOR) + 2;
 	}
 
-	private final int capacity;
+	public final int capacity;
 
 	/**
 	 * @param capacity

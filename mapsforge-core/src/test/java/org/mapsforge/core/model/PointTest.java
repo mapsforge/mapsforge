@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,50 +20,69 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class PointTest {
-	private static final String POINT_TO_STRING = "x=222.2, y=333.3";
-	private static final double X = 222.2;
-	private static final double Y = 333.3;
+	private static final String POINT_TO_STRING = "x=1.0, y=2.0";
 
 	@Test
 	public void compareToTest() {
-		Point point1 = new Point(X, Y);
-		Point point2 = new Point(X, Y);
-		Point point3 = new Point(0, 0);
+		Point point1 = new Point(1, 2);
+		Point point2 = new Point(1, 2);
+		Point point3 = new Point(1, 1);
+		Point point4 = new Point(2, 2);
 
 		Assert.assertEquals(0, point1.compareTo(point2));
-		Assert.assertNotEquals(0, point1.compareTo(point3));
-		Assert.assertNotEquals(0, point3.compareTo(point1));
+
+		TestUtils.notCompareToTest(point1, point3);
+		TestUtils.notCompareToTest(point1, point4);
+	}
+
+	@Test
+	public void distanceTest() {
+		Point point1 = new Point(0, 0);
+		Point point2 = new Point(1, 1);
+		Point point3 = new Point(0, -1);
+
+		Assert.assertEquals(0, point1.distance(point1), 0);
+		Assert.assertEquals(0, point2.distance(point2), 0);
+		Assert.assertEquals(0, point3.distance(point3), 0);
+
+		Assert.assertEquals(Math.sqrt(2), point1.distance(point2), 0);
+		Assert.assertEquals(Math.sqrt(2), point2.distance(point1), 0);
+
+		Assert.assertEquals(1, point1.distance(point3), 0);
+		Assert.assertEquals(1, point3.distance(point1), 0);
 	}
 
 	@Test
 	public void equalsTest() {
-		Point point1 = new Point(X, Y);
-		Point point2 = new Point(X, Y);
-		Point point3 = new Point(0, 0);
+		Point point1 = new Point(1, 2);
+		Point point2 = new Point(1, 2);
+		Point point3 = new Point(1, 1);
+		Point point4 = new Point(2, 2);
 
 		TestUtils.equalsTest(point1, point2);
 
-		Assert.assertNotEquals(point1, point3);
-		Assert.assertNotEquals(point3, point1);
-		Assert.assertNotEquals(point1, new Object());
+		TestUtils.notEqualsTest(point1, point3);
+		TestUtils.notEqualsTest(point1, point4);
+		TestUtils.notEqualsTest(point1, new Object());
+		TestUtils.notEqualsTest(point1, null);
 	}
 
 	@Test
 	public void fieldsTest() {
-		Point point = new Point(X, Y);
-		Assert.assertEquals(X, point.x, 0);
-		Assert.assertEquals(Y, point.y, 0);
+		Point point = new Point(1, 2);
+		Assert.assertEquals(1, point.x, 0);
+		Assert.assertEquals(2, point.y, 0);
 	}
 
 	@Test
 	public void serializeTest() throws IOException, ClassNotFoundException {
-		Point point = new Point(X, Y);
+		Point point = new Point(1, 2);
 		TestUtils.serializeTest(point);
 	}
 
 	@Test
 	public void toStringTest() {
-		Point point = new Point(X, Y);
+		Point point = new Point(1, 2);
 		Assert.assertEquals(POINT_TO_STRING, point.toString());
 	}
 }

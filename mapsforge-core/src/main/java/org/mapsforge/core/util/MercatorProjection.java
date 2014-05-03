@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -47,24 +47,6 @@ public final class MercatorProjection {
 	public static double calculateGroundResolution(double latitude, byte zoomLevel) {
 		long mapSize = getMapSize(zoomLevel);
 		return Math.cos(latitude * (Math.PI / 180)) * EARTH_CIRCUMFERENCE / mapSize;
-	}
-
-	/**
-	 * Computes the amount of latitude degrees for a given distance in pixel at a given zoom level.
-	 * 
-	 * @param deltaPixel
-	 *            the delta in pixel
-	 * @param lat
-	 *            the latitude
-	 * @param zoom
-	 *            the zoom level
-	 * @return the delta in degrees
-	 */
-	public static double deltaLat(double deltaPixel, double lat, byte zoom) {
-		double pixelY = latitudeToPixelY(lat, zoom);
-		double lat2 = pixelYToLatitude(pixelY + deltaPixel, zoom);
-
-		return Math.abs(lat2 - lat);
 	}
 
 	/**
@@ -201,6 +183,15 @@ public final class MercatorProjection {
 	 */
 	public static long pixelYToTileY(double pixelY, byte zoomLevel) {
 		return (long) Math.min(Math.max(pixelY / Tile.TILE_SIZE, 0), Math.pow(2, zoomLevel) - 1);
+	}
+
+	/**
+	 * @param tileNumber
+	 *            the tile number that should be converted.
+	 * @return the pixel coordinate for the given tile number.
+	 */
+	public static long tileToPixel(long tileNumber) {
+		return tileNumber * Tile.TILE_SIZE;
 	}
 
 	/**

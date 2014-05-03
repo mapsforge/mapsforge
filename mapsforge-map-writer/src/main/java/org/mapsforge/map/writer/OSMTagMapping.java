@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -51,37 +51,85 @@ import org.xml.sax.SAXParseException;
 /**
  * Reorders and maps tag ids according to their frequency in the input data. Ids are remapped so that the most frequent
  * entities receive the lowest ids.
- * 
- * @author bross
  */
 public final class OSMTagMapping {
-	private static OSMTagMapping mapping;
+	private class HistogramEntry implements Comparable<HistogramEntry> {
+		final int amount;
+		final short id;
+
+		public HistogramEntry(short id, int amount) {
+			super();
+			this.id = id;
+			this.amount = amount;
+		}
+
+		/**
+		 * First order: amount Second order: id (reversed order).
+		 */
+		@Override
+		public int compareTo(HistogramEntry o) {
+			if (this.amount > o.amount) {
+				return 1;
+			} else if (this.amount < o.amount) {
+				return -1;
+			} else {
+				if (this.id < o.id) {
+					return 1;
+				} else if (this.id > o.id) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			HistogramEntry other = (HistogramEntry) obj;
+			if (!getOuterType().equals(other.getOuterType())) {
+				return false;
+			}
+			if (this.amount != other.amount) {
+				return false;
+			}
+			if (this.id != other.id) {
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + this.amount;
+			result = prime * result + this.id;
+			return result;
+		}
+
+		private OSMTagMapping getOuterType() {
+			return OSMTagMapping.this;
+		}
+	}
 
 	private static final Logger LOGGER = Logger.getLogger(OSMTagMapping.class.getName());
 
-	// we use LinkedHashMaps as they guarantee to uphold the
-	// insertion order when iterating over the key or value "set"
-	private final Map<String, OSMTag> stringToPoiTag = new LinkedHashMap<String, OSMTag>();
-	private final Map<String, OSMTag> stringToWayTag = new LinkedHashMap<String, OSMTag>();
-
-	private final Map<Short, OSMTag> idToPoiTag = new LinkedHashMap<Short, OSMTag>();
-	private final Map<Short, OSMTag> idToWayTag = new LinkedHashMap<Short, OSMTag>();
-
-	private final Map<Short, Set<OSMTag>> poiZoomOverrides = new LinkedHashMap<Short, Set<OSMTag>>();
-	private final Map<Short, Set<OSMTag>> wayZoomOverrides = new LinkedHashMap<Short, Set<OSMTag>>();
-
-	private final Map<Short, Short> optimizedPoiIds = new LinkedHashMap<Short, Short>();
-	private final Map<Short, Short> optimizedWayIds = new LinkedHashMap<Short, Short>();
-
-	private short poiID = 0;
-	private short wayID = 0;
-
+	private static OSMTagMapping mapping;
 	private static final String XPATH_EXPRESSION_DEFAULT_ZOOM = "/tag-mapping/@default-zoom-appear";
 
 	private static final String XPATH_EXPRESSION_POIS = "//pois/osm-tag["
 			+ "(../@enabled='true' or not(../@enabled)) and (./@enabled='true' or not(./@enabled)) "
 			+ "or (../@enabled='false' and ./@enabled='true')]";
-
 	private static final String XPATH_EXPRESSION_WAYS = "//ways/osm-tag["
 			+ "(../@enabled='true' or not(../@enabled)) and (./@enabled='true' or not(./@enabled)) "
 			+ "or (../@enabled='false' and ./@enabled='true')]";
@@ -111,6 +159,26 @@ public final class OSMTagMapping {
 		return mapping;
 	}
 
+	private final Map<Short, OSMTag> idToPoiTag = new LinkedHashMap<>();
+	private final Map<Short, OSMTag> idToWayTag = new LinkedHashMap<>();
+
+	private final Map<Short, Short> optimizedPoiIds = new LinkedHashMap<>();
+	private final Map<Short, Short> optimizedWayIds = new LinkedHashMap<>();
+
+	private short poiID = 0;
+
+	private final Map<Short, Set<OSMTag>> poiZoomOverrides = new LinkedHashMap<>();
+
+	// we use LinkedHashMaps as they guarantee to uphold the
+	// insertion order when iterating over the key or value "set"
+	private final Map<String, OSMTag> stringToPoiTag = new LinkedHashMap<>();
+
+	private final Map<String, OSMTag> stringToWayTag = new LinkedHashMap<>();
+
+	private short wayID = 0;
+
+	private final Map<Short, Set<OSMTag>> wayZoomOverrides = new LinkedHashMap<>();
+
 	private OSMTagMapping(URL tagConf) {
 		try {
 			byte defaultZoomAppear;
@@ -125,8 +193,8 @@ public final class OSMTagMapping {
 			XPathExpression xe = xpath.compile(XPATH_EXPRESSION_DEFAULT_ZOOM);
 			defaultZoomAppear = Byte.parseByte((String) xe.evaluate(document, XPathConstants.STRING));
 
-			final HashMap<Short, Set<String>> tmpPoiZoomOverrides = new HashMap<Short, Set<String>>();
-			final HashMap<Short, Set<String>> tmpWayZoomOverrides = new HashMap<Short, Set<String>>();
+			final HashMap<Short, Set<String>> tmpPoiZoomOverrides = new HashMap<>();
+			final HashMap<Short, Set<String>> tmpWayZoomOverrides = new HashMap<>();
 
 			// ---- Get list of poi nodes ----
 			xe = xpath.compile(XPATH_EXPRESSION_POIS);
@@ -177,7 +245,7 @@ public final class OSMTagMapping {
 						String valueOverridden = overriddenNode.getAttributes().getNamedItem("value").getTextContent();
 						Set<String> s = tmpPoiZoomOverrides.get(Short.valueOf(this.poiID));
 						if (s == null) {
-							s = new HashSet<String>();
+							s = new HashSet<>();
 							tmpPoiZoomOverrides.put(Short.valueOf(this.poiID), s);
 						}
 						s.add(OSMTag.tagKey(keyOverridden, valueOverridden));
@@ -236,7 +304,7 @@ public final class OSMTagMapping {
 						String valueOverridden = overriddenNode.getAttributes().getNamedItem("value").getTextContent();
 						Set<String> s = tmpWayZoomOverrides.get(Short.valueOf(this.wayID));
 						if (s == null) {
-							s = new HashSet<String>();
+							s = new HashSet<>();
 							tmpWayZoomOverrides.put(Short.valueOf(this.wayID), s);
 						}
 						s.add(OSMTag.tagKey(keyOverridden, valueOverridden));
@@ -248,7 +316,7 @@ public final class OSMTagMapping {
 
 			// copy temporary values from zoom-override data sets
 			for (Entry<Short, Set<String>> entry : tmpPoiZoomOverrides.entrySet()) {
-				Set<OSMTag> overriddenTags = new HashSet<OSMTag>();
+				Set<OSMTag> overriddenTags = new HashSet<>();
 				for (String tagString : entry.getValue()) {
 					OSMTag tag = this.stringToPoiTag.get(tagString);
 					if (tag != null) {
@@ -261,7 +329,7 @@ public final class OSMTagMapping {
 			}
 
 			for (Entry<Short, Set<String>> entry : tmpWayZoomOverrides.entrySet()) {
-				Set<OSMTag> overriddenTags = new HashSet<OSMTag>();
+				Set<OSMTag> overriddenTags = new HashSet<>();
 				for (String tagString : entry.getValue()) {
 					OSMTag tag = this.stringToWayTag.get(tagString);
 					if (tag != null) {
@@ -286,6 +354,75 @@ public final class OSMTagMapping {
 		} catch (XPathExpressionException e) {
 			throw new IllegalStateException(e);
 		}
+	}
+
+	/**
+	 * @return a mapping that maps original tag ids to the optimized ones
+	 */
+	public Map<Short, Short> getOptimizedPoiIds() {
+		return this.optimizedPoiIds;
+	}
+
+	/**
+	 * @return a mapping that maps original tag ids to the optimized ones
+	 */
+	public Map<Short, Short> getOptimizedWayIds() {
+		return this.optimizedWayIds;
+	}
+
+	/**
+	 * @param id
+	 *            the id
+	 * @return the corresponding {@link OSMTag}
+	 */
+	public OSMTag getPoiTag(short id) {
+		return this.idToPoiTag.get(Short.valueOf(id));
+	}
+
+	/**
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 * @return the corresponding {@link OSMTag}
+	 */
+	public OSMTag getPoiTag(String key, String value) {
+		return this.stringToPoiTag.get(OSMTag.tagKey(key, value));
+	}
+
+	/**
+	 * @param id
+	 *            the id
+	 * @return the corresponding {@link OSMTag}
+	 */
+	public OSMTag getWayTag(short id) {
+		return this.idToWayTag.get(Short.valueOf(id));
+	}
+
+	// /**
+	// * @param tags
+	// * the tags
+	// * @return
+	// */
+	// private static short[] tagIDsFromList(List<OSMTag> tags) {
+	// short[] tagIDs = new short[tags.size()];
+	// int i = 0;
+	// for (OSMTag tag : tags) {
+	// tagIDs[i++] = tag.getId();
+	// }
+	//
+	// return tagIDs;
+	// }
+
+	/**
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 * @return the corresponding {@link OSMTag}
+	 */
+	public OSMTag getWayTag(String key, String value) {
+		return this.stringToWayTag.get(OSMTag.tagKey(key, value));
 	}
 
 	/**
@@ -374,81 +511,12 @@ public final class OSMTagMapping {
 	}
 
 	/**
-	 * @param key
-	 *            the key
-	 * @param value
-	 *            the value
-	 * @return the corresponding {@link OSMTag}
-	 */
-	public OSMTag getWayTag(String key, String value) {
-		return this.stringToWayTag.get(OSMTag.tagKey(key, value));
-	}
-
-	/**
-	 * @param key
-	 *            the key
-	 * @param value
-	 *            the value
-	 * @return the corresponding {@link OSMTag}
-	 */
-	public OSMTag getPoiTag(String key, String value) {
-		return this.stringToPoiTag.get(OSMTag.tagKey(key, value));
-	}
-
-	/**
-	 * @param id
-	 *            the id
-	 * @return the corresponding {@link OSMTag}
-	 */
-	public OSMTag getWayTag(short id) {
-		return this.idToWayTag.get(Short.valueOf(id));
-	}
-
-	/**
-	 * @param id
-	 *            the id
-	 * @return the corresponding {@link OSMTag}
-	 */
-	public OSMTag getPoiTag(short id) {
-		return this.idToPoiTag.get(Short.valueOf(id));
-	}
-
-	// /**
-	// * @param tags
-	// * the tags
-	// * @return
-	// */
-	// private static short[] tagIDsFromList(List<OSMTag> tags) {
-	// short[] tagIDs = new short[tags.size()];
-	// int i = 0;
-	// for (OSMTag tag : tags) {
-	// tagIDs[i++] = tag.getId();
-	// }
-	//
-	// return tagIDs;
-	// }
-
-	/**
-	 * @return a mapping that maps original tag ids to the optimized ones
-	 */
-	public Map<Short, Short> getOptimizedPoiIds() {
-		return this.optimizedPoiIds;
-	}
-
-	/**
-	 * @return a mapping that maps original tag ids to the optimized ones
-	 */
-	public Map<Short, Short> getOptimizedWayIds() {
-		return this.optimizedWayIds;
-	}
-
-	/**
 	 * @param histogram
 	 *            a histogram that represents the frequencies of tags
 	 */
 	public void optimizePoiOrdering(TShortIntHashMap histogram) {
 		this.optimizedPoiIds.clear();
-		final TreeSet<HistogramEntry> poiOrdering = new TreeSet<OSMTagMapping.HistogramEntry>();
+		final TreeSet<HistogramEntry> poiOrdering = new TreeSet<>();
 
 		histogram.forEachEntry(new TShortIntProcedure() {
 			@Override
@@ -476,7 +544,7 @@ public final class OSMTagMapping {
 	 */
 	public void optimizeWayOrdering(TShortIntHashMap histogram) {
 		this.optimizedWayIds.clear();
-		final TreeSet<HistogramEntry> wayOrdering = new TreeSet<OSMTagMapping.HistogramEntry>();
+		final TreeSet<HistogramEntry> wayOrdering = new TreeSet<>();
 
 		histogram.forEachEntry(new TShortIntProcedure() {
 			@Override
@@ -494,75 +562,6 @@ public final class OSMTagMapping {
 			LOGGER.finer("adding way tag: " + currentTag.tagKey() + " id:" + tmpWayID + " amount: "
 					+ histogramEntry.amount);
 			tmpWayID++;
-		}
-	}
-
-	private class HistogramEntry implements Comparable<HistogramEntry> {
-		final short id;
-		final int amount;
-
-		public HistogramEntry(short id, int amount) {
-			super();
-			this.id = id;
-			this.amount = amount;
-		}
-
-		/**
-		 * First order: amount Second order: id (reversed order).
-		 */
-		@Override
-		public int compareTo(HistogramEntry o) {
-			if (this.amount > o.amount) {
-				return 1;
-			} else if (this.amount < o.amount) {
-				return -1;
-			} else {
-				if (this.id < o.id) {
-					return 1;
-				} else if (this.id > o.id) {
-					return -1;
-				} else {
-					return 0;
-				}
-			}
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result + this.amount;
-			result = prime * result + this.id;
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			HistogramEntry other = (HistogramEntry) obj;
-			if (!getOuterType().equals(other.getOuterType())) {
-				return false;
-			}
-			if (this.amount != other.amount) {
-				return false;
-			}
-			if (this.id != other.id) {
-				return false;
-			}
-			return true;
-		}
-
-		private OSMTagMapping getOuterType() {
-			return OSMTagMapping.this;
 		}
 	}
 }

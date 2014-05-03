@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -38,16 +38,14 @@ import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
 /**
  * An Osmosis plugin that reads OpenStreetMap data and converts it to a mapsforge binary file.
- * 
- * @author bross
  */
 public class MapFileWriterTask implements Sink {
 	private static final Logger LOGGER = Logger.getLogger(MapFileWriterTask.class.getName());
 
 	// Accounting
 	private int amountOfNodesProcessed = 0;
-	private int amountOfWaysProcessed = 0;
 	private int amountOfRelationsProcessed = 0;
+	private int amountOfWaysProcessed = 0;
 
 	private final MapWriterConfiguration configuration;
 	private TileBasedDataProcessor tileBasedGeoObjectStore;
@@ -79,15 +77,6 @@ public class MapFileWriterTask implements Sink {
 				this.tileBasedGeoObjectStore = HDTileBasedDataProcessor.newInstance(configuration);
 			}
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.openstreetmap.osmosis.core.task.v0_6.Initializable#initialize(java.util.Map)
-	 */
-	@Override
-	public void initialize(Map<String, Object> metadata) {
-		// nothing to do here
 	}
 
 	@Override
@@ -122,11 +111,13 @@ public class MapFileWriterTask implements Sink {
 						.pow(1024, 2))) + "MB");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.openstreetmap.osmosis.core.task.v0_6.Initializable#initialize(java.util.Map)
+	 */
 	@Override
-	public final void release() {
-		if (this.tileBasedGeoObjectStore != null) {
-			this.tileBasedGeoObjectStore.release();
-		}
+	public void initialize(Map<String, Object> metadata) {
+		// nothing to do here
 	}
 
 	@Override
@@ -187,6 +178,13 @@ public class MapFileWriterTask implements Sink {
 				this.amountOfRelationsProcessed++;
 				entity = null;
 				break;
+		}
+	}
+
+	@Override
+	public final void release() {
+		if (this.tileBasedGeoObjectStore != null) {
+			this.tileBasedGeoObjectStore.release();
 		}
 	}
 }

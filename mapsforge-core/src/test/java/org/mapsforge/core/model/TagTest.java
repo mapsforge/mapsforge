@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -41,11 +41,10 @@ public class TagTest {
 
 		TestUtils.equalsTest(tag1, tag2);
 
-		Assert.assertNotEquals(tag1, tag3);
-		Assert.assertNotEquals(tag1, tag4);
-		Assert.assertNotEquals(tag3, tag1);
-		Assert.assertNotEquals(tag4, tag3);
-		Assert.assertNotEquals(tag1, new Object());
+		TestUtils.notEqualsTest(tag1, tag3);
+		TestUtils.notEqualsTest(tag1, tag4);
+		TestUtils.notEqualsTest(tag1, new Object());
+		TestUtils.notEqualsTest(tag1, null);
 	}
 
 	@Test

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,9 +23,6 @@ import org.mapsforge.map.writer.model.TDNode;
 import org.mapsforge.map.writer.model.TDWay;
 import org.mapsforge.map.writer.model.TileData;
 
-/**
- * @author bross
- */
 public class HDTileData extends TileData {
 	private final TLongArrayList pois;
 	private final TLongArrayList ways;
@@ -34,14 +31,6 @@ public class HDTileData extends TileData {
 		super();
 		this.pois = new TLongArrayList();
 		this.ways = new TLongArrayList();
-	}
-
-	final TLongArrayList getPois() {
-		return this.pois;
-	}
-
-	final TLongArrayList getWays() {
-		return this.ways;
 	}
 
 	@Override
@@ -62,5 +51,13 @@ public class HDTileData extends TileData {
 	@Override
 	public Map<Byte, List<TDWay>> waysByZoomlevel(byte minValidZoomlevel, byte maxValidZoomlevel) {
 		throw new UnsupportedOperationException(HDTileData.class.getName() + "does not support this operation");
+	}
+
+	final TLongArrayList getPois() {
+		return this.pois;
+	}
+
+	final TLongArrayList getWays() {
+		return this.ways;
 	}
 }

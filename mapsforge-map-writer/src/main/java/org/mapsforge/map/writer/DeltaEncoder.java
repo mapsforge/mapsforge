@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,13 +23,8 @@ import org.mapsforge.map.writer.model.WayDataBlock;
 
 /**
  * Provides delta or double delta encoding of lists of integers.
- * 
- * @author bross
  */
 public final class DeltaEncoder {
-	private DeltaEncoder() {
-	}
-
 	/**
 	 * Encodes a list of WayDataBlock objects with the given encoding scheme.
 	 * 
@@ -49,13 +44,13 @@ public final class DeltaEncoder {
 			return blocks;
 		}
 
-		List<WayDataBlock> results = new ArrayList<WayDataBlock>();
+		List<WayDataBlock> results = new ArrayList<>();
 
 		for (WayDataBlock wayDataBlock : blocks) {
 			List<Integer> outer = mEncode(wayDataBlock.getOuterWay(), encoding);
 			List<List<Integer>> inner = null;
 			if (wayDataBlock.getInnerWays() != null) {
-				inner = new ArrayList<List<Integer>>();
+				inner = new ArrayList<>();
 				for (List<Integer> list : wayDataBlock.getInnerWays()) {
 					inner.add(mEncode(list, encoding));
 				}
@@ -86,32 +81,11 @@ public final class DeltaEncoder {
 		return sum;
 	}
 
-	private static List<Integer> mEncode(List<Integer> list, Encoding encoding) {
-		switch (encoding) {
-			case DELTA:
-				return deltaEncode(list);
-			case DOUBLE_DELTA:
-				return doubleDeltaEncode(list);
-			case NONE:
-				return list;
-		}
-
-		throw new IllegalArgumentException("unknown encoding value: " + encoding);
-	}
-
-	private static int mSimulateSerialization(List<Integer> list) {
-		int sum = 0;
-		for (Integer coordinate : list) {
-			sum += Serializer.getVariableByteSigned(coordinate.intValue()).length;
-		}
-		return sum;
-	}
-
 	static List<Integer> deltaEncode(List<Integer> list) {
 		if (list == null) {
 			return null;
 		}
-		ArrayList<Integer> result = new ArrayList<Integer>();
+		ArrayList<Integer> result = new ArrayList<>();
 
 		if (list.isEmpty()) {
 			return result;
@@ -143,7 +117,7 @@ public final class DeltaEncoder {
 			return null;
 		}
 
-		ArrayList<Integer> result = new ArrayList<Integer>();
+		ArrayList<Integer> result = new ArrayList<>();
 		if (list.isEmpty()) {
 			return result;
 		}
@@ -175,5 +149,29 @@ public final class DeltaEncoder {
 		}
 
 		return result;
+	}
+
+	private static List<Integer> mEncode(List<Integer> list, Encoding encoding) {
+		switch (encoding) {
+			case DELTA:
+				return deltaEncode(list);
+			case DOUBLE_DELTA:
+				return doubleDeltaEncode(list);
+			case NONE:
+				return list;
+		}
+
+		throw new IllegalArgumentException("unknown encoding value: " + encoding);
+	}
+
+	private static int mSimulateSerialization(List<Integer> list) {
+		int sum = 0;
+		for (Integer coordinate : list) {
+			sum += Serializer.getVariableByteSigned(coordinate.intValue()).length;
+		}
+		return sum;
+	}
+
+	private DeltaEncoder() {
 	}
 }

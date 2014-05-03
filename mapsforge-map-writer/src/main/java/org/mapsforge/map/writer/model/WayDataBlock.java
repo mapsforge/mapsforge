@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,13 +19,11 @@ import java.util.List;
 /**
  * Class to store a WayDataBlock. Each WayDataBlock can store one way and a list of corresponding inner ways. Simple
  * ways and simple polygons have zero inner ways while multi polygons have one or more inner ways.
- * 
- * @author sahin
  */
 public class WayDataBlock {
-	private final List<Integer> outerWay;
-	private final List<List<Integer>> innerWays;
 	private final Encoding encoding;
+	private final List<List<Integer>> innerWays;
+	private final List<Integer> outerWay;
 
 	/**
 	 * Creates a WayDataBlock in which way coordinates are not encoded.
@@ -57,10 +55,10 @@ public class WayDataBlock {
 	}
 
 	/**
-	 * @return the outerWay
+	 * @return the encoding
 	 */
-	public List<Integer> getOuterWay() {
-		return this.outerWay;
+	public Encoding getEncoding() {
+		return this.encoding;
 	}
 
 	/**
@@ -71,9 +69,9 @@ public class WayDataBlock {
 	}
 
 	/**
-	 * @return the encoding
+	 * @return the outerWay
 	 */
-	public Encoding getEncoding() {
-		return this.encoding;
+	public List<Integer> getOuterWay() {
+		return this.outerWay;
 	}
 }

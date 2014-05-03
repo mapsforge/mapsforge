@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -41,29 +41,8 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
 /**
  * A TileBasedDataStore that uses the RAM as storage device for temporary data structures.
- * 
- * @author bross
  */
 public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor {
-	private final TLongObjectHashMap<TDNode> nodes;
-	final TLongObjectHashMap<TDWay> ways;
-	private final TLongObjectHashMap<TDRelation> multipolygons;
-
-	private final RAMTileData[][][] tileData;
-
-	private RAMTileBasedDataProcessor(MapWriterConfiguration configuration) {
-		super(configuration);
-		this.nodes = new TLongObjectHashMap<TDNode>();
-		this.ways = new TLongObjectHashMap<TDWay>();
-		this.multipolygons = new TLongObjectHashMap<TDRelation>();
-		this.tileData = new RAMTileData[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()][][];
-		// compute number of tiles needed on each base zoom level
-		for (int i = 0; i < this.zoomIntervalConfiguration.getNumberOfZoomIntervals(); i++) {
-			this.tileData[i] = new RAMTileData[this.tileGridLayouts[i].getAmountTilesHorizontal()][this.tileGridLayouts[i]
-					.getAmountTilesVertical()];
-		}
-	}
-
 	/**
 	 * Creates a new instance of a {@link RAMTileBasedDataProcessor}.
 	 * 
@@ -75,24 +54,24 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 		return new RAMTileBasedDataProcessor(configuration);
 	}
 
-	@Override
-	public TDNode getNode(long id) {
-		return this.nodes.get(id);
-	}
+	final TLongObjectHashMap<TDWay> ways;
+	private final TLongObjectHashMap<TDRelation> multipolygons;
 
-	@Override
-	public TDWay getWay(long id) {
-		return this.ways.get(id);
-	}
+	private final TLongObjectHashMap<TDNode> nodes;
 
-	@Override
-	public BoundingBox getBoundingBox() {
-		return this.boundingbox;
-	}
+	private final RAMTileData[][][] tileData;
 
-	@Override
-	public ZoomIntervalConfiguration getZoomIntervalConfiguration() {
-		return this.zoomIntervalConfiguration;
+	private RAMTileBasedDataProcessor(MapWriterConfiguration configuration) {
+		super(configuration);
+		this.nodes = new TLongObjectHashMap<>();
+		this.ways = new TLongObjectHashMap<>();
+		this.multipolygons = new TLongObjectHashMap<>();
+		this.tileData = new RAMTileData[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()][][];
+		// compute number of tiles needed on each base zoom level
+		for (int i = 0; i < this.zoomIntervalConfiguration.getNumberOfZoomIntervals(); i++) {
+			this.tileData[i] = new RAMTileData[this.tileGridLayouts[i].getAmountTilesHorizontal()][this.tileGridLayouts[i]
+					.getAmountTilesVertical()];
+		}
 	}
 
 	@Override
@@ -100,6 +79,14 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 		TDNode tdNode = TDNode.fromNode(node, this.preferredLanguage);
 		this.nodes.put(tdNode.getId(), tdNode);
 		addPOI(tdNode);
+	}
+
+	@Override
+	public void addRelation(Relation relation) {
+		TDRelation tdRelation = TDRelation.fromRelation(relation, this, this.preferredLanguage);
+		if (tdRelation != null) {
+			this.multipolygons.put(relation.getId(), tdRelation);
+		}
 	}
 
 	@Override
@@ -126,14 +113,6 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 	}
 
 	@Override
-	public void addRelation(Relation relation) {
-		TDRelation tdRelation = TDRelation.fromRelation(relation, this, this.preferredLanguage);
-		if (tdRelation != null) {
-			this.multipolygons.put(relation.getId(), tdRelation);
-		}
-	}
-
-	@Override
 	public void complete() {
 		// Polygonize multipolygon
 		RelationHandler relationHandler = new RelationHandler();
@@ -147,8 +126,68 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 	}
 
 	@Override
+	public BoundingBox getBoundingBox() {
+		return this.boundingbox;
+	}
+
+	@Override
+	public Set<TDWay> getCoastLines(TileCoordinate tc) {
+		if (tc.getZoomlevel() <= TileInfo.TILE_INFO_ZOOMLEVEL) {
+			return Collections.emptySet();
+		}
+		TileCoordinate correspondingOceanTile = tc.translateToZoomLevel(TileInfo.TILE_INFO_ZOOMLEVEL).get(0);
+		TLongHashSet coastlines = this.tilesToCoastlines.get(correspondingOceanTile);
+		if (coastlines == null) {
+			return Collections.emptySet();
+		}
+
+		final Set<TDWay> res = new HashSet<>();
+		coastlines.forEach(new TLongProcedure() {
+			@Override
+			public boolean execute(long id) {
+				TDWay way = RAMTileBasedDataProcessor.this.ways.get(id);
+				if (way != null) {
+					res.add(way);
+					return true;
+				}
+				return false;
+			}
+		});
+		return res;
+	}
+
+	@Override
+	public List<TDWay> getInnerWaysOfMultipolygon(long outerWayID) {
+		TLongArrayList innerwayIDs = this.outerToInnerMapping.get(outerWayID);
+		if (innerwayIDs == null) {
+			return null;
+		}
+		return getInnerWaysOfMultipolygon(innerwayIDs.toArray());
+	}
+
+	@Override
+	public TDNode getNode(long id) {
+		return this.nodes.get(id);
+	}
+
+	@Override
 	public TileData getTile(int zoom, int tileX, int tileY) {
 		return getTileImpl(zoom, tileX, tileY);
+	}
+
+	@Override
+	public TDWay getWay(long id) {
+		return this.ways.get(id);
+	}
+
+	@Override
+	public ZoomIntervalConfiguration getZoomIntervalConfiguration() {
+		return this.zoomIntervalConfiguration;
+	}
+
+	@Override
+	public void release() {
+		// nothing to do here
 	}
 
 	@Override
@@ -171,50 +210,25 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 	}
 
 	@Override
-	public Set<TDWay> getCoastLines(TileCoordinate tc) {
-		if (tc.getZoomlevel() <= TileInfo.TILE_INFO_ZOOMLEVEL) {
-			return Collections.emptySet();
-		}
-		TileCoordinate correspondingOceanTile = tc.translateToZoomLevel(TileInfo.TILE_INFO_ZOOMLEVEL).get(0);
-		TLongHashSet coastlines = this.tilesToCoastlines.get(correspondingOceanTile);
-		if (coastlines == null) {
-			return Collections.emptySet();
-		}
-
-		final Set<TDWay> res = new HashSet<TDWay>();
-		coastlines.forEach(new TLongProcedure() {
-			@Override
-			public boolean execute(long id) {
-				TDWay way = RAMTileBasedDataProcessor.this.ways.get(id);
-				if (way != null) {
-					res.add(way);
-					return true;
-				}
-				return false;
-			}
-		});
-		return res;
-	}
-
-	@Override
-	public void release() {
+	protected void handleAdditionalRelationTags(TDWay virtualWay, TDRelation relation) {
 		// nothing to do here
 	}
 
 	@Override
-	public List<TDWay> getInnerWaysOfMultipolygon(long outerWayID) {
-		TLongArrayList innerwayIDs = this.outerToInnerMapping.get(outerWayID);
-		if (innerwayIDs == null) {
-			return null;
-		}
-		return getInnerWaysOfMultipolygon(innerwayIDs.toArray());
+	protected void handleVirtualInnerWay(TDWay virtualWay) {
+		this.ways.put(virtualWay.getId(), virtualWay);
+	}
+
+	@Override
+	protected void handleVirtualOuterWay(TDWay virtualWay) {
+		// nothing to do here
 	}
 
 	private List<TDWay> getInnerWaysOfMultipolygon(long[] innerWayIDs) {
 		if (innerWayIDs == null) {
 			return Collections.emptyList();
 		}
-		List<TDWay> res = new ArrayList<TDWay>();
+		List<TDWay> res = new ArrayList<>();
 		for (long id : innerWayIDs) {
 			TDWay current = this.ways.get(id);
 			if (current == null) {
@@ -224,20 +238,5 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 		}
 
 		return res;
-	}
-
-	@Override
-	protected void handleVirtualOuterWay(TDWay virtualWay) {
-		// nothing to do here
-	}
-
-	@Override
-	protected void handleAdditionalRelationTags(TDWay virtualWay, TDRelation relation) {
-		// nothing to do here
-	}
-
-	@Override
-	protected void handleVirtualInnerWay(TDWay virtualWay) {
-		this.ways.put(virtualWay.getId(), virtualWay);
 	}
 }

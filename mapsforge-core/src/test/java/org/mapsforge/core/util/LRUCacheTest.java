@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,7 +26,19 @@ public class LRUCacheTest {
 	private static final String VALUE3 = "bar3";
 
 	private static LRUCache<String, String> createLRUCache(int capacity) {
-		return new LRUCache<String, String>(capacity);
+		LRUCache<String, String> lruCache = new LRUCache<String, String>(capacity);
+		Assert.assertEquals(capacity, lruCache.capacity);
+
+		return lruCache;
+	}
+
+	private static void verifyInvalidCapacity(int capacity) {
+		try {
+			createLRUCache(capacity);
+			Assert.fail("capacity: " + capacity);
+		} catch (IllegalArgumentException e) {
+			Assert.assertTrue(true);
+		}
 	}
 
 	@Test
@@ -63,11 +75,6 @@ public class LRUCacheTest {
 
 	@Test
 	public void lruCacheWithNegativeCapacityTest() {
-		try {
-			createLRUCache(-1);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
+		verifyInvalidCapacity(-1);
 	}
 }

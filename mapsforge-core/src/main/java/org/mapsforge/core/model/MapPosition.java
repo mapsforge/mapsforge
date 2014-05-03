@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +17,7 @@ package org.mapsforge.core.model;
 import java.io.Serializable;
 
 /**
- * A MapPosition represents an immutable pair of {@link GeoPoint} and zoom level.
+ * A MapPosition represents an immutable pair of {@link LatLong} and zoom level.
  */
 public class MapPosition implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -25,7 +25,7 @@ public class MapPosition implements Serializable {
 	/**
 	 * The geographical coordinates of the map center.
 	 */
-	public final GeoPoint geoPoint;
+	public final LatLong latLong;
 
 	/**
 	 * The zoom level of the map.
@@ -33,20 +33,20 @@ public class MapPosition implements Serializable {
 	public final byte zoomLevel;
 
 	/**
-	 * @param geoPoint
+	 * @param latLong
 	 *            the geographical coordinates of the map center.
 	 * @param zoomLevel
 	 *            the zoom level of the map.
 	 * @throws IllegalArgumentException
-	 *             if {@code geoPoint} is null or {@code zoomLevel} is negative.
+	 *             if {@code latLong} is null or {@code zoomLevel} is negative.
 	 */
-	public MapPosition(GeoPoint geoPoint, byte zoomLevel) {
-		if (geoPoint == null) {
-			throw new IllegalArgumentException("geoPoint must not be null");
+	public MapPosition(LatLong latLong, byte zoomLevel) {
+		if (latLong == null) {
+			throw new IllegalArgumentException("latLong must not be null");
 		} else if (zoomLevel < 0) {
 			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
 		}
-		this.geoPoint = geoPoint;
+		this.latLong = latLong;
 		this.zoomLevel = zoomLevel;
 	}
 
@@ -58,11 +58,7 @@ public class MapPosition implements Serializable {
 			return false;
 		}
 		MapPosition other = (MapPosition) obj;
-		if (this.geoPoint == null) {
-			if (other.geoPoint != null) {
-				return false;
-			}
-		} else if (!this.geoPoint.equals(other.geoPoint)) {
+		if (!this.latLong.equals(other.latLong)) {
 			return false;
 		} else if (this.zoomLevel != other.zoomLevel) {
 			return false;
@@ -74,7 +70,7 @@ public class MapPosition implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.geoPoint == null) ? 0 : this.geoPoint.hashCode());
+		result = prime * result + this.latLong.hashCode();
 		result = prime * result + this.zoomLevel;
 		return result;
 	}
@@ -82,8 +78,8 @@ public class MapPosition implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("geoPoint=");
-		stringBuilder.append(this.geoPoint);
+		stringBuilder.append("latLong=");
+		stringBuilder.append(this.latLong);
 		stringBuilder.append(", zoomLevel=");
 		stringBuilder.append(this.zoomLevel);
 		return stringBuilder.toString();

@@ -5,12 +5,18 @@
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
-		<version>0.3.1-SNAPSHOT</version>
+		<version>0.4.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>mapsforge-map-writer</artifactId>
 	<packaging>jar</packaging>
+
+	<properties>
+		<mapfile.writer.version>${project.version}</mapfile.writer.version>
+		<rootDirectory>../</rootDirectory>
+		<targetJdk>1.7</targetJdk>
+	</properties>
 
 	<build>
 		<resources>
@@ -121,15 +127,11 @@
 		</profile>
 	</profiles>
 
-	<properties>
-		<mapfile.writer.version>${project.version}</mapfile.writer.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-core</artifactId>
-			<version>0.3.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
@@ -153,15 +155,14 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>13.0.1</version>
+			<version>14.0.1</version>
 		</dependency>
 
 		<dependency>
-			<groupId>osmosis</groupId>
+			<groupId>org.openstreetmap.osmosis</groupId>
 			<artifactId>osmosis-core</artifactId>
-			<version>0.41</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/osmosis-core-0.41.jar</systemPath>
+			<version>0.43.1</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>

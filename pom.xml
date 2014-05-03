@@ -10,9 +10,11 @@
 
 	<groupId>org.mapsforge</groupId>
 	<artifactId>mapsforge</artifactId>
-	<version>0.3.1-SNAPSHOT</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<url>http://mapsforge.org</url>
+	<name>mapsforge</name>
+	<description>The mapsforge project provides free and open software for OpenStreetMap-based applications.</description>
 
 	<licenses>
 		<license>
@@ -25,15 +27,19 @@
 	<modules>
 		<module>mapsforge-core</module>
 		<module>mapsforge-map</module>
-		<module>mapsforge-render-theme</module>
+		<module>mapsforge-map-android</module>
+		<module>mapsforge-map-awt</module>
 		<module>mapsforge-map-reader</module>
 		<module>mapsforge-map-writer</module>
+		<module>Applications/Android/Samples</module>
+		<module>SwingMapViewer</module>
 	</modules>
 
 	<scm>
 		<connection>scm:git:https://code.google.com/p/mapsforge/</connection>
 		<developerConnection>scm:git:https://code.google.com/p/mapsforge/</developerConnection>
 		<url>https://code.google.com/p/mapsforge/source/browse/</url>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>
@@ -46,7 +52,7 @@
 		<developer>
 			<id>jjbross</id>
 			<name>Jürgen Broß</name>
-			<email>juergen.bross@fu-berlin.de</email>
+			<email>jjbross@gmail.com</email>
 		</developer>
 	</developers>
 
@@ -73,6 +79,21 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+					<artifactId>android-maven-plugin</artifactId>
+					<version>3.6.0</version>
+					<extensions>true</extensions>
+					<configuration>
+						<genDirectory>gen</genDirectory>
+						<genDirectoryAidl>gen</genDirectoryAidl>
+						<extractDuplicates>true</extractDuplicates>
+						<sdk>
+							<platform>16</platform>
+						</sdk>
+					</configuration>
+				</plugin>
+
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
 					<version>1.7</version>
@@ -91,15 +112,6 @@
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.9.1</version>
-					<configuration>
-						<configLocation>static-code-analysis/checkstyle_rules.xml</configLocation>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>2.5</version>
 				</plugin>
@@ -107,7 +119,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.0</version>
+					<version>3.1</version>
 					<configuration>
 						<source>${targetJdk}</source>
 						<target>${targetJdk}</target>
@@ -123,54 +135,26 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
-					<!-- version 2.8 is broken, see http://jira.codehaus.org/browse/MECLIPSE-704 -->
-					<version>2.6</version>
+					<version>2.9</version>
 					<configuration>
 						<downloadSources>true</downloadSources>
 						<downloadJavadocs>true</downloadJavadocs>
 						<additionalConfig>
-							<!-- Checkstyle -->
-							<file>
-								<name>.checkstyle</name>
-								<location>../eclipse-config/.checkstyle</location>
-							</file>
-							<file>
-								<name>.checkstyle_rules.xml</name>
-								<location>../static-code-analysis/checkstyle_rules.xml</location>
-							</file>
-
-							<!-- PMD -->
-							<file>
-								<name>.pmd</name>
-								<location>../eclipse-config/.pmd</location>
-							</file>
-							<file>
-								<name>.pmd_ruleset.xml</name>
-								<location>../static-code-analysis/pmd_ruleset.xml</location>
-							</file>
-
-							<!-- FindBugs -->
-							<file>
-								<name>.settings/edu.umd.cs.findbugs.core.prefs</name>
-								<location>../eclipse-config/.settings/edu.umd.cs.findbugs.core.prefs</location>
-							</file>
-
-							<!-- Eclipse -->
 							<file>
 								<name>.settings/org.eclipse.core.resources.prefs</name>
-								<location>../eclipse-config/.settings/org.eclipse.core.resources.prefs</location>
+								<location>${rootDirectory}/eclipse-config/org.eclipse.core.resources.prefs</location>
 							</file>
 							<file>
 								<name>.settings/org.eclipse.core.runtime.prefs</name>
-								<location>../eclipse-config/.settings/org.eclipse.core.runtime.prefs</location>
+								<location>${rootDirectory}/eclipse-config/org.eclipse.core.runtime.prefs</location>
 							</file>
 							<file>
 								<name>.settings/org.eclipse.jdt.core.prefs</name>
-								<location>../eclipse-config/.settings/org.eclipse.jdt.core.prefs</location>
+								<location>${rootDirectory}/eclipse-config/org.eclipse.jdt.core.prefs-${targetJdk}</location>
 							</file>
 							<file>
 								<name>.settings/org.eclipse.jdt.ui.prefs</name>
-								<location>../eclipse-config/.settings/org.eclipse.jdt.ui.prefs</location>
+								<location>${rootDirectory}/eclipse-config/org.eclipse.jdt.ui.prefs</location>
 							</file>
 						</additionalConfig>
 					</configuration>
@@ -202,21 +186,8 @@
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-pmd-plugin</artifactId>
-					<version>2.7.1</version>
-					<configuration>
-						<aggregate>true</aggregate>
-						<includeTests>true</includeTests>
-						<rulesets>
-							<ruleset>static-code-analysis/pmd_ruleset.xml</ruleset>
-						</rulesets>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.4</version>
+					<version>2.4.1</version>
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 					</configuration>
@@ -231,7 +202,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.2</version>
+					<version>3.3</version>
 				</plugin>
 
 				<plugin>
@@ -243,12 +214,26 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.12.4</version>
+					<version>2.14.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -264,6 +249,36 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +17,7 @@ package org.mapsforge.map.reader;
 import java.io.File;
 
 import org.junit.Assert;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.reader.header.FileOpenResult;
@@ -40,14 +40,14 @@ final class EncodingTest {
 		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
 		Assert.assertEquals(1, mapReadResult.ways.size());
 
-		GeoPoint geoPoint1 = new GeoPoint(0.0, 0.0);
-		GeoPoint geoPoint2 = new GeoPoint(0.0, 0.1);
-		GeoPoint geoPoint3 = new GeoPoint(-0.1, 0.1);
-		GeoPoint geoPoint4 = new GeoPoint(-0.1, 0.0);
-		GeoPoint[][] geoPointsExpected = new GeoPoint[][] { { geoPoint1, geoPoint2, geoPoint3, geoPoint4, geoPoint1 } };
+		LatLong latLong1 = new LatLong(0.0, 0.0);
+		LatLong latLong2 = new LatLong(0.0, 0.1);
+		LatLong latLong3 = new LatLong(-0.1, 0.1);
+		LatLong latLong4 = new LatLong(-0.1, 0.0);
+		LatLong[][] latLongsExpected = new LatLong[][] { { latLong1, latLong2, latLong3, latLong4, latLong1 } };
 
 		Way way = mapReadResult.ways.get(0);
-		Assert.assertArrayEquals(geoPointsExpected, way.geoPoints);
+		Assert.assertArrayEquals(latLongsExpected, way.latLongs);
 	}
 
 	private EncodingTest() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,7 +19,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoPoint;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
@@ -34,7 +34,7 @@ public class MapDatabaseFileHeaderTest {
 	private static final File MAP_FILE = new File("src/test/resources/file_header/output.map");
 	private static final int NUMBER_OF_SUBFILES = 3;
 	private static final String PROJECTION_NAME = "Mercator";
-	private static final GeoPoint START_POSITION = new GeoPoint(0.15, 0.25);
+	private static final LatLong START_POSITION = new LatLong(0.15, 0.25);
 	private static final Byte START_ZOOM_LEVEL = Byte.valueOf((byte) 16);
 	private static final int TILE_PIXEL_SIZE = 256;
 

@@ -1,22 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto"
-	package="org.mapsforge.applications.android.samples" android:versionCode="8" android:versionName="0.3.1-SNAPSHOT">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.mapsforge.applications.android.samples"
+    android:installLocation="auto"
+    android:versionCode="40"
+    android:versionName="0.4.0-SNAPSHOT" >
 
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+	
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="17" />
 
-	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17" />
-
-	<application android:allowBackup="true" android:label="Samples">
-		<activity android:name=".Samples" android:label="Samples">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".BasicMapViewer" android:label="BasicMapViewer" />
-		<activity android:name=".DualMapViewer" android:label="DualMapViewer" />
-		<activity android:name=".OverlayMapViewer" android:label="OverlayMapViewer" />
-		<activity android:name=".DownloadMapViewer" android:label="DownloadMapViewer" />
-		<activity android:name=".OverlayBenchmark" android:label="OverlayBenchmark" />
-	</application>
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:label="Samples" >
+        <activity
+            android:name="org.mapsforge.applications.android.samples.Samples"
+            android:label="Samples" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+               	<category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.mapsforge.applications.android.samples.BasicMapViewer"
+            android:label="BasicMapViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.BasicMapViewerXml"
+            android:label="BasicMapViewerXml" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.DownloadLayerViewer"
+            android:label="DownloadLayerViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.DiagnosticsMapViewer"
+            android:label="DiagnosticsMapViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.OverlayMapViewer"
+            android:label="OverlayMapViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.OverlayWithoutBaseMapViewer"
+            android:label="OverlayWithoutBaseMapViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.LocationOverlayMapViewer"
+            android:label="LocationOverlayMapViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.BubbleOverlay"
+            android:label="BubbleOverlay" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.DualMapViewer"
+            android:label="DualMapViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.DualMapnikMapViewer"
+            android:label="DualMapnikMapViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.DualOverviewMapViewer"
+            android:label="DualOverviewMapViewer" />
+        <activity
+            android:name="org.mapsforge.applications.android.samples.ItemListActivity"
+            android:label="@string/title_item_list"
+            android:parentActivityName="org.mapsforge.applications.android.samples.Samples" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.mapsforge.applications.android.samples.Samples" />
+        </activity>
+        <activity
+            android:name="org.mapsforge.applications.android.samples.ItemDetailActivity"
+            android:label="@string/title_item_detail"
+            android:parentActivityName=".ItemListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ItemListActivity" />
+        </activity>
+    </application>
 </manifest>

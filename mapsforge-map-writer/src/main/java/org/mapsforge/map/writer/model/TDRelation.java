@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,19 +27,9 @@ import org.openstreetmap.osmosis.core.domain.v0_6.RelationMember;
 
 /**
  * Represents an OSM relation.
- * 
- * @author bross
  */
 public class TDRelation {
 	private static final Logger LOGGER = Logger.getLogger(TDRelation.class.getName());
-
-	private final long id;
-	private final byte layer;
-	private final String name;
-	private final String houseNumber;
-	private final String ref;
-	private final short[] tags;
-	private final TDWay[] memberWays;
 
 	/**
 	 * Creates a new TDRelation from an osmosis entity using the given WayResolver.
@@ -57,7 +47,7 @@ public class TDRelation {
 			return null;
 		}
 
-		if (relation.getMembers().size() == 0) {
+		if (relation.getMembers().isEmpty()) {
 			return null;
 		}
 
@@ -74,7 +64,7 @@ public class TDRelation {
 		}
 
 		List<RelationMember> members = relation.getMembers();
-		List<TDWay> wayMembers = new ArrayList<TDWay>();
+		List<TDWay> wayMembers = new ArrayList<>();
 		for (RelationMember relationMember : members) {
 			if (relationMember.getMemberType() != EntityType.Way) {
 				continue;
@@ -96,6 +86,26 @@ public class TDRelation {
 		return new TDRelation(relation.getId(), ster.getLayer(), ster.getName(), ster.getHousenumber(), ster.getRef(),
 				knownWayTags, wayMembers.toArray(new TDWay[wayMembers.size()]));
 	}
+
+	/**
+	 * @param type
+	 *            the type attribute of a relation
+	 * @return true if the type if known, currently only multipolygons are known
+	 */
+	// TODO adjust if more relations should be supported
+	public static boolean knownRelationType(String type) {
+		return type != null && "multipolygon".equals(type);
+	}
+
+	private final String houseNumber;
+	private final long id;
+	private final byte layer;
+	private final TDWay[] memberWays;
+	private final String name;
+
+	private final String ref;
+
+	private final short[] tags;
 
 	/**
 	 * Constructor.
@@ -125,6 +135,31 @@ public class TDRelation {
 		this.memberWays = memberWays;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		TDRelation other = (TDRelation) obj;
+		if (this.id != other.id) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @return the houseNumber
+	 */
+	public String getHouseNumber() {
+		return this.houseNumber;
+	}
+
 	/**
 	 * @return the id
 	 */
@@ -140,17 +175,17 @@ public class TDRelation {
 	}
 
 	/**
+	 * @return the member ways
+	 */
+	public TDWay[] getMemberWays() {
+		return this.memberWays;
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return this.name;
-	}
-
-	/**
-	 * @return the houseNumber
-	 */
-	public String getHouseNumber() {
-		return this.houseNumber;
 	}
 
 	/**
@@ -167,25 +202,19 @@ public class TDRelation {
 		return this.tags;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (this.id ^ (this.id >>> 32));
+		return result;
+	}
+
 	/**
 	 * @return true if the relation has associated tags
 	 */
 	public boolean hasTags() {
 		return this.tags != null && this.tags.length > 0;
-	}
-
-	/**
-	 * @return true if the relation is relevant for rendering
-	 */
-	public boolean isRenderRelevant() {
-		return hasTags() || getName() != null && !getName().isEmpty() || getRef() != null && !getRef().isEmpty();
-	}
-
-	/**
-	 * @return the member ways
-	 */
-	public TDWay[] getMemberWays() {
-		return this.memberWays;
 	}
 
 	/**
@@ -207,39 +236,10 @@ public class TDRelation {
 	}
 
 	/**
-	 * @param type
-	 *            the type attribute of a relation
-	 * @return true if the type if known, currently only multipolygons are known
+	 * @return true if the relation is relevant for rendering
 	 */
-	// TODO adjust if more relations should be supported
-	public static boolean knownRelationType(String type) {
-		return type != null && "multipolygon".equals(type);
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (this.id ^ (this.id >>> 32));
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		TDRelation other = (TDRelation) obj;
-		if (this.id != other.id) {
-			return false;
-		}
-		return true;
+	public boolean isRenderRelevant() {
+		return hasTags() || getName() != null && !getName().isEmpty() || getRef() != null && !getRef().isEmpty();
 	}
 
 	@Override

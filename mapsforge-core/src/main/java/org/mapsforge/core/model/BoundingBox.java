@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +15,8 @@
 package org.mapsforge.core.model;
 
 import java.io.Serializable;
+
+import org.mapsforge.core.util.LatLongUtils;
 
 /**
  * A BoundingBox represents an immutable set of two latitude and two longitude coordinates.
@@ -33,7 +35,7 @@ public class BoundingBox implements Serializable {
 	 *             if the string cannot be parsed or describes an invalid BoundingBox.
 	 */
 	public static BoundingBox fromString(String boundingBoxString) {
-		double[] coordinates = CoordinatesUtil.parseCoordinateString(boundingBoxString, 4);
+		double[] coordinates = LatLongUtils.parseCoordinateString(boundingBoxString, 4);
 		return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
 	}
 
@@ -70,10 +72,10 @@ public class BoundingBox implements Serializable {
 	 *             if a coordinate is invalid.
 	 */
 	public BoundingBox(double minLatitude, double minLongitude, double maxLatitude, double maxLongitude) {
-		CoordinatesUtil.validateLatitude(minLatitude);
-		CoordinatesUtil.validateLongitude(minLongitude);
-		CoordinatesUtil.validateLatitude(maxLatitude);
-		CoordinatesUtil.validateLongitude(maxLongitude);
+		LatLongUtils.validateLatitude(minLatitude);
+		LatLongUtils.validateLongitude(minLongitude);
+		LatLongUtils.validateLatitude(maxLatitude);
+		LatLongUtils.validateLongitude(maxLongitude);
 
 		if (minLatitude > maxLatitude) {
 			throw new IllegalArgumentException("invalid latitude range: " + minLatitude + ' ' + maxLatitude);
@@ -88,13 +90,13 @@ public class BoundingBox implements Serializable {
 	}
 
 	/**
-	 * @param geoPoint
-	 *            the GeoPoint whose coordinates should be checked.
-	 * @return true if this BoundingBox contains the given GeoPoint, false otherwise.
+	 * @param latLong
+	 *            the LatLong whose coordinates should be checked.
+	 * @return true if this BoundingBox contains the given LatLong, false otherwise.
 	 */
-	public boolean contains(GeoPoint geoPoint) {
-		return this.minLatitude <= geoPoint.latitude && this.maxLatitude >= geoPoint.latitude
-				&& this.minLongitude <= geoPoint.longitude && this.maxLongitude >= geoPoint.longitude;
+	public boolean contains(LatLong latLong) {
+		return this.minLatitude <= latLong.latitude && this.maxLatitude >= latLong.latitude
+				&& this.minLongitude <= latLong.longitude && this.maxLongitude >= latLong.longitude;
 	}
 
 	@Override
@@ -118,12 +120,12 @@ public class BoundingBox implements Serializable {
 	}
 
 	/**
-	 * @return a new GeoPoint at the horizontal and vertical center of this BoundingBox.
+	 * @return a new LatLong at the horizontal and vertical center of this BoundingBox.
 	 */
-	public GeoPoint getCenterPoint() {
+	public LatLong getCenterPoint() {
 		double latitudeOffset = (this.maxLatitude - this.minLatitude) / 2;
 		double longitudeOffset = (this.maxLongitude - this.minLongitude) / 2;
-		return new GeoPoint(this.minLatitude + latitudeOffset, this.minLongitude + longitudeOffset);
+		return new LatLong(this.minLatitude + latitudeOffset, this.minLongitude + longitudeOffset);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,6 +27,16 @@ public class BoundingBoxTest {
 	private static final double MIN_LATITUDE = 2.0;
 	private static final double MIN_LONGITUDE = 1.0;
 
+	private static void assertIntersection(BoundingBox boundingBox1, BoundingBox boundingBox2) {
+		Assert.assertTrue(boundingBox1.intersects(boundingBox2));
+		Assert.assertTrue(boundingBox2.intersects(boundingBox1));
+	}
+
+	private static void assertNoIntersection(BoundingBox boundingBox1, BoundingBox boundingBox2) {
+		Assert.assertFalse(boundingBox1.intersects(boundingBox2));
+		Assert.assertFalse(boundingBox2.intersects(boundingBox1));
+	}
+
 	private static void verifyInvalid(String string) {
 		try {
 			BoundingBox.fromString(string);
@@ -39,28 +49,34 @@ public class BoundingBoxTest {
 	@Test
 	public void containsTest() {
 		BoundingBox boundingBox = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		GeoPoint geoPoint1 = new GeoPoint(MIN_LATITUDE, MIN_LONGITUDE);
-		GeoPoint geoPoint2 = new GeoPoint(MAX_LATITUDE, MAX_LONGITUDE);
-		GeoPoint geoPoint3 = new GeoPoint(MIN_LONGITUDE, MIN_LONGITUDE);
-		GeoPoint geoPoint4 = new GeoPoint(MAX_LATITUDE, MAX_LATITUDE);
+		LatLong latLong1 = new LatLong(MIN_LATITUDE, MIN_LONGITUDE);
+		LatLong latLong2 = new LatLong(MAX_LATITUDE, MAX_LONGITUDE);
+		LatLong latLong3 = new LatLong(MIN_LONGITUDE, MIN_LONGITUDE);
+		LatLong latLong4 = new LatLong(MAX_LATITUDE, MAX_LATITUDE);
 
-		Assert.assertTrue(boundingBox.contains(geoPoint1));
-		Assert.assertTrue(boundingBox.contains(geoPoint2));
-		Assert.assertFalse(boundingBox.contains(geoPoint3));
-		Assert.assertFalse(boundingBox.contains(geoPoint4));
+		Assert.assertTrue(boundingBox.contains(latLong1));
+		Assert.assertTrue(boundingBox.contains(latLong2));
+		Assert.assertFalse(boundingBox.contains(latLong3));
+		Assert.assertFalse(boundingBox.contains(latLong4));
 	}
 
 	@Test
 	public void equalsTest() {
 		BoundingBox boundingBox1 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
 		BoundingBox boundingBox2 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		BoundingBox boundingBox3 = new BoundingBox(0, 0, 0, 0);
+		BoundingBox boundingBox3 = new BoundingBox(MAX_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox4 = new BoundingBox(MIN_LATITUDE, MAX_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox5 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MIN_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox6 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MIN_LONGITUDE);
 
 		TestUtils.equalsTest(boundingBox1, boundingBox2);
 
-		Assert.assertNotEquals(boundingBox1, boundingBox3);
-		Assert.assertNotEquals(boundingBox3, boundingBox1);
-		Assert.assertNotEquals(boundingBox1, new Object());
+		TestUtils.notEqualsTest(boundingBox1, boundingBox3);
+		TestUtils.notEqualsTest(boundingBox1, boundingBox4);
+		TestUtils.notEqualsTest(boundingBox1, boundingBox5);
+		TestUtils.notEqualsTest(boundingBox1, boundingBox6);
+		TestUtils.notEqualsTest(boundingBox1, new Object());
+		TestUtils.notEqualsTest(boundingBox1, null);
 	}
 
 	@Test
@@ -108,7 +124,7 @@ public class BoundingBoxTest {
 	@Test
 	public void getCenterPointTest() {
 		BoundingBox boundingBox = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		GeoPoint centerPoint = boundingBox.getCenterPoint();
+		LatLong centerPoint = boundingBox.getCenterPoint();
 		Assert.assertEquals((MIN_LATITUDE + MAX_LATITUDE) / 2, centerPoint.latitude, 0);
 		Assert.assertEquals((MIN_LONGITUDE + MAX_LONGITUDE) / 2, centerPoint.longitude, 0);
 	}
@@ -135,20 +151,14 @@ public class BoundingBoxTest {
 		BoundingBox boundingBox5 = new BoundingBox(0, 0, 0, 0);
 		BoundingBox boundingBox6 = new BoundingBox(-4, -3, -2, -1);
 
-		Assert.assertTrue(boundingBox1.intersects(boundingBox1));
-		Assert.assertTrue(boundingBox1.intersects(boundingBox2));
-		Assert.assertTrue(boundingBox2.intersects(boundingBox1));
-		Assert.assertTrue(boundingBox1.intersects(boundingBox3));
-		Assert.assertTrue(boundingBox3.intersects(boundingBox1));
-		Assert.assertTrue(boundingBox1.intersects(boundingBox4));
-		Assert.assertTrue(boundingBox4.intersects(boundingBox1));
+		assertIntersection(boundingBox1, boundingBox1);
+		assertIntersection(boundingBox1, boundingBox2);
+		assertIntersection(boundingBox1, boundingBox3);
+		assertIntersection(boundingBox1, boundingBox4);
 
-		Assert.assertFalse(boundingBox1.intersects(boundingBox5));
-		Assert.assertFalse(boundingBox5.intersects(boundingBox1));
-		Assert.assertFalse(boundingBox1.intersects(boundingBox6));
-		Assert.assertFalse(boundingBox6.intersects(boundingBox1));
-		Assert.assertFalse(boundingBox5.intersects(boundingBox6));
-		Assert.assertFalse(boundingBox6.intersects(boundingBox5));
+		assertNoIntersection(boundingBox1, boundingBox5);
+		assertNoIntersection(boundingBox1, boundingBox6);
+		assertNoIntersection(boundingBox5, boundingBox6);
 	}
 
 	@Test

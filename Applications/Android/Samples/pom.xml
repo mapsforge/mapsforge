@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.mapsforge</groupId>
+		<artifactId>mapsforge</artifactId>
+		<version>0.4.0-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>Samples</artifactId>
+	<packaging>apk</packaging>
+
+	<properties>
+		<rootDirectory>../../..</rootDirectory>
+	</properties>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<outputDirectory>bin</outputDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+				<configuration>
+					<dex>
+						<jvmArguments>
+							<jvmArgument>-Xmx512M</jvmArgument>
+						</jvmArguments>
+					</dex>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<useProjectReferences>false</useProjectReferences>
+					<buildOutputDirectory>bin/classes</buildOutputDirectory>
+					<additionalBuildcommands>
+						<buildcommand>com.android.ide.eclipse.adt.ResourceManagerBuilder</buildcommand>
+						<buildcommand>com.android.ide.eclipse.adt.PreCompilerBuilder</buildcommand>
+						<buildcommand>com.android.ide.eclipse.adt.ApkBuilder</buildcommand>
+						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+					</additionalBuildcommands>
+					<additionalProjectnatures>
+						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+						<projectnature>com.android.ide.eclipse.adt.AndroidNature</projectnature>
+					</additionalProjectnatures>
+					<classpathContainers>
+						<classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
+						<classpathContainer>com.android.ide.eclipse.adt.ANDROID_FRAMEWORK</classpathContainer>
+						<classpathContainer>com.android.ide.eclipse.adt.LIBRARIES</classpathContainer>
+						<classpathContainer>com.android.ide.eclipse.adt.DEPENDENCIES</classpathContainer>
+					</classpathContainers>
+					<excludes>
+						<exclude>com.google.android:android</exclude>
+						<exclude>org.apache.httpcomponents:httpclient</exclude>
+						<exclude>org.apache.httpcomponents:httpcore</exclude>
+						<exclude>commons-codec:commons-codec</exclude>
+						<exclude>commons-logging:commons-logging</exclude>
+						<exclude>org.json:json</exclude>
+						<exclude>org.khronos:opengl-api</exclude>
+						<exclude>xerces:xmlParserAPIs</exclude>
+						<exclude>xpp3:xpp3</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.mapsforge</groupId>
+			<artifactId>mapsforge-map-android</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<version>4.1.1.4</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>support-v4</artifactId>
+			<version>r7</version>
+		</dependency>
+	</dependencies>
+</project>

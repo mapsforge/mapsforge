@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -29,6 +29,18 @@ public class Tile implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * @return the maximum valid tile number for the given zoom level, 2<sup>zoomLevel</sup> -1.
+	 */
+	public static long getMaxTileNumber(byte zoomLevel) {
+		if (zoomLevel < 0) {
+			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
+		} else if (zoomLevel == 0) {
+			return 0;
+		}
+		return (2 << zoomLevel - 1) - 1;
+	}
+
+	/**
 	 * The X number of this tile.
 	 */
 	public final long tileX;
@@ -50,8 +62,25 @@ public class Tile implements Serializable {
 	 *            the Y number of the tile.
 	 * @param zoomLevel
 	 *            the zoom level of the tile.
+	 * @throws IllegalArgumentException
+	 *             if any of the parameters is invalid.
 	 */
 	public Tile(long tileX, long tileY, byte zoomLevel) {
+		if (tileX < 0) {
+			throw new IllegalArgumentException("tileX must not be negative: " + tileX);
+		} else if (tileY < 0) {
+			throw new IllegalArgumentException("tileY must not be negative: " + tileY);
+		} else if (zoomLevel < 0) {
+			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
+		}
+
+		long maxTileNumber = getMaxTileNumber(zoomLevel);
+		if (tileX > maxTileNumber) {
+			throw new IllegalArgumentException("invalid tileX number on zoom level " + zoomLevel + ": " + tileX);
+		} else if (tileY > maxTileNumber) {
+			throw new IllegalArgumentException("invalid tileY number on zoom level " + zoomLevel + ": " + tileY);
+		}
+
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.zoomLevel = zoomLevel;
@@ -76,17 +105,30 @@ public class Tile implements Serializable {
 	}
 
 	/**
-	 * @return the pixel X coordinate of the upper left corner of this tile.
+	 * @return the parent tile of this tile or null, if the zoom level of this tile is 0.
 	 */
-	public long getPixelX() {
-		return this.tileX * TILE_SIZE;
+	public Tile getParent() {
+		if (this.zoomLevel == 0) {
+			return null;
+		}
+
+		return new Tile(this.tileX / 2, this.tileY / 2, (byte) (this.zoomLevel - 1));
 	}
 
-	/**
-	 * @return the pixel Y coordinate of the upper left corner of this tile.
-	 */
-	public long getPixelY() {
-		return this.tileY * TILE_SIZE;
+	public long getShiftX(Tile otherTile) {
+		if (this.equals(otherTile)) {
+			return 0;
+		}
+
+		return this.tileX % 2 + 2 * getParent().getShiftX(otherTile);
+	}
+
+	public long getShiftY(Tile otherTile) {
+		if (this.equals(otherTile)) {
+			return 0;
+		}
+
+		return this.tileY % 2 + 2 * getParent().getShiftY(otherTile);
 	}
 
 	@Override

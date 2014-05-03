@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,15 +14,12 @@
  */
 package org.mapsforge.map.writer.model;
 
-/**
- * @author bross
- */
 public class SpecialTagExtractionResult {
-	private final String name;
-	private final String ref;
+	private final short elevation;
 	private final String housenumber;
 	private final byte layer;
-	private final short elevation;
+	private final String name;
+	private final String ref;
 	private final String type;
 
 	/**
@@ -51,17 +48,10 @@ public class SpecialTagExtractionResult {
 	}
 
 	/**
-	 * @return the name
+	 * @return the elevation
 	 */
-	public final String getName() {
-		return this.name;
-	}
-
-	/**
-	 * @return the ref
-	 */
-	public final String getRef() {
-		return this.ref;
+	public final short getElevation() {
+		return this.elevation;
 	}
 
 	/**
@@ -79,10 +69,17 @@ public class SpecialTagExtractionResult {
 	}
 
 	/**
-	 * @return the elevation
+	 * @return the name
 	 */
-	public final short getElevation() {
-		return this.elevation;
+	public final String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @return the ref
+	 */
+	public final String getRef() {
+		return this.ref;
 	}
 
 	/**
