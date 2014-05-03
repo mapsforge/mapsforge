@@ -5,45 +5,38 @@
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
-		<version>0.4.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
+		<version>0.4.0-rc1</version>
 	</parent>
 
 	<artifactId>mapsforge-map-android</artifactId>
-	<packaging>jar</packaging>
+	<packaging>apklib</packaging>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
+		<targetJdk>1.6</targetJdk>
 	</properties>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<dex>
+						<jvmArguments>
+							<jvmArgument>-Xmx512M</jvmArgument>
+						</jvmArguments>
+					</dex>
 				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.android</groupId>
+			<groupId>android</groupId>
 			<artifactId>android</artifactId>
-			<version>4.1.1.4</version>
+			<version>4.4.2_r3</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -63,6 +56,12 @@
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-map</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>svg-android</groupId>
+			<artifactId>svg-android</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>

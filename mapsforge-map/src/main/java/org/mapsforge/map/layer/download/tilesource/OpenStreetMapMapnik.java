@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,13 +22,14 @@ import java.net.URL;
 import org.mapsforge.core.model.Tile;
 
 public class OpenStreetMapMapnik extends AbstractTileSource {
-	public static final OpenStreetMapMapnik INSTANCE = new OpenStreetMapMapnik("tile.openstreetmap.org", 80);
+	public static final OpenStreetMapMapnik INSTANCE = new OpenStreetMapMapnik(new String[] {
+			"a.tile.openstreetmap.org",	"b.tile.openstreetmap.org", "c.tile.openstreetmap.org" }, 80);
 	private static final int PARALLEL_REQUESTS_LIMIT = 8;
 	private static final String PROTOCOL = "http";
 	private static final int ZOOM_LEVEL_MAX = 18;
 	private static final int ZOOM_LEVEL_MIN = 0;
 
-	public OpenStreetMapMapnik(String hostName, int port) {
+	public OpenStreetMapMapnik(String[] hostName, int port) {
 		super(hostName, port);
 	}
 
@@ -47,7 +50,7 @@ public class OpenStreetMapMapnik extends AbstractTileSource {
 		stringBuilder.append(tile.tileY);
 		stringBuilder.append(".png");
 
-		return new URL(PROTOCOL, this.hostName, this.port, stringBuilder.toString());
+		return new URL(PROTOCOL, getHostName(), this.port, stringBuilder.toString());
 	}
 
 	@Override
@@ -59,4 +62,10 @@ public class OpenStreetMapMapnik extends AbstractTileSource {
 	public byte getZoomLevelMin() {
 		return ZOOM_LEVEL_MIN;
 	}
+
+	@Override
+	public boolean hasAlpha() {
+		return false;
+	}
+
 }

@@ -17,9 +17,9 @@ package org.mapsforge.core.graphics;
 public interface Path {
 	void clear();
 
-	void lineTo(int x, int y);
+	void lineTo(float x, float y);
 
-	void moveTo(int x, int y);
+	void moveTo(float x, float y);
 
 	void setFillRule(FillRule fillRule);
 }

@@ -49,6 +49,15 @@ public class Dimension implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Gets the center point of the dimension.
+	 * 
+	 * @return the center point
+	 */
+	public Point getCenter() {
+		return new Point((float) this.width / 2, (float) this.height / 2);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

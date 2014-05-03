@@ -16,6 +16,7 @@ package org.mapsforge.map.rendertheme.rule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.LRUCache;
@@ -33,21 +34,27 @@ public class RenderTheme {
 	private int levels;
 	private final int mapBackground;
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> matchingCache;
-	private final ArrayList<Rule> rulesList;
+	private final AtomicInteger refCount = new AtomicInteger();
+	private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
 
 	RenderTheme(RenderThemeBuilder renderThemeBuilder) {
 		this.baseStrokeWidth = renderThemeBuilder.baseStrokeWidth;
 		this.baseTextSize = renderThemeBuilder.baseTextSize;
 		this.mapBackground = renderThemeBuilder.mapBackground;
-		this.rulesList = new ArrayList<Rule>();
-		this.matchingCache = new LRUCache<MatchingCacheKey, List<RenderInstruction>>(MATCHING_CACHE_SIZE);
+		this.rulesList = new ArrayList<>();
+		this.matchingCache = new LRUCache<>(MATCHING_CACHE_SIZE);
 	}
 
 	/**
 	 * Must be called when this RenderTheme gets destroyed to clean up and free resources.
 	 */
 	public void destroy() {
-		this.matchingCache.clear();
+		if (this.refCount.decrementAndGet() < 0) {
+			this.matchingCache.clear();
+			for (Rule r : this.rulesList) {
+				r.destroy();
+			}
+		}
 	}
 
 	/**
@@ -62,6 +69,10 @@ public class RenderTheme {
 	 */
 	public int getMapBackground() {
 		return this.mapBackground;
+	}
+
+	public void incrementRefCount() {
+		this.refCount.incrementAndGet();
 	}
 
 	/**

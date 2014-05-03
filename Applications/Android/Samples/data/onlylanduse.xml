@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme.xsd" version="3" map-background="#00000000">
+
+	<!-- ways -->
+	<rule e="way" k="*" v="*">
+		<!-- landuse -->
+		<rule e="way" k="landuse" v="*">
+			<rule e="way" k="landuse" v="military">
+				<area src="jar:patterns/military.png" stroke="#e4e4e4" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="landuse" v="residential|farmyard">
+				<area fill="#e4e4e4" />
+			</rule>
+			<rule e="way" k="landuse" v="retail">
+				<area fill="#ffebeb" stroke="#e4e4e4" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="landuse" v="industrial|brownfield|railway">
+				<area fill="#ecd8ff" stroke="#e4e4e4" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="landuse" v="commercial">
+				<area fill="#ffffc0" stroke="#e4e4e4" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="landuse" v="construction|greenfield">
+				<area fill="#a47c41" stroke="#e4e4e4" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="landuse" v="garages">
+				<area fill="#d6d6e4" />
+			</rule>
+
+			<rule e="way" k="*" v="*" zoom-min="16">
+				<caption k="name" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
+			</rule>
+		</rule>
+
+
+
+		<!-- landuse -->
+		<rule e="way" k="landuse" v="*">
+			<rule e="way" k="landuse" v="landfill|quarry">
+				<area fill="#e9dd72" stroke="#556b2f" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="landuse" v="cemetery">
+				<area src="jar:patterns/cemetery.png" stroke="#e4e4e4" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="landuse" v="field|farm|farmland|meadow|grass">
+				<area fill="#ebfff2" stroke="#9ee673" stroke-width="0.1" />
+			</rule>
+			<rule e="way" k="landuse" v="allotments|village_green|recreation_ground">
+				<area fill="#bde3cb" stroke="#6fc13d" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="landuse" v="reservoir|basin">
+				<area fill="#b5d6f1" />
+			</rule>
+
+			<rule e="way" k="*" v="*" zoom-min="16">
+				<caption k="name" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
+			</rule>
+		</rule>
+
+
+		<rule e="way" k="natural|landuse" v="forest|wood|scrub">
+			<rule e="way" k="wood" v="*">
+				<rule e="way" k="wood" v="coniferous">
+					<area src="jar:patterns/wood-coniferous.png" />
+				</rule>
+				<rule e="way" k="wood" v="deciduous">
+					<area src="jar:patterns/wood-deciduous.png" />
+				</rule>
+				<rule e="way" k="wood" v="mixed">
+					<area src="jar:patterns/wood-mixed.png" />
+				</rule>
+			</rule>
+			<rule e="way" k="wood" v="~">
+				<area fill="#6fc18e" stroke="#6fc18e" stroke-width="0.2" />
+			</rule>
+
+			<rule e="way" k="*" v="*" zoom-min="16">
+				<caption k="name" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
+			</rule>
+		</rule>
+		
+		<!-- building -->
+		<rule e="way" k="building" v="*">
+			<area fill="#f3d6b6" stroke="#6a5a8e" stroke-width="0.2" />
+
+			<rule e="way" k="*" v="*" zoom-min="17">
+				<caption k="name" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
+				<caption k="addr:housenumber" font-style="bold" font-size="10" fill="#606060" stroke="#ffffff" stroke-width="2.0" />
+			</rule>
+		</rule>
+		
+	</rule>
+	
+	
+</rendertheme>

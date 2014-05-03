@@ -14,9 +14,11 @@
  */
 package org.mapsforge.map.android.input;
 
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.model.Model;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.util.MapViewProjection;
 
 import android.view.ViewConfiguration;
 
@@ -26,31 +28,60 @@ public class TouchGestureDetector implements TouchEventListener {
 	private final int gestureTimeout;
 	private Point lastActionUpPoint;
 	private long lastEventTime;
-	private final MapViewPosition mapViewPosition;
+	private final MapView mapView;
+	private final MapViewProjection projection;
 
-	public TouchGestureDetector(Model model, ViewConfiguration viewConfiguration) {
-		this.mapViewPosition = model.mapViewPosition;
+	public TouchGestureDetector(MapView mapView, ViewConfiguration viewConfiguration) {
+		this.mapView = mapView;
 		this.doubleTapSlop = viewConfiguration.getScaledDoubleTapSlop();
 		this.gestureTimeout = ViewConfiguration.getDoubleTapTimeout();
+		this.projection = new MapViewProjection(this.mapView);
 	}
 
 	@Override
-	public void onActionUp(Point point, long eventTime, boolean moveThresholdReached) {
+	public void onActionUp(LatLong latLong, Point xy, long eventTime, boolean moveThresholdReached) {
 		if (moveThresholdReached) {
 			this.lastActionUpPoint = null;
 			return;
 		} else if (this.lastActionUpPoint != null) {
 			long eventTimeDiff = eventTime - this.lastEventTime;
 
-			if (eventTimeDiff < this.gestureTimeout && this.lastActionUpPoint.distance(point) < this.doubleTapSlop) {
-				this.mapViewPosition.zoomIn();
+			if (eventTimeDiff < this.gestureTimeout && this.lastActionUpPoint.distance(xy) < this.doubleTapSlop) {
+
+				// handle a double tap, changes the mapview position
+				// so that the tap position remains stable within the view
+				Point center = this.mapView.getModel().mapViewDimension.getDimension().getCenter();
+				final byte zoomLevelDiff = 1;
+				double moveHorizontal = (center.x - xy.x) / Math.pow(2, zoomLevelDiff);
+				double moveVertical = (center.y - xy.y) / Math.pow(2, zoomLevelDiff);
+				this.mapView.getModel().mapViewPosition.setPivot(latLong);
+				this.mapView.getModel().mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
+
 				this.lastActionUpPoint = null;
 				return;
 			}
 		}
-
-		this.lastActionUpPoint = point;
+		this.lastActionUpPoint = xy;
 		this.lastEventTime = eventTime;
+
+		for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
+			final Layer ovl = this.mapView.getLayerManager().getLayers().get(i);
+			final Point layerXY = projection.toPixels(ovl.getPosition());
+			if (ovl.onTap(latLong, layerXY, xy)) {
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void onLongPress(LatLong latLong, Point xy) {
+		for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
+			final Layer ovl = this.mapView.getLayerManager().getLayers().get(i);
+			final Point layerXY = projection.toPixels(ovl.getPosition());
+			if (ovl.onLongPress(latLong, layerXY, xy)) {
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -64,7 +95,8 @@ public class TouchGestureDetector implements TouchEventListener {
 		long doubleTouchTime = eventTime - this.lastEventTime;
 		if (doubleTouchTime < this.gestureTimeout) {
 			this.lastActionUpPoint = null;
-			this.mapViewPosition.zoomOut();
+			this.mapView.getModel().mapViewPosition.zoomOut();
 		}
 	}
+
 }

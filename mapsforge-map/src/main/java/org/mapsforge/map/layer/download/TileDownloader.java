@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,8 +21,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 
 class TileDownloader {
@@ -56,13 +58,19 @@ class TileDownloader {
 		this.graphicFactory = graphicFactory;
 	}
 
-	Bitmap downloadImage() throws IOException {
+	TileBitmap downloadImage() throws IOException {
 		URL url = this.downloadJob.tileSource.getTileUrl(this.downloadJob.tile);
 		URLConnection urlConnection = getURLConnection(url);
 		InputStream inputStream = getInputStream(urlConnection);
 
 		try {
-			return this.graphicFactory.createBitmap(inputStream);
+			return this.graphicFactory.createTileBitmap(inputStream, this.downloadJob.tileSize,
+					this.downloadJob.hasAlpha);
+		} catch (CorruptedInputStreamException e) {
+			// the creation of the tile bit map can fail at, at least on Android,
+			// when the connection is slow or busy, returning null here ensures that
+			// the tile will be downloaded again
+			return null;
 		} finally {
 			IOUtils.closeQuietly(inputStream);
 		}

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,28 +19,36 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.util.PausableThread;
 
 class TileDownloadThread extends PausableThread {
 	private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());
 
+	private final DisplayModel displayModel;
 	private final GraphicFactory graphicFactory;
-	private final JobQueue<DownloadJob> jobQueue;
+	private JobQueue<DownloadJob> jobQueue;
 	private final Layer layer;
 	private final TileCache tileCache;
 
-	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory) {
+	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory,
+			DisplayModel displayModel) {
 		super();
 
 		this.tileCache = tileCache;
 		this.jobQueue = jobQueue;
 		this.layer = layer;
 		this.graphicFactory = graphicFactory;
+		this.displayModel = displayModel;
+	}
+
+	public void setJobQueue(JobQueue<DownloadJob> jobQueue) {
+		this.jobQueue = jobQueue;
 	}
 
 	@Override
@@ -69,9 +78,10 @@ class TileDownloadThread extends PausableThread {
 
 	private void downloadTile(DownloadJob downloadJob) throws IOException {
 		TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicFactory);
-		Bitmap bitmap = tileDownloader.downloadImage();
+		TileBitmap bitmap = tileDownloader.downloadImage();
 
 		if (!isInterrupted() && bitmap != null) {
+			bitmap.scaleTo(this.displayModel.getTileSize(), this.displayModel.getTileSize());
 			this.tileCache.put(downloadJob, bitmap);
 			this.layer.requestRedraw();
 		}

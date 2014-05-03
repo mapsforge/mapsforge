@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,11 +19,13 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -51,8 +54,8 @@ public class LineBuilder {
 	final Paint stroke;
 	float strokeWidth;
 
-	public LineBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes, int level,
-			String relativePathPrefix) throws IOException, SAXException {
+	public LineBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, int level, String relativePathPrefix) throws IOException, SAXException {
 		this.level = level;
 
 		this.stroke = graphicFactory.createPaint();
@@ -60,7 +63,7 @@ public class LineBuilder {
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
 
-		extractValues(graphicFactory, elementName, attributes, relativePathPrefix);
+		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
 	}
 
 	/**
@@ -70,20 +73,28 @@ public class LineBuilder {
 		return new Line(this);
 	}
 
-	private void extractValues(GraphicFactory graphicFactory, String elementName, Attributes attributes,
-			String relativePathPrefix) throws IOException, SAXException {
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				this.stroke.setBitmapShader(XmlUtils.createBitmap(graphicFactory, relativePathPrefix, value));
+				Bitmap shaderBitmap = XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, value);
+				if (shaderBitmap != null) {
+					this.stroke.setBitmapShader(shaderBitmap);
+					shaderBitmap.decrementRefCount();
+				}
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
-				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
+				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (STROKE_DASHARRAY.equals(name)) {
-				this.stroke.setDashPathEffect(parseFloatArray(name, value));
+				float[] floatArray = parseFloatArray(name, value);
+				for (int f = 0; f < floatArray.length; ++f) {
+					floatArray[f] = floatArray[f] * displayModel.getScaleFactor();
+				}
+				this.stroke.setDashPathEffect(floatArray);
 			} else if (STROKE_LINECAP.equals(name)) {
 				this.stroke.setStrokeCap(Cap.valueOf(value.toUpperCase(Locale.ENGLISH)));
 			} else {

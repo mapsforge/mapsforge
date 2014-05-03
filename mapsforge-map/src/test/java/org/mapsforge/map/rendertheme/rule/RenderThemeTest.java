@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +27,7 @@ import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
@@ -39,7 +41,7 @@ public class RenderThemeTest {
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(pathname));
 
 		try {
-			RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, xmlRenderTheme);
+			RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
 			Assert.fail();
 		} catch (SAXException e) {
 			Assert.assertTrue(true);
@@ -56,7 +58,8 @@ public class RenderThemeTest {
 	@Test
 	public void validRenderThemeTest() throws SAXException, ParserConfigurationException, IOException {
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(RESOURCE_FOLDER, "test-render-theme.xml"));
-		RenderTheme renderTheme = RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, xmlRenderTheme);
+		RenderTheme renderTheme = RenderThemeHandler
+				.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
 
 		Assert.assertEquals(3, renderTheme.getLevels());
 

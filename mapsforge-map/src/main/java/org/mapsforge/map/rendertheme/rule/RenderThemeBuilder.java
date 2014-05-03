@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +25,7 @@ import org.xml.sax.SAXException;
  * A builder for {@link RenderTheme} instances.
  */
 public class RenderThemeBuilder {
+
 	private static final String BASE_STROKE_WIDTH = "base-stroke-width";
 	private static final String BASE_TEXT_SIZE = "base-text-size";
 	private static final String MAP_BACKGROUND = "map-background";
@@ -40,8 +42,8 @@ public class RenderThemeBuilder {
 
 	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, Attributes attributes)
 			throws SAXException {
-		this.baseStrokeWidth = 1;
-		this.baseTextSize = 1;
+		this.baseStrokeWidth = 1f;
+		this.baseTextSize = 1f;
 		this.mapBackground = graphicFactory.createColor(Color.WHITE);
 
 		extractValues(graphicFactory, elementName, attributes);
@@ -85,8 +87,10 @@ public class RenderThemeBuilder {
 	private void validate(String elementName) throws SAXException {
 		XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
 
-		if (this.version.intValue() != RENDER_THEME_VERSION) {
+		if (!XmlUtils.supportOlderRenderThemes && this.version != RENDER_THEME_VERSION) {
 			throw new SAXException("unsupported render theme version: " + this.version);
+		} else if (this.version > RENDER_THEME_VERSION) {
+			throw new SAXException("unsupported newer render theme version: " + this.version);
 		}
 	}
 }

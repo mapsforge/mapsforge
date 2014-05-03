@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,11 +25,12 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
 public class PolygonTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	@Test
 	public void constructorTest() {
@@ -43,21 +45,24 @@ public class PolygonTest {
 
 	@Test
 	public void drawTest() {
-		Polygon polygon = new Polygon(null, null, GRAPHIC_FACTORY);
+		for (int tileSize : TILE_SIZES) {
+			Polygon polygon = new Polygon(null, null, GRAPHIC_FACTORY);
+			polygon.setDisplayModel(new FixedTileSizeDisplayModel(tileSize));
 
-		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
-		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
-		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
-		Point point = new Point(0, 0);
-		polygon.draw(boundingBox, (byte) 0, canvas, point);
+			BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
+			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
+			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
+			Point point = new Point(0, 0);
+			polygon.draw(boundingBox, (byte) 0, canvas, point);
 
-		polygon.getLatLongs().add(new LatLong(0, 0));
-		polygon.getLatLongs().add(new LatLong(1, 1));
-		polygon.draw(boundingBox, (byte) 0, canvas, point);
+			polygon.getLatLongs().add(new LatLong(0, 0));
+			polygon.getLatLongs().add(new LatLong(1, 1));
+			polygon.draw(boundingBox, (byte) 0, canvas, point);
 
-		polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
-		polygon.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-		polygon.draw(boundingBox, (byte) 0, canvas, point);
+			polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
+			polygon.setPaintStroke(GRAPHIC_FACTORY.createPaint());
+			polygon.draw(boundingBox, (byte) 0, canvas, point);
+		}
 	}
 
 	@Test

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,10 +24,10 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
-import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.queue.Job;
 
 /**
@@ -50,9 +51,8 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	private final File cacheDirectory;
-	private long cacheId;
 	private final GraphicFactory graphicFactory;
-	private final LRUCache<Job, File> lruCache;
+	private FileLRUCache<Integer> lruCache;
 
 	/**
 	 * @param capacity
@@ -63,14 +63,14 @@ public class FileSystemTileCache implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
-		this.lruCache = new FileLRUCache<Job>(capacity);
+		this.lruCache = new FileLRUCache<>(capacity);
 		this.cacheDirectory = checkDirectory(cacheDirectory);
 		this.graphicFactory = graphicFactory;
 	}
 
 	@Override
 	public synchronized boolean containsKey(Job key) {
-		return this.lruCache.containsKey(key);
+		return this.lruCache.containsKey(key.hashCode());
 	}
 
 	@Override
@@ -88,8 +88,9 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	@Override
-	public synchronized Bitmap get(Job key) {
-		File file = this.lruCache.get(key);
+	public synchronized TileBitmap get(Job key) {
+		File file = this.lruCache.get(key.hashCode());
+
 		if (file == null) {
 			return null;
 		}
@@ -97,9 +98,16 @@ public class FileSystemTileCache implements TileCache {
 		InputStream inputStream = null;
 		try {
 			inputStream = new FileInputStream(file);
-			return this.graphicFactory.createBitmap(inputStream);
+			return this.graphicFactory.createTileBitmap(inputStream, key.tileSize, key.hasAlpha);
+		} catch (CorruptedInputStreamException e) {
+			// this can happen, at least on Android, when the input stream
+			// is somehow corrupted, returning null ensures it will be loaded
+			// from another source
+			this.lruCache.remove(key.hashCode());
+			LOGGER.log(Level.WARNING, "input stream from file system cache invalid", e);
+			return null;
 		} catch (IOException e) {
-			this.lruCache.remove(key);
+			this.lruCache.remove(key.hashCode());
 			LOGGER.log(Level.SEVERE, null, e);
 			return null;
 		} finally {
@@ -113,7 +121,7 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	@Override
-	public synchronized void put(Job key, Bitmap bitmap) {
+	public synchronized void put(Job key, TileBitmap bitmap) {
 		if (key == null) {
 			throw new IllegalArgumentException("key must not be null");
 		} else if (bitmap == null) {
@@ -126,26 +134,26 @@ public class FileSystemTileCache implements TileCache {
 
 		OutputStream outputStream = null;
 		try {
-			File file = getOutputFile();
+			File file = getOutputFile(key);
 			outputStream = new FileOutputStream(file);
 			bitmap.compress(outputStream);
-			if (this.lruCache.put(key, file) != null) {
-				LOGGER.warning("overwriting cached entry: " + key);
+			if (this.lruCache.put(key.hashCode(), file) != null) {
+				LOGGER.warning("overwriting cached entry: " + key.hashCode());
 			}
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, "Disabling filesystem cache", e);
+			// most likely cause is that the disk is full, just disable the
+			// cache otherwise
+			// more and more exceptions will be thrown.
+			this.destroy();
+			this.lruCache = new FileLRUCache<Integer>(0);
+
 		} finally {
 			IOUtils.closeQuietly(outputStream);
 		}
 	}
 
-	private File getOutputFile() {
-		while (true) {
-			++this.cacheId;
-			File file = new File(this.cacheDirectory, this.cacheId + FILE_EXTENSION);
-			if (!file.exists()) {
-				return file;
-			}
-		}
+	private File getOutputFile(Job job) {
+		return new File(this.cacheDirectory, job.hashCode() + FILE_EXTENSION);
 	}
 }

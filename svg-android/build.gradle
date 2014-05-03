@@ -1,0 +1,4 @@
+dependencies {
+  compile group: 'net.sf.kxml', name: 'kxml2', version:'2.3.0'
+}
+

@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +20,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,6 +32,8 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.core.graphics.TileBitmap;
 
 public final class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
@@ -74,16 +79,18 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	private AwtGraphicFactory() {
-		// do nothing
-	}
-
-	@Override
-	public Bitmap createBitmap(InputStream inputStream) throws IOException {
-		return new AwtBitmap(inputStream);
 	}
 
 	@Override
 	public Bitmap createBitmap(int width, int height) {
+		return new AwtBitmap(width, height);
+	}
+
+	@Override
+	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
+		if (isTransparent) {
+			throw new UnsupportedOperationException("No transparencies in AWT implementation");
+		}
 		return new AwtBitmap(width, height);
 	}
 
@@ -116,4 +123,30 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	public Path createPath() {
 		return new AwtPath();
 	}
+
+	@Override
+	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
+		return new AwtResourceBitmap(inputStream);
+	}
+
+	@Override
+	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean hasAlpha) throws IOException {
+		return new AwtTileBitmap(inputStream);
+	}
+
+	@Override
+	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
+		return new AwtTileBitmap(tileSize);
+	}
+
+	@Override
+	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws FileNotFoundException {
+		return null;
+	}
+
+	@Override
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) {
+		return null;
+	}
+
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,10 +21,13 @@ import java.util.List;
 import java.util.RandomAccess;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.mapsforge.map.model.DisplayModel;
+
 /**
  * A thread-safe {@link Layer} list which does not allow {@code null} elements.
  */
 public class Layers implements Iterable<Layer>, RandomAccess {
+
 	private static void checkIsNull(Collection<Layer> layers) {
 		if (layers == null) {
 			throw new IllegalArgumentException("layers must not be null");
@@ -40,11 +44,13 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		}
 	}
 
+	private final DisplayModel displayModel;
 	private final List<Layer> layersList;
 	private final Redrawer redrawer;
 
-	Layers(Redrawer redrawer) {
+	Layers(Redrawer redrawer, DisplayModel displayModel) {
 		this.redrawer = redrawer;
+		this.displayModel = displayModel;
 
 		this.layersList = new CopyOnWriteArrayList<Layer>();
 	}
@@ -54,8 +60,10 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	 */
 	public synchronized void add(int index, Layer layer) {
 		checkIsNull(layer);
+		layer.setDisplayModel(this.displayModel);
 		this.layersList.add(index, layer);
 		layer.assign(this.redrawer);
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -63,8 +71,11 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	 */
 	public synchronized void add(Layer layer) {
 		checkIsNull(layer);
+		layer.setDisplayModel(this.displayModel);
+
 		this.layersList.add(layer);
 		layer.assign(this.redrawer);
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -72,10 +83,14 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	 */
 	public synchronized void addAll(Collection<Layer> layers) {
 		checkIsNull(layers);
+		for (Layer layer : layers) {
+			layer.setDisplayModel(this.displayModel);
+		}
 		this.layersList.addAll(layers);
 		for (Layer layer : layers) {
 			layer.assign(this.redrawer);
 		}
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -85,8 +100,10 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		checkIsNull(layers);
 		this.layersList.addAll(index, layers);
 		for (Layer layer : layers) {
+			layer.setDisplayModel(this.displayModel);
 			layer.assign(this.redrawer);
 		}
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -97,6 +114,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 			layer.unassign();
 		}
 		this.layersList.clear();
+		this.redrawer.redrawLayers();
 	}
 
 	/**
@@ -143,6 +161,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 	public synchronized Layer remove(int index) {
 		Layer layer = this.layersList.remove(index);
 		layer.unassign();
+		this.redrawer.redrawLayers();
 		return layer;
 	}
 
@@ -153,6 +172,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 		checkIsNull(layer);
 		if (this.layersList.remove(layer)) {
 			layer.unassign();
+			this.redrawer.redrawLayers();
 			return true;
 		}
 		return false;

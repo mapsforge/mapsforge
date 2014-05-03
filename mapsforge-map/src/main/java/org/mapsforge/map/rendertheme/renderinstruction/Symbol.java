@@ -31,6 +31,11 @@ public class Symbol implements RenderInstruction {
 	}
 
 	@Override
+	public void destroy() {
+		this.bitmap.decrementRefCount();
+	}
+
+	@Override
 	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
 		renderCallback.renderPointOfInterestSymbol(this.bitmap);
 	}
@@ -49,4 +54,5 @@ public class Symbol implements RenderInstruction {
 	public void scaleTextSize(float scaleFactor) {
 		// do nothing
 	}
+
 }

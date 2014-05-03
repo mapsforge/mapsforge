@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="120.72" height="214.97" version="1.0">
+ <metadata id="metadata7"/>
+ <g inkscape:label="Ebene 1" inkscape:groupmode="layer" id="layer1" transform="translate(-343.74564,-365.25068)">
+  <path id="path3161" d="m 374.28571,367.36557 0,104.27894" inkscape:connector-curvature="0" fill="none" stroke="#000000" stroke-width="4.23"/>
+  <path d="m 409.10714,403.4336 0,68.57143 -62.85714,104.28572 0,-58.57144 62.85714,-114.28571 z" id="path3275" sodipodi:nodetypes="ccccc" inkscape:connector-curvature="0" fill="#d40000" fill-rule="evenodd" stroke="#000000" stroke-width="5"/>
+  <path d="m 409.56325,470.57211 52.40537,-1.42855 -63.36064,108.58011 -52.36234,0 63.31761,-107.15156 z" id="path3277" sodipodi:nodetypes="ccccc" inkscape:connector-curvature="0" fill="#d40000" fill-rule="evenodd" stroke="#000000" stroke-width="5"/>
+ </g>
+</svg>

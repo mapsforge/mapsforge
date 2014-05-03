@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,11 +15,10 @@
  */
 package org.mapsforge.map.layer;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
@@ -26,14 +26,17 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 
 public abstract class TileLayer<T extends Job> extends Layer {
-	protected final JobQueue<T> jobQueue;
+	protected final boolean isTransparent;
+	protected JobQueue<T> jobQueue;
+	protected final TileCache tileCache;
+	private final MapViewPosition mapViewPosition;
 	private final Matrix matrix;
-	private final TileCache tileCache;
 
-	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
+	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent) {
 		super();
 
 		if (tileCache == null) {
@@ -43,13 +46,29 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		}
 
 		this.tileCache = tileCache;
-		this.jobQueue = new JobQueue<T>(mapViewPosition);
-		this.matrix = graphicFactory.createMatrix();
+		this.mapViewPosition = mapViewPosition;
+		this.matrix = matrix;
+		this.isTransparent = isTransparent;
 	}
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		ArrayList<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint);
+		List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
+				this.displayModel.getTileSize());
+
+		// In a rotation situation it is possible that drawParentTileBitmap sets the
+		// clipping bounds to portrait, while the device is just being rotated into
+		// landscape: the result is a partially painted screen that only goes away
+		// after zooming (which has the effect of resetting the clip bounds if drawParentTileBitmap
+		// is called again).
+		// Always resetting the clip bounds here seems to avoid the problem,
+		// I assume that this is a pretty cheap operation, otherwise it would be better
+		// to hook this into the onConfigurationChanged call chain.
+		canvas.resetClip();
+
+		if (!isTransparent) {
+			canvas.fillColor(this.displayModel.getBackgroundColor());
+		}
 
 		for (int i = tilePositions.size() - 1; i >= 0; --i) {
 			TilePosition tilePosition = tilePositions.get(i);
@@ -62,26 +81,32 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
 				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y));
+				bitmap.decrementRefCount();
 			}
 		}
-
 		this.jobQueue.notifyWorkers();
 	}
 
-	protected abstract T createJob(Tile tile);
-
 	@Override
-	protected void onDestroy() {
-		this.tileCache.destroy();
+	public synchronized void setDisplayModel(DisplayModel displayModel) {
+		super.setDisplayModel(displayModel);
+		if (displayModel != null) {
+			this.jobQueue = new JobQueue<T>(this.mapViewPosition, this.displayModel);
+		} else {
+			this.jobQueue = null;
+		}
 	}
+
+	protected abstract T createJob(Tile tile);
 
 	private void drawParentTileBitmap(Canvas canvas, Point point, Tile tile) {
 		Tile cachedParentTile = getCachedParentTile(tile, 4);
 		if (cachedParentTile != null) {
 			Bitmap bitmap = this.tileCache.get(createJob(cachedParentTile));
 			if (bitmap != null) {
-				long translateX = tile.getShiftX(cachedParentTile) * Tile.TILE_SIZE;
-				long translateY = tile.getShiftY(cachedParentTile) * Tile.TILE_SIZE;
+				int tileSize = this.displayModel.getTileSize();
+				long translateX = tile.getShiftX(cachedParentTile) * tileSize;
+				long translateY = tile.getShiftY(cachedParentTile) * tileSize;
 				byte zoomLevelDiff = (byte) (tile.zoomLevel - cachedParentTile.zoomLevel);
 				float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
 
@@ -92,9 +117,10 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.matrix.translate(x - translateX, y - translateY);
 				this.matrix.scale(scaleFactor, scaleFactor);
 
-				canvas.setClip(x, y, Tile.TILE_SIZE, Tile.TILE_SIZE);
+				canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
 				canvas.drawBitmap(bitmap, this.matrix);
 				canvas.resetClip();
+				bitmap.decrementRefCount();
 			}
 		}
 	}

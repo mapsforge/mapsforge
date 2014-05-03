@@ -23,6 +23,9 @@ import org.mapsforge.map.rendertheme.RenderCallback;
  * A RenderInstruction is a basic graphical primitive to draw a map.
  */
 public interface RenderInstruction {
+
+	void destroy();
+
 	/**
 	 * @param renderCallback
 	 *            a reference to the receiver of all render callbacks.

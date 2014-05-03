@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,13 +22,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.map.model.DisplayModel;
 import org.xml.sax.SAXException;
 
 public final class XmlUtils {
+	public static boolean supportOlderRenderThemes = true;
 	private static final String PREFIX_FILE = "file:";
 	private static final String PREFIX_JAR = "jar:";
+
+	private static final String PREFIX_JAR_V1 = "jar:/org/mapsforge/android/maps/rendertheme";
+
 	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
 
 	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
@@ -36,16 +43,32 @@ public final class XmlUtils {
 		}
 	}
 
-	public static Bitmap createBitmap(GraphicFactory graphicFactory, String relativePathPrefix, String src)
-			throws IOException {
+	public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
+			String relativePathPrefix, String src) throws IOException {
 		if (src == null || src.length() == 0) {
 			// no image source defined
 			return null;
 		}
 
-		InputStream inputStream = createInputStream(relativePathPrefix, src);
+		InputStream inputStream = graphicFactory.platformSpecificSources(relativePathPrefix, src);
+		if (inputStream == null) {
+			inputStream = createInputStream(relativePathPrefix, src);
+		}
 		try {
-			return graphicFactory.createBitmap(inputStream);
+			String absoluteName = getAbsoluteName(relativePathPrefix, src);
+			if (src.endsWith(".svg")) {
+				try {
+					return graphicFactory
+							.renderSvg(inputStream, displayModel.getScaleFactor(), absoluteName.hashCode());
+				} catch (IOException e) {
+					throw new IOException("SVG render failed " + src, e);
+				}
+			}
+			try {
+				return graphicFactory.createResourceBitmap(inputStream, absoluteName.hashCode());
+			} catch (IOException e) {
+				throw new IOException("Reading bitmap file failed " + src, e);
+			}
 		} finally {
 			inputStream.close();
 		}
@@ -105,8 +128,15 @@ public final class XmlUtils {
 	}
 
 	private static InputStream createInputStream(String relativePathPrefix, String src) throws FileNotFoundException {
+
 		if (src.startsWith(PREFIX_JAR)) {
-			String absoluteName = getAbsoluteName(relativePathPrefix, src.substring(PREFIX_JAR.length()));
+			final String prefixJar;
+			if (!supportOlderRenderThemes) {
+				prefixJar = PREFIX_JAR;
+			} else {
+				prefixJar = src.startsWith(PREFIX_JAR_V1) ? PREFIX_JAR_V1 : PREFIX_JAR;
+			}
+			String absoluteName = getAbsoluteName(relativePathPrefix, src.substring(prefixJar.length()));
 			InputStream inputStream = XmlUtils.class.getResourceAsStream(absoluteName);
 			if (inputStream == null) {
 				throw new FileNotFoundException("resource not found: " + absoluteName);
@@ -115,7 +145,13 @@ public final class XmlUtils {
 		} else if (src.startsWith(PREFIX_FILE)) {
 			File file = getFile(relativePathPrefix, src.substring(PREFIX_FILE.length()));
 			if (!file.exists()) {
-				throw new FileNotFoundException("file does not exist: " + file.getAbsolutePath());
+				final String pathName = src.substring(PREFIX_FILE.length());
+				if (pathName.length() > 0 && pathName.charAt(0) == File.separatorChar) {
+					file = getFile(relativePathPrefix, pathName.substring(1));
+				}
+				if (!file.exists()) {
+					throw new FileNotFoundException("file does not exist: " + file.getAbsolutePath());
+				}
 			} else if (!file.isFile()) {
 				throw new FileNotFoundException("not a file: " + file.getAbsolutePath());
 			} else if (!file.canRead()) {

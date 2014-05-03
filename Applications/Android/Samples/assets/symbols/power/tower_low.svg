@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata10"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z" id="path1329" fill="#8E7409" stroke="#eeeeee" stroke-width="3.408"/>
+ </g>
+ <path d="M 240.29595,136.807 C 139.62482,217.41717 35.59798,135.39278 35.59798,135.39278" id="path3812" inkscape:connector-curvature="0" opacity=".75" fill="none" stroke="#ffffff" stroke-width="8.894"/>
+ <path id="path3814" d="M 550.39906,138.807 C 449.18541,219.41717 344.59798,137.39278 344.59798,137.39278" inkscape:connector-curvature="0" opacity=".75" fill="none" stroke="#ffffff" stroke-width="8.917"/>
+ <path d="m 288.14928,90.096315 0,422.849865" id="path3882" inkscape:connector-curvature="0" sodipodi:nodetypes="cc" fill="none" stroke="#ffffff" stroke-linecap="square" stroke-width="40"/>
+ <path sodipodi:nodetypes="cc" inkscape:connector-curvature="0" id="path4652" d="m 360.87127,134.52125 -142.32189,0" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="31.22"/>
+</svg>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="4.16" height="7.67" viewBox="0 0 122.74678 226.3144">
+ <metadata id="metadata14"/>
+ <g transform="matrix(0.3,0,0,0.3,29.506437,29.61796)" id="g6771">
+  <path d="m 212.1,105 c 0,58 -47.5,105 -106,105 C 47.5,210 0.1,163 0.1,105 0,47 47.5,0 106,0 164.6,0 212.1,47 212.1,105 z" id="path6773" inkscape:connector-curvature="0"/>
+  <path d="m 212.1,452.3 c 0,58 -47.5,105 -106,105 -58.6,0 -106,-47 -106,-105 0,-58 47.5,-105 106,-105 58.5,0 106,47 106,105 z" id="path6775" inkscape:connector-curvature="0"/>
+  <path d="M 211.3,458.9 H 0 V 106.7 h 211.3 v 352.2 z" id="path6777" inkscape:connector-curvature="0"/>
+  <path d="m 190,103 c 0,46.4 -37.6,84 -84,84 -46.4,0 -84,-37.6 -84,-84 0,-46.4 37.6,-84 84,-84 46.4,0 84,37.6 84,84 z" id="path6779" inkscape:connector-curvature="0" fill="#ff0000"/>
+  <path d="m 190,455 c 0,46.4 -37.6,84 -84,84 -46.4,0 -84,-37.6 -84,-84 0,-46.4 37.6,-84 84,-84 46.4,0.1 84,37.7 84,84 z" id="path6781" inkscape:connector-curvature="0" fill="#32cd32"/>
+  <path d="m 190,279 c 0,46.4 -37.6,84 -84,84 -46.4,0 -84,-37.6 -84,-84 0,-46.4 37.6,-84 84,-84 46.4,0 84,37.6 84,84 z" id="path6783" inkscape:connector-curvature="0" fill="#ffff00"/>
+ </g>
+</svg>

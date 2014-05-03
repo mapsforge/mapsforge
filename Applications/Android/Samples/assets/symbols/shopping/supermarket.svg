@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z " id="path1329" fill="#AC39AC" stroke="#eee" stroke-width="3.408"/>
+ </g>
+ <path d="M 538.75588,90.924252 L 489.34651,118.92063 L 426.02351,388.57001 L 426.02351,445.69918 L 137.1468,445.69918" id="path2492" sodipodi:nodetypes="ccccc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="28.17"/>
+ <path d="M 479.06925,164.57688 L 56.196494,164.57688 L 105.86424,358.40271 L 425.39502,402.94461 L 479.06925,164.57688 z" id="path3264" sodipodi:nodetypes="ccccc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="28.17"/>
+ <path id="path3268" d="M 128.06871,165.73536 L 128.06871,343.20709" sodipodi:nodetypes="cc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="18.782"/>
+ <path sodipodi:nodetypes="cc" d="M 86.424707,243.00115 L 445.19209,243.00115" id="path3280" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="18.782"/>
+ <path transform="matrix(1.0862609,0,0,1.1358574,373.78132,-86.8033)" sodipodi:open="true" sodipodi:end="6.2832427" sodipodi:start="0.00024710373" d="M -184.12699,498.68445 A 29.153439,29.153439 0 1 1 -184.12699,498.67892" sodipodi:ry="29.153439" sodipodi:rx="29.153439" sodipodi:cy="498.67725" sodipodi:cx="-213.28043" id="path3284" sodipodi:type="arc" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+ <path transform="matrix(1.0862609,0,0,1.1358574,618.76176,-84.803297)" sodipodi:open="true" sodipodi:end="6.2832427" sodipodi:start="0.00024710373" d="M -184.12699,498.68445 A 29.153439,29.153439 0 1 1 -184.12699,498.67892" sodipodi:ry="29.153439" sodipodi:rx="29.153439" sodipodi:cy="498.67725" sodipodi:cx="-213.28043" id="path3316" sodipodi:type="arc" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+ <path d="M 215.1525,165.73536 L 215.1525,363.25095" id="path3318" sodipodi:nodetypes="cc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="18.782"/>
+ <path id="path3320" d="M 306.2363,165.73536 L 306.2363,372.15933" sodipodi:nodetypes="cc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="18.782"/>
+ <path d="M 395.3201,165.73536 L 395.3201,385.5219" id="path3322" sodipodi:nodetypes="cc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="18.782"/>
+ <path id="path3324" d="M 104.24147,322.08495 L 427.37533,322.08495" sodipodi:nodetypes="cc" fill="none" fill-rule="evenodd" stroke="#ffffff" stroke-linecap="round" stroke-width="18.782"/>
+</svg>

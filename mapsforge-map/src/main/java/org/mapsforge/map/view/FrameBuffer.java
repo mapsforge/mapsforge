@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,48 +21,72 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
 public class FrameBuffer {
+
+	private static final boolean IS_TRANSPARENT = false;
 	private Bitmap bitmap1;
 	private Bitmap bitmap2;
 	private Dimension dimension;
+	private final DisplayModel displayModel;
 	private final FrameBufferModel frameBufferModel;
 	private final GraphicFactory graphicFactory;
 	private final Matrix matrix;
 
-	public FrameBuffer(FrameBufferModel frameBufferModel, GraphicFactory graphicFactory) {
+	public FrameBuffer(FrameBufferModel frameBufferModel, DisplayModel displayModel, GraphicFactory graphicFactory) {
 		this.frameBufferModel = frameBufferModel;
+		this.displayModel = displayModel;
 		this.graphicFactory = graphicFactory;
-
 		this.matrix = graphicFactory.createMatrix();
 	}
 
-	public synchronized void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension) {
+	public synchronized void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
+			float pivotDistanceX, float pivotDistanceY) {
 		if (this.dimension == null) {
 			return;
 		}
-
 		this.matrix.reset();
-
 		centerFrameBufferToMapView(mapViewDimension);
-		this.matrix.translate(diffX, diffY);
-		scale(scaleFactor);
+		if (pivotDistanceX == 0 && pivotDistanceY == 0) {
+			// only translate the matrix if we are not zooming around a pivot,
+			// the translation happens only once the zoom is finished.
+			this.matrix.translate(diffX, diffY);
+		}
+
+		scale(scaleFactor, pivotDistanceX, pivotDistanceY);
+	}
+
+	public synchronized void destroy() {
+		destroyBitmaps();
 	}
 
 	public synchronized void draw(GraphicContext graphicContext) {
+		graphicContext.fillColor(this.displayModel.getBackgroundColor());
 		if (this.bitmap1 != null) {
 			graphicContext.drawBitmap(this.bitmap1, this.matrix);
 		}
 	}
 
-	public synchronized void frameFinished(MapPosition frameMapPosition) {
-		// swap both bitmap references
-		Bitmap bitmapTemp = this.bitmap1;
-		this.bitmap1 = this.bitmap2;
-		this.bitmap2 = bitmapTemp;
-
+	public void frameFinished(MapPosition frameMapPosition) {
+		synchronized (this) {
+			// swap both bitmap references
+			Bitmap bitmapTemp = this.bitmap1;
+			this.bitmap1 = this.bitmap2;
+			this.bitmap2 = bitmapTemp;
+			if (this.bitmap2 != null) {
+				this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
+			}
+		}
+		// taking this out of the synchronized region removes a deadlock potential
+		// at the small risk of an inconsistent zoom
 		this.frameBufferModel.setMapPosition(frameMapPosition);
+	}
+
+	public synchronized Dimension getDimension() {
+		return this.dimension;
 	}
 
 	/**
@@ -72,14 +97,16 @@ public class FrameBuffer {
 	}
 
 	public synchronized void setDimension(Dimension dimension) {
+		if (this.dimension != null && this.dimension.equals(dimension)) {
+			return;
+		}
 		this.dimension = dimension;
 
+		destroyBitmaps();
+
 		if (dimension.width > 0 && dimension.height > 0) {
-			this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
-			this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height);
-		} else {
-			this.bitmap1 = null;
-			this.bitmap2 = null;
+			this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
+			this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
 		}
 	}
 
@@ -89,14 +116,24 @@ public class FrameBuffer {
 		this.matrix.translate(dx, dy);
 	}
 
-	private void scale(float scaleFactor) {
-		if (scaleFactor != 1) {
-			// the pivot point is the coordinate which remains unchanged by the translation
-			float pivotScaleFactor = scaleFactor - 1;
-			float pivotX = (this.dimension.width / -2f) * pivotScaleFactor;
-			float pivotY = (this.dimension.height / -2f) * pivotScaleFactor;
-			this.matrix.translate(pivotX, pivotY);
-			this.matrix.scale(scaleFactor, scaleFactor);
+	private void destroyBitmaps() {
+		if (this.bitmap1 != null) {
+			this.bitmap1.decrementRefCount();
+			this.bitmap1 = null;
+		}
+		if (this.bitmap2 != null) {
+			this.bitmap2.decrementRefCount();
+			this.bitmap2 = null;
 		}
 	}
+
+	private void scale(float scaleFactor, float pivotDistanceX, float pivotDistanceY) {
+		if (scaleFactor != 1) {
+			final Point center = this.dimension.getCenter();
+			float pivotX = (float) (pivotDistanceX + center.x);
+			float pivotY = (float) (pivotDistanceY + center.y);
+			this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
+		}
+	}
+
 }

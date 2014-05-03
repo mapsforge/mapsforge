@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,6 +26,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.renderinstruction.Area;
 import org.mapsforge.map.rendertheme.renderinstruction.AreaBuilder;
@@ -51,6 +53,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * SAX2 handler to parse XML render theme files.
  */
 public final class RenderThemeHandler extends DefaultHandler {
+
 	private static enum Element {
 		RENDER_THEME, RENDERING_INSTRUCTION, RULE;
 	}
@@ -59,9 +62,9 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
 	private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
 
-	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, XmlRenderTheme xmlRenderTheme)
-			throws SAXException, ParserConfigurationException, IOException {
-		RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory,
+	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
+			XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException {
+		RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
 				xmlRenderTheme.getRelativePathPrefix());
 		XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		xmlReader.setContentHandler(renderThemeHandler);
@@ -69,13 +72,18 @@ public final class RenderThemeHandler extends DefaultHandler {
 		try {
 			inputStream = xmlRenderTheme.getRenderThemeAsStream();
 			xmlReader.parse(new InputSource(inputStream));
+			renderThemeHandler.renderTheme.incrementRefCount();
 			return renderThemeHandler.renderTheme;
 		} finally {
+			if (renderThemeHandler.renderTheme != null) {
+				renderThemeHandler.renderTheme.destroy();
+			}
 			IOUtils.closeQuietly(inputStream);
 		}
 	}
 
 	private Rule currentRule;
+	private final DisplayModel displayModel;
 	private final Stack<Element> elementStack = new Stack<Element>();
 	private final GraphicFactory graphicFactory;
 	private int level;
@@ -83,9 +91,10 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
 
-	private RenderThemeHandler(GraphicFactory graphicFactory, String relativePathPrefix) {
+	private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix) {
 		super();
 		this.graphicFactory = graphicFactory;
+		this.displayModel = displayModel;
 		this.relativePathPrefix = relativePathPrefix;
 	}
 
@@ -138,47 +147,49 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("area".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Area area = new AreaBuilder(this.graphicFactory, qName, attributes, this.level++,
+				Area area = new AreaBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
 						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(area);
 			}
 
 			else if ("caption".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Caption caption = new CaptionBuilder(this.graphicFactory, qName, attributes).build();
+				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes).build();
 				this.currentRule.addRenderingInstruction(caption);
 			}
 
 			else if ("circle".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Circle circle = new CircleBuilder(this.graphicFactory, qName, attributes, this.level++).build();
+				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes,
+						this.level++).build();
 				this.currentRule.addRenderingInstruction(circle);
 			}
 
 			else if ("line".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Line line = new LineBuilder(this.graphicFactory, qName, attributes, this.level++,
+				Line line = new LineBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
 						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(line);
 			}
 
 			else if ("lineSymbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, qName, attributes,
-						this.relativePathPrefix).build();
+				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName,
+						attributes, this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(lineSymbol);
 			}
 
 			else if ("pathText".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				PathText pathText = new PathTextBuilder(this.graphicFactory, qName, attributes).build();
+				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes)
+						.build();
 				this.currentRule.addRenderingInstruction(pathText);
 			}
 
 			else if ("symbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Symbol symbol = new SymbolBuilder(this.graphicFactory, qName, attributes, this.relativePathPrefix)
-						.build();
+				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
+						this.relativePathPrefix).build();
 				this.currentRule.addRenderingInstruction(symbol);
 			}
 
@@ -186,7 +197,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 				throw new SAXException("unknown element: " + qName);
 			}
 		} catch (IOException e) {
-			throw new SAXException(null, e);
+			LOGGER.warning("Rendertheme missing or invalid resource " + e.getMessage());
 		}
 	}
 

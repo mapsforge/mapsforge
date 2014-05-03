@@ -80,7 +80,6 @@ class AwtPaint implements Paint {
 	Stroke stroke;
 	Style style;
 	TexturePaint texturePaint;
-	private Align align;
 	private int cap;
 	private String fontName;
 	private int fontStyle;
@@ -126,7 +125,7 @@ class AwtPaint implements Paint {
 
 	@Override
 	public void setColor(int color) {
-		this.color = new java.awt.Color(color);
+		this.color = new java.awt.Color(color, true);
 	}
 
 	@Override
@@ -154,7 +153,7 @@ class AwtPaint implements Paint {
 
 	@Override
 	public void setTextAlign(Align align) {
-		this.align = align;
+		// this.align = align; //never read
 	}
 
 	@Override

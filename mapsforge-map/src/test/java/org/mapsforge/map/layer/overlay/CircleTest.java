@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,11 +23,12 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.awt.AwtGraphicFactory;
+import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
 public class CircleTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	private static Circle createCircle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
 		return new Circle(latLong, radius, paintFill, paintStroke);
@@ -49,7 +51,7 @@ public class CircleTest {
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Circle circle = new Circle(latLong, radius, paintFill, paintStroke);
-		Assert.assertEquals(latLong, circle.getLatLong());
+		Assert.assertEquals(latLong, circle.getPosition());
 		Assert.assertEquals(radius, circle.getRadius(), 0);
 		Assert.assertEquals(paintFill, circle.getPaintFill());
 		Assert.assertEquals(paintStroke, circle.getPaintStroke());
@@ -60,25 +62,28 @@ public class CircleTest {
 
 	@Test
 	public void drawTest() {
-		Circle circle = new Circle(null, 0, null, null);
+		for (int tileSize : TILE_SIZES) {
+			Circle circle = new Circle(null, 0, null, null);
+			circle.setDisplayModel(new FixedTileSizeDisplayModel(tileSize));
 
-		BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
-		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
-		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
-		Point point = new Point(0, 0);
-		circle.draw(boundingBox, (byte) 0, canvas, point);
+			BoundingBox boundingBox = new BoundingBox(-1, -1, 1, 1);
+			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
+			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
+			Point point = new Point(0, 0);
+			circle.draw(boundingBox, (byte) 0, canvas, point);
 
-		circle.setLatLong(new LatLong(0, 0));
-		circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.setLatLong(new LatLong(0, 0));
+			circle.draw(boundingBox, (byte) 0, canvas, point);
 
-		circle.setRadius(1);
-		circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.setRadius(1);
+			circle.draw(boundingBox, (byte) 0, canvas, point);
 
-		circle.setPaintFill(GRAPHIC_FACTORY.createPaint());
-		circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.setPaintFill(GRAPHIC_FACTORY.createPaint());
+			circle.draw(boundingBox, (byte) 0, canvas, point);
 
-		circle.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-		circle.draw(boundingBox, (byte) 0, canvas, point);
+			circle.setPaintStroke(GRAPHIC_FACTORY.createPaint());
+			circle.draw(boundingBox, (byte) 0, canvas, point);
+		}
 	}
 
 	@Test
@@ -88,13 +93,13 @@ public class CircleTest {
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Circle circle = new Circle(null, 0, null, null);
-		Assert.assertNull(circle.getLatLong());
+		Assert.assertNull(circle.getPosition());
 		Assert.assertEquals(0, circle.getRadius(), 0);
 		Assert.assertNull(circle.getPaintFill());
 		Assert.assertNull(circle.getPaintStroke());
 
 		circle.setLatLong(latLong);
-		Assert.assertEquals(latLong, circle.getLatLong());
+		Assert.assertEquals(latLong, circle.getPosition());
 
 		circle.setRadius(1);
 		Assert.assertEquals(1, circle.getRadius(), 0);

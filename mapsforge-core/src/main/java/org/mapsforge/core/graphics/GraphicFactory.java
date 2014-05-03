@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,9 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface GraphicFactory {
-	Bitmap createBitmap(InputStream inputStream) throws IOException;
-
 	Bitmap createBitmap(int width, int height);
+
+	Bitmap createBitmap(int width, int height, boolean isTransparent);
 
 	Canvas createCanvas();
 
@@ -33,4 +34,14 @@ public interface GraphicFactory {
 	Paint createPaint();
 
 	Path createPath();
+
+	ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
+
+	TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
+
+	TileBitmap createTileBitmap(int tileSize, boolean isTransparent);
+
+	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
+
+	ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException;
 }

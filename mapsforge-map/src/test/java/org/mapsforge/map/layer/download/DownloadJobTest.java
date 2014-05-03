@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,19 +25,22 @@ import org.mapsforge.map.layer.download.tilesource.OpenCycleMap;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.RendererJob;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class DownloadJobTest {
+	private static int tileSize = 256;
+
 	private static DownloadJob createDownloadJob(Tile tile, TileSource tileSource) {
-		return new DownloadJob(tile, tileSource);
+		return new DownloadJob(tile, tileSize, tileSource);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile, TileSource tileSource) {
 		try {
 			createDownloadJob(tile, tileSource);
 			Assert.fail("tile: " + tile + ", tileSource: " + tileSource);
-		} catch (IllegalArgumentException e) {
+		} catch (NullPointerException e) {
 			Assert.assertTrue(true);
 		}
 	}
@@ -56,9 +60,9 @@ public class DownloadJobTest {
 	@Test
 	public void equalsTest() {
 		Tile tile = new Tile(0, 0, (byte) 0);
-		DownloadJob downloadJob1 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
-		DownloadJob downloadJob2 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
-		DownloadJob downloadJob3 = new DownloadJob(tile, OpenCycleMap.INSTANCE);
+		DownloadJob downloadJob1 = new DownloadJob(tile, tileSize, OpenStreetMapMapnik.INSTANCE);
+		DownloadJob downloadJob2 = new DownloadJob(tile, tileSize, OpenStreetMapMapnik.INSTANCE);
+		DownloadJob downloadJob3 = new DownloadJob(tile, tileSize, OpenCycleMap.INSTANCE);
 
 		TestUtils.equalsTest(downloadJob1, downloadJob2);
 
@@ -68,6 +72,7 @@ public class DownloadJobTest {
 
 		File mapFile = new File("map.file");
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
-		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, xmlRenderTheme, 1));
+		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), 1,
+				false));
 	}
 }

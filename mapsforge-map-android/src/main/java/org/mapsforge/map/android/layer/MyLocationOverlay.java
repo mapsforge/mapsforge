@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -37,7 +38,11 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 
 /**
- * A thread-safe {@link Layer} implementation to display the current location.
+ * A thread-safe {@link Layer} implementation to display the current location. NOTE: This code really does not reflect
+ * Android best practice and used in production leads to bad user experience (e.g. long time to first fix, excessive
+ * battery use, non-compliance with the Android lifecycle...). Best use the new location services provided by Google
+ * Play Services. Also note that MyLocationOverlay needs to be added to a view before requesting location updates
+ * (otherwise no DisplayModel is set).
  */
 public class MyLocationOverlay extends Layer implements LocationListener {
 	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
@@ -150,6 +155,8 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 		}
 
 		this.centerAtNextFix = centerAtFirstFix;
+		this.circle.setDisplayModel(this.displayModel);
+		this.marker.setDisplayModel(this.displayModel);
 		return true;
 	}
 
@@ -182,14 +189,25 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	@Override
+	public void onDestroy() {
+		this.marker.onDestroy();
+	}
+
+	@Override
 	public void onLocationChanged(Location location) {
+
 		synchronized (this) {
 			this.lastLocation = location;
 
 			LatLong latLong = locationToLatLong(location);
 			this.marker.setLatLong(latLong);
 			this.circle.setLatLong(latLong);
-			this.circle.setRadius(location.getAccuracy());
+			if (location.getAccuracy() != 0) {
+				this.circle.setRadius(location.getAccuracy());
+			} else {
+				// on the emulator we do not get an accuracy
+				this.circle.setRadius(40);
+			}
 
 			if (this.centerAtNextFix || this.snapToLocationEnabled) {
 				this.centerAtNextFix = false;

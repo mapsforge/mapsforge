@@ -263,14 +263,15 @@ public final class GeoUtils {
 	 *            the simplification factor
 	 * @return the simplified geometry
 	 */
-	public static Geometry simplifyGeometry(TDWay way, Geometry geometry, byte zoomlevel, double simplificationFactor) {
+	public static Geometry simplifyGeometry(TDWay way, Geometry geometry, byte zoomlevel, int tileSize,
+			double simplificationFactor) {
 		Geometry ret = null;
 
 		Envelope bbox = geometry.getEnvelopeInternal();
 		// compute maximal absolute latitude (so that we don't need to care if we
 		// are on northern or southern hemisphere)
 		double latMax = Math.max(Math.abs(bbox.getMaxY()), Math.abs(bbox.getMinY()));
-		double deltaLat = deltaLat(simplificationFactor, latMax, zoomlevel);
+		double deltaLat = deltaLat(simplificationFactor, latMax, zoomlevel, tileSize);
 
 		try {
 			ret = TopologyPreservingSimplifier.simplify(geometry, deltaLat);
@@ -362,9 +363,9 @@ public final class GeoUtils {
 	}
 
 	// Computes the amount of latitude degrees for a given distance in pixel at a given zoom level.
-	private static double deltaLat(double deltaPixel, double lat, byte zoom) {
-		double pixelY = MercatorProjection.latitudeToPixelY(lat, zoom);
-		double lat2 = MercatorProjection.pixelYToLatitude(pixelY + deltaPixel, zoom);
+	private static double deltaLat(double deltaPixel, double lat, byte zoom, int tileSize) {
+		double pixelY = MercatorProjection.latitudeToPixelY(lat, zoom, tileSize);
+		double lat2 = MercatorProjection.pixelYToLatitude(pixelY + deltaPixel, zoom, tileSize);
 
 		return Math.abs(lat2 - lat);
 	}

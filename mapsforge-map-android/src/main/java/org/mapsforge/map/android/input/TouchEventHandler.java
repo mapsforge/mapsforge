@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,10 +19,14 @@ package org.mapsforge.map.android.input;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.util.MapViewProjection;
 
+import android.os.Handler;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.ViewConfiguration;
 
 public class TouchEventHandler {
@@ -31,15 +37,27 @@ public class TouchEventHandler {
 	}
 
 	private int activePointerId;
+	private LatLong lastLatLong;
+	private int lastNumberOfPointers;
 	private Point lastPosition;
+	private boolean longPressConsumed;
+	private Handler longPressHandler;
+	private boolean longPressInProgress;
 	private final float mapMoveDelta;
-	private final MapViewPosition mapViewPosition;
+	private final MapView mapView;
 	private boolean moveThresholdReached;
+	private Runnable onLongPress;
+	private final MapViewProjection projection;
+	private final ScaleGestureDetector scaleGestureDetector;
+
 	private final List<TouchEventListener> touchEventListeners = new CopyOnWriteArrayList<TouchEventListener>();
 
-	public TouchEventHandler(MapViewPosition mapViewPosition, ViewConfiguration viewConfiguration) {
-		this.mapViewPosition = mapViewPosition;
+	public TouchEventHandler(MapView mapView, ViewConfiguration viewConfiguration, ScaleGestureDetector sgd) {
+		this.longPressHandler = new Handler();
+		this.mapView = mapView;
 		this.mapMoveDelta = viewConfiguration.getScaledTouchSlop();
+		this.scaleGestureDetector = sgd;
+		this.projection = new MapViewProjection(this.mapView);
 	}
 
 	public void addListener(TouchEventListener touchEventListener) {
@@ -59,6 +77,11 @@ public class TouchEventHandler {
 	public boolean onTouchEvent(MotionEvent motionEvent) {
 		int action = getAction(motionEvent);
 
+		// workaround for a bug in the ScaleGestureDetector, see Android issue #12976
+		if (action != MotionEvent.ACTION_MOVE || motionEvent.getPointerCount() > 1) {
+			this.scaleGestureDetector.onTouchEvent(motionEvent);
+		}
+
 		switch (action) {
 			case MotionEvent.ACTION_DOWN:
 				return onActionDown(motionEvent);
@@ -71,6 +94,7 @@ public class TouchEventHandler {
 			case MotionEvent.ACTION_UP:
 				return onActionUp(motionEvent);
 			case MotionEvent.ACTION_CANCEL:
+				cancelLongPress();
 				return true;
 		}
 
@@ -87,23 +111,67 @@ public class TouchEventHandler {
 		this.touchEventListeners.remove(touchEventListener);
 	}
 
+	private void cancelLongPress() {
+		this.longPressInProgress = false;
+		if (this.onLongPress != null) {
+			this.longPressHandler.removeCallbacks(onLongPress);
+			this.onLongPress = null;
+		}
+	}
+
 	private boolean onActionDown(MotionEvent motionEvent) {
 		this.activePointerId = motionEvent.getPointerId(0);
 		this.lastPosition = new Point(motionEvent.getX(), motionEvent.getY());
+		try {
+			this.lastLatLong = projection.fromPixels(this.lastPosition.x, this.lastPosition.y);
+		} catch (IllegalArgumentException e) {
+			return true;
+		}
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		this.moveThresholdReached = false;
+
+		if (this.lastNumberOfPointers == 1) {
+			// set up a handler that will run after the long press interval expires,
+			// unless the operations is cancelled first
+			this.longPressInProgress = true;
+			this.longPressConsumed = false;
+			onLongPress = new Runnable() {
+				@Override
+				public void run() {
+					TouchEventHandler.this.longPressConsumed = true;
+					if (TouchEventHandler.this.longPressInProgress) {
+						if (TouchEventHandler.this.lastNumberOfPointers == 1) {
+							for (TouchEventListener touchEventListener : TouchEventHandler.this.touchEventListeners) {
+								touchEventListener.onLongPress(TouchEventHandler.this.lastLatLong,
+										TouchEventHandler.this.lastPosition);
+							}
+						}
+						TouchEventHandler.this.longPressInProgress = false;
+					}
+				}
+			};
+			this.longPressHandler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout());
+		}
 
 		return true;
 	}
 
 	private boolean onActionMove(MotionEvent motionEvent) {
+		if (this.scaleGestureDetector.isInProgress()) {
+			cancelLongPress();
+			return true;
+		}
+
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
 
 		float moveX = (float) (motionEvent.getX(pointerIndex) - this.lastPosition.x);
 		float moveY = (float) (motionEvent.getY(pointerIndex) - this.lastPosition.y);
 		if (this.moveThresholdReached) {
 			this.lastPosition = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
-			this.mapViewPosition.moveCenter(moveX, moveY);
+			this.mapView.getModel().mapViewPosition.moveCenter(moveX, moveY);
 		} else if (Math.abs(moveX) > this.mapMoveDelta || Math.abs(moveY) > this.mapMoveDelta) {
+			cancelLongPress();
 			this.moveThresholdReached = true;
 			this.lastPosition = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
 		}
@@ -112,6 +180,9 @@ public class TouchEventHandler {
 	}
 
 	private boolean onActionPointerDown(MotionEvent motionEvent) {
+
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
+
 		long eventTime = motionEvent.getEventTime();
 
 		for (TouchEventListener touchEventListener : this.touchEventListeners) {
@@ -122,6 +193,8 @@ public class TouchEventHandler {
 	}
 
 	private boolean onActionPointerUp(MotionEvent motionEvent) {
+
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
 		// extract the index of the pointer that left the touch sensor
 		int pointerIndex = (motionEvent.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
 
@@ -146,12 +219,24 @@ public class TouchEventHandler {
 	}
 
 	private boolean onActionUp(MotionEvent motionEvent) {
-		int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
-		Point point = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
-		long eventTime = motionEvent.getEventTime();
 
-		for (TouchEventListener touchEventListener : this.touchEventListeners) {
-			touchEventListener.onActionUp(point, eventTime, this.moveThresholdReached);
+		this.lastNumberOfPointers = motionEvent.getPointerCount();
+		if (longPressConsumed) {
+			// the press was consumed by a long press action, and the up must
+			// not be handled anymore.
+			return true;
+		}
+
+		cancelLongPress();
+
+		if (this.lastLatLong != null) {
+			int pointerIndex = motionEvent.findPointerIndex(this.activePointerId);
+			Point point = new Point(motionEvent.getX(pointerIndex), motionEvent.getY(pointerIndex));
+			long eventTime = motionEvent.getEventTime();
+
+			for (TouchEventListener touchEventListener : this.touchEventListeners) {
+				touchEventListener.onActionUp(this.lastLatLong, point, eventTime, this.moveThresholdReached);
+			}
 		}
 
 		return true;

@@ -18,7 +18,6 @@ import java.io.IOException;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Tag;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.reader.ReadBuffer;
 
@@ -155,9 +154,9 @@ final class RequiredFields {
 	static FileOpenResult readTilePixelSize(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
 		// get and check the tile pixel size (2 bytes)
 		int tilePixelSize = readBuffer.readShort();
-		if (tilePixelSize != Tile.TILE_SIZE) {
-			return new FileOpenResult("unsupported tile pixel size: " + tilePixelSize);
-		}
+		// if (tilePixelSize != Tile.TILE_SIZE) {
+		// return new FileOpenResult("unsupported tile pixel size: " + tilePixelSize);
+		// }
 		mapFileInfoBuilder.tilePixelSize = tilePixelSize;
 		return FileOpenResult.SUCCESS;
 	}

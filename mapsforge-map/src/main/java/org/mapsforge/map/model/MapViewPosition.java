@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,12 +18,68 @@ package org.mapsforge.map.model;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
+import org.mapsforge.map.util.PausableThread;
 
 public class MapViewPosition extends Observable implements Persistable {
+
+	class ZoomAnimator extends PausableThread {
+
+		// debugging tip: for investigating what happens during the zoom animation
+		// just make the times longer for duration and frame length
+		private static final int DEFAULT_DURATION = 250;
+		private static final int FRAME_LENGTH_IN_MS = 15;
+
+		double scaleDifference;
+		double startScaleFactor;
+		private boolean executeAnimation;
+		private long timeEnd;
+		private long timeStart;
+
+		@Override
+		protected void doWork() throws InterruptedException {
+			if (System.currentTimeMillis() >= this.timeEnd) {
+				this.executeAnimation = false;
+				MapViewPosition.this.setScaleFactor(calculateScaleFactor(1));
+				MapViewPosition.this.setPivot(null);
+			} else {
+				float timeElapsedRatio = (System.currentTimeMillis() - this.timeStart) / (1f * DEFAULT_DURATION);
+				MapViewPosition.this.setScaleFactor(calculateScaleFactor(timeElapsedRatio));
+			}
+			sleep(FRAME_LENGTH_IN_MS);
+		}
+
+		@Override
+		protected ThreadPriority getThreadPriority() {
+			return ThreadPriority.ABOVE_NORMAL;
+		}
+
+		@Override
+		protected boolean hasWork() {
+			return this.executeAnimation;
+		}
+
+		void startAnimation(double startScaleFactor, double targetScaleFactor) {
+			// TODO this is not properly synchronized
+			this.startScaleFactor = startScaleFactor;
+			this.scaleDifference = targetScaleFactor - this.startScaleFactor;
+			this.executeAnimation = true;
+			this.timeStart = System.currentTimeMillis();
+			this.timeEnd = this.timeStart + DEFAULT_DURATION;
+			synchronized (this) {
+				notify();
+			}
+		}
+
+		private double calculateScaleFactor(float percent) {
+			return this.startScaleFactor + this.scaleDifference * percent;
+		}
+	}
+
 	private static final String LATITUDE = "latitude";
 	private static final String LATITUDE_MAX = "latitudeMax";
 	private static final String LATITUDE_MIN = "latitudeMin";
@@ -43,17 +100,75 @@ public class MapViewPosition extends Observable implements Persistable {
 		return false;
 	}
 
+	private final DisplayModel displayModel;
 	private double latitude;
 	private double longitude;
 	private BoundingBox mapLimit;
+	private LatLong pivot;
+	private double scaleFactor;
+	private final ZoomAnimator zoomAnimator;
 	private byte zoomLevel;
 	private byte zoomLevelMax;
 	private byte zoomLevelMin;
 
-	public MapViewPosition() {
+	public MapViewPosition(DisplayModel displayModel) {
 		super();
-
+		this.displayModel = displayModel;
 		this.zoomLevelMax = Byte.MAX_VALUE;
+		this.zoomAnimator = new ZoomAnimator();
+		this.zoomAnimator.start();
+	}
+
+	/**
+	 * Start animating the map towards the given point.
+	 */
+	public void animateTo(final LatLong pos) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				final int totalSteps = 25; // Define the Step Number
+				int signX = 1; // Define the Sign for Horizontal Movement
+				int signY = 1; // Define the Sign for Vertical Movement
+				int tileSize = displayModel.getTileSize();
+
+				final double targetPixelX = MercatorProjection.longitudeToPixelX(pos.longitude, getZoomLevel(),
+						tileSize);
+				final double targetPixelY = MercatorProjection.latitudeToPixelY(pos.latitude, getZoomLevel(), tileSize);
+
+				final double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, getZoomLevel(), tileSize);
+				final double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, getZoomLevel(), tileSize);
+
+				final double stepSizeX = Math.abs(targetPixelX - currentPixelX) / totalSteps;
+				final double stepSizeY = Math.abs(targetPixelY - currentPixelY) / totalSteps;
+
+				/* Check the Signs */
+				if (currentPixelX < targetPixelX) {
+					signX = -1;
+				}
+
+				if (currentPixelY < targetPixelY) {
+					signY = -1;
+				}
+
+				/* Compute Scroll */
+				for (int i = 0; i < totalSteps; i++) {
+					moveCenter(stepSizeX * signX, stepSizeY * signY);
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// Nothing to do...
+					}
+				}
+			}
+		}).start();
+	}
+
+	public boolean animationInProgress() {
+		return this.scaleFactor != MercatorProjection.zoomLevelToScaleFactor(this.zoomLevel);
+	}
+
+	public void destroy() {
+		this.zoomAnimator.interrupt();
 	}
 
 	/**
@@ -75,6 +190,36 @@ public class MapViewPosition extends Observable implements Persistable {
 	 */
 	public synchronized MapPosition getMapPosition() {
 		return new MapPosition(getCenter(), this.zoomLevel);
+	}
+
+	/**
+	 * The pivot point is the point the map zooms around.
+	 *
+	 * @return the lat/long coordinates of the map pivot point if set or null otherwise.
+	 */
+
+	public synchronized LatLong getPivot() {
+		return this.pivot;
+	}
+
+	/**
+	 * The pivot point is the point the map zooms around. If the map zooms around its center null is returned, otherwise
+	 * the zoom-specific x/y pixel coordinates for the MercatorProjection (note: not the x/y coordinates for the map
+	 * view or the frame buffer, the MapViewPosition knows nothing about them).
+	 *
+	 * @param zoomLevel the zoomlevel to compute the x/y coordinates for
+	 * @return the x/y coordinates of the map pivot point if set or null otherwise.
+	 */
+
+	public synchronized Point getPivotXY(byte zoomLevel) {
+		if (this.pivot != null) {
+			return MercatorProjection.getPixel(this.pivot, zoomLevel, displayModel.getTileSize());
+		}
+		return null;
+	}
+
+	public synchronized double getScaleFactor() {
+		return this.scaleFactor;
 	}
 
 	/**
@@ -111,6 +256,7 @@ public class MapViewPosition extends Observable implements Persistable {
 		this.zoomLevel = preferencesFacade.getByte(ZOOM_LEVEL, (byte) 0);
 		this.zoomLevelMax = preferencesFacade.getByte(ZOOM_LEVEL_MAX, Byte.MAX_VALUE);
 		this.zoomLevelMin = preferencesFacade.getByte(ZOOM_LEVEL_MIN, (byte) 0);
+		this.scaleFactor = Math.pow(2, this.zoomLevel);
 	}
 
 	/**
@@ -122,17 +268,32 @@ public class MapViewPosition extends Observable implements Persistable {
 	 *            the amount of pixels to move this MapViewPosition vertically.
 	 */
 	public void moveCenter(double moveHorizontal, double moveVertical) {
-		synchronized (this) {
-			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, this.zoomLevel) - moveHorizontal;
-			double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, this.zoomLevel) - moveVertical;
+		this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0);
+	}
 
-			long mapSize = MercatorProjection.getMapSize(this.zoomLevel);
+	/**
+	 * Moves the center position of the map by the given amount of pixels.
+	 * 
+	 * @param moveHorizontal
+	 *            the amount of pixels to move this MapViewPosition horizontally.
+	 * @param moveVertical
+	 *            the amount of pixels to move this MapViewPosition vertically.
+	 */
+	public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff) {
+		synchronized (this) {
+			int tileSize = this.displayModel.getTileSize();
+			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, this.zoomLevel, tileSize)
+					- moveHorizontal;
+			double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, this.zoomLevel, tileSize) - moveVertical;
+
+			long mapSize = MercatorProjection.getMapSize(this.zoomLevel, tileSize);
 			pixelX = Math.min(Math.max(0, pixelX), mapSize);
 			pixelY = Math.min(Math.max(0, pixelY), mapSize);
 
-			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, this.zoomLevel);
-			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, this.zoomLevel);
+			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, this.zoomLevel, tileSize);
+			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, this.zoomLevel, tileSize);
 			setCenterInternal(new LatLong(newLatitude, newLongitude));
+			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
 		}
 		notifyObservers();
 	}
@@ -186,6 +347,38 @@ public class MapViewPosition extends Observable implements Persistable {
 		synchronized (this) {
 			setCenterInternal(mapPosition.latLong);
 			setZoomLevelInternal(mapPosition.zoomLevel);
+		}
+		notifyObservers();
+	}
+
+	/**
+	 * The pivot point is the point the map is scaled around when zooming. In normal mode the pivot point is whatever
+	 * the view center is (this is indicated by setting the pivot to null), but when hand-zooming the pivot point can be
+	 * any point on the map. It is stored as lat/long and retrieved as an x/y coordinate depending on the current zoom
+	 * level.
+	 * 
+	 * @param pivot
+	 *            lat/long of pivot point, null for map center
+	 */
+	public void setPivot(LatLong pivot) {
+		synchronized (this) {
+			this.pivot = pivot;
+		}
+	}
+
+	/**
+	 * Sets the new scale factor to be applied.
+	 */
+	public void setScaleFactor(double scaleFactor) {
+		synchronized (this) {
+			this.scaleFactor = scaleFactor;
+		}
+		notifyObservers();
+	}
+
+	public void setScaleFactorAdjustment(double adjustment) {
+		synchronized (this) {
+			this.setScaleFactor(Math.pow(2, zoomLevel) * adjustment);
 		}
 		notifyObservers();
 	}
@@ -269,5 +462,7 @@ public class MapViewPosition extends Observable implements Persistable {
 
 	private void setZoomLevelInternal(int zoomLevel) {
 		this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+		this.zoomAnimator.startAnimation(this.getScaleFactor(), Math.pow(2, this.zoomLevel));
 	}
+
 }

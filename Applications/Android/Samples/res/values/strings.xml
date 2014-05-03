@@ -2,7 +2,23 @@
 <resources>
 
     <string name="copyright_osm">Map data © OpenStreetMap contributors</string>
-    <string name="title_item_list">Items</string>
-    <string name="title_item_detail">Item Detail</string>
+
+   	<string name="menu_preferences">Settings</string>
+   	<string name="menu_position_enter_coordinates">Map Position</string>
+
+	<string name="cancelbutton">Cancel</string>
+   	<string name="okbutton">OK</string>
+   	
+	<string name="latitude">Latitude</string>
+	<string name="longitude">Longitude</string>
+	<string name="zoomlevel">Zoom Level</string>
+		
+    <string name="preferences_scale">Display Scale</string>
+    <string name="preferences_scale_desc">Adjust scale of the map display</string>   
+   
+    <string name="dialog_location_title">Coordinates</string>
+
+    <string name="startup_dontshowagain">Don\'t show again</string>
+    <string name="startup_message">To run this samples app, you need a map called germany.map installed on the sdcard.</string>
 
 </resources>

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,13 +21,13 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.TestUtils;
 
 public class JobTest {
-	private static Job createJob(Tile tile) {
-		return new Job(tile);
+	private static Job createJob(Tile tile, int tileSize) {
+		return new Job(tile, tileSize, false);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile) {
 		try {
-			createJob(tile);
+			createJob(tile, 1);
 			Assert.fail("tile: " + tile);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
@@ -35,9 +36,9 @@ public class JobTest {
 
 	@Test
 	public void equalsTest() {
-		Job job1 = new Job(new Tile(0, 1, (byte) 2));
-		Job job2 = new Job(new Tile(0, 1, (byte) 2));
-		Job job3 = new Job(new Tile(0, 0, (byte) 0));
+		Job job1 = new Job(new Tile(0, 1, (byte) 2), 1, false);
+		Job job2 = new Job(new Tile(0, 1, (byte) 2), 1, false);
+		Job job3 = new Job(new Tile(0, 0, (byte) 0), 1, false);
 
 		TestUtils.equalsTest(job1, job2);
 
@@ -48,7 +49,7 @@ public class JobTest {
 
 	@Test
 	public void jobTest() {
-		Job job = createJob(new Tile(0, 1, (byte) 2));
+		Job job = createJob(new Tile(0, 1, (byte) 2), 1);
 		Assert.assertEquals(new Tile(0, 1, (byte) 2), job.tile);
 
 		verifyInvalidConstructor(null);

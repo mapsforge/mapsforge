@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -167,15 +168,15 @@ class LabelPlacement {
 	 * @return the processed list of labels.
 	 */
 	List<PointTextContainer> placeLabels(List<PointTextContainer> labels, List<SymbolContainer> symbols,
-			List<PointTextContainer> areaLabels, Tile cT) {
+			List<PointTextContainer> areaLabels, Tile cT, int tileSize) {
 		List<PointTextContainer> returnLabels = labels;
 		this.dependencyCache.generateTileAndDependencyOnTile(cT);
 
-		preprocessAreaLabels(areaLabels);
+		preprocessAreaLabels(areaLabels, tileSize);
 
-		preprocessLabels(returnLabels);
+		preprocessLabels(returnLabels, tileSize);
 
-		preprocessSymbols(symbols);
+		preprocessSymbols(symbols, tileSize);
 
 		removeEmptySymbolReferences(returnLabels, symbols);
 
@@ -184,10 +185,10 @@ class LabelPlacement {
 		this.dependencyCache.removeOverlappingObjectsWithDependencyOnTile(returnLabels, areaLabels, symbols);
 
 		if (!returnLabels.isEmpty()) {
-			returnLabels = processFourPointGreedy(returnLabels, symbols, areaLabels);
+			returnLabels = processFourPointGreedy(returnLabels, symbols, areaLabels, tileSize);
 		}
 
-		this.dependencyCache.fillDependencyOnTile(returnLabels, symbols, areaLabels);
+		this.dependencyCache.fillDependencyOnTile(returnLabels, symbols, areaLabels, tileSize);
 
 		return returnLabels;
 	}
@@ -205,26 +206,26 @@ class LabelPlacement {
 		}
 	}
 
-	private void preprocessAreaLabels(List<PointTextContainer> areaLabels) {
+	private void preprocessAreaLabels(List<PointTextContainer> areaLabels, int tileSize) {
 		centerLabels(areaLabels);
 
-		removeOutOfTileAreaLabels(areaLabels);
+		removeOutOfTileAreaLabels(areaLabels, tileSize);
 
 		removeOverlappingAreaLabels(areaLabels);
 
 		if (!areaLabels.isEmpty()) {
-			this.dependencyCache.removeAreaLabelsInAlreadyDrawnAreas(areaLabels);
+			this.dependencyCache.removeAreaLabelsInAlreadyDrawnAreas(areaLabels, tileSize);
 		}
 	}
 
-	private void preprocessLabels(List<PointTextContainer> labels) {
-		removeOutOfTileLabels(labels);
+	private void preprocessLabels(List<PointTextContainer> labels, int tileSize) {
+		removeOutOfTileLabels(labels, tileSize);
 	}
 
-	private void preprocessSymbols(List<SymbolContainer> symbols) {
-		removeOutOfTileSymbols(symbols);
+	private void preprocessSymbols(List<SymbolContainer> symbols, int tileSize) {
+		removeOutOfTileSymbols(symbols, tileSize);
 		removeOverlappingSymbols(symbols);
-		this.dependencyCache.removeSymbolsFromDrawnAreas(symbols);
+		this.dependencyCache.removeSymbolsFromDrawnAreas(symbols, tileSize);
 	}
 
 	/**
@@ -243,7 +244,7 @@ class LabelPlacement {
 	 * @return list of labels without overlaps with symbols and other labels by the four fixed position greedy strategy
 	 */
 	private List<PointTextContainer> processFourPointGreedy(List<PointTextContainer> labels,
-			List<SymbolContainer> symbols, List<PointTextContainer> areaLabels) {
+			List<SymbolContainer> symbols, List<PointTextContainer> areaLabels, int tileSize) {
 		List<PointTextContainer> resolutionSet = new ArrayList<PointTextContainer>();
 
 		// Array for the generated reference positions around the points of interests
@@ -266,23 +267,25 @@ class LabelPlacement {
 					tmp = labels.get(z);
 
 					// up
-					refPos[z * 4] = new ReferencePosition(tmp.x - tmp.boundary.getWidth() / 2, tmp.y
-							- tmp.symbol.symbol.getHeight() / 2 - dis, z, tmp.boundary.getWidth(),
+					refPos[z * 4] = new ReferencePosition(tmp.x - (float) tmp.boundary.getWidth() / 2, tmp.y
+							- (float) tmp.symbol.symbol.getHeight() / 2 - dis, z, tmp.boundary.getWidth(),
 							tmp.boundary.getHeight());
 					// down
-					refPos[z * 4 + 1] = new ReferencePosition(tmp.x - tmp.boundary.getWidth() / 2, tmp.y
-							+ tmp.symbol.symbol.getHeight() / 2 + tmp.boundary.getHeight() + dis, z,
+					refPos[z * 4 + 1] = new ReferencePosition(tmp.x - (float) tmp.boundary.getWidth() / 2, tmp.y
+							+ (float) tmp.symbol.symbol.getHeight() / 2 + (float) tmp.boundary.getHeight() + dis, z,
 							tmp.boundary.getWidth(), tmp.boundary.getHeight());
 					// left
-					refPos[z * 4 + 2] = new ReferencePosition(tmp.x - tmp.symbol.symbol.getWidth() / 2
-							- tmp.boundary.getWidth() - dis, tmp.y + tmp.boundary.getHeight() / 2, z,
+					refPos[z * 4 + 2] = new ReferencePosition(tmp.x - (float) tmp.symbol.symbol.getWidth() / 2
+							- tmp.boundary.getWidth() - dis, tmp.y + (float) tmp.boundary.getHeight() / 2, z,
 							tmp.boundary.getWidth(), tmp.boundary.getHeight());
 					// right
-					refPos[z * 4 + 3] = new ReferencePosition(tmp.x + tmp.symbol.symbol.getWidth() / 2 + dis, tmp.y
-							+ tmp.boundary.getHeight() / 2 - 0.1f, z, tmp.boundary.getWidth(), tmp.boundary.getHeight());
+					refPos[z * 4 + 3] = new ReferencePosition(tmp.x + (float) tmp.symbol.symbol.getWidth() / 2 + dis,
+							tmp.y + (float) tmp.boundary.getHeight() / 2 - 0.1f, z, tmp.boundary.getWidth(),
+							tmp.boundary.getHeight());
 				} else {
-					refPos[z * 4] = new ReferencePosition(labels.get(z).x - ((labels.get(z).boundary.getWidth()) / 2),
-							labels.get(z).y, z, labels.get(z).boundary.getWidth(), labels.get(z).boundary.getHeight());
+					refPos[z * 4] = new ReferencePosition(labels.get(z).x
+							- (((float) labels.get(z).boundary.getWidth()) / 2), labels.get(z).y, z,
+							labels.get(z).boundary.getWidth(), labels.get(z).boundary.getHeight());
 					refPos[z * 4 + 1] = null;
 					refPos[z * 4 + 2] = null;
 					refPos[z * 4 + 3] = null;
@@ -290,7 +293,7 @@ class LabelPlacement {
 			}
 		}
 
-		removeNonValidateReferencePosition(refPos, symbols, areaLabels);
+		removeNonValidateReferencePosition(refPos, symbols, areaLabels, tileSize);
 
 		// do while it gives reference positions
 		for (int i = 0; i < refPos.length; i++) {
@@ -371,7 +374,7 @@ class LabelPlacement {
 	 *            actual list of the area labels
 	 */
 	private void removeNonValidateReferencePosition(ReferencePosition[] refPos, List<SymbolContainer> symbols,
-			List<PointTextContainer> areaLabels) {
+			List<PointTextContainer> areaLabels, int tileSize) {
 		int distance = LABEL_DISTANCE_TO_SYMBOL;
 
 		for (int i = 0; i < symbols.size(); i++) {
@@ -412,7 +415,7 @@ class LabelPlacement {
 			}
 		}
 
-		this.dependencyCache.removeReferencePointsFromDependencyCache(refPos);
+		this.dependencyCache.removeReferencePointsFromDependencyCache(refPos, tileSize);
 	}
 
 	/**
@@ -421,15 +424,15 @@ class LabelPlacement {
 	 * @param areaLabels
 	 *            area Labels from the actual object
 	 */
-	private void removeOutOfTileAreaLabels(List<PointTextContainer> areaLabels) {
+	private void removeOutOfTileAreaLabels(List<PointTextContainer> areaLabels, int tileSize) {
 		for (int i = 0; i < areaLabels.size(); i++) {
 			this.label = areaLabels.get(i);
 
-			if (this.label.x > Tile.TILE_SIZE) {
+			if (this.label.x > tileSize) {
 				areaLabels.remove(i);
 
 				i--;
-			} else if (this.label.y - this.label.boundary.getHeight() > Tile.TILE_SIZE) {
+			} else if (this.label.y - this.label.boundary.getHeight() > tileSize) {
 				areaLabels.remove(i);
 
 				i--;
@@ -451,14 +454,14 @@ class LabelPlacement {
 	 * @param labels
 	 *            Labels from the actual object
 	 */
-	private void removeOutOfTileLabels(List<PointTextContainer> labels) {
+	private void removeOutOfTileLabels(List<PointTextContainer> labels, int tileSize) {
 		for (int i = 0; i < labels.size();) {
 			this.label = labels.get(i);
 
-			if (this.label.x - this.label.boundary.getWidth() / 2 > Tile.TILE_SIZE) {
+			if (this.label.x - this.label.boundary.getWidth() / 2 > tileSize) {
 				labels.remove(i);
 				this.label = null;
-			} else if (this.label.y - this.label.boundary.getHeight() > Tile.TILE_SIZE) {
+			} else if (this.label.y - this.label.boundary.getHeight() > tileSize) {
 				labels.remove(i);
 				this.label = null;
 			} else if ((this.label.x - this.label.boundary.getWidth() / 2 + this.label.boundary.getWidth()) < 0.0f) {
@@ -479,13 +482,13 @@ class LabelPlacement {
 	 * @param symbols
 	 *            Symbols from the actual object
 	 */
-	private void removeOutOfTileSymbols(List<SymbolContainer> symbols) {
+	private void removeOutOfTileSymbols(List<SymbolContainer> symbols, int tileSize) {
 		for (int i = 0; i < symbols.size();) {
 			this.symbolContainer = symbols.get(i);
 
-			if (this.symbolContainer.point.x > Tile.TILE_SIZE) {
+			if (this.symbolContainer.point.x > tileSize) {
 				symbols.remove(i);
-			} else if (this.symbolContainer.point.y > Tile.TILE_SIZE) {
+			} else if (this.symbolContainer.point.y > tileSize) {
 				symbols.remove(i);
 			} else if (this.symbolContainer.point.x + this.symbolContainer.symbol.getWidth() < 0.0f) {
 				symbols.remove(i);

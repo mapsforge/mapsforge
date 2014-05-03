@@ -1,0 +1,121 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:0.9.+'
+  }
+}
+
+def filterProjects(filter) { 
+  return subprojects.findAll { project -> filter.contains(project.name) }
+} 
+
+
+allprojects {
+  group = 'org.mapsforge'
+  version = '0.4.0-rc1'
+  ext.androidBuildVersionTools = "19.0.3"
+  ext.jUnitVersion = "4.11"
+  description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
+}
+
+// no injection of functions, so via inheritance
+def androidMinSdk() { return 9 }
+def androidTargetSdk() { return 19 }
+def versionCode() { return 40 }
+def versionName() { return version }
+
+
+// Configuration injection for all subprojects
+
+subprojects {
+  repositories {        
+    mavenCentral()
+  }
+}	    	    
+
+// Configuration for all plain Java projects
+
+project.ext.javaprojects = ["mapsforge-core", "mapsforge-map-reader", "mapsforge-map", "mapsforge-map-awt", "mapsforge-map-writer", "SwingMapViewer"]
+
+configure(filterProjects(project.javaprojects)) { 
+  apply plugin: 'java'	
+  apply plugin: 'checkstyle'
+  apply plugin: 'pmd'
+
+  dependencies {
+    testCompile group: 'junit', name: 'junit', version:"$jUnitVersion"
+  }
+  
+  checkstyle {
+    showViolations = false  // turn on for reporting
+    configFile = new File("config/checkstyle/checkstyle.xml")
+  }
+
+  // set java source encoding, otherwise some tests fail
+  [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+  pmd {
+    ruleSetFiles = files("../config/pmd/pmd_ruleset.xml") 
+    ignoreFailures = true
+  }
+} 
+
+// Configuration for Android projects
+project.ext.androidlibraryprojects = ["svg-android", "mapsforge-map-android"]
+project.ext.androidapkprojects = ["Samples"] 
+project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
+
+// TODO get checkstyle and pmd working for android (right now it does not work out of the box, so better wait for official fix)
+
+configure(filterProjects(project.androidapkprojects)) { 
+  apply plugin: 'android'
+}
+
+
+configure(filterProjects(project.androidlibraryprojects)) { 
+  apply plugin: 'android-library'
+
+  android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
+      return; // Skip debug builds.
+    }
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    artifacts.add('archives', task);
+  }
+}
+
+configure(filterProjects(project.androidprojects)) { 
+
+  android {
+    compileSdkVersion androidTargetSdk()
+    buildToolsVersion "$androidBuildVersionTools"
+
+    compileOptions {
+      sourceCompatibility JavaVersion.VERSION_1_7
+      targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    defaultConfig {
+      versionCode versionCode()
+      versionName versionName()
+      minSdkVersion androidMinSdk()
+      targetSdkVersion androidTargetSdk()
+    }
+
+    sourceSets {
+      main {
+	manifest.srcFile 'AndroidManifest.xml'
+	java.srcDirs = ['src/main/java']
+	resources.srcDirs = ['src']
+	res.srcDirs = ['res']
+	assets.srcDirs = ['assets']
+      }
+    }
+  }
+} 
+

@@ -5,12 +5,11 @@
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
-		<version>0.4.0-SNAPSHOT</version>
+		<version>0.4.0-rc1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>mapsforge-map</artifactId>
-	<packaging>jar</packaging>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>

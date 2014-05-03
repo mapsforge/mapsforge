@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,29 +23,25 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 
 public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private static final int DOWNLOAD_THREADS_MAX = 8;
 
-	private final TileDownloadThread[] tileDownloadThreads;
+	private final GraphicFactory graphicFactory;
+	private boolean started;
+	private final TileCache tileCache;
+	private TileDownloadThread[] tileDownloadThreads;
 	private final TileSource tileSource;
 
 	public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
 			GraphicFactory graphicFactory) {
-		super(tileCache, mapViewPosition, graphicFactory);
+		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), tileSource.hasAlpha());
 
-		if (tileSource == null) {
-			throw new IllegalArgumentException("tileSource must not be null");
-		}
-
+		this.tileCache = tileCache;
 		this.tileSource = tileSource;
-
-		int numberOfDownloadThreads = Math.min(tileSource.getParallelRequestsLimit(), DOWNLOAD_THREADS_MAX);
-		this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
-		for (int i = 0; i < numberOfDownloadThreads; ++i) {
-			this.tileDownloadThreads[i] = new TileDownloadThread(tileCache, this.jobQueue, this, graphicFactory);
-		}
+		this.graphicFactory = graphicFactory;
 	}
 
 	@Override
@@ -56,28 +53,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
 	}
 
-	public void start() {
-		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-			tileDownloadThread.start();
-		}
-	}
-
 	@Override
-	protected DownloadJob createJob(Tile tile) {
-		return new DownloadJob(tile, this.tileSource);
-	}
-
-	@Override
-	protected void onAdd() {
-		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-			tileDownloadThread.proceed();
-		}
-
-		super.onAdd();
-	}
-
-	@Override
-	protected void onDestroy() {
+	public void onDestroy() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
 			tileDownloadThread.interrupt();
 		}
@@ -85,12 +62,50 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		super.onDestroy();
 	}
 
-	@Override
-	protected void onRemove() {
+	public void onPause() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
 			tileDownloadThread.pause();
 		}
+	}
 
-		super.onRemove();
+	public void onResume() {
+		if (!started) {
+			start();
+		}
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.proceed();
+		}
+	}
+
+	@Override
+	public synchronized void setDisplayModel(DisplayModel displayModel) {
+		super.setDisplayModel(displayModel);
+		int numberOfDownloadThreads = Math.min(tileSource.getParallelRequestsLimit(), DOWNLOAD_THREADS_MAX);
+		if (this.displayModel != null) {
+			this.tileDownloadThreads = new TileDownloadThread[numberOfDownloadThreads];
+			for (int i = 0; i < numberOfDownloadThreads; ++i) {
+				this.tileDownloadThreads[i] = new TileDownloadThread(this.tileCache, this.jobQueue, this,
+						this.graphicFactory, this.displayModel);
+			}
+		} else {
+			if (this.tileDownloadThreads != null) {
+				for (int i = 0; i < tileDownloadThreads.length; ++i) {
+					this.tileDownloadThreads[i].interrupt();
+				}
+			}
+		}
+
+	}
+
+	public void start() {
+		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
+			tileDownloadThread.start();
+		}
+		started = true;
+	}
+
+	@Override
+	protected DownloadJob createJob(Tile tile) {
+		return new DownloadJob(tile, this.displayModel.getTileSize(), this.tileSource);
 	}
 }

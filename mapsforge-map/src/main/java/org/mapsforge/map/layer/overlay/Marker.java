@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -51,14 +52,22 @@ public class Marker extends Layer {
 		this.verticalOffset = verticalOffset;
 	}
 
+	public synchronized boolean contains(Point center, Point point) {
+		Rectangle r = new Rectangle(center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset, center.y
+				- (float) bitmap.getHeight() / 2 + this.verticalOffset, center.x + (float) bitmap.getWidth() / 2
+				+ this.horizontalOffset, center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
+		return r.contains(point);
+	}
+
 	@Override
 	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (this.latLong == null || this.bitmap == null) {
 			return;
 		}
 
-		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, zoomLevel);
-		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, zoomLevel);
+		int tileSize = this.displayModel.getTileSize();
+		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, zoomLevel, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, zoomLevel, tileSize);
 
 		int halfBitmapWidth = this.bitmap.getWidth() / 2;
 		int halfBitmapHeight = this.bitmap.getHeight() / 2;
@@ -99,10 +108,24 @@ public class Marker extends Layer {
 	}
 
 	/**
+	 * @return Gets the LatLong Position of the Object
+	 */
+	public synchronized LatLong getPosition() {
+		return this.latLong;
+	}
+
+	/**
 	 * @return the vertical offset of this marker.
 	 */
 	public synchronized int getVerticalOffset() {
 		return this.verticalOffset;
+	}
+
+	@Override
+	public synchronized void onDestroy() {
+		if (this.bitmap != null) {
+			this.bitmap.decrementRefCount();
+		}
 	}
 
 	/**
@@ -110,6 +133,12 @@ public class Marker extends Layer {
 	 *            the new {@code Bitmap} of this marker (may be null).
 	 */
 	public synchronized void setBitmap(Bitmap bitmap) {
+		if (this.bitmap != null && this.bitmap.equals(bitmap)) {
+			return;
+		}
+		if (this.bitmap != null) {
+			this.bitmap.decrementRefCount();
+		}
 		this.bitmap = bitmap;
 	}
 
@@ -136,4 +165,5 @@ public class Marker extends Layer {
 	public synchronized void setVerticalOffset(int verticalOffset) {
 		this.verticalOffset = verticalOffset;
 	}
+
 }

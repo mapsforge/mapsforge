@@ -37,6 +37,11 @@ public class Area implements RenderInstruction {
 	}
 
 	@Override
+	public void destroy() {
+		// no-op
+	}
+
+	@Override
 	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
 		// do nothing
 	}
@@ -57,4 +62,5 @@ public class Area implements RenderInstruction {
 	public void scaleTextSize(float scaleFactor) {
 		// do nothing
 	}
+
 }

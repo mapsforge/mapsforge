@@ -5,12 +5,11 @@
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
-		<version>0.4.0-SNAPSHOT</version>
+		<version>0.4.0-rc1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>SwingMapViewer</artifactId>
-	<packaging>jar</packaging>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
@@ -69,6 +68,11 @@
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-map-reader</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 		</dependency>
 	</dependencies>
 </project>

@@ -40,7 +40,13 @@ class AndroidMatrix implements Matrix {
 	}
 
 	@Override
+	public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
+		this.matrix.preScale(scaleX, scaleY, pivotX, pivotY);
+	}
+
+	@Override
 	public void translate(float translateX, float translateY) {
 		this.matrix.preTranslate(translateX, translateY);
 	}
+
 }

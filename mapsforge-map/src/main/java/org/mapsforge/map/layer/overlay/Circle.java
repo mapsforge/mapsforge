@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,9 +31,6 @@ import org.mapsforge.map.layer.Layer;
  * drawing parameters such as color, stroke width, pattern and transparency.
  */
 public class Circle extends Layer {
-	private static double metersToPixels(double latitude, float meters, byte zoom) {
-		return meters / MercatorProjection.calculateGroundResolution(latitude, zoom);
-	}
 
 	private LatLong latLong;
 	private Paint paintFill;
@@ -68,9 +66,10 @@ public class Circle extends Layer {
 
 		double latitude = this.latLong.latitude;
 		double longitude = this.latLong.longitude;
-		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel) - topLeftPoint.x);
-		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel) - topLeftPoint.y);
-		int radiusInPixel = (int) metersToPixels(latitude, this.radius, zoomLevel);
+		int tileSize = displayModel.getTileSize();
+		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel, tileSize) - topLeftPoint.x);
+		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel, tileSize) - topLeftPoint.y);
+		int radiusInPixel = getRadiusInPixels(latitude, zoomLevel);
 
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
 		if (!canvasRectangle.intersectsCircle(pixelX, pixelY, radiusInPixel)) {
@@ -86,13 +85,6 @@ public class Circle extends Layer {
 	}
 
 	/**
-	 * @return the center point of this circle (may be null).
-	 */
-	public synchronized LatLong getLatLong() {
-		return this.latLong;
-	}
-
-	/**
 	 * @return the {@code Paint} used to fill this circle (may be null).
 	 */
 	public synchronized Paint getPaintFill() {
@@ -104,6 +96,14 @@ public class Circle extends Layer {
 	 */
 	public synchronized Paint getPaintStroke() {
 		return this.paintStroke;
+	}
+
+	/**
+	 * @return the center point of this circle (may be null).
+	 */
+	@Override
+	public synchronized LatLong getPosition() {
+		return this.latLong;
 	}
 
 	/**
@@ -147,10 +147,15 @@ public class Circle extends Layer {
 		setRadiusInternal(radius);
 	}
 
+	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
+		return (int) MercatorProjection.metersToPixels(this.radius, latitude, zoomLevel, displayModel.getTileSize());
+	}
+
 	private void setRadiusInternal(float radius) {
 		if (radius < 0 || Float.isNaN(radius)) {
 			throw new IllegalArgumentException("invalid radius: " + radius);
 		}
 		this.radius = radius;
 	}
+
 }

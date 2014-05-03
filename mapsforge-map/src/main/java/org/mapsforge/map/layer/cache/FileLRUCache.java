@@ -37,8 +37,8 @@ class FileLRUCache<T> extends LRUCache<T, File> {
 			if (file.exists() && !file.delete()) {
 				LOGGER.log(Level.SEVERE, "could not delete file: " + file);
 			}
+			return true;
 		}
-
 		return false;
 	}
 }

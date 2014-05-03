@@ -21,7 +21,7 @@ import org.mapsforge.map.model.common.Observable;
 public class FrameBufferModel extends Observable {
 	private Dimension dimension;
 	private MapPosition mapPosition;
-	private double overdrawFactor = 1.5;
+	private double overdrawFactor = 1.2;
 
 	/**
 	 * @return the current dimension of the {@code FrameBuffer} (may be null).

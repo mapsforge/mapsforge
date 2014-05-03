@@ -22,45 +22,54 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 
 public class MapPositionUtilTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	@Test
 	public void getBoundingBoxTest() {
-		MapPosition mapPosition = new MapPosition(new LatLong(0, 0), (byte) 0);
-		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
-		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
+		for (int tileSize : TILE_SIZES) {
+			MapPosition mapPosition = new MapPosition(new LatLong(0, 0), (byte) 0);
+			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
+			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 
-		double latitudeMin = MercatorProjection.LATITUDE_MIN;
-		double latitudeMax = MercatorProjection.LATITUDE_MAX;
+			double latitudeMin = MercatorProjection.LATITUDE_MIN;
+			double latitudeMax = MercatorProjection.LATITUDE_MAX;
 
-		BoundingBox expectedBoundingBox = new BoundingBox(latitudeMin, -180, latitudeMax, 180);
-		Assert.assertEquals(expectedBoundingBox, MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension()));
+			BoundingBox expectedBoundingBox = new BoundingBox(latitudeMin, -180, latitudeMax, 180);
+			Assert.assertEquals(expectedBoundingBox,
+					MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
 
-		mapPosition = new MapPosition(new LatLong(0, 90), (byte) 0);
-		expectedBoundingBox = new BoundingBox(latitudeMin, -90, latitudeMax, 180);
-		Assert.assertEquals(expectedBoundingBox, MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension()));
+			mapPosition = new MapPosition(new LatLong(0, 90), (byte) 0);
+			expectedBoundingBox = new BoundingBox(latitudeMin, -90, latitudeMax, 180);
+			Assert.assertEquals(expectedBoundingBox,
+					MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
 
-		mapPosition = new MapPosition(new LatLong(90, -180), (byte) 0);
-		expectedBoundingBox = new BoundingBox(0, -180, latitudeMax, 0);
-		Assert.assertEquals(expectedBoundingBox, MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension()));
+			mapPosition = new MapPosition(new LatLong(90, -180), (byte) 0);
+			expectedBoundingBox = new BoundingBox(0, -180, latitudeMax, 0);
+			Assert.assertEquals(expectedBoundingBox,
+					MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
+		}
 	}
 
 	@Test
 	public void getTopLeftPointTest() {
-		MapPosition mapPosition = new MapPosition(new LatLong(0, 0), (byte) 0);
-		Canvas canvas = GRAPHIC_FACTORY.createCanvas();
-		canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(Tile.TILE_SIZE, Tile.TILE_SIZE));
+		for (int tileSize : TILE_SIZES) {
+			MapPosition mapPosition = new MapPosition(new LatLong(0, 0), (byte) 0);
+			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
+			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 
-		Point expectedPoint = new Point(0, 0);
-		Assert.assertEquals(expectedPoint, MapPositionUtil.getTopLeftPoint(mapPosition, canvas.getDimension()));
+			Point expectedPoint = new Point(0, 0);
+			Assert.assertEquals(expectedPoint,
+					MapPositionUtil.getTopLeftPoint(mapPosition, canvas.getDimension(), tileSize));
 
-		mapPosition = new MapPosition(new LatLong(0, 90), (byte) 1);
-		expectedPoint = new Point(Tile.TILE_SIZE, Tile.TILE_SIZE / 2);
-		Assert.assertEquals(expectedPoint, MapPositionUtil.getTopLeftPoint(mapPosition, canvas.getDimension()));
+			mapPosition = new MapPosition(new LatLong(0, 90), (byte) 1);
+			expectedPoint = new Point(tileSize, (float) tileSize / 2);
+			Assert.assertEquals(expectedPoint,
+					MapPositionUtil.getTopLeftPoint(mapPosition, canvas.getDimension(), tileSize));
+		}
 	}
 }

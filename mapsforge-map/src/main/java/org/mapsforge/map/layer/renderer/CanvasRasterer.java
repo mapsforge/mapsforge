@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,7 @@ import java.util.List;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Point;
@@ -32,6 +34,10 @@ class CanvasRasterer {
 		this.canvas = graphicFactory.createCanvas();
 		this.symbolMatrix = graphicFactory.createMatrix();
 		this.path = graphicFactory.createPath();
+	}
+
+	void destroy() {
+		this.canvas.destroy();
 	}
 
 	void drawNodes(List<PointTextContainer> pointTextContainers) {
@@ -94,7 +100,9 @@ class CanvasRasterer {
 	}
 
 	void fill(int color) {
-		this.canvas.fillColor(color);
+		if (GraphicUtils.getAlpha(color) > 0) {
+			this.canvas.fillColor(color);
+		}
 	}
 
 	void setCanvasBitmap(Bitmap bitmap) {
@@ -114,7 +122,7 @@ class CanvasRasterer {
 			Point[] points = coordinates[j];
 			if (points.length >= 2) {
 				Point point = points[0];
-				this.path.moveTo((int) point.x, (int) point.y);
+				this.path.moveTo((float) point.x, (float) point.y);
 				for (int i = 1; i < points.length; ++i) {
 					point = points[i];
 					this.path.lineTo((int) point.x, (int) point.y);

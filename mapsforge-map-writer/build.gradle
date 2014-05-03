@@ -1,0 +1,28 @@
+configurations { providedCompile }
+
+dependencies {
+  compile project(":mapsforge-core")
+  compile group: 'net.sf.trove4j', name: 'trove4j', version:'3.0.3'
+  compile(group: 'com.vividsolutions', name: 'jts', version:'1.13') {
+    exclude(module: 'xercesImpl')
+  }
+  compile group: 'com.google.guava', name: 'guava', version:'17.0'
+  providedCompile group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version:'0.43.1' 
+}
+
+sourceSets.main.compileClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.providedCompile
+sourceSets.test.runtimeClasspath += configurations.providedCompile
+
+
+jar {
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  from('src/main/config/') {
+    include 'default.properties'
+    include 'plugin.xml'
+    include 'tag-mapping.xml'
+    filter {
+      line -> line.replace('${mapfile.writer.version}', version)
+    }
+  }
+}
