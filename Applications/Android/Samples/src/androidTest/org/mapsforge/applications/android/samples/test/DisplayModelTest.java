@@ -9,7 +9,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class DisplayModelTest extends ActivityInstrumentationTestCase2<DualMapViewerWithDifferentDisplayModels> {
 
 	Solo solo;
-	final int iterations = TestUtils.iterations;
+	final static int iterations = TestUtils.iterations;
 
 	public DisplayModelTest() {
 		super(DualMapViewerWithDifferentDisplayModels.class);

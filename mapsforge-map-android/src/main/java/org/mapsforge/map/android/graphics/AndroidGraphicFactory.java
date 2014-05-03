@@ -94,7 +94,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	/**
 	 * return the byte usage per pixel of a bitmap based on its configuration.
 	 */
-	static public int getBytesPerPixel(Config config) {
+	public static int getBytesPerPixel(Config config) {
 		if (config == Config.ARGB_8888) {
 			return 4;
 		} else if (config == Config.RGB_565) {

@@ -9,7 +9,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class BasicMapViewerXmlTest extends ActivityInstrumentationTestCase2<BasicMapViewerXml> {
 
 	Solo solo;
-	final int iterations = TestUtils.iterations;
+	final static int iterations = TestUtils.iterations;
 
 	public BasicMapViewerXmlTest() {
 		super(BasicMapViewerXml.class);

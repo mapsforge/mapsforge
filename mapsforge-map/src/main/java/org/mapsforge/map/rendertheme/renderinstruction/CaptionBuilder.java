@@ -38,7 +38,7 @@ import java.util.Locale;
  */
 public class CaptionBuilder extends RenderInstructionBuilder {
 
-	public final static float DEFAULT_GAP = 5f;
+	public static final float DEFAULT_GAP = 5f;
 
 	Bitmap bitmap;
 	Position position;

@@ -10,7 +10,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class TestUtils {
 
 	public static final int delay = 400;
-    public static final int iterations = 1;
+	public static final int iterations = 1;
 
 	public static void testClickWithRotation(Solo solo, int iterations) throws Exception {
 		for (int i = 0; i < iterations; i++) {
@@ -224,7 +224,7 @@ public class TestUtils {
 			mapViewPosition.zoom((byte) -1);
 			solo.sleep(delay);
 
-			assert (mapViewPosition.getZoomLevel() == startZoomLevel);
+			assert mapViewPosition.getZoomLevel() == startZoomLevel;
 			solo.assertMemoryNotLow();
 		}
 	}
@@ -270,11 +270,14 @@ public class TestUtils {
 	 * @param solo
 	 * @return true if the current activity uses fragments in one screen
 	 */
-	static public boolean usesFragments(Solo solo) {
+	public static boolean usesFragments(Solo solo) {
 		if (solo.getCurrentActivity().findViewById(R.id.item_detail_container) != null) {
 			return true;
 		}
 		return false;
 	}
 
+	private TestUtils() {
+		// no-op
+	}
 }

@@ -9,7 +9,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class DualMapnikViewerTest extends ActivityInstrumentationTestCase2<DualMapnikMapViewer> {
 
 	Solo solo;
-	final int iterations = TestUtils.iterations;
+	final static int iterations = TestUtils.iterations;
 
 	public DualMapnikViewerTest() {
 		super(DualMapnikMapViewer.class);

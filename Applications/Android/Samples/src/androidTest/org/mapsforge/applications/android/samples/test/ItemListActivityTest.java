@@ -13,7 +13,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class ItemListActivityTest extends ActivityInstrumentationTestCase2<ItemListActivity> {
 
 	Solo solo;
-	final int iterations = TestUtils.iterations;
+	final static int iterations = TestUtils.iterations;
 
 	public ItemListActivityTest() {
 		super(ItemListActivity.class);

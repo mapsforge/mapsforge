@@ -17,7 +17,6 @@ package org.mapsforge.map.model;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 public class DisplayModelTest {

@@ -16,8 +16,6 @@ package org.mapsforge.map.android.rendertheme;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
 
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;

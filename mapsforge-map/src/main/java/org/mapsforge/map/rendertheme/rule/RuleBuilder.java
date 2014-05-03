@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.mapsforge.map.rendertheme.XmlUtils;

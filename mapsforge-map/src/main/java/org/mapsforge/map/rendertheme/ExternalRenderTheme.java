@@ -18,8 +18,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * An ExternalRenderTheme allows for customizing the rendering style of the map via an XML file.

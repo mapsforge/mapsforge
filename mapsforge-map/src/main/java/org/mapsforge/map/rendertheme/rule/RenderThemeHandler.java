@@ -128,7 +128,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 		if (ELEMENT_NAME_RULE.equals(qName)) {
 			this.ruleStack.pop();
 			if (this.ruleStack.empty()) {
-				if (isVisible((this.currentRule))) {
+				if (isVisible(this.currentRule)) {
 					this.renderTheme.addRule(this.currentRule);
 				}
 			} else {

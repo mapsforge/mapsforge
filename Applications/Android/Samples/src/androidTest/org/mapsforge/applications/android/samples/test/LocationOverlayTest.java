@@ -9,7 +9,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class LocationOverlayTest extends ActivityInstrumentationTestCase2<LocationOverlayMapViewer> {
 
 	Solo solo;
-	final int iterations = TestUtils.iterations;
+	final static int iterations = TestUtils.iterations;
 
 	public LocationOverlayTest() {
 		super(LocationOverlayMapViewer.class);

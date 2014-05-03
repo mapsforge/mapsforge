@@ -15,7 +15,6 @@
 package org.mapsforge.map.rendertheme;
 
 import java.io.InputStream;
-import java.util.List;
 
 /**
  * Enumeration of all internal rendering themes.

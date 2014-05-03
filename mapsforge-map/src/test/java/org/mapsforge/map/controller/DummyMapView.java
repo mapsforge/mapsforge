@@ -77,6 +77,6 @@ public class DummyMapView implements MapView {
 
 	@Override
 	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-
+		// no-op
 	}
 }

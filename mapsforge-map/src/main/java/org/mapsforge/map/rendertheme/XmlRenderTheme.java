@@ -16,7 +16,6 @@ package org.mapsforge.map.rendertheme;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.List;
 
 /**
  * Interface for a render theme which is defined in XML.

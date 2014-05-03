@@ -12,7 +12,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class BubbleOverlayTest extends ActivityInstrumentationTestCase2<BubbleOverlay> {
 
 	Solo solo;
-	final int iterations = TestUtils.iterations;
+	final static int iterations = TestUtils.iterations;
 
 	public BubbleOverlayTest() {
 		super(BubbleOverlay.class);

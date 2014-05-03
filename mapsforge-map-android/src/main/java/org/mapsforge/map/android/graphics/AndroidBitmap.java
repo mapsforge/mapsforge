@@ -190,7 +190,7 @@ public class AndroidBitmap implements Bitmap {
 	}
 
 	protected final android.graphics.Bitmap getBitmapFromReusableSet(int width, int height, Config config) {
-		android.graphics.Bitmap bitmap = null;
+		android.graphics.Bitmap result = null;
 
 		if (reusableBitmaps != null && !reusableBitmaps.isEmpty()) {
 			synchronized (reusableBitmaps) {
@@ -202,7 +202,7 @@ public class AndroidBitmap implements Bitmap {
 					if (null != candidate && candidate.isMutable()) {
 						// Check to see it the item can be used for inBitmap.
 						if (canUseBitmap(candidate, width, height, config)) {
-							bitmap = candidate;
+							result = candidate;
 							// Remove from reusable set so it can't be used again.
 							iterator.remove();
 							break;
@@ -214,7 +214,7 @@ public class AndroidBitmap implements Bitmap {
 				}
 			}
 		}
-		return bitmap;
+		return result;
 	}
 
 }

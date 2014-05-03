@@ -39,7 +39,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
 	private static final float STROKE_EXTERNAL = 4;
 	private static final float STROKE_INTERNAL = 2;
 
-	public static enum ScaleBarMode { BOTH, IMPERIAL, METRIC };
+	public static enum ScaleBarMode { BOTH, IMPERIAL, METRIC }
 	private ScaleBarMode scaleBarMode;
 	private DistanceUnitAdapter secondaryDistanceUnitAdapter;
 

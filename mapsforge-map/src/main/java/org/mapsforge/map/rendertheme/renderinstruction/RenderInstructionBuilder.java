@@ -87,8 +87,12 @@ public class RenderInstructionBuilder {
 	}
 
 	protected ResourceScaling fromValue(String value) {
-		if (value.equals(SIZE)) return ResourceScaling.SIZE;
-		if (value.equals(TILE)) return ResourceScaling.TILE;
+		if (value.equals(SIZE)) {
+			return ResourceScaling.SIZE;
+		}
+		if (value.equals(TILE)) {
+			return ResourceScaling.TILE;
+		}
 		return ResourceScaling.DEFAULT;
 	}
 }

@@ -56,6 +56,7 @@ public class ItemListFragment extends ListFragment {
 	private static Callbacks sDummyCallbacks = new Callbacks() {
 		@Override
 		public void onItemSelected(String id) {
+			// no op
 		}
 	};
 

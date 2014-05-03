@@ -214,7 +214,7 @@ public class DisplayModel extends Observable {
 
 	private void setTileSize() {
 		if (this.fixedTileSize == 0) {
-			float temp = (DEFAULT_TILE_SIZE * deviceScaleFactor * userScaleFactor);
+			float temp = DEFAULT_TILE_SIZE * deviceScaleFactor * userScaleFactor;
 			// this will clamp to the nearest multiple of the tileSizeMultiple
 			// and make sure we do not end up with 0
 			this.tileSize = Math.max(tileSizeMultiple,
