@@ -15,9 +15,6 @@
  */
 package org.mapsforge.map.layer;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
@@ -33,7 +30,6 @@ import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
 public class LayerManager extends PausableThread implements Redrawer {
-	private static final Logger LOGGER = Logger.getLogger(LayerManager.class.getName());
 	private static final int MILLISECONDS_PER_FRAME = 30;
 
 	private final Canvas drawingCanvas;
@@ -110,9 +106,6 @@ public class LayerManager extends PausableThread implements Redrawer {
 		long timeSleep = MILLISECONDS_PER_FRAME - elapsedMilliseconds;
 
 		if (timeSleep > 1 && !isInterrupted()) {
-			if (LOGGER.isLoggable(Level.FINE)) {
-				LOGGER.log(Level.FINE, "sleeping (ms): " + timeSleep);
-			}
 			sleep(timeSleep);
 		}
 	}
