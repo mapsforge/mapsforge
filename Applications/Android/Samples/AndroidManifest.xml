@@ -3,7 +3,7 @@
           package="org.mapsforge.applications.android.samples"
           android:installLocation="auto"
           android:versionCode="40"
-          android:versionName="0.4.0-SNAPSHOT" >
+          android:versionName="0.4.0" >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
