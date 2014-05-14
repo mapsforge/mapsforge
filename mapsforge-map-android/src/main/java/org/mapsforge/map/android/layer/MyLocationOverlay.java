@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,7 +31,6 @@ import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.model.MapViewPosition;
 
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -46,8 +46,8 @@ import android.os.Bundle;
  */
 public class MyLocationOverlay extends Layer implements LocationListener {
 	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
-	private static final int UPDATE_DISTANCE = 0;
-	private static final int UPDATE_INTERVAL = 1000;
+	private float minDistance = 0.0f;
+	private long minTime = 0;
 
 	/**
 	 * @param location
@@ -234,6 +234,22 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	}
 
 	/**
+	 * Minimum distance between location updates, in meters.
+	 * You should call this before calling {@link MyLocationOverlay#enableMyLocation(boolean)}.
+	 */
+	public void setMinDistance(float minDistance) {
+		this.minDistance = minDistance;
+	}
+
+	/**
+	 * Minimum time interval between location updates, in milliseconds.
+	 * You should call this before calling {@link MyLocationOverlay#enableMyLocation(boolean)}.
+	 */
+	public void setMinTime(long minTime) {
+		this.minTime = minTime;
+	}
+
+	/**
 	 * @param snapToLocationEnabled
 	 *            whether the map should be centered at each received location fix.
 	 */
@@ -244,15 +260,15 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	private synchronized boolean enableBestAvailableProvider() {
 		disableMyLocation();
 
-		Criteria criteria = new Criteria();
-		criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		String bestAvailableProvider = this.locationManager.getBestProvider(criteria, true);
-		if (bestAvailableProvider == null) {
-			return false;
+		boolean result = false;
+		for (String provider : this.locationManager.getProviders(true)) {
+			if (LocationManager.GPS_PROVIDER.equals(provider)
+					|| LocationManager.NETWORK_PROVIDER.equals(provider)) {
+				result = true;
+				this.locationManager.requestLocationUpdates(provider, minTime, minDistance, this);
+			}
 		}
-
-		this.locationManager.requestLocationUpdates(bestAvailableProvider, UPDATE_INTERVAL, UPDATE_DISTANCE, this);
-		this.myLocationEnabled = true;
-		return true;
+		this.myLocationEnabled = result;
+		return result;
 	}
 }

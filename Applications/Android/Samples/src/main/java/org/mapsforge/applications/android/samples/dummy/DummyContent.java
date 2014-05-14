@@ -77,4 +77,8 @@ public class DummyContent {
 		ITEMS.add(item);
 		ITEM_MAP.put(item.id, item);
 	}
+
+	private DummyContent() {
+		// no-op
+	}
 }

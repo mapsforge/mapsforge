@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.mapsforge.applications.android.samples"
           android:installLocation="auto"
-          android:versionCode="43"
-          android:versionName="0.4.3" >
+          android:versionCode="50"
+          android:versionName="0.5.0-SNAPSHOT" >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -59,6 +59,14 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="SVGAssetsRenderThemeMapViewer" />
         <activity
+            android:name=".RenderTheme4"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="RenderTheme V4" />
+        <activity
+            android:name=".SVGTextures"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="SVG Textures" />
+        <activity
             android:name=".RenderThemeChanger"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Automatically changes between renderthemes on SDCard" />
@@ -106,6 +114,10 @@
             android:name=".DualMapViewerWithDifferentDisplayModels"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Two views with different DisplayModels" />
+        <activity
+            android:name=".DualMapViewerWithClampedTileSizes"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Clamping tile sizes to fixed multiples" />
         <activity
             android:name=".DualMapnikMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"

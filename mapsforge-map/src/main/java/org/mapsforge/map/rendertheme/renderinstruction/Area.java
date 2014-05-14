@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,17 +24,24 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 /**
  * Represents a closed polygon on the map.
  */
-public class Area implements RenderInstruction {
+public class Area extends RenderInstruction {
 	private final Paint fill;
+	private final float height;
 	private final int level;
+	private final RenderInstructionBuilder.ResourceScaling scaling;
 	private final Paint stroke;
 	private final float strokeWidth;
+	private final float width;
 
 	Area(AreaBuilder areaBuilder) {
+		super(areaBuilder.getCategory());
 		this.fill = areaBuilder.fill;
+		this.height = areaBuilder.height;
 		this.level = areaBuilder.level;
+		this.scaling = areaBuilder.scaling;
 		this.stroke = areaBuilder.stroke;
 		this.strokeWidth = areaBuilder.strokeWidth;
+		this.width = areaBuilder.width;
 	}
 
 	@Override

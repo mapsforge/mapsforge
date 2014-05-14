@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 devemux86
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,9 +16,9 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.Locale;
-
 import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
@@ -29,27 +30,28 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- * A builder for {@link Caption} instances.
- */
-public class CaptionBuilder {
-	static final String DY = "dy";
-	static final String FILL = "fill";
-	static final String FONT_FAMILY = "font-family";
-	static final String FONT_SIZE = "font-size";
-	static final String FONT_STYLE = "font-style";
-	static final String K = "k";
-	static final String STROKE = "stroke";
-	static final String STROKE_WIDTH = "stroke-width";
+import java.util.HashMap;
+import java.util.Locale;
 
+/**
+ * A builder for {@link org.mapsforge.map.rendertheme.renderinstruction.Caption} instances.
+ */
+public class CaptionBuilder extends RenderInstructionBuilder {
+
+	public static final float DEFAULT_GAP = 5f;
+
+	Bitmap bitmap;
+	Position position;
 	float dy;
 	final Paint fill;
 	float fontSize;
+	float gap;
 	final Paint stroke;
+	String symbolId;
 	TextKey textKey;
 
 	public CaptionBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-			Attributes attributes) throws SAXException {
+	                            Attributes attributes, HashMap<String, Symbol> symbols) throws SAXException {
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
@@ -60,7 +62,26 @@ public class CaptionBuilder {
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setTextAlign(Align.LEFT);
 
+		this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
+
 		extractValues(graphicFactory, displayModel, elementName, attributes);
+
+		if (this.symbolId != null) {
+			Symbol symbol = symbols.get(this.symbolId);
+			if (symbol != null) {
+				this.bitmap = symbol.getBitmap();
+			}
+		}
+
+		if (position == null) {
+			// sensible defaults: below if symbol is present, center if not
+			if (this.bitmap == null) {
+				this.position = Position.CENTER;
+			} else {
+				this.position = Position.BELOW;
+			}
+		}
+
 	}
 
 	/**
@@ -71,7 +92,7 @@ public class CaptionBuilder {
 	}
 
 	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-			Attributes attributes) throws SAXException {
+	                           Attributes attributes) throws SAXException {
 		FontFamily fontFamily = FontFamily.DEFAULT;
 		FontStyle fontStyle = FontStyle.NORMAL;
 
@@ -81,6 +102,10 @@ public class CaptionBuilder {
 
 			if (K.equals(name)) {
 				this.textKey = TextKey.getInstance(value);
+			} else if (POSITION.equals(name)) {
+				this.position = Position.valueOf(value.toUpperCase(Locale.ENGLISH));
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {
@@ -95,6 +120,8 @@ public class CaptionBuilder {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
+			} else if (SYMBOL_ID.equals(name)) {
+				this.symbolId = value;
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}

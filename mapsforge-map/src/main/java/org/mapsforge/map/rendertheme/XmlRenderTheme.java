@@ -21,6 +21,9 @@ import java.io.InputStream;
  * Interface for a render theme which is defined in XML.
  */
 public interface XmlRenderTheme {
+
+	XmlRenderThemeMenuCallback getMenuCallback();
+
 	/**
 	 * @return the prefix for all relative resource paths.
 	 */

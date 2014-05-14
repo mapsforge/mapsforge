@@ -19,9 +19,14 @@ import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.font.FontRenderContext;
+import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
@@ -29,6 +34,8 @@ import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.PointTextContainer;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Dimension;
 
@@ -121,6 +128,70 @@ class AwtCanvas implements Canvas {
 		}
 
 		throw new IllegalArgumentException(UNKNOWN_STYLE + style);
+	}
+
+	public void drawPointTextContainer(PointTextContainer ptc, int maxWidth) {
+		if (ptc.paintFront.isTransparent() && (ptc.paintBack == null || ptc.paintBack.isTransparent())) {
+			return;
+		}
+
+		int textWidth = ptc.paintFront.getTextWidth(ptc.text);
+		if (textWidth > maxWidth) {
+			AttributedString attrString = new AttributedString(ptc.text);
+			AwtPaint awtPaintFront = AwtGraphicFactory.getAwtPaint(ptc.paintFront);
+			attrString.addAttribute(TextAttribute.FOREGROUND, awtPaintFront.color);
+			attrString.addAttribute(TextAttribute.FONT, awtPaintFront.font);
+			AttributedCharacterIterator paragraph = attrString.getIterator();
+			int paragraphStart = paragraph.getBeginIndex();
+			int paragraphEnd = paragraph.getEndIndex();
+			FontRenderContext frc = this.graphics2D.getFontRenderContext();
+			LineBreakMeasurer lineMeasurer = new LineBreakMeasurer(paragraph, frc);
+
+			float layoutHeight = 0;
+			lineMeasurer.setPosition(paragraphStart);
+			while (lineMeasurer.getPosition() < paragraphEnd) {
+				TextLayout layout = lineMeasurer.nextLayout(maxWidth);
+				layoutHeight += layout.getAscent() + layout.getDescent() + layout.getLeading();
+			}
+
+			float drawPosY = (float) ptc.y;
+			lineMeasurer.setPosition(paragraphStart);
+			while (lineMeasurer.getPosition() < paragraphEnd) {
+				TextLayout layout = lineMeasurer.nextLayout(maxWidth);
+				float posX = (float) ptc.x;
+				float posY = drawPosY;
+				if (Position.CENTER == ptc.position) {
+					posX += (maxWidth - layout.getAdvance()) * 0.5f;
+					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight) * 0.5f;
+				} else if (Position.BELOW == ptc.position) {
+					posX += (maxWidth - layout.getAdvance()) * 0.5f;
+				} else if (Position.ABOVE == ptc.position) {
+					posX += (maxWidth - layout.getAdvance()) * 0.5f;
+					posY += layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight;
+				} else if (Position.LEFT == ptc.position) {
+					posX += textWidth * 0.5f - maxWidth * 0.5f + maxWidth - layout.getAdvance();
+					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight) * 0.5f;
+				} else if (Position.RIGHT == ptc.position) {
+					posX += -textWidth * 0.5f + maxWidth * 0.5f;
+					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight) * 0.5f;
+				} else {
+					throw new IllegalArgumentException("No position for drawing PointTextContainer");
+				}
+				if (ptc.paintBack != null) {
+					setColorAndStroke(AwtGraphicFactory.getAwtPaint(ptc.paintBack));
+					AffineTransform affineTransform = new AffineTransform();
+					affineTransform.translate(posX, posY);
+					this.graphics2D.draw(layout.getOutline(affineTransform));
+				}
+				layout.draw(this.graphics2D, posX, posY);
+				drawPosY += layout.getAscent() + layout.getDescent() + layout.getLeading();
+			}
+		} else {
+			if (ptc.paintBack != null) {
+				drawText(ptc.text, (int) ptc.x, (int) ptc.y, ptc.paintBack);
+			}
+			drawText(ptc.text, (int) ptc.x, (int) ptc.y, ptc.paintFront);
+		}
 	}
 
 	@Override

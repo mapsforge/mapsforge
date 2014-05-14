@@ -15,9 +15,12 @@
 package org.mapsforge.applications.android.samples;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 
 import android.util.Log;
 
@@ -26,19 +29,27 @@ import android.util.Log;
  * assets folder.
  * 
  */
-public class RenderThemeMapViewer extends BasicMapViewerXml {
+public class RenderThemeMapViewer extends BasicMapViewerXml implements XmlRenderThemeMenuCallback {
+
+	@Override
+	public Set<String> getCategories(XmlRenderThemeStyleMenu menuStyle) {
+		// in this case we ignore the render theme menu and just return
+		// null, meaning everything will be rendered.
+		return null;
+	}
 
 	@Override
 	protected XmlRenderTheme getRenderTheme() {
 		try {
 			return new AssetsRenderTheme(this, getRenderThemePrefix(),
-					getRenderThemeFile());
+					getRenderThemeFile(), this);
 		} catch (IOException e) {
 			Log.e(SamplesApplication.TAG,
 					"Render theme failure " + e.toString());
 		}
 		return null;
 	}
+
 
 	protected String getRenderThemeFile() {
 		return "renderthemes/driving.xml";
@@ -47,5 +58,6 @@ public class RenderThemeMapViewer extends BasicMapViewerXml {
 	protected String getRenderThemePrefix() {
 		return "/osmarender/";
 	}
+
 
 }

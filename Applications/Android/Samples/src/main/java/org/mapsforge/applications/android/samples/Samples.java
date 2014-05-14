@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
  * A simple start screen for the sample activities.
  */
 public class Samples extends Activity {
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.options_menu, menu);
@@ -83,11 +84,13 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(BasicMapViewerXml.class));
 		linearLayout.addView(createButton(DiagnosticsMapViewer.class));
 		linearLayout.addView(createButton(RenderThemeMapViewer.class));
-
 		linearLayout.addView(createButton(AssetsRenderThemeMapViewer.class,
 				"Rendertheme using Android Assets"));
 		linearLayout.addView(createButton(SVGAssetsRenderThemeMapViewer.class,
 				"Rendertheme using SVG files"));
+		linearLayout.addView(createButton(RenderTheme4.class,
+				"Rendertheme V4"));
+		linearLayout.addView(createButton(SVGTextures.class, "SVG Textures"));
 		linearLayout.addView(createButton(RenderThemeChanger.class,
 				"Automatically changing render themes"));
 		linearLayout.addView(createButton(TileSizeChanger.class,
@@ -112,6 +115,8 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(
 				DualMapViewerWithDifferentDisplayModels.class,
 				"Dual Viewer with different DisplayModels"));
+		linearLayout.addView(createButton(DualMapViewerWithClampedTileSizes.class,
+				"Dual Viewer with clamped tile sizes"));
 		linearLayout.addView(createButton(DualMapnikMapViewer.class,
 				"Tied MapViews MapDB/Mapnik"));
 		linearLayout.addView(createButton(DualOverviewMapViewer.class,

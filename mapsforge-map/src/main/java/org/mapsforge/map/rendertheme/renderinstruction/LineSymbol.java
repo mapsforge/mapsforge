@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,15 +24,24 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 /**
  * Represents an icon along a polyline on the map.
  */
-public class LineSymbol implements RenderInstruction {
+public class LineSymbol extends RenderInstruction {
 	private final boolean alignCenter;
 	private final Bitmap bitmap;
+	private final float dy;
 	private final boolean repeat;
+	private final float repeatGap;
+	private final float repeatStart;
+	private final boolean rotate;
 
 	LineSymbol(LineSymbolBuilder lineSymbolBuilder) {
+		super(lineSymbolBuilder.getCategory());
 		this.alignCenter = lineSymbolBuilder.alignCenter;
 		this.bitmap = lineSymbolBuilder.bitmap;
+		this.dy = lineSymbolBuilder.dy;
 		this.repeat = lineSymbolBuilder.repeat;
+		this.repeatGap = lineSymbolBuilder.repeatGap;
+		this.repeatStart = lineSymbolBuilder.repeatStart;
+		this.rotate = lineSymbolBuilder.rotate;
 	}
 
 	@Override
@@ -46,7 +56,8 @@ public class LineSymbol implements RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderWaySymbol(this.bitmap, this.alignCenter, this.repeat);
+		renderCallback.renderWaySymbol(this.bitmap, this.dy, this.alignCenter,
+				this.repeat, this.repeatGap, this.repeatStart, this.rotate);
 	}
 
 	@Override

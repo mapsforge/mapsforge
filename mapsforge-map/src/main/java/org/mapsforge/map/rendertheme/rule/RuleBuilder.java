@@ -29,6 +29,8 @@ import org.xml.sax.SAXException;
  * A builder for {@link Rule} instances.
  */
 public class RuleBuilder {
+
+	private static final String CAT = "cat";
 	private static final String CLOSED = "closed";
 	private static final String E = "e";
 	private static final String K = "k";
@@ -91,6 +93,7 @@ public class RuleBuilder {
 		return attributeMatcher;
 	}
 
+	String cat;
 	ClosedMatcher closedMatcher;
 	ElementMatcher elementMatcher;
 	byte zoomMax;
@@ -142,6 +145,8 @@ public class RuleBuilder {
 				this.keys = value;
 			} else if (V.equals(name)) {
 				this.values = value;
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (CLOSED.equals(name)) {
 				this.closed = Closed.valueOf(value.toUpperCase(Locale.ENGLISH));
 			} else if (ZOOM_MIN.equals(name)) {

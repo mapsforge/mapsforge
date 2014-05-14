@@ -36,6 +36,13 @@ public enum InternalRenderTheme implements XmlRenderTheme {
 	}
 
 	@Override
+	public XmlRenderThemeMenuCallback getMenuCallback() {
+		return null;
+	}
+	/**
+	 * @return the prefix for all relative resource paths.
+	 */
+	@Override
 	public String getRelativePathPrefix() {
 		return this.absolutePath;
 	}

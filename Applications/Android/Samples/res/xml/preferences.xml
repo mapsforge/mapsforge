@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	android:title="@string/menu_preferences">
-		<ListPreference
-		    android:negativeButtonText="@string/cancelbutton"
-			android:title="@string/preferences_scale"
-            android:summary="@string/preferences_scale_desc"
-            android:key="scale"
-            android:defaultValue="1.0"
-            android:entries="@array/pref_scale_entries"
-            android:entryValues="@array/pref_scale_values"/>
+    <ListPreference
+        android:negativeButtonText="@string/cancelbutton"
+        android:title="@string/preferences_scale"
+        android:summary="@string/preferences_scale_desc"
+        android:key="scale"
+        android:defaultValue="1.0"
+        android:entries="@array/pref_scale_entries"
+        android:entryValues="@array/pref_scale_values"/>
+    <ListPreference
+        android:negativeButtonText="@string/cancelbutton"
+        android:title="@string/preferences_scalebar"
+        android:summary="@string/preferences_scalebar_desc"
+        android:key="scalebar"
+        android:defaultValue="both"
+        android:entries="@array/pref_scalebar_entries"
+        android:entryValues="@array/pref_scalebar_values"/>
+    <PreferenceCategory android:title="Map Style for Rendertheme V4" android:key="renderthememenu">
+
+    </PreferenceCategory>
 </PreferenceScreen>

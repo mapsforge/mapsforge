@@ -35,16 +35,19 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 
 public class AndroidBitmap implements Bitmap {
-	private static List<AndroidBitmap> bitmaps;
+	private static final List<AndroidBitmap> bitmaps;
 
-	private static AtomicInteger instances;
+	private static final AtomicInteger instances;
 	private static final Logger LOGGER = Logger.getLogger(AndroidBitmap.class.getName());
-	private static Set<SoftReference<android.graphics.Bitmap>> reusableBitmaps = new HashSet<SoftReference<android.graphics.Bitmap>>();
+	private static final Set<SoftReference<android.graphics.Bitmap>> reusableBitmaps = new HashSet<SoftReference<android.graphics.Bitmap>>();
 
 	static {
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			instances = new AtomicInteger();
 			bitmaps = new LinkedList<AndroidBitmap>();
+		} else {
+			bitmaps = null;
+			instances = null;
 		}
 	}
 
@@ -187,7 +190,7 @@ public class AndroidBitmap implements Bitmap {
 	}
 
 	protected final android.graphics.Bitmap getBitmapFromReusableSet(int width, int height, Config config) {
-		android.graphics.Bitmap bitmap = null;
+		android.graphics.Bitmap result = null;
 
 		if (reusableBitmaps != null && !reusableBitmaps.isEmpty()) {
 			synchronized (reusableBitmaps) {
@@ -199,7 +202,7 @@ public class AndroidBitmap implements Bitmap {
 					if (null != candidate && candidate.isMutable()) {
 						// Check to see it the item can be used for inBitmap.
 						if (canUseBitmap(candidate, width, height, config)) {
-							bitmap = candidate;
+							result = candidate;
 							// Remove from reusable set so it can't be used again.
 							iterator.remove();
 							break;
@@ -211,7 +214,7 @@ public class AndroidBitmap implements Bitmap {
 				}
 			}
 		}
-		return bitmap;
+		return result;
 	}
 
 }

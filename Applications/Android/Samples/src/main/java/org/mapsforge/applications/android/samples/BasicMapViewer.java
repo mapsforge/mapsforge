@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.AndroidPreferences;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.graphics.AndroidSvgBitmapStore;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
@@ -35,6 +38,10 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
+import org.mapsforge.map.scalebar.MapScaleBar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -65,8 +72,8 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	protected ArrayList<MapView> mapViews = new ArrayList<MapView>();
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
-
 	protected TileCache tileCache;
+	protected XmlRenderThemeStyleMenu renderThemeStyleMenu;
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -81,10 +88,16 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			case R.id.menu_preferences:
 				intent = new Intent(this, Settings.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+				if (renderThemeStyleMenu != null) {
+					intent.putExtra(Settings.RENDERTHEME_MENU, renderThemeStyleMenu);
+				}
 				startActivity(intent);
 				return true;
 			case R.id.menu_position_enter_coordinates:
 				showDialog(DIALOG_ENTER_COORDINATES);
+				break;
+			case R.id.menu_svgclear:
+				AndroidSvgBitmapStore.clear();
 				break;
 		}
 		return false;
@@ -101,10 +114,14 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			createTileCaches();
 			redrawLayers();
 		}
+		if (SamplesApplication.SETTING_SCALEBAR.equals(key)) {
+			setScaleBars();
+		}
+
 	}
 
 	protected void createControls() {
-		// time to create control elements
+		setScaleBars();
 	}
 
 	protected void createLayerManagers() {
@@ -256,6 +273,13 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		super.onCreate(savedInstanceState);
 
 		this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		// problem that the first call to getAll() returns nothing, apparently the
+		// following two calls have to be made to read all the values correctly
+		// http://stackoverflow.com/questions/9310479/how-to-iterate-through-all-keys-of-shared-preferences
+		this.sharedPreferences.edit().clear();
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
+
 		this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
 		createSharedPreferences();
@@ -376,5 +400,33 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	 */
 	protected void setContentView() {
 		setContentView(this.mapViews.get(0));
+	}
+
+	protected void setScaleBars() {
+		String value = this.sharedPreferences.getString(SamplesApplication.SETTING_SCALEBAR, "both");
+
+		for (MapView mapView : mapViews) {
+
+			// TODO the setting of the scale bars is somewhat clunky.
+			if (SamplesApplication.SETTING_SCALEBAR_NONE.equals(value)) {
+				mapView.setMapScaleBar(null);
+			} else {
+				MapScaleBar scalebar = mapView.getMapScaleBar();
+				if (scalebar == null) {
+					mapView.setMapScaleBar(new DefaultMapScaleBar(mapView.getModel().mapViewPosition, mapView.getModel().mapViewDimension,
+							AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel));
+					scalebar = mapView.getMapScaleBar();
+				}
+				if (scalebar instanceof DefaultMapScaleBar) {
+					if (SamplesApplication.SETTING_SCALEBAR_BOTH.equals(value)) {
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.BOTH);
+					} else if (SamplesApplication.SETTING_SCALEBAR_METRIC.equals(value)) {
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.METRIC);
+					} else if (SamplesApplication.SETTING_SCALEBAR_IMPERIAL.equals(value)) {
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.IMPERIAL);
+					}
+				}
+			}
+		}
 	}
 }

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,6 +29,8 @@ import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
@@ -40,7 +43,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	private final FrameBuffer frameBuffer;
 	private final FrameBufferController frameBufferController;
 	private final LayerManager layerManager;
-	private final MapScaleBar mapScaleBar;
+	private MapScaleBar mapScaleBar;
 	private final Model model;
 
 	public MapView() {
@@ -58,8 +61,9 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		MapViewController.create(this, this.model);
 
-		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
+		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
 				new DisplayModel());
+		((DefaultMapScaleBar) this.mapScaleBar).setScaleBarMode(ScaleBarMode.BOTH);
 	}
 
 	@Override
@@ -88,8 +92,15 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		return this.layerManager;
 	}
 
+	@Override
 	public MapScaleBar getMapScaleBar() {
 		return this.mapScaleBar;
+	}
+
+	@Override
+	public void setMapScaleBar(MapScaleBar mapScaleBar) {
+		this.mapScaleBar.destroy();
+		this.mapScaleBar=mapScaleBar;
 	}
 
 	@Override

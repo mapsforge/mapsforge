@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580" viewBox="0 0 10668.302 10668.302">
+ <metadata id="metadata9"/>
+ <g id="g5357" transform="matrix(14.786663,0,0,14.786663,-1589.7804,596.1145)" fill="#0092da" stroke="#0092da">
+  <path inkscape:connector-curvature="0" sodipodi:nodetypes="cc" id="path4817" d="M 256.05495,237.14675 241.67023,317.3127" stroke-linejoin="round" stroke-linecap="round" stroke-width="74.2"/>
+  <path inkscape:connector-curvature="0" sodipodi:nodetypes="ccc" id="path5329" d="M 330.52502,307.73122 296.11201,278.04332 273.66832,225.7194" stroke-linejoin="round" stroke-linecap="round" stroke-width="32.6"/>
+  <path inkscape:connector-curvature="0" sodipodi:nodetypes="cc" id="path5331" d="M 313.55883,487.77682 302.16655,393.38367" stroke-linejoin="round" stroke-linecap="round" stroke-width="41.3"/>
+  <path inkscape:connector-curvature="0" sodipodi:nodetypes="cc" id="path5333" d="m 245.20517,315.8077 54.24893,74.86352" stroke-linejoin="round" stroke-linecap="round" stroke-width="45.1"/>
+  <path inkscape:connector-curvature="0" d="m 226.76053,316.89268 1.62747,87.34077" id="path5335" sodipodi:nodetypes="cc" stroke-linejoin="round" stroke-linecap="round" stroke-width="45.1"/>
+  <path inkscape:connector-curvature="0" d="m 192.04122,489.40429 37.43176,-80.83092" id="path5337" sodipodi:nodetypes="cc" stroke-linejoin="round" stroke-linecap="round" stroke-width="45.31"/>
+  <path inkscape:connector-curvature="0" d="m 278.89197,151.40646 c -9.43171,0.42792 -13.14501,14.03074 -5.34375,19.21875 7.10539,5.86065 18.86748,-1.24234 16.9375,-10.3125 -0.85188,-5.43638 -6.10237,-9.52 -11.59375,-8.90625 z" id="path5339" stroke-linejoin="round" stroke-linecap="round" stroke-width="45.1"/>
+  <path inkscape:connector-curvature="0" d="m 177.5811,312.56103 16.29998,-55.44688 51.61336,-38.63946" id="path5417" sodipodi:nodetypes="ccc" stroke-linejoin="round" stroke-linecap="round" stroke-width="32.6"/>
+ </g>
+ <g id="g3023" transform="matrix(0.6,0,0,0.6,8472.3899,-1394.9411)">
+  <path sodipodi:nodetypes="ccccccccccccc" inkscape:connector-curvature="0" id="path4083" d="m -7048.2837,7597.1178 4195.7516,2439.2582 4223.951,-2432.0433 712.62,1228.0844 -3522.3731,2021.8209 3518.3801,2014.965 -712.621,1228.084 -4201.5734,-2445.44 -4214.1351,2455.512 -700.9912,-1233.778 3466.7941,-2014.153 -3466.7943,-2028.5321 z" fill="#0092da"/>
+  <rect transform="matrix(0.86832845,0.49598962,-0.5160549,0.85655551,0,0)" y="10483.26" x="257.42" height="695.85" width="5834.99" id="rect4021" fill="#ffffff" rx="0"/>
+  <rect transform="matrix(-0.86832845,0.49598961,0.51605482,0.85655556,0,0)" y="7672.6" x="5111.32" height="695.85" width="5834.99" id="rect4021-9" fill="#ffffff" rx="0"/>
+ </g>
+</svg>

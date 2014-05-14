@@ -23,7 +23,10 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.PointTextContainer;
+import org.mapsforge.core.graphics.SymbolContainer;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.model.DisplayModel;
 
 class CanvasRasterer {
 	private final Canvas canvas;
@@ -40,17 +43,12 @@ class CanvasRasterer {
 		this.canvas.destroy();
 	}
 
-	void drawNodes(List<PointTextContainer> pointTextContainers) {
+	void drawNodes(List<PointTextContainer> pointTextContainers, DisplayModel displayModel) {
 		for (int index = pointTextContainers.size() - 1; index >= 0; --index) {
 			PointTextContainer pointTextContainer = pointTextContainers.get(index);
 
-			if (pointTextContainer.paintBack != null) {
-				this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
-						pointTextContainer.paintBack);
-			}
+			this.canvas.drawPointTextContainer(pointTextContainer, displayModel.getMaxTextWidth());
 
-			this.canvas.drawText(pointTextContainer.text, (int) pointTextContainer.x, (int) pointTextContainer.y,
-					pointTextContainer.paintFront);
 		}
 	}
 
@@ -115,11 +113,16 @@ class CanvasRasterer {
 		this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
 	}
 
-	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates) {
+	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
 		this.path.clear();
 
 		for (int j = 0; j < coordinates.length; ++j) {
-			Point[] points = coordinates[j];
+			Point[] points;
+			if (dy != 0f) {
+				points = RendererUtils.parallelPath(coordinates[j], dy);
+			} else {
+				points = coordinates[j];
+			}
 			if (points.length >= 2) {
 				Point point = points[0];
 				this.path.moveTo((float) point.x, (float) point.y);
@@ -142,7 +145,7 @@ class CanvasRasterer {
 
 			case POLYLINE:
 				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-				drawPath(shapePaintContainer, polylineContainer.coordinates);
+				drawPath(shapePaintContainer, polylineContainer.coordinates, shapePaintContainer.dy);
 				return;
 		}
 	}

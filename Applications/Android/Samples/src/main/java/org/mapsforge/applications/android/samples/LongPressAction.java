@@ -14,11 +14,14 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
@@ -36,6 +39,11 @@ public class LongPressAction extends BasicMapViewerXml {
 	private static final Paint RED = Utils.createPaint(
 			AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 0,
 			Style.FILL);
+	private static final Paint BLACK = Utils.createPaint(
+			AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 0,
+			Style.FILL);
+
+	private int i;
 
 	@Override
 	protected void createLayers() {
@@ -54,13 +62,31 @@ public class LongPressAction extends BasicMapViewerXml {
 		tileRendererLayer.setMapFile(this.getMapFile());
 		tileRendererLayer.setXmlRenderTheme(this.getRenderTheme());
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		BLACK.setTextSize(22);
 	}
 
-	protected void onLongPress(LatLong position) {
+	protected void onLongPress(final LatLong position) {
 		float circleSize = 20 * this.mapViews.get(0).getModel().displayModel
 				.getScaleFactor();
+
+		i += 1;
+
 		FixedPixelCircle tappableCircle = new FixedPixelCircle(position,
 				circleSize, GREEN, null) {
+
+			int count = i;
+
+			@Override
+			public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas
+					canvas, Point topLeftPoint) {
+				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+
+				int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, zoomLevel, this.displayModel.getTileSize()) - topLeftPoint.x);
+				int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, zoomLevel, this.displayModel.getTileSize()) - topLeftPoint.y);
+				String text = Integer.toString(count);
+				canvas.drawText(text, pixelX - BLACK.getTextWidth(text) / 2, pixelY + BLACK.getTextHeight(text) / 2, BLACK);
+			}
+
 			@Override
 			public boolean onLongPress(LatLong geoPoint, Point viewPosition,
 					Point tapPoint) {

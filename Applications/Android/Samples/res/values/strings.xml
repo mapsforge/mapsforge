@@ -4,7 +4,8 @@
     <string name="copyright_osm">Map data © OpenStreetMap contributors</string>
 
    	<string name="menu_preferences">Settings</string>
-   	<string name="menu_position_enter_coordinates">Map Position</string>
+    <string name="menu_position_enter_coordinates">Map Position</string>
+    <string name="menu_svgclear">Clear SVG icon cache</string>
 
 	<string name="cancelbutton">Cancel</string>
    	<string name="okbutton">OK</string>
@@ -12,10 +13,49 @@
 	<string name="latitude">Latitude</string>
 	<string name="longitude">Longitude</string>
 	<string name="zoomlevel">Zoom Level</string>
-		
+
     <string name="preferences_scale">Display Scale</string>
-    <string name="preferences_scale_desc">Adjust scale of the map display</string>   
-   
+    <string name="preferences_scale_desc">Adjust scale of the map display</string>
+
+    <string name="preferences_scalebar">Scale bar</string>
+    <string name="preferences_scalebar_desc">Set metric/imperial units on the scale bar</string>
+
+
+    <string name="preferences_r4_emergency">Emergency</string>
+    <string name="preferences_r4_emergency_desc">Show hospitals, doctors, police etc</string>
+    <string name="preferences_r4_accommodation">Accommodation</string>
+    <string name="preferences_r4_accommodation_desc">Show hostels, guesthouses, campsites etc</string>
+    <string name="preferences_r4_tourism_poi">Tourism</string>
+    <string name="preferences_r4_tourism_poi_desc">Show points of interest</string>
+    <string name="preferences_r4_shopping">Shopping</string>
+    <string name="preferences_r4_shopping_desc">Show shops</string>
+    <string name="preferences_r4_amenities">Amenities</string>
+    <string name="preferences_r4_amenities_desc">Show amenities???</string>
+    <string name="preferences_r4_public_transport">Transport</string>
+    <string name="preferences_r4_public_transport_desc">Show transport</string>
+    <string name="preferences_r4_food">Food</string>
+    <string name="preferences_r4_food_desc">Show restaurants</string>
+    <string name="preferences_r4_traffic">Traffic</string>
+    <string name="preferences_r4_traffic_desc">Show traffic/transport??</string>
+    <string name="preferences_r4_barriers">Barriers</string>
+    <string name="preferences_r4_barriers_desc">Show barriers</string>
+    <string name="preferences_r4_sports">Sports</string>
+    <string name="preferences_r4_sports_desc">Show sports facilities</string>
+    <string name="preferences_r4_places">Places</string>
+    <string name="preferences_r4_places_desc">Show place names</string>
+    <string name="preferences_r4_buildings">Buildings</string>
+    <string name="preferences_r4_buildings_desc">Show buildings</string>
+    <string name="preferences_r4_nature">Nature</string>
+    <string name="preferences_r4_nature_desc">Show natural items</string>
+    <string name="preferences_r4_areas">Areas</string>
+    <string name="preferences_r4_areas_desc">Show areas</string>
+    <string name="preferences_r4_roads">Roads</string>
+    <string name="preferences_r4_roads_desc">Show roads</string>
+    <string name="preferences_r4_waterbodies">Water</string>
+    <string name="preferences_r4_waterbodies_desc">Show lakes, rivers etc</string>
+
+
+
     <string name="dialog_location_title">Coordinates</string>
 
     <string name="startup_dontshowagain">Don\'t show again</string>

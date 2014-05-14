@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,6 +28,8 @@ import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
@@ -50,7 +53,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	private final FrameBufferController frameBufferController;
 	private GestureDetector gestureDetector;
 	private final LayerManager layerManager;
-	private final MapScaleBar mapScaleBar;
+	private MapScaleBar mapScaleBar;
 	private final MapZoomControls mapZoomControls;
 	private final Model model;
 	private final TouchEventHandler touchEventHandler;
@@ -83,8 +86,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.touchEventHandler = new TouchEventHandler(this, viewConfiguration, sgd);
 		this.touchEventHandler.addListener(touchGestureDetector);
 		this.mapZoomControls = new MapZoomControls(context, this);
-		this.mapScaleBar = new MapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
-				this.model.displayModel);
+		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
+				GRAPHIC_FACTORY, this.model.displayModel);
+		((DefaultMapScaleBar) this.mapScaleBar).setScaleBarMode(ScaleBarMode.BOTH);
 	}
 
 	@Override
@@ -92,7 +96,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.layerManager.interrupt();
 		this.frameBufferController.destroy();
 		this.frameBuffer.destroy();
-		this.mapScaleBar.destroy();
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.destroy();
+		}
 	}
 
 	@Override
@@ -115,8 +121,17 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		return this.layerManager;
 	}
 
+	@Override
 	public MapScaleBar getMapScaleBar() {
 		return this.mapScaleBar;
+	}
+
+	@Override
+	public void setMapScaleBar(MapScaleBar mapScaleBar) {
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.destroy();
+		}
+		this.mapScaleBar = mapScaleBar;
 	}
 
 	/**
@@ -154,7 +169,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 	/**
 	 * Sets the visibility of the zoom controls.
-	 *
+	 * 
 	 * @param showZoomControls
 	 *            true if the zoom controls should be visible, false otherwise.
 	 */
@@ -170,7 +185,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	protected void onDraw(Canvas androidCanvas) {
 		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
 		this.frameBuffer.draw(graphicContext);
-		this.mapScaleBar.draw(graphicContext);
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.draw(graphicContext);
+		}
 		this.fpsCounter.draw(graphicContext);
 		graphicContext.destroy();
 	}

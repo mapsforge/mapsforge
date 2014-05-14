@@ -21,6 +21,7 @@ jar {
     include 'default.properties'
     include 'plugin.xml'
     include 'tag-mapping.xml'
+    include 'osmosis-plugins.conf'
     filter {
       line -> line.replace('${mapfile.writer.version}', version)
     }

@@ -27,18 +27,29 @@ import org.xml.sax.SAXException;
 /**
  * A builder for {@link LineSymbol} instances.
  */
-public class LineSymbolBuilder {
-	static final String ALIGN_CENTER = "align-center";
-	static final String REPEAT = "repeat";
-	static final String SRC = "src";
+public class LineSymbolBuilder extends RenderInstructionBuilder {
+
+	private static final float REPEAT_GAP_DEFAULT = 200f;
+	private static final float REPEAT_START_DEFAULT = 30f;
 
 	boolean alignCenter;
 	Bitmap bitmap;
+	float dy;
 	boolean repeat;
+	float repeatGap;
+	float repeatStart;
+	boolean rotate;
 
 	public LineSymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
+
+		this.rotate = true;
+
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
+
+		this.bitmap = createBitmap(graphicFactory, displayModel, relativePathPrefix, src);
+		XmlUtils.checkMandatoryAttribute(this.elementName, SRC, this.bitmap);
+
 	}
 
 	/**
@@ -50,21 +61,35 @@ public class LineSymbolBuilder {
 
 	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
+
+		this.elementName = elementName;
+		this.repeatGap = REPEAT_GAP_DEFAULT * displayModel.getScaleFactor();
+		this.repeatStart = REPEAT_START_DEFAULT * displayModel.getScaleFactor();
+
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				this.bitmap = XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, value);
+				this.src = value;
+			} else if (DY.equals(name)) {
+				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (ALIGN_CENTER.equals(name)) {
 				this.alignCenter = Boolean.parseBoolean(value);
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (REPEAT.equals(name)) {
 				this.repeat = Boolean.parseBoolean(value);
+			} else if (REPEAT_GAP.equals(name)) {
+				this.repeatGap = Float.parseFloat(value) * displayModel.getScaleFactor();
+			} else if (REPEAT_START.equals(name)) {
+				this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
+			} else if (ROTATE.equals(name)) {
+				this.rotate = Boolean.parseBoolean(value);
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}
 		}
 
-		XmlUtils.checkMandatoryAttribute(elementName, SRC, this.bitmap);
 	}
 }

@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.model.DisplayModel;
@@ -33,12 +34,7 @@ import org.xml.sax.SAXException;
 /**
  * A builder for {@link Line} instances.
  */
-public class LineBuilder {
-	static final String SRC = "src";
-	static final String STROKE = "stroke";
-	static final String STROKE_DASHARRAY = "stroke-dasharray";
-	static final String STROKE_LINECAP = "stroke-linecap";
-	static final String STROKE_WIDTH = "stroke-width";
+public class LineBuilder extends RenderInstructionBuilder {
 	private static final Pattern SPLIT_PATTERN = Pattern.compile(",");
 
 	private static float[] parseFloatArray(String name, String dashString) throws SAXException {
@@ -50,6 +46,7 @@ public class LineBuilder {
 		return dashIntervals;
 	}
 
+	float dy;
 	final int level;
 	final Paint stroke;
 	float strokeWidth;
@@ -62,8 +59,16 @@ public class LineBuilder {
 		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
+		this.stroke.setStrokeJoin(Join.ROUND);
 
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
+
+		Bitmap shaderBitmap = createBitmap(graphicFactory, displayModel, relativePathPrefix, src);
+		if (shaderBitmap != null) {
+			this.stroke.setBitmapShader(shaderBitmap);
+			shaderBitmap.decrementRefCount();
+		}
+
 	}
 
 	/**
@@ -80,11 +85,11 @@ public class LineBuilder {
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				Bitmap shaderBitmap = XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, value);
-				if (shaderBitmap != null) {
-					this.stroke.setBitmapShader(shaderBitmap);
-					shaderBitmap.decrementRefCount();
-				}
+				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.cat = value;
+			} else if (DY.equals(name)) {
+				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
@@ -97,6 +102,14 @@ public class LineBuilder {
 				this.stroke.setDashPathEffect(floatArray);
 			} else if (STROKE_LINECAP.equals(name)) {
 				this.stroke.setStrokeCap(Cap.valueOf(value.toUpperCase(Locale.ENGLISH)));
+			} else if (STROKE_LINEJOIN.equals(name)) {
+				this.stroke.setStrokeJoin(Join.valueOf(value.toUpperCase(Locale.ENGLISH)));
+			} else if (SYMBOL_HEIGHT.equals(name)) {
+				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (SYMBOL_SCALING.equals(name)) {
+				this.scaling = fromValue(value);
+			} else if (SYMBOL_WIDTH.equals(name)) {
+				this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}

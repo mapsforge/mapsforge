@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,12 +20,12 @@ import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 
 import android.graphics.BitmapShader;
 import android.graphics.DashPathEffect;
-import android.graphics.Paint.Join;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
@@ -57,6 +58,20 @@ class AndroidPaint implements Paint {
 
 		throw new IllegalArgumentException("unknown cap: " + cap);
 	}
+
+	private static android.graphics.Paint.Join getAndroidJoin(Join join) {
+		switch (join) {
+			case BEVEL:
+				return android.graphics.Paint.Join.BEVEL;
+			case ROUND:
+				return android.graphics.Paint.Join.ROUND;
+			case MITER:
+				return android.graphics.Paint.Join.MITER;
+		}
+
+		throw new IllegalArgumentException("unknown join: " + join);
+	}
+
 
 	private static android.graphics.Paint.Style getAndroidStyle(Style style) {
 		switch (style) {
@@ -104,7 +119,7 @@ class AndroidPaint implements Paint {
 	AndroidPaint() {
 		this.paint.setAntiAlias(true);
 		this.paint.setStrokeCap(getAndroidCap(Cap.ROUND));
-		this.paint.setStrokeJoin(Join.ROUND);
+		this.paint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
 		this.paint.setStyle(getAndroidStyle(Style.FILL));
 	}
 
@@ -163,6 +178,11 @@ class AndroidPaint implements Paint {
 	@Override
 	public void setStrokeCap(Cap cap) {
 		this.paint.setStrokeCap(getAndroidCap(cap));
+	}
+
+	@Override
+	public void setStrokeJoin(org.mapsforge.core.graphics.Join join) {
+		this.paint.setStrokeJoin(getAndroidJoin(join));
 	}
 
 	@Override

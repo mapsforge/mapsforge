@@ -27,14 +27,18 @@ import org.xml.sax.SAXException;
 /**
  * A builder for {@link Symbol} instances.
  */
-public class SymbolBuilder {
-	static final String SRC = "src";
-
+public class SymbolBuilder extends RenderInstructionBuilder {
 	Bitmap bitmap;
+	String id;
 
 	public SymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
+
+		this.bitmap = createBitmap(graphicFactory, displayModel, relativePathPrefix, src);
+
+		XmlUtils.checkMandatoryAttribute(this.elementName, SRC, this.bitmap);
+
 	}
 
 	/**
@@ -46,17 +50,31 @@ public class SymbolBuilder {
 
 	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
+
+		this.elementName = elementName;
+
 		for (int i = 0; i < attributes.getLength(); ++i) {
 			String name = attributes.getQName(i);
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				this.bitmap = XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, value);
+				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.cat = value;
+			} else if (ID.equals(name)) {
+				this.id = value;
+			} else if (SYMBOL_HEIGHT.equals(name)) {
+				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (SYMBOL_PERCENT.equals(name)) {
+				this.percent = XmlUtils.parseNonNegativeInteger(name, value);
+			} else if (SYMBOL_SCALING.equals(name)) {
+				this.scaling = fromValue(value);
+			} else if (SYMBOL_WIDTH.equals(name)) {
+				this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else {
 				throw XmlUtils.createSAXException(elementName, name, value, i);
 			}
 		}
 
-		XmlUtils.checkMandatoryAttribute(elementName, SRC, this.bitmap);
 	}
 }

@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
 
 /**
@@ -38,14 +39,19 @@ public interface RenderCallback {
 	 * 
 	 * @param caption
 	 *            the text to be rendered.
+	 * @param horizontalOffset
+	 *            the horizontal offset of the caption.
 	 * @param verticalOffset
 	 *            the vertical offset of the caption.
 	 * @param fill
 	 *            the paint to be used for rendering the text.
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
+	 * @param position
+	 *            an optional position for the caption (may be null).
 	 */
-	void renderAreaCaption(String caption, float verticalOffset, Paint fill, Paint stroke);
+	void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset,
+	                       Paint fill, Paint stroke, Position position);
 
 	/**
 	 * Renders an area symbol with the given bitmap.
@@ -60,14 +66,20 @@ public interface RenderCallback {
 	 * 
 	 * @param caption
 	 *            the text to be rendered.
+	 * @param horizontalOffset
+	 *            the horizontal offset of the caption.
 	 * @param verticalOffset
 	 *            the vertical offset of the caption.
 	 * @param fill
 	 *            the paint to be used for rendering the text.
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
+	 * @param position
+	 *            an optional position for the caption (may be null).
+	 *
 	 */
-	void renderPointOfInterestCaption(String caption, float verticalOffset, Paint fill, Paint stroke);
+	void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset,
+	                                  Paint fill, Paint stroke, Position position);
 
 	/**
 	 * Renders a point of interest circle with the given parameters.
@@ -96,32 +108,43 @@ public interface RenderCallback {
 	 * 
 	 * @param stroke
 	 *            the paint to be used for rendering the way.
+	 * @param dy
+	 *            the offset of the way.
 	 * @param level
 	 *            the drawing level on which the way should be rendered.
 	 */
-	void renderWay(Paint stroke, int level);
+	void renderWay(Paint stroke, float dy, int level);
 
 	/**
 	 * Renders a way with the given symbol along the way path.
 	 * 
 	 * @param symbol
 	 *            the symbol to be rendered.
+	 * @param dy
+	 *            the offset of the way.
 	 * @param alignCenter
 	 *            true if the symbol should be centered, false otherwise.
 	 * @param repeat
 	 *            true if the symbol should be repeated, false otherwise.
+	 * @param repeatGap
+	 *            distance between repetitions.
+	 * @param repeatStart
+	 *            offset from start.
 	 */
-	void renderWaySymbol(Bitmap symbol, boolean alignCenter, boolean repeat);
+	void renderWaySymbol(Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
+	                     float repeatGap, float repeatStart, boolean rotate);
 
 	/**
 	 * Renders a way with the given text along the way path.
 	 * 
 	 * @param text
 	 *            the text to be rendered.
+	 * @param dy
+	 *            the offset of the way text.
 	 * @param fill
 	 *            the paint to be used for rendering the text.
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
 	 */
-	void renderWayText(String text, Paint fill, Paint stroke);
+	void renderWayText(String text, float dy, Paint fill, Paint stroke);
 }

@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 devemux86
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,6 +30,7 @@ import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 
@@ -74,6 +77,19 @@ class AwtPaint implements Paint {
 
 		throw new IllegalArgumentException("unknown fontStyle: " + fontStyle);
 	}
+	private static int getJoin(Join join) {
+		switch (join) {
+			case ROUND:
+				return BasicStroke.JOIN_ROUND;
+			case BEVEL:
+				return BasicStroke.JOIN_BEVEL;
+			case MITER:
+				return BasicStroke.JOIN_MITER;
+		}
+
+		throw new IllegalArgumentException("unknown cap: " + join);
+	}
+
 
 	java.awt.Color color;
 	Font font;
@@ -83,6 +99,7 @@ class AwtPaint implements Paint {
 	private int cap;
 	private String fontName;
 	private int fontStyle;
+	private int join;
 	private float[] strokeDasharray;
 	private float strokeWidth;
 	private float textSize;
@@ -91,20 +108,21 @@ class AwtPaint implements Paint {
 		this.cap = getCap(Cap.ROUND);
 		this.color = java.awt.Color.BLACK;
 		this.style = Style.FILL;
+		this.join = getJoin(Join.ROUND);
 	}
 
 	@Override
 	public int getTextHeight(String text) {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
-		return fontMetrics.getHeight();
+		return (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getHeight();
 	}
 
 	@Override
 	public int getTextWidth(String text) {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
-		return fontMetrics.stringWidth(text);
+		return (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getWidth();
 	}
 
 	@Override
@@ -137,6 +155,12 @@ class AwtPaint implements Paint {
 	@Override
 	public void setStrokeCap(Cap cap) {
 		this.cap = getCap(cap);
+		createStroke();
+	}
+
+	@Override
+	public void setStrokeJoin(Join join) {
+		this.join = getJoin(join);
 		createStroke();
 	}
 
@@ -181,6 +205,6 @@ class AwtPaint implements Paint {
 		if (this.strokeWidth <= 0) {
 			return;
 		}
-		this.stroke = new BasicStroke(this.strokeWidth, this.cap, BasicStroke.JOIN_ROUND, 0, this.strokeDasharray, 0);
+		this.stroke = new BasicStroke(this.strokeWidth, this.cap, this.join, this.join == 0 ? 1.0f : 0, this.strokeDasharray, 0);
 	}
 }

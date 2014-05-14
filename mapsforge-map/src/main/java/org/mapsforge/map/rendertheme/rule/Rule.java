@@ -24,9 +24,11 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
 abstract class Rule {
+
 	static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<List<String>, AttributeMatcher>();
 	static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<List<String>, AttributeMatcher>();
 
+	String cat;
 	final ClosedMatcher closedMatcher;
 	final ElementMatcher elementMatcher;
 	final byte zoomMax;
@@ -35,6 +37,7 @@ abstract class Rule {
 	private final ArrayList<Rule> subRules; // NOPMD we need specific interface
 
 	Rule(RuleBuilder ruleBuilder) {
+		this.cat = ruleBuilder.cat;
 		this.closedMatcher = ruleBuilder.closedMatcher;
 		this.elementMatcher = ruleBuilder.elementMatcher;
 		this.zoomMax = ruleBuilder.zoomMax;

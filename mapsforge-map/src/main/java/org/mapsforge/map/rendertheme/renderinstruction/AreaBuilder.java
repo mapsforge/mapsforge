@@ -31,11 +31,7 @@ import org.xml.sax.SAXException;
 /**
  * A builder for {@link Area} instances.
  */
-public class AreaBuilder {
-	static final String FILL = "fill";
-	static final String SRC = "src";
-	static final String STROKE = "stroke";
-	static final String STROKE_WIDTH = "stroke-width";
+public class AreaBuilder extends RenderInstructionBuilder {
 
 	final Paint fill;
 	final int level;
@@ -44,6 +40,7 @@ public class AreaBuilder {
 
 	public AreaBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, int level, String relativePathPrefix) throws IOException, SAXException {
+
 		this.level = level;
 
 		this.fill = graphicFactory.createPaint();
@@ -57,6 +54,13 @@ public class AreaBuilder {
 		this.stroke.setStrokeCap(Cap.ROUND);
 
 		extractValues(graphicFactory, displayModel, elementName, attributes, relativePathPrefix);
+
+		Bitmap shaderBitmap = createBitmap(graphicFactory, displayModel, relativePathPrefix, src);
+		if (shaderBitmap != null) {
+			this.fill.setBitmapShader(shaderBitmap);
+			shaderBitmap.decrementRefCount();
+		}
+
 	}
 
 	/**
@@ -73,15 +77,19 @@ public class AreaBuilder {
 			String value = attributes.getValue(i);
 
 			if (SRC.equals(name)) {
-				Bitmap shaderBitmap = XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, value);
-				if (shaderBitmap != null) {
-					this.fill.setBitmapShader(shaderBitmap);
-					shaderBitmap.decrementRefCount();
-				}
+				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.cat = value;
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (SYMBOL_HEIGHT.equals(name)) {
+				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (SYMBOL_SCALING.equals(name)) {
+				this.scaling = fromValue(value);
+			} else if (SYMBOL_WIDTH.equals(name)) {
+				this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else if (STROKE_WIDTH.equals(name)) {
 				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else {

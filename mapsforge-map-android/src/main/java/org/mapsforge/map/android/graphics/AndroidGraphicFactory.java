@@ -16,7 +16,9 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -92,7 +94,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	/**
 	 * return the byte usage per pixel of a bitmap based on its configuration.
 	 */
-	static public int getBytesPerPixel(Config config) {
+	public static int getBytesPerPixel(Config config) {
 		if (config == Config.ARGB_8888) {
 			return 4;
 		} else if (config == Config.RGB_565) {
@@ -212,6 +214,35 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		return new AndroidTileBitmap(tileSize, isTransparent);
 	}
 
+
+	/*
+	 * Android method accessible only via Context.
+	 */
+	public boolean deleteFile(String name) {
+		return this.application.deleteFile(name);
+	}
+
+	/*
+	 * Android method accessible only via Context.
+	 */
+	public String[] fileList() {
+		return this.application.fileList();
+	}
+
+	/*
+	 * Android method accessible only via Context.
+	 */
+	public FileInputStream openFileInput (String name) throws FileNotFoundException {
+		return this.application.openFileInput(name);
+	}
+
+	/*
+	 * Android method accessible only via Context.
+	 */
+	public FileOutputStream openFileOutput (String name, int mode) throws FileNotFoundException {
+		return this.application.openFileOutput(name, mode);
+	}
+
 	@Override
 	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
 		// this allows loading of resource bitmaps from the Andorid assets folder
@@ -227,8 +258,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int hash) throws IOException {
-		return new AndroidSvgBitmap(inputStream, hash, scaleFactor);
+	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+		return new AndroidSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
 	}
 
 }
