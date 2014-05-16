@@ -60,7 +60,7 @@ public final class MapViewer {
 	 * Starts the {@code MapViewer}.
 	 * 
 	 * @param args
-	 *            command line args: expects the map file as first and only parameter.
+	 *            command line args: expects the map files as multiple parameters.
 	 */
 	public static void main(String[] args) {
 		List<File> mapFiles = getMapFiles(args);
