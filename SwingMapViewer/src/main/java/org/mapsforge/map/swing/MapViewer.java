@@ -20,7 +20,8 @@ package org.mapsforge.map.swing;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -62,9 +63,9 @@ public final class MapViewer {
 	 *            command line args: expects the map file as first and only parameter.
 	 */
 	public static void main(String[] args) {
-		File mapFile = getMapFile(args);
+		List<File> mapFiles = getMapFiles(args);
 		MapView mapView = createMapView();
-		final BoundingBox boundingBox = addLayers(mapView, mapFile);
+		final BoundingBox boundingBox = addLayers(mapView, mapFiles);
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		final Model model = mapView.getModel();
@@ -85,20 +86,24 @@ public final class MapViewer {
 		});
 	}
 
-	private static BoundingBox addLayers(MapView mapView, File mapFile) {
+	private static BoundingBox addLayers(MapView mapView, List<File> mapFiles) {
 		Layers layers = mapView.getLayerManager().getLayers();
 		TileCache tileCache = createTileCache();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
-		TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition,
-				mapFile);
-		BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
-		layers.add(tileRendererLayer);
+		BoundingBox result = null;
+		for (File mapFile : mapFiles) {
+			TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition,
+					true, mapFile);
+			BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
+			result = result == null ? boundingBox : result.extend(boundingBox);
+			layers.add(tileRendererLayer);
+		}
 		if (SHOW_DEBUG_LAYERS) {
 			layers.add(new TileGridLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
 			layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
 		}
-		return boundingBox;
+		return result;
 	}
 
 	private static MapView createMapView() {
@@ -133,8 +138,7 @@ public final class MapViewer {
 
 	@SuppressWarnings("unused")
 	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			File mapFile) {
-		boolean isTransparent = false;
+			boolean isTransparent, File mapFile) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent,
 				GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(mapFile);
@@ -142,23 +146,24 @@ public final class MapViewer {
 		return tileRendererLayer;
 	}
 
-	private static File getMapFile(String[] args) {
+	private static List<File> getMapFiles(String[] args) {
 		if (args.length == 0) {
 			throw new IllegalArgumentException("missing argument: <mapFile>");
-		} else if (args.length > 1) {
-			throw new IllegalArgumentException("too many arguments: " + Arrays.toString(args));
 		}
 
-		File mapFile = new File(args[0]);
-		if (!mapFile.exists()) {
-			throw new IllegalArgumentException("file does not exist: " + mapFile);
-		} else if (!mapFile.isFile()) {
-			throw new IllegalArgumentException("not a file: " + mapFile);
-		} else if (!mapFile.canRead()) {
-			throw new IllegalArgumentException("cannot read file: " + mapFile);
+		List<File> result = new ArrayList<>();
+		for(String arg : args) {
+			File mapFile = new File(arg);
+			if (!mapFile.exists()) {
+				throw new IllegalArgumentException("file does not exist: " + mapFile);
+			} else if (!mapFile.isFile()) {
+				throw new IllegalArgumentException("not a file: " + mapFile);
+			} else if (!mapFile.canRead()) {
+				throw new IllegalArgumentException("cannot read file: " + mapFile);
+			}
+			result.add(mapFile);
 		}
-
-		return mapFile;
+		return result;
 	}
 
 	private MapViewer() {
