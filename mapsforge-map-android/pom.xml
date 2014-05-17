@@ -9,7 +9,6 @@
 	</parent>
 
 	<artifactId>mapsforge-map-android</artifactId>
-	<packaging>apklib</packaging>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
