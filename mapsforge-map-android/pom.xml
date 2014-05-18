@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
-		<version>0.5.0-dev</version>
+		<version>dev-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>mapsforge-map-android</artifactId>
@@ -58,9 +58,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>svg-android</groupId>
+			<groupId>org.mapsforge</groupId>
 			<artifactId>svg-android</artifactId>
-			<version>1.0</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>

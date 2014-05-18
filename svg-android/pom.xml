@@ -5,15 +5,14 @@
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
-		<version>0.5.0-dev</version>
+		<version>dev-SNAPSHOT</version>
 	</parent>
 
-	<groupId>svg-android</groupId>
 	<artifactId>svg-android</artifactId>
-	<version>1.0</version>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
+		<targetJdk>1.6</targetJdk>
 	</properties>
 
 	<build>

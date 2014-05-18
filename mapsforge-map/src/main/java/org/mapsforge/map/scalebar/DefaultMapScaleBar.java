@@ -3,6 +3,7 @@
  * Copyright © 2014 Ludwig M Brinckmann
  * Copyright © 2014 devemux86
  * Copyright © 2014 Erik Duisters
+ * Copyright © 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -175,7 +176,8 @@ public class DefaultMapScaleBar extends MapScaleBar {
 	private void drawScaleText(Canvas canvas, String scaleText1, String scaleText2, Paint paint, float scale) {
 		canvas.drawText(scaleText1, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN),
 				Math.round(canvas.getHeight() * 0.5f - STROKE_EXTERNAL * scale * 0.5f - TEXT_MARGIN), paint);
-		canvas.drawText(scaleText2, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN),
-				Math.round(canvas.getHeight() * 0.5f + STROKE_EXTERNAL * scale * 0.5f  + TEXT_MARGIN + this.paintScaleTextStroke.getTextHeight(scaleText2)), paint);
+		if (scaleText2.length() > 0)
+			canvas.drawText(scaleText2, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN),
+					Math.round(canvas.getHeight() * 0.5f + STROKE_EXTERNAL * scale * 0.5f + TEXT_MARGIN + this.paintScaleTextStroke.getTextHeight(scaleText2)), paint);
 	}
 }

@@ -33,6 +33,13 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 	private final XmlRenderThemeMenuCallback menuCallback;
 	private final String relativePathPrefix;
 
+	/*
+	 * Creates AssetsRenderTheme without menuCallback for compatibility with version 0.4.x
+	 */
+	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException {
+		this(context, relativePathPrefix, fileName, null);
+	}
+
 	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) throws IOException {
 		this.assetName = fileName;
 		this.relativePathPrefix = relativePathPrefix;

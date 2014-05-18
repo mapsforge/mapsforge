@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright © 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -170,6 +171,18 @@ public class BoundingBox implements Serializable {
 
 		return this.maxLatitude >= boundingBox.minLatitude && this.maxLongitude >= boundingBox.minLongitude
 				&& this.minLatitude <= boundingBox.maxLatitude && this.minLongitude <= boundingBox.maxLongitude;
+	}
+
+	/**
+	 * @param boundingBox
+	 *            the BoundingBox which this BoundingBox should be extended if it is larger
+	 * @return a BoundingBox that covers this BoundingBox and the given BoundingBox.
+	 */
+	public BoundingBox extend(BoundingBox boundingBox) {
+		return new BoundingBox(Math.min(this.minLatitude, boundingBox.minLatitude),
+				Math.min(this.minLongitude, boundingBox.minLongitude),
+				Math.max(this.maxLatitude, boundingBox.maxLatitude),
+				Math.max(this.maxLongitude, boundingBox.maxLongitude));
 	}
 
 	@Override

@@ -180,7 +180,7 @@ public class DatabaseRenderer implements RenderCallback {
 				rendererJob.hasAlpha);
 		this.canvasRasterer.setCanvasBitmap(bitmap);
 		if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
-			this.canvasRasterer.fill(this.renderTheme.getMapBackground());
+			this.canvasRasterer.fill(rendererJob.hasAlpha ? 0 : this.renderTheme.getMapBackground());
 		}
 		this.canvasRasterer.drawWays(this.ways);
 		this.canvasRasterer.drawSymbols(this.waySymbols);
