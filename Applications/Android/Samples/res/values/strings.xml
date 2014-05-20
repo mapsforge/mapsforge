@@ -18,7 +18,7 @@
     <string name="preferences_scale_desc">Adjust scale of the map display</string>
 
     <string name="preferences_scalebar">Scale bar</string>
-    <string name="preferences_scalebar_desc">Set metric/imperial units on the scale bar</string>
+    <string name="preferences_scalebar_desc">Set units system on the scale bar</string>
 
 
     <string name="preferences_r4_emergency">Emergency</string>

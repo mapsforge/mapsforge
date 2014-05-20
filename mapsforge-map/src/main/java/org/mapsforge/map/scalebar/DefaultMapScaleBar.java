@@ -40,7 +40,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
 	private static final float STROKE_EXTERNAL = 4;
 	private static final float STROKE_INTERNAL = 2;
 
-	public static enum ScaleBarMode { BOTH, IMPERIAL, METRIC }
+	public static enum ScaleBarMode { BOTH, SINGLE }
 	private ScaleBarMode scaleBarMode;
 	private DistanceUnitAdapter secondaryDistanceUnitAdapter;
 
@@ -53,8 +53,8 @@ public class DefaultMapScaleBar extends MapScaleBar {
 			GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super(mapViewPosition, mapViewDimension, displayModel, graphicFactory, BITMAP_WIDTH, BITMAP_HEIGHT);
 
-		this.scaleBarMode = ScaleBarMode.METRIC;
-		this.secondaryDistanceUnitAdapter = null;
+		this.scaleBarMode = ScaleBarMode.BOTH;
+		this.secondaryDistanceUnitAdapter = ImperialUnitAdapter.INSTANCE;
 
 		this.paintScaleBar = createScaleBarPaint(Color.BLACK, STROKE_INTERNAL, Style.FILL);
 		this.paintScaleBarStroke = createScaleBarPaint(Color.WHITE, STROKE_EXTERNAL, Style.STROKE);
@@ -62,17 +62,25 @@ public class DefaultMapScaleBar extends MapScaleBar {
 		this.paintScaleTextStroke = createTextPaint(Color.WHITE, 2, Style.STROKE);
 	}
 
-	@Override
-	public void setDistanceUnitAdapter(DistanceUnitAdapter distanceUnitAdapter) {
-		super.setDistanceUnitAdapter(distanceUnitAdapter);
+	/**
+	 * @return the secondary {@link DistanceUnitAdapter} in use by this MapScaleBar
+	 */
+	public DistanceUnitAdapter getSecondaryDistanceUnitAdapter() {
+		return this.secondaryDistanceUnitAdapter;
+	}
 
-		if (this.scaleBarMode == ScaleBarMode.BOTH) {
-			if (this.distanceUnitAdapter instanceof MetricUnitAdapter)
-				this.secondaryDistanceUnitAdapter = ImperialUnitAdapter.INSTANCE;
-			else
-				this.secondaryDistanceUnitAdapter = MetricUnitAdapter.INSTANCE;
-			this.redrawNeeded = true;
+	/**
+	 * Set the secondary {@link DistanceUnitAdapter} for the MapScaleBar
+	 * 
+	 * @param distanceUnitAdapter
+	 *            The secondary {@link DistanceUnitAdapter} to be used by this {@link MapScaleBar}
+	 */
+	public void setSecondaryDistanceUnitAdapter(DistanceUnitAdapter distanceUnitAdapter) {
+		if (distanceUnitAdapter == null) {
+			throw new IllegalArgumentException("adapter must not be null");
 		}
+		this.secondaryDistanceUnitAdapter = distanceUnitAdapter;
+		this.redrawNeeded = true;
 	}
 
 	public ScaleBarMode getScaleBarMode() {
@@ -81,24 +89,6 @@ public class DefaultMapScaleBar extends MapScaleBar {
 
 	public void setScaleBarMode(ScaleBarMode scaleBarMode) {
 		this.scaleBarMode = scaleBarMode;
-
-		switch (this.scaleBarMode) {
-		case BOTH:
-			if (this.distanceUnitAdapter instanceof MetricUnitAdapter)
-				this.secondaryDistanceUnitAdapter = ImperialUnitAdapter.INSTANCE;
-			else
-				this.secondaryDistanceUnitAdapter = MetricUnitAdapter.INSTANCE;
-			break;
-		case IMPERIAL:
-			this.distanceUnitAdapter = ImperialUnitAdapter.INSTANCE;
-			this.secondaryDistanceUnitAdapter = null;
-			break;
-		case METRIC:
-			this.distanceUnitAdapter = MetricUnitAdapter.INSTANCE;
-			this.secondaryDistanceUnitAdapter = null;
-			break;
-		}
-
 		this.redrawNeeded = true;
 	}
 

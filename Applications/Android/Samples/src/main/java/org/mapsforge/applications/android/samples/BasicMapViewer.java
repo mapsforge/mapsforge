@@ -41,7 +41,10 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
+import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.scalebar.MetricUnitAdapter;
+import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -406,24 +409,29 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		String value = this.sharedPreferences.getString(SamplesApplication.SETTING_SCALEBAR, "both");
 
 		for (MapView mapView : mapViews) {
-
-			// TODO the setting of the scale bars is somewhat clunky.
 			if (SamplesApplication.SETTING_SCALEBAR_NONE.equals(value)) {
 				mapView.setMapScaleBar(null);
 			} else {
 				MapScaleBar scalebar = mapView.getMapScaleBar();
 				if (scalebar == null) {
-					mapView.setMapScaleBar(new DefaultMapScaleBar(mapView.getModel().mapViewPosition, mapView.getModel().mapViewDimension,
-							AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel));
-					scalebar = mapView.getMapScaleBar();
+					scalebar = new DefaultMapScaleBar(mapView.getModel().mapViewPosition, mapView.getModel().mapViewDimension,
+							AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel);
+					mapView.setMapScaleBar(scalebar);
 				}
 				if (scalebar instanceof DefaultMapScaleBar) {
 					if (SamplesApplication.SETTING_SCALEBAR_BOTH.equals(value)) {
 						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.BOTH);
+						((DefaultMapScaleBar) scalebar).setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
+						((DefaultMapScaleBar) scalebar).setSecondaryDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
 					} else if (SamplesApplication.SETTING_SCALEBAR_METRIC.equals(value)) {
-						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.METRIC);
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.SINGLE);
+						((DefaultMapScaleBar) scalebar).setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
 					} else if (SamplesApplication.SETTING_SCALEBAR_IMPERIAL.equals(value)) {
-						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.IMPERIAL);
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.SINGLE);
+						((DefaultMapScaleBar) scalebar).setDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
+					} else if (SamplesApplication.SETTING_SCALEBAR_NAUTICAL.equals(value)) {
+						((DefaultMapScaleBar) scalebar).setScaleBarMode(ScaleBarMode.SINGLE);
+						((DefaultMapScaleBar) scalebar).setDistanceUnitAdapter(NauticalUnitAdapter.INSTANCE);
 					}
 				}
 			}

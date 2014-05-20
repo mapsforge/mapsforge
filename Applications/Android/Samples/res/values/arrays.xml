@@ -15,12 +15,14 @@
     <string-array name="pref_scalebar_entries">
         <item>Metric</item>
         <item>Imperial</item>
+        <item>Nautical</item>
         <item>Both Metric/Imperial</item>
         <item>No Scale Bar</item>
     </string-array>
     <string-array name="pref_scalebar_values">
         <item>metric</item>
         <item>imperial</item>
+        <item>nautical</item>
         <item>both</item>
         <item>none</item>
     </string-array>

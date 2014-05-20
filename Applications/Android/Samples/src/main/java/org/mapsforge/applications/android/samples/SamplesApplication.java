@@ -1,5 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,6 +32,7 @@ public class SamplesApplication extends Application {
 	public static final String SETTING_SCALEBAR = "scalebar";
 	public static final String SETTING_SCALEBAR_METRIC = "metric";
 	public static final String SETTING_SCALEBAR_IMPERIAL = "imperial";
+	public static final String SETTING_SCALEBAR_NAUTICAL = "nautical";
 	public static final String SETTING_SCALEBAR_BOTH = "both";
 	public static final String SETTING_SCALEBAR_NONE = "none";
 	public static final String TAG = "SAMPLES APP";
