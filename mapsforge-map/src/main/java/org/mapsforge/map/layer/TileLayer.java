@@ -30,6 +30,7 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 
 public abstract class TileLayer<T extends Job> extends Layer {
+	protected final boolean hasJobQueue;
 	protected final boolean isTransparent;
 	protected JobQueue<T> jobQueue;
 	protected final TileCache tileCache;
@@ -37,6 +38,10 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	private final Matrix matrix;
 
 	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent) {
+		this(tileCache, mapViewPosition, matrix, isTransparent, true);
+	}
+
+	public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent, boolean hasJobQueue) {
 		super();
 
 		if (tileCache == null) {
@@ -45,6 +50,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 			throw new IllegalArgumentException("mapViewPosition must not be null");
 		}
 
+		this.hasJobQueue = hasJobQueue;
 		this.tileCache = tileCache;
 		this.mapViewPosition = mapViewPosition;
 		this.matrix = matrix;
@@ -77,20 +83,24 @@ public abstract class TileLayer<T extends Job> extends Layer {
 			Bitmap bitmap = this.tileCache.get(createJob(tile));
 
 			if (bitmap == null) {
-				this.jobQueue.add(createJob(tile));
+				if (this.hasJobQueue) {
+					this.jobQueue.add(createJob(tile));
+				}
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
 				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y));
 				bitmap.decrementRefCount();
 			}
 		}
-		this.jobQueue.notifyWorkers();
+		if (this.hasJobQueue) {
+			this.jobQueue.notifyWorkers();
+		}
 	}
 
 	@Override
 	public synchronized void setDisplayModel(DisplayModel displayModel) {
 		super.setDisplayModel(displayModel);
-		if (displayModel != null) {
+		if (displayModel != null && this.hasJobQueue) {
 			this.jobQueue = new JobQueue<T>(this.mapViewPosition, this.displayModel);
 		} else {
 			this.jobQueue = null;

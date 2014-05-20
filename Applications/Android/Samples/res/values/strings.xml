@@ -60,5 +60,6 @@
 
     <string name="startup_dontshowagain">Don\'t show again</string>
     <string name="startup_message">To run this samples app, you need a map called germany.map installed on the sdcard.</string>
+    <string name="startup_message_tilestore">To run this sample activity, you need a TMS tile store at /sdcard/tilestore. Sample data in the Samples/data directory.</string>
 
 </resources>

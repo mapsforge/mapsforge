@@ -22,7 +22,7 @@ public class Job {
 	public final Tile tile;
 	public final int tileSize;
 
-	protected Job(Tile tile, int tileSize, boolean hasAlpha) {
+	public Job(Tile tile, int tileSize, boolean hasAlpha) {
 		if (tile == null) {
 			throw new IllegalArgumentException("tile must not be null");
 		}

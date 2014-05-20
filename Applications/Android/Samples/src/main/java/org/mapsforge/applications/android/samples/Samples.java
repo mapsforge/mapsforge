@@ -101,6 +101,8 @@ public class Samples extends Activity {
 				"Downloading Mapnik"));
 		linearLayout.addView(createButton(DownloadCustomLayerViewer.class,
 				"Downloading custom tile source"));
+		linearLayout.addView(createButton(TileStoreLayerViewer.class,
+				"Tile Store (locally stored TMS files)"));
 		linearLayout.addView(createButton(OverlayMapViewer.class));
 		linearLayout.addView(createButton(LongPressAction.class,
 				"Long Press Action"));
