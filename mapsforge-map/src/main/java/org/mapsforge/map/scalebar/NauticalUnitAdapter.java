@@ -17,10 +17,9 @@ package org.mapsforge.map.scalebar;
 
 public final class NauticalUnitAdapter implements DistanceUnitAdapter {
 	public static final NauticalUnitAdapter INSTANCE = new NauticalUnitAdapter();
-	private static final int ONE_KILOMETER = 1000;
 	private static final int ONE_MILE = 1852;
 	private static final int[] SCALE_BAR_VALUES = { 9260000, 3704000, 1852000, 926000, 370400, 185200, 92600,
-		37040, 18520, 9260, 3704, 1852, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1 };
+		37040, 18520, 9260, 3704, 1852, 926, 500, 200, 100, 50, 20, 10, 5, 2, 1 };
 
 	private NauticalUnitAdapter() {
 		// do nothing
@@ -38,11 +37,11 @@ public final class NauticalUnitAdapter implements DistanceUnitAdapter {
 
 	@Override
 	public String getScaleText(int mapScaleValue) {
-		if (mapScaleValue < ONE_KILOMETER) {
+		if (mapScaleValue < ONE_MILE / 2) {
 			return mapScaleValue + " m";
 		}
-		if (mapScaleValue < ONE_MILE) {
-			return (mapScaleValue / ONE_KILOMETER) + " km";
+		if (mapScaleValue == ONE_MILE / 2) {
+			return "0.5 nm";
 		}
 		return (mapScaleValue / ONE_MILE) + " nm";
 	}
