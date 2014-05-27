@@ -82,9 +82,17 @@ public class OnlineTileSource extends AbstractTileSource {
 		return this;
 	}
 
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
 	public OnlineTileSource setBaseUrl(String baseUrl) {
 		this.baseUrl = baseUrl;
 		return this;
+	}
+
+	public String getExtension() {
+		return extension;
 	}
 
 	public OnlineTileSource setExtension(String extension) {
@@ -100,6 +108,10 @@ public class OnlineTileSource extends AbstractTileSource {
 	public OnlineTileSource setParallelRequestsLimit(int parallelRequestsLimit) {
 		this.parallelRequestsLimit = parallelRequestsLimit;
 		return this;
+	}
+
+	public String getProtocol() {
+		return protocol;
 	}
 
 	public OnlineTileSource setProtocol(String protocol) {
