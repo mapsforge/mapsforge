@@ -35,6 +35,7 @@ public class LineSymbolBuilder extends RenderInstructionBuilder {
 	boolean alignCenter;
 	Bitmap bitmap;
 	float dy;
+	int priority;
 	boolean repeat;
 	float repeatGap;
 	float repeatStart;
@@ -78,6 +79,8 @@ public class LineSymbolBuilder extends RenderInstructionBuilder {
 				this.alignCenter = Boolean.parseBoolean(value);
 			} else if (CAT.equals(name)) {
 				this.cat = value;
+			} else if (PRIORITY.equals(name)) {
+				this.priority = Integer.parseInt(value);
 			} else if (REPEAT.equals(name)) {
 				this.repeat = Boolean.parseBoolean(value);
 			} else if (REPEAT_GAP.equals(name)) {

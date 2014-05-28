@@ -19,6 +19,9 @@ import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
 /**
@@ -28,6 +31,7 @@ public class LineSymbol extends RenderInstruction {
 	private final boolean alignCenter;
 	private final Bitmap bitmap;
 	private final float dy;
+	private final int priority;
 	private final boolean repeat;
 	private final float repeatGap;
 	private final float repeatStart;
@@ -38,6 +42,7 @@ public class LineSymbol extends RenderInstruction {
 		this.alignCenter = lineSymbolBuilder.alignCenter;
 		this.bitmap = lineSymbolBuilder.bitmap;
 		this.dy = lineSymbolBuilder.dy;
+		this.priority = lineSymbolBuilder.priority;
 		this.repeat = lineSymbolBuilder.repeat;
 		this.repeatGap = lineSymbolBuilder.repeatGap;
 		this.repeatStart = lineSymbolBuilder.repeatStart;
@@ -50,13 +55,13 @@ public class LineSymbol extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
+	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderWaySymbol(this.bitmap, this.dy, this.alignCenter,
+	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+		renderCallback.renderWaySymbol(way, this.priority, this.bitmap, this.dy, this.alignCenter,
 				this.repeat, this.repeatGap, this.repeatStart, this.rotate);
 	}
 

@@ -92,6 +92,13 @@ public class Point implements Comparable<Point>, Serializable {
 		return result;
 	}
 
+	public Point offset(double dx, double dy) {
+		if (0 == dx && 0 == dy) {
+			return this;
+		}
+		return new Point(this.x + dx, this.y + dy);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();

@@ -32,8 +32,6 @@ import android.util.Log;
 
 public class StackedLayersMapViewer extends RenderThemeMapViewer {
 
-	protected TileCache tileCache2;
-
 	@Override
 	protected void createLayers() {
 		super.createLayers();
@@ -41,10 +39,12 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 
 			XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "",
 					"renderthemes/onlybuildings.xml", null);
+
+			// we are adding the other layer below the labels
 			this.layerManagers
 					.get(0)
 					.getLayers()
-					.add(Utils.createTileRendererLayer(this.tileCache2,
+					.add(1, Utils.createTileRendererLayer(this.tileCaches.get(1), null,
 							this.mapViewPositions.get(0), getMapFile(),
 							secondRenderTheme, true));
 
@@ -57,19 +57,15 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 	@Override
 	protected void createTileCaches() {
 		super.createTileCaches();
-		this.tileCache2 = AndroidUtil.createTileCache(this,
+		TileCache tileCache2 = AndroidUtil.createTileCache(this,
 				getPersistableId2(),
 				this.mapViews.get(0).getModel().displayModel.getTileSize(),
 				this.getScreenRatio(),
 				this.mapViews.get(0).getModel().frameBufferModel
 						.getOverdrawFactor());
+		this.tileCaches.add(tileCache2);
 	}
 
-	@Override
-	protected void destroyTileCaches() {
-		super.destroyTileCaches();
-		this.tileCache2.destroy();
-	}
 
 	protected String getPersistableId2() {
 		return this.getPersistableId() + "-2";

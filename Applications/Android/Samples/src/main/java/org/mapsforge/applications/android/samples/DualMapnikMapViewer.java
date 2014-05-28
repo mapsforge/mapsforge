@@ -32,7 +32,7 @@ public class DualMapnikMapViewer extends DualMapViewer {
 
 	@Override
 	protected void createLayers2() {
-		this.downloadLayer = new TileDownloadLayer(this.tileCache2,
+		this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(1),
 				this.mapViewPositions.get(1), OpenStreetMapMapnik.INSTANCE,
 				AndroidGraphicFactory.INSTANCE);
 		this.layerManagers.get(1).getLayers().add(this.downloadLayer);
@@ -48,7 +48,6 @@ public class DualMapnikMapViewer extends DualMapViewer {
 				this.mapViewPositions.get(1), this.mapViewPositions.get(0));
 	}
 
-	@Override
 	protected TileCache createTileCache2() {
 		int tileSize = this.mapViews.get(1).getModel().displayModel
 				.getTileSize();
@@ -59,16 +58,16 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	}
 
 	@Override
+	protected void createTileCaches() {
+		super.createTileCaches();
+		this.tileCaches.add(createTileCache2());
+	}
+
+	@Override
 	protected void destroyMapViewPositions() {
 		super.destroyMapViewPositions();
 		this.observer1.removeObserver();
 		this.observer2.removeObserver();
-	}
-
-	@Override
-	protected void destroyTileCaches() {
-		super.destroyTileCaches();
-		this.tileCache2.destroy();
 	}
 
 	@Override

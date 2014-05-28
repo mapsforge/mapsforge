@@ -18,6 +18,7 @@ package org.mapsforge.applications.android.samples;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
@@ -29,6 +30,8 @@ import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.labels.LabelLayer;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
@@ -69,13 +72,15 @@ import android.widget.TextView;
  * A simple application which demonstrates how to use a MapView.
  */
 public class BasicMapViewer extends Activity implements OnSharedPreferenceChangeListener {
+
 	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
-	protected ArrayList<LayerManager> layerManagers = new ArrayList<LayerManager>();
-	protected ArrayList<MapViewPosition> mapViewPositions = new ArrayList<MapViewPosition>();
+	protected List<LayerManager> layerManagers = new ArrayList<LayerManager>();
+	protected List<MapViewPosition> mapViewPositions = new ArrayList<MapViewPosition>();
 	protected ArrayList<MapView> mapViews = new ArrayList<MapView>();
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
-	protected TileCache tileCache;
+	protected List<TileCache> tileCaches = new ArrayList<TileCache>();
+	protected List<TileBasedLabelStore> tileBasedLabelStores = new ArrayList<TileBasedLabelStore>();
 	protected XmlRenderThemeStyleMenu renderThemeStyleMenu;
 
 	@Override
@@ -117,6 +122,12 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			createTileCaches();
 			redrawLayers();
 		}
+		if (SamplesApplication.SETTING_TEXTWIDTH.equals(key)) {
+			destroyTileCaches();
+			setTextWidth();
+			createTileCaches();
+			redrawLayers();
+		}
 		if (SamplesApplication.SETTING_SCALEBAR.equals(key)) {
 			setScaleBars();
 		}
@@ -134,9 +145,12 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCache,
+		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0), this.tileBasedLabelStores.get(0),
 				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(0));
+		this.layerManagers.get(0).getLayers().add(labelLayer);
+
 	}
 
 	protected void createMapViewPositions() {
@@ -162,9 +176,13 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createTileCaches() {
-		this.tileCache = AndroidUtil.createTileCache(this, getPersistableId(),
+
+		this.tileBasedLabelStores.add(new TileBasedLabelStore(2 * AndroidUtil.getMinimumCacheSize(this, this.mapViews.get(0).getModel().displayModel.getTileSize(), this.mapViews.get(0)
+				.getModel().frameBufferModel.getOverdrawFactor(),this.getScreenRatio())));
+		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapViews.get(0).getModel().displayModel.getTileSize(), this.getScreenRatio(), this.mapViews.get(0)
-						.getModel().frameBufferModel.getOverdrawFactor());
+						.getModel().frameBufferModel.getOverdrawFactor()
+		));
 	}
 
 	protected void destroyLayers() {
@@ -189,7 +207,14 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void destroyTileCaches() {
-		this.tileCache.destroy();
+		for (TileCache tileCache : tileCaches) {
+			tileCache.destroy();
+		}
+		tileCaches.clear();
+		for (TileBasedLabelStore labelStore : tileBasedLabelStores) {
+			labelStore.destroy();
+		}
+		tileBasedLabelStores.clear();
 	}
 
 	protected MapPosition getInitialPosition() {
@@ -384,6 +409,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	protected void onStart() {
 		super.onStart();
 		createLayers();
+		setTextWidth();
 	}
 
 	@Override
@@ -435,6 +461,15 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 					}
 				}
 			}
+		}
+	}
+
+	protected void setTextWidth() {
+		float textWidthFactor = Float.valueOf(sharedPreferences.getString(
+				SamplesApplication.SETTING_TEXTWIDTH, "0.7"));
+
+		for (MapView mapView : mapViews) {
+			mapView.getModel().displayModel.setMaxTextWidthFactor(textWidthFactor);
 		}
 	}
 }

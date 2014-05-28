@@ -18,10 +18,10 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
-
-import java.util.List;
 
 /**
  * Represents a text label on the map.
@@ -39,6 +39,8 @@ public class Caption extends RenderInstruction {
 	private final Paint fill;
 	private final float fontSize;
 	private final float gap;
+	private final int maxTextWidth;
+	private final int priority;
 	private final Paint stroke;
 	private final TextKey textKey;
 
@@ -50,6 +52,8 @@ public class Caption extends RenderInstruction {
 		this.dy = captionBuilder.dy;
 		this.fill = captionBuilder.fill;
 		this.fontSize = captionBuilder.fontSize;
+		this.maxTextWidth = captionBuilder.maxTextWidth;
+		this.priority = captionBuilder.priority;
 		this.stroke = captionBuilder.stroke;
 		this.textKey = captionBuilder.textKey;
 	}
@@ -60,8 +64,8 @@ public class Caption extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
-		String caption = this.textKey.getValue(tags);
+	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+		String caption = this.textKey.getValue(poi.tags);
 		if (caption == null) {
 			return;
 		}
@@ -70,16 +74,17 @@ public class Caption extends RenderInstruction {
 		float verticalOffset = this.dy;
 
 		if (this.bitmap != null) {
-			horizontalOffset = computeHorizontalOffset(caption);
-			verticalOffset = computeVerticalOffset(caption);
+			horizontalOffset = computeHorizontalOffset();
+			verticalOffset = computeVerticalOffset();
 		}
 
-		renderCallback.renderPointOfInterestCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke, this.position);
+		renderCallback.renderPointOfInterestCaption(poi, this.priority, caption, horizontalOffset, verticalOffset,
+				this.fill, this.stroke, this.position, this.maxTextWidth, tile);
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		String caption = this.textKey.getValue(tags);
+	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+		String caption = this.textKey.getValue(way.getTags());
 		if (caption == null) {
 			return;
 		}
@@ -88,11 +93,12 @@ public class Caption extends RenderInstruction {
 		float verticalOffset = this.dy;
 
 		if (this.bitmap != null) {
-			horizontalOffset = computeHorizontalOffset(caption);
-			verticalOffset = computeVerticalOffset(caption);
+			horizontalOffset = computeHorizontalOffset();
+			verticalOffset = computeVerticalOffset();
 		}
 
-		renderCallback.renderAreaCaption(caption, horizontalOffset, verticalOffset, this.fill, this.stroke, this.position);
+		renderCallback.renderAreaCaption(way, this.priority, caption, horizontalOffset, verticalOffset,
+				this.fill, this.stroke, this.position, this.maxTextWidth);
 	}
 
 	@Override
@@ -106,40 +112,26 @@ public class Caption extends RenderInstruction {
 		this.stroke.setTextSize(this.fontSize * scaleFactor);
 	}
 
-	private float computeHorizontalOffset(String caption) {
-		float horizontalOffset = 0f;
-
+	private float computeHorizontalOffset() {
+		// compute only the offset required by the bitmap, not the text size,
+		// because at this point we do not know the text boxing
 		if (Position.RIGHT == this.position || Position.LEFT == this.position) {
-			float textWidth;
-			if (this.stroke != null) {
-				textWidth = this.stroke.getTextWidth(caption) / 2f;
-			} else {
-				textWidth = this.fill.getTextWidth(caption) / 2f;
-			}
-			horizontalOffset = this.bitmap.getWidth() / 2f + this.gap + textWidth;
+			float horizontalOffset = this.bitmap.getWidth() / 2f + this.gap;
 			if (Position.LEFT == this.position) {
 				horizontalOffset *= -1f;
 			}
+			return horizontalOffset;
 		}
-		return horizontalOffset;
+		return 0;
 	}
 
-	private float computeVerticalOffset(String caption) {
+	private float computeVerticalOffset() {
 		float verticalOffset = this.dy;
 
-		float textHeight;
-		if (this.stroke != null) {
-			textHeight = this.stroke.getTextHeight(caption);
-		} else {
-			textHeight = this.fill.getTextHeight(caption);
-		}
-
-		if (Position.RIGHT == this.position || Position.LEFT == this.position) {
-			verticalOffset = textHeight / 2f;
-		} else if (Position.ABOVE == this.position) {
+		if (Position.ABOVE == this.position) {
 			verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
 		} else if (Position.BELOW == this.position) {
-			verticalOffset += this.bitmap.getHeight() / 2f + this.gap + textHeight;
+			verticalOffset += this.bitmap.getHeight() / 2f + this.gap;
 		}
 		return verticalOffset;
 	}

@@ -18,11 +18,14 @@ package org.mapsforge.applications.android.samples;
 import java.io.File;
 
 import org.mapsforge.applications.android.samples.dummy.DummyContent;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.labels.LabelLayer;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
@@ -96,9 +99,13 @@ public class ItemDetailFragment extends Fragment {
 					1.5);
 
 			mapViewPosition.setCenter(this.dummyItem.location);
-			layers.add(Utils.createTileRendererLayer(this.tileCache,
+			TileBasedLabelStore labelStore = new TileBasedLabelStore(30);
+			layers.add(Utils.createTileRendererLayer(this.tileCache, labelStore,
 					mapViewPosition, getMapFile(),
 					InternalRenderTheme.OSMARENDER, false));
+			LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
+			layers.add(labelLayer);
+
 		}
 
 		return rootView;

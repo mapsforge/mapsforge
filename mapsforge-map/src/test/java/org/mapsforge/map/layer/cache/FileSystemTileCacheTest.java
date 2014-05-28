@@ -80,9 +80,9 @@ public class FileSystemTileCacheTest {
 	public void capacityZeroTest() {
 		for (int tileSize : TILE_SIZES) {
 			TileCache tileCache = new FileSystemTileCache(0, this.cacheDirectory, GRAPHIC_FACTORY);
-			Tile tile = new Tile(0, 0, (byte) 0);
+			Tile tile = new Tile(0, 0, (byte) 0, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-			Job job = new DownloadJob(tile, tileSize, tileSource);
+			Job job = new DownloadJob(tile, tileSource);
 
 			TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache.put(job, bitmap);
@@ -108,9 +108,9 @@ public class FileSystemTileCacheTest {
 			TileCache tileCache = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_FACTORY);
 			Assert.assertEquals(2, this.cacheDirectory.list().length);
 
-			Tile tile = new Tile(0, 0, (byte) 0);
+			Tile tile = new Tile(0, 0, (byte) 0, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-			Job job = new DownloadJob(tile, tileSize, tileSource);
+			Job job = new DownloadJob(tile, tileSource);
 
 			TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache.put(job, bitmap);
@@ -138,13 +138,13 @@ public class FileSystemTileCacheTest {
 			Assert.assertTrue(this.cacheDirectory.exists());
 			Assert.assertEquals(0, this.cacheDirectory.list().length);
 
-			Tile tile = new Tile(0, 0, (byte) 1);
+			Tile tile = new Tile(0, 0, (byte) 1, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 			File mapFile = new File("map.file");
 			XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
-			Job job1 = new DownloadJob(tile, tileSize, tileSource);
-			Job job2 = new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), 1, false);
+			Job job1 = new DownloadJob(tile, tileSource);
+			Job job2 = new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), 1, false, false);
 
 			Assert.assertFalse(tileCache.containsKey(job1));
 			Assert.assertFalse(tileCache.containsKey(job2));
@@ -191,7 +191,7 @@ public class FileSystemTileCacheTest {
 		for (int tileSize : TILE_SIZES) {
 			TileCache tileCache = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_FACTORY);
 			verifyInvalidPut(tileCache, null, GRAPHIC_FACTORY.createTileBitmap(tileSize, false));
-			verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), tileSize,
+			verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0, tileSize),
 					OpenStreetMapMapnik.INSTANCE), null);
 		}
 	}

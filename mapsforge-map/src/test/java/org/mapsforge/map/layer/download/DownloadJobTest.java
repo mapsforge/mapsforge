@@ -30,10 +30,10 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class DownloadJobTest {
-	private static int tileSize = 256;
+	private static final int TILE_SIZE = 256;
 
 	private static DownloadJob createDownloadJob(Tile tile, TileSource tileSource) {
-		return new DownloadJob(tile, tileSize, tileSource);
+		return new DownloadJob(tile, tileSource);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile, TileSource tileSource) {
@@ -47,7 +47,7 @@ public class DownloadJobTest {
 
 	@Test
 	public void downloadJobTest() {
-		Tile tile = new Tile(0, 0, (byte) 0);
+		Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 
 		DownloadJob downloadJob = createDownloadJob(tile, tileSource);
@@ -59,10 +59,10 @@ public class DownloadJobTest {
 
 	@Test
 	public void equalsTest() {
-		Tile tile = new Tile(0, 0, (byte) 0);
-		DownloadJob downloadJob1 = new DownloadJob(tile, tileSize, OpenStreetMapMapnik.INSTANCE);
-		DownloadJob downloadJob2 = new DownloadJob(tile, tileSize, OpenStreetMapMapnik.INSTANCE);
-		DownloadJob downloadJob3 = new DownloadJob(tile, tileSize, OpenCycleMap.INSTANCE);
+		Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
+		DownloadJob downloadJob1 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
+		DownloadJob downloadJob2 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
+		DownloadJob downloadJob3 = new DownloadJob(tile, OpenCycleMap.INSTANCE);
 
 		TestUtils.equalsTest(downloadJob1, downloadJob2);
 
@@ -73,6 +73,6 @@ public class DownloadJobTest {
 		File mapFile = new File("map.file");
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), 1,
-				false));
+				false, false));
 	}
 }

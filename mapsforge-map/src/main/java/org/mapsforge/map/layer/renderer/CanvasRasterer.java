@@ -23,10 +23,8 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.PointTextContainer;
-import org.mapsforge.core.graphics.SymbolContainer;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.core.model.Tile;
 
 class CanvasRasterer {
 	private final Canvas canvas;
@@ -43,45 +41,7 @@ class CanvasRasterer {
 		this.canvas.destroy();
 	}
 
-	void drawNodes(List<PointTextContainer> pointTextContainers, DisplayModel displayModel) {
-		for (int index = pointTextContainers.size() - 1; index >= 0; --index) {
-			PointTextContainer pointTextContainer = pointTextContainers.get(index);
-
-			this.canvas.drawPointTextContainer(pointTextContainer, displayModel.getMaxTextWidth());
-
-		}
-	}
-
-	void drawSymbols(List<SymbolContainer> symbolContainers) {
-		for (int index = symbolContainers.size() - 1; index >= 0; --index) {
-			SymbolContainer symbolContainer = symbolContainers.get(index);
-
-			Point point = symbolContainer.point;
-			this.symbolMatrix.reset();
-
-			if (symbolContainer.alignCenter) {
-				int pivotX = symbolContainer.symbol.getWidth() / 2;
-				int pivotY = symbolContainer.symbol.getHeight() / 2;
-				this.symbolMatrix.translate((float) (point.x - pivotX), (float) (point.y - pivotY));
-				this.symbolMatrix.rotate(symbolContainer.theta, pivotX, pivotY);
-			} else {
-				this.symbolMatrix.translate((float) point.x, (float) point.y);
-				this.symbolMatrix.rotate(symbolContainer.theta);
-			}
-
-			this.canvas.drawBitmap(symbolContainer.symbol, this.symbolMatrix);
-		}
-	}
-
-	void drawWayNames(List<WayTextContainer> wayTextContainers) {
-		for (int index = wayTextContainers.size() - 1; index >= 0; --index) {
-			WayTextContainer wayTextContainer = wayTextContainers.get(index);
-			this.canvas.drawTextRotated(wayTextContainer.text, wayTextContainer.x1, wayTextContainer.y1,
-					wayTextContainer.x2, wayTextContainer.y2, wayTextContainer.paint);
-		}
-	}
-
-	void drawWays(List<List<List<ShapePaintContainer>>> drawWays) {
+	void drawWays(List<List<List<ShapePaintContainer>>> drawWays, Tile tile) {
 		int levelsPerLayer = drawWays.get(0).size();
 
 		for (int layer = 0, layers = drawWays.size(); layer < layers; ++layer) {
@@ -91,7 +51,7 @@ class CanvasRasterer {
 				List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
 				for (int index = wayList.size() - 1; index >= 0; --index) {
-					drawShapePaintContainer(wayList.get(index));
+					drawShapePaintContainer(wayList.get(index), tile);
 				}
 			}
 		}
@@ -113,21 +73,21 @@ class CanvasRasterer {
 		this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
 	}
 
-	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
+	private void drawPath(ShapePaintContainer shapePaintContainer, List<List<Point>> coordinates, float dy) {
 		this.path.clear();
 
-		for (int j = 0; j < coordinates.length; ++j) {
-			Point[] points;
+		for (List<Point> innerList : coordinates) {
+			List<Point> points;
 			if (dy != 0f) {
-				points = RendererUtils.parallelPath(coordinates[j], dy);
+				points = RendererUtils.parallelPath(innerList, dy);
 			} else {
-				points = coordinates[j];
+				points = innerList;
 			}
-			if (points.length >= 2) {
-				Point point = points[0];
+			if (points.size() >= 2) {
+				Point point = points.get(0);
 				this.path.moveTo((float) point.x, (float) point.y);
-				for (int i = 1; i < points.length; ++i) {
-					point = points[i];
+				for (int i = 1; i < points.size(); ++i) {
+					point = points.get(i);
 					this.path.lineTo((int) point.x, (int) point.y);
 				}
 			}
@@ -136,7 +96,7 @@ class CanvasRasterer {
 		this.canvas.drawPath(this.path, shapePaintContainer.paint);
 	}
 
-	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
+	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer, Tile tile) {
 		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
 		switch (shapeType) {
 			case CIRCLE:
@@ -145,7 +105,7 @@ class CanvasRasterer {
 
 			case POLYLINE:
 				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
-				drawPath(shapePaintContainer, polylineContainer.coordinates, shapePaintContainer.dy);
+				drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToTile(), shapePaintContainer.dy);
 				return;
 		}
 	}

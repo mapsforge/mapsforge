@@ -90,7 +90,7 @@ public final class AndroidUtil {
 	 */
 
 	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
-		int cacheSize = Math.round(AndroidUtil.getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
+		int cacheSize = Math.round(getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
 		return createExternalStorageTileCache(c, id, cacheSize, tileSize);
 	}
 

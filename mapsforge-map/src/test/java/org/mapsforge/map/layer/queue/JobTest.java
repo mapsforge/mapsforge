@@ -21,13 +21,16 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.TestUtils;
 
 public class JobTest {
-	private static Job createJob(Tile tile, int tileSize) {
-		return new Job(tile, tileSize, false);
+
+	private static final int TILE_SIZE = 256;
+
+	private static Job createJob(Tile tile) {
+		return new Job(tile, false);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile) {
 		try {
-			createJob(tile, 1);
+			createJob(tile);
 			Assert.fail("tile: " + tile);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
@@ -36,9 +39,9 @@ public class JobTest {
 
 	@Test
 	public void equalsTest() {
-		Job job1 = new Job(new Tile(0, 1, (byte) 2), 1, false);
-		Job job2 = new Job(new Tile(0, 1, (byte) 2), 1, false);
-		Job job3 = new Job(new Tile(0, 0, (byte) 0), 1, false);
+		Job job1 = new Job(new Tile(0, 1, (byte) 2, TILE_SIZE), false);
+		Job job2 = new Job(new Tile(0, 1, (byte) 2, TILE_SIZE), false);
+		Job job3 = new Job(new Tile(0, 0, (byte) 0, TILE_SIZE), false);
 
 		TestUtils.equalsTest(job1, job2);
 
@@ -49,8 +52,8 @@ public class JobTest {
 
 	@Test
 	public void jobTest() {
-		Job job = createJob(new Tile(0, 1, (byte) 2), 1);
-		Assert.assertEquals(new Tile(0, 1, (byte) 2), job.tile);
+		Job job = createJob(new Tile(0, 1, (byte) 2, TILE_SIZE));
+		Assert.assertEquals(new Tile(0, 1, (byte) 2, TILE_SIZE), job.tile);
 
 		verifyInvalidConstructor(null);
 	}

@@ -33,7 +33,7 @@ public class OpenStreetMapMapnikTest {
 	public void getTileUrlTest() throws MalformedURLException {
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 
-		URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2));
+		URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2, 256));
 		Assert.assertTrue(tileUrl.toExternalForm().endsWith(".tile.openstreetmap.org:80/2/0/1.png"));
 	}
 

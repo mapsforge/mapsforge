@@ -69,7 +69,7 @@ public class RenderThemeChanger extends BasicMapViewer {
 
 	@Override
 	protected void createLayers() {
-		tileRendererLayer = Utils.createTileRendererLayer(this.tileCache,
+		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0), this.tileBasedLabelStores.get(0),
 				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
 				false);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
@@ -98,8 +98,10 @@ public class RenderThemeChanger extends BasicMapViewer {
 				// render theme safely
 				layerManagers.get(0).getLayers().remove(tileRendererLayer);
 				tileRendererLayer.onDestroy();
-				tileCache.destroy(); // clear the cache
-				tileRendererLayer = Utils.createTileRendererLayer(tileCache,
+				tileCaches.get(0).destroy(); // clear the cache
+				tileBasedLabelStores.get(0).clear();
+				tileRendererLayer = Utils.createTileRendererLayer(tileCaches.get(0),
+						tileBasedLabelStores.get(0),
 						mapViewPositions.get(0), getMapFile(), nextRenderTheme,
 						false);
 				layerManagers.get(0).getLayers().add(tileRendererLayer);

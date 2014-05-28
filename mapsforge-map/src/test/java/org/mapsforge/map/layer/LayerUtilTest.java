@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.util.LayerUtil;
 
 public class LayerUtilTest {
 	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
@@ -35,7 +36,7 @@ public class LayerUtilTest {
 			Assert.assertEquals(1, tilePositions.size());
 
 			TilePosition tilePosition = tilePositions.get(0);
-			Assert.assertEquals(new Tile(0, 0, (byte) 0), tilePosition.tile);
+			Assert.assertEquals(new Tile(0, 0, (byte) 0, tileSize), tilePosition.tile);
 			Assert.assertEquals(new Point(0, 0), tilePosition.point);
 		}
 	}

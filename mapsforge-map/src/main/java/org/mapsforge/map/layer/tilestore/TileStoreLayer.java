@@ -30,7 +30,7 @@ public class TileStoreLayer extends TileLayer<Job> {
 
 	@Override
 	protected Job createJob(Tile tile) {
-		return new Job(tile, this.displayModel.getTileSize(), isTransparent);
+		return new Job(tile, isTransparent);
 	}
 
 }

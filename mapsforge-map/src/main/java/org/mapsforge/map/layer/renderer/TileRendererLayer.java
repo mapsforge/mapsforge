@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDatabase;
@@ -35,16 +36,17 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private File mapFile;
 	private MapWorker mapWorker;
 	private float textScale;
+	private final TileBasedLabelStore tileBasedLabelStore;
 	private XmlRenderTheme xmlRenderTheme;
 
-	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, boolean isTransparent,
+	public TileRendererLayer(TileCache tileCache, TileBasedLabelStore labelStore, MapViewPosition mapViewPosition, boolean isTransparent,
 			GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
 		this.mapDatabase = new MapDatabase();
-		this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory);
-
+		this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory, labelStore);
 		this.textScale = 1;
+		this.tileBasedLabelStore = labelStore;
 	}
 
 	public MapDatabase getMapDatabase() {
@@ -102,7 +104,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	@Override
 	protected RendererJob createJob(Tile tile) {
 		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale,
-				this.isTransparent);
+				this.isTransparent, false);
 	}
 
 	@Override
@@ -116,4 +118,13 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		this.mapWorker.pause();
 		super.onRemove();
 	}
+
+	@Override
+	protected void retrieveLabelsOnly(RendererJob job) {
+		if (this.hasJobQueue && this.tileBasedLabelStore != null && this.tileBasedLabelStore.requiresTile(job.tile)) {
+			job.setRetrieveLabelsOnly();
+			this.jobQueue.add(job);
+		}
+	}
+
 }

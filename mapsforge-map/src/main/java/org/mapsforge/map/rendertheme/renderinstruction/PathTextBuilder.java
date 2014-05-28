@@ -37,6 +37,7 @@ public class PathTextBuilder extends RenderInstructionBuilder {
 	float dy;
 	final Paint fill;
 	float fontSize;
+	int priority;
 	final Paint stroke;
 	TextKey textKey;
 
@@ -85,6 +86,8 @@ public class PathTextBuilder extends RenderInstructionBuilder {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (PRIORITY.equals(name)) {
+				this.priority = Integer.parseInt(value);
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {

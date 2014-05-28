@@ -24,7 +24,7 @@ public class QueueItemTest {
 	private static final int[] TILE_SIZES = { 256, 128, 376, 512, 100 };
 
 	private static QueueItem<?> createTileDownloadJob(Tile tile, int tileSize) {
-		return new QueueItem<Job>(new Job(tile, tileSize, false));
+		return new QueueItem<Job>(new Job(tile, false));
 	}
 
 	private static void verifyInvalidPriority(QueueItem<Job> queueItem, double priority) {
@@ -39,12 +39,12 @@ public class QueueItemTest {
 	@Test
 	public void equalsTest() {
 		for (int tileSize : TILE_SIZES) {
-			Tile tile1 = new Tile(1, 1, (byte) 1);
-			Tile tile2 = new Tile(2, 2, (byte) 2);
+			Tile tile1 = new Tile(1, 1, (byte) 1, tileSize);
+			Tile tile2 = new Tile(2, 2, (byte) 2, tileSize);
 
-			QueueItem<Job> queueItem1 = new QueueItem<Job>(new Job(tile1, tileSize, false));
-			QueueItem<Job> queueItem2 = new QueueItem<Job>(new Job(tile1, tileSize, false));
-			QueueItem<Job> queueItem3 = new QueueItem<Job>(new Job(tile2, tileSize, false));
+			QueueItem<Job> queueItem1 = new QueueItem<Job>(new Job(tile1, false));
+			QueueItem<Job> queueItem2 = new QueueItem<Job>(new Job(tile1, false));
+			QueueItem<Job> queueItem3 = new QueueItem<Job>(new Job(tile2, false));
 
 			TestUtils.equalsTest(queueItem1, queueItem2);
 
@@ -67,8 +67,8 @@ public class QueueItemTest {
 	@Test
 	public void priorityTest() {
 		for (int tileSize : TILE_SIZES) {
-			Tile tile = new Tile(0, 0, (byte) 0);
-			QueueItem<Job> queueItem = new QueueItem<Job>(new Job(tile, tileSize, false));
+			Tile tile = new Tile(0, 0, (byte) 0, tileSize);
+			QueueItem<Job> queueItem = new QueueItem<Job>(new Job(tile, false));
 			Assert.assertEquals(0, queueItem.getPriority(), 0);
 
 			queueItem.setPriority(42);

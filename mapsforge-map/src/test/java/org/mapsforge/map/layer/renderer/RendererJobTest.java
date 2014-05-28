@@ -28,10 +28,12 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class RendererJobTest {
+
+	private static final int TILE_SIZE = 256;
 	private static final String MAP_FILE = "map.file";
 
 	private static RendererJob create(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
-		return new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), textScale, false);
+		return new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), textScale, false, false);
 	}
 
 	private static void verifyInvalidConstructor(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
@@ -46,7 +48,7 @@ public class RendererJobTest {
 
 	@Test
 	public void constructorTest() {
-		Tile tile = new Tile(0, 0, (byte) 0);
+		Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
 		File mapFile = new File(MAP_FILE);
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
@@ -66,11 +68,11 @@ public class RendererJobTest {
 		File mapFile = new File(MAP_FILE);
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
-		Tile tile = new Tile(0, 0, (byte) 0);
+		Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
 		DisplayModel displayModel = new DisplayModel();
-		RendererJob rendererJob1 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1, false);
-		RendererJob rendererJob2 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1, false);
-		RendererJob rendererJob3 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 2, false);
+		RendererJob rendererJob1 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1, false, false);
+		RendererJob rendererJob2 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1, false, false);
+		RendererJob rendererJob3 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 2, false, false);
 
 		TestUtils.equalsTest(rendererJob1, rendererJob2);
 
@@ -79,6 +81,6 @@ public class RendererJobTest {
 		Assert.assertNotEquals(rendererJob1, new Object());
 
 		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		Assert.assertNotEquals(rendererJob1, new DownloadJob(tile, 1, tileSource));
+		Assert.assertNotEquals(rendererJob1, new DownloadJob(tile, tileSource));
 	}
 }

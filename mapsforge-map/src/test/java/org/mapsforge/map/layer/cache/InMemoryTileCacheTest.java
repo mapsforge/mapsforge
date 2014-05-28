@@ -60,14 +60,14 @@ public class InMemoryTileCacheTest {
 			TileCache tileCache = new InMemoryTileCache(1);
 			Assert.assertEquals(1, tileCache.getCapacity());
 
-			Tile tile1 = new Tile(1, 1, (byte) 1);
-			Tile tile2 = new Tile(2, 2, (byte) 2);
+			Tile tile1 = new Tile(1, 1, (byte) 1, tileSize);
+			Tile tile2 = new Tile(2, 2, (byte) 2, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 			File mapFile = new File("map.file");
 			XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
-			Job job1 = new DownloadJob(tile1, tileSize, tileSource);
-			Job job2 = new RendererJob(tile2, mapFile, xmlRenderTheme, new DisplayModel(), 1, false);
+			Job job1 = new DownloadJob(tile1, tileSource);
+			Job job2 = new RendererJob(tile2, mapFile, xmlRenderTheme, new DisplayModel(), 1, false, false);
 
 			Assert.assertFalse(tileCache.containsKey(job1));
 			Assert.assertFalse(tileCache.containsKey(job2));
@@ -101,7 +101,7 @@ public class InMemoryTileCacheTest {
 		for (int tileSize : TILE_SIZES) {
 			TileCache tileCache = new InMemoryTileCache(0);
 			verifyInvalidPut(tileCache, null, GRAPHIC_FACTORY.createTileBitmap(tileSize, true));
-			verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0), tileSize,
+			verifyInvalidPut(tileCache, new DownloadJob(new Tile(0, 0, (byte) 0, tileSize),
 					OpenStreetMapMapnik.INSTANCE), null);
 		}
 	}
@@ -112,9 +112,9 @@ public class InMemoryTileCacheTest {
 			InMemoryTileCache inMemoryTileCache = new InMemoryTileCache(0);
 			Assert.assertEquals(0, inMemoryTileCache.getCapacity());
 
-			Tile tile1 = new Tile(1, 1, (byte) 1);
+			Tile tile1 = new Tile(1, 1, (byte) 1, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-			Job job1 = new DownloadJob(tile1, tileSize, tileSource);
+			Job job1 = new DownloadJob(tile1, tileSource);
 
 			TileBitmap bitmap1 = GRAPHIC_FACTORY.createTileBitmap(tileSize, true);
 			inMemoryTileCache.put(job1, bitmap1);
@@ -126,8 +126,8 @@ public class InMemoryTileCacheTest {
 			inMemoryTileCache.put(job1, bitmap1);
 			Assert.assertTrue(inMemoryTileCache.containsKey(job1));
 
-			Tile tile2 = new Tile(2, 2, (byte) 2);
-			Job job2 = new DownloadJob(tile2, tileSize, tileSource);
+			Tile tile2 = new Tile(2, 2, (byte) 2, tileSize);
+			Job job2 = new DownloadJob(tile2, tileSource);
 
 			inMemoryTileCache.put(job2, GRAPHIC_FACTORY.createTileBitmap(tileSize, true));
 			Assert.assertFalse(inMemoryTileCache.containsKey(job1));

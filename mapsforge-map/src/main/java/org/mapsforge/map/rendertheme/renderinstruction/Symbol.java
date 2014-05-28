@@ -19,6 +19,9 @@ import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
 /**
@@ -27,11 +30,13 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 public class Symbol extends RenderInstruction {
 	private final Bitmap bitmap;
 	private final String id;
+	private final int priority;
 
 	Symbol(SymbolBuilder symbolBuilder) {
 		super(symbolBuilder.getCategory());
 		this.bitmap = symbolBuilder.bitmap;
 		this.id = symbolBuilder.id;
+		this.priority = symbolBuilder.priority;
 	}
 
 	@Override
@@ -48,13 +53,13 @@ public class Symbol extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderPointOfInterestSymbol(this.bitmap);
+	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+		renderCallback.renderPointOfInterestSymbol(poi, this.priority, this.bitmap, tile);
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderAreaSymbol(this.bitmap);
+	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+		renderCallback.renderAreaSymbol(way, this.priority, this.bitmap);
 	}
 
 	@Override

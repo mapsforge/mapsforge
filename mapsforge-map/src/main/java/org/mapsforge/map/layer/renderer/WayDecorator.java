@@ -17,8 +17,10 @@ package org.mapsforge.map.layer.renderer;
 import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.SymbolContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.mapelements.WayTextContainer;
 import org.mapsforge.core.model.Point;
 
 final class WayDecorator {
@@ -28,31 +30,33 @@ final class WayDecorator {
 	 */
 	private static final int DISTANCE_BETWEEN_WAY_NAMES = 500;
 
-	static void renderSymbol(Bitmap symbolBitmap, float dy, boolean alignCenter,
+	static void renderSymbol(Bitmap symbolBitmap, int priority, float dy, boolean alignCenter,
 	                         boolean repeatSymbol, float repeatGap, float repeatStart,
-	                         boolean rotate, Point[][] coordinates,
-			List<SymbolContainer> waySymbols) {
+	                         boolean rotate, List<List<Point>> coordinates,
+			List<MapElementContainer> currentItems) {
 		int skipPixels = (int)repeatStart;
 
-		Point[] c;
+		List<Point> c;
 		if (dy == 0f) {
-			c = coordinates[0];
+			c = coordinates.get(0);
 		} else {
-			c = RendererUtils.parallelPath(coordinates[0], dy);
+			c = RendererUtils.parallelPath(coordinates.get(0), dy);
 		}
 
 		// get the first way point coordinates
-		double previousX = c[0].x;
-		double previousY = c[0].y;
+		double previousX = c.get(0).x;
+		double previousY = c.get(0).y;
 
-		// draw the symbol on each way segment
+		// draw the symbolContainer on each way segment
 		float segmentLengthRemaining;
 		float segmentSkipPercentage;
-		float theta = 0f;
-		for (int i = 1; i < coordinates[0].length; ++i) {
+		float theta = 0;
+
+
+		for (int i = 1; i < c.size(); ++i) {
 			// get the current way point coordinates
-			double currentX = c[i].x;
-			double currentY = c[i].y;
+			double currentX = c.get(i).x;
+			double currentY = c.get(i).y;
 
 			// calculate the length of the current segment (Euclidian distance)
 			double diffX = currentX - previousX;
@@ -71,10 +75,12 @@ final class WayDecorator {
 					// if we do not rotate theta will be 0, which is correct
 					theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
 				}
-				Point point = new Point(previousX, previousY);
-				waySymbols.add(new SymbolContainer(symbolBitmap, point, alignCenter, theta));
 
-				// check if the symbol should only be rendered once
+				Point point = new Point(previousX, previousY);
+
+				currentItems.add(new SymbolContainer(point, priority, symbolBitmap, theta, alignCenter));
+
+				// check if the symbolContainer should only be rendered once
 				if (!repeatSymbol) {
 					return;
 				}
@@ -86,7 +92,7 @@ final class WayDecorator {
 				// recalculate the remaining length of the current segment
 				segmentLengthRemaining -= skipPixels;
 
-				// set the amount of pixels to skip before repeating the symbol
+				// set the amount of pixels to skip before repeating the symbolContainer
 				skipPixels = (int)repeatGap;
 			}
 
@@ -101,29 +107,29 @@ final class WayDecorator {
 		}
 	}
 
-	static void renderText(String textKey, float dy, Paint fill, Paint stroke, Point[][] coordinates,
-			List<WayTextContainer> wayNames) {
+	static void renderText(String text, int priority, float dy, Paint fill, Paint stroke, List<List<Point>> coordinates,
+			List<MapElementContainer> currentItems) {
 		// calculate the way name length plus some margin of safety
-		int wayNameWidth = fill.getTextWidth(textKey) + 10;
+		int wayNameWidth = fill.getTextWidth(text) + 10;
 
 		int skipPixels = 0;
 
-		Point[] c;
+		List<Point> c;
 		if (dy == 0f) {
-			c = coordinates[0];
+			c = coordinates.get(0);
 		} else {
-			c = RendererUtils.parallelPath(coordinates[0], dy);
+			c = RendererUtils.parallelPath(coordinates.get(0), dy);
 		}
 
 		// get the first way point coordinates
-		double previousX = c[0].x;
-		double previousY = c[0].y;
+		double previousX = c.get(0).x;
+		double previousY = c.get(0).y;
 
 		// find way segments long enough to draw the way name on them
-		for (int i = 1; i < c.length; ++i) {
+		for (int i = 1; i < c.size(); ++i) {
 			// get the current way point coordinates
-			double currentX = c[i].x;
-			double currentY = c[i].y;
+			double currentX = c.get(i).x;
+			double currentY = c.get(i).y;
 
 			// calculate the length of the current segment (Euclidian distance)
 			double diffX = currentX - previousX;
@@ -133,28 +139,19 @@ final class WayDecorator {
 			if (skipPixels > 0) {
 				skipPixels -= segmentLengthInPixel;
 			} else if (segmentLengthInPixel > wayNameWidth) {
-				int x1;
-				int x2;
-				int y1;
-				int y2;
+
+				Point start;
+				Point end;
 
 				// check to prevent inverted way names
 				if (previousX <= currentX) {
-					x1 = (int) previousX;
-					y1 = (int) previousY;
-					x2 = (int) currentX;
-					y2 = (int) currentY;
+					start = new Point(previousX, previousY);
+					end = new Point(currentX, currentY);
 				} else {
-					x1 = (int) currentX;
-					y1 = (int) currentY;
-					x2 = (int) previousX;
-					y2 = (int) previousY;
+					start = new Point(currentX, currentY);
+					end = new Point(previousX, previousY);
 				}
-
-				wayNames.add(new WayTextContainer(x1, y1, x2, y2, textKey, fill));
-				if (stroke != null) {
-					wayNames.add(new WayTextContainer(x1, y1, x2, y2, textKey, stroke));
-				}
+				currentItems.add(new WayTextContainer(start, end, priority, text, fill, stroke));
 
 				skipPixels = DISTANCE_BETWEEN_WAY_NAMES;
 			}

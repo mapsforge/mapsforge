@@ -22,6 +22,9 @@ import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 
 public class JobQueueTest {
+
+	private static final int TILE_SIZE = 256;
+
 	private static void verifyInvalidRemove(JobQueue<Job> jobQueue, Job job) {
 		try {
 			jobQueue.remove(job);
@@ -37,13 +40,13 @@ public class JobQueueTest {
 		JobQueue<Job> jobQueue = new JobQueue<Job>(mapViewPosition, new FixedTileSizeDisplayModel(256));
 		Assert.assertEquals(0, jobQueue.size());
 
-		Tile tile1 = new Tile(0, 0, (byte) 1);
-		Tile tile2 = new Tile(0, 0, (byte) 0);
-		Tile tile3 = new Tile(0, 0, (byte) 2);
+		Tile tile1 = new Tile(0, 0, (byte) 1, TILE_SIZE);
+		Tile tile2 = new Tile(0, 0, (byte) 0, TILE_SIZE);
+		Tile tile3 = new Tile(0, 0, (byte) 2, TILE_SIZE);
 
-		Job job1 = new Job(tile1, 1, false);
-		Job job2 = new Job(tile2, 1, false);
-		Job job3 = new Job(tile3, 1, false);
+		Job job1 = new Job(tile1, false);
+		Job job2 = new Job(tile2, false);
+		Job job3 = new Job(tile3, false);
 		jobQueue.add(job1);
 		jobQueue.add(job2);
 		jobQueue.add(job3);

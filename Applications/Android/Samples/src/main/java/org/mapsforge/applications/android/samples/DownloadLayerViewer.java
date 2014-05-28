@@ -39,7 +39,7 @@ public class DownloadLayerViewer extends BasicMapViewerXml {
 
 	@Override
 	protected void createLayers() {
-		this.downloadLayer = new TileDownloadLayer(this.tileCache,
+		this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
 				this.mapViewPositions.get(0), OpenStreetMapMapnik.INSTANCE,
 				AndroidGraphicFactory.INSTANCE);
 		this.layerManagers.get(0).getLayers().add(this.downloadLayer);

@@ -1,6 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright © 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -13,24 +12,22 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.core.graphics;
 
+package org.mapsforge.map.layer.labels;
+
+import org.mapsforge.core.mapelements.MapElementContainer;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.model.DisplayModel;
 
-public class SymbolContainer {
-	public final boolean alignCenter;
-	public final Point point;
-	public Bitmap symbol;
-	public final float theta;
+import java.util.List;
 
-	public SymbolContainer(Bitmap symbol, Point point) {
-		this(symbol, point, false, 0);
-	}
+/**
+ * The LabelStore is an abstract store for labels from which it is possible to retrieve a priority-ordered
+ * queue of items that are visible within a given bounding box for a zoom level.
+ */
+public interface LabelStore {
+	abstract void clear();
+	abstract List<MapElementContainer> getVisibleItems(BoundingBox boundingBox, DisplayModel displayModel, byte zoomLevel, Point topLeftPoint);
 
-	public SymbolContainer(Bitmap symbol, Point point, boolean alignCenter, float theta) {
-		this.symbol = symbol;
-		this.point = point;
-		this.alignCenter = alignCenter;
-		this.theta = theta;
-	}
 }

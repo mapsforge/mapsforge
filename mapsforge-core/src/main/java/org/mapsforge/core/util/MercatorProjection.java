@@ -18,6 +18,7 @@ package org.mapsforge.core.util;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Tile;
 
 /**
  * An implementation of the spherical Mercator projection.
@@ -134,10 +135,54 @@ public final class MercatorProjection {
 		return new Point(pixelX, pixelY);
 	}
 
-	public static Point getPixel(LatLong latLong, byte zoomLevel, int tileSize) {
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize);
+	/**
+	 * Calculates the absolute pixel position for a zoom level and tile size
+	 *
+	 * @param latLong the geographic position.
+	 * @param zoomLevel the zoom level.
+	 * @param tileSize the tile size
+	 * @return the absolute pixel coordinates (for world)
+	 */
+
+	public static Point getPixelAbsolute(LatLong latLong, byte zoomLevel, int tileSize) {
+		return getPixelRelative(latLong, zoomLevel, tileSize, 0, 0);
+	}
+
+	/**
+	 * Calculates the absolute pixel position for a zoom level and tile size relative to origin
+	 *
+	 * @param latLong
+	 * @param zoomLevel
+	 * @param tileSize
+	 * @return the relative pixel position to the origin values (e.g. for a tile)
+	 */
+	public static Point getPixelRelative(LatLong latLong, byte zoomLevel, int tileSize, double x, double y) {
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize) - x;
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize) - y;
 		return new Point(pixelX, pixelY);
+	}
+
+
+	/**
+	 * Calculates the absolute pixel position for a zoom level and tile size relative to origin
+	 *
+	 * @param latLong
+	 * @param zoomLevel
+	 * @param tileSize
+	 * @return the relative pixel position to the origin values (e.g. for a tile)
+	 */
+	public static Point getPixelRelative(LatLong latLong, byte zoomLevel, int tileSize, Point origin) {
+		return getPixelRelative(latLong, zoomLevel, tileSize, origin.x, origin.y);
+	}
+
+	/**
+	 * Calculates the absolute pixel position for a zoom level and tile size relative to origin
+	 *
+	 * @param latLong
+	 * @return the relative pixel position to the origin values (e.g. for a tile)
+	 */
+	public static Point getPixelRelativeToTile(LatLong latLong, Tile tile) {
+		return getPixelRelative(latLong, tile.zoomLevel, tile.tileSize, tile.getOrigin());
 	}
 
 	/**

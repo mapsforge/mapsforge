@@ -1,0 +1,116 @@
+/*
+ * Copyright 2014 Ludwig M Brinckmann
+ *
+ * This program is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.mapsforge.core.mapelements;
+
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
+
+/**
+ * The MapElementContainer is the abstract base class for annotations that can be placed on the
+ * map, e.g. labels and icons.
+ *
+ * A MapElementContainer has a central pivot point, which denotes the geographic point for the entity
+ * translated into absolute map pixels. The boundary denotes the space that the item requires
+ * around this central point.
+ *
+ * A MapElementContainer has a priority (higher value means higher priority) that should be used to determine
+ * the drawing order, i.e. elements with higher priority should be drawn before elements with lower
+ * priority. If there is not enough space on the map, elements with lower priority should then not be
+ * drawn.
+ */
+public abstract class MapElementContainer implements Comparable<MapElementContainer> {
+
+	protected Rectangle boundary;
+	protected Rectangle boundaryAbsolute;
+	protected final int priority;
+	protected final Point xy;
+
+	protected MapElementContainer(Point xy, int priority) {
+		this.xy = xy;
+		this.priority = priority;
+	}
+
+	/**
+	 * Compares elements according to their priority.
+	 *
+	 * @param other
+	 * @return priority order
+	 */
+
+	@Override
+	public int compareTo(MapElementContainer other) {
+		if (this.priority < other.priority) {
+			return -1;
+		}
+		if (this.priority > other.priority) {
+			return 1;
+		}
+		return 0;
+	}
+
+	/**
+	 * Hook for memory management.
+	 */
+	public void incrementRefCount() {}
+
+	/**
+	 * Hook for memory management.
+	 */
+	public void decrementRefCount() {}
+
+	/**
+	 * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
+	 * using the matrix if rotation is required.
+	 *
+	 * @param canvas
+	 * @param origin
+	 * @param matrix
+	 */
+	abstract public void draw(Canvas canvas, Point origin, Matrix matrix);
+
+	/**
+	 * Gets the pixel absolute boundary for this element.
+	 *
+	 * @return Rectangle with absolute pixel coordinates.
+	 */
+	public Rectangle getBoundaryAbsolute() {
+		if (boundaryAbsolute == null) {
+			boundaryAbsolute = this.boundary.shift(xy);
+		}
+		return boundaryAbsolute;
+	}
+
+	/**
+	 * Gets the center point of this element.
+	 * @return Point with absolute center pixel coordinates.
+	 */
+	public Point getPoint() {
+		return this.xy;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("xy=");
+		stringBuilder.append(this.xy);
+		stringBuilder.append(", priority=");
+		stringBuilder.append(this.priority);
+		return stringBuilder.toString();
+	}
+
+}

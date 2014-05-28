@@ -18,6 +18,10 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import java.util.List;
 
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
+import org.mapsforge.map.reader.Way;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
 /**
@@ -40,18 +44,18 @@ public abstract class RenderInstruction {
 	/**
 	 * @param renderCallback
 	 *            a reference to the receiver of all render callbacks.
-	 * @param tags
-	 *            the tags of the node.
+	 * @param poi
+	 *            the point of interest.
 	 */
-	public abstract void renderNode(RenderCallback renderCallback, List<Tag> tags);
+	public abstract void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile);
 
 	/**
 	 * @param renderCallback
 	 *            a reference to the receiver of all render callbacks.
-	 * @param tags
-	 *            the tags of the way.
+	 * @param way
+	 *            the way.
 	 */
-	public abstract void renderWay(RenderCallback renderCallback, List<Tag> tags);
+	public abstract void renderWay(RenderCallback renderCallback, PolylineContainer way);
 
 	/**
 	 * Scales the stroke width of this RenderInstruction by the given factor.

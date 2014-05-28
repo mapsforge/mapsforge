@@ -25,11 +25,11 @@ public class QueueItemComparatorTest {
 	@Test
 	public void compareTest() {
 		for (int tileSize : TILE_SIZES) {
-			Tile tile1 = new Tile(0, 0, (byte) 1);
-			Tile tile2 = new Tile(0, 0, (byte) 2);
+			Tile tile1 = new Tile(0, 0, (byte) 1, tileSize);
+			Tile tile2 = new Tile(0, 0, (byte) 2, tileSize);
 
-			QueueItem<?> queueItem1 = new QueueItem<Job>(new Job(tile1, tileSize, false));
-			QueueItem<?> queueItem2 = new QueueItem<Job>(new Job(tile2, tileSize, false));
+			QueueItem<?> queueItem1 = new QueueItem<Job>(new Job(tile1, false));
+			QueueItem<?> queueItem2 = new QueueItem<Job>(new Job(tile2, false));
 
 			QueueItemComparator queueItemComparator = QueueItemComparator.INSTANCE;
 			Assert.assertEquals(0, queueItemComparator.compare(queueItem1, queueItem2), 0);

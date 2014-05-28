@@ -64,7 +64,7 @@ class TileDownloader {
 		InputStream inputStream = getInputStream(urlConnection);
 
 		try {
-			return this.graphicFactory.createTileBitmap(inputStream, this.downloadJob.tileSize,
+			return this.graphicFactory.createTileBitmap(inputStream, this.downloadJob.tile.tileSize,
 					this.downloadJob.hasAlpha);
 		} catch (CorruptedInputStreamException e) {
 			// the creation of the tile bit map can fail at, at least on Android,

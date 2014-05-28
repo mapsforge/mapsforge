@@ -59,7 +59,7 @@ public class MapWorker extends PausableThread {
 	protected void doWork() throws InterruptedException {
 		RendererJob rendererJob = this.jobQueue.get();
 		try {
-			if (!this.tileCache.containsKey(rendererJob)) {
+			if (!this.tileCache.containsKey(rendererJob) || rendererJob.labelsOnly) {
 				renderTile(rendererJob);
 			}
 		} finally {

@@ -136,10 +136,9 @@ public final class MapViewer {
 		return tileDownloadLayer;
 	}
 
-	@SuppressWarnings("unused")
 	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
 			boolean isTransparent, File mapFile) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent,
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, null, mapViewPosition, isTransparent,
 				GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);

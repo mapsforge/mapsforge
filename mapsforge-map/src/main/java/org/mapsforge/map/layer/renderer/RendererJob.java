@@ -24,14 +24,15 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class RendererJob extends Job {
 	public final DisplayModel displayModel;
+	public boolean labelsOnly;
 	public final File mapFile;
 	public final float textScale;
 	public final XmlRenderTheme xmlRenderTheme;
 	private final int hashCodeValue;
 
 	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel,
-			float textScale, boolean isTransparent) {
-		super(tile, displayModel.getTileSize(), isTransparent);
+			float textScale, boolean isTransparent, boolean labelsOnly) {
+		super(tile, isTransparent);
 
 		if (mapFile == null) {
 			throw new IllegalArgumentException("mapFile must not be null");
@@ -41,6 +42,7 @@ public class RendererJob extends Job {
 			throw new IllegalArgumentException("invalid textScale: " + textScale);
 		}
 
+		this.labelsOnly = labelsOnly;
 		this.displayModel = displayModel;
 		this.mapFile = mapFile;
 		this.xmlRenderTheme = xmlRenderTheme;
@@ -65,6 +67,8 @@ public class RendererJob extends Job {
 			return false;
 		} else if (!this.xmlRenderTheme.equals(other.xmlRenderTheme)) {
 			return false;
+		} else if (this.labelsOnly != other.labelsOnly) {
+			return false;
 		} else if (!this.displayModel.equals(other.displayModel)) {
 			return false;
 		}
@@ -74,6 +78,10 @@ public class RendererJob extends Job {
 	@Override
 	public int hashCode() {
 		return this.hashCodeValue;
+	}
+
+	public void setRetrieveLabelsOnly() {
+		this.labelsOnly = true;
 	}
 
 	private int calculateHashCode() {

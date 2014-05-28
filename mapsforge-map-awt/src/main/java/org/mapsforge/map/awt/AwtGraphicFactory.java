@@ -32,8 +32,12 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.model.Point;
 
 public final class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
@@ -122,6 +126,12 @@ public final class AwtGraphicFactory implements GraphicFactory {
 	@Override
 	public Path createPath() {
 		return new AwtPath();
+	}
+
+	@Override
+	public PointTextContainer createPointTextContainer(Point xy, int priority, String text, Paint paintFront, Paint paintBack,
+	                                                   SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+		return new AwtPointTextContainer(xy, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 	}
 
 	@Override

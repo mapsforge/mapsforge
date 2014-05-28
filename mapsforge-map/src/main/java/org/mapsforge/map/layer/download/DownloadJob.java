@@ -22,8 +22,8 @@ import org.mapsforge.map.layer.queue.Job;
 public class DownloadJob extends Job {
 	public final TileSource tileSource;
 
-	public DownloadJob(Tile tile, int tileSize, TileSource tileSource) {
-		super(tile, tileSize, tileSource.hasAlpha());
+	public DownloadJob(Tile tile, TileSource tileSource) {
+		super(tile, tileSource.hasAlpha());
 
 		this.tileSource = tileSource;
 	}

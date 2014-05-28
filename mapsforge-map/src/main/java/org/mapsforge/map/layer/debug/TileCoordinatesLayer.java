@@ -29,7 +29,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.LayerUtil;
+import org.mapsforge.map.util.LayerUtil;
 import org.mapsforge.map.layer.TilePosition;
 import org.mapsforge.map.model.DisplayModel;
 

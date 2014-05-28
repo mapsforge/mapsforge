@@ -160,7 +160,9 @@ public class Settings extends PreferenceActivity implements
 		renderthemeMenu.addPreference(baseLayerPreference);
 
 		String selection = baseLayerPreference.getValue();
-		if (selection == null) {
+		// need to check that the selection stored is actually a valid getLayer in the current
+		// rendertheme.
+		if (selection == null || !renderthemeOptions.getLayers().containsKey(selection)) {
 			selection = renderthemeOptions.getLayer(renderthemeOptions.getDefaultValue()).getId();
 		}
 		// the new Android style is to display information here, not instruction

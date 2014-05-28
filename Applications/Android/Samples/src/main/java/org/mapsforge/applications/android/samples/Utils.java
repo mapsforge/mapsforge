@@ -23,6 +23,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
@@ -93,6 +94,7 @@ public final class Utils {
 			LatLong latLong) {
 		Drawable drawable = c.getResources().getDrawable(resourceIdentifier);
 		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
+		bitmap.incrementRefCount();
 		return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {
 			@Override
 			public boolean onTap(LatLong geoPoint, Point viewPosition,
@@ -109,21 +111,21 @@ public final class Utils {
 
 	/*
 	 * @param tileCache the cache
-	 * 
+	 *
 	 * @param mapViewPosition the position
-	 * 
+	 *
 	 * @param layerManager the layer manager
-	 * 
+	 *
 	 * @param mapFile the map file
-	 * 
+	 *
 	 * @param renderTheme the render theme to use
-	 * 
+	 *
 	 * @return the layer
 	 */
-	static TileRendererLayer createTileRendererLayer(TileCache tileCache,
+	static TileRendererLayer createTileRendererLayer(TileCache tileCache, TileBasedLabelStore tileBasedLabelStore,
 			MapViewPosition mapViewPosition, File mapFile,
 			XmlRenderTheme renderTheme, boolean hasAlpha) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache,
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, tileBasedLabelStore,
 				mapViewPosition, hasAlpha, AndroidGraphicFactory.INSTANCE);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(renderTheme);

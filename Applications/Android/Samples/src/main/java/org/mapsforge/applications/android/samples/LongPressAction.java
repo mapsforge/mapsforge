@@ -23,6 +23,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.labels.LabelLayer;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
@@ -48,7 +49,7 @@ public class LongPressAction extends BasicMapViewerXml {
 	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(
-				this.tileCache,
+				this.tileCaches.get(0), this.tileBasedLabelStores.get(0),
 				this.mapViewPositions.get(0),
 				false,
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
@@ -63,6 +64,9 @@ public class LongPressAction extends BasicMapViewerXml {
 		tileRendererLayer.setXmlRenderTheme(this.getRenderTheme());
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
 		BLACK.setTextSize(22);
+		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(0));
+		this.layerManagers.get(0).getLayers().add(labelLayer);
+
 	}
 
 	protected void onLongPress(final LatLong position) {

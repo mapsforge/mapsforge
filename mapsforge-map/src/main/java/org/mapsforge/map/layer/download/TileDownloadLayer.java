@@ -106,6 +106,6 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 
 	@Override
 	protected DownloadJob createJob(Tile tile) {
-		return new DownloadJob(tile, this.displayModel.getTileSize(), this.tileSource);
+		return new DownloadJob(tile, this.tileSource);
 	}
 }

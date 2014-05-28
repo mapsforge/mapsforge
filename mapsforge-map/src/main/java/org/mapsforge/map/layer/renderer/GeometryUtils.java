@@ -14,7 +14,10 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+
+import java.util.List;
 
 final class GeometryUtils {
 	/**
@@ -24,14 +27,13 @@ final class GeometryUtils {
 	 *            the coordinates for which calculation should be done.
 	 * @return the center coordinates of the minimum bounding rectangle.
 	 */
-	static Point calculateCenterOfBoundingBox(Point[] coordinates) {
-		double pointXMin = coordinates[0].x;
-		double pointXMax = coordinates[0].x;
-		double pointYMin = coordinates[0].y;
-		double pointYMax = coordinates[0].y;
+	static Point calculateCenterOfBoundingBox(List<Point> coordinates) {
+		double pointXMin = coordinates.get(0).x;
+		double pointXMax = coordinates.get(0).x;
+		double pointYMin = coordinates.get(0).y;
+		double pointYMax = coordinates.get(0).y;
 
-		for (int i = 1; i < coordinates.length; ++i) {
-			Point immutablePoint = coordinates[i];
+		for (Point immutablePoint : coordinates) {
 			if (immutablePoint.x < pointXMin) {
 				pointXMin = immutablePoint.x;
 			} else if (immutablePoint.x > pointXMax) {
@@ -49,13 +51,36 @@ final class GeometryUtils {
 	}
 
 	/**
-	 * @param way
-	 *            the coordinates of the way.
-	 * @return true if the given way is closed, false otherwise.
+	 * Calculates the center of the minimum bounding rectangle for the given coordinates.
+	 *
+	 * @param coordinates
+	 *            the coordinates for which calculation should be done.
+	 * @return the center coordinates of the minimum bounding rectangle.
 	 */
-	static boolean isClosedWay(Point[] way) {
-		return way[0].equals(way[way.length - 1]);
+	static LatLong calculateCenterOfBoundingBox(LatLong[] coordinates) {
+		double pointXMin = coordinates[0].longitude;
+		double pointXMax = coordinates[0].longitude;
+		double pointYMin = coordinates[0].latitude;
+		double pointYMax = coordinates[0].latitude;
+
+		for (int i = 1; i < coordinates.length; ++i) {
+			LatLong immutablePoint = coordinates[i];
+			if (immutablePoint.longitude < pointXMin) {
+				pointXMin = immutablePoint.longitude;
+			} else if (immutablePoint.longitude > pointXMax) {
+				pointXMax = immutablePoint.longitude;
+			}
+
+			if (immutablePoint.latitude < pointYMin) {
+				pointYMin = immutablePoint.latitude;
+			} else if (immutablePoint.latitude > pointYMax) {
+				pointYMax = immutablePoint.latitude;
+			}
+		}
+
+		return new LatLong((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2);
 	}
+
 
 	private GeometryUtils() {
 		throw new IllegalStateException();

@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LRUCache;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
@@ -36,6 +38,8 @@ public class RenderTheme {
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> matchingCache;
 	private final AtomicInteger refCount = new AtomicInteger();
 	private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
+	private float textScale;
+	private float strokeWidthScale;
 
 	RenderTheme(RenderThemeBuilder renderThemeBuilder) {
 		this.baseStrokeWidth = renderThemeBuilder.baseStrokeWidth;
@@ -80,13 +84,11 @@ public class RenderTheme {
 	 * 
 	 * @param renderCallback
 	 *            the callback implementation which will be executed on each match.
-	 * @param tags
-	 *            the tags of the way.
-	 * @param zoomLevel
-	 *            the zoom level at which the way should be matched.
+	 * @param way
+	 *            the way.
 	 */
-	public void matchClosedWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel) {
-		matchWay(renderCallback, tags, zoomLevel, Closed.YES);
+	public void matchClosedWay(RenderCallback renderCallback, PolylineContainer way) {
+		matchWay(renderCallback, way, Closed.YES);
 	}
 
 	/**
@@ -94,13 +96,11 @@ public class RenderTheme {
 	 * 
 	 * @param renderCallback
 	 *            the callback implementation which will be executed on each match.
-	 * @param tags
-	 *            the tags of the way.
-	 * @param zoomLevel
-	 *            the zoom level at which the way should be matched.
+	 * @param way
+	 *            the way.
 	 */
-	public void matchLinearWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel) {
-		matchWay(renderCallback, tags, zoomLevel, Closed.NO);
+	public void matchLinearWay(RenderCallback renderCallback, PolylineContainer way) {
+		matchWay(renderCallback, way, Closed.NO);
 	}
 
 	/**
@@ -108,14 +108,14 @@ public class RenderTheme {
 	 * 
 	 * @param renderCallback
 	 *            the callback implementation which will be executed on each match.
-	 * @param tags
-	 *            the tags of the node.
-	 * @param zoomLevel
+	 * @param poi
+	 *            the point of interest.
+	 * @param tile
 	 *            the zoom level at which the node should be matched.
 	 */
-	public void matchNode(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel) {
+	public void matchNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
 		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).matchNode(renderCallback, tags, zoomLevel);
+			this.rulesList.get(i).matchNode(renderCallback, poi, tile);
 		}
 	}
 
@@ -126,8 +126,11 @@ public class RenderTheme {
 	 *            the factor by which the stroke width should be scaled.
 	 */
 	public void scaleStrokeWidth(float scaleFactor) {
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).scaleStrokeWidth(scaleFactor * this.baseStrokeWidth);
+		if (this.strokeWidthScale != scaleFactor) {
+			for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+				this.rulesList.get(i).scaleStrokeWidth(scaleFactor * this.baseStrokeWidth);
+			}
+			this.strokeWidthScale = scaleFactor;
 		}
 	}
 
@@ -138,8 +141,11 @@ public class RenderTheme {
 	 *            the factor by which the text size should be scaled.
 	 */
 	public void scaleTextSize(float scaleFactor) {
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).scaleTextSize(scaleFactor * this.baseTextSize);
+		if (this.textScale != scaleFactor) {
+			for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+				this.rulesList.get(i).scaleTextSize(scaleFactor * this.baseTextSize);
+			}
+			this.textScale = scaleFactor;
 		}
 	}
 
@@ -158,14 +164,14 @@ public class RenderTheme {
 		this.levels = levels;
 	}
 
-	private void matchWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel, Closed closed) {
-		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(tags, zoomLevel, closed);
+	private void matchWay(RenderCallback renderCallback, PolylineContainer way, Closed closed) {
+		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getTile().zoomLevel, closed);
 
 		List<RenderInstruction> matchingList = this.matchingCache.get(matchingCacheKey);
 		if (matchingList != null) {
 			// cache hit
 			for (int i = 0, n = matchingList.size(); i < n; ++i) {
-				matchingList.get(i).renderWay(renderCallback, tags);
+				matchingList.get(i).renderWay(renderCallback, way);
 			}
 			return;
 		}
@@ -173,7 +179,7 @@ public class RenderTheme {
 		// cache miss
 		matchingList = new ArrayList<RenderInstruction>();
 		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).matchWay(renderCallback, tags, zoomLevel, closed, matchingList);
+			this.rulesList.get(i).matchWay(renderCallback, way, way.getTile(), closed, matchingList);
 		}
 
 		this.matchingCache.put(matchingCacheKey, matchingList);

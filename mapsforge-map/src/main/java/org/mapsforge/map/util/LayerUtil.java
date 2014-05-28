@@ -13,15 +13,18 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer;
+package org.mapsforge.map.util;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.layer.TilePosition;
 
 public final class LayerUtil {
 
@@ -40,11 +43,27 @@ public final class LayerUtil {
 				double pixelX = MercatorProjection.tileToPixel(tileX, tileSize) - topLeftPoint.x;
 				double pixelY = MercatorProjection.tileToPixel(tileY, tileSize) - topLeftPoint.y;
 
-				tilePositions.add(new TilePosition(new Tile(tileX, tileY, zoomLevel), new Point(pixelX, pixelY)));
+				tilePositions.add(new TilePosition(new Tile(tileX, tileY, zoomLevel, tileSize), new Point(pixelX, pixelY)));
 			}
 		}
 
 		return tilePositions;
+	}
+
+	public static Set<Tile> getTiles(BoundingBox boundingBox, byte zoomLevel, Point topLeftPoint, int tileSize) {
+		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
+		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
+		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
+		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
+
+		Set<Tile> tiles = new HashSet<Tile>();
+
+		for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
+			for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
+				tiles.add(new Tile(tileX, tileY, zoomLevel, tileSize));
+			}
+		}
+		return tiles;
 	}
 
 	private LayerUtil() {

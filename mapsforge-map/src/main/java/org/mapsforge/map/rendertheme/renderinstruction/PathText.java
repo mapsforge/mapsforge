@@ -15,10 +15,10 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.List;
-
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
 /**
@@ -28,6 +28,7 @@ public class PathText extends RenderInstruction {
 	private final float dy;
 	private final Paint fill;
 	private final float fontSize;
+	private final int priority;
 	private final Paint stroke;
 	private final TextKey textKey;
 
@@ -36,6 +37,7 @@ public class PathText extends RenderInstruction {
 		this.dy = pathTextBuilder.dy;
 		this.fill = pathTextBuilder.fill;
 		this.fontSize = pathTextBuilder.fontSize;
+		this.priority = pathTextBuilder.priority;
 		this.stroke = pathTextBuilder.stroke;
 		this.textKey = pathTextBuilder.textKey;
 	}
@@ -46,17 +48,17 @@ public class PathText extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
+	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		String caption = this.textKey.getValue(tags);
+	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+		String caption = this.textKey.getValue(way.getTags());
 		if (caption == null) {
 			return;
 		}
-		renderCallback.renderWayText(caption, this.dy, this.fill, this.stroke);
+		renderCallback.renderWayText(way, priority, caption, this.dy, this.fill, this.stroke);
 	}
 
 	@Override

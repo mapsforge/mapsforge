@@ -19,6 +19,7 @@ package org.mapsforge.map.layer.renderer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,16 +27,18 @@ import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.PointTextContainer;
+import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.SymbolContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.MapReadResult;
@@ -49,7 +52,13 @@ import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.xml.sax.SAXException;
 
 /**
- * A DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
+ * The DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
+ *
+ * Up to version 0.4.x the DatabaseRenderer was responsible for rendering ways, areas as
+ * well as labels. However, the label placement algorithm suffered from multiple problems,
+ * such as clipped labels at tile bounds.
+ *
+ *
  */
 public class DatabaseRenderer implements RenderCallback {
 
@@ -61,12 +70,14 @@ public class DatabaseRenderer implements RenderCallback {
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
 	private static final byte ZOOM_MAX = 22;
 
-	private static Point[][] getTilePixelCoordinates(int tileSize) {
-		Point point1 = new Point(0, 0);
-		Point point2 = new Point(tileSize, 0);
-		Point point3 = new Point(tileSize, tileSize);
-		Point point4 = new Point(0, tileSize);
-		return new Point[][] { { point1, point2, point3, point4, point1 } };
+	private static List<Point> getTilePixelCoordinates(int tileSize) {
+		List result = new ArrayList(5);
+		result.add(new Point(0, 0));
+		result.add(new Point(tileSize, 0));
+		result.add(new Point(tileSize, tileSize));
+		result.add(new Point(0, tileSize));
+		result.add(result.get(0));
+		return result;
 	}
 
 	private static byte getValidLayer(byte layer) {
@@ -79,26 +90,15 @@ public class DatabaseRenderer implements RenderCallback {
 		}
 	}
 
-	private final List<PointTextContainer> areaLabels;
 	private final CanvasRasterer canvasRasterer;
-	private Point[][] coordinates;
-	private RendererJob currentRendererJob;
+	private List<MapElementContainer> currentMapElementContainers;
 	private List<List<ShapePaintContainer>> drawingLayers;
 	private final GraphicFactory graphicFactory;
-
-	private final LabelPlacement labelPlacement;
+	private final TileBasedLabelStore labelStore;
 	private final MapDatabase mapDatabase;
-	private List<PointTextContainer> nodes;
-	private final List<SymbolContainer> pointSymbols;
-	private Point poiPosition;
 	private XmlRenderTheme previousJobTheme;
-	private float previousTextScale;
-	private byte previousZoomLevel;
 	private RenderTheme renderTheme;
-	private ShapeContainer shapeContainer;
-	private final List<WayTextContainer> wayNames;
-	private final List<List<List<ShapePaintContainer>>> ways;
-	private final List<SymbolContainer> waySymbols;
+	private List<List<List<ShapePaintContainer>>> ways;
 
 	/**
 	 * Constructs a new DatabaseRenderer.
@@ -106,19 +106,12 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory) {
+	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 
 		this.canvasRasterer = new CanvasRasterer(graphicFactory);
-		this.labelPlacement = new LabelPlacement();
-
-		this.ways = new ArrayList<List<List<ShapePaintContainer>>>(LAYERS);
-		this.wayNames = new ArrayList<WayTextContainer>(64);
-		this.nodes = new ArrayList<PointTextContainer>(64);
-		this.areaLabels = new ArrayList<PointTextContainer>(64);
-		this.waySymbols = new ArrayList<SymbolContainer>(64);
-		this.pointSymbols = new ArrayList<SymbolContainer>(64);
+		this.labelStore = labelStore;
 	}
 
 	public void destroy() {
@@ -142,7 +135,10 @@ public class DatabaseRenderer implements RenderCallback {
 	 *            the job that should be executed.
 	 */
 	public TileBitmap executeJob(RendererJob rendererJob) {
-		this.currentRendererJob = rendererJob;
+		final int tileSize = rendererJob.tile.tileSize;
+		final byte zoomLevel = rendererJob.tile.zoomLevel;
+
+		this.currentMapElementContainers = new LinkedList<MapElementContainer>();
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
 		if (!jobTheme.equals(this.previousJobTheme)) {
@@ -151,45 +147,41 @@ public class DatabaseRenderer implements RenderCallback {
 				this.previousJobTheme = null;
 				return null;
 			}
-			createWayLists();
+			this.ways = createWayLists();
 			this.previousJobTheme = jobTheme;
-			this.previousZoomLevel = Byte.MIN_VALUE;
 		}
 
-		byte zoomLevel = rendererJob.tile.zoomLevel;
-		if (zoomLevel != this.previousZoomLevel) {
-			setScaleStrokeWidth(zoomLevel);
-			this.previousZoomLevel = zoomLevel;
-		}
-
-		float textScale = rendererJob.textScale;
-		if (Float.compare(textScale, this.previousTextScale) != 0) {
-			this.renderTheme.scaleTextSize(textScale);
-			this.previousTextScale = textScale;
-		}
+		setScaleStrokeWidth(zoomLevel);
+		this.renderTheme.scaleTextSize(rendererJob.textScale);
 
 		if (this.mapDatabase != null) {
 			MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
-			processReadMapData(mapReadResult);
+			processReadMapData(ways, mapReadResult, rendererJob.tile);
 		}
 
-		this.nodes = this.labelPlacement.placeLabels(this.nodes, this.pointSymbols, this.areaLabels, rendererJob.tile,
-				rendererJob.displayModel);
-
-		TileBitmap bitmap = this.graphicFactory.createTileBitmap(rendererJob.displayModel.getTileSize(),
-				rendererJob.hasAlpha);
-		this.canvasRasterer.setCanvasBitmap(bitmap);
-		if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
-			this.canvasRasterer.fill(rendererJob.hasAlpha ? 0 : this.renderTheme.getMapBackground());
+		TileBitmap bitmap = null;
+		if (!rendererJob.labelsOnly) {
+			bitmap = this.graphicFactory.createTileBitmap(tileSize,
+					rendererJob.hasAlpha);
+			this.canvasRasterer.setCanvasBitmap(bitmap);
+			if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
+				this.canvasRasterer.fill(rendererJob.hasAlpha ? 0 : this.renderTheme.getMapBackground());
+			}
+			this.canvasRasterer.drawWays(ways, rendererJob.tile);
 		}
-		this.canvasRasterer.drawWays(this.ways);
-		this.canvasRasterer.drawSymbols(this.waySymbols);
-		this.canvasRasterer.drawSymbols(this.pointSymbols);
-		this.canvasRasterer.drawWayNames(this.wayNames);
-		this.canvasRasterer.drawNodes(this.nodes, rendererJob.displayModel);
-		this.canvasRasterer.drawNodes(this.areaLabels, rendererJob.displayModel);
 
-		clearLists();
+		if (labelStore != null) {
+			this.labelStore.storeMapItems(rendererJob.tile, this.currentMapElementContainers);
+		}
+
+		// clear way list
+		for (int i = this.ways.size() - 1; i >= 0; --i) {
+			List<List<ShapePaintContainer>> innerWayList = this.ways.get(i);
+			for (int j = innerWayList.size() - 1; j >= 0; --j) {
+				innerWayList.get(j).clear();
+			}
+		}
+
 		return bitmap;
 	}
 
@@ -234,96 +226,79 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderArea(Paint fill, Paint stroke, int level) {
+	public void renderArea(PolylineContainer way, Paint fill, Paint stroke, int level) {
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
-		list.add(new ShapePaintContainer(this.shapeContainer, stroke));
-		list.add(new ShapePaintContainer(this.shapeContainer, fill));
+		list.add(new ShapePaintContainer(way, stroke));
+		list.add(new ShapePaintContainer(way, fill));
 	}
 
 	@Override
-	public void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position) {
-		Point centerPosition = GeometryUtils.calculateCenterOfBoundingBox(this.coordinates[0]);
-		this.areaLabels.add(new PointTextContainer(caption, centerPosition.x + horizontalOffset,
-				centerPosition.y + verticalOffset, fill, stroke, position));
+	public void renderAreaCaption(PolylineContainer way, int priority, String caption, float horizontalOffset, float verticalOffset,
+	                              Paint fill, Paint stroke, Position position, int maxTextWidth) {
+		Point centerPoint = way.getCenterAbsolute().offset(horizontalOffset, verticalOffset);
+		this.currentMapElementContainers.add(this.graphicFactory.createPointTextContainer(centerPoint, priority, caption, fill, stroke, null, position, maxTextWidth));
 	}
 
 	@Override
-	public void renderAreaSymbol(Bitmap symbol) {
-		Point centerPosition = GeometryUtils.calculateCenterOfBoundingBox(this.coordinates[0]);
-		int halfSymbolWidth = symbol.getWidth() / 2;
-		int halfSymbolHeight = symbol.getHeight() / 2;
-		double pointX = centerPosition.x - halfSymbolWidth;
-		double pointY = centerPosition.y - halfSymbolHeight;
-		Point shiftedCenterPosition = new Point(pointX, pointY);
-		this.pointSymbols.add(new SymbolContainer(symbol, shiftedCenterPosition));
+	public void renderAreaSymbol(PolylineContainer way, int priority, Bitmap symbol) {
+		Point centerPosition = way.getCenterAbsolute();
+
+		this.currentMapElementContainers.add(new SymbolContainer(centerPosition, priority, symbol));
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset,
-	                                         Paint fill, Paint stroke, Position position) {
-		this.nodes.add(new PointTextContainer(caption, this.poiPosition.x + horizontalOffset, this.poiPosition.y + verticalOffset, fill,
-				stroke, position));
+	public void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset, float verticalOffset,
+	                                         Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
+		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
+
+		this.currentMapElementContainers.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), priority, caption, fill,
+				stroke, null, position, maxTextWidth));
 	}
 
 	@Override
-	public void renderPointOfInterestCircle(float radius, Paint fill, Paint stroke, int level) {
+	public void renderPointOfInterestCircle(PointOfInterest poi, float radius, Paint fill, Paint stroke, int level, Tile tile) {
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
-		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), stroke));
-		list.add(new ShapePaintContainer(new CircleContainer(this.poiPosition, radius), fill));
+		Point poiPosition = MercatorProjection.getPixelRelativeToTile(poi.position, tile);
+		list.add(new ShapePaintContainer(new CircleContainer(poiPosition, radius), stroke));
+		list.add(new ShapePaintContainer(new CircleContainer(poiPosition, radius), fill));
 	}
 
 	@Override
-	public void renderPointOfInterestSymbol(Bitmap symbol) {
-		int halfSymbolWidth = symbol.getWidth() / 2;
-		int halfSymbolHeight = symbol.getHeight() / 2;
-		double pointX = this.poiPosition.x - halfSymbolWidth;
-		double pointY = this.poiPosition.y - halfSymbolHeight;
-		Point shiftedCenterPosition = new Point(pointX, pointY);
-		this.pointSymbols.add(new SymbolContainer(symbol, shiftedCenterPosition));
+	public void renderPointOfInterestSymbol(PointOfInterest poi, int priority, Bitmap symbol, Tile tile) {
+		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
+		this.currentMapElementContainers.add(new SymbolContainer(poiPosition, priority, symbol));
 	}
 
 	@Override
-	public void renderWay(Paint stroke, float dy, int level) {
-		this.drawingLayers.get(level).add(new ShapePaintContainer(this.shapeContainer, stroke, dy));
+	public void renderWay(PolylineContainer way, Paint stroke, float dy, int level) {
+		this.drawingLayers.get(level).add(new ShapePaintContainer(way, stroke, dy));
 	}
 
 	@Override
-	public void renderWaySymbol(Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
+	public void renderWaySymbol(PolylineContainer way, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
 	                     float repeatGap, float repeatStart, boolean rotate) {
-		WayDecorator.renderSymbol(symbol, dy, alignCenter, repeat, repeatGap, repeatStart, rotate, this.coordinates, this.waySymbols);
+		WayDecorator.renderSymbol(symbol, priority, dy, alignCenter, repeat, repeatGap,
+				repeatStart, rotate, way.getCoordinatesAbsolute(), this.currentMapElementContainers);
 	}
 
 	@Override
-	public void renderWayText(String textKey, float dy, Paint fill, Paint stroke) {
-		WayDecorator.renderText(textKey, dy, fill, stroke, this.coordinates, this.wayNames);
+	public void renderWayText(PolylineContainer way, int priority, String textKey, float dy, Paint fill, Paint stroke) {
+		WayDecorator.renderText(textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), this.currentMapElementContainers);
 	}
 
-	private void clearLists() {
-		for (int i = this.ways.size() - 1; i >= 0; --i) {
-			List<List<ShapePaintContainer>> innerWayList = this.ways.get(i);
-			for (int j = innerWayList.size() - 1; j >= 0; --j) {
-				innerWayList.get(j).clear();
-			}
-		}
 
-		this.areaLabels.clear();
-		this.nodes.clear();
-		this.pointSymbols.clear();
-		this.wayNames.clear();
-		this.waySymbols.clear();
-	}
-
-	private void createWayLists() {
+	private List<List<List<ShapePaintContainer>>> createWayLists() {
+		List<List<List<ShapePaintContainer>>> ways = new ArrayList<List<List<ShapePaintContainer>>>(LAYERS);
 		int levels = this.renderTheme.getLevels();
-		this.ways.clear();
 
 		for (byte i = LAYERS - 1; i >= 0; --i) {
 			List<List<ShapePaintContainer>> innerWayList = new ArrayList<List<ShapePaintContainer>>(levels);
 			for (int j = levels - 1; j >= 0; --j) {
 				innerWayList.add(new ArrayList<ShapePaintContainer>(0));
 			}
-			this.ways.add(innerWayList);
+			ways.add(innerWayList);
 		}
+		return ways;
 	}
 
 	private RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel) {
@@ -339,76 +314,44 @@ public class DatabaseRenderer implements RenderCallback {
 		return null;
 	}
 
-	private void processReadMapData(MapReadResult mapReadResult) {
+	private void processReadMapData(final List<List<List<ShapePaintContainer>>> ways, MapReadResult mapReadResult, Tile tile) {
 		if (mapReadResult == null) {
 			return;
 		}
 
 		for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-			renderPointOfInterest(pointOfInterest);
+			renderPointOfInterest(ways, pointOfInterest, tile);
 		}
 
 		for (Way way : mapReadResult.ways) {
-			renderWay(way);
+			renderWay(ways, new PolylineContainer(way, tile));
 		}
 
 		if (mapReadResult.isWater) {
-			renderWaterBackground();
+			renderWaterBackground(ways, tile);
 		}
 	}
 
-	private void renderPointOfInterest(PointOfInterest pointOfInterest) {
-		this.drawingLayers = this.ways.get(getValidLayer(pointOfInterest.layer));
-		this.poiPosition = scaleLatLong(pointOfInterest.position, this.currentRendererJob.displayModel.getTileSize());
-		this.renderTheme.matchNode(this, pointOfInterest.tags, this.currentRendererJob.tile.zoomLevel);
+	private void renderPointOfInterest(final List<List<List<ShapePaintContainer>>> ways, PointOfInterest pointOfInterest, Tile tile) {
+		this.drawingLayers = ways.get(getValidLayer(pointOfInterest.layer));
+		this.renderTheme.matchNode(this, pointOfInterest, tile);
 	}
 
-	private void renderWaterBackground() {
-		this.drawingLayers = this.ways.get(0);
-		this.coordinates = getTilePixelCoordinates(this.currentRendererJob.displayModel.getTileSize());
-		this.shapeContainer = new PolylineContainer(this.coordinates);
-		this.renderTheme.matchClosedWay(this, Arrays.asList(TAG_NATURAL_WATER), this.currentRendererJob.tile.zoomLevel);
+	private void renderWaterBackground(final List<List<List<ShapePaintContainer>>> ways, Tile tile) {
+		this.drawingLayers = ways.get(0);
+		List<Point> coordinates = getTilePixelCoordinates(tile.tileSize);
+		PolylineContainer way = new PolylineContainer(coordinates, tile, Arrays.asList(TAG_NATURAL_WATER));
+		this.renderTheme.matchClosedWay(this, way);
 	}
 
-	private void renderWay(Way way) {
-		this.drawingLayers = this.ways.get(getValidLayer(way.layer));
-		// TODO what about the label position?
+	private void renderWay(final List<List<List<ShapePaintContainer>>> ways, PolylineContainer way) {
+		this.drawingLayers = ways.get(getValidLayer(way.getLayer()));
 
-		LatLong[][] latLongs = way.latLongs;
-		this.coordinates = new Point[latLongs.length][];
-		for (int i = 0; i < this.coordinates.length; ++i) {
-			if (latLongs[i] == null) {
-				return;
-			}
-			this.coordinates[i] = new Point[latLongs[i].length];
-			for (int j = 0; j < this.coordinates[i].length; ++j) {
-				this.coordinates[i][j] = scaleLatLong(latLongs[i][j],
-						this.currentRendererJob.displayModel.getTileSize());
-			}
-		}
-		this.shapeContainer = new PolylineContainer(this.coordinates);
-
-		if (GeometryUtils.isClosedWay(this.coordinates[0])) {
-			this.renderTheme.matchClosedWay(this, way.tags, this.currentRendererJob.tile.zoomLevel);
+		if (way.isClosedWay()) {
+			this.renderTheme.matchClosedWay(this, way);
 		} else {
-			this.renderTheme.matchLinearWay(this, way.tags, this.currentRendererJob.tile.zoomLevel);
+			this.renderTheme.matchLinearWay(this, way);
 		}
-	}
-
-	/**
-	 * Converts the given LatLong into XY coordinates on the current object.
-	 * 
-	 * @param latLong
-	 *            the LatLong to convert.
-	 * @return the XY coordinates on the current object.
-	 */
-	private Point scaleLatLong(LatLong latLong, int tileSize) {
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, this.currentRendererJob.tile.zoomLevel,
-				tileSize) - MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileX, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, this.currentRendererJob.tile.zoomLevel,
-				tileSize) - MercatorProjection.tileToPixel(this.currentRendererJob.tile.tileY, tileSize);
-
-		return new Point((float) pixelX, (float) pixelY);
 	}
 
 	/**
@@ -421,4 +364,5 @@ public class DatabaseRenderer implements RenderCallback {
 		int zoomLevelDiff = Math.max(zoomLevel - STROKE_MIN_ZOOM_LEVEL, 0);
 		this.renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff));
 	}
+
 }

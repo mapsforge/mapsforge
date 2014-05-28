@@ -15,6 +15,8 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.labels.LabelLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.util.PausableThread;
 
@@ -52,10 +54,14 @@ public class TileSizeChanger extends BasicMapViewer {
 
 	@Override
 	protected void createLayers() {
-		tileRendererLayer = Utils.createTileRendererLayer(this.tileCache,
+		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
+				this.tileBasedLabelStores.get(0),
 				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
 				false);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(0));
+		this.layerManagers.get(0).getLayers().add(labelLayer);
+
 		this.changerThread = new ChangerThread();
 		this.changerThread.start();
 	}

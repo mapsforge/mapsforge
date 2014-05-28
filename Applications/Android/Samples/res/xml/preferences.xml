@@ -11,6 +11,14 @@
         android:entryValues="@array/pref_scale_values"/>
     <ListPreference
         android:negativeButtonText="@string/cancelbutton"
+        android:title="@string/preferences_textwidth"
+        android:summary="@string/preferences_textwidth_desc"
+        android:key="textwidth"
+        android:defaultValue="0.7"
+        android:entries="@array/pref_textwidth_entries"
+        android:entryValues="@array/pref_textwidth_values"/>
+    <ListPreference
+        android:negativeButtonText="@string/cancelbutton"
         android:title="@string/preferences_scalebar"
         android:summary="@string/preferences_scalebar_desc"
         android:key="scalebar"

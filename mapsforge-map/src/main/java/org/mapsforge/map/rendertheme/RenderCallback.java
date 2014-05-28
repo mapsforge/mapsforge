@@ -17,6 +17,9 @@ package org.mapsforge.map.rendertheme;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
 
 /**
  * Callback methods for rendering areas, ways and points of interest (POIs).
@@ -32,7 +35,7 @@ public interface RenderCallback {
 	 * @param level
 	 *            the drawing level on which the area should be rendered.
 	 */
-	void renderArea(Paint fill, Paint stroke, int level);
+	void renderArea(PolylineContainer way, Paint fill, Paint stroke, int level);
 
 	/**
 	 * Renders an area caption with the given text.
@@ -50,8 +53,8 @@ public interface RenderCallback {
 	 * @param position
 	 *            an optional position for the caption (may be null).
 	 */
-	void renderAreaCaption(String caption, float horizontalOffset, float verticalOffset,
-	                       Paint fill, Paint stroke, Position position);
+	void renderAreaCaption(PolylineContainer way, int priority, String caption, float horizontalOffset, float verticalOffset,
+	                       Paint fill, Paint stroke, Position position, int maxTextWidth);
 
 	/**
 	 * Renders an area symbol with the given bitmap.
@@ -59,7 +62,7 @@ public interface RenderCallback {
 	 * @param symbol
 	 *            the symbol to be rendered.
 	 */
-	void renderAreaSymbol(Bitmap symbol);
+	void renderAreaSymbol(PolylineContainer way, int priority, Bitmap symbol);
 
 	/**
 	 * Renders a point of interest caption with the given text.
@@ -78,8 +81,8 @@ public interface RenderCallback {
 	 *            an optional position for the caption (may be null).
 	 *
 	 */
-	void renderPointOfInterestCaption(String caption, float horizontalOffset, float verticalOffset,
-	                                  Paint fill, Paint stroke, Position position);
+	void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset, float verticalOffset,
+	                                  Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile);
 
 	/**
 	 * Renders a point of interest circle with the given parameters.
@@ -93,7 +96,7 @@ public interface RenderCallback {
 	 * @param level
 	 *            the drawing level on which the circle should be rendered.
 	 */
-	void renderPointOfInterestCircle(float radius, Paint fill, Paint stroke, int level);
+	void renderPointOfInterestCircle(PointOfInterest poi, float radius, Paint fill, Paint stroke, int level, Tile tile);
 
 	/**
 	 * Renders a point of interest symbol with the given bitmap.
@@ -101,7 +104,7 @@ public interface RenderCallback {
 	 * @param symbol
 	 *            the symbol to be rendered.
 	 */
-	void renderPointOfInterestSymbol(Bitmap symbol);
+	void renderPointOfInterestSymbol(PointOfInterest poi, int priority, Bitmap symbol, Tile tile);
 
 	/**
 	 * Renders a way with the given parameters.
@@ -113,7 +116,7 @@ public interface RenderCallback {
 	 * @param level
 	 *            the drawing level on which the way should be rendered.
 	 */
-	void renderWay(Paint stroke, float dy, int level);
+	void renderWay(PolylineContainer way, Paint stroke, float dy, int level);
 
 	/**
 	 * Renders a way with the given symbol along the way path.
@@ -131,7 +134,7 @@ public interface RenderCallback {
 	 * @param repeatStart
 	 *            offset from start.
 	 */
-	void renderWaySymbol(Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
+	void renderWaySymbol(PolylineContainer way, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
 	                     float repeatGap, float repeatStart, boolean rotate);
 
 	/**
@@ -146,5 +149,5 @@ public interface RenderCallback {
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
 	 */
-	void renderWayText(String text, float dy, Paint fill, Paint stroke);
+	void renderWayText(PolylineContainer way, int priority, String text, float dy, Paint fill, Paint stroke);
 }

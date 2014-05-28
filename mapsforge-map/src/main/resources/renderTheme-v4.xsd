@@ -117,6 +117,7 @@
 
 	<xs:complexType name="caption">
 		<xs:attribute name="cat" type="xs:string" use="optional" />
+		<xs:attribute name="priority" type="xs:integer" use="optional" default="0"/>
 		<xs:attribute name="k" type="tns:textKey" use="required" />
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
@@ -127,7 +128,6 @@
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
 		<xs:attribute name="position" type="tns:position" use="optional" default="below" />
 		<xs:attribute name="symbol-id" type="xs:string" use="optional" />
-
     </xs:complexType>
 
 	<!-- style menu cat element -->
@@ -178,6 +178,7 @@
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="src" type="tns:src" use="required" />
 		<xs:attribute name="align-center" type="xs:boolean" use="optional" default="false" />
+		<xs:attribute name="priority" type="xs:integer" use="optional" default="0"/>
 		<xs:attribute name="repeat" type="xs:boolean" use="optional" default="false" />
 		<xs:attribute name="repeat-gap" type="xs:float" use="optional" default="200" />
 		<xs:attribute name="repeat-start" type="xs:float" use="optional" default="30" />
@@ -203,6 +204,7 @@
 		<xs:attribute name="font-style" type="tns:fontStyle" use="optional" default="normal" />
 		<xs:attribute name="font-size" type="tns:nonNegativeFloat" use="optional" default="0" />
 		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
+		<xs:attribute name="priority" type="xs:integer" use="optional" default="0"/>
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
 	</xs:complexType>
@@ -210,6 +212,7 @@
 	<xs:complexType name="symbol">
 		<xs:attribute name="id" type="xs:string" use="optional" />
 		<xs:attribute name="cat" type="xs:string" use="optional" />
+		<xs:attribute name="priority" type="xs:integer" use="optional" default="0"/>
 		<xs:attribute name="src" type="tns:src" use="required" />
 		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
 		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />

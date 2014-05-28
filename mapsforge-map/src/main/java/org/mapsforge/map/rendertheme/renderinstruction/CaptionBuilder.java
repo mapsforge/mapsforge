@@ -46,21 +46,22 @@ public class CaptionBuilder extends RenderInstructionBuilder {
 	final Paint fill;
 	float fontSize;
 	float gap;
+	final int maxTextWidth;
+	int priority;
 	final Paint stroke;
 	String symbolId;
 	TextKey textKey;
 
 	public CaptionBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 	                            Attributes attributes, HashMap<String, Symbol> symbols) throws SAXException {
+		
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
-		this.fill.setTextAlign(Align.LEFT);
 
 		this.stroke = graphicFactory.createPaint();
 		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
-		this.stroke.setTextAlign(Align.LEFT);
 
 		this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
 
@@ -73,15 +74,35 @@ public class CaptionBuilder extends RenderInstructionBuilder {
 			}
 		}
 
-		if (position == null) {
-			// sensible defaults: below if symbol is present, center if not
+		if (this.position == null) {
+			// sensible defaults: below if symbolContainer is present, center if not
 			if (this.bitmap == null) {
 				this.position = Position.CENTER;
 			} else {
 				this.position = Position.BELOW;
 			}
 		}
+		switch (this.position) {
+			case CENTER:
+			case BELOW:
+			case ABOVE:
+				this.stroke.setTextAlign(Align.CENTER);
+				this.fill.setTextAlign(Align.CENTER);
+				break;
+			case LEFT:
+				this.stroke.setTextAlign(Align.RIGHT);
+				this.fill.setTextAlign(Align.RIGHT);
+				break;
+			case RIGHT:
+				this.stroke.setTextAlign(Align.LEFT);
+				this.fill.setTextAlign(Align.LEFT);
+				break;
+			default:
+				throw new IllegalArgumentException("Position invalid");
+		}
 
+
+		this.maxTextWidth = displayModel.getMaxTextWidth();
 	}
 
 	/**
@@ -116,6 +137,8 @@ public class CaptionBuilder extends RenderInstructionBuilder {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (FILL.equals(name)) {
 				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (PRIORITY.equals(name)) {
+				this.priority = Integer.parseInt(value);
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {

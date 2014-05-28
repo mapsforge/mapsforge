@@ -18,8 +18,12 @@ package org.mapsforge.applications.android.samples;
 import java.io.File;
 
 import org.mapsforge.map.android.AndroidPreferences;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.labels.LabelLayer;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
@@ -32,7 +36,6 @@ import android.os.Environment;
 public class DualMapViewer extends BasicMapViewerXml {
 
 	protected PreferencesFacade preferencesFacade2;
-	protected TileCache tileCache2;
 
 	@Override
 	protected void createLayers() {
@@ -47,9 +50,12 @@ public class DualMapViewer extends BasicMapViewerXml {
 		this.layerManagers
 				.get(1)
 				.getLayers()
-				.add(Utils.createTileRendererLayer(this.tileCache2,
+				.add(Utils.createTileRendererLayer(this.tileCaches.get(0), this.tileBasedLabelStores.get(1),
 						this.mapViewPositions.get(1), getMapFile2(),
 						getRenderTheme2(), false));
+		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(1));
+		this.layerManagers.get(1).getLayers().add(labelLayer);
+
 	}
 
 	@Override
@@ -70,18 +76,12 @@ public class DualMapViewer extends BasicMapViewerXml {
 		this.preferencesFacade2 = new AndroidPreferences(sp);
 	}
 
-	/**
-	 * @return tilecache for second map view
-	 */
-	protected TileCache createTileCache2() {
-		// no extra tile cache needed in this instance as map source is the same
-		return this.tileCache;
-	}
-
 	@Override
 	protected void createTileCaches() {
 		super.createTileCaches();
-		this.tileCache2 = createTileCache2();
+		this.tileBasedLabelStores.add(new TileBasedLabelStore(2 * AndroidUtil.getMinimumCacheSize(this, this.mapViews.get(1).getModel().displayModel.getTileSize(), this.mapViews.get(1)
+				.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio2())));
+
 	}
 
 	@Override

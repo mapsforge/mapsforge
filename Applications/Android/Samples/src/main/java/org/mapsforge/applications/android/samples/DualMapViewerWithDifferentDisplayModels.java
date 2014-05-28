@@ -33,7 +33,6 @@ public class DualMapViewerWithDifferentDisplayModels extends DualMapViewer {
 
 	}
 
-	@Override
 	protected TileCache createTileCache2() {
 		int tileSize = this.mapViews.get(1).getModel().displayModel
 				.getTileSize();
@@ -44,9 +43,8 @@ public class DualMapViewerWithDifferentDisplayModels extends DualMapViewer {
 	}
 
 	@Override
-	protected void destroyTileCaches() {
-		super.destroyTileCaches();
-		this.tileCache2.destroy();
+	protected void createTileCaches() {
+		super.createTileCaches();
+		this.tileCaches.add(createTileCache2());
 	}
-
 }

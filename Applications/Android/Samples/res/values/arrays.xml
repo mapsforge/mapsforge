@@ -12,6 +12,18 @@
         <item>1.5</item>
         <item>2</item>
     </string-array>
+    <string-array name="pref_textwidth_entries">
+        <item>Short</item>
+        <item>Normal</item>
+        <item>Long</item>
+        <item>No line breaks</item>
+    </string-array>
+    <string-array name="pref_textwidth_values">
+        <item>0.3</item>
+        <item>0.7</item>
+        <item>1.0</item>
+        <item>50</item>
+    </string-array>
     <string-array name="pref_scalebar_entries">
         <item>Metric</item>
         <item>Imperial</item>

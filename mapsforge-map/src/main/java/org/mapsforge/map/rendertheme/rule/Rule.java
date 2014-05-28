@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
@@ -68,26 +71,26 @@ abstract class Rule {
 
 	abstract boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed);
 
-	void matchNode(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel) {
-		if (matchesNode(tags, zoomLevel)) {
+	void matchNode(RenderCallback renderCallback, PointOfInterest pointOfInterest, Tile tile) {
+		if (matchesNode(pointOfInterest.tags, tile.zoomLevel)) {
 			for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-				this.renderInstructions.get(i).renderNode(renderCallback, tags);
+				this.renderInstructions.get(i).renderNode(renderCallback, pointOfInterest, tile);
 			}
 			for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-				this.subRules.get(i).matchNode(renderCallback, tags, zoomLevel);
+				this.subRules.get(i).matchNode(renderCallback, pointOfInterest, tile);
 			}
 		}
 	}
 
-	void matchWay(RenderCallback renderCallback, List<Tag> tags, byte zoomLevel, Closed closed,
+	void matchWay(RenderCallback renderCallback, PolylineContainer way, Tile tile, Closed closed,
 			List<RenderInstruction> matchingList) {
-		if (matchesWay(tags, zoomLevel, closed)) {
+		if (matchesWay(way.getTags(), tile.zoomLevel, closed)) {
 			for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-				this.renderInstructions.get(i).renderWay(renderCallback, tags);
+				this.renderInstructions.get(i).renderWay(renderCallback, way);
 				matchingList.add(this.renderInstructions.get(i));
 			}
 			for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-				this.subRules.get(i).matchWay(renderCallback, tags, zoomLevel, closed, matchingList);
+				this.subRules.get(i).matchWay(renderCallback, way, tile, closed, matchingList);
 			}
 		}
 	}

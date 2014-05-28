@@ -64,7 +64,7 @@ public class TileStoreLayerViewer extends BasicMapViewerXml {
 
 	@Override
 	protected void createLayers() {
-		this.tileStoreLayer = new TileStoreLayer(this.tileCache,
+		this.tileStoreLayer = new TileStoreLayer(this.tileCaches.get(0),
 				this.mapViewPositions.get(0), AndroidGraphicFactory.INSTANCE, false);
 		this.layerManagers.get(0).getLayers().add(this.tileStoreLayer);
 	}
@@ -77,7 +77,7 @@ public class TileStoreLayerViewer extends BasicMapViewerXml {
 				this.mapViews.get(0).getModel().displayModel.getTileSize(),
 				this.mapViews.get(0)
 						.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio()));
-		this.tileCache = new TwoLevelTileCache(memoryTileCache, tileStore);
+		this.tileCaches.add(new TwoLevelTileCache(memoryTileCache, tileStore));
 	}
 
 	protected void createMapViewPositions() {

@@ -19,6 +19,9 @@ import java.util.List;
 
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 
 /**
@@ -50,13 +53,13 @@ public class Area extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, List<Tag> tags) {
+	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, List<Tag> tags) {
-		renderCallback.renderArea(this.fill, this.stroke, this.level);
+	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+		renderCallback.renderArea(way, this.fill, this.stroke, this.level);
 	}
 
 	@Override

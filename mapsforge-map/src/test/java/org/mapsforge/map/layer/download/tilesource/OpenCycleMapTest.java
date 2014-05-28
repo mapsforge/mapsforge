@@ -33,7 +33,7 @@ public class OpenCycleMapTest {
 	public void getTileUrlTest() throws MalformedURLException {
 		TileSource tileSource = OpenCycleMap.INSTANCE;
 
-		URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2));
+		URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2, 256));
 		Assert.assertTrue(tileUrl.toExternalForm().endsWith(".tile.opencyclemap.org:80/cycle/2/0/1.png"));
 	}
 

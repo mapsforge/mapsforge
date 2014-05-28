@@ -14,6 +14,8 @@
  */
 package org.mapsforge.core.model;
 
+import org.mapsforge.core.util.MercatorProjection;
+
 import java.io.Serializable;
 
 /**
@@ -35,6 +37,8 @@ public class Tile implements Serializable {
 		return (2 << zoomLevel - 1) - 1;
 	}
 
+	public final int tileSize;
+
 	/**
 	 * The X number of this tile.
 	 */
@@ -50,6 +54,9 @@ public class Tile implements Serializable {
 	 */
 	public final byte zoomLevel;
 
+
+	private Point origin;
+
 	/**
 	 * @param tileX
 	 *            the X number of the tile.
@@ -60,7 +67,7 @@ public class Tile implements Serializable {
 	 * @throws IllegalArgumentException
 	 *             if any of the parameters is invalid.
 	 */
-	public Tile(long tileX, long tileY, byte zoomLevel) {
+	public Tile(long tileX, long tileY, byte zoomLevel, int tileSize) {
 		if (tileX < 0) {
 			throw new IllegalArgumentException("tileX must not be negative: " + tileX);
 		} else if (tileY < 0) {
@@ -76,10 +83,12 @@ public class Tile implements Serializable {
 			throw new IllegalArgumentException("invalid tileY number on zoom level " + zoomLevel + ": " + tileY);
 		}
 
+		this.tileSize = tileSize;
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.zoomLevel = zoomLevel;
 	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -95,8 +104,99 @@ public class Tile implements Serializable {
 			return false;
 		} else if (this.zoomLevel != other.zoomLevel) {
 			return false;
+		} else if (this.tileSize != other.tileSize) {
+			return false;
 		}
 		return true;
+	}
+
+	public Point getOrigin() {
+		if (this.origin == null) {
+			double x = MercatorProjection.tileToPixel(this.tileX, this.tileSize);
+			double y = MercatorProjection.tileToPixel(this.tileY, this.tileSize);
+			this.origin = new Point(x, y);
+		}
+		return this.origin;
+	}
+
+	public Tile getLeft() {
+		long x = tileX - 1;
+		if (x < 0) {
+			x = getMaxTileNumber(this.zoomLevel);
+		}
+		return new Tile(x, this.tileY, this.zoomLevel, this.tileSize);
+	}
+
+	public Tile getRight() {
+		long x = tileX + 1;
+		if (x > getMaxTileNumber(this.zoomLevel)) {
+			x = 0;
+		}
+		return new Tile(x, this.tileY, this.zoomLevel, this.tileSize);
+	}
+
+	public Tile getAbove() {
+		long y = tileY - 1;
+		if (y < 0) {
+			y = getMaxTileNumber(this.zoomLevel);
+		}
+		return new Tile(this.tileX, y, this.zoomLevel, this.tileSize);
+	}
+
+	public Tile getBelow() {
+		long y = tileY + 1;
+		if (y > getMaxTileNumber(this.zoomLevel)) {
+			y = 0;
+		}
+		return new Tile(this.tileX, y, this.zoomLevel, this.tileSize);
+	}
+
+	public Tile getAboveLeft() {
+		long y = tileY - 1;
+		long x = tileX - 1;
+		if (y < 0) {
+			y = getMaxTileNumber(this.zoomLevel);
+		}
+		if (x < 0) {
+			x = getMaxTileNumber(this.zoomLevel);
+		}
+		return new Tile(x, y, this.zoomLevel, this.tileSize);
+	}
+
+	public Tile getAboveRight() {
+		long y = tileY - 1;
+		long x = tileX + 1;
+		if (y < 0) {
+			y = getMaxTileNumber(this.zoomLevel);
+		}
+		if (x > getMaxTileNumber(this.zoomLevel)) {
+			x = 0;
+		}
+		return new Tile(x, y, this.zoomLevel, this.tileSize);
+	}
+
+	public Tile getBelowLeft() {
+		long y = tileY + 1;
+		long x = tileX - 1;
+		if (y > getMaxTileNumber(this.zoomLevel)) {
+			y = 0;
+		}
+		if (x < 0) {
+			x = getMaxTileNumber(this.zoomLevel);
+		}
+		return new Tile(x, y, this.zoomLevel, this.tileSize);
+	}
+
+	public Tile getBelowRight() {
+		long y = tileY + 1;
+		long x = tileX + 1;
+		if (y > getMaxTileNumber(this.zoomLevel)) {
+			y = 0;
+		}
+		if (x > getMaxTileNumber(this.zoomLevel)) {
+			x = 0;
+		}
+		return new Tile(x, y, this.zoomLevel, this.tileSize);
 	}
 
 	/**
@@ -107,7 +207,7 @@ public class Tile implements Serializable {
 			return null;
 		}
 
-		return new Tile(this.tileX / 2, this.tileY / 2, (byte) (this.zoomLevel - 1));
+		return new Tile(this.tileX / 2, this.tileY / 2, (byte) (this.zoomLevel - 1), this.tileSize);
 	}
 
 	public long getShiftX(Tile otherTile) {
@@ -132,6 +232,7 @@ public class Tile implements Serializable {
 		result = 31 * result + (int) (this.tileX ^ (this.tileX >>> 32));
 		result = 31 * result + (int) (this.tileY ^ (this.tileY >>> 32));
 		result = 31 * result + this.zoomLevel;
+		result = 31 * result + this.tileSize;
 		return result;
 	}
 

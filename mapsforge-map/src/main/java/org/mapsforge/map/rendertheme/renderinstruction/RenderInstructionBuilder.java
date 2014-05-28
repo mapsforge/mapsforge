@@ -33,6 +33,7 @@ public class RenderInstructionBuilder {
 	static final String ID = "id";
 	static final String K = "k";
 	static final String POSITION = "position";
+	static final String PRIORITY = "priority";
 	static final String R = "r";
 	static final String RADIUS = "radius";
 	static final String REPEAT = "repeat";

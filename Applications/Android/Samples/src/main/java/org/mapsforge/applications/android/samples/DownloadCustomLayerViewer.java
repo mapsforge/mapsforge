@@ -19,7 +19,8 @@ import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OnlineTileSource;
 
 /**
- * Shows how to use a custom tile download layer.
+ * Shows how to use a custom tile download layer. The important thing here is that the
+ * download layer needs to be paused/resumed to fit in with the Android life cycle.
  */
 public class DownloadCustomLayerViewer extends BasicMapViewerXml {
 	private TileDownloadLayer downloadLayer;
@@ -46,7 +47,7 @@ public class DownloadCustomLayerViewer extends BasicMapViewerXml {
 				.setParallelRequestsLimit(8).setProtocol("http")
 				.setTileSize(256).setZoomLevelMax((byte) 18)
 				.setZoomLevelMin((byte) 0);
-		this.downloadLayer = new TileDownloadLayer(this.tileCache,
+		this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
 				this.mapViewPositions.get(0), onlineTileSource,
 				AndroidGraphicFactory.INSTANCE);
 		this.layerManagers.get(0).getLayers().add(this.downloadLayer);

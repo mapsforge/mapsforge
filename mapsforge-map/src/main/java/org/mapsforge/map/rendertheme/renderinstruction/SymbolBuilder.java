@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 public class SymbolBuilder extends RenderInstructionBuilder {
 	Bitmap bitmap;
 	String id;
+	int priority = 0;
 
 	public SymbolBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 			Attributes attributes, String relativePathPrefix) throws IOException, SAXException {
@@ -63,6 +64,8 @@ public class SymbolBuilder extends RenderInstructionBuilder {
 				this.cat = value;
 			} else if (ID.equals(name)) {
 				this.id = value;
+			} else if (PRIORITY.equals(name)) {
+				this.priority = Integer.parseInt(value);
 			} else if (SYMBOL_HEIGHT.equals(name)) {
 				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else if (SYMBOL_PERCENT.equals(name)) {
