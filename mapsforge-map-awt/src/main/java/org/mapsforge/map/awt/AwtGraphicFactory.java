@@ -98,6 +98,16 @@ public final class AwtGraphicFactory implements GraphicFactory {
 		return new AwtBitmap(width, height);
 	}
 
+	/**
+	 * Returns the internal image representation.
+	 * @param bitmap Mapsforge Bitmap
+	 * @return platform specific image.
+	 */
+
+	public static BufferedImage getBitmap(Bitmap bitmap) {
+		return ((AwtBitmap) bitmap).bufferedImage;
+	}
+
 	@Override
 	public Canvas createCanvas() {
 		return new AwtCanvas();
