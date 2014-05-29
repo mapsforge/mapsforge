@@ -40,6 +40,8 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.labels.LabelLayer;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
@@ -93,11 +95,15 @@ public final class MapViewer {
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
 		BoundingBox result = null;
 		for (File mapFile : mapFiles) {
-			TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapView.getModel().mapViewPosition,
-					true, mapFile);
+			TileBasedLabelStore tileBasedLabelStore = new TileBasedLabelStore(2 * 64);
+			TileRendererLayer tileRendererLayer = createTileRendererLayer(
+					tileCache, tileBasedLabelStore,
+					mapView.getModel().mapViewPosition, true, mapFile);
 			BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
 			result = result == null ? boundingBox : result.extend(boundingBox);
 			layers.add(tileRendererLayer);
+			LabelLayer labelLayer = new LabelLayer(GRAPHIC_FACTORY, tileBasedLabelStore);
+			layers.add(labelLayer);
 		}
 		if (SHOW_DEBUG_LAYERS) {
 			layers.add(new TileGridLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
@@ -136,9 +142,11 @@ public final class MapViewer {
 		return tileDownloadLayer;
 	}
 
-	private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-			boolean isTransparent, File mapFile) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, null, mapViewPosition, isTransparent,
+	private static TileRendererLayer createTileRendererLayer(
+			TileCache tileCache, TileBasedLabelStore tileBasedLabelStore,
+			MapViewPosition mapViewPosition, boolean isTransparent, File mapFile) {
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache,
+				tileBasedLabelStore, mapViewPosition, isTransparent,
 				GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
