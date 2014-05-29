@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,6 +55,7 @@ public class FileSystemTileCache implements TileCache {
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
 	private FileLRUCache<Integer> lruCache;
+	private final ReentrantReadWriteLock lock;
 
 	/**
 	 * @param capacity
@@ -66,16 +69,27 @@ public class FileSystemTileCache implements TileCache {
 		this.lruCache = new FileLRUCache<>(capacity);
 		this.cacheDirectory = checkDirectory(cacheDirectory);
 		this.graphicFactory = graphicFactory;
+		this.lock = new ReentrantReadWriteLock();
 	}
 
 	@Override
-	public synchronized boolean containsKey(Job key) {
-		return this.lruCache.containsKey(key.hashCode());
+	public boolean containsKey(Job key) {
+		try {
+			lock.readLock().lock();
+			return this.lruCache.containsKey(key.hashCode());
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 
 	@Override
-	public synchronized void destroy() {
-		this.lruCache.clear();
+	public void destroy() {
+		try {
+			lock.writeLock().lock();
+			this.lruCache.clear();
+		} finally {
+			lock.writeLock().unlock();
+		}
 
 		File[] filesToDelete = this.cacheDirectory.listFiles(ImageFileNameFilter.INSTANCE);
 		if (filesToDelete != null) {
@@ -88,9 +102,15 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	@Override
-	public synchronized TileBitmap get(Job key) {
-		File file = this.lruCache.get(key.hashCode());
+	public TileBitmap get(Job key) {
 
+		File file;
+		try {
+			lock.readLock().lock();
+			file = this.lruCache.get(key.hashCode());
+		} finally {
+			lock.readLock().unlock();
+		}
 		if (file == null) {
 			return null;
 		}
@@ -103,11 +123,11 @@ public class FileSystemTileCache implements TileCache {
 			// this can happen, at least on Android, when the input stream
 			// is somehow corrupted, returning null ensures it will be loaded
 			// from another source
-			this.lruCache.remove(key.hashCode());
+			remove(key);
 			LOGGER.log(Level.WARNING, "input stream from file system cache invalid", e);
 			return null;
 		} catch (IOException e) {
-			this.lruCache.remove(key.hashCode());
+			remove(key);
 			LOGGER.log(Level.SEVERE, null, e);
 			return null;
 		} finally {
@@ -116,19 +136,24 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	@Override
-	public synchronized int getCapacity() {
-		return this.lruCache.capacity;
+	public int getCapacity() {
+		try {
+			lock.readLock().lock();
+			return this.lruCache.capacity;
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 
 	@Override
-	public synchronized void put(Job key, TileBitmap bitmap) {
+	public void put(Job key, TileBitmap bitmap) {
 		if (key == null) {
 			throw new IllegalArgumentException("key must not be null");
 		} else if (bitmap == null) {
 			throw new IllegalArgumentException("bitmap must not be null");
 		}
 
-		if (this.lruCache.capacity == 0) {
+		if (getCapacity() == 0) {
 			return;
 		}
 
@@ -137,8 +162,13 @@ public class FileSystemTileCache implements TileCache {
 			File file = getOutputFile(key);
 			outputStream = new FileOutputStream(file);
 			bitmap.compress(outputStream);
-			if (this.lruCache.put(key.hashCode(), file) != null) {
-				LOGGER.warning("overwriting cached entry: " + key.hashCode());
+			try {
+				lock.writeLock().lock();
+				if (this.lruCache.put(key.hashCode(), file) != null) {
+					LOGGER.warning("overwriting cached entry: " + key.hashCode());
+				}
+			} finally {
+				lock.writeLock().unlock();
 			}
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "Disabling filesystem cache", e);
@@ -146,8 +176,12 @@ public class FileSystemTileCache implements TileCache {
 			// cache otherwise
 			// more and more exceptions will be thrown.
 			this.destroy();
-			this.lruCache = new FileLRUCache<Integer>(0);
-
+			try {
+				lock.writeLock().lock();
+				this.lruCache = new FileLRUCache<Integer>(0);
+			} finally {
+				lock.writeLock().unlock();
+			}
 		} finally {
 			IOUtils.closeQuietly(outputStream);
 		}
@@ -155,5 +189,15 @@ public class FileSystemTileCache implements TileCache {
 
 	private File getOutputFile(Job job) {
 		return new File(this.cacheDirectory, job.hashCode() + FILE_EXTENSION);
+	}
+
+	private void remove(Job key) {
+		try {
+			lock.writeLock().lock();
+			this.lruCache.remove(key.hashCode());
+		} finally {
+			lock.writeLock().unlock();
+		}
+
 	}
 }

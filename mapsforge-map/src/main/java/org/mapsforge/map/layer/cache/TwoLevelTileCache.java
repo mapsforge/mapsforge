@@ -28,60 +28,39 @@ public class TwoLevelTileCache implements TileCache {
 
 	@Override
 	public boolean containsKey(Job key) {
-		synchronized (this.firstLevelTileCache) {
-			if (this.firstLevelTileCache.containsKey(key)) {
-				return true;
-			}
+		if (this.firstLevelTileCache.containsKey(key)) {
+			return true;
 		}
-
-		synchronized (this.secondLevelTileCache) {
-			return this.secondLevelTileCache.containsKey(key);
-		}
+		return this.secondLevelTileCache.containsKey(key);
 	}
 
 	@Override
 	public void destroy() {
-		synchronized (this.firstLevelTileCache) {
-			synchronized (this.secondLevelTileCache) {
-				this.firstLevelTileCache.destroy();
-				this.secondLevelTileCache.destroy();
-			}
-		}
+		this.firstLevelTileCache.destroy();
+		this.secondLevelTileCache.destroy();
 	}
 
 	@Override
 	public TileBitmap get(Job key) {
-		synchronized (this.firstLevelTileCache) {
-			TileBitmap returnBitmap = this.firstLevelTileCache.get(key);
-			if (returnBitmap != null) {
-				return returnBitmap;
-			}
-
-			synchronized (this.secondLevelTileCache) {
-				returnBitmap = this.secondLevelTileCache.get(key);
-				if (returnBitmap != null) {
-					this.firstLevelTileCache.put(key, returnBitmap);
-					return returnBitmap;
-				}
-
-				return null;
-			}
+		TileBitmap returnBitmap = this.firstLevelTileCache.get(key);
+		if (returnBitmap != null) {
+			return returnBitmap;
 		}
+		returnBitmap = this.secondLevelTileCache.get(key);
+		if (returnBitmap != null) {
+			this.firstLevelTileCache.put(key, returnBitmap);
+			return returnBitmap;
+		}
+		return null;
 	}
 
 	@Override
 	public int getCapacity() {
-		synchronized (this.firstLevelTileCache) {
-			synchronized (this.secondLevelTileCache) {
-				return Math.max(this.firstLevelTileCache.getCapacity(), this.secondLevelTileCache.getCapacity());
-			}
-		}
+		return Math.max(this.firstLevelTileCache.getCapacity(), this.secondLevelTileCache.getCapacity());
 	}
 
 	@Override
 	public void put(Job key, TileBitmap bitmap) {
-		synchronized (this.secondLevelTileCache) {
-			this.secondLevelTileCache.put(key, bitmap);
-		}
+		this.secondLevelTileCache.put(key, bitmap);
 	}
 }
