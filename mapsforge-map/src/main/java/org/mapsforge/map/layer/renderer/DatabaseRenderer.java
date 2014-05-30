@@ -49,6 +49,7 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
+import org.mapsforge.map.util.LayerUtil;
 import org.xml.sax.SAXException;
 
 /**
@@ -170,8 +171,10 @@ public class DatabaseRenderer implements RenderCallback {
 			this.canvasRasterer.drawWays(ways, rendererJob.tile);
 		}
 
+
+
 		if (labelStore != null) {
-			this.labelStore.storeMapItems(rendererJob.tile, this.currentMapElementContainers);
+			this.labelStore.storeMapItems(rendererJob.tile, LayerUtil.collisionFreeOrdered(this.currentMapElementContainers));
 		}
 
 		// clear way list

@@ -15,10 +15,11 @@
 package org.mapsforge.map.layer.cache;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.util.LRUCache;
+import org.mapsforge.core.util.WorkingSetCache;
 import org.mapsforge.map.layer.queue.Job;
 
 /**
@@ -38,6 +39,7 @@ public class InMemoryTileCache implements TileCache {
 	public InMemoryTileCache(int capacity) {
 		this.lruCache = new BitmapLRUCache(capacity);
 	}
+
 
 	@Override
 	public synchronized boolean containsKey(Job key) {
@@ -64,6 +66,11 @@ public class InMemoryTileCache implements TileCache {
 	@Override
 	public synchronized int getCapacity() {
 		return this.lruCache.capacity;
+	}
+
+	@Override
+	public TileBitmap getImmediately(Job key) {
+		return get(key);
 	}
 
 	@Override
@@ -99,9 +106,13 @@ public class InMemoryTileCache implements TileCache {
 		lruCacheNew.putAll(this.lruCache);
 		this.lruCache = lruCacheNew;
 	}
+
+	public void setWorkingSet(Set<Job> jobs) {
+		this.lruCache.setWorkingSet(jobs);
+	}
 }
 
-class BitmapLRUCache extends LRUCache<Job, TileBitmap> {
+class BitmapLRUCache extends WorkingSetCache<Job, TileBitmap> {
 	private static final long serialVersionUID = 1L;
 
 	public BitmapLRUCache(int capacity) {

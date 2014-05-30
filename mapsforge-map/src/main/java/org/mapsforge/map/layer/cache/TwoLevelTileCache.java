@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,13 +18,21 @@ package org.mapsforge.map.layer.cache;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.queue.Job;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public class TwoLevelTileCache implements TileCache {
+
+
 	private final TileCache firstLevelTileCache;
 	private final TileCache secondLevelTileCache;
+	private final Set<Job> workingSet;
 
 	public TwoLevelTileCache(TileCache firstLevelTileCache, TileCache secondLevelTileCache) {
 		this.firstLevelTileCache = firstLevelTileCache;
 		this.secondLevelTileCache = secondLevelTileCache;
+		this.workingSet = Collections.synchronizedSet(new HashSet<Job>());
 	}
 
 	@Override
@@ -60,7 +69,32 @@ public class TwoLevelTileCache implements TileCache {
 	}
 
 	@Override
+	public TileBitmap getImmediately(Job key) {
+		return firstLevelTileCache.get(key);
+	}
+
+	@Override
 	public void put(Job key, TileBitmap bitmap) {
+		if (this.workingSet.contains(key)) {
+			this.firstLevelTileCache.put(key, bitmap);
+		}
 		this.secondLevelTileCache.put(key, bitmap);
 	}
+
+	@Override
+	public void setWorkingSet(Set<Job> newWorkingSet) {
+		this.workingSet.clear();
+		this.workingSet.addAll(newWorkingSet);
+		this.firstLevelTileCache.setWorkingSet(this.workingSet);
+		this.secondLevelTileCache.setWorkingSet(this.workingSet);
+		for (Job job : workingSet) {
+			if (!firstLevelTileCache.containsKey(job) && secondLevelTileCache.containsKey(job)) {
+				TileBitmap tileBitmap = secondLevelTileCache.get(job);
+				if (tileBitmap != null) {
+					firstLevelTileCache.put(job, tileBitmap);
+				}
+			}
+		}
+	}
+
 }

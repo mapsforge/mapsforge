@@ -19,30 +19,27 @@ import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.core.util.LRUCache;
+import org.mapsforge.core.util.WorkingSetCache;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.util.LayerUtil;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.util.PausableThread;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.logging.Logger;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A LabelStore where the data is stored per tile.
  * This store is suitable when the label data is retrieved per tile and needs to be cached
  * for the LabelLayer.
  */
-public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer>> implements LabelStore {
-
-	private static final Logger LOGGER = Logger.getLogger(TileBasedLabelStore.class.getName());
+public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementContainer>> implements LabelStore {
 
 	/**
 	 * The LayoutCalculator calculates a collision-free set of MapElements where
@@ -81,45 +78,26 @@ public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer
 					}
 				}
 			}
-			// sort items by priority (highest first)
-			Collections.sort(itemsOnTiles, Collections.reverseOrder());
 
-			// in order of priority, see if an item can be drawn, i.e. none of the items
-			// in the currentItemsToDraw list overlaps with it.
-			List<MapElementContainer> currentItemsToDraw = new LinkedList<MapElementContainer>();
-			for (MapElementContainer item : itemsOnTiles) {
-				boolean hasSpace = true;
-				for (MapElementContainer itemToDraw : currentItemsToDraw) {
-					if (itemToDraw.getBoundaryAbsolute().intersects(item.getBoundaryAbsolute())) {
-						hasSpace = false;
-						break;
-					}
-				}
-				if (hasSpace) {
-					item.incrementRefCount();
-					currentItemsToDraw.add(item);
-				}
-			}
+			List<MapElementContainer> collisonFreeOrdered = LayerUtil.collisionFreeOrdered(itemsOnTiles);
 
-			synchronized (itemsToDraw) {
+			try {
+				lock.writeLock().lock();
 				Iterator<MapElementContainer> iter = itemsToDraw.iterator();
 				while (iter.hasNext()) {
 					iter.next().decrementRefCount();
 					iter.remove();
 				}
-				itemsToDraw.addAll(currentItemsToDraw);
+				itemsToDraw.addAll(collisonFreeOrdered);
+			} finally {
+				lock.writeLock().unlock();
 			}
 
 			TileBasedLabelStore.this.layer.requestRedraw();
 		}
 
-		@Override
-		protected void afterRun() {
-			LOGGER.info("Calculator exiting");
-		}
-
 		protected ThreadPriority getThreadPriority() {
-			return ThreadPriority.NORMAL;
+			return ThreadPriority.BELOW_NORMAL;
 		}
 
 		synchronized protected boolean hasWork() {
@@ -131,6 +109,7 @@ public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer
 	private final List<MapElementContainer> itemsToDraw;
 	private final Set<Tile> lastVisibleTileSet;
 	private Layer layer;
+	private final ReentrantReadWriteLock lock;
 
 
 	public TileBasedLabelStore(int capacity) {
@@ -138,6 +117,7 @@ public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer
 		lastVisibleTileSet = new CopyOnWriteArraySet<Tile>();
 		itemsToDraw = new ArrayList<MapElementContainer>();
 		calculator = new LayoutCalculator();
+		this.lock = new ReentrantReadWriteLock();
 		calculator.start();
 	}
 
@@ -146,19 +126,17 @@ public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer
 	}
 
 	void startLayoutEngine() {
-		LOGGER.info("Calculator proceed");
 		calculator.proceed();
 	}
 
 	void stopLayoutEngine() {
-		LOGGER.info("Calculator pause");
 		calculator.pause();
 	}
 
 	public void destroy() {
-		LOGGER.info("Calculator interrupt");
 		calculator.interrupt();
-		synchronized (this) {
+		try {
+			lock.writeLock().lock();
 			// there is still a risk that one of the map workers just finishes
 			// a job to store elements.
 			for (List<MapElementContainer> tile : this.values()) {
@@ -167,6 +145,8 @@ public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer
 				}
 			}
 			this.clear();
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 
@@ -179,12 +159,20 @@ public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer
 	 * @param mapItems the map elements.
 	 */
 	public void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
-		synchronized (this) {
+		try {
+			lock.writeLock().lock();
 			this.put(tile, mapItems);
+		} finally {
+			lock.writeLock().unlock();
 		}
 
-		if (lastVisibleTileSet.contains(tile)) {
-			calculator.put(lastVisibleTileSet);
+		try {
+			lock.readLock().lock();
+			if (lastVisibleTileSet.contains(tile)) {
+				calculator.put(lastVisibleTileSet);
+			}
+		} finally {
+			lock.readLock().unlock();
 		}
 	}
 
@@ -201,15 +189,23 @@ public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer
 
 		Set<Tile> newVisibileTileSet = LayerUtil.getTiles(boundingBox, zoomLevel, topLeftPoint, displayModel.getTileSize());
 
-		if (!newVisibileTileSet.equals(lastVisibleTileSet)) {
-			lastVisibleTileSet.clear();
-			lastVisibleTileSet.addAll(newVisibileTileSet);
-			calculator.put(lastVisibleTileSet);
+		try {
+			lock.writeLock().lock();
+			if (!newVisibileTileSet.equals(lastVisibleTileSet)) {
+				lastVisibleTileSet.clear();
+				lastVisibleTileSet.addAll(newVisibileTileSet);
+				calculator.put(lastVisibleTileSet);
+			}
+		} finally {
+			lock.writeLock().unlock();
 		}
 
 		List<MapElementContainer> currentItemsToDraw;
-		synchronized (itemsToDraw) {
+		try {
+			lock.readLock().lock();
 			currentItemsToDraw = new ArrayList<MapElementContainer>(itemsToDraw);
+		} finally {
+			lock.readLock().unlock();
 		}
 		return currentItemsToDraw;
 	}
@@ -219,15 +215,19 @@ public class TileBasedLabelStore extends LRUCache<Tile, List<MapElementContainer
 	 * @param tile the tile
 	 * @return
 	 */
-	synchronized public boolean requiresTile(Tile tile) {
-		return this.lastVisibleTileSet.contains(tile) && !this.containsKey(tile);
+	public boolean requiresTile(Tile tile) {
+		try {
+			lock.readLock().lock();
+			return this.lastVisibleTileSet.contains(tile) && !this.containsKey(tile);
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 
 	@Override
 	protected boolean removeEldestEntry(Map.Entry<Tile, List<MapElementContainer>> eldest) {
 		if (size() > this.capacity) {
-			remove(eldest.getKey());
-			List<MapElementContainer> list= eldest.getValue();
+			List<MapElementContainer> list = eldest.getValue();
 			for (MapElementContainer item : list) {
 				item.decrementRefCount();
 			}

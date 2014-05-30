@@ -15,7 +15,9 @@
  */
 package org.mapsforge.map.layer;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
@@ -77,16 +79,26 @@ public abstract class TileLayer<T extends Job> extends Layer {
 			canvas.fillColor(this.displayModel.getBackgroundColor());
 		}
 
+		Set<Job> jobs = new HashSet<>();
+		for (TilePosition tilePosition : tilePositions) {
+			jobs.add(createJob(tilePosition.tile));
+		}
+		this.tileCache.setWorkingSet(jobs);
+
+		boolean waitingForCachedTiles = false;
+
 		for (int i = tilePositions.size() - 1; i >= 0; --i) {
 			TilePosition tilePosition = tilePositions.get(i);
 			Point point = tilePosition.point;
 			Tile tile = tilePosition.tile;
 			T job = createJob(tile);
-			Bitmap bitmap = this.tileCache.get(job);
+			Bitmap bitmap = this.tileCache.getImmediately(job);
 
 			if (bitmap == null) {
-				if (this.hasJobQueue) {
+				if (this.hasJobQueue && !this.tileCache.containsKey(job)) {
 					this.jobQueue.add(job);
+				} else {
+					waitingForCachedTiles = true;
 				}
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
@@ -97,6 +109,10 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		}
 		if (this.hasJobQueue) {
 			this.jobQueue.notifyWorkers();
+		}
+
+		if (waitingForCachedTiles) {
+			this.requestRedraw();
 		}
 	}
 
@@ -116,7 +132,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	private void drawParentTileBitmap(Canvas canvas, Point point, Tile tile) {
 		Tile cachedParentTile = getCachedParentTile(tile, 4);
 		if (cachedParentTile != null) {
-			Bitmap bitmap = this.tileCache.get(createJob(cachedParentTile));
+			Bitmap bitmap = this.tileCache.getImmediately(createJob(cachedParentTile));
 			if (bitmap != null) {
 				int tileSize = this.displayModel.getTileSize();
 				long translateX = tile.getShiftX(cachedParentTile) * tileSize;

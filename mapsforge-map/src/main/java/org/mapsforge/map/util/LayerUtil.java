@@ -16,10 +16,13 @@
 package org.mapsforge.map.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
@@ -65,6 +68,38 @@ public final class LayerUtil {
 		}
 		return tiles;
 	}
+
+	/**
+	 * Transforms a list of MapElements, orders it and removes those elements that overlap.
+	 * This operation is useful for an early elimination of elements in a list that will never
+	 * be drawn because they overlap.
+	 *
+	 * @param input list of MapElements
+	 * @return collision-free, ordered list, a subset of the input.
+	 */
+
+	public static List<MapElementContainer> collisionFreeOrdered(List<MapElementContainer> input) {
+		// sort items by priority (highest first)
+		Collections.sort(input, Collections.reverseOrder());
+		// in order of priority, see if an item can be drawn, i.e. none of the items
+		// in the currentItemsToDraw list overlaps with it.
+		List<MapElementContainer> output = new LinkedList<MapElementContainer>();
+		for (MapElementContainer item : input) {
+			boolean hasSpace = true;
+			for (MapElementContainer outputElement : output) {
+				if (outputElement.getBoundaryAbsolute().intersects(item.getBoundaryAbsolute())) {
+					hasSpace = false;
+					break;
+				}
+			}
+			if (hasSpace) {
+				item.incrementRefCount();
+				output.add(item);
+			}
+		}
+		return output;
+	}
+
 
 	private LayerUtil() {
 		throw new IllegalStateException();

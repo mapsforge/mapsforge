@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -102,6 +103,12 @@ public class TileStore implements TileCache {
 	}
 
 	@Override
+	public TileBitmap getImmediately(Job key) {
+		return get(key);
+	}
+
+
+	@Override
 	public synchronized void put(Job key, TileBitmap bitmap) {
 		// no-op
 	}
@@ -125,6 +132,10 @@ public class TileStore implements TileCache {
 		}
 		LOGGER.info("Found file " + l3.getAbsolutePath());
 		return l3;
+	}
+
+	@Override
+	public void setWorkingSet(Set<Job> key) {
 	}
 
 }

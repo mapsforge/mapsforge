@@ -15,6 +15,7 @@
 package org.mapsforge.map.layer.cache;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.queue.Job;
@@ -23,6 +24,7 @@ import org.mapsforge.map.layer.queue.Job;
  * Interface for tile image caches.
  */
 public interface TileCache {
+
 	/**
 	 * @return true if this cache contains an image for the given key, false otherwise.
 	 * @see Map#containsKey
@@ -46,9 +48,22 @@ public interface TileCache {
 	int getCapacity();
 
 	/**
+	 * Returns tileBitmap only if available at fastest cache in case of multi-layered
+	 * cache, null otherwise.
+	 * @return tileBitmap if available without getting from lower storage levels
+	 */
+	TileBitmap getImmediately(Job key);
+
+	/**
 	 * @throws IllegalArgumentException
 	 *             if any of the parameters is {@code null}.
 	 * @see Map#put
 	 */
 	void put(Job key, TileBitmap bitmap);
+
+	/**
+	 * Reserves a working set in this cache, for multi-level caches this means bringing
+	 * the elements in workingSet into the fastest cache.
+	 */
+	void setWorkingSet(Set<Job> workingSet);
 }

@@ -21,7 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.locks.Lock;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,7 +55,7 @@ public class FileSystemTileCache implements TileCache {
 
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
-	private FileLRUCache<Integer> lruCache;
+	private FileWorkingSetCache<Integer> lruCache;
 	private final ReentrantReadWriteLock lock;
 
 	/**
@@ -66,7 +67,7 @@ public class FileSystemTileCache implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
-		this.lruCache = new FileLRUCache<>(capacity);
+		this.lruCache = new FileWorkingSetCache<>(capacity);
 		this.cacheDirectory = checkDirectory(cacheDirectory);
 		this.graphicFactory = graphicFactory;
 		this.lock = new ReentrantReadWriteLock();
@@ -146,6 +147,11 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	@Override
+	public TileBitmap getImmediately(Job key) {
+		return get(key);
+	}
+
+	@Override
 	public void put(Job key, TileBitmap bitmap) {
 		if (key == null) {
 			throw new IllegalArgumentException("key must not be null");
@@ -178,13 +184,21 @@ public class FileSystemTileCache implements TileCache {
 			this.destroy();
 			try {
 				lock.writeLock().lock();
-				this.lruCache = new FileLRUCache<Integer>(0);
+				this.lruCache = new FileWorkingSetCache<Integer>(0);
 			} finally {
 				lock.writeLock().unlock();
 			}
 		} finally {
 			IOUtils.closeQuietly(outputStream);
 		}
+	}
+
+	public void setWorkingSet(Set<Job> workingSet) {
+		Set<Integer> workingSetInteger = new HashSet<Integer>();
+		for (Job job : workingSet) {
+			workingSetInteger.add(job.hashCode());
+		}
+		this.lruCache.setWorkingSet(workingSetInteger);
 	}
 
 	private File getOutputFile(Job job) {
