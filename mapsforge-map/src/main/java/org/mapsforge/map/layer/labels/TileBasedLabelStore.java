@@ -71,7 +71,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 
 		lastVisibleTileSet = tiles;
 
-		List<MapElementContainer> visibleItems = new ArrayList<MapElementContainer>();;
+		List<MapElementContainer> visibleItems = new ArrayList<MapElementContainer>();
 		for (Tile tile : lastVisibleTileSet) {
 			if (containsKey(tile)) {
 				visibleItems.addAll(get(tile));

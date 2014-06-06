@@ -36,11 +36,6 @@ public class WayTextContainer extends MapElementContainer {
 		this.paintBack = paintBack;
 		this.end = end;
 
-		double left = Math.min(0, this.end.x - this.xy.x);
-		double right = Math.max(0, this.end.x - this.xy.x);
-		double top = Math.min(0, this.end.y - this.xy.y);
-		double bottom = Math.max(0, this.end.y - this.xy.y);
-
 		this.boundary = null;
 		this.boundaryAbsolute = new Rectangle(Math.min(point.x, end.x), Math.min(point.y, end.y), Math.max(point.x, end.x), Math.max(point.y, end.y));
 	}

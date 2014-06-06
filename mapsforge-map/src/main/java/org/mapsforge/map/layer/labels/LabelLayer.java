@@ -25,7 +25,6 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.util.LayerUtil;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 public class LabelLayer extends Layer {
 
@@ -44,7 +43,6 @@ public class LabelLayer extends Layer {
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 
-		long time = System.currentTimeMillis();
 		Set<Tile> currentTileSet = LayerUtil.getTiles(boundingBox, zoomLevel, displayModel.getTileSize());
 		if (!currentTileSet.equals(lastTileSet) || lastLabelStoreVersion != labelStore.getVersion()) {
 			// only need to get new data set if either set of tiles changed or the label store
