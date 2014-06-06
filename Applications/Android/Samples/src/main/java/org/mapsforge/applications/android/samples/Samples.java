@@ -129,6 +129,8 @@ public class Samples extends Activity {
 				"Fragment List/View"));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class,
 				"Stacked rendered tiles"));
+		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer (alpha)"));
+
 	}
 
 	private Button createButton(final Class<?> clazz) {

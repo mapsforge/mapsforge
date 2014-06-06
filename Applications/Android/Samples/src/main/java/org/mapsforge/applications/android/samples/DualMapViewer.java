@@ -50,11 +50,9 @@ public class DualMapViewer extends BasicMapViewerXml {
 		this.layerManagers
 				.get(1)
 				.getLayers()
-				.add(Utils.createTileRendererLayer(this.tileCaches.get(0), this.tileBasedLabelStores.get(1),
+				.add(Utils.createTileRendererLayer(this.tileCaches.get(1),
 						this.mapViewPositions.get(1), getMapFile2(),
-						getRenderTheme2(), false));
-		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(1));
-		this.layerManagers.get(1).getLayers().add(labelLayer);
+						getRenderTheme2(), false, true));
 
 	}
 
@@ -68,20 +66,27 @@ public class DualMapViewer extends BasicMapViewerXml {
 		mapViews.add(mapView);
 	}
 
+	protected TileCache createTileCache2() {
+		int tileSize = this.mapViews.get(1).getModel().displayModel
+				.getTileSize();
+		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
+				getScreenRatio2(),
+				this.mapViews.get(1).getModel().frameBufferModel
+						.getOverdrawFactor());
+	}
+
+	@Override
+	protected void createTileCaches() {
+		super.createTileCaches();
+		this.tileCaches.add(createTileCache2());
+	}
+
 	@Override
 	protected void createSharedPreferences() {
 		super.createSharedPreferences();
 		SharedPreferences sp = this.getSharedPreferences(getPersistableId2(),
 				MODE_PRIVATE);
 		this.preferencesFacade2 = new AndroidPreferences(sp);
-	}
-
-	@Override
-	protected void createTileCaches() {
-		super.createTileCaches();
-		this.tileBasedLabelStores.add(new TileBasedLabelStore(2 * AndroidUtil.getMinimumCacheSize(this, this.mapViews.get(1).getModel().displayModel.getTileSize(), this.mapViews.get(1)
-				.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio2())));
-
 	}
 
 	@Override

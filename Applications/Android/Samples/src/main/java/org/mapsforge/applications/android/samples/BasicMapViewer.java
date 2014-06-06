@@ -30,8 +30,8 @@ import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.labels.LabelLayer;
-import org.mapsforge.map.layer.labels.TileBasedLabelStore;
+import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
+import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
@@ -80,7 +80,6 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
 	protected List<TileCache> tileCaches = new ArrayList<TileCache>();
-	protected List<TileBasedLabelStore> tileBasedLabelStores = new ArrayList<TileBasedLabelStore>();
 	protected XmlRenderThemeStyleMenu renderThemeStyleMenu;
 
 	@Override
@@ -145,12 +144,9 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0), this.tileBasedLabelStores.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false);
+		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
+				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false, true);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
-		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(0));
-		this.layerManagers.get(0).getLayers().add(labelLayer);
-
 	}
 
 	protected void createMapViewPositions() {
@@ -176,9 +172,6 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createTileCaches() {
-
-		this.tileBasedLabelStores.add(new TileBasedLabelStore(2 * AndroidUtil.getMinimumCacheSize(this, this.mapViews.get(0).getModel().displayModel.getTileSize(), this.mapViews.get(0)
-				.getModel().frameBufferModel.getOverdrawFactor(),this.getScreenRatio())));
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapViews.get(0).getModel().displayModel.getTileSize(), this.getScreenRatio(), this.mapViews.get(0)
 						.getModel().frameBufferModel.getOverdrawFactor()
@@ -211,10 +204,6 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			tileCache.destroy();
 		}
 		tileCaches.clear();
-		for (TileBasedLabelStore labelStore : tileBasedLabelStores) {
-			labelStore.destroy();
-		}
-		tileBasedLabelStores.clear();
 	}
 
 	protected MapPosition getInitialPosition() {

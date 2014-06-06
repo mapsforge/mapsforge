@@ -53,7 +53,7 @@ public final class LayerUtil {
 		return tilePositions;
 	}
 
-	public static Set<Tile> getTiles(BoundingBox boundingBox, byte zoomLevel, Point topLeftPoint, int tileSize) {
+	public static Set<Tile> getTiles(BoundingBox boundingBox, byte zoomLevel, int tileSize) {
 		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
 		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
 		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
@@ -82,12 +82,12 @@ public final class LayerUtil {
 		// sort items by priority (highest first)
 		Collections.sort(input, Collections.reverseOrder());
 		// in order of priority, see if an item can be drawn, i.e. none of the items
-		// in the currentItemsToDraw list overlaps with it.
+		// in the currentItemsToDraw list clashes with it.
 		List<MapElementContainer> output = new LinkedList<MapElementContainer>();
 		for (MapElementContainer item : input) {
 			boolean hasSpace = true;
 			for (MapElementContainer outputElement : output) {
-				if (outputElement.getBoundaryAbsolute().intersects(item.getBoundaryAbsolute())) {
+				if (outputElement.clashesWith(item)) {
 					hasSpace = false;
 					break;
 				}
@@ -99,7 +99,6 @@ public final class LayerUtil {
 		}
 		return output;
 	}
-
 
 	private LayerUtil() {
 		throw new IllegalStateException();

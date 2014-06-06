@@ -38,6 +38,7 @@ public class LayerManager extends PausableThread implements Redrawer {
 	private final MapViewPosition mapViewPosition;
 	private boolean redrawNeeded;
 
+
 	public LayerManager(MapView mapView, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
 		super();
 

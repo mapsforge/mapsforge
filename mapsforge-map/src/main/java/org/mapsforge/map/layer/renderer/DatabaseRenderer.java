@@ -16,15 +16,17 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.mapelements.MapElementContainer;
@@ -38,6 +40,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDatabase;
@@ -51,6 +54,9 @@ import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.mapsforge.map.util.LayerUtil;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 
 /**
  * The DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
@@ -92,28 +98,56 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	private final CanvasRasterer canvasRasterer;
-	private List<MapElementContainer> currentMapElementContainers;
+	private List<MapElementContainer> currentLabels;
+	private Set<MapElementContainer> currentWayLabels;
 	private List<List<ShapePaintContainer>> drawingLayers;
 	private final GraphicFactory graphicFactory;
 	private final TileBasedLabelStore labelStore;
 	private final MapDatabase mapDatabase;
 	private XmlRenderTheme previousJobTheme;
+	private final boolean renderLabels;
 	private RenderTheme renderTheme;
 	private List<List<List<ShapePaintContainer>>> ways;
+	private final TileCache tileCache;
+	private final TileDependencies tileDependencies;
 
 	/**
-	 * Constructs a new DatabaseRenderer.
+	 * Constructs a new DatabaseRenderer that will not draw labels, instead it stores the label
+	 * information in the labelStore for drawing by a LabelLayer.
 	 * 
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
+	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory,
+	                        TileBasedLabelStore labelStore) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 
 		this.canvasRasterer = new CanvasRasterer(graphicFactory);
 		this.labelStore = labelStore;
+		this.renderLabels = false;
+		this.tileCache = null;
+		this.tileDependencies = null;
 	}
+
+	/**
+	 * Constructs a new DatabaseRenderer that will draw labels onto the tiles.
+	 *
+	 * @param mapDatabase
+	 *            the MapDatabase from which the map data will be read.
+	 */
+	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory,
+	                        TileCache tileCache) {
+		this.mapDatabase = mapDatabase;
+		this.graphicFactory = graphicFactory;
+
+		this.canvasRasterer = new CanvasRasterer(graphicFactory);
+		this.labelStore = null;
+		this.renderLabels = true;
+		this.tileCache = tileCache;
+		this.tileDependencies = new TileDependencies();
+	}
+
 
 	public void destroy() {
 		this.canvasRasterer.destroy();
@@ -139,7 +173,8 @@ public class DatabaseRenderer implements RenderCallback {
 		final int tileSize = rendererJob.tile.tileSize;
 		final byte zoomLevel = rendererJob.tile.zoomLevel;
 
-		this.currentMapElementContainers = new LinkedList<MapElementContainer>();
+		this.currentLabels = new LinkedList<MapElementContainer>();
+		this.currentWayLabels = new HashSet<MapElementContainer>();
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
 		if (!jobTheme.equals(this.previousJobTheme)) {
@@ -171,10 +206,79 @@ public class DatabaseRenderer implements RenderCallback {
 			this.canvasRasterer.drawWays(ways, rendererJob.tile);
 		}
 
+		if (renderLabels) {
+			// if we are drawing the labels per tile, we need to establish which tile-overlapping
+			// elements need to be drawn.
 
+			Set<MapElementContainer> labelsToDraw = new HashSet<MapElementContainer>();
+			// first we need to get the labels from the adjacent tiles if they have already been drawn
+			// as those overlapping items must also be drawn on the current tile. They must be drawn regardless
+			// of priority clashes as a part of them has alread been drawn.
+			Set<Tile> neighbours = rendererJob.tile.getNeighbours();
+			Iterator<Tile> tileIterator = neighbours.iterator();
+			Set<MapElementContainer> undrawableElements = new HashSet<MapElementContainer>();
+			while (tileIterator.hasNext()) {
+				Tile neighbour = tileIterator.next();
+				if (tileCache.containsKey(rendererJob.otherTile(neighbour))) {
+					// if a tile has already been drawn, the elements drawn that overlap onto the
+					// current tile should be in the tile dependencies, we add them to the labels that
+					// need to be drawn onto this tile.
+					labelsToDraw.addAll(tileDependencies.getOverlappingElements(neighbour, rendererJob.tile));
 
-		if (labelStore != null) {
-			this.labelStore.storeMapItems(rendererJob.tile, LayerUtil.collisionFreeOrdered(this.currentMapElementContainers));
+					// but we need to remove the labels for this tile that overlap onto a tile that has been drawn
+					for (MapElementContainer current : currentLabels) {
+						if (current.intersects(neighbour.getBoundaryAbsolute())) {
+							undrawableElements.add(current);
+						}
+					}
+					// since we already have the data from that tile, we do not need to get the data for
+					// it, so remove it from the neighbours list.
+					tileIterator.remove();
+				} else {
+					tileDependencies.removeTileData(neighbour);
+				}
+			}
+
+			// now we remove the elements that overlap onto a drawn tile from the list of labels
+			// for this tile
+			currentLabels.removeAll(undrawableElements);
+
+			// at this point we have two lists: one is the list of labels that must be drawn because
+			// they already overlap from other tiles. The second one is currentLabels that contains
+			// the elements on this tile that do not overlap onto a drawn tile. Now we sort this list and
+			// remove those elements that clash in this list already.
+			List<MapElementContainer> currentElementsOrdered = LayerUtil.collisionFreeOrdered(currentLabels);
+
+			// now we go through this list, ordered by priority, to see which can be drawn without clashing.
+			Iterator<MapElementContainer> currentMapElementsIterator = currentElementsOrdered.iterator();
+			while (currentMapElementsIterator.hasNext()) {
+				MapElementContainer current = currentMapElementsIterator.next();
+				for (MapElementContainer label : labelsToDraw) {
+					if (label.clashesWith(current)) {
+						currentMapElementsIterator.remove();
+						break;
+					}
+				}
+			}
+
+			labelsToDraw.addAll(currentElementsOrdered);
+
+			// update dependencies, add to the dependencies list all the elements that overlap to the
+			// neighbouring tiles, first clearing out the cache for this relation.
+			for (Tile tile : neighbours) {
+				tileDependencies.removeTileData(rendererJob.tile, tile);
+				for (MapElementContainer element : labelsToDraw) {
+					if (element.intersects(tile.getBoundaryAbsolute())) {
+						tileDependencies.addOverlappingElement(rendererJob.tile, tile, element);
+					}
+				}
+			}
+			// now draw the ways and the labels
+			this.canvasRasterer.drawMapElements(currentWayLabels, rendererJob.tile);
+			this.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
+		} else {
+			// store elements for this tile in the label cache
+			this.labelStore.storeMapItems(rendererJob.tile, this.currentLabels);
 		}
 
 		// clear way list
@@ -239,14 +343,14 @@ public class DatabaseRenderer implements RenderCallback {
 	public void renderAreaCaption(PolylineContainer way, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                              Paint fill, Paint stroke, Position position, int maxTextWidth) {
 		Point centerPoint = way.getCenterAbsolute().offset(horizontalOffset, verticalOffset);
-		this.currentMapElementContainers.add(this.graphicFactory.createPointTextContainer(centerPoint, priority, caption, fill, stroke, null, position, maxTextWidth));
+		this.currentLabels.add(this.graphicFactory.createPointTextContainer(centerPoint, priority, caption, fill, stroke, null, position, maxTextWidth));
 	}
 
 	@Override
 	public void renderAreaSymbol(PolylineContainer way, int priority, Bitmap symbol) {
 		Point centerPosition = way.getCenterAbsolute();
 
-		this.currentMapElementContainers.add(new SymbolContainer(centerPosition, priority, symbol));
+		this.currentLabels.add(new SymbolContainer(centerPosition, priority, symbol));
 	}
 
 	@Override
@@ -254,7 +358,7 @@ public class DatabaseRenderer implements RenderCallback {
 	                                         Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
 		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
 
-		this.currentMapElementContainers.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), priority, caption, fill,
+		this.currentLabels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), priority, caption, fill,
 				stroke, null, position, maxTextWidth));
 	}
 
@@ -269,7 +373,7 @@ public class DatabaseRenderer implements RenderCallback {
 	@Override
 	public void renderPointOfInterestSymbol(PointOfInterest poi, int priority, Bitmap symbol, Tile tile) {
 		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
-		this.currentMapElementContainers.add(new SymbolContainer(poiPosition, priority, symbol));
+		this.currentLabels.add(new SymbolContainer(poiPosition, priority, symbol));
 	}
 
 	@Override
@@ -281,14 +385,13 @@ public class DatabaseRenderer implements RenderCallback {
 	public void renderWaySymbol(PolylineContainer way, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
 	                     float repeatGap, float repeatStart, boolean rotate) {
 		WayDecorator.renderSymbol(symbol, priority, dy, alignCenter, repeat, repeatGap,
-				repeatStart, rotate, way.getCoordinatesAbsolute(), this.currentMapElementContainers);
+				repeatStart, rotate, way.getCoordinatesAbsolute(), this.currentLabels);
 	}
 
 	@Override
 	public void renderWayText(PolylineContainer way, int priority, String textKey, float dy, Paint fill, Paint stroke) {
-		WayDecorator.renderText(textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), this.currentMapElementContainers);
+		WayDecorator.renderText(textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), this.currentWayLabels);
 	}
-
 
 	private List<List<List<ShapePaintContainer>>> createWayLists() {
 		List<List<List<ShapePaintContainer>>> ways = new ArrayList<List<List<ShapePaintContainer>>>(LAYERS);

@@ -49,9 +49,9 @@ public class LongPressAction extends BasicMapViewerXml {
 	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(
-				this.tileCaches.get(0), this.tileBasedLabelStores.get(0),
+				this.tileCaches.get(0),
 				this.mapViewPositions.get(0),
-				false,
+				false, true,
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
 			@Override
 			public boolean onLongPress(LatLong tapLatLong, Point thisXY,
@@ -64,9 +64,6 @@ public class LongPressAction extends BasicMapViewerXml {
 		tileRendererLayer.setXmlRenderTheme(this.getRenderTheme());
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
 		BLACK.setTextSize(22);
-		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(0));
-		this.layerManagers.get(0).getLayers().add(labelLayer);
-
 	}
 
 	protected void onLongPress(final LatLong position) {

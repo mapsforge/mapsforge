@@ -55,6 +55,44 @@ abstract public class PointTextContainer extends MapElementContainer {
 		this.isVisible = !this.paintFront.isTransparent() || (this.paintBack != null && !this.paintBack.isTransparent());
 	}
 
+	@Override
+	public boolean clashesWith(MapElementContainer other) {
+		if (super.clashesWith(other)) {
+			return true;
+		}
+		if (!(other instanceof PointTextContainer)) {
+			return false;
+		}
+		PointTextContainer ptc = (PointTextContainer) other;
+		if (this.text.equals(ptc.text) && this.xy.distance(ptc.xy) < 200) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof PointTextContainer)) {
+			return false;
+		}
+		PointTextContainer other = (PointTextContainer) obj;
+		if (!this.text.equals(other.text)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + text.hashCode();
+		return result;
+	}
+
+
 
 	@Override
 	public String toString() {

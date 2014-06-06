@@ -69,6 +69,11 @@ public class TwoLevelTileCache implements TileCache {
 	}
 
 	@Override
+	public int getCapacityFirstLevel() {
+		return this.firstLevelTileCache.getCapacity();
+	}
+
+	@Override
 	public TileBitmap getImmediately(Job key) {
 		return firstLevelTileCache.get(key);
 	}

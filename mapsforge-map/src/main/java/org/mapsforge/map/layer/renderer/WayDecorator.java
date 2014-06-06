@@ -15,6 +15,7 @@
 package org.mapsforge.map.layer.renderer;
 
 import java.util.List;
+import java.util.Set;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.mapelements.MapElementContainer;
@@ -108,7 +109,7 @@ final class WayDecorator {
 	}
 
 	static void renderText(String text, int priority, float dy, Paint fill, Paint stroke, List<List<Point>> coordinates,
-			List<MapElementContainer> currentItems) {
+			Set<MapElementContainer> currentWayLabels) {
 		// calculate the way name length plus some margin of safety
 		int wayNameWidth = fill.getTextWidth(text) + 10;
 
@@ -151,7 +152,7 @@ final class WayDecorator {
 					start = new Point(currentX, currentY);
 					end = new Point(previousX, previousY);
 				}
-				currentItems.add(new WayTextContainer(start, end, priority, text, fill, stroke));
+				currentWayLabels.add(new WayTextContainer(start, end, priority, text, fill, stroke));
 
 				skipPixels = DISTANCE_BETWEEN_WAY_NAMES;
 			}

@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TileTest {
-	private static final String TILE_TO_STRING = "tileX=1, tileY=2, zoomLevel=3";
+	private static final String TILE_TO_STRING = "x=1, y=2, z=3";
 
 	private static final int TILE_SIZE = 256;
 
@@ -31,7 +31,7 @@ public class TileTest {
 	private static void verifyInvalid(long tileX, long tileY, byte zoomLevel) {
 		try {
 			createTile(tileX, tileY, zoomLevel);
-			Assert.fail("tileX: " + tileX + ", tileY: " + tileY + ", zoomLevel: " + zoomLevel);
+			Assert.fail("x: " + tileX + ", tileY: " + tileY + ", zoomLevel: " + zoomLevel);
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}

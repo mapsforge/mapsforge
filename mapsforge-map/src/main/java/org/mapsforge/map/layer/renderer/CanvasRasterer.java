@@ -16,6 +16,7 @@
 package org.mapsforge.map.layer.renderer;
 
 import java.util.List;
+import java.util.Set;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
@@ -23,6 +24,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
@@ -54,6 +56,12 @@ class CanvasRasterer {
 					drawShapePaintContainer(wayList.get(index), tile);
 				}
 			}
+		}
+	}
+
+	void drawMapElements(Set<MapElementContainer> elements, Tile tile) {
+		for (MapElementContainer element : elements) {
+			element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
 		}
 	}
 

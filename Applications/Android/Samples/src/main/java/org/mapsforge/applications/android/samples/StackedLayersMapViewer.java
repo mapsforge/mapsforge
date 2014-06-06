@@ -40,13 +40,12 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 			XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "",
 					"renderthemes/onlybuildings.xml", null);
 
-			// we are adding the other layer below the labels
 			this.layerManagers
 					.get(0)
 					.getLayers()
-					.add(1, Utils.createTileRendererLayer(this.tileCaches.get(1), null,
+					.add(Utils.createTileRendererLayer(this.tileCaches.get(1),
 							this.mapViewPositions.get(0), getMapFile(),
-							secondRenderTheme, true));
+							secondRenderTheme, true, false));
 
 		} catch (IOException e) {
 			Log.e("ERROR", "Rendertheme not found");

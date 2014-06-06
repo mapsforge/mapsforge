@@ -99,12 +99,9 @@ public class ItemDetailFragment extends Fragment {
 					1.5);
 
 			mapViewPosition.setCenter(this.dummyItem.location);
-			TileBasedLabelStore labelStore = new TileBasedLabelStore(30);
-			layers.add(Utils.createTileRendererLayer(this.tileCache, labelStore,
+			layers.add(Utils.createTileRendererLayer(this.tileCache,
 					mapViewPosition, getMapFile(),
-					InternalRenderTheme.OSMARENDER, false));
-			LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
-			layers.add(labelLayer);
+					InternalRenderTheme.OSMARENDER, false, true));
 
 		}
 

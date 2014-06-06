@@ -95,15 +95,11 @@ public final class MapViewer {
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
 		BoundingBox result = null;
 		for (File mapFile : mapFiles) {
-			TileBasedLabelStore tileBasedLabelStore = new TileBasedLabelStore(2 * 64);
-			TileRendererLayer tileRendererLayer = createTileRendererLayer(
-					tileCache, tileBasedLabelStore,
-					mapView.getModel().mapViewPosition, true, mapFile);
+			TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache,
+					mapView.getModel().mapViewPosition, true, true, mapFile);
 			BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
 			result = result == null ? boundingBox : result.extend(boundingBox);
 			layers.add(tileRendererLayer);
-			LabelLayer labelLayer = new LabelLayer(GRAPHIC_FACTORY, tileBasedLabelStore);
-			layers.add(labelLayer);
 		}
 		if (SHOW_DEBUG_LAYERS) {
 			layers.add(new TileGridLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
@@ -143,11 +139,10 @@ public final class MapViewer {
 	}
 
 	private static TileRendererLayer createTileRendererLayer(
-			TileCache tileCache, TileBasedLabelStore tileBasedLabelStore,
-			MapViewPosition mapViewPosition, boolean isTransparent, File mapFile) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache,
-				tileBasedLabelStore, mapViewPosition, isTransparent,
-				GRAPHIC_FACTORY);
+			TileCache tileCache,
+			MapViewPosition mapViewPosition, boolean isTransparent, boolean renderLabels, File mapFile) {
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent,
+				renderLabels, GRAPHIC_FACTORY);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;

@@ -103,6 +103,11 @@ public class TileStore implements TileCache {
 	}
 
 	@Override
+	public synchronized int getCapacityFirstLevel() {
+		return getCapacity();
+	}
+
+	@Override
 	public TileBitmap getImmediately(Job key) {
 		return get(key);
 	}

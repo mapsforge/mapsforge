@@ -63,6 +63,23 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 		return 0;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof MapElementContainer)) {
+			return false;
+		}
+		MapElementContainer other = (MapElementContainer) obj;
+		if (this.priority != other.priority) {
+			return false;
+		} else if (!this.xy.equals(other.xy)) {
+			return false;
+		}
+		return true;
+	}
+
+
 	/**
 	 * Hook for memory management.
 	 */
@@ -88,11 +105,35 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	 *
 	 * @return Rectangle with absolute pixel coordinates.
 	 */
-	public Rectangle getBoundaryAbsolute() {
+	protected Rectangle getBoundaryAbsolute() {
 		if (boundaryAbsolute == null) {
 			boundaryAbsolute = this.boundary.shift(xy);
 		}
 		return boundaryAbsolute;
+	}
+
+	public boolean intersects(Rectangle rectangle) {
+		return this.getBoundaryAbsolute().intersects(rectangle);
+	}
+
+	/**
+	 * Returns if MapElementContainers clash with each other
+	 * @param other element to test against
+	 * @return true if they overlap, false if they are equal or do not overlap
+	 */
+	public boolean clashesWith(MapElementContainer other) {
+		if (this.equals(other)) {
+			return false;
+		}
+		return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 7;
+		result = 31 * result + xy.hashCode();
+		result = 31 * result + priority;
+		return result;
 	}
 
 	/**
@@ -101,6 +142,10 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	 */
 	public Point getPoint() {
 		return this.xy;
+	}
+
+	public int getPriority() {
+		return priority;
 	}
 
 	@Override

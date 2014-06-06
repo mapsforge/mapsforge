@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
@@ -30,7 +31,6 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class TileRendererLayer extends TileLayer<RendererJob> {
-
 	private final DatabaseRenderer databaseRenderer;
 	private final MapDatabase mapDatabase;
 	private File mapFile;
@@ -39,14 +39,36 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private final TileBasedLabelStore tileBasedLabelStore;
 	private XmlRenderTheme xmlRenderTheme;
 
-	public TileRendererLayer(TileCache tileCache, TileBasedLabelStore labelStore, MapViewPosition mapViewPosition, boolean isTransparent,
-			GraphicFactory graphicFactory) {
+	/**
+	 * Creates a TileRendererLayer.
+	 * @param tileCache cache where tiles are stored
+	 * @param mapViewPosition the mapViewPosition to know which tiles to render
+	 * @param isTransparent true if the tile should have an alpha/transparency
+	 * @param renderLabels true if labels should be rendered onto tiles
+	 * @param graphicFactory the graphicFactory to carry out platform specific operations
+	 */
+	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, boolean isTransparent,
+	                         boolean renderLabels, GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
 		this.mapDatabase = new MapDatabase();
-		this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory, labelStore);
+		if (renderLabels) {
+			this.tileBasedLabelStore = null;
+			this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory, tileCache);
+		} else {
+			this.tileBasedLabelStore = new TileBasedLabelStore(tileCache.getCapacityFirstLevel());
+			this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory, tileBasedLabelStore);
+		}
 		this.textScale = 1;
-		this.tileBasedLabelStore = labelStore;
+	}
+
+	/**
+	 * If the labels are not rendered onto the tile directly, they are stored in a LabelStore for
+	 * rendering on a separate Layer.
+	 * @return the LabelStore used for storing labels, null if labels are rendered onto tiles directly.
+	 */
+	public LabelStore getLabelStore() {
+		return tileBasedLabelStore;
 	}
 
 	public MapDatabase getMapDatabase() {

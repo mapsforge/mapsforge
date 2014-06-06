@@ -47,6 +47,22 @@ public class SymbolContainer extends MapElementContainer {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof SymbolContainer)) {
+			return false;
+		}
+		SymbolContainer other = (SymbolContainer) obj;
+		if (this.symbol != other.symbol) {
+			return false;
+		}
+		return true;
+	}
+
+
+	@Override
 	public void decrementRefCount() {
 
 	}
@@ -54,6 +70,13 @@ public class SymbolContainer extends MapElementContainer {
 	@Override
 	public void incrementRefCount() {
 
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + symbol.hashCode();
+		return result;
 	}
 
 	public void draw(Canvas canvas, Point origin, Matrix matrix) {

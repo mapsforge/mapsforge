@@ -122,11 +122,11 @@ public final class Utils {
 	 *
 	 * @return the layer
 	 */
-	static TileRendererLayer createTileRendererLayer(TileCache tileCache, TileBasedLabelStore tileBasedLabelStore,
+	static TileRendererLayer createTileRendererLayer(TileCache tileCache,
 			MapViewPosition mapViewPosition, File mapFile,
-			XmlRenderTheme renderTheme, boolean hasAlpha) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, tileBasedLabelStore,
-				mapViewPosition, hasAlpha, AndroidGraphicFactory.INSTANCE);
+			XmlRenderTheme renderTheme, boolean hasAlpha, boolean renderLabels) {
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache,
+				mapViewPosition, hasAlpha, renderLabels, AndroidGraphicFactory.INSTANCE);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(renderTheme);
 		tileRendererLayer.setTextScale(1.5f);

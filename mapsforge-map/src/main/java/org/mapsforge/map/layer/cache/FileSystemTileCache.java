@@ -147,6 +147,11 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	@Override
+	public int getCapacityFirstLevel() {
+		return getCapacity();
+	}
+
+	@Override
 	public TileBitmap getImmediately(Job key) {
 		return get(key);
 	}

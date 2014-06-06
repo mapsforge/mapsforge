@@ -16,18 +16,31 @@
 package org.mapsforge.map.layer.labels;
 
 import org.mapsforge.core.mapelements.MapElementContainer;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.Point;
-import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.core.model.Tile;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * The LabelStore is an abstract store for labels from which it is possible to retrieve a priority-ordered
  * queue of items that are visible within a given bounding box for a zoom level.
  */
 public interface LabelStore {
+	/**
+	 * Clears the data.
+	 */
 	abstract void clear();
-	abstract List<MapElementContainer> getVisibleItems(BoundingBox boundingBox, DisplayModel displayModel, byte zoomLevel, Point topLeftPoint);
 
+	/**
+	 * Returns a version number, which changes every time an update is made to the LabelStore.
+	 * @return
+	 */
+	abstract int getVersion();
+
+	/**
+	 * Gets the items that are visible on a set of tiles.
+	 * @param tiles the set of tiles to get the labels for
+	 * @return a list of MapElements that are visible on the tiles
+	 */
+	abstract List<MapElementContainer> getVisibleItems(Set<Tile> tiles);
 }

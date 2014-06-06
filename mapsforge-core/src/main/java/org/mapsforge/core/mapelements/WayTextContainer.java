@@ -41,7 +41,8 @@ public class WayTextContainer extends MapElementContainer {
 		double top = Math.min(0, this.end.y - this.xy.y);
 		double bottom = Math.max(0, this.end.y - this.xy.y);
 
-		this.boundary = new Rectangle(left, top, right, bottom);
+		this.boundary = null;
+		this.boundaryAbsolute = new Rectangle(Math.min(point.x, end.x), Math.min(point.y, end.y), Math.max(point.x, end.x), Math.max(point.y, end.y));
 	}
 
 	public void draw(Canvas canvas, Point origin, Matrix matrix) {
@@ -58,6 +59,15 @@ public class WayTextContainer extends MapElementContainer {
 				(int) (adjustedStart.y),
 				(int) (adjustedEnd.x),
 				(int) (adjustedEnd.y), this.paintFront);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(super.toString());
+		stringBuilder.append(", text=");
+		stringBuilder.append(this.text);
+		return stringBuilder.toString();
 	}
 
 }

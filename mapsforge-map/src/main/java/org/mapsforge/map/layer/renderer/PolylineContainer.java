@@ -49,7 +49,7 @@ public class PolylineContainer implements ShapeContainer {
 		this.tile = tile;
 		layer = way.layer;
 		this.way = way;
-		this.isClosedWay = way.latLongs[0].equals(way.latLongs[way.latLongs.length-1]);
+		this.isClosedWay = way.latLongs[0][0].equals(way.latLongs[0][way.latLongs[0].length-1]);
 	}
 
 	PolylineContainer(List<Point> coordinates, Tile tile, List tags) {
@@ -58,7 +58,7 @@ public class PolylineContainer implements ShapeContainer {
 		this.tags = tags;
 		this.tile = tile;
 		this.layer = 0;
-		isClosedWay = coordinatesAbsolute.get(0).equals(coordinatesAbsolute.get(coordinatesAbsolute.size()-1));
+		isClosedWay = coordinates.get(0).equals(coordinates.get(coordinates.size()-1));
 	}
 
 	public Point getCenterAbsolute() {

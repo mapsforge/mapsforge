@@ -32,19 +32,4 @@ public class DualMapViewerWithDifferentDisplayModels extends DualMapViewer {
 																				// background
 
 	}
-
-	protected TileCache createTileCache2() {
-		int tileSize = this.mapViews.get(1).getModel().displayModel
-				.getTileSize();
-		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
-				getScreenRatio2(),
-				this.mapViews.get(1).getModel().frameBufferModel
-						.getOverdrawFactor());
-	}
-
-	@Override
-	protected void createTileCaches() {
-		super.createTileCaches();
-		this.tileCaches.add(createTileCache2());
-	}
 }

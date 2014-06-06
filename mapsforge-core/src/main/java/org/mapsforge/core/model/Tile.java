@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +18,8 @@ package org.mapsforge.core.model;
 import org.mapsforge.core.util.MercatorProjection;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A tile represents a rectangular part of the world map. All tiles can be identified by their X and Y number together
@@ -110,6 +113,35 @@ public class Tile implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Returns a set of the eight neighbours of this tile.
+	 * @return neighbour tiles as a set
+	 */
+	public Set<Tile> getNeighbours() {
+		Set<Tile> neighbours = new HashSet<Tile>(8);
+		neighbours.add(getLeft());
+		neighbours.add(getAboveLeft());
+		neighbours.add(getAbove());
+		neighbours.add(getAboveRight());
+		neighbours.add(getRight());
+		neighbours.add(getBelowRight());
+		neighbours.add(getBelow());
+		neighbours.add(getBelowLeft());
+		return neighbours;
+	}
+
+	/**
+	 * Extend of this tile in absolute coordinates.
+	 * @return rectangle with the absolute coordinates.
+	 */
+	public Rectangle getBoundaryAbsolute() {
+		return new Rectangle(getOrigin().x, getOrigin().y, getOrigin().x + tileSize, getOrigin().y + tileSize);
+	}
+
+	/**
+	 * Returns the top-left point of this tile in absolute coordinates.
+	 * @return the top-left point
+	 */
 	public Point getOrigin() {
 		if (this.origin == null) {
 			double x = MercatorProjection.tileToPixel(this.tileX, this.tileSize);
@@ -119,6 +151,10 @@ public class Tile implements Serializable {
 		return this.origin;
 	}
 
+	/**
+	 * Returns the tile to the left of this tile.
+	 * @return tile to the left.
+	 */
 	public Tile getLeft() {
 		long x = tileX - 1;
 		if (x < 0) {
@@ -127,6 +163,10 @@ public class Tile implements Serializable {
 		return new Tile(x, this.tileY, this.zoomLevel, this.tileSize);
 	}
 
+	/**
+	 * Returns the tile to the right of this tile.
+	 * @return
+	 */
 	public Tile getRight() {
 		long x = tileX + 1;
 		if (x > getMaxTileNumber(this.zoomLevel)) {
@@ -239,11 +279,11 @@ public class Tile implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("tileX=");
+		stringBuilder.append("x=");
 		stringBuilder.append(this.tileX);
-		stringBuilder.append(", tileY=");
+		stringBuilder.append(", y=");
 		stringBuilder.append(this.tileY);
-		stringBuilder.append(", zoomLevel=");
+		stringBuilder.append(", z=");
 		stringBuilder.append(this.zoomLevel);
 		return stringBuilder.toString();
 	}

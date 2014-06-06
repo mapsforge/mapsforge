@@ -55,13 +55,9 @@ public class TileSizeChanger extends BasicMapViewer {
 	@Override
 	protected void createLayers() {
 		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
-				this.tileBasedLabelStores.get(0),
 				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
-				false);
+				false, true);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
-		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(0));
-		this.layerManagers.get(0).getLayers().add(labelLayer);
-
 		this.changerThread = new ChangerThread();
 		this.changerThread.start();
 	}

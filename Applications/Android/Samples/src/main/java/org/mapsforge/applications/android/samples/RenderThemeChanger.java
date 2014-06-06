@@ -69,9 +69,9 @@ public class RenderThemeChanger extends BasicMapViewer {
 
 	@Override
 	protected void createLayers() {
-		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0), this.tileBasedLabelStores.get(0),
+		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
 				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
-				false);
+				false, true);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
 		this.changerThread = new ChangerThread();
 		this.changerThread.start();
@@ -99,11 +99,9 @@ public class RenderThemeChanger extends BasicMapViewer {
 				layerManagers.get(0).getLayers().remove(tileRendererLayer);
 				tileRendererLayer.onDestroy();
 				tileCaches.get(0).destroy(); // clear the cache
-				tileBasedLabelStores.get(0).clear();
 				tileRendererLayer = Utils.createTileRendererLayer(tileCaches.get(0),
-						tileBasedLabelStores.get(0),
 						mapViewPositions.get(0), getMapFile(), nextRenderTheme,
-						false);
+						false, false);
 				layerManagers.get(0).getLayers().add(tileRendererLayer);
 				layerManagers.get(0).redrawLayers();
 			} catch (FileNotFoundException e) {

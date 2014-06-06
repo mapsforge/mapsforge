@@ -48,6 +48,11 @@ public interface TileCache {
 	int getCapacity();
 
 	/**
+	 * @return the capacity of the first level of a multi-level cache.
+	 */
+	int getCapacityFirstLevel();
+
+	/**
 	 * Returns tileBitmap only if available at fastest cache in case of multi-layered
 	 * cache, null otherwise.
 	 * @return tileBitmap if available without getting from lower storage levels

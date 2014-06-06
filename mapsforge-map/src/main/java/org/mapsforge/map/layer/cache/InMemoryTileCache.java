@@ -54,6 +54,7 @@ public class InMemoryTileCache implements TileCache {
 		this.lruCache.clear();
 	}
 
+
 	@Override
 	public synchronized TileBitmap get(Job key) {
 		TileBitmap bitmap = this.lruCache.get(key);
@@ -69,9 +70,16 @@ public class InMemoryTileCache implements TileCache {
 	}
 
 	@Override
+	public int getCapacityFirstLevel() {
+		return getCapacity();
+	}
+
+	@Override
 	public TileBitmap getImmediately(Job key) {
 		return get(key);
 	}
+
+
 
 	@Override
 	public synchronized void put(Job key, TileBitmap bitmap) {

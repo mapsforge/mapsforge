@@ -20,40 +20,43 @@ import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
-
+import org.mapsforge.map.util.LayerUtil;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 public class LabelLayer extends Layer {
 
-	private final TileBasedLabelStore tileBasedLabelStore;
+	private final LabelStore labelStore;
 	private final Matrix matrix;
+	private List<MapElementContainer> elementsToDraw;
+	private Set<Tile> lastTileSet;
+	private int lastLabelStoreVersion;
 
-	public LabelLayer(GraphicFactory graphicFactory, TileBasedLabelStore tileBasedLabelStore) {
-		this.tileBasedLabelStore = tileBasedLabelStore;
-		this.tileBasedLabelStore.setLayer(this);
+
+	public LabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
+		this.labelStore = labelStore;
 		this.matrix = graphicFactory.createMatrix();
 	}
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 
-		List<MapElementContainer> itemsToDraw = this.tileBasedLabelStore.getVisibleItems(boundingBox, this.displayModel, zoomLevel, topLeftPoint);
-		if (itemsToDraw != null) {
-			for (MapElementContainer item : itemsToDraw) {
-				item.draw(canvas, topLeftPoint, this.matrix);
-			}
+		long time = System.currentTimeMillis();
+		Set<Tile> currentTileSet = LayerUtil.getTiles(boundingBox, zoomLevel, displayModel.getTileSize());
+		if (!currentTileSet.equals(lastTileSet) || lastLabelStoreVersion != labelStore.getVersion()) {
+			// only need to get new data set if either set of tiles changed or the label store
+			lastTileSet = currentTileSet;
+			lastLabelStoreVersion = labelStore.getVersion();
+			List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(currentTileSet);
+			elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
 		}
-	}
 
-	@Override
-	public void onAdd() {
-		this.tileBasedLabelStore.startLayoutEngine();
-	}
-
-	@Override
-	public void onRemove() {
-		this.tileBasedLabelStore.stopLayoutEngine();
+		for (MapElementContainer item : elementsToDraw) {
+			item.draw(canvas, topLeftPoint, this.matrix);
+		}
 	}
 
 }

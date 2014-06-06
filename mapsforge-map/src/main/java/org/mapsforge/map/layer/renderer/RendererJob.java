@@ -80,6 +80,18 @@ public class RendererJob extends Job {
 		return this.hashCodeValue;
 	}
 
+	/**
+	 * Just a way of generating a hash key for a tile if only the RendererJob is known.
+	 * @param tile the tile that changes
+	 * @return a RendererJob based on the current one, only tile changes
+	 */
+	public RendererJob otherTile(Tile tile) {
+		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale, this.hasAlpha, this.labelsOnly);
+	}
+
+	/**
+	 * Indicates that for this job only the labels should be generated.
+	 */
 	public void setRetrieveLabelsOnly() {
 		this.labelsOnly = true;
 	}
