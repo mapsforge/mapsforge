@@ -135,6 +135,12 @@ public final class MercatorProjection {
 		return new Point(pixelX, pixelY);
 	}
 
+	public static Point getPixel(LatLong latLong, byte zoomLevel, int tileSize) {
+		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, zoomLevel, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, zoomLevel, tileSize);
+		return new Point(pixelX, pixelY);
+	}
+
 	/**
 	 * Calculates the absolute pixel position for a zoom level and tile size
 	 *
