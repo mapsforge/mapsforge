@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
@@ -49,7 +50,7 @@ public class PolylineContainer implements ShapeContainer {
 		this.tile = tile;
 		layer = way.layer;
 		this.way = way;
-		this.isClosedWay = way.latLongs[0][0].equals(way.latLongs[0][way.latLongs[0].length-1]);
+		this.isClosedWay = isClosedWay(way.latLongs[0]);
 	}
 
 	PolylineContainer(List<Point> coordinates, Tile tile, List tags) {
@@ -123,6 +124,10 @@ public class PolylineContainer implements ShapeContainer {
 
 	public Tile getTile() {
 		return tile;
+	}
+
+	private boolean isClosedWay(LatLong[] latLongs) {
+		return latLongs[0].distance(latLongs[latLongs.length -1]) < 0.000000001;
 	}
 
 }

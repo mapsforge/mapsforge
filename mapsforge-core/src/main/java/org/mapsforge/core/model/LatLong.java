@@ -64,6 +64,10 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 		return 0;
 	}
 
+	public double distance(LatLong other) {
+		return Math.hypot(this.longitude - other.longitude, this.latitude - other.latitude);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
