@@ -93,7 +93,7 @@ public class PolylineContainer implements ShapeContainer {
 	public List<List<Point>> getCoordinatesRelativeToTile() {
 		if (coordinatesRelativeToTile == null) {
 			Point tileOrigin = tile.getOrigin();
-			coordinatesRelativeToTile = new ArrayList<List<Point>>(getCoordinatesAbsolute());
+			coordinatesRelativeToTile = new ArrayList<List<Point>>(getCoordinatesAbsolute().size());
 			for (List<Point> innerList : getCoordinatesAbsolute()) {
 				List<Point> inner = new ArrayList<Point>(innerList.size());
 				coordinatesRelativeToTile.add(inner);
