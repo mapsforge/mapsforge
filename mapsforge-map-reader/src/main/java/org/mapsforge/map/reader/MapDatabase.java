@@ -663,8 +663,7 @@ public class MapDatabase {
 			if (numberOfWayNodes < 2 || numberOfWayNodes > MAXIMUM_WAY_NODES_SEQUENCE_LENGTH) {
 				LOGGER.warning("invalid number of way nodes: " + numberOfWayNodes);
 				logDebugSignatures();
-				wayCoordinates[coordinateBlock] = null;
-				continue;
+				return null;
 			}
 
 			// create the array which will store the current way segment
@@ -778,11 +777,9 @@ public class MapDatabase {
 
 			for (int wayDataBlock = 0; wayDataBlock < wayDataBlocks; ++wayDataBlock) {
 				LatLong[][] wayNodes = processWayDataBlock(featureWayDoubleDeltaEncoding);
-				if (wayNodes == null) {
-					return null;
+				if (wayNodes != null) {
+					ways.add(new Way(layer, tags, wayNodes, labelPosition));
 				}
-
-				ways.add(new Way(layer, tags, wayNodes, labelPosition));
 			}
 		}
 

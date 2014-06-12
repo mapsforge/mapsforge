@@ -75,10 +75,6 @@ public class PolylineContainer implements ShapeContainer {
 		if (coordinatesAbsolute == null) {
 			coordinatesAbsolute = new ArrayList<List<Point>>(way.latLongs.length);
 			for (int i = 0; i < way.latLongs.length; ++i) {
-				if (way.latLongs[i] == null) {
-					// TODO what is happening here?
-					return null;
-				}
 				List inner = new ArrayList<Point>(way.latLongs[i].length);
 				coordinatesAbsolute.add(inner);
 				for (int j = 0; j < way.latLongs[i].length; ++j) {
