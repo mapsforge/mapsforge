@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -70,26 +71,26 @@ public class AwtPointTextContainer extends PointTextContainer {
 				layoutHeight += layout.getAscent() + layout.getDescent() + layout.getLeading();
 			}
 
-			float drawPosY = (float) (pointAdjusted.y + boundary.top + this.textHeight);
+			float drawPosY = (float) pointAdjusted.y;
 			lineMeasurer.setPosition(paragraphStart);
 			while (lineMeasurer.getPosition() < paragraphEnd) {
 				TextLayout layout = lineMeasurer.nextLayout(maxTextWidth);
-				float posX = (float) (pointAdjusted.x + boundary.left);
+				float posX = (float) pointAdjusted.x;
 				float posY = drawPosY;
 				if (Position.CENTER == this.position) {
-					posX += (maxTextWidth - layout.getAdvance()) * 0.5f;
-					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight) * 0.5f;
+					posX += -layout.getAdvance() * 0.5f;
+					posY += layout.getAscent() - layoutHeight * 0.5f;
 				} else if (Position.BELOW == this.position) {
-					posX += (maxTextWidth - layout.getAdvance()) * 0.5f;
+					posX += -layout.getAdvance() * 0.5f;
+					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading()) * 0.5f;
 				} else if (Position.ABOVE == this.position) {
-					posX += (maxTextWidth - layout.getAdvance()) * 0.5f;
+					posX += -layout.getAdvance() * 0.5f;
 					posY += layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight;
 				} else if (Position.LEFT == this.position) {
-					posX += textWidth * 0.5f - maxTextWidth * 0.5f + maxTextWidth - layout.getAdvance();
-					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight) * 0.5f;
+					posX += -layout.getAdvance();
+					posY += layout.getAscent() - layoutHeight * 0.5f;
 				} else if (Position.RIGHT == this.position) {
-					posX += -textWidth * 0.5f + maxTextWidth * 0.5f;
-					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight) * 0.5f;
+					posY += layout.getAscent() - layoutHeight * 0.5f;
 				} else {
 					throw new IllegalArgumentException("No position for drawing PointTextContainer");
 				}
