@@ -94,7 +94,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				boundary = new Rectangle(-boxWidth / 2f, -boxHeight, boxWidth / 2f, 0);
 				break;
 			case LEFT:
-				boundary = new Rectangle(boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
+				boundary = new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
 				break;
 			case RIGHT:
 				boundary = new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
@@ -112,7 +112,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				debugBoundary = new Rectangle(-textWidth / 2f, -textHeight, textWidth / 2f, 0);
 				break;
 			case LEFT:
-				debugBoundary = new Rectangle(textWidth, -textHeight / 2f, 0, textHeight / 2f);
+				debugBoundary = new Rectangle(-textWidth, -textHeight / 2f, 0, textHeight / 2f);
 				break;
 			case RIGHT:
 				debugBoundary = new Rectangle(0, -textHeight / 2f, textWidth, textHeight / 2f);

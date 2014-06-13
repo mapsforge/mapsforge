@@ -133,7 +133,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 			case ABOVE:
 				return new Rectangle(-boxWidth / 2f, -boxHeight, boxWidth / 2f, 0);
 			case LEFT:
-				return new Rectangle(boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
+				return new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
 			case RIGHT:
 				return new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
 		}
