@@ -70,11 +70,11 @@ public class AwtPointTextContainer extends PointTextContainer {
 				layoutHeight += layout.getAscent() + layout.getDescent() + layout.getLeading();
 			}
 
-			float drawPosY = (float) pointAdjusted.y;
+			float drawPosY = (float) (pointAdjusted.y + boundary.top + this.textHeight);
 			lineMeasurer.setPosition(paragraphStart);
 			while (lineMeasurer.getPosition() < paragraphEnd) {
 				TextLayout layout = lineMeasurer.nextLayout(maxTextWidth);
-				float posX = (float) pointAdjusted.x;
+				float posX = (float) (pointAdjusted.x + boundary.left);
 				float posY = drawPosY;
 				if (Position.CENTER == this.position) {
 					posX += (maxTextWidth - layout.getAdvance()) * 0.5f;
@@ -104,9 +104,9 @@ public class AwtPointTextContainer extends PointTextContainer {
 			}
 		} else {
 			if (this.paintBack != null) {
-				canvas.drawText(this.text, (int) pointAdjusted.x, (int) pointAdjusted.y, this.paintBack);
+				canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintBack);
 			}
-			canvas.drawText(this.text, (int) pointAdjusted.x, (int) pointAdjusted.y, this.paintFront);
+			canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintFront);
 		}
 
 
@@ -114,11 +114,29 @@ public class AwtPointTextContainer extends PointTextContainer {
 
 
 	private Rectangle computeBoundary() {
+
 		int lines = this.textWidth / maxTextWidth + 1;
+		double boxWidth = this.textWidth;
+		double boxHeight = this.textHeight;
 
 		if (lines > 1) {
-			return new Rectangle(0, 0, maxTextWidth, this.textHeight * lines);
+			// a crude approximation of the size of the text box
+			boxWidth = maxTextWidth;
+			boxHeight = this.textHeight * lines;
 		}
-		return new Rectangle(0, 0, this.textWidth, this.textHeight);
+
+		switch (this.position) {
+			case CENTER:
+				return new Rectangle(-boxWidth / 2f, -boxHeight / 2f, boxWidth / 2f, boxHeight / 2f);
+			case BELOW:
+				return new Rectangle(-boxWidth / 2f, 0, boxWidth / 2f, boxHeight);
+			case ABOVE:
+				return new Rectangle(-boxWidth / 2f, -boxHeight, boxWidth / 2f, 0);
+			case LEFT:
+				return new Rectangle(boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
+			case RIGHT:
+				return new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
+		}
+		return null;
 	}
 }
