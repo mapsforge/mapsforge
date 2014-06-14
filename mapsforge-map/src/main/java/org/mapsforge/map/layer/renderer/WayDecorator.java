@@ -33,20 +33,20 @@ final class WayDecorator {
 
 	static void renderSymbol(Bitmap symbolBitmap, int priority, float dy, boolean alignCenter,
 	                         boolean repeatSymbol, float repeatGap, float repeatStart,
-	                         boolean rotate, List<List<Point>> coordinates,
+	                         boolean rotate, Point[][] coordinates,
 			List<MapElementContainer> currentItems) {
 		int skipPixels = (int)repeatStart;
 
-		List<Point> c;
+		Point[] c;
 		if (dy == 0f) {
-			c = coordinates.get(0);
+			c = coordinates[0];
 		} else {
-			c = RendererUtils.parallelPath(coordinates.get(0), dy);
+			c = RendererUtils.parallelPath(coordinates[0], dy);
 		}
 
 		// get the first way point coordinates
-		double previousX = c.get(0).x;
-		double previousY = c.get(0).y;
+		double previousX = c[0].x;
+		double previousY = c[0].y;
 
 		// draw the symbolContainer on each way segment
 		float segmentLengthRemaining;
@@ -54,10 +54,10 @@ final class WayDecorator {
 		float theta = 0;
 
 
-		for (int i = 1; i < c.size(); ++i) {
+		for (int i = 1; i < c.length; ++i) {
 			// get the current way point coordinates
-			double currentX = c.get(i).x;
-			double currentY = c.get(i).y;
+			double currentX = c[i].x;
+			double currentY = c[i].y;
 
 			// calculate the length of the current segment (Euclidian distance)
 			double diffX = currentX - previousX;
@@ -108,29 +108,29 @@ final class WayDecorator {
 		}
 	}
 
-	static void renderText(String text, int priority, float dy, Paint fill, Paint stroke, List<List<Point>> coordinates,
+	static void renderText(String text, int priority, float dy, Paint fill, Paint stroke, Point[][] coordinates,
 			Set<MapElementContainer> currentWayLabels) {
 		// calculate the way name length plus some margin of safety
 		int wayNameWidth = fill.getTextWidth(text) + 10;
 
 		int skipPixels = 0;
 
-		List<Point> c;
+		Point[] c;
 		if (dy == 0f) {
-			c = coordinates.get(0);
+			c = coordinates[0];
 		} else {
-			c = RendererUtils.parallelPath(coordinates.get(0), dy);
+			c = RendererUtils.parallelPath(coordinates[0], dy);
 		}
 
 		// get the first way point coordinates
-		double previousX = c.get(0).x;
-		double previousY = c.get(0).y;
+		double previousX = c[0].x;
+		double previousY = c[0].y;
 
 		// find way segments long enough to draw the way name on them
-		for (int i = 1; i < c.size(); ++i) {
+		for (int i = 1; i < c.length; ++i) {
 			// get the current way point coordinates
-			double currentX = c.get(i).x;
-			double currentY = c.get(i).y;
+			double currentX = c[i].x;
+			double currentY = c[i].y;
 
 			// calculate the length of the current segment (Euclidian distance)
 			double diffX = currentX - previousX;

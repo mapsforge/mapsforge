@@ -81,21 +81,21 @@ class CanvasRasterer {
 		this.canvas.drawCircle((int) point.x, (int) point.y, (int) circleContainer.radius, shapePaintContainer.paint);
 	}
 
-	private void drawPath(ShapePaintContainer shapePaintContainer, List<List<Point>> coordinates, float dy) {
+	private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
 		this.path.clear();
 
-		for (List<Point> innerList : coordinates) {
-			List<Point> points;
+		for (Point[] innerList : coordinates) {
+			Point[] points;
 			if (dy != 0f) {
 				points = RendererUtils.parallelPath(innerList, dy);
 			} else {
 				points = innerList;
 			}
-			if (points.size() >= 2) {
-				Point point = points.get(0);
+			if (points.length >= 2) {
+				Point point = points[0];
 				this.path.moveTo((float) point.x, (float) point.y);
-				for (int i = 1; i < points.size(); ++i) {
-					point = points.get(i);
+				for (int i = 1; i < points.length; ++i) {
+					point = points[i];
 					this.path.lineTo((int) point.x, (int) point.y);
 				}
 			}

@@ -77,13 +77,13 @@ public class DatabaseRenderer implements RenderCallback {
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
 	private static final byte ZOOM_MAX = 22;
 
-	private static List<Point> getTilePixelCoordinates(int tileSize) {
-		List result = new ArrayList(5);
-		result.add(new Point(0, 0));
-		result.add(new Point(tileSize, 0));
-		result.add(new Point(tileSize, tileSize));
-		result.add(new Point(0, tileSize));
-		result.add(result.get(0));
+	private static Point[] getTilePixelCoordinates(int tileSize) {
+		Point[] result = new Point[5];
+		result[0] = new Point(0, 0);
+		result[1] = new Point(tileSize, 0);
+		result[2] = new Point(tileSize, tileSize);
+		result[3] = new Point(0, tileSize);
+		result[4] = result[0];
 		return result;
 	}
 
@@ -445,7 +445,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 	private void renderWaterBackground(final List<List<List<ShapePaintContainer>>> ways, Tile tile) {
 		this.drawingLayers = ways.get(0);
-		List<Point> coordinates = getTilePixelCoordinates(tile.tileSize);
+		Point[] coordinates = getTilePixelCoordinates(tile.tileSize);
 		PolylineContainer way = new PolylineContainer(coordinates, tile, Arrays.asList(TAG_NATURAL_WATER));
 		this.renderTheme.matchClosedWay(this, way);
 	}

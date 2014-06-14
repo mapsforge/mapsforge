@@ -22,7 +22,6 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.reader.Way;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +36,8 @@ import java.util.List;
 public class PolylineContainer implements ShapeContainer {
 
 	private Point center;
-	private List<List<Point>> coordinatesAbsolute;
-	private List<List<Point>> coordinatesRelativeToTile;
+	private Point[][] coordinatesAbsolute;
+	private Point[][] coordinatesRelativeToTile;
 	private final List<Tag> tags;
 	private final byte layer;
 	private final Tile tile;
@@ -46,6 +45,8 @@ public class PolylineContainer implements ShapeContainer {
 	private Way way;
 
 	PolylineContainer(Way way, Tile tile) {
+		this.coordinatesAbsolute = null;
+		this.coordinatesRelativeToTile = null;
 		this.tags = way.tags;
 		this.tile = tile;
 		layer = way.layer;
@@ -53,32 +54,33 @@ public class PolylineContainer implements ShapeContainer {
 		this.isClosedWay = isClosedWay(way.latLongs[0]);
 	}
 
-	PolylineContainer(List<Point> coordinates, Tile tile, List tags) {
-		this.coordinatesAbsolute = new ArrayList<List<Point>>(1);
-		this.coordinatesAbsolute.add(coordinates);
+	PolylineContainer(Point[] coordinates, Tile tile, List tags) {
+		this.coordinatesAbsolute = new Point[1][];
+		this.coordinatesRelativeToTile = null;
+		this.coordinatesAbsolute[0] = new Point[coordinates.length];
+		System.arraycopy(coordinates, 0, coordinatesAbsolute[0][0], 0, coordinates.length);
 		this.tags = tags;
 		this.tile = tile;
 		this.layer = 0;
-		isClosedWay = coordinates.get(0).equals(coordinates.get(coordinates.size()-1));
+		isClosedWay = coordinates[0].equals(coordinates[coordinates.length-1]);
 	}
 
 	public Point getCenterAbsolute() {
 		if (null == center) {
-			this.center = GeometryUtils.calculateCenterOfBoundingBox(getCoordinatesAbsolute().get(0));
+			this.center = GeometryUtils.calculateCenterOfBoundingBox(getCoordinatesAbsolute()[0]);
 		}
 		return this.center;
 	}
 
-	public List<List<Point>> getCoordinatesAbsolute() {
+	public Point[][] getCoordinatesAbsolute() {
 		// deferred evaluation as some PolyLineContainers will never be drawn. However,
 		// to save memory, after computing the absolute coordinates, the way is released.
 		if (coordinatesAbsolute == null) {
-			coordinatesAbsolute = new ArrayList<List<Point>>(way.latLongs.length);
+			coordinatesAbsolute = new Point[(way.latLongs.length)][];
 			for (int i = 0; i < way.latLongs.length; ++i) {
-				List inner = new ArrayList<Point>(way.latLongs[i].length);
-				coordinatesAbsolute.add(inner);
+				coordinatesAbsolute[i] = new Point[way.latLongs[i].length];
 				for (int j = 0; j < way.latLongs[i].length; ++j) {
-					inner.add(MercatorProjection.getPixelAbsolute(way.latLongs[i][j], tile.zoomLevel, tile.tileSize));
+					coordinatesAbsolute[i][j] = MercatorProjection.getPixelAbsolute(way.latLongs[i][j], tile.zoomLevel, tile.tileSize);
 				}
 			}
 			this.way = null;
@@ -86,15 +88,14 @@ public class PolylineContainer implements ShapeContainer {
 		return coordinatesAbsolute;
 	}
 
-	public List<List<Point>> getCoordinatesRelativeToTile() {
+	public Point[][] getCoordinatesRelativeToTile() {
 		if (coordinatesRelativeToTile == null) {
 			Point tileOrigin = tile.getOrigin();
-			coordinatesRelativeToTile = new ArrayList<List<Point>>(getCoordinatesAbsolute().size());
-			for (List<Point> innerList : getCoordinatesAbsolute()) {
-				List<Point> inner = new ArrayList<Point>(innerList.size());
-				coordinatesRelativeToTile.add(inner);
-				for (Point p : innerList) {
-					inner.add(p.offset(-tileOrigin.x, -tileOrigin.y));
+			coordinatesRelativeToTile = new Point[getCoordinatesAbsolute().length][];
+			for (int i = 0; i < coordinatesRelativeToTile.length; ++ i) {
+				coordinatesRelativeToTile[i] = new Point[coordinatesAbsolute[i].length];
+				for (int j = 0; j < coordinatesRelativeToTile[i].length; ++j) {
+					coordinatesRelativeToTile[i][j] = coordinatesAbsolute[i][j].offset(-tileOrigin.x, -tileOrigin.y);
 				}
 			}
 		}

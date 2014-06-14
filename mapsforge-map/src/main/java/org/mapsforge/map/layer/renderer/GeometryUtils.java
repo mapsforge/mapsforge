@@ -17,8 +17,6 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 
-import java.util.List;
-
 final class GeometryUtils {
 	/**
 	 * Calculates the center of the minimum bounding rectangle for the given coordinates.
@@ -27,11 +25,11 @@ final class GeometryUtils {
 	 *            the coordinates for which calculation should be done.
 	 * @return the center coordinates of the minimum bounding rectangle.
 	 */
-	static Point calculateCenterOfBoundingBox(List<Point> coordinates) {
-		double pointXMin = coordinates.get(0).x;
-		double pointXMax = coordinates.get(0).x;
-		double pointYMin = coordinates.get(0).y;
-		double pointYMax = coordinates.get(0).y;
+	static Point calculateCenterOfBoundingBox(Point[] coordinates) {
+		double pointXMin = coordinates[0].x;
+		double pointXMax = coordinates[0].x;
+		double pointYMin = coordinates[0].y;
+		double pointYMax = coordinates[0].y;
 
 		for (Point immutablePoint : coordinates) {
 			if (immutablePoint.x < pointXMin) {
@@ -78,7 +76,7 @@ final class GeometryUtils {
 			}
 		}
 
-		return new LatLong((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2);
+		return new LatLong((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2, true);
 	}
 
 
