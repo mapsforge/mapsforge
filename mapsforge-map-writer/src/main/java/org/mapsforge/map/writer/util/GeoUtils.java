@@ -155,7 +155,7 @@ public final class GeoUtils {
 	public static LatLong computeCentroid(Geometry geometry) {
 		Point centroid = geometry.getCentroid();
 		if (centroid != null) {
-			return new LatLong(centroid.getCoordinate().y, centroid.getCoordinate().x);
+			return new LatLong(centroid.getCoordinate().y, centroid.getCoordinate().x, true);
 		}
 
 		return null;
@@ -417,7 +417,7 @@ public final class GeoUtils {
 		ArrayList<Integer> result = new ArrayList<>();
 
 		for (int j = 0; j < jtsCoords.length; j++) {
-			LatLong geoCoord = new LatLong(jtsCoords[j].y, jtsCoords[j].x);
+			LatLong geoCoord = new LatLong(jtsCoords[j].y, jtsCoords[j].x, true);
 			result.add(Integer.valueOf(LatLongUtils.degreesToMicrodegrees(geoCoord.latitude)));
 			result.add(Integer.valueOf(LatLongUtils.degreesToMicrodegrees(geoCoord.longitude)));
 		}

@@ -53,8 +53,8 @@ public class PolylineTest {
 			Point point = new Point(0, 0);
 			polyline.draw(boundingBox, (byte) 0, canvas, point);
 
-			polyline.getLatLongs().add(new LatLong(0, 0));
-			polyline.getLatLongs().add(new LatLong(1, 1));
+			polyline.getLatLongs().add(new LatLong(0, 0, true));
+			polyline.getLatLongs().add(new LatLong(1, 1, true));
 			polyline.draw(boundingBox, (byte) 0, canvas, point);
 
 			polyline.setPaintStroke(GRAPHIC_FACTORY.createPaint());
@@ -64,7 +64,7 @@ public class PolylineTest {
 
 	@Test
 	public void setterTest() {
-		LatLong latLong = new LatLong(0, 0);
+		LatLong latLong = new LatLong(0, 0, true);
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 
 		Polyline polyline = new Polyline(null, GRAPHIC_FACTORY);

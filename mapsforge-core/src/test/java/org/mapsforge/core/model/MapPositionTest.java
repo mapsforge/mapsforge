@@ -37,16 +37,16 @@ public class MapPositionTest {
 
 	@Test
 	public void badConstructorTest() {
-		verifyBadConstructor(new LatLong(1.0, 2.0), (byte) -1);
+		verifyBadConstructor(new LatLong(1.0, 2.0, true), (byte) -1);
 		verifyBadConstructor(null, (byte) 0);
 	}
 
 	@Test
 	public void equalsTest() {
-		MapPosition mapPosition1 = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
-		MapPosition mapPosition2 = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
-		MapPosition mapPosition3 = new MapPosition(new LatLong(1.0, 2.0), (byte) 0);
-		MapPosition mapPosition4 = new MapPosition(new LatLong(0, 0), (byte) 3);
+		MapPosition mapPosition1 = new MapPosition(new LatLong(1.0, 2.0, true), (byte) 3);
+		MapPosition mapPosition2 = new MapPosition(new LatLong(1.0, 2.0, true), (byte) 3);
+		MapPosition mapPosition3 = new MapPosition(new LatLong(1.0, 2.0, true), (byte) 0);
+		MapPosition mapPosition4 = new MapPosition(new LatLong(0, 0, true), (byte) 3);
 
 		TestUtils.equalsTest(mapPosition1, mapPosition2);
 
@@ -58,20 +58,20 @@ public class MapPositionTest {
 
 	@Test
 	public void fieldsTest() {
-		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
-		Assert.assertEquals(new LatLong(1.0, 2.0), mapPosition.latLong);
+		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0, true), (byte) 3);
+		Assert.assertEquals(new LatLong(1.0, 2.0, true), mapPosition.latLong);
 		Assert.assertEquals(3, mapPosition.zoomLevel);
 	}
 
 	@Test
 	public void serializeTest() throws IOException, ClassNotFoundException {
-		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0, true), (byte) 3);
 		TestUtils.serializeTest(mapPosition);
 	}
 
 	@Test
 	public void toStringTest() {
-		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0, true), (byte) 3);
 		Assert.assertEquals(MAP_POSITION_TO_STRING, mapPosition.toString());
 	}
 }

@@ -32,7 +32,7 @@ public class MarkerTest {
 
 	@Test
 	public void constructorTest() {
-		LatLong latLong = new LatLong(0, 0);
+		LatLong latLong = new LatLong(0, 0, true);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
 		Marker marker = new Marker(latLong, bitmap, 1, 2);
@@ -54,7 +54,7 @@ public class MarkerTest {
 			Point point = new Point(0, 0);
 			marker.draw(boundingBox, (byte) 0, canvas, point);
 
-			marker.setLatLong(new LatLong(0, 0));
+			marker.setLatLong(new LatLong(0, 0, true));
 			marker.draw(boundingBox, (byte) 0, canvas, point);
 
 			marker.setBitmap(GRAPHIC_FACTORY.createBitmap(10, 20));
@@ -64,7 +64,7 @@ public class MarkerTest {
 
 	@Test
 	public void setterTest() {
-		LatLong latLong = new LatLong(0, 0);
+		LatLong latLong = new LatLong(0, 0, true);
 		Bitmap bitmap = GRAPHIC_FACTORY.createBitmap(10, 20);
 
 		Marker marker = new Marker(null, null, 0, 0);

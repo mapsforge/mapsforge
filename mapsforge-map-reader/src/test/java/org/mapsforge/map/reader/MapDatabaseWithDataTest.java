@@ -61,9 +61,9 @@ public class MapDatabaseWithDataTest {
 		Assert.assertEquals(4, way.layer);
 		Assert.assertNull(way.labelPosition);
 
-		LatLong latLong1 = new LatLong(0.00, 0.00);
-		LatLong latLong2 = new LatLong(0.04, 0.08);
-		LatLong latLong3 = new LatLong(0.08, 0.00);
+		LatLong latLong1 = new LatLong(0.00, 0.00, true);
+		LatLong latLong2 = new LatLong(0.04, 0.08, true);
+		LatLong latLong3 = new LatLong(0.08, 0.00, true);
 		LatLong[][] latLongsExpected = new LatLong[][] { { latLong1, latLong2, latLong3 } };
 
 		assertLatLongsEquals(latLongsExpected, way.latLongs);

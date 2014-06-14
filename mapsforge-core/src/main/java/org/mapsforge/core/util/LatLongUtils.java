@@ -84,7 +84,7 @@ public final class LatLongUtils {
 	 */
 	public static LatLong fromString(String latLongString) {
 		double[] coordinates = parseCoordinateString(latLongString, 2);
-		return new LatLong(coordinates[0], coordinates[1]);
+		return new LatLong(coordinates[0], coordinates[1], true);
 	}
 
 	/**

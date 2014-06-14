@@ -26,10 +26,10 @@ public class LatLongTest {
 
 	@Test
 	public void compareToTest() {
-		LatLong latLong1 = new LatLong(LATITUDE, LONGITUDE);
-		LatLong latLong2 = new LatLong(LATITUDE, LONGITUDE);
-		LatLong latLong3 = new LatLong(LATITUDE, LATITUDE);
-		LatLong latLong4 = new LatLong(LONGITUDE, LONGITUDE);
+		LatLong latLong1 = new LatLong(LATITUDE, LONGITUDE, true);
+		LatLong latLong2 = new LatLong(LATITUDE, LONGITUDE, true);
+		LatLong latLong3 = new LatLong(LATITUDE, LATITUDE, true);
+		LatLong latLong4 = new LatLong(LONGITUDE, LONGITUDE, true);
 
 		Assert.assertEquals(0, latLong1.compareTo(latLong2));
 
@@ -39,10 +39,10 @@ public class LatLongTest {
 
 	@Test
 	public void equalsTest() {
-		LatLong latLong1 = new LatLong(LATITUDE, LONGITUDE);
-		LatLong latLong2 = new LatLong(LATITUDE, LONGITUDE);
-		LatLong latLong3 = new LatLong(LATITUDE, LATITUDE);
-		LatLong latLong4 = new LatLong(LONGITUDE, LONGITUDE);
+		LatLong latLong1 = new LatLong(LATITUDE, LONGITUDE, true);
+		LatLong latLong2 = new LatLong(LATITUDE, LONGITUDE, true);
+		LatLong latLong3 = new LatLong(LATITUDE, LATITUDE, true);
+		LatLong latLong4 = new LatLong(LONGITUDE, LONGITUDE, true);
 
 		TestUtils.equalsTest(latLong1, latLong2);
 
@@ -54,20 +54,20 @@ public class LatLongTest {
 
 	@Test
 	public void fieldsTest() {
-		LatLong latLong = new LatLong(LATITUDE, LONGITUDE);
+		LatLong latLong = new LatLong(LATITUDE, LONGITUDE, true);
 		Assert.assertEquals(LATITUDE, latLong.latitude, 0);
 		Assert.assertEquals(LONGITUDE, latLong.longitude, 0);
 	}
 
 	@Test
 	public void serializeTest() throws IOException, ClassNotFoundException {
-		LatLong latLong = new LatLong(LATITUDE, LONGITUDE);
+		LatLong latLong = new LatLong(LATITUDE, LONGITUDE, true);
 		TestUtils.serializeTest(latLong);
 	}
 
 	@Test
 	public void toStringTest() {
-		LatLong latLong = new LatLong(LATITUDE, LONGITUDE);
+		LatLong latLong = new LatLong(LATITUDE, LONGITUDE, true);
 		Assert.assertEquals(GEO_POINT_TO_STRING, latLong.toString());
 	}
 }

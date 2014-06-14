@@ -50,10 +50,10 @@ public class BoundingBoxTest {
 	@Test
 	public void containsTest() {
 		BoundingBox boundingBox = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		LatLong latLong1 = new LatLong(MIN_LATITUDE, MIN_LONGITUDE);
-		LatLong latLong2 = new LatLong(MAX_LATITUDE, MAX_LONGITUDE);
-		LatLong latLong3 = new LatLong(MIN_LONGITUDE, MIN_LONGITUDE);
-		LatLong latLong4 = new LatLong(MAX_LATITUDE, MAX_LATITUDE);
+		LatLong latLong1 = new LatLong(MIN_LATITUDE, MIN_LONGITUDE, true);
+		LatLong latLong2 = new LatLong(MAX_LATITUDE, MAX_LONGITUDE, true);
+		LatLong latLong3 = new LatLong(MIN_LONGITUDE, MIN_LONGITUDE, true);
+		LatLong latLong4 = new LatLong(MAX_LATITUDE, MAX_LATITUDE, true);
 
 		Assert.assertTrue(boundingBox.contains(latLong1));
 		Assert.assertTrue(boundingBox.contains(latLong2));

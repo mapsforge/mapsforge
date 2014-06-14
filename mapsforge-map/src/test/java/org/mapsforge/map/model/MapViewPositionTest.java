@@ -56,7 +56,7 @@ public class MapViewPositionTest {
 		MapViewPosition mapViewPosition = new MapViewPosition(new DisplayModel());
 		Assert.assertNull(mapViewPosition.getMapLimit());
 
-		LatLong latLong = new LatLong(10, 20);
+		LatLong latLong = new LatLong(10, 20, true);
 		mapViewPosition.setCenter(latLong);
 		Assert.assertEquals(latLong, mapViewPosition.getCenter());
 
@@ -66,7 +66,7 @@ public class MapViewPositionTest {
 		Assert.assertEquals(latLong, mapViewPosition.getCenter());
 
 		mapViewPosition.setCenter(latLong);
-		Assert.assertEquals(new LatLong(3, 4), mapViewPosition.getCenter());
+		Assert.assertEquals(new LatLong(3, 4, true), mapViewPosition.getCenter());
 	}
 
 	@Test
@@ -89,13 +89,13 @@ public class MapViewPositionTest {
 		mapViewPosition.addObserver(dummyObserver);
 		Assert.assertEquals(0, dummyObserver.getCallbacks());
 
-		mapViewPosition.setCenter(new LatLong(0, 0));
+		mapViewPosition.setCenter(new LatLong(0, 0, true));
 		// Assert.assertEquals(1, dummyObserver.getCallbacks());
 
 		mapViewPosition.setMapLimit(new BoundingBox(0, 0, 0, 0));
 		// Assert.assertEquals(2, dummyObserver.getCallbacks());
 
-		mapViewPosition.setMapPosition(new MapPosition(new LatLong(0, 0), (byte) 0));
+		mapViewPosition.setMapPosition(new MapPosition(new LatLong(0, 0, true), (byte) 0));
 		// Assert.assertEquals(3, dummyObserver.getCallbacks());
 
 		mapViewPosition.setZoomLevel((byte) 0);

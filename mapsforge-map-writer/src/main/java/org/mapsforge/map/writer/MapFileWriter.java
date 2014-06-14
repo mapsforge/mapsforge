@@ -182,7 +182,7 @@ public final class MapFileWriter {
 					&& !GeoUtils.coveredByTile(originalGeometry, this.tile, this.configuration.getBboxEnlargement())) {
 				Point centroidPoint = originalGeometry.getCentroid();
 				if (GeoUtils.coveredByTile(centroidPoint, this.tile, this.configuration.getBboxEnlargement())) {
-					centroidCoordinate = new LatLong(centroidPoint.getY(), centroidPoint.getX());
+					centroidCoordinate = new LatLong(centroidPoint.getY(), centroidPoint.getX(), true);
 				}
 			}
 
