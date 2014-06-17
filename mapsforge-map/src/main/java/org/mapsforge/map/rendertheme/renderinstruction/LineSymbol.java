@@ -15,43 +15,54 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.List;
+import java.io.IOException;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.XmlUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents an icon along a polyline on the map.
  */
 public class LineSymbol extends RenderInstruction {
-	private final boolean alignCenter;
-	private final Bitmap bitmap;
-	private final float dy;
-	private final int priority;
-	private final boolean repeat;
-	private final float repeatGap;
-	private final float repeatStart;
-	private final boolean rotate;
 
-	LineSymbol(LineSymbolBuilder lineSymbolBuilder) {
-		super(lineSymbolBuilder.getCategory());
-		this.alignCenter = lineSymbolBuilder.alignCenter;
-		this.bitmap = lineSymbolBuilder.bitmap;
-		this.dy = lineSymbolBuilder.dy;
-		this.priority = lineSymbolBuilder.priority;
-		this.repeat = lineSymbolBuilder.repeat;
-		this.repeatGap = lineSymbolBuilder.repeatGap;
-		this.repeatStart = lineSymbolBuilder.repeatStart;
-		this.rotate = lineSymbolBuilder.rotate;
+	private static final float REPEAT_GAP_DEFAULT = 200f;
+	private static final float REPEAT_START_DEFAULT = 30f;
+
+	private boolean alignCenter;
+	private Bitmap bitmap;
+	private boolean bitmapInvalid;
+	private float dy;
+	private int priority;
+	private final String relativePathPrefix;
+	private boolean repeat;
+	private float repeatGap;
+	private float repeatStart;
+	private boolean rotate;
+	private String src;
+
+	public LineSymbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+	                         XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
+		super(graphicFactory, displayModel);
+
+		this.rotate = true;
+		this.relativePathPrefix = relativePathPrefix;
+
+		extractValues(elementName, pullParser);
 	}
 
 	@Override
 	public void destroy() {
-		this.bitmap.decrementRefCount();
+		if (this.bitmap != null) {
+			this.bitmap.decrementRefCount();
+		}
 	}
 
 	@Override
@@ -61,8 +72,17 @@ public class LineSymbol extends RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
-		renderCallback.renderWaySymbol(way, this.priority, this.bitmap, this.dy, this.alignCenter,
-				this.repeat, this.repeatGap, this.repeatStart, this.rotate);
+		if (this.bitmap == null && !this.bitmapInvalid) {
+			try {
+				this.bitmap = createBitmap(relativePathPrefix, src);
+			} catch (IOException ioException) {
+				this.bitmapInvalid = true;
+			}
+		}
+		if (this.bitmap != null) {
+			renderCallback.renderWaySymbol(way, this.priority, this.bitmap, this.dy, this.alignCenter,
+					this.repeat, this.repeatGap, this.repeatStart, this.rotate);
+		}
 	}
 
 	@Override
@@ -74,4 +94,39 @@ public class LineSymbol extends RenderInstruction {
 	public void scaleTextSize(float scaleFactor) {
 		// do nothing
 	}
+
+	private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {
+
+		this.repeatGap = REPEAT_GAP_DEFAULT * displayModel.getScaleFactor();
+		this.repeatStart = REPEAT_START_DEFAULT * displayModel.getScaleFactor();
+
+		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+			String name = pullParser.getAttributeName(i);
+			String value = pullParser.getAttributeValue(i);
+
+			if (SRC.equals(name)) {
+				this.src = value;
+			} else if (DY.equals(name)) {
+				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+			} else if (ALIGN_CENTER.equals(name)) {
+				this.alignCenter = Boolean.parseBoolean(value);
+			} else if (CAT.equals(name)) {
+				this.category = value;
+			} else if (PRIORITY.equals(name)) {
+				this.priority = Integer.parseInt(value);
+			} else if (REPEAT.equals(name)) {
+				this.repeat = Boolean.parseBoolean(value);
+			} else if (REPEAT_GAP.equals(name)) {
+				this.repeatGap = Float.parseFloat(value) * displayModel.getScaleFactor();
+			} else if (REPEAT_START.equals(name)) {
+				this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
+			} else if (ROTATE.equals(name)) {
+				this.rotate = Boolean.parseBoolean(value);
+			} else {
+				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+			}
+		}
+
+	}
+
 }

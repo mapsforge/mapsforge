@@ -19,15 +19,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
-import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class ExternalRenderThemeTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -74,7 +72,7 @@ public class ExternalRenderThemeTest {
 	}
 
 	@Test
-	public void validRenderThemeFileTest() throws SAXException, ParserConfigurationException, IOException {
+	public void validRenderThemeFileTest() throws XmlPullParserException, IOException {
 		File renderThemeFile = new File(RESOURCE_FOLDER, "empty-render-theme.xml");
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(renderThemeFile);
 		Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));

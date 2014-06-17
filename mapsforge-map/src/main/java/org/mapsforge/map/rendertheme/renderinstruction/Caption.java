@@ -15,13 +15,26 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
+import org.mapsforge.core.graphics.Align;
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.XmlUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Represents a text label on the map.
@@ -33,29 +46,73 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 
 public class Caption extends RenderInstruction {
 
-	private final Bitmap bitmap;
-	private final Position position;
-	private final float dy;
+	private Bitmap bitmap;
+	private Position position;
+	private float dy;
 	private final Paint fill;
-	private final float fontSize;
+	private float fontSize;
 	private final float gap;
 	private final int maxTextWidth;
-	private final int priority;
+	private int priority;
 	private final Paint stroke;
-	private final TextKey textKey;
+	private TextKey textKey;
+	public static final float DEFAULT_GAP = 5f;
 
-	Caption(CaptionBuilder captionBuilder) {
-		super(captionBuilder.getCategory());
-		this.bitmap = captionBuilder.bitmap;
-		this.position = captionBuilder.position;
-		this.gap = captionBuilder.gap;
-		this.dy = captionBuilder.dy;
-		this.fill = captionBuilder.fill;
-		this.fontSize = captionBuilder.fontSize;
-		this.maxTextWidth = captionBuilder.maxTextWidth;
-		this.priority = captionBuilder.priority;
-		this.stroke = captionBuilder.stroke;
-		this.textKey = captionBuilder.textKey;
+	String symbolId;
+
+
+	public Caption(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+	        XmlPullParser pullParser, HashMap<String, Symbol> symbols) throws XmlPullParserException {
+		super(graphicFactory, displayModel);
+		this.fill = graphicFactory.createPaint();
+		this.fill.setColor(Color.BLACK);
+		this.fill.setStyle(Style.FILL);
+
+		this.stroke = graphicFactory.createPaint();
+		this.stroke.setColor(Color.BLACK);
+		this.stroke.setStyle(Style.STROKE);
+
+		this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
+
+		extractValues(graphicFactory, displayModel, elementName, pullParser);
+
+		if (this.symbolId != null) {
+			Symbol symbol = symbols.get(this.symbolId);
+			if (symbol != null) {
+				this.bitmap = symbol.getBitmap();
+			}
+		}
+
+		if (this.position == null) {
+			// sensible defaults: below if symbolContainer is present, center if not
+			if (this.bitmap == null) {
+				this.position = Position.CENTER;
+			} else {
+				this.position = Position.BELOW;
+			}
+		}
+		switch (this.position) {
+			case CENTER:
+			case BELOW:
+			case ABOVE:
+				this.stroke.setTextAlign(Align.CENTER);
+				this.fill.setTextAlign(Align.CENTER);
+				break;
+			case LEFT:
+				this.stroke.setTextAlign(Align.RIGHT);
+				this.fill.setTextAlign(Align.RIGHT);
+				break;
+			case RIGHT:
+				this.stroke.setTextAlign(Align.LEFT);
+				this.fill.setTextAlign(Align.LEFT);
+				break;
+			default:
+				throw new IllegalArgumentException("Position invalid");
+		}
+
+
+		this.maxTextWidth = displayModel.getMaxTextWidth();
+
 	}
 
 	@Override
@@ -134,6 +191,49 @@ public class Caption extends RenderInstruction {
 			verticalOffset += this.bitmap.getHeight() / 2f + this.gap;
 		}
 		return verticalOffset;
+	}
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+	                           XmlPullParser pullParser) throws XmlPullParserException {
+		FontFamily fontFamily = FontFamily.DEFAULT;
+		FontStyle fontStyle = FontStyle.NORMAL;
+
+		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+			String name = pullParser.getAttributeName(i);
+			String value = pullParser.getAttributeValue(i);
+
+			if (K.equals(name)) {
+				this.textKey = TextKey.getInstance(value);
+			} else if (POSITION.equals(name)) {
+				this.position = Position.valueOf(value.toUpperCase(Locale.ENGLISH));
+			} else if (CAT.equals(name)) {
+				this.category = value;
+			} else if (DY.equals(name)) {
+				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+			} else if (FONT_FAMILY.equals(name)) {
+				fontFamily = FontFamily.valueOf(value.toUpperCase(Locale.ENGLISH));
+			} else if (FONT_STYLE.equals(name)) {
+				fontStyle = FontStyle.valueOf(value.toUpperCase(Locale.ENGLISH));
+			} else if (FONT_SIZE.equals(name)) {
+				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+			} else if (FILL.equals(name)) {
+				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (PRIORITY.equals(name)) {
+				this.priority = Integer.parseInt(value);
+			} else if (STROKE.equals(name)) {
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (STROKE_WIDTH.equals(name)) {
+				this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
+			} else if (SYMBOL_ID.equals(name)) {
+				this.symbolId = value;
+			} else {
+				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+			}
+		}
+
+		this.fill.setTypeface(fontFamily, fontStyle);
+		this.stroke.setTypeface(fontFamily, fontStyle);
+
+		XmlUtils.checkMandatoryAttribute(elementName, K, this.textKey);
 	}
 
 }

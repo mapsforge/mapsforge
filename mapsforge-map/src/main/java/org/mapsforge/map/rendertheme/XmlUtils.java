@@ -25,7 +25,7 @@ import java.io.InputStream;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.map.model.DisplayModel;
-import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParserException;
 
 public final class XmlUtils {
 	public static boolean supportOlderRenderThemes = true;
@@ -37,9 +37,9 @@ public final class XmlUtils {
 	private static final String UNSUPPORTED_COLOR_FORMAT = "unsupported color format: ";
 
 	public static void checkMandatoryAttribute(String elementName, String attributeName, Object attributeValue)
-			throws SAXException {
+			throws XmlPullParserException {
 		if (attributeValue == null) {
-			throw new SAXException("missing attribute '" + attributeName + "' for element: " + elementName);
+			throw new XmlPullParserException("missing attribute '" + attributeName + "' for element: " + elementName);
 		}
 	}
 
@@ -76,7 +76,7 @@ public final class XmlUtils {
 		}
 	}
 
-	public static SAXException createSAXException(String element, String name, String value, int attributeIndex) {
+	public static XmlPullParserException createXmlPullParserException(String element, String name, String value, int attributeIndex) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("unknown attribute (");
 		stringBuilder.append(attributeIndex);
@@ -87,7 +87,7 @@ public final class XmlUtils {
 		stringBuilder.append('=');
 		stringBuilder.append(value);
 
-		return new SAXException(stringBuilder.toString());
+		return new XmlPullParserException(stringBuilder.toString());
 	}
 
 	/**
@@ -105,27 +105,27 @@ public final class XmlUtils {
 		}
 	}
 
-	public static byte parseNonNegativeByte(String name, String value) throws SAXException {
+	public static byte parseNonNegativeByte(String name, String value) throws XmlPullParserException {
 		byte parsedByte = Byte.parseByte(value);
 		checkForNegativeValue(name, parsedByte);
 		return parsedByte;
 	}
 
-	public static float parseNonNegativeFloat(String name, String value) throws SAXException {
+	public static float parseNonNegativeFloat(String name, String value) throws XmlPullParserException {
 		float parsedFloat = Float.parseFloat(value);
 		checkForNegativeValue(name, parsedFloat);
 		return parsedFloat;
 	}
 
-	public static int parseNonNegativeInteger(String name, String value) throws SAXException {
+	public static int parseNonNegativeInteger(String name, String value) throws XmlPullParserException {
 		int parsedInt = Integer.parseInt(value);
 		checkForNegativeValue(name, parsedInt);
 		return parsedInt;
 	}
 
-	private static void checkForNegativeValue(String name, float value) throws SAXException {
+	private static void checkForNegativeValue(String name, float value) throws XmlPullParserException {
 		if (value < 0) {
-			throw new SAXException("Attribute '" + name + "' must not be negative: " + value);
+			throw new XmlPullParserException("Attribute '" + name + "' must not be negative: " + value);
 		}
 	}
 

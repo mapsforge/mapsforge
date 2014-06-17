@@ -6,6 +6,7 @@ jar {
 
 dependencies {
   compile project(":mapsforge-map-reader")
+  compile group: 'net.sf.kxml', name: 'kxml2', version:'2.3.0'
   testCompile project(":mapsforge-map-awt")
   testCompile group: 'commons-io', name: 'commons-io', version:'2.4'
   testCompile group: 'org.mortbay.jetty', name: 'jetty', version:'6.1.26'

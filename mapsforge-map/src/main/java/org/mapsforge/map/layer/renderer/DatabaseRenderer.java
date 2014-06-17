@@ -53,7 +53,7 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.mapsforge.map.util.LayerUtil;
-import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParserException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -410,9 +410,7 @@ public class DatabaseRenderer implements RenderCallback {
 	private RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel) {
 		try {
 			return RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, jobTheme);
-		} catch (ParserConfigurationException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-		} catch (SAXException e) {
+		} catch (XmlPullParserException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, null, e);

@@ -17,12 +17,18 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.util.List;
 
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.XmlUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents a round area on the map.
@@ -30,20 +36,27 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 public class Circle extends RenderInstruction {
 	private final Paint fill;
 	private final int level;
-	private final float radius;
+	private float radius;
 	private float renderRadius;
-	private final boolean scaleRadius;
+	private boolean scaleRadius;
 	private final Paint stroke;
-	private final float strokeWidth;
+	private float strokeWidth;
 
-	Circle(CircleBuilder circleBuilder) {
-		super(circleBuilder.getCategory());
-		this.fill = circleBuilder.fill;
-		this.level = circleBuilder.level;
-		this.radius = circleBuilder.radius.floatValue();
-		this.scaleRadius = circleBuilder.scaleRadius;
-		this.stroke = circleBuilder.stroke;
-		this.strokeWidth = circleBuilder.strokeWidth;
+	public Circle(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+	       XmlPullParser pullParser, int level) throws XmlPullParserException {
+		super(graphicFactory, displayModel);
+		this.level = level;
+
+		this.fill = graphicFactory.createPaint();
+		this.fill.setColor(Color.TRANSPARENT);
+		this.fill.setStyle(Style.FILL);
+
+		this.stroke = graphicFactory.createPaint();
+		this.stroke.setColor(Color.TRANSPARENT);
+		this.stroke.setStyle(Style.STROKE);
+
+		extractValues(graphicFactory, displayModel, elementName, pullParser);
+
 
 		if (!this.scaleRadius) {
 			this.renderRadius = this.radius;
@@ -82,4 +95,31 @@ public class Circle extends RenderInstruction {
 	public void scaleTextSize(float scaleFactor) {
 		// do nothing
 	}
+
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+	                           XmlPullParser pullParser) throws XmlPullParserException {
+		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+			String name = pullParser.getAttributeName(i);
+			String value = pullParser.getAttributeValue(i);
+
+			if (RADIUS.equals(name) || (XmlUtils.supportOlderRenderThemes && R.equals(name))) {
+				this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value)) * displayModel.getScaleFactor();
+			} else if (SCALE_RADIUS.equals(name)) {
+				this.scaleRadius = Boolean.parseBoolean(value);
+			} else if (CAT.equals(name)) {
+				this.category = value;
+			} else if (FILL.equals(name)) {
+				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (STROKE.equals(name)) {
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (STROKE_WIDTH.equals(name)) {
+				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+			} else {
+				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+			}
+		}
+
+		XmlUtils.checkMandatoryAttribute(elementName, RADIUS, this.radius);
+	}
+
 }

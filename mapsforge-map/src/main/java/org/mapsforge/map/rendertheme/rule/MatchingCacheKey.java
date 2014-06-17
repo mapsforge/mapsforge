@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,19 +15,30 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.mapsforge.core.model.Tag;
 
 class MatchingCacheKey {
 	private final Closed closed;
 	private final List<Tag> tags;
+	private final Set<Tag> tagsWithoutName;
 	private final byte zoomLevel;
 
 	MatchingCacheKey(List<Tag> tags, byte zoomLevel, Closed closed) {
 		this.tags = tags;
 		this.zoomLevel = zoomLevel;
 		this.closed = closed;
+		this.tagsWithoutName = new HashSet<Tag>();
+		if (this.tags != null) {
+			for (Tag tag : tags) {
+				if (tag.key != "name") {
+					this.tagsWithoutName.add(tag);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -40,11 +52,9 @@ class MatchingCacheKey {
 		if (this.closed != other.closed) {
 			return false;
 		}
-		if (this.tags == null) {
-			if (other.tags != null) {
-				return false;
-			}
-		} else if (!this.tags.equals(other.tags)) {
+		if (this.tagsWithoutName == null && other.tagsWithoutName != null) {
+			return false;
+		} else if (!this.tagsWithoutName.equals(other.tagsWithoutName)) {
 			return false;
 		}
 		if (this.zoomLevel != other.zoomLevel) {
@@ -58,7 +68,7 @@ class MatchingCacheKey {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((this.closed == null) ? 0 : this.closed.hashCode());
-		result = prime * result + ((this.tags == null) ? 0 : this.tags.hashCode());
+		result = prime * result + this.tagsWithoutName.hashCode();
 		result = prime * result + this.zoomLevel;
 		return result;
 	}

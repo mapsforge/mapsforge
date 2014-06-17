@@ -17,7 +17,6 @@ package org.mapsforge.map.rendertheme;
 
 import java.io.IOException;
 
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,13 +24,13 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
-import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class InternalRenderThemeTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
 	@Test
-	public void osmarenderTest() throws SAXException, ParserConfigurationException, IOException {
+	public void osmarenderTest() throws XmlPullParserException, IOException {
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 		Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
 	}

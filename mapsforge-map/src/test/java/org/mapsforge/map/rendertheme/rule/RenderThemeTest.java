@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -31,32 +29,32 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParserException;
 
 public class RenderThemeTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final String RESOURCE_FOLDER = "src/test/resources/rendertheme/";
 
-	private static void verifyInvalid(String pathname) throws ParserConfigurationException, IOException {
+	private static void verifyInvalid(String pathname) throws XmlPullParserException, IOException {
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(pathname));
 
 		try {
 			RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
 			Assert.fail();
-		} catch (SAXException e) {
+		} catch (XmlPullParserException e) {
 			Assert.assertTrue(true);
 		}
 	}
 
 	@Test
-	public void invalidRenderThemeTest() throws ParserConfigurationException, IOException {
+	public void invalidRenderThemeTest() throws XmlPullParserException, IOException {
 		verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme1.xml");
 		verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme2.xml");
 		verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme3.xml");
 	}
 
 	@Test
-	public void validRenderThemeTest() throws SAXException, ParserConfigurationException, IOException {
+	public void validRenderThemeTest() throws XmlPullParserException, IOException {
 		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(RESOURCE_FOLDER, "test-render-theme.xml"));
 		RenderTheme renderTheme = RenderThemeHandler
 				.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);

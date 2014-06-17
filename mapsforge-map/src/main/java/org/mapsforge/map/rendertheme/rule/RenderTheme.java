@@ -29,13 +29,14 @@ import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
  * A RenderTheme defines how ways and nodes are drawn.
  */
 public class RenderTheme {
-	private static final int MATCHING_CACHE_SIZE = 512;
+	private static final int MATCHING_CACHE_SIZE = 1024;
 
 	private final float baseStrokeWidth;
 	private final float baseTextSize;
 	private int levels;
 	private final int mapBackground;
-	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> matchingCache;
+	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> wayMatchingCache;
+	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> poiMatchingCache;
 	private final AtomicInteger refCount = new AtomicInteger();
 	private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
 	private float textScale;
@@ -46,7 +47,8 @@ public class RenderTheme {
 		this.baseTextSize = renderThemeBuilder.baseTextSize;
 		this.mapBackground = renderThemeBuilder.mapBackground;
 		this.rulesList = new ArrayList<>();
-		this.matchingCache = new LRUCache<>(MATCHING_CACHE_SIZE);
+		this.poiMatchingCache = new LRUCache<>(MATCHING_CACHE_SIZE);
+		this.wayMatchingCache = new LRUCache<>(MATCHING_CACHE_SIZE);
 	}
 
 	/**
@@ -54,7 +56,8 @@ public class RenderTheme {
 	 */
 	public void destroy() {
 		if (this.refCount.decrementAndGet() < 0) {
-			this.matchingCache.clear();
+			this.poiMatchingCache.clear();
+			this.wayMatchingCache.clear();
 			for (Rule r : this.rulesList) {
 				r.destroy();
 			}
@@ -114,9 +117,24 @@ public class RenderTheme {
 	 *            the zoom level at which the node should be matched.
 	 */
 	public void matchNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).matchNode(renderCallback, poi, tile);
+		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(poi.tags, tile.zoomLevel, Closed.NO);
+
+		List<RenderInstruction> matchingList = this.poiMatchingCache.get(matchingCacheKey);
+		if (matchingList != null) {
+			// cache hit
+			for (int i = 0, n = matchingList.size(); i < n; ++i) {
+				matchingList.get(i).renderNode(renderCallback, poi, tile);
+			}
+			return;
 		}
+
+		// cache miss
+		matchingList = new ArrayList<RenderInstruction>();
+
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+			this.rulesList.get(i).matchNode(renderCallback, poi, tile, matchingList);
+		}
+		this.poiMatchingCache.put(matchingCacheKey, matchingList);
 	}
 
 	/**
@@ -167,7 +185,7 @@ public class RenderTheme {
 	private void matchWay(RenderCallback renderCallback, PolylineContainer way, Closed closed) {
 		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getTile().zoomLevel, closed);
 
-		List<RenderInstruction> matchingList = this.matchingCache.get(matchingCacheKey);
+		List<RenderInstruction> matchingList = this.wayMatchingCache.get(matchingCacheKey);
 		if (matchingList != null) {
 			// cache hit
 			for (int i = 0, n = matchingList.size(); i < n; ++i) {
@@ -182,6 +200,6 @@ public class RenderTheme {
 			this.rulesList.get(i).matchWay(renderCallback, way, way.getTile(), closed, matchingList);
 		}
 
-		this.matchingCache.put(matchingCacheKey, matchingList);
+		this.wayMatchingCache.put(matchingCacheKey, matchingList);
 	}
 }

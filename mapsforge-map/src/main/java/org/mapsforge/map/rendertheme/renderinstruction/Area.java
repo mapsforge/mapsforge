@@ -15,42 +15,93 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.List;
+import java.io.IOException;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.XmlUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents a closed polygon on the map.
  */
 public class Area extends RenderInstruction {
+	private boolean bitmapInvalid;
 	private final Paint fill;
-	private final float height;
+	private float height;
 	private final int level;
-	private final RenderInstructionBuilder.ResourceScaling scaling;
+	private final String relativePathPrefix;
+	private RenderInstruction.ResourceScaling scaling;
+	private Bitmap shaderBitmap;
+	private String src;
 	private final Paint stroke;
-	private final float strokeWidth;
-	private final float width;
+	private float strokeWidth;
+	private float width;
 
-	Area(AreaBuilder areaBuilder) {
-		super(areaBuilder.getCategory());
-		this.fill = areaBuilder.fill;
-		this.height = areaBuilder.height;
-		this.level = areaBuilder.level;
-		this.scaling = areaBuilder.scaling;
-		this.stroke = areaBuilder.stroke;
-		this.strokeWidth = areaBuilder.strokeWidth;
-		this.width = areaBuilder.width;
+	public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+	            XmlPullParser pullParser, int level, String relativePathPrefix) throws IOException, XmlPullParserException {
+		super(graphicFactory, displayModel);
+
+		this.level = level;
+		this.relativePathPrefix = relativePathPrefix;
+
+		this.fill = graphicFactory.createPaint();
+		this.fill.setColor(Color.TRANSPARENT);
+		this.fill.setStyle(Style.FILL);
+		this.fill.setStrokeCap(Cap.ROUND);
+
+		this.stroke = graphicFactory.createPaint();
+		this.stroke.setColor(Color.TRANSPARENT);
+		this.stroke.setStyle(Style.STROKE);
+		this.stroke.setStrokeCap(Cap.ROUND);
+
+		extractValues(elementName, pullParser);
 	}
 
 	@Override
 	public void destroy() {
 		// no-op
 	}
+
+	private void extractValues(String elementName,
+	                           XmlPullParser pullParser) throws IOException, XmlPullParserException {
+		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+			String name = pullParser.getAttributeName(i);
+			String value = pullParser.getAttributeValue(i);
+
+			if (SRC.equals(name)) {
+				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.category = value;
+			} else if (FILL.equals(name)) {
+				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (STROKE.equals(name)) {
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (SYMBOL_HEIGHT.equals(name)) {
+				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (SYMBOL_SCALING.equals(name)) {
+				this.scaling = fromValue(value);
+			} else if (SYMBOL_WIDTH.equals(name)) {
+				this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (STROKE_WIDTH.equals(name)) {
+				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+			} else {
+				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+			}
+		}
+	}
+
+
 
 	@Override
 	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
@@ -59,6 +110,18 @@ public class Area extends RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+		if (shaderBitmap == null && !bitmapInvalid) {
+			try {
+				Bitmap shaderBitmap = createBitmap(relativePathPrefix, src);
+				if (shaderBitmap != null) {
+					this.fill.setBitmapShader(shaderBitmap);
+					shaderBitmap.decrementRefCount();
+				}
+			} catch (IOException ioException) {
+				bitmapInvalid = true;
+			}
+		}
+
 		renderCallback.renderArea(way, this.fill, this.stroke, this.level);
 	}
 

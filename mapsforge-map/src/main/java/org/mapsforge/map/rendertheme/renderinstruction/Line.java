@@ -15,30 +15,55 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Cap;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.XmlUtils;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents a polyline on the map.
  */
 public class Line extends RenderInstruction {
-	private final float dy;
-	private final int level;
-	private final Paint stroke;
-	private final float strokeWidth;
 
-	Line(LineBuilder lineBuilder) {
-		super(lineBuilder.getCategory());
-		this.dy = lineBuilder.dy;
-		this.level = lineBuilder.level;
-		this.stroke = lineBuilder.stroke;
-		this.strokeWidth = lineBuilder.strokeWidth;
+	private static final Pattern SPLIT_PATTERN = Pattern.compile(",");
+
+	private boolean bitmapCreated;
+	private float dy;
+	private final int level;
+	private final String relativePathPrefix;
+	private String src;
+	private final Paint stroke;
+	private float strokeWidth;
+
+	public Line(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+	     XmlPullParser pullParser, int level, String relativePathPrefix) throws IOException, XmlPullParserException {
+		super(graphicFactory, displayModel);
+		this.level = level;
+		this.relativePathPrefix = relativePathPrefix;
+
+		this.stroke = graphicFactory.createPaint();
+		this.stroke.setColor(Color.BLACK);
+		this.stroke.setStyle(Style.STROKE);
+		this.stroke.setStrokeCap(Cap.ROUND);
+		this.stroke.setStrokeJoin(Join.ROUND);
+
+		extractValues(graphicFactory, displayModel, elementName, pullParser, relativePathPrefix);
 	}
 
 	@Override
@@ -53,6 +78,18 @@ public class Line extends RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+		if (!bitmapCreated) {
+			try {
+				Bitmap shaderBitmap = createBitmap(relativePathPrefix, src);
+				if (shaderBitmap != null) {
+					this.stroke.setBitmapShader(shaderBitmap);
+					shaderBitmap.decrementRefCount();
+				}
+			} catch (IOException ioException) {
+				// no-op
+			}
+			bitmapCreated = true;
+		}
 		renderCallback.renderWay(way, this.stroke, this.dy, this.level);
 	}
 
@@ -65,4 +102,52 @@ public class Line extends RenderInstruction {
 	public void scaleTextSize(float scaleFactor) {
 		// do nothing
 	}
+	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+	                           XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
+		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+			String name = pullParser.getAttributeName(i);
+			String value = pullParser.getAttributeValue(i);
+
+			if (SRC.equals(name)) {
+				this.src = value;
+			} else if (CAT.equals(name)) {
+				this.category = value;
+			} else if (DY.equals(name)) {
+				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+			} else if (STROKE.equals(name)) {
+				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+			} else if (STROKE_WIDTH.equals(name)) {
+				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+			} else if (STROKE_DASHARRAY.equals(name)) {
+				float[] floatArray = parseFloatArray(name, value);
+				for (int f = 0; f < floatArray.length; ++f) {
+					floatArray[f] = floatArray[f] * displayModel.getScaleFactor();
+				}
+				this.stroke.setDashPathEffect(floatArray);
+			} else if (STROKE_LINECAP.equals(name)) {
+				this.stroke.setStrokeCap(Cap.valueOf(value.toUpperCase(Locale.ENGLISH)));
+			} else if (STROKE_LINEJOIN.equals(name)) {
+				this.stroke.setStrokeJoin(Join.valueOf(value.toUpperCase(Locale.ENGLISH)));
+			} else if (SYMBOL_HEIGHT.equals(name)) {
+				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (SYMBOL_SCALING.equals(name)) {
+				this.scaling = fromValue(value);
+			} else if (SYMBOL_WIDTH.equals(name)) {
+				this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else {
+				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+			}
+		}
+	}
+
+	private static float[] parseFloatArray(String name, String dashString) throws XmlPullParserException {
+		String[] dashEntries = SPLIT_PATTERN.split(dashString);
+		float[] dashIntervals = new float[dashEntries.length];
+		for (int i = 0; i < dashEntries.length; ++i) {
+			dashIntervals[i] = XmlUtils.parseNonNegativeFloat(name, dashEntries[i]);
+		}
+		return dashIntervals;
+	}
+
+
 }

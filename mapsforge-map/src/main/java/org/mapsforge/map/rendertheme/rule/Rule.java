@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -71,13 +72,15 @@ abstract class Rule {
 
 	abstract boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed);
 
-	void matchNode(RenderCallback renderCallback, PointOfInterest pointOfInterest, Tile tile) {
+	void matchNode(RenderCallback renderCallback, PointOfInterest pointOfInterest, Tile tile,
+	               List<RenderInstruction> matchingList ) {
 		if (matchesNode(pointOfInterest.tags, tile.zoomLevel)) {
 			for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
 				this.renderInstructions.get(i).renderNode(renderCallback, pointOfInterest, tile);
+				matchingList.add(this.renderInstructions.get(i));
 			}
 			for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-				this.subRules.get(i).matchNode(renderCallback, pointOfInterest, tile);
+				this.subRules.get(i).matchNode(renderCallback, pointOfInterest, tile, matchingList);
 			}
 		}
 	}

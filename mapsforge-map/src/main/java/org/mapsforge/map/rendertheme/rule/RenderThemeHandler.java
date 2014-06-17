@@ -17,14 +17,12 @@ package org.mapsforge.map.rendertheme.rule;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Stack;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
@@ -33,50 +31,40 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.rendertheme.renderinstruction.Area;
-import org.mapsforge.map.rendertheme.renderinstruction.AreaBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Caption;
-import org.mapsforge.map.rendertheme.renderinstruction.CaptionBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Circle;
-import org.mapsforge.map.rendertheme.renderinstruction.CircleBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.Line;
-import org.mapsforge.map.rendertheme.renderinstruction.LineBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.LineSymbol;
-import org.mapsforge.map.rendertheme.renderinstruction.LineSymbolBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.PathText;
-import org.mapsforge.map.rendertheme.renderinstruction.PathTextBuilder;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.mapsforge.map.rendertheme.renderinstruction.Symbol;
-import org.mapsforge.map.rendertheme.renderinstruction.SymbolBuilder;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
+
+import org.kxml2.io.*;
+import org.xmlpull.v1.*;
 
 /**
- * SAX2 handler to parse XML render theme files.
+ * KXML handler to parse XML render theme files.
  */
-public final class RenderThemeHandler extends DefaultHandler {
+public final class RenderThemeHandler {
 
 	private static enum Element {
 		RENDER_THEME, RENDERING_INSTRUCTION, RULE, RENDERING_STYLE;
 	}
-
-	private static final String ELEMENT_NAME_RULE = "rule";
 	private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
+	private static final String ELEMENT_NAME_RULE = "rule";
 	private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
 
 	public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
-			XmlRenderTheme xmlRenderTheme) throws SAXException, ParserConfigurationException, IOException {
+			XmlRenderTheme xmlRenderTheme) throws IOException, XmlPullParserException {
+		XmlPullParser pullParser = new KXmlParser();
+
 		RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
-				xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme);
-		XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
-		xmlReader.setContentHandler(renderThemeHandler);
+				xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme, pullParser);
 		InputStream inputStream = null;
 		try {
 			inputStream = xmlRenderTheme.getRenderThemeAsStream();
-			xmlReader.parse(new InputSource(inputStream));
+			pullParser.setInput(new InputStreamReader(inputStream));
+			renderThemeHandler.processRenderTheme();
 			renderThemeHandler.renderTheme.incrementRefCount();
 			return renderThemeHandler.renderTheme;
 		} finally {
@@ -93,6 +81,8 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private final Stack<Element> elementStack = new Stack<Element>();
 	private final GraphicFactory graphicFactory;
 	private int level;
+	private final XmlPullParser pullParser;
+	private String qName;
 	private final String relativePathPrefix;
 	private RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
@@ -102,16 +92,35 @@ public final class RenderThemeHandler extends DefaultHandler {
 	private XmlRenderThemeStyleLayer currentLayer;
 
 	private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix,
-	                           XmlRenderTheme xmlRenderTheme) {
+	                           XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
 		super();
+		this.pullParser = pullParser;
 		this.graphicFactory = graphicFactory;
 		this.displayModel = displayModel;
 		this.relativePathPrefix = relativePathPrefix;
 		this.xmlRenderTheme = xmlRenderTheme;
 	}
 
-	@Override
-	public void endDocument() {
+
+	public void processRenderTheme() throws XmlPullParserException, IOException {
+		int eventType = pullParser.getEventType();
+		do {
+			if(eventType == XmlPullParser.START_DOCUMENT) {
+				// no-op
+			} else if(eventType == XmlPullParser.START_TAG) {
+				startElement();
+			} else if(eventType == XmlPullParser.END_TAG) {
+				endElement();
+			} else if(eventType == XmlPullParser.TEXT) {
+				// not implemented
+			}
+			eventType = pullParser.next();
+		} while (eventType != XmlPullParser.END_DOCUMENT);
+		endDocument();
+	}
+
+
+	private void endDocument() {
 		if (this.renderTheme == null) {
 			throw new IllegalArgumentException("missing element: rules");
 		}
@@ -120,8 +129,8 @@ public final class RenderThemeHandler extends DefaultHandler {
 		this.renderTheme.complete();
 	}
 
-	@Override
-	public void endElement(String uri, String localName, String qName) {
+	private void endElement() {
+		qName = pullParser.getName();
 
 		this.elementStack.pop();
 
@@ -140,7 +149,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 			// categories to render from the initiator. This allows the creating action
 			// to select which of the menu options to choose
 			if (null != this.xmlRenderTheme.getMenuCallback()) {
-				// if there is no callback, there is no menu, so we categories will be null
+				// if there is no callback, there is no menu, so the categories will be null
 				this.categories = this.xmlRenderTheme.getMenuCallback().getCategories(this.renderThemeStyleMenu);
 			}
 			return;
@@ -148,22 +157,18 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 	}
 
-	@Override
-	public void error(SAXParseException exception) {
-		LOGGER.log(Level.SEVERE, null, exception);
-	}
+	private void startElement() throws XmlPullParserException {
+		qName = pullParser.getName();
 
-	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		try {
 			if ("rendertheme".equals(qName)) {
 				checkState(qName, Element.RENDER_THEME);
-				this.renderTheme = new RenderThemeBuilder(this.graphicFactory, qName, attributes).build();
+				this.renderTheme = new RenderThemeBuilder(this.graphicFactory, qName, pullParser).build();
 			}
 
 			else if (ELEMENT_NAME_RULE.equals(qName)) {
 				checkState(qName, Element.RULE);
-				Rule rule = new RuleBuilder(qName, attributes, this.ruleStack).build();
+				Rule rule = new RuleBuilder(qName, pullParser, this.ruleStack).build();
 				if (!this.ruleStack.empty()) {
 					if (isVisible(rule)) {
 						this.currentRule.addSubRule(rule);
@@ -175,8 +180,8 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("area".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Area area = new AreaBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
-						this.relativePathPrefix).build();
+				Area area = new Area(this.graphicFactory, this.displayModel, qName, pullParser, this.level++,
+						this.relativePathPrefix);
 				if (isVisible(area)) {
 					this.currentRule.addRenderingInstruction(area);
 				}
@@ -184,7 +189,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("caption".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Caption caption = new CaptionBuilder(this.graphicFactory, this.displayModel, qName, attributes, symbols).build();
+				Caption caption = new Caption(this.graphicFactory, this.displayModel, qName, pullParser, symbols);
 				if (isVisible(caption)) {
 					this.currentRule.addRenderingInstruction(caption);
 				}
@@ -192,13 +197,13 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("cat".equals(qName)) {
 				checkState(qName, Element.RENDERING_STYLE);
-				this.currentLayer.addCategory(attributes.getValue("id"));
+				this.currentLayer.addCategory(getStringAttribute("id"));
 			}
 
 			else if ("circle".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Circle circle = new CircleBuilder(this.graphicFactory, this.displayModel, qName, attributes,
-						this.level++).build();
+				Circle circle = new Circle(this.graphicFactory, this.displayModel, qName, pullParser,
+						this.level++);
 				if (isVisible(circle)) {
 					this.currentRule.addRenderingInstruction(circle);
 				}
@@ -208,12 +213,12 @@ public final class RenderThemeHandler extends DefaultHandler {
 			else if ("layer".equals(qName)) {
 				checkState(qName, Element.RENDERING_STYLE);
 				boolean enabled = false;
-				if (attributes.getValue("enabled") != null) {
-					enabled = Boolean.valueOf(attributes.getValue("enabled"));
+				if (getStringAttribute("enabled") != null) {
+					enabled = Boolean.valueOf(getStringAttribute("enabled"));
 				}
-				boolean visible = Boolean.valueOf(attributes.getValue("visible"));
-				this.currentLayer = this.renderThemeStyleMenu.createLayer(attributes.getValue("id"), visible, enabled);
-				String parent = attributes.getValue("parent");
+				boolean visible = Boolean.valueOf(getStringAttribute("visible"));
+				this.currentLayer = this.renderThemeStyleMenu.createLayer(getStringAttribute("id"), visible, enabled);
+				String parent = getStringAttribute("parent");
 				if (null != parent) {
 					XmlRenderThemeStyleLayer parentEntry = this.renderThemeStyleMenu.getLayer(parent);
 					if (null != parentEntry) {
@@ -229,8 +234,8 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("line".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Line line = new LineBuilder(this.graphicFactory, this.displayModel, qName, attributes, this.level++,
-						this.relativePathPrefix).build();
+				Line line = new Line(this.graphicFactory, this.displayModel, qName, pullParser, this.level++,
+						this.relativePathPrefix);
 				if (isVisible(line)) {
 					this.currentRule.addRenderingInstruction(line);
 				}
@@ -238,8 +243,8 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("lineSymbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				LineSymbol lineSymbol = new LineSymbolBuilder(this.graphicFactory, this.displayModel, qName,
-						attributes, this.relativePathPrefix).build();
+				LineSymbol lineSymbol = new LineSymbol(this.graphicFactory, this.displayModel, qName,
+						pullParser, this.relativePathPrefix);
 				if (isVisible(lineSymbol)) {
 					this.currentRule.addRenderingInstruction(lineSymbol);
 				}
@@ -248,13 +253,13 @@ public final class RenderThemeHandler extends DefaultHandler {
 			// render theme menu name
 			else if ("name".equals(qName)) {
 				checkState(qName, Element.RENDERING_STYLE);
-				this.currentLayer.addTranslation(attributes.getValue("lang"), attributes.getValue("value"));
+				this.currentLayer.addTranslation(getStringAttribute("lang"), getStringAttribute("value"));
 			}
 
 			// render theme menu overlay
 			else if ("overlay".equals(qName)) {
 				checkState(qName, Element.RENDERING_STYLE);
-				XmlRenderThemeStyleLayer overlay = this.renderThemeStyleMenu.getLayer(attributes.getValue("id"));
+				XmlRenderThemeStyleLayer overlay = this.renderThemeStyleMenu.getLayer(getStringAttribute("id"));
 				if (overlay != null) {
 					this.currentLayer.addOverlay(overlay);
 				}
@@ -262,8 +267,7 @@ public final class RenderThemeHandler extends DefaultHandler {
 
 			else if ("pathText".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				PathText pathText = new PathTextBuilder(this.graphicFactory, this.displayModel, qName, attributes)
-						.build();
+				PathText pathText = new PathText(this.graphicFactory, this.displayModel, qName, pullParser);
 				if (isVisible(pathText)) {
 					this.currentRule.addRenderingInstruction(pathText);
 				}
@@ -273,14 +277,14 @@ public final class RenderThemeHandler extends DefaultHandler {
 				checkState(qName, Element.RENDERING_STYLE);
 
 				this.renderThemeStyleMenu =
-						new XmlRenderThemeStyleMenu(attributes.getValue("id"),
-								attributes.getValue("defaultlang"), attributes.getValue("defaultvalue"));
+						new XmlRenderThemeStyleMenu(getStringAttribute("id"),
+								getStringAttribute("defaultlang"), getStringAttribute("defaultvalue"));
 			}
 
 			else if ("symbol".equals(qName)) {
 				checkState(qName, Element.RENDERING_INSTRUCTION);
-				Symbol symbol = new SymbolBuilder(this.graphicFactory, this.displayModel, qName, attributes,
-						this.relativePathPrefix).build();
+				Symbol symbol = new Symbol(this.graphicFactory, this.displayModel, qName, pullParser,
+						this.relativePathPrefix);
 				this.currentRule.addRenderingInstruction(symbol);
 				String symbolId = symbol.getId();
 				if (symbolId != null) {
@@ -289,36 +293,31 @@ public final class RenderThemeHandler extends DefaultHandler {
 			}
 
 			else {
-				throw new SAXException("unknown element: " + qName);
+				throw new XmlPullParserException("unknown element: " + qName);
 			}
 		} catch (IOException e) {
 			LOGGER.warning("Rendertheme missing or invalid resource " + e.getMessage());
 		}
 	}
 
-	@Override
-	public void warning(SAXParseException exception) {
-		LOGGER.log(Level.SEVERE, null, exception);
-	}
-
-	private void checkElement(String elementName, Element element) throws SAXException {
+	private void checkElement(String elementName, Element element) throws XmlPullParserException {
 		switch (element) {
 			case RENDER_THEME:
 				if (!this.elementStack.empty()) {
-					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+					throw new XmlPullParserException(UNEXPECTED_ELEMENT + elementName);
 				}
 				return;
 
 			case RULE:
 				Element parentElement = this.elementStack.peek();
 				if (parentElement != Element.RENDER_THEME && parentElement != Element.RULE) {
-					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+					throw new XmlPullParserException(UNEXPECTED_ELEMENT + elementName);
 				}
 				return;
 
 			case RENDERING_INSTRUCTION:
 				if (this.elementStack.peek() != Element.RULE) {
-					throw new SAXException(UNEXPECTED_ELEMENT + elementName);
+					throw new XmlPullParserException(UNEXPECTED_ELEMENT + elementName);
 				}
 				return;
 
@@ -326,12 +325,22 @@ public final class RenderThemeHandler extends DefaultHandler {
 				return;
 		}
 
-		throw new SAXException("unknown enum value: " + element);
+		throw new XmlPullParserException("unknown enum value: " + element);
 	}
 
-	private void checkState(String elementName, Element element) throws SAXException {
+	private void checkState(String elementName, Element element) throws XmlPullParserException {
 		checkElement(elementName, element);
 		this.elementStack.push(element);
+	}
+
+	private String getStringAttribute(String name) {
+		int n = pullParser.getAttributeCount();
+		for (int i = 0; i < n; i++) {
+			if (pullParser.getAttributeName(i).equals(name)) {
+				return pullParser.getAttributeValue(i);
+			}
+		}
+		return null;
 	}
 
 	private boolean isVisible(RenderInstruction renderInstruction) {
