@@ -15,14 +15,14 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import java.util.List;
+
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.reader.Way;
-
-import java.util.List;
 
 /**
  * A PolylineContainer encapsulates the way data retrieved from a map file.
@@ -58,7 +58,7 @@ public class PolylineContainer implements ShapeContainer {
 		this.coordinatesAbsolute = new Point[1][];
 		this.coordinatesRelativeToTile = null;
 		this.coordinatesAbsolute[0] = new Point[coordinates.length];
-		System.arraycopy(coordinates, 0, coordinatesAbsolute[0][0], 0, coordinates.length);
+		System.arraycopy(coordinates, 0, coordinatesAbsolute[0], 0, coordinates.length);
 		this.tags = tags;
 		this.tile = tile;
 		this.layer = 0;
