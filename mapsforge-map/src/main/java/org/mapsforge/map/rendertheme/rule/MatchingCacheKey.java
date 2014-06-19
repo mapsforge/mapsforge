@@ -34,7 +34,7 @@ class MatchingCacheKey {
 		this.tagsWithoutName = new HashSet<Tag>();
 		if (this.tags != null) {
 			for (Tag tag : tags) {
-				if (tag.key != "name") {
+				if (!"name".equals(tag.key)) {
 					this.tagsWithoutName.add(tag);
 				}
 			}

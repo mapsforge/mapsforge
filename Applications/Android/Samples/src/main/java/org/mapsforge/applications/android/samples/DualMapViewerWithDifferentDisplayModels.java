@@ -14,9 +14,6 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.layer.cache.TileCache;
-
 /**
  * Illustrates the ability to set different tile sizes and background colors to
  * MapViews.

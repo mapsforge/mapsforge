@@ -38,15 +38,12 @@ import org.xmlpull.v1.XmlPullParserException;
 public class Area extends RenderInstruction {
 	private boolean bitmapInvalid;
 	private final Paint fill;
-	private float height;
 	private final int level;
 	private final String relativePathPrefix;
-	private RenderInstruction.ResourceScaling scaling;
 	private Bitmap shaderBitmap;
 	private String src;
 	private final Paint stroke;
 	private float strokeWidth;
-	private float width;
 
 	public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
 	            XmlPullParser pullParser, int level, String relativePathPrefix) throws IOException, XmlPullParserException {
@@ -112,7 +109,7 @@ public class Area extends RenderInstruction {
 	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
 		if (shaderBitmap == null && !bitmapInvalid) {
 			try {
-				Bitmap shaderBitmap = createBitmap(relativePathPrefix, src);
+				shaderBitmap = createBitmap(relativePathPrefix, src);
 				if (shaderBitmap != null) {
 					this.fill.setBitmapShader(shaderBitmap);
 					shaderBitmap.decrementRefCount();

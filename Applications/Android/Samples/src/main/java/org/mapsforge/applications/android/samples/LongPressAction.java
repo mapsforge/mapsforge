@@ -23,7 +23,6 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.labels.LabelLayer;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 

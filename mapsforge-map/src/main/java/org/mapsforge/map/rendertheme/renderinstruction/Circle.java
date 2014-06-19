@@ -60,9 +60,7 @@ public class Circle extends RenderInstruction {
 
 		if (!this.scaleRadius) {
 			this.renderRadius = this.radius;
-			if (this.stroke != null) {
-				this.stroke.setStrokeWidth(this.strokeWidth);
-			}
+			this.stroke.setStrokeWidth(this.strokeWidth);
 		}
 	}
 

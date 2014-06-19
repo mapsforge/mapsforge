@@ -15,8 +15,6 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.labels.LabelLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.util.PausableThread;
 

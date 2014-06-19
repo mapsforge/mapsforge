@@ -55,8 +55,6 @@ import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.mapsforge.map.util.LayerUtil;
 import org.xmlpull.v1.XmlPullParserException;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 
 /**
  * The DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
@@ -394,7 +392,7 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	private List<List<List<ShapePaintContainer>>> createWayLists() {
-		List<List<List<ShapePaintContainer>>> ways = new ArrayList<List<List<ShapePaintContainer>>>(LAYERS);
+		List<List<List<ShapePaintContainer>>> result = new ArrayList<List<List<ShapePaintContainer>>>(LAYERS);
 		int levels = this.renderTheme.getLevels();
 
 		for (byte i = LAYERS - 1; i >= 0; --i) {
@@ -402,9 +400,9 @@ public class DatabaseRenderer implements RenderCallback {
 			for (int j = levels - 1; j >= 0; --j) {
 				innerWayList.add(new ArrayList<ShapePaintContainer>(0));
 			}
-			ways.add(innerWayList);
+			result.add(innerWayList);
 		}
-		return ways;
+		return result;
 	}
 
 	private RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel) {
