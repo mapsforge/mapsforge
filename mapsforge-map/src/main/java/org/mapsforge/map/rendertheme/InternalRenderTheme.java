@@ -49,6 +49,6 @@ public enum InternalRenderTheme implements XmlRenderTheme {
 
 	@Override
 	public InputStream getRenderThemeAsStream() {
-		return Thread.currentThread().getClass().getResourceAsStream(this.absolutePath + this.file);
+		return getClass().getResourceAsStream(this.absolutePath + this.file);
 	}
 }
