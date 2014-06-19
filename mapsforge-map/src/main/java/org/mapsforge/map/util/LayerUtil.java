@@ -33,16 +33,16 @@ public final class LayerUtil {
 
 	public static List<TilePosition> getTilePositions(BoundingBox boundingBox, byte zoomLevel, Point topLeftPoint,
 			int tileSize) {
-		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
-		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
-		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
-		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
+		int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
+		int tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
+		int tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
+		int tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
 
 		int initialCapacity = (int) ((tileRight - tileLeft + 1) * (tileBottom - tileTop + 1));
 		List<TilePosition> tilePositions = new ArrayList<TilePosition>(initialCapacity);
 
-		for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
-			for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
+		for (int tileY = tileTop; tileY <= tileBottom; ++tileY) {
+			for (int tileX = tileLeft; tileX <= tileRight; ++tileX) {
 				double pixelX = MercatorProjection.tileToPixel(tileX, tileSize) - topLeftPoint.x;
 				double pixelY = MercatorProjection.tileToPixel(tileY, tileSize) - topLeftPoint.y;
 
@@ -54,15 +54,15 @@ public final class LayerUtil {
 	}
 
 	public static Set<Tile> getTiles(BoundingBox boundingBox, byte zoomLevel, int tileSize) {
-		long tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
-		long tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
-		long tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
-		long tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
+		int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
+		int tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
+		int tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
+		int tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
 
 		Set<Tile> tiles = new HashSet<Tile>();
 
-		for (long tileY = tileTop; tileY <= tileBottom; ++tileY) {
-			for (long tileX = tileLeft; tileX <= tileRight; ++tileX) {
+		for (int tileY = tileTop; tileY <= tileBottom; ++tileY) {
+			for (int tileX = tileLeft; tileX <= tileRight; ++tileX) {
 				tiles.add(new Tile(tileX, tileY, zoomLevel, tileSize));
 			}
 		}

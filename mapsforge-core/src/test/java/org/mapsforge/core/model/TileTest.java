@@ -24,11 +24,11 @@ public class TileTest {
 
 	private static final int TILE_SIZE = 256;
 
-	private static Tile createTile(long tileX, long tileY, byte zoomLevel) {
+	private static Tile createTile(int tileX, int tileY, byte zoomLevel) {
 		return new Tile(tileX, tileY, zoomLevel, TILE_SIZE);
 	}
 
-	private static void verifyInvalid(long tileX, long tileY, byte zoomLevel) {
+	private static void verifyInvalid(int tileX, int tileY, byte zoomLevel) {
 		try {
 			createTile(tileX, tileY, zoomLevel);
 			Assert.fail("x: " + tileX + ", tileY: " + tileY + ", zoomLevel: " + zoomLevel);

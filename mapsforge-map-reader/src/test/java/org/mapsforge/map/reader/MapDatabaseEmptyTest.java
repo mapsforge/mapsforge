@@ -34,8 +34,8 @@ public class MapDatabaseEmptyTest {
 		Assert.assertTrue(fileOpenResult.getErrorMessage(), fileOpenResult.isSuccess());
 
 		for (byte zoomLevel = 0; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
-			long tileX = MercatorProjection.longitudeToTileX(1, zoomLevel);
-			long tileY = MercatorProjection.latitudeToTileY(1, zoomLevel);
+			int tileX = MercatorProjection.longitudeToTileX(1, zoomLevel);
+			int tileY = MercatorProjection.latitudeToTileY(1, zoomLevel);
 			Tile tile = new Tile(tileX, tileY, zoomLevel, 256);
 
 			MapReadResult mapReadResult = mapDatabase.readMapData(tile);

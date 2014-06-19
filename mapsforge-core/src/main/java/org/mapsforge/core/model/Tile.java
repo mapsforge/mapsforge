@@ -31,7 +31,7 @@ public class Tile implements Serializable {
 	/**
 	 * @return the maximum valid tile number for the given zoom level, 2<sup>zoomLevel</sup> -1.
 	 */
-	public static long getMaxTileNumber(byte zoomLevel) {
+	public static int getMaxTileNumber(byte zoomLevel) {
 		if (zoomLevel < 0) {
 			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
 		} else if (zoomLevel == 0) {
@@ -45,12 +45,12 @@ public class Tile implements Serializable {
 	/**
 	 * The X number of this tile.
 	 */
-	public final long tileX;
+	public final int tileX;
 
 	/**
 	 * The Y number of this tile.
 	 */
-	public final long tileY;
+	public final int tileY;
 
 	/**
 	 * The zoom level of this tile.
@@ -70,7 +70,7 @@ public class Tile implements Serializable {
 	 * @throws IllegalArgumentException
 	 *             if any of the parameters is invalid.
 	 */
-	public Tile(long tileX, long tileY, byte zoomLevel, int tileSize) {
+	public Tile(int tileX, int tileY, byte zoomLevel, int tileSize) {
 		if (tileX < 0) {
 			throw new IllegalArgumentException("tileX must not be negative: " + tileX);
 		} else if (tileY < 0) {
@@ -156,7 +156,7 @@ public class Tile implements Serializable {
 	 * @return tile to the left.
 	 */
 	public Tile getLeft() {
-		long x = tileX - 1;
+		int x = tileX - 1;
 		if (x < 0) {
 			x = getMaxTileNumber(this.zoomLevel);
 		}
@@ -168,7 +168,7 @@ public class Tile implements Serializable {
 	 * @return
 	 */
 	public Tile getRight() {
-		long x = tileX + 1;
+		int x = tileX + 1;
 		if (x > getMaxTileNumber(this.zoomLevel)) {
 			x = 0;
 		}
@@ -176,7 +176,7 @@ public class Tile implements Serializable {
 	}
 
 	public Tile getAbove() {
-		long y = tileY - 1;
+		int y = tileY - 1;
 		if (y < 0) {
 			y = getMaxTileNumber(this.zoomLevel);
 		}
@@ -184,7 +184,7 @@ public class Tile implements Serializable {
 	}
 
 	public Tile getBelow() {
-		long y = tileY + 1;
+		int y = tileY + 1;
 		if (y > getMaxTileNumber(this.zoomLevel)) {
 			y = 0;
 		}
@@ -192,8 +192,8 @@ public class Tile implements Serializable {
 	}
 
 	public Tile getAboveLeft() {
-		long y = tileY - 1;
-		long x = tileX - 1;
+		int y = tileY - 1;
+		int x = tileX - 1;
 		if (y < 0) {
 			y = getMaxTileNumber(this.zoomLevel);
 		}
@@ -204,8 +204,8 @@ public class Tile implements Serializable {
 	}
 
 	public Tile getAboveRight() {
-		long y = tileY - 1;
-		long x = tileX + 1;
+		int y = tileY - 1;
+		int x = tileX + 1;
 		if (y < 0) {
 			y = getMaxTileNumber(this.zoomLevel);
 		}
@@ -216,8 +216,8 @@ public class Tile implements Serializable {
 	}
 
 	public Tile getBelowLeft() {
-		long y = tileY + 1;
-		long x = tileX - 1;
+		int y = tileY + 1;
+		int x = tileX - 1;
 		if (y > getMaxTileNumber(this.zoomLevel)) {
 			y = 0;
 		}
@@ -228,8 +228,8 @@ public class Tile implements Serializable {
 	}
 
 	public Tile getBelowRight() {
-		long y = tileY + 1;
-		long x = tileX + 1;
+		int y = tileY + 1;
+		int x = tileX + 1;
 		if (y > getMaxTileNumber(this.zoomLevel)) {
 			y = 0;
 		}
@@ -250,7 +250,7 @@ public class Tile implements Serializable {
 		return new Tile(this.tileX / 2, this.tileY / 2, (byte) (this.zoomLevel - 1), this.tileSize);
 	}
 
-	public long getShiftX(Tile otherTile) {
+	public int getShiftX(Tile otherTile) {
 		if (this.equals(otherTile)) {
 			return 0;
 		}
@@ -258,7 +258,7 @@ public class Tile implements Serializable {
 		return this.tileX % 2 + 2 * getParent().getShiftX(otherTile);
 	}
 
-	public long getShiftY(Tile otherTile) {
+	public int getShiftY(Tile otherTile) {
 		if (this.equals(otherTile)) {
 			return 0;
 		}
@@ -269,8 +269,8 @@ public class Tile implements Serializable {
 	@Override
 	public int hashCode() {
 		int result = 7;
-		result = 31 * result + (int) (this.tileX ^ (this.tileX >>> 32));
-		result = 31 * result + (int) (this.tileY ^ (this.tileY >>> 32));
+		result = 31 * result + (int) (this.tileX ^ (this.tileX >>> 16));
+		result = 31 * result + (int) (this.tileY ^ (this.tileY >>> 16));
 		result = 31 * result + this.zoomLevel;
 		result = 31 * result + this.tileSize;
 		return result;

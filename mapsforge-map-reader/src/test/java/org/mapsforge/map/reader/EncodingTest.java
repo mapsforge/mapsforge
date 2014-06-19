@@ -30,8 +30,8 @@ final class EncodingTest {
 		FileOpenResult fileOpenResult = mapDatabase.openFile(mapFile);
 		Assert.assertTrue(fileOpenResult.getErrorMessage(), fileOpenResult.isSuccess());
 
-		long tileX = MercatorProjection.longitudeToTileX(0, ZOOM_LEVEL);
-		long tileY = MercatorProjection.latitudeToTileY(0, ZOOM_LEVEL);
+		int tileX = MercatorProjection.longitudeToTileX(0, ZOOM_LEVEL);
+		int tileY = MercatorProjection.latitudeToTileY(0, ZOOM_LEVEL);
 		Tile tile = new Tile(tileX, tileY, ZOOM_LEVEL, 256);
 
 		MapReadResult mapReadResult = mapDatabase.readMapData(tile);
