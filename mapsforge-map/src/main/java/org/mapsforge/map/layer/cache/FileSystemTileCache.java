@@ -32,9 +32,11 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.layer.renderer.RendererJob;
 
 /**
- * A thread-safe cache for image files with a fixed size and LRU policy.
+ * A thread-safe cache for image files with a fixed size and LRU policy, persistent across
+ * instances.
  */
 public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
@@ -113,6 +115,13 @@ public class FileSystemTileCache implements TileCache {
 			lock.readLock().unlock();
 		}
 		if (file == null) {
+			// check if there is a cached tile from an earlier instance
+			file = new File(this.cacheDirectory, key.hashCode() + FILE_EXTENSION);
+			if (file == null) return null;
+			// discard cached copy of locally rendered tile if source is newer
+			if ((key instanceof RendererJob)
+				&& (((RendererJob) key).mapFile.lastModified() > file.lastModified())) return null;
+			// TODO: expire downloaded tiles
 			return null;
 		}
 
