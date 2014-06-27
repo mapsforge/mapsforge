@@ -122,7 +122,6 @@ public class FileSystemTileCache implements TileCache {
 			if ((key instanceof RendererJob)
 				&& (((RendererJob) key).mapFile.lastModified() > file.lastModified())) return null;
 			// TODO: expire downloaded tiles
-			return null;
 		}
 
 		InputStream inputStream = null;
