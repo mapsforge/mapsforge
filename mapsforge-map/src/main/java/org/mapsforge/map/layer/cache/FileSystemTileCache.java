@@ -31,12 +31,12 @@ import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
+import org.mapsforge.map.layer.download.DownloadJob;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.renderer.RendererJob;
 
 /**
- * A thread-safe cache for image files with a fixed size and LRU policy, persistent across
- * instances.
+ * A thread-safe cache for image files with a fixed size and LRU policy, persistent across instances.
  */
 public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
@@ -59,6 +59,9 @@ public class FileSystemTileCache implements TileCache {
 	private final GraphicFactory graphicFactory;
 	private FileWorkingSetCache<Integer> lruCache;
 	private final ReentrantReadWriteLock lock;
+
+	// FIXME: make TTL configurable
+	static final long TTL = 604800000; // 604,800,000 ms equals one week
 
 	/**
 	 * @param capacity
@@ -117,11 +120,16 @@ public class FileSystemTileCache implements TileCache {
 		if (file == null) {
 			// check if there is a cached tile from an earlier instance
 			file = new File(this.cacheDirectory, key.hashCode() + FILE_EXTENSION);
-			if (file == null) return null;
+			if (!file.exists())
+				return null;
 			// discard cached copy of locally rendered tile if source is newer
-			if ((key instanceof RendererJob)
-				&& (((RendererJob) key).mapFile.lastModified() > file.lastModified())) return null;
-			// TODO: expire downloaded tiles
+			if ((key instanceof RendererJob) && (((RendererJob) key).mapFile.lastModified() > file.lastModified()))
+				return null;
+			if ((key instanceof DownloadJob) && ((System.currentTimeMillis() - file.lastModified()) > TTL))
+				return null;
+			// TODO: find a nicer way to expire downloaded tiles
+			// tile URL is ((DownloadJob) key).TileSource.getTileURL(key.tile)
+			// last modification date is URLConnection.getLastModified()
 		}
 
 		InputStream inputStream = null;
