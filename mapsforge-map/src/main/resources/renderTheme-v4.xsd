@@ -109,6 +109,7 @@
 		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
 		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
 		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
 		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#00000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
@@ -167,6 +168,7 @@
 		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
 		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
 		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
@@ -179,6 +181,10 @@
 		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="src" type="tns:src" use="required" />
+		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
+		<xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
+		<xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
 		<xs:attribute name="align-center" type="xs:boolean" use="optional" default="false" />
 		<xs:attribute name="priority" type="xs:integer" use="optional" default="0"/>
 		<xs:attribute name="repeat" type="xs:boolean" use="optional" default="false" />
