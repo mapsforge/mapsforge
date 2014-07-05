@@ -17,6 +17,7 @@ package org.mapsforge.map.layer.download;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
@@ -29,6 +30,7 @@ import org.mapsforge.map.model.MapViewPosition;
 public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private static final int DOWNLOAD_THREADS_MAX = 8;
 
+	private long cacheTTL = 0;
 	private final GraphicFactory graphicFactory;
 	private boolean started;
 	private final TileCache tileCache;
@@ -53,6 +55,15 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
 	}
 
+	/**
+	 * Returns the time-to-live (TTL) for tiles in the cache, or 0 if not set.
+	 * <p>
+	 * Refer to {@link #isTileStale(TileBitmap)} for information on how the TTL is enforced.
+	 */
+	public long getCacheTTL() {
+		return cacheTTL;
+	}
+
 	@Override
 	public void onDestroy() {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
@@ -75,6 +86,18 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 		for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
 			tileDownloadThread.proceed();
 		}
+	}
+
+	/**
+	 * Sets the time-to-live (TTL) for tiles in the cache.
+	 * <p>
+	 * Refer to {@link #isTileStale(TileBitmap)} for information on how the TTL is enforced.
+	 * 
+	 * @param ttl
+	 *            The TTL. If set to 0, no TTL will be enforced.
+	 */
+	public void setCacheTTL(long ttl) {
+		cacheTTL = ttl;
 	}
 
 	@Override
@@ -107,5 +130,37 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	@Override
 	protected DownloadJob createJob(Tile tile) {
 		return new DownloadJob(tile, this.tileSource);
+	}
+
+	/**
+	 * Whether the tile is stale and should be refreshed.
+	 * <p>
+	 * This method is called from {@link #draw(BoundingBox, byte, Canvas, Point)} to determine whether the tile needs to
+	 * be refreshed.
+	 * <p>
+	 * A tile is considered stale if one or more of the following two conditions apply:
+	 * <ul>
+	 * <li>The {@code bitmap}'s {@link org.mapsforge.core.graphics.TileBitmap#isExpired()} method returns {@code True}.</li>
+	 * <li>The layer has a time-to-live (TTL) set ({@link #getCacheTTL()} returns a nonzero value) and the sum of the
+	 * {@code bitmap}'s {@link org.mapsforge.core.graphics.TileBitmap#getTimestamp()} and TTL is less than current time
+	 * (as returned by {@link java.lang.System#currentTimeMillis()}).</li>
+	 * </ul>
+	 * <p>
+	 * When a tile has become stale, the layer will first display the tile referenced by {@code bitmap} and attempt to
+	 * obtain a fresh copy in the background. When a fresh copy becomes available, the layer will replace it and update
+	 * the cache. If a fresh copy cannot be obtained (e.g. because the tile is obtained from an online source which
+	 * cannot be reached), the stale tile will continue to be used until another
+	 * {@code #draw(BoundingBox, byte, Canvas, Point)} operation requests it again.
+	 * 
+	 * @param bitmap
+	 *            A tile bitmap currently held in the layer's cache.
+	 */
+	@Override
+	protected boolean isTileStale(TileBitmap bitmap) {
+		if (bitmap.isExpired())
+			return true;
+		if (cacheTTL == 0)
+			return false;
+		return ((bitmap.getTimestamp() + cacheTTL) < System.currentTimeMillis());
 	}
 }

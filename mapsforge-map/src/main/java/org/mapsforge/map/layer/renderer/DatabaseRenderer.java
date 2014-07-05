@@ -16,7 +16,6 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,12 +28,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.mapelements.MapElementContainer;
-import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.mapelements.MapElementContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
@@ -55,15 +54,10 @@ import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.mapsforge.map.util.LayerUtil;
 import org.xmlpull.v1.XmlPullParserException;
 
-
 /**
- * The DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
- *
- * Up to version 0.4.x the DatabaseRenderer was responsible for rendering ways, areas as
- * well as labels. However, the label placement algorithm suffered from multiple problems,
- * such as clipped labels at tile bounds.
- *
- *
+ * The DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}. Up to version 0.4.x the
+ * DatabaseRenderer was responsible for rendering ways, areas as well as labels. However, the label placement algorithm
+ * suffered from multiple problems, such as clipped labels at tile bounds.
  */
 public class DatabaseRenderer implements RenderCallback {
 
@@ -110,14 +104,13 @@ public class DatabaseRenderer implements RenderCallback {
 	private final TileDependencies tileDependencies;
 
 	/**
-	 * Constructs a new DatabaseRenderer that will not draw labels, instead it stores the label
-	 * information in the labelStore for drawing by a LabelLayer.
+	 * Constructs a new DatabaseRenderer that will not draw labels, instead it stores the label information in the
+	 * labelStore for drawing by a LabelLayer.
 	 * 
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory,
-	                        TileBasedLabelStore labelStore) {
+	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 
@@ -130,12 +123,11 @@ public class DatabaseRenderer implements RenderCallback {
 
 	/**
 	 * Constructs a new DatabaseRenderer that will draw labels onto the tiles.
-	 *
+	 * 
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory,
-	                        TileCache tileCache) {
+	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory, TileCache tileCache) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 
@@ -145,7 +137,6 @@ public class DatabaseRenderer implements RenderCallback {
 		this.tileCache = tileCache;
 		this.tileDependencies = new TileDependencies();
 	}
-
 
 	public void destroy() {
 		this.canvasRasterer.destroy();
@@ -195,8 +186,8 @@ public class DatabaseRenderer implements RenderCallback {
 
 		TileBitmap bitmap = null;
 		if (!rendererJob.labelsOnly) {
-			bitmap = this.graphicFactory.createTileBitmap(tileSize,
-					rendererJob.hasAlpha);
+			bitmap = this.graphicFactory.createTileBitmap(tileSize, rendererJob.hasAlpha);
+			bitmap.setTimestamp(mapDatabase.getMapFileInfo().mapDate);
 			this.canvasRasterer.setCanvasBitmap(bitmap);
 			if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
 				this.canvasRasterer.fill(rendererJob.hasAlpha ? 0 : this.renderTheme.getMapBackground());
@@ -338,10 +329,11 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderAreaCaption(PolylineContainer way, int priority, String caption, float horizontalOffset, float verticalOffset,
-	                              Paint fill, Paint stroke, Position position, int maxTextWidth) {
+	public void renderAreaCaption(PolylineContainer way, int priority, String caption, float horizontalOffset,
+			float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth) {
 		Point centerPoint = way.getCenterAbsolute().offset(horizontalOffset, verticalOffset);
-		this.currentLabels.add(this.graphicFactory.createPointTextContainer(centerPoint, priority, caption, fill, stroke, null, position, maxTextWidth));
+		this.currentLabels.add(this.graphicFactory.createPointTextContainer(centerPoint, priority, caption, fill,
+				stroke, null, position, maxTextWidth));
 	}
 
 	@Override
@@ -352,16 +344,18 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset, float verticalOffset,
-	                                         Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
+	public void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset,
+			float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
 		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
 
-		this.currentLabels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), priority, caption, fill,
-				stroke, null, position, maxTextWidth));
+		this.currentLabels.add(this.graphicFactory.createPointTextContainer(
+				poiPosition.offset(horizontalOffset, verticalOffset), priority, caption, fill, stroke, null, position,
+				maxTextWidth));
 	}
 
 	@Override
-	public void renderPointOfInterestCircle(PointOfInterest poi, float radius, Paint fill, Paint stroke, int level, Tile tile) {
+	public void renderPointOfInterestCircle(PointOfInterest poi, float radius, Paint fill, Paint stroke, int level,
+			Tile tile) {
 		List<ShapePaintContainer> list = this.drawingLayers.get(level);
 		Point poiPosition = MercatorProjection.getPixelRelativeToTile(poi.position, tile);
 		list.add(new ShapePaintContainer(new CircleContainer(poiPosition, radius), stroke));
@@ -380,15 +374,16 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderWaySymbol(PolylineContainer way, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
-	                     float repeatGap, float repeatStart, boolean rotate) {
-		WayDecorator.renderSymbol(symbol, priority, dy, alignCenter, repeat, repeatGap,
-				repeatStart, rotate, way.getCoordinatesAbsolute(), this.currentLabels);
+	public void renderWaySymbol(PolylineContainer way, int priority, Bitmap symbol, float dy, boolean alignCenter,
+			boolean repeat, float repeatGap, float repeatStart, boolean rotate) {
+		WayDecorator.renderSymbol(symbol, priority, dy, alignCenter, repeat, repeatGap, repeatStart, rotate,
+				way.getCoordinatesAbsolute(), this.currentLabels);
 	}
 
 	@Override
 	public void renderWayText(PolylineContainer way, int priority, String textKey, float dy, Paint fill, Paint stroke) {
-		WayDecorator.renderText(textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), this.currentWayLabels);
+		WayDecorator.renderText(textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(),
+				this.currentWayLabels);
 	}
 
 	private List<List<List<ShapePaintContainer>>> createWayLists() {
@@ -416,7 +411,8 @@ public class DatabaseRenderer implements RenderCallback {
 		return null;
 	}
 
-	private void processReadMapData(final List<List<List<ShapePaintContainer>>> ways, MapReadResult mapReadResult, Tile tile) {
+	private void processReadMapData(final List<List<List<ShapePaintContainer>>> ways, MapReadResult mapReadResult,
+			Tile tile) {
 		if (mapReadResult == null) {
 			return;
 		}
@@ -434,7 +430,8 @@ public class DatabaseRenderer implements RenderCallback {
 		}
 	}
 
-	private void renderPointOfInterest(final List<List<List<ShapePaintContainer>>> ways, PointOfInterest pointOfInterest, Tile tile) {
+	private void renderPointOfInterest(final List<List<List<ShapePaintContainer>>> ways,
+			PointOfInterest pointOfInterest, Tile tile) {
 		this.drawingLayers = ways.get(getValidLayer(pointOfInterest.layer));
 		this.renderTheme.matchNode(this, pointOfInterest, tile);
 	}

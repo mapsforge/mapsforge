@@ -18,7 +18,11 @@ package org.mapsforge.map.layer.renderer;
 
 import java.io.File;
 
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -41,14 +45,20 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	/**
 	 * Creates a TileRendererLayer.
-	 * @param tileCache cache where tiles are stored
-	 * @param mapViewPosition the mapViewPosition to know which tiles to render
-	 * @param isTransparent true if the tile should have an alpha/transparency
-	 * @param renderLabels true if labels should be rendered onto tiles
-	 * @param graphicFactory the graphicFactory to carry out platform specific operations
+	 * 
+	 * @param tileCache
+	 *            cache where tiles are stored
+	 * @param mapViewPosition
+	 *            the mapViewPosition to know which tiles to render
+	 * @param isTransparent
+	 *            true if the tile should have an alpha/transparency
+	 * @param renderLabels
+	 *            true if labels should be rendered onto tiles
+	 * @param graphicFactory
+	 *            the graphicFactory to carry out platform specific operations
 	 */
 	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, boolean isTransparent,
-	                         boolean renderLabels, GraphicFactory graphicFactory) {
+			boolean renderLabels, GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
 		this.mapDatabase = new MapDatabase();
@@ -63,8 +73,9 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	}
 
 	/**
-	 * If the labels are not rendered onto the tile directly, they are stored in a LabelStore for
-	 * rendering on a separate Layer.
+	 * If the labels are not rendered onto the tile directly, they are stored in a LabelStore for rendering on a
+	 * separate Layer.
+	 * 
 	 * @return the LabelStore used for storing labels, null if labels are rendered onto tiles directly.
 	 */
 	public LabelStore getLabelStore() {
@@ -127,6 +138,28 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	protected RendererJob createJob(Tile tile) {
 		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale,
 				this.isTransparent, false);
+	}
+
+	/**
+	 * Whether the tile is stale and should be refreshed.
+	 * <p>
+	 * This method is called from {@link #draw(BoundingBox, byte, Canvas, Point)} to determine whether the tile needs to
+	 * be refreshed.
+	 * <p>
+	 * A tile is considered stale if the timestamp of the layer's {@link #mapDatabase} is more recent than the
+	 * {@code bitmap}'s {@link org.mapsforge.core.graphics.TileBitmap#getTimestamp()}.
+	 * <p>
+	 * When a tile has become stale, the layer will first display the tile referenced by {@code bitmap} and attempt to
+	 * obtain a fresh copy in the background. When a fresh copy becomes available, the layer will replace is and update
+	 * the cache. If a fresh copy cannot be obtained for whatever reason, the stale tile will continue to be used until
+	 * another {@code #draw(BoundingBox, byte, Canvas, Point)} operation requests it again.
+	 * 
+	 * @param bitmap
+	 *            A tile bitmap currently held in the layer's cache.
+	 */
+	@Override
+	protected boolean isTileStale(TileBitmap bitmap) {
+		return this.mapDatabase.getMapFileInfo().mapDate > bitmap.getTimestamp();
 	}
 
 	@Override

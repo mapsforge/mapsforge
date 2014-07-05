@@ -31,12 +31,19 @@ import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
-import org.mapsforge.map.layer.download.DownloadJob;
 import org.mapsforge.map.layer.queue.Job;
-import org.mapsforge.map.layer.renderer.RendererJob;
 
 /**
- * A thread-safe cache for image files with a fixed size and LRU policy, persistent across instances.
+ * A thread-safe cache for image files with a fixed size and LRU policy.
+ * <p>
+ * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor. The
+ * cache is persistent across instances, i.e. a new {@code FileSystemTileCache} instance will serve tiles cached by a
+ * previous instance using the same cache directory. If persistence is not desired, call {@link #destroy()} immediately
+ * after instantiating a new {@code FileSystemTileCache}, or when the current instance is no longer needed.
+ * <p>
+ * When used for a {@link org.mapsforge.map.layer.renderer.TileRendererLayer}, persistent caching may result in clipped
+ * labels when tiles from different instances are used. To work around this, either display labels in a separate
+ * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described above.
  */
 public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
@@ -60,9 +67,6 @@ public class FileSystemTileCache implements TileCache {
 	private FileWorkingSetCache<Integer> lruCache;
 	private final ReentrantReadWriteLock lock;
 
-	// FIXME: make TTL configurable
-	static final long TTL = 604800000; // 604,800,000 ms equals one week
-
 	/**
 	 * @param capacity
 	 *            the maximum number of entries in this cache.
@@ -82,12 +86,20 @@ public class FileSystemTileCache implements TileCache {
 	public boolean containsKey(Job key) {
 		try {
 			lock.readLock().lock();
-			return this.lruCache.containsKey(key.hashCode());
+			if (this.lruCache.containsKey(key.hashCode()))
+				return true;
 		} finally {
 			lock.readLock().unlock();
 		}
+		return getOutputFile(key).exists();
 	}
 
+	/**
+	 * Destroys this cache.
+	 * <p>
+	 * Destroying the cache will delete any tiles stored on disk, freeing up disk space and causing subsequent calls to
+	 * {@link #get(Job)} to return {@code null}, requiring the caller to obtain a fresh copy of the tile.
+	 */
 	@Override
 	public void destroy() {
 		try {
@@ -119,23 +131,17 @@ public class FileSystemTileCache implements TileCache {
 		}
 		if (file == null) {
 			// check if there is a cached tile from an earlier instance
-			file = new File(this.cacheDirectory, key.hashCode() + FILE_EXTENSION);
+			file = getOutputFile(key);
 			if (!file.exists())
 				return null;
-			// discard cached copy of locally rendered tile if source is newer
-			if ((key instanceof RendererJob) && (((RendererJob) key).mapFile.lastModified() > file.lastModified()))
-				return null;
-			if ((key instanceof DownloadJob) && ((System.currentTimeMillis() - file.lastModified()) > TTL))
-				return null;
-			// TODO: find a nicer way to expire downloaded tiles
-			// tile URL is ((DownloadJob) key).TileSource.getTileURL(key.tile)
-			// last modification date is URLConnection.getLastModified()
 		}
 
 		InputStream inputStream = null;
 		try {
 			inputStream = new FileInputStream(file);
-			return this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+			TileBitmap result = this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+			result.setTimestamp(file.lastModified());
+			return result;
 		} catch (CorruptedInputStreamException e) {
 			// this can happen, at least on Android, when the input stream
 			// is somehow corrupted, returning null ensures it will be loaded
@@ -189,6 +195,7 @@ public class FileSystemTileCache implements TileCache {
 			File file = getOutputFile(key);
 			outputStream = new FileOutputStream(file);
 			bitmap.compress(outputStream);
+			file.setLastModified(bitmap.getTimestamp());
 			try {
 				lock.writeLock().lock();
 				if (this.lruCache.put(key.hashCode(), file) != null) {
