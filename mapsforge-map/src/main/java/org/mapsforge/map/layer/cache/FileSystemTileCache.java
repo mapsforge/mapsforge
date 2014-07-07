@@ -44,6 +44,12 @@ import org.mapsforge.map.layer.queue.Job;
  * When used for a {@link org.mapsforge.map.layer.renderer.TileRendererLayer}, persistent caching may result in clipped
  * labels when tiles from different instances are used. To work around this, either display labels in a separate
  * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described above.
+ * <p>
+ * When releasing a new version of an application using a persistent cache, consider whether the new version serving
+ * tiles cached by an older version is expected to have undesirable side effects. This may be the case if the new
+ * version changes the render style for locally rendered tiles, or the source for downloaded tiles. In such cases, you
+ * should either {@link #destroy()} the cache when the new version starts up for the first time, or use different cache
+ * directories in the new version (and remove leftover cache data from the previous version).
  */
 public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
@@ -195,7 +201,6 @@ public class FileSystemTileCache implements TileCache {
 			File file = getOutputFile(key);
 			outputStream = new FileOutputStream(file);
 			bitmap.compress(outputStream);
-			file.setLastModified(bitmap.getTimestamp());
 			try {
 				lock.writeLock().lock();
 				if (this.lruCache.put(key.hashCode(), file) != null) {

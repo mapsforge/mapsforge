@@ -55,9 +55,10 @@ import org.mapsforge.map.util.LayerUtil;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- * The DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}. Up to version 0.4.x the
- * DatabaseRenderer was responsible for rendering ways, areas as well as labels. However, the label placement algorithm
- * suffered from multiple problems, such as clipped labels at tile bounds.
+ * The DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
+ * <p>
+ * Up to version 0.4.x the DatabaseRenderer was responsible for rendering ways, areas as well as labels. However, the
+ * label placement algorithm suffered from multiple problems, such as clipped labels at tile bounds.
  */
 public class DatabaseRenderer implements RenderCallback {
 
@@ -187,7 +188,7 @@ public class DatabaseRenderer implements RenderCallback {
 		TileBitmap bitmap = null;
 		if (!rendererJob.labelsOnly) {
 			bitmap = this.graphicFactory.createTileBitmap(tileSize, rendererJob.hasAlpha);
-			bitmap.setTimestamp(mapDatabase.getMapFileInfo().mapDate);
+			bitmap.setTimestamp(rendererJob.mapFile.lastModified());
 			this.canvasRasterer.setCanvasBitmap(bitmap);
 			if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
 				this.canvasRasterer.fill(rendererJob.hasAlpha ? 0 : this.renderTheme.getMapBackground());

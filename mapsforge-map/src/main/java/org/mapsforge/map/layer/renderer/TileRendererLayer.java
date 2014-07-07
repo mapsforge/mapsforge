@@ -159,7 +159,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	 */
 	@Override
 	protected boolean isTileStale(TileBitmap bitmap) {
-		return this.mapDatabase.getMapFileInfo().mapDate > bitmap.getTimestamp();
+		return this.mapFile.lastModified() > bitmap.getTimestamp();
 	}
 
 	@Override

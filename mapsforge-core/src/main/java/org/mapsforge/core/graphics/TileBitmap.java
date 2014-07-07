@@ -15,7 +15,6 @@
 package org.mapsforge.core.graphics;
 
 public interface TileBitmap extends Bitmap {
-	// only different behaviour
 
 	/**
 	 * Returns the timestamp of the tile in milliseconds since January 1, 1970 GMT or 0 if this timestamp is unknown.
