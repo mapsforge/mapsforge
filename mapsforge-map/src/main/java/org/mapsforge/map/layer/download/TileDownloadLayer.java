@@ -43,6 +43,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 
 		this.tileCache = tileCache;
 		this.tileSource = tileSource;
+		this.cacheTTL = tileSource.getDefaultTTL();
 		this.graphicFactory = graphicFactory;
 	}
 
@@ -91,7 +92,9 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	/**
 	 * Sets the time-to-live (TTL) for tiles in the cache.
 	 * <p>
-	 * Refer to {@link #isTileStale(TileBitmap)} for information on how the TTL is enforced.
+	 * The initial TTL is obtained by calling the {@link org.mapsforge.map.layer.download.tilesource.TileSource}'s
+	 * {@link org.mapsforge.map.layer.download.tilesource.TileSource#getDefaultTTL()} method. Refer to
+	 * {@link #isTileStale(TileBitmap)} for information on how the TTL is enforced.
 	 * 
 	 * @param ttl
 	 *            The TTL. If set to 0, no TTL will be enforced.
