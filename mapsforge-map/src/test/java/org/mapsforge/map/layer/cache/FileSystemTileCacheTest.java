@@ -240,8 +240,6 @@ public class FileSystemTileCacheTest {
 	@Test
 	public void invalidConstructorTest() throws IOException {
 		Assert.assertTrue(this.cacheDirectory.createNewFile());
-		verifyInvalidConstructor(0, this.cacheDirectory);
-
 		Assert.assertTrue(this.cacheDirectory.delete());
 		Assert.assertTrue(this.cacheDirectory.mkdirs());
 		verifyInvalidConstructor(-1, this.cacheDirectory);

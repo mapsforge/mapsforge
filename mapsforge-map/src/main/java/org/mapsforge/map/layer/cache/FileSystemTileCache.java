@@ -41,42 +41,34 @@ public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 
-	private static File checkDirectory(File file) {
-		if (!file.exists() && !file.mkdirs()) {
-			throw new IllegalArgumentException("could not create directory: " + file);
-		} else if (!file.isDirectory()) {
-			throw new IllegalArgumentException("not a directory: " + file);
-		} else if (!file.canRead()) {
-			throw new IllegalArgumentException("cannot read directory: " + file);
-		} else if (!file.canWrite()) {
-			throw new IllegalArgumentException("cannot write directory: " + file);
+	private static boolean isValidCacheDirectory(File file) {
+		if ((!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead() || !file.canWrite()) {
+			return false;
 		}
-		return file;
+		return true;
 	}
 
-	/**
-	 * Removes all files and subdirectories in a given directory.
-	 */
-	static private void clearDirectory(File dir) {
-		File[] subdirs = dir.listFiles();
-		if (subdirs != null)
-			for (File subdir : subdirs) {
-				if (subdir.exists() && subdir.isDirectory()) {
-					clearDirectory(subdir);
-					if ((subdir.list().length == 0) && !subdir.delete())
-						LOGGER.log(Level.SEVERE, "could not delete dir: " + subdir);
-				}
-			}
+    /**
+     * Recursively deletes directory and all files.
+     * See http://stackoverflow.com/questions/3775694/deleting-folder-from-java/3775723#3775723
+     *
+     * @param dir the directory to delete with all its content
+     * @return true if directory and all content has been deleted, false if not
+     */
 
-		File[] filesToDelete = dir.listFiles(ImageFileNameFilter.INSTANCE);
-		if (filesToDelete != null) {
-			for (File file : filesToDelete) {
-				if (file.exists() && !file.delete()) {
-					LOGGER.log(Level.SEVERE, "could not delete file: " + file);
-				}
-			}
-		}
-	}
+    private static boolean deleteDirectory(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDirectory(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
 
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
@@ -93,7 +85,11 @@ public class FileSystemTileCache implements TileCache {
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
 		this.lruCache = new FileWorkingSetCache<>(capacity);
-		this.cacheDirectory = checkDirectory(cacheDirectory);
+		if (isValidCacheDirectory(cacheDirectory)) {
+			this.cacheDirectory = cacheDirectory;
+		} else {
+			this.cacheDirectory = null;
+		}
 		this.graphicFactory = graphicFactory;
 		this.lock = new ReentrantReadWriteLock();
 	}
@@ -117,7 +113,7 @@ public class FileSystemTileCache implements TileCache {
 			lock.writeLock().unlock();
 		}
 
-		clearDirectory(this.cacheDirectory);
+		deleteDirectory(this.cacheDirectory);
 		this.cacheDirectory.delete();
 	}
 
@@ -190,6 +186,10 @@ public class FileSystemTileCache implements TileCache {
 		OutputStream outputStream = null;
 		try {
 			File file = getOutputFile(key);
+			if (file == null) {
+				// if the file cannot be written, silently return
+				return;
+			}
 			outputStream = new FileOutputStream(file);
 			bitmap.compress(outputStream);
 			try {
@@ -226,10 +226,12 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	private File getOutputFile(Job job) {
-		String dir = this.cacheDirectory + File.separator + job.getKey();
-		dir = dir.substring(0, dir.lastIndexOf(File.separatorChar));
-		checkDirectory(new File(dir));
-		return new File(this.cacheDirectory + File.separator + job.getKey() + FILE_EXTENSION);
+		String file = this.cacheDirectory + File.separator + job.getKey();
+		String dir = file.substring(0, file.lastIndexOf(File.separatorChar));
+		if (isValidCacheDirectory(new File(dir))) {
+            return new File(file + FILE_EXTENSION);
+        }
+        return null;
 	}
 
 	private void remove(Job key) {
