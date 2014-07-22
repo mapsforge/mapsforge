@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 mvglasow <michael -at- vonglasow.com>
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -53,9 +54,33 @@ public class FileSystemTileCache implements TileCache {
 		return file;
 	}
 
+	/**
+	 * Removes all files and subdirectories in a given directory.
+	 */
+	static private void clearDirectory(File dir) {
+		File[] subdirs = dir.listFiles();
+		if (subdirs != null)
+			for (File subdir : subdirs) {
+				if (subdir.exists() && subdir.isDirectory()) {
+					clearDirectory(subdir);
+					if ((subdir.list().length == 0) && !subdir.delete())
+						LOGGER.log(Level.SEVERE, "could not delete dir: " + subdir);
+				}
+			}
+
+		File[] filesToDelete = dir.listFiles(ImageFileNameFilter.INSTANCE);
+		if (filesToDelete != null) {
+			for (File file : filesToDelete) {
+				if (file.exists() && !file.delete()) {
+					LOGGER.log(Level.SEVERE, "could not delete file: " + file);
+				}
+			}
+		}
+	}
+
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
-	private FileWorkingSetCache<Integer> lruCache;
+	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
 
 	/**
@@ -77,7 +102,7 @@ public class FileSystemTileCache implements TileCache {
 	public boolean containsKey(Job key) {
 		try {
 			lock.readLock().lock();
-			return this.lruCache.containsKey(key.hashCode());
+			return this.lruCache.containsKey(key.getKey());
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -92,14 +117,8 @@ public class FileSystemTileCache implements TileCache {
 			lock.writeLock().unlock();
 		}
 
-		File[] filesToDelete = this.cacheDirectory.listFiles(ImageFileNameFilter.INSTANCE);
-		if (filesToDelete != null) {
-			for (File file : filesToDelete) {
-				if (file.exists() && !file.delete()) {
-					LOGGER.log(Level.SEVERE, "could not delete file: " + file);
-				}
-			}
-		}
+		clearDirectory(this.cacheDirectory);
+		this.cacheDirectory.delete();
 	}
 
 	@Override
@@ -108,7 +127,7 @@ public class FileSystemTileCache implements TileCache {
 		File file;
 		try {
 			lock.readLock().lock();
-			file = this.lruCache.get(key.hashCode());
+			file = this.lruCache.get(key.getKey());
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -175,7 +194,7 @@ public class FileSystemTileCache implements TileCache {
 			bitmap.compress(outputStream);
 			try {
 				lock.writeLock().lock();
-				if (this.lruCache.put(key.hashCode(), file) != null) {
+				if (this.lruCache.put(key.getKey(), file) != null) {
 					LOGGER.warning("overwriting cached entry: " + key.hashCode());
 				}
 			} finally {
@@ -189,7 +208,7 @@ public class FileSystemTileCache implements TileCache {
 			this.destroy();
 			try {
 				lock.writeLock().lock();
-				this.lruCache = new FileWorkingSetCache<Integer>(0);
+				this.lruCache = new FileWorkingSetCache<String>(0);
 			} finally {
 				lock.writeLock().unlock();
 			}
@@ -199,21 +218,24 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	public void setWorkingSet(Set<Job> workingSet) {
-		Set<Integer> workingSetInteger = new HashSet<Integer>();
+		Set<String> workingSetInteger = new HashSet<String>();
 		for (Job job : workingSet) {
-			workingSetInteger.add(job.hashCode());
+			workingSetInteger.add(job.getKey());
 		}
 		this.lruCache.setWorkingSet(workingSetInteger);
 	}
 
 	private File getOutputFile(Job job) {
-		return new File(this.cacheDirectory, job.hashCode() + FILE_EXTENSION);
+		String dir = this.cacheDirectory + File.separator + job.getKey();
+		dir = dir.substring(0, dir.lastIndexOf(File.separatorChar));
+		checkDirectory(new File(dir));
+		return new File(this.cacheDirectory + File.separator + job.getKey() + FILE_EXTENSION);
 	}
 
 	private void remove(Job key) {
 		try {
 			lock.writeLock().lock();
-			this.lruCache.remove(key.hashCode());
+			this.lruCache.remove(key.getKey());
 		} finally {
 			lock.writeLock().unlock();
 		}
