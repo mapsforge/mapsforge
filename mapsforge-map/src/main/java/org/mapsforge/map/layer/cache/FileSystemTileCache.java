@@ -195,7 +195,7 @@ public class FileSystemTileCache implements TileCache {
 			try {
 				lock.writeLock().lock();
 				if (this.lruCache.put(key.getKey(), file) != null) {
-					LOGGER.warning("overwriting cached entry: " + key.hashCode());
+					LOGGER.warning("overwriting cached entry: " + key.getKey());
 				}
 			} finally {
 				lock.writeLock().unlock();
