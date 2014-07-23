@@ -10,7 +10,7 @@ dependencies {
 android {
 
   defaultConfig {
-    testPackageName "org.mapsforge.applications.android.samples.test"
+    testApplicationId "org.mapsforge.applications.android.samples.test"
     testInstrumentationRunner "android.test.InstrumentationTestRunner"
   }
 

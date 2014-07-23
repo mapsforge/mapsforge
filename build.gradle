@@ -3,7 +3,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.10.+'
+    classpath 'com.android.tools.build:gradle:0.12.+'
   }
 }
 
@@ -15,7 +15,7 @@ def filterProjects(filter) {
 allprojects {
   group = 'org.mapsforge'
   version = 'dev-SNAPSHOT'
-  ext.androidBuildVersionTools = "19.0.3"
+  ext.androidBuildVersionTools = "20"
   ext.jUnitVersion = "4.11"
   description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 }
@@ -79,7 +79,8 @@ configure(filterProjects(project.androidlibraryprojects)) {
 
   android.libraryVariants.all { variant ->
     def name = variant.buildType.name
-    if (name.equals(com.android.builder.BuilderConstants.DEBUG)) {
+    if (name.equals("debug")) {
+      print "Skipping debug jar"
       return; // Skip debug builds.
     }
     def task = project.tasks.create "jar${name.capitalize()}", Jar
