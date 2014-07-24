@@ -87,7 +87,7 @@ public abstract class Layer {
 	 * The default implementation of this method does nothing and returns false.
 	 * 
 	 * @param tapLatLong
-	 *            the the geographic position of the long press.
+	 *            the the geographic position of the tap.
 	 * @param layerXY
 	 *            the xy position of the layer element (if available)
 	 * @param tapXY
