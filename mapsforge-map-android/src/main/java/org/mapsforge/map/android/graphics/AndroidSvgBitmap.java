@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,8 +25,7 @@ import android.graphics.Picture;
 import android.graphics.RectF;
 import android.util.Pair;
 
-import com.applantation.android.svg.SVG;
-import com.applantation.android.svg.SVGParser;
+import com.caverock.androidsvg.SVG;
 
 class AndroidSvgBitmap extends AndroidResourceBitmap {
 	static final float DEFAULT_SIZE = 400f;
@@ -44,32 +44,36 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 			android.graphics.Bitmap bitmap = AndroidSvgBitmapStore.get(hash);
 
 			if (bitmap == null) {
-				// not in any cache, so need to render svg
-				SVG svg = SVGParser.getSVGFromInputStream(inputStream);
-				Picture picture = svg.getPicture();
+				try {
+					// not in any cache, so need to render svg
+					SVG svg = SVG.getFromInputStream(inputStream);
+					Picture picture = svg.renderToPicture();
 
-				double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / DEFAULT_SIZE);
+					double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / DEFAULT_SIZE);
 
-				float bitmapWidth = (float) (picture.getWidth() * scale);
-				float bitmapHeight = (float) (picture.getHeight() * scale);
+					float bitmapWidth = (float) (picture.getWidth() * scale);
+					float bitmapHeight = (float) (picture.getHeight() * scale);
 
-				if (width != 0 && height != 0) {
-					bitmapWidth = width;
-					bitmapHeight = height;
+					if (width != 0 && height != 0) {
+						bitmapWidth = width;
+						bitmapHeight = height;
+					}
+
+					if (percent != 100) {
+						bitmapWidth *= percent / 100f;
+						bitmapHeight *= percent / 100f;
+					}
+
+					bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
+							(int) Math.ceil(bitmapHeight), AndroidGraphicFactory.TRANSPARENT_BITMAP);
+					Canvas canvas = new Canvas(bitmap);
+					canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
+
+					// save to disk for faster future retrieval
+					AndroidSvgBitmapStore.put(hash, bitmap);
+				} catch (Exception e) {
+					throw new IOException(e);
 				}
-
-				if (percent != 100) {
-					bitmapWidth *= percent / 100f;
-					bitmapHeight *= percent / 100f;
-				}
-
-				bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
-						(int) Math.ceil(bitmapHeight), AndroidGraphicFactory.TRANSPARENT_BITMAP);
-				Canvas canvas = new Canvas(bitmap);
-				canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
-
-				// save to disk for faster future retrieval
-				AndroidSvgBitmapStore.put(hash, bitmap);
 			}
 
 			// save in in-memory cache
@@ -89,7 +93,7 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 
 	AndroidSvgBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height, int percent) throws IOException {
 		super(hash);
- 		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor, width, height, percent);
+		this.bitmap = getResourceBitmap(inputStream, hash, scaleFactor, width, height, percent);
 	}
 
 }

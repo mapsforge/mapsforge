@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,7 +27,6 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -130,6 +130,8 @@ public class Line extends RenderInstruction {
 				this.stroke.setStrokeJoin(Join.valueOf(value.toUpperCase(Locale.ENGLISH)));
 			} else if (SYMBOL_HEIGHT.equals(name)) {
 				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+			} else if (SYMBOL_PERCENT.equals(name)) {
+				this.percent = XmlUtils.parseNonNegativeInteger(name, value);
 			} else if (SYMBOL_SCALING.equals(name)) {
 				this.scaling = fromValue(value);
 			} else if (SYMBOL_WIDTH.equals(name)) {

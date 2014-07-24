@@ -1,6 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 mvglasow <michael -at- vonglasow.com>
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -55,22 +57,38 @@ public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 
-	private static File checkDirectory(File file) {
-		if (!file.exists() && !file.mkdirs()) {
-			throw new IllegalArgumentException("could not create directory: " + file);
-		} else if (!file.isDirectory()) {
-			throw new IllegalArgumentException("not a directory: " + file);
-		} else if (!file.canRead()) {
-			throw new IllegalArgumentException("cannot read directory: " + file);
-		} else if (!file.canWrite()) {
-			throw new IllegalArgumentException("cannot write directory: " + file);
+	private static boolean isValidCacheDirectory(File file) {
+		if ((!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead() || !file.canWrite()) {
+			return false;
 		}
-		return file;
+		return true;
 	}
+
+    /**
+     * Recursively deletes directory and all files.
+     * See http://stackoverflow.com/questions/3775694/deleting-folder-from-java/3775723#3775723
+     *
+     * @param dir the directory to delete with all its content
+     * @return true if directory and all content has been deleted, false if not
+     */
+
+    private static boolean deleteDirectory(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDirectory(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
 
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
-	private FileWorkingSetCache<Integer> lruCache;
+	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
 
 	/**
@@ -83,7 +101,11 @@ public class FileSystemTileCache implements TileCache {
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
 		this.lruCache = new FileWorkingSetCache<>(capacity);
-		this.cacheDirectory = checkDirectory(cacheDirectory);
+		if (isValidCacheDirectory(cacheDirectory)) {
+			this.cacheDirectory = cacheDirectory;
+		} else {
+			this.cacheDirectory = null;
+		}
 		this.graphicFactory = graphicFactory;
 		this.lock = new ReentrantReadWriteLock();
 	}
@@ -92,7 +114,7 @@ public class FileSystemTileCache implements TileCache {
 	public boolean containsKey(Job key) {
 		try {
 			lock.readLock().lock();
-			if (this.lruCache.containsKey(key.hashCode()))
+			if (this.lruCache.containsKey(key.getKey()))
 				return true;
 		} finally {
 			lock.readLock().unlock();
@@ -115,14 +137,7 @@ public class FileSystemTileCache implements TileCache {
 			lock.writeLock().unlock();
 		}
 
-		File[] filesToDelete = this.cacheDirectory.listFiles(ImageFileNameFilter.INSTANCE);
-		if (filesToDelete != null) {
-			for (File file : filesToDelete) {
-				if (file.exists() && !file.delete()) {
-					LOGGER.log(Level.SEVERE, "could not delete file: " + file);
-				}
-			}
-		}
+		deleteDirectory(this.cacheDirectory);
 	}
 
 	@Override
@@ -131,7 +146,7 @@ public class FileSystemTileCache implements TileCache {
 		File file;
 		try {
 			lock.readLock().lock();
-			file = this.lruCache.get(key.hashCode());
+			file = this.lruCache.get(key.getKey());
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -199,12 +214,16 @@ public class FileSystemTileCache implements TileCache {
 		OutputStream outputStream = null;
 		try {
 			File file = getOutputFile(key);
+			if (file == null) {
+				// if the file cannot be written, silently return
+				return;
+			}
 			outputStream = new FileOutputStream(file);
 			bitmap.compress(outputStream);
 			try {
 				lock.writeLock().lock();
-				if (this.lruCache.put(key.hashCode(), file) != null) {
-					LOGGER.warning("overwriting cached entry: " + key.hashCode());
+				if (this.lruCache.put(key.getKey(), file) != null) {
+					LOGGER.warning("overwriting cached entry: " + key.getKey());
 				}
 			} finally {
 				lock.writeLock().unlock();
@@ -217,7 +236,7 @@ public class FileSystemTileCache implements TileCache {
 			this.destroy();
 			try {
 				lock.writeLock().lock();
-				this.lruCache = new FileWorkingSetCache<Integer>(0);
+				this.lruCache = new FileWorkingSetCache<String>(0);
 			} finally {
 				lock.writeLock().unlock();
 			}
@@ -227,21 +246,26 @@ public class FileSystemTileCache implements TileCache {
 	}
 
 	public void setWorkingSet(Set<Job> workingSet) {
-		Set<Integer> workingSetInteger = new HashSet<Integer>();
+		Set<String> workingSetInteger = new HashSet<String>();
 		for (Job job : workingSet) {
-			workingSetInteger.add(job.hashCode());
+			workingSetInteger.add(job.getKey());
 		}
 		this.lruCache.setWorkingSet(workingSetInteger);
 	}
 
 	private File getOutputFile(Job job) {
-		return new File(this.cacheDirectory, job.hashCode() + FILE_EXTENSION);
+		String file = this.cacheDirectory + File.separator + job.getKey();
+		String dir = file.substring(0, file.lastIndexOf(File.separatorChar));
+		if (isValidCacheDirectory(new File(dir))) {
+            return new File(file + FILE_EXTENSION);
+        }
+        return null;
 	}
 
 	private void remove(Job key) {
 		try {
 			lock.writeLock().lock();
-			this.lruCache.remove(key.hashCode());
+			this.lruCache.remove(key.getKey());
 		} finally {
 			lock.writeLock().unlock();
 		}

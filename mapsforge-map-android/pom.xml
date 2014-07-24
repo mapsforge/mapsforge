@@ -58,9 +58,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.mapsforge</groupId>
-			<artifactId>svg-android</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.caverock</groupId>
+			<artifactId>androidsvg</artifactId>
+			<version>1.2.2-beta-1</version>
 		</dependency>
 
 		<dependency>

@@ -8,6 +8,5 @@
         android:targetSdkVersion="19" />
     <application
         android:allowBackup="true"
-        android:label="mapsforge"
     />
 </manifest>

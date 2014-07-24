@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 mvglasow <michael -at- vonglasow.com>
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +15,8 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.mapsforge.map.layer.queue;
+
+import java.io.File;
 
 import org.mapsforge.core.model.Tile;
 
@@ -42,6 +45,32 @@ public class Job {
 			return false;
 		}
 		return this.tile.equals(other.tile);
+	}
+
+	/**
+	 * Returns a unique identifier for the tile.
+	 * <p>
+	 * The key has the form {@code zoom/x/y}, which is the de-facto standard for tile references. The default path
+	 * separator character of the platform is used between {@code zoom}, {@code x} and {@code y}.
+	 * 
+	 * @since 0.5.0
+	 */
+	public String getKey() {
+		return this.getKey(File.separatorChar);
+	}
+
+	/**
+	 * Returns a unique identifier for the tile.
+	 * <p>
+	 * The key has the form {@code zoom/x/y}, which is the de-facto standard for tile references.
+	 * 
+	 * @param sep
+	 *            The separator to be used between {@code zoom}, {@code x} and {@code y}
+	 * @since 0.5.0
+	 */
+	public String getKey(char sep) {
+		return Byte.toString(this.tile.zoomLevel) + sep + Integer.toString(this.tile.tileX) + sep
+				+ Integer.toString(this.tile.tileY);
 	}
 
 	@Override

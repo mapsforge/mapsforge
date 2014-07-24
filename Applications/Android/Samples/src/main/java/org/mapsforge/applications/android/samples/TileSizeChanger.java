@@ -29,8 +29,8 @@ public class TileSizeChanger extends BasicMapViewer {
 
 		@Override
 		protected void doWork() throws InterruptedException {
-			TileSizeChanger.this.changeTileSize();
 			sleep(ROTATION_TIME);
+			TileSizeChanger.this.changeTileSize();
 		}
 
 		@Override
@@ -51,32 +51,44 @@ public class TileSizeChanger extends BasicMapViewer {
 	private TileRendererLayer tileRendererLayer;
 
 	@Override
+	protected void createControls() {
+		super.createControls();
+		this.changerThread = new ChangerThread();
+		this.changerThread.start();
+    }
+
+	@Override
 	protected void createLayers() {
 		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
 				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
 				false, true);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
-		this.changerThread = new ChangerThread();
-		this.changerThread.start();
 	}
 
-	@Override
-	protected void destroyLayers() {
-		this.changerThread.interrupt();
-		super.destroyLayers();
-	}
+    @Override
+    protected void destroyControls() {
+        super.destroyControls();
+        this.changerThread.interrupt();
+    }
+
 
 	void changeTileSize() {
+
 		Integer[] tileSizes = { 256, 120, 0, 120};
 
 		if (tileSizes.length > 0) {
-			int tileSize = tileSizes[iteration % tileSizes.length];
-			this.mapViews.get(0).getModel().displayModel.setFixedTileSize(tileSize);
 			iteration += 1;
 			// destroy and recreate the tile caches so that old storage is
 			// freed and a new tile cache is created based on the new tile size
+			destroyLayers();
 			destroyTileCaches();
+
+			int tileSize = tileSizes[iteration % tileSizes.length];
+			this.mapViews.get(0).getModel().displayModel.setFixedTileSize(tileSize);
+
 			createTileCaches();
+			createLayers();
+
 			this.mapViews.get(0).getMapScaleBar().redrawScaleBar();
 			layerManagers.get(0).redrawLayers();
 		}

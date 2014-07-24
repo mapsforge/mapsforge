@@ -178,6 +178,9 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		));
 	}
 
+	protected void destroyControls() {
+	}
+
 	protected void destroyLayers() {
 		for (LayerManager layerManager : this.layerManagers) {
 			for (Layer layer : layerManager.getLayers()) {
@@ -341,6 +344,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		destroyControls();
 		destroyTileCaches();
 		destroyMapViewPositions();
 		destroyMapViews();

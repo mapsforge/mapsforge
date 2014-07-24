@@ -26,7 +26,7 @@ import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.util.PausableThread;
 
 public class MapWorker extends PausableThread {
-	private static final boolean DEBUG_TIMING = true;
+	private static final boolean DEBUG_TIMING = false;
 	private static final Logger LOGGER = Logger.getLogger(MapWorker.class.getName());
 
 	private final DatabaseRenderer databaseRenderer;
