@@ -40,7 +40,6 @@ public class InMemoryTileCache implements TileCache {
 		this.lruCache = new BitmapLRUCache(capacity);
 	}
 
-
 	@Override
 	public synchronized boolean containsKey(Job key) {
 		return this.lruCache.containsKey(key);
@@ -48,12 +47,8 @@ public class InMemoryTileCache implements TileCache {
 
 	@Override
 	public synchronized void destroy() {
-		for (TileBitmap bitmap : this.lruCache.values()) {
-			bitmap.decrementRefCount();
-		}
-		this.lruCache.clear();
+		purge();
 	}
-
 
 	@Override
 	public synchronized TileBitmap get(Job key) {
@@ -79,7 +74,13 @@ public class InMemoryTileCache implements TileCache {
 		return get(key);
 	}
 
-
+	@Override
+	public void purge() {
+		for (TileBitmap bitmap : this.lruCache.values()) {
+			bitmap.decrementRefCount();
+		}
+		this.lruCache.clear();
+	}
 
 	@Override
 	public synchronized void put(Job key, TileBitmap bitmap) {

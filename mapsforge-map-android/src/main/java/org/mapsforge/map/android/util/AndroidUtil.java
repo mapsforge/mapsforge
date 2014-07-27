@@ -37,17 +37,25 @@ public final class AndroidUtil {
 	public static final boolean HONEYCOMB_PLUS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
 	/**
+	 * Creates a two-level tile cache.
+	 * <p>
+	 * This is a utility function which creates a two-level tile cache along with its backends.
+	 * 
 	 * @param c
 	 *            the Android context
 	 * @param id
-	 *            name for the directory
+	 *            name for the directory, which will be created as a subdirectory of the default cache directory (as
+	 *            returned by {@link android.content.Context#getExternalCacheDir()}).
 	 * @param firstLevelSize
 	 *            size of the first level cache
 	 * @param tileSize
 	 *            tile size
+	 * @param persistent
+	 *            whether the second level tile cache should be persistent
 	 * @return a new cache created on the external storage
 	 */
-	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
+	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize,
+			boolean persistent) {
 		Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
 		TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
 		File cacheDir = c.getExternalCacheDir();
@@ -73,6 +81,19 @@ public final class AndroidUtil {
 	}
 
 	/**
+	 * Creates a two-level tile cache.
+	 * <p>
+	 * This is a utility function which creates a two-level tile cache along with its backends. It is equivalent to
+	 * calling {@link #createExternalStorageTileCache(Context, String, int, int, boolean)} with the {@code persistent}
+	 * argument set to {@code false}.
+	 */
+	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
+		return createExternalStorageTileCache(c, id, firstLevelSize, tileSize, false);
+	}
+
+	/**
+	 * Creates a two-level tile cache with the right size.
+	 * <p>
 	 * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
 	 * actually know the size of the mapview, so the screenRatio is an approximation of the required size.
 	 * 
@@ -86,12 +107,27 @@ public final class AndroidUtil {
 	 *            part of the screen the view takes up
 	 * @param overdraw
 	 *            overdraw allowance
+	 * @param persistent
+	 *            whether the second level tile cache should be persistent
 	 * @return a new cache created on the external storage
 	 */
 
-	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
+	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw,
+			boolean persistent) {
 		int cacheSize = Math.round(getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
-		return createExternalStorageTileCache(c, id, cacheSize, tileSize);
+		return createExternalStorageTileCache(c, id, cacheSize, tileSize, persistent);
+	}
+
+	/**
+	 * Creates a two-level tile cache with the right size.
+	 * <p>
+	 * Utility function to create a two-level tile cache with the right size. It is equivalent to calling
+	 * {@link #createTileCache(Context, String, int, float, double, boolean)} with the {@code persistent} argument set
+	 * to {@code false}.
+	 */
+
+	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
+		return createTileCache(c, id, tileSize, screenRatio, overdraw, false);
 	}
 
 	/**
@@ -178,8 +214,8 @@ public final class AndroidUtil {
 			width = display.getWidth();
 		}
 
-		return (int) (screenRatio * Math.ceil(1 + (height  * overdrawFactor / tileSize))
-				* Math.ceil(1 + (width  * overdrawFactor / tileSize)));
+		return (int) (screenRatio * Math.ceil(1 + (height * overdrawFactor / tileSize)) * Math.ceil(1 + (width
+				* overdrawFactor / tileSize)));
 	}
 
 	private AndroidUtil() {

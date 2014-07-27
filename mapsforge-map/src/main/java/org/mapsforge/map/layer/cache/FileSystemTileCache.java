@@ -38,20 +38,12 @@ import org.mapsforge.map.layer.queue.Job;
 /**
  * A thread-safe cache for image files with a fixed size and LRU policy.
  * <p>
- * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor. The
- * cache is persistent across instances, i.e. a new {@code FileSystemTileCache} instance will serve tiles cached by a
- * previous instance using the same cache directory. If persistence is not desired, call {@link #destroy()} immediately
- * after instantiating a new {@code FileSystemTileCache}, or when the current instance is no longer needed.
+ * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor.
  * <p>
  * When used for a {@link org.mapsforge.map.layer.renderer.TileRendererLayer}, persistent caching may result in clipped
  * labels when tiles from different instances are used. To work around this, either display labels in a separate
- * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described above.
- * <p>
- * When releasing a new version of an application using a persistent cache, consider whether the new version serving
- * tiles cached by an older version is expected to have undesirable side effects. This may be the case if the new
- * version changes the render style for locally rendered tiles, or the source for downloaded tiles. In such cases, you
- * should either {@link #destroy()} the cache when the new version starts up for the first time, or use different cache
- * directories in the new version (and remove leftover cache data from the previous version).
+ * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described in
+ * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean)}.
  */
 public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
@@ -64,34 +56,44 @@ public class FileSystemTileCache implements TileCache {
 		return true;
 	}
 
-    /**
-     * Recursively deletes directory and all files.
-     * See http://stackoverflow.com/questions/3775694/deleting-folder-from-java/3775723#3775723
-     *
-     * @param dir the directory to delete with all its content
-     * @return true if directory and all content has been deleted, false if not
-     */
+	/**
+	 * Recursively deletes directory and all files. See
+	 * http://stackoverflow.com/questions/3775694/deleting-folder-from-java/3775723#3775723
+	 * 
+	 * @param dir
+	 *            the directory to delete with all its content
+	 * @return true if directory and all content has been deleted, false if not
+	 */
 
-    private static boolean deleteDirectory(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                boolean success = deleteDirectory(new File(dir, children[i]));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        // The directory is now empty so delete it
-        return dir.delete();
-    }
+	private static boolean deleteDirectory(File dir) {
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i = 0; i < children.length; i++) {
+				boolean success = deleteDirectory(new File(dir, children[i]));
+				if (!success) {
+					return false;
+				}
+			}
+		}
+		// The directory is now empty so delete it
+		return dir.delete();
+	}
 
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
 	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
+	private boolean persistent;
 
 	/**
+	 * Creates a new FileSystemTileCache.
+	 * <p>
+	 * Use the {@code persistent} argument to specify whether cache contents should be kept across instances. A
+	 * persistent cache will serve any tiles it finds in {@code cacheDirectory}. Calling {@link #destroy()} on a
+	 * persistent cache will not delete the cache directory. Conversely, a non-persistent cache will serve only tiles
+	 * added to it via the {@link #put(Job, TileBitmap)} method, and calling {@link #destroy()} on a non-persistent
+	 * cache will delete {@code cacheDirectory}.
+	 * 
 	 * @param capacity
 	 *            the maximum number of entries in this cache.
 	 * @param cacheDirectory
@@ -99,7 +101,7 @@ public class FileSystemTileCache implements TileCache {
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
 	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean persistent) {
 		this.lruCache = new FileWorkingSetCache<>(capacity);
 		if (isValidCacheDirectory(cacheDirectory)) {
 			this.cacheDirectory = cacheDirectory;
@@ -108,6 +110,24 @@ public class FileSystemTileCache implements TileCache {
 		}
 		this.graphicFactory = graphicFactory;
 		this.lock = new ReentrantReadWriteLock();
+		this.persistent = persistent;
+	}
+
+	/**
+	 * Creates a new, non-persistent FileSystemTileCache.
+	 * <p>
+	 * Calling this constructor is equivalent to calling
+	 * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean)} with the last argument set to {@code false}.
+	 * 
+	 * @param capacity
+	 *            the maximum number of entries in this cache.
+	 * @param cacheDirectory
+	 *            the directory where cached tiles will be stored.
+	 * @throws IllegalArgumentException
+	 *             if the capacity is negative.
+	 */
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
+		this(capacity, cacheDirectory, graphicFactory, false);
 	}
 
 	@Override
@@ -119,25 +139,26 @@ public class FileSystemTileCache implements TileCache {
 		} finally {
 			lock.readLock().unlock();
 		}
-		return getOutputFile(key).exists();
+		return this.persistent && getOutputFile(key).exists();
 	}
 
 	/**
 	 * Destroys this cache.
 	 * <p>
-	 * Destroying the cache will delete any tiles stored on disk, freeing up disk space and causing subsequent calls to
-	 * {@link #get(Job)} to return {@code null}, requiring the caller to obtain a fresh copy of the tile.
+	 * Applications are expected to call this method when they no longer require the cache.
+	 * <p>
+	 * If the cache is not persistent, calling this method is equivalent to calling {@link #purge()}. If the cache is
+	 * persistent, it does nothing.
+	 * <p>
+	 * In versions prior to 0.5.0, it was common practice to call this method but continue using the cache, in order to
+	 * empty it, forcing all tiles to be re-rendered or re-requested from the source. Beginning with 0.5.0,
+	 * {@link #purge()} should be used for this purpose. The earlier practice is now discouraged and may lead to
+	 * unexpected results when used with features introduced in 0.5.0 or later.
 	 */
 	@Override
 	public void destroy() {
-		try {
-			lock.writeLock().lock();
-			this.lruCache.clear();
-		} finally {
-			lock.writeLock().unlock();
-		}
-
-		deleteDirectory(this.cacheDirectory);
+		if (!this.persistent)
+			purge();
 	}
 
 	@Override
@@ -151,9 +172,11 @@ public class FileSystemTileCache implements TileCache {
 			lock.readLock().unlock();
 		}
 		if (file == null) {
-			// check if there is a cached tile from an earlier instance
-			file = getOutputFile(key);
-			if (!file.exists())
+			if (this.persistent) {
+				file = getOutputFile(key);
+				if (!file.exists())
+					return null;
+			} else
 				return null;
 		}
 
@@ -197,6 +220,37 @@ public class FileSystemTileCache implements TileCache {
 	@Override
 	public TileBitmap getImmediately(Job key) {
 		return get(key);
+	}
+
+	/**
+	 * Whether the cache is persistent.
+	 */
+	public boolean isPersistent() {
+		return this.persistent;
+	}
+
+	/**
+	 * Purges this cache.
+	 * <p>
+	 * Calls to {@link #get(Job)} issued after purging will not return any tiles added before the purge operation.
+	 * Purging will also delete the cache directory on disk, freeing up disk space.
+	 * <p>
+	 * Applications should purge the tile cache when map model parameters change, such as the render style for locally
+	 * rendered tiles, or the source for downloaded tiles. Applications which frequently alternate between a limited
+	 * number of map model configurations may want to consider using a different cache for each.
+	 * 
+	 * @since 0.5.0
+	 */
+	@Override
+	public void purge() {
+		try {
+			this.lock.writeLock().lock();
+			this.lruCache.clear();
+		} finally {
+			this.lock.writeLock().unlock();
+		}
+
+		deleteDirectory(this.cacheDirectory);
 	}
 
 	@Override
@@ -257,9 +311,9 @@ public class FileSystemTileCache implements TileCache {
 		String file = this.cacheDirectory + File.separator + job.getKey();
 		String dir = file.substring(0, file.lastIndexOf(File.separatorChar));
 		if (isValidCacheDirectory(new File(dir))) {
-            return new File(file + FILE_EXTENSION);
-        }
-        return null;
+			return new File(file + FILE_EXTENSION);
+		}
+		return null;
 	}
 
 	private void remove(Job key) {
