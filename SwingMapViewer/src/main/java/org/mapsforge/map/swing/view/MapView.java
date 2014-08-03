@@ -27,7 +27,6 @@ import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
-import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
@@ -54,7 +53,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.model = new Model();
 
 		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
-		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, new DisplayModel(), GRAPHIC_FACTORY);
+		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
 		this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
 		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
@@ -64,7 +63,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		MapViewController.create(this, this.model);
 
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
-				new DisplayModel());
+				this.model.displayModel);
 		((DefaultMapScaleBar) this.mapScaleBar).setScaleBarMode(ScaleBarMode.BOTH);
 		((DefaultMapScaleBar) this.mapScaleBar).setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
 		((DefaultMapScaleBar) this.mapScaleBar).setSecondaryDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
