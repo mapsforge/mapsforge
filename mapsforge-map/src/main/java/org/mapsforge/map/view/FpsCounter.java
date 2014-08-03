@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +23,8 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.model.DisplayModel;
 
 /**
  * An FPS counter measures the drawing frame rate.
@@ -29,22 +32,33 @@ import org.mapsforge.core.graphics.Paint;
 public class FpsCounter {
 	private static final long ONE_SECOND = TimeUnit.SECONDS.toNanos(1);
 
-	private static Paint createPaint(GraphicFactory graphicFactory) {
+	private static Paint createPaint(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
 		paint.setColor(Color.BLACK);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-		paint.setTextSize(25);
+		paint.setTextSize(25 * displayModel.getScaleFactor());
+		return paint;
+	}
+
+	private static Paint createPaintStroke(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		Paint paint = graphicFactory.createPaint();
+		paint.setColor(Color.WHITE);
+		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
+		paint.setTextSize(25 * displayModel.getScaleFactor());
+		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
+		paint.setStyle(Style.STROKE);
 		return paint;
 	}
 
 	private String fps;
 	private int frameCounter;
 	private long lastTime;
-	private final Paint paint;
+	private final Paint paint, paintStroke;
 	private boolean visible;
 
-	public FpsCounter(GraphicFactory graphicFactory) {
-		this.paint = createPaint(graphicFactory);
+	public FpsCounter(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		this.paint = createPaint(graphicFactory, displayModel);
+		this.paintStroke = createPaintStroke(graphicFactory, displayModel);
 	}
 
 	public void draw(GraphicContext graphicContext) {
@@ -60,6 +74,7 @@ public class FpsCounter {
 			this.frameCounter = 0;
 		}
 
+		graphicContext.drawText(this.fps, 20, 40, this.paintStroke);
 		graphicContext.drawText(this.fps, 20, 40, this.paint);
 		++this.frameCounter;
 	}

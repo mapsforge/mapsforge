@@ -36,14 +36,23 @@ public class TileGridLayer extends Layer {
 		return paint;
 	}
 
+	private static Paint createPaintStroke(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		Paint paint = graphicFactory.createPaint();
+		paint.setColor(Color.WHITE);
+		paint.setStrokeWidth(4 * displayModel.getScaleFactor());
+		paint.setStyle(Style.STROKE);
+		return paint;
+	}
+
 	private final DisplayModel displayModel;
-	private final Paint paint;
+	private final Paint paint, paintStroke;
 
 	public TileGridLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
 		this.displayModel = displayModel;
 		this.paint = createPaint(graphicFactory, displayModel);
+		this.paintStroke = createPaintStroke(graphicFactory, displayModel);
 	}
 
 	@Override
@@ -58,6 +67,14 @@ public class TileGridLayer extends Layer {
 		int pixelY1 = (int) (MercatorProjection.tileToPixel(tileTop, tileSize) - topLeftPoint.y);
 		int pixelX2 = (int) (MercatorProjection.tileToPixel(tileRight, tileSize) - topLeftPoint.x + tileSize);
 		int pixelY2 = (int) (MercatorProjection.tileToPixel(tileBottom, tileSize) - topLeftPoint.y + tileSize);
+
+		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += tileSize) {
+			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paintStroke);
+		}
+
+		for (int lineY = pixelY1; lineY <= pixelY2 + 1; lineY += tileSize) {
+			canvas.drawLine(pixelX1, lineY, pixelX2, lineY, this.paintStroke);
+		}
 
 		for (int lineX = pixelX1; lineX <= pixelX2 + 1; lineX += tileSize) {
 			canvas.drawLine(lineX, pixelY1, lineX, pixelY2, this.paint);
