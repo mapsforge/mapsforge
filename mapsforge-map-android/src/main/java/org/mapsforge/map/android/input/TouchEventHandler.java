@@ -124,7 +124,7 @@ public class TouchEventHandler {
 		this.lastPosition = new Point(motionEvent.getX(), motionEvent.getY());
 		try {
 			this.lastLatLong = projection.fromPixels(this.lastPosition.x, this.lastPosition.y);
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			return true;
 		}
 		this.lastNumberOfPointers = motionEvent.getPointerCount();
