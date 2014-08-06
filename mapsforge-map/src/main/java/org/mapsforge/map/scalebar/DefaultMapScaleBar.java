@@ -34,11 +34,12 @@ import org.mapsforge.map.model.MapViewPosition;
  * Displays the default mapsforge MapScaleBar
  */
 public class DefaultMapScaleBar extends MapScaleBar {
-	private static final int BITMAP_HEIGHT = 50;
-	private static final int BITMAP_WIDTH = 150;
-	private static final int TEXT_MARGIN = 5;
+	private static final int BITMAP_HEIGHT = 40;
+	private static final int BITMAP_WIDTH = 120;
+	private static final int SCALE_BAR_MARGIN = 10;
 	private static final float STROKE_EXTERNAL = 4;
 	private static final float STROKE_INTERNAL = 2;
+	private static final int TEXT_MARGIN = 2;
 
 	public static enum ScaleBarMode { BOTH, SINGLE }
 	private ScaleBarMode scaleBarMode;
@@ -107,7 +108,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
 		paint.setStrokeWidth(strokeWidth * this.displayModel.getScaleFactor());
 		paint.setStyle(style);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-		paint.setTextSize(16 * this.displayModel.getScaleFactor());
+		paint.setTextSize(12 * this.displayModel.getScaleFactor());
 
 		return paint;
 	}
@@ -126,48 +127,51 @@ public class DefaultMapScaleBar extends MapScaleBar {
 			lengthAndValue2 = new ScaleBarLengthAndValue(0, 0);
 		}
 
-		drawScaleBar(canvas, lengthAndValue.scaleBarLength, lengthAndValue2.scaleBarLength, this.paintScaleBarStroke,
-				scale);
+		drawScaleBar(canvas, lengthAndValue.scaleBarLength, lengthAndValue2.scaleBarLength, this.paintScaleBarStroke, scale);
 		drawScaleBar(canvas, lengthAndValue.scaleBarLength, lengthAndValue2.scaleBarLength, this.paintScaleBar, scale);
 
 		String scaleText1 = this.distanceUnitAdapter.getScaleText(lengthAndValue.scaleBarValue);
-		String scaleText2 = this.scaleBarMode == ScaleBarMode.BOTH ? this.secondaryDistanceUnitAdapter
-				.getScaleText(lengthAndValue2.scaleBarValue) : "";
+		String scaleText2 = this.scaleBarMode == ScaleBarMode.BOTH ? this.secondaryDistanceUnitAdapter.getScaleText(lengthAndValue2.scaleBarValue) : "";
 
 		drawScaleText(canvas, scaleText1, scaleText2, this.paintScaleTextStroke, scale);
 		drawScaleText(canvas, scaleText1, scaleText2, this.paintScaleText, scale);
 	}
 
 	private void drawScaleBar(Canvas canvas, int scaleBarLength1, int scaleBarLength2, Paint paint, float scale) {
-		final int maxScaleBarLength = (scaleBarLength1 <= scaleBarLength2) ? scaleBarLength2 : scaleBarLength1;
-		final float startX = (STROKE_EXTERNAL * scale - STROKE_INTERNAL * scale) * 0.5f + STROKE_INTERNAL * scale;
-		int stopX;
-
-		canvas.drawLine(Math.round(startX), Math.round(canvas.getHeight() * 0.5f),
-				Math.round(startX + maxScaleBarLength), Math.round(canvas.getHeight() * 0.5f), paint);
-
-		final float startY = 10 * scale;
-		canvas.drawLine(Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(startY),
-				Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(canvas.getHeight() - startY), paint);
+		int maxScaleBarLength = scaleBarLength2 > scaleBarLength1 ? scaleBarLength2 : scaleBarLength1;
+		float startX = (STROKE_EXTERNAL * scale - STROKE_INTERNAL * scale) * 0.5f + STROKE_INTERNAL * scale;
 
 		if (scaleBarLength2 == 0) {
-			stopX = Math.round(startX + maxScaleBarLength + STROKE_INTERNAL * scale * 0.5f);
-
-			canvas.drawLine(stopX, Math.round(startY), stopX, Math.round(canvas.getHeight() - startY), paint);
+			canvas.drawLine(Math.round(startX), Math.round(canvas.getHeight() - SCALE_BAR_MARGIN * scale),
+					Math.round(startX + maxScaleBarLength), Math.round(canvas.getHeight() - SCALE_BAR_MARGIN * scale), paint);
+			canvas.drawLine(Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(canvas.getHeight() * 0.5f),
+					Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(canvas.getHeight() - SCALE_BAR_MARGIN * scale), paint);
+			int stopX = Math.round(startX + maxScaleBarLength + STROKE_INTERNAL * scale * 0.5f);
+			canvas.drawLine(stopX, Math.round(canvas.getHeight() * 0.5f),
+					stopX, Math.round(canvas.getHeight() - SCALE_BAR_MARGIN * scale), paint);
 		} else {
-			stopX = Math.round(startX + scaleBarLength1 + STROKE_INTERNAL * scale * 0.5f);
-			canvas.drawLine(stopX, Math.round(startY), stopX, Math.round(canvas.getHeight() * 0.5f), paint);
-			stopX = Math.round(startX + scaleBarLength2 + STROKE_INTERNAL * scale * 0.5f);
-			canvas.drawLine(stopX, Math.round(canvas.getHeight() * 0.5f), stopX,
-					Math.round(canvas.getHeight() - startY), paint);
+			canvas.drawLine(Math.round(startX), Math.round(canvas.getHeight() * 0.5f),
+					Math.round(startX + maxScaleBarLength), Math.round(canvas.getHeight() * 0.5f), paint);
+			canvas.drawLine(Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(SCALE_BAR_MARGIN * scale),
+					Math.round(STROKE_EXTERNAL * scale * 0.5f), Math.round(canvas.getHeight() - SCALE_BAR_MARGIN * scale), paint);
+			int stopX1 = Math.round(startX + scaleBarLength1 + STROKE_INTERNAL * scale * 0.5f);
+			canvas.drawLine(stopX1, Math.round(SCALE_BAR_MARGIN * scale),
+					stopX1, Math.round(canvas.getHeight() * 0.5f), paint);
+			int stopX2 = Math.round(startX + scaleBarLength2 + STROKE_INTERNAL * scale * 0.5f);
+			canvas.drawLine(stopX2, Math.round(canvas.getHeight() * 0.5f),
+					stopX2, Math.round(canvas.getHeight() - SCALE_BAR_MARGIN * scale), paint);
 		}
 	}
 
 	private void drawScaleText(Canvas canvas, String scaleText1, String scaleText2, Paint paint, float scale) {
-		canvas.drawText(scaleText1, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN),
-				Math.round(canvas.getHeight() * 0.5f - STROKE_EXTERNAL * scale * 0.5f - TEXT_MARGIN), paint);
-		if (scaleText2.length() > 0)
-			canvas.drawText(scaleText2, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN),
-					Math.round(canvas.getHeight() * 0.5f + STROKE_EXTERNAL * scale * 0.5f + TEXT_MARGIN + this.paintScaleTextStroke.getTextHeight(scaleText2)), paint);
+		if (scaleText2.length() == 0) {
+			canvas.drawText(scaleText1, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN * scale),
+					Math.round(canvas.getHeight() - SCALE_BAR_MARGIN * scale - STROKE_EXTERNAL * scale * 0.5f - TEXT_MARGIN * scale), paint);
+		} else {
+			canvas.drawText(scaleText1, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN * scale),
+					Math.round(canvas.getHeight() * 0.5f - STROKE_EXTERNAL * scale * 0.5f - TEXT_MARGIN * scale), paint);
+			canvas.drawText(scaleText2, Math.round(STROKE_EXTERNAL * scale + TEXT_MARGIN * scale),
+					Math.round(canvas.getHeight() * 0.5f + STROKE_EXTERNAL * scale * 0.5f + TEXT_MARGIN * scale + this.paintScaleTextStroke.getTextHeight(scaleText2)), paint);
+		}
 	}
 }
