@@ -50,6 +50,7 @@ public class FpsCounter {
 		return paint;
 	}
 
+	private final DisplayModel displayModel;
 	private String fps;
 	private int frameCounter;
 	private long lastTime;
@@ -57,6 +58,7 @@ public class FpsCounter {
 	private boolean visible;
 
 	public FpsCounter(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		this.displayModel = displayModel;
 		this.paint = createPaint(graphicFactory, displayModel);
 		this.paintStroke = createPaintStroke(graphicFactory, displayModel);
 	}
@@ -74,8 +76,10 @@ public class FpsCounter {
 			this.frameCounter = 0;
 		}
 
-		graphicContext.drawText(this.fps, 20, 40, this.paintStroke);
-		graphicContext.drawText(this.fps, 20, 40, this.paint);
+		int x = (int) (20 * displayModel.getScaleFactor());
+		int y = (int) (40 * displayModel.getScaleFactor());
+		graphicContext.drawText(this.fps, x, y, this.paintStroke);
+		graphicContext.drawText(this.fps, x, y, this.paint);
 		++this.frameCounter;
 	}
 
