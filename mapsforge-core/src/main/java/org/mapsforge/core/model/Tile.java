@@ -40,6 +40,11 @@ public class Tile implements Serializable {
 		return (2 << zoomLevel - 1) - 1;
 	}
 
+	/**
+	 * the map size implied by zoom level and tileSize, to avoid multiple computations.
+	 */
+	public final long mapSize;
+
 	public final int tileSize;
 
 	/**
@@ -90,6 +95,7 @@ public class Tile implements Serializable {
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.zoomLevel = zoomLevel;
+		this.mapSize = MercatorProjection.getMapSize(zoomLevel, tileSize);
 	}
 
 

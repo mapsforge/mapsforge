@@ -132,7 +132,7 @@ public abstract class MapScaleBar {
 	protected ScaleBarLengthAndValue calculateScaleBarLengthAndValue(DistanceUnitAdapter unitAdapter) {
 		this.prevMapPosition = this.mapViewPosition.getMapPosition();
 		double groundResolution = MercatorProjection.calculateGroundResolution(this.prevMapPosition.latLong.latitude,
-				this.prevMapPosition.zoomLevel, this.displayModel.getTileSize());
+				MercatorProjection.getMapSize(this.prevMapPosition.zoomLevel, this.displayModel.getTileSize()));
 
 		groundResolution = groundResolution / unitAdapter.getMeterRatio();
 		int[] scaleBarValues = unitAdapter.getScaleBarValues();

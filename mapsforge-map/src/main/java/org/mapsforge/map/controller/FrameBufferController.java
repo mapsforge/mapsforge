@@ -113,10 +113,10 @@ public final class FrameBufferController implements Observer {
 
 		MapPosition mapViewPosition = this.model.mapViewPosition.getMapPosition();
 
-		Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapPositionFrameBuffer.zoomLevel,
-				model.displayModel.getTileSize());
-		Point pointMapPosition = MercatorProjection.getPixel(mapViewPosition.latLong, mapPositionFrameBuffer.zoomLevel,
-				model.displayModel.getTileSize());
+		long mapSize = MercatorProjection.getMapSize(mapPositionFrameBuffer.zoomLevel, model.displayModel.getTileSize());
+
+		Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapSize);
+		Point pointMapPosition = MercatorProjection.getPixel(mapViewPosition.latLong, mapSize);
 
 		double diffX = pointFrameBuffer.x - pointMapPosition.x;
 		double diffY = pointFrameBuffer.y - pointMapPosition.y;
@@ -127,7 +127,7 @@ public final class FrameBufferController implements Observer {
 		double pivotDistanceX = 0d;
 		double pivotDistanceY = 0d;
 		if (pivot != null) {
-			Point pivotXY = MercatorProjection.getPixel(pivot, mapPositionFrameBuffer.zoomLevel, this.model.displayModel.getTileSize());
+			Point pivotXY = MercatorProjection.getPixel(pivot, mapSize);
 			pivotDistanceX = pivotXY.x - pointFrameBuffer.x;
 			pivotDistanceY = pivotXY.y - pointFrameBuffer.y;
 		}

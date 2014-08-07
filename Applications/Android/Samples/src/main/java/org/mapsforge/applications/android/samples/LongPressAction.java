@@ -81,8 +81,10 @@ public class LongPressAction extends BasicMapViewerXml {
 					canvas, Point topLeftPoint) {
 				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
 
-				int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, zoomLevel, this.displayModel.getTileSize()) - topLeftPoint.x);
-				int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, zoomLevel, this.displayModel.getTileSize()) - topLeftPoint.y);
+				long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
+
+				int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, mapSize) - topLeftPoint.x);
+				int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, mapSize) - topLeftPoint.y);
 				String text = Integer.toString(count);
 				canvas.drawText(text, pixelX - BLACK.getTextWidth(text) / 2, pixelY + BLACK.getTextHeight(text) / 2, BLACK);
 			}

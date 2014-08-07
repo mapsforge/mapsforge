@@ -354,7 +354,7 @@ public class DatabaseRenderer implements RenderCallback {
 	@Override
 	public void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                                         Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
-		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
+		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.mapSize);
 
 		this.currentLabels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), priority, caption, fill,
 				stroke, null, position, maxTextWidth));
@@ -370,7 +370,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 	@Override
 	public void renderPointOfInterestSymbol(PointOfInterest poi, int priority, Bitmap symbol, Tile tile) {
-		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
+		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.mapSize);
 		this.currentLabels.add(new SymbolContainer(poiPosition, priority, symbol));
 	}
 

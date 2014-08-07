@@ -80,7 +80,7 @@ public class PolylineContainer implements ShapeContainer {
 			for (int i = 0; i < way.latLongs.length; ++i) {
 				coordinatesAbsolute[i] = new Point[way.latLongs[i].length];
 				for (int j = 0; j < way.latLongs[i].length; ++j) {
-					coordinatesAbsolute[i][j] = MercatorProjection.getPixelAbsolute(way.latLongs[i][j], tile.zoomLevel, tile.tileSize);
+					coordinatesAbsolute[i][j] = MercatorProjection.getPixelAbsolute(way.latLongs[i][j], tile.mapSize);
 				}
 			}
 			this.way = null;

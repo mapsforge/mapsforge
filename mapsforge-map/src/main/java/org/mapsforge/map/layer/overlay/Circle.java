@@ -66,9 +66,9 @@ public class Circle extends Layer {
 
 		double latitude = this.latLong.latitude;
 		double longitude = this.latLong.longitude;
-		int tileSize = displayModel.getTileSize();
-		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, zoomLevel, tileSize) - topLeftPoint.x);
-		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, zoomLevel, tileSize) - topLeftPoint.y);
+		long mapSize = MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize());
+		int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, mapSize) - topLeftPoint.x);
+		int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, mapSize) - topLeftPoint.y);
 		int radiusInPixel = getRadiusInPixels(latitude, zoomLevel);
 
 		Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -148,7 +148,7 @@ public class Circle extends Layer {
 	}
 
 	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		return (int) MercatorProjection.metersToPixels(this.radius, latitude, zoomLevel, displayModel.getTileSize());
+		return (int) MercatorProjection.metersToPixels(this.radius, latitude, MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize()));
 	}
 
 	private void setRadiusInternal(float radius) {

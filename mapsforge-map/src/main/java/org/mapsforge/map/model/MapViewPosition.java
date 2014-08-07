@@ -129,14 +129,13 @@ public class MapViewPosition extends Observable implements Persistable {
 				final int totalSteps = 25; // Define the Step Number
 				int signX = 1; // Define the Sign for Horizontal Movement
 				int signY = 1; // Define the Sign for Vertical Movement
-				int tileSize = displayModel.getTileSize();
+				long mapSize = MercatorProjection.getMapSize(getZoomLevel(), displayModel.getTileSize());
 
-				final double targetPixelX = MercatorProjection.longitudeToPixelX(pos.longitude, getZoomLevel(),
-						tileSize);
-				final double targetPixelY = MercatorProjection.latitudeToPixelY(pos.latitude, getZoomLevel(), tileSize);
+				final double targetPixelX = MercatorProjection.longitudeToPixelX(pos.longitude, mapSize);
+				final double targetPixelY = MercatorProjection.latitudeToPixelY(pos.latitude, mapSize);
 
-				final double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, getZoomLevel(), tileSize);
-				final double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, getZoomLevel(), tileSize);
+				final double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, mapSize);
+				final double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, mapSize);
 
 				final double stepSizeX = Math.abs(targetPixelX - currentPixelX) / totalSteps;
 				final double stepSizeY = Math.abs(targetPixelY - currentPixelY) / totalSteps;
@@ -213,7 +212,7 @@ public class MapViewPosition extends Observable implements Persistable {
 
 	public synchronized Point getPivotXY(byte zoomLevel) {
 		if (this.pivot != null) {
-			return MercatorProjection.getPixel(this.pivot, zoomLevel, displayModel.getTileSize());
+			return MercatorProjection.getPixel(this.pivot, MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize()));
 		}
 		return null;
 	}
@@ -281,17 +280,16 @@ public class MapViewPosition extends Observable implements Persistable {
 	 */
 	public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff) {
 		synchronized (this) {
-			int tileSize = this.displayModel.getTileSize();
-			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, this.zoomLevel, tileSize)
+			long mapSize = MercatorProjection.getMapSize(this.zoomLevel, this.displayModel.getTileSize());
+			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, mapSize)
 					- moveHorizontal;
-			double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, this.zoomLevel, tileSize) - moveVertical;
+			double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, mapSize) - moveVertical;
 
-			long mapSize = MercatorProjection.getMapSize(this.zoomLevel, tileSize);
 			pixelX = Math.min(Math.max(0, pixelX), mapSize);
 			pixelY = Math.min(Math.max(0, pixelY), mapSize);
 
-			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, this.zoomLevel, tileSize);
-			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, this.zoomLevel, tileSize);
+			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, mapSize);
+			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
 			setCenterInternal(new LatLong(newLatitude, newLongitude));
 			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
 		}
