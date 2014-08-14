@@ -140,7 +140,7 @@ public class RuleBuilder {
 			String value = pullParser.getAttributeValue(i);
 
 			if (E.equals(name)) {
-				this.element = Element.valueOf(value.toUpperCase(Locale.ENGLISH));
+				this.element = Element.fromString(value);
 			} else if (K.equals(name)) {
 				this.keys = value;
 			} else if (V.equals(name)) {
@@ -148,7 +148,7 @@ public class RuleBuilder {
 			} else if (CAT.equals(name)) {
 				this.cat = value;
 			} else if (CLOSED.equals(name)) {
-				this.closed = Closed.valueOf(value.toUpperCase(Locale.ENGLISH));
+				this.closed = Closed.fromString(value);
 			} else if (ZOOM_MIN.equals(name)) {
 				this.zoomMin = XmlUtils.parseNonNegativeByte(name, value);
 			} else if (ZOOM_MAX.equals(name)) {

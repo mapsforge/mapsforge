@@ -19,4 +19,16 @@ package org.mapsforge.core.graphics;
  */
 public enum Join {
 	BEVEL, MITER, ROUND;
+
+	static public Join fromString(String value) {
+		if ("bevel".equals(value)) {
+			return BEVEL;
+		} else if (("round").equals(value)) {
+			return ROUND;
+		} else if ("miter".equals(value)) {
+			return MITER;
+		}
+		throw new IllegalArgumentException("Invalid value for Join: " + value);
+	}
+
 }

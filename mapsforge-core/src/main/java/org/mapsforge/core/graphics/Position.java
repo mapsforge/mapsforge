@@ -16,4 +16,20 @@ package org.mapsforge.core.graphics;
 
 public enum Position {
 	CENTER, BELOW, ABOVE, LEFT, RIGHT;
+
+	static public Position fromString(String value) {
+		if ("center".equals(value)) {
+			return CENTER;
+		} else if (("below").equals(value)) {
+			return BELOW;
+		} else if ("above".equals(value)) {
+			return ABOVE;
+		} else if ("left".equals(value)) {
+			return LEFT;
+		} else if ("right".equals(value)) {
+			return RIGHT;
+		}
+		throw new IllegalArgumentException("Invalid value for Position: " + value);
+	}
+
 }

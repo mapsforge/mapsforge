@@ -204,15 +204,15 @@ public class Caption extends RenderInstruction {
 			if (K.equals(name)) {
 				this.textKey = TextKey.getInstance(value);
 			} else if (POSITION.equals(name)) {
-				this.position = Position.valueOf(value.toUpperCase(Locale.ENGLISH));
+				this.position = Position.fromString(value);
 			} else if (CAT.equals(name)) {
 				this.category = value;
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {
-				fontFamily = FontFamily.valueOf(value.toUpperCase(Locale.ENGLISH));
+				fontFamily = FontFamily.fromString(value);
 			} else if (FONT_STYLE.equals(name)) {
-				fontStyle = FontStyle.valueOf(value.toUpperCase(Locale.ENGLISH));
+				fontStyle = FontStyle.fromString(value);
 			} else if (FONT_SIZE.equals(name)) {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (FILL.equals(name)) {

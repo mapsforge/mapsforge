@@ -125,9 +125,9 @@ public class Line extends RenderInstruction {
 				}
 				this.stroke.setDashPathEffect(floatArray);
 			} else if (STROKE_LINECAP.equals(name)) {
-				this.stroke.setStrokeCap(Cap.valueOf(value.toUpperCase(Locale.ENGLISH)));
+				this.stroke.setStrokeCap(Cap.fromString(value));
 			} else if (STROKE_LINEJOIN.equals(name)) {
-				this.stroke.setStrokeJoin(Join.valueOf(value.toUpperCase(Locale.ENGLISH)));
+				this.stroke.setStrokeJoin(Join.fromString(value));
 			} else if (SYMBOL_HEIGHT.equals(name)) {
 				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else if (SYMBOL_PERCENT.equals(name)) {
