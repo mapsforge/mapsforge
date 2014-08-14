@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
@@ -80,6 +81,9 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 				candidate = iterator.next().get();
 				if (null != candidate && candidate.isMutable()) {
 					bitmap = candidate;
+					if (isTransparent) {
+						bitmap.eraseColor(android.graphics.Color.TRANSPARENT);
+					}
 					// Remove from reusable set so it can't be used again.
 					iterator.remove();
 					break;

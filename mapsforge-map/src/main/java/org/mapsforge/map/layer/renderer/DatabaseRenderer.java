@@ -198,8 +198,8 @@ public class DatabaseRenderer implements RenderCallback {
 			bitmap = this.graphicFactory.createTileBitmap(tileSize,
 					rendererJob.hasAlpha);
 			this.canvasRasterer.setCanvasBitmap(bitmap);
-			if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
-				this.canvasRasterer.fill(rendererJob.hasAlpha ? 0 : this.renderTheme.getMapBackground());
+			if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
+				this.canvasRasterer.fill(this.renderTheme.getMapBackground());
 			}
 			this.canvasRasterer.drawWays(ways, rendererJob.tile);
 		}
