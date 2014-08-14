@@ -23,6 +23,7 @@ import org.mapsforge.core.model.Tile;
 public class Job {
 	public final boolean hasAlpha;
 	public final Tile tile;
+	public final String key;
 
 	public Job(Tile tile, boolean hasAlpha) {
 		if (tile == null) {
@@ -31,6 +32,8 @@ public class Job {
 
 		this.tile = tile;
 		this.hasAlpha = hasAlpha;
+		this.key = new StringBuilder().append(this.tile.zoomLevel).append(File.separatorChar).
+				append(this.tile.tileX).append(File.separatorChar).append(this.tile.tileY).toString();
 	}
 
 	@Override
@@ -52,29 +55,15 @@ public class Job {
 	 * <p>
 	 * The key has the form {@code zoom/x/y}, which is the de-facto standard for tile references. The default path
 	 * separator character of the platform is used between {@code zoom}, {@code x} and {@code y}.
-	 * 
+	 *
 	 * @since 0.5.0
 	 */
 	public String getKey() {
-		return this.getKey(File.separatorChar);
-	}
-
-	/**
-	 * Returns a unique identifier for the tile.
-	 * <p>
-	 * The key has the form {@code zoom/x/y}, which is the de-facto standard for tile references.
-	 * 
-	 * @param sep
-	 *            The separator to be used between {@code zoom}, {@code x} and {@code y}
-	 * @since 0.5.0
-	 */
-	public String getKey(char sep) {
-		return Byte.toString(this.tile.zoomLevel) + sep + Integer.toString(this.tile.tileX) + sep
-				+ Integer.toString(this.tile.tileY);
+		return this.key;
 	}
 
 	@Override
 	public int hashCode() {
-		return 31 * this.tile.hashCode();
+		return this.tile.hashCode();
 	}
 }
