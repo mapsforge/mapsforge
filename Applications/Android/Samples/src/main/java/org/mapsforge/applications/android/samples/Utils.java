@@ -1,5 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,7 +24,6 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
@@ -129,7 +129,6 @@ public final class Utils {
 				mapViewPosition, hasAlpha, renderLabels, AndroidGraphicFactory.INSTANCE);
 		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(renderTheme);
-		tileRendererLayer.setTextScale(1.5f);
 		return tileRendererLayer;
 	}
 
