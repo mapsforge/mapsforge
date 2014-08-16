@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,15 +16,23 @@
 package org.mapsforge.core.graphics;
 
 public enum Position {
-	CENTER, BELOW, ABOVE, LEFT, RIGHT;
+	CENTER, BELOW, BELOW_LEFT, BELOW_RIGHT, ABOVE, ABOVE_LEFT, ABOVE_RIGHT, LEFT, RIGHT;
 
 	static public Position fromString(String value) {
 		if ("center".equals(value)) {
 			return CENTER;
 		} else if (("below").equals(value)) {
 			return BELOW;
+		} else if (("below_left").equals(value)) {
+			return BELOW_LEFT;
+		} else if (("below_right").equals(value)) {
+			return BELOW_RIGHT;
 		} else if ("above".equals(value)) {
 			return ABOVE;
+		} else if ("above_left".equals(value)) {
+			return ABOVE_LEFT;
+		} else if ("above_right".equals(value)) {
+			return ABOVE_RIGHT;
 		} else if ("left".equals(value)) {
 			return LEFT;
 		} else if ("right".equals(value)) {

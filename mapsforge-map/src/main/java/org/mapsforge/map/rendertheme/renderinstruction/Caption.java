@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -98,10 +99,14 @@ public class Caption extends RenderInstruction {
 				this.stroke.setTextAlign(Align.CENTER);
 				this.fill.setTextAlign(Align.CENTER);
 				break;
+			case BELOW_LEFT:
+			case ABOVE_LEFT:
 			case LEFT:
 				this.stroke.setTextAlign(Align.RIGHT);
 				this.fill.setTextAlign(Align.RIGHT);
 				break;
+			case BELOW_RIGHT:
+			case ABOVE_RIGHT:
 			case RIGHT:
 				this.stroke.setTextAlign(Align.LEFT);
 				this.fill.setTextAlign(Align.LEFT);
@@ -172,9 +177,13 @@ public class Caption extends RenderInstruction {
 	private float computeHorizontalOffset() {
 		// compute only the offset required by the bitmap, not the text size,
 		// because at this point we do not know the text boxing
-		if (Position.RIGHT == this.position || Position.LEFT == this.position) {
+		if (Position.RIGHT == this.position || Position.LEFT == this.position
+				|| Position.BELOW_RIGHT == this.position || Position.BELOW_LEFT == this.position
+				|| Position.ABOVE_RIGHT == this.position || Position.ABOVE_LEFT == this.position) {
 			float horizontalOffset = this.bitmap.getWidth() / 2f + this.gap;
-			if (Position.LEFT == this.position) {
+			if (Position.LEFT == this.position
+					|| Position.BELOW_LEFT == this.position
+					|| Position.ABOVE_LEFT == this.position) {
 				horizontalOffset *= -1f;
 			}
 			return horizontalOffset;
@@ -185,9 +194,13 @@ public class Caption extends RenderInstruction {
 	private float computeVerticalOffset() {
 		float verticalOffset = this.dy;
 
-		if (Position.ABOVE == this.position) {
+		if (Position.ABOVE == this.position
+				|| Position.ABOVE_LEFT == this.position
+				|| Position.ABOVE_RIGHT == this.position) {
 			verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
-		} else if (Position.BELOW == this.position) {
+		} else if (Position.BELOW == this.position
+				|| Position.BELOW_LEFT == this.position
+				|| Position.BELOW_RIGHT == this.position) {
 			verticalOffset += this.bitmap.getHeight() / 2f + this.gap;
 		}
 		return verticalOffset;

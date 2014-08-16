@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -58,9 +59,13 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			}
 
 			Layout.Alignment alignment = Layout.Alignment.ALIGN_CENTER;
-			if (Position.LEFT == this.position) {
+			if (Position.LEFT == this.position
+					|| Position.BELOW_LEFT == this.position
+					|| Position.ABOVE_LEFT == this.position) {
 				alignment = Layout.Alignment.ALIGN_OPPOSITE;
-			} else if (Position.RIGHT == this.position) {
+			} else if (Position.RIGHT == this.position
+					|| Position.BELOW_RIGHT == this.position
+					|| Position.ABOVE_RIGHT == this.position) {
 				alignment = Layout.Alignment.ALIGN_NORMAL;
 			}
 
@@ -90,8 +95,20 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			case BELOW:
 				boundary = new Rectangle(-boxWidth / 2f, 0, boxWidth / 2f, boxHeight);
 				break;
+			case BELOW_LEFT:
+				boundary = new Rectangle(-boxWidth, 0, 0, boxHeight);
+				break;
+			case BELOW_RIGHT:
+				boundary = new Rectangle(0, 0, boxWidth, boxHeight);
+				break;
 			case ABOVE:
 				boundary = new Rectangle(-boxWidth / 2f, -boxHeight, boxWidth / 2f, 0);
+				break;
+			case ABOVE_LEFT:
+				boundary = new Rectangle(-boxWidth, -boxHeight, 0, 0);
+				break;
+			case ABOVE_RIGHT:
+				boundary = new Rectangle(0, -boxHeight, boxWidth, 0);
 				break;
 			case LEFT:
 				boundary = new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
@@ -108,8 +125,20 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			case BELOW:
 				debugBoundary = new Rectangle(-textWidth / 2f, 0, textWidth / 2f, textHeight);
 				break;
+			case BELOW_LEFT:
+				debugBoundary = new Rectangle(-textWidth, 0, 0, textHeight);
+				break;
+			case BELOW_RIGHT:
+				debugBoundary = new Rectangle(0, 0, textWidth, textHeight);
+				break;
 			case ABOVE:
 				debugBoundary = new Rectangle(-textWidth / 2f, -textHeight, textWidth / 2f, 0);
+				break;
+			case ABOVE_LEFT:
+				debugBoundary = new Rectangle(-textWidth, -textHeight, 0, 0);
+				break;
+			case ABOVE_RIGHT:
+				debugBoundary = new Rectangle(0, -textHeight, textWidth, 0);
 				break;
 			case LEFT:
 				debugBoundary = new Rectangle(-textWidth, -textHeight / 2f, 0, textHeight / 2f);
@@ -152,6 +181,8 @@ public class AndroidPointTextContainer extends PointTextContainer {
 					textOffset = textHeight / 2f;
 					break;
 				case BELOW:
+				case BELOW_LEFT:
+				case BELOW_RIGHT:
 					textOffset = textHeight;
 					break;
 			}
