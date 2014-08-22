@@ -920,9 +920,6 @@
 				<symbol src="assets:symbols/peak.png" />
 				<caption k="ele" dy="20" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
-			<rule e="node" k="natural" v="tree" zoom-min="16">
-				<symbol src="assets:symbols/tree.png" />
-			</rule>
 			<rule e="node" k="natural" v="volcano" zoom-min="12">
 				<symbol src="assets:symbols/vulcan.png" />
 			</rule>
