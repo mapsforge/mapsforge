@@ -16,6 +16,7 @@
 package org.mapsforge.map.awt;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -81,7 +82,10 @@ class AwtBitmap implements Bitmap {
 
 	@Override
 	public void setBackgroundColor(int color) {
-		// TODO implement
+		Graphics2D graphics = bufferedImage.createGraphics();
+		graphics.setColor(new Color(color, true));
+		graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+		graphics.dispose();
 	}
 
 }
