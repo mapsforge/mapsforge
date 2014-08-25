@@ -29,7 +29,7 @@ public class WayTextContainer extends MapElementContainer {
 	private final String text;
 	private final Point end;
 
-	public WayTextContainer(Point point, Point end, int priority, String text, Paint paintFront, Paint paintBack) {
+	public WayTextContainer(Point point, Point end, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
 		super(point, priority);
 		this.text = text;
 		this.paintFront = paintFront;
@@ -37,7 +37,12 @@ public class WayTextContainer extends MapElementContainer {
 		this.end = end;
 
 		this.boundary = null;
-		this.boundaryAbsolute = new Rectangle(Math.min(point.x, end.x), Math.min(point.y, end.y), Math.max(point.x, end.x), Math.max(point.y, end.y));
+		// a way text container should always run left to right, but I leave this in because it might matter
+		// if we support right-to-left text.
+		// we also need to make the container larger by textHeight as otherwise the end points do
+		// not correctly reflect the size of the text on screen
+		this.boundaryAbsolute = new Rectangle(Math.min(point.x, end.x), Math.min(point.y, end.y),
+				Math.max(point.x, end.x), Math.max(point.y, end.y)).envelope(textHeight/2d);
 	}
 
 	public void draw(Canvas canvas, Point origin, Matrix matrix) {

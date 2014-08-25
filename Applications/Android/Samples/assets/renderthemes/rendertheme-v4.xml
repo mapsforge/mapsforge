@@ -656,21 +656,21 @@
 <!-- highway captions etc. -->
 	<rule cat="roads" e="way" k="tunnel" v="~|no|false">
 		<rule e="way" k="highway" v="footway|path|track|bridleway|steps|byway" zoom-min="14">
-			<pathText k="name" font-style="bold" font-size="12" fill="#606060" stroke="#FFFFFF" stroke-width="2"/>
+			<pathText k="name" priority="-8" font-style="bold" font-size="12" fill="#606060" stroke="#FFFFFF" stroke-width="2"/>
 		</rule>
 		<rule e="way" k="highway" v="cycleway|service|construction|road|pedestrian|unclassified|residential|living_street|tertiary|tertiary_link" zoom-min="16">
-			<pathText k="name" font-style="bold" font-size="10" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
+			<pathText k="name" priority="-7" font-style="bold" font-size="10" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="way" k="highway" v="secondary_link|primary_link|trunk_link|motorway_link|secondary|primary" zoom-min="15">
-			<pathText k="name" font-style="bold" font-size="12" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
+			<pathText k="name" priority="-6" font-style="bold" font-size="12" fill="#000000" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="highway" v="trunk|primary|secondary|tertiary" zoom-min="12">
 			<rule e="way" k="name" v="~">
-				<pathText k="ref" font-style="bold" font-size="14" stroke="#FFFFFF" fill="#606060" stroke-width="3.0"/>
+				<pathText k="ref" priority="-5" font-style="bold" font-size="14" stroke="#FFFFFF" fill="#606060" stroke-width="3.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="highway" v="motorway" zoom-min="12">
-			<pathText k="ref" font-style="bold" font-size="14" stroke="#FFFF00" fill="#FF0000" stroke-width="3.0"/>
+			<pathText k="ref" priority="-4" font-style="bold" font-size="14" stroke="#FFFF00" fill="#FF0000" stroke-width="3.0"/>
 		</rule>
 		<rule e="way" k="highway" v="*" zoom-min="15">
 			<rule e="way" k="access" v="destination">
@@ -680,7 +680,7 @@
 				<line src="assets:patterns/access-private.png" stroke-width="1.0"/>
 			</rule>
 			<rule e="way" k="oneway" v="yes|true|1" zoom-min="16">
-				<lineSymbol src="assets:symbols/oneway.svg" align-center="true" repeat="true"/>
+				<lineSymbol src="assets:symbols/oneway.svg" priority="-10" align-center="true" repeat="true"/>
 			</rule>
 		</rule>
 	</rule>
