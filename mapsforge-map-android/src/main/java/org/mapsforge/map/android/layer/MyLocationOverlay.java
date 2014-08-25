@@ -107,9 +107,9 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	 * @param bitmap
 	 *            a bitmap to display at the current location (might be null).
 	 * @param circleFill
-	 *            the {@code Paint} used to fill the circle that represents the current location (might be null).
+	 *            the {@code Paint} used to fill the circle that represents the accuracy of the current location (might be null).
 	 * @param circleStroke
-	 *            the {@code Paint} used to stroke the circle that represents the current location (might be null).
+	 *            the {@code Paint} used to stroke the circle that represents the accuracy of the current location (might be null).
 	 */
 	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Bitmap bitmap, Paint circleFill,
 			Paint circleStroke) {
