@@ -97,7 +97,6 @@ public class DatabaseRenderer implements RenderCallback {
 
 	private final CanvasRasterer canvasRasterer;
 	private List<MapElementContainer> currentLabels;
-	private Set<MapElementContainer> currentWayLabels;
 	private List<List<ShapePaintContainer>> drawingLayers;
 	private final GraphicFactory graphicFactory;
 	private final TileBasedLabelStore labelStore;
@@ -172,7 +171,6 @@ public class DatabaseRenderer implements RenderCallback {
 		final byte zoomLevel = rendererJob.tile.zoomLevel;
 
 		this.currentLabels = new LinkedList<MapElementContainer>();
-		this.currentWayLabels = new HashSet<MapElementContainer>();
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
 		if (!jobTheme.equals(this.previousJobTheme)) {
@@ -272,7 +270,6 @@ public class DatabaseRenderer implements RenderCallback {
 				}
 			}
 			// now draw the ways and the labels
-			this.canvasRasterer.drawMapElements(currentWayLabels, rendererJob.tile);
 			this.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
 		} else {
 			// store elements for this tile in the label cache
@@ -388,7 +385,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 	@Override
 	public void renderWayText(PolylineContainer way, int priority, String textKey, float dy, Paint fill, Paint stroke) {
-		WayDecorator.renderText(textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), this.currentWayLabels);
+		WayDecorator.renderText(way.getTile(), textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), this.currentLabels);
 	}
 
 	private List<List<List<ShapePaintContainer>>> createWayLists() {
