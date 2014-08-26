@@ -13,6 +13,7 @@
 	<xs:simpleType name="position">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="auto" />
+			<xs:enumeration value="center" />
 			<xs:enumeration value="below" />
 			<xs:enumeration value="below_left" />
 			<xs:enumeration value="below_right" />
