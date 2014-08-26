@@ -12,6 +12,7 @@
 
 	<xs:simpleType name="position">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="auto" />
 			<xs:enumeration value="below" />
 			<xs:enumeration value="below_left" />
 			<xs:enumeration value="below_right" />
@@ -130,7 +131,7 @@
 		<xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
 		<xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
-		<xs:attribute name="position" type="tns:position" use="optional" default="below" />
+		<xs:attribute name="position" type="tns:position" use="optional" default="auto" />
 		<xs:attribute name="symbol-id" type="xs:string" use="optional" />
     </xs:complexType>
 

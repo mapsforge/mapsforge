@@ -1041,7 +1041,7 @@
 		<rule e="any" k="amenity" v="restaurant" zoom-min="14">
 			<symbol id="restaurant" src="assets:symbols/food/restaurant.svg"/>
 			<rule e="node" k="*" v="*" zoom-min="16">
-				<caption symbol-id="restaurant" k="name" font-size="12" font-style="bold" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="restaurant" position="auto" k="name" font-size="12" font-style="bold" fill="#734A08" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="fast_food" zoom-min="15">
@@ -1124,13 +1124,13 @@
 		<rule e="any" k="amenity" v="atm" zoom-min="15">
 			<symbol id="atm" src="assets:symbols/money/atm2.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-				<caption symbol-id="atm" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="atm" k="name" position="auto" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="bank" zoom-min="15">
 			<symbol id="bank" src="assets:symbols/money/bank2.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-			    <caption symbol-id="bank" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+			    <caption symbol-id="bank" k="name" position="auto" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="post_box" zoom-min="15">
