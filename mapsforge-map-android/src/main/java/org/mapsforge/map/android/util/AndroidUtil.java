@@ -178,8 +178,14 @@ public final class AndroidUtil {
 			width = display.getWidth();
 		}
 
-		return (int) (screenRatio * Math.ceil(1 + (height  * overdrawFactor / tileSize))
-				* Math.ceil(1 + (width  * overdrawFactor / tileSize)));
+		// height  * overdrawFactor / tileSize calculates the number of tiles that would cover
+		// the view port, adding 1 is required since we can have part tiles on either side,
+		// adding 2 adds another row/column as spare and ensures that we will generally have
+		// a larger number of tiles in the cache than a TileLayer will render for a view.
+		// Multiplying by screenRatio adjusts this somewhat inaccurately for MapViews on only part
+		// of a screen (the result can be too low if a MapView is very narrow).
+		return (int) (screenRatio * Math.ceil(2 + (height  * overdrawFactor / tileSize))
+				* Math.ceil(2 + (width  * overdrawFactor / tileSize)));
 	}
 
 	private AndroidUtil() {
