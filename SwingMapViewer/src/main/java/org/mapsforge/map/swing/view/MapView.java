@@ -73,6 +73,10 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	public void destroy() {
 		this.layerManager.interrupt();
 		this.frameBufferController.destroy();
+		this.frameBuffer.destroy();
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.destroy();
+		}
 	}
 
 	@Override
