@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,11 +35,26 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.util.PausableThread;
 
 /**
- * A thread-safe cache for image files with a fixed size and LRU policy.
+ * Container class to tie a key/bitmap together.
  */
-public class FileSystemTileCache implements TileCache {
+class StorageJob {
+	Job key;
+	TileBitmap bitmap;
+	StorageJob(Job key, TileBitmap bitmap) {
+		this.key = key;
+		this.bitmap = bitmap;
+	}
+}
+
+/**
+ * A thread-safe cache for image files with a fixed size and LRU policy. The cache writes
+ * the data on a separate thread, i.e. when the call to put a job/tile into the cache returns
+ * the data is not actually written to disk.
+ */
+public class FileSystemTileCache extends PausableThread implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 
@@ -76,6 +92,11 @@ public class FileSystemTileCache implements TileCache {
 	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
 
+	// if threaded is true, the bitmap writing is executed on a separate thread,
+	// and jobs are stored in the jobStack.
+	private final boolean threaded = true;
+	private final LinkedBlockingQueue<StorageJob> storageJobs = new LinkedBlockingQueue<>();
+
 	/**
 	 * @param capacity
 	 *            the maximum number of entries in this cache.
@@ -93,6 +114,9 @@ public class FileSystemTileCache implements TileCache {
 		}
 		this.graphicFactory = graphicFactory;
 		this.lock = new ReentrantReadWriteLock();
+		if (this.threaded) {
+			this.start();
+		}
 	}
 
 	@Override
@@ -110,6 +134,9 @@ public class FileSystemTileCache implements TileCache {
 		try {
 			lock.writeLock().lock();
 			this.lruCache.clear();
+			if (this.threaded) {
+				this.interrupt();
+			}
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -183,6 +210,66 @@ public class FileSystemTileCache implements TileCache {
 			return;
 		}
 
+		if (this.threaded) {
+			bitmap.incrementRefCount();
+			storageJobs.offer(new StorageJob(key, bitmap));
+		} else {
+			storeData(key, bitmap);
+		}
+	}
+
+	public void setWorkingSet(Set<Job> workingSet) {
+		Set<String> workingSetInteger = new HashSet<String>();
+		for (Job job : workingSet) {
+			workingSetInteger.add(job.getKey());
+		}
+		this.lruCache.setWorkingSet(workingSetInteger);
+	}
+
+	private File getOutputFile(Job job) {
+		String file = this.cacheDirectory + File.separator + job.getKey();
+		String dir = file.substring(0, file.lastIndexOf(File.separatorChar));
+		if (isValidCacheDirectory(new File(dir))) {
+            return new File(file + FILE_EXTENSION);
+        }
+        return null;
+	}
+
+	private void remove(Job key) {
+		try {
+			lock.writeLock().lock();
+			this.lruCache.remove(key.getKey());
+		} finally {
+			lock.writeLock().unlock();
+		}
+
+	}
+
+	protected void doWork() throws InterruptedException {
+			StorageJob x = storageJobs.take();
+			storeData(x.key, x.bitmap);
+	}
+
+	/**
+	 * @return the priority which will be set for this thread.
+	 */
+	protected ThreadPriority getThreadPriority() {
+		return ThreadPriority.BELOW_NORMAL;
+	}
+
+	/**
+	 * @return true if this thread has some work to do, false otherwise.
+	 */
+	protected boolean hasWork() {
+		return true;
+	}
+
+	/**
+	 * stores the bitmap data on disk with filename key
+	 * @param key filename
+	 * @param bitmap tile image
+	 */
+	private void storeData(Job key, TileBitmap bitmap) {
 		OutputStream outputStream = null;
 		try {
 			File file = getOutputFile(key);
@@ -215,32 +302,8 @@ public class FileSystemTileCache implements TileCache {
 		} finally {
 			IOUtils.closeQuietly(outputStream);
 		}
+
+		bitmap.decrementRefCount();
 	}
 
-	public void setWorkingSet(Set<Job> workingSet) {
-		Set<String> workingSetInteger = new HashSet<String>();
-		for (Job job : workingSet) {
-			workingSetInteger.add(job.getKey());
-		}
-		this.lruCache.setWorkingSet(workingSetInteger);
-	}
-
-	private File getOutputFile(Job job) {
-		String file = this.cacheDirectory + File.separator + job.getKey();
-		String dir = file.substring(0, file.lastIndexOf(File.separatorChar));
-		if (isValidCacheDirectory(new File(dir))) {
-            return new File(file + FILE_EXTENSION);
-        }
-        return null;
-	}
-
-	private void remove(Job key) {
-		try {
-			lock.writeLock().lock();
-			this.lruCache.remove(key.getKey());
-		} finally {
-			lock.writeLock().unlock();
-		}
-
-	}
 }
