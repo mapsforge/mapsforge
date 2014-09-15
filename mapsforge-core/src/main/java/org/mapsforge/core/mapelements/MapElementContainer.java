@@ -119,13 +119,10 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	/**
 	 * Returns if MapElementContainers clash with each other
 	 * @param other element to test against
-	 * @return true if they overlap, false if they are equal or do not overlap
+	 * @return true if they overlap
 	 */
 	public boolean clashesWith(MapElementContainer other) {
-		if (this.equals(other)) {
-			return false;
-		}
-		return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
+ 		return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
 	}
 
 	@Override
