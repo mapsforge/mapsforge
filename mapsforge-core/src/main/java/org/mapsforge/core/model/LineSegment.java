@@ -137,6 +137,28 @@ public final class LineSegment {
 	}
 
 	/**
+	 * Returns a fast computation if the line intersects the rectangle or bias if there
+	 * is no fast way to compute the intersection.
+	 * @param r retangle to test
+	 * @param bias the result if no fast computation is possible
+	 * @return either the fast and correct result or the bias (which might be wrong).
+	 */
+
+	public boolean intersectsRectangle(Rectangle r, boolean bias) {
+		int codeStart = code(r, this.start);
+		int codeEnd = code(r, this.end);
+
+		if (0 == (codeStart | codeEnd)) {
+			// both points are inside, trivial case
+			return true;
+		} else if (0 != (codeStart & codeEnd)) {
+			// both points are either below, above, left or right of the box, no intersection
+			return false;
+		}
+		return bias;
+	}
+
+	/**
 	 * Euclidian distance between start and end.
 	 *
 	 * @return the length of the segment.
