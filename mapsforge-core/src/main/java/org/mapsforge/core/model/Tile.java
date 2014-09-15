@@ -145,6 +145,15 @@ public class Tile implements Serializable {
 	}
 
 	/**
+	 * Extend of this tile in relative (tile) coordinates.
+	 * @return rectangle with the relative coordinates.
+	 */
+	public Rectangle getBoundaryRelative() {
+		return new Rectangle(0, 0, tileSize, tileSize);
+	}
+
+
+	/**
 	 * Returns the top-left point of this tile in absolute coordinates.
 	 * @return the top-left point
 	 */
