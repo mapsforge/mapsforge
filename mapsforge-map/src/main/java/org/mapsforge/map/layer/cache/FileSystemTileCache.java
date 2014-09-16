@@ -93,7 +93,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	private final ReentrantReadWriteLock lock;
 
 	// if threaded is true, the bitmap writing is executed on a separate thread,
-	// and jobs are stored in the jobStack.
+	// and jobs are stored in the jobStack. The false option remains for testing.
 	private final boolean threaded = true;
 	private final LinkedBlockingQueue<StorageJob> storageJobs = new LinkedBlockingQueue<>();
 
@@ -287,7 +287,11 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			} finally {
 				lock.writeLock().unlock();
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
+			// we are catching now any exception and then disable the file cache
+			// this should ensure that no exception in the storage thread will
+			// ever crash the main app. If there is a runtime exception, the thread
+			// will exit (via destroy).
 			LOGGER.log(Level.SEVERE, "Disabling filesystem cache", e);
 			// most likely cause is that the disk is full, just disable the
 			// cache otherwise
@@ -301,9 +305,11 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			}
 		} finally {
 			IOUtils.closeQuietly(outputStream);
+			if (threaded) {
+				bitmap.decrementRefCount();
+			}
 		}
 
-		bitmap.decrementRefCount();
 	}
 
 }
