@@ -198,6 +198,17 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 		return get(key);
 	}
 
+	/**
+	 * Gets the number of remaining tiles still in the queue to be written to disk.
+	 * @return number of jobs in queue, 0 if not threaded.
+	 */
+	public int getQueueLength() {
+		if (this.threaded) {
+			return this.storageJobs.size();
+		}
+		return 0;
+	}
+
 	@Override
 	public void put(Job key, TileBitmap bitmap) {
 		if (key == null) {

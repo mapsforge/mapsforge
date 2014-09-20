@@ -110,7 +110,7 @@ public class FileSystemTileCacheTest {
 			Assert.assertTrue(file1.createNewFile());
 			Assert.assertTrue(file2.createNewFile());
 
-			TileCache tileCache = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_FACTORY);
+			FileSystemTileCache tileCache = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_FACTORY);
 			Assert.assertEquals(2, this.cacheDirectory.list().length);
 
 			Tile tile = new Tile(0, 0, (byte) 0, tileSize);
@@ -119,10 +119,12 @@ public class FileSystemTileCacheTest {
 
 			TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache.put(job, bitmap);
-			try {
-				// wait for threaded tile cache
-				Thread.sleep(100);
-			} catch (Exception e) {
+			while (0 != tileCache.getQueueLength()) {
+				try {
+					// wait for threaded tile cache
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
 			}
 			Assert.assertEquals(3, this.cacheDirectory.list().length);
 			Assert.assertTrue(file1.exists());
@@ -139,8 +141,8 @@ public class FileSystemTileCacheTest {
 		Assert.assertFalse(this.cacheDirectory2.exists());
 
 		for (int tileSize : TILE_SIZES) {
-			TileCache tileCache1 = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_FACTORY);
-			TileCache tileCache2 = new FileSystemTileCache(1, this.cacheDirectory2, GRAPHIC_FACTORY);
+			FileSystemTileCache tileCache1 = new FileSystemTileCache(1, this.cacheDirectory, GRAPHIC_FACTORY);
+			FileSystemTileCache tileCache2 = new FileSystemTileCache(1, this.cacheDirectory2, GRAPHIC_FACTORY);
 			Assert.assertEquals(1, tileCache1.getCapacity());
 			Assert.assertEquals(1, tileCache2.getCapacity());
 			Assert.assertTrue(this.cacheDirectory.exists());
@@ -183,10 +185,12 @@ public class FileSystemTileCacheTest {
 
 			TileBitmap bitmap1 = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache1.put(job1, bitmap1);
-			try {
-				// wait for threaded tile cache
-				Thread.sleep(100);
-			} catch (Exception e) {
+			while (0 != tileCache1.getQueueLength()) {
+				try {
+					// wait for threaded tile cache
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
 			}
 
 			Assert.assertTrue(tileCache1.containsKey(job1));
@@ -202,10 +206,12 @@ public class FileSystemTileCacheTest {
 
 			TileBitmap bitmap2 = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache2.put(job2, bitmap2);
-			try {
-				// wait for threaded tile cache
-				Thread.sleep(100);
-			} catch (Exception e) {
+			while (0 != tileCache2.getQueueLength()) {
+				try {
+					// wait for threaded tile cache
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
 			}
 
 			Assert.assertTrue(tileCache1.containsKey(job1));
@@ -219,10 +225,12 @@ public class FileSystemTileCacheTest {
 
 			TileBitmap bitmap3 = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache1.put(job3, bitmap3);
-			try {
-				// wait for threaded tile cache
-				Thread.sleep(100);
-			} catch (Exception e) {
+			while (0 != tileCache1.getQueueLength()) {
+				try {
+					// wait for threaded tile cache
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
 			}
 
 			Assert.assertFalse(tileCache1.containsKey(job1));
