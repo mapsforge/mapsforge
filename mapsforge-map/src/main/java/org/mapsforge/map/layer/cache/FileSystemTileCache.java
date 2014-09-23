@@ -94,18 +94,39 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 
 	// if threaded is true, the bitmap writing is executed on a separate thread,
 	// and jobs are stored in the jobStack. The false option remains for testing.
-	private final boolean threaded = true;
+	private final boolean threaded;
 	private final LinkedBlockingQueue<StorageJob> storageJobs = new LinkedBlockingQueue<>();
+
+
+	/**
+	 * Compatibility constructor that creates a threaded FSTC.
+	 * @param capacity
+	 *            the maximum number of entries in this cache.
+	 * @param cacheDirectory
+	 *            the directory where cached tiles will be stored.
+	 * @param graphicFactory
+	 *            the graphicFactory implementation to use.
+	 * @throws IllegalArgumentException
+	 *             if the capacity is negative.
+	 */
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
+		this(capacity, cacheDirectory, graphicFactory, true);
+	}
 
 	/**
 	 * @param capacity
 	 *            the maximum number of entries in this cache.
 	 * @param cacheDirectory
 	 *            the directory where cached tiles will be stored.
+	 * @param graphicFactory
+	 *            the graphicFactory implementation to use.
+	 * @param threaded
+	 *            if cache will use background thread to store data (more responsive).
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
 	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded) {
+		this.threaded = threaded;
 		this.lruCache = new FileWorkingSetCache<>(capacity);
 		if (isValidCacheDirectory(cacheDirectory)) {
 			this.cacheDirectory = cacheDirectory;
