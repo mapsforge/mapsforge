@@ -419,7 +419,13 @@ public class DatabaseRenderer implements RenderCallback {
 		}
 
 		for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-			renderPointOfInterest(ways, pointOfInterest, tile);
+			// Depending on the zoom level configuration, the map read result contains POIs that lie outside
+			// of this tile. These POIs need not be rendered for this tile (any overlaps are handled from the
+			// adjacent tiles).
+			if (tile.tileY == MercatorProjection.latitudeToTileY(pointOfInterest.position.latitude, tile.zoomLevel) &&
+				tile.tileX == MercatorProjection.longitudeToTileX(pointOfInterest.position.longitude, tile.zoomLevel)) {
+				renderPointOfInterest(ways, pointOfInterest, tile);
+			}
 		}
 
 		for (Way way : mapReadResult.ways) {
