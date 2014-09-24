@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -50,12 +51,12 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, int left, int top) {
-		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, null);
+		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
 	}
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), null);
+		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
 	}
 
 	@Override
