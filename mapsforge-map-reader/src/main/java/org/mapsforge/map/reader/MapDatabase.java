@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
@@ -318,7 +319,7 @@ public class MapDatabase {
 			QueryCalculations.calculateBaseTiles(queryParameters, tile, subFileParameter);
 			QueryCalculations.calculateBlocks(queryParameters, subFileParameter);
 
-			return processBlocks(queryParameters, subFileParameter);
+			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 			return null;
@@ -399,7 +400,8 @@ public class MapDatabase {
 		}
 	}
 
-	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter) {
+	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
+	                                  BoundingBox boundingBox) {
 		if (!processBlockSignature()) {
 			return null;
 		}
@@ -429,7 +431,9 @@ public class MapDatabase {
 			return null;
 		}
 
-		List<PointOfInterest> pois = processPOIs(poisOnQueryZoomLevel);
+		boolean filterRequired = queryParameters.queryZoomLevel > subFileParameter.baseZoomLevel;
+
+		List<PointOfInterest> pois = processPOIs(poisOnQueryZoomLevel, boundingBox, filterRequired);
 		if (pois == null) {
 			return null;
 		}
@@ -446,7 +450,7 @@ public class MapDatabase {
 		// move the pointer to the first way
 		this.readBuffer.setBufferPosition(firstWayOffset);
 
-		List<Way> ways = processWays(queryParameters, waysOnQueryZoomLevel);
+		List<Way> ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox, filterRequired);
 		if (ways == null) {
 			return null;
 		}
@@ -454,7 +458,8 @@ public class MapDatabase {
 		return new PoiWayBundle(pois, ways);
 	}
 
-	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter)
+	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter,
+	                                    BoundingBox boundingBox)
 			throws IOException {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
@@ -535,7 +540,7 @@ public class MapDatabase {
 						subFileParameter.baseZoomLevel);
 
 				try {
-					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter);
+					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox);
 					if (poiWayBundle != null) {
 						mapReadResultBuilder.add(poiWayBundle);
 					}
@@ -570,7 +575,7 @@ public class MapDatabase {
 		return true;
 	}
 
-	private List<PointOfInterest> processPOIs(int numberOfPois) {
+	private List<PointOfInterest> processPOIs(int numberOfPois, BoundingBox boundingBox, boolean filterRequired) {
 		List<PointOfInterest> pois = new ArrayList<PointOfInterest>();
 		Tag[] poiTags = this.mapFileHeader.getMapFileInfo().poiTags;
 
@@ -638,7 +643,12 @@ public class MapDatabase {
 				tags.add(new Tag(TAG_KEY_ELE, Integer.toString(this.readBuffer.readSignedInt())));
 			}
 
-			pois.add(new PointOfInterest(layer, tags, new LatLong(latitude, longitude)));
+			LatLong position = new LatLong(latitude, longitude);
+			// depending on the zoom level configuration the poi can lie outside
+			// the tile requested, we filter them out here
+			if (!filterRequired || boundingBox.contains(position)) {
+				pois.add(new PointOfInterest(layer, tags, position));
+			}
 		}
 
 		return pois;
@@ -681,7 +691,8 @@ public class MapDatabase {
 		return wayCoordinates;
 	}
 
-	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays) {
+	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays,
+	                              BoundingBox boundingBox, boolean filterRequired) {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
@@ -778,7 +789,13 @@ public class MapDatabase {
 			for (int wayDataBlock = 0; wayDataBlock < wayDataBlocks; ++wayDataBlock) {
 				LatLong[][] wayNodes = processWayDataBlock(featureWayDoubleDeltaEncoding);
 				if (wayNodes != null) {
+					if (filterRequired) {
+						if (!boundingBox.intersectsArea(wayNodes)) {
+							continue;
+						}
+					}
 					ways.add(new Way(layer, tags, wayNodes, labelPosition));
+
 				}
 			}
 		}
