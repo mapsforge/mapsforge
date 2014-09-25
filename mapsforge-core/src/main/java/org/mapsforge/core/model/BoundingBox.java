@@ -90,6 +90,7 @@ public class BoundingBox implements Serializable {
 		this.maxLongitude = maxLongitude;
 	}
 
+
 	/**
 	 * @param latLong
 	 *            the LatLong whose coordinates should be checked.
@@ -172,6 +173,47 @@ public class BoundingBox implements Serializable {
 		return this.maxLatitude >= boundingBox.minLatitude && this.maxLongitude >= boundingBox.minLongitude
 				&& this.minLatitude <= boundingBox.maxLatitude && this.minLongitude <= boundingBox.maxLongitude;
 	}
+
+	/**
+	 * Returns if an area built from the latLongs intersects with a bias towards
+	 * returning true.
+	 * The method returns fast if any of the points lie within the bbox. If none of the points
+	 * lie inside the box, it constructs the outer bbox for all the points and tests for intersection
+	 * (so it is possible that the area defined by the points does not actually intersect)
+	 *
+	 * @param latLongs the points that define an area
+	 * @return false if there is no intersection, true if there could be an intersection
+	 */
+	public boolean intersectsArea(LatLong[][] latLongs) {
+		if (latLongs.length == 0 || latLongs[0].length == 0) {
+			return false;
+		}
+		for (LatLong[] outer : latLongs) {
+			for (LatLong latLong : outer) {
+				if (this.contains(latLong)) {
+					// if any of the points is inside the bbox return early
+					return true;
+				}
+			}
+		}
+
+		// no fast solution, so accumulate boundary points
+		double minLatitude = latLongs[0][0].latitude;
+		double minLongitude = latLongs[0][0].longitude;
+		double maxLatitude = latLongs[0][0].latitude;
+		double maxLongitude = latLongs[0][0].longitude;
+
+		for (LatLong[] outer : latLongs) {
+			for (LatLong latLong : outer) {
+				minLatitude = Math.min(minLatitude, latLong.latitude);
+				maxLatitude = Math.max(maxLatitude, latLong.latitude);
+				minLongitude = Math.min(minLongitude, latLong.longitude);
+				maxLongitude = Math.max(maxLongitude, latLong.longitude);
+			}
+		}
+		return this.intersects(new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude));
+	}
+
 
 	/**
 	 * @param boundingBox
