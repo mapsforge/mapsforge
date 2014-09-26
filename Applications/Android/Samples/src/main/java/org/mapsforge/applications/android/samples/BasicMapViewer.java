@@ -161,8 +161,8 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		mapView.setClickable(true);
 		mapView.getMapScaleBar().setVisible(true);
 		mapView.setBuiltInZoomControls(hasZoomControls());
-		mapView.getMapZoomControls().setZoomLevelMin((byte) 10);
-		mapView.getMapZoomControls().setZoomLevelMax((byte) 20);
+		mapView.getMapZoomControls().setZoomLevelMin((byte) 0);
+		mapView.getMapZoomControls().setZoomLevelMax((byte) 24);
 		this.mapViews.add(mapView);
 	}
 
@@ -284,7 +284,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			mvp.setMapPosition(this.getInitialPosition());
 		}
 		mvp.setZoomLevelMax((byte) 24);
-		mvp.setZoomLevelMin((byte) 7);
+		mvp.setZoomLevelMin((byte) 0);
 		return mvp;
 	}
 
