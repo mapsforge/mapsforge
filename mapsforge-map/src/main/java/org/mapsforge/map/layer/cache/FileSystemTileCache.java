@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,6 +90,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
+	private final AtomicInteger jobs;
 	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
 
@@ -126,6 +128,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded) {
+		this.jobs = new AtomicInteger(0);
 		this.threaded = threaded;
 		this.lruCache = new FileWorkingSetCache<>(capacity);
 		if (isValidCacheDirectory(cacheDirectory)) {
@@ -224,10 +227,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 * @return number of jobs in queue, 0 if not threaded.
 	 */
 	public int getQueueLength() {
-		if (this.threaded) {
-			return this.storageJobs.size();
-		}
-		return 0;
+		return jobs.get();
 	}
 
 	@Override
@@ -242,6 +242,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			return;
 		}
 
+		jobs.incrementAndGet();
 		if (this.threaded) {
 			bitmap.incrementRefCount();
 			storageJobs.offer(new StorageJob(key, bitmap));
@@ -278,8 +279,8 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	}
 
 	protected void doWork() throws InterruptedException {
-			StorageJob x = storageJobs.take();
-			storeData(x.key, x.bitmap);
+		StorageJob x = storageJobs.take();
+		storeData(x.key, x.bitmap);
 	}
 
 	/**
@@ -340,6 +341,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			if (threaded) {
 				bitmap.decrementRefCount();
 			}
+			jobs.decrementAndGet();
 		}
 
 	}
