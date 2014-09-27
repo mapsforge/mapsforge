@@ -229,20 +229,21 @@ public class BoundingBox implements Serializable {
 	}
 
 	/**
-	 * Creates a BoundingBox that is percent larger on all sides (but does not cross date line/poles)
-	 * @param percent relative extension (must be >= 0)
-	 * @return an extended BoundingBox or this (if percent == 0)
+	 * Creates a BoundingBox that is a fixed meter amount larger on all sides (but does not cross date line/poles)
+	 * @param meters extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if meters == 0)
 	 */
-	public BoundingBox extend(double percent) {
+	public BoundingBox extend(int meters) {
 
-		if (percent == 0) {
+		if (meters == 0) {
 			return this;
-		} else if (percent < 0) {
+		} else if (meters < 0) {
 			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
 		}
 
-		double verticalExpansion = getLatitudeSpan() * percent;
-		double horizontalExpansion = getLongitudeSpan() * percent;
+
+		double verticalExpansion = LatLongUtils.latitudeDistance(meters);
+		double horizontalExpansion = LatLongUtils.longitudeDistance(meters, Math.max(Math.abs(minLatitude), Math.abs(maxLatitude)));
 
 		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
 		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
@@ -251,6 +252,8 @@ public class BoundingBox implements Serializable {
 
 		return new BoundingBox(minLat, minLon, maxLat, maxLon);
 	}
+
+
 
 	@Override
 	public String toString() {
