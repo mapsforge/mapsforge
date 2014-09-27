@@ -18,6 +18,7 @@ package org.mapsforge.core.model;
 import java.io.Serializable;
 
 import org.mapsforge.core.util.LatLongUtils;
+import org.mapsforge.core.util.MercatorProjection;
 
 /**
  * A BoundingBox represents an immutable set of two latitude and two longitude coordinates.
@@ -225,6 +226,30 @@ public class BoundingBox implements Serializable {
 				Math.min(this.minLongitude, boundingBox.minLongitude),
 				Math.max(this.maxLatitude, boundingBox.maxLatitude),
 				Math.max(this.maxLongitude, boundingBox.maxLongitude));
+	}
+
+	/**
+	 * Creates a BoundingBox that is percent larger on all sides (but does not cross date line/poles)
+	 * @param percent relative extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if percent == 0)
+	 */
+	public BoundingBox extend(double percent) {
+
+		if (percent == 0) {
+			return this;
+		} else if (percent < 0) {
+			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
+		}
+
+		double verticalExpansion = getLatitudeSpan() * percent;
+		double horizontalExpansion = getLongitudeSpan() * percent;
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
 	}
 
 	@Override
