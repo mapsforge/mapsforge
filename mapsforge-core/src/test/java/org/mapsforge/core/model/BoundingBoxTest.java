@@ -187,10 +187,10 @@ public class BoundingBoxTest {
 		Assert.assertEquals(boundingBox2, boundingBox2.extend(0));
 		Assert.assertEquals(boundingBox3, boundingBox3.extend(0));
 
-		Assert.assertTrue(boundingBox1.extend(0.1).contains(new LatLong(MIN_LATITUDE, MAX_LONGITUDE)));
-		Assert.assertTrue(boundingBox1.extend(0.1).contains(new LatLong(MAX_LATITUDE, MAX_LONGITUDE)));
-		Assert.assertTrue(boundingBox1.extend(0.1).contains(new LatLong(MAX_LATITUDE, MIN_LONGITUDE)));
-		Assert.assertTrue(boundingBox1.extend(0.1).contains(new LatLong(MIN_LATITUDE, MIN_LONGITUDE)));
+		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MIN_LATITUDE, MAX_LONGITUDE)));
+		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MAX_LATITUDE, MAX_LONGITUDE)));
+		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MAX_LATITUDE, MIN_LONGITUDE)));
+		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MIN_LATITUDE, MIN_LONGITUDE)));
 	}
 
 

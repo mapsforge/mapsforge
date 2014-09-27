@@ -322,7 +322,7 @@ public class MapDatabase {
 			// we enlarge the bounding box for the tile slightly in order to retain any data that
 			// lies right on the border, some of this data needs to be drawn as the graphics will
 			// overlap onto this tile.
-			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox().extend(0.1));
+			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox().extend(20));
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 			return null;
