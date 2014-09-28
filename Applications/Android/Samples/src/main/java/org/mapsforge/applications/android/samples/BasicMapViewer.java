@@ -32,6 +32,7 @@ import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
+import org.mapsforge.map.layer.renderer.MapWorker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
@@ -134,6 +135,9 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		}
 		if (SamplesApplication.SETTING_SCALEBAR.equals(key)) {
 			setScaleBars();
+		}
+		if (SamplesApplication.SETTING_DEBUG_TIMING.equals(key)) {
+			MapWorker.DEBUG_TIMING = preferences.getBoolean(SamplesApplication.SETTING_DEBUG_TIMING, false);
 		}
 		if (SamplesApplication.SETTING_WAYFILTERING_DISTANCE.equals(key) ||
 				SamplesApplication.SETTING_WAYFILTERING.equals(key)) {
