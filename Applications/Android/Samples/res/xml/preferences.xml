@@ -25,6 +25,11 @@
         android:defaultValue="both"
         android:entries="@array/pref_scalebar_entries"
         android:entryValues="@array/pref_scalebar_values"/>
+    <CheckBoxPreference
+        android:title="@string/preferences_debug_timing"
+        android:summary="@string/preferences_debug_timing_desc"
+        android:key="debug_timing"
+        android:defaultValue="false" />
     <PreferenceCategory android:title="@string/preferences_category_wayfiltering">
         <CheckBoxPreference
             android:title="@string/preferences_wayfiltering"
