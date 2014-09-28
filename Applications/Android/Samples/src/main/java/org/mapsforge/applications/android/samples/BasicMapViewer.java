@@ -127,6 +127,11 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			createTileCaches();
 			redrawLayers();
 		}
+		if (SamplesApplication.SETTING_TILECACHE_QUEUESIZE.equals(key) || SamplesApplication.SETTING_TILECACHE_THREADING.equals(key)) {
+			destroyTileCaches();
+			createTileCaches();
+			redrawLayers();
+		}
 		if (SamplesApplication.SETTING_SCALEBAR.equals(key)) {
 			setScaleBars();
 		}
@@ -179,9 +184,13 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void createTileCaches() {
+		boolean threaded = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_THREADING, true);
+		int queueSize = Integer.parseInt(sharedPreferences.getString(SamplesApplication.SETTING_TILECACHE_QUEUESIZE, "4"));
+
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
-				this.mapViews.get(0).getModel().displayModel.getTileSize(), this.getScreenRatio(), this.mapViews.get(0)
-						.getModel().frameBufferModel.getOverdrawFactor()
+				this.mapViews.get(0).getModel().displayModel.getTileSize(), this.getScreenRatio(),
+				this.mapViews.get(0).getModel().frameBufferModel.getOverdrawFactor(),
+				threaded, queueSize
 		));
 	}
 

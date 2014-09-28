@@ -47,7 +47,7 @@ public final class AndroidUtil {
 	 *            tile size
 	 * @return a new cache created on the external storage
 	 */
-	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
+	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize, boolean threaded, int queueSize) {
 		Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
 		TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
 		File cacheDir = c.getExternalCacheDir();
@@ -60,8 +60,9 @@ public final class AndroidUtil {
 				if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
 					try {
 						Log.d("TILECACHE FILECACHE SIZE", Integer.toString(firstLevelSize));
+
 						TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
-								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE);
+								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE, threaded, queueSize);
 						return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 					} catch (IllegalArgumentException e) {
 						Log.w("TILECACHE", e.toString());
@@ -86,12 +87,35 @@ public final class AndroidUtil {
 	 *            part of the screen the view takes up
 	 * @param overdraw
 	 *            overdraw allowance
+	 * @param threaded if a background thread is employed to store tile data
+	 * @param queueSize maximum length of queue before the put operation blocks
+	 * @return a new cache created on the external storage
+	 */
+
+	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw, boolean threaded, int queueSize) {
+		int cacheSize = Math.round(getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
+		return createExternalStorageTileCache(c, id, cacheSize, tileSize, threaded, queueSize);
+	}
+
+	/**
+	 * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
+	 * actually know the size of the mapview, so the screenRatio is an approximation of the required size.
+	 * This is the compatibility version that by default creates a non-threaded cache.
+	 * @param c
+	 *            the Android context
+	 * @param id
+	 *            name for the storage directory
+	 * @param tileSize
+	 *            tile size
+	 * @param screenRatio
+	 *            part of the screen the view takes up
+	 * @param overdraw
+	 *            overdraw allowance
 	 * @return a new cache created on the external storage
 	 */
 
 	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
-		int cacheSize = Math.round(getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
-		return createExternalStorageTileCache(c, id, cacheSize, tileSize);
+		return createTileCache(c, id, tileSize, screenRatio, overdraw, false, 0);
 	}
 
 	/**
