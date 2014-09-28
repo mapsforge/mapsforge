@@ -17,6 +17,7 @@ package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.reader.MapDatabase;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -36,6 +37,8 @@ public class SamplesApplication extends Application {
 	public static final String SETTING_SCALEBAR_BOTH = "both";
 	public static final String SETTING_SCALEBAR_NONE = "none";
 	public static final String SETTING_TEXTWIDTH = "textwidth";
+	public static final String SETTING_WAYFILTERING = "wayfiltering";
+	public static final String SETTING_WAYFILTERING_DISTANCE = "wayfiltering_distance";
 	public static final String TAG = "SAMPLES APP";
 
 	@Override
@@ -52,6 +55,11 @@ public class SamplesApplication extends Application {
 		Log.e(TAG, "User ScaleFactor " + Float.toString(fs));
 		if (fs != DisplayModel.getDefaultUserScaleFactor()) {
 			DisplayModel.setDefaultUserScaleFactor(fs);
+		}
+
+		MapDatabase.wayFilterEnabled = preferences.getBoolean(SETTING_WAYFILTERING, true);
+		if (MapDatabase.wayFilterEnabled) {
+			MapDatabase.wayFilterDistance = Integer.parseInt(preferences.getString(SETTING_WAYFILTERING_DISTANCE, "20"));
 		}
 	}
 }
