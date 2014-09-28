@@ -207,6 +207,18 @@ public class MapDatabase {
 	private double tileLongitude;
 
 	/**
+	 * Way filtering reduces the number of ways returned to only those that are
+	 * relevant for the tile requested, leading to performance gains, but can
+	 * cause line clipping artifacts (particularly at higher zoom levels). The
+	 * risk of clipping can be reduced by either turning way filtering off or by
+	 * increasing the wayFilterDistance which governs how large an area surrounding
+	 * the requested tile will be returned.
+	 * For most use cases the standard settings should be sufficient.
+	 */
+	public static boolean wayFilterEnabled = true;
+	public static int wayFilterDistance = 20;
+
+	/**
 	 * Closes the map file and destroys all internal caches. Has no effect if no map file is currently opened.
 	 */
 	public void closeFile() {
@@ -322,7 +334,7 @@ public class MapDatabase {
 			// we enlarge the bounding box for the tile slightly in order to retain any data that
 			// lies right on the border, some of this data needs to be drawn as the graphics will
 			// overlap onto this tile.
-			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox().extend(20));
+			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 			return null;
@@ -699,6 +711,8 @@ public class MapDatabase {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
+		BoundingBox wayFilterBbox = boundingBox.extend(wayFilterDistance);
+
 		for (int elementCounter = numberOfWays; elementCounter != 0; --elementCounter) {
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
 				// get and check the way signature
@@ -792,8 +806,8 @@ public class MapDatabase {
 			for (int wayDataBlock = 0; wayDataBlock < wayDataBlocks; ++wayDataBlock) {
 				LatLong[][] wayNodes = processWayDataBlock(featureWayDoubleDeltaEncoding);
 				if (wayNodes != null) {
-					if (filterRequired) {
-						if (!boundingBox.intersectsArea(wayNodes)) {
+					if (filterRequired && wayFilterEnabled) {
+						if (!wayFilterBbox.intersectsArea(wayNodes)) {
 							continue;
 						}
 					}
