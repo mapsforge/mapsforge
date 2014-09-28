@@ -44,9 +44,25 @@ import org.mapsforge.map.util.PausableThread;
 class StorageJob {
 	Job key;
 	TileBitmap bitmap;
+
 	StorageJob(Job key, TileBitmap bitmap) {
 		this.key = key;
 		this.bitmap = bitmap;
+	}
+
+	/**
+	 * Equality is just defined over the key, not over the bitmap content. This allows
+	 * finding a StorageJob in the queue without knowing the data.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof StorageJob)) {
+			return false;
+		}
+		StorageJob other = (StorageJob) obj;
+		return key.equals(other.key);
 	}
 }
 
@@ -97,7 +113,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	// if threaded is true, the bitmap writing is executed on a separate thread,
 	// and jobs are stored in the jobStack. The false option remains for testing.
 	private final boolean threaded;
-	private final LinkedBlockingQueue<StorageJob> storageJobs = new LinkedBlockingQueue<>();
+	private final LinkedBlockingQueue<StorageJob> storageJobs;
 
 
 	/**
@@ -112,7 +128,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
-		this(capacity, cacheDirectory, graphicFactory, true);
+		this(capacity, cacheDirectory, graphicFactory, false, 0);
 	}
 
 	/**
@@ -127,9 +143,14 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
 	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded) {
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded, int queueSize) {
 		this.jobs = new AtomicInteger(0);
 		this.threaded = threaded;
+		if (threaded) {
+			this.storageJobs = new LinkedBlockingQueue<>(queueSize);
+		} else {
+			this.storageJobs = null;
+		}
 		this.lruCache = new FileWorkingSetCache<>(capacity);
 		if (isValidCacheDirectory(cacheDirectory)) {
 			this.cacheDirectory = cacheDirectory;
@@ -147,7 +168,9 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	public boolean containsKey(Job key) {
 		try {
 			lock.readLock().lock();
-			return this.lruCache.containsKey(key.getKey());
+			// if we are using a threaded cache we return true if the tile is still in the
+			// queue to reduce double rendering
+			return this.lruCache.containsKey(key.getKey()) || (threaded && storageJobs.contains(key));
 		} finally {
 			lock.readLock().unlock();
 		}
