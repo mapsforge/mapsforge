@@ -130,6 +130,13 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 		if (SamplesApplication.SETTING_SCALEBAR.equals(key)) {
 			setScaleBars();
 		}
+		if (SamplesApplication.SETTING_WAYFILTERING_DISTANCE.equals(key) ||
+				SamplesApplication.SETTING_WAYFILTERING.equals(key)) {
+			MapDatabase.wayFilterEnabled = preferences.getBoolean(SamplesApplication.SETTING_WAYFILTERING, true);
+			if (MapDatabase.wayFilterEnabled) {
+				MapDatabase.wayFilterDistance = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_WAYFILTERING_DISTANCE, "20"));
+			}
+		}
 
 	}
 

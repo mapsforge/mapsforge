@@ -25,6 +25,20 @@
         android:defaultValue="both"
         android:entries="@array/pref_scalebar_entries"
         android:entryValues="@array/pref_scalebar_values"/>
+    <PreferenceCategory android:title="@string/preferences_category_wayfiltering">
+        <CheckBoxPreference
+            android:title="@string/preferences_wayfiltering"
+            android:summary="@string/preferences_wayfiltering_desc"
+            android:key="wayfiltering"
+            android:defaultValue="true" />
+        <EditTextPreference
+            android:defaultValue="20"
+            android:dependency="wayfiltering"
+            android:title="@string/preferences_wayfiltering_distance"
+            android:summary="@string/preferences_wayfiltering_distance_desc"
+            android:inputType="number"
+            android:key="wayfiltering_distance" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="Map Style for Rendertheme V4" android:key="renderthememenu">
 
     </PreferenceCategory>
