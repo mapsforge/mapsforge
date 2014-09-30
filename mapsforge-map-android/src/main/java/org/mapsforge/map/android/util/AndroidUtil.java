@@ -208,8 +208,10 @@ public final class AndroidUtil {
 		// a larger number of tiles in the cache than a TileLayer will render for a view.
 		// Multiplying by screenRatio adjusts this somewhat inaccurately for MapViews on only part
 		// of a screen (the result can be too low if a MapView is very narrow).
-		return (int) (screenRatio * Math.ceil(2 + (height  * overdrawFactor / tileSize))
-				* Math.ceil(2 + (width  * overdrawFactor / tileSize)));
+		// For any size we need a minimum of 4 (as the intersection of 4 tiles can always be in the
+		// middle of a view.
+		return (int) Math.max(4, (screenRatio * Math.ceil(2 + (height  * overdrawFactor / tileSize))
+				* Math.ceil(2 + (width  * overdrawFactor / tileSize))));
 	}
 
 	private AndroidUtil() {
