@@ -96,4 +96,20 @@ public class DualOverviewMapViewer extends DualMapViewer {
 		// provides a layout with two mapViews
 		return R.layout.dualoverviewmapviewer;
 	}
+
+	/**
+	 * @return the screen ratio that the mapview takes up (for cache
+	 *         calculation)
+	 */
+	protected float getScreenRatio() {
+		return 1f;
+	}
+
+	/**
+	 * @return the screen ratio that the mapview takes up (for cache
+	 *         calculation)
+	 */
+	protected float getScreenRatio2() {
+		return 0.1f;
+	}
 }
