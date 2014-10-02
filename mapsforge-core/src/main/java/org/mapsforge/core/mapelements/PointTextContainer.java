@@ -19,7 +19,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.model.Point;
 
-abstract public class PointTextContainer extends MapElementContainer {
+public abstract class PointTextContainer extends MapElementContainer {
 
 	public final boolean isVisible;
 	public final int maxTextWidth;

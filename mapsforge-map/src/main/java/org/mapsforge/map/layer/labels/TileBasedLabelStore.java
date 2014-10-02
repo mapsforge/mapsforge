@@ -41,13 +41,6 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	}
 
 	synchronized public void destroy() {
-		// there is still a risk that one of the map workers just finishes
-		// a job to store elements.
-		for (List<MapElementContainer> tile : this.values()) {
-			for (MapElementContainer element : tile) {
-				element.decrementRefCount();
-			}
-		}
 		this.clear();
 	}
 
@@ -93,9 +86,6 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	protected boolean removeEldestEntry(Map.Entry<Tile, List<MapElementContainer>> eldest) {
 		if (size() > this.capacity) {
 			List<MapElementContainer> list = eldest.getValue();
-			for (MapElementContainer item : list) {
-				item.decrementRefCount();
-			}
 			return true;
 		}
 		return false;
