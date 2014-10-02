@@ -98,7 +98,7 @@ public class RenderThemeChanger extends BasicMapViewer {
 				// render theme safely
 				layerManagers.get(0).getLayers().remove(tileRendererLayer);
 				tileRendererLayer.onDestroy();
-				tileCaches.get(0).destroy(); // clear the cache
+				tileCaches.get(0).destroy();
 				tileRendererLayer = Utils.createTileRendererLayer(tileCaches.get(0),
 						mapViewPositions.get(0), getMapFile(), nextRenderTheme,
 						false, false);

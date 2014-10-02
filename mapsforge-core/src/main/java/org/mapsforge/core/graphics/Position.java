@@ -18,7 +18,7 @@ package org.mapsforge.core.graphics;
 public enum Position {
 	AUTO, CENTER, BELOW, BELOW_LEFT, BELOW_RIGHT, ABOVE, ABOVE_LEFT, ABOVE_RIGHT, LEFT, RIGHT;
 
-	static public Position fromString(String value) {
+	public static Position fromString(String value) {
 		if ("auto".equals(value)) {
 			// deliberately returning BELOW for auto, by default
 			// we are implementing auto positioning as below
