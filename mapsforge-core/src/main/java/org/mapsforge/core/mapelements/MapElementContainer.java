@@ -79,17 +79,6 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 		return true;
 	}
 
-
-	/**
-	 * Hook for memory management.
-	 */
-	public void incrementRefCount() {}
-
-	/**
-	 * Hook for memory management.
-	 */
-	public void decrementRefCount() {}
-
 	/**
 	 * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
 	 * using the matrix if rotation is required.
@@ -98,7 +87,7 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	 * @param origin
 	 * @param matrix
 	 */
-	abstract public void draw(Canvas canvas, Point origin, Matrix matrix);
+	public abstract void draw(Canvas canvas, Point origin, Matrix matrix);
 
 	/**
 	 * Gets the pixel absolute boundary for this element.

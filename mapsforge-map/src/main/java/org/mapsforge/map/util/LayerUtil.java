@@ -93,7 +93,6 @@ public final class LayerUtil {
 				}
 			}
 			if (hasSpace) {
-				item.incrementRefCount();
 				output.add(item);
 			}
 		}
