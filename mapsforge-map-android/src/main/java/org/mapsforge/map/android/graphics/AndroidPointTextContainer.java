@@ -32,7 +32,6 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
 	private StaticLayout frontLayout;
 	private StaticLayout backLayout;
-	private Rectangle debugBoundary;
 	private float boxWidth;
 	private float boxHeight;
 
@@ -117,37 +116,6 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				boundary = new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
 				break;
 		}
-		// debug
-		switch (this.position) {
-			case CENTER:
-				debugBoundary = new Rectangle(-textWidth / 2f, -textHeight / 2f, textWidth / 2f, textHeight / 2f);
-				break;
-			case BELOW:
-				debugBoundary = new Rectangle(-textWidth / 2f, 0, textWidth / 2f, textHeight);
-				break;
-			case BELOW_LEFT:
-				debugBoundary = new Rectangle(-textWidth, 0, 0, textHeight);
-				break;
-			case BELOW_RIGHT:
-				debugBoundary = new Rectangle(0, 0, textWidth, textHeight);
-				break;
-			case ABOVE:
-				debugBoundary = new Rectangle(-textWidth / 2f, -textHeight, textWidth / 2f, 0);
-				break;
-			case ABOVE_LEFT:
-				debugBoundary = new Rectangle(-textWidth, -textHeight, 0, 0);
-				break;
-			case ABOVE_RIGHT:
-				debugBoundary = new Rectangle(0, -textHeight, textWidth, 0);
-				break;
-			case LEFT:
-				debugBoundary = new Rectangle(-textWidth, -textHeight / 2f, 0, textHeight / 2f);
-				break;
-			case RIGHT:
-				debugBoundary = new Rectangle(0, -textHeight / 2f, textWidth, textHeight / 2f);
-				break;
-		}
-
 	}
 
 	@Override
@@ -194,21 +162,6 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				androidCanvas.drawText(this.text, adjustedX, adjustedY, AndroidGraphicFactory.getPaint(this.paintBack));
 			}
 			androidCanvas.drawText(this.text, adjustedX, adjustedY, AndroidGraphicFactory.getPaint(this.paintFront));
-			//debugDrawBounds(androidCanvas, adjustedX, adjustedY - textOffset);
 		}
 	}
-
-
-	private void debugDrawBounds(android.graphics.Canvas androidCanvas, float offsetX, float offsetY) {
-		androidCanvas.drawLine((float) (offsetX + boundary.left), (float) (offsetY + boundary.top), (float) (offsetX + boundary.right), (float) (offsetY + boundary.top), AndroidGraphicFactory.getPaint(this.paintFront));
-		androidCanvas.drawLine((float) (offsetX + boundary.right), (float) (offsetY + boundary.top), (float) (offsetX + boundary.right), (float) (offsetY + boundary.bottom), AndroidGraphicFactory.getPaint(this.paintFront));
-		androidCanvas.drawLine((float) (offsetX + boundary.right), (float) (offsetY + boundary.bottom), (float) (offsetX + boundary.left), (float) (offsetY + boundary.bottom), AndroidGraphicFactory.getPaint(this.paintFront));
-		androidCanvas.drawLine((float) (offsetX + boundary.left), (float) (offsetY + boundary.bottom), (float) (offsetX + boundary.left), (float) (offsetY + boundary.top), AndroidGraphicFactory.getPaint(this.paintFront));
-
-		androidCanvas.drawLine((float) (offsetX + debugBoundary.left), (float) (offsetY +debugBoundary.top), (float) (offsetX +debugBoundary.right), (float) (offsetY +debugBoundary.top), AndroidGraphicFactory.getPaint(this.paintFront));
-		androidCanvas.drawLine((float) (offsetX +debugBoundary.right), (float) (offsetY +debugBoundary.top), (float) (offsetX +debugBoundary.right), (float) (offsetY +debugBoundary.bottom), AndroidGraphicFactory.getPaint(this.paintFront));
-		androidCanvas.drawLine((float) (offsetX +debugBoundary.right), (float) (offsetY +debugBoundary.bottom), (float) (offsetX +debugBoundary.left), (float) (offsetY +debugBoundary.bottom), AndroidGraphicFactory.getPaint(this.paintFront));
-		androidCanvas.drawLine((float) (offsetX +debugBoundary.left), (float) (offsetY +debugBoundary.bottom), (float) (offsetX +debugBoundary.left), (float) (offsetY +debugBoundary.top), AndroidGraphicFactory.getPaint(this.paintFront));
-	}
-
 }

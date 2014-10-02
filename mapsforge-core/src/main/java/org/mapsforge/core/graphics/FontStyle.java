@@ -17,7 +17,7 @@ package org.mapsforge.core.graphics;
 public enum FontStyle {
 	BOLD, BOLD_ITALIC, ITALIC, NORMAL;
 
-	static public FontStyle fromString(String value) {
+	public static FontStyle fromString(String value) {
 		if ("bold".equals(value)) {
 			return BOLD;
 		} else if (("bold_italic").equals(value)) {

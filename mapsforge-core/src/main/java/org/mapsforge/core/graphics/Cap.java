@@ -20,7 +20,7 @@ package org.mapsforge.core.graphics;
 public enum Cap {
 	BUTT, ROUND, SQUARE;
 
-	static public Cap fromString(String value) {
+	public static Cap fromString(String value) {
 		if ("butt".equals(value)) {
 			return BUTT;
 		} else if (("round").equals(value)) {

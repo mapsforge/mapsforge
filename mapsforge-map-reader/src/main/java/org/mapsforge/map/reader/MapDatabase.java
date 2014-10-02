@@ -806,13 +806,10 @@ public class MapDatabase {
 			for (int wayDataBlock = 0; wayDataBlock < wayDataBlocks; ++wayDataBlock) {
 				LatLong[][] wayNodes = processWayDataBlock(featureWayDoubleDeltaEncoding);
 				if (wayNodes != null) {
-					if (filterRequired && wayFilterEnabled) {
-						if (!wayFilterBbox.intersectsArea(wayNodes)) {
-							continue;
-						}
+					if (filterRequired && wayFilterEnabled && !wayFilterBbox.intersectsArea(wayNodes)) {
+						continue;
 					}
 					ways.add(new Way(layer, tags, wayNodes, labelPosition));
-
 				}
 			}
 		}

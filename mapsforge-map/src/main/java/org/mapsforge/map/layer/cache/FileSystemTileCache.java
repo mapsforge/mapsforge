@@ -64,6 +64,11 @@ class StorageJob {
 		StorageJob other = (StorageJob) obj;
 		return key.equals(other.key);
 	}
+
+	@Override
+	public int hashCode() {
+		return this.key.hashCode();
+	}
 }
 
 /**

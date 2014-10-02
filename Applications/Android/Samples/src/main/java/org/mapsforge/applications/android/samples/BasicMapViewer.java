@@ -77,7 +77,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
 	protected List<LayerManager> layerManagers = new ArrayList<LayerManager>();
 	protected List<MapViewPosition> mapViewPositions = new ArrayList<MapViewPosition>();
-	protected ArrayList<MapView> mapViews = new ArrayList<MapView>();
+	protected List<MapView> mapViews = new ArrayList<MapView>();
 	protected PreferencesFacade preferencesFacade;
 	protected SharedPreferences sharedPreferences;
 	protected List<TileCache> tileCaches = new ArrayList<TileCache>();
@@ -199,6 +199,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	}
 
 	protected void destroyControls() {
+		// hook for cleanup code
 	}
 
 	protected void destroyLayers() {

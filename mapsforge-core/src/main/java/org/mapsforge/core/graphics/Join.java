@@ -20,7 +20,7 @@ package org.mapsforge.core.graphics;
 public enum Join {
 	BEVEL, MITER, ROUND;
 
-	static public Join fromString(String value) {
+	public static Join fromString(String value) {
 		if ("bevel".equals(value)) {
 			return BEVEL;
 		} else if (("round").equals(value)) {

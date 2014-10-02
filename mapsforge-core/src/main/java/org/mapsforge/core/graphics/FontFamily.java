@@ -17,7 +17,7 @@ package org.mapsforge.core.graphics;
 public enum FontFamily {
 	DEFAULT, MONOSPACE, SANS_SERIF, SERIF;
 
-	static public FontFamily fromString(String value) {
+	public static FontFamily fromString(String value) {
 		if ("default".equals(value)) {
 			return DEFAULT;
 		} else if (("monospace").equals(value)) {

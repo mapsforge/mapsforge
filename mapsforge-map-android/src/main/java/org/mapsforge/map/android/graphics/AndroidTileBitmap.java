@@ -20,12 +20,12 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
@@ -46,7 +46,7 @@ import android.graphics.BitmapFactory;
 
 public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	private static final Logger LOGGER = Logger.getLogger(AndroidTileBitmap.class.getName());
-	private static HashMap<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<Integer, Set<SoftReference<Bitmap>>>();
+	private static Map<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<Integer, Set<SoftReference<Bitmap>>>();
 
 	private static AtomicInteger tileInstances;
 

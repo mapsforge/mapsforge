@@ -27,6 +27,7 @@ public class OverlayWithoutBaseMapViewer extends OverlayMapViewer {
 
 	@Override
 	protected void createTileCaches() {
+		// we do not have tiles, so need no tile cache
 	}
 
 	@Override

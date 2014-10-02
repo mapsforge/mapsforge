@@ -98,7 +98,7 @@ public final class LineSegment {
 					newY = a.y + (b.y - a.y) * (r.left - a.x) / (b.x - a.x);
 					newX = r.left;
 				} else {
-					throw new RuntimeException("Should not get here");
+					throw new IllegalStateException("Should not get here");
 				}
 				// Now we move outside point to intersection point to clip
 				// and get ready for next pass.
