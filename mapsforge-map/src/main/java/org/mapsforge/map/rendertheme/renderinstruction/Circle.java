@@ -15,8 +15,6 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.List;
-
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;

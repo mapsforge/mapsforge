@@ -23,12 +23,9 @@ import org.mapsforge.map.layer.queue.Job;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -141,6 +138,7 @@ public class TileStore implements TileCache {
 
 	@Override
 	public void setWorkingSet(Set<Job> key) {
+		// all tiles are always in the cache
 	}
 
 }

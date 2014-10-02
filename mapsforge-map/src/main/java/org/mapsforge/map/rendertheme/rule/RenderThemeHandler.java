@@ -19,6 +19,7 @@ package org.mapsforge.map.rendertheme.rule;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
@@ -85,7 +86,7 @@ public final class RenderThemeHandler {
 	private final String relativePathPrefix;
 	private RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
-	private HashMap<String, Symbol> symbols = new HashMap<String, Symbol>();
+	private Map<String, Symbol> symbols = new HashMap<String, Symbol>();
 	private final XmlRenderTheme xmlRenderTheme;
 	private XmlRenderThemeStyleMenu renderThemeStyleMenu;
 	private XmlRenderThemeStyleLayer currentLayer;

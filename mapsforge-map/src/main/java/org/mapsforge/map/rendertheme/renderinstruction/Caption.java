@@ -34,8 +34,7 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.Map;
 
 /**
  * Represents a text label on the map.
@@ -63,7 +62,7 @@ public class Caption extends RenderInstruction {
 
 
 	public Caption(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-	        XmlPullParser pullParser, HashMap<String, Symbol> symbols) throws XmlPullParserException {
+	        XmlPullParser pullParser, Map<String, Symbol> symbols) throws XmlPullParserException {
 		super(graphicFactory, displayModel);
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);

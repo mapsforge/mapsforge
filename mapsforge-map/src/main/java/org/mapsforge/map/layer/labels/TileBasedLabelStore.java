@@ -50,7 +50,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	 * @param tile tile on which the mapItems reside.
 	 * @param mapItems the map elements.
 	 */
-	synchronized public void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
+	public synchronized void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
 		this.put(tile, LayerUtil.collisionFreeOrdered(mapItems));
 		this.version += 1;
 	}
@@ -60,7 +60,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	}
 
 	@Override
-	synchronized public List<MapElementContainer> getVisibleItems(Set<Tile> tiles) {
+	public synchronized List<MapElementContainer> getVisibleItems(Set<Tile> tiles) {
 
 		lastVisibleTileSet = tiles;
 
@@ -78,7 +78,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	 * @param tile the tile
 	 * @return
 	 */
-	synchronized public boolean requiresTile(Tile tile) {
+	public synchronized boolean requiresTile(Tile tile) {
 		return this.lastVisibleTileSet.contains(tile) && !this.containsKey(tile);
 	}
 
