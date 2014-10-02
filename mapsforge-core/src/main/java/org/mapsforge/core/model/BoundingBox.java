@@ -199,20 +199,20 @@ public class BoundingBox implements Serializable {
 		}
 
 		// no fast solution, so accumulate boundary points
-		double minLatitude = latLongs[0][0].latitude;
-		double minLongitude = latLongs[0][0].longitude;
-		double maxLatitude = latLongs[0][0].latitude;
-		double maxLongitude = latLongs[0][0].longitude;
+		double tmpMinLat = latLongs[0][0].latitude;
+		double tmpMinLon = latLongs[0][0].longitude;
+		double tmpMaxLat = latLongs[0][0].latitude;
+		double tmpMaxLon = latLongs[0][0].longitude;
 
 		for (LatLong[] outer : latLongs) {
 			for (LatLong latLong : outer) {
-				minLatitude = Math.min(minLatitude, latLong.latitude);
-				maxLatitude = Math.max(maxLatitude, latLong.latitude);
-				minLongitude = Math.min(minLongitude, latLong.longitude);
-				maxLongitude = Math.max(maxLongitude, latLong.longitude);
+				tmpMinLat = Math.min(tmpMinLat, latLong.latitude);
+				tmpMaxLat = Math.max(tmpMaxLat, latLong.latitude);
+				tmpMinLon = Math.min(tmpMinLon, latLong.longitude);
+				tmpMaxLon = Math.max(tmpMaxLon, latLong.longitude);
 			}
 		}
-		return this.intersects(new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude));
+		return this.intersects(new BoundingBox(tmpMinLat, tmpMinLon, tmpMaxLat, tmpMaxLon));
 	}
 
 

@@ -17,7 +17,7 @@ package org.mapsforge.map.rendertheme.rule;
 enum Closed {
 	ANY, NO, YES;
 
-	static public Closed fromString(String value) {
+	public static Closed fromString(String value) {
 		if ("any".equals(value)) {
 			return ANY;
 		} else if (("no").equals(value)) {

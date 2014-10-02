@@ -18,7 +18,6 @@ package org.mapsforge.map.layer;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;

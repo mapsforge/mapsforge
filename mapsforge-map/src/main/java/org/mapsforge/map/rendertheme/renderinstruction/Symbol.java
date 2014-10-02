@@ -19,7 +19,7 @@ import java.io.IOException;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.Tag;
+
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;

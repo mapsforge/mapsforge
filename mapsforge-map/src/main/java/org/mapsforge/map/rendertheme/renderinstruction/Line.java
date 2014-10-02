@@ -17,7 +17,6 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.mapsforge.core.graphics.Bitmap;

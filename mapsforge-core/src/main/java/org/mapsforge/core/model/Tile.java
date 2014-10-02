@@ -15,7 +15,6 @@
  */
 package org.mapsforge.core.model;
 
-import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 
 import java.io.Serializable;

@@ -31,8 +31,6 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.util.Locale;
-
 /**
  * Represents a text along a polyline on the map.
  */
