@@ -169,10 +169,8 @@ public final class RenderThemeHandler {
 			else if (ELEMENT_NAME_RULE.equals(qName)) {
 				checkState(qName, Element.RULE);
 				Rule rule = new RuleBuilder(qName, pullParser, this.ruleStack).build();
-				if (!this.ruleStack.empty()) {
-					if (isVisible(rule)) {
-						this.currentRule.addSubRule(rule);
-					}
+				if (!this.ruleStack.empty() && isVisible(rule)) {
+					this.currentRule.addSubRule(rule);
 				}
 				this.currentRule = rule;
 				this.ruleStack.push(this.currentRule);
