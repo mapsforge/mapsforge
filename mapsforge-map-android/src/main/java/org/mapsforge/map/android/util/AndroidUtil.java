@@ -59,7 +59,7 @@ public final class AndroidUtil {
 				int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
 				if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
 					try {
-						Log.d("TILECACHE FILECACHE SIZE", Integer.toString(firstLevelSize));
+						Log.d("TILECACHE FILECACHE SIZE", Integer.toString(tileCacheFiles));
 
 						TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
 								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE, threaded, queueSize);
@@ -210,8 +210,8 @@ public final class AndroidUtil {
 		// of a screen (the result can be too low if a MapView is very narrow).
 		// For any size we need a minimum of 4 (as the intersection of 4 tiles can always be in the
 		// middle of a view.
-		return (int) Math.max(4, screenRatio * Math.ceil(2 + (height  * overdrawFactor / tileSize))
-				* Math.ceil(2 + (width  * overdrawFactor / tileSize)));
+		return (int) Math.max(4, screenRatio * (2 + (height  * overdrawFactor / tileSize))
+				* (2 + (width  * overdrawFactor / tileSize)));
 	}
 
 	private AndroidUtil() {
