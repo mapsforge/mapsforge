@@ -40,7 +40,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 		lastVisibleTileSet = new HashSet<Tile>();
 	}
 
-	synchronized public void destroy() {
+	public void destroy() {
 		this.clear();
 	}
 
@@ -85,7 +85,6 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	@Override
 	protected boolean removeEldestEntry(Map.Entry<Tile, List<MapElementContainer>> eldest) {
 		if (size() > this.capacity) {
-			List<MapElementContainer> list = eldest.getValue();
 			return true;
 		}
 		return false;

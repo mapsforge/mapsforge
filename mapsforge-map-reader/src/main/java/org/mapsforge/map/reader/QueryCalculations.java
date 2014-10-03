@@ -85,7 +85,7 @@ final class QueryCalculations {
 		if (tile.tileX % 2 == 0 && tile.tileY % 2 == 0) {
 			// upper left quadrant
 			return 0xcc00;
-		} else if (tile.tileX % 2 == 1 && tile.tileY % 2 == 0) {
+		} else if (tile.tileX % 2 == 1 && tile.tileY % 2 == 0) { //NOSONAR tiles are always positiv
 			// upper right quadrant
 			return 0x3300;
 		} else if (tile.tileX % 2 == 0 && tile.tileY % 2 == 1) {

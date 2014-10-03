@@ -37,8 +37,8 @@ abstract class Rule {
 	final ElementMatcher elementMatcher;
 	final byte zoomMax;
 	final byte zoomMin;
-	private final ArrayList<RenderInstruction> renderInstructions; // NOPMD we need specific interface
-	private final ArrayList<Rule> subRules; // NOPMD we need specific interface
+	private final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
+	private final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
 
 	Rule(RuleBuilder ruleBuilder) {
 		this.cat = ruleBuilder.cat;
