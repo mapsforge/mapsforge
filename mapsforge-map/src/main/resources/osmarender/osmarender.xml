@@ -1077,10 +1077,10 @@
 
 		<!-- historic -->
 		<rule e="node" k="historic" v="*">
-			<circle radius="3" fill="#4040ff" stroke="#606060" stroke-width="1.5" />
+			<symbol id="monument" src="jar:symbols/monument.png" />
 
 			<rule e="node" k="*" v="*" zoom-min="17">
-				<caption k="name" dy="-15" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
+				<caption symbol-id="monument" k="name" position="above" font-style="bold" font-size="10" fill="#4040ff" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
 		</rule>
 
@@ -1151,12 +1151,12 @@
 				<symbol src="jar:symbols/railway-crossing.png" />
 			</rule>
 			<rule e="node" k="railway" v="station" zoom-min="14">
-				<circle radius="6" fill="#ec2d2d" stroke="#606060" stroke-width="1.5" />
-				<caption k="name" dy="-16.5" font-style="bold" font-size="13" fill="#ec2d2d" stroke="#ffffff" stroke-width="2.0" />
+				<symbol id="train_station" src="jar:symbols/train_station.png" />
+				<caption symbol-id="train_station" k="name" position="above" font-style="bold" font-size="13" fill="#ec2d2d" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
 			<rule e="node" k="railway" v="halt|tram_stop" zoom-min="17">
-				<circle radius="4" fill="#ec2d2d" stroke="#606060" stroke-width="1.5" />
-				<caption k="name" dy="-20.5" font-style="bold" font-size="11" fill="#ec2d2d" stroke="#ffffff" stroke-width="2.0" />
+				<symbol id="train_station2" src="jar:symbols/train_station2.png" />
+				<caption symbol-id="train_station2" k="name" position="above" font-style="bold" font-size="11" fill="#ec2d2d" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
 		</rule>
 
