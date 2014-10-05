@@ -116,7 +116,7 @@ public class InMemoryTileCache implements TileCache {
 		this.lruCache = lruCacheNew;
 	}
 
-	public void setWorkingSet(Set<Job> jobs) {
+	public synchronized void setWorkingSet(Set<Job> jobs) {
 		this.lruCache.setWorkingSet(jobs);
 	}
 }
