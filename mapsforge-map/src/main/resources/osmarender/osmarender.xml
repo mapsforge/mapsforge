@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme.xsd" version="3" map-background="#f8f8f8">
+	xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme-v4.xsd" version="4" map-background="#f8f8f8">
 
 	<!-- ways -->
 	<rule e="way" k="*" v="*">
@@ -1109,8 +1109,8 @@
 				<symbol src="jar:symbols/cave_entrance.png" />
 			</rule>
 			<rule e="node" k="natural" v="peak" zoom-min="12">
-				<symbol src="jar:symbols/peak.png" />
-				<caption k="ele" dy="-15" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
+				<symbol id="peak" src="jar:symbols/peak.png" />
+				<caption symbol-id="peak" k="ele" position="above" font-style="bold" font-size="10" fill="#000000" stroke="#ffffff" stroke-width="2.0" />
 			</rule>
 			<rule e="node" k="natural" v="volcano" zoom-min="12">
 				<symbol src="jar:symbols/vulcan.png" />
