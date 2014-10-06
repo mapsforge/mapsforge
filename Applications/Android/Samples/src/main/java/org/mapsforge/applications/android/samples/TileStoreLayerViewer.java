@@ -1,5 +1,6 @@
 /*
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -69,6 +70,13 @@ public class TileStoreLayerViewer extends BasicMapViewerXml {
 		this.layerManagers.get(0).getLayers().add(this.tileStoreLayer);
 	}
 
+	@Override
+	protected void createMapViews() {
+		super.createMapViews();
+		this.mapViews.get(0).getModel().displayModel.setFixedTileSize(256);
+	}
+
+	@Override
 	protected void createTileCaches() {
 		// to use a tile store you provide it as a cache (which is pre-filled and never purges any files.
 		// additionally you should use a memory tile store for faster refresh.
@@ -80,6 +88,7 @@ public class TileStoreLayerViewer extends BasicMapViewerXml {
 		this.tileCaches.add(new TwoLevelTileCache(memoryTileCache, tileStore));
 	}
 
+	@Override
 	protected void createMapViewPositions() {
 		// here we do not have a map where the initial position comes from. We use our standard location in Berlin.
 		for (MapView mapView : mapViews) {
