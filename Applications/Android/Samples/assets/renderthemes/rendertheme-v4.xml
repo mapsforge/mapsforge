@@ -158,8 +158,7 @@
 		<area fill="#BBD3EBD9" stroke="#6FC13D" stroke-width="0.2"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse|amenity" v="cemetery|grave_yard" zoom-min="14">
-		<area fill="#BBD3EBD9" stroke="#6FC13D" stroke-width="0.2"/>
-		<area src="assets:patterns/cemetery.png" stroke="#E4E4E4" stroke-width="0.2"/>
+		<area src="assets:patterns/cemetery.svg" symbol-scaling="tiling"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural|landuse" v="land|beach|sand|rock|fell|meadow|grassland|heath|marsh|wetland|scree|scrub|forest|wood" zoom-min="16">
 		<caption cat="labels-big" k="name" font-style="italic" font-family="serif" font-size="20" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
