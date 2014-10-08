@@ -61,7 +61,8 @@ public abstract class RenderInstruction {
 	static final String SYMBOL_PERCENT = "symbol-percent";
 	static final String SYMBOL_SCALING = "symbol-scaling";
 	static final String SYMBOL_WIDTH = "symbol-width";
-	static final String TILE = "tile";
+	static final String TILE = "tiling";
+
 
 	enum ResourceScaling {
 		DEFAULT,
