@@ -818,7 +818,7 @@
 			<lineSymbol src="assets:symbols/cable_car.svg" repeat="true" rotate="false"/>
 		</rule>
 		<rule e="way" k="aerialway" v="chair_lift" zoom-min="15">
-			<lineSymbol src="assets:symbols/chair_lift.svg" repeat="true" rotate="false"/>
+			<lineSymbol src="assets:symbols/chair_lift_2.svg" repeat="true" rotate="false"/>
 		</rule>
 		<rule e="way" k="aerialway" v="gondola" zoom-min="15">
 			<lineSymbol src="assets:symbols/gondola.svg" repeat="true" rotate="false"/>

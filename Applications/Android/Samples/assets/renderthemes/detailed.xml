@@ -972,7 +972,7 @@
 				<lineSymbol src="assets:symbols/cable_car.svg" />
 			</rule>
 			<rule e="way" k="aerialway" v="chair_lift">
-				<lineSymbol src="assets:symbols/chair_lift.svg" />
+				<lineSymbol src="assets:symbols/chair_lift_2.svg" />
 			</rule>
 			<rule e="way" k="aerialway" v="gondola">
 				<lineSymbol src="assets:symbols/gondola.svg" />
