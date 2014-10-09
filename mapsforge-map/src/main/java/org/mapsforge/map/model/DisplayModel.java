@@ -83,7 +83,7 @@ public class DisplayModel extends Observable {
 	private int maxTextWidth = DEFAULT_MAX_TEXT_WIDTH;
 	private float maxTextWidthFactor = DEFAULT_MAX_TEXT_WIDTH_FACTOR;
 	private int tileSize = DEFAULT_TILE_SIZE;
-	private int tileSizeMultiple = 1;
+	private int tileSizeMultiple = 64;
 
 	private float userScaleFactor = defaultUserScaleFactor;
 
@@ -190,6 +190,12 @@ public class DisplayModel extends Observable {
 	/**
 	 * Clamps the tile size to a multiple of the supplied value.
 	 *
+	 * The default value of tileSizeMultiple will be overwritten with this call.
+	 * The default value should be good enough for most applications and setting
+	 * this value should rarely be required.
+	 * Applications that allow external renderthemes might negatively impact
+	 * their layout as area fills may depend on the default value being used.
+	 *
 	 * @param multiple tile size multiple
 	 */
 	public synchronized void setTileSizeMultiple(int multiple) {
@@ -218,7 +224,7 @@ public class DisplayModel extends Observable {
 			// this will clamp to the nearest multiple of the tileSizeMultiple
 			// and make sure we do not end up with 0
 			this.tileSize = Math.max(tileSizeMultiple,
-					(int) (Math.round(temp / this.tileSizeMultiple) * this.tileSizeMultiple));
+					Math.round(temp / this.tileSizeMultiple) * this.tileSizeMultiple);
 		} else {
 			this.tileSize = this.fixedTileSize;
 		}
