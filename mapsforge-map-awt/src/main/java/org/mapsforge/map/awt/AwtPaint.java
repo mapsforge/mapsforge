@@ -137,6 +137,11 @@ class AwtPaint implements Paint {
 	}
 
 	@Override
+	public void setBitmapShaderShift(double dx, double dy) {
+		// TODO find way to shift bitmap origin for AWT
+	}
+
+	@Override
 	public void setColor(Color color) {
 		this.color = AwtGraphicFactory.getColor(color);
 	}

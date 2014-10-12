@@ -23,6 +23,7 @@ public interface Paint {
 	boolean isTransparent();
 
 	void setBitmapShader(Bitmap bitmap);
+	void setBitmapShaderShift(double dx, double dy);
 
 	void setColor(Color color);
 
