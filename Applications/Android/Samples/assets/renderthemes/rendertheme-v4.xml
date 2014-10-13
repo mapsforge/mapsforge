@@ -82,8 +82,11 @@
 	<rule cat="nature" e="way" k="natural" v="land">
 		<area fill="#BBF8F8F8" stroke="#F8F8F8" stroke-width="0.1"/>
 	</rule>
-	<rule cat="areas" e="way" k="landuse" v="residential|farmyard" zoom-min="14">
-		<area fill="#BBF0F2E9" stroke="#D4D4D4" stroke-width="0.2"/>
+	<rule cat="areas" e="way" k="landuse" v="farmyard" zoom-min="14">
+		<area src="assets:patterns/farmland.svg" symbol-scaling="size" symbol-height="70" symbol-width="70"/>
+	</rule>
+	<rule cat="areas" e="way" k="landuse" v="residential" zoom-min="14">
+		<area fill="#BBDEDEDE" />
 	</rule>
 	<rule cat="areas" e="way" k="landuse" v="retail" zoom-min="14">
 		<area fill="#BBF0CCF0" stroke="#E4E4E4" stroke-width="0.2"/>
@@ -101,13 +104,13 @@
 		<area fill="#A5CBA5"/>
 		<rule e="any" k="*" v="*" zoom-min="13">
 			<rule e="any" k="wood" v="coniferous">
-				<area src="assets:symbols/landuse/coniferous.svg" symbol-scaling="tiling"/>
+				<area src="assets:symbols/landuse/coniferous.svg" symbol-scaling="size" symbol-height="50" symbol-width="50"/>
 			</rule>
 			<rule e="any" k="wood" v="deciduous">
-				<area src="assets:patterns/deciduous.svg" symbol-scaling="tiling"/>
+				<area src="assets:patterns/deciduous.svg" symbol-scaling="size" symbol-height="50" symbol-width="50"/>
 			</rule>
 			<rule e="any" k="wood" v="~|*">
-				<area src="assets:patterns/coniferous_and_deciduous.svg" symbol-scaling="tiling"/>
+				<area src="assets:patterns/coniferous_and_deciduous.svg" symbol-scaling="size" symbol-height="50" symbol-width="50"/>
 			</rule>
 		</rule>
 	</rule>
@@ -115,41 +118,41 @@
 		<area fill="#BBE6FFDB" stroke="#C6E6B8" stroke-width="0.1"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse" v="field|farm|farmland|orchard|vineyard" zoom-min="13">
-		<area fill="#BBF5FFDB" stroke="#D9E6B8" stroke-width="0.1"/>
+        <area src="assets:patterns/farmland.svg" symbol-scaling="size" symbol-height="70" symbol-width="70"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="marsh|wetland|mud" zoom-min="13">
 		<area fill="#88D0D9BF" stroke="#D0D9BF" stroke-width="0.1"/>
-		<area src="assets:patterns/swamp.svg" symbol-scaling="tiling"/>
+		<area src="assets:patterns/swamp.svg" symbol-scaling="size" symbol-height="40" symbol-width="40"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="beach|sand" zoom-min="14">
 		<area fill="#FAEBB9"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="rock|stone|bare_rock|bedrock" zoom-min="14">
 		<area fill="#BBF1F1F1" stroke="#F1F1F1" stroke-width="0.1"/>
-		<area src="assets:patterns/hills.svg" symbol-scaling="tiling"/>
+		<area src="assets:patterns/hills.svg" symbol-scaling="size" symbol-height="40" symbol-width="40"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="heath" zoom-min="14">
 		<area fill="#BBEBF7E4" stroke="#EBF7E4" stroke-width="0.1"/>
-		<area src="assets:patterns/grass.svg" symbol-scaling="tiling"/>
+		<area src="assets:patterns/grass.svg" symbol-scaling="percent" symbol-percent="30"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="scrub" zoom-min="14">
 		<area fill="#BBB7EBA4" stroke="#B7EBA4" stroke-width="0.1"/>
-		<area src="assets:patterns/scrub1.svg" symbol-scaling="tiling"/>
+		<area src="assets:patterns/scrub1.svg" symbol-scaling="percent" symbol-percent="50"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="fell" zoom-min="14">
 		<area fill="#BBE9FCE6" stroke="#E9FCE6" stroke-width="0.1"/>
-		<area src="assets:patterns/quarry.svg" symbol-scaling="tiling"/>
+		<area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="160" symbol-width="160"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="scree" zoom-min="14">
 		<area fill="#BBF5F5F5" stroke="#F5F5F5" stroke-width="0.1"/>
-		<area src="assets:patterns/quarry.svg" symbol-scaling="tiling"/>
+        <area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="160" symbol-width="160"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="glacier" zoom-min="12">
 		<area fill="#BBE0FFFF" stroke="#E0FFFF" stroke-width="0.8"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse" v="landfill|quarry" zoom-min="14">
 		<area fill="#CCF2EFE4" stroke="#9EA199" stroke-width="0.2"/>
-		<area src="assets:patterns/quarry.svg" symbol-scaling="tiling"/>
+        <area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="160" symbol-width="160"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse|leisure" v="garden|village_green|common|grass" zoom-min="14">
 		<area fill="#BBC7F1A3" stroke="#6FC18E" stroke-width="0.2"/>
@@ -157,8 +160,14 @@
 	<rule cat="areas" e="way" k="landuse|leisure" v="allotments|greenfield|golf_course" zoom-min="14">
 		<area fill="#BBD3EBD9" stroke="#6FC13D" stroke-width="0.2"/>
 	</rule>
-	<rule cat="areas" e="way" k="landuse|amenity" v="cemetery|grave_yard" zoom-min="14">
-		<area src="assets:patterns/cemetery.svg" symbol-scaling="tiling"/>
+	<rule cat="areas" e="way" k="landuse|amenity" v="cemetery|grave_yard" zoom-min="14" zoom-max="16">
+		<area src="assets:patterns/cemetery.svg" symbol-scaling="size" symbol-height="20" symbol-width="20"/>
+	</rule>
+	<rule cat="areas" e="way" k="landuse|amenity" v="cemetery|grave_yard" zoom-min="17" zoom-max="19">
+		<area src="assets:patterns/cemetery.svg" symbol-scaling="size" symbol-height="30" symbol-width="30"/>
+	</rule>
+	<rule cat="areas" e="way" k="landuse|amenity" v="cemetery|grave_yard" zoom-min="20">
+		<area src="assets:patterns/cemetery.svg" symbol-scaling="size" symbol-height="40" symbol-width="40"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural|landuse" v="land|beach|sand|rock|fell|meadow|grassland|heath|marsh|wetland|scree|scrub|forest|wood" zoom-min="16">
 		<caption cat="labels-big" k="name" font-style="italic" font-family="serif" font-size="20" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
