@@ -33,6 +33,7 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Point;
 
 class AwtPaint implements Paint {
 	private static int getCap(Cap cap) {
@@ -137,7 +138,7 @@ class AwtPaint implements Paint {
 	}
 
 	@Override
-	public void setBitmapShaderShift(double dx, double dy) {
+	public void setBitmapShaderShift(Point origin) {
 		// TODO find way to shift bitmap origin for AWT
 	}
 

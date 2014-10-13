@@ -124,8 +124,7 @@ public class Area extends RenderInstruction {
 		}
 
 		if (this.fill != null) {
-			Point origin = way.getTile().getOrigin();
-			this.fill.setBitmapShaderShift((float) -origin.x, (float) -origin.y);
+			this.fill.setBitmapShaderShift(way.getTile().getOrigin());
 		}
 
 		renderCallback.renderArea(way, this.fill, this.stroke, this.level);
