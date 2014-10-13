@@ -23,12 +23,14 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Point;
 
 import android.graphics.BitmapShader;
 import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -173,15 +175,14 @@ class AndroidPaint implements Paint {
 	 * Shifts the bitmap pattern so that it will always start at a multiple of
 	 * itself for any tile the pattern is used. This ensures that regardless of
 	 * size of the pattern it tiles correctly.
-	 * @param dx tile origin x
-	 * @param dy tile origin y
+	 * @param origin the reference point
 	 */
 	@Override
-	public void setBitmapShaderShift(double dx, double dy) {
-		BitmapShader shader = (BitmapShader) this.paint.getShader();
+	public void setBitmapShaderShift(Point origin) {
+		Shader shader = this.paint.getShader();
 		if (shader != null) {
-			int relativeDx = ((int) dx) % this.shaderWidth;
-			int relativeDy = ((int) dy) % this.shaderHeight;
+			int relativeDx = ((int) -origin.x) % this.shaderWidth;
+			int relativeDy = ((int) -origin.y) % this.shaderHeight;
 
 			Matrix localMatrix = new Matrix();
 			localMatrix.setTranslate(relativeDx, relativeDy);
