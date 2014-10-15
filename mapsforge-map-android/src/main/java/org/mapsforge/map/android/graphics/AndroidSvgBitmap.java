@@ -54,9 +54,20 @@ class AndroidSvgBitmap extends AndroidResourceBitmap {
 					float bitmapWidth = (float) (picture.getWidth() * scale);
 					float bitmapHeight = (float) (picture.getHeight() * scale);
 
+					float aspectRatio = (1f * picture.getWidth()) / picture.getHeight();
+
 					if (width != 0 && height != 0) {
+						// both width and height set, override any other setting
 						bitmapWidth = width;
 						bitmapHeight = height;
+					} else if (width == 0 && height != 0) {
+						// only width set, calculate from aspect ratio
+						bitmapWidth = height * aspectRatio;
+						bitmapHeight = height;
+					} else if (width != 0 && height == 0) {
+						// only height set, calculate from aspect ratio
+						bitmapHeight = width / aspectRatio;
+						bitmapWidth = width;
 					}
 
 					if (percent != 100) {
