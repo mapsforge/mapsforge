@@ -936,7 +936,7 @@
 			<caption priority="10" symbol-id="hospital" k="name" position="above" font-style="bold" font-size="12" fill="#DA0092" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="amenity" v="pharmacy" zoom-min="13">
-			<symbol id="pharmacy" src="assets:symbols/health/pharmacy.svg"/>
+			<symbol id="pharmacy" src="assets:symbols/health/pharmacy.svg" symbol-scaling="size" symbol-height="30"/>
 			<caption priority="10" symbol-id="pharmacy" k="name" position="above" font-style="bold" font-size="12" fill="#DA0092" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="amenity" v="doctors" zoom-min="14">
@@ -991,7 +991,7 @@
 			</rule>
 		</rule>
 		<rule e="any" k="tourism|building" v="hotel|guest_house|motel" zoom-min="13">
-			<symbol id="hotel" src="assets:symbols/accommodation/hotel.svg" />
+			<symbol id="hotel" src="assets:symbols/accommodation/hotel.svg" symbol-scaling="size" symbol-height="50"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
 				<caption symbol-id="hotel" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2"/>
 			</rule>
@@ -1059,10 +1059,10 @@
 			<symbol src="assets:symbols/food/biergarten.svg"/>
 		</rule>
 		<rule e="any" k="amenity" v="cafe" zoom-min="15">
-			<symbol src="assets:symbols/food/cafe.svg"/>
+			<symbol src="assets:symbols/food/cafe.svg" symbol-scaling="size" symbol-height="30"/>
 		</rule>
 		<rule e="any" k="amenity" v="pub|bar" zoom-min="15">
-			<symbol src="assets:symbols/food/bar.svg"/>
+			<symbol src="assets:symbols/food/bar.svg" symbol-scaling="size" symbol-width="30"/>
 		</rule>
 	</rule>
 
