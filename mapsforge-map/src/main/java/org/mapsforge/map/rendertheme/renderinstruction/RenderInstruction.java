@@ -61,13 +61,11 @@ public abstract class RenderInstruction {
 	static final String SYMBOL_PERCENT = "symbol-percent";
 	static final String SYMBOL_SCALING = "symbol-scaling";
 	static final String SYMBOL_WIDTH = "symbol-width";
-	static final String TILE = "tiling";
 
 
 	enum ResourceScaling {
 		DEFAULT,
-		SIZE,
-		TILE
+		SIZE
 	}
 
 	protected String category;
@@ -130,20 +128,12 @@ public abstract class RenderInstruction {
 			return null;
 		}
 
-		if (scaling == RenderInstruction.ResourceScaling.TILE) {
-			width = displayModel.getTilingSize();
-			height = displayModel.getTilingSize();
-		}
-
 		return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height, percent);
 	}
 
 	protected ResourceScaling fromValue(String value) {
 		if (value.equals(SIZE)) {
 			return ResourceScaling.SIZE;
-		}
-		if (value.equals(TILE)) {
-			return ResourceScaling.TILE;
 		}
 		return ResourceScaling.DEFAULT;
 	}

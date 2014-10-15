@@ -134,19 +134,6 @@ public class DisplayModel extends Observable {
 	}
 
 	/**
-	 * Returns the minimum repeating tile size > 1, used for sizing shader bitmaps
-	 */
-	public synchronized int getTilingSize() {
-		if (this.fixedTileSize != 0) {
-			return this.fixedTileSize;
-		}
-		if (this.tileSizeMultiple == 1) {
-			return tileSize;
-		}
-		return this.tileSizeMultiple;
-	}
-
-	/**
 	 * Returns the user scale factor.
 	 * 
 	 * @return the user scale factor.
