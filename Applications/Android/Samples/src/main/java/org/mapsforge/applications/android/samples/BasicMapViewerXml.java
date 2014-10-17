@@ -20,7 +20,7 @@ import org.mapsforge.map.android.view.MapView;
  * A simple application which demonstrates how to use a MapView by initializing
  * it from an XML layout resource.
  */
-public class BasicMapViewerXml extends BasicMapViewer {
+public class BasicMapViewerXml extends BasicMapViewerV3 {
 	/**
 	 * @return the layout to be used
 	 */

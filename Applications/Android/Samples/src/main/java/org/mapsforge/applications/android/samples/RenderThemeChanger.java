@@ -29,7 +29,7 @@ import android.util.Log;
  * Demonstration of changing render themes. This activity checks for .xml files
  * on the sdcard and loads them as render themes.
  */
-public class RenderThemeChanger extends BasicMapViewer {
+public class RenderThemeChanger extends BasicMapViewerV3 {
 
 	private class ChangerThread extends PausableThread {
 		private static final int ROTATION_TIME = 10000; // milli secs to display

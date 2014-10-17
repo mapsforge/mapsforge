@@ -80,16 +80,18 @@ public class Samples extends Activity {
 
 		setContentView(R.layout.activity_samples);
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.samples);
-		linearLayout.addView(createButton(BasicMapViewer.class));
-		linearLayout.addView(createButton(BasicMapViewerXml.class));
+		linearLayout.addView(createButton(RenderTheme4.class,
+				"Map Viewer Rendertheme V4"));
+
+		linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Map Viewer Rendertheme V3"));
+		linearLayout.addView(createButton(BasicMapViewerXml.class, "Old Map Viewer with XML Layout"));
+
 		linearLayout.addView(createButton(DiagnosticsMapViewer.class));
 		linearLayout.addView(createButton(RenderThemeMapViewer.class));
 		linearLayout.addView(createButton(AssetsRenderThemeMapViewer.class,
 				"Rendertheme using Android Assets"));
 		linearLayout.addView(createButton(SVGAssetsRenderThemeMapViewer.class,
 				"Rendertheme using SVG files"));
-		linearLayout.addView(createButton(RenderTheme4.class,
-				"Rendertheme V4"));
 		linearLayout.addView(createButton(SVGTextures.class, "SVG Textures"));
 		linearLayout.addView(createButton(RenderThemeChanger.class,
 				"Automatically changing render themes"));

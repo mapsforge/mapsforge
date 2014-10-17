@@ -30,8 +30,6 @@ import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
-import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.MapWorker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
@@ -72,7 +70,7 @@ import android.widget.TextView;
 /**
  * A simple application which demonstrates how to use a MapView.
  */
-public class BasicMapViewer extends Activity implements OnSharedPreferenceChangeListener {
+public class BasicMapViewerV3 extends Activity implements OnSharedPreferenceChangeListener {
 
 	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
 	protected List<LayerManager> layerManagers = new ArrayList<LayerManager>();
@@ -349,10 +347,10 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 								.toString());
 						double lon = Double.parseDouble(((EditText) view.findViewById(R.id.longitude)).getText()
 								.toString());
-						byte zoomLevel = (byte) ((((SeekBar) view.findViewById(R.id.zoomlevel)).getProgress()) + BasicMapViewer.this.mapViewPositions
+						byte zoomLevel = (byte) ((((SeekBar) view.findViewById(R.id.zoomlevel)).getProgress()) + BasicMapViewerV3.this.mapViewPositions
 								.get(0).getZoomLevelMin());
 
-						BasicMapViewer.this.mapViewPositions.get(0).setMapPosition(
+						BasicMapViewerV3.this.mapViewPositions.get(0).setMapPosition(
 								new MapPosition(new LatLong(lat, lon), zoomLevel));
 					}
 				});
@@ -386,7 +384,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 	@Override
 	protected void onPrepareDialog(int id, final Dialog dialog) {
 		if (id == this.DIALOG_ENTER_COORDINATES) {
-			MapViewPosition currentPosition = BasicMapViewer.this.mapViewPositions.get(0);
+			MapViewPosition currentPosition = BasicMapViewerV3.this.mapViewPositions.get(0);
 			LatLong currentCenter = currentPosition.getCenter();
 			EditText editText = (EditText) dialog.findViewById(R.id.latitude);
 			editText.setText(Double.toString(currentCenter.latitude));
@@ -394,7 +392,7 @@ public class BasicMapViewer extends Activity implements OnSharedPreferenceChange
 			editText.setText(Double.toString(currentCenter.longitude));
 			SeekBar zoomlevel = (SeekBar) dialog.findViewById(R.id.zoomlevel);
 			zoomlevel.setMax(currentPosition.getZoomLevelMax() - currentPosition.getZoomLevelMin());
-			zoomlevel.setProgress(BasicMapViewer.this.mapViewPositions.get(0).getZoomLevel()
+			zoomlevel.setProgress(BasicMapViewerV3.this.mapViewPositions.get(0).getZoomLevel()
 					- currentPosition.getZoomLevelMin());
 			final TextView textView = (TextView) dialog.findViewById(R.id.zoomlevelValue);
 			textView.setText(String.valueOf(zoomlevel.getProgress()));

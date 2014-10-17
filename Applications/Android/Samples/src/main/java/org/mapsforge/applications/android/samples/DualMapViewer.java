@@ -30,7 +30,7 @@ import android.os.Environment;
 /**
  * An activity with two independent MapViews.
  */
-public class DualMapViewer extends BasicMapViewerXml {
+public class DualMapViewer extends RenderTheme4 {
 
 	protected PreferencesFacade preferencesFacade2;
 

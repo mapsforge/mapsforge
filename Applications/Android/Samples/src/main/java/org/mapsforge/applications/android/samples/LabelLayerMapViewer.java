@@ -24,7 +24,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  * experimental code and has some notable speed issues. Its use in production is currently not
  * recommended.
  */
-public class LabelLayerMapViewer extends BasicMapViewer {
+public class LabelLayerMapViewer extends BasicMapViewerV3 {
 
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),

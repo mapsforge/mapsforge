@@ -27,9 +27,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BasicMapViewer"
+            android:name=".BasicMapViewerV3"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="BasicMapViewer" />
+            android:label="Old Basic Map Viewer" />
         <activity
             android:name=".LabelLayerMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -37,7 +37,7 @@
         <activity
             android:name=".BasicMapViewerXml"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="BasicMapViewerXml" />
+            android:label="Old Basic Map Viewer with XML Layout" />
         <activity
             android:name=".DownloadLayerViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
