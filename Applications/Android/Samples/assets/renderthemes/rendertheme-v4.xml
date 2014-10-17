@@ -1454,7 +1454,7 @@
 		<symbol src="assets:symbols/railway-crossing-small1.svg"/>
 	</rule>
 	<rule cat="public_transport" e="node" k="railway" v="level_crossing" zoom-min="15">
-		<symbol src="assets:symbols/railway-crossing1.svg"/>
+		<symbol src="assets:symbols/railway-crossing.svg"/>
 	</rule>
 	<!-- barriers -->
 	<rule cat="barriers" e="any" k="barrier" v="*" zoom-min="17">
