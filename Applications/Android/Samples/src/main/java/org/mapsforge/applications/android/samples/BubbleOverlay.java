@@ -25,7 +25,7 @@ import android.widget.TextView;
 /**
  * Basic map viewer that shows bubbles with content at a few locations.
  */
-public class BubbleOverlay extends BasicMapViewerXml {
+public class BubbleOverlay extends RenderTheme4 {
 
 	private Bitmap bubble;
 

@@ -1,18 +1,18 @@
 package org.mapsforge.applications.android.samples.test;
 
-import org.mapsforge.applications.android.samples.BasicMapViewer;
+import org.mapsforge.applications.android.samples.BasicMapViewerV3;
 
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class BasicMapViewerTest extends ActivityInstrumentationTestCase2<BasicMapViewer> {
+public class BasicMapViewerV3Test extends ActivityInstrumentationTestCase2<BasicMapViewerV3> {
 
 	Solo solo;
 	final static int iterations = TestUtils.iterations;
 
-	public BasicMapViewerTest() {
-		super(BasicMapViewer.class);
+	public BasicMapViewerV3Test() {
+		super(BasicMapViewerV3.class);
 	}
 
 	public void setUp() throws Exception {

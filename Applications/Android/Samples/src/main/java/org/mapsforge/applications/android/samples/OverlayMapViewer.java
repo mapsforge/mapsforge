@@ -34,7 +34,7 @@ import android.util.Log;
 /**
  * Basic map viewer with a few overlays added.
  */
-public class OverlayMapViewer extends BasicMapViewerXml {
+public class OverlayMapViewer extends RenderTheme4 {
 
 	protected LatLong latLong1 = new LatLong(52.5, 13.4);
 	protected LatLong latLong2 = new LatLong(52.499, 13.402);

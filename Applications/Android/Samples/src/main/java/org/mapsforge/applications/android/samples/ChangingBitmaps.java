@@ -27,7 +27,7 @@ import android.os.Handler;
  * A map viewer demonstrating changing bitmap drawables: every two seconds the
  * view changes the bitmap.
  */
-public class ChangingBitmaps extends BasicMapViewerXml {
+public class ChangingBitmaps extends RenderTheme4 {
 
 	final class BitmapChanger implements Runnable {
 		@Override

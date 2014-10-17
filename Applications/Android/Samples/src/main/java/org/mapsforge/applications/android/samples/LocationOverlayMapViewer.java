@@ -26,7 +26,7 @@ import android.graphics.drawable.Drawable;
  * project is the file berlin.gpx that can be loaded in the Android Monitor to
  * simulate location data in the center of Berlin.
  */
-public class LocationOverlayMapViewer extends BasicMapViewerXml {
+public class LocationOverlayMapViewer extends RenderTheme4 {
 	private MyLocationOverlay myLocationOverlay;
 
 	@Override
