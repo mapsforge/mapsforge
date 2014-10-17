@@ -123,9 +123,7 @@ public class Area extends RenderInstruction {
 			}
 		}
 
-		if (this.fill != null) {
-			this.fill.setBitmapShaderShift(way.getTile().getOrigin());
-		}
+		this.fill.setBitmapShaderShift(way.getTile().getOrigin());
 
 		renderCallback.renderArea(way, this.fill, this.stroke, this.level);
 	}
