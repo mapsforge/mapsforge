@@ -89,6 +89,9 @@ public class Line extends RenderInstruction {
 			}
 			bitmapCreated = true;
 		}
+
+		this.stroke.setBitmapShaderShift(way.getTile().getOrigin());
+
 		renderCallback.renderWay(way, this.stroke, this.dy, this.level);
 	}
 
