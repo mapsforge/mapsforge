@@ -1,76 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme-v4.xsd" version="4" map-background="#F8F8F8">
 
-	<stylemenu id="r4menu" defaultvalue="outdoor" defaultlang="en">
+	<stylemenu id="r4menu" defaultvalue="standard" defaultlang="en">
 
 		<layer id="shopping">
 			<name lang="de" value="Shopping"/>
 			<name lang="en" value="Shopping"/>
-			<name lang="es" value="Shopping"/>
+			<name lang="es" value="Tiendas"/>
+			<name lang="fr" value="Shopping"/>
 			<cat id="shopping"/>
-			<cat id="amenities"/>
-		</layer>
-
-		<layer id="accommodation">
-			<name lang="de" value="Hotels etc"/>
-			<name lang="en" value="Accommodation"/>
-			<name lang="es" value="Hoteles"/>
-			<cat id="accommodation"/>
-		</layer>
-
-		<layer id="parking">
-			<name lang="de" value="Parkplätze"/>
-			<name lang="en" value="Parking"/>
-			<name lang="es" value="Parking"/>
-			<cat id="parking"/>
 		</layer>
 
 		<layer id="emergency">
 			<name lang="de" value="Notfall"/>
 			<name lang="en" value="Emergency"/>
 			<name lang="es" value="Emergencia"/>
+			<name lang="fr" value="Urgence"/>
 			<cat id="emergency"/>
+		</layer>
+
+		<layer id="parking">
+			<name lang="de" value="Parkplätze"/>
+			<name lang="en" value="Parking"/>
+			<name lang="es" value="Aparcamiento"/>
+			<name lang="fr" value="Parking"/>
+			<cat id="parking"/>
+		</layer>
+
+		<layer enabled="true" id="buildings">
+			<name lang="de" value="Gebäude"/>
+			<name lang="en" value="Buildings"/>
+			<name lang="es" value="Edificios"/>
+			<name lang="fr" value="Bâtiments"/>
+			<cat id="buildings"/>
+		</layer>
+
+		<layer id="public_transport">
+			<name lang="de" value="Öffentlicher Verkehr"/>
+			<name lang="en" value="Public Transport"/>
+			<name lang="es" value="Transporte público"/>
+			<name lang="fr" value="Transport public"/>
+			<cat id="public_transport"/>
+			<cat id="rail"></cat>
+		</layer>
+
+		<layer id="food">
+			<name lang="de" value="Restaurants/Bars"/>
+			<name lang="en" value="Restaurants/Bars"/>
+			<name lang="es" value="Restaurantes/Bares"/>
+			<name lang="fr" value="Restaurants/Bars"/>
+			<cat id="food"/>
+		</layer>
+
+		<layer id="sports">
+			<name lang="de" value="Sport"/>
+			<name lang="en" value="Sports"/>
+			<name lang="es" value="Deporte"/>
+			<name lang="fr" value="Sport"/>
+			<cat id="sports"/>
+		</layer>
+
+		<layer id="amenities">
+			<name lang="de" value="Diverse Einrichtungen"/>
+			<name lang="en" value="Facilities"/>
+			<name lang="es" value="Comodidades"/>
+			<name lang="fr" value="Aménagements"/>
+			<cat id="amenities"/>
+		</layer>
+
+		<layer id="tourism">
+			<name lang="de" value="Tourismus"/>
+			<name lang="en" value="Tourism"/>
+			<name lang="es" value="Turisimo"/>
+			<name lang="fr" value="Tourisme"/>
+			<cat id="tourism"/>
+		</layer>
+
+		<layer id="mountain">
+			<name lang="de" value="Berge"/>
+			<name lang="en" value="Mountains"/>
+			<name lang="es" value="Montañas"/>
+			<name lang="fr" value="Montagnes"/>
+			<cat id="mountain"/>
+		</layer>
+
+		<layer id="accommodation">
+			<name lang="de" value="Unterkunft"/>
+			<name lang="en" value="Accommodation"/>
+			<name lang="es" value="Alojamiento"/>
+			<name lang="fr" value="Logement"/>
+			<cat id="accommodation"/>
 		</layer>
 
 		<layer id="base">
 			<cat id="roads"/>
 			<cat id="waterbodies"/>
+			<cat id="landuse"/>
+			<cat id="places"/>
 			<overlay id="emergency"/>
+			<overlay id="food"/>
 		</layer>
-		
-		<layer id="driving" parent="base" visible="true">
+
+		<layer id="simple" parent="base" visible="true">
 			<name lang="de" value="Auto"/>
 			<name lang="en" value="Driving"/>
-			<name lang="es" value="Coche"/>
+			<name lang="es" value="Conducción"/>
+			<name lang="fr" value="Conduite"/>
 			<cat id="transport"/>
-            <cat id="redrivers"/>
-            <cat id="places"/>
+			<cat id="barrier"/>
+			<cat id="driving"/>
 			<overlay id="parking"/>
+			<overlay id="shopping"/>
 		</layer>
-		
-		<layer id="outdoor" parent="base" visible="true">
-			<name lang="de" value="Outdoor"/>
-			<name lang="en" value="Outdoor"/>
-			<name lang="es" value="Outdoor"/>
-			<cat id="nature"/>
-			<cat id="areas"/>
-			<cat id="bluerivers"/>
-			<overlay id="accommodation"/>
-		</layer>
-		
-		<layer id="city" parent="driving" visible="true">
+
+		<layer id="standard" parent="base" visible="true">
 			<name lang="de" value="Stadt"/>
 			<name lang="en" value="City"/>
-			<name lang="es" value="Ciudad"/>
-            <cat id="buildings"/>
-			<cat id="shopping"/>
-			<cat id="amenities"/>
-			<cat id="public_transport"/>
-			<overlay id="shopping" />
+			<name lang="es" value="City"/>
+			<name lang="fr" value="Ville"/>
+			<cat id="areas"/>
+			<overlay id="tourism"/>
+			<overlay id="sports"/>
+			<overlay id="amenities"/>
+			<overlay id="buildings"/>
+			<overlay id="public_transport"/>
+			<overlay id="accommodation"/>
+			<overlay id="shopping"/>
 		</layer>
+
 	</stylemenu>
 
-<!-- landcover -->
+	-<!-- land/sea -->
 	<rule cat="nature" e="way" k="natural" v="coastline">
 		<rule e="way" k="*" v="*" closed="no">
 			<line stroke="#D4D4D4" stroke-width="2.0"/>
@@ -79,11 +139,18 @@
 			<area fill="#BBF8F8F8" stroke="#D4D4D4" stroke-width="0.2"/>
 		</rule>
 	</rule>
+
 	<rule cat="nature" e="way" k="natural" v="land">
 		<area fill="#BBF8F8F8" stroke="#F8F8F8" stroke-width="0.1"/>
 	</rule>
-	<rule cat="areas" e="way" k="landuse" v="farmyard" zoom-min="14">
-		<area src="assets:patterns/farmland.svg" symbol-scaling="size" symbol-height="70" symbol-width="70"/>
+
+	<rule e="way" k="natural" v="issea">
+		<area fill="#B3DDFF"/>
+	</rule>
+
+	<!-- landuse -->
+	<rule e="way" k="landuse" v="military">
+		<area src="assets:patterns/military.png" stroke="#e4e4e4" stroke-width="0.2"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse" v="residential" zoom-min="14">
 		<area fill="#BBDEDEDE" />
@@ -91,6 +158,7 @@
 	<rule cat="areas" e="way" k="landuse" v="retail" zoom-min="14">
 		<area fill="#BBF0CCF0" stroke="#E4E4E4" stroke-width="0.2"/>
 	</rule>
+
 	<rule cat="areas" e="way" k="landuse" v="commercial|industrial|brownfield|railway|garages|construction" zoom-min="14">
 		<area fill="#BBC9DDDD" stroke="#CCCCCC" stroke-width="0.2"/>
 	</rule>
@@ -104,7 +172,7 @@
 		<area fill="#A5CBA5"/>
 		<rule e="any" k="*" v="*" zoom-min="13">
 			<rule e="any" k="wood" v="coniferous">
-				<area src="assets:symbols/landuse/coniferous.svg" symbol-scaling="size" symbol-height="50" symbol-width="50"/>
+				<area src="assets:patterns/coniferous.svg" symbol-scaling="size" symbol-height="50" symbol-width="50"/>
 			</rule>
 			<rule e="any" k="wood" v="deciduous">
 				<area src="assets:patterns/deciduous.svg" symbol-scaling="size" symbol-height="50" symbol-width="50"/>
@@ -114,11 +182,12 @@
 			</rule>
 		</rule>
 	</rule>
+
 	<rule cat="nature" e="way" k="landuse|natural" v="meadow|grassland" zoom-min="13">
 		<area fill="#BBE6FFDB" stroke="#C6E6B8" stroke-width="0.1"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse" v="field|farm|farmland|orchard|vineyard" zoom-min="13">
-        <area src="assets:patterns/farmland.svg" symbol-scaling="size" symbol-height="70" symbol-width="70"/>
+		<area src="assets:patterns/farmland.svg" symbol-scaling="size" symbol-height="70" symbol-width="70"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="marsh|wetland|mud" zoom-min="13">
 		<area fill="#88D0D9BF" stroke="#D0D9BF" stroke-width="0.1"/>
@@ -137,27 +206,27 @@
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="scrub" zoom-min="14">
 		<area fill="#BBB7EBA4" stroke="#B7EBA4" stroke-width="0.1"/>
-		<area src="assets:patterns/scrub1.svg" symbol-scaling="percent" symbol-percent="50"/>
+		<area src="assets:patterns/scrub1.svg" symbol-percent="50" symbol-scaling="percent"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="fell" zoom-min="14">
 		<area fill="#BBE9FCE6" stroke="#E9FCE6" stroke-width="0.1"/>
-		<area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="160" symbol-width="160"/>
+		<area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="90" symbol-width="90"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="scree" zoom-min="14">
 		<area fill="#BBF5F5F5" stroke="#F5F5F5" stroke-width="0.1"/>
-        <area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="160" symbol-width="160"/>
+		<area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="90" symbol-width="90"/>
 	</rule>
 	<rule cat="nature" e="way" k="natural" v="glacier" zoom-min="12">
 		<area fill="#BBE0FFFF" stroke="#E0FFFF" stroke-width="0.8"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse" v="landfill|quarry" zoom-min="14">
 		<area fill="#CCF2EFE4" stroke="#9EA199" stroke-width="0.2"/>
-        <area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="160" symbol-width="160"/>
+		<area src="assets:patterns/quarry.svg" symbol-scaling="size" symbol-height="90" symbol-width="90"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse|leisure" v="garden|village_green|common|grass" zoom-min="14">
 		<area fill="#BBC7F1A3" stroke="#6FC18E" stroke-width="0.2"/>
 	</rule>
-	<rule cat="areas" e="way" k="landuse|leisure" v="allotments|greenfield|golf_course" zoom-min="14">
+	<rule cat="areas" e="way" k="landuse|leisure" v="allotments|greenfield|golf_course" zoom-min="15">
 		<area fill="#BBD3EBD9" stroke="#6FC13D" stroke-width="0.2"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse|amenity" v="cemetery|grave_yard" zoom-min="14" zoom-max="16">
@@ -169,19 +238,17 @@
 	<rule cat="areas" e="way" k="landuse|amenity" v="cemetery|grave_yard" zoom-min="20">
 		<area src="assets:patterns/cemetery.svg" symbol-scaling="size" symbol-height="40" symbol-width="40"/>
 	</rule>
-	<rule cat="nature" e="way" k="natural|landuse" v="land|beach|sand|rock|fell|meadow|grassland|heath|marsh|wetland|scree|scrub|forest|wood" zoom-min="16">
-		<caption cat="labels-big" k="name" font-style="italic" font-family="serif" font-size="20" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
-		<caption cat="labels-small" k="name" font-style="italic" font-family="serif" font-size="10" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
+	<rule cat="nature" e="way" k="natural|landuse" v="land|beach|sand|rock|fell|meadow|grassland|heath|marsh|wetland|scree|scrub|forest|wood" zoom-min="15">
+		<caption k="name" font-style="italic" font-family="serif" font-size="10" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
 	</rule>
 	<rule cat="areas" e="way" k="landuse" v="landfill|quarry|vineyard|field|farm|farmland|orchard" zoom-min="16">
 		<caption k="name" font-style="italic" font-family="serif" font-size="16" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
 	</rule>
-	
 	<rule cat="areas" e="way" k="landuse|leisure|amenity" v="grass|village_green|recreation_ground|military|park|garden|common|green|dog_park|allotments|cemetery|graveyard" zoom-min="16">
 		<caption k="name" font-style="italic" font-family="serif" font-size="14" fill="#888888" stroke="#FFFFFF" stroke-width="2.0"/>
 	</rule>
 
-<!-- tunnels -->
+	<!-- tunnels -->
 	<rule cat="roads" e="way" k="tunnel" v="true|yes|culvert|building_passage|passage">
 		<!-- highway tunnel -->
 		<rule e="way" k="highway" v="steps|footway|path">
@@ -214,7 +281,8 @@
 		</rule>
 	</rule>
 
-<!-- waterbodies -->
+
+	<!-- waterbodies -->
 	<rule cat="waterbodies" e="any" k="*" v="*">
 		<rule e="way" k="bridge" v="yes|true|viaduct|aqueduct|suspension|culvert|swing">
 			<rule e="way" k="waterway" v="ditch|drain|stream">
@@ -244,24 +312,24 @@
 			<line stroke="#B3DDFF" stroke-width="1.1"/>
 		</rule>
 		<rule e="way" k="waterway" v="riverbank">
-			<area cat="redrivers" fill="#FF0000"/>
-			<area cat="bluerivers" fill="#B3DDFF"/>
+			<area fill="#B3DDFF"/>
 		</rule>
 		<rule e="way" k="waterway" v="river" zoom-min="12">
 			<pathText k="name" font-style="bold" font-size="14" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
-		<rule e="way" k="waterway" v="stream|canal" zoom-min="14">
+		<rule e="way" k="waterway" v="stream|canal" zoom-min="15">
 			<pathText k="name" font-style="bold" font-size="12" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="way" k="natural|landuse" v="water|reservoir|basin">
 			<area fill="#B3DDFF"/>
-			<rule e="any" k="*" v="*" zoom-min="12">
-				<caption k="name" font-style="bold" font-size="13" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
+			<rule e="any" k="*" v="*" zoom-min="14">
+				<caption k="name" font-size="12" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 	</rule>
 
-<!-- POI areas -->
+
+	<!-- POI areas -->
 	<rule cat="roads" e="way" k="area" v="yes|true">
 		<rule e="way" k="highway" v="footway|pedestrian">
 			<area fill="#E3E3E3" stroke="#707070" stroke-width="0.15"/>
@@ -285,13 +353,13 @@
 			<line stroke="#734A08" stroke-width="0.2" stroke-dasharray="4,4" stroke-linecap="butt"/>
 		</rule>
 	</rule>
-	<rule cat="areas" e="way" k="tourism" v="attraction" closed="yes" zoom-min="14">
+	<rule cat="tourism" e="way" k="tourism" v="attraction" closed="yes" zoom-min="14">
 		<line stroke="#60734A08" stroke-width="0.5"/>
 	</rule>
-	<rule cat="tourism_poi" e="way" k="tourism" v="attraction" closed="no" zoom-min="14">
+	<rule cat="tourism" e="way" k="tourism" v="attraction" closed="no" zoom-min="14">
 		<line stroke="#40734A08" stroke-width="0.8"/>
 	</rule>
-	<rule cat="parking" e="way" k="amenity" v="parking">
+	<rule cat="driving" e="way" k="amenity" v="parking">
 		<area fill="#FFFFC0" stroke="#E9DD72" stroke-width="0.2"/>
 		<rule e="way" k="access" v="private">
 			<area src="assets:patterns/access-private.png"/>
@@ -300,7 +368,7 @@
 	<rule cat="buildings" e="way" k="amenity" v="fountain" closed="yes">
 		<area fill="#B3DDFF" stroke="#000080" stroke-width="0.15"/>
 	</rule>
-	
+
 	<!-- leisure -->
 	<rule cat="buildings" e="way" k="leisure|sport" v="sports_centre|shooting|stadium">
 		<area fill="#DDD3EBD9" stroke="#6FC18E" stroke-width="0.2"/>
@@ -312,13 +380,13 @@
 		<line stroke="#B36C4C" stroke-width="1.6"/>
 		<line stroke="#F2A07B" stroke-width="1.2"/>
 	</rule>
-	<rule cat="areas" e="way" k="leisure" v="playground|pitch|dog_park" zoom-min="12">
+	<rule cat="areas" e="way" k="leisure" v="playground|pitch|dog_park" zoom-min="15">
 		<area fill="#D3EBD9" stroke="#6FC13D" stroke-width="0.2"/>
 	</rule>
 	<rule cat="buildings" e="way" k="leisure|amenity" v="swimming_pool">
 		<area fill="#B3DDFF" stroke="#000080" stroke-width="0.15"/>
 	</rule>
-	<rule cat="areas" e="way" k="sport|leisure" v="swimming|water_park" zoom-min="14">
+	<rule cat="areas" e="way" k="sport|leisure" v="swimming|water_park" zoom-min="15">
 		<line stroke="#806060FF" stroke-width="0.3"/>
 	</rule>
 	<rule cat="areas" e="way" k="sport" v="tennis">
@@ -347,7 +415,8 @@
 		</rule>
 	</rule>
 
-<!-- non-physical boundaries -->
+
+	<!-- non-physical boundaries -->
 	<!-- administrative borders -->
 	<rule cat="areas" e="any" k="*" v="*">
 		<rule e="way" k="admin_level" v="2">
@@ -378,6 +447,7 @@
 			<line stroke="#70EDC2EC" stroke-width="4" stroke-dasharray="15, 15" stroke-linecap="butt"/>
 			<line stroke="#693937" stroke-width="0.25" stroke-dasharray="15, 15"/>
 		</rule>
+
 		<!-- special areas -->
 		<rule e="way" k="military" v="*">
 			<area fill="#15DF003F"/>
@@ -394,19 +464,15 @@
 			</rule>
 		</rule>
 		<rule e="way" k="leisure|boundary" v="nature_reserve|national_park|protected_area">
-			<rule e="any" k="protect_class" v="1|2|3|4|5|6|7|97|98|99|~" zoom-min="11" zoom-max="13">
+			<rule e="any" k="protect_class" v="1|2|3|4|5|6|7|97|98|99|~" zoom-min="15">
 				<area fill="#40C0FFBF"/>
 				<area src="assets:patterns/nature-reserve.png"/>
-				<caption k="name" font-style="bold_italic" font-family="serif" font-size="16" fill="#8ABF8A" stroke="#FFFFFF" stroke-width="2.0"/>
-			</rule>
-			<rule e="any" k="protect_class" v="1|2|3|4|5|6|7|97|98|99|~" zoom-min="14">
-				<area src="assets:patterns/nature-reserve.png"/>
-				<caption k="name" font-style="bold_italic" font-family="serif" font-size="16" fill="#8ABF8A" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption k="name" font-style="bold_italic" font-family="serif" font-size="14" fill="#8ABF8A" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 	</rule>
 
-<!-- buildings -->
+	<!-- buildings -->
 	<rule cat="buildings" e="any" k="*" v="*">
 		<rule e="way" k="waterway" v="dock" zoom-min="14">
 			<area fill="#90CCCCCC"/>
@@ -456,7 +522,7 @@
 		</rule>
 	</rule>
 
-<!-- aeroways -->
+	<!-- aeroways -->
 	<!-- runways areas -->
 	<rule cat="areas" e="way" k="aeroway" v="aerodrome" closed="yes">
 		<area fill="#90D8DCCE" stroke="#000000" stroke-width="0.5"/>
@@ -479,7 +545,7 @@
 		<line stroke="#000000" stroke-width="2" stroke-linecap="butt"/>
 	</rule>
 
-<!-- bridges -->
+	<!-- bridges -->
 	<rule cat="roads" e="way" k="bridge" v="yes|true|viaduct|aqueduct|suspension|culvert|swing">
 		<rule e="way" k="highway" v="steps|footway|path">
 			<line stroke="#333333" stroke-width="1.3" stroke-linecap="butt"/>
@@ -521,12 +587,12 @@
 		</rule>
 	</rule>
 
-<!-- turning circle casing -->
+	<!-- turning circle casing -->
 	<rule cat="roads" e="node" k="highway" v="turning_circle">
 		<circle radius="1.45" scale-radius="true" fill="#000000"/>
 	</rule>
 
-<!-- highway casings -->
+	<!-- highway casings -->
 	<rule cat="roads" e="way" k="tunnel" v="~|no|false">
 		<rule e="way" k="area" v="~|no|false">
 			<!-- highway casings -->
@@ -572,13 +638,12 @@
 			</rule>
 		</rule>
 	</rule>
-
-<!-- turning circle core -->
+	<!-- turning circle core -->
 	<rule cat="roads" e="node" k="highway" v="turning_circle">
 		<circle radius="1.2" scale-radius="true" fill="#FFFFFF"/>
 	</rule>
 
-<!-- highway cores -->
+	<!-- highway cores -->
 	<rule cat="roads" e="way" k="tunnel" v="~|no|false">
 		<!-- no area -->
 		<rule e="way" k="area" v="~|no|false">
@@ -661,7 +726,7 @@
 		</rule>
 	</rule>
 
-<!-- highway captions etc. -->
+	<!-- highway captions etc. -->
 	<rule cat="roads" e="way" k="tunnel" v="~|no|false">
 		<rule e="way" k="highway" v="footway|path|track|bridleway|steps|byway" zoom-min="14">
 			<pathText k="name" priority="-8" font-style="bold" font-size="12" fill="#606060" stroke="#FFFFFF" stroke-width="2"/>
@@ -693,7 +758,7 @@
 		</rule>
 	</rule>
 
-<!-- other transportation ways -->
+	<!-- other transportation ways -->
 	<!-- aeroway runways cores -->
 	<rule cat="roads" e="way" k="aeroway" v="runway" closed="no">
 		<line stroke="#D4DCBD" stroke-width="3.5" stroke-linecap="butt"/>
@@ -719,6 +784,7 @@
 			<caption priority="-10" symbol-id="airport" k="name" position="above" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 	</rule>
+
 
 	<!-- ferry routes -->
 	<rule cat="roads" e="way" k="route" v="ferry">
@@ -750,7 +816,7 @@
 				<area fill="#55505050" />
 			</rule>
 		</rule>
-	
+
 		<!-- piste ways -->
 		<rule e="way" k="piste:type" v="downhill" closed="no" zoom-min="13">
 			<rule e="way" k="piste:difficulty" v="novice">
@@ -837,19 +903,19 @@
 		</rule>
 	</rule>
 
-<!-- POI -->
+	<!-- POI -->
 	<!-- place -->
 	<rule cat="places" e="any" k="*" v="*">
 		<rule e="any" k="place" v="locality" zoom-min="14">
 			<rule e="any" k="mountain_pass|natural|tourism" v="~">
-				<caption priority="10" k="name" font-style="italic" font-family="serif" font-size="16" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
+				<caption priority="10" k="name" font-style="italic" font-family="serif" font-size="12" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
 			</rule>
 		</rule>
 		<rule e="node" k="place" v="island|islet" zoom-min="14">
-			<caption priority="30" k="name" font-style="italic" font-family="serif" font-size="16" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
+			<caption priority="30" k="name" font-style="italic" font-family="serif" font-size="12" fill="#888888" stroke="#FFFFFF" stroke-width="0.1"/>
 		</rule>
 		<rule e="node" k="place" v="suburb" zoom-min="13">
-			<caption priority="20" k="name" font-style="bold_italic" font-family="serif" font-size="11" fill="#5555AA" stroke="#FFFFFF" stroke-width="2.0"/>
+			<caption priority="20" k="name" font-style="bold_italic" font-family="serif" font-size="14" fill="#5555AA" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="node" k="place" v="isolated_dwelling" zoom-min="15">
 			<caption priority="5"  k="name" font-style="bold" font-size="12" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
@@ -858,16 +924,16 @@
 			<caption priority="5" k="name" font-style="bold" font-size="12" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="node" k="place" v="village" zoom-min="12">
-			<caption priority="20" k="name" font-style="bold" font-size="12" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+			<caption priority="20" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="node" k="place" v="town" zoom-min="8">
-			<caption priority="30" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+			<caption priority="30" k="name" font-style="bold" font-size="16" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="node" k="place" v="city" zoom-min="6" zoom-max="6">
-			<caption priority="40" k="name" font-style="bold" font-size="11" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+			<caption priority="40" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="node" k="place" v="city" zoom-min="7" zoom-max="7">
-			<caption priority="40" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+			<caption priority="40" k="name" font-style="bold" font-size="15" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="node" k="place" v="city" zoom-min="8" zoom-max="9">
 			<caption priority="40" k="name" font-style="bold" font-size="17" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
@@ -875,8 +941,8 @@
 		<rule e="node" k="place" v="city" zoom-min="10" zoom-max="11">
 			<caption priority="40" k="name" font-style="bold" font-size="19" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
-		<rule e="node" k="place" v="city" zoom-min="12" zoom-max="16">
-			<caption priority="40" k="name" font-style="bold" font-size="19" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+		<rule e="node" k="place" v="city" zoom-min="12" zoom-max="13">
+			<caption priority="40" k="name" font-style="bold" font-size="20" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="node" k="place" v="country" zoom-max="3">
 			<caption priority="50" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
@@ -891,7 +957,7 @@
 			<caption priority="50" k="name" font-style="bold" font-size="20" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 	</rule>
-	
+
 	<!-- natural -->
 	<rule cat="nature" e="any" k="*" v="*">
 		<rule e="node" k="natural" v="cave_entrance" zoom-min="14">
@@ -936,7 +1002,7 @@
 			<caption priority="10" symbol-id="hospital" k="name" position="above" font-style="bold" font-size="12" fill="#DA0092" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="amenity" v="pharmacy" zoom-min="13">
-			<symbol id="pharmacy" src="assets:symbols/health/pharmacy.svg" symbol-scaling="size" symbol-height="30"/>
+			<symbol id="pharmacy" src="assets:symbols/health/pharmacy.svg" symbol-scaling="size" symbol-height="15"/>
 			<caption priority="10" symbol-id="pharmacy" k="name" position="above" font-style="bold" font-size="12" fill="#DA0092" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="any" k="amenity" v="doctors" zoom-min="14">
@@ -991,7 +1057,7 @@
 			</rule>
 		</rule>
 		<rule e="any" k="tourism|building" v="hotel|guest_house|motel" zoom-min="13">
-			<symbol id="hotel" src="assets:symbols/accommodation/hotel.svg" symbol-scaling="size" symbol-height="50"/>
+			<symbol id="hotel" src="assets:symbols/accommodation/hotel.svg" symbol-scaling="size" symbol-height="25"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
 				<caption symbol-id="hotel" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2"/>
 			</rule>
@@ -1043,7 +1109,7 @@
 			</rule>
 		</rule>
 	</rule>
-	
+
 	<!-- food -->
 	<rule cat="food" e="any" k="*" v="*">
 		<rule e="any" k="amenity" v="restaurant" zoom-min="14">
@@ -1059,10 +1125,10 @@
 			<symbol src="assets:symbols/food/biergarten.svg"/>
 		</rule>
 		<rule e="any" k="amenity" v="cafe" zoom-min="15">
-			<symbol src="assets:symbols/food/cafe.svg" symbol-scaling="size" symbol-height="30"/>
+			<symbol src="assets:symbols/food/cafe.svg" symbol-scaling="size" symbol-height="25"/>
 		</rule>
 		<rule e="any" k="amenity" v="pub|bar" zoom-min="15">
-			<symbol src="assets:symbols/food/bar.svg" symbol-scaling="size" symbol-width="30"/>
+			<symbol src="assets:symbols/food/bar.svg" symbol-scaling="size" symbol-width="25"/>
 		</rule>
 	</rule>
 
@@ -1079,9 +1145,9 @@
 		</rule>
 		<rule e="any" k="amenity" v="fuel" zoom-min="13">
 			<symbol id="fuel" src="assets:symbols/transport/fuel.svg"/>
-			<rule e="any" k="*" v="*" zoom-min="18">			
+			<rule e="any" k="*" v="*" zoom-min="18">
 				<caption symbol-id="fuel" k="name" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
-			</rule>			
+			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="marketplace" zoom-min="15">
 			<symbol id="marketplace" src="assets:symbols/shopping/marketplace.svg"/>
@@ -1114,11 +1180,11 @@
 			<symbol src="assets:symbols/shopping/car_repair.svg"/>
 		</rule>
 	</rule>
-	
+
 	<!-- amenity -->
 	<rule cat="amenities" e="any" k="*" v="*">
-		<rule e="any" k="amenity" v="drinking_water" zoom-min="15">
-		<symbol src="assets:symbols/food/drinkingtap.svg"/>
+		<rule e="any" k="amenity" v="drinking_water" zoom-min="16">
+			<symbol src="assets:symbols/food/drinkingtap.svg"/>
 		</rule>
 		<rule e="any" k="amenity" v="toilets" zoom-min="15">
 			<symbol src="assets:symbols/amenity/toilets.svg"/>
@@ -1138,7 +1204,7 @@
 		<rule e="any" k="amenity" v="bank" zoom-min="15">
 			<symbol id="bank" src="assets:symbols/money/bank2.svg"/>
 			<rule e="any" k="*" v="*" zoom-min="18">
-			    <caption symbol-id="bank" k="name" position="auto" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption symbol-id="bank" k="name" position="auto" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 		<rule e="any" k="amenity" v="post_box" zoom-min="15">
@@ -1220,7 +1286,7 @@
 		</rule>
 	</rule>
 	<!-- tourism & POI -->
-	<rule cat="tourism_poi" e="any" k="*" v="*">	
+	<rule cat="tourism" e="any" k="*" v="*">
 		<rule e="node" k="tourism" v="viewpoint" zoom-min="15">
 			<symbol id="viewpoint" src="assets:symbols/tourist/view_point.svg"/>
 			<rule e="any" k="natural" v="~" zoom-min="17">
@@ -1277,7 +1343,7 @@
 				<symbol id="bahai" src="assets:symbols/place_of_worship/bahai3.svg"/>
 				<rule e="any" k="*" v="*" zoom-min="18">
 					<caption symbol-id="bahai" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
-			    </rule>
+				</rule>
 			</rule>
 			<rule e="any" k="religion" v="buddhist">
 				<symbol id="buddhist" src="assets:symbols/place_of_worship/buddhist3.svg"/>
@@ -1335,7 +1401,7 @@
 			</rule>
 		</rule>
 	</rule>
-	
+
 
 	<!-- sports -->
 	<rule cat="sports" e="any" k="*" v="*">
