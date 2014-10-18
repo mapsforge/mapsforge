@@ -22,7 +22,7 @@ allprojects {
 
 // no injection of functions, so via inheritance
 def androidMinSdk() { return 9 }
-def androidTargetSdk() { return 19 }
+def androidTargetSdk() { return 20 }
 def versionCode() { return 50 }
 def versionName() { return version }
 
@@ -70,7 +70,7 @@ project.ext.androidprojects = project.androidlibraryprojects + project.androidap
 // TODO get checkstyle and pmd working for android (right now it does not work out of the box, so better wait for official fix)
 
 configure(filterProjects(project.androidapkprojects)) { 
-  apply plugin: 'android'
+  apply plugin: 'com.android.application'
 }
 
 
