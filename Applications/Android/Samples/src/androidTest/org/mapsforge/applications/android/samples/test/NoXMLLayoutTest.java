@@ -1,18 +1,18 @@
 package org.mapsforge.applications.android.samples.test;
 
-import org.mapsforge.applications.android.samples.BasicMapViewerXml;
+import org.mapsforge.applications.android.samples.NoXMLLayout;
 
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class BasicMapViewerXmlTest extends ActivityInstrumentationTestCase2<BasicMapViewerXml> {
+public class NoXMLLayoutTest extends ActivityInstrumentationTestCase2<NoXMLLayout> {
 
 	Solo solo;
 	final static int iterations = TestUtils.iterations;
 
-	public BasicMapViewerXmlTest() {
-		super(BasicMapViewerXml.class);
+	public NoXMLLayoutTest() {
+		super(NoXMLLayout.class);
 	}
 
 	public void setUp() throws Exception {

@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.android.util.ExternalRenderThemeUsingJarResources;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.util.PausableThread;
@@ -29,7 +31,7 @@ import android.util.Log;
  * Demonstration of changing render themes. This activity checks for .xml files
  * on the sdcard and loads them as render themes.
  */
-public class RenderThemeChanger extends BasicMapViewerV3 {
+public class RenderThemeChanger extends RenderTheme4 {
 
 	private class ChangerThread extends PausableThread {
 		private static final int ROTATION_TIME = 10000; // milli secs to display
@@ -69,7 +71,7 @@ public class RenderThemeChanger extends BasicMapViewerV3 {
 
 	@Override
 	protected void createLayers() {
-		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
+		tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
 				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
 				false, true);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
@@ -90,8 +92,7 @@ public class RenderThemeChanger extends BasicMapViewerV3 {
 			File nextTheme = renderThemes[iteration % renderThemes.length];
 			iteration += 1;
 			try {
-				XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(
-						nextTheme);
+				XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(nextTheme);
 				Log.i(SamplesApplication.TAG, "Loading new render theme "
 						+ nextTheme.getName());
 				// there should really be a simpler way to just change the
@@ -99,7 +100,7 @@ public class RenderThemeChanger extends BasicMapViewerV3 {
 				layerManagers.get(0).getLayers().remove(tileRendererLayer);
 				tileRendererLayer.onDestroy();
 				tileCaches.get(0).destroy();
-				tileRendererLayer = Utils.createTileRendererLayer(tileCaches.get(0),
+				tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
 						mapViewPositions.get(0), getMapFile(), nextRenderTheme,
 						false, false);
 				layerManagers.get(0).getLayers().add(tileRendererLayer);

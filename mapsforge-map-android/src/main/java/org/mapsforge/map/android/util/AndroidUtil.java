@@ -17,10 +17,14 @@ package org.mapsforge.map.android.util;
 
 import java.io.File;
 
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -116,6 +120,28 @@ public final class AndroidUtil {
 
 	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
 		return createTileCache(c, id, tileSize, screenRatio, overdraw, false, 0);
+	}
+
+	/**
+	 * Utility method to create a standard tile renderer layer.
+	 *
+	 * @param tileCache the cache
+	 * @param mapViewPosition the position
+	 * @param mapFile the map file
+	 * @param renderTheme the render theme to use
+	 * @param hasAlpha if the layer is transparent (more memory)
+	 * @param renderLabels should usually be true
+	 *
+	 * @return the layer
+	 */
+	public static TileRendererLayer createTileRendererLayer(TileCache tileCache,
+	                                                 MapViewPosition mapViewPosition, File mapFile,
+	                                                 XmlRenderTheme renderTheme, boolean hasAlpha, boolean renderLabels) {
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache,
+				mapViewPosition, hasAlpha, renderLabels, AndroidGraphicFactory.INSTANCE);
+		tileRendererLayer.setMapFile(mapFile);
+		tileRendererLayer.setXmlRenderTheme(renderTheme);
+		return tileRendererLayer;
 	}
 
 	/**

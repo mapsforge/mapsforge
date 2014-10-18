@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,15 +14,28 @@
  */
 package org.mapsforge.applications.android.samples;
 
-/**
- * Viewer that demonstrates the use of SVG based symbols in rendertheme file.
- * 
- */
-public class SVGAssetsRenderThemeMapViewer extends AssetsRenderThemeMapViewer {
+import org.mapsforge.map.android.view.MapView;
 
+/**
+ * A simple activity that illustrates that an XML layout file is not really needed
+ * for the most simple map activities.
+ */
+public class NoXMLLayout extends RenderTheme4 {
+
+	/**
+	 * In this class we instantiate the MapView directly using this class,
+	 * without using an XML layout file.
+	 * @return
+	 */
 	@Override
-	protected String getRenderThemeFile() {
-		return "renderthemes/assetssvg.xml";
+	protected MapView getMapView() {
+		MapView mv = new MapView(this);
+		setContentView(mv);
+		return mv;
 	}
 
+	@Override
+	public void setContentView() {
+		// no-op, we have already set the map view in getMapView()
+	}
 }

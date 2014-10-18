@@ -17,20 +17,33 @@ package org.mapsforge.applications.android.samples;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
  * Example of the capabilities of RenderTheme version 4
  */
-public class RenderTheme4 extends AssetsRenderThemeMapViewer {
+public class RenderTheme4 extends SamplesBaseActivity implements XmlRenderThemeMenuCallback {
+
 
 	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		this.mapViews.get(0).getModel().displayModel.setTileSizeMultiple(64);
+	protected XmlRenderTheme getRenderTheme() {
+		try {
+			return new AssetsRenderTheme(this, getRenderThemePrefix(), getRenderThemeFile(), this);
+		} catch (IOException e) {
+			Log.e(SamplesApplication.TAG, "Render theme failure " + e.toString());
+		}
+		return null;
+	}
+
+	protected String getRenderThemePrefix() {
+		return "";
 	}
 
 	@Override
@@ -41,7 +54,7 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 
 		XmlRenderThemeStyleLayer baseLayer = this.renderThemeStyleMenu.getLayer(id);
 		if (baseLayer == null) {
-			Log.w("Rendertheme ", "Invalid style " + id);
+			Log.w(SamplesApplication.TAG, "Invalid style " + id);
 			return null;
 		}
 		Set<String> result = baseLayer.getCategories();
@@ -56,7 +69,6 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 		return result;
 	}
 
-	@Override
 	protected String getRenderThemeFile() {
 		return "renderthemes/rendertheme-v4.xml";
 	}

@@ -31,7 +31,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  * circles, tap on a circle toggles the colour.
  * 
  */
-public class LongPressAction extends BasicMapViewerXml {
+public class LongPressAction extends RenderTheme4 {
 
 	private static final Paint GREEN = Utils.createPaint(
 			AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0,

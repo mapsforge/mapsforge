@@ -15,6 +15,7 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.util.PausableThread;
 
@@ -22,7 +23,7 @@ import org.mapsforge.map.util.PausableThread;
  * Demonstration of changing between fixed and computed tile sizes.
  */
 
-public class TileSizeChanger extends BasicMapViewerV3 {
+public class TileSizeChanger extends RenderTheme4 {
 
 	private class ChangerThread extends PausableThread {
 		private static final int ROTATION_TIME = 10000;
@@ -59,7 +60,7 @@ public class TileSizeChanger extends BasicMapViewerV3 {
 
 	@Override
 	protected void createLayers() {
-		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
+		tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
 				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
 				false, true);
 		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
