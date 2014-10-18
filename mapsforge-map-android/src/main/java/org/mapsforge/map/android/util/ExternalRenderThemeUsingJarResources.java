@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,27 +12,28 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.applications.android.samples;
+package org.mapsforge.map.android.util;
 
-import org.mapsforge.map.android.view.MapView;
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 
 /**
- * A simple application which demonstrates how to use a MapView by initializing
- * it from an XML layout resource.
+ * Combining an external render theme file with the jar-embedded resources of
+ * the internal osmarender style.
  */
-public class BasicMapViewerXml extends BasicMapViewerV3 {
-	/**
-	 * @return the layout to be used
-	 */
-	protected int getLayoutId() {
-		return R.layout.mapviewer;
+
+public class ExternalRenderThemeUsingJarResources extends ExternalRenderTheme {
+
+	public ExternalRenderThemeUsingJarResources(File renderThemeFile)
+			throws FileNotFoundException {
+		super(renderThemeFile);
 	}
 
 	@Override
-	protected MapView getMapView() {
-		// in this example the mapview is defined in the layout file
-		// mapviewer.xml
-		setContentView(getLayoutId());
-		return (MapView) findViewById(R.id.mapView);
+	public String getRelativePathPrefix() {
+		return "/osmarender/";
 	}
+
 }

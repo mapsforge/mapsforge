@@ -109,28 +109,6 @@ public final class Utils {
 		};
 	}
 
-	/*
-	 * @param tileCache the cache
-	 *
-	 * @param mapViewPosition the position
-	 *
-	 * @param layerManager the layer manager
-	 *
-	 * @param mapFile the map file
-	 *
-	 * @param renderTheme the render theme to use
-	 *
-	 * @return the layer
-	 */
-	static TileRendererLayer createTileRendererLayer(TileCache tileCache,
-			MapViewPosition mapViewPosition, File mapFile,
-			XmlRenderTheme renderTheme, boolean hasAlpha, boolean renderLabels) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache,
-				mapViewPosition, hasAlpha, renderLabels, AndroidGraphicFactory.INSTANCE);
-		tileRendererLayer.setMapFile(mapFile);
-		tileRendererLayer.setXmlRenderTheme(renderTheme);
-		return tileRendererLayer;
-	}
 
 	static Bitmap viewToBitmap(Context c, View view) {
 		view.measure(MeasureSpec.getSize(view.getMeasuredWidth()),

@@ -18,12 +18,21 @@ package org.mapsforge.applications.android.samples;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 /**
  * Shows how to use a tile download layer.
+ * The important thing here is that
+ * the downloadLayer needs to be paused and resumed to fit into the Android life cycle.
  */
-public class DownloadLayerViewer extends BasicMapViewerXml {
-	private TileDownloadLayer downloadLayer;
+public class DownloadLayerViewer extends SamplesBaseActivity {
+	protected TileDownloadLayer downloadLayer;
+
+	@Override
+	protected XmlRenderTheme getRenderTheme() {
+		// no render theme needed here
+		return null;
+	}
 
 	@Override
 	public void onPause() {

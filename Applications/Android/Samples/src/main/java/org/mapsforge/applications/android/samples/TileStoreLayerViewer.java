@@ -36,7 +36,7 @@ import java.io.File;
 /**
  * Shows how to use a tile store layer.
  */
-public class TileStoreLayerViewer extends BasicMapViewerXml {
+public class TileStoreLayerViewer extends RenderTheme4 {
 	private TileStoreLayer tileStoreLayer;
 
 	@Override

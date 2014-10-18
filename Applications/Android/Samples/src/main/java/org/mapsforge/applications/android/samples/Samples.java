@@ -29,7 +29,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 /**
- * A simple start screen for the sample activities.
+ * Start screen for the sample activities.
  */
 public class Samples extends Activity {
 
@@ -80,19 +80,13 @@ public class Samples extends Activity {
 
 		setContentView(R.layout.activity_samples);
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.samples);
-		linearLayout.addView(createButton(RenderTheme4.class,
-				"Map Viewer Rendertheme V4"));
-
-		linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Map Viewer Rendertheme V3"));
-		linearLayout.addView(createButton(BasicMapViewerXml.class, "Old Map Viewer with XML Layout"));
+		linearLayout.addView(createButton(RenderTheme4.class, "Map Viewer Rendertheme V4"));
 
 		linearLayout.addView(createButton(DiagnosticsMapViewer.class));
-		linearLayout.addView(createButton(RenderThemeMapViewer.class));
-		linearLayout.addView(createButton(AssetsRenderThemeMapViewer.class,
-				"Rendertheme using Android Assets"));
-		linearLayout.addView(createButton(SVGAssetsRenderThemeMapViewer.class,
-				"Rendertheme using SVG files"));
-		linearLayout.addView(createButton(SVGTextures.class, "SVG Textures"));
+
+		linearLayout.addView(createButton(SimplestMapViewer.class, "Simplest Map Viewer"));
+
+
 		linearLayout.addView(createButton(RenderThemeChanger.class,
 				"Automatically changing render themes"));
 		linearLayout.addView(createButton(TileSizeChanger.class,
@@ -131,6 +125,10 @@ public class Samples extends Activity {
 				"Fragment List/View"));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class,
 				"Stacked rendered tiles"));
+
+		linearLayout.addView(createButton(NoXMLLayout.class, "Without XML Layout"));
+		linearLayout.addView(createButton(BasicMapViewerV3.class, "Built-in osmarender rendertheme (deprecated)"));
+
 		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer (alpha)"));
 
 	}

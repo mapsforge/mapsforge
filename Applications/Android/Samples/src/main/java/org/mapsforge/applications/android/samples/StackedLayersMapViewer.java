@@ -30,7 +30,7 @@ import android.util.Log;
  * that is intentional.
  */
 
-public class StackedLayersMapViewer extends RenderThemeMapViewer {
+public class StackedLayersMapViewer extends RenderTheme4 {
 
 	@Override
 	protected void createLayers() {
@@ -43,7 +43,7 @@ public class StackedLayersMapViewer extends RenderThemeMapViewer {
 			this.layerManagers
 					.get(0)
 					.getLayers()
-					.add(Utils.createTileRendererLayer(this.tileCaches.get(1),
+					.add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
 							this.mapViewPositions.get(0), getMapFile(),
 							secondRenderTheme, true, false));
 
