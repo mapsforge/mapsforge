@@ -18,11 +18,10 @@
 		android:name=".SamplesApplication"
 		android:allowBackup="true"
 		android:hardwareAccelerated="false"
-		android:label="Samples">
+		android:label="Mapsforge Samples">
 
 		<activity
-			android:name=".Samples"
-			android:label="Samples">
+			android:name=".Samples">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
