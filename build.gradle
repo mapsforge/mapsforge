@@ -15,14 +15,14 @@ def filterProjects(filter) {
 allprojects {
   group = 'org.mapsforge'
   version = 'dev-SNAPSHOT'
-  ext.androidBuildVersionTools = "20"
+  ext.androidBuildVersionTools = "21.0.1"
   ext.jUnitVersion = "4.11"
   description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 }
 
 // no injection of functions, so via inheritance
 def androidMinSdk() { return 9 }
-def androidTargetSdk() { return 20 }
+def androidTargetSdk() { return 21 }
 def versionCode() { return 50 }
 def versionName() { return version }
 

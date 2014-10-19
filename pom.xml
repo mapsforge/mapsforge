@@ -98,7 +98,7 @@
 						<genDirectoryAidl>gen</genDirectoryAidl>
 						<extractDuplicates>true</extractDuplicates>
 						<sdk>
-							<platform>19</platform>
+							<platform>21</platform>
 						</sdk>
 					</configuration>
 				</plugin>
