@@ -29,10 +29,10 @@ public class LabelLayerMapViewer extends RenderTheme4 {
 
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false, false);
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false);
+		mapView.getLayerManager().getLayers().add(tileRendererLayer);
 		org.mapsforge.map.layer.labels.LabelLayer labelLayer = new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
-		this.layerManagers.get(0).getLayers().add(labelLayer);
+		mapView.getLayerManager().getLayers().add(labelLayer);
 	}
 
 }

@@ -67,8 +67,8 @@ public class SimplestMapViewer extends MapViewerTemplate {
 	 */
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false, true);
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true);
+		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 	}
 
 	/**
@@ -76,8 +76,8 @@ public class SimplestMapViewer extends MapViewerTemplate {
 	 */
 	protected void createTileCaches() {
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
-				this.mapViews.get(0).getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapViews.get(0).getModel().frameBufferModel.getOverdrawFactor(),
+				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
 				false, 0
 		));
 	}

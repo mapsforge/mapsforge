@@ -21,12 +21,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * Start screen for the sample activities.
@@ -55,8 +57,7 @@ public class Samples extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		final SharedPreferences preferences = getSharedPreferences(
-				"installation", Activity.MODE_PRIVATE);
+		final SharedPreferences preferences = getSharedPreferences("installation", Activity.MODE_PRIVATE);
 		final String accepted = "accepted";
 		if (!preferences.getBoolean(accepted, false)) {
 			final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -82,59 +83,64 @@ public class Samples extends Activity {
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.samples);
 		linearLayout.addView(createButton(RenderTheme4.class, "Map Viewer Rendertheme V4"));
 
-		linearLayout.addView(createButton(DiagnosticsMapViewer.class));
+		linearLayout.addView(createButton(DiagnosticsMapViewer.class, "Diagnostics"));
 
 		linearLayout.addView(createButton(SimplestMapViewer.class, "Simplest Map Viewer"));
 
-
-		linearLayout.addView(createButton(RenderThemeChanger.class,
-				"Automatically changing render themes"));
-		linearLayout.addView(createButton(TileSizeChanger.class,
-				"Automatically changing tile sizes"));
-		linearLayout.addView(createButton(ChangingBitmaps.class,
-				"Automatically changing bitmaps"));
+		linearLayout.addView(createLabel("Raster Maps"));
 		linearLayout.addView(createButton(DownloadLayerViewer.class,
 				"Downloading Mapnik"));
 		linearLayout.addView(createButton(DownloadCustomLayerViewer.class,
-				"Downloading custom tile source"));
+				"Custom Tile Source"));
 		linearLayout.addView(createButton(TileStoreLayerViewer.class,
-				"Tile Store (locally stored TMS files)"));
-		linearLayout.addView(createButton(OverlayMapViewer.class));
+				"Tile Store (TMS)"));
+
+		linearLayout.addView(createLabel("Overlays"));
+		linearLayout.addView(createButton(OverlayMapViewer.class, "Overlay"));
+		linearLayout
+				.addView(createButton(BubbleOverlay.class, "Bubble Overlay"));
+		linearLayout.addView(createButton(LocationOverlayMapViewer.class, "Location Overlay"));
+		linearLayout.addView(createButton(ChangingBitmaps.class,
+				"Changing bitmaps"));
+		linearLayout.addView(createButton(OverlayWithoutBaseMapViewer.class,
+				"Just Overlays, No Map"));
+
+
+		linearLayout.addView(createLabel("User Interaction"));
 		linearLayout.addView(createButton(LongPressAction.class,
 				"Long Press Action"));
 		linearLayout
 				.addView(createButton(MoveAnimation.class, "Move Animation"));
 		linearLayout
 				.addView(createButton(ZoomToBounds.class, "Zoom to Bounds"));
-		linearLayout.addView(createButton(OverlayWithoutBaseMapViewer.class,
-				"Just Overlays, No Map"));
-		linearLayout.addView(createButton(LocationOverlayMapViewer.class));
-		linearLayout.addView(createButton(DualMapViewer.class, "Dual MapDB"));
-		linearLayout.addView(createButton(
-				DualMapViewerWithDifferentDisplayModels.class,
-				"Dual Viewer with different DisplayModels"));
-		linearLayout.addView(createButton(DualMapViewerWithClampedTileSizes.class,
-				"Dual Viewer with clamped tile sizes"));
-		linearLayout.addView(createButton(DualMapnikMapViewer.class,
-				"Tied MapViews MapDB/Mapnik"));
-		linearLayout.addView(createButton(DualOverviewMapViewer.class,
-				"Overview Mapview"));
-		linearLayout
-				.addView(createButton(BubbleOverlay.class, "Bubble Overlay"));
 		linearLayout.addView(createButton(ItemListActivity.class,
 				"Fragment List/View"));
+
+		linearLayout.addView(createLabel("Dual Map Views"));
+		linearLayout.addView(createButton(DualMapViewer.class, "Dual Maps"));
+		linearLayout.addView(createButton(
+				DualMapViewerWithDifferentDisplayModels.class,
+				"Different DisplayModels"));
+		linearLayout.addView(createButton(DualMapViewerWithClampedTileSizes.class,
+				"Clamped Tile Sizes"));
+		linearLayout.addView(createButton(DualMapnikMapViewer.class,
+				"Tied Maps"));
+		linearLayout.addView(createButton(DualOverviewMapViewer.class,
+				"Overview Map"));
+
+		linearLayout.addView(createLabel("Experiments"));
+		linearLayout.addView(createButton(RenderThemeChanger.class,
+				"Changing Renderthemes"));
+		linearLayout.addView(createButton(TileSizeChanger.class,
+				"Changing Tile Size"));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class,
-				"Stacked rendered tiles"));
+				"Stacked Tiles"));
 
 		linearLayout.addView(createButton(NoXMLLayout.class, "Without XML Layout"));
-		linearLayout.addView(createButton(BasicMapViewerV3.class, "Built-in osmarender rendertheme (deprecated)"));
+		linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Osmarender (deprecated)"));
 
 		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer (alpha)"));
 
-	}
-
-	private Button createButton(final Class<?> clazz) {
-		return this.createButton(clazz, null);
 	}
 
 	private Button createButton(final Class<?> clazz, String text) {
@@ -152,4 +158,16 @@ public class Samples extends Activity {
 		});
 		return button;
 	}
+
+	private TextView createLabel(String text) {
+		TextView textView = new TextView(this);
+		textView.setGravity(Gravity.CENTER);
+		if (text == null) {
+			textView.setText("---------------");
+		} else {
+			textView.setText(text);
+		}
+		return textView;
+	}
+
 }

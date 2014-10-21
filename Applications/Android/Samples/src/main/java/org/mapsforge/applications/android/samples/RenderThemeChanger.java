@@ -34,8 +34,7 @@ import android.util.Log;
 public class RenderThemeChanger extends RenderTheme4 {
 
 	private class ChangerThread extends PausableThread {
-		private static final int ROTATION_TIME = 10000; // milli secs to display
-														// a rendertheme
+		private static final int ROTATION_TIME = 10000; // milli secs to display a theme
 
 		@Override
 		protected void doWork() throws InterruptedException {
@@ -72,9 +71,9 @@ public class RenderThemeChanger extends RenderTheme4 {
 	@Override
 	protected void createLayers() {
 		tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
 				false, true);
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		mapView.getLayerManager().getLayers().add(tileRendererLayer);
 		this.changerThread = new ChangerThread();
 		this.changerThread.start();
 	}
@@ -86,28 +85,25 @@ public class RenderThemeChanger extends RenderTheme4 {
 	}
 
 	void changeRenderTheme() {
-		File[] renderThemes = Environment.getExternalStorageDirectory()
-				.listFiles(renderThemesFilter);
+		File[] renderThemes = Environment.getExternalStorageDirectory().listFiles(renderThemesFilter);
 		if (renderThemes.length > 0) {
 			File nextTheme = renderThemes[iteration % renderThemes.length];
 			iteration += 1;
 			try {
 				XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(nextTheme);
-				Log.i(SamplesApplication.TAG, "Loading new render theme "
-						+ nextTheme.getName());
+				Log.i(SamplesApplication.TAG, "Loading new render theme " + nextTheme.getName());
 				// there should really be a simpler way to just change the
 				// render theme safely
-				layerManagers.get(0).getLayers().remove(tileRendererLayer);
+				mapView.getLayerManager().getLayers().remove(tileRendererLayer);
 				tileRendererLayer.onDestroy();
 				tileCaches.get(0).destroy();
 				tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
-						mapViewPositions.get(0), getMapFile(), nextRenderTheme,
+						mapView.getModel().mapViewPosition, getMapFile(), nextRenderTheme,
 						false, false);
-				layerManagers.get(0).getLayers().add(tileRendererLayer);
-				layerManagers.get(0).redrawLayers();
+				mapView.getLayerManager().getLayers().add(tileRendererLayer);
+				mapView.getLayerManager().redrawLayers();
 			} catch (FileNotFoundException e) {
-				Log.i(SamplesApplication.TAG, "Could not open file "
-						+ nextTheme.getName());
+				Log.i(SamplesApplication.TAG, "Could not open file " + nextTheme.getName());
 			}
 		}
 	}

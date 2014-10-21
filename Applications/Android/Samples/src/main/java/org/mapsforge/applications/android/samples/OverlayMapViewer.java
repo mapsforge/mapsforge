@@ -32,7 +32,7 @@ import org.mapsforge.map.layer.overlay.Polyline;
 import android.util.Log;
 
 /**
- * Basic map viewer with a few overlays added.
+ * Map viewer with a few overlays added.
  */
 public class OverlayMapViewer extends RenderTheme4 {
 
@@ -116,6 +116,6 @@ public class OverlayMapViewer extends RenderTheme4 {
 		super.createLayers();
 
 		// we just add a few more overlays
-		addOverlayLayers(layerManagers.get(0).getLayers());
+		addOverlayLayers(mapView.getLayerManager().getLayers());
 	}
 }

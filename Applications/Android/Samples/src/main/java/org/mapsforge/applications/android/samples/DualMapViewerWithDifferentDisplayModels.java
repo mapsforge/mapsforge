@@ -24,8 +24,9 @@ public class DualMapViewerWithDifferentDisplayModels extends DualMapViewer {
 	@Override
 	protected void createMapViews() {
 		super.createMapViews();
-		mapViews.get(1).getModel().displayModel.setUserScaleFactor(0.3f);
-		mapViews.get(1).getModel().displayModel.setBackgroundColor(0xffff0000); // red background
 
+		// change tile size and background colour for the second view
+		mapView2.getModel().displayModel.setUserScaleFactor(0.3f);
+		mapView2.getModel().displayModel.setBackgroundColor(0xffff0000); // red background
 	}
 }

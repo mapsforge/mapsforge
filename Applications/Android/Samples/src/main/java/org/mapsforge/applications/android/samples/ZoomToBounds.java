@@ -39,16 +39,13 @@ public class ZoomToBounds extends OverlayMapViewer {
 		if (hasFocus) {
 			BoundingBox bb = new BoundingBox(latLong2.latitude,
 					latLong3.longitude, latLong3.latitude, latLong2.longitude);
-			Dimension dimension = this.mapViews.get(0).getModel().mapViewDimension
-					.getDimension();
-			this.mapViews.get(0).getModel().mapViewPosition
-					.setMapPosition(new MapPosition(
+			Dimension dimension = this.mapView.getModel().mapViewDimension.getDimension();
+			this.mapView.getModel().mapViewPosition.setMapPosition(new MapPosition(
 							bb.getCenterPoint(),
 							LatLongUtils.zoomForBounds(
 									dimension,
 									bb,
-									this.mapViews.get(0).getModel().displayModel
-											.getTileSize())));
+									this.mapView.getModel().displayModel.getTileSize())));
 		}
 	}
 

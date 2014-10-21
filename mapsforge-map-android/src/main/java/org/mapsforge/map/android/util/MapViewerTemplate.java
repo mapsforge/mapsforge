@@ -24,10 +24,8 @@ import android.os.Environment;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.AndroidPreferences;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
@@ -36,11 +34,6 @@ import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
-import org.mapsforge.map.scalebar.DefaultMapScaleBar;
-import org.mapsforge.map.scalebar.ImperialUnitAdapter;
-import org.mapsforge.map.scalebar.MapScaleBar;
-import org.mapsforge.map.scalebar.MetricUnitAdapter;
-import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,19 +45,10 @@ import java.util.List;
  */
 public abstract class MapViewerTemplate extends Activity  {
 
-	public static final String SETTING_SCALEBAR = "scalebar";
-	public static final String SETTING_SCALEBAR_METRIC = "metric";
-	public static final String SETTING_SCALEBAR_IMPERIAL = "imperial";
-	public static final String SETTING_SCALEBAR_NAUTICAL = "nautical";
-	public static final String SETTING_SCALEBAR_BOTH = "both";
-	public static final String SETTING_SCALEBAR_NONE = "none";
-
+	protected MapView mapView;
 	protected PreferencesFacade preferencesFacade;
-	protected List<LayerManager> layerManagers = new ArrayList<LayerManager>();
-	protected List<MapViewPosition> mapViewPositions = new ArrayList<MapViewPosition>();
-	protected List<MapView> mapViews = new ArrayList<MapView>();
-	protected List<TileCache> tileCaches = new ArrayList<TileCache>();
 	protected XmlRenderThemeStyleMenu renderThemeStyleMenu;
+	protected List<TileCache> tileCaches = new ArrayList<TileCache>();
 
 	/*
 	 * Abstract methods that must be implemented.
@@ -113,7 +97,7 @@ public abstract class MapViewerTemplate extends Activity  {
 	 * You can add more controls.
 	 */
 	protected void createControls() {
-		setScaleBars();
+		// hook for control creation
 	}
 
 	/**
@@ -125,14 +109,12 @@ public abstract class MapViewerTemplate extends Activity  {
 
 	/**
 	 * Hook to destroy layers. By default we destroy every layer that
-	 * has been added to the layer managers.
+	 * has been added to the layer manager.
 	 */
 	protected void destroyLayers() {
-		for (LayerManager layerManager : this.layerManagers) {
-			for (Layer layer : layerManager.getLayers()) {
-				layerManager.getLayers().remove(layer);
-				layer.onDestroy();
-			}
+		for (Layer layer : mapView.getLayerManager().getLayers()) {
+			mapView.getLayerManager().getLayers().remove(layer);
+			layer.onDestroy();
 		}
 	}
 
@@ -178,28 +160,18 @@ public abstract class MapViewerTemplate extends Activity  {
 		return (byte) 24;
 	}
 
-	protected void createLayerManagers() {
-		for (MapView mapView : mapViews) {
-			this.layerManagers.add(mapView.getLayerManager());
-		}
-	}
-
-
-	protected void createMapViewPositions() {
-		for (MapView mapView : mapViews) {
-			this.mapViewPositions.add(initializePosition(mapView.getModel().mapViewPosition));
-		}
-	}
-
+	/**
+	 * Template method to create the map views.
+	 */
 	protected void createMapViews() {
-		MapView mapView = getMapView();
+		mapView = getMapView();
 		mapView.getModel().init(this.preferencesFacade);
 		mapView.setClickable(true);
 		mapView.getMapScaleBar().setVisible(true);
 		mapView.setBuiltInZoomControls(hasZoomControls());
 		mapView.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(getZoomLevelMax());
-		this.mapViews.add(mapView);
+		initializePosition(mapView.getModel().mapViewPosition);
 	}
 
 	/**
@@ -211,23 +183,11 @@ public abstract class MapViewerTemplate extends Activity  {
 	}
 
 	/**
-	 * Clean up map views positions in the Android life cycle. By default all map view positions
-	 * in the map view positions list are destroyed.
-	 */
-	protected void destroyMapViewPositions() {
-		for (MapViewPosition mapViewPosition : mapViewPositions) {
-			mapViewPosition.destroy();
-		}
-	}
-
-	/**
 	 * Clean up map views in the Android life cycle. By default all map views in the map view list
 	 * are destroyed.
 	 */
 	protected void destroyMapViews() {
-		for (MapView mapView : mapViews) {
-			mapView.destroy();
-		}
+		mapView.destroy();
 	}
 
 	/**
@@ -280,7 +240,6 @@ public abstract class MapViewerTemplate extends Activity  {
 		return file;
 	}
 
-
 	/**
 	 * The persistable ID is used to store settings information, like the center of the last view
 	 * and the zoomlevel. By default the simple name of the class is used. The value is not user
@@ -290,7 +249,6 @@ public abstract class MapViewerTemplate extends Activity  {
 	protected String getPersistableId() {
 		return this.getClass().getSimpleName();
 	}
-
 
 	/**
 	 * Returns the relative size of a map view in relation to the screen size of the device. This
@@ -337,8 +295,6 @@ public abstract class MapViewerTemplate extends Activity  {
 		super.onCreate(savedInstanceState);
 		createSharedPreferences();
 		createMapViews();
-		createMapViewPositions();
-		createLayerManagers();
 		createTileCaches();
 		createControls();
 	}
@@ -350,7 +306,6 @@ public abstract class MapViewerTemplate extends Activity  {
 	protected void onStart() {
 		super.onStart();
 		createLayers();
-		setMaxTextWidthFactor();
 	}
 
 	/**
@@ -359,9 +314,7 @@ public abstract class MapViewerTemplate extends Activity  {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		for (MapView mapView : mapViews) {
-			mapView.getModel().save(this.preferencesFacade);
-		}
+		mapView.getModel().save(this.preferencesFacade);
 		this.preferencesFacade.save();
 	}
 
@@ -382,60 +335,20 @@ public abstract class MapViewerTemplate extends Activity  {
 		super.onDestroy();
 		destroyControls();
 		destroyTileCaches();
-		destroyMapViewPositions();
 		destroyMapViews();
 		org.mapsforge.map.android.graphics.AndroidResourceBitmap.clearResourceBitmaps();
 	}
 
 
 	protected void redrawLayers() {
-		for (LayerManager layerManager : this.layerManagers) {
-			layerManager.redrawLayers();
-		}
+		mapView.getLayerManager().redrawLayers();
 	}
 
 	/**
 	 * sets the content view if it has not been set already.
 	 */
 	protected void setContentView() {
-		setContentView(this.mapViews.get(0));
-	}
-
-	protected String getScaleBarSetting() {
-		return SETTING_SCALEBAR_BOTH;
-	}
-
-	protected void setScaleBars() {
-		String value = getScaleBarSetting();
-
-		for (MapView mapView : mapViews) {
-			if (SETTING_SCALEBAR_NONE.equals(value)) {
-				mapView.setMapScaleBar(null);
-			} else {
-				MapScaleBar scalebar = mapView.getMapScaleBar();
-				if (scalebar == null) {
-					scalebar = new DefaultMapScaleBar(mapView.getModel().mapViewPosition, mapView.getModel().mapViewDimension,
-							AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel);
-					mapView.setMapScaleBar(scalebar);
-				}
-				if (scalebar instanceof DefaultMapScaleBar) {
-					if (SETTING_SCALEBAR_BOTH.equals(value)) {
-						((DefaultMapScaleBar) scalebar).setScaleBarMode(DefaultMapScaleBar.ScaleBarMode.BOTH);
-						scalebar.setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
-						((DefaultMapScaleBar) scalebar).setSecondaryDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
-					} else if (SETTING_SCALEBAR_METRIC.equals(value)) {
-						((DefaultMapScaleBar) scalebar).setScaleBarMode(DefaultMapScaleBar.ScaleBarMode.SINGLE);
-						scalebar.setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
-					} else if (SETTING_SCALEBAR_IMPERIAL.equals(value)) {
-						((DefaultMapScaleBar) scalebar).setScaleBarMode(DefaultMapScaleBar.ScaleBarMode.SINGLE);
-						scalebar.setDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
-					} else if (SETTING_SCALEBAR_NAUTICAL.equals(value)) {
-						((DefaultMapScaleBar) scalebar).setScaleBarMode(DefaultMapScaleBar.ScaleBarMode.SINGLE);
-						scalebar.setDistanceUnitAdapter(NauticalUnitAdapter.INSTANCE);
-					}
-				}
-			}
-		}
+		setContentView(mapView);
 	}
 
 	/**
@@ -446,13 +359,6 @@ public abstract class MapViewerTemplate extends Activity  {
 	protected MapView getMapView() {
 		setContentView(getLayoutId());
 		return (MapView) findViewById(getMapViewId());
-	}
-
-	protected void setMaxTextWidthFactor() {
-		float textWidthFactor = getMaxTextWidthFactor();
-		for (MapView mapView : mapViews) {
-			mapView.getModel().displayModel.setMaxTextWidthFactor(textWidthFactor);
-		}
 	}
 
 }

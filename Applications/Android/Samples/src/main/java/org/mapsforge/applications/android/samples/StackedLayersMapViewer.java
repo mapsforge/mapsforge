@@ -40,11 +40,10 @@ public class StackedLayersMapViewer extends RenderTheme4 {
 			XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "",
 					"renderthemes/onlybuildings.xml", null);
 
-			this.layerManagers
-					.get(0)
+			this.mapView.getLayerManager()
 					.getLayers()
 					.add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
-							this.mapViewPositions.get(0), getMapFile(),
+							this.mapView.getModel().mapViewPosition, getMapFile(),
 							secondRenderTheme, true, false));
 
 		} catch (IOException e) {
@@ -58,9 +57,9 @@ public class StackedLayersMapViewer extends RenderTheme4 {
 		super.createTileCaches();
 		TileCache tileCache2 = AndroidUtil.createTileCache(this,
 				getPersistableId2(),
-				this.mapViews.get(0).getModel().displayModel.getTileSize(),
+				this.mapView.getModel().displayModel.getTileSize(),
 				this.getScreenRatio(),
-				this.mapViews.get(0).getModel().frameBufferModel
+				this.mapView.getModel().frameBufferModel
 						.getOverdrawFactor());
 		this.tileCaches.add(tileCache2);
 	}
