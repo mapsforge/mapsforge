@@ -17,7 +17,6 @@ package org.mapsforge.applications.android.samples;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OnlineTileSource;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 /**
  * Shows how to use a custom tile download layer.
@@ -35,9 +34,9 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
 				.setTileSize(256).setZoomLevelMax((byte) 18)
 				.setZoomLevelMin((byte) 0);
 		this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), onlineTileSource,
+				this.mapView.getModel().mapViewPosition, onlineTileSource,
 				AndroidGraphicFactory.INSTANCE);
-		this.layerManagers.get(0).getLayers().add(this.downloadLayer);
+		mapView.getLayerManager().getLayers().add(this.downloadLayer);
 	}
 
 }

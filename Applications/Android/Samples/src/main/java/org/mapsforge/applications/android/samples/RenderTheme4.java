@@ -27,7 +27,8 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
- * Example of the capabilities of RenderTheme version 4
+ * Standard map view with use of Rendertheme V4, loading the render theme from the Android
+ * assets folder and showing a configuration menu based on the stylemenu.
  */
 public class RenderTheme4 extends SamplesBaseActivity implements XmlRenderThemeMenuCallback {
 

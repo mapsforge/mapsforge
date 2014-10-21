@@ -18,6 +18,7 @@ package org.mapsforge.map.android.util;
 import java.io.File;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -25,6 +26,9 @@ import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar;
+import org.mapsforge.map.scalebar.DistanceUnitAdapter;
+import org.mapsforge.map.scalebar.MapScaleBar;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -240,8 +244,43 @@ public final class AndroidUtil {
 				* (2 + (width  * overdrawFactor / tileSize)));
 	}
 
+	/**
+	 * Sets the scale bar on a map view with implicit arguments.
+	 * If no distance unit adapters are
+	 * supplied, there will be no scalebar, with only a primary adapter supplied, the mode will
+	 * be single, with two adapters supplied, the mode will be dual.
+	 *
+	 * @param mapView the map view to change
+	 * @param primaryDistanceUnitAdapter primary scale
+	 * @param secondaryDistanceUnitAdapter secondary scale
+	 */
+	public static void setMapScaleBar(MapView mapView,
+	                           DistanceUnitAdapter primaryDistanceUnitAdapter,
+	                           DistanceUnitAdapter secondaryDistanceUnitAdapter) {
+
+		if (null == primaryDistanceUnitAdapter && null == secondaryDistanceUnitAdapter) {
+			mapView.setMapScaleBar(null);
+		} else {
+			MapScaleBar scaleBar = mapView.getMapScaleBar();
+			if (scaleBar == null) {
+				scaleBar = new DefaultMapScaleBar(mapView.getModel().mapViewPosition, mapView.getModel().mapViewDimension,
+						AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel);
+				mapView.setMapScaleBar(scaleBar);
+			}
+			if (scaleBar instanceof DefaultMapScaleBar) {
+				if (null != secondaryDistanceUnitAdapter) {
+					((DefaultMapScaleBar) scaleBar).setScaleBarMode(DefaultMapScaleBar.ScaleBarMode.BOTH);
+					((DefaultMapScaleBar) scaleBar).setSecondaryDistanceUnitAdapter(secondaryDistanceUnitAdapter);
+				} else {
+					((DefaultMapScaleBar) scaleBar).setScaleBarMode(DefaultMapScaleBar.ScaleBarMode.SINGLE);
+				}
+			}
+			scaleBar.setDistanceUnitAdapter(primaryDistanceUnitAdapter);
+		}
+	}
+
 	private AndroidUtil() {
-		// noop, for privacy
+		// no-op, for privacy
 	}
 
 }

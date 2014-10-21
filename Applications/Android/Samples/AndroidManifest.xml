@@ -106,7 +106,7 @@
 		<activity
 			android:name=".DualMapViewer"
 			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Show two maps at the same time"/>
+			android:label="Dual Map View"/>
 		<activity
 			android:name=".DualMapViewerWithDifferentDisplayModels"
 			android:configChanges="keyboardHidden|orientation|screenSize"
@@ -118,7 +118,7 @@
 		<activity
 			android:name=".DualMapnikMapViewer"
 			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Show two maps linked in position movements"/>
+			android:label="Two tied viewers"/>
 		<activity
 			android:name=".DualOverviewMapViewer"
 			android:configChanges="keyboardHidden|orientation|screenSize"

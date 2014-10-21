@@ -33,10 +33,8 @@ public class ChangingBitmaps extends RenderTheme4 {
 		@Override
 		public void run() {
 			if (current != null) {
-				// since we want to keep the green bitmap around, we have to
-				// increment
-				// its ref count, otherwise it gets recycled automatically when
-				// it is
+				// since we want to keep the green bitmap around, we have to increment
+				// its ref count, otherwise it gets recycled automatically when it is
 				// replaced with the other colour.
 				current.incrementRefCount();
 			}
@@ -47,7 +45,7 @@ public class ChangingBitmaps extends RenderTheme4 {
 				marker.setBitmap(bitmapGreen);
 				current = bitmapGreen;
 			}
-			layerManagers.get(0).redrawLayers();
+			redrawLayers();
 			handler.postDelayed(this, 2000);
 		}
 	}
@@ -63,7 +61,7 @@ public class ChangingBitmaps extends RenderTheme4 {
 	@Override
 	public void createLayers() {
 		super.createLayers();
-		layerManagers.get(0).getLayers().add(marker);
+		mapView.getLayerManager().getLayers().add(marker);
 		bitmapChanger = new BitmapChanger();
 		handler.post(bitmapChanger);
 	}

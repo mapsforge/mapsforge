@@ -35,17 +35,26 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidSvgBitmapStore;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
-import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.renderer.MapWorker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.scalebar.ImperialUnitAdapter;
+import org.mapsforge.map.scalebar.MetricUnitAdapter;
+import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
 /**
  * Code common to most activities in the Samples app.
  */
 public abstract class SamplesBaseActivity extends MapViewerTemplate implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+	public static final String SETTING_SCALEBAR = "scalebar";
+	public static final String SETTING_SCALEBAR_METRIC = "metric";
+	public static final String SETTING_SCALEBAR_IMPERIAL = "imperial";
+	public static final String SETTING_SCALEBAR_NAUTICAL = "nautical";
+	public static final String SETTING_SCALEBAR_BOTH = "both";
+	public static final String SETTING_SCALEBAR_NONE = "none";
 
 	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
 	protected SharedPreferences sharedPreferences;
@@ -65,10 +74,19 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		return new MapPosition(new LatLong(52.517037, 13.38886), (byte) 12);
 	}
 
+	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false, true);
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+				mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true);
+		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
+
+		// needed only for samples to hook into Settings.
+		setMaxTextWidthFactor();
+	}
+
+	@Override
+	protected void createControls() {
+		setMapScaleBar();
 	}
 
 	protected void createTileCaches() {
@@ -76,8 +94,8 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		int queueSize = Integer.parseInt(sharedPreferences.getString(SamplesApplication.SETTING_TILECACHE_QUEUESIZE, "4"));
 
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
-				this.mapViews.get(0).getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapViews.get(0).getModel().frameBufferModel.getOverdrawFactor(),
+				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
 				threaded, queueSize
 		));
 	}
@@ -89,9 +107,13 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		return "germany.map";
 	}
 
+	protected void onDestroy() {
+		super.onDestroy();
+		this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+	}
+
 	/*
-	 * Below comes code that is relevant only for the menus, shared preferences etc and is
-	 * not required for a basic map view.
+	 * Settings related methods.
 	 */
 
 	@Override
@@ -107,21 +129,6 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
 
 		this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-	}
-
-	protected void onDestroy() {
-		super.onDestroy();
-		this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-	}
-
-	@Override
-	protected String getScaleBarSetting() {
-		return this.sharedPreferences.getString(SETTING_SCALEBAR, MapViewerTemplate.SETTING_SCALEBAR_BOTH);
-	}
-
-	@Override
-	protected float getMaxTextWidthFactor() {
-		return Float.valueOf(sharedPreferences.getString(SamplesApplication.SETTING_TEXTWIDTH, "0.7"));
 	}
 
 	@Deprecated
@@ -142,10 +149,10 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 								.toString());
 						double lon = Double.parseDouble(((EditText) view.findViewById(R.id.longitude)).getText()
 								.toString());
-						byte zoomLevel = (byte) ((((SeekBar) view.findViewById(R.id.zoomlevel)).getProgress()) + SamplesBaseActivity.this.mapViewPositions
-								.get(0).getZoomLevelMin());
+						byte zoomLevel = (byte) ((((SeekBar) view.findViewById(R.id.zoomlevel)).getProgress()) +
+								SamplesBaseActivity.this.mapView.getModel().mapViewPosition.getZoomLevelMin());
 
-						SamplesBaseActivity.this.mapViewPositions.get(0).setMapPosition(
+						SamplesBaseActivity.this.mapView.getModel().mapViewPosition.setMapPosition(
 								new MapPosition(new LatLong(lat, lon), zoomLevel));
 					}
 				});
@@ -187,7 +194,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	@Override
 	protected void onPrepareDialog(int id, final Dialog dialog) {
 		if (id == this.DIALOG_ENTER_COORDINATES) {
-			MapViewPosition currentPosition = SamplesBaseActivity.this.mapViewPositions.get(0);
+			MapViewPosition currentPosition = SamplesBaseActivity.this.mapView.getModel().mapViewPosition;
 			LatLong currentCenter = currentPosition.getCenter();
 			EditText editText = (EditText) dialog.findViewById(R.id.latitude);
 			editText.setText(Double.toString(currentCenter.latitude));
@@ -195,7 +202,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 			editText.setText(Double.toString(currentCenter.longitude));
 			SeekBar zoomlevel = (SeekBar) dialog.findViewById(R.id.zoomlevel);
 			zoomlevel.setMax(currentPosition.getZoomLevelMax() - currentPosition.getZoomLevelMin());
-			zoomlevel.setProgress(SamplesBaseActivity.this.mapViewPositions.get(0).getZoomLevel()
+			zoomlevel.setProgress(SamplesBaseActivity.this.mapView.getModel().mapViewPosition.getZoomLevel()
 					- currentPosition.getZoomLevelMin());
 			final TextView textView = (TextView) dialog.findViewById(R.id.zoomlevelValue);
 			textView.setText(String.valueOf(zoomlevel.getProgress()));
@@ -219,20 +226,18 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 			super.onPrepareDialog(id, dialog);
 		}
 	}
+
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		if (SamplesApplication.SETTING_SCALE.equals(key)) {
 			destroyTileCaches();
-			for (MapView mapView : mapViews) {
-				mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
-			}
-			Log.d(SamplesApplication.TAG, "Tilesize now " + mapViews.get(0).getModel().displayModel.getTileSize());
+			this.mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
+			Log.d(SamplesApplication.TAG, "Tilesize now " + this.mapView.getModel().displayModel.getTileSize());
 			createTileCaches();
 			redrawLayers();
 		}
 		if (SamplesApplication.SETTING_TEXTWIDTH.equals(key)) {
 			destroyTileCaches();
-			setMaxTextWidthFactor();
 			createTileCaches();
 			redrawLayers();
 		}
@@ -242,7 +247,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 			redrawLayers();
 		}
 		if (SETTING_SCALEBAR.equals(key)) {
-			setScaleBars();
+			setMapScaleBar();
 		}
 		if (SamplesApplication.SETTING_DEBUG_TIMING.equals(key)) {
 			MapWorker.DEBUG_TIMING = preferences.getBoolean(SamplesApplication.SETTING_DEBUG_TIMING, false);
@@ -254,6 +259,34 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 				MapDatabase.wayFilterDistance = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_WAYFILTERING_DISTANCE, "20"));
 			}
 		}
+	}
+
+	/**
+	 * Sets the scale bar from preferences.
+	 */
+	protected void setMapScaleBar() {
+		String value = this.sharedPreferences.getString(SETTING_SCALEBAR, SETTING_SCALEBAR_BOTH);
+
+		if (SETTING_SCALEBAR_NONE.equals(value)) {
+			AndroidUtil.setMapScaleBar(this.mapView, null, null);
+		} else {
+			if (SETTING_SCALEBAR_BOTH.equals(value)) {
+				AndroidUtil.setMapScaleBar(this.mapView, MetricUnitAdapter.INSTANCE, ImperialUnitAdapter.INSTANCE);
+			} else if (SETTING_SCALEBAR_METRIC.equals(value)) {
+				AndroidUtil.setMapScaleBar(this.mapView, MetricUnitAdapter.INSTANCE, null);
+			} else if (SETTING_SCALEBAR_IMPERIAL.equals(value)) {
+				AndroidUtil.setMapScaleBar(this.mapView, ImperialUnitAdapter.INSTANCE, null);
+			} else if (SETTING_SCALEBAR_NAUTICAL.equals(value)) {
+				AndroidUtil.setMapScaleBar(this.mapView, NauticalUnitAdapter.INSTANCE, null);
+			}
+		}
+	}
+
+	/**
+	 * sets the value for breaking line text in labels.
+	 */
+	protected void setMaxTextWidthFactor() {
+		mapView.getModel().displayModel.setMaxTextWidthFactor(Float.valueOf(sharedPreferences.getString(SamplesApplication.SETTING_TEXTWIDTH, "0.7")));
 	}
 
 }

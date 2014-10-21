@@ -50,8 +50,8 @@ public class LocationOverlayMapViewer extends RenderTheme4 {
 
 		// create the overlay and tell it to follow the location
 		this.myLocationOverlay = new MyLocationOverlay(this,
-				this.mapViewPositions.get(0), bitmap);
+				this.mapView.getModel().mapViewPosition, bitmap);
 		this.myLocationOverlay.setSnapToLocationEnabled(true);
-		this.layerManagers.get(0).getLayers().add(this.myLocationOverlay);
+		mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
 	}
 }

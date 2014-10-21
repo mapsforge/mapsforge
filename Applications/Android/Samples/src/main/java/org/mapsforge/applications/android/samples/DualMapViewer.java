@@ -24,7 +24,6 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
-import android.content.SharedPreferences;
 import android.os.Environment;
 
 /**
@@ -32,6 +31,7 @@ import android.os.Environment;
  */
 public class DualMapViewer extends RenderTheme4 {
 
+	protected MapView mapView2;
 	protected PreferencesFacade preferencesFacade2;
 
 	@Override
@@ -44,32 +44,31 @@ public class DualMapViewer extends RenderTheme4 {
 	 * creates the layers for the second map view.
 	 */
 	protected void createLayers2() {
-		this.layerManagers
-				.get(1)
-				.getLayers()
-				.add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
-						this.mapViewPositions.get(1), getMapFile2(),
+		this.mapView2.getLayerManager()
+				.getLayers().add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
+						this.mapView2.getModel().mapViewPosition, getMapFile2(),
 						getRenderTheme2(), false, true));
-
 	}
 
 	@Override
 	protected void createMapViews() {
 		super.createMapViews();
 		// second mapView is defined in layout
-		MapView mapView = (MapView) this.findViewById(R.id.mapView2);
-		mapView.getModel().init(this.preferencesFacade2);
-		mapView.setClickable(true);
-		mapViews.add(mapView);
+		this.mapView2 = (MapView) this.findViewById(R.id.mapView2);
+		this.mapView2.getModel().init(this.preferencesFacade2);
+		this.mapView2.setClickable(true);
+		mapView2.getMapScaleBar().setVisible(true);
+		mapView2.setBuiltInZoomControls(hasZoomControls());
+		mapView2.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
+		mapView2.getMapZoomControls().setZoomLevelMax(getZoomLevelMax());
+		initializePosition(mapView2.getModel().mapViewPosition);
 	}
 
 	protected TileCache createTileCache2() {
-		int tileSize = this.mapViews.get(1).getModel().displayModel
-				.getTileSize();
+		int tileSize = this.mapView2.getModel().displayModel.getTileSize();
 		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
 				getScreenRatio2(),
-				this.mapViews.get(1).getModel().frameBufferModel
-						.getOverdrawFactor());
+				this.mapView2.getModel().frameBufferModel.getOverdrawFactor());
 	}
 
 	@Override
@@ -81,9 +80,7 @@ public class DualMapViewer extends RenderTheme4 {
 	@Override
 	protected void createSharedPreferences() {
 		super.createSharedPreferences();
-		SharedPreferences sp = this.getSharedPreferences(getPersistableId2(),
-				MODE_PRIVATE);
-		this.preferencesFacade2 = new AndroidPreferences(sp);
+		this.preferencesFacade2 = new AndroidPreferences(this.getSharedPreferences(getPersistableId2(), MODE_PRIVATE));
 	}
 
 	@Override
@@ -96,8 +93,7 @@ public class DualMapViewer extends RenderTheme4 {
 	 * @return the map file for the second view
 	 */
 	protected File getMapFile2() {
-		return new File(Environment.getExternalStorageDirectory(),
-				this.getMapFileName2());
+		return new File(Environment.getExternalStorageDirectory(), this.getMapFileName2());
 	}
 
 	/**
@@ -137,6 +133,7 @@ public class DualMapViewer extends RenderTheme4 {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		this.mapView2.getModel().save(this.preferencesFacade2);
 		this.preferencesFacade2.save();
 	}
 

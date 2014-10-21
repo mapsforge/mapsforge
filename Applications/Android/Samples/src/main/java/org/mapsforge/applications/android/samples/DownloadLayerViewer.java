@@ -49,9 +49,9 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
 	@Override
 	protected void createLayers() {
 		this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), OpenStreetMapMapnik.INSTANCE,
+				this.mapView.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
 				AndroidGraphicFactory.INSTANCE);
-		this.layerManagers.get(0).getLayers().add(this.downloadLayer);
+		mapView.getLayerManager().getLayers().add(this.downloadLayer);
 	}
 
 }

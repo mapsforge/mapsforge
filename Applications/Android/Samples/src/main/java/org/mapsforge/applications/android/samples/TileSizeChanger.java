@@ -61,9 +61,9 @@ public class TileSizeChanger extends RenderTheme4 {
 	@Override
 	protected void createLayers() {
 		tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
 				false, true);
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 	}
 
     @Override
@@ -85,13 +85,13 @@ public class TileSizeChanger extends RenderTheme4 {
 			destroyTileCaches();
 
 			int tileSize = tileSizes[iteration % tileSizes.length];
-			this.mapViews.get(0).getModel().displayModel.setFixedTileSize(tileSize);
+			this.mapView.getModel().displayModel.setFixedTileSize(tileSize);
 
 			createTileCaches();
 			createLayers();
 
-			this.mapViews.get(0).getMapScaleBar().redrawScaleBar();
-			layerManagers.get(0).redrawLayers();
+			this.mapView.getMapScaleBar().redrawScaleBar();
+			this.mapView.getLayerManager().redrawLayers();
 		}
 	}
 }
