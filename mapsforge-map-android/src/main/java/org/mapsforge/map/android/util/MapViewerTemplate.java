@@ -296,16 +296,8 @@ public abstract class MapViewerTemplate extends Activity  {
 		createSharedPreferences();
 		createMapViews();
 		createTileCaches();
-		createControls();
-	}
-
-	/**
-	 * Android Activity life cycle method.
-	 */
-	@Override
-	protected void onStart() {
-		super.onStart();
 		createLayers();
+		createControls();
 	}
 
 	/**
@@ -318,14 +310,6 @@ public abstract class MapViewerTemplate extends Activity  {
 		this.preferencesFacade.save();
 	}
 
-	/**
-	 * Android Activity life cycle method.
-	 */
-	@Override
-	protected void onStop() {
-		super.onStop();
-		destroyLayers();
-	}
 
 	/**
 	 * Android Activity life cycle method.
@@ -334,6 +318,7 @@ public abstract class MapViewerTemplate extends Activity  {
 	protected void onDestroy() {
 		super.onDestroy();
 		destroyControls();
+		destroyLayers();
 		destroyTileCaches();
 		destroyMapViews();
 		org.mapsforge.map.android.graphics.AndroidResourceBitmap.clearResourceBitmaps();
