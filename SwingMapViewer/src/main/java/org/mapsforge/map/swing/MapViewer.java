@@ -123,7 +123,7 @@ public final class MapViewer {
 	}
 
 	private static TileCache createTileCache() {
-		TileCache firstLevelTileCache = new InMemoryTileCache(64);
+		TileCache firstLevelTileCache = new InMemoryTileCache(128);
 		File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge");
 		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
