@@ -7,7 +7,7 @@ import org.mapsforge.map.model.MapViewPosition;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 public class BubbleOverlayTest extends ActivityInstrumentationTestCase2<BubbleOverlay> {
 

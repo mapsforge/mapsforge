@@ -4,7 +4,7 @@ import org.mapsforge.applications.android.samples.OverlayMapViewer;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 public class OverlayMapViewerTest extends ActivityInstrumentationTestCase2<OverlayMapViewer> {
 

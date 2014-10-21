@@ -4,7 +4,7 @@ import org.mapsforge.applications.android.samples.BasicMapViewerV3;
 
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 public class BasicMapViewerV3Test extends ActivityInstrumentationTestCase2<BasicMapViewerV3> {
 
