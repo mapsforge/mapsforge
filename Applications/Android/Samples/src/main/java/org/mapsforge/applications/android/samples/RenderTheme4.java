@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
+import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
@@ -81,10 +82,7 @@ public class RenderTheme4 extends SamplesBaseActivity implements XmlRenderThemeM
 		// difficult to know which render theme options have changed since we
 		// do not know all the keys, so we just redraw the map whenever there
 		// is a change in the settings.
-		destroyLayers();
-		destroyTileCaches();
-		createTileCaches();
-		createLayers();
+		AndroidUtil.restartActivity(this);
 	}
 
 }

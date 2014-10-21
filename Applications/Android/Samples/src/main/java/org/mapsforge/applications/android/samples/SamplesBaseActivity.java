@@ -230,21 +230,15 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		if (SamplesApplication.SETTING_SCALE.equals(key)) {
-			destroyTileCaches();
 			this.mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
 			Log.d(SamplesApplication.TAG, "Tilesize now " + this.mapView.getModel().displayModel.getTileSize());
-			createTileCaches();
-			redrawLayers();
+			AndroidUtil.restartActivity(this);
 		}
 		if (SamplesApplication.SETTING_TEXTWIDTH.equals(key)) {
-			destroyTileCaches();
-			createTileCaches();
-			redrawLayers();
+			AndroidUtil.restartActivity(this);
 		}
 		if (SamplesApplication.SETTING_TILECACHE_QUEUESIZE.equals(key) || SamplesApplication.SETTING_TILECACHE_THREADING.equals(key)) {
-			destroyTileCaches();
-			createTileCaches();
-			redrawLayers();
+			AndroidUtil.restartActivity(this);
 		}
 		if (SETTING_SCALEBAR.equals(key)) {
 			setMapScaleBar();

@@ -31,7 +31,9 @@ import org.mapsforge.map.scalebar.DistanceUnitAdapter;
 import org.mapsforge.map.scalebar.MapScaleBar;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Looper;
@@ -45,14 +47,10 @@ public final class AndroidUtil {
 	public static final boolean HONEYCOMB_PLUS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
 	/**
-	 * @param c
-	 *            the Android context
-	 * @param id
-	 *            name for the directory
-	 * @param firstLevelSize
-	 *            size of the first level cache
-	 * @param tileSize
-	 *            tile size
+	 * @param c              the Android context
+	 * @param id             name for the directory
+	 * @param firstLevelSize size of the first level cache
+	 * @param tileSize       tile size
 	 * @return a new cache created on the external storage
 	 */
 	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize, boolean threaded, int queueSize) {
@@ -84,19 +82,14 @@ public final class AndroidUtil {
 	/**
 	 * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
 	 * actually know the size of the mapview, so the screenRatio is an approximation of the required size.
-	 * 
-	 * @param c
-	 *            the Android context
-	 * @param id
-	 *            name for the storage directory
-	 * @param tileSize
-	 *            tile size
-	 * @param screenRatio
-	 *            part of the screen the view takes up
-	 * @param overdraw
-	 *            overdraw allowance
-	 * @param threaded if a background thread is employed to store tile data
-	 * @param queueSize maximum length of queue before the put operation blocks
+	 *
+	 * @param c           the Android context
+	 * @param id          name for the storage directory
+	 * @param tileSize    tile size
+	 * @param screenRatio part of the screen the view takes up
+	 * @param overdraw    overdraw allowance
+	 * @param threaded    if a background thread is employed to store tile data
+	 * @param queueSize   maximum length of queue before the put operation blocks
 	 * @return a new cache created on the external storage
 	 */
 
@@ -109,16 +102,12 @@ public final class AndroidUtil {
 	 * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
 	 * actually know the size of the mapview, so the screenRatio is an approximation of the required size.
 	 * This is the compatibility version that by default creates a non-threaded cache.
-	 * @param c
-	 *            the Android context
-	 * @param id
-	 *            name for the storage directory
-	 * @param tileSize
-	 *            tile size
-	 * @param screenRatio
-	 *            part of the screen the view takes up
-	 * @param overdraw
-	 *            overdraw allowance
+	 *
+	 * @param c           the Android context
+	 * @param id          name for the storage directory
+	 * @param tileSize    tile size
+	 * @param screenRatio part of the screen the view takes up
+	 * @param overdraw    overdraw allowance
 	 * @return a new cache created on the external storage
 	 */
 
@@ -129,18 +118,17 @@ public final class AndroidUtil {
 	/**
 	 * Utility method to create a standard tile renderer layer.
 	 *
-	 * @param tileCache the cache
+	 * @param tileCache       the cache
 	 * @param mapViewPosition the position
-	 * @param mapFile the map file
-	 * @param renderTheme the render theme to use
-	 * @param hasAlpha if the layer is transparent (more memory)
-	 * @param renderLabels should usually be true
-	 *
+	 * @param mapFile         the map file
+	 * @param renderTheme     the render theme to use
+	 * @param hasAlpha        if the layer is transparent (more memory)
+	 * @param renderLabels    should usually be true
 	 * @return the layer
 	 */
 	public static TileRendererLayer createTileRendererLayer(TileCache tileCache,
-	                                                 MapViewPosition mapViewPosition, File mapFile,
-	                                                 XmlRenderTheme renderTheme, boolean hasAlpha, boolean renderLabels) {
+	                                                        MapViewPosition mapViewPosition, File mapFile,
+	                                                        XmlRenderTheme renderTheme, boolean hasAlpha, boolean renderLabels) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache,
 				mapViewPosition, hasAlpha, renderLabels, AndroidGraphicFactory.INSTANCE);
 		tileRendererLayer.setMapFile(mapFile);
@@ -156,12 +144,9 @@ public final class AndroidUtil {
 	}
 
 	/**
-	 * @param cacheDirectoryName
-	 *            where the file system tile cache will be located
-	 * @param firstLevelSize
-	 *            size of the first level cache, no point cache being smaller
-	 * @param tileSize
-	 *            tile size
+	 * @param cacheDirectoryName where the file system tile cache will be located
+	 * @param firstLevelSize     size of the first level cache, no point cache being smaller
+	 * @param tileSize           tile size
 	 * @return recommended number of files in FileSystemTileCache
 	 */
 	public static int estimateSizeOfFileSystemCache(String cacheDirectoryName, int firstLevelSize, int tileSize) {
@@ -182,11 +167,9 @@ public final class AndroidUtil {
 
 	/**
 	 * Get the number of tiles that can be stored on the file system.
-	 * 
-	 * @param directory
-	 *            where the cache will reside
-	 * @param fileSize
-	 *            average size of tile to be cached
+	 *
+	 * @param directory where the cache will reside
+	 * @param fileSize  average size of tile to be cached
 	 * @return number of tiles that can be stored without running out of space
 	 */
 	@SuppressWarnings("deprecation")
@@ -204,15 +187,11 @@ public final class AndroidUtil {
 
 	/**
 	 * Compute the minimum cache size for a view.
-	 * 
-	 * @param c
-	 *            the context.
-	 * @param tileSize
-	 *            tile size
-	 * @param overdrawFactor
-	 *            the overdraw factor applied to the mapview.
-	 * @param screenRatio
-	 *            the part of the screen the view covers.
+	 *
+	 * @param c              the context.
+	 * @param tileSize       tile size
+	 * @param overdrawFactor the overdraw factor applied to the mapview.
+	 * @param screenRatio    the part of the screen the view covers.
 	 * @return the minimum cache size for the view.
 	 */
 	@TargetApi(13)
@@ -240,8 +219,27 @@ public final class AndroidUtil {
 		// of a screen (the result can be too low if a MapView is very narrow).
 		// For any size we need a minimum of 4 (as the intersection of 4 tiles can always be in the
 		// middle of a view.
-		return (int) Math.max(4, screenRatio * (2 + (height  * overdrawFactor / tileSize))
-				* (2 + (width  * overdrawFactor / tileSize)));
+		return (int) Math.max(4, screenRatio * (2 + (height * overdrawFactor / tileSize))
+				* (2 + (width * overdrawFactor / tileSize)));
+	}
+
+
+	/**
+	 * Restarts activity, from http://stackoverflow.com/questions/1397361/how-do-i-restart-an-android-activity
+	 * @param activity the activity to restart
+	 */
+	public static void restartActivity(Activity activity) {
+		if(Build.VERSION.SDK_INT>=11) {
+			activity.recreate();
+		} else {
+			Intent intent = activity.getIntent();
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			activity.finish();
+			activity.overridePendingTransition(0, 0);
+
+			activity.startActivity(intent);
+			activity.overridePendingTransition(0, 0);
+		}
 	}
 
 	/**
