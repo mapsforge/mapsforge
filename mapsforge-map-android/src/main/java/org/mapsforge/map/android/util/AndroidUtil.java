@@ -228,8 +228,9 @@ public final class AndroidUtil {
 	 * Restarts activity, from http://stackoverflow.com/questions/1397361/how-do-i-restart-an-android-activity
 	 * @param activity the activity to restart
 	 */
+	@TargetApi(11)
 	public static void restartActivity(Activity activity) {
-		if(Build.VERSION.SDK_INT>=11) {
+		if (Build.VERSION.SDK_INT >= 11) {
 			activity.recreate();
 		} else {
 			Intent intent = activity.getIntent();
