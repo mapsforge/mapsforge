@@ -97,6 +97,7 @@ public class Samples extends Activity {
 
 		linearLayout.addView(createLabel("Overlays"));
 		linearLayout.addView(createButton(OverlayMapViewer.class, "Overlay"));
+		linearLayout.addView(createButton(GridMapViewer.class, "Geographical Grid"));
 		linearLayout
 				.addView(createButton(BubbleOverlay.class, "Bubble Overlay"));
 		linearLayout.addView(createButton(LocationOverlayMapViewer.class, "Location Overlay"));
