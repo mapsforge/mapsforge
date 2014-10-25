@@ -76,6 +76,10 @@
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="OverlayMapViewer"/>
 		<activity
+			android:name=".GridMapViewer"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:label="Geographical Grid"/>
+		<activity
 			android:name=".ZoomToBounds"
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="Zooms to map bounds of overlay"/>
