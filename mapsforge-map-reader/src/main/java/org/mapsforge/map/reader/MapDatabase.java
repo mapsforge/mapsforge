@@ -79,11 +79,6 @@ public class MapDatabase {
 	private static final Logger LOGGER = Logger.getLogger(MapDatabase.class.getName());
 
 	/**
-	 * Maximum way nodes sequence length which is considered as valid.
-	 */
-	private static final int MAXIMUM_WAY_NODES_SEQUENCE_LENGTH = 8192;
-
-	/**
 	 * Bitmask for the optional POI feature "elevation".
 	 */
 	private static final int POI_FEATURE_ELEVATION = 0x20;
@@ -685,9 +680,12 @@ public class MapDatabase {
 		for (int coordinateBlock = 0; coordinateBlock < numberOfWayCoordinateBlocks; ++coordinateBlock) {
 			// get and check the number of way nodes (VBE-U)
 			int numberOfWayNodes = this.readBuffer.readUnsignedInt();
-			if (numberOfWayNodes < 2 || numberOfWayNodes > MAXIMUM_WAY_NODES_SEQUENCE_LENGTH) {
+			if (numberOfWayNodes < 2 || numberOfWayNodes > Short.MAX_VALUE) {
 				LOGGER.warning("invalid number of way nodes: " + numberOfWayNodes);
 				logDebugSignatures();
+				// returning null here will actually leave the tile blank as the
+				// position on the ReadBuffer will not be advanced correctly. However,
+				// it will not crash the app.
 				return null;
 			}
 
