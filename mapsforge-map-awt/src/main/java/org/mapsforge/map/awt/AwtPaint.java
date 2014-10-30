@@ -33,8 +33,14 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Point;
 
 class AwtPaint implements Paint {
+
+	// needed to record size of bitmap shader to compute the shift
+	private int shaderWidth;
+	private int shaderHeight;
+
 	private static int getCap(Cap cap) {
 		switch (cap) {
 			case BUTT:
@@ -132,8 +138,30 @@ class AwtPaint implements Paint {
 
 	@Override
 	public void setBitmapShader(Bitmap bitmap) {
+		if (bitmap == null) {
+			return;
+		}
+		this.shaderWidth = bitmap.getWidth();
+		this.shaderHeight = bitmap.getHeight();
 		Rectangle rectangle = new Rectangle(0, 0, bitmap.getWidth(), bitmap.getHeight());
 		this.texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(bitmap), rectangle);
+	}
+
+	/**
+	 * Shifts the bitmap pattern so that it will always start at a multiple of
+	 * itself for any tile the pattern is used. This ensures that regardless of
+	 * size of the pattern it tiles correctly.
+	 * @param origin the reference point
+	 */
+	@Override
+	public void setBitmapShaderShift(Point origin) {
+		if (this.texturePaint != null) {
+			int relativeDx = ((int) -origin.x) % this.shaderWidth;
+			int relativeDy = ((int) -origin.y) % this.shaderHeight;
+
+			Rectangle rectangle = new Rectangle(relativeDx, relativeDy, this.shaderWidth, this.shaderHeight);
+			this.texturePaint = new TexturePaint(this.texturePaint.getImage(), rectangle);
+		}
 	}
 
 	@Override
@@ -205,6 +233,6 @@ class AwtPaint implements Paint {
 		if (this.strokeWidth <= 0) {
 			return;
 		}
-		this.stroke = new BasicStroke(this.strokeWidth, this.cap, this.join, this.join == 0 ? 1.0f : 0, this.strokeDasharray, 0);
+		this.stroke = new BasicStroke(this.strokeWidth, this.cap, this.join, this.join == BasicStroke.JOIN_MITER ? 1.0f : 0, this.strokeDasharray, 0);
 	}
 }

@@ -22,28 +22,18 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 /**
  * Viewer with tile grid and coordinates visible and frame counter displayed.
  */
-public class DiagnosticsMapViewer extends BasicMapViewerXml {
+public class DiagnosticsMapViewer extends RenderTheme4 {
 
 	@Override
 	protected void createLayers() {
 		super.createLayers();
-		this.layerManagers
-				.get(0)
-				.getLayers()
-				.add(new TileGridLayer(AndroidGraphicFactory.INSTANCE,
-						this.mapViews.get(0).getModel().displayModel));
-		this.layerManagers
-				.get(0)
-				.getLayers()
-				.add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE,
-						this.mapViews.get(0).getModel().displayModel));
+
+		// add a grid layer and a layer showing tile coordinates
+		mapView.getLayerManager().getLayers()
+				.add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+		mapView.getLayerManager().getLayers()
+				.add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+		mapView.getFpsCounter().setVisible(true);
 	}
 
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		for (MapView mapView : mapViews) {
-			mapView.getFpsCounter().setVisible(true);
-		}
-	}
 }

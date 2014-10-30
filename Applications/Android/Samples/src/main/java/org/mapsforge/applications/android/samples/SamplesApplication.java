@@ -16,7 +16,9 @@
 package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.renderer.MapWorker;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.reader.MapDatabase;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -28,14 +30,13 @@ import android.util.Log;
  */
 public class SamplesApplication extends Application {
 
+	public static final String SETTING_DEBUG_TIMING = "debug_timing";
 	public static final String SETTING_SCALE = "scale";
-	public static final String SETTING_SCALEBAR = "scalebar";
-	public static final String SETTING_SCALEBAR_METRIC = "metric";
-	public static final String SETTING_SCALEBAR_IMPERIAL = "imperial";
-	public static final String SETTING_SCALEBAR_NAUTICAL = "nautical";
-	public static final String SETTING_SCALEBAR_BOTH = "both";
-	public static final String SETTING_SCALEBAR_NONE = "none";
 	public static final String SETTING_TEXTWIDTH = "textwidth";
+	public static final String SETTING_WAYFILTERING = "wayfiltering";
+	public static final String SETTING_WAYFILTERING_DISTANCE = "wayfiltering_distance";
+	public static final String SETTING_TILECACHE_THREADING = "tilecache_threading";
+	public static final String SETTING_TILECACHE_QUEUESIZE = "tilecache_queuesize";
 	public static final String TAG = "SAMPLES APP";
 
 	@Override
@@ -53,5 +54,11 @@ public class SamplesApplication extends Application {
 		if (fs != DisplayModel.getDefaultUserScaleFactor()) {
 			DisplayModel.setDefaultUserScaleFactor(fs);
 		}
+
+		MapDatabase.wayFilterEnabled = preferences.getBoolean(SETTING_WAYFILTERING, true);
+		if (MapDatabase.wayFilterEnabled) {
+			MapDatabase.wayFilterDistance = Integer.parseInt(preferences.getString(SETTING_WAYFILTERING_DISTANCE, "20"));
+		}
+		MapWorker.DEBUG_TIMING = preferences.getBoolean(SETTING_DEBUG_TIMING, false);
 	}
 }

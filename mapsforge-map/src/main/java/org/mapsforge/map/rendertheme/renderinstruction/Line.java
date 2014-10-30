@@ -17,7 +17,6 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -90,6 +89,9 @@ public class Line extends RenderInstruction {
 			}
 			bitmapCreated = true;
 		}
+
+		this.stroke.setBitmapShaderShift(way.getTile().getOrigin());
+
 		renderCallback.renderWay(way, this.stroke, this.dy, this.level);
 	}
 
@@ -125,9 +127,9 @@ public class Line extends RenderInstruction {
 				}
 				this.stroke.setDashPathEffect(floatArray);
 			} else if (STROKE_LINECAP.equals(name)) {
-				this.stroke.setStrokeCap(Cap.valueOf(value.toUpperCase(Locale.ENGLISH)));
+				this.stroke.setStrokeCap(Cap.fromString(value));
 			} else if (STROKE_LINEJOIN.equals(name)) {
-				this.stroke.setStrokeJoin(Join.valueOf(value.toUpperCase(Locale.ENGLISH)));
+				this.stroke.setStrokeJoin(Join.fromString(value));
 			} else if (SYMBOL_HEIGHT.equals(name)) {
 				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
 			} else if (SYMBOL_PERCENT.equals(name)) {

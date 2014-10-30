@@ -17,14 +17,14 @@ package org.mapsforge.applications.android.samples;
 import org.mapsforge.core.model.LatLong;
 
 /**
- * Demonstrates the animateTo function in MapViewPosition: longPress a point on
+ * Demonstrates the animateTo function in MapViewPosition: long press a point on
  * the map and it will move in steps to that position.
  */
 
 public class MoveAnimation extends LongPressAction {
 
 	protected void onLongPress(LatLong position) {
-		this.mapViews.get(0).getModel().mapViewPosition.animateTo(position);
+		this.mapView.getModel().mapViewPosition.animateTo(position);
 	}
 
 }

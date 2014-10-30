@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Jordan Black
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,6 +22,8 @@ import org.mapsforge.core.model.Point;
  * Time-consuming operations should be performed in a separate thread.
  */
 public interface TouchEventListener {
+	void onActionDown(LatLong latLong, Point point, long eventTime);
+
 	void onActionUp(LatLong latLong, Point point, long eventTime, boolean moveThresholdReached);
 
 	void onLongPress(LatLong latLong, Point xy);

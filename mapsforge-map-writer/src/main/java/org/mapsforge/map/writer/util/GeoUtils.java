@@ -364,8 +364,9 @@ public final class GeoUtils {
 
 	// Computes the amount of latitude degrees for a given distance in pixel at a given zoom level.
 	private static double deltaLat(double deltaPixel, double lat, byte zoom, int tileSize) {
-		double pixelY = MercatorProjection.latitudeToPixelY(lat, zoom, tileSize);
-		double lat2 = MercatorProjection.pixelYToLatitude(pixelY + deltaPixel, zoom, tileSize);
+		long mapSize = MercatorProjection.getMapSize(zoom, tileSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(lat, mapSize);
+		double lat2 = MercatorProjection.pixelYToLatitude(pixelY + deltaPixel, mapSize);
 
 		return Math.abs(lat2 - lat);
 	}

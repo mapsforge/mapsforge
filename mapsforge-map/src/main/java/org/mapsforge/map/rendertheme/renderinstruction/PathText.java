@@ -31,8 +31,6 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.util.Locale;
-
 /**
  * Represents a text along a polyline on the map.
  */
@@ -106,9 +104,9 @@ public class PathText extends RenderInstruction {
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {
-				fontFamily = FontFamily.valueOf(value.toUpperCase(Locale.ENGLISH));
+				fontFamily = FontFamily.fromString(value);
 			} else if (FONT_STYLE.equals(name)) {
-				fontStyle = FontStyle.valueOf(value.toUpperCase(Locale.ENGLISH));
+				fontStyle = FontStyle.fromString(value);
 			} else if (FONT_SIZE.equals(name)) {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (FILL.equals(name)) {

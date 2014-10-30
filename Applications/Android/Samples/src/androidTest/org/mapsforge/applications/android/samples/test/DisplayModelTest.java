@@ -1,10 +1,10 @@
 package org.mapsforge.applications.android.samples.test;
 
-import org.mapsforge.applications.android.samples.DualMapViewerWithDifferentDisplayModels;
-
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
+
+import org.mapsforge.applications.android.samples.DualMapViewerWithDifferentDisplayModels;
 
 public class DisplayModelTest extends ActivityInstrumentationTestCase2<DualMapViewerWithDifferentDisplayModels> {
 

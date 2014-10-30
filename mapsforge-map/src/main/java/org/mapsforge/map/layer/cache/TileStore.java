@@ -141,6 +141,7 @@ public class TileStore implements TileCache {
 
 	@Override
 	public void setWorkingSet(Set<Job> key) {
+		// all tiles are always in the cache
 	}
 
 }

@@ -65,9 +65,9 @@ public class Marker extends Layer {
 			return;
 		}
 
-		int tileSize = this.displayModel.getTileSize();
-		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, zoomLevel, tileSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, zoomLevel, tileSize);
+		long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
+		double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, mapSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, mapSize);
 
 		int halfBitmapWidth = this.bitmap.getWidth() / 2;
 		int halfBitmapHeight = this.bitmap.getHeight() / 2;

@@ -15,6 +15,8 @@
  */
 package org.mapsforge.core.graphics;
 
+import org.mapsforge.core.model.Point;
+
 public interface Paint {
 	int getTextHeight(String text);
 
@@ -23,6 +25,7 @@ public interface Paint {
 	boolean isTransparent();
 
 	void setBitmapShader(Bitmap bitmap);
+	void setBitmapShaderShift(Point origin);
 
 	void setColor(Color color);
 

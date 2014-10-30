@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,7 +34,7 @@ class FileWorkingSetCache<T> extends WorkingSetCache<T, File> {
 	protected boolean removeEldestEntry(Map.Entry<T, File> eldest) {
 		if (size() > this.capacity) {
 			File file = eldest.getValue();
-			if (file.exists() && !file.delete()) {
+			if (file != null && file.exists() && !file.delete()) {
 				LOGGER.log(Level.SEVERE, "could not delete file: " + file);
 			}
 			return true;

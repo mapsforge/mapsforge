@@ -18,6 +18,7 @@ package org.mapsforge.core.model;
 import java.io.Serializable;
 
 import org.mapsforge.core.util.LatLongUtils;
+import org.mapsforge.core.util.MercatorProjection;
 
 /**
  * A BoundingBox represents an immutable set of two latitude and two longitude coordinates.
@@ -89,6 +90,7 @@ public class BoundingBox implements Serializable {
 		this.maxLatitude = maxLatitude;
 		this.maxLongitude = maxLongitude;
 	}
+
 
 	/**
 	 * @param latLong
@@ -174,6 +176,47 @@ public class BoundingBox implements Serializable {
 	}
 
 	/**
+	 * Returns if an area built from the latLongs intersects with a bias towards
+	 * returning true.
+	 * The method returns fast if any of the points lie within the bbox. If none of the points
+	 * lie inside the box, it constructs the outer bbox for all the points and tests for intersection
+	 * (so it is possible that the area defined by the points does not actually intersect)
+	 *
+	 * @param latLongs the points that define an area
+	 * @return false if there is no intersection, true if there could be an intersection
+	 */
+	public boolean intersectsArea(LatLong[][] latLongs) {
+		if (latLongs.length == 0 || latLongs[0].length == 0) {
+			return false;
+		}
+		for (LatLong[] outer : latLongs) {
+			for (LatLong latLong : outer) {
+				if (this.contains(latLong)) {
+					// if any of the points is inside the bbox return early
+					return true;
+				}
+			}
+		}
+
+		// no fast solution, so accumulate boundary points
+		double tmpMinLat = latLongs[0][0].latitude;
+		double tmpMinLon = latLongs[0][0].longitude;
+		double tmpMaxLat = latLongs[0][0].latitude;
+		double tmpMaxLon = latLongs[0][0].longitude;
+
+		for (LatLong[] outer : latLongs) {
+			for (LatLong latLong : outer) {
+				tmpMinLat = Math.min(tmpMinLat, latLong.latitude);
+				tmpMaxLat = Math.max(tmpMaxLat, latLong.latitude);
+				tmpMinLon = Math.min(tmpMinLon, latLong.longitude);
+				tmpMaxLon = Math.max(tmpMaxLon, latLong.longitude);
+			}
+		}
+		return this.intersects(new BoundingBox(tmpMinLat, tmpMinLon, tmpMaxLat, tmpMaxLon));
+	}
+
+
+	/**
 	 * @param boundingBox
 	 *            the BoundingBox which this BoundingBox should be extended if it is larger
 	 * @return a BoundingBox that covers this BoundingBox and the given BoundingBox.
@@ -184,6 +227,33 @@ public class BoundingBox implements Serializable {
 				Math.max(this.maxLatitude, boundingBox.maxLatitude),
 				Math.max(this.maxLongitude, boundingBox.maxLongitude));
 	}
+
+	/**
+	 * Creates a BoundingBox that is a fixed meter amount larger on all sides (but does not cross date line/poles)
+	 * @param meters extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if meters == 0)
+	 */
+	public BoundingBox extend(int meters) {
+
+		if (meters == 0) {
+			return this;
+		} else if (meters < 0) {
+			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
+		}
+
+
+		double verticalExpansion = LatLongUtils.latitudeDistance(meters);
+		double horizontalExpansion = LatLongUtils.longitudeDistance(meters, Math.max(Math.abs(minLatitude), Math.abs(maxLatitude)));
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+
 
 	@Override
 	public String toString() {

@@ -40,8 +40,6 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
-import org.mapsforge.map.layer.labels.LabelLayer;
-import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
@@ -67,7 +65,8 @@ public final class MapViewer {
 	public static void main(String[] args) {
 		List<File> mapFiles = getMapFiles(args);
 		MapView mapView = createMapView();
-		final BoundingBox boundingBox = addLayers(mapView, mapFiles);
+		TileCache tileCache = createTileCache();
+		final BoundingBox boundingBox = addLayers(mapView, mapFiles, tileCache);
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		final Model model = mapView.getModel();
@@ -75,7 +74,7 @@ public final class MapViewer {
 
 		MainFrame mainFrame = new MainFrame();
 		mainFrame.add(mapView);
-		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, model, preferencesFacade));
+		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, mapView, preferencesFacade, tileCache));
 		mainFrame.setVisible(true);
 
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -88,9 +87,8 @@ public final class MapViewer {
 		});
 	}
 
-	private static BoundingBox addLayers(MapView mapView, List<File> mapFiles) {
+	private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, TileCache tileCache) {
 		Layers layers = mapView.getLayerManager().getLayers();
-		TileCache tileCache = createTileCache();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
 		BoundingBox result = null;
@@ -111,7 +109,9 @@ public final class MapViewer {
 	private static MapView createMapView() {
 		MapView mapView = new MapView();
 		mapView.getMapScaleBar().setVisible(true);
-		mapView.getFpsCounter().setVisible(true);
+		if (SHOW_DEBUG_LAYERS) {
+			mapView.getFpsCounter().setVisible(true);
+		}
 		mapView.addComponentListener(new MapViewComponentListener(mapView, mapView.getModel().mapViewDimension));
 
 		MouseEventListener mouseEventListener = new MouseEventListener(mapView.getModel());
@@ -123,7 +123,7 @@ public final class MapViewer {
 	}
 
 	private static TileCache createTileCache() {
-		TileCache firstLevelTileCache = new InMemoryTileCache(64);
+		TileCache firstLevelTileCache = new InMemoryTileCache(128);
 		File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge");
 		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);

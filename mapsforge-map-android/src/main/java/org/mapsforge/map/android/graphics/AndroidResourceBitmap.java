@@ -20,19 +20,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.ResourceBitmap;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Pair;
 
 public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitmap {
 	protected static final Logger LOGGER = Logger.getLogger(AndroidResourceBitmap.class.getName());
-	protected static HashSet<Integer> rBitmaps;
-	protected static final HashMap<Integer, Pair<android.graphics.Bitmap, Integer>> RESOURCE_BITMAPS = new HashMap<Integer, Pair<android.graphics.Bitmap, Integer>>();
+	protected static Set<Integer> rBitmaps;
+	protected static final Map<Integer, Pair<Bitmap, Integer>> RESOURCE_BITMAPS = new HashMap<Integer, Pair<android.graphics.Bitmap, Integer>>();
 
 	// used for debug bitmap accounting
 	protected static AtomicInteger rInstances;

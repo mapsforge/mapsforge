@@ -40,14 +40,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 		lastVisibleTileSet = new HashSet<Tile>();
 	}
 
-	synchronized public void destroy() {
-		// there is still a risk that one of the map workers just finishes
-		// a job to store elements.
-		for (List<MapElementContainer> tile : this.values()) {
-			for (MapElementContainer element : tile) {
-				element.decrementRefCount();
-			}
-		}
+	public void destroy() {
 		this.clear();
 	}
 
@@ -57,7 +50,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	 * @param tile tile on which the mapItems reside.
 	 * @param mapItems the map elements.
 	 */
-	synchronized public void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
+	public synchronized void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
 		this.put(tile, LayerUtil.collisionFreeOrdered(mapItems));
 		this.version += 1;
 	}
@@ -67,7 +60,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	}
 
 	@Override
-	synchronized public List<MapElementContainer> getVisibleItems(Set<Tile> tiles) {
+	public synchronized List<MapElementContainer> getVisibleItems(Set<Tile> tiles) {
 
 		lastVisibleTileSet = tiles;
 
@@ -85,17 +78,13 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	 * @param tile the tile
 	 * @return
 	 */
-	synchronized public boolean requiresTile(Tile tile) {
+	public synchronized boolean requiresTile(Tile tile) {
 		return this.lastVisibleTileSet.contains(tile) && !this.containsKey(tile);
 	}
 
 	@Override
 	protected boolean removeEldestEntry(Map.Entry<Tile, List<MapElementContainer>> eldest) {
 		if (size() > this.capacity) {
-			List<MapElementContainer> list = eldest.getValue();
-			for (MapElementContainer item : list) {
-				item.decrementRefCount();
-			}
 			return true;
 		}
 		return false;

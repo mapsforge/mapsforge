@@ -70,7 +70,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 		this.model = new Model();
 
-		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY);
+		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
 		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
 		this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
@@ -99,6 +99,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		if (this.mapScaleBar != null) {
 			this.mapScaleBar.destroy();
 		}
+		this.getModel().mapViewPosition.destroy();
 	}
 
 	@Override

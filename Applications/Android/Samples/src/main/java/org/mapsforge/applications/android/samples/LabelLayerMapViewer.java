@@ -17,21 +17,22 @@
 package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
- * A BasicMapViewer that draws the labels onto a single separate layer. The LabelLayer remains
+ * A map viewer that draws the labels onto a single separate layer. The LabelLayer remains
  * experimental code and has some notable speed issues. Its use in production is currently not
  * recommended.
  */
-public class LabelLayerMapViewer extends BasicMapViewer {
+public class LabelLayerMapViewer extends RenderTheme4 {
 
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false, false);
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false);
+		mapView.getLayerManager().getLayers().add(tileRendererLayer);
 		org.mapsforge.map.layer.labels.LabelLayer labelLayer = new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
-		this.layerManagers.get(0).getLayers().add(labelLayer);
+		mapView.getLayerManager().getLayers().add(labelLayer);
 	}
 
 }

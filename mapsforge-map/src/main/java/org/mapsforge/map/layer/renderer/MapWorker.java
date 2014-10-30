@@ -26,7 +26,9 @@ import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.util.PausableThread;
 
 public class MapWorker extends PausableThread {
-	private static final boolean DEBUG_TIMING = false;
+
+	public static boolean DEBUG_TIMING = false;
+
 	private static final Logger LOGGER = Logger.getLogger(MapWorker.class.getName());
 
 	private final DatabaseRenderer databaseRenderer;
@@ -78,12 +80,20 @@ public class MapWorker extends PausableThread {
 	}
 
 	private void renderTile(RendererJob rendererJob) {
-		long start;
+		long start = 0;
 		if (DEBUG_TIMING) {
 			start = System.currentTimeMillis();
 		}
 
 		TileBitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
+
+		if (!isInterrupted() && bitmap != null) {
+			this.tileCache.put(rendererJob, bitmap);
+			this.layer.requestRedraw();
+		}
+		if (bitmap != null) {
+			bitmap.decrementRefCount();
+		}
 
 		if (DEBUG_TIMING) {
 			long end = System.currentTimeMillis();
@@ -94,12 +104,5 @@ public class MapWorker extends PausableThread {
 			}
 		}
 
-		if (!isInterrupted() && bitmap != null) {
-			this.tileCache.put(rendererJob, bitmap);
-			this.layer.requestRedraw();
-		}
-		if (bitmap != null) {
-			bitmap.decrementRefCount();
-		}
 	}
 }

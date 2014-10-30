@@ -1,10 +1,10 @@
 package org.mapsforge.applications.android.samples.test;
 
-import org.mapsforge.applications.android.samples.DualMapnikMapViewer;
-
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
+
+import org.mapsforge.applications.android.samples.DualMapnikMapViewer;
 
 public class DualMapnikViewerTest extends ActivityInstrumentationTestCase2<DualMapnikMapViewer> {
 

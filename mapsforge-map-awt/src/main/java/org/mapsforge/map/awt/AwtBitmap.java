@@ -15,6 +15,10 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +29,7 @@ import javax.imageio.ImageIO;
 import org.mapsforge.core.graphics.Bitmap;
 
 class AwtBitmap implements Bitmap {
-	final BufferedImage bufferedImage;
+	BufferedImage bufferedImage;
 
 	AwtBitmap(InputStream inputStream) throws IOException {
 		this.bufferedImage = ImageIO.read(inputStream);
@@ -65,12 +69,23 @@ class AwtBitmap implements Bitmap {
 
 	@Override
 	public void scaleTo(int width, int height) {
-		// TODO implement
+		BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graphics = resizedImage.createGraphics();
+		graphics.setComposite(AlphaComposite.Src);
+		graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		graphics.drawImage(bufferedImage, 0, 0, width, height, null);
+		graphics.dispose();
+		this.bufferedImage = resizedImage;
 	}
 
 	@Override
 	public void setBackgroundColor(int color) {
-		// TODO implement
+		Graphics2D graphics = bufferedImage.createGraphics();
+		graphics.setColor(new Color(color, true));
+		graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+		graphics.dispose();
 	}
 
 }

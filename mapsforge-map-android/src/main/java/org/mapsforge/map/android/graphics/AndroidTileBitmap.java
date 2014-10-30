@@ -20,6 +20,7 @@ import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -45,7 +46,7 @@ import android.graphics.BitmapFactory;
 
 public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 	private static final Logger LOGGER = Logger.getLogger(AndroidTileBitmap.class.getName());
-	private static HashMap<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<Integer, Set<SoftReference<Bitmap>>>();
+	private static Map<Integer, Set<SoftReference<Bitmap>>> reusableTileBitmaps = new HashMap<Integer, Set<SoftReference<Bitmap>>>();
 
 	private static AtomicInteger tileInstances;
 
@@ -80,6 +81,9 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 				candidate = iterator.next().get();
 				if (null != candidate && candidate.isMutable()) {
 					bitmap = candidate;
+					if (isTransparent) {
+						bitmap.eraseColor(android.graphics.Color.TRANSPARENT);
+					}
 					// Remove from reusable set so it can't be used again.
 					iterator.remove();
 					break;
@@ -114,7 +118,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 			// is triggered if the stream is not readable,
 			// so that it can be handled at this point, rather than later
 			// during bitmap painting
-			int w = this.bitmap.getWidth();
+			int w = this.bitmap.getWidth(); //NOSONAR
 		} catch (Exception e) {
 			// this is really stupid, the runtime system actually throws a SocketTimeoutException,
 			// but we cannot catch it, because it is not declared, so we needed to catch the base

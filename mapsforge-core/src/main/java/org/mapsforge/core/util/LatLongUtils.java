@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
  * Copyright © 2014 Christian Pesch
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -199,15 +200,14 @@ public final class LatLongUtils {
 	 *         tile size.
 	 */
 	public static byte zoomForBounds(Dimension dimension, BoundingBox boundingBox, int tileSize) {
-		double dxMax = MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, (byte) 0, tileSize) / tileSize;
-		double dxMin = MercatorProjection.longitudeToPixelX(boundingBox.minLongitude, (byte) 0, tileSize) / tileSize;
-		double zoomX = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dxMax - dxMin)) + (float) dimension.width
-				/ tileSize);
-		double dyMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, (byte) 0, tileSize) / tileSize;
-		double dyMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, (byte) 0, tileSize) / tileSize;
-		double zoomY = Math.floor(-Math.log(3.8) * Math.log(Math.abs(dyMax - dyMin)) + (float) dimension.height
-				/ tileSize);
-		return (byte) Math.min(zoomX, zoomY);
+		long mapSize = MercatorProjection.getMapSize((byte) 0, tileSize);
+		double pixelXMax = MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, mapSize);
+		double pixelXMin = MercatorProjection.longitudeToPixelX(boundingBox.minLongitude, mapSize);
+		double zoomX = -Math.log(Math.abs(pixelXMax - pixelXMin) / dimension.width) / Math.log(2);
+		double pixelYMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, mapSize);
+		double pixelYMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, mapSize);
+		double zoomY = -Math.log(Math.abs(pixelYMax - pixelYMin) / dimension.height) / Math.log(2);
+		return (byte) Math.max(0, Math.floor(Math.min(zoomX, zoomY)));
 	}
 
 	private LatLongUtils() {

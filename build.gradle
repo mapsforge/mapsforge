@@ -3,7 +3,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.12.+'
+    classpath 'com.android.tools.build:gradle:0.13.+'
   }
 }
 
@@ -15,14 +15,14 @@ def filterProjects(filter) {
 allprojects {
   group = 'org.mapsforge'
   version = 'dev-SNAPSHOT'
-  ext.androidBuildVersionTools = "20"
+  ext.androidBuildVersionTools = "21.0.1"
   ext.jUnitVersion = "4.11"
   description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 }
 
 // no injection of functions, so via inheritance
 def androidMinSdk() { return 9 }
-def androidTargetSdk() { return 19 }
+def androidTargetSdk() { return 21 }
 def versionCode() { return 50 }
 def versionName() { return version }
 
@@ -70,7 +70,7 @@ project.ext.androidprojects = project.androidlibraryprojects + project.androidap
 // TODO get checkstyle and pmd working for android (right now it does not work out of the box, so better wait for official fix)
 
 configure(filterProjects(project.androidapkprojects)) { 
-  apply plugin: 'android'
+  apply plugin: 'com.android.application'
 }
 
 

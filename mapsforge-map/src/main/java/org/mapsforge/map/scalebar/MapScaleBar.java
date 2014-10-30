@@ -32,7 +32,7 @@ import org.mapsforge.map.view.MapView;
  * A MapScaleBar displays the ratio of a distance on the map to the corresponding distance on the ground.
  */
 public abstract class MapScaleBar {
-	private static final int MARGIN_BOTTOM = 5;
+	private static final int MARGIN_BOTTOM = 0;
 	private static final int MARGIN_LEFT = 5;
 	private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
 
@@ -132,7 +132,7 @@ public abstract class MapScaleBar {
 	protected ScaleBarLengthAndValue calculateScaleBarLengthAndValue(DistanceUnitAdapter unitAdapter) {
 		this.prevMapPosition = this.mapViewPosition.getMapPosition();
 		double groundResolution = MercatorProjection.calculateGroundResolution(this.prevMapPosition.latLong.latitude,
-				this.prevMapPosition.zoomLevel, this.displayModel.getTileSize());
+				MercatorProjection.getMapSize(this.prevMapPosition.zoomLevel, this.displayModel.getTileSize()));
 
 		groundResolution = groundResolution / unitAdapter.getMeterRatio();
 		int[] scaleBarValues = unitAdapter.getScaleBarValues();

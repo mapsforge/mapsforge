@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -116,7 +117,7 @@ public class InMemoryTileCache implements TileCache {
 		this.lruCache = lruCacheNew;
 	}
 
-	public void setWorkingSet(Set<Job> jobs) {
+	public synchronized void setWorkingSet(Set<Job> jobs) {
 		this.lruCache.setWorkingSet(jobs);
 	}
 }
@@ -131,7 +132,10 @@ class BitmapLRUCache extends WorkingSetCache<Job, TileBitmap> {
 	@Override
 	protected boolean removeEldestEntry(Map.Entry<Job, TileBitmap> eldest) {
 		if (size() > this.capacity) {
-			eldest.getValue().decrementRefCount();
+			TileBitmap bitmap = eldest.getValue();
+			if (bitmap != null) {
+				bitmap.decrementRefCount();
+			}
 			return true;
 		}
 		return false;

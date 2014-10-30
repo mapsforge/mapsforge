@@ -17,20 +17,35 @@ package org.mapsforge.applications.android.samples;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
- * Example of the capabilities of RenderTheme version 4
+ * Standard map view with use of Rendertheme V4, loading the render theme from the Android
+ * assets folder and showing a configuration menu based on the stylemenu.
  */
-public class RenderTheme4 extends AssetsRenderThemeMapViewer {
+public class RenderTheme4 extends SamplesBaseActivity implements XmlRenderThemeMenuCallback {
+
 
 	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		this.mapViews.get(0).getModel().displayModel.setTileSizeMultiple(64);
+	protected XmlRenderTheme getRenderTheme() {
+		try {
+			return new AssetsRenderTheme(this, getRenderThemePrefix(), getRenderThemeFile(), this);
+		} catch (IOException e) {
+			Log.e(SamplesApplication.TAG, "Render theme failure " + e.toString());
+		}
+		return null;
+	}
+
+	protected String getRenderThemePrefix() {
+		return "";
 	}
 
 	@Override
@@ -41,7 +56,7 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 
 		XmlRenderThemeStyleLayer baseLayer = this.renderThemeStyleMenu.getLayer(id);
 		if (baseLayer == null) {
-			Log.w("Rendertheme ", "Invalid style " + id);
+			Log.w(SamplesApplication.TAG, "Invalid style " + id);
 			return null;
 		}
 		Set<String> result = baseLayer.getCategories();
@@ -56,7 +71,6 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 		return result;
 	}
 
-	@Override
 	protected String getRenderThemeFile() {
 		return "renderthemes/rendertheme-v4.xml";
 	}
@@ -68,10 +82,7 @@ public class RenderTheme4 extends AssetsRenderThemeMapViewer {
 		// difficult to know which render theme options have changed since we
 		// do not know all the keys, so we just redraw the map whenever there
 		// is a change in the settings.
-		destroyLayers();
-		destroyTileCaches();
-		createTileCaches();
-		createLayers();
+		AndroidUtil.restartActivity(this);
 	}
 
 }

@@ -23,6 +23,21 @@
     <string name="preferences_textwidth">Maximum Textwidth</string>
     <string name="preferences_textwidth_desc">Debugging aid for setting maximum textwidth</string>
 
+    <string name="preferences_category_wayfiltering">Way filtering</string>
+    <string name="preferences_wayfiltering">Way filtering</string>
+    <string name="preferences_wayfiltering_desc">Way filtering reduces the number of ways returned at the risk of clipping artifacts.</string>
+    <string name="preferences_wayfiltering_distance">Way filter size</string>
+    <string name="preferences_wayfiltering_distance_desc">The higher the number the less artifacts, but slower.</string>
+
+    <string name="preferences_category_tilecache">Tilecache</string>
+    <string name="preferences_tilecache_threading">Threading</string>
+    <string name="preferences_tilecache_threading_desc">Threading makes the app more responsive, with some risk.</string>
+    <string name="preferences_tilecache_queuelimit">Queue limit</string>
+    <string name="preferences_tilecache_queuelimit_desc">The higher the limit, the more memory is needed. Risk of OOM.</string>
+
+    <string name="preferences_debug_timing">Debug timing</string>
+    <string name="preferences_debug_timing_desc">Measure rendering time</string>
+
     <string name="preferences_r4_emergency">Emergency</string>
     <string name="preferences_r4_emergency_desc">Show hospitals, doctors, police etc</string>
     <string name="preferences_r4_accommodation">Accommodation</string>

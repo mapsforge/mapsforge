@@ -26,6 +26,7 @@ import org.mapsforge.map.writer.model.OSMTag;
 import org.mapsforge.map.writer.model.SpecialTagExtractionResult;
 import org.openstreetmap.osmosis.core.domain.v0_6.Entity;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
+import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
 /**
  * OpenStreetMap related utility methods.
@@ -150,6 +151,43 @@ public final class OSMUtils {
 
 		return new SpecialTagExtractionResult(name, ref, housenumber, layer, elevation, relationType);
 	}
+
+
+	/**
+	 * Heuristic to determine from attributes if a way is likely to be an area.
+	 *
+	 * Determining what is an area is neigh impossible in OSM, this method inspects tag elements
+	 * to give a likely answer. See http://wiki.openstreetmap.org/wiki/The_Future_of_Areas and
+	 * http://wiki.openstreetmap.org/wiki/Way
+	 *
+	 * @param way
+	 *            the way (which is assumed to be closed and have enough nodes to be an area)
+	 * @return true if tags indicate this is an area, otherwise false.
+	 */
+	public static boolean isArea(Way way) {
+		boolean result = true;
+		if (way.getTags() != null) {
+			for (Tag tag : way.getTags()) {
+				String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+				String value = tag.getValue().toLowerCase(Locale.ENGLISH);
+				if ("area".equals(key)) {
+					// obvious result
+					if (("yes").equals(value) || ("y").equals(value) || ("true").equals(value)) {
+						return true;
+					}
+					if (("no").equals(value) || ("n").equals(value) || ("false").equals(value)) {
+						return false;
+					}
+				}
+				if ("highway".equals(key) || "railway".equals(key) || "barrier".equals(key)) {
+					// false unless something else overrides this.
+					result = false;
+				}
+			}
+		}
+		return result;
+	}
+
 
 	private OSMUtils() {
 	}

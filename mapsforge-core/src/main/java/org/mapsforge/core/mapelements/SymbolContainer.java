@@ -61,17 +61,6 @@ public class SymbolContainer extends MapElementContainer {
 		return true;
 	}
 
-
-	@Override
-	public void decrementRefCount() {
-
-	}
-
-	@Override
-	public void incrementRefCount() {
-
-	}
-
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();

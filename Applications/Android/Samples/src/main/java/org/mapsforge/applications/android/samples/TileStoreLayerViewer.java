@@ -1,5 +1,6 @@
 /*
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -35,7 +36,7 @@ import java.io.File;
 /**
  * Shows how to use a tile store layer.
  */
-public class TileStoreLayerViewer extends BasicMapViewerXml {
+public class TileStoreLayerViewer extends RenderTheme4 {
 	private TileStoreLayer tileStoreLayer;
 
 	@Override
@@ -65,28 +66,27 @@ public class TileStoreLayerViewer extends BasicMapViewerXml {
 	@Override
 	protected void createLayers() {
 		this.tileStoreLayer = new TileStoreLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), AndroidGraphicFactory.INSTANCE, false);
-		this.layerManagers.get(0).getLayers().add(this.tileStoreLayer);
+				this.mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE, false);
+		mapView.getLayerManager().getLayers().add(this.tileStoreLayer);
 	}
 
+	@Override
+	protected void createMapViews() {
+		super.createMapViews();
+		// we need to set a fixed size tile as the tiles in the store come at a fixed size
+		this.mapView.getModel().displayModel.setFixedTileSize(256);
+		mapView.getModel().mapViewPosition.setMapPosition(new MapPosition(new LatLong(52.517037, 13.38886), (byte) 12));
+	}
+
+	@Override
 	protected void createTileCaches() {
 		// to use a tile store you provide it as a cache (which is pre-filled and never purges any files.
 		// additionally you should use a memory tile store for faster refresh.
 		TileStore tileStore = new TileStore(new File(Environment.getExternalStorageDirectory(), "tilestore"), ".png", AndroidGraphicFactory.INSTANCE);
 		InMemoryTileCache memoryTileCache = new InMemoryTileCache(AndroidUtil.getMinimumCacheSize(this,
-				this.mapViews.get(0).getModel().displayModel.getTileSize(),
-				this.mapViews.get(0)
-						.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio()));
+				this.mapView.getModel().displayModel.getTileSize(),
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio()));
 		this.tileCaches.add(new TwoLevelTileCache(memoryTileCache, tileStore));
 	}
-
-	protected void createMapViewPositions() {
-		// here we do not have a map where the initial position comes from. We use our standard location in Berlin.
-		for (MapView mapView : mapViews) {
-			mapView.getModel().mapViewPosition.setMapPosition(new MapPosition(new LatLong(52.517037, 13.38886), (byte) 12));
-			this.mapViewPositions.add(mapView.getModel().mapViewPosition);
-		}
-	}
-
 
 }

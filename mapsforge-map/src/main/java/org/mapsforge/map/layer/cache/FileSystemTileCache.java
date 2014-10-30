@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,18 +36,54 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.util.PausableThread;
+
+/**
+ * Container class to tie a key/bitmap together.
+ */
+class StorageJob {
+	Job key;
+	TileBitmap bitmap;
+
+	StorageJob(Job key, TileBitmap bitmap) {
+		this.key = key;
+		this.bitmap = bitmap;
+	}
+
+	/**
+	 * Equality is just defined over the key, not over the bitmap content. This allows finding a StorageJob in the queue
+	 * without knowing the data.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof StorageJob)) {
+			return false;
+		}
+		StorageJob other = (StorageJob) obj;
+		return key.equals(other.key);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.key.hashCode();
+	}
+}
 
 /**
  * A thread-safe cache for image files with a fixed size and LRU policy.
  * <p>
- * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor.
+ * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor. The
+ * cache writes the data on a separate thread, i.e. when the call to put a job/tile into the cache returns the data is
+ * not actually written to disk.
  * <p>
  * When used for a {@link org.mapsforge.map.layer.renderer.TileRendererLayer}, persistent caching may result in clipped
  * labels when tiles from different instances are used. To work around this, either display labels in a separate
  * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described in
  * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean)}.
  */
-public class FileSystemTileCache implements TileCache {
+public class FileSystemTileCache extends PausableThread implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 
@@ -81,9 +119,31 @@ public class FileSystemTileCache implements TileCache {
 
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
+	private final AtomicInteger jobs;
 	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
 	private boolean persistent;
+
+	// if threaded is true, the bitmap writing is executed on a separate thread,
+	// and jobs are stored in the jobStack. The false option remains for testing.
+	private final boolean threaded;
+	private final LinkedBlockingQueue<StorageJob> storageJobs;
+
+	/**
+	 * Compatibility constructor that creates a non-threaded, non-persistent FSTC.
+	 * 
+	 * @param capacity
+	 *            the maximum number of entries in this cache.
+	 * @param cacheDirectory
+	 *            the directory where cached tiles will be stored.
+	 * @param graphicFactory
+	 *            the graphicFactory implementation to use.
+	 * @throws IllegalArgumentException
+	 *             if the capacity is negative.
+	 */
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
+		this(capacity, cacheDirectory, graphicFactory, false, 0, false);
+	}
 
 	/**
 	 * Creates a new FileSystemTileCache.
@@ -98,10 +158,24 @@ public class FileSystemTileCache implements TileCache {
 	 *            the maximum number of entries in this cache.
 	 * @param cacheDirectory
 	 *            the directory where cached tiles will be stored.
+	 * @param graphicFactory
+	 *            the graphicFactory implementation to use.
+	 * @param threaded
+	 *            if cache will use background thread to store data (more responsive).
+	 * @throws IllegalArgumentException
+	 *             if the capacity is negative.
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
 	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean persistent) {
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded,
+			int queueSize, boolean persistent) {
+		this.jobs = new AtomicInteger(0);
+		this.threaded = threaded;
+		if (threaded) {
+			this.storageJobs = new LinkedBlockingQueue<>(queueSize);
+		} else {
+			this.storageJobs = null;
+		}
 		this.lruCache = new FileWorkingSetCache<>(capacity);
 		if (isValidCacheDirectory(cacheDirectory)) {
 			this.cacheDirectory = cacheDirectory;
@@ -111,30 +185,18 @@ public class FileSystemTileCache implements TileCache {
 		this.graphicFactory = graphicFactory;
 		this.lock = new ReentrantReadWriteLock();
 		this.persistent = persistent;
-	}
-
-	/**
-	 * Creates a new, non-persistent FileSystemTileCache.
-	 * <p>
-	 * Calling this constructor is equivalent to calling
-	 * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean)} with the last argument set to {@code false}.
-	 * 
-	 * @param capacity
-	 *            the maximum number of entries in this cache.
-	 * @param cacheDirectory
-	 *            the directory where cached tiles will be stored.
-	 * @throws IllegalArgumentException
-	 *             if the capacity is negative.
-	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
-		this(capacity, cacheDirectory, graphicFactory, false);
+		if (this.threaded) {
+			this.start();
+		}
 	}
 
 	@Override
 	public boolean containsKey(Job key) {
 		try {
 			lock.readLock().lock();
-			if (this.lruCache.containsKey(key.getKey()))
+			// if we are using a threaded cache we return true if the tile is still in the
+			// queue to reduce double rendering
+			if (this.lruCache.containsKey(key.getKey()) || (threaded && storageJobs.contains(key)))
 				return true;
 		} finally {
 			lock.readLock().unlock();
@@ -150,10 +212,10 @@ public class FileSystemTileCache implements TileCache {
 	 * If the cache is not persistent, calling this method is equivalent to calling {@link #purge()}. If the cache is
 	 * persistent, it does nothing.
 	 * <p>
-	 * In versions prior to 0.5.0, it was common practice to call this method but continue using the cache, in order to
-	 * empty it, forcing all tiles to be re-rendered or re-requested from the source. Beginning with 0.5.0,
-	 * {@link #purge()} should be used for this purpose. The earlier practice is now discouraged and may lead to
-	 * unexpected results when used with features introduced in 0.5.0 or later.
+	 * Beginning with 0.6.0, accessing the cache after calling {@code destroy()} is discouraged. In order to empty the
+	 * cache and force all tiles to be re-rendered or re-requested from the source, use {@link #purge()} instead.
+	 * Earlier versions lacked the {@link #purge()} method and used {@code destroy()} instead, but this practice is now
+	 * discouraged and may lead to unexpected results when used with features introduced in 0.6.0 or later.
 	 */
 	@Override
 	public void destroy() {
@@ -246,11 +308,23 @@ public class FileSystemTileCache implements TileCache {
 		try {
 			this.lock.writeLock().lock();
 			this.lruCache.clear();
+			if (this.threaded) {
+				this.interrupt();
+			}
 		} finally {
 			this.lock.writeLock().unlock();
 		}
 
 		deleteDirectory(this.cacheDirectory);
+	}
+
+	/**
+	 * Gets the number of remaining tiles still in the queue to be written to disk.
+	 * 
+	 * @return number of jobs in queue, 0 if not threaded.
+	 */
+	public int getQueueLength() {
+		return jobs.get();
 	}
 
 	@Override
@@ -265,37 +339,12 @@ public class FileSystemTileCache implements TileCache {
 			return;
 		}
 
-		OutputStream outputStream = null;
-		try {
-			File file = getOutputFile(key);
-			if (file == null) {
-				// if the file cannot be written, silently return
-				return;
-			}
-			outputStream = new FileOutputStream(file);
-			bitmap.compress(outputStream);
-			try {
-				lock.writeLock().lock();
-				if (this.lruCache.put(key.getKey(), file) != null) {
-					LOGGER.warning("overwriting cached entry: " + key.getKey());
-				}
-			} finally {
-				lock.writeLock().unlock();
-			}
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "Disabling filesystem cache", e);
-			// most likely cause is that the disk is full, just disable the
-			// cache otherwise
-			// more and more exceptions will be thrown.
-			this.destroy();
-			try {
-				lock.writeLock().lock();
-				this.lruCache = new FileWorkingSetCache<String>(0);
-			} finally {
-				lock.writeLock().unlock();
-			}
-		} finally {
-			IOUtils.closeQuietly(outputStream);
+		jobs.incrementAndGet();
+		if (this.threaded) {
+			bitmap.incrementRefCount();
+			storageJobs.offer(new StorageJob(key, bitmap));
+		} else {
+			storeData(key, bitmap);
 		}
 	}
 
@@ -325,4 +374,76 @@ public class FileSystemTileCache implements TileCache {
 		}
 
 	}
+
+	protected void doWork() throws InterruptedException {
+		StorageJob x = storageJobs.take();
+		storeData(x.key, x.bitmap);
+	}
+
+	/**
+	 * @return the priority which will be set for this thread.
+	 */
+	protected ThreadPriority getThreadPriority() {
+		return ThreadPriority.BELOW_NORMAL;
+	}
+
+	/**
+	 * @return true if this thread has some work to do, false otherwise.
+	 */
+	protected boolean hasWork() {
+		return true;
+	}
+
+	/**
+	 * stores the bitmap data on disk with filename key
+	 * 
+	 * @param key
+	 *            filename
+	 * @param bitmap
+	 *            tile image
+	 */
+	private void storeData(Job key, TileBitmap bitmap) {
+		OutputStream outputStream = null;
+		try {
+			File file = getOutputFile(key);
+			if (file == null) {
+				// if the file cannot be written, silently return
+				return;
+			}
+			outputStream = new FileOutputStream(file);
+			bitmap.compress(outputStream);
+			try {
+				lock.writeLock().lock();
+				if (this.lruCache.put(key.getKey(), file) != null) {
+					LOGGER.warning("overwriting cached entry: " + key.getKey());
+				}
+			} finally {
+				lock.writeLock().unlock();
+			}
+		} catch (Exception e) {
+			// we are catching now any exception and then disable the file cache
+			// this should ensure that no exception in the storage thread will
+			// ever crash the main app. If there is a runtime exception, the thread
+			// will exit (via destroy).
+			LOGGER.log(Level.SEVERE, "Disabling filesystem cache", e);
+			// most likely cause is that the disk is full, just disable the
+			// cache otherwise
+			// more and more exceptions will be thrown.
+			this.destroy();
+			try {
+				lock.writeLock().lock();
+				this.lruCache = new FileWorkingSetCache<String>(0);
+			} finally {
+				lock.writeLock().unlock();
+			}
+		} finally {
+			IOUtils.closeQuietly(outputStream);
+			if (threaded) {
+				bitmap.decrementRefCount();
+			}
+			jobs.decrementAndGet();
+		}
+
+	}
+
 }

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?> 
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'> 
+<svg width='256' height='256' viewport-fill="#33D40B" viewport-fill-opacity="0.3" xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'> 
+
+  <defs>
+    <g id="cross">
+      <rect width="24" height="96" x="20" y="2" id="rect3092" style="fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <rect width="60" height="24" x="2" y="26" id="rect3094" style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+  </defs>
+
+  <g transform="translate(0,0)"><use xlink:href="#cross"/></g>
+  <g transform="translate(140,70)"><use xlink:href="#cross"/></g>
+  <g transform="translate(30,140)"><use xlink:href="#cross"/></g>
+</svg>

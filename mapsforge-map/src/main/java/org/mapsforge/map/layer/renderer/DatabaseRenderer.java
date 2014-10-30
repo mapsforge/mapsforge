@@ -92,7 +92,6 @@ public class DatabaseRenderer implements RenderCallback {
 
 	private final CanvasRasterer canvasRasterer;
 	private List<MapElementContainer> currentLabels;
-	private Set<MapElementContainer> currentWayLabels;
 	private List<List<ShapePaintContainer>> drawingLayers;
 	private final GraphicFactory graphicFactory;
 	private final TileBasedLabelStore labelStore;
@@ -164,7 +163,6 @@ public class DatabaseRenderer implements RenderCallback {
 		final byte zoomLevel = rendererJob.tile.zoomLevel;
 
 		this.currentLabels = new LinkedList<MapElementContainer>();
-		this.currentWayLabels = new HashSet<MapElementContainer>();
 
 		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
 		if (!jobTheme.equals(this.previousJobTheme)) {
@@ -190,8 +188,9 @@ public class DatabaseRenderer implements RenderCallback {
 			bitmap = this.graphicFactory.createTileBitmap(tileSize, rendererJob.hasAlpha);
 			bitmap.setTimestamp(rendererJob.mapFile.lastModified());
 			this.canvasRasterer.setCanvasBitmap(bitmap);
-			if (rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
-				this.canvasRasterer.fill(rendererJob.hasAlpha ? 0 : this.renderTheme.getMapBackground());
+			if (!rendererJob.hasAlpha
+					&& rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
+				this.canvasRasterer.fill(this.renderTheme.getMapBackground());
 			}
 			this.canvasRasterer.drawWays(ways, rendererJob.tile);
 		}
@@ -264,7 +263,6 @@ public class DatabaseRenderer implements RenderCallback {
 				}
 			}
 			// now draw the ways and the labels
-			this.canvasRasterer.drawMapElements(currentWayLabels, rendererJob.tile);
 			this.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
 		} else {
 			// store elements for this tile in the label cache
@@ -347,7 +345,7 @@ public class DatabaseRenderer implements RenderCallback {
 	@Override
 	public void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset,
 			float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
-		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
+		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.mapSize);
 
 		this.currentLabels.add(this.graphicFactory.createPointTextContainer(
 				poiPosition.offset(horizontalOffset, verticalOffset), priority, caption, fill, stroke, null, position,
@@ -365,7 +363,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 	@Override
 	public void renderPointOfInterestSymbol(PointOfInterest poi, int priority, Bitmap symbol, Tile tile) {
-		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.zoomLevel, tile.tileSize);
+		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.mapSize);
 		this.currentLabels.add(new SymbolContainer(poiPosition, priority, symbol));
 	}
 
@@ -383,8 +381,8 @@ public class DatabaseRenderer implements RenderCallback {
 
 	@Override
 	public void renderWayText(PolylineContainer way, int priority, String textKey, float dy, Paint fill, Paint stroke) {
-		WayDecorator.renderText(textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(),
-				this.currentWayLabels);
+		WayDecorator.renderText(way.getTile(), textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(),
+				this.currentLabels);
 	}
 
 	private List<List<List<ShapePaintContainer>>> createWayLists() {

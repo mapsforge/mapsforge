@@ -40,6 +40,11 @@ public class Tile implements Serializable {
 		return (2 << zoomLevel - 1) - 1;
 	}
 
+	/**
+	 * the map size implied by zoom level and tileSize, to avoid multiple computations.
+	 */
+	public final long mapSize;
+
 	public final int tileSize;
 
 	/**
@@ -57,7 +62,7 @@ public class Tile implements Serializable {
 	 */
 	public final byte zoomLevel;
 
-
+	private BoundingBox boundingBox;
 	private Point origin;
 
 	/**
@@ -90,6 +95,9 @@ public class Tile implements Serializable {
 		this.tileX = tileX;
 		this.tileY = tileY;
 		this.zoomLevel = zoomLevel;
+		this.mapSize = MercatorProjection.getMapSize(zoomLevel, tileSize);
+
+
 	}
 
 
@@ -111,6 +119,25 @@ public class Tile implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Gets the geographic extend of this Tile as a BoundingBox.
+	 * @return boundaries of this tile.
+	 */
+	public BoundingBox getBoundingBox() {
+		if (this.boundingBox == null) {
+			double minLatitude = Math.max(MercatorProjection.LATITUDE_MIN, MercatorProjection.tileYToLatitude(tileY + 1, zoomLevel));
+			double minLongitude = Math.max(-180, MercatorProjection.tileXToLongitude(this.tileX, zoomLevel));
+			double maxLatitude = Math.min(MercatorProjection.LATITUDE_MAX, MercatorProjection.tileYToLatitude(this.tileY, zoomLevel));
+			double maxLongitude = Math.min(180, MercatorProjection.tileXToLongitude(tileX + 1, zoomLevel));
+			if (maxLongitude == -180) {
+				// fix for dateline crossing, where the right tile starts at -180 and causes an invalid bbox
+				maxLongitude = 180;
+			}
+			this.boundingBox = new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
+		}
+		return this.boundingBox;
 	}
 
 	/**
@@ -137,6 +164,15 @@ public class Tile implements Serializable {
 	public Rectangle getBoundaryAbsolute() {
 		return new Rectangle(getOrigin().x, getOrigin().y, getOrigin().x + tileSize, getOrigin().y + tileSize);
 	}
+
+	/**
+	 * Extend of this tile in relative (tile) coordinates.
+	 * @return rectangle with the relative coordinates.
+	 */
+	public Rectangle getBoundaryRelative() {
+		return new Rectangle(0, 0, tileSize, tileSize);
+	}
+
 
 	/**
 	 * Returns the top-left point of this tile in absolute coordinates.

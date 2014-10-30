@@ -28,17 +28,17 @@ public class DualMapViewerWithClampedTileSizes extends DualMapViewerWithDifferen
 	@Override
 	protected void createMapViews() {
 		super.createMapViews();
-		mapViews.get(0).getModel().displayModel.setTileSizeMultiple(200);
-		mapViews.get(1).getModel().displayModel.setTileSizeMultiple(100);
+		mapView.getModel().displayModel.setTileSizeMultiple(200);
+		mapView2.getModel().displayModel.setTileSizeMultiple(100);
 
-		Log.d("TILESIZE 1", Integer.toString(mapViews.get(0).getModel().displayModel.getTileSize()));
-		Log.d("TILESIZE 2", Integer.toString(mapViews.get(1).getModel().displayModel.getTileSize()));
+		Log.d("TILESIZE 1", Integer.toString(mapView.getModel().displayModel.getTileSize()));
+		Log.d("TILESIZE 2", Integer.toString(mapView2.getModel().displayModel.getTileSize()));
 	}
 
 	@Override
 	protected void createLayers() {
 		super.createLayers();
-		mapViews.get(0).getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapViews.get(0).getModel().displayModel));
-		mapViews.get(1).getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapViews.get(1).getModel().displayModel));
+		mapView.getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+		mapView2.getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView2.getModel().displayModel));
 	}
 }

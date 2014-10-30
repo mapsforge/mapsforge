@@ -25,7 +25,7 @@ import android.widget.TextView;
 /**
  * Basic map viewer that shows bubbles with content at a few locations.
  */
-public class BubbleOverlay extends BasicMapViewerXml {
+public class BubbleOverlay extends RenderTheme4 {
 
 	private Bitmap bubble;
 
@@ -34,10 +34,7 @@ public class BubbleOverlay extends BasicMapViewerXml {
 		super.createLayers();
 		for (DummyContent.DummyItem item : DummyContent.ITEMS) {
 			TextView bubbleView = new TextView(this);
-			Utils.setBackground(
-					bubbleView,
-					getResources().getDrawable(
-							R.drawable.balloon_overlay_unfocused));
+			Utils.setBackground(bubbleView, getResources().getDrawable(R.drawable.balloon_overlay_unfocused));
 			bubbleView.setGravity(Gravity.CENTER);
 			bubbleView.setMaxEms(20);
 			bubbleView.setTextSize(15);
@@ -45,19 +42,14 @@ public class BubbleOverlay extends BasicMapViewerXml {
 			bubbleView.setText(item.text);
 			bubble = Utils.viewToBitmap(this, bubbleView);
 			bubble.incrementRefCount();
-			this.layerManagers
-					.get(0)
-					.getLayers()
-					.add(new Marker(item.location, bubble, 0, -bubble
-							.getHeight() / 2));
+			this.mapView.getLayerManager().getLayers().add(new Marker(item.location, bubble, 0, -bubble.getHeight() / 2));
 		}
 	}
 
 	@Override
-	protected void createMapViewPositions() {
-		super.createMapViewPositions();
-		this.mapViews.get(0).getModel().mapViewPosition
-				.setCenter(DummyContent.ITEMS.get(1).location);
+	protected void createMapViews() {
+		super.createMapViews();
+		this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
 	}
 
 	@Override
@@ -68,7 +60,6 @@ public class BubbleOverlay extends BasicMapViewerXml {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		this.mapViewPositions.get(0).setCenter(
-				DummyContent.ITEMS.get(1).location);
+		this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
 	}
 }

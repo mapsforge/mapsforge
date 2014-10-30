@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,13 +18,13 @@ package org.mapsforge.map.rendertheme.rule;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
 
-
+import org.kxml2.io.KXmlParser;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.model.DisplayModel;
@@ -38,9 +39,8 @@ import org.mapsforge.map.rendertheme.renderinstruction.LineSymbol;
 import org.mapsforge.map.rendertheme.renderinstruction.PathText;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.mapsforge.map.rendertheme.renderinstruction.Symbol;
-
-import org.kxml2.io.*;
-import org.xmlpull.v1.*;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * KXML handler to parse XML render theme files.
@@ -63,7 +63,7 @@ public final class RenderThemeHandler {
 		InputStream inputStream = null;
 		try {
 			inputStream = xmlRenderTheme.getRenderThemeAsStream();
-			pullParser.setInput(new InputStreamReader(inputStream));
+			pullParser.setInput(inputStream, null);
 			renderThemeHandler.processRenderTheme();
 			renderThemeHandler.renderTheme.incrementRefCount();
 			return renderThemeHandler.renderTheme;
@@ -86,7 +86,7 @@ public final class RenderThemeHandler {
 	private final String relativePathPrefix;
 	private RenderTheme renderTheme;
 	private final Stack<Rule> ruleStack = new Stack<Rule>();
-	private HashMap<String, Symbol> symbols = new HashMap<String, Symbol>();
+	private Map<String, Symbol> symbols = new HashMap<String, Symbol>();
 	private final XmlRenderTheme xmlRenderTheme;
 	private XmlRenderThemeStyleMenu renderThemeStyleMenu;
 	private XmlRenderThemeStyleLayer currentLayer;
@@ -169,10 +169,8 @@ public final class RenderThemeHandler {
 			else if (ELEMENT_NAME_RULE.equals(qName)) {
 				checkState(qName, Element.RULE);
 				Rule rule = new RuleBuilder(qName, pullParser, this.ruleStack).build();
-				if (!this.ruleStack.empty()) {
-					if (isVisible(rule)) {
-						this.currentRule.addSubRule(rule);
-					}
+				if (!this.ruleStack.empty() && isVisible(rule)) {
+					this.currentRule.addSubRule(rule);
 				}
 				this.currentRule = rule;
 				this.ruleStack.push(this.currentRule);

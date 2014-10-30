@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,8 +34,7 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.Map;
 
 /**
  * Represents a text label on the map.
@@ -62,7 +62,7 @@ public class Caption extends RenderInstruction {
 
 
 	public Caption(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-	        XmlPullParser pullParser, HashMap<String, Symbol> symbols) throws XmlPullParserException {
+	        XmlPullParser pullParser, Map<String, Symbol> symbols) throws XmlPullParserException {
 		super(graphicFactory, displayModel);
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
@@ -98,10 +98,14 @@ public class Caption extends RenderInstruction {
 				this.stroke.setTextAlign(Align.CENTER);
 				this.fill.setTextAlign(Align.CENTER);
 				break;
+			case BELOW_LEFT:
+			case ABOVE_LEFT:
 			case LEFT:
 				this.stroke.setTextAlign(Align.RIGHT);
 				this.fill.setTextAlign(Align.RIGHT);
 				break;
+			case BELOW_RIGHT:
+			case ABOVE_RIGHT:
 			case RIGHT:
 				this.stroke.setTextAlign(Align.LEFT);
 				this.fill.setTextAlign(Align.LEFT);
@@ -172,9 +176,13 @@ public class Caption extends RenderInstruction {
 	private float computeHorizontalOffset() {
 		// compute only the offset required by the bitmap, not the text size,
 		// because at this point we do not know the text boxing
-		if (Position.RIGHT == this.position || Position.LEFT == this.position) {
+		if (Position.RIGHT == this.position || Position.LEFT == this.position
+				|| Position.BELOW_RIGHT == this.position || Position.BELOW_LEFT == this.position
+				|| Position.ABOVE_RIGHT == this.position || Position.ABOVE_LEFT == this.position) {
 			float horizontalOffset = this.bitmap.getWidth() / 2f + this.gap;
-			if (Position.LEFT == this.position) {
+			if (Position.LEFT == this.position
+					|| Position.BELOW_LEFT == this.position
+					|| Position.ABOVE_LEFT == this.position) {
 				horizontalOffset *= -1f;
 			}
 			return horizontalOffset;
@@ -185,9 +193,13 @@ public class Caption extends RenderInstruction {
 	private float computeVerticalOffset() {
 		float verticalOffset = this.dy;
 
-		if (Position.ABOVE == this.position) {
+		if (Position.ABOVE == this.position
+				|| Position.ABOVE_LEFT == this.position
+				|| Position.ABOVE_RIGHT == this.position) {
 			verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
-		} else if (Position.BELOW == this.position) {
+		} else if (Position.BELOW == this.position
+				|| Position.BELOW_LEFT == this.position
+				|| Position.BELOW_RIGHT == this.position) {
 			verticalOffset += this.bitmap.getHeight() / 2f + this.gap;
 		}
 		return verticalOffset;
@@ -204,15 +216,15 @@ public class Caption extends RenderInstruction {
 			if (K.equals(name)) {
 				this.textKey = TextKey.getInstance(value);
 			} else if (POSITION.equals(name)) {
-				this.position = Position.valueOf(value.toUpperCase(Locale.ENGLISH));
+				this.position = Position.fromString(value);
 			} else if (CAT.equals(name)) {
 				this.category = value;
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {
-				fontFamily = FontFamily.valueOf(value.toUpperCase(Locale.ENGLISH));
+				fontFamily = FontFamily.fromString(value);
 			} else if (FONT_STYLE.equals(name)) {
-				fontStyle = FontStyle.valueOf(value.toUpperCase(Locale.ENGLISH));
+				fontStyle = FontStyle.fromString(value);
 			} else if (FONT_SIZE.equals(name)) {
 				this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
 			} else if (FILL.equals(name)) {

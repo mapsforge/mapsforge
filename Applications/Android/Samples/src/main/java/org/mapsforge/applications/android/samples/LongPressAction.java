@@ -27,11 +27,13 @@ import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
- * Demonstrates how to enable a LongPress on a layer, long press creates/removes
- * circles, tap on a circle toggles the colour.
+ * Demonstrates how to enable a LongPress on a layer.
+ *
+ * In this example a long press creates/removes
+ * circles, a tap on a circle toggles the colour between red and green.
  * 
  */
-public class LongPressAction extends BasicMapViewerXml {
+public class LongPressAction extends RenderTheme4 {
 
 	private static final Paint GREEN = Utils.createPaint(
 			AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0,
@@ -49,7 +51,7 @@ public class LongPressAction extends BasicMapViewerXml {
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(
 				this.tileCaches.get(0),
-				this.mapViewPositions.get(0),
+				this.mapView.getModel().mapViewPosition,
 				false, true,
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
 			@Override
@@ -61,12 +63,12 @@ public class LongPressAction extends BasicMapViewerXml {
 		};
 		tileRendererLayer.setMapFile(this.getMapFile());
 		tileRendererLayer.setXmlRenderTheme(this.getRenderTheme());
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		mapView.getLayerManager().getLayers().add(tileRendererLayer);
 		BLACK.setTextSize(22);
 	}
 
 	protected void onLongPress(final LatLong position) {
-		float circleSize = 20 * this.mapViews.get(0).getModel().displayModel
+		float circleSize = 20 * this.mapView.getModel().displayModel
 				.getScaleFactor();
 
 		i += 1;
@@ -81,8 +83,10 @@ public class LongPressAction extends BasicMapViewerXml {
 					canvas, Point topLeftPoint) {
 				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
 
-				int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, zoomLevel, this.displayModel.getTileSize()) - topLeftPoint.x);
-				int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, zoomLevel, this.displayModel.getTileSize()) - topLeftPoint.y);
+				long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
+
+				int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, mapSize) - topLeftPoint.x);
+				int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, mapSize) - topLeftPoint.y);
 				String text = Integer.toString(count);
 				canvas.drawText(text, pixelX - BLACK.getTextWidth(text) / 2, pixelY + BLACK.getTextHeight(text) / 2, BLACK);
 			}
@@ -91,9 +95,9 @@ public class LongPressAction extends BasicMapViewerXml {
 			public boolean onLongPress(LatLong geoPoint, Point viewPosition,
 					Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
-					LongPressAction.this.mapViews.get(0).getLayerManager()
+					LongPressAction.this.mapView.getLayerManager()
 							.getLayers().remove(this);
-					LongPressAction.this.mapViews.get(0).getLayerManager()
+					LongPressAction.this.mapView.getLayerManager()
 							.redrawLayers();
 					return true;
 				}
@@ -119,7 +123,7 @@ public class LongPressAction extends BasicMapViewerXml {
 				}
 			}
 		};
-		this.mapViews.get(0).getLayerManager().getLayers().add(tappableCircle);
+		this.mapView.getLayerManager().getLayers().add(tappableCircle);
 		tappableCircle.requestRedraw();
 
 	}

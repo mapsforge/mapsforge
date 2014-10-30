@@ -83,8 +83,18 @@ public class AwtPointTextContainer extends PointTextContainer {
 				} else if (Position.BELOW == this.position) {
 					posX += -layout.getAdvance() * 0.5f;
 					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading()) * 0.5f;
+				} else if (Position.BELOW_LEFT == this.position) {
+					posX += -layout.getAdvance();
+					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading()) * 0.5f;
+				} else if (Position.BELOW_RIGHT == this.position) {
+					posY += (layout.getAscent() + layout.getDescent() + layout.getLeading()) * 0.5f;
 				} else if (Position.ABOVE == this.position) {
 					posX += -layout.getAdvance() * 0.5f;
+					posY += layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight;
+				} else if (Position.ABOVE_LEFT == this.position) {
+					posX += -layout.getAdvance();
+					posY += layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight;
+				} else if (Position.ABOVE_RIGHT == this.position) {
 					posY += layout.getAscent() + layout.getDescent() + layout.getLeading() - layoutHeight;
 				} else if (Position.LEFT == this.position) {
 					posX += -layout.getAdvance();
@@ -131,8 +141,16 @@ public class AwtPointTextContainer extends PointTextContainer {
 				return new Rectangle(-boxWidth / 2f, -boxHeight / 2f, boxWidth / 2f, boxHeight / 2f);
 			case BELOW:
 				return new Rectangle(-boxWidth / 2f, 0, boxWidth / 2f, boxHeight);
+			case BELOW_LEFT:
+				return new Rectangle(-boxWidth, 0, 0, boxHeight);
+			case BELOW_RIGHT:
+				return new Rectangle(0, 0, boxWidth, boxHeight);
 			case ABOVE:
 				return new Rectangle(-boxWidth / 2f, -boxHeight, boxWidth / 2f, 0);
+			case ABOVE_LEFT:
+				return new Rectangle(-boxWidth, -boxHeight, 0, 0);
+			case ABOVE_RIGHT:
+				return new Rectangle(0, -boxHeight, boxWidth, 0);
 			case LEFT:
 				return new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
 			case RIGHT:

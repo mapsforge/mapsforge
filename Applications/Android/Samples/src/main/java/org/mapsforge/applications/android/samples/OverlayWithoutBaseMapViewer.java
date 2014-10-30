@@ -15,18 +15,19 @@
 package org.mapsforge.applications.android.samples;
 
 /**
- * Basic map viewer with a few overlays added.
+ * A map view that shows only the overlays, not base  map.
  */
 public class OverlayWithoutBaseMapViewer extends OverlayMapViewer {
 	@Override
 	protected void createLayers() {
 		// not calling super here, so that base layers are not created
 		// just add few overlays to an empty map
-		addOverlayLayers(this.layerManagers.get(0).getLayers());
+		addOverlayLayers(mapView.getLayerManager().getLayers());
 	}
 
 	@Override
 	protected void createTileCaches() {
+		// we do not have tiles, so need no tile cache
 	}
 
 	@Override

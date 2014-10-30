@@ -8,7 +8,7 @@ import org.mapsforge.applications.android.samples.ItemListActivity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
 
-import com.jayway.android.robotium.solo.Solo;
+import com.robotium.solo.Solo;
 
 public class ItemListActivityTest extends ActivityInstrumentationTestCase2<ItemListActivity> {
 

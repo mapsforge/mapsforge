@@ -23,16 +23,25 @@ import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Point;
 
 import android.graphics.BitmapShader;
 import android.graphics.DashPathEffect;
+import android.graphics.Matrix;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 import android.os.Build;
 
+
 class AndroidPaint implements Paint {
+
+	// needed to record size of bitmap shader to compute the shift
+	private int shaderWidth;
+	private int shaderHeight;
+
 	private static android.graphics.Paint.Align getAndroidAlign(Align align) {
 		switch (align) {
 			case CENTER:
@@ -147,6 +156,8 @@ class AndroidPaint implements Paint {
 		if (bitmap == null) {
 			return;
 		}
+		this.shaderWidth = bitmap.getWidth();
+		this.shaderHeight = bitmap.getHeight();
 		if (!AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			// there is an problem when bitmaps are recycled too early on honeycomb and up,
 			// where shaders are corrupted. This problem does of course not arise if
@@ -157,6 +168,26 @@ class AndroidPaint implements Paint {
 		this.paint.setColor(AndroidGraphicFactory.getColor(Color.WHITE));
 		this.paint
 				.setShader(new BitmapShader(AndroidGraphicFactory.getBitmap(bitmap), TileMode.REPEAT, TileMode.REPEAT));
+
+	}
+
+	/**
+	 * Shifts the bitmap pattern so that it will always start at a multiple of
+	 * itself for any tile the pattern is used. This ensures that regardless of
+	 * size of the pattern it tiles correctly.
+	 * @param origin the reference point
+	 */
+	@Override
+	public void setBitmapShaderShift(Point origin) {
+		Shader shader = this.paint.getShader();
+		if (shader != null) {
+			int relativeDx = ((int) -origin.x) % this.shaderWidth;
+			int relativeDy = ((int) -origin.y) % this.shaderHeight;
+
+			Matrix localMatrix = new Matrix();
+			localMatrix.setTranslate(relativeDx, relativeDy);
+			shader.setLocalMatrix(localMatrix);
+		}
 	}
 
 	@Override

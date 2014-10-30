@@ -76,11 +76,11 @@ public class PolylineContainer implements ShapeContainer {
 		// deferred evaluation as some PolyLineContainers will never be drawn. However,
 		// to save memory, after computing the absolute coordinates, the way is released.
 		if (coordinatesAbsolute == null) {
-			coordinatesAbsolute = new Point[(way.latLongs.length)][];
+			coordinatesAbsolute = new Point[way.latLongs.length][];
 			for (int i = 0; i < way.latLongs.length; ++i) {
 				coordinatesAbsolute[i] = new Point[way.latLongs[i].length];
 				for (int j = 0; j < way.latLongs[i].length; ++j) {
-					coordinatesAbsolute[i][j] = MercatorProjection.getPixelAbsolute(way.latLongs[i][j], tile.zoomLevel, tile.tileSize);
+					coordinatesAbsolute[i][j] = MercatorProjection.getPixelAbsolute(way.latLongs[i][j], tile.mapSize);
 				}
 			}
 			this.way = null;

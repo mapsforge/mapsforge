@@ -38,7 +38,7 @@ public class TileCoordinatesLayer extends Layer {
 		Paint paint = graphicFactory.createPaint();
 		paint.setColor(Color.BLACK);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-		paint.setTextSize(20 * displayModel.getScaleFactor());
+		paint.setTextSize(16 * displayModel.getScaleFactor());
 		return paint;
 	}
 
@@ -46,7 +46,7 @@ public class TileCoordinatesLayer extends Layer {
 		Paint paint = graphicFactory.createPaint();
 		paint.setColor(Color.WHITE);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-		paint.setTextSize(20 * displayModel.getScaleFactor());
+		paint.setTextSize(16 * displayModel.getScaleFactor());
 		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
 		paint.setStyle(Style.STROKE);
 		return paint;
@@ -73,8 +73,8 @@ public class TileCoordinatesLayer extends Layer {
 	}
 
 	private void drawTileCoordinates(TilePosition tilePosition, Canvas canvas) {
-		int x = (int) (tilePosition.point.x + 15 * displayModel.getScaleFactor());
-		int y = (int) (tilePosition.point.y + 30 * displayModel.getScaleFactor());
+		int x = (int) (tilePosition.point.x + 8 * displayModel.getScaleFactor());
+		int y = (int) (tilePosition.point.y + 24 * displayModel.getScaleFactor());
 		Tile tile = tilePosition.tile;
 
 		StringBuilder stringBuilder = new StringBuilder();
@@ -88,14 +88,14 @@ public class TileCoordinatesLayer extends Layer {
 		stringBuilder.append("Y: ");
 		stringBuilder.append(tile.tileY);
 		text = stringBuilder.toString();
-		canvas.drawText(text, x, (int) (y + 30 * displayModel.getScaleFactor()), this.paintStroke);
-		canvas.drawText(text, x, (int) (y + 30 * displayModel.getScaleFactor()), this.paint);
+		canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paintStroke);
+		canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paint);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Z: ");
 		stringBuilder.append(tile.zoomLevel);
 		text = stringBuilder.toString();
-		canvas.drawText(text, x, (int) (y + 60 * displayModel.getScaleFactor()), this.paintStroke);
-		canvas.drawText(text, x, (int) (y + 60 * displayModel.getScaleFactor()), this.paint);
+		canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintStroke);
+		canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paint);
 	}
 }

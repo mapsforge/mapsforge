@@ -15,6 +15,7 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.util.PausableThread;
 
@@ -22,7 +23,7 @@ import org.mapsforge.map.util.PausableThread;
  * Demonstration of changing between fixed and computed tile sizes.
  */
 
-public class TileSizeChanger extends BasicMapViewer {
+public class TileSizeChanger extends RenderTheme4 {
 
 	private class ChangerThread extends PausableThread {
 		private static final int ROTATION_TIME = 10000;
@@ -59,10 +60,10 @@ public class TileSizeChanger extends BasicMapViewer {
 
 	@Override
 	protected void createLayers() {
-		tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(),
+		tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
 				false, true);
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
+		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 	}
 
     @Override
@@ -84,13 +85,13 @@ public class TileSizeChanger extends BasicMapViewer {
 			destroyTileCaches();
 
 			int tileSize = tileSizes[iteration % tileSizes.length];
-			this.mapViews.get(0).getModel().displayModel.setFixedTileSize(tileSize);
+			this.mapView.getModel().displayModel.setFixedTileSize(tileSize);
 
 			createTileCaches();
 			createLayers();
 
-			this.mapViews.get(0).getMapScaleBar().redrawScaleBar();
-			layerManagers.get(0).redrawLayers();
+			this.mapView.getMapScaleBar().redrawScaleBar();
+			this.mapView.getLayerManager().redrawLayers();
 		}
 	}
 }

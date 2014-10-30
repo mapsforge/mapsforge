@@ -112,7 +112,6 @@
 		<osm-tag key="natural" value="cave_entrance" zoom-appear="14" />
 		<osm-tag key="natural" value="peak" zoom-appear="12" />
 		<osm-tag key="natural" value="spring" zoom-appear="17" />
-		<osm-tag key="natural" value="tree" zoom-appear="16" />
 		<osm-tag key="natural" value="volcano" zoom-appear="12" />
 	</pois>
 

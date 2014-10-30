@@ -31,7 +31,6 @@
 		<module>mapsforge-map-awt</module>
 		<module>mapsforge-map-reader</module>
 		<module>mapsforge-map-writer</module>
-		<module>svg-android</module>
 		<module>Applications/Android/Samples</module>
 		<module>SwingMapViewer</module>		
 	</modules>
@@ -99,7 +98,7 @@
 						<genDirectoryAidl>gen</genDirectoryAidl>
 						<extractDuplicates>true</extractDuplicates>
 						<sdk>
-							<platform>19</platform>
+							<platform>21</platform>
 						</sdk>
 					</configuration>
 				</plugin>
