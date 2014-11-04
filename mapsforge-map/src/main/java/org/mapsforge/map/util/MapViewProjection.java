@@ -44,6 +44,11 @@ public class MapViewProjection {
 		// what the user sees on the screen if an animation is in progress
 		MapPosition mapPosition = this.mapView.getModel().frameBufferModel.getMapPosition();
 
+		if (mapPosition == null) {
+			// this means somehow the mapview is not yet properly set up, see issue #308.
+			return null;
+		}
+
 		// calculate the pixel coordinates of the top left corner
 		LatLong latLong = mapPosition.latLong;
 		long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
