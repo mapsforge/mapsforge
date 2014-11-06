@@ -54,6 +54,18 @@
 			<name>Jürgen Broß</name>
 			<email>jjbross@gmail.com</email>
 		</developer>
+
+		<developer>
+			<id>ludwigbrinckmann</id>
+			<name>Ludwig M Brinckmann</name>
+			<email>ludwigbrinckmann@gmail.com</email>
+		</developer>
+
+		<developer>
+			<id>devemux86</id>
+			<name>devemux86</name>
+			<email>devemux86@gmail.com</email>
+		</developer>
 	</developers>
 
 	<issueManagement>
