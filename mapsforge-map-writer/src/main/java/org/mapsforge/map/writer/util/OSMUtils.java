@@ -157,7 +157,7 @@ public final class OSMUtils {
 	 * Heuristic to determine from attributes if a way is likely to be an area.
 	 * Precondition for this call is that the first and last node of a way are the
 	 * same, so that this method should only return false if it is known that the
-	 * feature should not be an area even if the geometry is a polygon. 
+	 * feature should not be an area even if the geometry is a polygon.
 	 *
 	 * Determining what is an area is neigh impossible in OSM, this method inspects tag elements
 	 * to give a likely answer. See http://wiki.openstreetmap.org/wiki/The_Future_of_Areas and
@@ -194,9 +194,8 @@ public final class OSMUtils {
 					if ("rail".equals(value) || "tram".equals(value) || "subway".equals(value) ||
 						"monorail".equals(value) || "narrow_gauge".equals(value) || "preserved".equals(value)
 						|| "light_rail".equals(value) || "construction".equals(value)) {
-						return false;
+						result = false;
 					}
-					return true;
 				}
 			}
 		}
