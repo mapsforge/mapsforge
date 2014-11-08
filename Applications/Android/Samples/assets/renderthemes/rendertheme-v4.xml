@@ -128,6 +128,15 @@
 			<overlay id="shopping"/>
 		</layer>
 
+		<layer id="topo" parent="standard" visible="true">
+			<name lang="de" value="Topo"/>
+			<name lang="en" value="Topo"/>
+			<name lang="es" value="Topo"/>
+			<name lang="fr" value="Topo"/>
+			<cat id="nature"/>
+		</layer>
+
+
 	</stylemenu>
 
 	-<!-- land/sea -->
