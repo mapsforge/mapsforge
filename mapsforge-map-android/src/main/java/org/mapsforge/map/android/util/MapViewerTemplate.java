@@ -212,8 +212,14 @@ public abstract class MapViewerTemplate extends Activity  {
 		final FileOpenResult result = mapDatabase.openFile(getMapFile());
 		if (result.isSuccess()) {
 			final MapFileInfo mapFileInfo = mapDatabase.getMapFileInfo();
+			
 			if (mapFileInfo != null && mapFileInfo.startPosition != null) {
-				return new MapPosition(mapFileInfo.startPosition, mapFileInfo.startZoomLevel);
+				Byte startZoomLevel = mapFileInfo.startZoomLevel;
+				if (startZoomLevel == null) {
+					// it is actually possible to have no start zoom level in the file
+					startZoomLevel = new Byte((byte) 12);
+				}
+				return new MapPosition(mapFileInfo.startPosition, startZoomLevel);
 			} else {
 				return getDefaultInitialPosition();
 			}
