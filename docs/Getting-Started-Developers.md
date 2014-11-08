@@ -121,6 +121,13 @@ You should install the [Checkstyle](http://eclipse-cs.sourceforge.net/), [FindBu
 
 Each of the mapsforge modules is now configured as an Eclipse project and can be added to your current workspace via `File > Import > General > Existing Projects into Workspace`.
 
+To build the Android sample application, you need to make a few adjustments:
+* Select `Project > Properties` from the menu.
+* In the dialog that opens, go to `Java Build Path Order and Export`. Make sure the entry for `M2_REPO/android/android/5.0_r1/android-5.0_r1.jar` is unchecked and all others are checked.
+* Go to `Java Compiler` and set the compiler compliance level to 1.7.
+* Then clean the project (`Project > Clean`).
+
+Without these steps, you may have issues with the app crashing with a `java.lang.NoClassDefFoundError` exception. If that happens, carry out the above steps and build again.
 
 ## How to contribute
 
