@@ -1,6 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014 devemux86
+ * Copyright © 2014 Develar
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +17,7 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -22,12 +25,20 @@ import org.mapsforge.core.graphics.TileBitmap;
 
 public class AwtTileBitmap extends AwtBitmap implements TileBitmap {
 
-	AwtTileBitmap(InputStream inputStream) throws IOException {
+	public AwtTileBitmap(InputStream inputStream) throws IOException {
 		super(inputStream);
 	}
 
-	AwtTileBitmap(int tileSize) {
+	public AwtTileBitmap(int tileSize) {
 		super(tileSize, tileSize);
+	}
+
+	public AwtTileBitmap(int tileSize, boolean hasAlpha) {
+		super(tileSize, tileSize, hasAlpha);
+	}
+
+	public AwtTileBitmap(BufferedImage bufferedImage) {
+		super(bufferedImage);
 	}
 
 }
