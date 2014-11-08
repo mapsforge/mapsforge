@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
  * Copyright © 2014 Christian Pesch
+ * Copyright © 2014 Develar
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,7 +40,7 @@ import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Point;
 
-public final class AwtGraphicFactory implements GraphicFactory {
+public class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
@@ -80,9 +81,6 @@ public final class AwtGraphicFactory implements GraphicFactory {
 		}
 
 		throw new IllegalArgumentException("unknown color: " + color);
-	}
-
-	private AwtGraphicFactory() {
 	}
 
 	@Override
@@ -156,7 +154,7 @@ public final class AwtGraphicFactory implements GraphicFactory {
 
 	@Override
 	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
-		return new AwtTileBitmap(tileSize);
+		return new AwtTileBitmap(tileSize, hasAlpha);
 	}
 
 	@Override
