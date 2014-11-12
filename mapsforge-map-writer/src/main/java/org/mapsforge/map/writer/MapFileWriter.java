@@ -55,6 +55,7 @@ import com.google.common.cache.LoadingCache;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -139,7 +140,9 @@ public final class MapFileWriter {
 			}
 
 			Geometry processedGeometry = originalGeometry;
-			if (originalGeometry instanceof Polygon && this.configuration.isPolygonClipping()
+
+
+			if ((originalGeometry instanceof Polygon || originalGeometry instanceof MultiPolygon) && this.configuration.isPolygonClipping()
 					|| (originalGeometry instanceof LineString || originalGeometry instanceof MultiLineString)
 					&& this.configuration.isWayClipping()) {
 				processedGeometry = GeoUtils.clipToTile(this.way, originalGeometry, this.tile,
@@ -158,6 +161,11 @@ public final class MapFileWriter {
 					return null;
 				}
 			}
+
+			if (originalGeometry.getCoordinates().length > 5000) {
+				LOGGER.info("Large geometry " + this.way.getId() + " (" + processedGeometry.getCoordinates().length + " coords, down from " + originalGeometry.getCoordinates().length + " coords)");
+			}
+
 
 			List<WayDataBlock> blocks = GeoUtils.toWayDataBlockList(processedGeometry);
 			if (blocks == null) {
