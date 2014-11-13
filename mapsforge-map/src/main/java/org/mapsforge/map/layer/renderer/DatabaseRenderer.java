@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -335,25 +336,25 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderAreaCaption(PolylineContainer way, int priority, String caption, float horizontalOffset, float verticalOffset,
+	public void renderAreaCaption(PolylineContainer way, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                              Paint fill, Paint stroke, Position position, int maxTextWidth) {
 		Point centerPoint = way.getCenterAbsolute().offset(horizontalOffset, verticalOffset);
-		this.currentLabels.add(this.graphicFactory.createPointTextContainer(centerPoint, priority, caption, fill, stroke, null, position, maxTextWidth));
+		this.currentLabels.add(this.graphicFactory.createPointTextContainer(centerPoint, display, priority, caption, fill, stroke, null, position, maxTextWidth));
 	}
 
 	@Override
-	public void renderAreaSymbol(PolylineContainer way, int priority, Bitmap symbol) {
+	public void renderAreaSymbol(PolylineContainer way, Display display, int priority, Bitmap symbol) {
 		Point centerPosition = way.getCenterAbsolute();
 
-		this.currentLabels.add(new SymbolContainer(centerPosition, priority, symbol));
+		this.currentLabels.add(new SymbolContainer(centerPosition, display, priority, symbol));
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset, float verticalOffset,
+	public void renderPointOfInterestCaption(PointOfInterest poi, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                                         Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
 		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.mapSize);
 
-		this.currentLabels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), priority, caption, fill,
+		this.currentLabels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), display, priority, caption, fill,
 				stroke, null, position, maxTextWidth));
 	}
 
@@ -366,9 +367,9 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestSymbol(PointOfInterest poi, int priority, Bitmap symbol, Tile tile) {
+	public void renderPointOfInterestSymbol(PointOfInterest poi, Display display, int priority, Bitmap symbol, Tile tile) {
 		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, tile.mapSize);
-		this.currentLabels.add(new SymbolContainer(poiPosition, priority, symbol));
+		this.currentLabels.add(new SymbolContainer(poiPosition, display, priority, symbol));
 	}
 
 	@Override
@@ -377,15 +378,15 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	@Override
-	public void renderWaySymbol(PolylineContainer way, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
+	public void renderWaySymbol(PolylineContainer way, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
 	                     float repeatGap, float repeatStart, boolean rotate) {
-		WayDecorator.renderSymbol(symbol, priority, dy, alignCenter, repeat, repeatGap,
+		WayDecorator.renderSymbol(symbol, display, priority, dy, alignCenter, repeat, repeatGap,
 				repeatStart, rotate, way.getCoordinatesAbsolute(), this.currentLabels);
 	}
 
 	@Override
-	public void renderWayText(PolylineContainer way, int priority, String textKey, float dy, Paint fill, Paint stroke) {
-		WayDecorator.renderText(way.getTile(), textKey, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), this.currentLabels);
+	public void renderWayText(PolylineContainer way, Display display, int priority, String textKey, float dy, Paint fill, Paint stroke) {
+		WayDecorator.renderText(way.getTile(), textKey, display, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), this.currentLabels);
 	}
 
 	private List<List<List<ShapePaintContainer>>> createWayLists() {

@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Tile;
@@ -29,18 +30,18 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderAreaCaption(PolylineContainer way, int priority, String caption, float horizontalOffset, float verticalOffset,
+	public void renderAreaCaption(PolylineContainer way, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                              Paint fill, Paint stroke, Position position, int maxTextWidth) {
 		// do nothing
 	}
 
 	@Override
-	public void renderAreaSymbol(PolylineContainer way, int priority, Bitmap symbol) {
+	public void renderAreaSymbol(PolylineContainer way, Display display, int priority, Bitmap symbol) {
 		// do nothing
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset, float verticalOffset,
+	public void renderPointOfInterestCaption(PointOfInterest poi, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                                         Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
 		// do nothing
 	}
@@ -51,7 +52,7 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestSymbol(PointOfInterest poi, int priority, Bitmap symbol, Tile tile) {
+	public void renderPointOfInterestSymbol(PointOfInterest poi, Display display, int priority, Bitmap symbol, Tile tile) {
 		// do nothing
 	}
 
@@ -61,13 +62,13 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderWaySymbol(PolylineContainer way, int priority, Bitmap symbol, float dy, boolean alignCenter,
+	public void renderWaySymbol(PolylineContainer way, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter,
 	                            boolean repeat, float repeatGap, float repeatStart, boolean rotate) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWayText(PolylineContainer way, int priority, String text, float dy, Paint fill, Paint stroke) {
+	public void renderWayText(PolylineContainer way, Display display, int priority, String text, float dy, Paint fill, Paint stroke) {
 		// do nothing
 	}
 }

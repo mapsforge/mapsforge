@@ -33,6 +33,7 @@ public abstract class RenderInstruction {
 
 	static final String ALIGN_CENTER = "align-center";
 	static final String CAT = "cat";
+	static final String DISPLAY = "display";
 	static final String DY = "dy";
 	static final String FILL = "fill";
 	static final String FONT_FAMILY = "font-family";
@@ -61,7 +62,6 @@ public abstract class RenderInstruction {
 	static final String SYMBOL_PERCENT = "symbol-percent";
 	static final String SYMBOL_SCALING = "symbol-scaling";
 	static final String SYMBOL_WIDTH = "symbol-width";
-
 
 	enum ResourceScaling {
 		DEFAULT,

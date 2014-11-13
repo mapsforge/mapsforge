@@ -19,6 +19,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import java.io.IOException;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
@@ -40,6 +41,7 @@ public class LineSymbol extends RenderInstruction {
 	private boolean alignCenter;
 	private Bitmap bitmap;
 	private boolean bitmapInvalid;
+	private Display display;
 	private float dy;
 	private int priority;
 	private final String relativePathPrefix;
@@ -53,6 +55,7 @@ public class LineSymbol extends RenderInstruction {
 	                         XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
 		super(graphicFactory, displayModel);
 
+		this.display = Display.IFSPACE;
 		this.rotate = true;
 		this.relativePathPrefix = relativePathPrefix;
 
@@ -73,6 +76,11 @@ public class LineSymbol extends RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+
+		if (Display.NEVER == this.display) {
+			return;
+		}
+
 		if (this.bitmap == null && !this.bitmapInvalid) {
 			try {
 				this.bitmap = createBitmap(relativePathPrefix, src);
@@ -81,7 +89,7 @@ public class LineSymbol extends RenderInstruction {
 			}
 		}
 		if (this.bitmap != null) {
-			renderCallback.renderWaySymbol(way, this.priority, this.bitmap, this.dy, this.alignCenter,
+			renderCallback.renderWaySymbol(way, this.display, this.priority, this.bitmap, this.dy, this.alignCenter,
 					this.repeat, this.repeatGap, this.repeatStart, this.rotate);
 		}
 	}
@@ -107,6 +115,8 @@ public class LineSymbol extends RenderInstruction {
 
 			if (SRC.equals(name)) {
 				this.src = value;
+			} else if (DISPLAY.equals(name)) {
+				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (ALIGN_CENTER.equals(name)) {

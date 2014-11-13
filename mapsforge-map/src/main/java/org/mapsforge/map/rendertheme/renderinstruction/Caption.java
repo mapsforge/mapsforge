@@ -19,6 +19,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.graphics.Align;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -48,6 +49,7 @@ public class Caption extends RenderInstruction {
 
 	private Bitmap bitmap;
 	private Position position;
+	private Display display;
 	private float dy;
 	private final Paint fill;
 	private float fontSize;
@@ -71,6 +73,8 @@ public class Caption extends RenderInstruction {
 		this.stroke = graphicFactory.createPaint();
 		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
+
+		this.display = Display.IFSPACE;
 
 		this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
 
@@ -126,6 +130,11 @@ public class Caption extends RenderInstruction {
 
 	@Override
 	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+
+		if (Display.NEVER == this.display) {
+			return;
+		}
+
 		String caption = this.textKey.getValue(poi.tags);
 		if (caption == null) {
 			return;
@@ -139,12 +148,17 @@ public class Caption extends RenderInstruction {
 			verticalOffset = computeVerticalOffset();
 		}
 
-		renderCallback.renderPointOfInterestCaption(poi, this.priority, caption, horizontalOffset, verticalOffset,
+		renderCallback.renderPointOfInterestCaption(poi, this.display, this.priority, caption, horizontalOffset, verticalOffset,
 				this.fill, this.stroke, this.position, this.maxTextWidth, tile);
 	}
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+
+		if (Display.NEVER == this.display) {
+			return;
+		}
+
 		String caption = this.textKey.getValue(way.getTags());
 		if (caption == null) {
 			return;
@@ -158,7 +172,7 @@ public class Caption extends RenderInstruction {
 			verticalOffset = computeVerticalOffset();
 		}
 
-		renderCallback.renderAreaCaption(way, this.priority, caption, horizontalOffset, verticalOffset,
+		renderCallback.renderAreaCaption(way, this.display, this.priority, caption, horizontalOffset, verticalOffset,
 				this.fill, this.stroke, this.position, this.maxTextWidth);
 	}
 
@@ -219,6 +233,8 @@ public class Caption extends RenderInstruction {
 				this.position = Position.fromString(value);
 			} else if (CAT.equals(name)) {
 				this.category = value;
+			} else if (DISPLAY.equals(name)) {
+				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {

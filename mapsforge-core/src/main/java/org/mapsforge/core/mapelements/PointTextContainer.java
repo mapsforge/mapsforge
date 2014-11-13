@@ -15,6 +15,7 @@
  */
 package org.mapsforge.core.mapelements;
 
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.model.Point;
@@ -35,9 +36,9 @@ public abstract class PointTextContainer extends MapElementContainer {
 	 * Create a new point container, that holds the x-y coordinates of a point, a text variable, two paint objects, and
 	 * a reference on a symbolContainer, if the text is connected with a POI.
 	 */
-	protected PointTextContainer(Point point, int priority, String text, Paint paintFront, Paint paintBack,
+	protected PointTextContainer(Point point, Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                             SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		super(point, priority);
+		super(point, display, priority);
 
 		this.maxTextWidth = maxTextWidth;
 		this.text = text;
