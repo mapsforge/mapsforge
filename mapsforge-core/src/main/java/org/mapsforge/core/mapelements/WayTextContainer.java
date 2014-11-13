@@ -17,6 +17,7 @@ package org.mapsforge.core.mapelements;
 
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Point;
@@ -29,8 +30,8 @@ public class WayTextContainer extends MapElementContainer {
 	private final String text;
 	private final Point end;
 
-	public WayTextContainer(Point point, Point end, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
-		super(point, priority);
+	public WayTextContainer(Point point, Point end, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
+		super(point, display, priority);
 		this.text = text;
 		this.paintFront = paintFront;
 		this.paintBack = paintBack;

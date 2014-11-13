@@ -28,6 +28,7 @@ import java.io.InputStream;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
@@ -137,9 +138,9 @@ public class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
-	public PointTextContainer createPointTextContainer(Point xy, int priority, String text, Paint paintFront, Paint paintBack,
+	public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                                                   SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		return new AwtPointTextContainer(xy, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+		return new AwtPointTextContainer(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 	}
 
 	@Override

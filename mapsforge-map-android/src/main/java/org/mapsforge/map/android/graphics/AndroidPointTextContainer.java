@@ -20,6 +20,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.mapelements.PointTextContainer;
@@ -35,9 +36,9 @@ public class AndroidPointTextContainer extends PointTextContainer {
 	private float boxWidth;
 	private float boxHeight;
 
-	AndroidPointTextContainer(Point xy, int priority, String text, Paint paintFront, Paint paintBack,
+	AndroidPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                          SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		super(xy, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+		super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
 		if (this.textWidth > this.maxTextWidth) {
 

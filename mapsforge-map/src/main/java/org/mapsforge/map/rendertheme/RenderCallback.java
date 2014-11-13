@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Tile;
@@ -39,21 +40,18 @@ public interface RenderCallback {
 
 	/**
 	 * Renders an area caption with the given text.
-	 * 
-	 * @param caption
-	 *            the text to be rendered.
-	 * @param horizontalOffset
-	 *            the horizontal offset of the caption.
-	 * @param verticalOffset
-	 *            the vertical offset of the caption.
-	 * @param fill
-	 *            the paint to be used for rendering the text.
-	 * @param stroke
-	 *            an optional paint for the text casing (may be null).
-	 * @param position
-	 *            an optional position for the caption (may be null).
+	 * @param way the way for the caption.
+	 * @param display display mode
+	 * @param priority priority level
+	 * @param caption the text.
+	 * @param horizontalOffset the horizontal offset of the text.
+	 * @param verticalOffset the vertical offset of the text.
+	 * @param fill the paint for the text.
+	 * @param stroke the casing of the text (may be null).
+	 * @param position optional position (may be null)
+	 * @param maxTextWidth maximum text width .
 	 */
-	void renderAreaCaption(PolylineContainer way, int priority, String caption, float horizontalOffset, float verticalOffset,
+	 void renderAreaCaption(PolylineContainer way, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                       Paint fill, Paint stroke, Position position, int maxTextWidth);
 
 	/**
@@ -62,7 +60,7 @@ public interface RenderCallback {
 	 * @param symbol
 	 *            the symbol to be rendered.
 	 */
-	void renderAreaSymbol(PolylineContainer way, int priority, Bitmap symbol);
+	void renderAreaSymbol(PolylineContainer way, Display display, int priority, Bitmap symbol);
 
 	/**
 	 * Renders a point of interest caption with the given text.
@@ -81,7 +79,7 @@ public interface RenderCallback {
 	 *            an optional position for the caption (may be null).
 	 *
 	 */
-	void renderPointOfInterestCaption(PointOfInterest poi, int priority, String caption, float horizontalOffset, float verticalOffset,
+	void renderPointOfInterestCaption(PointOfInterest poi, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
 	                                  Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile);
 
 	/**
@@ -104,7 +102,7 @@ public interface RenderCallback {
 	 * @param symbol
 	 *            the symbol to be rendered.
 	 */
-	void renderPointOfInterestSymbol(PointOfInterest poi, int priority, Bitmap symbol, Tile tile);
+	void renderPointOfInterestSymbol(PointOfInterest poi, Display display, int priority, Bitmap symbol, Tile tile);
 
 	/**
 	 * Renders a way with the given parameters.
@@ -134,7 +132,7 @@ public interface RenderCallback {
 	 * @param repeatStart
 	 *            offset from start.
 	 */
-	void renderWaySymbol(PolylineContainer way, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
+	void renderWaySymbol(PolylineContainer way, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat,
 	                     float repeatGap, float repeatStart, boolean rotate);
 
 	/**
@@ -149,5 +147,5 @@ public interface RenderCallback {
 	 * @param stroke
 	 *            an optional paint for the text casing (may be null).
 	 */
-	void renderWayText(PolylineContainer way, int priority, String text, float dy, Paint fill, Paint stroke);
+	void renderWayText(PolylineContainer way, Display display, int priority, String text, float dy, Paint fill, Paint stroke);
 }
