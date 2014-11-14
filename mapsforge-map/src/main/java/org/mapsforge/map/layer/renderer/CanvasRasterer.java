@@ -15,6 +15,8 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +62,13 @@ class CanvasRasterer {
 	}
 
 	void drawMapElements(Set<MapElementContainer> elements, Tile tile) {
-		for (MapElementContainer element : elements) {
+		// we have a set of all map elements (needed so we do not draw elements twice),
+		// but we need to draw in priority order as we now allow overlaps. So we
+		// convert into list, then sort, then draw.
+		List<MapElementContainer> elementsAsList = new ArrayList<MapElementContainer>(elements);
+		Collections.sort(elementsAsList, Collections.reverseOrder());
+
+		for (MapElementContainer element : elementsAsList) {
 			element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
 		}
 	}
