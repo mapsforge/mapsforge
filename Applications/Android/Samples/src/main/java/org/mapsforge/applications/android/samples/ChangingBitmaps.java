@@ -78,7 +78,6 @@ public class ChangingBitmaps extends RenderTheme4 {
 
 	@Override
 	public void onCreate(Bundle sis) {
-		super.onCreate(sis);
 		Drawable drawableGreen = getResources().getDrawable(
 				R.drawable.marker_green);
 		Drawable drawableRed = getResources()
@@ -87,6 +86,7 @@ public class ChangingBitmaps extends RenderTheme4 {
 		bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableGreen);
 		marker = new Marker(latLong, bitmapGreen, 0,
 				-bitmapGreen.getHeight() / 2);
+		super.onCreate(sis);
 	}
 
 	@Override
