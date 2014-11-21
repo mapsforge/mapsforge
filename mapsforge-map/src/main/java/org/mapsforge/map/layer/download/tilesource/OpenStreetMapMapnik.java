@@ -29,8 +29,8 @@ public class OpenStreetMapMapnik extends AbstractTileSource {
 	private static final int ZOOM_LEVEL_MAX = 18;
 	private static final int ZOOM_LEVEL_MIN = 0;
 
-	public OpenStreetMapMapnik(String[] hostName, int port) {
-		super(hostName, port);
+	public OpenStreetMapMapnik(String[] hostNames, int port) {
+		super(hostNames, port);
 	}
 
 	@Override

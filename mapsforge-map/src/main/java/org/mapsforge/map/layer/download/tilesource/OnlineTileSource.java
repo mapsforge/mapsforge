@@ -30,8 +30,8 @@ public class OnlineTileSource extends AbstractTileSource {
 	private byte zoomLevelMax = 18;
 	private byte zoomLevelMin = 0;
 
-	public OnlineTileSource(String[] hostName, int port) {
-		super(hostName, port);
+	public OnlineTileSource(String[] hostNames, int port) {
+		super(hostNames, port);
 	}
 
 	public String getName() {
