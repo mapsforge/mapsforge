@@ -28,6 +28,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 
 class CanvasRasterer {
@@ -77,6 +78,18 @@ class CanvasRasterer {
 		if (GraphicUtils.getAlpha(color) > 0) {
 			this.canvas.fillColor(color);
 		}
+	}
+
+	/**
+	 * Fills the area outside the specificed rectangle with color.
+	 * This method is used to blank out areas that fall outside the map area.
+	 * @param color the fill color for the outside area
+	 * @param insideArea the inside area on which not to draw
+	 */
+	void fillOutsideAreas(int color, Rectangle insideArea) {
+		this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+		this.canvas.fillColor(color);
+		this.canvas.resetClip();
 	}
 
 	void setCanvasBitmap(Bitmap bitmap) {
