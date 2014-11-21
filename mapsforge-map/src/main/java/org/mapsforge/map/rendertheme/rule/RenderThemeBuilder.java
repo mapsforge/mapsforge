@@ -29,6 +29,7 @@ public class RenderThemeBuilder {
 	private static final String BASE_STROKE_WIDTH = "base-stroke-width";
 	private static final String BASE_TEXT_SIZE = "base-text-size";
 	private static final String MAP_BACKGROUND = "map-background";
+	private static final String MAP_BACKGROUND_OUTSIDE = "map-background-outside";
 	private static final int RENDER_THEME_VERSION = 4;
 	private static final String VERSION = "version";
 	private static final String XMLNS = "xmlns";
@@ -37,7 +38,9 @@ public class RenderThemeBuilder {
 
 	float baseStrokeWidth;
 	float baseTextSize;
+	boolean hasBackgroundOutside;
 	int mapBackground;
+	int mapBackgroundOutside;
 	private Integer version;
 
 	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, XmlPullParser pullParser)
@@ -72,6 +75,9 @@ public class RenderThemeBuilder {
 				this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
 			} else if (MAP_BACKGROUND.equals(name)) {
 				this.mapBackground = XmlUtils.getColor(graphicFactory, value);
+			} else if (MAP_BACKGROUND_OUTSIDE.equals(name)) {
+				this.mapBackgroundOutside = XmlUtils.getColor(graphicFactory, value);
+				this.hasBackgroundOutside = true;
 			} else if (BASE_STROKE_WIDTH.equals(name)) {
 				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
 			} else if (BASE_TEXT_SIZE.equals(name)) {

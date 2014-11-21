@@ -218,6 +218,12 @@ class AwtCanvas implements Canvas {
 		this.graphics2D.setClip(left, top, width, height);
 	}
 
+	@Override
+	public void setClipDifference(int left, int top, int width, int height) {
+		//TODO implement inverse clip.
+	}
+
+
 	private void enableAntiAliasing() {
 		this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);

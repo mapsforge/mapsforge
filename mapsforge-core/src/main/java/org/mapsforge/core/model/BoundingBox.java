@@ -145,6 +145,17 @@ public class BoundingBox implements Serializable {
 		return this.maxLongitude - this.minLongitude;
 	}
 
+	/**
+	 * Computes the coordinates of this bounding box relative to a tile.
+	 * @param tile the tile to compute the relative position for.
+	 * @return rectangle giving the relative position.
+	 */
+	public Rectangle getPositionRelativeToTile(Tile tile) {
+		Point upperLeft = MercatorProjection.getPixelRelativeToTile(new LatLong(this.maxLatitude, minLongitude), tile);
+		Point lowerRight = MercatorProjection.getPixelRelativeToTile(new LatLong(this.minLatitude, maxLongitude), tile);
+		return new Rectangle(upperLeft.x, upperLeft.y, lowerRight.x, lowerRight.y);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -38,6 +38,7 @@ import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
@@ -184,105 +185,120 @@ public class DatabaseRenderer implements RenderCallback {
 			this.previousJobTheme = jobTheme;
 		}
 
-		setScaleStrokeWidth(zoomLevel);
-		this.renderTheme.scaleTextSize(rendererJob.textScale);
-
-		if (this.mapDatabase != null) {
-			MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
-			processReadMapData(ways, mapReadResult, rendererJob.tile);
-		}
-
 		TileBitmap bitmap = null;
-		if (!rendererJob.labelsOnly) {
-			bitmap = this.graphicFactory.createTileBitmap(tileSize,
-					rendererJob.hasAlpha);
-			this.canvasRasterer.setCanvasBitmap(bitmap);
-			if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
-				this.canvasRasterer.fill(this.renderTheme.getMapBackground());
+
+		if (!this.renderTheme.hasMapBackgroundOutside() || this.mapDatabase.getMapFileInfo().boundingBox.intersects(rendererJob.tile.getBoundingBox())) {
+
+			setScaleStrokeWidth(zoomLevel);
+			this.renderTheme.scaleTextSize(rendererJob.textScale);
+
+			if (this.mapDatabase != null) {
+				MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
+				processReadMapData(ways, mapReadResult, rendererJob.tile);
 			}
-			this.canvasRasterer.drawWays(ways, rendererJob.tile);
-		}
 
-		if (renderLabels) {
-			// if we are drawing the labels per tile, we need to establish which tile-overlapping
-			// elements need to be drawn.
+			if (!rendererJob.labelsOnly) {
+				bitmap = this.graphicFactory.createTileBitmap(tileSize, rendererJob.hasAlpha);
+				this.canvasRasterer.setCanvasBitmap(bitmap);
+				if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != this.renderTheme.getMapBackground()) {
+					this.canvasRasterer.fill(this.renderTheme.getMapBackground());
+				}
+				this.canvasRasterer.drawWays(ways, rendererJob.tile);
+			}
 
-			Set<MapElementContainer> labelsToDraw = new HashSet<MapElementContainer>();
-			// first we need to get the labels from the adjacent tiles if they have already been drawn
-			// as those overlapping items must also be drawn on the current tile. They must be drawn regardless
-			// of priority clashes as a part of them has alread been drawn.
-			Set<Tile> neighbours = rendererJob.tile.getNeighbours();
-			Iterator<Tile> tileIterator = neighbours.iterator();
-			Set<MapElementContainer> undrawableElements = new HashSet<MapElementContainer>();
-			while (tileIterator.hasNext()) {
-				Tile neighbour = tileIterator.next();
-				if (tileCache.containsKey(rendererJob.otherTile(neighbour))) {
-					// if a tile has already been drawn, the elements drawn that overlap onto the
-					// current tile should be in the tile dependencies, we add them to the labels that
-					// need to be drawn onto this tile.
-					labelsToDraw.addAll(tileDependencies.getOverlappingElements(neighbour, rendererJob.tile));
+			if (renderLabels) {
+				// if we are drawing the labels per tile, we need to establish which tile-overlapping
+				// elements need to be drawn.
 
-					// but we need to remove the labels for this tile that overlap onto a tile that has been drawn
-					for (MapElementContainer current : currentLabels) {
-						if (current.intersects(neighbour.getBoundaryAbsolute())) {
-							undrawableElements.add(current);
+				Set<MapElementContainer> labelsToDraw = new HashSet<MapElementContainer>();
+				// first we need to get the labels from the adjacent tiles if they have already been drawn
+				// as those overlapping items must also be drawn on the current tile. They must be drawn regardless
+				// of priority clashes as a part of them has alread been drawn.
+				Set<Tile> neighbours = rendererJob.tile.getNeighbours();
+				Iterator<Tile> tileIterator = neighbours.iterator();
+				Set<MapElementContainer> undrawableElements = new HashSet<MapElementContainer>();
+				while (tileIterator.hasNext()) {
+					Tile neighbour = tileIterator.next();
+					if (tileCache.containsKey(rendererJob.otherTile(neighbour))) {
+						// if a tile has already been drawn, the elements drawn that overlap onto the
+						// current tile should be in the tile dependencies, we add them to the labels that
+						// need to be drawn onto this tile.
+						labelsToDraw.addAll(tileDependencies.getOverlappingElements(neighbour, rendererJob.tile));
+
+						// but we need to remove the labels for this tile that overlap onto a tile that has been drawn
+						for (MapElementContainer current : currentLabels) {
+							if (current.intersects(neighbour.getBoundaryAbsolute())) {
+								undrawableElements.add(current);
+							}
+						}
+						// since we already have the data from that tile, we do not need to get the data for
+						// it, so remove it from the neighbours list.
+						tileIterator.remove();
+					} else {
+						tileDependencies.removeTileData(neighbour);
+					}
+				}
+
+				// now we remove the elements that overlap onto a drawn tile from the list of labels
+				// for this tile
+				currentLabels.removeAll(undrawableElements);
+
+				// at this point we have two lists: one is the list of labels that must be drawn because
+				// they already overlap from other tiles. The second one is currentLabels that contains
+				// the elements on this tile that do not overlap onto a drawn tile. Now we sort this list and
+				// remove those elements that clash in this list already.
+				List<MapElementContainer> currentElementsOrdered = LayerUtil.collisionFreeOrdered(currentLabels);
+
+				// now we go through this list, ordered by priority, to see which can be drawn without clashing.
+				Iterator<MapElementContainer> currentMapElementsIterator = currentElementsOrdered.iterator();
+				while (currentMapElementsIterator.hasNext()) {
+					MapElementContainer current = currentMapElementsIterator.next();
+					for (MapElementContainer label : labelsToDraw) {
+						if (label.clashesWith(current)) {
+							currentMapElementsIterator.remove();
+							break;
 						}
 					}
-					// since we already have the data from that tile, we do not need to get the data for
-					// it, so remove it from the neighbours list.
-					tileIterator.remove();
-				} else {
-					tileDependencies.removeTileData(neighbour);
 				}
-			}
 
-			// now we remove the elements that overlap onto a drawn tile from the list of labels
-			// for this tile
-			currentLabels.removeAll(undrawableElements);
+				labelsToDraw.addAll(currentElementsOrdered);
 
-			// at this point we have two lists: one is the list of labels that must be drawn because
-			// they already overlap from other tiles. The second one is currentLabels that contains
-			// the elements on this tile that do not overlap onto a drawn tile. Now we sort this list and
-			// remove those elements that clash in this list already.
-			List<MapElementContainer> currentElementsOrdered = LayerUtil.collisionFreeOrdered(currentLabels);
-
-			// now we go through this list, ordered by priority, to see which can be drawn without clashing.
-			Iterator<MapElementContainer> currentMapElementsIterator = currentElementsOrdered.iterator();
-			while (currentMapElementsIterator.hasNext()) {
-				MapElementContainer current = currentMapElementsIterator.next();
-				for (MapElementContainer label : labelsToDraw) {
-					if (label.clashesWith(current)) {
-						currentMapElementsIterator.remove();
-						break;
+				// update dependencies, add to the dependencies list all the elements that overlap to the
+				// neighbouring tiles, first clearing out the cache for this relation.
+				for (Tile tile : neighbours) {
+					tileDependencies.removeTileData(rendererJob.tile, tile);
+					for (MapElementContainer element : labelsToDraw) {
+						if (element.intersects(tile.getBoundaryAbsolute())) {
+							tileDependencies.addOverlappingElement(rendererJob.tile, tile, element);
+						}
 					}
 				}
+				// now draw the ways and the labels
+				this.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
+			} else {
+				// store elements for this tile in the label cache
+				this.labelStore.storeMapItems(rendererJob.tile, this.currentLabels);
 			}
 
-			labelsToDraw.addAll(currentElementsOrdered);
-
-			// update dependencies, add to the dependencies list all the elements that overlap to the
-			// neighbouring tiles, first clearing out the cache for this relation.
-			for (Tile tile : neighbours) {
-				tileDependencies.removeTileData(rendererJob.tile, tile);
-				for (MapElementContainer element : labelsToDraw) {
-					if (element.intersects(tile.getBoundaryAbsolute())) {
-						tileDependencies.addOverlappingElement(rendererJob.tile, tile, element);
-					}
+			// clear way list
+			for (int i = this.ways.size() - 1; i >= 0; --i) {
+				List<List<ShapePaintContainer>> innerWayList = this.ways.get(i);
+				for (int j = innerWayList.size() - 1; j >= 0; --j) {
+					innerWayList.get(j).clear();
 				}
 			}
-			// now draw the ways and the labels
-			this.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
+
+			if (this.renderTheme.hasMapBackgroundOutside()) {
+				// blank out all areas outside of map
+				Rectangle insideArea = this.mapDatabase.getMapFileInfo().boundingBox.getPositionRelativeToTile(rendererJob.tile);
+				this.canvasRasterer.fillOutsideAreas(this.renderTheme.getMapBackgroundOutside(), insideArea);
+			}
 		} else {
-			// store elements for this tile in the label cache
-			this.labelStore.storeMapItems(rendererJob.tile, this.currentLabels);
-		}
-
-		// clear way list
-		for (int i = this.ways.size() - 1; i >= 0; --i) {
-			List<List<ShapePaintContainer>> innerWayList = this.ways.get(i);
-			for (int j = innerWayList.size() - 1; j >= 0; --j) {
-				innerWayList.get(j).clear();
-			}
+			// tile is entirely outside the map area, so draw everything with outside
+			// color
+			bitmap = this.graphicFactory.createTileBitmap(tileSize, rendererJob.hasAlpha);
+			this.canvasRasterer.setCanvasBitmap(bitmap);
+			this.canvasRasterer.fill(this.renderTheme.getMapBackgroundOutside());
 		}
 
 		return bitmap;
