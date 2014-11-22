@@ -23,7 +23,7 @@ The master branch contains the latest mapsforge version considered stable, but n
 
 - [Latest Samples application (master)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Latest Jars (master)](http://ci.mapsforge.org/job/master/)
-- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0-SNAPSHOT.jar)
+- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0-rc2.jar)
   
 # Lastest Development Build Downloads
 
