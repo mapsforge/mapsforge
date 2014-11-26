@@ -21,6 +21,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -220,9 +222,10 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void setClipDifference(int left, int top, int width, int height) {
-		//TODO implement inverse clip.
+		Area clip = new Area(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+		clip.subtract(new Area(new Rectangle2D.Double(left, top, width, height)));
+		this.graphics2D.setClip(clip);
 	}
-
 
 	private void enableAntiAliasing() {
 		this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
