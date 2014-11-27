@@ -13,12 +13,11 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 |Android Build Version Tools|21|
 |Gradle|2.1 if building with gradle|
 |Maven|1.3.1 if building with maven|
-|Java|1.7|
+|Java|1.7 (1.8 is supported in maven builds)|
 
 ## Checkout the code
 
-There are problems checking out the code from this repository with git > 1.7.2, the reason is unknown but it might be a corruption of the Google repository. 
-You can clone the repository with git version 1.7.2 or via one of the clones, eg. at https://github.com/applantation/mapsforge
+The mapsforge code is now **only** at https://github.com/mapsforge/mapsforge. The old repositories are not maintained anymore.
 
 ## Components
 
@@ -39,13 +38,11 @@ The jars build from the above components are required elements for a mapsforge a
 ### Branches
 
 The mapsforge code has now been consolidated into two main branches as well as releases
-- master: the latest stable development branch. Use this if you want to use newer mapsforge functionality that has not yet been released, but you still want a certain stability.
-- dev: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
-- 0.4.0 release: use this if you want to build applications built on top of well-tested and stable code.
+- **master**: the latest stable development branch. Use this if you want to use newer mapsforge functionality that has not yet been released, but you still want a certain stability.
+- **dev**: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
+- **0.5.0 release**: use this if you want to build applications built on top of well-tested and stable code.
 
-Code before the 0.4.0 release is not supported anymore and if you are starting development with mapsforge, its use is strongly discouraged. 
-
-For a while, what has become the 0.4.0 release was known as the 'rescue' branch, while what is known as dev now was the 'rescue-exp' branch. Rescue has been merged into master, and rescue-exp has become dev. The use of the cloned repositories holding these branches is discouraged, they will only exist for a transition period before being removed.
+Code before the 0.5.0 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
 
 ## Development Applications
 
@@ -53,9 +50,10 @@ For a while, what has become the 0.4.0 release was known as the 'rescue' branch,
 
  The Samples app, in Applications/Android/Samples, is a sample app for Android demonstrating mapsforge capabilities and a good starting point if you want to develop your own mapsforge-based app.
 - The Samples app in Applications/Android/Samples is meant as a template and test case for building apps based on this version.
+- There is now a MapViewerTemplate class for building Android apps, that gives simple hooks to implement an Android based applicaiton. For its use refer to the Samples app. 
 - After a successful build, you will find the Samples apk in Applications/Android/Samples/build/apk
 - To run the Samples app, you will need to install a map called 'germany.map' onto the sdcard of a device or emulator.
-- It is probably best if the map contains the area of central Berlin
+- It is probably best if the map contains the area of central Berlin.
 
 ### Swing Map Viewer
 
@@ -67,7 +65,7 @@ The SwingMapViewer is a simple Java only app useful for testing maps.
 
 Gradle is the new build system favoured by Google for Android builds. Android Studio, the new IDE provided by Google for building Android apps, integrates nicely with Gradle. 
 
-The current version for building mapsforge is Gradle 2,1.
+The current version for building mapsforge is Gradle 2.1.
 
 After checking out the code, a build from the command line should be as easy as 
 
@@ -91,6 +89,7 @@ A second way to build mapsforge is using maven. This was the original way of bui
 The mapsforge project uses the free [Apache maven](http://maven.apache.org/) tool to automatize the build process. Both version 2 and version 3 can be used. If you want to learn more about maven, please refer to the [official documentation](http://maven.apache.org/guides/index.html).
 
 To start a complete build of all modules, open a command prompt, change to the directory which contains the copy of the mapsforge repository and execute the following command:
+    
     mvn clean install
 
 This will tell maven to delete any pre-existing generated files and directories during the build. Although the cleanup step is not always needed, we recommend to do so every time in order to avoid problems and have repeatable results.
@@ -133,10 +132,10 @@ Without these steps, you may have issues with the app crashing with a `java.lang
 
 As an open source project, we welcome new contributors and appreciate your help.
 
-Before you start working on an unresolved issue or try to implement a new feature, please contact us via our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list. You may also create a new issue or comment on an existing one to describe your ideas. We will then discuss the best way to realize your proposal and figure out how we can help you to get started quickly.
+Before you start working on an unresolved issue or try to implement a new feature, please contact us via our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list. 
 
-If you are only requesting a small change in the code, you may attach a patch file to the corresponding issue. Make sure that your patch is derived from the latest version in our repository, otherwise we might be unable to apply it. Please follow our code and style conventions. Detailed information about them can be found in the [[Project Conventions|Project conventions]] article.
+You may also create a new issue on [Github](https://github.com/mapsforge/mapsforge/issues) or comment on an existing one to describe your ideas. We will then discuss the best way to realize your proposal and figure out how we can help you to get started quickly.
 
-Besides writing code, improving our written documentation and keeping our issue tracker up-to-date is equally important. Participating in this way, you are required to have a [Google account](https://accounts.google.com/). We will grant potentially required permissions on individual basis and request.
+If you are only requesting a small change in the code, you may attach a patch file to the corresponding issue, but it is best to create a pull request on Github. Make sure that your patch is derived from the latest version in our repository, otherwise we might be unable to apply it. Please follow our code and style conventions. Detailed information about them can be found in the [Project Conventions](Project-Conventions.md) article.
 
 Please note that the mapsforge project is licenced under the [GNU LGPL3 licence](http://www.gnu.org/licenses/lgpl.html). Thus, all your contributions are going to be published under this license.

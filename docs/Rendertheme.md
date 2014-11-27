@@ -100,7 +100,15 @@ You can find the full xsd in the mapsforge repository at https://code.google.com
 But if you want to develop your renderthemes further, Rendertheme V4 offers a number of enhancements. If you want to make use of the new features, you will first need to set your rendertheme version in the header to 4:
 
     <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    	xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme-v4.xsd" version="4" map-background="#f8f8f8">
+    	xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme-v4.xsd" version="4" map-background="#f8f8f8" map-background-outside="#dddddd">
+
+
+###Header Elements
+ 
+The following header elements can be used:
+ - version: should be "4" now.
+ - map-background: a color value to set the color of a blank tile. This should not be used to set the color of the sea or land. 
+ - map-background-outside: a color value to set the color of the background of a map outside the map area. Effectively everything outside the map area will be overwritten by this color. For transparent layers, the color value will be ignored, but the outside area will be erased to transparent.  
 
 ## Stylemenus
 
@@ -193,6 +201,11 @@ Labels and icons are now drawn in order of priority, higher priorities first. Th
     			<caption priority="40" k="name" font-style="bold" font-size="11" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
     		</rule>
 
+## Display
+The display directive has been added whereever priorities can be used. The following values can be used:
+ - always: an element will always be displayed regardless of space. 
+ - ifspace: an element will only be displayed if the layout algorithm determines there is space and no higher priority element will take it. 
+ - never: an element is not displayed. This is useful to blank out elements.
 
 ## SVG Symbols
 
