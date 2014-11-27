@@ -105,6 +105,8 @@ public class Samples extends Activity {
 				"Changing bitmaps"));
 		linearLayout.addView(createButton(OverlayWithoutBaseMapViewer.class,
 				"Just Overlays, No Map"));
+		linearLayout.addView(createButton(TwoMaps.class, "Two Maps Overlaid"));
+
 
 
 		linearLayout.addView(createLabel("User Interaction"));
@@ -136,7 +138,6 @@ public class Samples extends Activity {
 				"Changing Tile Size"));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class,
 				"Stacked Tiles"));
-
 		linearLayout.addView(createButton(NoXMLLayout.class, "Without XML Layout"));
 		linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Osmarender (deprecated)"));
 
