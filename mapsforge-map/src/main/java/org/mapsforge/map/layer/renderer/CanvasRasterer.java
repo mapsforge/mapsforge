@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
@@ -78,6 +79,19 @@ class CanvasRasterer {
 		if (GraphicUtils.getAlpha(color) > 0) {
 			this.canvas.fillColor(color);
 		}
+	}
+
+	/**
+	 * Fills the area outside the specificed rectangle with color. Use this method when
+	 * overpainting with a transparent color as it sets the PorterDuff mode.
+	 * This method is used to blank out areas that fall outside the map area.
+	 * @param color the fill color for the outside area
+	 * @param insideArea the inside area on which not to draw
+	 */
+	void fillOutsideAreas(Color color, Rectangle insideArea) {
+		this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+		this.canvas.fillColor(color);
+		this.canvas.resetClip();
 	}
 
 	/**

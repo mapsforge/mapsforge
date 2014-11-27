@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Position;
@@ -291,14 +292,20 @@ public class DatabaseRenderer implements RenderCallback {
 			if (this.renderTheme.hasMapBackgroundOutside()) {
 				// blank out all areas outside of map
 				Rectangle insideArea = this.mapDatabase.getMapFileInfo().boundingBox.getPositionRelativeToTile(rendererJob.tile);
-				this.canvasRasterer.fillOutsideAreas(this.renderTheme.getMapBackgroundOutside(), insideArea);
+				if (!rendererJob.hasAlpha) {
+					this.canvasRasterer.fillOutsideAreas(this.renderTheme.getMapBackgroundOutside(), insideArea);
+				} else {
+					this.canvasRasterer.fillOutsideAreas(Color.TRANSPARENT, insideArea);
+				}
 			}
 		} else {
 			// tile is entirely outside the map area, so draw everything with outside
 			// color
 			bitmap = this.graphicFactory.createTileBitmap(tileSize, rendererJob.hasAlpha);
 			this.canvasRasterer.setCanvasBitmap(bitmap);
-			this.canvasRasterer.fill(this.renderTheme.getMapBackgroundOutside());
+			if (!rendererJob.hasAlpha) {
+				this.canvasRasterer.fill(this.renderTheme.getMapBackgroundOutside());
+			}
 		}
 
 		return bitmap;
