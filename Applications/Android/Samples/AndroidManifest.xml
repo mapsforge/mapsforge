@@ -64,6 +64,10 @@
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="RenderTheme V4"/>
 		<activity
+			android:name=".TwoMaps"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:label="Two Maps Overlaid"/>
+		<activity
 			android:name=".RenderThemeChanger"
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="Automatically changes between renderthemes on SDCard"/>
