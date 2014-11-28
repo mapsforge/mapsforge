@@ -60,7 +60,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 
 ## Plugin Installation
 
-- Download the  [map-writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.4.0-rc1.jar) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
+- Download the  [map-writer plugin](http://ci.mapsforge.org/job/0.5.0-rc3/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0-rc3.jar) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
 1. Copy the downloaded plugin to $USER_HOME/.openstreetmap/osmosis/plugins (Linux) or Application Data\Openstreetmap\Osmosis\Plugins (Windows).
 1. Copy the downloaded plugin to subdirectory plugins in the current directory.
 1. Use the Osmosis parameter ‘-plugin <plugin_qualified_classname>’ to load the plugin. The qualified classname of the map-writer is ‘org.mapsforge.map.writer.osmosis.MapFileWriterPluginLoader’.
@@ -85,6 +85,17 @@ The currently realeased version of the map-writer gives you the choice of either
 
 We recommend using the main memory mode only for small input files (< 200 MB in PBF format) as it requires quite a huge amount of memory (about ten times the size of the input file).
 
+## Land/Sea Feature Encoding
+For a minimum compatibility of maps generated, the following standard for encoding land and sea areas is suggested:
+ - either have a single sea polygon at the bottom or more complex sea polygons (this is really up to map makers to decide, the single sea polygon is smaller in the map file but has the effect of some double drawing), tag natural=sea
+ - define land areas with tag natural=nosea
+ - everything else
+
+It is encouraged to include land/sea areas for the entire bbox of the map (so even if the real map data covers just one irregularly shaped polygon, the land/sea should be for the whole bbox), the overhead is often not great and the result looks much better on maps.
+
+The old practice of implicitly assuming that the background is land-coloured and not defining land areas is deprecated. 
+
+
 ## Defining a Custom Tag Mapping via XML
 
 This section describes how to configure the ***known tag set*** via an XML file. The *known tag set* comprises all OSM tags (for ways and POIs) that are known to the renderer. You can use the XML configuration to define which subset of the known tag set should be included in the map file and to configure the zoom levels on which map objects first appear.
@@ -94,14 +105,15 @@ Please consult the XML-Schmea documentation of http://code.google.com/p/mapsforg
 
 You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article [## Feedback
 
-Please report any bugs and feature requests via the [http://code.google.com/p/mapsforge/issues/list mapsforge issue tracking](RenderThemeAPI].).
+Please report any bugs and feature requests via [Github issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
 ## Changelog
 
 ### 0.5.0
-There are no significant changes in 0.5.0 and the mapfile format has not changed.
- - Some smaller changes to the tag-mapping.xml (remove trees)
- - Heuristics to only encode certain ways as areas
+The mapfile format has not changed in 0.5.0, but the creation process has changed somewhat and it is recommended to use the latest version of the map file writer.
+ - The encoding of multi-polygons is now much more efficient as multi-polygons are clipped to tile boundaries. Previous versions resulted in very large files that then triggered OOM situations in the map file reader.
+ - Some smaller changes to the tag-mapping.xml (remove trees, duplicates).
+ - Heuristics to only encode certain ways as areas.
 
 ### 0.4.0
 
