@@ -139,6 +139,14 @@
 
 	</stylemenu>
 
+	<rule e="way" k="natural" v="issea|sea">
+		<area fill="#B3DDFF"/>
+	</rule>
+
+	<rule e="way" k="natural" v="nosea">
+		<area fill="#F8F8F8"/>
+	</rule>
+
 	-<!-- land/sea -->
 	<rule cat="nature" e="way" k="natural" v="coastline">
 		<rule e="way" k="*" v="*" closed="no">
@@ -151,10 +159,6 @@
 
 	<rule cat="nature" e="way" k="natural" v="land">
 		<area fill="#BBF8F8F8" stroke="#F8F8F8" stroke-width="0.1"/>
-	</rule>
-
-	<rule e="way" k="natural" v="issea">
-		<area fill="#B3DDFF"/>
 	</rule>
 
 	<!-- landuse -->

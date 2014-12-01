@@ -179,6 +179,10 @@
 	<ways>
 		<osm-tag key="lock" value="yes" zoom-appear="14" />
 
+		<!-- mapsforge artificial tags for land/sea areas, do not remove -->
+		<osm-tag key="natural" value="sea" zoom-appear="0" />
+		<osm-tag key="natural" value="nosea" zoom-appear="0" />
+
 		<osm-tag key="natural" value="beach" zoom-appear="10" />
 		<osm-tag key="natural" value="coastline" zoom-appear="0" />
 		<osm-tag key="natural" value="fell" zoom-appear="10" />
