@@ -162,7 +162,7 @@ public final class MapFileWriter {
 				}
 			}
 
-			if (originalGeometry.getCoordinates().length > 5000) {
+			if (processedGeometry.getCoordinates().length > 2000 ) {
 				LOGGER.info("Large geometry " + this.way.getId() + " (" + processedGeometry.getCoordinates().length + " coords, down from " + originalGeometry.getCoordinates().length + " coords)");
 			}
 
