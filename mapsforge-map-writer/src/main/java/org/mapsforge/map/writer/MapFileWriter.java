@@ -385,6 +385,13 @@ public final class MapFileWriter {
 		LOGGER.info("Finished writing file.");
 	}
 
+	/**
+	 * Cleans up thread pool. Must only be called at the end of processing.
+	 */
+	public static void release() {
+		EXECUTOR_SERVICE.shutdown();
+	}
+
 	static byte infoByteOptmizationParams(MapWriterConfiguration configuration) {
 		byte infoByte = 0;
 
