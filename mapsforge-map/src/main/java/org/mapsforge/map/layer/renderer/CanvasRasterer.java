@@ -68,7 +68,9 @@ class CanvasRasterer {
 		// but we need to draw in priority order as we now allow overlaps. So we
 		// convert into list, then sort, then draw.
 		List<MapElementContainer> elementsAsList = new ArrayList<MapElementContainer>(elements);
-		Collections.sort(elementsAsList, Collections.reverseOrder());
+		// draw elements in order of priority: lower priority first, so more important
+		// elements will be drawn on top (in case of display=true) items.
+		Collections.sort(elementsAsList);
 
 		for (MapElementContainer element : elementsAsList) {
 			element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
