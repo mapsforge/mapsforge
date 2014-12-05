@@ -94,6 +94,15 @@ public final class GeoUtils {
 		// clip the geometry by intersection with the bounding box of the tile
 		// may throw a TopologyException
 		try {
+			if (!geometry.isValid()) {
+				// this should stop the problem of non-noded intersections that trigger an error when
+				// clipping
+				LOGGER.log(Level.WARNING, "invalid geometry prior to tile clipping, trying to repair " + way.getId());
+				geometry = JTSUtils.repairInvalidPolygon(geometry);
+				if (!geometry.isValid()) {
+					LOGGER.log(Level.WARNING, "invalid geometry even after attempt to fix " + way.getId());
+				}
+			}
 			ret = tileBBJTS.intersection(geometry);
 			// according to Ludwig (see issue332) valid polygons may become invalid by clipping (at least
 			// in the Python shapely library
@@ -104,7 +113,7 @@ public final class GeoUtils {
 				ret = JTSUtils.repairInvalidPolygon(ret);
 				if (ret == null) {
 					way.setInvalid(true);
-					LOGGER.log(Level.WARNING, "could not repait invalid polygon: " + way.getId());
+					LOGGER.log(Level.WARNING, "could not repair invalid polygon: " + way.getId());
 				}
 			}
 		} catch (TopologyException e) {
