@@ -1,12 +1,12 @@
 # Downloads for Developers
 
 
-# 0.5.0 Release Candidate 3 0.5.0-rc3 Downloads
+# 0.5.0 Release Candidate 4 0.5.0-rc4 Downloads
 
-These are the downloads for version 0.5.0-rc3:
+These are the downloads for version 0.5.0-rc4:
 
-- [Samples app](http://ci.mapsforge.org/job/0.5.0-rc3/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
-- [jars](http://ci.mapsforge.org/job/0.5.0-rc3/)
+- [Samples app](http://ci.mapsforge.org/job/0.5.0-rc4/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
+- [jars](http://ci.mapsforge.org/job/0.5.0-rc4/)
  
 # Release 0.4.0 Downloads
 

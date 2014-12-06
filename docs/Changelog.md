@@ -6,6 +6,14 @@
 
 In preparation.
 
+## Version 0.5.0-rc4
+**2014-12-05**
+
+ - Changes to support the new standard for encoding land/sea area. 
+ - Fix for #332 (invalid geometries in map writer).
+ - Fix for #549 (ordering of label drawing).
+ - Documentation updates. 
+
 ## Version 0.5.0-rc3
 **2014-11-27**
 
