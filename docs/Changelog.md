@@ -3,8 +3,9 @@
 <wiki:toc />
 
 ## Version 0.5.0
+**2014-12-08**
 
-In preparation.
+Release 0.5.0 is, apart from minor documentation changes, identical to 0.5.0-rc4.
 
 ## Version 0.5.0-rc4
 **2014-12-05**

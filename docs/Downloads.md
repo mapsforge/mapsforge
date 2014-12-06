@@ -1,16 +1,17 @@
 # Downloads for Developers
 
 
-# 0.5.0 Release Candidate 4 0.5.0-rc4 Downloads
+# Release 0.5.0 Downloads
 
-These are the downloads for version 0.5.0-rc4:
+These are the downloads for version 0.5.0:
 
-- [Samples app](http://ci.mapsforge.org/job/0.5.0-rc4/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
-- [jars](http://ci.mapsforge.org/job/0.5.0-rc4/)
- 
+- [Samples 0.5.0 application](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/apk/Samples-debug-unaligned.apk)
+- [Release 0.5.0 jars](http://ci.mapsforge.org/job/release-0.5.0/)
+- [Writer plugin](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0.jar) 
+
 # Release 0.4.0 Downloads
 
-These are the downloads for version 0.4.0:
+These are the downloads for version 0.4.0. If possible use the newer release, we cannot offer support for 0.4.0 and all changes will be made on top of the newer release.
 
 - [Samples 0.4.0 application](http://ci.mapsforge.org/job/release-0.4.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/apk/Samples-debug-unaligned.apk)
 - [Release 0.4.0 jars](http://ci.mapsforge.org/job/release-0.4.0/)
