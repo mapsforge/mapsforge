@@ -3,7 +3,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.13.+'
+    classpath 'com.android.tools.build:gradle:0.14.+'
   }
 }
 
@@ -50,7 +50,9 @@ configure(filterProjects(project.javaprojects)) {
   
   checkstyle {
     showViolations = false  // turn on for reporting
-    configFile = new File("config/checkstyle/checkstyle.xml")
+    // as of Gradle 2.2.1 every sub project seems to require a checkstyle file, this
+    // directive forces all projects to use the shared file in the root project
+    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
   }
 
   // set java source encoding, otherwise some tests fail
