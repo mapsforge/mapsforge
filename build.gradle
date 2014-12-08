@@ -3,7 +3,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.14.+'
+    classpath 'com.android.tools.build:gradle:1.0.0'
   }
 }
 
@@ -15,7 +15,7 @@ def filterProjects(filter) {
 allprojects {
   group = 'org.mapsforge'
   version = 'dev-SNAPSHOT'
-  ext.androidBuildVersionTools = "21.0.1"
+  ext.androidBuildVersionTools = "21.1.1"
   ext.jUnitVersion = "4.11"
   description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 }
