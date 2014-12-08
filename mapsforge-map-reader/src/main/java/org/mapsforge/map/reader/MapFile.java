@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,7 +29,7 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.reader.header.FileOpenResult;
+import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.reader.header.SubFileParameter;
@@ -36,11 +37,13 @@ import org.mapsforge.map.reader.header.SubFileParameter;
 /**
  * A class for reading binary map files.
  * <p>
- * This class is not thread-safe. Each thread should use its own instance.
- * 
+ * The readMapData method is now thread safe, but care should be taken that not too much data is
+ * read at the same time (keep simultaneous requests to minimum)
+ *
  * @see <a href="https://code.google.com/p/mapsforge/wiki/SpecificationBinaryMapFile">Specification</a>
  */
-public class MapDatabase {
+public class MapFile implements MapDataStore {
+
 	/**
 	 * Bitmask to extract the block offset from an index entry.
 	 */
@@ -76,7 +79,7 @@ public class MapDatabase {
 	 */
 	private static final String INVALID_FIRST_WAY_OFFSET = "invalid first way offset: ";
 
-	private static final Logger LOGGER = Logger.getLogger(MapDatabase.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(MapFile.class.getName());
 
 	/**
 	 * Bitmask for the optional POI feature "elevation".
@@ -190,16 +193,15 @@ public class MapDatabase {
 	 */
 	private static final int WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 
-	private IndexCache databaseIndexCache;
-	private long fileSize;
-	private RandomAccessFile inputFile;
-	private MapFileHeader mapFileHeader;
-	private ReadBuffer readBuffer;
-	private String signatureBlock;
-	private String signaturePoi;
-	private String signatureWay;
-	private double tileLatitude;
-	private double tileLongitude;
+	private final IndexCache databaseIndexCache;
+	private final long fileSize;
+	private final RandomAccessFile inputFile;
+	private final MapFileHeader mapFileHeader;
+	private final ReadBuffer readBuffer;
+
+
+	/* Only for testing, an empty file. */
+	public static final MapFile TEST_MAP_FILE = new MapFile();
 
 	/**
 	 * Way filtering reduces the number of ways returned to only those that are
@@ -213,24 +215,69 @@ public class MapDatabase {
 	public static boolean wayFilterEnabled = true;
 	public static int wayFilterDistance = 20;
 
+
+		/**
+		 * Opens the given map file, reads its header data and validates them.
+		 *
+		 * @param mapFile the map file.
+		 * @throws MapFileException if the given map file is null or invalid.
+		 */
+	public MapFile(File mapFile) {
+		if (mapFile == null) {
+			throw new MapFileException("mapFile must not be null");
+		}
+		try {
+			// check if the file exists and is readable
+			if (!mapFile.exists()) {
+				throw new MapFileException("file does not exist: " + mapFile);
+			} else if (!mapFile.isFile()) {
+				throw new MapFileException("not a file: " + mapFile);
+			} else if (!mapFile.canRead()) {
+				throw new MapFileException("cannot read file: " + mapFile);
+			}
+
+			// open the file in read only mode
+			this.inputFile = new RandomAccessFile(mapFile, READ_ONLY_MODE);
+			this.fileSize = this.inputFile.length();
+
+			this.readBuffer = new ReadBuffer(this.inputFile);
+			this.mapFileHeader = new MapFileHeader();
+			this.mapFileHeader.readHeader(this.readBuffer, this.fileSize);
+			this.databaseIndexCache = new IndexCache(this.inputFile, INDEX_CACHE_SIZE);
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, null, e);
+			// make sure that the file is closed
+			closeFile();
+			throw new MapFileException(e.getMessage());
+		}
+	}
+
+	/**
+	 * Opens the given map file, reads its header data and validates them.
+	 *
+	 * @param mapFileName the path of the map file.
+	 * @throws MapFileException if the given map file is null or invalid or IOException if the file
+	 * cannot be opened.
+	 */
+	public MapFile(String mapFileName) {
+		this(new File(mapFileName));
+	}
+
+	public BoundingBox boundingBox() {
+		return getMapFileInfo().boundingBox;
+	}
+
+	public void close() {
+		closeFile();
+	}
+
 	/**
 	 * Closes the map file and destroys all internal caches. Has no effect if no map file is currently opened.
 	 */
-	public void closeFile() {
+	private void closeFile() {
 		try {
-			this.mapFileHeader = null;
-
-			if (this.databaseIndexCache != null) {
-				this.databaseIndexCache.destroy();
-				this.databaseIndexCache = null;
-			}
-
-			if (this.inputFile != null) {
-				this.inputFile.close();
-				this.inputFile = null;
-			}
-
-			this.readBuffer = null;
+			this.databaseIndexCache.destroy();
+			this.inputFile.close();
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, null, e);
 		}
@@ -242,77 +289,18 @@ public class MapDatabase {
 	 *             if no map is currently opened.
 	 */
 	public MapFileInfo getMapFileInfo() {
-		if (this.mapFileHeader == null) {
-			throw new IllegalStateException("no map file is currently opened");
-		}
 		return this.mapFileHeader.getMapFileInfo();
 	}
 
 	/**
-	 * @return true if a map file is currently opened, false otherwise.
-	 */
-	public boolean hasOpenFile() {
-		return this.inputFile != null;
-	}
-
-	/**
-	 * Opens the given map file, reads its header data and validates them.
-	 * 
-	 * @param mapFile
-	 *            the map file.
-	 * @return a FileOpenResult containing an error message in case of a failure.
-	 * @throws IllegalArgumentException
-	 *             if the given map file is null.
-	 */
-	public FileOpenResult openFile(File mapFile) {
-		try {
-			if (mapFile == null) {
-				throw new IllegalArgumentException("mapFile must not be null");
-			}
-
-			// make sure to close any previously opened file first
-			closeFile();
-
-			// check if the file exists and is readable
-			if (!mapFile.exists()) {
-				return new FileOpenResult("file does not exist: " + mapFile);
-			} else if (!mapFile.isFile()) {
-				return new FileOpenResult("not a file: " + mapFile);
-			} else if (!mapFile.canRead()) {
-				return new FileOpenResult("cannot read file: " + mapFile);
-			}
-
-			// open the file in read only mode
-			this.inputFile = new RandomAccessFile(mapFile, READ_ONLY_MODE);
-			this.fileSize = this.inputFile.length();
-
-			this.readBuffer = new ReadBuffer(this.inputFile);
-			this.mapFileHeader = new MapFileHeader();
-			FileOpenResult fileOpenResult = this.mapFileHeader.readHeader(this.readBuffer, this.fileSize);
-			if (!fileOpenResult.isSuccess()) {
-				closeFile();
-				return fileOpenResult;
-			}
-
-			return FileOpenResult.SUCCESS;
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-			// make sure that the file is closed
-			closeFile();
-			return new FileOpenResult(e.getMessage());
-		}
-	}
-
-	/**
 	 * Reads all map data for the area covered by the given tile at the tile zoom level.
-	 * 
+	 *
 	 * @param tile
 	 *            defines area and zoom level of read map data.
 	 * @return the read map data.
 	 */
 	public MapReadResult readMapData(Tile tile) {
 		try {
-			prepareExecution();
 			QueryParameters queryParameters = new QueryParameters();
 			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
 
@@ -323,8 +311,8 @@ public class MapDatabase {
 				return null;
 			}
 
-			QueryCalculations.calculateBaseTiles(queryParameters, tile, subFileParameter);
-			QueryCalculations.calculateBlocks(queryParameters, subFileParameter);
+			queryParameters.calculateBaseTiles(tile, subFileParameter);
+			queryParameters.calculateBlocks(subFileParameter);
 
 			// we enlarge the bounding box for the tile slightly in order to retain any data that
 			// lies right on the border, some of this data needs to be drawn as the graphics will
@@ -336,13 +324,42 @@ public class MapDatabase {
 		}
 	}
 
-	private void decodeWayNodesDoubleDelta(LatLong[] waySegment) {
+	/**
+	 * Restricts returns of data to zoom level range specified. This can be used to restrict
+	 * the use of this map data base when used in MultiMapDatabase settings.
+	 * @param minZoom minimum zoom level supported
+	 * @param maxZoom maximum zoom level supported
+	 */
+	public void restrictToZoomRange(byte minZoom, byte maxZoom) {
+		this.getMapFileInfo().zoomLevelMax = maxZoom;
+		this.getMapFileInfo().zoomLevelMin = minZoom;
+	}
+
+	public LatLong startPosition() {
+		if (null != getMapFileInfo().startPosition) {
+			return getMapFileInfo().startPosition;
+		}
+		return getMapFileInfo().boundingBox.getCenterPoint();
+	}
+
+	public Byte startZoomLevel() {
+		return getMapFileInfo().startZoomLevel;
+	}
+
+	public boolean supportsTile(Tile tile) {
+		if (getMapFileInfo().supportsZoomLevel(tile.zoomLevel)) {
+			return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
+		}
+		return false;
+	}
+
+	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
 		// get the first way node latitude offset (VBE-S)
-		double wayNodeLatitude = this.tileLatitude
+		double wayNodeLatitude = tileLatitude
 				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// get the first way node longitude offset (VBE-S)
-		double wayNodeLongitude = this.tileLongitude
+		double wayNodeLongitude = tileLongitude
 				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// store the first way node
@@ -371,13 +388,13 @@ public class MapDatabase {
 		}
 	}
 
-	private void decodeWayNodesSingleDelta(LatLong[] waySegment) {
+	private void decodeWayNodesSingleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
 		// get the first way node latitude single-delta offset (VBE-S)
-		double wayNodeLatitude = this.tileLatitude
+		double wayNodeLatitude = tileLatitude
 				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// get the first way node longitude single-delta offset (VBE-S)
-		double wayNodeLongitude = this.tileLongitude
+		double wayNodeLongitude = tileLongitude
 				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// store the first way node
@@ -397,21 +414,15 @@ public class MapDatabase {
 	/**
 	 * Logs the debug signatures of the current way and block.
 	 */
-	private void logDebugSignatures() {
+	private void logDebugSignatures(String signatureBlock, String signatureWay) {
 		if (this.mapFileHeader.getMapFileInfo().debugFile) {
-			LOGGER.warning(DEBUG_SIGNATURE_WAY + this.signatureWay);
-			LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
-		}
-	}
-
-	private void prepareExecution() {
-		if (this.databaseIndexCache == null) {
-			this.databaseIndexCache = new IndexCache(this.inputFile, INDEX_CACHE_SIZE);
+			LOGGER.warning(DEBUG_SIGNATURE_WAY + signatureWay);
+			LOGGER.warning(DEBUG_SIGNATURE_BLOCK + signatureBlock);
 		}
 	}
 
 	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                  BoundingBox boundingBox) {
+	                                  BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
 		if (!processBlockSignature()) {
 			return null;
 		}
@@ -425,9 +436,6 @@ public class MapDatabase {
 		int firstWayOffset = this.readBuffer.readUnsignedInt();
 		if (firstWayOffset < 0) {
 			LOGGER.warning(INVALID_FIRST_WAY_OFFSET + firstWayOffset);
-			if (this.mapFileHeader.getMapFileInfo().debugFile) {
-				LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
-			}
 			return null;
 		}
 
@@ -435,15 +443,12 @@ public class MapDatabase {
 		firstWayOffset += this.readBuffer.getBufferPosition();
 		if (firstWayOffset > this.readBuffer.getBufferSize()) {
 			LOGGER.warning(INVALID_FIRST_WAY_OFFSET + firstWayOffset);
-			if (this.mapFileHeader.getMapFileInfo().debugFile) {
-				LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
-			}
 			return null;
 		}
 
 		boolean filterRequired = queryParameters.queryZoomLevel > subFileParameter.baseZoomLevel;
 
-		List<PointOfInterest> pois = processPOIs(poisOnQueryZoomLevel, boundingBox, filterRequired);
+		List<PointOfInterest> pois = processPOIs(tileLatitude, tileLongitude, poisOnQueryZoomLevel, boundingBox, filterRequired);
 		if (pois == null) {
 			return null;
 		}
@@ -451,16 +456,13 @@ public class MapDatabase {
 		// finished reading POIs, check if the current buffer position is valid
 		if (this.readBuffer.getBufferPosition() > firstWayOffset) {
 			LOGGER.warning("invalid buffer position: " + this.readBuffer.getBufferPosition());
-			if (this.mapFileHeader.getMapFileInfo().debugFile) {
-				LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
-			}
 			return null;
 		}
 
 		// move the pointer to the first way
 		this.readBuffer.setBufferPosition(firstWayOffset);
 
-		List<Way> ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox, filterRequired);
+		List<Way> ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox, filterRequired, tileLatitude, tileLongitude);
 		if (ways == null) {
 			return null;
 		}
@@ -544,13 +546,13 @@ public class MapDatabase {
 				}
 
 				// calculate the top-left coordinates of the underlying tile
-				this.tileLatitude = MercatorProjection.tileYToLatitude(subFileParameter.boundaryTileTop + row,
+				double tileLatitude = MercatorProjection.tileYToLatitude(subFileParameter.boundaryTileTop + row,
 						subFileParameter.baseZoomLevel);
-				this.tileLongitude = MercatorProjection.tileXToLongitude(subFileParameter.boundaryTileLeft + column,
+				double tileLongitude = MercatorProjection.tileXToLongitude(subFileParameter.boundaryTileLeft + column,
 						subFileParameter.baseZoomLevel);
 
 				try {
-					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox);
+					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox, tileLatitude, tileLongitude);
 					if (poiWayBundle != null) {
 						mapReadResultBuilder.add(poiWayBundle);
 					}
@@ -570,41 +572,40 @@ public class MapDatabase {
 
 	/**
 	 * Processes the block signature, if present.
-	 * 
+	 *
 	 * @return true if the block signature could be processed successfully, false otherwise.
 	 */
 	private boolean processBlockSignature() {
 		if (this.mapFileHeader.getMapFileInfo().debugFile) {
 			// get and check the block signature
-			this.signatureBlock = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_BLOCK);
-			if (!this.signatureBlock.startsWith("###TileStart")) {
-				LOGGER.warning("invalid block signature: " + this.signatureBlock);
+			String signatureBlock = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_BLOCK);
+			if (!signatureBlock.startsWith("###TileStart")) {
+				LOGGER.warning("invalid block signature: " + signatureBlock);
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private List<PointOfInterest> processPOIs(int numberOfPois, BoundingBox boundingBox, boolean filterRequired) {
+	private List<PointOfInterest> processPOIs(double tileLatitude, double tileLongitude, int numberOfPois, BoundingBox boundingBox, boolean filterRequired) {
 		List<PointOfInterest> pois = new ArrayList<PointOfInterest>();
 		Tag[] poiTags = this.mapFileHeader.getMapFileInfo().poiTags;
 
 		for (int elementCounter = numberOfPois; elementCounter != 0; --elementCounter) {
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
 				// get and check the POI signature
-				this.signaturePoi = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_POI);
-				if (!this.signaturePoi.startsWith("***POIStart")) {
-					LOGGER.warning("invalid POI signature: " + this.signaturePoi);
-					LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+				String signaturePoi = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_POI);
+				if (!signaturePoi.startsWith("***POIStart")) {
+					LOGGER.warning("invalid POI signature: " + signaturePoi);
 					return null;
 				}
 			}
 
 			// get the POI latitude offset (VBE-S)
-			double latitude = this.tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double latitude = tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the POI longitude offset (VBE-S)
-			double longitude = this.tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double longitude = tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the special byte which encodes multiple flags
 			byte specialByte = this.readBuffer.readByte();
@@ -621,10 +622,6 @@ public class MapDatabase {
 				int tagId = this.readBuffer.readUnsignedInt();
 				if (tagId < 0 || tagId >= poiTags.length) {
 					LOGGER.warning("invalid POI tag ID: " + tagId);
-					if (this.mapFileHeader.getMapFileInfo().debugFile) {
-						LOGGER.warning(DEBUG_SIGNATURE_POI + this.signaturePoi);
-						LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
-					}
 					return null;
 				}
 				tags.add(poiTags[tagId]);
@@ -664,12 +661,11 @@ public class MapDatabase {
 		return pois;
 	}
 
-	private LatLong[][] processWayDataBlock(boolean doubleDeltaEncoding) {
+	private LatLong[][] processWayDataBlock(double tileLatitude, double tileLongitude, boolean doubleDeltaEncoding) {
 		// get and check the number of way coordinate blocks (VBE-U)
 		int numberOfWayCoordinateBlocks = this.readBuffer.readUnsignedInt();
 		if (numberOfWayCoordinateBlocks < 1 || numberOfWayCoordinateBlocks > Short.MAX_VALUE) {
 			LOGGER.warning("invalid number of way coordinate blocks: " + numberOfWayCoordinateBlocks);
-			logDebugSignatures();
 			return null;
 		}
 
@@ -682,7 +678,6 @@ public class MapDatabase {
 			int numberOfWayNodes = this.readBuffer.readUnsignedInt();
 			if (numberOfWayNodes < 2 || numberOfWayNodes > Short.MAX_VALUE) {
 				LOGGER.warning("invalid number of way nodes: " + numberOfWayNodes);
-				logDebugSignatures();
 				// returning null here will actually leave the tile blank as the
 				// position on the ReadBuffer will not be advanced correctly. However,
 				// it will not crash the app.
@@ -693,9 +688,9 @@ public class MapDatabase {
 			LatLong[] waySegment = new LatLong[numberOfWayNodes];
 
 			if (doubleDeltaEncoding) {
-				decodeWayNodesDoubleDelta(waySegment);
+				decodeWayNodesDoubleDelta(waySegment, tileLatitude, tileLongitude);
 			} else {
-				decodeWayNodesSingleDelta(waySegment);
+				decodeWayNodesSingleDelta(waySegment, tileLatitude, tileLongitude);
 			}
 
 			wayCoordinates[coordinateBlock] = waySegment;
@@ -705,7 +700,8 @@ public class MapDatabase {
 	}
 
 	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays,
-	                              BoundingBox boundingBox, boolean filterRequired) {
+	                              BoundingBox boundingBox, boolean filterRequired,
+	                              double tileLatitude, double tileLongitude) {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
@@ -714,10 +710,9 @@ public class MapDatabase {
 		for (int elementCounter = numberOfWays; elementCounter != 0; --elementCounter) {
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
 				// get and check the way signature
-				this.signatureWay = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_WAY);
-				if (!this.signatureWay.startsWith("---WayStart")) {
-					LOGGER.warning("invalid way signature: " + this.signatureWay);
-					LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
+				String signatureWay = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_WAY);
+				if (!signatureWay.startsWith("---WayStart")) {
+					LOGGER.warning("invalid way signature: " + signatureWay);
 					return null;
 				}
 			}
@@ -726,9 +721,6 @@ public class MapDatabase {
 			int wayDataSize = this.readBuffer.readUnsignedInt();
 			if (wayDataSize < 0) {
 				LOGGER.warning("invalid way data size: " + wayDataSize);
-				if (this.mapFileHeader.getMapFileInfo().debugFile) {
-					LOGGER.warning(DEBUG_SIGNATURE_BLOCK + this.signatureBlock);
-				}
 				return null;
 			}
 
@@ -760,7 +752,6 @@ public class MapDatabase {
 				int tagId = this.readBuffer.readUnsignedInt();
 				if (tagId < 0 || tagId >= wayTags.length) {
 					LOGGER.warning("invalid way tag ID: " + tagId);
-					logDebugSignatures();
 					return null;
 				}
 				tags.add(wayTags[tagId]);
@@ -792,17 +783,16 @@ public class MapDatabase {
 				tags.add(new Tag(TAG_KEY_REF, this.readBuffer.readUTF8EncodedString()));
 			}
 
-			LatLong labelPosition = readOptionalLabelPosition(featureLabelPosition);
+			LatLong labelPosition = readOptionalLabelPosition(tileLatitude, tileLongitude, featureLabelPosition);
 
 			int wayDataBlocks = readOptionalWayDataBlocksByte(featureWayDataBlocksByte);
 			if (wayDataBlocks < 1) {
 				LOGGER.warning("invalid number of way data blocks: " + wayDataBlocks);
-				logDebugSignatures();
 				return null;
 			}
 
 			for (int wayDataBlock = 0; wayDataBlock < wayDataBlocks; ++wayDataBlock) {
-				LatLong[][] wayNodes = processWayDataBlock(featureWayDoubleDeltaEncoding);
+				LatLong[][] wayNodes = processWayDataBlock(tileLatitude, tileLongitude, featureWayDoubleDeltaEncoding);
 				if (wayNodes != null) {
 					if (filterRequired && wayFilterEnabled && !wayFilterBbox.intersectsArea(wayNodes)) {
 						continue;
@@ -815,13 +805,13 @@ public class MapDatabase {
 		return ways;
 	}
 
-	private LatLong readOptionalLabelPosition(boolean featureLabelPosition) {
+	private LatLong readOptionalLabelPosition(double tileLatitude, double tileLongitude, boolean featureLabelPosition) {
 		if (featureLabelPosition) {
 			// get the label position latitude offset (VBE-S)
-			double latitude = this.tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double latitude = tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			// get the label position longitude offset (VBE-S)
-			double longitude = this.tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+			double longitude = tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			return new LatLong(latitude, longitude);
 		}
@@ -855,4 +845,15 @@ public class MapDatabase {
 
 		return zoomTable;
 	}
+
+
+	private MapFile() {
+		// only to create a dummy empty file.
+		databaseIndexCache = null;
+		fileSize = 0;
+		inputFile = null;
+		mapFileHeader = null;
+		readBuffer = null;
+	}
 }
+

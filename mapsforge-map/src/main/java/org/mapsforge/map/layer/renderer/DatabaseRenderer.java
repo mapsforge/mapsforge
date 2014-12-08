@@ -46,11 +46,10 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.reader.MapReadResult;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.reader.Way;
-import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderTheme;
@@ -60,7 +59,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 
 /**
- * The DatabaseRenderer renders map tiles by reading from a {@link MapDatabase}.
+ * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.reader.MapFile}.
  *
  * Up to version 0.4.x the DatabaseRenderer was responsible for rendering ways, areas as
  * well as labels. However, the label placement algorithm suffered from multiple problems,
@@ -103,7 +102,7 @@ public class DatabaseRenderer implements RenderCallback {
 	private List<List<ShapePaintContainer>> drawingLayers;
 	private final GraphicFactory graphicFactory;
 	private final TileBasedLabelStore labelStore;
-	private final MapDatabase mapDatabase;
+	private final MapDataStore mapDatabase;
 	private XmlRenderTheme previousJobTheme;
 	private final boolean renderLabels;
 	private RenderTheme renderTheme;
@@ -118,7 +117,7 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory,
+	public DatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory,
 	                        TileBasedLabelStore labelStore) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
@@ -133,12 +132,12 @@ public class DatabaseRenderer implements RenderCallback {
 	/**
 	 * Constructs a new DatabaseRenderer that will draw labels onto the tiles.
 	 *
-	 * @param mapDatabase
+	 * @param mapFile
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDatabase mapDatabase, GraphicFactory graphicFactory,
+	public DatabaseRenderer(MapDataStore mapFile, GraphicFactory graphicFactory,
 	                        TileCache tileCache) {
-		this.mapDatabase = mapDatabase;
+		this.mapDatabase = mapFile;
 		this.graphicFactory = graphicFactory;
 
 		this.canvasRasterer = new CanvasRasterer(graphicFactory);
@@ -188,7 +187,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 		TileBitmap bitmap = null;
 
-		if (!this.renderTheme.hasMapBackgroundOutside() || this.mapDatabase.getMapFileInfo().boundingBox.intersects(rendererJob.tile.getBoundingBox())) {
+		if (!this.renderTheme.hasMapBackgroundOutside() || this.mapDatabase.supportsTile(rendererJob.tile)) {
 
 			setScaleStrokeWidth(zoomLevel);
 			this.renderTheme.scaleTextSize(rendererJob.textScale);
@@ -291,7 +290,7 @@ public class DatabaseRenderer implements RenderCallback {
 
 			if (this.renderTheme.hasMapBackgroundOutside()) {
 				// blank out all areas outside of map
-				Rectangle insideArea = this.mapDatabase.getMapFileInfo().boundingBox.getPositionRelativeToTile(rendererJob.tile);
+				Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(rendererJob.tile);
 				if (!rendererJob.hasAlpha) {
 					this.canvasRasterer.fillOutsideAreas(this.renderTheme.getMapBackgroundOutside(), insideArea);
 				} else {
@@ -311,22 +310,17 @@ public class DatabaseRenderer implements RenderCallback {
 		return bitmap;
 	}
 
-	public MapDatabase getMapDatabase() {
+	public MapDataStore getMapDatabase() {
 		return this.mapDatabase;
 	}
 
 	/**
 	 * @return the start point (may be null).
 	 */
-	public LatLong getStartPoint() {
-		if (this.mapDatabase != null && this.mapDatabase.hasOpenFile()) {
-			MapFileInfo mapFileInfo = this.mapDatabase.getMapFileInfo();
-			if (mapFileInfo.startPosition != null) {
-				return mapFileInfo.startPosition;
-			}
-			return mapFileInfo.boundingBox.getCenterPoint();
+	public LatLong getStartPosition() {
+		if (this.mapDatabase != null) {
+			return this.mapDatabase.startPosition();
 		}
-
 		return null;
 	}
 
@@ -334,13 +328,9 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @return the start zoom level (may be null).
 	 */
 	public Byte getStartZoomLevel() {
-		if (this.mapDatabase != null && this.mapDatabase.hasOpenFile()) {
-			MapFileInfo mapFileInfo = this.mapDatabase.getMapFileInfo();
-			if (mapFileInfo.startZoomLevel != null) {
-				return mapFileInfo.startZoomLevel;
-			}
+		if (this.mapDatabase != null && null != this.mapDatabase.startZoomLevel()) {
+			return this.mapDatabase.startZoomLevel();
 		}
-
 		return DEFAULT_START_ZOOM_LEVEL;
 	}
 

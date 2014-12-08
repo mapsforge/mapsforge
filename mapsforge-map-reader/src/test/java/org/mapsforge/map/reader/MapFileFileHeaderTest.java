@@ -20,10 +20,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
-import org.mapsforge.map.reader.header.FileOpenResult;
+import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
-public class MapDatabaseFileHeaderTest {
+public class MapFileFileHeaderTest {
 	private static final BoundingBox BOUNDING_BOX = new BoundingBox(0.1, 0.2, 0.3, 0.4);
 	private static final String COMMENT = "testcomment";
 	private static final String CREATED_BY = "mapsforge-map-writer-0.3.1-SNAPSHOT";
@@ -40,15 +40,10 @@ public class MapDatabaseFileHeaderTest {
 
 	@Test
 	public void getMapFileInfoTest() {
-		MapDatabase mapDatabase = new MapDatabase();
-		FileOpenResult fileOpenResult = mapDatabase.openFile(MAP_FILE);
-		Assert.assertTrue(fileOpenResult.getErrorMessage(), fileOpenResult.isSuccess());
+		MapFile mapFile = new MapFile(MAP_FILE);
 
-		MapFileInfo mapFileInfo = mapDatabase.getMapFileInfo();
-		mapDatabase.closeFile();
-
-		Assert.assertTrue(fileOpenResult.getErrorMessage(), fileOpenResult.isSuccess());
-		Assert.assertNull(fileOpenResult.getErrorMessage());
+		MapFileInfo mapFileInfo = mapFile.getMapFileInfo();
+		mapFile.close();
 
 		Assert.assertEquals(BOUNDING_BOX, mapFileInfo.boundingBox);
 		Assert.assertEquals(FILE_SIZE, mapFileInfo.fileSize);

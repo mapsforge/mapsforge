@@ -22,6 +22,7 @@ import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.common.PreferencesFacade;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 import android.os.Environment;
@@ -92,8 +93,8 @@ public class DualMapViewer extends RenderTheme4 {
 	/**
 	 * @return the map file for the second view
 	 */
-	protected File getMapFile2() {
-		return new File(Environment.getExternalStorageDirectory(), this.getMapFileName2());
+	protected MapFile getMapFile2() {
+		return new MapFile(new File(Environment.getExternalStorageDirectory(), this.getMapFileName2()));
 	}
 
 	/**

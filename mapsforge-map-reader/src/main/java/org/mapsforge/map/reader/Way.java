@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -49,4 +50,52 @@ public class Way {
 		this.latLongs = latLongs;
 		this.labelPosition = labelPosition;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof Way)) {
+			return false;
+		}
+		Way other = (Way) obj;
+		if (this.layer != other.layer) {
+			return false;
+		} else if (!this.tags.equals(other.tags)) {
+			return false;
+		} else if (this.labelPosition == null && other.labelPosition != null) {
+			return false;
+		} else if (this.labelPosition!= null && this.labelPosition.equals(other.labelPosition)) {
+			return false;
+		} else if (this.latLongs.length != other.latLongs.length) {
+			return false;
+		} else {
+			for (int i = 0; i < this.latLongs.length; i++) {
+				if (this.latLongs[i].length != other.latLongs[i].length) {
+					return false;
+				} else {
+					for (int j = 0; j < this.latLongs[i].length; j++) {
+						if (!latLongs[i][j].equals(other.latLongs[i][j])) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + layer;
+		result = prime * result + tags.hashCode();
+		result = prime * result + latLongs.hashCode();
+		if (labelPosition != null) {
+			result = prime * result + labelPosition.hashCode();
+		}
+		return result;
+	}
+
 }

@@ -22,10 +22,10 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.reader.header.FileOpenResult;
+import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
-public class MapDatabaseWithDataTest {
+public class MapFileWithDataTest {
 	private static final File MAP_FILE = new File("src/test/resources/with_data/output.map");
 	private static final byte ZOOM_LEVEL_MAX = 11;
 	private static final int ZOOM_LEVEL_MIN = 6;
@@ -75,12 +75,9 @@ public class MapDatabaseWithDataTest {
 
 	@Test
 	public void executeQueryTest() {
-		MapDatabase mapDatabase = new MapDatabase();
-		FileOpenResult fileOpenResult = mapDatabase.openFile(MAP_FILE);
-		Assert.assertTrue(mapDatabase.hasOpenFile());
-		Assert.assertTrue(fileOpenResult.getErrorMessage(), fileOpenResult.isSuccess());
+		MapFile mapFile = new MapFile(MAP_FILE);
 
-		MapFileInfo mapFileInfo = mapDatabase.getMapFileInfo();
+		MapFileInfo mapFileInfo = mapFile.getMapFileInfo();
 		Assert.assertTrue(mapFileInfo.debugFile);
 
 		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
@@ -88,7 +85,7 @@ public class MapDatabaseWithDataTest {
 			int tileY = MercatorProjection.latitudeToTileY(0.04, zoomLevel);
 			Tile tile = new Tile(tileX, tileY, zoomLevel, 256);
 
-			MapReadResult mapReadResult = mapDatabase.readMapData(tile);
+			MapReadResult mapReadResult = mapFile.readMapData(tile);
 
 			Assert.assertEquals(1, mapReadResult.pointOfInterests.size());
 			Assert.assertEquals(1, mapReadResult.ways.size());
@@ -97,7 +94,6 @@ public class MapDatabaseWithDataTest {
 			checkWay(mapReadResult.ways.get(0));
 		}
 
-		mapDatabase.closeFile();
-		Assert.assertFalse(mapDatabase.hasOpenFile());
+		mapFile.close();
 	}
 }

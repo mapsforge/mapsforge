@@ -20,12 +20,14 @@ import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.reader.MapFile;
 
 import java.io.File;
 
 /**
  * Two rendered maps overlaid in the same map view, e.g. for maps can be for different areas.
- * The lower map is rendered as non-transparent, the higher transparent.
+ * The lower map is rendered as non-transparent, the higher transparent. There is now a better way of doing
+ * this, with the new MultiMapDataStore class.
  */
 public class TwoMaps extends RenderTheme4 {
 
@@ -57,8 +59,8 @@ public class TwoMaps extends RenderTheme4 {
 	/**
 	 * @return the map file for the second view
 	 */
-	protected File getMapFile2() {
-		return new File(Environment.getExternalStorageDirectory(), this.getMapFileName2());
+	protected MapFile getMapFile2() {
+		return new MapFile(new File(Environment.getExternalStorageDirectory(), this.getMapFileName2()));
 	}
 
 	/**

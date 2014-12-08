@@ -24,6 +24,7 @@ import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
 import android.os.Bundle;
@@ -119,9 +120,9 @@ public class ItemDetailFragment extends Fragment {
 
 	}
 
-	protected File getMapFile() {
-		return new File(Environment.getExternalStorageDirectory(),
-				this.getMapFileName());
+	protected MapFile getMapFile() {
+		return new MapFile(new File(Environment.getExternalStorageDirectory(),
+				this.getMapFileName()));
 	}
 
 	protected String getMapFileName() {

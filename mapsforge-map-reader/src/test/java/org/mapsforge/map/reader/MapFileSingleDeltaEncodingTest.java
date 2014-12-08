@@ -18,8 +18,8 @@ import java.io.File;
 
 import org.junit.Test;
 
-public class MapDatabaseSingleDeltaEncodingTest {
-	private static final File MAP_FILE_SINGLE_DELTA = new File("src/test/resources/single_delta_encoding/output.map");
+public class MapFileSingleDeltaEncodingTest {
+	private static final MapFile MAP_FILE_SINGLE_DELTA = new MapFile("src/test/resources/single_delta_encoding/output.map");
 
 	@Test
 	public void executeQueryTest() {

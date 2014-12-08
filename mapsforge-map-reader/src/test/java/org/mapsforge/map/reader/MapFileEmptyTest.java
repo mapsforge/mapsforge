@@ -20,31 +20,27 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.reader.header.FileOpenResult;
+import org.mapsforge.map.reader.header.MapFileException;
 
-public class MapDatabaseEmptyTest {
+public class MapFileEmptyTest {
 	private static final File MAP_FILE = new File("src/test/resources/empty/output.map");
 	private static final byte ZOOM_LEVEL_MAX = 25;
 
 	@Test
 	public void executeQueryTest() {
-		MapDatabase mapDatabase = new MapDatabase();
-		FileOpenResult fileOpenResult = mapDatabase.openFile(MAP_FILE);
-		Assert.assertTrue(fileOpenResult.getErrorMessage(), mapDatabase.hasOpenFile());
-		Assert.assertTrue(fileOpenResult.getErrorMessage(), fileOpenResult.isSuccess());
+		MapFile mapFile = new MapFile(MAP_FILE);
 
 		for (byte zoomLevel = 0; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
 			int tileX = MercatorProjection.longitudeToTileX(1, zoomLevel);
 			int tileY = MercatorProjection.latitudeToTileY(1, zoomLevel);
 			Tile tile = new Tile(tileX, tileY, zoomLevel, 256);
 
-			MapReadResult mapReadResult = mapDatabase.readMapData(tile);
+			MapReadResult mapReadResult = mapFile.readMapData(tile);
 
 			Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
 			Assert.assertTrue(mapReadResult.ways.isEmpty());
 		}
 
-		mapDatabase.closeFile();
-		Assert.assertFalse(mapDatabase.hasOpenFile());
+		mapFile.close();
 	}
 }

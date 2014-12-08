@@ -29,6 +29,7 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
@@ -63,7 +64,7 @@ public class InMemoryTileCacheTest {
 			Tile tile1 = new Tile(1, 1, (byte) 1, tileSize);
 			Tile tile2 = new Tile(2, 2, (byte) 2, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-			File mapFile = new File("map.file");
+			MapFile mapFile = MapFile.TEST_MAP_FILE;
 			XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
 			Job job1 = new DownloadJob(tile1, tileSource);
