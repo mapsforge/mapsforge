@@ -29,9 +29,8 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
-import org.mapsforge.map.reader.MapDatabase;
-import org.mapsforge.map.reader.header.FileOpenResult;
-import org.mapsforge.map.reader.header.MapFileInfo;
+import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 
@@ -208,23 +207,18 @@ public abstract class MapViewerTemplate extends Activity  {
 	 * @return the initial position encoded in the map file or a fallback value.
 	 */
 	protected MapPosition getInitialPosition() {
-		MapDatabase mapDatabase = new MapDatabase();
-		final FileOpenResult result = mapDatabase.openFile(getMapFile());
-		if (result.isSuccess()) {
-			final MapFileInfo mapFileInfo = mapDatabase.getMapFileInfo();
-			
-			if (mapFileInfo != null && mapFileInfo.startPosition != null) {
-				Byte startZoomLevel = mapFileInfo.startZoomLevel;
-				if (startZoomLevel == null) {
-					// it is actually possible to have no start zoom level in the file
-					startZoomLevel = new Byte((byte) 12);
-				}
-				return new MapPosition(mapFileInfo.startPosition, startZoomLevel);
-			} else {
-				return getDefaultInitialPosition();
+		MapDataStore mapFile = getMapFile();
+
+		if (mapFile.startPosition() != null) {
+			Byte startZoomLevel = mapFile.startZoomLevel();
+			if (startZoomLevel == null) {
+				// it is actually possible to have no start zoom level in the file
+				startZoomLevel = new Byte((byte) 12);
 			}
+			return new MapPosition(mapFile.startPosition(), startZoomLevel);
+		} else {
+			return getDefaultInitialPosition();
 		}
-		throw new IllegalArgumentException("Invalid Map File " + getMapFileName());
 	}
 
 	/**
@@ -239,11 +233,10 @@ public abstract class MapViewerTemplate extends Activity  {
 	/**
 	 * Combines map file directory and map file to a map file.
 	 * This method usually will not need to be changed.
-	 * @return a map file
+	 * @return a map file interface
 	 */
-	protected File getMapFile() {
-		File file = new File(getMapFileDirectory(), this.getMapFileName());
-		return file;
+	protected MapDataStore getMapFile() {
+		return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()));
 	}
 
 	/**

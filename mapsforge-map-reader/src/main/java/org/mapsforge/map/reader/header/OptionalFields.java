@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -59,15 +60,11 @@ final class OptionalFields {
 	 */
 	private static final int START_ZOOM_LEVEL_MAX = 22;
 
-	static FileOpenResult readOptionalFields(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
+	static void readOptionalFields(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
 		OptionalFields optionalFields = new OptionalFields(readBuffer.readByte());
 		mapFileInfoBuilder.optionalFields = optionalFields;
 
-		FileOpenResult fileOpenResult = optionalFields.readOptionalFields(readBuffer);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
-		return FileOpenResult.SUCCESS;
+		optionalFields.readOptionalFields(readBuffer);
 	}
 
 	String comment;
@@ -91,58 +88,46 @@ final class OptionalFields {
 		this.hasCreatedBy = (flags & HEADER_BITMASK_CREATED_BY) != 0;
 	}
 
-	private FileOpenResult readLanguagePreference(ReadBuffer readBuffer) {
+	private void readLanguagePreference(ReadBuffer readBuffer) {
 		if (this.hasLanguagePreference) {
 			String countryCode = readBuffer.readUTF8EncodedString();
 			if (countryCode.length() != LANGUAGE_PREFERENCE_LENGTH) {
-				return new FileOpenResult("invalid language preference: " + countryCode);
+				throw new MapFileException("invalid language preference: " + countryCode);
 			}
 			this.languagePreference = countryCode;
 		}
-		return FileOpenResult.SUCCESS;
 	}
 
-	private FileOpenResult readMapStartPosition(ReadBuffer readBuffer) {
+	private void readMapStartPosition(ReadBuffer readBuffer) {
 		if (this.hasStartPosition) {
 			double mapStartLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
 			double mapStartLongitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
 			try {
 				this.startPosition = new LatLong(mapStartLatitude, mapStartLongitude, true);
 			} catch (IllegalArgumentException e) {
-				return new FileOpenResult(e.getMessage());
+				throw new MapFileException(e.getMessage());
 			}
 		}
-		return FileOpenResult.SUCCESS;
 	}
 
-	private FileOpenResult readMapStartZoomLevel(ReadBuffer readBuffer) {
+	private void readMapStartZoomLevel(ReadBuffer readBuffer) {
 		if (this.hasStartZoomLevel) {
 			// get and check the start zoom level (1 byte)
 			byte mapStartZoomLevel = readBuffer.readByte();
 			if (mapStartZoomLevel < 0 || mapStartZoomLevel > START_ZOOM_LEVEL_MAX) {
-				return new FileOpenResult("invalid map start zoom level: " + mapStartZoomLevel);
+				throw new MapFileException("invalid map start zoom level: " + mapStartZoomLevel);
 			}
 
 			this.startZoomLevel = Byte.valueOf(mapStartZoomLevel);
 		}
-		return FileOpenResult.SUCCESS;
 	}
 
-	private FileOpenResult readOptionalFields(ReadBuffer readBuffer) {
-		FileOpenResult fileOpenResult = readMapStartPosition(readBuffer);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+	private void readOptionalFields(ReadBuffer readBuffer) {
+		readMapStartPosition(readBuffer);
 
-		fileOpenResult = readMapStartZoomLevel(readBuffer);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		readMapStartZoomLevel(readBuffer);
 
-		fileOpenResult = readLanguagePreference(readBuffer);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		readLanguagePreference(readBuffer);
 
 		if (this.hasComment) {
 			this.comment = readBuffer.readUTF8EncodedString();
@@ -151,7 +136,5 @@ final class OptionalFields {
 		if (this.hasCreatedBy) {
 			this.createdBy = readBuffer.readUTF8EncodedString();
 		}
-
-		return FileOpenResult.SUCCESS;
 	}
 }

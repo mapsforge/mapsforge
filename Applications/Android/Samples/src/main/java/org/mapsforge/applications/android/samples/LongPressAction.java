@@ -25,6 +25,7 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.reader.MapFile;
 
 /**
  * Demonstrates how to enable a LongPress on a layer.
@@ -50,7 +51,7 @@ public class LongPressAction extends RenderTheme4 {
 	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(
-				this.tileCaches.get(0),
+				this.tileCaches.get(0), getMapFile(),
 				this.mapView.getModel().mapViewPosition,
 				false, true,
 				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
@@ -61,7 +62,6 @@ public class LongPressAction extends RenderTheme4 {
 				return true;
 			}
 		};
-		tileRendererLayer.setMapFile(this.getMapFile());
 		tileRendererLayer.setXmlRenderTheme(this.getRenderTheme());
 		mapView.getLayerManager().getLayers().add(tileRendererLayer);
 		BLACK.setTextSize(22);

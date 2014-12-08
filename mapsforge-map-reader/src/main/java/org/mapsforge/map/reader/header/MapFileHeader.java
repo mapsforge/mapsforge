@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -88,79 +89,41 @@ public class MapFileHeader {
 	 * @throws IOException
 	 *             if an error occurs while reading the file.
 	 */
-	public FileOpenResult readHeader(ReadBuffer readBuffer, long fileSize) throws IOException {
-		FileOpenResult fileOpenResult = RequiredFields.readMagicByte(readBuffer);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
-
-		fileOpenResult = RequiredFields.readRemainingHeader(readBuffer);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+	public void readHeader(ReadBuffer readBuffer, long fileSize) throws IOException {
+		RequiredFields.readMagicByte(readBuffer);
+		RequiredFields.readRemainingHeader(readBuffer);
 
 		MapFileInfoBuilder mapFileInfoBuilder = new MapFileInfoBuilder();
 
-		fileOpenResult = RequiredFields.readFileVersion(readBuffer, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		RequiredFields.readFileVersion(readBuffer, mapFileInfoBuilder);
 
-		fileOpenResult = RequiredFields.readFileSize(readBuffer, fileSize, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		RequiredFields.readFileSize(readBuffer, fileSize, mapFileInfoBuilder);
 
-		fileOpenResult = RequiredFields.readMapDate(readBuffer, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		RequiredFields.readMapDate(readBuffer, mapFileInfoBuilder);
 
-		fileOpenResult = RequiredFields.readBoundingBox(readBuffer, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		RequiredFields.readBoundingBox(readBuffer, mapFileInfoBuilder);
 
-		fileOpenResult = RequiredFields.readTilePixelSize(readBuffer, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		RequiredFields.readTilePixelSize(readBuffer, mapFileInfoBuilder);
 
-		fileOpenResult = RequiredFields.readProjectionName(readBuffer, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		RequiredFields.readProjectionName(readBuffer, mapFileInfoBuilder);
 
-		fileOpenResult = OptionalFields.readOptionalFields(readBuffer, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		OptionalFields.readOptionalFields(readBuffer, mapFileInfoBuilder);
 
-		fileOpenResult = RequiredFields.readPoiTags(readBuffer, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		RequiredFields.readPoiTags(readBuffer, mapFileInfoBuilder);
 
-		fileOpenResult = RequiredFields.readWayTags(readBuffer, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		RequiredFields.readWayTags(readBuffer, mapFileInfoBuilder);
 
-		fileOpenResult = readSubFileParameters(readBuffer, fileSize, mapFileInfoBuilder);
-		if (!fileOpenResult.isSuccess()) {
-			return fileOpenResult;
-		}
+		readSubFileParameters(readBuffer, fileSize, mapFileInfoBuilder);
 
 		this.mapFileInfo = mapFileInfoBuilder.build();
-		return FileOpenResult.SUCCESS;
 	}
 
-	private FileOpenResult readSubFileParameters(ReadBuffer readBuffer, long fileSize,
+	private void readSubFileParameters(ReadBuffer readBuffer, long fileSize,
 			MapFileInfoBuilder mapFileInfoBuilder) {
 		// get and check the number of sub-files (1 byte)
 		byte numberOfSubFiles = readBuffer.readByte();
 		if (numberOfSubFiles < 1) {
-			return new FileOpenResult("invalid number of sub-files: " + numberOfSubFiles);
+			throw new MapFileException("invalid number of sub-files: " + numberOfSubFiles);
 		}
 		mapFileInfoBuilder.numberOfSubFiles = numberOfSubFiles;
 
@@ -175,33 +138,33 @@ public class MapFileHeader {
 			// get and check the base zoom level (1 byte)
 			byte baseZoomLevel = readBuffer.readByte();
 			if (baseZoomLevel < 0 || baseZoomLevel > BASE_ZOOM_LEVEL_MAX) {
-				return new FileOpenResult("invalid base zooom level: " + baseZoomLevel);
+				throw new MapFileException("invalid base zoom level: " + baseZoomLevel);
 			}
 			subFileParameterBuilder.baseZoomLevel = baseZoomLevel;
 
 			// get and check the minimum zoom level (1 byte)
 			byte zoomLevelMin = readBuffer.readByte();
 			if (zoomLevelMin < 0 || zoomLevelMin > 22) {
-				return new FileOpenResult("invalid minimum zoom level: " + zoomLevelMin);
+				throw new MapFileException("invalid minimum zoom level: " + zoomLevelMin);
 			}
 			subFileParameterBuilder.zoomLevelMin = zoomLevelMin;
 
 			// get and check the maximum zoom level (1 byte)
 			byte zoomLevelMax = readBuffer.readByte();
 			if (zoomLevelMax < 0 || zoomLevelMax > 22) {
-				return new FileOpenResult("invalid maximum zoom level: " + zoomLevelMax);
+				throw new MapFileException("invalid maximum zoom level: " + zoomLevelMax);
 			}
 			subFileParameterBuilder.zoomLevelMax = zoomLevelMax;
 
 			// check for valid zoom level range
 			if (zoomLevelMin > zoomLevelMax) {
-				return new FileOpenResult("invalid zoom level range: " + zoomLevelMin + SPACE + zoomLevelMax);
+				throw new MapFileException("invalid zoom level range: " + zoomLevelMin + SPACE + zoomLevelMax);
 			}
 
 			// get and check the start address of the sub-file (8 bytes)
 			long startAddress = readBuffer.readLong();
 			if (startAddress < HEADER_SIZE_MIN || startAddress >= fileSize) {
-				return new FileOpenResult("invalid start address: " + startAddress);
+				throw new MapFileException("invalid start address: " + startAddress);
 			}
 			subFileParameterBuilder.startAddress = startAddress;
 
@@ -215,7 +178,7 @@ public class MapFileHeader {
 			// get and check the size of the sub-file (8 bytes)
 			long subFileSize = readBuffer.readLong();
 			if (subFileSize < 1) {
-				return new FileOpenResult("invalid sub-file size: " + subFileSize);
+				throw new MapFileException("invalid sub-file size: " + subFileSize);
 			}
 			subFileParameterBuilder.subFileSize = subFileSize;
 
@@ -224,7 +187,17 @@ public class MapFileHeader {
 			// add the current sub-file to the list of sub-files
 			tempSubFileParameters[currentSubFile] = subFileParameterBuilder.build();
 
-			updateZoomLevelInformation(tempSubFileParameters[currentSubFile]);
+
+			// update the global minimum and maximum zoom level information
+			if (this.zoomLevelMinimum > tempSubFileParameters[currentSubFile].zoomLevelMin) {
+				this.zoomLevelMinimum = tempSubFileParameters[currentSubFile].zoomLevelMin;
+				mapFileInfoBuilder.zoomLevelMin = this.zoomLevelMinimum;
+			}
+			if (this.zoomLevelMaximum < tempSubFileParameters[currentSubFile].zoomLevelMax) {
+				this.zoomLevelMaximum = tempSubFileParameters[currentSubFile].zoomLevelMax;
+				mapFileInfoBuilder.zoomLevelMax = this.zoomLevelMaximum;
+			}
+
 		}
 
 		// create and fill the lookup table for the sub-files
@@ -235,16 +208,6 @@ public class MapFileHeader {
 				this.subFileParameters[zoomLevel] = subFileParameter;
 			}
 		}
-		return FileOpenResult.SUCCESS;
 	}
 
-	private void updateZoomLevelInformation(SubFileParameter subFileParameter) {
-		// update the global minimum and maximum zoom level information
-		if (this.zoomLevelMinimum > subFileParameter.zoomLevelMin) {
-			this.zoomLevelMinimum = subFileParameter.zoomLevelMin;
-		}
-		if (this.zoomLevelMaximum < subFileParameter.zoomLevelMax) {
-			this.zoomLevelMaximum = subFileParameter.zoomLevelMax;
-		}
-	}
 }

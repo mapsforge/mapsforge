@@ -26,6 +26,7 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DistanceUnitAdapter;
@@ -140,7 +141,7 @@ public final class AndroidUtil {
 	 * @param id          name for the storage directory
 	 * @param tileSize    tile size
 	 * @param width       the width of the map view
-	 * @param heigh       the height of the map view
+	 * @param height       the height of the map view
 	 * @param overdraw    overdraw allowance
 	 * @return a new cache created on the external storage
 	 */
@@ -160,11 +161,10 @@ public final class AndroidUtil {
 	 * @return the layer
 	 */
 	public static TileRendererLayer createTileRendererLayer(TileCache tileCache,
-	                                                        MapViewPosition mapViewPosition, File mapFile,
+	                                                        MapViewPosition mapViewPosition, MapDataStore mapFile,
 	                                                        XmlRenderTheme renderTheme, boolean hasAlpha, boolean renderLabels) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache,
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
 				mapViewPosition, hasAlpha, renderLabels, AndroidGraphicFactory.INSTANCE);
-		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(renderTheme);
 		return tileRendererLayer;
 	}

@@ -15,22 +15,21 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import java.io.File;
-
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class RendererJob extends Job {
 	public final DisplayModel displayModel;
 	public boolean labelsOnly;
-	public final File mapFile;
+	public final MapDataStore mapDataStore;
 	public final float textScale;
 	public final XmlRenderTheme xmlRenderTheme;
 	private final int hashCodeValue;
 
-	public RendererJob(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel,
+	public RendererJob(Tile tile, MapDataStore mapFile, XmlRenderTheme xmlRenderTheme, DisplayModel displayModel,
 			float textScale, boolean isTransparent, boolean labelsOnly) {
 		super(tile, isTransparent);
 
@@ -44,7 +43,7 @@ public class RendererJob extends Job {
 
 		this.labelsOnly = labelsOnly;
 		this.displayModel = displayModel;
-		this.mapFile = mapFile;
+		this.mapDataStore = mapFile;
 		this.xmlRenderTheme = xmlRenderTheme;
 		this.textScale = textScale;
 
@@ -61,7 +60,7 @@ public class RendererJob extends Job {
 			return false;
 		}
 		RendererJob other = (RendererJob) obj;
-		if (!this.mapFile.equals(other.mapFile)) {
+		if (!this.mapDataStore.equals(other.mapDataStore)) {
 			return false;
 		} else if (Float.floatToIntBits(this.textScale) != Float.floatToIntBits(other.textScale)) {
 			return false;
@@ -86,7 +85,7 @@ public class RendererJob extends Job {
 	 * @return a RendererJob based on the current one, only tile changes
 	 */
 	public RendererJob otherTile(Tile tile) {
-		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale, this.hasAlpha, this.labelsOnly);
+		return new RendererJob(tile, this.mapDataStore, this.xmlRenderTheme, this.displayModel, this.textScale, this.hasAlpha, this.labelsOnly);
 	}
 
 	/**
@@ -99,7 +98,7 @@ public class RendererJob extends Job {
 	private int calculateHashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + this.mapFile.hashCode();
+		result = prime * result + this.mapDataStore.hashCode();
 		result = prime * result + Float.floatToIntBits(this.textScale);
 		result = prime * result + this.xmlRenderTheme.hashCode();
 		return result;

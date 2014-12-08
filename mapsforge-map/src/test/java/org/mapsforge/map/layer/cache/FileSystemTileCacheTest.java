@@ -33,6 +33,7 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
@@ -153,7 +154,7 @@ public class FileSystemTileCacheTest {
 			Tile tile1 = new Tile(0, 0, (byte) 1, tileSize);
 			Tile tile2 = new Tile(0, 1, (byte) 2, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-			File mapFile = new File("map.file");
+			MapFile mapFile = MapFile.TEST_MAP_FILE;
 			XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
 			// Note that job1 and job2 refer to the same tile (X/Y/Z) but from different sources. Since tiles are

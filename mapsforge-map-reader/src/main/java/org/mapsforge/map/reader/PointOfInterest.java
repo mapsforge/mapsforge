@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -43,4 +44,33 @@ public class PointOfInterest {
 		this.tags = tags;
 		this.position = position;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof PointOfInterest)) {
+			return false;
+		}
+		PointOfInterest other = (PointOfInterest) obj;
+		if (this.layer != other.layer) {
+			return false;
+		} else if (!this.tags.equals(other.tags)) {
+			return false;
+		} else if (!this.position.equals(other.position)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + layer;
+		result = prime * result + tags.hashCode();
+		result = prime * result + position.hashCode();
+		return result;
+	}
+
 }

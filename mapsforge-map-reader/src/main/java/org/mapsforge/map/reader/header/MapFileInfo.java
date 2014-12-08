@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,12 +18,11 @@ package org.mapsforge.map.reader.header;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
-import org.mapsforge.map.reader.MapDatabase;
 
 /**
  * Contains the immutable metadata of a map file.
  * 
- * @see MapDatabase#getMapFileInfo()
+ * @see org.mapsforge.map.reader.MapFile#getMapFileInfo()
  */
 public class MapFileInfo {
 	/**
@@ -100,6 +100,9 @@ public class MapFileInfo {
 	 */
 	public final Tag[] wayTags;
 
+	public byte zoomLevelMin;
+	public byte zoomLevelMax;
+
 	MapFileInfo(MapFileInfoBuilder mapFileInfoBuilder) {
 		this.comment = mapFileInfoBuilder.optionalFields.comment;
 		this.createdBy = mapFileInfoBuilder.optionalFields.createdBy;
@@ -116,5 +119,11 @@ public class MapFileInfo {
 		this.startZoomLevel = mapFileInfoBuilder.optionalFields.startZoomLevel;
 		this.tilePixelSize = mapFileInfoBuilder.tilePixelSize;
 		this.wayTags = mapFileInfoBuilder.wayTags;
+		this.zoomLevelMax = mapFileInfoBuilder.zoomLevelMax;
+		this.zoomLevelMin = mapFileInfoBuilder.zoomLevelMin;
+	}
+
+	public boolean supportsZoomLevel(byte zoomLevel) {
+		return zoomLevel >= this.zoomLevelMin && zoomLevel <= this.zoomLevelMax;
 	}
 }

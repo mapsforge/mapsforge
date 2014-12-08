@@ -2,6 +2,9 @@
 
 <wiki:toc />
 
+## New since release 0.5.0
+ - Support for more general map data sources through [MapDataStore interface and MultiMapDataStore class](MapDataStore.md)
+
 ## Version 0.5.0
 **2014-12-08**
 

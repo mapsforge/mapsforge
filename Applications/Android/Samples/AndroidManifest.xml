@@ -132,6 +132,10 @@
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="Show a little overview map at different zoom level"/>
 		<activity
+			android:name=".MultiMapLowResWorld"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:label="Low res world background"/>
+		<activity
 			android:name=".StackedLayersMapViewer"
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="Multiple layers generated from same map"/>
