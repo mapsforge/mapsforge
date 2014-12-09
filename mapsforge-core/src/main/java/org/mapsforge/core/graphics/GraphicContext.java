@@ -43,4 +43,6 @@ public interface GraphicContext {
 	void resetClip();
 
 	void setClip(int left, int top, int width, int height);
+
+	void setClipDifference(int left, int top, int width, int height);
 }

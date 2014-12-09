@@ -249,7 +249,6 @@
 		<osm-tag key="leisure" value="water_park" zoom-appear="12" />
 
 		<osm-tag key="sport" value="golf" zoom-appear="12" />
-		<osm-tag key="sport" value="shooting" zoom-appear="12" />
 		<osm-tag key="sport" value="soccer" zoom-appear="12" />
 		<osm-tag key="sport" value="swimming" zoom-appear="12" />
 		<osm-tag key="sport" value="tennis" zoom-appear="12" />

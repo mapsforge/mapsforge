@@ -17,6 +17,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.mapsforge.core.graphics.Align;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -35,6 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * Represents a text along a polyline on the map.
  */
 public class PathText extends RenderInstruction {
+	private Display display;
 	private float dy;
 	private final Paint fill;
 	private float fontSize;
@@ -54,6 +56,7 @@ public class PathText extends RenderInstruction {
 		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setTextAlign(Align.CENTER);
+		this.display = Display.IFSPACE;
 
 		extractValues(graphicFactory, displayModel, elementName, pullParser);
 	}
@@ -70,11 +73,16 @@ public class PathText extends RenderInstruction {
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+
+		if (Display.NEVER == this.display) {
+			return;
+		}
+
 		String caption = this.textKey.getValue(way.getTags());
 		if (caption == null) {
 			return;
 		}
-		renderCallback.renderWayText(way, priority, caption, this.dy, this.fill, this.stroke);
+		renderCallback.renderWayText(way, this.display, this.priority, caption, this.dy, this.fill, this.stroke);
 	}
 
 	@Override
@@ -101,6 +109,8 @@ public class PathText extends RenderInstruction {
 				this.textKey = TextKey.getInstance(value);
 			} else if (CAT.equals(name)) {
 				this.category = value;
+			} else if (DISPLAY.equals(name)) {
+				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
 			} else if (FONT_FAMILY.equals(name)) {

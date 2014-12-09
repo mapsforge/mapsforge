@@ -15,6 +15,8 @@
  */
 package org.mapsforge.map.layer.renderer;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +28,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 
 class CanvasRasterer {
@@ -60,7 +63,13 @@ class CanvasRasterer {
 	}
 
 	void drawMapElements(Set<MapElementContainer> elements, Tile tile) {
-		for (MapElementContainer element : elements) {
+		// we have a set of all map elements (needed so we do not draw elements twice),
+		// but we need to draw in priority order as we now allow overlaps. So we
+		// convert into list, then sort, then draw.
+		List<MapElementContainer> elementsAsList = new ArrayList<MapElementContainer>(elements);
+		Collections.sort(elementsAsList, Collections.reverseOrder());
+
+		for (MapElementContainer element : elementsAsList) {
 			element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
 		}
 	}
@@ -69,6 +78,18 @@ class CanvasRasterer {
 		if (GraphicUtils.getAlpha(color) > 0) {
 			this.canvas.fillColor(color);
 		}
+	}
+
+	/**
+	 * Fills the area outside the specificed rectangle with color.
+	 * This method is used to blank out areas that fall outside the map area.
+	 * @param color the fill color for the outside area
+	 * @param insideArea the inside area on which not to draw
+	 */
+	void fillOutsideAreas(int color, Rectangle insideArea) {
+		this.canvas.setClipDifference((int) insideArea.left, (int) insideArea.top, (int) insideArea.getWidth(), (int) insideArea.getHeight());
+		this.canvas.fillColor(color);
+		this.canvas.resetClip();
 	}
 
 	void setCanvasBitmap(Bitmap bitmap) {

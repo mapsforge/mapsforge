@@ -33,8 +33,10 @@ public class RenderTheme {
 
 	private final float baseStrokeWidth;
 	private final float baseTextSize;
+	private final boolean hasBackgroundOutside;
 	private int levels;
 	private final int mapBackground;
+	private final int mapBackgroundOutside;
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> wayMatchingCache;
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> poiMatchingCache;
 	private final AtomicInteger refCount = new AtomicInteger();
@@ -45,7 +47,9 @@ public class RenderTheme {
 	RenderTheme(RenderThemeBuilder renderThemeBuilder) {
 		this.baseStrokeWidth = renderThemeBuilder.baseStrokeWidth;
 		this.baseTextSize = renderThemeBuilder.baseTextSize;
+		this.hasBackgroundOutside = renderThemeBuilder.hasBackgroundOutside;
 		this.mapBackground = renderThemeBuilder.mapBackground;
+		this.mapBackgroundOutside = renderThemeBuilder.mapBackgroundOutside;
 		this.rulesList = new ArrayList<>();
 		this.poiMatchingCache = new LRUCache<>(MATCHING_CACHE_SIZE);
 		this.wayMatchingCache = new LRUCache<>(MATCHING_CACHE_SIZE);
@@ -77,6 +81,21 @@ public class RenderTheme {
 	public int getMapBackground() {
 		return this.mapBackground;
 	}
+
+	/**
+	 * @return the background color that applies to areas outside the map.
+	 */
+	public int getMapBackgroundOutside() {
+		return this.mapBackgroundOutside;
+	}
+
+	/**
+	 * @return true if map color is defined for outside areas.
+	 */
+	public boolean hasMapBackgroundOutside() {
+		return this.hasBackgroundOutside;
+	}
+
 
 	public void incrementRefCount() {
 		this.refCount.incrementAndGet();

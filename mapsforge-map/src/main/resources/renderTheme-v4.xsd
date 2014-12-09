@@ -42,6 +42,14 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+	<xs:simpleType name="display">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="always" />
+			<xs:enumeration value="never" />
+			<xs:enumeration value="ifspace" />
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:simpleType name="elementList">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="node" />
@@ -125,6 +133,7 @@
 		<xs:attribute name="cat" type="xs:string" use="optional" />
 		<xs:attribute name="priority" type="xs:integer" use="optional" default="0"/>
 		<xs:attribute name="k" type="tns:textKey" use="required" />
+		<xs:attribute name="display" type="tns:display" use="optional" default="ifspace"/>
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
 		<xs:attribute name="font-style" type="tns:fontStyle" use="optional" default="normal" />
@@ -185,6 +194,7 @@
 
 	<xs:complexType name="lineSymbol">
 		<xs:attribute name="cat" type="xs:string" use="optional" />
+		<xs:attribute name="display" type="tns:display" use="optional" default="ifspace"/>
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="src" type="tns:src" use="required" />
 		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
@@ -212,6 +222,7 @@
 
 	<xs:complexType name="pathText">
 		<xs:attribute name="cat" type="xs:string" use="optional" />
+		<xs:attribute name="display" type="tns:display" use="optional" default="ifspace"/>
 		<xs:attribute name="k" type="tns:textKey" use="required" />
 		<xs:attribute name="dy" type="xs:float" use="optional" default="0" />
 		<xs:attribute name="font-family" type="tns:fontFamily" use="optional" default="default" />
@@ -226,6 +237,7 @@
 	<xs:complexType name="symbol">
 		<xs:attribute name="id" type="xs:string" use="optional" />
 		<xs:attribute name="cat" type="xs:string" use="optional" />
+		<xs:attribute name="display" type="tns:display" use="optional" default="ifspace"/>
 		<xs:attribute name="priority" type="xs:integer" use="optional" default="0"/>
 		<xs:attribute name="src" type="tns:src" use="required" />
 		<xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default"/>
@@ -267,6 +279,7 @@
 		</xs:sequence>
 		<xs:attribute name="version" type="xs:positiveInteger" fixed="4" />
 		<xs:attribute name="map-background" type="tns:color" use="optional" default="#ffffff" />
+		<xs:attribute name="map-background-outside" type="tns:color" use="optional" default="#ffffff" />
 		<xs:attribute name="base-stroke-width" type="tns:nonNegativeFloat" use="optional" default="1" />
 		<xs:attribute name="base-text-size" type="tns:nonNegativeFloat" use="optional" default="1" />
 	</xs:complexType>

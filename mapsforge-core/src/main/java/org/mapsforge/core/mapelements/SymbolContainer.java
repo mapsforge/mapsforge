@@ -17,6 +17,7 @@ package org.mapsforge.core.mapelements;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
@@ -26,12 +27,12 @@ public class SymbolContainer extends MapElementContainer {
 	public Bitmap symbol;
 	public final float theta;
 
-	public SymbolContainer(Point point, int priority, Bitmap symbol) {
-		this(point, priority, symbol, 0, true);
+	public SymbolContainer(Point point, Display display, int priority, Bitmap symbol) {
+		this(point, display, priority, symbol, 0, true);
 	}
 
-	public SymbolContainer(Point point, int priority, Bitmap symbol, float theta, boolean alignCenter) {
-		super(point, priority);
+	public SymbolContainer(Point point, Display display, int priority, Bitmap symbol, float theta, boolean alignCenter) {
+		super(point, display, priority);
 		this.symbol = symbol;
 		this.theta = theta;
 		this.alignCenter = alignCenter;

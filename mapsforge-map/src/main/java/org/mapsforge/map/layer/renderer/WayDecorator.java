@@ -17,6 +17,7 @@ package org.mapsforge.map.layer.renderer;
 import java.util.List;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.mapelements.SymbolContainer;
@@ -33,7 +34,7 @@ final class WayDecorator {
 	 */
 	private static final int WAYNAME_SAFETY_MARGIN = 10;
 
-	static void renderSymbol(Bitmap symbolBitmap, int priority, float dy, boolean alignCenter,
+	static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, boolean alignCenter,
 	                         boolean repeatSymbol, float repeatGap, float repeatStart,
 	                         boolean rotate, Point[][] coordinates,
 			List<MapElementContainer> currentItems) {
@@ -81,7 +82,7 @@ final class WayDecorator {
 
 				Point point = new Point(previousX, previousY);
 
-				currentItems.add(new SymbolContainer(point, priority, symbolBitmap, theta, alignCenter));
+				currentItems.add(new SymbolContainer(point, display, priority, symbolBitmap, theta, alignCenter));
 
 				// check if the symbolContainer should only be rendered once
 				if (!repeatSymbol) {
@@ -123,7 +124,7 @@ final class WayDecorator {
 	 * @param coordinates the list of way coordinates
 	 * @param currentLabels the list of labels to which a new WayTextContainer will be added
 	 */
-	static void renderText(Tile tile, String text, int priority, float dy, Paint fill, Paint stroke, Point[][] coordinates,
+	static void renderText(Tile tile, String text, Display display, int priority, float dy, Paint fill, Paint stroke, Point[][] coordinates,
 			List<MapElementContainer> currentLabels) {
 
 		// Calculate the way name length plus some margin of safety
@@ -185,9 +186,9 @@ final class WayDecorator {
 			LineSegment actuallyUsedSegment = drawableSegment.subSegment(WAYNAME_SAFETY_MARGIN, wayNameWidth - WAYNAME_SAFETY_MARGIN);
 			// check to prevent inverted way names
 			if (actuallyUsedSegment.start.x <= actuallyUsedSegment.end.x) {
-				currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, priority, text, fill, stroke, textHeight));
+				currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, display, priority, text, fill, stroke, textHeight));
 			} else {
-				currentLabels.add(new WayTextContainer(actuallyUsedSegment.end, actuallyUsedSegment.start, priority, text, fill, stroke, textHeight));
+				currentLabels.add(new WayTextContainer(actuallyUsedSegment.end, actuallyUsedSegment.start, display, priority, text, fill, stroke, textHeight));
 			}
 
 			skipPixels = wayNameWidth;

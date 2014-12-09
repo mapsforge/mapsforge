@@ -16,6 +16,7 @@
 package org.mapsforge.core.mapelements;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
@@ -37,11 +38,13 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 
 	protected Rectangle boundary;
 	protected Rectangle boundaryAbsolute;
+	protected Display display;
 	protected final int priority;
 	protected final Point xy;
 
-	protected MapElementContainer(Point xy, int priority) {
+	protected MapElementContainer(Point xy, Display display, int priority) {
 		this.xy = xy;
+		this.display = display;
 		this.priority = priority;
 	}
 
@@ -111,6 +114,10 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	 * @return true if they overlap
 	 */
 	public boolean clashesWith(MapElementContainer other) {
+		// if either of the elements is always drawn, the elements do not clash
+		if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
+			return false;
+		}
  		return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
 	}
 

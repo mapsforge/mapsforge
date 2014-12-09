@@ -18,6 +18,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import java.io.IOException;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 
 import org.mapsforge.core.model.Tile;
@@ -35,6 +36,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class Symbol extends RenderInstruction {
 	private Bitmap bitmap;
 	private boolean bitmapInvalid;
+	private Display display;
 	private String id;
 	private int priority;
 	private final String relativePathPrefix;
@@ -44,6 +46,7 @@ public class Symbol extends RenderInstruction {
 	                     XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
 		super(graphicFactory, displayModel);
 		this.relativePathPrefix = relativePathPrefix;
+		this.display = Display.IFSPACE;
 		extractValues(elementName, pullParser);
 	}
 
@@ -71,15 +74,25 @@ public class Symbol extends RenderInstruction {
 
 	@Override
 	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+
+		if (Display.NEVER == this.display) {
+			return;
+		}
+
 		if (getBitmap() != null) {
-			renderCallback.renderPointOfInterestSymbol(poi, this.priority, this.bitmap, tile);
+			renderCallback.renderPointOfInterestSymbol(poi, this.display, this.priority, this.bitmap, tile);
 		}
 	}
 
 	@Override
 	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+
+		if (Display.NEVER == this.display) {
+			return;
+		}
+
 		if (this.getBitmap() != null) {
-			renderCallback.renderAreaSymbol(way, this.priority, this.bitmap);
+			renderCallback.renderAreaSymbol(way, this.display, this.priority, this.bitmap);
 		}
 	}
 
@@ -102,6 +115,8 @@ public class Symbol extends RenderInstruction {
 				this.src = value;
 			} else if (CAT.equals(name)) {
 				this.category = value;
+			} else if (DISPLAY.equals(name)) {
+				this.display = Display.fromString(value);
 			} else if (ID.equals(name)) {
 				this.id = value;
 			} else if (PRIORITY.equals(name)) {

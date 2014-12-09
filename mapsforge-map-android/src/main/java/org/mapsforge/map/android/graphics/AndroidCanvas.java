@@ -142,6 +142,15 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void setClip(int left, int top, int width, int height) {
-		this.canvas.clipRect(left, top, left + width, top + height, Region.Op.REPLACE);
+		this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
+	}
+
+	@Override
+	public void setClipDifference(int left, int top, int width, int height) {
+		this.setClipInternal(left, top, width, height, Region.Op.DIFFERENCE);
+	}
+
+	public void setClipInternal(int left, int top, int width, int height, Region.Op op) {
+		this.canvas.clipRect(left, top, left + width, top + height, op);
 	}
 }

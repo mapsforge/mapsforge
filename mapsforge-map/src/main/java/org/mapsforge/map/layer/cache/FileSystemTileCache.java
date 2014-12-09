@@ -106,10 +106,12 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	private static boolean deleteDirectory(File dir) {
 		if (dir.isDirectory()) {
 			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDirectory(new File(dir, children[i]));
-				if (!success) {
-					return false;
+			if (children != null) {
+				for (int i = 0; i < children.length; i++) {
+					boolean success = deleteDirectory(new File(dir, children[i]));
+					if (!success) {
+						return false;
+					}
 				}
 			}
 		}

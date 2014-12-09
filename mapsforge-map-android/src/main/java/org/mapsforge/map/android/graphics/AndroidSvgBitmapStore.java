@@ -63,6 +63,8 @@ public class AndroidSvgBitmapStore {
 				if (!this.bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream)) {
 					LOGGER.warning("SVG Failed to write svg bitmap " + fileName);
 				}
+			} catch (IllegalStateException e) {
+				LOGGER.warning("SVG Failed to stream bitmap to file " + fileName);
 			} catch (FileNotFoundException e) {
 				LOGGER.warning("SVG Failed to create file for svg bitmap " + fileName);
 			}

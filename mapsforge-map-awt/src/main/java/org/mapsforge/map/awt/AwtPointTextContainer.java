@@ -16,6 +16,7 @@
 package org.mapsforge.map.awt;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.mapelements.PointTextContainer;
@@ -34,9 +35,9 @@ import java.text.AttributedString;
 
 public class AwtPointTextContainer extends PointTextContainer {
 
-	AwtPointTextContainer(Point xy, int priority, String text, Paint paintFront, Paint paintBack,
+	AwtPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                      SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		super(xy, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+		super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
 		this.boundary = computeBoundary();
 	}
