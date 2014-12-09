@@ -72,16 +72,19 @@ public class MultiMapDataStore implements MapDataStore {
 		}
 	}
 
+	@Override
 	public BoundingBox boundingBox() {
 		return this.boundingBox;
 	}
 
+	@Override
 	public void close() {
 		for (MapDataStore mdb : mapDatabases) {
 			mdb.close();
 		}
 	}
 
+	@Override
 	public MapReadResult readMapData(Tile tile) {
 		switch (this.dataPolicy) {
 			case RETURN_FIRST:
@@ -99,14 +102,16 @@ public class MultiMapDataStore implements MapDataStore {
 		throw new IllegalStateException("Invalid data policy for multi map database");
 	}
 
+	@Override
 	public LatLong startPosition() {
 		return this.startPosition;
 	}
 
-	public void startPosition(LatLong startPosition) {
+	public void setStartPosition(LatLong startPosition) {
 		this.startPosition = startPosition;
 	}
 
+	@Override
 	public Byte startZoomLevel() {
 		return startZoomLevel;
 	}
@@ -115,6 +120,7 @@ public class MultiMapDataStore implements MapDataStore {
 		this.startZoomLevel = startZoomLevel;
 	}
 
+	@Override
 	public boolean supportsTile(Tile tile) {
 		for (MapDataStore mdb : mapDatabases) {
 			if (mdb.supportsTile(tile)) {

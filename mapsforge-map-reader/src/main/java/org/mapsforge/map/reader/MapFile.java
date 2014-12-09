@@ -215,13 +215,12 @@ public class MapFile implements MapDataStore {
 	public static boolean wayFilterEnabled = true;
 	public static int wayFilterDistance = 20;
 
-
-		/**
-		 * Opens the given map file, reads its header data and validates them.
-		 *
-		 * @param mapFile the map file.
-		 * @throws MapFileException if the given map file is null or invalid.
-		 */
+	/**
+	 * Opens the given map file, reads its header data and validates them.
+	 *
+	 * @param mapFile the map file.
+	 * @throws MapFileException if the given map file is null or invalid.
+	 */
 	public MapFile(File mapFile) {
 		if (mapFile == null) {
 			throw new MapFileException("mapFile must not be null");
@@ -263,10 +262,12 @@ public class MapFile implements MapDataStore {
 		this(new File(mapFileName));
 	}
 
+	@Override
 	public BoundingBox boundingBox() {
 		return getMapFileInfo().boundingBox;
 	}
 
+	@Override
 	public void close() {
 		closeFile();
 	}
@@ -299,6 +300,7 @@ public class MapFile implements MapDataStore {
 	 *            defines area and zoom level of read map data.
 	 * @return the read map data.
 	 */
+	@Override
 	public MapReadResult readMapData(Tile tile) {
 		try {
 			QueryParameters queryParameters = new QueryParameters();
@@ -335,6 +337,7 @@ public class MapFile implements MapDataStore {
 		this.getMapFileInfo().zoomLevelMin = minZoom;
 	}
 
+	@Override
 	public LatLong startPosition() {
 		if (null != getMapFileInfo().startPosition) {
 			return getMapFileInfo().startPosition;
@@ -342,10 +345,12 @@ public class MapFile implements MapDataStore {
 		return getMapFileInfo().boundingBox.getCenterPoint();
 	}
 
+	@Override
 	public Byte startZoomLevel() {
 		return getMapFileInfo().startZoomLevel;
 	}
 
+	@Override
 	public boolean supportsTile(Tile tile) {
 		if (getMapFileInfo().supportsZoomLevel(tile.zoomLevel)) {
 			return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
