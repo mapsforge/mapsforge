@@ -38,7 +38,7 @@ import org.mapsforge.map.reader.header.SubFileParameter;
  * <p>
  * This class is not thread-safe. Each thread should use its own instance.
  * 
- * @see <a href="https://code.google.com/p/mapsforge/wiki/SpecificationBinaryMapFile">Specification</a>
+ * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
 public class MapDatabase {
 	/**
