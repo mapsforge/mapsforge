@@ -41,7 +41,7 @@ import org.mapsforge.map.reader.header.SubFileParameter;
  * The readMapData method is now thread safe, but care should be taken that not too much data is
  * read at the same time (keep simultaneous requests to minimum)
  *
- * @see <a href="https://code.google.com/p/mapsforge/wiki/SpecificationBinaryMapFile">Specification</a>
+ * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
 public class MapFile implements MapDataStore {
 
