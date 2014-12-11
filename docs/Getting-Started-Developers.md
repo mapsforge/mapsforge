@@ -5,7 +5,7 @@
 
 This article describes how to build the mapsforge project and libraries from scratch and how developers should start working.
 
-If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://code.google.com/p/mapsforge/issues/list).
+If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
 ## Requirements
 |Tool|Version|
