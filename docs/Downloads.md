@@ -5,7 +5,7 @@
 
 These are the downloads for version 0.5.0:
 
-- [Samples 0.5.0 application](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/apk/Samples-debug-unaligned.apk)
+- [Samples 0.5.0 application](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-release-unsigned.apk)
 - [Release 0.5.0 jars](http://ci.mapsforge.org/job/release-0.5.0/)
 - [Writer plugin](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0.jar) 
 
@@ -24,7 +24,7 @@ The master branch contains the latest mapsforge version considered stable, but n
 
 - [Latest Samples application (master)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Latest Jars (master)](http://ci.mapsforge.org/job/master/)
-- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0-rc2.jar)
+- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0.jar)
   
 # Lastest Development Build Downloads
 
