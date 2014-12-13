@@ -18,17 +18,20 @@ package org.mapsforge.applications.android.samples;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.renderer.MapWorker;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.MapFile;
 
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-/**
- * @author ludwig
- */
+
 public class SamplesApplication extends Application {
+
+	/*
+	 * type to use for maps to store in the external files directory
+	 */
+	public static final String MAPS = "maps";
 
 	public static final String SETTING_DEBUG_TIMING = "debug_timing";
 	public static final String SETTING_SCALE = "scale";
@@ -38,6 +41,7 @@ public class SamplesApplication extends Application {
 	public static final String SETTING_TILECACHE_THREADING = "tilecache_threading";
 	public static final String SETTING_TILECACHE_QUEUESIZE = "tilecache_queuesize";
 	public static final String TAG = "SAMPLES APP";
+
 
 	@Override
 	public void onCreate() {
@@ -55,10 +59,11 @@ public class SamplesApplication extends Application {
 			DisplayModel.setDefaultUserScaleFactor(fs);
 		}
 
-		MapDatabase.wayFilterEnabled = preferences.getBoolean(SETTING_WAYFILTERING, true);
-		if (MapDatabase.wayFilterEnabled) {
-			MapDatabase.wayFilterDistance = Integer.parseInt(preferences.getString(SETTING_WAYFILTERING_DISTANCE, "20"));
+		MapFile.wayFilterEnabled = preferences.getBoolean(SETTING_WAYFILTERING, true);
+		if (MapFile.wayFilterEnabled) {
+			MapFile.wayFilterDistance = Integer.parseInt(preferences.getString(SETTING_WAYFILTERING_DISTANCE, "20"));
 		}
 		MapWorker.DEBUG_TIMING = preferences.getBoolean(SETTING_DEBUG_TIMING, false);
 	}
+
 }

@@ -24,19 +24,21 @@ import org.mapsforge.map.layer.download.DownloadJob;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class RendererJobTest {
 
 	private static final int TILE_SIZE = 256;
-	private static final String MAP_FILE = "map.file";
 
-	private static RendererJob create(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
+	private static final MapFile MAP_FILE = MapFile.TEST_MAP_FILE;
+
+	private static RendererJob create(Tile tile, MapFile mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
 		return new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), textScale, false, false);
 	}
 
-	private static void verifyInvalidConstructor(Tile tile, File mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
+	private static void verifyInvalidConstructor(Tile tile, MapFile mapFile, XmlRenderTheme xmlRenderTheme, float textScale) {
 		try {
 			create(tile, mapFile, xmlRenderTheme, textScale);
 			Assert.fail("tile: " + tile + ", mapFile: " + mapFile + ", xmlRenderTheme: " + xmlRenderTheme
@@ -49,30 +51,28 @@ public class RendererJobTest {
 	@Test
 	public void constructorTest() {
 		Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
-		File mapFile = new File(MAP_FILE);
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
-		create(tile, mapFile, xmlRenderTheme, 1);
+		create(tile, MAP_FILE, xmlRenderTheme, 1);
 
-		verifyInvalidConstructor(null, mapFile, xmlRenderTheme, 1);
+		verifyInvalidConstructor(null, MAP_FILE, xmlRenderTheme, 1);
 		verifyInvalidConstructor(tile, null, xmlRenderTheme, 1);
-		verifyInvalidConstructor(tile, mapFile, null, 1);
-		verifyInvalidConstructor(tile, mapFile, xmlRenderTheme, 0);
-		verifyInvalidConstructor(tile, mapFile, xmlRenderTheme, -1);
-		verifyInvalidConstructor(tile, mapFile, xmlRenderTheme, Float.NEGATIVE_INFINITY);
-		verifyInvalidConstructor(tile, mapFile, xmlRenderTheme, Float.NaN);
+		verifyInvalidConstructor(tile, MAP_FILE, null, 1);
+		verifyInvalidConstructor(tile, MAP_FILE, xmlRenderTheme, 0);
+		verifyInvalidConstructor(tile, MAP_FILE, xmlRenderTheme, -1);
+		verifyInvalidConstructor(tile, MAP_FILE, xmlRenderTheme, Float.NEGATIVE_INFINITY);
+		verifyInvalidConstructor(tile, MAP_FILE, xmlRenderTheme, Float.NaN);
 	}
 
 	@Test
 	public void equalsTest() {
-		File mapFile = new File(MAP_FILE);
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
 		Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
 		DisplayModel displayModel = new DisplayModel();
-		RendererJob rendererJob1 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1, false, false);
-		RendererJob rendererJob2 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 1, false, false);
-		RendererJob rendererJob3 = new RendererJob(tile, mapFile, xmlRenderTheme, displayModel, 2, false, false);
+		RendererJob rendererJob1 = new RendererJob(tile, MAP_FILE, xmlRenderTheme, displayModel, 1, false, false);
+		RendererJob rendererJob2 = new RendererJob(tile, MAP_FILE, xmlRenderTheme, displayModel, 1, false, false);
+		RendererJob rendererJob3 = new RendererJob(tile, MAP_FILE, xmlRenderTheme, displayModel, 2, false, false);
 
 		TestUtils.equalsTest(rendererJob1, rendererJob2);
 

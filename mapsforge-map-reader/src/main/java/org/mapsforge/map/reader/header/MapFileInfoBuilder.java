@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,6 +29,8 @@ class MapFileInfoBuilder {
 	String projectionName;
 	int tilePixelSize;
 	Tag[] wayTags;
+	byte zoomLevelMin;
+	byte zoomLevelMax;
 
 	MapFileInfo build() {
 		return new MapFileInfo(this);

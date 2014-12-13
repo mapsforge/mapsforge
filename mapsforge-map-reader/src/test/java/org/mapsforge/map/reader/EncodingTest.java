@@ -20,22 +20,19 @@ import org.junit.Assert;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.reader.header.FileOpenResult;
+import org.mapsforge.map.reader.header.MapFileException;
 
 final class EncodingTest {
 	private static final byte ZOOM_LEVEL = 8;
 
-	static void runTest(File mapFile) {
-		MapDatabase mapDatabase = new MapDatabase();
-		FileOpenResult fileOpenResult = mapDatabase.openFile(mapFile);
-		Assert.assertTrue(fileOpenResult.getErrorMessage(), fileOpenResult.isSuccess());
+	static void runTest(MapFile mapFile) {
 
 		int tileX = MercatorProjection.longitudeToTileX(0, ZOOM_LEVEL);
 		int tileY = MercatorProjection.latitudeToTileY(0, ZOOM_LEVEL);
 		Tile tile = new Tile(tileX, tileY, ZOOM_LEVEL, 256);
 
-		MapReadResult mapReadResult = mapDatabase.readMapData(tile);
-		mapDatabase.closeFile();
+		MapReadResult mapReadResult = mapFile.readMapData(tile);
+		mapFile.close();
 
 		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
 		Assert.assertEquals(1, mapReadResult.ways.size());

@@ -1,16 +1,17 @@
 # Downloads for Developers
 
 
-# 0.5.0 Release Candidate 2 0.5.0-rc2 Downloads
+# Release 0.5.0 Downloads
 
-These are the downloads for version 0.5.0-rc2:
+These are the downloads for version 0.5.0:
 
-- [Samples app](http://ci.mapsforge.org/job/0.5.0-rc2/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
-- [jars](http://ci.mapsforge.org/job/0.5.0-rc2/)
- 
+- [Samples 0.5.0 application](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-release-unsigned.apk)
+- [Release 0.5.0 jars](http://ci.mapsforge.org/job/release-0.5.0/)
+- [Writer plugin](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0.jar) 
+
 # Release 0.4.0 Downloads
 
-These are the downloads for version 0.4.0:
+These are the downloads for version 0.4.0. If possible use the newer release, we cannot offer support for 0.4.0 and all changes will be made on top of the newer release.
 
 - [Samples 0.4.0 application](http://ci.mapsforge.org/job/release-0.4.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/apk/Samples-debug-unaligned.apk)
 - [Release 0.4.0 jars](http://ci.mapsforge.org/job/release-0.4.0/)
@@ -23,7 +24,7 @@ The master branch contains the latest mapsforge version considered stable, but n
 
 - [Latest Samples application (master)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Latest Jars (master)](http://ci.mapsforge.org/job/master/)
-- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0-SNAPSHOT.jar)
+- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0.jar)
   
 # Lastest Development Build Downloads
 

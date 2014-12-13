@@ -64,6 +64,10 @@
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="RenderTheme V4"/>
 		<activity
+			android:name=".TwoMaps"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:label="Two Maps Overlaid"/>
+		<activity
 			android:name=".RenderThemeChanger"
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="Automatically changes between renderthemes on SDCard"/>
@@ -127,6 +131,10 @@
 			android:name=".DualOverviewMapViewer"
 			android:configChanges="keyboardHidden|orientation|screenSize"
 			android:label="Show a little overview map at different zoom level"/>
+		<activity
+			android:name=".MultiMapLowResWorld"
+			android:configChanges="keyboardHidden|orientation|screenSize"
+			android:label="Low res world background"/>
 		<activity
 			android:name=".StackedLayersMapViewer"
 			android:configChanges="keyboardHidden|orientation|screenSize"

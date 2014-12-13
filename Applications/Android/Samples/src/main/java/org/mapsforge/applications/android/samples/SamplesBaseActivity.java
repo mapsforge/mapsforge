@@ -39,7 +39,7 @@ import org.mapsforge.map.layer.renderer.MapWorker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
 import org.mapsforge.map.scalebar.NauticalUnitAdapter;
@@ -248,9 +248,9 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		}
 		if (SamplesApplication.SETTING_WAYFILTERING_DISTANCE.equals(key) ||
 				SamplesApplication.SETTING_WAYFILTERING.equals(key)) {
-			MapDatabase.wayFilterEnabled = preferences.getBoolean(SamplesApplication.SETTING_WAYFILTERING, true);
-			if (MapDatabase.wayFilterEnabled) {
-				MapDatabase.wayFilterDistance = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_WAYFILTERING_DISTANCE, "20"));
+			MapFile.wayFilterEnabled = preferences.getBoolean(SamplesApplication.SETTING_WAYFILTERING, true);
+			if (MapFile.wayFilterEnabled) {
+				MapFile.wayFilterDistance = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_WAYFILTERING_DISTANCE, "20"));
 			}
 		}
 	}

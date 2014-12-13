@@ -2,14 +2,42 @@
 
 <wiki:toc />
 
-## Version 0.5.0rc2
+## New since release 0.5.0
+ - Support for more general map data sources through [MapDataStore interface and MultiMapDataStore class](MapDataStore.md)
+
+## Version 0.5.0
+**2014-12-08**
+
+Release 0.5.0 is, apart from minor documentation changes, identical to 0.5.0-rc4.
+
+## Version 0.5.0-rc4
+**2014-12-05**
+
+ - Changes to support the new standard for encoding land/sea area. 
+ - Fix for #332 (invalid geometries in map writer).
+ - Fix for #549 (ordering of label drawing).
+ - Documentation updates. 
+
+## Version 0.5.0-rc3
+**2014-11-27**
+
+- Rendertheme V4: added display directive to force symbols to appear.
+- Rendertheme V4: added optional map-background-outside to blank out non-map areas.
+- Introduced MapViewerTemplate for easier development of Android apps and simplified the Android Samples app.
+- Android Lollipop support, various upgrades to latest software, Java 8 (for maven only so far).
+- Map Reader fix for long ways.
+- Map Writer fix to clip multi-polygons and area detection.
+- Cache calculation improvements.
+- Improved documentation integrated into git.
+- Move to github.
+
+## Version 0.5.0-rc2
 
 - Fixes to Rendertheme V4 with most notably improved tiling of area shaders.
 - Smaller internal bug fixes and software updates.
 
-## Version 0.5.0rc1
+## Version 0.5.0-rc1
 
-These are (some of) the changes in the as yet unreleased 0.5.x version.
 - Rendertheme V4.
 - Scalebar now with the option of using two units at the same time. New unit: nautical.
 - Line breaks in labels: this is the most fragile change at the moment as it does not play well with the label placement algorithm.

@@ -16,8 +16,6 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import java.io.File;
-
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
@@ -30,14 +28,12 @@ import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.reader.MapDatabase;
-import org.mapsforge.map.reader.header.FileOpenResult;
+import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class TileRendererLayer extends TileLayer<RendererJob> {
 	private final DatabaseRenderer databaseRenderer;
-	private final MapDatabase mapDatabase;
-	private File mapFile;
+	private final MapDataStore mapDataStore;
 	private MapWorker mapWorker;
 	private float textScale;
 	private final TileBasedLabelStore tileBasedLabelStore;
@@ -48,6 +44,8 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	 * 
 	 * @param tileCache
 	 *            cache where tiles are stored
+	 * @param mapDataStore
+	 *            the mapsforge map file
 	 * @param mapViewPosition
 	 *            the mapViewPosition to know which tiles to render
 	 * @param isTransparent
@@ -57,17 +55,17 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	 * @param graphicFactory
 	 *            the graphicFactory to carry out platform specific operations
 	 */
-	public TileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition, boolean isTransparent,
-			boolean renderLabels, GraphicFactory graphicFactory) {
+	public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition,
+			boolean isTransparent, boolean renderLabels, GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
-		this.mapDatabase = new MapDatabase();
+		this.mapDataStore = mapDataStore;
 		if (renderLabels) {
 			this.tileBasedLabelStore = null;
-			this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory, tileCache);
+			this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileCache);
 		} else {
 			this.tileBasedLabelStore = new TileBasedLabelStore(tileCache.getCapacityFirstLevel());
-			this.databaseRenderer = new DatabaseRenderer(this.mapDatabase, graphicFactory, tileBasedLabelStore);
+			this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileBasedLabelStore);
 		}
 		this.textScale = 1;
 	}
@@ -82,12 +80,8 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		return tileBasedLabelStore;
 	}
 
-	public MapDatabase getMapDatabase() {
-		return mapDatabase;
-	}
-
-	public File getMapFile() {
-		return this.mapFile;
+	public MapDataStore getMapDataStore() {
+		return mapDataStore;
 	}
 
 	public float getTextScale() {
@@ -100,7 +94,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	@Override
 	public void onDestroy() {
-		new DestroyThread(this.mapWorker, this.mapDatabase, this.databaseRenderer).start();
+		new DestroyThread(this.mapWorker, this.mapDataStore, this.databaseRenderer).start();
 		super.onDestroy();
 	}
 
@@ -118,14 +112,6 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		}
 	}
 
-	public void setMapFile(File mapFile) {
-		this.mapFile = mapFile;
-		FileOpenResult result = this.mapDatabase.openFile(mapFile);
-		if (!result.isSuccess()) {
-			throw new IllegalArgumentException(result.getErrorMessage());
-		}
-	}
-
 	public void setTextScale(float textScale) {
 		this.textScale = textScale;
 	}
@@ -136,7 +122,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	@Override
 	protected RendererJob createJob(Tile tile) {
-		return new RendererJob(tile, this.mapFile, this.xmlRenderTheme, this.displayModel, this.textScale,
+		return new RendererJob(tile, this.mapDataStore, this.xmlRenderTheme, this.displayModel, this.textScale,
 				this.isTransparent, false);
 	}
 

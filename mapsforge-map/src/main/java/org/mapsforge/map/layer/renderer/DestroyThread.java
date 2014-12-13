@@ -14,19 +14,20 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.reader.MapFile;
 
 class DestroyThread extends Thread {
 
-	private final MapDatabase mapDatabase;
+	private final MapDataStore mapDataStore;
 	private final DatabaseRenderer renderer;
 	private final Thread thread;
 
-	DestroyThread(Thread thread, MapDatabase mapDatabase, DatabaseRenderer renderer) {
+	DestroyThread(Thread thread, MapDataStore dataStore, DatabaseRenderer renderer) {
 		super();
 
 		this.thread = thread;
-		this.mapDatabase = mapDatabase;
+		this.mapDataStore = dataStore;
 		this.renderer = renderer;
 	}
 
@@ -40,7 +41,7 @@ class DestroyThread extends Thread {
 			interrupt();
 		} finally {
 			this.renderer.destroy();
-			this.mapDatabase.closeFile();
+			this.mapDataStore.close();
 		}
 	}
 }

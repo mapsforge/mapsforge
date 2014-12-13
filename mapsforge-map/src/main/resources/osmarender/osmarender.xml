@@ -2,6 +2,14 @@
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://mapsforge.org/renderTheme ../renderTheme-v4.xsd" version="4" map-background="#f8f8f8">
 
+	<rule e="way" k="natural" v="issea|sea">
+		<area fill="#B3DDFF"/>
+	</rule>
+
+	<rule e="way" k="natural" v="nosea">
+		<area fill="#F8F8F8"/>
+	</rule>
+
 	<!-- ways -->
 	<rule e="way" k="*" v="*">
 		<!-- landuse -->

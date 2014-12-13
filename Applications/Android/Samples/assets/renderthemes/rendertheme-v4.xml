@@ -139,6 +139,14 @@
 
 	</stylemenu>
 
+	<rule e="way" k="natural" v="issea|sea">
+		<area fill="#B3DDFF"/>
+	</rule>
+
+	<rule e="way" k="natural" v="nosea">
+		<area fill="#F8F8F8"/>
+	</rule>
+
 	-<!-- land/sea -->
 	<rule cat="nature" e="way" k="natural" v="coastline">
 		<rule e="way" k="*" v="*" closed="no">
@@ -151,10 +159,6 @@
 
 	<rule cat="nature" e="way" k="natural" v="land">
 		<area fill="#BBF8F8F8" stroke="#F8F8F8" stroke-width="0.1"/>
-	</rule>
-
-	<rule e="way" k="natural" v="issea">
-		<area fill="#B3DDFF"/>
 	</rule>
 
 	<!-- landuse -->
@@ -324,15 +328,15 @@
 			<area fill="#B3DDFF"/>
 		</rule>
 		<rule e="way" k="waterway" v="river" zoom-min="12">
-			<pathText k="name" display="always" font-style="bold" font-size="14" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
+			<pathText k="name" display="always" priority="-100" font-style="bold" font-size="14" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="way" k="waterway" v="stream|canal" zoom-min="15">
-			<pathText k="name" display="always" font-style="bold" font-size="12" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
+			<pathText k="name" display="always" priority="-100" font-style="bold" font-size="12" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
 		</rule>
 		<rule e="way" k="natural|landuse" v="water|reservoir|basin">
 			<area fill="#B3DDFF"/>
 			<rule e="any" k="*" v="*" zoom-min="14">
-				<caption k="name" display="always" font-size="12" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
+				<caption k="name" display="always" priority="-100" font-size="12" fill="#6C96E6" stroke="#FFFFFF" stroke-width="2.0"/>
 			</rule>
 		</rule>
 	</rule>
@@ -762,7 +766,7 @@
 				<line src="assets:patterns/access-private.png" stroke-width="1.0"/>
 			</rule>
 			<rule e="way" k="oneway" v="yes|true|1" zoom-min="16">
-				<lineSymbol src="assets:symbols/oneway.svg" display="always" priority="40" align-center="true" repeat="true"/>
+				<lineSymbol src="assets:symbols/oneway.svg" display="always" priority="-50" align-center="true" repeat="true"/>
 			</rule>
 		</rule>
 	</rule>

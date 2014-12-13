@@ -18,6 +18,11 @@ Release to Maven Central:
 
 mvn -DperformRelease=true -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dhttps.protocols=SSLv3 -Dforce.http.jre.executor=true -DskipTests=true  -s settings.xml deploy
 
+or (if there is no ssl bug)
+
+mvn -DperformRelease=true -Dforce.http.jre.executor=true -DskipTests=true  -s settings.xml deploy
+
+
 The settings.xml file needs to look like this:
 
 <settings>
@@ -60,7 +65,13 @@ Jenkins
 -------
 Add a jenkins build based on the Git tag (copy previous release and just change tag to check out)
 
+Doxygen
+---------------
+On server add new directory for new release and update the main listing file.
+
+
 Devoloper Links
 ---------------
 Add release information to the developer wikis.
+
 

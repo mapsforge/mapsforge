@@ -162,7 +162,7 @@ public final class MapFileWriter {
 				}
 			}
 
-			if (originalGeometry.getCoordinates().length > 5000) {
+			if (processedGeometry.getCoordinates().length > 2000 ) {
 				LOGGER.info("Large geometry " + this.way.getId() + " (" + processedGeometry.getCoordinates().length + " coords, down from " + originalGeometry.getCoordinates().length + " coords)");
 			}
 
@@ -383,6 +383,13 @@ public final class MapFileWriter {
 		LOGGER.info("JTS Geometry total load time: " + stats.totalLoadTime() / 1000);
 
 		LOGGER.info("Finished writing file.");
+	}
+
+	/**
+	 * Cleans up thread pool. Must only be called at the end of processing.
+	 */
+	public static void release() {
+		EXECUTOR_SERVICE.shutdown();
 	}
 
 	static byte infoByteOptmizationParams(MapWriterConfiguration configuration) {

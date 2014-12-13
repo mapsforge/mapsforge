@@ -44,6 +44,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
+import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.swing.controller.MapViewComponentListener;
 import org.mapsforge.map.swing.controller.MouseEventListener;
@@ -95,7 +96,7 @@ public final class MapViewer {
 		for (File mapFile : mapFiles) {
 			TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache,
 					mapView.getModel().mapViewPosition, true, true, mapFile);
-			BoundingBox boundingBox = tileRendererLayer.getMapDatabase().getMapFileInfo().boundingBox;
+			BoundingBox boundingBox = tileRendererLayer.getMapDataStore().boundingBox();
 			result = result == null ? boundingBox : result.extend(boundingBox);
 			layers.add(tileRendererLayer);
 		}
@@ -141,9 +142,8 @@ public final class MapViewer {
 	private static TileRendererLayer createTileRendererLayer(
 			TileCache tileCache,
 			MapViewPosition mapViewPosition, boolean isTransparent, boolean renderLabels, File mapFile) {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapViewPosition, isTransparent,
+		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile), mapViewPosition, isTransparent,
 				renderLabels, GRAPHIC_FACTORY);
-		tileRendererLayer.setMapFile(mapFile);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
 	}

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,43 +19,6 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.reader.header.SubFileParameter;
 
 final class QueryCalculations {
-	static void calculateBaseTiles(QueryParameters queryParameters, Tile tile, SubFileParameter subFileParameter) {
-		if (tile.zoomLevel < subFileParameter.baseZoomLevel) {
-			// calculate the XY numbers of the upper left and lower right sub-tiles
-			int zoomLevelDifference = subFileParameter.baseZoomLevel - tile.zoomLevel;
-			queryParameters.fromBaseTileX = tile.tileX << zoomLevelDifference;
-			queryParameters.fromBaseTileY = tile.tileY << zoomLevelDifference;
-			queryParameters.toBaseTileX = queryParameters.fromBaseTileX + (1 << zoomLevelDifference) - 1;
-			queryParameters.toBaseTileY = queryParameters.fromBaseTileY + (1 << zoomLevelDifference) - 1;
-			queryParameters.useTileBitmask = false;
-		} else if (tile.zoomLevel > subFileParameter.baseZoomLevel) {
-			// calculate the XY numbers of the parent base tile
-			int zoomLevelDifference = tile.zoomLevel - subFileParameter.baseZoomLevel;
-			queryParameters.fromBaseTileX = tile.tileX >>> zoomLevelDifference;
-			queryParameters.fromBaseTileY = tile.tileY >>> zoomLevelDifference;
-			queryParameters.toBaseTileX = queryParameters.fromBaseTileX;
-			queryParameters.toBaseTileY = queryParameters.fromBaseTileY;
-			queryParameters.useTileBitmask = true;
-			queryParameters.queryTileBitmask = calculateTileBitmask(tile, zoomLevelDifference);
-		} else {
-			// use the tile XY numbers of the requested tile
-			queryParameters.fromBaseTileX = tile.tileX;
-			queryParameters.fromBaseTileY = tile.tileY;
-			queryParameters.toBaseTileX = queryParameters.fromBaseTileX;
-			queryParameters.toBaseTileY = queryParameters.fromBaseTileY;
-			queryParameters.useTileBitmask = false;
-		}
-	}
-
-	static void calculateBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter) {
-		// calculate the blocks in the file which need to be read
-		queryParameters.fromBlockX = Math.max(queryParameters.fromBaseTileX - subFileParameter.boundaryTileLeft, 0);
-		queryParameters.fromBlockY = Math.max(queryParameters.fromBaseTileY - subFileParameter.boundaryTileTop, 0);
-		queryParameters.toBlockX = Math.min(queryParameters.toBaseTileX - subFileParameter.boundaryTileLeft,
-				subFileParameter.blocksWidth - 1);
-		queryParameters.toBlockY = Math.min(queryParameters.toBaseTileY - subFileParameter.boundaryTileTop,
-				subFileParameter.blocksHeight - 1);
-	}
 
 	static int calculateTileBitmask(Tile tile, int zoomLevelDifference) {
 		if (zoomLevelDifference == 1) {
