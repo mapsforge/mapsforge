@@ -29,7 +29,6 @@ import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
 import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
-import android.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;

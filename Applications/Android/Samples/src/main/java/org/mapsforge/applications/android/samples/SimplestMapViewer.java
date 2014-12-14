@@ -21,8 +21,6 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
-import android.R;
-
 /**
  * The simplest form of creating a map viewer based on the MapViewerTemplate.
  */
