@@ -96,6 +96,9 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		return bitmap;
 	}
 
+	private long expiration = 0;
+	private long timestamp = System.currentTimeMillis();
+
 	/*
 	 * THIS CAN THROW AN IllegalArgumentException or SocketTimeoutException The inputStream can be corrupt for various
 	 * reasons (slow download or slow access to file system) and will then raise an exception. This exception must be
@@ -141,6 +144,28 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			tileInstances.incrementAndGet();
 		}
+	}
+
+	@Override
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	@Override
+	public boolean isExpired() {
+		if (expiration == 0)
+			return false;
+		return (expiration >= System.currentTimeMillis());
+	}
+
+	@Override
+	public void setExpiration(long expiration) {
+		this.expiration = expiration;
+	}
+
+	@Override
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	@Override
