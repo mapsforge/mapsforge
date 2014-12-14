@@ -21,6 +21,8 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
+import android.R;
+
 /**
  * The simplest form of creating a map viewer based on the MapViewerTemplate.
  */
@@ -28,6 +30,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 
 	/**
 	 * This MapViewer uses the deprecated built-in osmarender theme.
+	 * 
 	 * @return the render theme to use
 	 */
 	@Override
@@ -37,6 +40,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 
 	/**
 	 * This MapViewer uses the standard xml layout in the Samples app.
+	 * 
 	 * @return
 	 */
 	@Override
@@ -46,6 +50,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 
 	/**
 	 * The id of the mapview inside the layout.
+	 * 
 	 * @return the id of the MapView inside the layout.
 	 */
 	@Override
@@ -55,6 +60,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 
 	/**
 	 * The name of the map file.
+	 * 
 	 * @return map file name
 	 */
 	@Override
@@ -77,9 +83,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 	protected void createTileCaches() {
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
-				false, 0
-		));
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), false, 0, false));
 	}
 
 }
