@@ -15,25 +15,23 @@
 
 package org.mapsforge.map.reader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * A MapDatabase that reads and combines data from multiple map files.
- * The MultiMapDatabase supports the following modes for reading from multiple files:
- * - RETURN_FIRST: the data from the first database to support a tile will be returned. This is the
- * fastest operation suitable when you know there is no overlap between map files.
- * - RETURN_ALL: the data from all files will be returned, the data will be combined. This is suitable
- * if more than one file can contain data for a tile, but you know there is no semantic overlap, e.g.
- * one file contains contour lines, another road data.
- * - DEDUPLICATE: the data from all files will be returned but duplicates will be eliminated. This is
- * suitable when multiple maps cover the different areas, but there is some overlap at boundaries. This
- * is the most expensive operation and often it is actually faster to double paint objects as otherwise
- * all objects have to be compared with all others.
+ * A MapDatabase that reads and combines data from multiple map files. The MultiMapDatabase supports the following modes
+ * for reading from multiple files: - RETURN_FIRST: the data from the first database to support a tile will be returned.
+ * This is the fastest operation suitable when you know there is no overlap between map files. - RETURN_ALL: the data
+ * from all files will be returned, the data will be combined. This is suitable if more than one file can contain data
+ * for a tile, but you know there is no semantic overlap, e.g. one file contains contour lines, another road data. -
+ * DEDUPLICATE: the data from all files will be returned but duplicates will be eliminated. This is suitable when
+ * multiple maps cover the different areas, but there is some overlap at boundaries. This is the most expensive
+ * operation and often it is actually faster to double paint objects as otherwise all objects have to be compared with
+ * all others.
  */
 public class MultiMapDataStore implements MapDataStore {
 
@@ -82,6 +80,38 @@ public class MultiMapDataStore implements MapDataStore {
 		for (MapDataStore mdb : mapDatabases) {
 			mdb.close();
 		}
+	}
+
+	/**
+	 * Returns the timestamp of the data used to render a specific tile.
+	 * <p>
+	 * If the tile uses data from multiple data stores, the most recent timestamp is returned.
+	 * 
+	 * @param tile
+	 *            A tile.
+	 * @return the timestamp of the data used to render the tile
+	 */
+	@Override
+	public long getDataTimestamp(Tile tile) {
+		switch (this.dataPolicy) {
+			case RETURN_FIRST:
+				for (MapDataStore mdb : mapDatabases) {
+					if (mdb.supportsTile(tile)) {
+						return mdb.getDataTimestamp(tile);
+					}
+				}
+				return 0;
+			case RETURN_ALL:
+			case DEDUPLICATE:
+				long result = 0;
+				for (MapDataStore mdb : mapDatabases) {
+					if (mdb.supportsTile(tile)) {
+						result = Math.max(result, mdb.getDataTimestamp(tile));
+					}
+				}
+				return result;
+		}
+		throw new IllegalStateException("Invalid data policy for multi map database");
 	}
 
 	@Override
