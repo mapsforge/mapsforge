@@ -155,11 +155,13 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	 * cannot be reached), the stale tile will continue to be used until another
 	 * {@code #draw(BoundingBox, byte, Canvas, Point)} operation requests it again.
 	 * 
+	 * @param tile
+	 *            A tile. This parameter is not used for a {@code TileDownloadLayer} and can be null.
 	 * @param bitmap
-	 *            A tile bitmap currently held in the layer's cache.
+	 *            The bitmap for {@code tile} currently held in the layer's cache.
 	 */
 	@Override
-	protected boolean isTileStale(TileBitmap bitmap) {
+	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
 		if (bitmap.isExpired())
 			return true;
 		if (cacheTTL == 0)

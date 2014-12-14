@@ -37,13 +37,15 @@ public class TileStoreLayer extends TileLayer<Job> {
 	/**
 	 * Whether the tile is stale and should be refreshed.
 	 * <p>
-	 * This method is not needed for a TileStoreLayer and will always return {@code false}.
+	 * This method is not needed for a TileStoreLayer and will always return {@code false}. Both arguments can be null.
 	 * 
+	 * @param tile
+	 *            A tile.
 	 * @param bitmap
-	 *            A tile bitmap currently held in the layer's cache.
+	 *            The bitmap for {@code tile} currently held in the layer's cache.
 	 */
 	@Override
-	protected boolean isTileStale(TileBitmap bitmap) {
+	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
 		return false;
 	}
 }

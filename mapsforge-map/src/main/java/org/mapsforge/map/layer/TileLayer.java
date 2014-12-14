@@ -104,7 +104,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				}
 				drawParentTileBitmap(canvas, point, tile);
 			} else {
-				if (isTileStale(bitmap) && this.hasJobQueue && !this.tileCache.containsKey(job))
+				if (isTileStale(tile, bitmap) && this.hasJobQueue && !this.tileCache.containsKey(job))
 					this.jobQueue.add(job);
 				retrieveLabelsOnly(job);
 				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y));
@@ -147,10 +147,12 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	 * because the tile is obtained from an online source which cannot be reached), the stale tile will continue to be
 	 * used until another {@code #draw(BoundingBox, byte, Canvas, Point)} operation requests it again.
 	 * 
+	 * @param tile
+	 *            A tile.
 	 * @param bitmap
-	 *            A tile bitmap currently held in the layer's cache.
+	 *            The bitmap for {@code tile} currently held in the layer's cache.
 	 */
-	protected abstract boolean isTileStale(TileBitmap bitmap);
+	protected abstract boolean isTileStale(Tile tile, TileBitmap bitmap);
 
 	protected void retrieveLabelsOnly(T job) {
 	}

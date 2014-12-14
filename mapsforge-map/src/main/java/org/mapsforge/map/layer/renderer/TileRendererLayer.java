@@ -140,12 +140,14 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	 * the cache. If a fresh copy cannot be obtained for whatever reason, the stale tile will continue to be used until
 	 * another {@code #draw(BoundingBox, byte, Canvas, Point)} operation requests it again.
 	 * 
+	 * @param tile
+	 *            A tile.
 	 * @param bitmap
-	 *            A tile bitmap currently held in the layer's cache.
+	 *            The bitmap for {@code tile} currently held in the layer's cache.
 	 */
 	@Override
-	protected boolean isTileStale(TileBitmap bitmap) {
-		return this.mapFile.lastModified() > bitmap.getTimestamp();
+	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
+		return this.mapDataStore.getDataTimestamp(tile) > bitmap.getTimestamp();
 	}
 
 	@Override
