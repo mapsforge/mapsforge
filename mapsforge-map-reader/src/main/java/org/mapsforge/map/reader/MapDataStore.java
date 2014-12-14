@@ -26,37 +26,53 @@ public interface MapDataStore {
 
 	/**
 	 * Returns the area for which data is supplied.
+	 * 
 	 * @return bounding box of area.
 	 */
 	BoundingBox boundingBox();
 
-	/*
+	/**
 	 * Closes the map database.
 	 */
 	void close();
 
 	/**
+	 * Returns the timestamp of the data used to render a specific tile.
+	 * 
+	 * @param tile
+	 *            A tile.
+	 * @return the timestamp of the data used to render the tile
+	 */
+	long getDataTimestamp(Tile tile);
+
+	/**
 	 * Gets the initial map position.
+	 * 
 	 * @return the start position, if available.
 	 */
 	LatLong startPosition();
 
 	/**
 	 * Gets the initial zoom level.
+	 * 
 	 * @return the start zoom level.
 	 */
 	Byte startZoomLevel();
 
 	/**
 	 * Reads data for tile.
-	 * @param tile tile for which data is requested.
+	 * 
+	 * @param tile
+	 *            tile for which data is requested.
 	 * @return map data for the tile.
 	 */
 	MapReadResult readMapData(Tile tile);
 
 	/**
 	 * Returns true if MapDatabase contains tile.
-	 * @param tile tile to be rendered.
+	 * 
+	 * @param tile
+	 *            tile to be rendered.
 	 * @return true if tile is part of database.
 	 */
 	boolean supportsTile(Tile tile);

@@ -15,15 +15,14 @@
  */
 package org.mapsforge.map.layer.cache;
 
-import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.map.layer.queue.Job;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TwoLevelTileCache implements TileCache {
+import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.map.layer.queue.Job;
 
+public class TwoLevelTileCache implements TileCache {
 
 	private final TileCache firstLevelTileCache;
 	private final TileCache secondLevelTileCache;
@@ -76,6 +75,12 @@ public class TwoLevelTileCache implements TileCache {
 	@Override
 	public TileBitmap getImmediately(Job key) {
 		return firstLevelTileCache.get(key);
+	}
+
+	@Override
+	public void purge() {
+		this.firstLevelTileCache.purge();
+		this.secondLevelTileCache.purge();
 	}
 
 	@Override
