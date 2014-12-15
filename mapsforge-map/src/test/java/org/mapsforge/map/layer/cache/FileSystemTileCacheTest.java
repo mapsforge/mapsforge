@@ -87,7 +87,7 @@ public class FileSystemTileCacheTest {
 	@Test
 	public void capacityZeroTest() {
 		for (int tileSize : TILE_SIZES) {
-			TileCache tileCache = new FileSystemTileCache(0, this.cacheDirectory, GRAPHIC_FACTORY, false, 0);
+			TileCache tileCache = new FileSystemTileCache(0, this.cacheDirectory, GRAPHIC_FACTORY, false, 0, false);
 			Tile tile = new Tile(0, 0, (byte) 0, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 			Job job = new DownloadJob(tile, tileSource);

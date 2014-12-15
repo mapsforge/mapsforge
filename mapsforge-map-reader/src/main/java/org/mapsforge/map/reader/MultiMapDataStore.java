@@ -84,6 +84,38 @@ public class MultiMapDataStore implements MapDataStore {
 		}
 	}
 
+	/**
+	 * Returns the timestamp of the data used to render a specific tile.
+	 * <p>
+	 * If the tile uses data from multiple data stores, the most recent timestamp is returned.
+	 *
+	 * @param tile
+	 *            A tile.
+	 * @return the timestamp of the data used to render the tile
+	 */
+	@Override
+	public long getDataTimestamp(Tile tile) {
+		switch (this.dataPolicy) {
+			case RETURN_FIRST:
+				for (MapDataStore mdb : mapDatabases) {
+					if (mdb.supportsTile(tile)) {
+						return mdb.getDataTimestamp(tile);
+					}
+				}
+				return 0;
+			case RETURN_ALL:
+			case DEDUPLICATE:
+				long result = 0;
+				for (MapDataStore mdb : mapDatabases) {
+					if (mdb.supportsTile(tile)) {
+						result = Math.max(result, mdb.getDataTimestamp(tile));
+					}
+				}
+				return result;
+		}
+		throw new IllegalStateException("Invalid data policy for multi map database");
+	}
+
 	@Override
 	public MapReadResult readMapData(Tile tile) {
 		switch (this.dataPolicy) {
