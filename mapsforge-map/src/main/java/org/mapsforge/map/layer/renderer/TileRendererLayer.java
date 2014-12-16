@@ -17,6 +17,7 @@
 package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -132,6 +133,30 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	protected RendererJob createJob(Tile tile) {
 		return new RendererJob(tile, this.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale,
 				this.isTransparent, false);
+	}
+
+	/**
+	 * Whether the tile is stale and should be refreshed.
+	 * <p>
+	 * This method is called from {@link #draw(org.mapsforge.core.model.BoundingBox, byte, org.mapsforge.core.graphics.Canvas, org.mapsforge.core.model.Point)} to determine whether the tile needs to
+	 * be refreshed.
+	 * <p>
+	 * A tile is considered stale if the timestamp of the layer's {@link #mapDataStore} is more recent than the
+	 * {@code bitmap}'s {@link org.mapsforge.core.graphics.TileBitmap#getTimestamp()}.
+	 * <p>
+	 * When a tile has become stale, the layer will first display the tile referenced by {@code bitmap} and attempt to
+	 * obtain a fresh copy in the background. When a fresh copy becomes available, the layer will replace is and update
+	 * the cache. If a fresh copy cannot be obtained for whatever reason, the stale tile will continue to be used until
+	 * another {@code #draw(BoundingBox, byte, Canvas, Point)} operation requests it again.
+	 *
+	 * @param tile
+	 *            A tile.
+	 * @param bitmap
+	 *            The bitmap for {@code tile} currently held in the layer's cache.
+	 */
+	@Override
+	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
+		return this.mapDataStore.getDataTimestamp(tile) > bitmap.getTimestamp();
 	}
 
 	@Override
