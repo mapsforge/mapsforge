@@ -295,6 +295,27 @@ public class MapFile implements MapDataStore {
 	}
 
 	/**
+	 * Returns the creation timestamp of the map file.
+	 * @param tile not used, as all tiles will shared the same creation date.
+	 * @return the creation timestamp inside the map file.
+	 */
+	@Override
+	public long getDataTimestamp(Tile tile) {
+		/*
+		* FIXME: we should really use the timestamp of the underlying file. Assume the following case: We have a map
+		* file with mapDate = January 1. On March 1 we render a tile. The OS doesn't let us change the file date, so
+		* the cached file has a timestamp of March 1. On March 15 we download a new map with mapDate = February 15. The
+		* same day, we request the same tile again. Since its timestamp reads March 1 and getDataTimestamp() returns
+		* February 15, the cached bitmap is deemed up to date and returned. In reality the tile is stale and should be
+		* re-rendered. Examining the timestamp of the underlying file would reveal that (bitmap: March 1, map: March
+		* 15) and cause the tile to be re-rendered. It would also behave as expected when the user downgrades to an
+		* older map file for whatever reason, as long as the file timestamp reflects the date when the old file was
+		* copied back in place.
+		*/
+		return this.getMapFileInfo().mapDate;
+	}
+
+	/**
 	 * Reads all map data for the area covered by the given tile at the tile zoom level.
 	 *
 	 * @param tile
