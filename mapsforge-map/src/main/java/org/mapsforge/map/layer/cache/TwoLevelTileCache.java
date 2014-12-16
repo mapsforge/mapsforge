@@ -79,6 +79,12 @@ public class TwoLevelTileCache implements TileCache {
 	}
 
 	@Override
+	public void purge() {
+		this.firstLevelTileCache.purge();
+		this.secondLevelTileCache.purge();
+	}
+
+	@Override
 	public void put(Job key, TileBitmap bitmap) {
 		if (this.workingSet.contains(key)) {
 			this.firstLevelTileCache.put(key, bitmap);

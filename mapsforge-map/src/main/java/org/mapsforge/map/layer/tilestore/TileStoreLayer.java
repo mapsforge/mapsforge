@@ -15,6 +15,7 @@
 package org.mapsforge.map.layer.tilestore;
 
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -33,4 +34,18 @@ public class TileStoreLayer extends TileLayer<Job> {
 		return new Job(tile, isTransparent);
 	}
 
+	/**
+	 * Whether the tile is stale and should be refreshed.
+	 * <p>
+	 * This method is not needed for a TileStoreLayer and will always return {@code false}. Both arguments can be null.
+	 *
+	 * @param tile
+	 *            A tile.
+	 * @param bitmap
+	 *            The bitmap for {@code tile} currently held in the layer's cache.
+	 */
+	@Override
+	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
+		return false;
+	}
 }

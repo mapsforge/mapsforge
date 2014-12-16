@@ -72,9 +72,16 @@ class StorageJob {
 }
 
 /**
- * A thread-safe cache for image files with a fixed size and LRU policy. The cache writes
- * the data on a separate thread, i.e. when the call to put a job/tile into the cache returns
- * the data is not actually written to disk.
+ * A thread-safe cache for image files with a fixed size and LRU policy.
+ * <p>
+ * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor. The
+ * cache writes the data on a separate thread, i.e. when the call to put a job/tile into the cache returns the data is
+ * not actually written to disk.
+ * <p>
+ * When used for a {@link org.mapsforge.map.layer.renderer.TileRendererLayer}, persistent caching may result in clipped
+ * labels when tiles from different instances are used. To work around this, either display labels in a separate
+ * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described in
+ * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean)}.
  */
 public class FileSystemTileCache extends PausableThread implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
@@ -87,44 +94,46 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 		return true;
 	}
 
-    /**
-     * Recursively deletes directory and all files.
-     * See http://stackoverflow.com/questions/3775694/deleting-folder-from-java/3775723#3775723
-     *
-     * @param dir the directory to delete with all its content
-     * @return true if directory and all content has been deleted, false if not
-     */
+	/**
+	 * Recursively deletes directory and all files. See
+	 * http://stackoverflow.com/questions/3775694/deleting-folder-from-java/3775723#3775723
+	 * 
+	 * @param dir
+	 *            the directory to delete with all its content
+	 * @return true if directory and all content has been deleted, false if not
+	 */
 
-    private static boolean deleteDirectory(File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            if (children != null) {
-            	for (int i = 0; i < children.length; i++) {
-            		boolean success = deleteDirectory(new File(dir, children[i]));
-            		if (!success) {
-            			return false;
-            		}
-            	}
-            }
-        }
-        // The directory is now empty so delete it
-        return dir.delete();
-    }
+	private static boolean deleteDirectory(File dir) {
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			if (children != null) {
+				for (int i = 0; i < children.length; i++) {
+					boolean success = deleteDirectory(new File(dir, children[i]));
+					if (!success) {
+						return false;
+					}
+				}
+			}
+		}
+		// The directory is now empty so delete it
+		return dir.delete();
+	}
 
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
 	private final AtomicInteger jobs;
 	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
+	private boolean persistent;
 
 	// if threaded is true, the bitmap writing is executed on a separate thread,
 	// and jobs are stored in the jobStack. The false option remains for testing.
 	private final boolean threaded;
 	private final LinkedBlockingQueue<StorageJob> storageJobs;
 
-
 	/**
-	 * Compatibility constructor that creates a threaded FSTC.
+	 * Compatibility constructor that creates a non-threaded, non-persistent FSTC.
+	 * 
 	 * @param capacity
 	 *            the maximum number of entries in this cache.
 	 * @param cacheDirectory
@@ -135,10 +144,18 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
-		this(capacity, cacheDirectory, graphicFactory, false, 0);
+		this(capacity, cacheDirectory, graphicFactory, false, 0, false);
 	}
 
 	/**
+	 * Creates a new FileSystemTileCache.
+	 * <p>
+	 * Use the {@code persistent} argument to specify whether cache contents should be kept across instances. A
+	 * persistent cache will serve any tiles it finds in {@code cacheDirectory}. Calling {@link #destroy()} on a
+	 * persistent cache will not delete the cache directory. Conversely, a non-persistent cache will serve only tiles
+	 * added to it via the {@link #put(Job, TileBitmap)} method, and calling {@link #destroy()} on a non-persistent
+	 * cache will delete {@code cacheDirectory}.
+	 * 
 	 * @param capacity
 	 *            the maximum number of entries in this cache.
 	 * @param cacheDirectory
@@ -149,8 +166,11 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 *            if cache will use background thread to store data (more responsive).
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
+	 * @throws IllegalArgumentException
+	 *             if the capacity is negative.
 	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded, int queueSize) {
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded,
+			int queueSize, boolean persistent) {
 		this.jobs = new AtomicInteger(0);
 		this.threaded = threaded;
 		if (threaded) {
@@ -166,6 +186,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 		}
 		this.graphicFactory = graphicFactory;
 		this.lock = new ReentrantReadWriteLock();
+		this.persistent = persistent;
 		if (this.threaded) {
 			this.start();
 		}
@@ -177,25 +198,31 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			lock.readLock().lock();
 			// if we are using a threaded cache we return true if the tile is still in the
 			// queue to reduce double rendering
-			return this.lruCache.containsKey(key.getKey()) || (threaded && storageJobs.contains(key));
+			if (this.lruCache.containsKey(key.getKey()) || (threaded && storageJobs.contains(key)))
+				return true;
 		} finally {
 			lock.readLock().unlock();
 		}
+		return this.persistent && getOutputFile(key).exists();
 	}
 
+	/**
+	 * Destroys this cache.
+	 * <p>
+	 * Applications are expected to call this method when they no longer require the cache.
+	 * <p>
+	 * If the cache is not persistent, calling this method is equivalent to calling {@link #purge()}. If the cache is
+	 * persistent, it does nothing.
+	 * <p>
+	 * Beginning with 0.6.0, accessing the cache after calling {@code destroy()} is discouraged. In order to empty the
+	 * cache and force all tiles to be re-rendered or re-requested from the source, use {@link #purge()} instead.
+	 * Earlier versions lacked the {@link #purge()} method and used {@code destroy()} instead, but this practice is now
+	 * discouraged and may lead to unexpected results when used with features introduced in 0.6.0 or later.
+	 */
 	@Override
 	public void destroy() {
-		try {
-			lock.writeLock().lock();
-			this.lruCache.clear();
-			if (this.threaded) {
-				this.interrupt();
-			}
-		} finally {
-			lock.writeLock().unlock();
-		}
-
-		deleteDirectory(this.cacheDirectory);
+		if (!this.persistent)
+			purge();
 	}
 
 	@Override
@@ -209,13 +236,20 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			lock.readLock().unlock();
 		}
 		if (file == null) {
-			return null;
+			if (this.persistent) {
+				file = getOutputFile(key);
+				if (!file.exists())
+					return null;
+			} else
+				return null;
 		}
 
 		InputStream inputStream = null;
 		try {
 			inputStream = new FileInputStream(file);
-			return this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+			TileBitmap result = this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+			result.setTimestamp(file.lastModified());
+			return result;
 		} catch (CorruptedInputStreamException e) {
 			// this can happen, at least on Android, when the input stream
 			// is somehow corrupted, returning null ensures it will be loaded
@@ -253,7 +287,42 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	}
 
 	/**
+	 * Whether the cache is persistent.
+	 */
+	public boolean isPersistent() {
+		return this.persistent;
+	}
+
+	/**
+	 * Purges this cache.
+	 * <p>
+	 * Calls to {@link #get(Job)} issued after purging will not return any tiles added before the purge operation.
+	 * Purging will also delete the cache directory on disk, freeing up disk space.
+	 * <p>
+	 * Applications should purge the tile cache when map model parameters change, such as the render style for locally
+	 * rendered tiles, or the source for downloaded tiles. Applications which frequently alternate between a limited
+	 * number of map model configurations may want to consider using a different cache for each.
+	 * 
+	 * @since 0.5.0
+	 */
+	@Override
+	public void purge() {
+		try {
+			this.lock.writeLock().lock();
+			this.lruCache.clear();
+			if (this.threaded) {
+				this.interrupt();
+			}
+		} finally {
+			this.lock.writeLock().unlock();
+		}
+
+		deleteDirectory(this.cacheDirectory);
+	}
+
+	/**
 	 * Gets the number of remaining tiles still in the queue to be written to disk.
+	 * 
 	 * @return number of jobs in queue, 0 if not threaded.
 	 */
 	public int getQueueLength() {
@@ -293,9 +362,9 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 		String file = this.cacheDirectory + File.separator + job.getKey();
 		String dir = file.substring(0, file.lastIndexOf(File.separatorChar));
 		if (isValidCacheDirectory(new File(dir))) {
-            return new File(file + FILE_EXTENSION);
-        }
-        return null;
+			return new File(file + FILE_EXTENSION);
+		}
+		return null;
 	}
 
 	private void remove(Job key) {
@@ -329,8 +398,11 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 
 	/**
 	 * stores the bitmap data on disk with filename key
-	 * @param key filename
-	 * @param bitmap tile image
+	 * 
+	 * @param key
+	 *            filename
+	 * @param bitmap
+	 *            tile image
 	 */
 	private void storeData(Job key, TileBitmap bitmap) {
 		OutputStream outputStream = null;

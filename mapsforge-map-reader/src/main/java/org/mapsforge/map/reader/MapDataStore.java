@@ -36,6 +36,15 @@ public interface MapDataStore {
 	void close();
 
 	/**
+	 * Returns the timestamp of the data used to render a specific tile.
+	 *
+	 * @param tile
+	 *            A tile.
+	 * @return the timestamp of the data used to render the tile
+	 */
+	long getDataTimestamp(Tile tile);
+
+	/**
 	 * Gets the initial map position.
 	 * @return the start position, if available.
 	 */
