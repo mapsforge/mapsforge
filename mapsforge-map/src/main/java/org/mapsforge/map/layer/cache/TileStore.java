@@ -15,12 +15,6 @@
  */
 package org.mapsforge.map.layer.cache;
 
-import org.mapsforge.core.graphics.CorruptedInputStreamException;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.util.IOUtils;
-import org.mapsforge.map.layer.queue.Job;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,10 +22,15 @@ import java.io.InputStream;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.mapsforge.core.graphics.CorruptedInputStreamException;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.util.IOUtils;
+import org.mapsforge.map.layer.queue.Job;
+
 /**
- * A "tilecache" storing map tiles that is prepopulated and never removes any files.
- * This tile store uses the standard TMS directory layout of zoomlevel/y/x . To support
- * a different directory structure override the findFile method.
+ * A "tilecache" storing map tiles that is prepopulated and never removes any files. This tile store uses the standard
+ * TMS directory layout of zoomlevel/y/x . To support a different directory structure override the findFile method.
  */
 public class TileStore implements TileCache {
 
@@ -109,6 +108,10 @@ public class TileStore implements TileCache {
 		return get(key);
 	}
 
+	@Override
+	public synchronized void purge() {
+		// no-op
+	}
 
 	@Override
 	public synchronized void put(Job key, TileBitmap bitmap) {

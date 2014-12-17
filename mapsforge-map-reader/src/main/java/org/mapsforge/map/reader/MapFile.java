@@ -38,10 +38,11 @@ import org.mapsforge.map.reader.header.SubFileParameter;
 /**
  * A class for reading binary map files.
  * <p>
- * The readMapData method is now thread safe, but care should be taken that not too much data is
- * read at the same time (keep simultaneous requests to minimum)
- *
- * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
+ * The readMapData method is now thread safe, but care should be taken that not too much data is read at the same time
+ * (keep simultaneous requests to minimum)
+ * 
+ * @see <a
+ *      href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
 public class MapFile implements MapDataStore {
 
@@ -200,27 +201,26 @@ public class MapFile implements MapDataStore {
 	private final MapFileHeader mapFileHeader;
 	private final ReadBuffer readBuffer;
 
-
 	/* Only for testing, an empty file. */
 	public static final MapFile TEST_MAP_FILE = new MapFile();
 
 	/**
-	 * Way filtering reduces the number of ways returned to only those that are
-	 * relevant for the tile requested, leading to performance gains, but can
-	 * cause line clipping artifacts (particularly at higher zoom levels). The
-	 * risk of clipping can be reduced by either turning way filtering off or by
-	 * increasing the wayFilterDistance which governs how large an area surrounding
-	 * the requested tile will be returned.
-	 * For most use cases the standard settings should be sufficient.
+	 * Way filtering reduces the number of ways returned to only those that are relevant for the tile requested, leading
+	 * to performance gains, but can cause line clipping artifacts (particularly at higher zoom levels). The risk of
+	 * clipping can be reduced by either turning way filtering off or by increasing the wayFilterDistance which governs
+	 * how large an area surrounding the requested tile will be returned. For most use cases the standard settings
+	 * should be sufficient.
 	 */
 	public static boolean wayFilterEnabled = true;
 	public static int wayFilterDistance = 20;
 
 	/**
 	 * Opens the given map file, reads its header data and validates them.
-	 *
-	 * @param mapFile the map file.
-	 * @throws MapFileException if the given map file is null or invalid.
+	 * 
+	 * @param mapFile
+	 *            the map file.
+	 * @throws MapFileException
+	 *             if the given map file is null or invalid.
 	 */
 	public MapFile(File mapFile) {
 		if (mapFile == null) {
@@ -254,10 +254,11 @@ public class MapFile implements MapDataStore {
 
 	/**
 	 * Opens the given map file, reads its header data and validates them.
-	 *
-	 * @param mapFileName the path of the map file.
-	 * @throws MapFileException if the given map file is null or invalid or IOException if the file
-	 * cannot be opened.
+	 * 
+	 * @param mapFileName
+	 *            the path of the map file.
+	 * @throws MapFileException
+	 *             if the given map file is null or invalid or IOException if the file cannot be opened.
 	 */
 	public MapFile(String mapFileName) {
 		this(new File(mapFileName));
@@ -295,8 +296,34 @@ public class MapFile implements MapDataStore {
 	}
 
 	/**
+	 * Returns the timestamp of the data used to render a specific tile.
+	 * <p>
+	 * This method does not check if the tile is supported. Thus, the timestamp of the map data will be returned even if
+	 * the tile is entirely outside its boundaries.
+	 * 
+	 * @param tile
+	 *            A tile. This parameter is not used for {@code MapFile} and can be null.
+	 * @return the timestamp of the data used to render the tile
+	 */
+	@Override
+	public long getDataTimestamp(Tile tile) {
+		/*
+		 * FIXME: we should really use the timestamp of the underlying file. Assume the following case: We have a map
+		 * file with mapDate = January 1. On March 1 we render a tile. The OS doesn't let us change the file date, so
+		 * the cached file has a timestamp of March 1. On March 15 we download a new map with mapDate = February 15. The
+		 * same day, we request the same tile again. Since its timestamp reads March 1 and getDataTimestamp() returns
+		 * February 15, the cached bitmap is deemed up to date and returned. In reality the tile is stale and should be
+		 * re-rendered. Examining the timestamp of the underlying file would reveal that (bitmap: March 1, map: March
+		 * 15) and cause the tile to be re-rendered. It would also behave as expected when the user downgrades to an
+		 * older map file for whatever reason, as long as the file timestamp reflects the date when the old file was
+		 * copied back in place.
+		 */
+		return this.getMapFileInfo().mapDate;
+	}
+
+	/**
 	 * Reads all map data for the area covered by the given tile at the tile zoom level.
-	 *
+	 * 
 	 * @param tile
 	 *            defines area and zoom level of read map data.
 	 * @return the read map data.
@@ -328,10 +355,13 @@ public class MapFile implements MapDataStore {
 	}
 
 	/**
-	 * Restricts returns of data to zoom level range specified. This can be used to restrict
-	 * the use of this map data base when used in MultiMapDatabase settings.
-	 * @param minZoom minimum zoom level supported
-	 * @param maxZoom maximum zoom level supported
+	 * Restricts returns of data to zoom level range specified. This can be used to restrict the use of this map data
+	 * base when used in MultiMapDatabase settings.
+	 * 
+	 * @param minZoom
+	 *            minimum zoom level supported
+	 * @param maxZoom
+	 *            maximum zoom level supported
 	 */
 	public void restrictToZoomRange(byte minZoom, byte maxZoom) {
 		this.getMapFileInfo().zoomLevelMax = maxZoom;
@@ -361,12 +391,10 @@ public class MapFile implements MapDataStore {
 
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
 		// get the first way node latitude offset (VBE-S)
-		double wayNodeLatitude = tileLatitude
-				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		double wayNodeLatitude = tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// get the first way node longitude offset (VBE-S)
-		double wayNodeLongitude = tileLongitude
-				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		double wayNodeLongitude = tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// store the first way node
 		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
@@ -396,12 +424,10 @@ public class MapFile implements MapDataStore {
 
 	private void decodeWayNodesSingleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
 		// get the first way node latitude single-delta offset (VBE-S)
-		double wayNodeLatitude = tileLatitude
-				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		double wayNodeLatitude = tileLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// get the first way node longitude single-delta offset (VBE-S)
-		double wayNodeLongitude = tileLongitude
-				+ LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+		double wayNodeLongitude = tileLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 		// store the first way node
 		waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
@@ -428,7 +454,7 @@ public class MapFile implements MapDataStore {
 	}
 
 	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                  BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
 		if (!processBlockSignature()) {
 			return null;
 		}
@@ -454,7 +480,8 @@ public class MapFile implements MapDataStore {
 
 		boolean filterRequired = queryParameters.queryZoomLevel > subFileParameter.baseZoomLevel;
 
-		List<PointOfInterest> pois = processPOIs(tileLatitude, tileLongitude, poisOnQueryZoomLevel, boundingBox, filterRequired);
+		List<PointOfInterest> pois = processPOIs(tileLatitude, tileLongitude, poisOnQueryZoomLevel, boundingBox,
+				filterRequired);
 		if (pois == null) {
 			return null;
 		}
@@ -468,7 +495,8 @@ public class MapFile implements MapDataStore {
 		// move the pointer to the first way
 		this.readBuffer.setBufferPosition(firstWayOffset);
 
-		List<Way> ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox, filterRequired, tileLatitude, tileLongitude);
+		List<Way> ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox, filterRequired, tileLatitude,
+				tileLongitude);
 		if (ways == null) {
 			return null;
 		}
@@ -477,8 +505,7 @@ public class MapFile implements MapDataStore {
 	}
 
 	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                    BoundingBox boundingBox)
-			throws IOException {
+			BoundingBox boundingBox) throws IOException {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
 
@@ -558,7 +585,8 @@ public class MapFile implements MapDataStore {
 						subFileParameter.baseZoomLevel);
 
 				try {
-					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox, tileLatitude, tileLongitude);
+					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox,
+							tileLatitude, tileLongitude);
 					if (poiWayBundle != null) {
 						mapReadResultBuilder.add(poiWayBundle);
 					}
@@ -578,7 +606,7 @@ public class MapFile implements MapDataStore {
 
 	/**
 	 * Processes the block signature, if present.
-	 *
+	 * 
 	 * @return true if the block signature could be processed successfully, false otherwise.
 	 */
 	private boolean processBlockSignature() {
@@ -593,7 +621,8 @@ public class MapFile implements MapDataStore {
 		return true;
 	}
 
-	private List<PointOfInterest> processPOIs(double tileLatitude, double tileLongitude, int numberOfPois, BoundingBox boundingBox, boolean filterRequired) {
+	private List<PointOfInterest> processPOIs(double tileLatitude, double tileLongitude, int numberOfPois,
+			BoundingBox boundingBox, boolean filterRequired) {
 		List<PointOfInterest> pois = new ArrayList<PointOfInterest>();
 		Tag[] poiTags = this.mapFileHeader.getMapFileInfo().poiTags;
 
@@ -705,9 +734,8 @@ public class MapFile implements MapDataStore {
 		return wayCoordinates;
 	}
 
-	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays,
-	                              BoundingBox boundingBox, boolean filterRequired,
-	                              double tileLatitude, double tileLongitude) {
+	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays, BoundingBox boundingBox,
+			boolean filterRequired, double tileLatitude, double tileLongitude) {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
@@ -852,7 +880,6 @@ public class MapFile implements MapDataStore {
 		return zoomTable;
 	}
 
-
 	private MapFile() {
 		// only to create a dummy empty file.
 		databaseIndexCache = null;
@@ -862,4 +889,3 @@ public class MapFile implements MapDataStore {
 		readBuffer = null;
 	}
 }
-
