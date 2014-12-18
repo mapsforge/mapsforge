@@ -33,6 +33,13 @@ public interface TileCache {
 
 	/**
 	 * Destroys this cache.
+	 * <p>
+	 * Applications are expected to call this method when they no longer require the cache.
+	 * <p>
+	 * In versions prior to 0.5.0, it was common practice to call this method but continue using the cache, in order to
+	 * empty it, forcing all tiles to be re-rendered or re-requested from the source. Beginning with 0.5.0,
+	 * {@link #purge()} should be used for this purpose. The earlier practice is now discouraged and may lead to
+	 * unexpected results when used with features introduced in 0.5.0 or later.
 	 */
 	void destroy();
 
@@ -53,11 +60,24 @@ public interface TileCache {
 	int getCapacityFirstLevel();
 
 	/**
-	 * Returns tileBitmap only if available at fastest cache in case of multi-layered
-	 * cache, null otherwise.
+	 * Returns tileBitmap only if available at fastest cache in case of multi-layered cache, null otherwise.
+	 * 
 	 * @return tileBitmap if available without getting from lower storage levels
 	 */
 	TileBitmap getImmediately(Job key);
+
+	/**
+	 * Purges this cache.
+	 * <p>
+	 * Calls to {@link #get(Job)} issued after purging will not return any tiles added before the purge operation.
+	 * <p>
+	 * Applications should purge the tile cache when map model parameters change, such as the render style for locally
+	 * rendered tiles, or the source for downloaded tiles. Applications which frequently alternate between a limited
+	 * number of map model configurations may want to consider using a different cache for each.
+	 * 
+	 * @since 0.5.0
+	 */
+	void purge();
 
 	/**
 	 * @throws IllegalArgumentException
@@ -67,8 +87,8 @@ public interface TileCache {
 	void put(Job key, TileBitmap bitmap);
 
 	/**
-	 * Reserves a working set in this cache, for multi-level caches this means bringing
-	 * the elements in workingSet into the fastest cache.
+	 * Reserves a working set in this cache, for multi-level caches this means bringing the elements in workingSet into
+	 * the fastest cache.
 	 */
 	void setWorkingSet(Set<Job> workingSet);
 }

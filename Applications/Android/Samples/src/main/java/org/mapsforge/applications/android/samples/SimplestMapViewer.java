@@ -78,7 +78,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
 				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
-				false, 0
+				false, 0, false
 		));
 	}
 

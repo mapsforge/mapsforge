@@ -22,6 +22,11 @@ import org.mapsforge.core.model.Tile;
 
 public interface TileSource {
 	/**
+	 * Returns the default TTL for cached tiles.
+	 */
+	long getDefaultTTL();
+
+	/**
 	 * @return the maximum number of parallel requests which this {@code TileSource} supports.
 	 */
 	int getParallelRequestsLimit();
