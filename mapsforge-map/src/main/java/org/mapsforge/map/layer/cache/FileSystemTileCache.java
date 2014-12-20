@@ -81,7 +81,7 @@ class StorageJob {
  * When used for a {@link org.mapsforge.map.layer.renderer.TileRendererLayer}, persistent caching may result in clipped
  * labels when tiles from different instances are used. To work around this, either display labels in a separate
  * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described in
- * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean)}.
+ * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean, int, boolean)}.
  */
 public class FileSystemTileCache extends PausableThread implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
@@ -148,6 +148,27 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	}
 
 	/**
+	 * Compatibility constructor that creates a non-persistent FSTC.
+	 * 
+	 * @param capacity
+	 *            the maximum number of entries in this cache.
+	 * @param cacheDirectory
+	 *            the directory where cached tiles will be stored.
+	 * @param graphicFactory
+	 *            the graphicFactory implementation to use.
+	 * @param threaded
+	 *            if cache will use background thread to store data (more responsive).
+	 * @param queueSize
+	 *            maximum length of queue before the put operation blocks
+	 * @throws IllegalArgumentException
+	 *             if the capacity is negative.
+	 */
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded,
+			int queueSize) {
+		this(capacity, cacheDirectory, graphicFactory, threaded, queueSize, false);
+	}
+
+	/**
 	 * Creates a new FileSystemTileCache.
 	 * <p>
 	 * Use the {@code persistent} argument to specify whether cache contents should be kept across instances. A
@@ -164,6 +185,10 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 *            the graphicFactory implementation to use.
 	 * @param threaded
 	 *            if cache will use background thread to store data (more responsive).
+	 * @param queueSize
+	 *            maximum length of queue before the put operation blocks
+	 * @param persistent
+	 *            if cache data will be kept between instances
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
 	 * @throws IllegalArgumentException
@@ -172,6 +197,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded,
 			int queueSize, boolean persistent) {
 		this.jobs = new AtomicInteger(0);
+		this.persistent = persistent;
 		this.threaded = threaded;
 		if (threaded) {
 			this.storageJobs = new LinkedBlockingQueue<>(queueSize);
@@ -179,14 +205,15 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			this.storageJobs = null;
 		}
 		this.lruCache = new FileWorkingSetCache<>(capacity);
+		this.lock = new ReentrantReadWriteLock();
 		if (isValidCacheDirectory(cacheDirectory)) {
 			this.cacheDirectory = cacheDirectory;
+			if (this.persistent)
+				readCacheDirectory();
 		} else {
 			this.cacheDirectory = null;
 		}
 		this.graphicFactory = graphicFactory;
-		this.lock = new ReentrantReadWriteLock();
-		this.persistent = persistent;
 		if (this.threaded) {
 			this.start();
 		}
@@ -198,12 +225,10 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			lock.readLock().lock();
 			// if we are using a threaded cache we return true if the tile is still in the
 			// queue to reduce double rendering
-			if (this.lruCache.containsKey(key.getKey()) || (threaded && storageJobs.contains(key)))
-				return true;
+			return (this.lruCache.containsKey(key.getKey()) || (threaded && storageJobs.contains(key)));
 		} finally {
 			lock.readLock().unlock();
 		}
-		return this.persistent && getOutputFile(key).exists();
 	}
 
 	/**
@@ -236,12 +261,8 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			lock.readLock().unlock();
 		}
 		if (file == null) {
-			if (this.persistent) {
-				file = getOutputFile(key);
-				if (!file.exists())
-					return null;
-			} else
-				return null;
+			LOGGER.fine("No cache entry for tile " + key.getKey());
+			return null;
 		}
 
 		InputStream inputStream = null;
@@ -303,7 +324,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 * rendered tiles, or the source for downloaded tiles. Applications which frequently alternate between a limited
 	 * number of map model configurations may want to consider using a different cache for each.
 	 * 
-	 * @since 0.5.0
+	 * @since 0.6.0
 	 */
 	@Override
 	public void purge() {
@@ -365,6 +386,58 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			return new File(file + FILE_EXTENSION);
 		}
 		return null;
+	}
+
+	/**
+	 * Reads the cache directory and re-populates the cache with data saved by previous instances.
+	 * <p>
+	 * This method assumes the standard TMS directory layout of zoomlevel/y/x and a file extension of
+	 * {@link #FILE_EXTENSION}.
+	 */
+	private void readCacheDirectory() {
+		String[] l1Dirs = this.cacheDirectory.list();
+		if (l1Dirs != null)
+			for (int i = 0; i < l1Dirs.length; i++) {
+				File l1 = new File(this.cacheDirectory, l1Dirs[i]);
+				if (l1 == null || !l1.isDirectory() || !l1.canRead()) {
+					LOGGER.info("Not a valid directory: " + l1.getAbsolutePath());
+				} else {
+					String[] l2Dirs = l1.list();
+					if (l2Dirs != null)
+						for (int j = 0; j < l2Dirs.length; j++) {
+							File l2 = new File(l1, l2Dirs[j]);
+							if (l2 == null || !l2.isDirectory() || !l2.canRead()) {
+								LOGGER.info("Not a valid directory: " + l2.getAbsolutePath());
+							} else {
+								String[] l3Files = l2.list();
+								if (l3Files != null)
+									for (int k = 0; k < l3Files.length; k++) {
+										File l3 = new File(l2, l3Files[k]);
+										int index = l3Files[k].indexOf(FILE_EXTENSION.charAt(0));
+										if (l3 == null || !l3.isFile() || !l3.canRead()) {
+											LOGGER.info("Not a valid file: " + l3.getAbsolutePath());
+										} else if ((index < 0)
+												|| !l3Files[k].substring(index).contentEquals(FILE_EXTENSION)) {
+											LOGGER.info("Not a valid file name: " + l3.getAbsolutePath());
+										} else {
+											String key = l1Dirs[i] + File.separator + l2Dirs[j] + File.separator
+													+ l3Files[k].substring(0, index);
+											LOGGER.fine("Adding previously cached file " + l3.getAbsolutePath()
+													+ " as " + key);
+											try {
+												this.lock.writeLock().lock();
+												if (this.lruCache.put(key, l3) != null) {
+													LOGGER.warning("overwriting cached entry: " + key);
+												}
+											} finally {
+												this.lock.writeLock().unlock();
+											}
+										} // else (l3)
+									} // for (k)
+							} // else (l2)
+						} // for (j)
+				} // else (l1)
+			} // for (i)
 	}
 
 	private void remove(Job key) {

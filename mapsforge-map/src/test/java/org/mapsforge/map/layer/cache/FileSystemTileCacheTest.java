@@ -282,4 +282,117 @@ public class FileSystemTileCacheTest {
 					OpenStreetMapMapnik.INSTANCE), null);
 		}
 	}
+
+	/**
+	 * Tests specific behavior of a persistent tile cache.
+	 * <p>
+	 * This test creates a persistent cache instance with a cache size of 2, requests two tiles and destroys the
+	 * instance. Then it creates another persistent cache instance in the same cache directory with a size of 3 and
+	 * performs the following tests:
+	 * <ul>
+	 * <li>Request the tiles cached by the previous instance and verify its content.</li>
+	 * <li>Request two new tiles (thus exceeding the cache size) and verify the oldest tile of the previous instance is
+	 * no longer in the cache</li>
+	 * <li>Purge the cache and verify none of the tiles are available from it any more</li>
+	 * </ul>
+	 */
+	@Test
+	public void persistentCacheTest() {
+		int i;
+		int tileSize = TILE_SIZES[0];
+		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+		FileSystemTileCache tileCache1;
+		FileSystemTileCache tileCache2;
+		Tile[] tile = new Tile[4];
+		Job[] job = new Job[4];
+		TileBitmap[] bitmap = new TileBitmap[4];
+
+		Assert.assertFalse(this.cacheDirectory.exists());
+
+		tileCache1 = new FileSystemTileCache(2, this.cacheDirectory, GRAPHIC_FACTORY, false, 0, true);
+
+		Assert.assertEquals(2, tileCache1.getCapacity());
+		Assert.assertTrue(this.cacheDirectory.exists());
+		Assert.assertEquals(0, this.cacheDirectory.list().length);
+
+		for (i = 0; i < 4; i++) {
+			tile[i] = new Tile(i, 0, (byte) 4, tileSize);
+			job[i] = new DownloadJob(tile[i], tileSource);
+			bitmap[i] = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
+
+			Assert.assertFalse(tileCache1.containsKey(job[i]));
+			Assert.assertNull(tileCache1.get(job[i]));
+		}
+
+		for (i = 0; i < 2; i++) {
+			tileCache1.put(job[i], bitmap[i]);
+			while (0 != tileCache1.getQueueLength()) {
+				try {
+					// wait for threaded tile cache
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+			}
+
+			Assert.assertTrue(tileCache1.containsKey(job[i]));
+			verifyEquals(bitmap[i], tileCache1.get(job[i]));
+
+			try {
+				// make sure timestamps are sufficiently far apart (old FAT implementations have 2s resolution)
+				Thread.sleep(2000);
+			} catch (Exception e) {
+			}
+		}
+
+		for (i = 2; i < 4; i++) {
+			Assert.assertFalse(tileCache1.containsKey(job[i]));
+			Assert.assertNull(tileCache1.get(job[i]));
+		}
+
+		tileCache1.destroy();
+
+		Assert.assertTrue(this.cacheDirectory.exists());
+
+		tileCache2 = new FileSystemTileCache(3, this.cacheDirectory, GRAPHIC_FACTORY, false, 0, true);
+
+		Assert.assertEquals(3, tileCache2.getCapacity());
+		Assert.assertTrue(this.cacheDirectory.exists());
+
+		for (i = 0; i < 2; i++) {
+			Assert.assertTrue(tileCache2.containsKey(job[i]));
+			Assert.assertNotNull(tileCache2.get(job[i]));
+			verifyEquals(bitmap[i], tileCache2.get(job[i]));
+		}
+
+		for (i = 2; i < 4; i++) {
+			Assert.assertFalse(tileCache2.containsKey(job[i]));
+			Assert.assertNull(tileCache2.get(job[i]));
+
+			tileCache2.put(job[i], bitmap[i]);
+			while (0 != tileCache2.getQueueLength()) {
+				try {
+					// wait for threaded tile cache
+					Thread.sleep(100);
+				} catch (Exception e) {
+				}
+			}
+
+			Assert.assertTrue(tileCache2.containsKey(job[i]));
+			verifyEquals(bitmap[i], tileCache2.get(job[i]));
+		}
+
+		Assert.assertFalse(tileCache2.containsKey(job[0]));
+		Assert.assertNull(tileCache2.get(job[0]));
+		Assert.assertTrue(tileCache2.containsKey(job[1]));
+		verifyEquals(bitmap[1], tileCache2.get(job[1]));
+
+		tileCache2.purge();
+
+		for (i = 0; i < 4; i++) {
+			Assert.assertFalse(tileCache2.containsKey(job[i]));
+			Assert.assertNull(tileCache2.get(job[i]));
+		}
+
+		tileCache2.destroy();
+	}
 }
