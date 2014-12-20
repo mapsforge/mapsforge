@@ -24,9 +24,9 @@ import org.mapsforge.core.model.Tile;
 /**
  * A tile source which fetches standard Mapnik tiles from OpenStreetMap.
  * <p>
- * Layers using this tile source will enforce a TTL of 6,649,000 milliseconds for cached tiles (unless the application
- * explicitly sets a different TTL for that layer). The default TTL corresponds to the lifetime which the OSM server
- * sets on a newly rendered tile.
+ * Layers using this tile source will enforce a time-to-live (TTL) of 8,279,000 milliseconds for cached tiles (unless
+ * the application explicitly sets a different TTL for that layer). The default TTL corresponds to the lifetime which
+ * the OSM server sets on a newly rendered tile.
  * <p>
  * Refer to {@link org.mapsforge.map.layer.download.TileDownloadLayer} for details on the TTL mechanism.
  */
@@ -40,7 +40,8 @@ public class OpenStreetMapMapnik extends AbstractTileSource {
 
 	public OpenStreetMapMapnik(String[] hostNames, int port) {
 		super(hostNames, port);
-		defaultTTL = 6649000;
+		/* Default TTL: 8279 seconds (the TTL currently set by the OSM server). */
+		defaultTimeToLive = 8279000;
 	}
 
 	@Override

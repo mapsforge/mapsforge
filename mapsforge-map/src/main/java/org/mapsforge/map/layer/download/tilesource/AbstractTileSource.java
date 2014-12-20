@@ -31,9 +31,9 @@ import java.util.Random;
 public abstract class AbstractTileSource implements TileSource {
 
 	/**
-	 * The default TTL for cached tiles.
+	 * The default time-to-live (TTL) for cached tiles (one day, or 86,400,000 milliseconds).
 	 */
-	protected long defaultTTL = 86400000;
+	protected long defaultTimeToLive = 86400000;
 
 	protected final String[] hostNames;
 	protected final int port;
@@ -77,11 +77,11 @@ public abstract class AbstractTileSource implements TileSource {
 	}
 
 	/**
-	 * Returns the default TTL for cached tiles.
+	 * Returns the default time-to-live (TTL) for cached tiles.
 	 */
 	@Override
-	public long getDefaultTTL() {
-		return defaultTTL;
+	public long getDefaultTimeToLive() {
+		return defaultTimeToLive;
 	}
 
 	@Override

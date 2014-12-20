@@ -30,7 +30,7 @@ import org.mapsforge.map.model.MapViewPosition;
 public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	private static final int DOWNLOAD_THREADS_MAX = 8;
 
-	private long cacheTTL = 0;
+	private long cacheTimeToLive = 0;
 	private final GraphicFactory graphicFactory;
 	private boolean started;
 	private final TileCache tileCache;
@@ -43,7 +43,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 
 		this.tileCache = tileCache;
 		this.tileSource = tileSource;
-		this.cacheTTL = tileSource.getDefaultTTL();
+		this.cacheTimeToLive = tileSource.getDefaultTimeToLive();
 		this.graphicFactory = graphicFactory;
 	}
 
@@ -61,8 +61,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	 * <p>
 	 * Refer to {@link #isTileStale(TileBitmap)} for information on how the TTL is enforced.
 	 */
-	public long getCacheTTL() {
-		return cacheTTL;
+	public long getCacheTimeToLive() {
+		return cacheTimeToLive;
 	}
 
 	@Override
@@ -99,8 +99,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	 * @param ttl
 	 *            The TTL. If set to 0, no TTL will be enforced.
 	 */
-	public void setCacheTTL(long ttl) {
-		cacheTTL = ttl;
+	public void setCacheTimeToLive(long ttl) {
+		cacheTimeToLive = ttl;
 	}
 
 	@Override
@@ -144,9 +144,9 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	 * A tile is considered stale if one or more of the following two conditions apply:
 	 * <ul>
 	 * <li>The {@code bitmap}'s {@link org.mapsforge.core.graphics.TileBitmap#isExpired()} method returns {@code True}.</li>
-	 * <li>The layer has a time-to-live (TTL) set ({@link #getCacheTTL()} returns a nonzero value) and the sum of the
-	 * {@code bitmap}'s {@link org.mapsforge.core.graphics.TileBitmap#getTimestamp()} and TTL is less than current time
-	 * (as returned by {@link java.lang.System#currentTimeMillis()}).</li>
+	 * <li>The layer has a time-to-live (TTL) set ({@link #getCacheTimeToLive()} returns a nonzero value) and the sum of
+	 * the {@code bitmap}'s {@link org.mapsforge.core.graphics.TileBitmap#getTimestamp()} and TTL is less than current
+	 * time (as returned by {@link java.lang.System#currentTimeMillis()}).</li>
 	 * </ul>
 	 * <p>
 	 * When a tile has become stale, the layer will first display the tile referenced by {@code bitmap} and attempt to
@@ -164,8 +164,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
 		if (bitmap.isExpired())
 			return true;
-		if (cacheTTL == 0)
+		if (cacheTimeToLive == 0)
 			return false;
-		return ((bitmap.getTimestamp() + cacheTTL) < System.currentTimeMillis());
+		return ((bitmap.getTimestamp() + cacheTimeToLive) < System.currentTimeMillis());
 	}
 }
