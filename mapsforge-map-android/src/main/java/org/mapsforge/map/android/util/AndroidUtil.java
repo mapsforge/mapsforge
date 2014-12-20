@@ -128,6 +128,32 @@ public final class AndroidUtil {
 	/**
 	 * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
 	 * actually know the size of the mapview, so the screenRatio is an approximation of the required size. This is the
+	 * compatibility version that by default creates a non-persistent cache.
+	 * 
+	 * @param c
+	 *            the Android context
+	 * @param id
+	 *            name for the storage directory
+	 * @param tileSize
+	 *            tile size
+	 * @param screenRatio
+	 *            part of the screen the view takes up
+	 * @param overdraw
+	 *            overdraw allowance
+	 * @param threaded
+	 *            if a background thread is employed to store tile data
+	 * @param queueSize
+	 *            maximum length of queue before the put operation blocks
+	 * @return a new cache created on the external storage
+	 */
+	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw,
+            boolean threaded, int queueSize) {
+		return createTileCache(c, id, tileSize, screenRatio, overdraw, threaded, queueSize, false);
+	}
+
+	/**
+	 * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
+	 * actually know the size of the mapview, so the screenRatio is an approximation of the required size. This is the
 	 * compatibility version that by default creates a non-threaded and non-persistent cache.
 	 *
 	 * @param c

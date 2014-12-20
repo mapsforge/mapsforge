@@ -22,7 +22,7 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 
 class InvalidTileSource implements TileSource {
 	@Override
-	public long getDefaultTTL() {
+	public long getDefaultTimeToLive() {
 		throw new AssertionError();
 	}
 
