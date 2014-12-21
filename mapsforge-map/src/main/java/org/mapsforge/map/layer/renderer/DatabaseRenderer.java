@@ -150,16 +150,6 @@ public class DatabaseRenderer implements RenderCallback {
 
 	public void destroy() {
 		this.canvasRasterer.destroy();
-		// there is a chance that the renderer is being destroyed from the
-		// DestroyThread before the rendertheme has been completely created
-		// and assigned. If that happens bitmap memory held by the
-		// RenderThemeHandler
-		// will be leaked
-		if (this.renderTheme != null) {
-			this.renderTheme.destroy();
-		} else {
-			LOGGER.log(Level.SEVERE, "RENDERTHEME Could not destroy RenderTheme");
-		}
 	}
 
 	/**
@@ -174,16 +164,8 @@ public class DatabaseRenderer implements RenderCallback {
 
 		this.currentLabels = new LinkedList<MapElementContainer>();
 
-		XmlRenderTheme jobTheme = rendererJob.xmlRenderTheme;
-		if (!jobTheme.equals(this.previousJobTheme)) {
-			this.renderTheme = getRenderTheme(jobTheme, rendererJob.displayModel);
-			if (this.renderTheme == null) {
-				this.previousJobTheme = null;
-				return null;
-			}
-			this.ways = createWayLists();
-			this.previousJobTheme = jobTheme;
-		}
+		this.renderTheme = rendererJob.renderTheme;
+		this.ways = createWayLists();
 
 		TileBitmap bitmap = null;
 
@@ -414,17 +396,6 @@ public class DatabaseRenderer implements RenderCallback {
 			result.add(innerWayList);
 		}
 		return result;
-	}
-
-	private RenderTheme getRenderTheme(XmlRenderTheme jobTheme, DisplayModel displayModel) {
-		try {
-			return RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, jobTheme);
-		} catch (XmlPullParserException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-		}
-		return null;
 	}
 
 	private void processReadMapData(final List<List<List<ShapePaintContainer>>> ways, MapReadResult mapReadResult, Tile tile) {
