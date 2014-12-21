@@ -15,7 +15,6 @@
  */
 package org.mapsforge.map.layer.cache;
 
-import java.io.File;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,8 +29,6 @@ import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class InMemoryTileCacheTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -65,10 +62,9 @@ public class InMemoryTileCacheTest {
 			Tile tile2 = new Tile(2, 2, (byte) 2, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 			MapFile mapFile = MapFile.TEST_MAP_FILE;
-			XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
 			Job job1 = new DownloadJob(tile1, tileSource);
-			Job job2 = new RendererJob(tile2, mapFile, xmlRenderTheme, new DisplayModel(), 1, false, false);
+			Job job2 = new RendererJob(tile2, mapFile, null, new DisplayModel(), 1, false, false);
 
 			Assert.assertFalse(tileCache.containsKey(job1));
 			Assert.assertFalse(tileCache.containsKey(job2));

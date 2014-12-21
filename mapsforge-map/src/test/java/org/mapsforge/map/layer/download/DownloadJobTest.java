@@ -74,7 +74,7 @@ public class DownloadJobTest {
 
 		MapFile mapFile = MapFile.TEST_MAP_FILE;
 		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
-		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, xmlRenderTheme, new DisplayModel(), 1,
+		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, null, new DisplayModel(), 1,
 				false, false));
 	}
 }

@@ -34,8 +34,6 @@ import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 public class FileSystemTileCacheTest {
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -155,7 +153,6 @@ public class FileSystemTileCacheTest {
 			Tile tile2 = new Tile(0, 1, (byte) 2, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 			MapFile mapFile = MapFile.TEST_MAP_FILE;
-			XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 
 			// Note that job1 and job2 refer to the same tile (X/Y/Z) but from different sources. Since tiles are
 			// referred to ONLY by these three parameters, the following code -
@@ -168,7 +165,7 @@ public class FileSystemTileCacheTest {
 			// test cases.
 
 			Job job1 = new DownloadJob(tile1, tileSource);
-			Job job2 = new RendererJob(tile1, mapFile, xmlRenderTheme, new DisplayModel(), 1, false, false);
+			Job job2 = new RendererJob(tile1, mapFile, null, new DisplayModel(), 1, false, false);
 			Job job3 = new DownloadJob(tile2, tileSource);
 
 			Assert.assertFalse(tileCache1.containsKey(job1));

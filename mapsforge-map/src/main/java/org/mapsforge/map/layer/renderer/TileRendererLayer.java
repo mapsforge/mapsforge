@@ -26,11 +26,18 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.rule.RenderTheme;
+import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 public class TileRendererLayer extends TileLayer<RendererJob> {
 	private final DatabaseRenderer databaseRenderer;
+	private final GraphicFactory graphicFactory;
 	private final MapDataStore mapDataStore;
 	private MapWorker mapWorker;
+	private RenderTheme renderTheme;
 	private float textScale;
 	private final TileBasedLabelStore tileBasedLabelStore;
 	private XmlRenderTheme xmlRenderTheme;
@@ -48,6 +55,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	                         boolean renderLabels, GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
+		this.graphicFactory = graphicFactory;
 		this.mapDataStore = mapDataStore;
 		if (renderLabels) {
 			this.tileBasedLabelStore = null;
@@ -76,13 +84,12 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		return this.textScale;
 	}
 
-	public XmlRenderTheme getXmlRenderTheme() {
-		return this.xmlRenderTheme;
-	}
-
 	@Override
 	public void onDestroy() {
 		new DestroyThread(this.mapWorker, this.mapDataStore, this.databaseRenderer).start();
+		if (this.renderTheme != null) {
+			this.renderTheme.destroy();
+		}
 		super.onDestroy();
 	}
 
@@ -90,6 +97,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	public synchronized void setDisplayModel(DisplayModel displayModel) {
 		super.setDisplayModel(displayModel);
 		if (displayModel != null) {
+			compileRenderTheme();
 			this.mapWorker = new MapWorker(this.tileCache, this.jobQueue, this.databaseRenderer, this);
 			this.mapWorker.start();
 		} else {
@@ -100,18 +108,32 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		}
 	}
 
-
 	public void setTextScale(float textScale) {
 		this.textScale = textScale;
 	}
 
 	public void setXmlRenderTheme(XmlRenderTheme xmlRenderTheme) {
 		this.xmlRenderTheme = xmlRenderTheme;
+		compileRenderTheme();
+	}
+
+	protected void compileRenderTheme() {
+		if (xmlRenderTheme == null || this.displayModel == null) {
+			this.renderTheme = null;
+			return;
+		}
+		try {
+			this.renderTheme = RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, this.xmlRenderTheme);
+		} catch (XmlPullParserException e) {
+			throw new IllegalArgumentException("Parse error for XML rendertheme", e);
+		} catch (IOException e) {
+			throw new IllegalArgumentException("File error for XML rendertheme", e);
+		}
 	}
 
 	@Override
 	protected RendererJob createJob(Tile tile) {
-		return new RendererJob(tile, this.mapDataStore, this.xmlRenderTheme, this.displayModel, this.textScale,
+		return new RendererJob(tile, this.mapDataStore, this.renderTheme, this.displayModel, this.textScale,
 				this.isTransparent, false);
 	}
 
