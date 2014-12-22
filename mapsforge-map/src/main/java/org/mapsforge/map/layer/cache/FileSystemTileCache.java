@@ -87,11 +87,50 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 
+	/**
+	 * Determines whether a File instance refers to a valid cache directory.
+	 * <p>
+	 * This method checks that {@code file} refers to a directory to which the current process has read and write
+	 * access. If the directory does not exist, it will be created. For a simpler check that will not create directories
+	 * or verify write access, use {@link #isValidDirectory(File)} instead.
+	 * 
+	 * @param file
+	 *            The File instance to examine. This can be null, which will cause the method to return {@code false}.
+	 */
 	private static boolean isValidCacheDirectory(File file) {
-		if ((!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead() || !file.canWrite()) {
+		if ((file == null) || (!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead()
+				|| !file.canWrite()) {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Determines whether a File instance refers to a valid directory from which tiles can be read.
+	 * <p>
+	 * This method checks that {@code file} refers to an existing directory to which the current process has read
+	 * access. It does not create directories and not verify that the directory is writable. If you need this behavior,
+	 * use {@link #isValidCacheDirectory(File)} instead.
+	 * 
+	 * @param file
+	 *            The File instance to examine. This can be null, which will cause the method to return {@code false}.
+	 */
+	private static boolean isValidDirectory(File file) {
+		return file != null && file.isDirectory() && file.canRead();
+	}
+
+	/**
+	 * Determines whether a File instance refers to a valid file which can be read.
+	 * <p>
+	 * This method checks that {@code file} refers to an existing file to which the current process has read access. It
+	 * does not create directories and not verify that the directory is writable. If you need this behavior, use
+	 * {@link #isValidCacheDirectory(File)} instead.
+	 * 
+	 * @param file
+	 *            The File instance to examine. This can be null, which will cause the method to return {@code false}.
+	 */
+	private static boolean isValidFile(File file) {
+		return file != null && file.isFile() && file.canRead();
 	}
 
 	/**
@@ -391,35 +430,28 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	/**
 	 * Reads the cache directory and re-populates the cache with data saved by previous instances.
 	 * <p>
-	 * This method assumes the standard TMS directory layout of zoomlevel/y/x and a file extension of
-	 * {@link #FILE_EXTENSION}.
+	 * This method assumes tile files to have a file extension of {@link #FILE_EXTENSION} and reside in a second-level
+	 * of subdir of the cache dir (as in the standard TMS directory layout of zoomlevel/x/y). The relative path to the
+	 * cached tile, after stripping the extension, is used as the lookup key.
 	 */
 	private void readCacheDirectory() {
 		String[] l1Dirs = this.cacheDirectory.list();
 		if (l1Dirs != null)
 			for (int i = 0; i < l1Dirs.length; i++) {
 				File l1 = new File(this.cacheDirectory, l1Dirs[i]);
-				if (l1 == null || !l1.isDirectory() || !l1.canRead()) {
-					LOGGER.info("Not a valid directory: " + l1.getAbsolutePath());
-				} else {
+				if (isValidDirectory(l1)) {
 					String[] l2Dirs = l1.list();
 					if (l2Dirs != null)
 						for (int j = 0; j < l2Dirs.length; j++) {
 							File l2 = new File(l1, l2Dirs[j]);
-							if (l2 == null || !l2.isDirectory() || !l2.canRead()) {
-								LOGGER.info("Not a valid directory: " + l2.getAbsolutePath());
-							} else {
+							if (isValidDirectory(l2)) {
 								String[] l3Files = l2.list();
 								if (l3Files != null)
 									for (int k = 0; k < l3Files.length; k++) {
 										File l3 = new File(l2, l3Files[k]);
 										int index = l3Files[k].indexOf(FILE_EXTENSION.charAt(0));
-										if (l3 == null || !l3.isFile() || !l3.canRead()) {
-											LOGGER.info("Not a valid file: " + l3.getAbsolutePath());
-										} else if ((index < 0)
-												|| !l3Files[k].substring(index).contentEquals(FILE_EXTENSION)) {
-											LOGGER.info("Not a valid file name: " + l3.getAbsolutePath());
-										} else {
+										if (isValidFile(l3) && (index >= 0)
+												&& l3Files[k].substring(index).contentEquals(FILE_EXTENSION)) {
 											String key = l1Dirs[i] + File.separator + l2Dirs[j] + File.separator
 													+ l3Files[k].substring(0, index);
 											LOGGER.fine("Adding previously cached file " + l3.getAbsolutePath()
@@ -432,11 +464,11 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 											} finally {
 												this.lock.writeLock().unlock();
 											}
-										} // else (l3)
+										} // isValidFile(l3)
 									} // for (k)
-							} // else (l2)
+							} // isValidDirectory(l2)
 						} // for (j)
-				} // else (l1)
+				} // isValidDirectory(l1)
 			} // for (i)
 	}
 
