@@ -47,11 +47,12 @@ import android.view.WindowManager;
 public final class AndroidUtil {
 
 	public static final boolean HONEYCOMB_PLUS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+	
 	/**
 	 * Creates a two-level tile cache.
 	 * <p>
 	 * This is a utility function which creates a two-level tile cache along with its backends.
-	 *
+	 * 
 	 * @param c
 	 *            the Android context
 	 * @param id
@@ -62,7 +63,34 @@ public final class AndroidUtil {
 	 * @param tileSize
 	 *            tile size
 	 * @param threaded
-	 * @parem queueSize
+	 *            if a background thread is employed to store tile data
+	 * @param queueSize
+	 *            maximum length of queue before the put operation blocks
+	 * @return a new cache created on the external storage
+	 */
+	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize,
+			boolean threaded, int queueSize) {
+		return createExternalStorageTileCache(c, id, firstLevelSize, tileSize, threaded, queueSize, false);
+	}
+
+	/**
+	 * Creates a two-level tile cache.
+	 * <p>
+	 * This is a utility function which creates a two-level tile cache along with its backends.
+	 * 
+	 * @param c
+	 *            the Android context
+	 * @param id
+	 *            name for the directory, which will be created as a subdirectory of the default cache directory (as
+	 *            returned by {@link android.content.Context#getExternalCacheDir()}).
+	 * @param firstLevelSize
+	 *            size of the first level cache
+	 * @param tileSize
+	 *            tile size
+	 * @param threaded
+	 *            if a background thread is employed to store tile data
+	 * @param queueSize
+	 *            maximum length of queue before the put operation blocks
 	 * @param persistent
 	 *            whether the second level tile cache should be persistent
 	 * @return a new cache created on the external storage
@@ -204,7 +232,7 @@ public final class AndroidUtil {
 	/**
 	 * Utility function to create a two-level tile cache with the right size, using the size of the map view. This is
 	 * the compatibility version that by default creates a non-threaded cache.
-	 *
+	 * 
 	 * @param c
 	 *            the Android context
 	 * @param id
@@ -217,13 +245,15 @@ public final class AndroidUtil {
 	 *            the height of the map view
 	 * @param overdraw
 	 *            overdraw allowance
-	 * @param persistent
-	 *            whether the file system tile cache should be persistent
+	 * @param threaded
+	 *            if a background thread is employed to store tile data
+	 * @param queueSize
+	 *            maximum length of queue before the put operation blocks
 	 * @return a new cache created on the external storage
 	 */
 	public static TileCache createTileCache(Context c, String id, int tileSize, int width, int height, double overdraw,
-	                                        boolean persistent) {
-		return createTileCache(c, id, tileSize, width, height, overdraw, false, 0, persistent);
+			boolean threaded, int queueSize) {
+		return createTileCache(c, id, tileSize, width, height, overdraw, threaded, queueSize, false);
 	}
 
 	/**
