@@ -15,7 +15,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 
 ## Plugin Usage
 
-- Activate the plugin with the Osmosis parameter ‘--map-writer’, or short ‘--mw’.
+- Activate the plugin with the Osmosis parameter ‘--mapfile-writer’, or short ‘--mw’.
 - The plugin requires an input stream of valid OSM data. Use for example the MySQL, PostGIS, XML or PBF-Binary tasks of Osmosis to read OSM data.
 - Use the following optional parameters to configure the process of map creation:
 
