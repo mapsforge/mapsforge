@@ -20,16 +20,17 @@ import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.rule.RenderTheme;
+import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 public class RendererJob extends Job {
 	public final DisplayModel displayModel;
 	public boolean labelsOnly;
 	public final MapDataStore mapDataStore;
-	public final RenderTheme renderTheme;
+	public final RenderThemeFuture renderThemeFuture;
 	public final float textScale;
 	private final int hashCodeValue;
 
-	public RendererJob(Tile tile, MapDataStore mapFile, RenderTheme renderTheme, DisplayModel displayModel,
+	public RendererJob(Tile tile, MapDataStore mapFile, RenderThemeFuture renderThemeFuture, DisplayModel displayModel,
 			float textScale, boolean isTransparent, boolean labelsOnly) {
 		super(tile, isTransparent);
 
@@ -42,7 +43,7 @@ public class RendererJob extends Job {
 		this.labelsOnly = labelsOnly;
 		this.displayModel = displayModel;
 		this.mapDataStore = mapFile;
-		this.renderTheme = renderTheme;
+		this.renderThemeFuture = renderThemeFuture;
 		this.textScale = textScale;
 
 		this.hashCodeValue = calculateHashCode();
@@ -62,9 +63,9 @@ public class RendererJob extends Job {
 			return false;
 		} else if (Float.floatToIntBits(this.textScale) != Float.floatToIntBits(other.textScale)) {
 			return false;
-		} else if (this.renderTheme == null && other.renderTheme != null) {
+		} else if (this.renderThemeFuture == null && other.renderThemeFuture != null) {
 			return false;
-		} else if (this.renderTheme != null && !this.renderTheme.equals(other.renderTheme)) {
+		} else if (this.renderThemeFuture != null && !this.renderThemeFuture.equals(other.renderThemeFuture)) {
 			return false;
 		} else if (this.labelsOnly != other.labelsOnly) {
 			return false;
@@ -85,7 +86,7 @@ public class RendererJob extends Job {
 	 * @return a RendererJob based on the current one, only tile changes
 	 */
 	public RendererJob otherTile(Tile tile) {
-		return new RendererJob(tile, this.mapDataStore, this.renderTheme, this.displayModel, this.textScale, this.hasAlpha, this.labelsOnly);
+		return new RendererJob(tile, this.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, this.hasAlpha, this.labelsOnly);
 	}
 
 	/**
@@ -100,8 +101,8 @@ public class RendererJob extends Job {
 		int result = super.hashCode();
 		result = prime * result + this.mapDataStore.hashCode();
 		result = prime * result + Float.floatToIntBits(this.textScale);
-		if (renderTheme != null) {
-			result = prime * result + this.renderTheme.hashCode();
+		if (renderThemeFuture != null) {
+			result = prime * result + this.renderThemeFuture.hashCode();
 		}
 		return result;
 	}

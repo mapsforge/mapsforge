@@ -164,7 +164,12 @@ public class DatabaseRenderer implements RenderCallback {
 
 		this.currentLabels = new LinkedList<MapElementContainer>();
 
-		this.renderTheme = rendererJob.renderTheme;
+		try {
+			this.renderTheme = rendererJob.renderThemeFuture.get();
+		} catch (Exception e) {
+			LOGGER.severe("Error to retrieve render theme from future" + e);
+			return null;
+		}
 		this.ways = createWayLists();
 
 		TileBitmap bitmap = null;

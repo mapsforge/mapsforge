@@ -26,9 +26,7 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
-import org.mapsforge.map.rendertheme.rule.RenderTheme;
-import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
-import org.xmlpull.v1.XmlPullParserException;
+import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 import java.io.IOException;
 
@@ -37,7 +35,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	private final GraphicFactory graphicFactory;
 	private final MapDataStore mapDataStore;
 	private MapWorker mapWorker;
-	private RenderTheme renderTheme;
+	private RenderThemeFuture renderThemeFuture;
 	private float textScale;
 	private final TileBasedLabelStore tileBasedLabelStore;
 	private XmlRenderTheme xmlRenderTheme;
@@ -87,8 +85,16 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	@Override
 	public void onDestroy() {
 		new DestroyThread(this.mapWorker, this.mapDataStore, this.databaseRenderer).start();
-		if (this.renderTheme != null) {
-			this.renderTheme.destroy();
+		if (this.renderThemeFuture != null) {
+			if (renderThemeFuture.isDone()) {
+				try {
+					renderThemeFuture.get().destroy();
+				} catch (Exception e) {
+					// no-op, we are just cleaning up.
+				}
+			} else {
+				renderThemeFuture.cancel(true);
+			}
 		}
 		super.onDestroy();
 	}
@@ -118,22 +124,13 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	}
 
 	protected void compileRenderTheme() {
-		if (xmlRenderTheme == null || this.displayModel == null) {
-			this.renderTheme = null;
-			return;
-		}
-		try {
-			this.renderTheme = RenderThemeHandler.getRenderTheme(this.graphicFactory, displayModel, this.xmlRenderTheme);
-		} catch (XmlPullParserException e) {
-			throw new IllegalArgumentException("Parse error for XML rendertheme", e);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("File error for XML rendertheme", e);
-		}
+		this.renderThemeFuture = new RenderThemeFuture(this.graphicFactory, this.xmlRenderTheme, this.displayModel);
+		new Thread(this.renderThemeFuture).run();
 	}
 
 	@Override
 	protected RendererJob createJob(Tile tile) {
-		return new RendererJob(tile, this.mapDataStore, this.renderTheme, this.displayModel, this.textScale,
+		return new RendererJob(tile, this.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale,
 				this.isTransparent, false);
 	}
 
