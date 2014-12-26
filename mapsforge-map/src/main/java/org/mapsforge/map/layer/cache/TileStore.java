@@ -109,6 +109,10 @@ public class TileStore implements TileCache {
 		return get(key);
 	}
 
+	@Override
+	public synchronized void purge() {
+		// no-op
+	}
 
 	@Override
 	public synchronized void put(Job key, TileBitmap bitmap) {

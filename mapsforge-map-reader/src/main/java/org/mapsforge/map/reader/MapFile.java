@@ -199,6 +199,7 @@ public class MapFile implements MapDataStore {
 	private final RandomAccessFile inputFile;
 	private final MapFileHeader mapFileHeader;
 	private final ReadBuffer readBuffer;
+	private final long timestamp;
 
 
 	/* Only for testing, an empty file. */
@@ -244,6 +245,8 @@ public class MapFile implements MapDataStore {
 			this.mapFileHeader = new MapFileHeader();
 			this.mapFileHeader.readHeader(this.readBuffer, this.fileSize);
 			this.databaseIndexCache = new IndexCache(this.inputFile, INDEX_CACHE_SIZE);
+
+			this.timestamp = mapFile.lastModified();
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, null, e);
 			// make sure that the file is closed
@@ -292,6 +295,16 @@ public class MapFile implements MapDataStore {
 	 */
 	public MapFileInfo getMapFileInfo() {
 		return this.mapFileHeader.getMapFileInfo();
+	}
+
+	/**
+	 * Returns the creation timestamp of the map file.
+	 * @param tile not used, as all tiles will shared the same creation date.
+	 * @return the creation timestamp inside the map file.
+	 */
+	@Override
+	public long getDataTimestamp(Tile tile) {
+		return this.timestamp;
 	}
 
 	/**
@@ -860,6 +873,7 @@ public class MapFile implements MapDataStore {
 		inputFile = null;
 		mapFileHeader = null;
 		readBuffer = null;
+		timestamp = System.currentTimeMillis();
 	}
 }
 

@@ -22,6 +22,11 @@ import org.mapsforge.core.model.Tile;
 
 public interface TileSource {
 	/**
+	 * Returns the default time-to-live (TTL) for cached tiles.
+	 */
+	long getDefaultTimeToLive();
+
+	/**
 	 * @return the maximum number of parallel requests which this {@code TileSource} supports.
 	 */
 	int getParallelRequestsLimit();

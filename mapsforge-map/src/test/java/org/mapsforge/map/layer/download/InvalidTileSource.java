@@ -22,6 +22,11 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 
 class InvalidTileSource implements TileSource {
 	@Override
+	public long getDefaultTimeToLive() {
+		throw new AssertionError();
+	}
+
+	@Override
 	public int getParallelRequestsLimit() {
 		throw new AssertionError();
 	}
