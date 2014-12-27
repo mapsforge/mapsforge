@@ -355,6 +355,12 @@ public class FileSystemTileCacheTest {
 		Assert.assertEquals(3, tileCache2.getCapacity());
 		Assert.assertTrue(this.cacheDirectory.exists());
 
+		try {
+			// make sure tile cache has been read in
+			Thread.sleep(2000);
+		} catch (Exception e) {
+		}
+
 		for (i = 0; i < 2; i++) {
 			Assert.assertTrue(tileCache2.containsKey(job[i]));
 			Assert.assertNotNull(tileCache2.get(job[i]));
