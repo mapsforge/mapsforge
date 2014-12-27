@@ -35,6 +35,7 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidSvgBitmapStore;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
+import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.MapWorker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
@@ -92,11 +93,12 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	protected void createTileCaches() {
 		boolean threaded = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_THREADING, true);
 		int queueSize = Integer.parseInt(sharedPreferences.getString(SamplesApplication.SETTING_TILECACHE_QUEUESIZE, "4"));
+		boolean persistent = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_PERSISTENCE, true);
 
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
 				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
-				threaded, queueSize
+				threaded, queueSize, persistent
 		));
 	}
 
@@ -232,6 +234,15 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		if (SamplesApplication.SETTING_SCALE.equals(key)) {
 			this.mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
 			Log.d(SamplesApplication.TAG, "Tilesize now " + this.mapView.getModel().displayModel.getTileSize());
+			AndroidUtil.restartActivity(this);
+		}
+		if (SamplesApplication.SETTING_TILECACHE_PERSISTENCE.equals(key)) {
+			if (!preferences.getBoolean(SamplesApplication.SETTING_TILECACHE_PERSISTENCE, false)) {
+				Log.d(SamplesApplication.TAG, "Purging tile caches");
+				for (TileCache tileCache : this.tileCaches) {
+					tileCache.purge();
+				}
+			}
 			AndroidUtil.restartActivity(this);
 		}
 		if (SamplesApplication.SETTING_TEXTWIDTH.equals(key)) {
