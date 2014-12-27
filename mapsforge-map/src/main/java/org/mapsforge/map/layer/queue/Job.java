@@ -25,6 +25,16 @@ public class Job {
 	public final Tile tile;
 	public final String key;
 
+	public static String composeKey(byte z, long x, long y) {
+		return new StringBuilder().append(z).append(File.separatorChar).
+				append(x).append(File.separatorChar).append(y).toString();
+	}
+
+	public static String composeKey(String z, String x, String y) {
+		return new StringBuilder().append(z).append(File.separatorChar).
+				append(x).append(File.separatorChar).append(y).toString();
+	}
+
 	public Job(Tile tile, boolean hasAlpha) {
 		if (tile == null) {
 			throw new IllegalArgumentException("tile must not be null");
@@ -32,8 +42,7 @@ public class Job {
 
 		this.tile = tile;
 		this.hasAlpha = hasAlpha;
-		this.key = new StringBuilder().append(this.tile.zoomLevel).append(File.separatorChar).
-				append(this.tile.tileX).append(File.separatorChar).append(this.tile.tileY).toString();
+		this.key = composeKey(this.tile.zoomLevel, this.tile.tileX, this.tile.tileY);
 	}
 
 	@Override
