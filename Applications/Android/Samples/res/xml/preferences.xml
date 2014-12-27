@@ -45,6 +45,11 @@
             android:key="wayfiltering_distance" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_category_tilecache">
+	    <CheckBoxPreference
+		    android:title="@string/preferences_tilecache_persistence"
+		    android:summary="@string/preferences_tilecache_persistence_desc"
+		    android:key="tilecache_persistence"
+		    android:defaultValue="true" />
         <CheckBoxPreference
             android:title="@string/preferences_tilecache_threading"
             android:summary="@string/preferences_tilecache_threading_desc"
