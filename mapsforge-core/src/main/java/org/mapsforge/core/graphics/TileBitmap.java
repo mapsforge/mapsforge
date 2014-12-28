@@ -37,7 +37,7 @@ public interface TileBitmap extends Bitmap {
 	public boolean isExpired();
 
 	/**
-	 * Returns the timestamp when this tile will be expired in milliseconds since January 1, 1970 GMT or 0 if this
+	 * Sets the timestamp when this tile will be expired in milliseconds since January 1, 1970 GMT or 0 if this
 	 * timestamp is unknown.
 	 * <p>
 	 * The timestamp indicates when the tile should be treated it as expired, i.e. {@link #isExpired()} will return
