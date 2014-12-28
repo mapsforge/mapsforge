@@ -19,6 +19,7 @@ import android.util.Log;
 
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
 import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
@@ -80,8 +81,16 @@ public class RenderTheme4 extends SamplesBaseActivity implements XmlRenderThemeM
 	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
 		super.onSharedPreferenceChanged(preferences, key);
 		// difficult to know which render theme options have changed since we
-		// do not know all the keys, so we just redraw the map whenever there
-		// is a change in the settings.
+		// do not know all the keys, so we just purge the caches and redraw
+		// the map whenever there is a change in the settings.
+		// TODO: for real applications it is essential to know when the style menu has
+		// changed. It would be good to find a way of identifying when a key is
+		// for the style menu.
+		Log.i(SamplesApplication.TAG, "Purging tile caches");
+
+		for (TileCache tileCache : tileCaches) {
+			tileCache.purge();
+		}
 		AndroidUtil.restartActivity(this);
 	}
 
