@@ -49,9 +49,8 @@ public final class AndroidUtil {
 	public static final boolean HONEYCOMB_PLUS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 	
 	/**
-	 * Creates a two-level tile cache.
-	 * <p>
-	 * This is a utility function which creates a two-level tile cache along with its backends.
+	 * Utility function to create a two-level tile cache along with its backends.
+	 * This is the compatibility version that by default creates a non-persistent cache.
 	 * 
 	 * @param c
 	 *            the Android context
@@ -74,9 +73,7 @@ public final class AndroidUtil {
 	}
 
 	/**
-	 * Creates a two-level tile cache.
-	 * <p>
-	 * This is a utility function which creates a two-level tile cache along with its backends.
+	 * Utility function to create a two-level tile cache along with its backends.
 	 * 
 	 * @param c
 	 *            the Android context
@@ -124,8 +121,6 @@ public final class AndroidUtil {
 	}
 
 	/**
-	 * Creates a two-level tile cache with the right size.
-	 * <p>
 	 * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
 	 * actually know the size of the mapview, so the screenRatio is an approximation of the required size.
 	 *
@@ -254,6 +249,28 @@ public final class AndroidUtil {
 	public static TileCache createTileCache(Context c, String id, int tileSize, int width, int height, double overdraw,
 			boolean threaded, int queueSize) {
 		return createTileCache(c, id, tileSize, width, height, overdraw, threaded, queueSize, false);
+	}
+
+	/**
+	 * Utility function to create a two-level tile cache with the right size, using the size of the map view. This is
+	 * the compatibility version that by default creates a non-threaded and non-persistent cache.
+	 * 
+	 * @param c
+	 *            the Android context
+	 * @param id
+	 *            name for the storage directory
+	 * @param tileSize
+	 *            tile size
+	 * @param width
+	 *            the width of the map view
+	 * @param height
+	 *            the height of the map view
+	 * @param overdraw
+	 *            overdraw allowance
+	 * @return a new cache created on the external storage
+	 */
+	public static TileCache createTileCache(Context c, String id, int tileSize, int width, int height, double overdraw) {
+		return createTileCache(c, id, tileSize, width, height, overdraw, false, 0, false);
 	}
 
 	/**
