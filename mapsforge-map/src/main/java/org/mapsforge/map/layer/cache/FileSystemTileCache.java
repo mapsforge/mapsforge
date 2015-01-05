@@ -96,19 +96,28 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 */
 	class CacheDirectoryReader implements Runnable {
 		public void run() {
-			for (File z : FileSystemTileCache.this.cacheDirectory.listFiles()) {
-				for (File x : z.listFiles()) {
-					for (File y : x.listFiles()) {
-						if (isValidFile(y) && y.getName().endsWith(FILE_EXTENSION)) {
-							int index = y.getName().lastIndexOf(FILE_EXTENSION);
-							String key = Job.composeKey(z.getName(), x.getName(), y.getName().substring(0, index));
-							try {
-								FileSystemTileCache.this.lock.writeLock().lock();
-								if (FileSystemTileCache.this.lruCache.put(key, y) != null) {
-									LOGGER.warning("overwriting cached entry: " + key);
+			File[] zFiles = FileSystemTileCache.this.cacheDirectory.listFiles();
+			if (zFiles != null) {
+				for (File z : zFiles) {
+					File[] xFiles = z.listFiles();
+					if (xFiles != null) {
+						for (File x : xFiles) {
+							File[] yFiles = x.listFiles();
+							if (yFiles != null) {
+								for (File y : yFiles) {
+									if (isValidFile(y) && y.getName().endsWith(FILE_EXTENSION)) {
+										int index = y.getName().lastIndexOf(FILE_EXTENSION);
+										String key = Job.composeKey(z.getName(), x.getName(), y.getName().substring(0, index));
+										try {
+											FileSystemTileCache.this.lock.writeLock().lock();
+											if (FileSystemTileCache.this.lruCache.put(key, y) != null) {
+												LOGGER.warning("overwriting cached entry: " + key);
+											}
+										} finally {
+											FileSystemTileCache.this.lock.writeLock().unlock();
+										}
+									}
 								}
-							} finally {
-								FileSystemTileCache.this.lock.writeLock().unlock();
 							}
 						}
 					}
