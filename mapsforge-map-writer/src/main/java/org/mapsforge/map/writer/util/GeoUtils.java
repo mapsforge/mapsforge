@@ -358,15 +358,15 @@ public final class GeoUtils {
 
 	// **************** JTS CONVERSIONS *********************
 
-	private static double[] computeTileEnlargement(double lat, int enlargementInPixel) {
-		if (enlargementInPixel == 0) {
+	private static double[] computeTileEnlargement(double lat, int enlargementInMeter) {
+		if (enlargementInMeter == 0) {
 			return EPSILON_ZERO;
 		}
 
 		double[] epsilons = new double[2];
 
-		epsilons[0] = LatLongUtils.latitudeDistance(enlargementInPixel);
-		epsilons[1] = LatLongUtils.longitudeDistance(enlargementInPixel, lat);
+		epsilons[0] = LatLongUtils.latitudeDistance(enlargementInMeter);
+		epsilons[1] = LatLongUtils.longitudeDistance(enlargementInMeter, lat);
 
 		return epsilons;
 	}
@@ -380,7 +380,7 @@ public final class GeoUtils {
 		return Math.abs(lat2 - lat);
 	}
 
-	private static TileCoordinate[] getWayBoundingBox(final TDWay way, byte zoomlevel, int enlargementInPixel) {
+	private static TileCoordinate[] getWayBoundingBox(final TDWay way, byte zoomlevel, int enlargementInMeter) {
 		double maxx = Double.NEGATIVE_INFINITY, maxy = Double.NEGATIVE_INFINITY, minx = Double.POSITIVE_INFINITY, miny = Double.POSITIVE_INFINITY;
 		for (TDNode coordinate : way.getWayNodes()) {
 			maxy = Math.max(maxy, LatLongUtils.microdegreesToDegrees(coordinate.getLatitude()));
@@ -389,8 +389,8 @@ public final class GeoUtils {
 			minx = Math.min(minx, LatLongUtils.microdegreesToDegrees(coordinate.getLongitude()));
 		}
 
-		double[] epsilonsTopLeft = computeTileEnlargement(maxy, enlargementInPixel);
-		double[] epsilonsBottomRight = computeTileEnlargement(miny, enlargementInPixel);
+		double[] epsilonsTopLeft = computeTileEnlargement(maxy, enlargementInMeter);
+		double[] epsilonsBottomRight = computeTileEnlargement(miny, enlargementInMeter);
 
 		TileCoordinate[] bbox = new TileCoordinate[2];
 		bbox[0] = new TileCoordinate((int) MercatorProjection.longitudeToTileX(minx - epsilonsTopLeft[1], zoomlevel),
