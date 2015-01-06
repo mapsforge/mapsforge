@@ -14,20 +14,20 @@ The map file consists of several sub-files, each storing the map objects for a d
 
 ## General remarks
 
-- All latitude and longitude coordinates are stored in microdegrees (degrees × 10^6^).
+- All latitude and longitude coordinates are stored in microdegrees (degrees × 10<sup>6</sup>).
 - Numeric fields with a fixed byte size are stored with *Big Endian* byte order.
 - Unsigned numeric fields with a variable byte encoding are marked with *`VBE-U` INT* and stored as follows:
-- the first bit of each byte is used for continuation info, the other seven bits for data.
-- the value of the first bit is 1 if the following byte belongs to the field, 0 otherwise.
-- each byte holds seven bits of the numeric value, starting with the least significant ones.
+  - the first bit of each byte is used for continuation info, the other seven bits for data.
+  - the value of the first bit is 1 if the following byte belongs to the field, 0 otherwise.
+  - each byte holds seven bits of the numeric value, starting with the least significant ones.
 - Signed numeric fields with a variable byte encoding are marked with *`VBE-S` INT* and stored as follows:
-- the first bit of each byte is used for continuation info, the other six (first byte) or seven (all other bytes) bits for data.
-- the value of the first bit is 1 if the following byte belongs to the field, 0 otherwise.
-- each byte holds six (first byte) or seven (all other bytes) bits of the numeric value, starting with the least significant ones.
-- the second bit in the first byte indicates the sign of the number. A value of 0 means positive, 1 negative.
+  - the first bit of each byte is used for continuation info, the other six (last byte) or seven (all other bytes) bits for data.
+  - the value of the first bit is 1 if the following byte belongs to the field, 0 otherwise.
+  - each byte holds six (last byte) or seven (all other bytes) bits of the numeric value, starting with the least significant ones.
+  - the second bit in the last byte indicates the sign of the number. A value of 0 means positive, 1 negative.
 - All strings are stored in UTF-8 as follows:
-- the length *L* of the UTF-8 encoded string in bytes as *`VBE-U` INT*.
-- *L* bytes for the UTF-8 encoding of the string.
+  - the length *L* of the UTF-8 encoded string in bytes as *`VBE-U` INT*.
+  - *L* bytes for the UTF-8 encoding of the string.
 
 
 ## File structure
@@ -65,13 +65,13 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 |4||file version|version number of the currently used binary file format as 4-byte *INT*|
 |8||file size|The total size of the map file in bytes|
 |8||date of creation|date in milliseconds since 01.01.1970 as 8-byte *LONG*|
-|16||bounding box|geo coordinates of the bounding box in microdegrees as 4*4-byte *INT*, in the order minLat, minLon, maxLat, maxLon|
+|16||bounding box|geo coordinates of the bounding box in microdegrees as 4\*4-byte *INT*, in the order minLat, minLon, maxLat, maxLon|
 |2||tile size|the tile size in pixels (e.g. 256)|
 |variable||projection|defines the projection used to create this file as a string|
 |1||flags|<ul><li>1. bit: flag for existence of debug information</li><li>2. bit: flag for existence of the *map start position* field</li><li>3. bit: flag for existence of the *start zoom level* field</li><li>4. bit: flag for existence of the *language preference* field</li><li>5. bit: flag for existence of the *comment* field</li><li>6. bit: flag for existence of the *created by* field</li><li>7.-8. bit: reserved for future use</li></ul>|
-|8|yes|map start position|geo coordinate in microdegrees as 2*4-byte *INT*, in the order lat, lon|
+|8|yes|map start position|geo coordinate in microdegrees as 2\*4-byte *INT*, in the order lat, lon|
 |1|yes|start zoom level|zoom level of the map at first load|
-|variable|yes|language preference|The preferred language for names as defined in [ <ul><li>for each zoom interval:<ul><li>base zoom level as *BYTE*</li><li>minimal zoom level as *BYTE*</li><li>maximal zoom level as *BYTE*</li><li>absolute start position of the sub file as 8-byte *LONG*</li><li>size of the sub-file as 8-byte *LONG*</li></ul></li></ul>|](|variable||zoom interval configuration|<ul><li>for each zoom interval:<ul><li>base zoom level as *BYTE*</li><li>minimal zoom level as *BYTE*</li><li>maximal zoom level as *BYTE*</li><li>absolute start position of the sub file as 8-byte *LONG*</li><li>size of the sub-file as 8-byte *LONG*</li></ul></li></ul>|) as string|
+|variable|yes|language preference|The preferred language for names as defined in ISO 639-1 or ISO 639-2|](|variable||zoom interval configuration|<ul><li>for each zoom interval:<ul><li>base zoom level as *BYTE*</li><li>minimal zoom level as *BYTE*</li><li>maximal zoom level as *BYTE*</li><li>absolute start position of the sub file as 8-byte *LONG*</li><li>size of the sub-file as 8-byte *LONG*</li></ul></li></ul>|) as string|
 |variable|yes|comment|comment as a string|
 |variable|yes|created by|The name of the application which created the file as a string|
 |variable||POI tags|<ul><li>amount of tags as 2-byte *SHORT*</li><li>tag names as a strings</li><li>tag IDs are implicitly derived from the order of tag names, starting with 0</li></ul>|
@@ -152,8 +152,8 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 ## Version history
 
 
-|** Version**|**Date**|**Changes**|
-|------------|--------|-----------|
+|**Version**|**Date**|**Changes**|
+|-----------|--------|-----------|
 |1|2010-11-21|Initial release of the specification|
 |2|2011-01-26|<ul><li>Introduced variable byte encoding for some numeric fields to reduce the file size</li><li>Modified some field names and descriptions for clarification</li><li>Offset encoding is now used on all coordinates</li></ul>|
 |3|2012-03-18|<ul><li>Ways are stored as multiple segments</li><li>Ways can also have a house number</li><li>Removed obsolete data</li><li>Added *language preference* field to the header</li><li>Added *file size* field to the header</li><li>Added *start zoom level* field to the header</li><li>Added *created by* field to the header</li><li>Added a flag for single and double delta encoding</li><li>Reordered some fields</li><li>Removed some data type related limitations</li></ul>|
