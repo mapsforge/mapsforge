@@ -28,7 +28,8 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`type`|switch for main memory or hd mode|ram, hd|ram|
 |`bbox`|bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters)|minLat, minLon, maxLat, maxLon in exactly this order as degrees or microdegrees|(blank)|
 |`map-start-position`|write a start position to the file which is used, when the file is first opened in the MapViewer|latitude, longitude in degrees or microdegrees|(blank)|
-|`map-start-zoom`|write a start zoom level to the file which is used, when the file is first opened in the MapViewer|zoom level as integer in [|`preferred-language`|will write names of geo objects in the preferred language to the file, this only works for objects which have been tagged for the preferred language|language code as as defined in [ (blank)|](0;21]|(blank)|)(|`comment`|writes a comment to the file||(blank)|)|(blank)|
+|`map-start-zoom`|write a start zoom level to the file which is used, when the file is first opened in the MapViewer|zoom level as integer in [0, 21]|(blank)|
+|`preferred-language`|will write names of geo objects in the preferred language to the file, this only works for objects which have been tagged for the preferred language|language code as as defined in ISO 639-1 or ISO 639-2|(blank)|
 |`comment`|writes a comment to the file||(blank)|
 
 ### Advanced Options (only use when you know what you are doing)
@@ -40,8 +41,8 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`polygon-clipping`|use polygon clipping to reduce map file size (minimal performance overhead)|true/false|true|
 |`way-clipping`|use way clipping to reduce map file size (minimal performance overhead)|true/false|true|
 |`label-position`|compute label position for polygons that cover multiple tiles (minimal performance overhead)|true/false|true|
-|`simplification-factor`|simplifies ways and polygons with a topology preserving algorithm similar to the Douglas Peucker algorithm, using as the maximum distance difference value the given simplification factor (evaluated in pixels on max zoom level of a base zoom level); on base zoom levels higher than 12, no simplification is computed|positive real number|5|
-|`bbox-enlargement`|amount of pixels used for enlarging bounding boxes in computations|positive integer|20|
+|`simplification-factor`|simplifies ways and polygons with a topology preserving algorithm similar to the Douglas Peucker algorithm, using as the maximum distance difference value the given simplification factor (evaluated in pixels on max zoom level of a base zoom level); on base zoom levels higher than 12, no simplification is computed|positive real number|2.5|
+|`bbox-enlargement`|amount of meters used for enlarging bounding boxes in computations|positive integer|20|
 |`zoom-interval-conf`|configure the zoom intervals used in this file, configuration is given in the form: baseZoomA, minZoomA, maxZoomA, baseZoomB, minZoomB, maxZoomB,..., baseZoomN, minZoomN, maxZoomN, in most cases you do **not** need to alter the standard configuration|intervals must not overlap and must not contain gaps|5,0,7,10,8,11,14,12,21|
 |`debug-file`|switch for writing debug information to the file, *do **not activate** this option unless you know what you are doing*|true/false|false|
 
