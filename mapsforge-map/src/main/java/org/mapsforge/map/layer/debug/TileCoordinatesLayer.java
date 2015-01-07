@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -34,7 +34,7 @@ import org.mapsforge.map.layer.TilePosition;
 import org.mapsforge.map.model.DisplayModel;
 
 public class TileCoordinatesLayer extends Layer {
-	private static Paint createPaint(GraphicFactory graphicFactory, DisplayModel displayModel) {
+	private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
 		paint.setColor(Color.BLACK);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
@@ -42,7 +42,7 @@ public class TileCoordinatesLayer extends Layer {
 		return paint;
 	}
 
-	private static Paint createPaintStroke(GraphicFactory graphicFactory, DisplayModel displayModel) {
+	private static Paint createPaintBack(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
 		paint.setColor(Color.WHITE);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
@@ -53,14 +53,22 @@ public class TileCoordinatesLayer extends Layer {
 	}
 
 	private final DisplayModel displayModel;
-	private final Paint paint, paintStroke;
+	private final Paint paintFront, paintBack;
 
 	public TileCoordinatesLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
 		this.displayModel = displayModel;
-		this.paint = createPaint(graphicFactory, displayModel);
-		this.paintStroke = createPaintStroke(graphicFactory, displayModel);
+		this.paintFront = createPaintFront(graphicFactory, displayModel);
+		this.paintBack = createPaintBack(graphicFactory, displayModel);
+	}
+
+	public TileCoordinatesLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
+		super();
+
+		this.displayModel = displayModel;
+		this.paintFront = paintFront;
+		this.paintBack = paintBack;
 	}
 
 	@Override
@@ -81,21 +89,21 @@ public class TileCoordinatesLayer extends Layer {
 		stringBuilder.append("X: ");
 		stringBuilder.append(tile.tileX);
 		String text = stringBuilder.toString();
-		canvas.drawText(text, x, y, this.paintStroke);
-		canvas.drawText(text, x, y, this.paint);
+		canvas.drawText(text, x, y, this.paintBack);
+		canvas.drawText(text, x, y, this.paintFront);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Y: ");
 		stringBuilder.append(tile.tileY);
 		text = stringBuilder.toString();
-		canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paintStroke);
-		canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paint);
+		canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paintBack);
+		canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paintFront);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Z: ");
 		stringBuilder.append(tile.zoomLevel);
 		text = stringBuilder.toString();
-		canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintStroke);
-		canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paint);
+		canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintBack);
+		canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintFront);
 	}
 }
