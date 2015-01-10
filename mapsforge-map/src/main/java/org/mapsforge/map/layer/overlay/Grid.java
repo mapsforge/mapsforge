@@ -96,19 +96,29 @@ public class Grid extends Layer {
 
 			long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
 
-			for (double latitude = minLatitude; latitude <= maxLatitude; latitude += spacing) {
-				int bottom = (int) (MercatorProjection.latitudeToPixelY(latitude, mapSize) - topLeftPoint.y);
-				int top = (int) (MercatorProjection.latitudeToPixelY(latitude + spacing, mapSize) - topLeftPoint.y);
+			int bottom = (int) (MercatorProjection.latitudeToPixelY(minLatitude, mapSize) - topLeftPoint.y);
+			int top = (int) (MercatorProjection.latitudeToPixelY(maxLatitude, mapSize) - topLeftPoint.y);
+			int left = (int) (MercatorProjection.longitudeToPixelX(minLongitude, mapSize) - topLeftPoint.x);
+			int right = (int) (MercatorProjection.longitudeToPixelX(maxLongitude, mapSize) - topLeftPoint.x);
 
-				for (double longitude = minLongitude; longitude <= maxLongitude; longitude += spacing) {
-					int left = (int) (MercatorProjection.longitudeToPixelX(longitude, mapSize) - topLeftPoint.x);
-					int right = (int) (MercatorProjection.longitudeToPixelX(longitude + spacing, mapSize) - topLeftPoint.x);
-					// draw both back paints first, then front paints on top.
-					canvas.drawLine(left, bottom, left, top, this.lineBack);
-					canvas.drawLine(left, bottom, right, bottom, this.lineBack);
-					canvas.drawLine(left, bottom, left, top, this.lineFront);
-					canvas.drawLine(left, bottom, right, bottom, this.lineFront);
-				}
+			for (double latitude = minLatitude; latitude <= maxLatitude; latitude += spacing) {
+				int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, mapSize) - topLeftPoint.y);
+				canvas.drawLine(left, pixelY, right, pixelY, this.lineBack);
+			}
+
+			for (double longitude = minLongitude; longitude <= maxLongitude; longitude += spacing) {
+				int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, mapSize) - topLeftPoint.x);
+				canvas.drawLine(pixelX, bottom, pixelX, top, this.lineBack);
+			}
+
+			for (double latitude = minLatitude; latitude <= maxLatitude; latitude += spacing) {
+				int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, mapSize) - topLeftPoint.y);
+				canvas.drawLine(left, pixelY, right, pixelY, this.lineFront);
+			}
+
+			for (double longitude = minLongitude; longitude <= maxLongitude; longitude += spacing) {
+				int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, mapSize) - topLeftPoint.x);
+				canvas.drawLine(pixelX, bottom, pixelX, top, this.lineFront);
 			}
 		}
 	}
