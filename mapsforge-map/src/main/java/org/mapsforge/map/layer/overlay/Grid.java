@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,7 +16,10 @@
 package org.mapsforge.map.layer.overlay;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
@@ -27,11 +31,41 @@ import java.util.Map;
 /**
  * The Grid layer draws a geographical grid.
  */
-
 public class Grid extends Layer {
+	private static Paint createLineFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		Paint paint = graphicFactory.createPaint();
+		paint.setColor(Color.BLACK);
+		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
+		paint.setStyle(Style.STROKE);
+		return paint;
+	}
+
+	private static Paint createLineBack(GraphicFactory graphicFactory, DisplayModel displayModel) {
+		Paint paint = graphicFactory.createPaint();
+		paint.setColor(Color.WHITE);
+		paint.setStrokeWidth(4 * displayModel.getScaleFactor());
+		paint.setStyle(Style.STROKE);
+		return paint;
+	}
 
 	private final Paint lineFront, lineBack;
 	private final Map<Byte, Double> spacingConfig;
+
+	/**
+	 * Ctor.
+	 * @param graphicFactory the graphic factory. 
+	 * @param displayModel the display model of the map view.
+	 * @param spacingConfig a map containing the spacing for every zoom level.
+	 */
+	public Grid(GraphicFactory graphicFactory, DisplayModel displayModel,
+			Map<Byte, Double> spacingConfig) {
+		super();
+
+		this.displayModel = displayModel;
+		this.lineFront = createLineFront(graphicFactory, displayModel);
+		this.lineBack = createLineBack(graphicFactory, displayModel);
+		this.spacingConfig = spacingConfig;
+	}
 
 	/**
 	 * Ctor.
@@ -41,7 +75,7 @@ public class Grid extends Layer {
 	 * @param spacingConfig a map containing the spacing for every zoom level.
 	 */
 	public Grid(DisplayModel displayModel, Map<Byte, Double> spacingConfig,
-	            Paint lineBack, Paint lineFront) {
+			Paint lineBack, Paint lineFront) {
 		super();
 
 		this.displayModel = displayModel;
@@ -53,7 +87,6 @@ public class Grid extends Layer {
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 		if (spacingConfig.containsKey(zoomLevel)) {
-
 			double spacing = spacingConfig.get(zoomLevel);
 
 			double minLongitude = spacing * (Math.floor(boundingBox.minLongitude / spacing));
