@@ -10,7 +10,9 @@ Here, however, we go through a very basic example of an app that simply displays
 # App Initialization
 
 Before you make any calls on the mapsforge library, you need to initialize the AndroidGraphicFactory. Behind the scenes, this initialization process gathers a bit of information on your device, such as the screen resolution, that allows mapsforge to automatically adapt the rendering for the device.
+
     AndroidGraphicFactory.createInstance(this.getApplication());
+
 If you forget this step, your app will crash. You can place this code, like in the Samples app, in the Android Application class. This ensures it is created before any specific activity. But it can also be created in the onCreate() method in your activity.
 
 ## Create a MapView
@@ -21,6 +23,7 @@ A MapView is an Android View (or ViewGroup) that displays a mapsforge map. You c
     setContentView(this.mapView);
 
 We then make some simple adjustments, such as showing a scale bar and setting up the zoom buttons:
+
     this.mapView.setClickable(true);
     this.mapView.getMapScaleBar().setVisible(true);
     this.mapView.setBuiltInZoomControls(true);
@@ -30,11 +33,13 @@ We then make some simple adjustments, such as showing a scale bar and setting up
 ## Create a TileCache
 
 To avoid redrawing all the tiles all the time, we need to set up a tile cache. A utility method helps with this:
+
     this.tileCache = AndroidUtil.createTileCache(this, "mapcache",mapView.getModel().displayModel.getTileSize(),1f,this.mapView.getModel().frameBufferModel.getOverdrawFactor());
 
 ## Creating a Map Layer
 
 Now we need to set up the process of displaying a map. A map can have several layers, stacked on top of each other. A layer can be a map or some visual elements, such as markers. Here we only show a map based on a mapsforge map file. For this we need a TileRendererLayer. A tileRendererLayer needs a tileCache to hold the generated map tiles, a mapfile from which the tiles are generated and rendertheme that defines the appearance of the map:
+
     this.tileRendererLayer = new TileRendererLayer(tileCache,
     				this.mapView.getModel().mapViewPosition, false, AndroidGraphicFactory.INSTANCE);
     tileRendererLayer.setMapFile(getMapFile());
@@ -47,6 +52,7 @@ On its own a tileRendererLayer does not know where to display the map, so we nee
 ## Specifying the Position
 
 The map also needs to know which area to display and at what zoom level. This is set via a MapViewPosition:
+
     this.mapView.getModel().mapViewPosition.setCenter(new LatLong(52.517037, 13.38886));
     this.mapView.getModel().mapViewPosition.setZoomLevel((byte) 12);
 
