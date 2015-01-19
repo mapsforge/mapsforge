@@ -4,14 +4,14 @@
 
 The best way to get started building an Android app with mapsforge is by studying the Samples app, which gives a complete overview of the capabilities of the mapsforge library. 
 
-Here, however, we go through a very basic example of an app that simply displays a map rendered from a mapfile in the build-in render style.  
+Here, however, we go through a very basic example of an app that simply displays a map rendered from a mapfile in the built-in render style.  
 
 
 # App Initialization
 
 Before you make any calls on the mapsforge library, you need to initialize the AndroidGraphicFactory. Behind the scenes, this initialization process gathers a bit of information on your device, such as the screen resolution, that allows mapsforge to automatically adapt the rendering for the device.
     AndroidGraphicFactory.createInstance(this.getApplication());
-It you forget this step, your app will crash. You can place this code, like in the Samples app, in the Android Application class. This ensures it is created before any specific activity. But it can also be created in the onCreate() method in your activity.
+If you forget this step, your app will crash. You can place this code, like in the Samples app, in the Android Application class. This ensures it is created before any specific activity. But it can also be created in the onCreate() method in your activity.
 
 ## Create a MapView
 
@@ -40,13 +40,13 @@ Now we need to set up the process of displaying a map. A map can have several la
     tileRendererLayer.setMapFile(getMapFile());
     tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 
-On its own a tileRendererLayer does not know where to display the map, so we need to associate it with out mapView:
+On its own a tileRendererLayer does not know where to display the map, so we need to associate it with our mapView:
 
     this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 
 ## Specifying the Position
 
-The map also needs to known which area to display and at what zoom level. This is set via a MapViewPosition:
+The map also needs to know which area to display and at what zoom level. This is set via a MapViewPosition:
     this.mapView.getModel().mapViewPosition.setCenter(new LatLong(52.517037, 13.38886));
     this.mapView.getModel().mapViewPosition.setZoomLevel((byte) 12);
 
