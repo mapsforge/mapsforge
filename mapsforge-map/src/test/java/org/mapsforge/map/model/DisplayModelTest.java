@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,8 +19,40 @@ package org.mapsforge.map.model;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mapsforge.map.TestUtils;
 
 public class DisplayModelTest {
+
+	@Test
+	public void equalsTest() {
+		DisplayModel displayModel1 = new DisplayModel();
+		DisplayModel displayModel2 = new DisplayModel();
+
+		DisplayModel displayModel3 = new DisplayModel();
+		displayModel3.setBackgroundColor(0xffff0000);
+
+		DisplayModel displayModel4 = new DisplayModel();
+		displayModel4.setFixedTileSize(512);
+
+		DisplayModel displayModel5 = new DisplayModel();
+		displayModel5.setMaxTextWidthFactor(0.5f);
+
+		DisplayModel displayModel6 = new DisplayModel();
+		displayModel6.setTileSizeMultiple(200);
+
+		DisplayModel displayModel7 = new DisplayModel();
+		displayModel7.setUserScaleFactor(0.3f);
+
+		TestUtils.equalsTest(displayModel1, displayModel2);
+
+		TestUtils.notEqualsTest(displayModel1, displayModel3);
+		TestUtils.notEqualsTest(displayModel1, displayModel4);
+		TestUtils.notEqualsTest(displayModel1, displayModel5);
+		TestUtils.notEqualsTest(displayModel1, displayModel6);
+		TestUtils.notEqualsTest(displayModel1, displayModel7);
+		TestUtils.notEqualsTest(displayModel1, new Object());
+		TestUtils.notEqualsTest(displayModel1, null);
+	}
 
 	@Test
 	public void tileSizeTest() {

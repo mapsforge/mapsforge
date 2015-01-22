@@ -1,5 +1,6 @@
 /*
  * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -35,7 +36,6 @@ public class DisplayModel extends Observable {
 
 	private static float defaultUserScaleFactor = 1f;
 	private static float deviceScaleFactor = 1f;
-
 
 	/**
 	 * Get the default scale factor for all newly created DisplayModels.
@@ -92,6 +92,30 @@ public class DisplayModel extends Observable {
 		this.setTileSize();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof DisplayModel))
+			return false;
+		DisplayModel other = (DisplayModel) obj;
+		if (this.backgroundColor != other.backgroundColor)
+			return false;
+		if (this.fixedTileSize != other.fixedTileSize)
+			return false;
+		if (this.maxTextWidth != other.maxTextWidth)
+			return false;
+		if (Float.floatToIntBits(this.maxTextWidthFactor) != Float.floatToIntBits(other.maxTextWidthFactor))
+			return false;
+		if (this.tileSize != other.tileSize)
+			return false;
+		if (this.tileSizeMultiple != other.tileSizeMultiple)
+			return false;
+		if (Float.floatToIntBits(this.userScaleFactor) != Float.floatToIntBits(other.userScaleFactor))
+			return false;
+		return true;
+	}
+
 	/**
 	 * Returns the background color.
 	 * 
@@ -140,6 +164,20 @@ public class DisplayModel extends Observable {
 	 */
 	public synchronized float getUserScaleFactor() {
 		return this.userScaleFactor;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.backgroundColor;
+		result = prime * result + this.fixedTileSize;
+		result = prime * result + this.maxTextWidth;
+		result = prime * result + Float.floatToIntBits(this.maxTextWidthFactor);
+		result = prime * result + this.tileSize;
+		result = prime * result + this.tileSizeMultiple;
+		result = prime * result + Float.floatToIntBits(this.userScaleFactor);
+		return result;
 	}
 
 	/**
@@ -217,5 +255,4 @@ public class DisplayModel extends Observable {
 		}
 		this.setMaxTextWidth();
 	}
-
 }
