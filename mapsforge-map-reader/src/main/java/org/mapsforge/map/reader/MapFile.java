@@ -366,10 +366,7 @@ public class MapFile implements MapDataStore {
 
 	@Override
 	public boolean supportsTile(Tile tile) {
-		if (getMapFileInfo().supportsZoomLevel(tile.zoomLevel)) {
-			return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
-		}
-		return false;
+		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
 	}
 
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
