@@ -155,6 +155,64 @@ A set of layer definitions makes up a style:
         </layer>
     </stylemenu>
 
+The **visible** attribute is meant to indicate which of the layers are visible in the user interface. Layers where visible is set to false should not be seen by a user, and are thus useful to build base-layers of common categories from which then user-visible layers can be inherited, like this:
+
+		<layer id="base">
+			<cat id="roads"/>
+			<cat id="waterbodies"/>
+			<cat id="landuse"/>
+			<cat id="places"/>
+			<overlay id="emergency"/>
+			<overlay id="food"/>
+		</layer>
+
+		<layer id="simple" parent="base" visible="true">
+			<name lang="de" value="Auto"/>
+			<name lang="en" value="Driving"/>
+			<name lang="es" value="Conducción"/>
+			<name lang="fr" value="Conduite"/>
+			<cat id="transport"/>
+			<cat id="barrier"/>
+			<cat id="driving"/>
+			<overlay id="parking"/>
+			<overlay id="shopping"/>
+		</layer>
+
+		<layer id="standard" parent="base" visible="true">
+			<name lang="de" value="Stadt"/>
+			<name lang="en" value="City"/>
+			<name lang="es" value="City"/>
+			<name lang="fr" value="Ville"/>
+			<cat id="areas"/>
+			<overlay id="tourism"/>
+			<overlay id="sports"/>
+			<overlay id="amenities"/>
+			<overlay id="buildings"/>
+			<overlay id="public_transport"/>
+			<overlay id="accommodation"/>
+			<overlay id="shopping"/>
+		</layer>
+
+To turn layers on by default, add the **enabled=true** attribute. In this case, buildings should be by default visible, while parking related elements not:
+
+		<layer id="parking">
+			<name lang="de" value="Parkplätze"/>
+			<name lang="en" value="Parking"/>
+			<name lang="es" value="Aparcamiento"/>
+			<name lang="fr" value="Parking"/>
+			<cat id="parking"/>
+		</layer>
+
+		<layer enabled="true" id="buildings">
+			<name lang="de" value="Gebäude"/>
+			<name lang="en" value="Buildings"/>
+			<name lang="es" value="Edificios"/>
+			<name lang="fr" value="Bâtiments"/>
+			<cat id="buildings"/>
+		</layer>
+
+The Samples app has a completely worked style menu.
+
 ## Map Integration
 
 When a V4 rendertheme is parsed, the style menu definitons are parsed and a callback is made into the application giving it access to the stylemenu definitions. 
