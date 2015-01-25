@@ -174,7 +174,8 @@
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required" />
 		<xs:attribute name="parent" type="xs:string" use="optional" />
-		<xs:attribute name="visible" type="xs:boolean" use="optional" default="true"/>
+		<xs:attribute name="visible" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="enabled" type="xs:boolean" use="optional" default="false"/>
 	</xs:complexType>
 
 	<xs:complexType name="line">
@@ -246,7 +247,7 @@
 		<xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
     </xs:complexType>
 
-<!-- rule elements -->
+	<!-- rule elements -->
 	<xs:complexType name="rule">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<!-- recursion to allow for nested rules -->
@@ -268,7 +269,6 @@
 		<xs:attribute name="zoom-max" type="xs:unsignedByte" use="optional" default="127" />
 	</xs:complexType>
 
-
 	<!-- rendertheme element -->
 	<xs:complexType name="rendertheme">
 		<xs:sequence minOccurs="0" maxOccurs="1">
@@ -288,11 +288,11 @@
  	<xs:complexType name="stylemenu">
 		<xs:sequence minOccurs="0" maxOccurs="1">
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="style" type="tns:layer" />
+				<xs:element name="layer" type="tns:layer" />
 			</xs:sequence>
 		</xs:sequence>
 		<xs:attribute name="defaultvalue" type="xs:string" use="required" />
-		<xs:attribute name="defaultlang" type="xs:string" use="optional" />
+		<xs:attribute name="defaultlang" type="xs:string" use="required" />
 		<xs:attribute name="id" type="xs:string" use="required" />
     </xs:complexType>
 
