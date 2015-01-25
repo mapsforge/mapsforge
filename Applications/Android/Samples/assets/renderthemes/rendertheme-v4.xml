@@ -147,7 +147,7 @@
 		<area fill="#F8F8F8"/>
 	</rule>
 
-	-<!-- land/sea -->
+	<!-- land/sea -->
 	<rule cat="nature" e="way" k="natural" v="coastline">
 		<rule e="way" k="*" v="*" closed="no">
 			<line stroke="#D4D4D4" stroke-width="2.0"/>
@@ -1385,7 +1385,7 @@
 			<rule e="any" k="religion" v="jewish">
 				<symbol id="jewish" src="assets:symbols/place_of_worship/jewish3.svg"/>
 				<rule e="any" k="*" v="*" zoom-min="18">
-					caption symbol-id="jewish" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
+					<caption symbol-id="jewish" k="name" position="above" font-style="bold" font-size="12" fill="#666666" stroke="#FFFFFF" stroke-width="2.0"/>
 				</rule>
 			</rule>
 			<rule e="any" k="religion" v="muslim">
