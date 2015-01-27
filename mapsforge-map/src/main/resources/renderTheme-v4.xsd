@@ -161,7 +161,7 @@
 
 	<!-- style menu layer element -->
 	<xs:complexType name="layer">
-		<xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="1">
 			<xs:element name="name" type="tns:name" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="cat" type="tns:cat" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="overlay" type="tns:overlay" minOccurs="0" maxOccurs="unbounded" />
@@ -265,7 +265,7 @@
 
 	<!-- rendertheme element -->
 	<xs:complexType name="rendertheme">
-		<xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="1">
 			<xs:element name="stylemenu" type="tns:stylemenu" minOccurs="0" maxOccurs="1" />
 			<xs:element name="rule" type="tns:rule" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
@@ -278,7 +278,7 @@
 
  	<!-- stylemenu element -->
  	<xs:complexType name="stylemenu">
-		<xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="1">
 			<xs:element name="layer" type="tns:layer" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="defaultvalue" type="xs:string" use="required" />
