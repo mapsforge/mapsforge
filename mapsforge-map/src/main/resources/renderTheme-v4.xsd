@@ -161,16 +161,10 @@
 
 	<!-- style menu layer element -->
 	<xs:complexType name="layer">
-		<xs:sequence minOccurs="0" maxOccurs="1">
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="name" type="tns:name" />
-			</xs:sequence>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="cat" type="tns:cat" />
-			</xs:sequence>
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="overlay" type="tns:overlay" />
-			</xs:sequence>
+		<xs:sequence>
+			<xs:element name="name" type="tns:name" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="cat" type="tns:cat" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="overlay" type="tns:overlay" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required" />
 		<xs:attribute name="parent" type="xs:string" use="optional" />
@@ -271,11 +265,9 @@
 
 	<!-- rendertheme element -->
 	<xs:complexType name="rendertheme">
-		<xs:sequence minOccurs="0" maxOccurs="1">
-			<xs:element name="stylemenu" type="tns:stylemenu" />
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="rule" type="tns:rule" />
-		    </xs:sequence>
+		<xs:sequence>
+			<xs:element name="stylemenu" type="tns:stylemenu" minOccurs="0" maxOccurs="1" />
+			<xs:element name="rule" type="tns:rule" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="version" type="xs:positiveInteger" fixed="4" />
 		<xs:attribute name="map-background" type="tns:color" use="optional" default="#ffffff" />
@@ -286,10 +278,8 @@
 
  	<!-- stylemenu element -->
  	<xs:complexType name="stylemenu">
-		<xs:sequence minOccurs="0" maxOccurs="1">
-			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="layer" type="tns:layer" />
-			</xs:sequence>
+		<xs:sequence>
+			<xs:element name="layer" type="tns:layer" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="defaultvalue" type="xs:string" use="required" />
 		<xs:attribute name="defaultlang" type="xs:string" use="required" />
