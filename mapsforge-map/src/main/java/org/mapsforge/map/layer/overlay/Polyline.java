@@ -37,16 +37,30 @@ import org.mapsforge.map.layer.Layer;
  */
 public class Polyline extends Layer {
 	private final GraphicFactory graphicFactory;
+	private final boolean keepAligned;
 	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
 	private Paint paintStroke;
 
 	/**
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this polyline (may be null).
+	 * @param graphicFactory the GraphicFactory
 	 */
 	public Polyline(Paint paintStroke, GraphicFactory graphicFactory) {
+		this(paintStroke, graphicFactory, false);
+	}
+
+	/**
+	 * @param paintStroke
+	 *            the initial {@code Paint} used to stroke this polyline (may be null).
+	 * @param graphicFactory the GraphicFactory
+	 * @param keepAligned if set to true it will keep the bitmap aligned with the map, to avoid
+	 *                    a moving effect of a bitmap shader.
+	 */
+	public Polyline(Paint paintStroke, GraphicFactory graphicFactory, boolean keepAligned) {
 		super();
 
+		this.keepAligned = keepAligned;
 		this.paintStroke = paintStroke;
 		this.graphicFactory = graphicFactory;
 	}
@@ -78,6 +92,9 @@ public class Polyline extends Layer {
 			path.lineTo(x, y);
 		}
 
+		if (this.keepAligned) {
+			this.paintStroke.setBitmapShaderShift(topLeftPoint);
+		}
 		canvas.drawPath(path, this.paintStroke);
 	}
 

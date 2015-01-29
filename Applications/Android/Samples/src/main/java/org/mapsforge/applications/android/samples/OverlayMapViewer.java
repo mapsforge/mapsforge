@@ -42,6 +42,9 @@ public class OverlayMapViewer extends RenderTheme4 {
 	protected LatLong latLong4 = new LatLong(52.51, 13.401);
 	protected LatLong latLong5 = new LatLong(52.508, 13.408);
 	protected LatLong latLong6 = new LatLong(52.515, 13.420);
+	protected LatLong latLong7 = new LatLong(52.51, 13.41);
+	protected LatLong latLong8 = new LatLong(52.51, 13.42);
+	protected LatLong latLong9 = new LatLong(52.52, 13.43);
 
 	protected void addOverlayLayers(Layers layers) {
 
@@ -52,6 +55,18 @@ public class OverlayMapViewer extends RenderTheme4 {
 		latLongs.add(latLong1);
 		latLongs.add(latLong2);
 		latLongs.add(latLong3);
+
+
+		// this illustrates that bitmap shaders can be used on a path, but then any dash effect
+		// will not be applied.
+		Paint shaderPaint = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 90, Style.STROKE);
+		shaderPaint.setBitmapShader(AndroidGraphicFactory.convertToBitmap(getResources().getDrawable(R.drawable.marker_green)));
+
+		Polyline polylineWithShader = new Polyline(shaderPaint, AndroidGraphicFactory.INSTANCE, true);
+		List<LatLong> latLongs2 = polylineWithShader.getLatLongs();
+		latLongs2.add(latLong7);
+		latLongs2.add(latLong8);
+		latLongs2.add(latLong9);
 
 		Paint paintFill = Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 2,
@@ -105,6 +120,7 @@ public class OverlayMapViewer extends RenderTheme4 {
 		};
 
 		layers.add(polyline);
+		layers.add(polylineWithShader);
 		layers.add(polygon);
 		layers.add(circle);
 		layers.add(marker1);
