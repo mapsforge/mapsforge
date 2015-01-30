@@ -38,9 +38,11 @@ import org.mapsforge.map.layer.Layer;
  */
 public class Polygon extends Layer {
 	private final GraphicFactory graphicFactory;
+	private final boolean keepAligned;
 	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
 	private Paint paintFill;
 	private Paint paintStroke;
+
 
 	/**
 	 * @param paintFill
@@ -49,8 +51,20 @@ public class Polygon extends Layer {
 	 *            the initial {@code Paint} used to stroke this polygon (may be null).
 	 */
 	public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory) {
-		super();
+		this(paintFill, paintStroke, graphicFactory, false);
+	}
 
+		/**
+		 * @param paintFill
+		 *            the initial {@code Paint} used to fill this polygon (may be null).
+		 * @param paintStroke
+		 *            the initial {@code Paint} used to stroke this polygon (may be null).
+		 * @param keepAligned if set to true it will keep the bitmap aligned with the map, to avoid
+		 *                    a moving effect of a bitmap shader.
+		 */
+	public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory, boolean keepAligned) {
+		super();
+		this.keepAligned = keepAligned;
 		this.paintFill = paintFill;
 		this.paintStroke = paintStroke;
 		this.graphicFactory = graphicFactory;
@@ -78,10 +92,18 @@ public class Polygon extends Layer {
 			path.lineTo(x, y);
 		}
 
+
 		if (this.paintStroke != null) {
+			if (this.keepAligned) {
+				this.paintStroke.setBitmapShaderShift(topLeftPoint);
+			}
 			canvas.drawPath(path, this.paintStroke);
 		}
 		if (this.paintFill != null) {
+			if (this.keepAligned) {
+				this.paintFill.setBitmapShaderShift(topLeftPoint);
+			}
+
 			canvas.drawPath(path, this.paintFill);
 		}
 	}

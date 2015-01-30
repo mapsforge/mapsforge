@@ -32,10 +32,12 @@ import org.mapsforge.map.layer.Layer;
  */
 public class Circle extends Layer {
 
+	private final boolean keepAligned;
 	private LatLong latLong;
 	private Paint paintFill;
 	private Paint paintStroke;
 	private float radius;
+
 
 	/**
 	 * @param latLong
@@ -50,8 +52,27 @@ public class Circle extends Layer {
 	 *             if the given {@code radius} is negative or {@link Float#NaN}.
 	 */
 	public Circle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
+		this(latLong, radius, paintFill, paintStroke, false);
+	}
+	/**
+	 * @param latLong
+	 *            the initial center point of this circle (may be null).
+	 * @param radius
+	 *            the initial non-negative radius of this circle in meters.
+	 * @param paintFill
+	 *            the initial {@code Paint} used to fill this circle (may be null).
+	 * @param paintStroke
+	 *            the initial {@code Paint} used to stroke this circle (may be null).
+	 * @param keepAligned if set to true it will keep the bitmap aligned with the map, to avoid
+	 *                    a moving effect of a bitmap shader.
+	 * @throws IllegalArgumentException
+	 *             if the given {@code radius} is negative or {@link Float#NaN}.
+
+	 */
+	public Circle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke, boolean keepAligned) {
 		super();
 
+		this.keepAligned = keepAligned;
 		this.latLong = latLong;
 		setRadiusInternal(radius);
 		this.paintFill = paintFill;
@@ -77,9 +98,15 @@ public class Circle extends Layer {
 		}
 
 		if (this.paintStroke != null) {
+			if (this.keepAligned) {
+				this.paintStroke.setBitmapShaderShift(topLeftPoint);
+			}
 			canvas.drawCircle(pixelX, pixelY, radiusInPixel, this.paintStroke);
 		}
 		if (this.paintFill != null) {
+			if (this.keepAligned) {
+				this.paintFill.setBitmapShaderShift(topLeftPoint);
+			}
 			canvas.drawCircle(pixelX, pixelY, radiusInPixel, this.paintFill);
 		}
 	}

@@ -46,6 +46,14 @@ public class OverlayMapViewer extends RenderTheme4 {
 	protected LatLong latLong8 = new LatLong(52.51, 13.42);
 	protected LatLong latLong9 = new LatLong(52.52, 13.43);
 
+	protected LatLong latLong10 = new LatLong(52.514, 13.413);
+	protected LatLong latLong11 = new LatLong(52.514, 13.423);
+	protected LatLong latLong12 = new LatLong(52.524, 13.433);
+	protected LatLong latLong13 = new LatLong(52.516, 13.4145);
+	protected LatLong latLong14 = new LatLong(52.516, 13.4245);
+	protected LatLong latLong15 = new LatLong(52.526, 13.4345);
+
+
 	protected void addOverlayLayers(Layers layers) {
 
 		Polyline polyline = new Polyline(Utils.createPaint(
@@ -76,22 +84,55 @@ public class OverlayMapViewer extends RenderTheme4 {
 				Style.STROKE);
 		Polygon polygon = new Polygon(paintFill, paintStroke,
 				AndroidGraphicFactory.INSTANCE);
-		latLongs = polygon.getLatLongs();
-		latLongs.add(latLong2);
-		latLongs.add(latLong3);
-		latLongs.add(latLong4);
-		latLongs.add(latLong5);
+		List<LatLong>latLongs3 = polygon.getLatLongs();
+		latLongs3.add(latLong2);
+		latLongs3.add(latLong3);
+		latLongs3.add(latLong4);
+		latLongs3.add(latLong5);
+
+		// A polygon filled with a shader, where the shader is not aligned
+		Paint paintFill2 = Utils.createPaint(
+				AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 2,
+				Style.FILL);
+		paintFill2.setBitmapShader(AndroidGraphicFactory.convertToBitmap(getResources().getDrawable(R.drawable.marker_green)));
+
+		Paint paintStroke2 = Utils.createPaint(
+				AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,
+				Style.STROKE);
+		Polygon polygonWithShaderNonAligned = new Polygon(paintFill2, paintStroke2,
+				AndroidGraphicFactory.INSTANCE);
+		List<LatLong>latLongs4 = polygonWithShaderNonAligned.getLatLongs();
+		latLongs4.add(latLong10);
+		latLongs4.add(latLong11);
+		latLongs4.add(latLong12);
+		latLongs4.add(latLong10);
+
+		Paint paintFill3 = Utils.createPaint(
+				AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 2,
+				Style.FILL);
+		paintFill3.setBitmapShader(AndroidGraphicFactory.convertToBitmap(getResources().getDrawable(R.drawable.marker_red)));
+
+		Paint paintStroke3 = Utils.createPaint(
+				AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,
+				Style.STROKE);
+		Polygon polygonWithShaderAligned = new Polygon(paintFill3, paintStroke3,
+				AndroidGraphicFactory.INSTANCE, true);
+		List<LatLong>latLongs5 = polygonWithShaderAligned.getLatLongs();
+		latLongs5.add(latLong13);
+		latLongs5.add(latLong14);
+		latLongs5.add(latLong15);
+		latLongs5.add(latLong13);
 
 		Marker marker1 = Utils.createTappableMarker(this,
 				R.drawable.marker_red, latLong1);
 
-		Circle circle = new Circle(latLong3, 300, Utils.createPaint(
+		Circle circle = new Circle(latLong3, 100, Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0,
 				Style.FILL), null);
 
 		FixedPixelCircle tappableCircle = new FixedPixelCircle(
 				latLong6,
-				70,
+				20,
 				Utils.createPaint(
 						AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN),
 						0, Style.FILL), null) {
@@ -122,6 +163,8 @@ public class OverlayMapViewer extends RenderTheme4 {
 		layers.add(polyline);
 		layers.add(polylineWithShader);
 		layers.add(polygon);
+		layers.add(polygonWithShaderAligned);
+		layers.add(polygonWithShaderNonAligned);
 		layers.add(circle);
 		layers.add(marker1);
 		layers.add(tappableCircle);
