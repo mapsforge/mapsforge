@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -69,6 +69,11 @@ public class MapFile implements MapDataStore {
 	 * Debug message prefix for the way signature.
 	 */
 	private static final String DEBUG_SIGNATURE_WAY = "way signature: ";
+
+	/**
+	 * Default start zoom level.
+	 */
+	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
 
 	/**
 	 * Amount of cache blocks that the index cache should store.
@@ -361,7 +366,10 @@ public class MapFile implements MapDataStore {
 
 	@Override
 	public Byte startZoomLevel() {
-		return getMapFileInfo().startZoomLevel;
+		if (null != getMapFileInfo().startZoomLevel) {
+			return getMapFileInfo().startZoomLevel;
+		}
+		return DEFAULT_START_ZOOM_LEVEL;
 	}
 
 	@Override
