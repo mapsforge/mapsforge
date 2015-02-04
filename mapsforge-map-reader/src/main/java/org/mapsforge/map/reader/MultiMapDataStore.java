@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -136,7 +137,13 @@ public class MultiMapDataStore implements MapDataStore {
 
 	@Override
 	public LatLong startPosition() {
-		return this.startPosition;
+		if (null != this.startPosition) {
+			return this.startPosition;
+		}
+		if (null != this.boundingBox) {
+			return this.boundingBox.getCenterPoint();
+		}
+		return null;
 	}
 
 	public void setStartPosition(LatLong startPosition) {
