@@ -108,7 +108,6 @@ Here comes the whole as a single file:
     	private TileCache tileCache;
     	private TileRendererLayer tileRendererLayer;
     
-    
     	@Override
     	protected void onCreate(Bundle savedInstanceState) {
     		super.onCreate(savedInstanceState);
