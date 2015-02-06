@@ -41,7 +41,7 @@ To avoid redrawing all the tiles all the time, we need to set up a tile cache. A
 Now we need to set up the process of displaying a map. A map can have several layers, stacked on top of each other. A layer can be a map or some visual elements, such as markers. Here we only show a map based on a mapsforge map file. For this we need a TileRendererLayer. A tileRendererLayer needs a tileCache to hold the generated map tiles, a mapfile from which the tiles are generated and rendertheme that defines the appearance of the map:
 
     this.tileRendererLayer = new TileRendererLayer(tileCache,
-    				this.mapView.getModel().mapViewPosition, false, AndroidGraphicFactory.INSTANCE);
+    				this.mapView.getModel().mapViewPosition, false, true, AndroidGraphicFactory.INSTANCE);
     tileRendererLayer.setMapFile(getMapFile());
     tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 
@@ -141,7 +141,7 @@ Here comes the whole as a single file:
     
     		// tile renderer layer using internal render theme
     		this.tileRendererLayer = new TileRendererLayer(tileCache,
-    				this.mapView.getModel().mapViewPosition, false, AndroidGraphicFactory.INSTANCE);
+    				this.mapView.getModel().mapViewPosition, false, true, AndroidGraphicFactory.INSTANCE);
     		tileRendererLayer.setMapFile(getMapFile());
     		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
     		
