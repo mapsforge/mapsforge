@@ -93,13 +93,11 @@ Here comes the whole as a single file:
     import org.mapsforge.map.android.view.MapView;
     import org.mapsforge.map.layer.cache.TileCache;
     import org.mapsforge.map.layer.renderer.TileRendererLayer;
-    import org.mapsforge.map.model.common.PreferencesFacade;
     import org.mapsforge.map.rendertheme.InternalRenderTheme;
     
     import android.app.Activity;
     import android.os.Bundle;
     import android.os.Environment;
-    
     
     public class MainActivity extends Activity {
     	
@@ -109,7 +107,6 @@ Here comes the whole as a single file:
     	private MapView mapView;	
     	private TileCache tileCache;
     	private TileRendererLayer tileRendererLayer;
-    
     
     	@Override
     	protected void onCreate(Bundle savedInstanceState) {
