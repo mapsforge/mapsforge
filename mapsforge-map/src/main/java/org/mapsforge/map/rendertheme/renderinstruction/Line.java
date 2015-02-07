@@ -44,6 +44,7 @@ public class Line extends RenderInstruction {
 
 	private boolean bitmapCreated;
 	private float dy;
+	private float dyScaled;
 	private final int level;
 	private final String relativePathPrefix;
 	private String src;
@@ -92,12 +93,13 @@ public class Line extends RenderInstruction {
 
 		this.stroke.setBitmapShaderShift(way.getTile().getOrigin());
 
-		renderCallback.renderWay(way, this.stroke, this.dy, this.level);
+		renderCallback.renderWay(way, this.stroke, this.dyScaled, this.level);
 	}
 
 	@Override
 	public void scaleStrokeWidth(float scaleFactor) {
 		this.stroke.setStrokeWidth(this.strokeWidth * scaleFactor);
+		this.dyScaled = this.dy * scaleFactor;
 	}
 
 	@Override
@@ -116,6 +118,7 @@ public class Line extends RenderInstruction {
 				this.category = value;
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+				this.dyScaled = this.dy;
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {

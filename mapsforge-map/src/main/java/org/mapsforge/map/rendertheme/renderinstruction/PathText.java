@@ -38,6 +38,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class PathText extends RenderInstruction {
 	private Display display;
 	private float dy;
+	private float dyScaled;
 	private final Paint fill;
 	private float fontSize;
 	private int priority;
@@ -82,7 +83,7 @@ public class PathText extends RenderInstruction {
 		if (caption == null) {
 			return;
 		}
-		renderCallback.renderWayText(way, this.display, this.priority, caption, this.dy, this.fill, this.stroke);
+		renderCallback.renderWayText(way, this.display, this.priority, caption, this.dyScaled, this.fill, this.stroke);
 	}
 
 	@Override
@@ -94,6 +95,7 @@ public class PathText extends RenderInstruction {
 	public void scaleTextSize(float scaleFactor) {
 		this.fill.setTextSize(this.fontSize * scaleFactor);
 		this.stroke.setTextSize(this.fontSize * scaleFactor);
+		this.dyScaled = this.dy * scaleFactor;
 	}
 
 	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -113,6 +115,7 @@ public class PathText extends RenderInstruction {
 				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+				this.dyScaled = this.dy;
 			} else if (FONT_FAMILY.equals(name)) {
 				fontFamily = FontFamily.fromString(value);
 			} else if (FONT_STYLE.equals(name)) {

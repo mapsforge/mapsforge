@@ -51,6 +51,7 @@ public class Caption extends RenderInstruction {
 	private Position position;
 	private Display display;
 	private float dy;
+	private float dyScaled;
 	private final Paint fill;
 	private float fontSize;
 	private final float gap;
@@ -141,7 +142,7 @@ public class Caption extends RenderInstruction {
 		}
 
 		float horizontalOffset = 0f;
-		float verticalOffset = this.dy;
+		float verticalOffset = this.dyScaled;
 
 		if (this.bitmap != null) {
 			horizontalOffset = computeHorizontalOffset();
@@ -165,7 +166,7 @@ public class Caption extends RenderInstruction {
 		}
 
 		float horizontalOffset = 0f;
-		float verticalOffset = this.dy;
+		float verticalOffset = this.dyScaled;
 
 		if (this.bitmap != null) {
 			horizontalOffset = computeHorizontalOffset();
@@ -185,6 +186,7 @@ public class Caption extends RenderInstruction {
 	public void scaleTextSize(float scaleFactor) {
 		this.fill.setTextSize(this.fontSize * scaleFactor);
 		this.stroke.setTextSize(this.fontSize * scaleFactor);
+		this.dyScaled = this.dy * scaleFactor;
 	}
 
 	private float computeHorizontalOffset() {
@@ -205,7 +207,7 @@ public class Caption extends RenderInstruction {
 	}
 
 	private float computeVerticalOffset() {
-		float verticalOffset = this.dy;
+		float verticalOffset = this.dyScaled;
 
 		if (Position.ABOVE == this.position
 				|| Position.ABOVE_LEFT == this.position
@@ -237,6 +239,7 @@ public class Caption extends RenderInstruction {
 				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+				this.dyScaled = this.dy;
 			} else if (FONT_FAMILY.equals(name)) {
 				fontFamily = FontFamily.fromString(value);
 			} else if (FONT_STYLE.equals(name)) {
