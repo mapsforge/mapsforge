@@ -82,13 +82,15 @@ public final class JTSUtils {
 			return null;
 		}
 
-		if (way.isValidClosedLine()) {
-			// a closed line
-			if (way.isForcePolygonLine()) {
-				// may build a single line string if inner ways are empty
-				return buildMultiLineString(way, innerWays);
-			}
-			// a true polygon
+		if (way.isForcePolygonLine()) {
+			// may build a single line string if inner ways are empty
+			return buildMultiLineString(way, innerWays);
+		}
+
+		if (way.getShape() != TDWay.LINE || innerWays != null && innerWays.size() > 0) {
+			// Have to be careful here about polygons and lines again, the problem with
+			// polygons is that a certain direction is forced, so we do not want to reverse
+			// closed lines that are not meant to be polygons
 			// may contain holes if inner ways are not empty
 			Polygon polygon = buildPolygon(way, innerWays);
 			if (polygon.isValid()) {
