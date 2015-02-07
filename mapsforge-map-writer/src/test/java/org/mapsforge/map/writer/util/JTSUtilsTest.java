@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.mapsforge.map.writer.model.TDWay;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.Assert;
@@ -27,16 +28,15 @@ import com.vividsolutions.jts.util.Assert;
 public class JTSUtilsTest {
 	@Test
 	public void testBuildGeometryFromInValidPolygon() {
+		// Some of these tests do not really make sense, as not everything that is a closed line
+		// should be a polygon in OSM.
 		String testfile = "invalid-polygon.wkt";
 		String expectedfile = "invalid-polygon-repaired.wkt";
 
 		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
 		Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));
-		Assert.isTrue(geometry instanceof Polygon);
+		Assert.isTrue(geometry instanceof LineString);
 		Assert.isTrue(geometry.isValid());
-
-		Geometry expected = MockingUtils.readWKTFile(expectedfile);
-		Assert.equals(expected, geometry);
 	}
 
 	@Test
@@ -59,11 +59,8 @@ public class JTSUtilsTest {
 
 		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
 		Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));
-		Assert.isTrue(geometry instanceof Polygon);
+		Assert.isTrue(geometry instanceof LineString);
 		Assert.isTrue(geometry.isValid());
-
-		Geometry expected = MockingUtils.readWKTFile(testfile);
-		Assert.equals(expected, geometry);
 	}
 
 	@Test
