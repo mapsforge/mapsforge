@@ -43,6 +43,7 @@ public class LineSymbol extends RenderInstruction {
 	private boolean bitmapInvalid;
 	private Display display;
 	private float dy;
+	private float dyScaled;
 	private int priority;
 	private final String relativePathPrefix;
 	private boolean repeat;
@@ -89,14 +90,14 @@ public class LineSymbol extends RenderInstruction {
 			}
 		}
 		if (this.bitmap != null) {
-			renderCallback.renderWaySymbol(way, this.display, this.priority, this.bitmap, this.dy, this.alignCenter,
+			renderCallback.renderWaySymbol(way, this.display, this.priority, this.bitmap, this.dyScaled, this.alignCenter,
 					this.repeat, this.repeatGap, this.repeatStart, this.rotate);
 		}
 	}
 
 	@Override
 	public void scaleStrokeWidth(float scaleFactor) {
-		// do nothing
+		this.dyScaled = this.dy * scaleFactor;
 	}
 
 	@Override
@@ -119,6 +120,7 @@ public class LineSymbol extends RenderInstruction {
 				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+				this.dyScaled = this.dy;
 			} else if (ALIGN_CENTER.equals(name)) {
 				this.alignCenter = Boolean.parseBoolean(value);
 			} else if (CAT.equals(name)) {

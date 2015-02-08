@@ -88,14 +88,13 @@ public class PathText extends RenderInstruction {
 
 	@Override
 	public void scaleStrokeWidth(float scaleFactor) {
-		// do nothing
+		this.dyScaled = this.dy * scaleFactor;
 	}
 
 	@Override
 	public void scaleTextSize(float scaleFactor) {
 		this.fill.setTextSize(this.fontSize * scaleFactor);
 		this.stroke.setTextSize(this.fontSize * scaleFactor);
-		this.dyScaled = this.dy * scaleFactor;
 	}
 
 	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
