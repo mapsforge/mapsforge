@@ -1,170 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-	package="org.mapsforge.applications.android.samples"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:installLocation="auto"
-	android:versionCode="50"
-	android:versionName="dev-SNAPSHOT">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.mapsforge.applications.android.samples"
+    android:installLocation="auto"
+    android:versionCode="50"
+    android:versionName="dev-SNAPSHOT" >
 
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-	<uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
-	<uses-sdk
-		android:minSdkVersion="9"
-		android:targetSdkVersion="21"/>
-	<application
-		android:name=".SamplesApplication"
-		android:allowBackup="true"
-		android:hardwareAccelerated="false"
-		android:label="Mapsforge Samples">
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="21" />
 
-		<activity
-			android:name=".Samples">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN"/>
-				<category android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
-		<activity
-			android:name=".BasicMapViewerV3"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Map Viewer with built-in V3 Rendertheme (osmarender)"/>
-		<activity
-			android:name=".LabelLayerMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="BasicMapViewer Labels on Tiles"/>
-		<activity
-			android:name=".NoXMLLayout"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Map Viewer without XML Layout"/>
-		<activity
-			android:name=".SimplestMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Simplest Map Viewer"/>
-		<activity
-			android:name=".DownloadLayerViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="DownloadLayerViewer"/>
-		<activity
-			android:name=".TileStoreLayerViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Tile Store Viewer"/>
-		<activity
-			android:name=".DownloadCustomLayerViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="DownloadCustomLayerViewer"/>
-		<activity
-			android:name=".DiagnosticsMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="DiagnosticsMapViewer"/>
-		<activity
-			android:name=".RenderTheme4"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="RenderTheme V4"/>
-		<activity
-			android:name=".TwoMaps"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Two Maps Overlaid"/>
-		<activity
-			android:name=".RenderThemeChanger"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Automatically changes between renderthemes on SDCard"/>
-		<activity
-			android:name=".TileSizeChanger"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Automatically changes tile sizes"/>
-		<activity
-			android:name=".OverlayMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="OverlayMapViewer"/>
-		<activity
-			android:name=".GridMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Geographical Grid"/>
-		<activity
-			android:name=".ZoomToBounds"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Zooms to map bounds of overlay"/>
-		<activity
-			android:name=".OverlayWithoutBaseMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="OverlayWithoutBaseMapViewer"/>
-		<activity
-			android:name=".LongPressAction"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Create and delete circles with long press"/>
-		<activity
-			android:name=".MoveAnimation"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Long press triggers animation to point"/>
-		<activity
-			android:name=".ChangingBitmaps"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Bitmaps automatically change"/>
-		<activity
-			android:name=".LocationOverlayMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="LocationOverlayMapViewer"/>
-		<activity
-			android:name=".BubbleOverlay"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Information bubbles"/>
-		<activity
-			android:name=".DualMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Dual Map View"/>
-		<activity
-			android:name=".DualMapViewerWithDifferentDisplayModels"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Two views with different DisplayModels"/>
-		<activity
-			android:name=".DualMapViewerWithClampedTileSizes"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Clamping tile sizes to fixed multiples"/>
-		<activity
-			android:name=".DualMapnikMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Two tied viewers"/>
-		<activity
-			android:name=".DualOverviewMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Show a little overview map at different zoom level"/>
-		<activity
-			android:name=".MultiMapLowResWorld"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Low res world background"/>
-		<activity
-			android:name=".StackedLayersMapViewer"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Multiple layers generated from same map"/>
-		<activity
-			android:name=".ItemListActivity"
-			android:label="Fragments Item List"
-			android:parentActivityName="org.mapsforge.applications.android.samples.Samples">
-			<meta-data
-				android:name="android.support.PARENT_ACTIVITY"
-				android:value="org.mapsforge.applications.android.samples.Samples"/>
-		</activity>
-		<activity
-			android:name=".ItemDetailActivity"
-			android:configChanges="keyboardHidden|orientation|screenSize"
-			android:label="Fragments Item Details"
-			android:parentActivityName=".ItemListActivity">
-			<meta-data
-				android:name="android.support.PARENT_ACTIVITY"
-				android:value=".ItemListActivity"/>
-		</activity>
-		<activity
-			android:name=".Settings"
-			android:label="Settings"
-			android:parentActivityName=".Samples">
-			<meta-data
-				android:name="android.support.PARENT_ACTIVITY"
-				android:value=".Samples"/>
-		</activity>
+    <application
+        android:name=".SamplesApplication"
+        android:allowBackup="true"
+        android:hardwareAccelerated="false"
+        android:label="Mapsforge Samples" >
+        <activity android:name=".Samples" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-	</application>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".BasicMapViewerV3"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Map Viewer with built-in V3 Rendertheme (osmarender)" />
+        <activity
+            android:name=".LabelLayerMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="BasicMapViewer Labels on Tiles" />
+        <activity
+            android:name=".NoXMLLayout"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Map Viewer without XML Layout" />
+        <activity
+            android:name=".SimplestMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Simplest Map Viewer" />
+        <activity
+            android:name=".DownloadLayerViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="DownloadLayerViewer" />
+        <activity
+            android:name=".TileStoreLayerViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Tile Store Viewer" />
+        <activity
+            android:name=".DownloadCustomLayerViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="DownloadCustomLayerViewer" />
+        <activity
+            android:name=".DiagnosticsMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="DiagnosticsMapViewer" />
+        <activity
+            android:name=".RenderTheme4"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="RenderTheme V4" />
+        <activity
+            android:name=".TwoMaps"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Two Maps Overlaid" />
+        <activity
+            android:name=".RenderThemeChanger"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Automatically changes between renderthemes on SDCard" />
+        <activity
+            android:name=".TileSizeChanger"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Automatically changes tile sizes" />
+        <activity
+            android:name=".OverlayMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="OverlayMapViewer" />
+        <activity
+            android:name=".GridMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Geographical Grid" />
+        <activity
+            android:name=".ZoomToBounds"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Zooms to map bounds of overlay" />
+        <activity
+            android:name=".OverlayWithoutBaseMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="OverlayWithoutBaseMapViewer" />
+        <activity
+            android:name=".LongPressAction"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Create and delete circles with long press" />
+        <activity
+            android:name=".MoveAnimation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Long press triggers animation to point" />
+        <activity
+            android:name=".ChangingBitmaps"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Bitmaps automatically change" />
+        <activity
+            android:name=".LocationOverlayMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="LocationOverlayMapViewer" />
+        <activity
+            android:name=".BubbleOverlay"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Information bubbles" />
+        <activity
+            android:name=".DualMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Dual Map View" />
+        <activity
+            android:name=".DualMapViewerWithDifferentDisplayModels"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Two views with different DisplayModels" />
+        <activity
+            android:name=".DualMapViewerWithClampedTileSizes"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Clamping tile sizes to fixed multiples" />
+        <activity
+            android:name=".DualMapnikMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Two tied viewers" />
+        <activity
+            android:name=".DualOverviewMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Show a little overview map at different zoom level" />
+        <activity
+            android:name=".MultiMapLowResWorld"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Low res world background" />
+        <activity
+            android:name=".StackedLayersMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Multiple layers generated from same map" />
+        <activity
+            android:name=".RotateMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Map rotation" />
+        <activity
+            android:name=".ItemListActivity"
+            android:label="Fragments Item List"
+            android:parentActivityName="org.mapsforge.applications.android.samples.Samples" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.mapsforge.applications.android.samples.Samples" />
+        </activity>
+        <activity
+            android:name=".ItemDetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Fragments Item Details"
+            android:parentActivityName=".ItemListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ItemListActivity" />
+        </activity>
+        <activity
+            android:name=".Settings"
+            android:label="Settings"
+            android:parentActivityName=".Samples" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Samples" />
+        </activity>
+    </application>
 
 </manifest>
