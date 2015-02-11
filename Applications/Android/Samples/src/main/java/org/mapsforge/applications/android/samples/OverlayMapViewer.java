@@ -1,5 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -29,7 +30,7 @@ import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.overlay.Polygon;
 import org.mapsforge.map.layer.overlay.Polyline;
 
-import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Map viewer with a few overlays added.
@@ -140,9 +141,11 @@ public class OverlayMapViewer extends RenderTheme4 {
 			public boolean onLongPress(LatLong geoPoint, Point viewPosition,
 					Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
-					Log.w(SamplesApplication.TAG,
+					Toast.makeText(
+							OverlayMapViewer.this,
 							"The Circle was long pressed at "
-									+ geoPoint.toString());
+									+ geoPoint.toString(), Toast.LENGTH_SHORT)
+							.show();
 					return true;
 				}
 				return false;
@@ -152,8 +155,9 @@ public class OverlayMapViewer extends RenderTheme4 {
 			public boolean onTap(LatLong geoPoint, Point viewPosition,
 					Point tapPoint) {
 				if (this.contains(viewPosition, tapPoint)) {
-					Log.w(SamplesApplication.TAG, "The Circle was tapped at "
-							+ geoPoint.toString());
+					Toast.makeText(OverlayMapViewer.this,
+							"The Circle was tapped " + geoPoint.toString(),
+							Toast.LENGTH_SHORT).show();
 					return true;
 				}
 				return false;

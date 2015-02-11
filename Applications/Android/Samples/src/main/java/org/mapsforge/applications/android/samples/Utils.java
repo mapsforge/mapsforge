@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,19 +15,13 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import java.io.File;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.overlay.Marker;
-import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -35,9 +29,9 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.View.MeasureSpec;
+import android.widget.Toast;
 
 /**
  * Utility functions that can be used across different mapsforge based
@@ -66,7 +60,8 @@ public final class Utils {
 	 * @param background
 	 *            the background
 	 */
-	@TargetApi(16)
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	@SuppressWarnings("deprecation")
 	public static void setBackground(View view, Drawable background) {
 		if (android.os.Build.VERSION.SDK_INT >= 16) {
 			view.setBackground(background);
@@ -90,7 +85,7 @@ public final class Utils {
 		return paint;
 	}
 
-	static Marker createTappableMarker(Context c, int resourceIdentifier,
+	static Marker createTappableMarker(final Context c, int resourceIdentifier,
 			LatLong latLong) {
 		Drawable drawable = c.getResources().getDrawable(resourceIdentifier);
 		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
@@ -100,15 +95,15 @@ public final class Utils {
 			public boolean onTap(LatLong geoPoint, Point viewPosition,
 					Point tapPoint) {
 				if (contains(viewPosition, tapPoint)) {
-					Log.w("Tapp", "The Marker was touched with onTap: "
-							+ this.getLatLong().toString());
+					Toast.makeText(c,
+							"The Marker was tapped " + geoPoint.toString(),
+							Toast.LENGTH_SHORT).show();
 					return true;
 				}
 				return false;
 			}
 		};
 	}
-
 
 	static Bitmap viewToBitmap(Context c, View view) {
 		view.measure(MeasureSpec.getSize(view.getMeasuredWidth()),
