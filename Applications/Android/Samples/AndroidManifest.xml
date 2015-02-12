@@ -142,7 +142,7 @@
         <activity
             android:name=".RotateMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Map rotation" />
+            android:label="Map Rotation (external)" />
         <activity
             android:name=".ItemListActivity"
             android:label="Fragments Item List"

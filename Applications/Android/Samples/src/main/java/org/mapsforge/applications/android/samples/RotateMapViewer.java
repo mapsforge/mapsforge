@@ -30,6 +30,19 @@ import android.widget.Button;
 public class RotateMapViewer extends OverlayMapViewer {
 
 	@Override
+	protected void createControls() {
+		Button rotateButton = (Button) findViewById(R.id.rotateButton);
+		rotateButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				RotateView rotateView = (RotateView) findViewById(R.id.rotateView);
+				rotateView.setHeading(rotateView.getHeading() - 45f);
+				rotateView.postInvalidate();
+			}
+		});
+	}
+
+	@Override
 	protected void createMapViews() {
 		mapView = getMapView();
 		mapView.getModel().frameBufferModel.setOverdrawFactor(1.0d);
@@ -40,17 +53,6 @@ public class RotateMapViewer extends OverlayMapViewer {
 		mapView.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(getZoomLevelMax());
 		initializePosition(mapView.getModel().mapViewPosition);
-
-		// Rotate button
-		Button rotateButton = (Button) findViewById(R.id.rotateButton);
-		rotateButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				RotateView rotateView = (RotateView) findViewById(R.id.rotateView);
-				rotateView.setHeading(rotateView.getHeading() - 45f);
-				rotateView.postInvalidate();
-			}
-		});
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
