@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,6 +24,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public class SymbolContainer extends MapElementContainer {
+
 	final boolean alignCenter;
 	public Bitmap symbol;
 	public final float theta;
@@ -71,7 +73,8 @@ public class SymbolContainer extends MapElementContainer {
 
 	public void draw(Canvas canvas, Point origin, Matrix matrix) {
 		matrix.reset();
-		matrix.translate((float) (this.xy.x - origin.x + boundary.left), (float) (this.xy.y - origin.y + boundary.top));
+		// We cast to int for pixel perfect positioning
+		matrix.translate((int) (this.xy.x - origin.x + boundary.left), (int) (this.xy.y - origin.y + boundary.top));
 		if (theta != 0 && alignCenter) {
 			matrix.rotate(theta, (float) -boundary.left, (float) -boundary.top);
 		} else {
