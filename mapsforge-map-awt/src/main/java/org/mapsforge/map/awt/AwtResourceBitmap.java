@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +15,7 @@
  */
 package org.mapsforge.map.awt;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -23,6 +25,10 @@ public class AwtResourceBitmap extends AwtBitmap implements ResourceBitmap {
 
 	AwtResourceBitmap(InputStream inputStream) throws IOException {
 		super(inputStream);
+	}
+
+	AwtResourceBitmap(BufferedImage bufferedImage) {
+		super(bufferedImage);
 	}
 
 }
