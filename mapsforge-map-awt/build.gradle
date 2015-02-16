@@ -1,3 +1,4 @@
 dependencies {
   compile project(":mapsforge-map")
+  compile group: 'com.kitfox.svg', name: 'svg-salamander', version:'1.0'
 }
