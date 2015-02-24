@@ -75,7 +75,7 @@ Whenever your activity changes, some cleanup operations have to be performed les
     	this.tileCache.destroy();
     	this.mapView.getModel().mapViewPosition.destroy();
     	this.mapView.destroy();
-    	AndroidResourceBitmap.clearResourceBitmaps();
+    	AndroidGraphicFactory.clearResourceMemoryCache();
     }
 
 ## All in one
@@ -88,7 +88,6 @@ Here comes the whole as a single file:
     
     import org.mapsforge.core.model.LatLong;
     import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-    import org.mapsforge.map.android.graphics.AndroidResourceBitmap;
     import org.mapsforge.map.android.util.AndroidUtil;
     import org.mapsforge.map.android.view.MapView;
     import org.mapsforge.map.layer.cache.TileCache;
@@ -162,7 +161,7 @@ Here comes the whole as a single file:
     		this.tileCache.destroy();
     		this.mapView.getModel().mapViewPosition.destroy();
     		this.mapView.destroy();
-    		AndroidResourceBitmap.clearResourceBitmaps();
+    		AndroidGraphicFactory.clearResourceMemoryCache();
     	}
     	
     	private File getMapFile() {
