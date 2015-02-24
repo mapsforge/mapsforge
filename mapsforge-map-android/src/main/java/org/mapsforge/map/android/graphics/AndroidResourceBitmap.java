@@ -48,7 +48,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 
 	// if AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS is set, the bitmaps are kept in
 	// a dictionary for faster retrieval and are not deleted or recycled until
-	// clearBitmaps is called
+	// clearResourceBitmaps is called
 
 	public static void clearResourceBitmaps() {
 		if (!AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS) {

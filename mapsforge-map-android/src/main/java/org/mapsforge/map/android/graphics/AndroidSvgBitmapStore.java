@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  *
  * For developers please note that the storage is permanent, so if you introduce new icons with
  * the same name/size (=hash) you will retrieve the old, cached one unless you uninstall the
- * app first.
+ * app first or clear its data.
  */
 public class AndroidSvgBitmapStore {
 

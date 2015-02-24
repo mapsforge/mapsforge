@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.graphics.AndroidSvgBitmapStore;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
@@ -186,7 +187,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 				showDialog(DIALOG_ENTER_COORDINATES);
 				break;
 			case R.id.menu_svgclear:
-				AndroidSvgBitmapStore.clear();
+				AndroidGraphicFactory.clearResourceFileCache();
 				break;
 		}
 		return false;
