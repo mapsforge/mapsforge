@@ -24,6 +24,7 @@ import android.os.Environment;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.AndroidPreferences;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -320,7 +321,7 @@ public abstract class MapViewerTemplate extends Activity  {
 		destroyLayers();
 		destroyTileCaches();
 		destroyMapViews();
-		org.mapsforge.map.android.graphics.AndroidResourceBitmap.clearResourceBitmaps();
+		AndroidGraphicFactory.clearResourceMemoryCache();
 	}
 
 

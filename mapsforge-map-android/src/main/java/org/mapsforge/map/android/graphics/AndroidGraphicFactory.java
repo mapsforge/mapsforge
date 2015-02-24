@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright © 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,11 +30,11 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.mapelements.PointTextContainer;
+import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
@@ -159,6 +159,14 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 		((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
 		// the scaledDensity is an approximate scale factor for the device
 		DisplayModel.setDeviceScaleFactor(metrics.scaledDensity);
+	}
+
+	public static void clearResourceFileCache() {
+		AndroidSvgBitmapStore.clear();
+	}
+
+	public static void clearResourceMemoryCache() {
+		AndroidResourceBitmap.clearResourceBitmaps();
 	}
 
 	@Override

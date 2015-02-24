@@ -18,6 +18,7 @@ package org.mapsforge.applications.android.samples;
 import java.io.File;
 
 import org.mapsforge.applications.android.samples.dummy.DummyContent;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.LayerManager;
@@ -115,9 +116,7 @@ public class ItemDetailFragment extends Fragment {
 		if (this.tileCache != null) {
 			this.tileCache.destroy();
 		}
-		org.mapsforge.map.android.graphics.AndroidResourceBitmap
-				.clearResourceBitmaps();
-
+		AndroidGraphicFactory.clearResourceMemoryCache();
 	}
 
 	protected MapFile getMapFile() {

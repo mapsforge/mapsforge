@@ -42,6 +42,8 @@ import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 
+import com.kitfox.svg.SVGCache;
+
 public class AwtGraphicFactory implements GraphicFactory {
 	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
@@ -83,6 +85,14 @@ public class AwtGraphicFactory implements GraphicFactory {
 		}
 
 		throw new IllegalArgumentException("unknown color: " + color);
+	}
+
+	public static void clearResourceFileCache() {
+		// We don't use a resource file cache
+	}
+
+	public static void clearResourceMemoryCache() {
+		SVGCache.getSVGUniverse().clear();
 	}
 
 	@Override
