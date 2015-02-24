@@ -21,19 +21,24 @@ The mapsforge code is now **only** at https://github.com/mapsforge/mapsforge. Th
 
 ## Components
 
-Mapsforge consists of the following components:
+Mapsforge consists of the following core components:
 
 - mapsforge-core: platform unspecific general components and interfaces.
 - mapsforge-map: platform unspecific elements used for map display.
 - mapsforge-map-reader: platform unspecific code to read mapsforge map files.
-- mapsforge-map-android: android specific elements.
 - kXML2: lightweight XML parser for render themes.
+
+Extra Android components:
+
+- mapsforge-map-android: android specific elements.
 - androidsvg: SVG library for displaying SVG files as icons.
- 
-The jars build from the above components are required elements for a mapsforge application on Android.
+
+Extra Java components:
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
 - svg-salamander: SVG library for displaying SVG files as icons.
+ 
+The jars build from the above components are required elements for a mapsforge application on Android or Java.
 
 
 ### Branches
