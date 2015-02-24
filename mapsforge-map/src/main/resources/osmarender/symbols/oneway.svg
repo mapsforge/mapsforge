@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg height="60" version="1.0" width="60" xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <metadata/>
+ <defs id="defs3">
+  <linearGradient id="linearGradient575">
+   <stop id="stop576"/>
+   <stop id="stop577" offset="1" stop-color="#fff"/>
+  </linearGradient>
+  <linearGradient id="linearGradient578" xlink:href="#linearGradient575"/>
+ </defs>
+ <path d="M 55.186040,31.208662 L 4.0814158,31.208662" id="path831" sodipodi:stroke-cmyk="(0.0000000 0.0000000 0.0000000 0.80000001)" fill="none" fill-rule="evenodd" stroke="#666666" stroke-linejoin="round" fill-opacity=".75" stroke-linecap="round" stroke-width="5"/>
+ <path d="M 43.687955,21.951630 L 56.607159,31.232880 L 43.996605,41.545380 L 43.687955,21.951630 z " id="path869" sodipodi:nodetypes="cccc" sodipodi:stroke-cmyk="(0.0000000 0.0000000 0.0000000 0.80000001)" fill="#666666" fill-rule="evenodd" stroke="#666666" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.712"/>
+</svg>
