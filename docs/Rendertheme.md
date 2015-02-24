@@ -267,11 +267,11 @@ The display directive has been added whereever priorities can be used. The follo
 
 ## SVG Symbols
 
-Symbols can be either defined in the raster PNG format or as vector graphics in SVG format. Mapsforge uses a library (https://code.google.com/p/androidsvg) that supports a large subset of the Tiny SVG specification (see http://www.w3.org/TR/SVGTiny12/index.html). 
+Symbols can be either defined in the raster PNG format or as vector graphics in SVG format. Mapsforge uses libraries (https://code.google.com/p/androidsvg on Android) and (https://svgsalamander.java.net on Java) that support a large subset of the Tiny SVG specification (see http://www.w3.org/TR/SVGTiny12/index.html). 
 
-To speed up map rendering, SVG symbols are now only rendered at the point where they are needed and are then written to disk in the PNG format. Subsequent uses will retrieve the file just like another raster image source. The file cache where these files are stored can be cleared through a static call.  
+To speed up map rendering, SVG symbols are now only rendered at the point where they are needed and on Android are then written to disk in the PNG format. Subsequent uses will retrieve the file just like another raster image source. The file cache where these files are stored can be cleared through a static call.  
 
-    AndroidSvgBitmapStore.clear();
+    AndroidGraphicFactory.clearResourceFileCache();
 
 ### Symbol Scaling
 
