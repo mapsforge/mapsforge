@@ -33,7 +33,8 @@ Mapsforge consists of the following components:
 The jars build from the above components are required elements for a mapsforge application on Android.
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
- 
+- svg-salamander: SVG library for displaying SVG files as icons.
+
 
 ### Branches
 
