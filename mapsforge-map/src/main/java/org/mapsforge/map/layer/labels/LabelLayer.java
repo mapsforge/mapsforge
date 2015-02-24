@@ -23,6 +23,8 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.util.LayerUtil;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +52,13 @@ public class LabelLayer extends Layer {
 			lastLabelStoreVersion = labelStore.getVersion();
 			List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(currentTileSet);
 			elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
+
+			// TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out
+			// what LayerUtil.collisionFreeOrdered gave us is a list where highest priority comes first,
+			// so we need to reverse that in order to
+			// draw elements in order of priority: lower priority first, so more important
+			// elements will be drawn on top (in case of display=true) items.
+			Collections.sort(elementsToDraw);
 		}
 
 		for (MapElementContainer item : elementsToDraw) {
