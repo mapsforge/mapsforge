@@ -2,8 +2,13 @@
 
 <wiki:toc />
 
-## New since release 0.5.0
+## Version 0.5.1-rc1
  - Support for more general map data sources through [MapDataStore interface and MultiMapDataStore class](MapDataStore.md)
+ - Persistent Caching.
+ - Documentation updates.
+ - Various bug fixes.
+ - Improved grid drawing.
+ - External Map Rotation example in Samples.
 
 ## Version 0.5.0
 **2014-12-08**
