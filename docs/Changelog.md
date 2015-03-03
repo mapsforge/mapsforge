@@ -3,6 +3,10 @@
 <wiki:toc />
 
 ## Version 0.5.1-rc1
+ - Fix for NPE when using persisten tile cache.
+ - Doc updates
+ 
+## Version 0.5.1-rc1
  - Support for more general map data sources through [MapDataStore interface and MultiMapDataStore class](MapDataStore.md)
  - Persistent Caching.
  - Documentation updates.

@@ -1,12 +1,12 @@
 # Downloads for Developers
 
-# Release Candidate 0.5.1-rc1 Downloads
+# Release Candidate 0.5.1-rc2 Downloads
 
-These are the downloads for version 0.5.1-rc1:
+These are the downloads for version 0.5.1-rc2:
 
-- [Samples 0.5.1-rc1 application](http://ci.mapsforge.org/job/0.5.1-rc1/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-release-unsigned.apk)
-- [Release 0.5.1-rc1 jars](http://ci.mapsforge.org/job/0.5.1-rc1/)
-- [Writer plugin](http://ci.mapsforge.org/job/0.5.1-rc1/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.1-rc1.jar) 
+- [Samples 0.5.1-rc2 application](http://ci.mapsforge.org/job/0.5.1-rc2/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-release-unsigned.apk)
+- [Release 0.5.1-rc2 jars](http://ci.mapsforge.org/job/0.5.1-rc2/)
+- [Writer plugin](http://ci.mapsforge.org/job/0.5.1-rc2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.1-rc2.jar) 
 
 # Release 0.5.0 Downloads
 
