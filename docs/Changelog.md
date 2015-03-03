@@ -2,6 +2,11 @@
 
 <wiki:toc />
 
+## Version 0.5.1-rc3
+ - SVG rendering for Java with SVG Salamander
+ - Internal rendertheme (osmarender) using SVG symbols by default
+ - Resource memory/file cache: common clear methods
+ 
 ## Version 0.5.1-rc2
  - Fix for NPE when using persistent tile cache.
  - Doc updates
