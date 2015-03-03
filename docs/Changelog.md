@@ -2,8 +2,8 @@
 
 <wiki:toc />
 
-## Version 0.5.1-rc1
- - Fix for NPE when using persisten tile cache.
+## Version 0.5.1-rc2
+ - Fix for NPE when using persistent tile cache.
  - Doc updates
  
 ## Version 0.5.1-rc1
