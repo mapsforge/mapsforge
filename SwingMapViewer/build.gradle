@@ -4,6 +4,7 @@ dependencies {
 
 jar {
   from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }}
+  exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
   manifest {
     attributes 'Main-Class': 'org.mapsforge.map.swing.MapViewer'
   }
