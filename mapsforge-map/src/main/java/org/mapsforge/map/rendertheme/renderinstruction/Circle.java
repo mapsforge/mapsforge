@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +24,7 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -68,12 +69,12 @@ public class Circle extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
-		renderCallback.renderPointOfInterestCircle(poi, this.renderRadius, this.fill, this.stroke, this.level, tile);
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
+		renderCallback.renderPointOfInterestCircle(renderContext, this.renderRadius, this.fill, this.stroke, this.level, tile, poi);
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
 		// do nothing
 	}
 

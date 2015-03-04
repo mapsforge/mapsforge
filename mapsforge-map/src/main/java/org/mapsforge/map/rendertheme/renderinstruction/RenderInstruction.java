@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +24,7 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 
 /**
@@ -92,18 +93,18 @@ public abstract class RenderInstruction {
 	/**
 	 * @param renderCallback
 	 *            a reference to the receiver of all render callbacks.
+	 * @param renderContext
 	 * @param poi
-	 *            the point of interest.
 	 */
-	public abstract void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile);
+	public abstract void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi);
 
 	/**
 	 * @param renderCallback
 	 *            a reference to the receiver of all render callbacks.
+	 * @param renderContext
 	 * @param way
-	 *            the way.
 	 */
-	public abstract void renderWay(RenderCallback renderCallback, PolylineContainer way);
+	public abstract void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way);
 
 	/**
 	 * Scales the stroke width of this RenderInstruction by the given factor.

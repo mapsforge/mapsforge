@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -26,6 +26,7 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -71,12 +72,12 @@ public class LineSymbol extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
 
 		if (Display.NEVER == this.display) {
 			return;
@@ -90,8 +91,8 @@ public class LineSymbol extends RenderInstruction {
 			}
 		}
 		if (this.bitmap != null) {
-			renderCallback.renderWaySymbol(way, this.display, this.priority, this.bitmap, this.dyScaled, this.alignCenter,
-					this.repeat, this.repeatGap, this.repeatStart, this.rotate);
+			renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, this.dyScaled, this.alignCenter,
+					this.repeat, this.repeatGap, this.repeatStart, this.rotate, way);
 		}
 	}
 

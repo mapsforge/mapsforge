@@ -22,53 +22,51 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 
 class DummyRenderCallback implements RenderCallback {
 	@Override
-	public void renderArea(PolylineContainer way, Paint fill, Paint stroke, int level) {
+	public void renderArea(final RenderContext renderContext, Paint fill, Paint stroke, int level, PolylineContainer way) {
 		// do nothing
 	}
 
 	@Override
-	public void renderAreaCaption(PolylineContainer way, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
-	                              Paint fill, Paint stroke, Position position, int maxTextWidth) {
+	public void renderAreaCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PolylineContainer way) {
 		// do nothing
 	}
 
 	@Override
-	public void renderAreaSymbol(PolylineContainer way, Display display, int priority, Bitmap symbol) {
+	public void renderAreaSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PolylineContainer way) {
 		// do nothing
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(PointOfInterest poi, Display display, int priority, String caption, float horizontalOffset, float verticalOffset,
-	                                         Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile) {
+	public void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile, PointOfInterest poi) {
 		// do nothing
 	}
 
 	@Override
-	public void renderPointOfInterestCircle(PointOfInterest poi, float radius, Paint fill, Paint stroke, int level, Tile tile) {
+	public void renderPointOfInterestCircle(final RenderContext renderContext, float radius, Paint fill, Paint stroke, int level, Tile tile, PointOfInterest poi) {
 		// do nothing
 	}
 
 	@Override
-	public void renderPointOfInterestSymbol(PointOfInterest poi, Display display, int priority, Bitmap symbol, Tile tile) {
+	public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, Tile tile, PointOfInterest poi) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWay(PolylineContainer way, Paint stroke, float dy, int level) {
+	public void renderWay(final RenderContext renderContext, Paint stroke, float dy, int level, PolylineContainer way) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWaySymbol(PolylineContainer way, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter,
-	                            boolean repeat, float repeatGap, float repeatStart, boolean rotate) {
+	public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWayText(PolylineContainer way, Display display, int priority, String text, float dy, Paint fill, Paint stroke) {
+	public void renderWayText(final RenderContext renderContext, Display display, int priority, String text, float dy, Paint fill, Paint stroke, PolylineContainer way) {
 		// do nothing
 	}
 }

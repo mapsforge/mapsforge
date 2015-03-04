@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,6 +25,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
 abstract class Rule {
@@ -72,28 +73,27 @@ abstract class Rule {
 
 	abstract boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed);
 
-	void matchNode(RenderCallback renderCallback, PointOfInterest pointOfInterest, Tile tile,
-	               List<RenderInstruction> matchingList ) {
+	void matchNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, List<RenderInstruction> matchingList, PointOfInterest pointOfInterest) {
 		if (matchesNode(pointOfInterest.tags, tile.zoomLevel)) {
 			for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-				this.renderInstructions.get(i).renderNode(renderCallback, pointOfInterest, tile);
+				this.renderInstructions.get(i).renderNode(renderCallback, renderContext, tile, pointOfInterest);
 				matchingList.add(this.renderInstructions.get(i));
 			}
 			for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-				this.subRules.get(i).matchNode(renderCallback, pointOfInterest, tile, matchingList);
+				this.subRules.get(i).matchNode(renderCallback, renderContext, tile, matchingList, pointOfInterest);
 			}
 		}
 	}
 
 	void matchWay(RenderCallback renderCallback, PolylineContainer way, Tile tile, Closed closed,
-			List<RenderInstruction> matchingList) {
+	              List<RenderInstruction> matchingList, final RenderContext renderContext) {
 		if (matchesWay(way.getTags(), tile.zoomLevel, closed)) {
 			for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-				this.renderInstructions.get(i).renderWay(renderCallback, way);
+				this.renderInstructions.get(i).renderWay(renderCallback, renderContext, way);
 				matchingList.add(this.renderInstructions.get(i));
 			}
 			for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-				this.subRules.get(i).matchWay(renderCallback, way, tile, closed, matchingList);
+				this.subRules.get(i).matchWay(renderCallback, way, tile, closed, matchingList, renderContext);
 			}
 		}
 	}

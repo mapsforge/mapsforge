@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -31,6 +31,7 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -130,7 +131,7 @@ public class Caption extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
 
 		if (Display.NEVER == this.display) {
 			return;
@@ -149,12 +150,12 @@ public class Caption extends RenderInstruction {
 			verticalOffset = computeVerticalOffset();
 		}
 
-		renderCallback.renderPointOfInterestCaption(poi, this.display, this.priority, caption, horizontalOffset, verticalOffset,
-				this.fill, this.stroke, this.position, this.maxTextWidth, tile);
+		renderCallback.renderPointOfInterestCaption(renderContext, this.display, this.priority, caption, horizontalOffset, verticalOffset,
+				this.fill, this.stroke, this.position, this.maxTextWidth, tile, poi);
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
 
 		if (Display.NEVER == this.display) {
 			return;
@@ -173,8 +174,8 @@ public class Caption extends RenderInstruction {
 			verticalOffset = computeVerticalOffset();
 		}
 
-		renderCallback.renderAreaCaption(way, this.display, this.priority, caption, horizontalOffset, verticalOffset,
-				this.fill, this.stroke, this.position, this.maxTextWidth);
+		renderCallback.renderAreaCaption(renderContext, this.display, this.priority, caption, horizontalOffset, verticalOffset,
+				this.fill, this.stroke, this.position, this.maxTextWidth, way);
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
 /**
@@ -103,46 +104,43 @@ public class RenderTheme {
 
 	/**
 	 * Matches a closed way with the given parameters against this RenderTheme.
-	 * 
-	 * @param renderCallback
+	 *  @param renderCallback
 	 *            the callback implementation which will be executed on each match.
+	 * @param renderContext
 	 * @param way
-	 *            the way.
 	 */
-	public void matchClosedWay(RenderCallback renderCallback, PolylineContainer way) {
-		matchWay(renderCallback, way, Closed.YES);
+	public void matchClosedWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+		matchWay(renderCallback, renderContext, Closed.YES, way);
 	}
 
 	/**
 	 * Matches a linear way with the given parameters against this RenderTheme.
-	 * 
-	 * @param renderCallback
+	 *  @param renderCallback
 	 *            the callback implementation which will be executed on each match.
+	 * @param renderContext
 	 * @param way
-	 *            the way.
 	 */
-	public void matchLinearWay(RenderCallback renderCallback, PolylineContainer way) {
-		matchWay(renderCallback, way, Closed.NO);
+	public void matchLinearWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+		matchWay(renderCallback, renderContext, Closed.NO, way);
 	}
 
 	/**
 	 * Matches a node with the given parameters against this RenderTheme.
-	 * 
-	 * @param renderCallback
+	 *  @param renderCallback
 	 *            the callback implementation which will be executed on each match.
-	 * @param poi
-	 *            the point of interest.
+	 * @param renderContext
 	 * @param tile
-	 *            the zoom level at which the node should be matched.
+	 * @param poi
+ *            the point of interest.
 	 */
-	public void matchNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+	public void matchNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
 		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(poi.tags, tile.zoomLevel, Closed.NO);
 
 		List<RenderInstruction> matchingList = this.poiMatchingCache.get(matchingCacheKey);
 		if (matchingList != null) {
 			// cache hit
 			for (int i = 0, n = matchingList.size(); i < n; ++i) {
-				matchingList.get(i).renderNode(renderCallback, poi, tile);
+				matchingList.get(i).renderNode(renderCallback, renderContext, tile, poi);
 			}
 			return;
 		}
@@ -151,7 +149,7 @@ public class RenderTheme {
 		matchingList = new ArrayList<RenderInstruction>();
 
 		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).matchNode(renderCallback, poi, tile, matchingList);
+			this.rulesList.get(i).matchNode(renderCallback, renderContext, tile, matchingList, poi);
 		}
 		this.poiMatchingCache.put(matchingCacheKey, matchingList);
 	}
@@ -201,14 +199,14 @@ public class RenderTheme {
 		this.levels = levels;
 	}
 
-	private void matchWay(RenderCallback renderCallback, PolylineContainer way, Closed closed) {
+	private void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
 		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getTile().zoomLevel, closed);
 
 		List<RenderInstruction> matchingList = this.wayMatchingCache.get(matchingCacheKey);
 		if (matchingList != null) {
 			// cache hit
 			for (int i = 0, n = matchingList.size(); i < n; ++i) {
-				matchingList.get(i).renderWay(renderCallback, way);
+				matchingList.get(i).renderWay(renderCallback, renderContext, way);
 			}
 			return;
 		}
@@ -216,7 +214,7 @@ public class RenderTheme {
 		// cache miss
 		matchingList = new ArrayList<RenderInstruction>();
 		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).matchWay(renderCallback, way, way.getTile(), closed, matchingList);
+			this.rulesList.get(i).matchWay(renderCallback, way, way.getTile(), closed, matchingList, renderContext);
 		}
 
 		this.wayMatchingCache.put(matchingCacheKey, matchingList);
