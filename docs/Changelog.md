@@ -2,6 +2,9 @@
 
 <wiki:toc />
 
+## Version 0.5.1-rc4
+ - Fix for build of SwingMapViewer with new SVG libraries
+ 
 ## Version 0.5.1-rc3
  - SVG rendering for Java with SVG Salamander
  - Internal rendertheme (osmarender) using SVG symbols by default
