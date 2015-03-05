@@ -65,7 +65,7 @@ Jenkins
 -------
 Add a jenkins build based on the Git tag (copy previous release and just change tag to check out)
 
-Doxygen
+Javadoc
 ---------------
 On server add new directory for new release and update the main listing file.
 
