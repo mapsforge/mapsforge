@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.WorkingSetCache;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.model.common.Observable;
+import org.mapsforge.map.model.common.Observer;
 
 /**
  * A thread-safe cache for tile images with a variable size and LRU policy.
@@ -30,6 +32,7 @@ public class InMemoryTileCache implements TileCache {
 	private static final Logger LOGGER = Logger.getLogger(InMemoryTileCache.class.getName());
 
 	private BitmapLRUCache lruCache;
+	private Observable observable;
 
 	/**
 	 * @param capacity
@@ -39,6 +42,7 @@ public class InMemoryTileCache implements TileCache {
 	 */
 	public InMemoryTileCache(int capacity) {
 		this.lruCache = new BitmapLRUCache(capacity);
+		this.observable = new Observable();
 	}
 
 	@Override
@@ -100,6 +104,7 @@ public class InMemoryTileCache implements TileCache {
 			LOGGER.warning("overwriting cached entry: " + key);
 		}
 		bitmap.incrementRefCount();
+		this.observable.notifyObservers();
 	}
 
 	/**
@@ -120,6 +125,17 @@ public class InMemoryTileCache implements TileCache {
 	public synchronized void setWorkingSet(Set<Job> jobs) {
 		this.lruCache.setWorkingSet(jobs);
 	}
+
+	@Override
+	public void addObserver(final Observer observer) {
+		this.observable.addObserver(observer);
+	}
+
+	@Override
+	public void removeObserver(final Observer observer) {
+		this.observable.removeObserver(observer);
+	}
+
 }
 
 class BitmapLRUCache extends WorkingSetCache<Job, TileBitmap> {
@@ -140,4 +156,5 @@ class BitmapLRUCache extends WorkingSetCache<Job, TileBitmap> {
 		}
 		return false;
 	}
+
 }

@@ -17,13 +17,14 @@ package org.mapsforge.map.layer.cache;
 
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.model.common.Observable;
+import org.mapsforge.map.model.common.Observer;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class TwoLevelTileCache implements TileCache {
-
 
 	private final TileCache firstLevelTileCache;
 	private final TileCache secondLevelTileCache;
@@ -106,6 +107,18 @@ public class TwoLevelTileCache implements TileCache {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void addObserver(final Observer observer) {
+		this.firstLevelTileCache.addObserver(observer);
+		this.secondLevelTileCache.addObserver(observer);
+	}
+
+	@Override
+	public void removeObserver(final Observer observer) {
+		this.secondLevelTileCache.removeObserver(observer);
+		this.firstLevelTileCache.removeObserver(observer);
 	}
 
 }

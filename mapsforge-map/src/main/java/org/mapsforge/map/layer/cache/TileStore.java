@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.model.common.Observer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -145,4 +146,11 @@ public class TileStore implements TileCache {
 		// all tiles are always in the cache
 	}
 
+	@Override
+	public void addObserver(final Observer observer) {
+	}
+
+	@Override
+	public void removeObserver(final Observer observer) {
+	}
 }

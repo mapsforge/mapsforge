@@ -31,6 +31,7 @@ import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.util.LayerUtil;
 
 public abstract class TileLayer<T extends Job> extends Layer {
@@ -115,9 +116,6 @@ public abstract class TileLayer<T extends Job> extends Layer {
 			this.jobQueue.notifyWorkers();
 		}
 
-		if (waitingForCachedTiles) {
-			this.requestRedraw();
-		}
 	}
 
 	@Override

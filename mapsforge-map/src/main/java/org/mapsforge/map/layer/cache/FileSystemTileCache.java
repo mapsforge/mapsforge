@@ -36,6 +36,8 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.model.common.Observable;
+import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.util.PausableThread;
 
 /**
@@ -191,6 +193,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	private final AtomicInteger jobs;
 	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
+	private final Observable observable;
 	private boolean persistent;
 
 	// if threaded is true, the bitmap writing is executed on a separate thread,
@@ -263,6 +266,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded,
 			int queueSize, boolean persistent) {
+		this.observable = new Observable();
 		this.jobs = new AtomicInteger(0);
 		this.persistent = persistent;
 		this.threaded = threaded;
@@ -440,6 +444,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 		} else {
 			storeData(key, bitmap);
 		}
+		this.observable.notifyObservers();
 	}
 
 	public void setWorkingSet(Set<Job> workingSet) {
@@ -449,6 +454,17 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 		}
 		this.lruCache.setWorkingSet(workingSetInteger);
 	}
+
+	@Override
+	public void addObserver(final Observer observer) {
+		this.observable.addObserver(observer);
+	}
+
+	@Override
+	public void removeObserver(final Observer observer) {
+		this.observable.removeObserver(observer);
+	}
+
 
 	private File getOutputFile(Job job) {
 		String file = this.cacheDirectory + File.separator + job.getKey();

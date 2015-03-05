@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright © 2014-2015 Ludwig M Brinckmann
  * Copyright © 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -25,13 +25,13 @@ import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
-import java.io.IOException;
 
-public class TileRendererLayer extends TileLayer<RendererJob> {
+public class TileRendererLayer extends TileLayer<RendererJob> implements Observer {
 	private final DatabaseRenderer databaseRenderer;
 	private final GraphicFactory graphicFactory;
 	private final MapDataStore mapDataStore;
@@ -162,12 +162,19 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 	@Override
 	protected void onAdd() {
 		this.mapWorker.proceed();
+		if (tileCache != null) {
+			tileCache.addObserver(this);
+		}
+
 		super.onAdd();
 	}
 
 	@Override
 	protected void onRemove() {
 		this.mapWorker.pause();
+		if (tileCache != null) {
+			tileCache.removeObserver(this);
+		}
 		super.onRemove();
 	}
 
@@ -179,4 +186,8 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		}
 	}
 
+	@Override
+	public void onChange() {
+		this.requestRedraw();
+	}
 }
