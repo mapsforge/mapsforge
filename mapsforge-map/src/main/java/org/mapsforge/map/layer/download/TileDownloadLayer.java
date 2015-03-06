@@ -26,8 +26,9 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.common.Observer;
 
-public class TileDownloadLayer extends TileLayer<DownloadJob> {
+public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observer {
 	private static final int DOWNLOAD_THREADS_MAX = 8;
 
 	private long cacheTimeToLive = 0;
@@ -168,4 +169,27 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 			return false;
 		return ((bitmap.getTimestamp() + cacheTimeToLive) < System.currentTimeMillis());
 	}
+
+	@Override
+	protected void onAdd() {
+		if (tileCache != null) {
+			tileCache.addObserver(this);
+		}
+
+		super.onAdd();
+	}
+
+	@Override
+	protected void onRemove() {
+		if (tileCache != null) {
+			tileCache.removeObserver(this);
+		}
+		super.onRemove();
+	}
+
+	@Override
+	public void onChange() {
+		this.requestRedraw();
+	}
+
 }
