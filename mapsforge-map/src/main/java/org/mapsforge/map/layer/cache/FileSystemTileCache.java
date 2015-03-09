@@ -315,10 +315,10 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 * If the cache is not persistent, calling this method is equivalent to calling {@link #purge()}. If the cache is
 	 * persistent, it does nothing.
 	 * <p>
-	 * Beginning with 0.6.0, accessing the cache after calling {@code destroy()} is discouraged. In order to empty the
+	 * Beginning with 0.5.1, accessing the cache after calling {@code destroy()} is discouraged. In order to empty the
 	 * cache and force all tiles to be re-rendered or re-requested from the source, use {@link #purge()} instead.
 	 * Earlier versions lacked the {@link #purge()} method and used {@code destroy()} instead, but this practice is now
-	 * discouraged and may lead to unexpected results when used with features introduced in 0.6.0 or later.
+	 * discouraged and may lead to unexpected results when used with features introduced in 0.5.1 or later.
 	 */
 	@Override
 	public void destroy() {
@@ -399,7 +399,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 * rendered tiles, or the source for downloaded tiles. Applications which frequently alternate between a limited
 	 * number of map model configurations may want to consider using a different cache for each.
 	 * 
-	 * @since 0.6.0
+	 * @since 0.5.1
 	 */
 	@Override
 	public void purge() {
