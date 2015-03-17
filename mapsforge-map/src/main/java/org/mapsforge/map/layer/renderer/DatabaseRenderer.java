@@ -53,12 +53,6 @@ import org.mapsforge.map.util.LayerUtil;
 
 /**
  * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.reader.MapFile}.
- *
- * Up to version 0.4.x the DatabaseRenderer was responsible for rendering ways, areas as
- * well as labels. However, the label placement algorithm suffered from multiple problems,
- * such as clipped labels at tile bounds.
- *
- *
  */
 public class DatabaseRenderer implements RenderCallback {
 
@@ -77,7 +71,6 @@ public class DatabaseRenderer implements RenderCallback {
 		return result;
 	}
 
-	private final CanvasRasterer canvasRasterer;
 	private final GraphicFactory graphicFactory;
 	private final TileBasedLabelStore labelStore;
 	private final MapDataStore mapDatabase;
@@ -96,8 +89,6 @@ public class DatabaseRenderer implements RenderCallback {
 	                        TileBasedLabelStore labelStore) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
-
-		this.canvasRasterer = new CanvasRasterer(graphicFactory);
 		this.labelStore = labelStore;
 		this.renderLabels = false;
 		this.tileCache = null;
@@ -115,16 +106,10 @@ public class DatabaseRenderer implements RenderCallback {
 		this.mapDatabase = mapFile;
 		this.graphicFactory = graphicFactory;
 
-		this.canvasRasterer = new CanvasRasterer(graphicFactory);
 		this.labelStore = null;
 		this.renderLabels = true;
 		this.tileCache = tileCache;
 		this.tileDependencies = new TileDependencies();
-	}
-
-
-	public void destroy() {
-		this.canvasRasterer.destroy();
 	}
 
 	/**
@@ -143,48 +128,55 @@ public class DatabaseRenderer implements RenderCallback {
 			return null;
 		}
 
-		RenderContext renderContext = new RenderContext(renderTheme, rendererJob);
+		RenderContext renderContext = null;
+		try {
+			renderContext = new RenderContext(renderTheme, rendererJob, new CanvasRasterer(graphicFactory));
 
-		if (renderBitmap(renderContext)) {
-			TileBitmap bitmap = null;
+			if (renderBitmap(renderContext)) {
+				TileBitmap bitmap = null;
 
-			if (this.mapDatabase != null) {
-				MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
-				processReadMapData(renderContext, mapReadResult, rendererJob.tile);
-			}
-
-			if (!rendererJob.labelsOnly) {
-				bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
-				bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(rendererJob.tile));
-				this.canvasRasterer.setCanvasBitmap(bitmap);
-				if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != renderContext.renderTheme.getMapBackground()) {
-					this.canvasRasterer.fill(renderContext.renderTheme.getMapBackground());
+				if (this.mapDatabase != null) {
+					MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
+					processReadMapData(renderContext, mapReadResult, rendererJob.tile);
 				}
-				this.canvasRasterer.drawWays(renderContext.ways, rendererJob.tile);
-			}
 
-			if (renderLabels) {
-				Set<MapElementContainer> labelsToDraw = processLabels(renderContext);
-				// now draw the ways and the labels
-				this.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
-			} else {
-				// store elements for this tile in the label cache
-				this.labelStore.storeMapItems(rendererJob.tile, renderContext.labels);
-			}
+				if (!rendererJob.labelsOnly) {
+					bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
+					bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(rendererJob.tile));
+					renderContext.canvasRasterer.setCanvasBitmap(bitmap);
+					if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != renderContext.renderTheme.getMapBackground()) {
+						renderContext.canvasRasterer.fill(renderContext.renderTheme.getMapBackground());
+					}
+					renderContext.canvasRasterer.drawWays(renderContext.ways, rendererJob.tile);
+				}
 
-			if (renderContext.renderTheme.hasMapBackgroundOutside()) {
-				// blank out all areas outside of map
-				Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(rendererJob.tile);
-				if (!rendererJob.hasAlpha) {
-					this.canvasRasterer.fillOutsideAreas(renderContext.renderTheme.getMapBackgroundOutside(), insideArea);
+				if (renderLabels) {
+					Set<MapElementContainer> labelsToDraw = processLabels(renderContext);
+					// now draw the ways and the labels
+					renderContext.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
 				} else {
-					this.canvasRasterer.fillOutsideAreas(Color.TRANSPARENT, insideArea);
+					// store elements for this tile in the label cache
+					this.labelStore.storeMapItems(rendererJob.tile, renderContext.labels);
 				}
+
+				if (renderContext.renderTheme.hasMapBackgroundOutside()) {
+					// blank out all areas outside of map
+					Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(rendererJob.tile);
+					if (!rendererJob.hasAlpha) {
+						renderContext.canvasRasterer.fillOutsideAreas(renderContext.renderTheme.getMapBackgroundOutside(), insideArea);
+					} else {
+						renderContext.canvasRasterer.fillOutsideAreas(Color.TRANSPARENT, insideArea);
+					}
+				}
+				return bitmap;
 			}
-			return bitmap;
+			// outside of map area with background defined:
+			return createBackgroundBitmap(renderContext);
+		} finally {
+			if (renderContext != null) {
+				renderContext.destroy();
+			}
 		}
-		// outside of map area with background defined:
-		return createBackgroundBitmap(renderContext);
 	}
 
 	public MapDataStore getMapDatabase() {
@@ -285,15 +277,11 @@ public class DatabaseRenderer implements RenderCallback {
 	 */
 	private TileBitmap createBackgroundBitmap(RenderContext renderContext) {
 		TileBitmap bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
-		this.canvasRasterer.setCanvasBitmap(bitmap);
+		renderContext.canvasRasterer.setCanvasBitmap(bitmap);
 		if (!renderContext.rendererJob.hasAlpha) {
-			this.canvasRasterer.fill(renderContext.renderTheme.getMapBackgroundOutside());
+			renderContext.canvasRasterer.fill(renderContext.renderTheme.getMapBackgroundOutside());
 		}
 		return bitmap;
-
-	}
-
-	private void readMapData() {
 
 	}
 

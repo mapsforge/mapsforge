@@ -16,7 +16,6 @@ package org.mapsforge.map.rendertheme.rule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LRUCache;
@@ -40,7 +39,6 @@ public class RenderTheme {
 	private final int mapBackgroundOutside;
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> wayMatchingCache;
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> poiMatchingCache;
-	private final AtomicInteger refCount = new AtomicInteger();
 	private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
 	private float textScale;
 	private float strokeWidthScale;
@@ -60,12 +58,10 @@ public class RenderTheme {
 	 * Must be called when this RenderTheme gets destroyed to clean up and free resources.
 	 */
 	public void destroy() {
-		if (this.refCount.decrementAndGet() < 0) {
-			this.poiMatchingCache.clear();
-			this.wayMatchingCache.clear();
-			for (Rule r : this.rulesList) {
-				r.destroy();
-			}
+		this.poiMatchingCache.clear();
+		this.wayMatchingCache.clear();
+		for (Rule r : this.rulesList) {
+			r.destroy();
 		}
 	}
 
@@ -95,11 +91,6 @@ public class RenderTheme {
 	 */
 	public boolean hasMapBackgroundOutside() {
 		return this.hasBackgroundOutside;
-	}
-
-
-	public void incrementRefCount() {
-		this.refCount.incrementAndGet();
 	}
 
 	/**
@@ -133,7 +124,7 @@ public class RenderTheme {
 	 * @param poi
  *            the point of interest.
 	 */
-	public void matchNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
+	public synchronized void matchNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
 		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(poi.tags, tile.zoomLevel, Closed.NO);
 
 		List<RenderInstruction> matchingList = this.poiMatchingCache.get(matchingCacheKey);
@@ -199,7 +190,7 @@ public class RenderTheme {
 		this.levels = levels;
 	}
 
-	private void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
+	private synchronized void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
 		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getTile().zoomLevel, closed);
 
 		List<RenderInstruction> matchingList = this.wayMatchingCache.get(matchingCacheKey);

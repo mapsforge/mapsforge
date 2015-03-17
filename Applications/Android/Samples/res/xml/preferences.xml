@@ -30,7 +30,14 @@
         android:summary="@string/preferences_debug_timing_desc"
         android:key="debug_timing"
         android:defaultValue="false" />
-    <PreferenceCategory android:title="@string/preferences_category_wayfiltering">
+	<EditTextPreference
+		android:defaultValue="2"
+		android:title="@string/preferences_rendering_threads"
+		android:summary="@string/preferences_rendering_threads_desc"
+		android:inputType="number"
+		android:key="rendering_threads" />
+
+	<PreferenceCategory android:title="@string/preferences_category_wayfiltering">
         <CheckBoxPreference
             android:title="@string/preferences_wayfiltering"
             android:summary="@string/preferences_wayfiltering_desc"

@@ -156,6 +156,11 @@ class AndroidPaint implements Paint {
 		if (bitmap == null) {
 			return;
 		}
+		android.graphics.Bitmap androidBitmap = AndroidGraphicFactory.getBitmap(bitmap);
+		if (androidBitmap == null) {
+			return;
+		}
+
 		this.shaderWidth = bitmap.getWidth();
 		this.shaderHeight = bitmap.getHeight();
 		if (!AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -166,8 +171,7 @@ class AndroidPaint implements Paint {
 			bitmap.incrementRefCount();
 		}
 		this.paint.setColor(AndroidGraphicFactory.getColor(Color.WHITE));
-		this.paint
-				.setShader(new BitmapShader(AndroidGraphicFactory.getBitmap(bitmap), TileMode.REPEAT, TileMode.REPEAT));
+		this.paint.setShader(new BitmapShader(androidBitmap, TileMode.REPEAT, TileMode.REPEAT));
 
 	}
 

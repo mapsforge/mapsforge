@@ -35,7 +35,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 	private final DatabaseRenderer databaseRenderer;
 	private final GraphicFactory graphicFactory;
 	private final MapDataStore mapDataStore;
-	private MapWorker mapWorker;
+	private MapWorkerPool mapWorkerPool;
 	private RenderThemeFuture renderThemeFuture;
 	private float textScale;
 	private final TileBasedLabelStore tileBasedLabelStore;
@@ -85,18 +85,10 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 
 	@Override
 	public void onDestroy() {
-		new DestroyThread(this.mapWorker, this.mapDataStore, this.databaseRenderer).start();
 		if (this.renderThemeFuture != null) {
-			if (renderThemeFuture.isDone()) {
-				try {
-					renderThemeFuture.get().destroy();
-				} catch (Exception e) {
-					// no-op, we are just cleaning up.
-				}
-			} else {
-				renderThemeFuture.cancel(true);
-			}
+			this.renderThemeFuture.decrementRefCount();
 		}
+		this.mapDataStore.close();
 		super.onDestroy();
 	}
 
@@ -105,12 +97,12 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 		super.setDisplayModel(displayModel);
 		if (displayModel != null) {
 			compileRenderTheme();
-			this.mapWorker = new MapWorker(this.tileCache, this.jobQueue, this.databaseRenderer, this);
-			this.mapWorker.start();
+			this.mapWorkerPool = new MapWorkerPool(this.tileCache, this.jobQueue, this.databaseRenderer, this);
+			this.mapWorkerPool.start();
 		} else {
 			// if we do not have a displayModel any more we can stop rendering.
-			if (this.mapWorker != null) {
-				this.mapWorker.interrupt();
+			if (this.mapWorkerPool != null) {
+				this.mapWorkerPool.stop();
 			}
 		}
 	}
@@ -161,7 +153,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 
 	@Override
 	protected void onAdd() {
-		this.mapWorker.proceed();
+		this.mapWorkerPool.start();
 		if (tileCache != null) {
 			tileCache.addObserver(this);
 		}
@@ -171,7 +163,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 
 	@Override
 	protected void onRemove() {
-		this.mapWorker.pause();
+		this.mapWorkerPool.stop();
 		if (tileCache != null) {
 			tileCache.removeObserver(this);
 		}

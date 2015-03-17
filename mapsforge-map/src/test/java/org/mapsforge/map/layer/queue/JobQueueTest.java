@@ -25,15 +25,6 @@ public class JobQueueTest {
 
 	private static final int TILE_SIZE = 256;
 
-	private static void verifyInvalidRemove(JobQueue<Job> jobQueue, Job job) {
-		try {
-			jobQueue.remove(job);
-			Assert.fail("job: " + job);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
-
 	@Test
 	public void jobQueueTest() throws InterruptedException {
 		MapViewPosition mapViewPosition = new MapViewPosition(new FixedTileSizeDisplayModel(256));
@@ -67,8 +58,5 @@ public class JobQueueTest {
 		jobQueue.remove(job2);
 		jobQueue.remove(job3);
 
-		verifyInvalidRemove(jobQueue, job1);
-		verifyInvalidRemove(jobQueue, job2);
-		verifyInvalidRemove(jobQueue, job3);
 	}
 }

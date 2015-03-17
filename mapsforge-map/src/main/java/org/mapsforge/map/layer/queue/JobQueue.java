@@ -50,7 +50,18 @@ public class JobQueue<T extends Job> {
 	 * Returns the most important entry from this queue. The method blocks while this queue is empty.
 	 */
 	public synchronized T get() throws InterruptedException {
-		while (this.queueItems.isEmpty()) {
+		return get(Integer.MAX_VALUE);
+	}
+
+	/**
+	 * Returns the most important entry from this queue. The method blocks while this queue is empty
+	 * or while there are already a certain number of jobs assigned.
+	 * @param maxAssigned the maximum number of jobs that should be assigned at any one point. If there
+	 *                    are already so many jobs assigned, the queue will block. This is to ensure
+	 *                    that the scheduling will continue to work.
+	 */
+	public synchronized T get(int maxAssigned) throws InterruptedException {
+		while (this.queueItems.isEmpty() || this.assignedJobs.size() >= maxAssigned) {
 			this.wait();
 		}
 
@@ -69,9 +80,8 @@ public class JobQueue<T extends Job> {
 	}
 
 	public synchronized void remove(T job) {
-		if (!this.assignedJobs.remove(job)) {
-			throw new IllegalArgumentException("job not assigned: " + job);
-		}
+		this.assignedJobs.remove(job);
+		this.notifyWorkers();
 	}
 
 	/**

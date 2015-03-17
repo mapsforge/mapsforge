@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.mapelements.MapElementContainer;
+import org.mapsforge.map.layer.renderer.CanvasRasterer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.layer.renderer.ShapePaintContainer;
 import org.mapsforge.map.rendertheme.rule.RenderTheme;
@@ -39,6 +40,7 @@ public class RenderContext {
 	// Configuration that drives the rendering
 	public final RenderTheme renderTheme;
 	public final RendererJob rendererJob;
+	public final CanvasRasterer canvasRasterer;
 
 	// Data generated for the rendering process
 	private List<List<ShapePaintContainer>> drawingLayers;
@@ -46,13 +48,18 @@ public class RenderContext {
 	public final List<List<List<ShapePaintContainer>>> ways;
 
 
-	public RenderContext(RenderTheme renderTheme, RendererJob rendererJob) {
+	public RenderContext(RenderTheme renderTheme, RendererJob rendererJob, CanvasRasterer canvasRasterer) {
 		this.rendererJob = rendererJob;
 		this.labels = new LinkedList<MapElementContainer>();
 		this.renderTheme = renderTheme;
+		this.canvasRasterer = canvasRasterer;
 		this.ways = createWayLists();
 		setScaleStrokeWidth(rendererJob.tile.zoomLevel);
 		renderTheme.scaleTextSize(rendererJob.textScale);
+	}
+
+	public void destroy() {
+		this.canvasRasterer.destroy();
 	}
 
 	public void setDrawingLayers(byte layer) {

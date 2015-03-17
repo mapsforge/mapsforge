@@ -33,11 +33,10 @@ import android.widget.TextView;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.graphics.AndroidSvgBitmapStore;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.renderer.MapWorker;
+import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
@@ -256,7 +255,11 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 			setMapScaleBar();
 		}
 		if (SamplesApplication.SETTING_DEBUG_TIMING.equals(key)) {
-			MapWorker.DEBUG_TIMING = preferences.getBoolean(SamplesApplication.SETTING_DEBUG_TIMING, false);
+			MapWorkerPool.DEBUG_TIMING = preferences.getBoolean(SamplesApplication.SETTING_DEBUG_TIMING, false);
+		}
+		if (SamplesApplication.SETTING_RENDERING_THREADS.equals(key)) {
+			MapWorkerPool.NUMBER_OF_THREADS = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(MapWorkerPool.DEFAULT_NUMBER_OF_THREADS)));
+			AndroidUtil.restartActivity(this);
 		}
 		if (SamplesApplication.SETTING_WAYFILTERING_DISTANCE.equals(key) ||
 				SamplesApplication.SETTING_WAYFILTERING.equals(key)) {

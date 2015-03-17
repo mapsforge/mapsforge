@@ -320,7 +320,7 @@ public class MapFile implements MapDataStore {
 	 * @return the read map data.
 	 */
 	@Override
-	public MapReadResult readMapData(Tile tile) {
+	public synchronized MapReadResult readMapData(Tile tile) {
 		try {
 			QueryParameters queryParameters = new QueryParameters();
 			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);

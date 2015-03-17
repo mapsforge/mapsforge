@@ -32,7 +32,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 
-class CanvasRasterer {
+public class CanvasRasterer {
 	private final Canvas canvas;
 	private final Path path;
 	private final Matrix symbolMatrix;
@@ -43,7 +43,7 @@ class CanvasRasterer {
 		this.path = graphicFactory.createPath();
 	}
 
-	void destroy() {
+	public void destroy() {
 		this.canvas.destroy();
 	}
 
