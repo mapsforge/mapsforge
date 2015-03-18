@@ -10,8 +10,8 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 ## Requirements
 |Tool|Version|
 |----|---|
-|Android Build Version Tools|21|
-|Gradle|2.1 if building with gradle|
+|Android Build Version Tools|22|
+|Gradle|2.2.1 if building with gradle|
 |Maven|1.3.1 if building with maven|
 |Java|1.7 (1.8 is supported in maven builds)|
 
@@ -46,9 +46,9 @@ The jars build from the above components are required elements for a mapsforge a
 The mapsforge code has now been consolidated into two main branches as well as releases
 - **master**: the latest stable development branch. Use this if you want to use newer mapsforge functionality that has not yet been released, but you still want a certain stability.
 - **dev**: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
-- **0.5.0 release**: use this if you want to build applications built on top of well-tested and stable code.
+- **0.5.1 release**: use this if you want to build applications built on top of well-tested and stable code.
 
-Code before the 0.5.0 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
+Code before the 0.5.1 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
 
 ## Development Applications
 
@@ -71,7 +71,7 @@ The SwingMapViewer is a simple Java only app useful for testing maps.
 
 Gradle is the new build system favoured by Google for Android builds. Android Studio, the new IDE provided by Google for building Android apps, integrates nicely with Gradle. 
 
-The current version for building mapsforge is Gradle 2.1.
+The current version for building mapsforge is Gradle 2.2.1.
 
 After checking out the code, a build from the command line should be as easy as 
 
@@ -92,7 +92,7 @@ Android Studio integrates tightly with gradle. The easiest way to create a new a
 
 A second way to build mapsforge is using maven. This was the original way of building mapsforge.
 
-The mapsforge project uses the free [Apache maven](http://maven.apache.org/) tool to automatize the build process. Both version 2 and version 3 can be used. If you want to learn more about maven, please refer to the [official documentation](http://maven.apache.org/guides/index.html).
+The mapsforge project uses the free [Apache maven](http://maven.apache.org/) tool to automatize the build process. Only version 3.1.1 and up can be used. If you want to learn more about maven, please refer to the [official documentation](http://maven.apache.org/guides/index.html).
 
 To start a complete build of all modules, open a command prompt, change to the directory which contains the copy of the mapsforge repository and execute the following command:
     

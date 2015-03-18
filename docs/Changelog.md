@@ -2,6 +2,10 @@
 
 <wiki:toc />
 
+## Version 0.5.1
+ **2015-13-18**
+ - Same as 0.5.1-rc4
+ 
 ## Version 0.5.1-rc4
  - Fix for build of SwingMapViewer with new SVG libraries
  
