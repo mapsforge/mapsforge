@@ -14,6 +14,6 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-interface ShapeContainer {
+public interface ShapeContainer {
 	ShapeType getShapeType();
 }
