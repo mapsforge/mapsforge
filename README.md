@@ -1,8 +1,6 @@
 The mapsforge project provides free and open software for the rendering of maps based on OpenStreetMap data. Currently, we offer a library for ad-hoc map rendering on Android devices and in Java stand-alone applications.
 
-**Mapsforge 0.5.0 has been released.**
-
-**We encourage all users to upgrade to the new stable version. See the [changelog](docs/Changelog.md) for details, [download official 0.5.0 binaries](docs/Downloads.md).**
+**The current stable release is 0.5.1. See the [changelog](docs/Changelog.md) for details, [download official 0.5.1 binaries](docs/Downloads.md).**
 
 - The mapsforge project uses a [compact file format](docs/Specification-Binary-Map-File.md) for fast ad-hoc rendering of OpenStreetMap data.
 - We provide tools to [compile your own maps](docs/Getting-Started-Map-Writer.md) and also [precompiled maps](http://download.mapsforge.org).
