@@ -2,8 +2,29 @@
 
 <wiki:toc />
 
-## New since release 0.5.0
+## Version 0.5.1
+ **2015-13-18**
+ - Same as 0.5.1-rc4
+ 
+## Version 0.5.1-rc4
+ - Fix for build of SwingMapViewer with new SVG libraries
+ 
+## Version 0.5.1-rc3
+ - SVG rendering for Java with SVG Salamander
+ - Internal rendertheme (osmarender) using SVG symbols by default
+ - Resource memory/file cache: common clear methods
+ 
+## Version 0.5.1-rc2
+ - Fix for NPE when using persistent tile cache.
+ - Doc updates
+ 
+## Version 0.5.1-rc1
  - Support for more general map data sources through [MapDataStore interface and MultiMapDataStore class](MapDataStore.md)
+ - Persistent Caching.
+ - Documentation updates.
+ - Various bug fixes.
+ - Improved grid drawing.
+ - External Map Rotation example in Samples.
 
 ## Version 0.5.0
 **2014-12-08**
