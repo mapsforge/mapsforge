@@ -116,6 +116,10 @@ public class MapWorkerPool implements Runnable {
 
 				if (bitmap != null) {
 					MapWorkerPool.this.tileCache.put(rendererJob, bitmap);
+					// at this point the tile should be in the cache (at least when the tile cache
+					// is not threaded as well, so there needs to be no extra warning flag
+					// for the label drawing.
+					MapWorkerPool.this.databaseRenderer.removeTileInProgress(rendererJob.tile);
 					MapWorkerPool.this.layer.requestRedraw();
 				}
 

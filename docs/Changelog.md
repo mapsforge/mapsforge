@@ -2,6 +2,9 @@
 
 <wiki:toc />
 
+## New since 0.5.1
+ - Multi-threaded map rendering.
+
 ## Version 0.5.1
  **2015-13-18**
  - Same as 0.5.1-rc4

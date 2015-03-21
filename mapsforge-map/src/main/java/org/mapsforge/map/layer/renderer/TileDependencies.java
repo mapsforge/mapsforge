@@ -21,9 +21,13 @@ import java.util.Set;
  */
 public class TileDependencies {
 	Map<Tile, Map<Tile, Set<MapElementContainer>>> overlapData;
+	// for the multithreaded renderer we also need to keep track of tiles that are in progress
+	// and not yet in the TileCache to avoid truncated labels.
+	Set<Tile> tilesInProgress;
 
 	TileDependencies() {
 		overlapData = new HashMap<Tile, Map<Tile, Set<MapElementContainer>>>();
+		tilesInProgress = new HashSet<Tile>();
 	}
 
 	/**
@@ -74,5 +78,17 @@ public class TileDependencies {
 			overlapData.get(from).remove(to);
 		}
 
+	}
+
+	synchronized boolean isTileInProgress(Tile tile) {
+		return tilesInProgress.contains(tile);
+	}
+
+	synchronized void addTileInProgress(Tile tileInProgress) {
+		tilesInProgress.add(tileInProgress);
+	}
+
+	synchronized void removeTileInProgress(Tile tileFinished) {
+		tilesInProgress.remove(tileFinished);
 	}
 }
