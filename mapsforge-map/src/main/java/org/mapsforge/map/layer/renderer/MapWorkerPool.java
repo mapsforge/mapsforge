@@ -28,7 +28,7 @@ import org.mapsforge.map.layer.queue.JobQueue;
 
 public class MapWorkerPool implements Runnable {
 
-	public static final int DEFAULT_NUMBER_OF_THREADS = 2;
+	public static final int DEFAULT_NUMBER_OF_THREADS = 6;
 	public static int NUMBER_OF_THREADS = DEFAULT_NUMBER_OF_THREADS;
 	public static boolean DEBUG_TIMING = false;
 
@@ -116,9 +116,6 @@ public class MapWorkerPool implements Runnable {
 
 				if (bitmap != null) {
 					MapWorkerPool.this.tileCache.put(rendererJob, bitmap);
-					// at this point the tile should be in the cache (at least when the tile cache
-					// is not threaded as well, so there needs to be no extra warning flag
-					// for the label drawing.
 					MapWorkerPool.this.databaseRenderer.removeTileInProgress(rendererJob.tile);
 					MapWorkerPool.this.layer.requestRedraw();
 				}

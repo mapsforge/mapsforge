@@ -39,8 +39,6 @@ public class SamplesApplication extends Application {
 	public static final String SETTING_WAYFILTERING = "wayfiltering";
 	public static final String SETTING_WAYFILTERING_DISTANCE = "wayfiltering_distance";
 	public static final String SETTING_TILECACHE_PERSISTENCE = "tilecache_persistence";
-	public static final String SETTING_TILECACHE_THREADING = "tilecache_threading";
-	public static final String SETTING_TILECACHE_QUEUESIZE = "tilecache_queuesize";
 	public static final String SETTING_RENDERING_THREADS = "rendering_threads";
 	public static final String TAG = "SAMPLES APP";
 

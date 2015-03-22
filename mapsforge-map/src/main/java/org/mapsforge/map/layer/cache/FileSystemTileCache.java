@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014 mvglasow <michael -at- vonglasow.com>
  * Copyright 2014, 2015 devemux86
  *
@@ -25,8 +25,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,54 +36,21 @@ import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.util.PausableThread;
-
-/**
- * Container class to tie a key/bitmap together.
- */
-class StorageJob {
-	Job key;
-	TileBitmap bitmap;
-
-	StorageJob(Job key, TileBitmap bitmap) {
-		this.key = key;
-		this.bitmap = bitmap;
-	}
-
-	/**
-	 * Equality is just defined over the key, not over the bitmap content. This allows
-	 * finding a StorageJob in the queue without knowing the data.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!(obj instanceof StorageJob)) {
-			return false;
-		}
-		StorageJob other = (StorageJob) obj;
-		return key.equals(other.key);
-	}
-
-	@Override
-	public int hashCode() {
-		return this.key.hashCode();
-	}
-}
 
 /**
  * A thread-safe cache for image files with a fixed size and LRU policy.
  * <p>
- * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor. The
- * cache writes the data on a separate thread, i.e. when the call to put a job/tile into the cache returns the data is
- * not actually written to disk.
+ * A {@code FileSystemTileCache} caches tiles in a dedicated path in the file system, specified in the constructor.
  * <p>
  * When used for a {@link org.mapsforge.map.layer.renderer.TileRendererLayer}, persistent caching may result in clipped
  * labels when tiles from different instances are used. To work around this, either display labels in a separate
  * {@link org.mapsforge.map.layer.labels.LabelLayer} (experimental) or disable persistence as described in
- * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean, int, boolean)}.
+ * {@link #FileSystemTileCache(int, File, GraphicFactory, boolean)}.
+ *
+ * Note: previously the FileSystemTileCache utilized threading to speed up response times. This is not the
+ * case anymore and the constructors have been removed.
  */
-public class FileSystemTileCache extends PausableThread implements TileCache {
+public class FileSystemTileCache implements TileCache {
 	static final String FILE_EXTENSION = ".tile";
 	private static final Logger LOGGER = Logger.getLogger(FileSystemTileCache.class.getName());
 
@@ -190,16 +155,10 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 
 	private final File cacheDirectory;
 	private final GraphicFactory graphicFactory;
-	private final AtomicInteger jobs;
 	private FileWorkingSetCache<String> lruCache;
 	private final ReentrantReadWriteLock lock;
 	private final Observable observable;
-	private boolean persistent;
-
-	// if threaded is true, the bitmap writing is executed on a separate thread,
-	// and jobs are stored in the jobStack. The false option remains for testing.
-	private final boolean threaded;
-	private final LinkedBlockingQueue<StorageJob> storageJobs;
+	private final boolean persistent;
 
 	/**
 	 * Compatibility constructor that creates a non-threaded, non-persistent FSTC.
@@ -214,28 +173,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 *             if the capacity is negative.
 	 */
 	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory) {
-		this(capacity, cacheDirectory, graphicFactory, false, 0, false);
-	}
-
-	/**
-	 * Compatibility constructor that creates a non-persistent FSTC.
-	 * 
-	 * @param capacity
-	 *            the maximum number of entries in this cache.
-	 * @param cacheDirectory
-	 *            the directory where cached tiles will be stored.
-	 * @param graphicFactory
-	 *            the graphicFactory implementation to use.
-	 * @param threaded
-	 *            if cache will use background thread to store data (more responsive).
-	 * @param queueSize
-	 *            maximum length of queue before the put operation blocks
-	 * @throws IllegalArgumentException
-	 *             if the capacity is negative.
-	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded,
-			int queueSize) {
-		this(capacity, cacheDirectory, graphicFactory, threaded, queueSize, false);
+		this(capacity, cacheDirectory, graphicFactory, false);
 	}
 
 	/**
@@ -246,17 +184,13 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 * persistent cache will not delete the cache directory. Conversely, a non-persistent cache will serve only tiles
 	 * added to it via the {@link #put(Job, TileBitmap)} method, and calling {@link #destroy()} on a non-persistent
 	 * cache will delete {@code cacheDirectory}.
-	 * 
+	 *
 	 * @param capacity
 	 *            the maximum number of entries in this cache.
 	 * @param cacheDirectory
 	 *            the directory where cached tiles will be stored.
 	 * @param graphicFactory
 	 *            the graphicFactory implementation to use.
-	 * @param threaded
-	 *            if cache will use background thread to store data (more responsive).
-	 * @param queueSize
-	 *            maximum length of queue before the put operation blocks
 	 * @param persistent
 	 *            if cache data will be kept between instances
 	 * @throws IllegalArgumentException
@@ -264,17 +198,9 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 	 * @throws IllegalArgumentException
 	 *             if the capacity is negative.
 	 */
-	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean threaded,
-			int queueSize, boolean persistent) {
+	public FileSystemTileCache(int capacity, File cacheDirectory, GraphicFactory graphicFactory, boolean persistent) {
 		this.observable = new Observable();
-		this.jobs = new AtomicInteger(0);
 		this.persistent = persistent;
-		this.threaded = threaded;
-		if (threaded) {
-			this.storageJobs = new LinkedBlockingQueue<>(queueSize);
-		} else {
-			this.storageJobs = null;
-		}
 		this.lruCache = new FileWorkingSetCache<>(capacity);
 		this.lock = new ReentrantReadWriteLock();
 		if (isValidCacheDirectory(cacheDirectory)) {
@@ -290,9 +216,6 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			this.cacheDirectory = null;
 		}
 		this.graphicFactory = graphicFactory;
-		if (this.threaded) {
-			this.start();
-		}
 	}
 
 	@Override
@@ -301,7 +224,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			lock.readLock().lock();
 			// if we are using a threaded cache we return true if the tile is still in the
 			// queue to reduce double rendering
-			return (this.lruCache.containsKey(key.getKey()) || (threaded && storageJobs.contains(key)));
+			return this.lruCache.containsKey(key.getKey());
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -406,23 +329,11 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 		try {
 			this.lock.writeLock().lock();
 			this.lruCache.clear();
-			if (this.threaded) {
-				this.interrupt();
-			}
 		} finally {
 			this.lock.writeLock().unlock();
 		}
 
 		deleteDirectory(this.cacheDirectory);
-	}
-
-	/**
-	 * Gets the number of remaining tiles still in the queue to be written to disk.
-	 * 
-	 * @return number of jobs in queue, 0 if not threaded.
-	 */
-	public int getQueueLength() {
-		return jobs.get();
 	}
 
 	@Override
@@ -437,13 +348,7 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			return;
 		}
 
-		jobs.incrementAndGet();
-		if (this.threaded) {
-			bitmap.incrementRefCount();
-			storageJobs.offer(new StorageJob(key, bitmap));
-		} else {
-			storeData(key, bitmap);
-		}
+		storeData(key, bitmap);
 		this.observable.notifyObservers();
 	}
 
@@ -483,25 +388,6 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			lock.writeLock().unlock();
 		}
 
-	}
-
-	protected void doWork() throws InterruptedException {
-		StorageJob x = storageJobs.take();
-		storeData(x.key, x.bitmap);
-	}
-
-	/**
-	 * @return the priority which will be set for this thread.
-	 */
-	protected ThreadPriority getThreadPriority() {
-		return ThreadPriority.BELOW_NORMAL;
-	}
-
-	/**
-	 * @return true if this thread has some work to do, false otherwise.
-	 */
-	protected boolean hasWork() {
-		return true;
 	}
 
 	/**
@@ -548,10 +434,6 @@ public class FileSystemTileCache extends PausableThread implements TileCache {
 			}
 		} finally {
 			IOUtils.closeQuietly(outputStream);
-			if (threaded) {
-				bitmap.decrementRefCount();
-			}
-			jobs.decrementAndGet();
 		}
 
 	}

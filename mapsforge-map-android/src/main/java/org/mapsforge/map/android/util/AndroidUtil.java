@@ -61,15 +61,10 @@ public final class AndroidUtil {
 	 *            size of the first level cache
 	 * @param tileSize
 	 *            tile size
-	 * @param threaded
-	 *            if a background thread is employed to store tile data
-	 * @param queueSize
-	 *            maximum length of queue before the put operation blocks
 	 * @return a new cache created on the external storage
 	 */
-	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize,
-			boolean threaded, int queueSize) {
-		return createExternalStorageTileCache(c, id, firstLevelSize, tileSize, threaded, queueSize, false);
+	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize) {
+		return createExternalStorageTileCache(c, id, firstLevelSize, tileSize, false);
 	}
 
 	/**
@@ -84,16 +79,12 @@ public final class AndroidUtil {
 	 *            size of the first level cache
 	 * @param tileSize
 	 *            tile size
-	 * @param threaded
-	 *            if a background thread is employed to store tile data
-	 * @param queueSize
-	 *            maximum length of queue before the put operation blocks
 	 * @param persistent
 	 *            whether the second level tile cache should be persistent
 	 * @return a new cache created on the external storage
 	 */
 	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize,
-	                                                       boolean threaded, int queueSize, boolean persistent) {
+	                                                       boolean persistent) {
 		Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
 		TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
 		File cacheDir = c.getExternalCacheDir();
@@ -105,11 +96,10 @@ public final class AndroidUtil {
 				int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
 				if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
 					try {
-						Log.d("TILECACHE FILECACHE SIZE", Integer.toString(tileCacheFiles));
+						Log.d("TILECACHE FILE SIZE", Integer.toString(tileCacheFiles));
 
 						TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
-								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE, threaded, queueSize,
-								persistent);
+								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE, persistent);
 						return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 					} catch (IllegalArgumentException e) {
 						Log.w("TILECACHE", e.toString());
@@ -134,18 +124,14 @@ public final class AndroidUtil {
 	 *            part of the screen the view takes up
 	 * @param overdraw
 	 *            overdraw allowance
-	 * @param threaded
-	 *            if a background thread is employed to store tile data
-	 * @param queueSize
-	 *            maximum length of queue before the put operation blocks
 	 * @param persistent
 	 *            whether the second level tile cache should be persistent
 	 * @return a new cache created on the external storage
 	 */
 	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw,
-	                                        boolean threaded, int queueSize, boolean persistent) {
+	                                        boolean persistent) {
 		int cacheSize = Math.round(getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
-		return createExternalStorageTileCache(c, id, cacheSize, tileSize, threaded, queueSize, persistent);
+		return createExternalStorageTileCache(c, id, cacheSize, tileSize, persistent);
 	}
 
 	/**
@@ -163,36 +149,10 @@ public final class AndroidUtil {
 	 *            part of the screen the view takes up
 	 * @param overdraw
 	 *            overdraw allowance
-	 * @param threaded
-	 *            if a background thread is employed to store tile data
-	 * @param queueSize
-	 *            maximum length of queue before the put operation blocks
-	 * @return a new cache created on the external storage
-	 */
-	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw,
-            boolean threaded, int queueSize) {
-		return createTileCache(c, id, tileSize, screenRatio, overdraw, threaded, queueSize, false);
-	}
-
-	/**
-	 * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
-	 * actually know the size of the mapview, so the screenRatio is an approximation of the required size. This is the
-	 * compatibility version that by default creates a non-threaded and non-persistent cache.
-	 *
-	 * @param c
-	 *            the Android context
-	 * @param id
-	 *            name for the storage directory
-	 * @param tileSize
-	 *            tile size
-	 * @param screenRatio
-	 *            part of the screen the view takes up
-	 * @param overdraw
-	 *            overdraw allowance
 	 * @return a new cache created on the external storage
 	 */
 	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
-		return createTileCache(c, id, tileSize, screenRatio, overdraw, false, 0, false);
+		return createTileCache(c, id, tileSize, screenRatio, overdraw, false);
 	}
 
 	/**
@@ -210,45 +170,14 @@ public final class AndroidUtil {
 	 *            the height of the map view
 	 * @param overdraw
 	 *            overdraw allowance
-	 * @param threaded
-	 *            if a background thread is employed to store tile data
-	 * @param queueSize
-	 *            maximum length of queue before the put operation blocks
 	 * @param persistent
 	 *            whether the cache should be persistent
 	 * @return a new cache created on the external storage
 	 */
 	public static TileCache createTileCache(Context c, String id, int tileSize, int width, int height, double overdraw,
-	                                        boolean threaded, int queueSize, boolean persistent) {
+	                                        boolean persistent) {
 		int cacheSize = Math.round(getMinimumCacheSize(tileSize, overdraw, width, height));
-		return createExternalStorageTileCache(c, id, cacheSize, tileSize, threaded, queueSize, persistent);
-	}
-
-	/**
-	 * Utility function to create a two-level tile cache with the right size, using the size of the map view. This is
-	 * the compatibility version that by default creates a non-threaded cache.
-	 * 
-	 * @param c
-	 *            the Android context
-	 * @param id
-	 *            name for the storage directory
-	 * @param tileSize
-	 *            tile size
-	 * @param width
-	 *            the width of the map view
-	 * @param height
-	 *            the height of the map view
-	 * @param overdraw
-	 *            overdraw allowance
-	 * @param threaded
-	 *            if a background thread is employed to store tile data
-	 * @param queueSize
-	 *            maximum length of queue before the put operation blocks
-	 * @return a new cache created on the external storage
-	 */
-	public static TileCache createTileCache(Context c, String id, int tileSize, int width, int height, double overdraw,
-			boolean threaded, int queueSize) {
-		return createTileCache(c, id, tileSize, width, height, overdraw, threaded, queueSize, false);
+		return createExternalStorageTileCache(c, id, cacheSize, tileSize, persistent);
 	}
 
 	/**
@@ -270,7 +199,7 @@ public final class AndroidUtil {
 	 * @return a new cache created on the external storage
 	 */
 	public static TileCache createTileCache(Context c, String id, int tileSize, int width, int height, double overdraw) {
-		return createTileCache(c, id, tileSize, width, height, overdraw, false, 0, false);
+		return createTileCache(c, id, tileSize, width, height, overdraw, false);
 	}
 
 	/**

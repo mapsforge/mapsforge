@@ -59,10 +59,6 @@ public class RotateMapViewer extends OverlayMapViewer {
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void createTileCaches() {
-		boolean threaded = sharedPreferences.getBoolean(
-				SamplesApplication.SETTING_TILECACHE_THREADING, true);
-		int queueSize = Integer.parseInt(sharedPreferences.getString(
-				SamplesApplication.SETTING_TILECACHE_QUEUESIZE, "4"));
 		boolean persistent = sharedPreferences.getBoolean(
 				SamplesApplication.SETTING_TILECACHE_PERSISTENCE, true);
 
@@ -81,8 +77,7 @@ public class RotateMapViewer extends OverlayMapViewer {
 				getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), hypot,
 				hypot,
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
-				threaded, queueSize, persistent));
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent));
 	}
 
 	@Override

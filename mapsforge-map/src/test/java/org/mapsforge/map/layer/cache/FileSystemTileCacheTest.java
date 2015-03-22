@@ -85,7 +85,7 @@ public class FileSystemTileCacheTest {
 	@Test
 	public void capacityZeroTest() {
 		for (int tileSize : TILE_SIZES) {
-			TileCache tileCache = new FileSystemTileCache(0, this.cacheDirectory, GRAPHIC_FACTORY, false, 0);
+			TileCache tileCache = new FileSystemTileCache(0, this.cacheDirectory, GRAPHIC_FACTORY);
 			Tile tile = new Tile(0, 0, (byte) 0, tileSize);
 			TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 			Job job = new DownloadJob(tile, tileSource);
@@ -118,13 +118,6 @@ public class FileSystemTileCacheTest {
 
 			TileBitmap bitmap = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache.put(job, bitmap);
-			while (0 != tileCache.getQueueLength()) {
-				try {
-					// wait for threaded tile cache
-					Thread.sleep(100);
-				} catch (Exception e) {
-				}
-			}
 			Assert.assertEquals(3, this.cacheDirectory.list().length);
 			Assert.assertTrue(file1.exists());
 			Assert.assertTrue(file2.exists());
@@ -183,13 +176,6 @@ public class FileSystemTileCacheTest {
 
 			TileBitmap bitmap1 = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache1.put(job1, bitmap1);
-			while (0 != tileCache1.getQueueLength()) {
-				try {
-					// wait for threaded tile cache
-					Thread.sleep(100);
-				} catch (Exception e) {
-				}
-			}
 
 			Assert.assertTrue(tileCache1.containsKey(job1));
 			Assert.assertFalse(tileCache1.containsKey(job3));
@@ -204,13 +190,6 @@ public class FileSystemTileCacheTest {
 
 			TileBitmap bitmap2 = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache2.put(job2, bitmap2);
-			while (0 != tileCache2.getQueueLength()) {
-				try {
-					// wait for threaded tile cache
-					Thread.sleep(100);
-				} catch (Exception e) {
-				}
-			}
 
 			Assert.assertTrue(tileCache1.containsKey(job1));
 			Assert.assertFalse(tileCache1.containsKey(job3));
@@ -223,14 +202,6 @@ public class FileSystemTileCacheTest {
 
 			TileBitmap bitmap3 = GRAPHIC_FACTORY.createTileBitmap(tileSize, false);
 			tileCache1.put(job3, bitmap3);
-			while (0 != tileCache1.getQueueLength()) {
-				try {
-					// wait for threaded tile cache
-					Thread.sleep(100);
-				} catch (Exception e) {
-				}
-			}
-
 			Assert.assertFalse(tileCache1.containsKey(job1));
 			Assert.assertFalse(tileCache1.containsKey(job2));
 			Assert.assertTrue(tileCache1.containsKey(job3));
@@ -306,7 +277,7 @@ public class FileSystemTileCacheTest {
 
 		Assert.assertFalse(this.cacheDirectory.exists());
 
-		tileCache1 = new FileSystemTileCache(2, this.cacheDirectory, GRAPHIC_FACTORY, false, 0, true);
+		tileCache1 = new FileSystemTileCache(2, this.cacheDirectory, GRAPHIC_FACTORY, false);
 
 		Assert.assertEquals(2, tileCache1.getCapacity());
 		Assert.assertTrue(this.cacheDirectory.exists());
@@ -323,22 +294,8 @@ public class FileSystemTileCacheTest {
 
 		for (i = 0; i < 2; i++) {
 			tileCache1.put(job[i], bitmap[i]);
-			while (0 != tileCache1.getQueueLength()) {
-				try {
-					// wait for threaded tile cache
-					Thread.sleep(100);
-				} catch (Exception e) {
-				}
-			}
-
 			Assert.assertTrue(tileCache1.containsKey(job[i]));
 			verifyEquals(bitmap[i], tileCache1.get(job[i]));
-
-			try {
-				// make sure timestamps are sufficiently far apart (old FAT implementations have 2s resolution)
-				Thread.sleep(2000);
-			} catch (Exception e) {
-			}
 		}
 
 		for (i = 2; i < 4; i++) {
@@ -348,20 +305,15 @@ public class FileSystemTileCacheTest {
 
 		tileCache1.destroy();
 
-		Assert.assertTrue(this.cacheDirectory.exists());
+		Assert.assertFalse(this.cacheDirectory.exists());
 
-		tileCache2 = new FileSystemTileCache(3, this.cacheDirectory, GRAPHIC_FACTORY, false, 0, true);
+		tileCache2 = new FileSystemTileCache(3, this.cacheDirectory, GRAPHIC_FACTORY, true);
 
 		Assert.assertEquals(3, tileCache2.getCapacity());
 		Assert.assertTrue(this.cacheDirectory.exists());
 
-		try {
-			// make sure tile cache has been read in
-			Thread.sleep(2000);
-		} catch (Exception e) {
-		}
-
 		for (i = 0; i < 2; i++) {
+			tileCache2.put(job[i], bitmap[i]);
 			Assert.assertTrue(tileCache2.containsKey(job[i]));
 			Assert.assertNotNull(tileCache2.get(job[i]));
 			verifyEquals(bitmap[i], tileCache2.get(job[i]));
@@ -372,13 +324,6 @@ public class FileSystemTileCacheTest {
 			Assert.assertNull(tileCache2.get(job[i]));
 
 			tileCache2.put(job[i], bitmap[i]);
-			while (0 != tileCache2.getQueueLength()) {
-				try {
-					// wait for threaded tile cache
-					Thread.sleep(100);
-				} catch (Exception e) {
-				}
-			}
 
 			Assert.assertTrue(tileCache2.containsKey(job[i]));
 			verifyEquals(bitmap[i], tileCache2.get(job[i]));

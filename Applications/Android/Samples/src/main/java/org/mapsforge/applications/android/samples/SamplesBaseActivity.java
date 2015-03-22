@@ -91,14 +91,11 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	}
 
 	protected void createTileCaches() {
-		boolean threaded = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_THREADING, true);
-		int queueSize = Integer.parseInt(sharedPreferences.getString(SamplesApplication.SETTING_TILECACHE_QUEUESIZE, "4"));
 		boolean persistent = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_PERSISTENCE, true);
 
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
-				threaded, queueSize, persistent
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent
 		));
 	}
 
@@ -246,9 +243,6 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 			AndroidUtil.restartActivity(this);
 		}
 		if (SamplesApplication.SETTING_TEXTWIDTH.equals(key)) {
-			AndroidUtil.restartActivity(this);
-		}
-		if (SamplesApplication.SETTING_TILECACHE_QUEUESIZE.equals(key) || SamplesApplication.SETTING_TILECACHE_THREADING.equals(key)) {
 			AndroidUtil.restartActivity(this);
 		}
 		if (SETTING_SCALEBAR.equals(key)) {
