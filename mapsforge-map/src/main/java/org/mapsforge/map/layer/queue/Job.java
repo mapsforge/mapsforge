@@ -23,16 +23,14 @@ import org.mapsforge.core.model.Tile;
 public class Job {
 	public final boolean hasAlpha;
 	public final Tile tile;
-	public final String key;
+	private final String key;
 
-	public static String composeKey(byte z, long x, long y) {
-		return new StringBuilder().append(z).append(File.separatorChar).
-				append(x).append(File.separatorChar).append(y).toString();
+	private static String composeKey(byte z, long x, long y) {
+		return String.valueOf(z) + File.separatorChar + x + File.separatorChar + y;
 	}
 
 	public static String composeKey(String z, String x, String y) {
-		return new StringBuilder().append(z).append(File.separatorChar).
-				append(x).append(File.separatorChar).append(y).toString();
+		return z + File.separatorChar + x + File.separatorChar + y;
 	}
 
 	public Job(Tile tile, boolean hasAlpha) {
@@ -53,10 +51,7 @@ public class Job {
 			return false;
 		}
 		Job other = (Job) obj;
-		if (this.hasAlpha != other.hasAlpha) {
-			return false;
-		}
-		return this.tile.equals(other.tile);
+		return this.hasAlpha == other.hasAlpha && this.tile.equals(other.tile);
 	}
 
 	/**

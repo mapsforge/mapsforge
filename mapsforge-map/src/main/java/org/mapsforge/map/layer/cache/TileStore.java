@@ -120,20 +120,20 @@ public class TileStore implements TileCache {
 		// no-op
 	}
 
-	protected File findFile(Job key) {
+	File findFile(Job key) {
 		// slow descent at the moment, better for debugging.
 		File l1 = new File(this.rootDirectory, Byte.toString(key.tile.zoomLevel));
-		if (l1 == null || !l1.isDirectory() || !l1.canRead()) {
+		if (!l1.isDirectory() || !l1.canRead()) {
 			LOGGER.info("Failed to find directory " + l1.getAbsolutePath());
 			return null;
 		}
 		File l2 = new File(l1, Long.toString(key.tile.tileX));
-		if (l2 == null || !l2.isDirectory() || !l2.canRead()) {
+		if (!l2.isDirectory() || !l2.canRead()) {
 			LOGGER.info("Failed to find directory " + l2.getAbsolutePath());
 			return null;
 		}
 		File l3 = new File(l2, Long.toString(key.tile.tileY) + this.suffix);
-		if (l3 == null || !l3.isFile() || !l3.canRead()) {
+		if (!l3.isFile() || !l3.canRead()) {
 			LOGGER.info("Failed to find file " + l3.getAbsolutePath());
 			return null;
 		}

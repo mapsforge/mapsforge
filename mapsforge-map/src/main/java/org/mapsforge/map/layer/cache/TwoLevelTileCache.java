@@ -17,7 +17,6 @@ package org.mapsforge.map.layer.cache;
 
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.queue.Job;
-import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Observer;
 
 import java.util.Collections;
@@ -38,10 +37,7 @@ public class TwoLevelTileCache implements TileCache {
 
 	@Override
 	public boolean containsKey(Job key) {
-		if (this.firstLevelTileCache.containsKey(key)) {
-			return true;
-		}
-		return this.secondLevelTileCache.containsKey(key);
+		return this.firstLevelTileCache.containsKey(key) || this.secondLevelTileCache.containsKey(key);
 	}
 
 	@Override

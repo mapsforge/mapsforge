@@ -38,10 +38,7 @@ public class DownloadJob extends Job {
 			return false;
 		}
 		DownloadJob other = (DownloadJob) obj;
-		if (!this.tileSource.equals(other.tileSource)) {
-			return false;
-		}
-		return true;
+		return this.tileSource.equals(other.tileSource);
 	}
 
 	@Override

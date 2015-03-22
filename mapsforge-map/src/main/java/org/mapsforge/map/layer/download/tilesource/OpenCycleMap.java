@@ -40,17 +40,8 @@ public class OpenCycleMap extends AbstractTileSource {
 
 	@Override
 	public URL getTileUrl(Tile tile) throws MalformedURLException {
-		StringBuilder stringBuilder = new StringBuilder(32);
 
-		stringBuilder.append("/cycle/");
-		stringBuilder.append(tile.zoomLevel);
-		stringBuilder.append('/');
-		stringBuilder.append(tile.tileX);
-		stringBuilder.append('/');
-		stringBuilder.append(tile.tileY);
-		stringBuilder.append(".png");
-
-		return new URL(PROTOCOL, getHostName(), this.port, stringBuilder.toString());
+		return new URL(PROTOCOL, getHostName(), this.port, "/cycle/" + tile.zoomLevel + '/' + tile.tileX + '/' + tile.tileY + ".png");
 	}
 
 	@Override

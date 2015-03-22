@@ -116,8 +116,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
 			}
 		} else {
 			if (this.tileDownloadThreads != null) {
-				for (int i = 0; i < tileDownloadThreads.length; ++i) {
-					this.tileDownloadThreads[i].interrupt();
+				for (final TileDownloadThread tileDownloadThread : tileDownloadThreads) {
+					tileDownloadThread.interrupt();
 				}
 			}
 		}
@@ -165,9 +165,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
 	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
 		if (bitmap.isExpired())
 			return true;
-		if (cacheTimeToLive == 0)
-			return false;
-		return ((bitmap.getTimestamp() + cacheTimeToLive) < System.currentTimeMillis());
+		return cacheTimeToLive != 0 && ((bitmap.getTimestamp() + cacheTimeToLive) < System.currentTimeMillis());
 	}
 
 	@Override

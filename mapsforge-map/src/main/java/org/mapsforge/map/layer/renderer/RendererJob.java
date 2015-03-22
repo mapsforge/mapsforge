@@ -19,7 +19,6 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDataStore;
-import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 public class RendererJob extends Job {

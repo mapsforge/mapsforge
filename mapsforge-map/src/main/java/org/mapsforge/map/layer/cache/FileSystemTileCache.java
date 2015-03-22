@@ -61,7 +61,7 @@ public class FileSystemTileCache implements TileCache {
 	 * of subdir of the cache dir (as in the standard TMS directory layout of zoomlevel/x/y). The relative path to the
 	 * cached tile, after stripping the extension, is used as the lookup key.
 	 */
-	class CacheDirectoryReader implements Runnable {
+	private class CacheDirectoryReader implements Runnable {
 		public void run() {
 			File[] zFiles = FileSystemTileCache.this.cacheDirectory.listFiles();
 			if (zFiles != null) {
@@ -103,11 +103,8 @@ public class FileSystemTileCache implements TileCache {
 	 *            The File instance to examine. This can be null, which will cause the method to return {@code false}.
 	 */
 	private static boolean isValidCacheDirectory(File file) {
-		if ((file == null) || (!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead()
-				|| !file.canWrite()) {
-			return false;
-		}
-		return true;
+		return !((file == null) || (!file.exists() && !file.mkdirs()) || !file.isDirectory() || !file.canRead()
+				|| !file.canWrite());
 	}
 
 	/**

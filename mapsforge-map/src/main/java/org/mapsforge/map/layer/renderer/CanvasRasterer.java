@@ -57,7 +57,7 @@ public class CanvasRasterer {
 				List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
 				for (int index = wayList.size() - 1; index >= 0; --index) {
-					drawShapePaintContainer(wayList.get(index), tile);
+					drawShapePaintContainer(wayList.get(index));
 				}
 			}
 		}
@@ -141,7 +141,7 @@ public class CanvasRasterer {
 		this.canvas.drawPath(this.path, shapePaintContainer.paint);
 	}
 
-	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer, Tile tile) {
+	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
 		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
 		switch (shapeType) {
 			case CIRCLE:

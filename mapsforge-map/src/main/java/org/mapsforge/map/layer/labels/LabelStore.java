@@ -33,7 +33,7 @@ public interface LabelStore {
 
 	/**
 	 * Returns a version number, which changes every time an update is made to the LabelStore.
-	 * @return
+	 * @return the version number
 	 */
 	abstract int getVersion();
 

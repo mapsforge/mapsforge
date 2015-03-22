@@ -29,6 +29,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
+import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.util.LayerUtil;

@@ -56,7 +56,7 @@ import org.mapsforge.map.util.LayerUtil;
  */
 public class DatabaseRenderer implements RenderCallback {
 
-	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
+	private static final Byte DEFAULT_START_ZOOM_LEVEL = (byte) 12;
 	private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
 	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
 	private static final byte ZOOM_MAX = 22;
@@ -272,7 +272,7 @@ public class DatabaseRenderer implements RenderCallback {
 		WayDecorator.renderText(way.getTile(), textKey, display, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), renderContext.labels);
 	}
 
-	protected boolean renderBitmap(RenderContext renderContext) {
+	boolean renderBitmap(RenderContext renderContext) {
 		return !renderContext.renderTheme.hasMapBackgroundOutside() || this.mapDatabase.supportsTile(renderContext.rendererJob.tile);
 	}
 
