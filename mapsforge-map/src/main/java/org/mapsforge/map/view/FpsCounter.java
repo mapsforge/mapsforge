@@ -34,7 +34,7 @@ public class FpsCounter {
 
 	private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(Color.BLACK);
+		paint.setColor(Color.RED);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 		paint.setTextSize(25 * displayModel.getScaleFactor());
 		return paint;
@@ -54,19 +54,20 @@ public class FpsCounter {
 	private String fps;
 	private int frameCounter;
 	private long lastTime;
-	private final Paint paintFront, paintBack;
+	private final Paint paintBack, paintFront;
 	private boolean visible;
 
 	public FpsCounter(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		this.displayModel = displayModel;
-		this.paintFront = createPaintFront(graphicFactory, displayModel);
+
 		this.paintBack = createPaintBack(graphicFactory, displayModel);
+		this.paintFront = createPaintFront(graphicFactory, displayModel);
 	}
 
 	public FpsCounter(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
 		this.displayModel = displayModel;
-		this.paintFront = paintFront;
 		this.paintBack = paintBack;
+		this.paintFront = paintFront;
 	}
 
 	public void draw(GraphicContext graphicContext) {

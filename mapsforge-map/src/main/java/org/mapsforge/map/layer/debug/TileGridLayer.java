@@ -30,7 +30,7 @@ import org.mapsforge.map.model.DisplayModel;
 public class TileGridLayer extends Layer {
 	private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(Color.BLACK);
+		paint.setColor(Color.RED);
 		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
 		paint.setStyle(Style.STROKE);
 		return paint;
@@ -45,22 +45,23 @@ public class TileGridLayer extends Layer {
 	}
 
 	private final DisplayModel displayModel;
-	private final Paint paintFront, paintBack;
+	private final Paint paintBack, paintFront;
 
 	public TileGridLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
 		this.displayModel = displayModel;
-		this.paintFront = createPaintFront(graphicFactory, displayModel);
+
 		this.paintBack = createPaintBack(graphicFactory, displayModel);
+		this.paintFront = createPaintFront(graphicFactory, displayModel);
 	}
 
 	public TileGridLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
 		super();
 
 		this.displayModel = displayModel;
-		this.paintFront = paintFront;
 		this.paintBack = paintBack;
+		this.paintFront = paintFront;
 	}
 
 	@Override
