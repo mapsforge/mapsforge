@@ -1,5 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,15 +15,11 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.overlay.Grid;
-import org.mapsforge.map.model.DisplayModel;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.overlay.Grid;
 
 /**
  * Map viewer with a Grid layer added.
@@ -33,18 +30,7 @@ public class GridMapViewer extends RenderTheme4 {
 	protected void createLayers() {
 		super.createLayers();
 
-		DisplayModel displayModel = this.mapView.getModel().displayModel;
-
-		Paint lineFront = Utils.createPaint(
-				AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK),
-				(int) (2 * displayModel.getScaleFactor()),
-				Style.STROKE);
-		Paint lineBack = Utils.createPaint(
-				AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE),
-				(int) (4 * displayModel.getScaleFactor()),
-				Style.STROKE);
-
-		Map<Byte, Double> spacingConfig = new HashMap<Byte, Double>(25);
+		Map<Byte, Double> spacingConfig = new HashMap<Byte, Double>(23);
 
 		spacingConfig.put((byte)(0), 10d);
 		spacingConfig.put((byte)(1), 10d);
@@ -70,7 +56,7 @@ public class GridMapViewer extends RenderTheme4 {
 		spacingConfig.put((byte)(21), .0002d);
 		spacingConfig.put((byte)(22), .0001d);
 
-		mapView.getLayerManager().getLayers().add(
-				new Grid(displayModel, spacingConfig,lineBack, lineFront));
+		mapView.getLayerManager().getLayers().add(new Grid(
+				AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel, spacingConfig));
 	}
 }

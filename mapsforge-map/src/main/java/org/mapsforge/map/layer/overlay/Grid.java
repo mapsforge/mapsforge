@@ -34,7 +34,7 @@ import java.util.Map;
 public class Grid extends Layer {
 	private static Paint createLineFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(Color.BLACK);
+		paint.setColor(Color.BLUE);
 		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
 		paint.setStyle(Style.STROKE);
 		return paint;
@@ -48,7 +48,7 @@ public class Grid extends Layer {
 		return paint;
 	}
 
-	private final Paint lineFront, lineBack;
+	private final Paint lineBack, lineFront;
 	private final Map<Byte, Double> spacingConfig;
 
 	/**
@@ -62,26 +62,27 @@ public class Grid extends Layer {
 		super();
 
 		this.displayModel = displayModel;
-		this.lineFront = createLineFront(graphicFactory, displayModel);
-		this.lineBack = createLineBack(graphicFactory, displayModel);
 		this.spacingConfig = spacingConfig;
+
+		this.lineBack = createLineBack(graphicFactory, displayModel);
+		this.lineFront = createLineFront(graphicFactory, displayModel);
 	}
 
 	/**
 	 * Ctor.
 	 * @param displayModel the display model of the map view.
-	 * @param lineFront the top line paint
-	 * @param lineBack the back line paint.
 	 * @param spacingConfig a map containing the spacing for every zoom level.
+	 * @param lineBack the back line paint.
+	 * @param lineFront the top line paint.
 	 */
 	public Grid(DisplayModel displayModel, Map<Byte, Double> spacingConfig,
 			Paint lineBack, Paint lineFront) {
 		super();
 
 		this.displayModel = displayModel;
-		this.lineFront = lineFront;
-		this.lineBack = lineBack;
 		this.spacingConfig = spacingConfig;
+		this.lineBack = lineBack;
+		this.lineFront = lineFront;
 	}
 
 	@Override
