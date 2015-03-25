@@ -57,7 +57,6 @@ public class GridMapViewer extends RenderTheme4 {
 		spacingConfig.put((byte) 22, 1d / 60 / 60); // 1″
 
 		mapView.getLayerManager().getLayers().add(new Grid(
-				AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel,
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), spacingConfig));
+				AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel, spacingConfig));
 	}
 }

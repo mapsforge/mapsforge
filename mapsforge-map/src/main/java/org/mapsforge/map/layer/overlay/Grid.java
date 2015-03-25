@@ -94,25 +94,18 @@ public class Grid extends Layer {
 	}
 
 	private final Paint lineBack, lineFront, textBack, textFront;
-	private final double overdrawFactor;
 	private final Map<Byte, Double> spacingConfig;
 
 	/**
 	 * Ctor.
 	 * @param graphicFactory the graphic factory. 
 	 * @param displayModel the display model of the map view.
-	 * @param overdrawFactor the overdraw factor.
 	 * @param spacingConfig a map containing the spacing for every zoom level.
 	 */
-	public Grid(GraphicFactory graphicFactory, DisplayModel displayModel,
-			double overdrawFactor, Map<Byte, Double> spacingConfig) {
+	public Grid(GraphicFactory graphicFactory, DisplayModel displayModel, Map<Byte, Double> spacingConfig) {
 		super();
-		if (overdrawFactor <= 0) {
-			throw new IllegalArgumentException("overdrawFactor must be > 0: " + overdrawFactor);
-		}
 
 		this.displayModel = displayModel;
-		this.overdrawFactor = overdrawFactor;
 		this.spacingConfig = spacingConfig;
 
 		this.lineBack = createLineBack(graphicFactory, displayModel);
@@ -124,22 +117,17 @@ public class Grid extends Layer {
 	/**
 	 * Ctor.
 	 * @param displayModel the display model of the map view.
-	 * @param overdrawFactor Overdraw factor.
 	 * @param spacingConfig a map containing the spacing for every zoom level.
 	 * @param lineBack the back line paint.
 	 * @param lineFront the top line paint.
 	 * @param textBack the back text paint.
 	 * @param textFront the top text paint.
 	 */
-	public Grid(DisplayModel displayModel, double overdrawFactor, Map<Byte, Double> spacingConfig,
+	public Grid(DisplayModel displayModel, Map<Byte, Double> spacingConfig,
 			Paint lineBack, Paint lineFront, Paint textBack, Paint textFront) {
 		super();
-		if (overdrawFactor <= 0) {
-			throw new IllegalArgumentException("overdrawFactor must be > 0: " + overdrawFactor);
-		}
 
 		this.displayModel = displayModel;
-		this.overdrawFactor = overdrawFactor;
 		this.spacingConfig = spacingConfig;
 		this.lineBack = lineBack;
 		this.lineFront = lineFront;
@@ -163,12 +151,6 @@ public class Grid extends Layer {
 			int top = (int) (MercatorProjection.latitudeToPixelY(maxLatitude, mapSize) - topLeftPoint.y);
 			int left = (int) (MercatorProjection.longitudeToPixelX(minLongitude, mapSize) - topLeftPoint.x);
 			int right = (int) (MercatorProjection.longitudeToPixelX(maxLongitude, mapSize) - topLeftPoint.x);
-			int textX = (int) (MercatorProjection.longitudeToPixelX(boundingBox.minLongitude, mapSize) - topLeftPoint.x);
-			int textY = (int) (MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, mapSize) - topLeftPoint.y);
-			if (overdrawFactor > 1) {
-				textX += ((MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, mapSize) - topLeftPoint.x) - textX) * (overdrawFactor - 1) / 2;
-				textY += ((MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, mapSize) - topLeftPoint.y) - textY) * (overdrawFactor - 1) / 2;
-			}
 
 			for (double latitude = minLatitude; latitude <= maxLatitude; latitude += spacing) {
 				int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, mapSize) - topLeftPoint.y);
@@ -192,18 +174,18 @@ public class Grid extends Layer {
 
 			for (double latitude = minLatitude; latitude <= maxLatitude; latitude += spacing) {
 				String text = convertCoordinate(latitude);
-				int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, mapSize) - topLeftPoint.y)
-						+ this.textFront.getTextHeight(text) / 2;
-				canvas.drawText(text, textX, pixelY, this.textBack);
-				canvas.drawText(text, textX, pixelY, this.textFront);
+				int pixelX = (canvas.getWidth() - this.textFront.getTextWidth(text)) / 2;
+				int pixelY = (int) (MercatorProjection.latitudeToPixelY(latitude, mapSize) - topLeftPoint.y) + this.textFront.getTextHeight(text) / 2;
+				canvas.drawText(text, pixelX, pixelY, this.textBack);
+				canvas.drawText(text, pixelX, pixelY, this.textFront);
 			}
 
 			for (double longitude = minLongitude; longitude <= maxLongitude; longitude += spacing) {
 				String text = convertCoordinate(longitude);
-				int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, mapSize) - topLeftPoint.x)
-						- this.textFront.getTextWidth(text) / 2;
-				canvas.drawText(text, pixelX, textY, this.textBack);
-				canvas.drawText(text, pixelX, textY, this.textFront);
+				int pixelX = (int) (MercatorProjection.longitudeToPixelX(longitude, mapSize) - topLeftPoint.x) - this.textFront.getTextWidth(text) / 2;
+				int pixelY = (canvas.getHeight() + this.textFront.getTextHeight(text)) / 2;
+				canvas.drawText(text, pixelX, pixelY, this.textBack);
+				canvas.drawText(text, pixelX, pixelY, this.textFront);
 			}
 		}
 	}
