@@ -32,31 +32,32 @@ public class GridMapViewer extends RenderTheme4 {
 
 		Map<Byte, Double> spacingConfig = new HashMap<Byte, Double>(23);
 
-		spacingConfig.put((byte)(0), 10d);
-		spacingConfig.put((byte)(1), 10d);
-		spacingConfig.put((byte)(2), 10d);
-		spacingConfig.put((byte)(3), 10d);
-		spacingConfig.put((byte)(4), 5d);
-		spacingConfig.put((byte)(5), 2.5d);
-		spacingConfig.put((byte)(6), 2.5d);
-		spacingConfig.put((byte)(7), 1d);
-		spacingConfig.put((byte)(8), .5d);
-		spacingConfig.put((byte)(9), .5d);
-		spacingConfig.put((byte)(10), .2d);
-		spacingConfig.put((byte)(11), .1d);
-		spacingConfig.put((byte)(12), .1d);
-		spacingConfig.put((byte)(13), .05d);
-		spacingConfig.put((byte)(14), .02d);
-		spacingConfig.put((byte)(15), .01d);
-		spacingConfig.put((byte)(16), .01d);
-		spacingConfig.put((byte)(17), .005d);
-		spacingConfig.put((byte)(18), .002d);
-		spacingConfig.put((byte)(19), .001d);
-		spacingConfig.put((byte)(20), .0005d);
-		spacingConfig.put((byte)(21), .0002d);
-		spacingConfig.put((byte)(22), .0001d);
+		spacingConfig.put((byte) 0, 90d); // 90°
+		spacingConfig.put((byte) 1, 45d); // 45°
+		spacingConfig.put((byte) 2, 30d); // 30°
+		spacingConfig.put((byte) 3, 15d); // 15°
+		spacingConfig.put((byte) 4, 10d); // 10°
+		spacingConfig.put((byte) 5, 5d); // 5°
+		spacingConfig.put((byte) 6, 2d); // 2°
+		spacingConfig.put((byte) 7, 1d); // 1°
+		spacingConfig.put((byte) 8, 30d / 60); // 30′
+		spacingConfig.put((byte) 9, 20d / 60); // 20′
+		spacingConfig.put((byte) 10, 10d / 60); // 10′
+		spacingConfig.put((byte) 11, 5d / 60); // 5′
+		spacingConfig.put((byte) 12, 2d / 60); // 2′
+		spacingConfig.put((byte) 13, 1d / 60); // 1′
+		spacingConfig.put((byte) 14, 30d / 60 / 60); // 30″
+		spacingConfig.put((byte) 15, 20d / 60 / 60); // 20″
+		spacingConfig.put((byte) 16, 10d / 60 / 60); // 10″
+		spacingConfig.put((byte) 17, 5d / 60 / 60); // 5″
+		spacingConfig.put((byte) 18, 2d / 60 / 60); // 2″
+		spacingConfig.put((byte) 19, 1d / 60 / 60); // 1″
+		spacingConfig.put((byte) 20, 1d / 60 / 60); // 1″
+		spacingConfig.put((byte) 21, 1d / 60 / 60); // 1″
+		spacingConfig.put((byte) 22, 1d / 60 / 60); // 1″
 
 		mapView.getLayerManager().getLayers().add(new Grid(
-				AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel, spacingConfig));
+				AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel,
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), spacingConfig));
 	}
 }
