@@ -4,6 +4,7 @@
 
 ## New since 0.5.1
  - Multi-threaded map rendering.
+ - Geographic grid layer improvements.
 
 ## Version 0.5.1
  **2015-13-18**
@@ -26,7 +27,7 @@
  - Persistent Caching.
  - Documentation updates.
  - Various bug fixes.
- - Improved grid drawing.
+ - Geographic grid layer.
  - External Map Rotation example in Samples.
 
 ## Version 0.5.0
