@@ -23,7 +23,7 @@
  - Persistent Caching.
  - Documentation updates.
  - Various bug fixes.
- - Improved grid drawing.
+ - Geographic grid layer.
  - External Map Rotation example in Samples.
 
 ## Version 0.5.0
