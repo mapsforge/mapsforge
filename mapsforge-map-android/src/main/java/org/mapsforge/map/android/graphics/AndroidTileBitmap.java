@@ -68,13 +68,13 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 
 	private static android.graphics.Bitmap getTileBitmapFromReusableSet(int tileSize, boolean isTransparent) {
 		int hash = composeHash(tileSize, isTransparent);
-		Set<SoftReference<Bitmap>> subSet = reusableTileBitmaps.get(hash);
 
-		if (subSet == null) {
-			return null;
-		}
-		android.graphics.Bitmap bitmap = null;
-		synchronized (subSet) {
+		synchronized (reusableTileBitmaps) {
+			Set<SoftReference<Bitmap>> subSet = reusableTileBitmaps.get(hash);
+			if (subSet == null) {
+				return null;
+			}
+			android.graphics.Bitmap bitmap = null;
 			final Iterator<SoftReference<android.graphics.Bitmap>> iterator = subSet.iterator();
 			android.graphics.Bitmap candidate;
 			while (iterator.hasNext()) {
@@ -92,8 +92,8 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 					iterator.remove();
 				}
 			}
+			return bitmap;
 		}
-		return bitmap;
 	}
 
 	private long expiration = 0;
@@ -192,9 +192,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 						reusableTileBitmaps.put(hash, new HashSet<SoftReference<Bitmap>>());
 					}
 					Set<SoftReference<Bitmap>> sizeSpecificSet = reusableTileBitmaps.get(hash);
-					synchronized (sizeSpecificSet) {
-						sizeSpecificSet.add(new SoftReference<Bitmap>(this.bitmap));
-					}
+					sizeSpecificSet.add(new SoftReference<Bitmap>(this.bitmap));
 				}
 			} else {
 				this.bitmap.recycle();

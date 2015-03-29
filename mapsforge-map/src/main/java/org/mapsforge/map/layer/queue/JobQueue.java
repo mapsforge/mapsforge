@@ -42,6 +42,7 @@ public class JobQueue<T extends Job> {
 			if (!this.queueItems.contains(queueItem)) {
 				this.queueItems.add(queueItem);
 				this.scheduleNeeded = true;
+				this.notifyWorkers();
 			}
 		}
 	}
@@ -62,7 +63,7 @@ public class JobQueue<T extends Job> {
 	 */
 	public synchronized T get(int maxAssigned) throws InterruptedException {
 		while (this.queueItems.isEmpty() || this.assignedJobs.size() >= maxAssigned) {
-			this.wait();
+			this.wait(200);
 		}
 
 		if (this.scheduleNeeded) {
