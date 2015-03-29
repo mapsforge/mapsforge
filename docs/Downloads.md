@@ -4,7 +4,7 @@
 
 These are the downloads for version 0.5.1, released 18 March 2015
 
-- [Samples 0.5.1 application](http://ci.mapsforge.org/job/0.5.1/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-release-unsigned.apk)
+- [Samples 0.5.1 application](http://ci.mapsforge.org/job/0.5.1/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Release 0.5.1 jars](http://ci.mapsforge.org/job/0.5.1/)
 - [Writer plugin](http://ci.mapsforge.org/job/0.5.1/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.1.jar) 
 
@@ -12,7 +12,7 @@ These are the downloads for version 0.5.1, released 18 March 2015
 
 These are the downloads for version 0.5.0:
 
-- [Samples 0.5.0 application](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-release-unsigned.apk)
+- [Samples 0.5.0 application](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Release 0.5.0 jars](http://ci.mapsforge.org/job/release-0.5.0/)
 - [Writer plugin](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0.jar) 
 
