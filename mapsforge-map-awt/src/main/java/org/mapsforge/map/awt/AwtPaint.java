@@ -117,6 +117,22 @@ class AwtPaint implements Paint {
 		this.join = getJoin(Join.ROUND);
 	}
 
+	AwtPaint(Paint paint) {
+		AwtPaint ap = (AwtPaint) paint;
+		this.cap = ap.cap;
+		this.color = ap.color;
+		this.style = ap.style = style;
+		this.join = ap.join;
+		this.stroke = ap.stroke;
+		this.fontStyle = ap.fontStyle;
+		this.font = ap.font;
+		this.fontName = ap.fontName;
+		this.strokeWidth = ap.strokeWidth;
+		this.textSize = ap.textSize;
+		this.strokeDasharray = ap.strokeDasharray;
+	}
+
+
 	@Override
 	public int getTextHeight(String text) {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);

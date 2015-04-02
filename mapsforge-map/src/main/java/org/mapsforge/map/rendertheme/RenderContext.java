@@ -55,7 +55,7 @@ public class RenderContext {
 		this.canvasRasterer = canvasRasterer;
 		this.ways = createWayLists();
 		setScaleStrokeWidth(rendererJob.tile.zoomLevel);
-		renderTheme.scaleTextSize(rendererJob.textScale);
+		renderTheme.scaleTextSize(rendererJob.textScale, this.rendererJob.tile.zoomLevel);
 	}
 
 	public void destroy() {
@@ -97,7 +97,7 @@ public class RenderContext {
 	 */
 	private void setScaleStrokeWidth(byte zoomLevel) {
 		int zoomLevelDiff = Math.max(zoomLevel - STROKE_MIN_ZOOM_LEVEL, 0);
-		renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff));
+		renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff), this.rendererJob.tile.zoomLevel);
 	}
 
 }

@@ -61,8 +61,8 @@ public class RenderThemeTest {
 
 		Assert.assertEquals(3, renderTheme.getLevels());
 
-		renderTheme.scaleStrokeWidth(12.34f);
-		renderTheme.scaleTextSize(56.78f);
+		renderTheme.scaleStrokeWidth(12.34f, (byte) 12);
+		renderTheme.scaleTextSize(56.78f, (byte) 12);
 
 		RenderCallback renderCallback = new DummyRenderCallback();
 

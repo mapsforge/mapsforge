@@ -144,6 +144,12 @@ public class AwtGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
+	public Paint createPaint(Paint paint) {
+		return new AwtPaint(paint);
+	}
+
+
+	@Override
 	public Path createPath() {
 		return new AwtPath();
 	}

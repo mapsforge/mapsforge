@@ -17,10 +17,13 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -44,7 +47,7 @@ public class LineSymbol extends RenderInstruction {
 	private boolean bitmapInvalid;
 	private Display display;
 	private float dy;
-	private float dyScaled;
+	private final Map<Byte, Float> dyScaled;
 	private int priority;
 	private final String relativePathPrefix;
 	private boolean repeat;
@@ -60,6 +63,7 @@ public class LineSymbol extends RenderInstruction {
 		this.display = Display.IFSPACE;
 		this.rotate = true;
 		this.relativePathPrefix = relativePathPrefix;
+		this.dyScaled = new HashMap<>();
 
 		extractValues(elementName, pullParser);
 	}
@@ -72,7 +76,7 @@ public class LineSymbol extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 		// do nothing
 	}
 
@@ -90,19 +94,25 @@ public class LineSymbol extends RenderInstruction {
 				this.bitmapInvalid = true;
 			}
 		}
+
+		Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+		if (dyScale == null) {
+			dyScale = this.dy;
+		}
+
 		if (this.bitmap != null) {
-			renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, this.dyScaled, this.alignCenter,
+			renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, this.alignCenter,
 					this.repeat, this.repeatGap, this.repeatStart, this.rotate, way);
 		}
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
-		this.dyScaled = this.dy * scaleFactor;
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+		this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 
@@ -121,7 +131,6 @@ public class LineSymbol extends RenderInstruction {
 				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
-				this.dyScaled = this.dy;
 			} else if (ALIGN_CENTER.equals(name)) {
 				this.alignCenter = Boolean.parseBoolean(value);
 			} else if (CAT.equals(name)) {

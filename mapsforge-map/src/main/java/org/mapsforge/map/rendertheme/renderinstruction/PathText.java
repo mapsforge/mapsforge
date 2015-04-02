@@ -33,17 +33,23 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents a text along a polyline on the map.
  */
 public class PathText extends RenderInstruction {
 	private Display display;
 	private float dy;
-	private float dyScaled;
+	private final Map<Byte, Float> dyScaled;
 	private final Paint fill;
+	private final Map<Byte, Paint> fills;
 	private float fontSize;
 	private int priority;
 	private final Paint stroke;
+	private final Map<Byte, Paint> strokes;
+
 	private TextKey textKey;
 
 	public PathText(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -53,11 +59,14 @@ public class PathText extends RenderInstruction {
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
 		this.fill.setTextAlign(Align.CENTER);
+		this.fills = new HashMap<>();
 
 		this.stroke = graphicFactory.createPaint();
 		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setTextAlign(Align.CENTER);
+		this.strokes = new HashMap<>();
+		this.dyScaled = new HashMap<>();
 		this.display = Display.IFSPACE;
 
 		extractValues(graphicFactory, displayModel, elementName, pullParser);
@@ -69,7 +78,7 @@ public class PathText extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 		// do nothing
 	}
 
@@ -84,18 +93,31 @@ public class PathText extends RenderInstruction {
 		if (caption == null) {
 			return;
 		}
-		renderCallback.renderWayText(renderContext, this.display, this.priority, caption, this.dyScaled, this.fill, this.stroke, way);
+
+		Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+		if (dyScale == null) {
+			dyScale = this.dy;
+		}
+
+		renderCallback.renderWayText(renderContext, this.display, this.priority, caption, dyScale, getFillPaint(renderContext.rendererJob.tile.zoomLevel),
+				getStrokePaint(renderContext.rendererJob.tile.zoomLevel), way);
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
-		this.dyScaled = this.dy * scaleFactor;
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+		this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
-		this.fill.setTextSize(this.fontSize * scaleFactor);
-		this.stroke.setTextSize(this.fontSize * scaleFactor);
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+		Paint zlPaint = graphicFactory.createPaint(this.fill);
+		zlPaint.setTextSize(this.fontSize * scaleFactor);
+		this.fills.put(zoomLevel, zlPaint);
+
+		Paint zlStroke = graphicFactory.createPaint(this.stroke);
+		zlStroke.setTextSize(this.fontSize * scaleFactor);
+		this.strokes.put(zoomLevel, zlStroke);
+
 	}
 
 	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -115,7 +137,6 @@ public class PathText extends RenderInstruction {
 				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
-				this.dyScaled = this.dy;
 			} else if (FONT_FAMILY.equals(name)) {
 				fontFamily = FontFamily.fromString(value);
 			} else if (FONT_STYLE.equals(name)) {
@@ -141,4 +162,19 @@ public class PathText extends RenderInstruction {
 		XmlUtils.checkMandatoryAttribute(elementName, K, this.textKey);
 	}
 
+	private Paint getFillPaint(byte zoomLevel) {
+		Paint paint = fills.get(zoomLevel);
+		if (paint == null) {
+			paint = this.fill;
+		}
+		return paint;
+	}
+
+	private Paint getStrokePaint(byte zoomLevel) {
+		Paint paint = strokes.get(zoomLevel);
+		if (paint == null) {
+			paint = this.stroke;
+		}
+		return paint;
+	}
 }

@@ -29,16 +29,22 @@ import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents a round area on the map.
  */
 public class Circle extends RenderInstruction {
 	private final Paint fill;
+	private final Map<Byte, Paint> fills;
 	private final int level;
 	private float radius;
 	private float renderRadius;
+	private final Map<Byte, Float> renderRadiusScaled;
 	private boolean scaleRadius;
 	private final Paint stroke;
+	private final Map<Byte, Paint> strokes;
 	private float strokeWidth;
 
 	public Circle(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -49,10 +55,13 @@ public class Circle extends RenderInstruction {
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.TRANSPARENT);
 		this.fill.setStyle(Style.FILL);
+		this.fills = new HashMap<>();
 
 		this.stroke = graphicFactory.createPaint();
 		this.stroke.setColor(Color.TRANSPARENT);
 		this.stroke.setStyle(Style.STROKE);
+		this.strokes = new HashMap<>();
+		this.renderRadiusScaled = new HashMap<>();
 
 		extractValues(graphicFactory, displayModel, elementName, pullParser);
 
@@ -69,8 +78,8 @@ public class Circle extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
-		renderCallback.renderPointOfInterestCircle(renderContext, this.renderRadius, this.fill, this.stroke, this.level, tile, poi);
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
+		renderCallback.renderPointOfInterestCircle(renderContext, getRenderRadius(renderContext.rendererJob.tile.zoomLevel), getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, poi);
 	}
 
 	@Override
@@ -79,17 +88,19 @@ public class Circle extends RenderInstruction {
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
 		if (this.scaleRadius) {
-			this.renderRadius = this.radius * scaleFactor;
+			this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
 			if (this.stroke != null) {
-				this.stroke.setStrokeWidth(this.strokeWidth * scaleFactor);
+				Paint s = graphicFactory.createPaint(stroke);
+				s.setStrokeWidth(this.strokeWidth * scaleFactor);
+				strokes.put(zoomLevel, s);
 			}
 		}
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 
@@ -117,6 +128,30 @@ public class Circle extends RenderInstruction {
 		}
 
 		XmlUtils.checkMandatoryAttribute(elementName, RADIUS, this.radius);
+	}
+
+	private Paint getFillPaint(byte zoomLevel) {
+		Paint paint = fills.get(zoomLevel);
+		if (paint == null) {
+			paint = this.fill;
+		}
+		return paint;
+	}
+
+	private Paint getStrokePaint(byte zoomLevel) {
+		Paint paint = strokes.get(zoomLevel);
+		if (paint == null) {
+			paint = this.stroke;
+		}
+		return paint;
+	}
+
+	private float getRenderRadius(byte zoomLevel) {
+		Float radius = renderRadiusScaled.get(zoomLevel);
+		if (radius == null) {
+			radius = this.renderRadius;
+		}
+		return radius;
 	}
 
 }

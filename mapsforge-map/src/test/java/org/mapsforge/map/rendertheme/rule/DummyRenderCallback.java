@@ -18,7 +18,6 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
@@ -41,17 +40,17 @@ class DummyRenderCallback implements RenderCallback {
 	}
 
 	@Override
-	public void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile, PointOfInterest poi) {
+	public void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PointOfInterest poi) {
 		// do nothing
 	}
 
 	@Override
-	public void renderPointOfInterestCircle(final RenderContext renderContext, float radius, Paint fill, Paint stroke, int level, Tile tile, PointOfInterest poi) {
+	public void renderPointOfInterestCircle(final RenderContext renderContext, float radius, Paint fill, Paint stroke, int level, PointOfInterest poi) {
 		// do nothing
 	}
 
 	@Override
-	public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, Tile tile, PointOfInterest poi) {
+	public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PointOfInterest poi) {
 		// do nothing
 	}
 

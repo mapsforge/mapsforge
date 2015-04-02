@@ -123,14 +123,20 @@ class AndroidPaint implements Paint {
 		throw new IllegalArgumentException("unknown font family: " + fontFamily);
 	}
 
-	final android.graphics.Paint paint = new android.graphics.Paint();
+	final android.graphics.Paint paint;
 
 	AndroidPaint() {
+		paint = new android.graphics.Paint();
 		this.paint.setAntiAlias(true);
 		this.paint.setStrokeCap(getAndroidCap(Cap.ROUND));
 		this.paint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
 		this.paint.setStyle(getAndroidStyle(Style.FILL));
 	}
+
+	AndroidPaint(Paint paint) {
+		this.paint = new android.graphics.Paint(((AndroidPaint) paint).paint);
+	}
+
 
 	@Override
 	public int getTextHeight(String text) {

@@ -208,6 +208,12 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	}
 
 	@Override
+	public Paint createPaint(Paint paint) {
+		return new AndroidPaint(paint);
+	}
+
+
+	@Override
 	public Path createPath() {
 		return new AndroidPath();
 	}

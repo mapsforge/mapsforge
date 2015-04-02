@@ -18,7 +18,6 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.reader.PointOfInterest;
 
@@ -79,7 +78,7 @@ public interface RenderCallback {
 	 * @param position
 	 *
 	 */
-	void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, Tile tile, PointOfInterest poi);
+	void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PointOfInterest poi);
 
 	/**
 	 * Renders a point of interest circle with the given parameters.
@@ -93,7 +92,7 @@ public interface RenderCallback {
 *            an optional paint for the circle casing (may be null).
 	 * @param level
 	 */
-	void renderPointOfInterestCircle(final RenderContext renderContext, float radius, Paint fill, Paint stroke, int level, Tile tile, PointOfInterest poi);
+	void renderPointOfInterestCircle(final RenderContext renderContext, float radius, Paint fill, Paint stroke, int level, PointOfInterest poi);
 
 	/**
 	 * Renders a point of interest symbol with the given bitmap.
@@ -101,7 +100,7 @@ public interface RenderCallback {
 	 * @param renderContext
 	 * @param symbol
 	 */
-	void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, Tile tile, PointOfInterest poi);
+	void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PointOfInterest poi);
 
 	/**
 	 * Renders a way with the given parameters.

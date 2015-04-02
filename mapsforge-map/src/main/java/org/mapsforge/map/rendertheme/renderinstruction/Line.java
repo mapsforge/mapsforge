@@ -17,6 +17,8 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -45,11 +47,12 @@ public class Line extends RenderInstruction {
 
 	private boolean bitmapCreated;
 	private float dy;
-	private float dyScaled;
+	private final Map<Byte, Float> dyScaled;
 	private final int level;
 	private final String relativePathPrefix;
 	private String src;
 	private final Paint stroke;
+	private final Map<Byte, Paint> strokes;
 	private float strokeWidth;
 
 	public Line(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -63,6 +66,8 @@ public class Line extends RenderInstruction {
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
 		this.stroke.setStrokeJoin(Join.ROUND);
+		this.strokes = new HashMap<>();
+		this.dyScaled = new HashMap<>();
 
 		extractValues(graphicFactory, displayModel, elementName, pullParser, relativePathPrefix);
 	}
@@ -73,7 +78,7 @@ public class Line extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 		// do nothing
 	}
 
@@ -94,17 +99,26 @@ public class Line extends RenderInstruction {
 
 		this.stroke.setBitmapShaderShift(way.getTile().getOrigin());
 
-		renderCallback.renderWay(renderContext, this.stroke, this.dyScaled, this.level, way);
+		Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+		if (dyScale == null) {
+			dyScale = this.dy;
+		}
+		renderCallback.renderWay(renderContext, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), dyScale, this.level, way);
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
-		this.stroke.setStrokeWidth(this.strokeWidth * scaleFactor);
-		this.dyScaled = this.dy * scaleFactor;
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+		if (this.stroke != null) {
+			Paint s = graphicFactory.createPaint(stroke);
+			s.setStrokeWidth(this.strokeWidth * scaleFactor);
+			strokes.put(zoomLevel, s);
+		}
+
+		this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -119,7 +133,6 @@ public class Line extends RenderInstruction {
 				this.category = value;
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
-				this.dyScaled = this.dy;
 			} else if (STROKE.equals(name)) {
 				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
 			} else if (STROKE_WIDTH.equals(name)) {
@@ -157,5 +170,11 @@ public class Line extends RenderInstruction {
 		return dashIntervals;
 	}
 
-
+	private Paint getStrokePaint(byte zoomLevel) {
+		Paint paint = strokes.get(zoomLevel);
+		if (paint == null) {
+			paint = this.stroke;
+		}
+		return paint;
+	}
 }

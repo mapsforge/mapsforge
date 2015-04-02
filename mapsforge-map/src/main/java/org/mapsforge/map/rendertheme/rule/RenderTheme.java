@@ -17,7 +17,6 @@ package org.mapsforge.map.rendertheme.rule;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.reader.PointOfInterest;
@@ -40,8 +39,6 @@ public class RenderTheme {
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> wayMatchingCache;
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> poiMatchingCache;
 	private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
-	private float textScale;
-	private float strokeWidthScale;
 
 	RenderTheme(RenderThemeBuilder renderThemeBuilder) {
 		this.baseStrokeWidth = renderThemeBuilder.baseStrokeWidth;
@@ -120,18 +117,17 @@ public class RenderTheme {
 	 *  @param renderCallback
 	 *            the callback implementation which will be executed on each match.
 	 * @param renderContext
-	 * @param tile
 	 * @param poi
  *            the point of interest.
 	 */
-	public synchronized void matchNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
-		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(poi.tags, tile.zoomLevel, Closed.NO);
+	public synchronized void matchNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
+		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(poi.tags, renderContext.rendererJob.tile.zoomLevel, Closed.NO);
 
 		List<RenderInstruction> matchingList = this.poiMatchingCache.get(matchingCacheKey);
 		if (matchingList != null) {
 			// cache hit
 			for (int i = 0, n = matchingList.size(); i < n; ++i) {
-				matchingList.get(i).renderNode(renderCallback, renderContext, tile, poi);
+				matchingList.get(i).renderNode(renderCallback, renderContext, poi);
 			}
 			return;
 		}
@@ -140,7 +136,7 @@ public class RenderTheme {
 		matchingList = new ArrayList<RenderInstruction>();
 
 		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).matchNode(renderCallback, renderContext, tile, matchingList, poi);
+			this.rulesList.get(i).matchNode(renderCallback, renderContext, matchingList, poi);
 		}
 		this.poiMatchingCache.put(matchingCacheKey, matchingList);
 	}
@@ -151,12 +147,12 @@ public class RenderTheme {
 	 * @param scaleFactor
 	 *            the factor by which the stroke width should be scaled.
 	 */
-	public void scaleStrokeWidth(float scaleFactor) {
-		if (this.strokeWidthScale != scaleFactor) {
-			for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-				this.rulesList.get(i).scaleStrokeWidth(scaleFactor * this.baseStrokeWidth);
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+			Rule rule = this.rulesList.get(i);
+			if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
+				rule.scaleStrokeWidth(scaleFactor * this.baseStrokeWidth, zoomLevel);
 			}
-			this.strokeWidthScale = scaleFactor;
 		}
 	}
 
@@ -166,12 +162,12 @@ public class RenderTheme {
 	 * @param scaleFactor
 	 *            the factor by which the text size should be scaled.
 	 */
-	public void scaleTextSize(float scaleFactor) {
-		if (this.textScale != scaleFactor) {
-			for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-				this.rulesList.get(i).scaleTextSize(scaleFactor * this.baseTextSize);
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+			Rule rule = this.rulesList.get(i);
+			if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
+				rule.scaleTextSize(scaleFactor * this.baseTextSize, zoomLevel);
 			}
-			this.textScale = scaleFactor;
 		}
 	}
 

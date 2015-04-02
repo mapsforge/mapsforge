@@ -96,7 +96,7 @@ public abstract class RenderInstruction {
 	 * @param renderContext
 	 * @param poi
 	 */
-	public abstract void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi);
+	public abstract void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi);
 
 	/**
 	 * @param renderCallback
@@ -112,7 +112,7 @@ public abstract class RenderInstruction {
 	 * @param scaleFactor
 	 *            the factor by which the stroke width should be scaled.
 	 */
-	public abstract void scaleStrokeWidth(float scaleFactor);
+	public abstract void scaleStrokeWidth(float scaleFactor, byte zoomLevel);
 
 	/**
 	 * Scales the text size of this RenderInstruction by the given factor.
@@ -120,7 +120,7 @@ public abstract class RenderInstruction {
 	 * @param scaleFactor
 	 *            the factor by which the text size should be scaled.
 	 */
-	public abstract void scaleTextSize(float scaleFactor);
+	public abstract void scaleTextSize(float scaleFactor, byte zoomLevel);
 
 
 	protected Bitmap createBitmap(String relativePathPrefix, String src)

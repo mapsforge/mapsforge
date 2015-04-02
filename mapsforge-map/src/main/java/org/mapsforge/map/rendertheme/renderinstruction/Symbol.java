@@ -74,14 +74,14 @@ public class Symbol extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 
 		if (Display.NEVER == this.display) {
 			return;
 		}
 
 		if (getBitmap() != null) {
-			renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, tile, poi);
+			renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, poi);
 		}
 	}
 
@@ -98,12 +98,12 @@ public class Symbol extends RenderInstruction {
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 	private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {
