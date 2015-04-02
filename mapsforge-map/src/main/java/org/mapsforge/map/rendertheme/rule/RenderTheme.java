@@ -15,7 +15,9 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
@@ -39,6 +41,9 @@ public class RenderTheme {
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> wayMatchingCache;
 	private final LRUCache<MatchingCacheKey, List<RenderInstruction>> poiMatchingCache;
 	private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
+
+	private final Map<Byte, Float> strokeScales = new HashMap<>();
+	private final Map<Byte, Float> textScales = new HashMap<>();
 
 	RenderTheme(RenderThemeBuilder renderThemeBuilder) {
 		this.baseStrokeWidth = renderThemeBuilder.baseStrokeWidth;
@@ -142,32 +147,40 @@ public class RenderTheme {
 	}
 
 	/**
-	 * Scales the stroke width of this RenderTheme by the given factor.
+	 * Scales the stroke width of this RenderTheme by the given factor for a given zoom level
 	 * 
 	 * @param scaleFactor
 	 *            the factor by which the stroke width should be scaled.
+	 * @param zoomLevel the zoom level to which this is applied.
 	 */
-	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			Rule rule = this.rulesList.get(i);
-			if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
-				rule.scaleStrokeWidth(scaleFactor * this.baseStrokeWidth, zoomLevel);
+	public synchronized void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+		if (!strokeScales.containsKey(zoomLevel) || scaleFactor != strokeScales.get(zoomLevel)) {
+			for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+				Rule rule = this.rulesList.get(i);
+				if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
+					rule.scaleStrokeWidth(scaleFactor * this.baseStrokeWidth, zoomLevel);
+				}
 			}
+			strokeScales.put(zoomLevel, scaleFactor);
 		}
 	}
 
 	/**
-	 * Scales the text size of this RenderTheme by the given factor.
+	 * Scales the text size of this RenderTheme by the given factor for a given zoom level.
 	 * 
 	 * @param scaleFactor
 	 *            the factor by which the text size should be scaled.
+	 * @param zoomLevel the zoom level to which this is applied.
 	 */
-	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			Rule rule = this.rulesList.get(i);
-			if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
-				rule.scaleTextSize(scaleFactor * this.baseTextSize, zoomLevel);
+	public synchronized void scaleTextSize(float scaleFactor, byte zoomLevel) {
+		if (!textScales.containsKey(zoomLevel) || scaleFactor != textScales.get(zoomLevel)) {
+			for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+				Rule rule = this.rulesList.get(i);
+				if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
+					rule.scaleTextSize(scaleFactor * this.baseTextSize, zoomLevel);
+				}
 			}
+			textScales.put(zoomLevel, scaleFactor);
 		}
 	}
 
