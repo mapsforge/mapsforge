@@ -121,7 +121,7 @@ class AwtPaint implements Paint {
 		AwtPaint ap = (AwtPaint) paint;
 		this.cap = ap.cap;
 		this.color = ap.color;
-		this.style = ap.style = style;
+		this.style = ap.style;
 		this.join = ap.join;
 		this.stroke = ap.stroke;
 		this.fontStyle = ap.fontStyle;
