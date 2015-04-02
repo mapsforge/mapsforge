@@ -28,8 +28,13 @@ import org.mapsforge.map.layer.queue.JobQueue;
 
 public class MapWorkerPool implements Runnable {
 
-	public static final int DEFAULT_NUMBER_OF_THREADS = 6;
+	// the default number of threads is one greater than the number of processors as one thread
+	// is likely to be blocked on I/O reading map data. Technically this value can change, so a
+	// better implementation, maybe one that also takes the available memory into account, would
+	// be good.
+	public static final int DEFAULT_NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors() + 1;
 	public static int NUMBER_OF_THREADS = DEFAULT_NUMBER_OF_THREADS;
+
 	public static boolean DEBUG_TIMING = false;
 
 	private final AtomicInteger concurrentJobs = new AtomicInteger();
