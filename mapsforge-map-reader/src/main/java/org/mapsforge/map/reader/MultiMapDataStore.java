@@ -175,6 +175,9 @@ public class MultiMapDataStore implements MapDataStore {
 		for (MapDataStore mdb : mapDatabases) {
 			if (mdb.supportsTile(tile)) {
 				MapReadResult result = mdb.readMapData(tile);
+				if (result == null) {
+					continue;
+				}
 				mapReadResultBuilder.isWater &= result.isWater;
 
 				if (first) {
