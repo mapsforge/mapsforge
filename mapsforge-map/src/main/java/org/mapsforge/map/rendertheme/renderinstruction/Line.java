@@ -28,7 +28,6 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
@@ -50,6 +49,7 @@ public class Line extends RenderInstruction {
 	private final Map<Byte, Float> dyScaled;
 	private final int level;
 	private final String relativePathPrefix;
+	private Bitmap shaderBitmap;
 	private String src;
 	private final Paint stroke;
 	private final Map<Byte, Paint> strokes;
@@ -83,27 +83,29 @@ public class Line extends RenderInstruction {
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+	public synchronized void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+
 		if (!bitmapCreated) {
 			try {
-				Bitmap shaderBitmap = createBitmap(relativePathPrefix, src);
-				if (shaderBitmap != null) {
-					this.stroke.setBitmapShader(shaderBitmap);
-					shaderBitmap.decrementRefCount();
-				}
+				shaderBitmap = createBitmap(relativePathPrefix, src);
 			} catch (IOException ioException) {
 				// no-op
 			}
 			bitmapCreated = true;
 		}
 
-		this.stroke.setBitmapShaderShift(way.getTile().getOrigin());
+		Paint strokePaint = getStrokePaint(renderContext.rendererJob.tile.zoomLevel);
+
+		if (shaderBitmap != null) {
+			strokePaint.setBitmapShader(shaderBitmap);
+			strokePaint.setBitmapShaderShift(way.getTile().getOrigin());
+		}
 
 		Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
 		if (dyScale == null) {
 			dyScale = this.dy;
 		}
-		renderCallback.renderWay(renderContext, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), dyScale, this.level, way);
+		renderCallback.renderWay(renderContext, strokePaint, dyScale, this.level, way);
 	}
 
 	@Override
