@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright © 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,6 +21,7 @@ import java.awt.Graphics;
 
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
@@ -33,6 +34,7 @@ import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
 import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
+import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
@@ -77,6 +79,12 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		if (this.mapScaleBar != null) {
 			this.mapScaleBar.destroy();
 		}
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(),
+				getDimension(), this.model.displayModel.getTileSize());
 	}
 
 	@Override

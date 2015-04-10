@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright © 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +17,7 @@
 package org.mapsforge.map.android.view;
 
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
@@ -31,6 +32,7 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
@@ -100,6 +102,12 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 			this.mapScaleBar.destroy();
 		}
 		this.getModel().mapViewPosition.destroy();
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(),
+				getDimension(), this.model.displayModel.getTileSize());
 	}
 
 	@Override
