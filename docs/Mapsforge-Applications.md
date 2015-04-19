@@ -22,20 +22,21 @@
 | 16 | mappa | Tourist Map | Proprietary/Commercial | Closed | http://mynativeguide.com/ |
 | 17 | Mapsforge Tile Server | Tile Server | MIT/Free | Open | https://github.com/develar/mapsforge-tile-server |
 | 18 | MapTag | Offline Location Sharing | Proprietary/Commercial | Closed | http://www.rockethub.com/projects/9335-maptag |
-| 19 | Momentum Tracker | Fitness Application | Proprietary/Free and Premium | Closed | https://play.google.com/store/apps/details?id=com.momentum_tracker.android |
-| 20 | Navi Cyprus | Map and navigation application | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi |
-| 21 | Nutiteq | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open | https://github.com/nutiteq/hellomap3d |
-| 22 | Offline City Map | Tourist Map | Proprietary/Commercial | Closed | http://topobyte.de/ |
-| 23 | Offline Maps | Tourist Map | Proprietary/Commercial | Closed | https://play.google.com/store/apps/developer?id=applantation.com |
-| 24 | OpenTrail | Freemap for Android | GPL/Free | Open | http://wiki.openstreetmap.org/wiki/OpenTrail |
-| 25 | OruxMaps | Map Viewer | Proprietary/Free | Closed | http://www.oruxmaps.com/ |
-| 26 | OSMapTuner | Map Viewer & Tag-Editor | Proprietary/Free | Closed | http://osmaptuner.salzburgresearch.at/ |
-| 27 | Pocket Coruna | Tourist guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo&hl=en |
-| 28 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
-| 29 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
-| 30 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
-| 31 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
-| 32 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
+| 19 | Mobile Atlas Creator | Creation of offline atlases | GPL/Free | Open | http://mobac.sourceforge.net/ |
+| 20 | Momentum Tracker | Fitness Application | Proprietary/Free and Premium | Closed | https://play.google.com/store/apps/details?id=com.momentum_tracker.android |
+| 21 | Navi Cyprus | Map and navigation application | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi |
+| 22 | Nutiteq | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open | https://github.com/nutiteq/hellomap3d |
+| 23 | Offline City Map | Tourist Map | Proprietary/Commercial | Closed | http://topobyte.de/ |
+| 24 | Offline Maps | Tourist Map | Proprietary/Commercial | Closed | https://play.google.com/store/apps/developer?id=applantation.com |
+| 25 | OpenTrail | Freemap for Android | GPL/Free | Open | http://wiki.openstreetmap.org/wiki/OpenTrail |
+| 26 | OruxMaps | Map Viewer | Proprietary/Free | Closed | http://www.oruxmaps.com/ |
+| 27 | OSMapTuner | Map Viewer & Tag-Editor | Proprietary/Free | Closed | http://osmaptuner.salzburgresearch.at/ |
+| 28 | Pocket Coruna | Tourist guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo&hl=en |
+| 29 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
+| 30 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
+| 31 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
+| 32 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
+| 33 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
 
 
 You know an application that is missing here? Please inform us by sending a message via our public mapsforge-dev(https://groups.google.com/group/mapsforge-dev) mailing list.
