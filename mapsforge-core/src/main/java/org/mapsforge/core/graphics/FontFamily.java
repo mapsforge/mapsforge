@@ -27,6 +27,6 @@ public enum FontFamily {
 		} else if ("serif".equals(value)) {
 			return SERIF;
 		}
-		throw new IllegalArgumentException("Invalid value for Align: " + value);
+		throw new IllegalArgumentException("Invalid value for FontFamily: " + value);
 	}
 }
