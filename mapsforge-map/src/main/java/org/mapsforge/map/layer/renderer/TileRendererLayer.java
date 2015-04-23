@@ -118,7 +118,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 
 	protected void compileRenderTheme() {
 		this.renderThemeFuture = new RenderThemeFuture(this.graphicFactory, this.xmlRenderTheme, this.displayModel);
-		new Thread(this.renderThemeFuture).run();
+		new Thread(this.renderThemeFuture).start();
 	}
 
 	@Override
