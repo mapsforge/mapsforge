@@ -84,16 +84,16 @@
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>
-											com.jayway.maven.plugins.android.generation2
+											com.simpligility.maven.plugins
 										</groupId>
 										<artifactId>
 											android-maven-plugin
 										</artifactId>
 										<versionRange>
-											[3.8.2,)
+											[4.1.1,)
 										</versionRange>
 										<goals>
-											<goal>consume-aar</goal>
+											<goal>emma</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
