@@ -70,10 +70,10 @@ public class ItemDetailActivity extends FragmentActivity {
 			Bundle arguments = new Bundle();
 			arguments.putString(ItemDetailFragment.ARG_ITEM_ID, getIntent()
 					.getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
-			ItemDetailFragment fragment = new ItemDetailFragment();
-			fragment.setArguments(arguments);
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.item_detail_container, fragment).commit();
+            ItemDetailFragment fragment = new ItemDetailFragment();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.item_detail_container, fragment, "fragmentMap").commit();
 		}
 	}
 }

@@ -77,7 +77,7 @@ public class DummyContent {
 		ITEM_MAP.put(item.id, item);
 	}
 
-	private DummyContent() {
+	protected DummyContent() {
 		// no-op
 	}
 }

@@ -50,7 +50,7 @@ public class ItemDetailFragment extends Fragment {
 	/**
 	 * The dummy content this fragment is presenting.
 	 */
-	private DummyContent.DummyItem dummyItem;
+	protected DummyContent.DummyItem dummyItem;
 	private MapView mapView;
 	private TileCache tileCache;
 
@@ -96,7 +96,7 @@ public class ItemDetailFragment extends Fragment {
 					"fragments",
 					this.mapView.getModel().displayModel.getTileSize(), 1.0f,
 					1.5);
-
+            this.tileCache.purge();
 			mapViewPosition.setCenter(this.dummyItem.location);
 			layers.add(AndroidUtil.createTileRendererLayer(this.tileCache,
 					mapViewPosition, getMapFile(),

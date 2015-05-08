@@ -178,6 +178,8 @@ public class Samples extends Activity {
 
 		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer (alpha)", null));
 
+        linearLayout.addView(createButton(ClusterMapActivity.class, "Marker clustering (alpha)", null));
+
 	}
 
 	private Button createButton(final Class<?> clazz, String text, final OnClickListener customListener) {

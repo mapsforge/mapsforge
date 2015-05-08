@@ -105,7 +105,7 @@ public final class Utils {
 		};
 	}
 
-	static Bitmap viewToBitmap(Context c, View view) {
+	public static Bitmap viewToBitmap(Context c, View view) {
 		view.measure(MeasureSpec.getSize(view.getMeasuredWidth()),
 				MeasureSpec.getSize(view.getMeasuredHeight()));
 		view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());

@@ -144,6 +144,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Map Rotation (external)" />
         <activity
+            android:name=".ClusterMapActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Marker Clustering" />
+        <activity
             android:name=".ItemListActivity"
             android:label="Fragments Item List"
             android:parentActivityName="org.mapsforge.applications.android.samples.Samples" >

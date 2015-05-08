@@ -18,7 +18,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.MenuItem;
+
+import org.mapsforge.applications.android.samples.dummy.DummyContent;
+import org.mapsforge.map.reader.MapFile;
 
 /**
  * An activity representing a list of Items. This activity has different
@@ -37,7 +41,8 @@ import android.view.MenuItem;
  */
 public class ItemListActivity extends FragmentActivity implements
 		ItemListFragment.Callbacks {
-	/**
+    private static final String TAG = ItemListActivity.class.getSimpleName();
+    /**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet
 	 * device.
 	 */
@@ -53,12 +58,24 @@ public class ItemListActivity extends FragmentActivity implements
 			// In two-pane mode, show the detail view in this activity by
 			// adding or replacing the detail fragment using a
 			// fragment transaction.
-			Bundle arguments = new Bundle();
-			arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
-			ItemDetailFragment fragment = new ItemDetailFragment();
-			fragment.setArguments(arguments);
+			Bundle arguments;
+
+            ItemDetailFragment fragment = (ItemDetailFragment)getSupportFragmentManager()
+                    .findFragmentByTag("fragmentMap"); // new ItemDetailFragment();
+            if ( fragment == null ) {
+                Log.e(TAG, " fragment == null ");
+                fragment = new ItemDetailFragment();
+                arguments = new Bundle();
+                arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
+                fragment.setArguments(arguments);
+            }
+            else {
+                Log.e(TAG, " fragment != null... ");
+                arguments = fragment.getArguments();
+                arguments.putString(ItemDetailFragment.ARG_ITEM_ID, id);
+            }
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.item_detail_container, fragment).commit();
+					.add(R.id.item_detail_container, fragment, "fragmentMap").commit();
 		} else {
 			// In single-pane mode, simply start the detail activity
 			// for the selected item ID.
@@ -66,6 +83,7 @@ public class ItemListActivity extends FragmentActivity implements
 			detailIntent.putExtra(ItemDetailFragment.ARG_ITEM_ID, id);
 			startActivity(detailIntent);
 		}
+        MapFile mapFile;
 	}
 
 	@Override
@@ -88,7 +106,7 @@ public class ItemListActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_item_list);
+		setContentView(R.layout.activity_item_twopane);
 
 		Utils.enableHome(this);
 
