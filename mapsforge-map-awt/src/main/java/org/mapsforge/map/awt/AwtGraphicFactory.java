@@ -56,7 +56,7 @@ public class AwtGraphicFactory implements GraphicFactory {
 		return ((AwtMatrix) matrix).affineTransform;
 	}
 
-	static AwtPaint getPaint(Paint paint) {
+	public static AwtPaint getPaint(Paint paint) {
 		return (AwtPaint) paint;
 	}
 

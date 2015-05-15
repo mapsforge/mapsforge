@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -35,7 +35,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 
-class AwtPaint implements Paint {
+public class AwtPaint implements Paint {
 
 	// needed to record size of bitmap shader to compute the shift
 	private int shaderWidth;
@@ -234,5 +234,9 @@ class AwtPaint implements Paint {
 			return;
 		}
 		this.stroke = new BasicStroke(this.strokeWidth, this.cap, this.join, this.join == BasicStroke.JOIN_MITER ? 1.0f : 0, this.strokeDasharray, 0);
+	}
+
+	public void setStroke(Stroke stroke) {
+		this.stroke = stroke;
 	}
 }
