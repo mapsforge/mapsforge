@@ -56,11 +56,11 @@ public class AwtGraphicFactory implements GraphicFactory {
 		return ((AwtMatrix) matrix).affineTransform;
 	}
 
-	static AwtPaint getAwtPaint(Paint paint) {
+	static AwtPaint getPaint(Paint paint) {
 		return (AwtPaint) paint;
 	}
 
-	static AwtPath getAwtPath(Path path) {
+	static AwtPath getPath(Path path) {
 		return (AwtPath) path;
 	}
 

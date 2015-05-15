@@ -71,7 +71,7 @@ class AwtCanvas implements Canvas {
 			return;
 		}
 
-		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
+		AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
 		setColorAndStroke(awtPaint);
 		int doubleRadius = radius * 2;
 
@@ -95,7 +95,7 @@ class AwtCanvas implements Canvas {
 			return;
 		}
 
-		setColorAndStroke(AwtGraphicFactory.getAwtPaint(paint));
+		setColorAndStroke(AwtGraphicFactory.getPaint(paint));
 		this.graphics2D.drawLine(x1, y1, x2, y2);
 	}
 
@@ -105,8 +105,8 @@ class AwtCanvas implements Canvas {
 			return;
 		}
 
-		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
-		AwtPath awtPath = AwtGraphicFactory.getAwtPath(path);
+		AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
+		AwtPath awtPath = AwtGraphicFactory.getPath(path);
 
 		setColorAndStroke(awtPaint);
 		this.graphics2D.setPaint(awtPaint.texturePaint);
@@ -132,7 +132,7 @@ class AwtCanvas implements Canvas {
 			return;
 		}
 
-		AwtPaint awtPaint = AwtGraphicFactory.getAwtPaint(paint);
+		AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
 
 		if (awtPaint.stroke == null) {
 			this.graphics2D.setColor(awtPaint.color);
