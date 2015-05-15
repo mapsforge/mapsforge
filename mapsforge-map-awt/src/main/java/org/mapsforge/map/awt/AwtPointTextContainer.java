@@ -56,7 +56,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 		int textWidth = this.paintFront.getTextWidth(this.text);
 		if (textWidth > maxTextWidth) {
 			AttributedString attrString = new AttributedString(this.text);
-			AwtPaint awtPaintFront = AwtGraphicFactory.getAwtPaint(this.paintFront);
+			AwtPaint awtPaintFront = AwtGraphicFactory.getPaint(this.paintFront);
 			attrString.addAttribute(TextAttribute.FOREGROUND, awtPaintFront.color);
 			attrString.addAttribute(TextAttribute.FONT, awtPaintFront.font);
 			AttributedCharacterIterator paragraph = attrString.getIterator();
@@ -106,7 +106,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 					throw new IllegalArgumentException("No position for drawing PointTextContainer");
 				}
 				if (this.paintBack != null) {
-					awtCanvas.setColorAndStroke(AwtGraphicFactory.getAwtPaint(this.paintBack));
+					awtCanvas.setColorAndStroke(AwtGraphicFactory.getPaint(this.paintBack));
 					AffineTransform affineTransform = new AffineTransform();
 					affineTransform.translate(posX, posY);
 					awtCanvas.getGraphicObject().draw(layout.getOutline(affineTransform));
