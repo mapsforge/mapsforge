@@ -215,7 +215,7 @@ The Samples app has a completely worked style menu.
 
 ## Map Integration
 
-When a V4 rendertheme is parsed, the style menu definitons are parsed and a callback is made into the application giving it access to the stylemenu definitions. 
+When a V4 rendertheme is parsed, the style menu definitions are parsed and a callback is made into the application giving it access to the stylemenu definitions. 
 
 On Android, the stylemenus can thus be converted into standard Android settings, providing a seamless integration of the rendertheme definitions that do not require changes every time the rendertheme changes. There is an example on how to do this in the Samples app, see the Settings.java file. 
 
@@ -260,7 +260,7 @@ Labels and icons are now drawn in order of priority, higher priorities first. Th
     		</rule>
 
 ## Display
-The display directive has been added whereever priorities can be used. The following values can be used:
+The display directive has been added wherever priorities can be used. The following values can be used:
  - always: an element will always be displayed regardless of space. 
  - ifspace: an element will only be displayed if the layout algorithm determines there is space and no higher priority element will take it. 
  - never: an element is not displayed. This is useful to blank out elements.
