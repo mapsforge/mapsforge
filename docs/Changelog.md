@@ -3,8 +3,9 @@
 <wiki:toc />
 
 ## New since 0.5.1
- - Multi-threaded map rendering.
- - Geographic grid layer improvements.
+ - Multi-threaded map rendering
+ - Geographic grid layer improvements
+ - Java painting enhancements
 
 ## Version 0.5.1
  **2015-13-18**
