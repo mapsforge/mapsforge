@@ -44,6 +44,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -272,7 +273,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
 		// this allows loading of resource bitmaps from the Andorid assets folder
 		if (src.startsWith(PREFIX_ASSETS)) {
-			String pathName = (relativePathPrefix == null) ? "" : relativePathPrefix + src.substring(PREFIX_ASSETS.length());
+			String pathName = (TextUtils.isEmpty(relativePathPrefix) ? "" : relativePathPrefix) + src.substring(PREFIX_ASSETS.length());
 			InputStream inputStream = this.application.getAssets().open(pathName);
 			if (inputStream == null) {
 				throw new FileNotFoundException("resource not found: " + pathName);

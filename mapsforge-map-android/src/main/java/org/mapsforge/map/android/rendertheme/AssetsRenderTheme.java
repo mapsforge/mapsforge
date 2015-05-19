@@ -21,12 +21,12 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 /**
  * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder.
  */
 public class AssetsRenderTheme implements XmlRenderTheme {
-	private static final long serialVersionUID = 1L;
 
 	private final String assetName;
 	private final InputStream inputStream;
@@ -43,7 +43,7 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) throws IOException {
 		this.assetName = fileName;
 		this.relativePathPrefix = relativePathPrefix;
-		this.inputStream = context.getAssets().open((this.relativePathPrefix == null) ? "" : this.relativePathPrefix + this.assetName);
+		this.inputStream = context.getAssets().open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.assetName);
 		this.menuCallback = menuCallback;
 	}
 
