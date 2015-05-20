@@ -120,7 +120,7 @@ public class TileStore implements TileCache {
 		// no-op
 	}
 
-	File findFile(Job key) {
+	protected File findFile(Job key) {
 		// slow descent at the moment, better for debugging.
 		File l1 = new File(this.rootDirectory, Byte.toString(key.tile.zoomLevel));
 		if (!l1.isDirectory() || !l1.canRead()) {
