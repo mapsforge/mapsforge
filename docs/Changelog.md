@@ -6,6 +6,8 @@
  - Multi-threaded map rendering
  - Geographic grid layer improvements
  - Java painting enhancements
+ - Map writer tag-mapping improvements
+ - Render themes (Osmarender, RenderThemeV4) improvements
 
 ## Version 0.5.1
  **2015-13-18**
