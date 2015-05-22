@@ -425,7 +425,7 @@
 		<osm-tag key="barrier" value="retaining_wall" zoom-appear="16" />
 		<osm-tag key="barrier" value="wall" zoom-appear="16" />
 
-		<osm-tag key="boundary" value="administrative" force-polygon-line="true" zoom-appear="0" enabled="false" />
+		<osm-tag key="boundary" value="administrative" force-polygon-line="true" zoom-appear="0" />
 		<osm-tag key="boundary" value="national_park" zoom-appear="12" />
 
 		<osm-tag key="historic" value="ruins" zoom-appear="17" />
