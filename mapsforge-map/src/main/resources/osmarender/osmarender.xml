@@ -7,7 +7,7 @@
 	</rule>
 
 	<rule e="way" k="natural" v="nosea">
-		<area fill="#F8F8F8"/>
+		<area fill="#F8F8F8" stroke="#F8F8F8" stroke-width="1.0"/>
 	</rule>
 
 	<!-- ways -->
