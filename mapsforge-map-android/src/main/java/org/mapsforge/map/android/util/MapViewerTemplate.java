@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright © 2013-2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright © 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.map.android.util;
 
 import android.app.Activity;
@@ -72,12 +71,10 @@ public abstract class MapViewerTemplate extends Activity  {
 	 */
 	protected abstract String getMapFileName();
 
-
 	/**
 	 * @return the rendertheme for this viewer
 	 */
 	protected abstract XmlRenderTheme getRenderTheme();
-
 
 	/**
 	 * Hook to create map layers. You will need to create at least one layer to
@@ -90,7 +87,6 @@ public abstract class MapViewerTemplate extends Activity  {
 	 * for the renderer. If you do not need tilecaches just provide an empty implementation.
 	 */
 	protected abstract void createTileCaches();
-
 
 	/**
 	 * Hook to create controls, such as scale bars.
@@ -128,7 +124,6 @@ public abstract class MapViewerTemplate extends Activity  {
 		}
 		tileCaches.clear();
 	}
-
 
 	/**
 	 * The MaxTextWidthFactor determines how long a text may be before it is line broken. The
@@ -310,7 +305,6 @@ public abstract class MapViewerTemplate extends Activity  {
 		this.preferencesFacade.save();
 	}
 
-
 	/**
 	 * Android Activity life cycle method.
 	 */
@@ -324,6 +318,16 @@ public abstract class MapViewerTemplate extends Activity  {
 		AndroidGraphicFactory.clearResourceMemoryCache();
 	}
 
+	/**
+	 * Hook to purge tile caches.
+	 * By default we purge every tile cache that has been added to the tileCaches list.
+	 */
+	protected void purgeTileCaches() {
+		for (TileCache tileCache : tileCaches) {
+			tileCache.purge();
+		}
+		tileCaches.clear();
+	}
 
 	protected void redrawLayers() {
 		mapView.getLayerManager().redrawLayers();
@@ -345,5 +349,4 @@ public abstract class MapViewerTemplate extends Activity  {
 		setContentView(getLayoutId());
 		return (MapView) findViewById(getMapViewId());
 	}
-
 }

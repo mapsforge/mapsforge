@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -82,7 +82,7 @@ public class TileSizeChanger extends RenderTheme4 {
 			// destroy and recreate the tile caches so that old storage is
 			// freed and a new tile cache is created based on the new tile size
 			destroyLayers();
-			destroyTileCaches();
+			purgeTileCaches();
 
 			int tileSize = tileSizes[iteration % tileSizes.length];
 			this.mapView.getModel().displayModel.setFixedTileSize(tileSize);
