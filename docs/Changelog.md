@@ -8,6 +8,7 @@
  - Java painting enhancements
  - Map writer tag-mapping improvements
  - Render themes (Osmarender, RenderThemeV4) improvements
+ - Many other minor improvements and bugfixes
 
 ## Version 0.5.1
  **2015-13-18**
