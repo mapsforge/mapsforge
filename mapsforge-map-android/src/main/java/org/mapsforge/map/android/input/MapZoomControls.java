@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -103,6 +104,7 @@ public class MapZoomControls implements Observer {
 	 */
 	private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
 
+	private boolean autoHide = true;
 	private boolean gravityChanged;
 	private final MapView mapView;
 	private boolean showMapZoomControls;
@@ -161,6 +163,13 @@ public class MapZoomControls implements Observer {
 	}
 
 	/**
+	 * @return true if the zoom controls hide automatically, false otherwise.
+	 */
+	public boolean isAutoHide() {
+		return this.autoHide;
+	}
+
+	/**
 	 * @return true if the zoom controls are visible, false otherwise.
 	 */
 	public boolean isShowMapZoomControls() {
@@ -197,7 +206,7 @@ public class MapZoomControls implements Observer {
 			// no multitouch
 			return;
 		}
-		if (this.showMapZoomControls) {
+		if (this.showMapZoomControls && this.autoHide) {
 			switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					showZoomControls();
@@ -224,6 +233,17 @@ public class MapZoomControls implements Observer {
 					changeZoomControls(newZoomLevel);
 				}
 			});
+		}
+	}
+
+	/**
+	 * @param autoHide
+	 *            true if the zoom controls hide automatically, false otherwise.
+	 */
+	public void setAutoHide(boolean autoHide) {
+		this.autoHide = autoHide;
+		if (!this.autoHide) {
+			showZoomControls();
 		}
 	}
 
