@@ -164,6 +164,7 @@ public abstract class MapViewerTemplate extends Activity  {
 		mapView.setClickable(true);
 		mapView.getMapScaleBar().setVisible(true);
 		mapView.setBuiltInZoomControls(hasZoomControls());
+		mapView.getMapZoomControls().setAutoHide(isZoomControlsAutoHide());
 		mapView.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(getZoomLevelMax());
 		initializePosition(mapView.getModel().mapViewPosition);
@@ -260,6 +261,14 @@ public abstract class MapViewerTemplate extends Activity  {
 	 * @return true if the map has standard zoom controls.
 	 */
 	protected boolean hasZoomControls() {
+		return true;
+	}
+
+	/**
+	 * Configuration method to set if map view activity's zoom controls hide automatically.
+	 * @return true if zoom controls hide automatically.
+	 */
+	protected boolean isZoomControlsAutoHide() {
 		return true;
 	}
 
