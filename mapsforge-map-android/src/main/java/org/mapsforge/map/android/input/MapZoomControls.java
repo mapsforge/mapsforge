@@ -97,16 +97,23 @@ public class MapZoomControls implements Observer {
 	/**
 	 * Horizontal padding for the zoom controls.
 	 */
-	private static final int ZOOM_CONTROLS_HORIZONTAL_PADDING = 5;
+	private static final int DEFAULT_ZOOM_CONTROLS_HORIZONTAL_PADDING = 5;
+
+	/**
+	 * Vertical padding for the zoom controls.
+	 */
+	private static final int DEFAULT_ZOOM_CONTROLS_VERTICAL_PADDING = 0;
 
 	/**
 	 * Delay in milliseconds after which the zoom controls disappear.
 	 */
 	private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
 
-	private boolean autoHide = true;
+	private boolean autoHide;
 	private boolean gravityChanged;
 	private final MapView mapView;
+	private int paddingHorizontal;
+	private int paddingVertical;
 	private boolean showMapZoomControls;
 	private final ZoomControls zoomControls;
 	private int zoomControlsGravity;
@@ -117,6 +124,9 @@ public class MapZoomControls implements Observer {
 	public MapZoomControls(Context context, final MapView mapView) {
 		this.mapView = mapView;
 		this.zoomControls = new ZoomControls(context);
+		this.autoHide = true;
+		this.paddingHorizontal = DEFAULT_ZOOM_CONTROLS_HORIZONTAL_PADDING;
+		this.paddingVertical = DEFAULT_ZOOM_CONTROLS_VERTICAL_PADDING;
 		this.showMapZoomControls = true;
 		this.zoomLevelMax = DEFAULT_ZOOM_LEVEL_MAX;
 		this.zoomLevelMin = DEFAULT_ZOOM_LEVEL_MIN;
@@ -138,6 +148,14 @@ public class MapZoomControls implements Observer {
 
 	public int getMeasuredWidth() {
 		return this.zoomControls.getMeasuredWidth();
+	}
+
+	public int getPaddingHorizontal() {
+		return paddingHorizontal;
+	}
+
+	public int getPaddingVertical() {
+		return paddingVertical;
 	}
 
 	/**
@@ -247,6 +265,14 @@ public class MapZoomControls implements Observer {
 		}
 	}
 
+	public void setPaddingHorizontal(int paddingHorizontal) {
+		this.paddingHorizontal = paddingHorizontal;
+	}
+
+	public void setPaddingVertical(int paddingVertical) {
+		this.paddingVertical = paddingVertical;
+	}
+
 	/**
 	 * @param showMapZoomControls
 	 *            true if the zoom controls should be visible, false otherwise.
@@ -307,13 +333,13 @@ public class MapZoomControls implements Observer {
 		int gravity = this.zoomControlsGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
 		switch (gravity) {
 			case Gravity.LEFT:
-				return ZOOM_CONTROLS_HORIZONTAL_PADDING;
+				return paddingHorizontal;
 
 			case Gravity.CENTER_HORIZONTAL:
 				return (right - left - zoomControlsWidth) / 2;
 
 			case Gravity.RIGHT:
-				return right - left - zoomControlsWidth - ZOOM_CONTROLS_HORIZONTAL_PADDING;
+				return right - left - zoomControlsWidth - paddingHorizontal;
 		}
 
 		throw new IllegalArgumentException("unknown horizontal gravity: " + gravity);
@@ -323,13 +349,13 @@ public class MapZoomControls implements Observer {
 		int gravity = this.zoomControlsGravity & Gravity.VERTICAL_GRAVITY_MASK;
 		switch (gravity) {
 			case Gravity.TOP:
-				return 0;
+				return paddingVertical;
 
 			case Gravity.CENTER_VERTICAL:
 				return (bottom - top - zoomControlsHeight) / 2;
 
 			case Gravity.BOTTOM:
-				return bottom - top - zoomControlsHeight;
+				return bottom - top - zoomControlsHeight - paddingVertical;
 		}
 
 		throw new IllegalArgumentException("unknown vertical gravity: " + gravity);
