@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  * Copyright 2014 Erik Duisters
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -32,20 +32,30 @@ import org.mapsforge.map.view.MapView;
  * A MapScaleBar displays the ratio of a distance on the map to the corresponding distance on the ground.
  */
 public abstract class MapScaleBar {
-	private static final int MARGIN_BOTTOM = 0;
-	private static final int MARGIN_LEFT = 5;
+	public static enum ScaleBarPosition { BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT }
+
+	/**
+	 * Default position of the scale bar.
+	 */
+	private static final ScaleBarPosition DEFAULT_SCALE_BAR_POSITION = ScaleBarPosition.BOTTOM_LEFT;
+
+	private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+	private static final int DEFAULT_VERTICAL_MARGIN = 0;
 	private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
 
-	private MapViewPosition mapViewPosition;
-	private MapViewDimension mapViewDimension;
-	private MapPosition prevMapPosition;
-	protected DisplayModel displayModel;
-	protected GraphicFactory graphicFactory;
-	private Bitmap mapScaleBitmap;
-	protected final Canvas mapScaleCanvas;
+	protected final DisplayModel displayModel;
 	protected DistanceUnitAdapter distanceUnitAdapter;
-	protected boolean visible;
+	protected final GraphicFactory graphicFactory;
+	private final Bitmap mapScaleBitmap;
+	private final Canvas mapScaleCanvas;
+	private final MapViewDimension mapViewDimension;
+	private final MapViewPosition mapViewPosition;
+	private int marginHorizontal;
+	private int marginVertical;
+	private MapPosition prevMapPosition;
 	protected boolean redrawNeeded;
+	private ScaleBarPosition scaleBarPosition;
+	private boolean visible;
 
 	/**
 	 * Internal class used by calculateScaleBarLengthAndValue
@@ -68,6 +78,10 @@ public abstract class MapScaleBar {
 		this.graphicFactory = graphicFactory;
 		this.mapScaleBitmap = graphicFactory.createBitmap((int) (width * this.displayModel.getScaleFactor()),
 				(int) (height * this.displayModel.getScaleFactor()));
+
+		this.marginHorizontal = DEFAULT_HORIZONTAL_MARGIN;
+		this.marginVertical = DEFAULT_VERTICAL_MARGIN;
+		this.scaleBarPosition = DEFAULT_SCALE_BAR_POSITION;
 
 		this.mapScaleCanvas = graphicFactory.createCanvas();
 		this.mapScaleCanvas.setBitmap(this.mapScaleBitmap);
@@ -120,6 +134,73 @@ public abstract class MapScaleBar {
 		}
 		this.distanceUnitAdapter = distanceUnitAdapter;
 		this.redrawNeeded = true;
+	}
+
+	public int getMarginHorizontal() {
+		return marginHorizontal;
+	}
+
+	public void setMarginHorizontal(int marginHorizontal) {
+		if (this.marginHorizontal != marginHorizontal) {
+			this.marginHorizontal = marginHorizontal;
+			this.redrawNeeded = true;
+		}
+	}
+
+	public int getMarginVertical() {
+		return marginVertical;
+	}
+
+	public void setMarginVertical(int marginVertical) {
+		if (this.marginVertical != marginVertical) {
+			this.marginVertical = marginVertical;
+			this.redrawNeeded = true;
+		}
+	}
+
+	public ScaleBarPosition getScaleBarPosition() {
+		return scaleBarPosition;
+	}
+
+	public void setScaleBarPosition(ScaleBarPosition scaleBarPosition) {
+		if (this.scaleBarPosition != scaleBarPosition) {
+			this.scaleBarPosition = scaleBarPosition;
+			this.redrawNeeded = true;
+		}
+	}
+
+	private int calculatePositionLeft(int left, int right, int width) {
+		switch (scaleBarPosition) {
+		case BOTTOM_LEFT:
+		case TOP_LEFT:
+			return marginHorizontal;
+
+		case BOTTOM_CENTER:
+		case TOP_CENTER:
+			return (right - left - width) / 2;
+
+		case BOTTOM_RIGHT:
+		case TOP_RIGHT:
+			return right - left - width - marginHorizontal;
+		}
+
+		throw new IllegalArgumentException("unknown horizontal position: " + scaleBarPosition);
+	}
+
+	private int calculatePositionTop(int top, int bottom, int height) {
+		switch (scaleBarPosition) {
+		case TOP_CENTER:
+		case TOP_LEFT:
+		case TOP_RIGHT:
+			return marginVertical;
+
+		case BOTTOM_CENTER:
+		case BOTTOM_LEFT:
+		case BOTTOM_RIGHT:
+			return bottom - top - height - marginVertical;
+		}
+
+		throw new IllegalArgumentException("unknown vertical position: " + scaleBarPosition);
 	}
 
 	/**
@@ -180,8 +261,10 @@ public abstract class MapScaleBar {
 			this.redrawNeeded = false;
 		}
 
-		int top = this.mapViewDimension.getDimension().height - this.mapScaleBitmap.getHeight() - MARGIN_BOTTOM;
-		graphicContext.drawBitmap(this.mapScaleBitmap, MARGIN_LEFT, top);
+		int positionLeft = calculatePositionLeft(0, this.mapViewDimension.getDimension().width, this.mapScaleBitmap.getWidth());
+		int positionTop = calculatePositionTop(0, this.mapViewDimension.getDimension().height, this.mapScaleBitmap.getHeight());
+
+		graphicContext.drawBitmap(this.mapScaleBitmap, positionLeft, positionTop);
 	}
 
 	/**
