@@ -110,7 +110,7 @@ public class MapZoomControls implements Observer {
 	private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
 
 	private boolean autoHide;
-	private boolean gravityChanged;
+	private boolean layoutChanged;
 	private final MapView mapView;
 	private int paddingHorizontal;
 	private int paddingVertical;
@@ -195,7 +195,7 @@ public class MapZoomControls implements Observer {
 	}
 
 	public void layout(boolean changed, int left, int top, int right, int bottom) {
-		if (!changed && !this.gravityChanged) {
+		if (!changed && !this.layoutChanged) {
 			return;
 		}
 
@@ -208,7 +208,7 @@ public class MapZoomControls implements Observer {
 		int positionBottom = positionTop + zoomControlsHeight;
 
 		this.zoomControls.layout(positionLeft, positionTop, positionRight, positionBottom);
-		this.gravityChanged = false;
+		this.layoutChanged = false;
 	}
 
 	public void measure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -266,11 +266,17 @@ public class MapZoomControls implements Observer {
 	}
 
 	public void setPaddingHorizontal(int paddingHorizontal) {
-		this.paddingHorizontal = paddingHorizontal;
+		if (this.paddingHorizontal != paddingHorizontal) {
+			this.paddingHorizontal = paddingHorizontal;
+			this.layoutChanged = true;
+		}
 	}
 
 	public void setPaddingVertical(int paddingVertical) {
-		this.paddingVertical = paddingVertical;
+		if (this.paddingVertical != paddingVertical) {
+			this.paddingVertical = paddingVertical;
+			this.layoutChanged = true;
+		}
 	}
 
 	/**
@@ -292,7 +298,7 @@ public class MapZoomControls implements Observer {
 	public void setZoomControlsGravity(int zoomControlsGravity) {
 		if (this.zoomControlsGravity != zoomControlsGravity) {
 			this.zoomControlsGravity = zoomControlsGravity;
-			this.gravityChanged = true;
+			this.layoutChanged = true;
 		}
 	}
 
