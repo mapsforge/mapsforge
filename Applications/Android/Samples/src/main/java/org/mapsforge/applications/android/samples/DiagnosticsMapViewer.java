@@ -1,6 +1,6 @@
 /*
- * Copyright © 2013-2014 Ludwig M Brinckmann
- * Copyright © 2015 devemux86
+ * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software

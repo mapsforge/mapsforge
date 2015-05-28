@@ -1,9 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
- * Copyright © 2014 Erik Duisters
- * Copyright © 2014 Christian Pesch
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
+ * Copyright 2014 Erik Duisters
+ * Copyright 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
