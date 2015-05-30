@@ -30,7 +30,6 @@ import org.mapsforge.map.controller.MapViewController;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
-import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.view.FpsCounter;
@@ -90,7 +89,6 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.mapZoomControls = new MapZoomControls(context, this);
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
 				GRAPHIC_FACTORY, this.model.displayModel);
-		((DefaultMapScaleBar) this.mapScaleBar).setScaleBarMode(ScaleBarMode.BOTH);
 	}
 
 	@Override
