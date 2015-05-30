@@ -54,7 +54,7 @@ public abstract class MapScaleBar {
 	private int marginVertical;
 	private MapPosition prevMapPosition;
 	protected boolean redrawNeeded;
-	private ScaleBarPosition scaleBarPosition;
+	protected ScaleBarPosition scaleBarPosition;
 	private boolean visible;
 
 	/**
