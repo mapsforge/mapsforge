@@ -149,7 +149,7 @@ public class AwtPaint implements Paint {
 		Graphics2D graphics2d = bufferedImage.createGraphics();
 		FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
 		graphics2d.dispose();
-		return (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getWidth();
+		return fontMetrics.stringWidth(text);
 	}
 
 	@Override
