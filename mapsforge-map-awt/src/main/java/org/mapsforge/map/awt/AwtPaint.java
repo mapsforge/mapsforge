@@ -19,6 +19,7 @@ package org.mapsforge.map.awt;
 import java.awt.BasicStroke;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
@@ -36,10 +37,6 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 
 public class AwtPaint implements Paint {
-
-	// needed to record size of bitmap shader to compute the shift
-	private int shaderWidth;
-	private int shaderHeight;
 
 	private static int getCap(Cap cap) {
 		switch (cap) {
@@ -83,6 +80,7 @@ public class AwtPaint implements Paint {
 
 		throw new IllegalArgumentException("unknown fontStyle: " + fontStyle);
 	}
+
 	private static int getJoin(Join join) {
 		switch (join) {
 			case ROUND:
@@ -96,7 +94,6 @@ public class AwtPaint implements Paint {
 		throw new IllegalArgumentException("unknown cap: " + join);
 	}
 
-
 	java.awt.Color color;
 	Font font;
 	Stroke stroke;
@@ -109,6 +106,13 @@ public class AwtPaint implements Paint {
 	private float[] strokeDasharray;
 	private float strokeWidth;
 	private float textSize;
+
+	// needed to record size of bitmap shader to compute the shift
+	private int shaderWidth;
+	private int shaderHeight;
+
+	// Avoid creating unnecessary objects
+	private final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
 	AwtPaint() {
 		this.cap = getCap(Cap.ROUND);
@@ -132,18 +136,19 @@ public class AwtPaint implements Paint {
 		this.strokeDasharray = ap.strokeDasharray;
 	}
 
-
 	@Override
 	public int getTextHeight(String text) {
-		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
+		Graphics2D graphics2d = bufferedImage.createGraphics();
+		FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
+		graphics2d.dispose();
 		return (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getHeight();
 	}
 
 	@Override
 	public int getTextWidth(String text) {
-		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-		FontMetrics fontMetrics = bufferedImage.getGraphics().getFontMetrics(this.font);
+		Graphics2D graphics2d = bufferedImage.createGraphics();
+		FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
+		graphics2d.dispose();
 		return (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getWidth();
 	}
 
