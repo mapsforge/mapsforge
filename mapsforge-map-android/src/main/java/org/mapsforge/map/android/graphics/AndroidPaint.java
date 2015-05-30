@@ -147,8 +147,7 @@ class AndroidPaint implements Paint {
 
 	@Override
 	public int getTextWidth(String text) {
-		this.paint.getTextBounds(text, 0, text.length(), rect);
-		return rect.width();
+		return (int) this.paint.measureText(text);
 	}
 
 	@Override
