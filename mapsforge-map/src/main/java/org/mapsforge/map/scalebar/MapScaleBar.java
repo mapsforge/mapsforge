@@ -46,8 +46,8 @@ public abstract class MapScaleBar {
 	protected final DisplayModel displayModel;
 	protected DistanceUnitAdapter distanceUnitAdapter;
 	protected final GraphicFactory graphicFactory;
-	private final Bitmap mapScaleBitmap;
-	private final Canvas mapScaleCanvas;
+	protected final Bitmap mapScaleBitmap;
+	protected final Canvas mapScaleCanvas;
 	private final MapViewDimension mapViewDimension;
 	private final MapViewPosition mapViewPosition;
 	private int marginHorizontal;
@@ -279,7 +279,7 @@ public abstract class MapScaleBar {
 	 * 
 	 * @return true if redraw is necessary, false otherwise
 	 */
-	private boolean isRedrawNecessary() {
+	protected boolean isRedrawNecessary() {
 		if (this.redrawNeeded || this.prevMapPosition == null) {
 			return true;
 		}
