@@ -147,16 +147,6 @@
 		<area fill="#F8F8F8" stroke="#F8F8F8" stroke-width="1.0"/>
 	</rule>
 
-	<!-- land/sea -->
-	<rule cat="nature" e="way" k="natural" v="coastline">
-		<rule e="way" k="*" v="*" closed="no">
-			<line stroke="#D4D4D4" stroke-width="2.0"/>
-		</rule>
-		<rule e="way" k="*" v="*" closed="yes">
-			<area fill="#BBF8F8F8" stroke="#D4D4D4" stroke-width="0.2"/>
-		</rule>
-	</rule>
-
 	<rule cat="nature" e="way" k="natural" v="land">
 		<area fill="#BBF8F8F8" stroke="#F8F8F8" stroke-width="0.1"/>
 	</rule>
