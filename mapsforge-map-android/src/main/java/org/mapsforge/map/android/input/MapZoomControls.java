@@ -95,14 +95,14 @@ public class MapZoomControls implements Observer {
 	private static final int MSG_ZOOM_CONTROLS_HIDE = 0;
 
 	/**
-	 * Horizontal padding for the zoom controls.
+	 * Horizontal margin for the zoom controls.
 	 */
-	private static final int DEFAULT_ZOOM_CONTROLS_HORIZONTAL_PADDING = 5;
+	private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
 
 	/**
-	 * Vertical padding for the zoom controls.
+	 * Vertical margin for the zoom controls.
 	 */
-	private static final int DEFAULT_ZOOM_CONTROLS_VERTICAL_PADDING = 0;
+	private static final int DEFAULT_VERTICAL_MARGIN = 0;
 
 	/**
 	 * Delay in milliseconds after which the zoom controls disappear.
@@ -112,8 +112,8 @@ public class MapZoomControls implements Observer {
 	private boolean autoHide;
 	private boolean layoutChanged;
 	private final MapView mapView;
-	private int paddingHorizontal;
-	private int paddingVertical;
+	private int marginHorizontal;
+	private int marginVertical;
 	private boolean showMapZoomControls;
 	private final ZoomControls zoomControls;
 	private int zoomControlsGravity;
@@ -125,8 +125,8 @@ public class MapZoomControls implements Observer {
 		this.mapView = mapView;
 		this.zoomControls = new ZoomControls(context);
 		this.autoHide = true;
-		this.paddingHorizontal = DEFAULT_ZOOM_CONTROLS_HORIZONTAL_PADDING;
-		this.paddingVertical = DEFAULT_ZOOM_CONTROLS_VERTICAL_PADDING;
+		this.marginHorizontal = DEFAULT_HORIZONTAL_MARGIN;
+		this.marginVertical = DEFAULT_VERTICAL_MARGIN;
 		this.showMapZoomControls = true;
 		this.zoomLevelMax = DEFAULT_ZOOM_LEVEL_MAX;
 		this.zoomLevelMin = DEFAULT_ZOOM_LEVEL_MIN;
@@ -142,20 +142,20 @@ public class MapZoomControls implements Observer {
 		this.mapView.addView(this.zoomControls, layoutParams);
 	}
 
+	public int getMarginHorizontal() {
+		return marginHorizontal;
+	}
+
+	public int getMarginVertical() {
+		return marginVertical;
+	}
+
 	public int getMeasuredHeight() {
 		return this.zoomControls.getMeasuredHeight();
 	}
 
 	public int getMeasuredWidth() {
 		return this.zoomControls.getMeasuredWidth();
-	}
-
-	public int getPaddingHorizontal() {
-		return paddingHorizontal;
-	}
-
-	public int getPaddingVertical() {
-		return paddingVertical;
 	}
 
 	/**
@@ -265,16 +265,16 @@ public class MapZoomControls implements Observer {
 		}
 	}
 
-	public void setPaddingHorizontal(int paddingHorizontal) {
-		if (this.paddingHorizontal != paddingHorizontal) {
-			this.paddingHorizontal = paddingHorizontal;
+	public void setMarginHorizontal(int marginHorizontal) {
+		if (this.marginHorizontal != marginHorizontal) {
+			this.marginHorizontal = marginHorizontal;
 			this.layoutChanged = true;
 		}
 	}
 
-	public void setPaddingVertical(int paddingVertical) {
-		if (this.paddingVertical != paddingVertical) {
-			this.paddingVertical = paddingVertical;
+	public void setMarginVertical(int marginVertical) {
+		if (this.marginVertical != marginVertical) {
+			this.marginVertical = marginVertical;
 			this.layoutChanged = true;
 		}
 	}
@@ -339,13 +339,13 @@ public class MapZoomControls implements Observer {
 		int gravity = this.zoomControlsGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
 		switch (gravity) {
 			case Gravity.LEFT:
-				return paddingHorizontal;
+				return marginHorizontal;
 
 			case Gravity.CENTER_HORIZONTAL:
 				return (right - left - zoomControlsWidth) / 2;
 
 			case Gravity.RIGHT:
-				return right - left - zoomControlsWidth - paddingHorizontal;
+				return right - left - zoomControlsWidth - marginHorizontal;
 		}
 
 		throw new IllegalArgumentException("unknown horizontal gravity: " + gravity);
@@ -355,13 +355,13 @@ public class MapZoomControls implements Observer {
 		int gravity = this.zoomControlsGravity & Gravity.VERTICAL_GRAVITY_MASK;
 		switch (gravity) {
 			case Gravity.TOP:
-				return paddingVertical;
+				return marginVertical;
 
 			case Gravity.CENTER_VERTICAL:
 				return (bottom - top - zoomControlsHeight) / 2;
 
 			case Gravity.BOTTOM:
-				return bottom - top - zoomControlsHeight - paddingVertical;
+				return bottom - top - zoomControlsHeight - marginVertical;
 		}
 
 		throw new IllegalArgumentException("unknown vertical gravity: " + gravity);
