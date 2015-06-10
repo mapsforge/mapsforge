@@ -4,6 +4,8 @@
 
 ## New since 0.5.1
  - Multi-threaded map rendering
+ - Hardware acceleration improvements
+ - Touch gesture improvements
  - Geographic grid layer improvements
  - Java painting enhancements
  - Map writer tag-mapping improvements
