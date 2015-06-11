@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,7 +27,8 @@ public class ReadBuffer {
 	/**
 	 * Maximum buffer size which is supported by this implementation.
 	 */
-	static final int MAXIMUM_BUFFER_SIZE = 2500000;
+	private static final int DEFAULT_MAXIMUM_BUFFER_SIZE = 2500000;
+	public static int MAXIMUM_BUFFER_SIZE = DEFAULT_MAXIMUM_BUFFER_SIZE;
 	private static final String CHARSET_UTF8 = "UTF-8";
 	private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
 
