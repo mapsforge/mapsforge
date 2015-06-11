@@ -45,6 +45,7 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
+import org.mapsforge.map.reader.ReadBuffer;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.swing.controller.MapViewComponentListener;
 import org.mapsforge.map.swing.controller.MouseEventListener;
@@ -64,6 +65,9 @@ public final class MapViewer {
 	 *            command line args: expects the map files as multiple parameters.
 	 */
 	public static void main(String[] args) {
+		// Increase read buffer limit
+		ReadBuffer.MAXIMUM_BUFFER_SIZE = 6500000;
+
 		List<File> mapFiles = getMapFiles(args);
 		MapView mapView = createMapView();
 		TileCache[] tileCaches = new TileCache[mapFiles.size()];
