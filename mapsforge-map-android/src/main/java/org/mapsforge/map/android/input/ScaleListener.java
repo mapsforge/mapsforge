@@ -58,7 +58,12 @@ public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListene
 	@Override
 	public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
 		double zoomLevelOffset = Math.log(this.scaleFactorCumulative) / Math.log(2);
-		byte zoomLevelDiff = (byte) Math.round(zoomLevelOffset < 0 ? Math.floor(zoomLevelOffset) : Math.ceil(zoomLevelOffset));
+		byte zoomLevelDiff;
+		if (Math.abs(zoomLevelOffset) > 1) {
+			zoomLevelDiff = (byte) Math.round(zoomLevelOffset < 0 ? Math.floor(zoomLevelOffset) : Math.ceil(zoomLevelOffset));
+		} else {
+			zoomLevelDiff = (byte) Math.round(zoomLevelOffset);
+		}
 		this.mapViewPosition.zoom(zoomLevelDiff);
 	}
 
