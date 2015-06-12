@@ -82,7 +82,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		MapViewController.create(this, this.model);
 
 		ViewConfiguration viewConfiguration = ViewConfiguration.get(context);
-		ScaleGestureDetector sgd = new ScaleGestureDetector(context, new ScaleListener(this.getModel().mapViewPosition));
+		ScaleGestureDetector sgd = new ScaleGestureDetector(context, new ScaleListener(this));
 		TouchGestureDetector touchGestureDetector = new TouchGestureDetector(this, viewConfiguration);
 		this.touchEventHandler = new TouchEventHandler(this, viewConfiguration, sgd);
 		this.touchEventHandler.addListener(touchGestureDetector);
