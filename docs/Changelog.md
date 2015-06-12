@@ -3,7 +3,7 @@
 <wiki:toc />
 
 ## Version 0.5.1
- **2015-13-18**
+ **2015-03-18**
  - Same as 0.5.1-rc4
  
 ## Version 0.5.1-rc4
