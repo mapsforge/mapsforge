@@ -47,7 +47,10 @@ public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListene
 		if (this.scaleFactorCumulative < this.scaleFactorApplied - threshold
 				|| this.scaleFactorCumulative > this.scaleFactorApplied + threshold) {
 			// hysteresis to avoid flickering
-			this.mapView.getModel().mapViewPosition.setPivot(projection.fromPixels(focusX, focusY));
+			try {
+				this.mapView.getModel().mapViewPosition.setPivot(projection.fromPixels(focusX, focusY));
+			} catch (Exception e) {
+			}
 			this.mapView.getModel().mapViewPosition.setScaleFactorAdjustment(scaleFactorCumulative);
 			this.scaleFactorApplied = this.scaleFactorCumulative;
 		}
@@ -78,18 +81,27 @@ public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListene
 			Point center = this.mapView.getModel().mapViewDimension.getDimension().getCenter();
 			if (zoomLevelDiff > 0) {
 				// Zoom in
-				for (int i = 0; i < zoomLevelDiff; i++) {
-					moveHorizontal += (center.x - focusX) / Math.pow(2, i + 1);
-					moveVertical += (center.y - focusY) / Math.pow(2, i + 1);
+				for (int i = 1; i <= zoomLevelDiff; i++) {
+					if (this.mapView.getModel().mapViewPosition.getZoomLevel() + i > this.mapView.getModel().mapViewPosition.getZoomLevelMax()) {
+						break;
+					}
+					moveHorizontal += (center.x - focusX) / Math.pow(2, i);
+					moveVertical += (center.y - focusY) / Math.pow(2, i);
 				}
 			} else {
 				// Zoom out
-				for (int i = 0; i > zoomLevelDiff; i--) {
-					moveHorizontal += -(center.x - focusX) / Math.pow(2, i);
-					moveVertical += -(center.y - focusY) / Math.pow(2, i);
+				for (int i = -1; i >= zoomLevelDiff; i--) {
+					if (this.mapView.getModel().mapViewPosition.getZoomLevel() + i < this.mapView.getModel().mapViewPosition.getZoomLevelMin()) {
+						break;
+					}
+					moveHorizontal -= (center.x - focusX) / Math.pow(2, i + 1);
+					moveVertical -= (center.y - focusY) / Math.pow(2, i + 1);
 				}
 			}
-			this.mapView.getModel().mapViewPosition.setPivot(projection.fromPixels(focusX, focusY));
+			try {
+				this.mapView.getModel().mapViewPosition.setPivot(projection.fromPixels(focusX, focusY));
+			} catch (Exception e) {
+			}
 			this.mapView.getModel().mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
 		} else {
 			this.mapView.getModel().mapViewPosition.zoom(zoomLevelDiff);
