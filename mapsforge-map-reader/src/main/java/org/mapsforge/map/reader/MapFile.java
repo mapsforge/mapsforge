@@ -550,7 +550,7 @@ public class MapFile implements MapDataStore {
 				} else if (currentBlockSize == 0) {
 					// the current block is empty, continue with the next block
 					continue;
-				} else if (currentBlockSize > ReadBuffer.MAXIMUM_BUFFER_SIZE) {
+				} else if (currentBlockSize > ReadBuffer.getMaximumBufferSize()) {
 					// the current block is too large, continue with the next block
 					LOGGER.warning("current block size too large: " + currentBlockSize);
 					continue;

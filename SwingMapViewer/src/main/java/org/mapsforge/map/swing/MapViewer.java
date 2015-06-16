@@ -66,7 +66,7 @@ public final class MapViewer {
 	 */
 	public static void main(String[] args) {
 		// Increase read buffer limit
-		ReadBuffer.MAXIMUM_BUFFER_SIZE = 6500000;
+		ReadBuffer.setMaximumBufferSize(6500000);
 
 		List<File> mapFiles = getMapFiles(args);
 		MapView mapView = createMapView();
