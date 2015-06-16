@@ -1,7 +1,6 @@
-package org.mapsforge.map.layer.renderer;
-
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +13,8 @@ package org.mapsforge.map.layer.renderer;
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package org.mapsforge.map.layer.renderer;
+
 import org.mapsforge.core.model.Point;
 
 class RendererUtils {
@@ -27,12 +28,16 @@ class RendererUtils {
 		Point[] u = new Point[n];
 		Point[] h = new Point[p.length];
 
-		// Generate an array U[] of unity vectors of each direction
+		// Generate an array u[] of unity vectors of each direction
 		for (int k = 0; k < n; ++k) {
 			double c = p[k + 1].x - p[k].x;
 			double s = p[k + 1].y - p[k].y;
 			double l = Math.sqrt(c * c + s * s);
-			u[k] = new Point(c / l, s / l);
+			if (l == 0) {
+				u[k] = new Point(0, 0);
+			} else {
+				u[k] = new Point(c / l, s / l);
+			}
 		}
 
 		// For the start point calculate the normal
