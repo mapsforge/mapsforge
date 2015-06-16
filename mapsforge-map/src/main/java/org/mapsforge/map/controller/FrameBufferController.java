@@ -45,7 +45,7 @@ public final class FrameBufferController implements Observer {
 		return frameBufferController;
 	}
 
-	private static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
+	public static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
 		int width = (int) (mapViewDimension.width * overdrawFactor);
 		int height = (int) (mapViewDimension.height * overdrawFactor);
 		if (useSquareFrameBuffer) {
