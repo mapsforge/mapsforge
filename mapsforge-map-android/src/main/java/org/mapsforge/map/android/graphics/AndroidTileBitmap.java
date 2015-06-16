@@ -29,11 +29,11 @@ import java.util.logging.Logger;
 import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
-import org.mapsforge.map.android.util.AndroidUtil;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 
 /**
  * On Android, managing and recycling the memory for bitmaps is important, but varies significantly between versions:
@@ -131,9 +131,10 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	AndroidTileBitmap(int tileSize, boolean isTransparent) {
 		super();
-		if (AndroidUtil.HONEYCOMB_PLUS) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			this.bitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
 		}
 		if (this.bitmap == null) {
@@ -177,11 +178,12 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void destroyBitmap() {
 		if (this.bitmap != null) {
 			// bitmap can be null if there is an error creating it
-			if (AndroidUtil.HONEYCOMB_PLUS) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				final int tileSize = this.getHeight();
 				synchronized (reusableTileBitmaps) {
 					int hash = composeHash(tileSize, this.bitmap.hasAlpha());
@@ -201,7 +203,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		}
 	}
 
-	@TargetApi(11)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent) {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 		if (isTransparent) {
@@ -209,7 +211,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		} else {
 			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
 		}
-		if (org.mapsforge.map.android.util.AndroidUtil.HONEYCOMB_PLUS) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			android.graphics.Bitmap reusableBitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
 			if (reusableBitmap != null) {
 				bitmapFactoryOptions.inMutable = true;

@@ -48,8 +48,6 @@ import android.view.WindowManager;
 
 public final class AndroidUtil {
 
-	public static final boolean HONEYCOMB_PLUS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-
 	/**
 	 * Utility function to create a two-level tile cache along with its backends.
 	 * This is the compatibility version that by default creates a non-persistent cache.
@@ -262,10 +260,10 @@ public final class AndroidUtil {
 	 * @return number of tiles that can be stored without running out of space
 	 */
 	@SuppressWarnings("deprecation")
-	@TargetApi(18)
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 	public static long getAvailableCacheSlots(String directory, int fileSize) {
 		StatFs statfs = new StatFs(directory);
-		if (android.os.Build.VERSION.SDK_INT >= 18) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 			return statfs.getAvailableBytes() / fileSize;
 		}
 		// problem is overflow with devices with large storage, so order is important here
@@ -286,13 +284,13 @@ public final class AndroidUtil {
 	 * @return the minimum cache size for the view
 	 */
 	@SuppressWarnings("deprecation")
-	@TargetApi(13)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public static int getMinimumCacheSize(Context c, int tileSize, double overdrawFactor, float screenRatio) {
 		WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		int height;
 		int width;
-		if (android.os.Build.VERSION.SDK_INT >= 13) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			Point p = new Point();
 			display.getSize(p);
 			height = p.y;
@@ -342,9 +340,9 @@ public final class AndroidUtil {
 	 * Restarts activity, from http://stackoverflow.com/questions/1397361/how-do-i-restart-an-android-activity
 	 * @param activity the activity to restart
 	 */
-	@TargetApi(11)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static void restartActivity(Activity activity) {
-		if (Build.VERSION.SDK_INT >= 11) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			activity.recreate();
 		} else {
 			Intent intent = activity.getIntent();

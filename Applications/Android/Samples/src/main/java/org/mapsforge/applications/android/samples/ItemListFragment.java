@@ -99,7 +99,7 @@ public class ItemListFragment extends ListFragment {
 	}
 
 	@Override
-	@TargetApi(11)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		int layout = android.R.layout.simple_list_item_1;

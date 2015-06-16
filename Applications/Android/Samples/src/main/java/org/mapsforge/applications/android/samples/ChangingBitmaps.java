@@ -19,7 +19,9 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.Marker;
 
+import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -76,12 +78,12 @@ public class ChangingBitmaps extends RenderTheme4 {
 		super.destroyLayers();
 	}
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	public void onCreate(Bundle sis) {
-		Drawable drawableGreen = getResources().getDrawable(
-				R.drawable.marker_green);
-		Drawable drawableRed = getResources()
-				.getDrawable(R.drawable.marker_red);
+		Drawable drawableGreen = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_green) : getResources().getDrawable(R.drawable.marker_green);
+		Drawable drawableRed = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_red) : getResources().getDrawable(R.drawable.marker_red);
 		bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableRed);
 		bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableGreen);
 		marker = new Marker(latLong, bitmapGreen, 0,

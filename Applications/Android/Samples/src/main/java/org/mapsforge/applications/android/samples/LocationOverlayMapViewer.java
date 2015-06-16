@@ -19,7 +19,9 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.layer.MyLocationOverlay;
 
+import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 
 /**
  * MapViewer that shows current position. In the data directory of the Samples
@@ -40,12 +42,14 @@ public class LocationOverlayMapViewer extends RenderTheme4 {
 		this.myLocationOverlay.enableMyLocation(true);
 	}
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	protected void createLayers() {
 		super.createLayers();
 
 		// a marker to show at the position
-		Drawable drawable = getResources().getDrawable(R.drawable.marker_red);
+		Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_red) : getResources().getDrawable(R.drawable.marker_red);
 		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
 
 		// create the overlay and tell it to follow the location

@@ -30,9 +30,11 @@ import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 
 public class AndroidBitmap implements Bitmap {
 	private static final List<AndroidBitmap> BITMAP_LIST;
@@ -176,9 +178,10 @@ public class AndroidBitmap implements Bitmap {
 		destroyBitmap();
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void destroyBitmap() {
 		if (this.bitmap != null) {
-			if (org.mapsforge.map.android.util.AndroidUtil.HONEYCOMB_PLUS) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				synchronized (REUSABLE_BITMAPS) {
 					REUSABLE_BITMAPS.add(new SoftReference<android.graphics.Bitmap>(this.bitmap));
 				}

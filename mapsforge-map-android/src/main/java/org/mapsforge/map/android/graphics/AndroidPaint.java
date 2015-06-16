@@ -26,6 +26,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 
+import android.annotation.TargetApi;
 import android.graphics.BitmapShader;
 import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
@@ -155,6 +156,7 @@ class AndroidPaint implements Paint {
 		return this.paint.getShader() == null && this.paint.getAlpha() == 0;
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {
 		if (bitmap == null) {
