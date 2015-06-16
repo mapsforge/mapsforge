@@ -58,6 +58,14 @@ public final class FrameBufferController implements Observer {
 		return new Dimension(width, height);
 	}
 
+	public static boolean isUseSquareFrameBuffer() {
+		return useSquareFrameBuffer;
+	}
+
+	public static void setUseSquareFrameBuffer(boolean useSquareFrameBuffer) {
+		FrameBufferController.useSquareFrameBuffer = useSquareFrameBuffer;
+	}
+
 	private final FrameBuffer frameBuffer;
 	private Dimension lastMapViewDimension;
 	private double lastOverdrawFactor;
