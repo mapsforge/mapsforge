@@ -56,21 +56,6 @@ public class MapFile implements MapDataStore {
 	private static final long BITMASK_INDEX_WATER = 0x8000000000L;
 
 	/**
-	 * Debug message prefix for the block signature.
-	 */
-	private static final String DEBUG_SIGNATURE_BLOCK = "block signature: ";
-
-	/**
-	 * Debug message prefix for the POI signature.
-	 */
-	private static final String DEBUG_SIGNATURE_POI = "POI signature: ";
-
-	/**
-	 * Debug message prefix for the way signature.
-	 */
-	private static final String DEBUG_SIGNATURE_WAY = "way signature: ";
-
-	/**
 	 * Default start zoom level.
 	 */
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
@@ -432,16 +417,6 @@ public class MapFile implements MapDataStore {
 			wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
-		}
-	}
-
-	/**
-	 * Logs the debug signatures of the current way and block.
-	 */
-	private void logDebugSignatures(String signatureBlock, String signatureWay) {
-		if (this.mapFileHeader.getMapFileInfo().debugFile) {
-			LOGGER.warning(DEBUG_SIGNATURE_WAY + signatureWay);
-			LOGGER.warning(DEBUG_SIGNATURE_BLOCK + signatureBlock);
 		}
 	}
 
