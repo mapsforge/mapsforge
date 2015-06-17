@@ -22,7 +22,7 @@ These are the downloads for old versions. If possible use the newer release, we 
 
 - Old releases for mapsforge are available [here](http://download.mapsforge.org/releases/).
 
-# Lastest Master Project Build Downloads
+# Latest Master Build Downloads
 
 The master branch contains the latest mapsforge version considered stable, but not yet released. Use this branch if you want to stay up-to-date with mapsforge stable versions.
 
@@ -30,7 +30,7 @@ The master branch contains the latest mapsforge version considered stable, but n
 - [Latest Jars (master)](http://ci.mapsforge.org/job/master/)
 - [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.1.jar)
   
-# Lastest Development Build Downloads
+# Latest Development Build Downloads
 
 These are the latest development builds from the dev branch. Use this branch if you want the latest mapsforge features and are prepared for some instability.
 
