@@ -25,19 +25,20 @@
 | 19 | MapTag | Offline Location Sharing | Proprietary/Commercial | Closed | http://www.rockethub.com/projects/9335-maptag |
 | 20 | Mobile Atlas Creator | Creation of offline atlases | GPL/Free | Open | http://mobac.sourceforge.net/ |
 | 21 | Momentum Tracker | Fitness Application | Proprietary/Free and Premium | Closed | https://play.google.com/store/apps/details?id=com.momentum_tracker.android |
-| 22 | Navi Cyprus | Map and navigation application | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi |
-| 23 | Nutiteq | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open | https://github.com/nutiteq/hellomap3d |
-| 24 | Offline City Map | Tourist Map | Proprietary/Commercial | Closed | http://topobyte.de/ |
-| 25 | Offline Maps | Tourist Map | Proprietary/Commercial | Closed | https://play.google.com/store/apps/developer?id=applantation.com |
-| 26 | OpenTrail | Freemap for Android | GPL/Free | Open | http://wiki.openstreetmap.org/wiki/OpenTrail |
-| 27 | OruxMaps | Map Viewer | Proprietary/Free | Closed | http://www.oruxmaps.com/ |
-| 28 | OSMapTuner | Map Viewer & Tag-Editor | Proprietary/Free | Closed | http://osmaptuner.salzburgresearch.at/ |
-| 29 | Pocket Coruna | Tourist guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo&hl=en |
-| 30 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
-| 31 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
-| 32 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
-| 33 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
-| 34 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
+| 22 | Nautilus Charts | Offline Nautical Charts plotting and positioning system | Proprietary/Commercial | Closed | https://play.google.com/store/apps/details?id=gr.talent.nautiluscharts |
+| 23 | Navi Cyprus | Map and navigation application | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi |
+| 24 | Nutiteq | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open | https://github.com/nutiteq/hellomap3d |
+| 25 | Offline City Map | Tourist Map | Proprietary/Commercial | Closed | http://topobyte.de/ |
+| 26 | Offline Maps | Tourist Map | Proprietary/Commercial | Closed | https://play.google.com/store/apps/developer?id=applantation.com |
+| 27 | OpenTrail | Freemap for Android | GPL/Free | Open | http://wiki.openstreetmap.org/wiki/OpenTrail |
+| 28 | OruxMaps | Map Viewer | Proprietary/Free | Closed | http://www.oruxmaps.com/ |
+| 29 | OSMapTuner | Map Viewer & Tag-Editor | Proprietary/Free | Closed | http://osmaptuner.salzburgresearch.at/ |
+| 30 | Pocket Coruna | Tourist guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo&hl=en |
+| 31 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
+| 32 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
+| 33 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
+| 34 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
+| 35 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
 
 
 You know an application that is missing here? Please inform us by sending a message via our public mapsforge-dev(https://groups.google.com/group/mapsforge-dev) mailing list.
