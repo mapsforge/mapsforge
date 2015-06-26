@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -37,31 +38,36 @@ import org.mapsforge.map.layer.Layer;
  * drawing parameters such as color, stroke width, pattern and transparency.
  */
 public class Polygon extends Layer {
+
 	private final GraphicFactory graphicFactory;
 	private final boolean keepAligned;
 	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
 	private Paint paintFill;
 	private Paint paintStroke;
 
+	/**
+	 * @param paintFill
+	 *            the initial {@code Paint} used to fill this polygon (may be null).
+	 * @param paintStroke
+	 *            the initial {@code Paint} used to stroke this polygon (may be null).
+	 * @param graphicFactory
+	 *            the GraphicFactory
+	 */
+	public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory) {
+		this(paintFill, paintStroke, graphicFactory, false);
+	}
 
 	/**
 	 * @param paintFill
 	 *            the initial {@code Paint} used to fill this polygon (may be null).
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this polygon (may be null).
+	 * @param graphicFactory
+	 *            the GraphicFactory
+	 * @param keepAligned
+	 *            if set to true it will keep the bitmap aligned with the map,
+	 *            to avoid a moving effect of a bitmap shader.
 	 */
-	public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory) {
-		this(paintFill, paintStroke, graphicFactory, false);
-	}
-
-		/**
-		 * @param paintFill
-		 *            the initial {@code Paint} used to fill this polygon (may be null).
-		 * @param paintStroke
-		 *            the initial {@code Paint} used to stroke this polygon (may be null).
-		 * @param keepAligned if set to true it will keep the bitmap aligned with the map, to avoid
-		 *                    a moving effect of a bitmap shader.
-		 */
 	public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory, boolean keepAligned) {
 		super();
 		this.keepAligned = keepAligned;
@@ -109,6 +115,13 @@ public class Polygon extends Layer {
 	}
 
 	/**
+	 * @return the {@code GraphicFactory}.
+	 */
+	public GraphicFactory getGraphicFactory() {
+		return graphicFactory;
+	}
+
+	/**
 	 * @return a thread-safe list of LatLongs in this polygon.
 	 */
 	public List<LatLong> getLatLongs() {
@@ -130,6 +143,14 @@ public class Polygon extends Layer {
 	}
 
 	/**
+	 * @return true if it keeps the bitmap aligned with the map, to avoid a
+	 *         moving effect of a bitmap shader, false otherwise.
+	 */
+	public boolean isKeepAligned() {
+		return keepAligned;
+	}
+
+	/**
 	 * @param paintFill
 	 *            the new {@code Paint} used to fill this polygon (may be null).
 	 */
@@ -144,4 +165,5 @@ public class Polygon extends Layer {
 	public synchronized void setPaintStroke(Paint paintStroke) {
 		this.paintStroke = paintStroke;
 	}
+
 }
