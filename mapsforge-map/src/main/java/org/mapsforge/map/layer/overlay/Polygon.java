@@ -31,8 +31,8 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
 /**
- * A {@code Polygon} draws a connected series of line segments specified by a list of {@link LatLong LatLongs}. If the
- * first and the last {@code LatLong} are not equal, the {@code Polygon} will be closed automatically.
+ * A {@code Polygon} draws a closed connected series of line segments specified by a list of {@link LatLong LatLongs}.
+ * If the first and the last {@code LatLong} are not equal, the {@code Polygon} will be closed automatically.
  * <p>
  * A {@code Polygon} holds two {@link Paint} objects to allow for different outline and filling. These paints define
  * drawing parameters such as color, stroke width, pattern and transparency.
