@@ -12,6 +12,7 @@
  - Render themes improvements
  - Scale bar enhancements
  - Zoom controls enhancements
+ - Map buffer size adjustable
  - Many other minor improvements and bugfixes
 
 ## Version 0.5.1
