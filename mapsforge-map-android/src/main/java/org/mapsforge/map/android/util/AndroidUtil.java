@@ -17,6 +17,7 @@
 package org.mapsforge.map.android.util;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -42,11 +43,12 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Looper;
 import android.os.StatFs;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
 public final class AndroidUtil {
+
+	private static final Logger LOGGER = Logger.getLogger(AndroidUtil.class.getName());
 
 	/**
 	 * Utility function to create a two-level tile cache along with its backends.
@@ -85,7 +87,7 @@ public final class AndroidUtil {
 	 */
 	public static TileCache createExternalStorageTileCache(Context c,
 			String id, int firstLevelSize, int tileSize, boolean persistent) {
-		Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
+		LOGGER.info("TILECACHE INMEMORY SIZE: " + Integer.toString(firstLevelSize));
 		TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
 		File cacheDir = c.getExternalCacheDir();
 		if (cacheDir != null) {
@@ -96,13 +98,13 @@ public final class AndroidUtil {
 				int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
 				if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
 					try {
-						Log.d("TILECACHE FILE SIZE", Integer.toString(tileCacheFiles));
+						LOGGER.info("TILECACHE FILE SIZE: " + Integer.toString(tileCacheFiles));
 
 						TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
 								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE, persistent);
 						return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 					} catch (IllegalArgumentException e) {
-						Log.w("TILECACHE", e.toString());
+						LOGGER.warning(e.getMessage());
 					}
 				}
 			}

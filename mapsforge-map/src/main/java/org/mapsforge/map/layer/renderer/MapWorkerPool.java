@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.TileBitmap;
@@ -85,7 +86,7 @@ public class MapWorkerPool implements Runnable {
 				}
 			}
 		} catch (InterruptedException e) {
-			LOGGER.severe("MapWorkerPool interrupted " + e);
+			LOGGER.log(Level.SEVERE, "MapWorkerPool interrupted", e);
 			// should get restarted by the ExecutorService
 		}
 	}

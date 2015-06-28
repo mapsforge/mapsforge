@@ -238,7 +238,7 @@ public class MapFile implements MapDataStore {
 
 			this.timestamp = mapFile.lastModified();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			// make sure that the file is closed
 			closeFile();
 			throw new MapFileException(e.getMessage());
@@ -274,7 +274,7 @@ public class MapFile implements MapDataStore {
 			this.databaseIndexCache.destroy();
 			this.inputFile.close();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -325,7 +325,7 @@ public class MapFile implements MapDataStore {
 			// overlap onto this tile.
 			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		}
 	}
@@ -556,7 +556,7 @@ public class MapFile implements MapDataStore {
 						mapReadResultBuilder.add(poiWayBundle);
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
-					LOGGER.log(Level.SEVERE, null, e);
+					LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		}

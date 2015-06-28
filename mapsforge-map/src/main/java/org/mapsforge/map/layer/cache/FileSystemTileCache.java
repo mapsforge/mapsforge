@@ -275,7 +275,7 @@ public class FileSystemTileCache implements TileCache {
 			return null;
 		} catch (IOException e) {
 			remove(key);
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		} finally {
 			IOUtils.closeQuietly(inputStream);

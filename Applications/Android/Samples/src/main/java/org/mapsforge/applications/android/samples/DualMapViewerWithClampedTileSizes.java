@@ -31,8 +31,8 @@ public class DualMapViewerWithClampedTileSizes extends DualMapViewerWithDifferen
 		mapView.getModel().displayModel.setTileSizeMultiple(200);
 		mapView2.getModel().displayModel.setTileSizeMultiple(100);
 
-		Log.d("TILESIZE 1", Integer.toString(mapView.getModel().displayModel.getTileSize()));
-		Log.d("TILESIZE 2", Integer.toString(mapView2.getModel().displayModel.getTileSize()));
+		Log.d(SamplesApplication.TAG, "TILESIZE 1: " + Integer.toString(mapView.getModel().displayModel.getTileSize()));
+		Log.d(SamplesApplication.TAG, "TILESIZE 2: " + Integer.toString(mapView2.getModel().displayModel.getTileSize()));
 	}
 
 	@Override

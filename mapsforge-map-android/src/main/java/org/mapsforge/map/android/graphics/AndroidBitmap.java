@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -170,9 +169,9 @@ public class AndroidBitmap implements Bitmap {
 				if (BITMAP_LIST.contains(this)) {
 					BITMAP_LIST.remove(this);
 				} else {
-					LOGGER.log(Level.SEVERE, "BITMAP ALREADY REMOVED " + this.toString());
+					LOGGER.severe("BITMAP ALREADY REMOVED " + this.toString());
 				}
-				LOGGER.log(Level.INFO, "BITMAP COUNT " + Integer.toString(i) + " " + BITMAP_LIST.size());
+				LOGGER.info("BITMAP COUNT " + Integer.toString(i) + " " + BITMAP_LIST.size());
 			}
 		}
 		destroyBitmap();

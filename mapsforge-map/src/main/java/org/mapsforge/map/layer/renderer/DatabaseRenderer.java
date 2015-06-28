@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -124,7 +125,7 @@ public class DatabaseRenderer implements RenderCallback {
 		try {
 			renderTheme = rendererJob.renderThemeFuture.get();
 		} catch (Exception e) {
-			LOGGER.severe("Error to retrieve render theme from future" + e);
+			LOGGER.log(Level.SEVERE, "Error to retrieve render theme from future", e);
 			return null;
 		}
 

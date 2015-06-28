@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.CorruptedInputStreamException;
@@ -123,7 +122,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 			// this is really stupid, the runtime system actually throws a SocketTimeoutException,
 			// but we cannot catch it, because it is not declared, so we needed to catch the base
 			// class exception
-			LOGGER.log(Level.INFO, "TILEBITMAP ERROR " + e.toString());
+			LOGGER.info("TILEBITMAP ERROR " + e.toString());
 			this.bitmap = null; // need to null out to avoid recycling
 			IOUtils.closeQuietly(inputStream); // seems to improve memory usage
 			this.destroy();
@@ -174,7 +173,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		super.destroy();
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			int i = tileInstances.decrementAndGet();
-			LOGGER.log(Level.INFO, "TILEBITMAP COUNT " + Integer.toString(i));
+			LOGGER.info("TILEBITMAP COUNT " + Integer.toString(i));
 		}
 	}
 
