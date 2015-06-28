@@ -58,7 +58,7 @@ public final class AndroidUtil {
 	 *            name for the directory, which will be created as a subdirectory of the default cache directory (as
 	 *            returned by {@link android.content.Context#getExternalCacheDir()}).
 	 * @param firstLevelSize
-	 *            size of the first level cache
+	 *            size of the first level cache (tiles number)
 	 * @param tileSize
 	 *            tile size
 	 * @return a new cache created on the external storage
@@ -76,7 +76,7 @@ public final class AndroidUtil {
 	 *            name for the directory, which will be created as a subdirectory of the default cache directory (as
 	 *            returned by {@link android.content.Context#getExternalCacheDir()}).
 	 * @param firstLevelSize
-	 *            size of the first level cache
+	 *            size of the first level cache (tiles number)
 	 * @param tileSize
 	 *            tile size
 	 * @param persistent
@@ -232,7 +232,7 @@ public final class AndroidUtil {
 
 	/**
 	 * @param cacheDirectoryName where the file system tile cache will be located
-	 * @param firstLevelSize     size of the first level cache, no point cache being smaller
+	 * @param firstLevelSize     size of the first level cache (tiles number), no point cache being smaller
 	 * @param tileSize           tile size
 	 * @return recommended number of files in FileSystemTileCache
 	 */
