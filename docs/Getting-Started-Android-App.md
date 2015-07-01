@@ -10,6 +10,11 @@ Here, however, we go through a very basic example of an app that simply displays
 
 Mapsforge currently requires disabling hardware acceleration for the map view. This can be controlled in various levels, better described in Android [documentation](http://developer.android.com/guide/topics/graphics/hardware-accel.html#controlling).
 
+# Android manifest
+You'll need to have the appropriate permissions in manifest for tile cache to work properly:
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 # App Initialization
 
 Before you make any calls on the mapsforge library, you need to initialize the AndroidGraphicFactory. Behind the scenes, this initialization process gathers a bit of information on your device, such as the screen resolution, that allows mapsforge to automatically adapt the rendering for the device.
