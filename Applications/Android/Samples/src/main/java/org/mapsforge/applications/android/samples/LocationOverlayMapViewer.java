@@ -17,7 +17,6 @@ package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.layer.MyLocationOverlay;
 
 import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
