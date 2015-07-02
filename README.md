@@ -4,7 +4,7 @@ The mapsforge project provides free and open software for the rendering of maps 
 
 - The mapsforge project uses a [compact file format](docs/Specification-Binary-Map-File.md) for fast ad-hoc rendering of OpenStreetMap data.
 - We provide tools to [compile your own maps](docs/Getting-Started-Map-Writer.md) and also [precompiled maps](http://download.mapsforge.org).
-- It provides [simple boilerplate code](docs/Getting-Started-Android-App.md) to build applications for Android that display OpenStreetMap-based maps.
+- It provides [simple boilerplate code](docs/Getting-Started-Android-App.md) to [build](docs/Getting-Started-Developers.md) applications for Android that display OpenStreetMap-based maps.
 - It provides a library to build standalone applications in Java.
 - Mapsforge maps can be flexibly styled with XML style files ([render themes](docs/Rendertheme.md)).
 - Mapsforge supports Android 2.3 and above. Mapsforge has been tested on Android 5 Lollipop.
