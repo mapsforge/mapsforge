@@ -11,7 +11,9 @@
    	<string name="okbutton">OK</string>
 	<string name="downloadnowbutton">OK</string>
 	<string name="rotate_button">Rotate</string>
-	
+	<string name="zoomin_button">+</string>
+	<string name="zoomout_button">-</string>
+		
 	<string name="latitude">Latitude</string>
 	<string name="longitude">Longitude</string>
 	<string name="zoomlevel">Zoom Level</string>
