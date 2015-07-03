@@ -13,7 +13,8 @@
  - Scale bar enhancements
  - Zoom controls enhancements
  - Map buffer size adjustable
- - MyLocationOverlay move in Samples
+ - MyLocationOverlay moved in Samples
+ - External Map Rotation example improvements in Samples
  - Many other minor improvements and bugfixes
 
 ## Version 0.5.1
