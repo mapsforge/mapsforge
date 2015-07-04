@@ -70,7 +70,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
 	private static final String PREFIX_ASSETS = "assets:";
 
-	public static Bitmap convertToBitmap(Drawable drawable) {
+	public static android.graphics.Bitmap convertToAndroidBitmap(Drawable drawable) {
 		android.graphics.Bitmap bitmap;
 		if (drawable instanceof BitmapDrawable) {
 			bitmap = ((BitmapDrawable) drawable).getBitmap();
@@ -86,7 +86,21 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 			drawable.setBounds(rect);
 		}
 
-		return new AndroidBitmap(bitmap);
+		return bitmap;
+	}
+
+	public static Bitmap convertToBitmap(Drawable drawable) {
+		return new AndroidBitmap(AndroidGraphicFactory.convertToAndroidBitmap(drawable));
+	}
+
+	public static Bitmap convertToBitmap(Drawable drawable, android.graphics.Paint paint) {
+		android.graphics.Bitmap immutable = AndroidGraphicFactory.convertToAndroidBitmap(drawable);
+		android.graphics.Bitmap mutable = immutable.copy(AndroidGraphicFactory.TRANSPARENT_BITMAP, true);
+		android.graphics.Canvas canvas = new android.graphics.Canvas(mutable);
+
+		canvas.drawBitmap(mutable, 0, 0, paint);
+
+		return new AndroidBitmap(mutable);
 	}
 
 	public static Canvas createGraphicContext(android.graphics.Canvas canvas) {
