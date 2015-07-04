@@ -16,7 +16,6 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,7 +49,6 @@ import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.util.LayerUtil;
-
 
 /**
  * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.reader.MapFile}.
@@ -86,8 +84,8 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @param mapDatabase
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDataStore mapDatabase, GraphicFactory graphicFactory,
-	                        TileBasedLabelStore labelStore) {
+	public DatabaseRenderer(MapDataStore mapDatabase,
+			GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
 		this.mapDatabase = mapDatabase;
 		this.graphicFactory = graphicFactory;
 		this.labelStore = labelStore;
@@ -102,8 +100,8 @@ public class DatabaseRenderer implements RenderCallback {
 	 * @param mapFile
 	 *            the MapDatabase from which the map data will be read.
 	 */
-	public DatabaseRenderer(MapDataStore mapFile, GraphicFactory graphicFactory,
-	                        TileCache tileCache) {
+	public DatabaseRenderer(MapDataStore mapFile,
+			GraphicFactory graphicFactory, TileCache tileCache) {
 		this.mapDatabase = mapFile;
 		this.graphicFactory = graphicFactory;
 
@@ -160,7 +158,7 @@ public class DatabaseRenderer implements RenderCallback {
 					this.labelStore.storeMapItems(renderContext.rendererJob.tile, renderContext.labels);
 				}
 
-				if (renderContext.renderTheme.hasMapBackgroundOutside()) {
+				if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
 					// blank out all areas outside of map
 					Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(renderContext.rendererJob.tile);
 					if (!rendererJob.hasAlpha) {
