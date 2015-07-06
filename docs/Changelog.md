@@ -15,6 +15,7 @@
  - Map buffer size adjustable
  - MyLocationOverlay moved in Samples
  - External Map Rotation example improvements in Samples
+ - LabelLayer improvements
  - Many other minor improvements and bugfixes
 
 ## Version 0.5.1
