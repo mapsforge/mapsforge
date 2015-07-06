@@ -121,7 +121,7 @@ public class MapWorkerPool implements Runnable {
 					return;
 				}
 
-				if (bitmap != null) {
+				if (!rendererJob.labelsOnly && bitmap != null) {
 					MapWorkerPool.this.tileCache.put(rendererJob, bitmap);
 					MapWorkerPool.this.databaseRenderer.removeTileInProgress(rendererJob.tile);
 				}
