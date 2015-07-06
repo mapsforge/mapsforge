@@ -88,7 +88,7 @@ public class MapWorker extends PausableThread {
 
 		TileBitmap bitmap = this.databaseRenderer.executeJob(rendererJob);
 
-		if (!isInterrupted() && bitmap != null) {
+		if (!isInterrupted() && !rendererJob.labelsOnly && bitmap != null) {
 			this.tileCache.put(rendererJob, bitmap);
 		}
 		this.layer.requestRedraw();
