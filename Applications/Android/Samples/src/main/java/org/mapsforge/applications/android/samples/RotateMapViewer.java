@@ -62,6 +62,7 @@ public class RotateMapViewer extends OverlayMapViewer {
 		});
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void createMapViews() {
 		mapView = getMapView();
@@ -81,8 +82,11 @@ public class RotateMapViewer extends OverlayMapViewer {
 		mapScaleBar.setSecondaryDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
 		MapScaleBarView mapScaleBarView = (MapScaleBarView) findViewById(R.id.mapScaleBarView);
 		mapScaleBarView.setMapScaleBar(mapScaleBar);
-		// For hardware acceleration
-		mapView.getModel().mapViewPosition.addObserver(mapScaleBarView);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			if (mapView.isHardwareAccelerated()) {
+				mapView.getModel().mapViewPosition.addObserver(mapScaleBarView);
+			}
+		}
 
 		mapView.setBuiltInZoomControls(hasZoomControls());
 		mapView.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
