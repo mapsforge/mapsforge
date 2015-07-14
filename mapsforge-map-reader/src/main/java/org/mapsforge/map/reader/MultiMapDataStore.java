@@ -178,32 +178,34 @@ public class MultiMapDataStore implements MapDataStore {
 				if (result == null) {
 					continue;
 				}
-				mapReadResultBuilder.isWater &= result.isWater;
+				boolean isWater = mapReadResultBuilder.isWater() & result.isWater;
+				mapReadResultBuilder.setWater(isWater);
+
 
 				if (first) {
-					mapReadResultBuilder.ways.addAll(result.ways);
+					mapReadResultBuilder.getWays().addAll(result.ways);
 				} else {
 					if (deduplicate) {
 						for (Way way : result.ways) {
-							if (!mapReadResultBuilder.ways.contains(way)) {
-								mapReadResultBuilder.ways.add(way);
+							if (!mapReadResultBuilder.getWays().contains(way)) {
+								mapReadResultBuilder.getWays().add(way);
 							}
 						}
 					} else {
-						mapReadResultBuilder.ways.addAll(result.ways);
+						mapReadResultBuilder.getWays().addAll(result.ways);
 					}
 				}
 				if (first) {
-					mapReadResultBuilder.pointOfInterests.addAll(result.pointOfInterests);
+					mapReadResultBuilder.getPointOfInterests().addAll(result.pointOfInterests);
 				} else {
 					if (deduplicate) {
 						for (PointOfInterest poi : result.pointOfInterests) {
-							if (!mapReadResultBuilder.pointOfInterests.contains(poi)) {
-								mapReadResultBuilder.pointOfInterests.add(poi);
+							if (!mapReadResultBuilder.getPointOfInterests().contains(poi)) {
+								mapReadResultBuilder.getPointOfInterests().add(poi);
 							}
 						}
 					} else {
-						mapReadResultBuilder.pointOfInterests.addAll(result.pointOfInterests);
+						mapReadResultBuilder.getPointOfInterests().addAll(result.pointOfInterests);
 					}
 				}
 				first = false;

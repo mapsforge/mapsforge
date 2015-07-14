@@ -563,7 +563,7 @@ public class MapFile implements MapDataStore {
 
 		// the query is finished, was the water flag set for all blocks?
 		if (queryIsWater && queryReadWaterInfo) {
-			mapReadResultBuilder.isWater = true;
+			mapReadResultBuilder.setWater(true);
 		}
 
 		return mapReadResultBuilder.build();
