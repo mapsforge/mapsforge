@@ -55,6 +55,13 @@ public class MultiMapDataStore implements MapDataStore {
 		this.mapDatabases = new ArrayList<MapDataStore>();
 	}
 
+	/**
+	 * adds another mapDataStore
+	 * @param mapDataStore the mapDataStore to add
+	 * @param useStartZoomLevel if true, use the start zoom level of this mapDataStore as the start zoom level
+	 * @param useStartPosition if true, use the start position of this mapDataStore as the start position
+	 */
+
 	public void addMapDataStore(MapDataStore mapDataStore, boolean useStartZoomLevel, boolean useStartPosition) {
 		if (this.mapDatabases.contains(mapDataStore)) {
 			throw new IllegalArgumentException("Duplicate map database");
