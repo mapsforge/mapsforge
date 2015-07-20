@@ -383,16 +383,28 @@ public class MapViewPosition extends Observable implements Persistable {
 
 	/**
 	 * Sets the new zoom level of the map.
+	 *
+	 * NOTE: The default zoom level changes are animated
 	 * 
 	 * @throws IllegalArgumentException
 	 *             if the zoom level is negative.
 	 */
 	public void setZoomLevel(byte zoomLevel) {
+		setZoomLevel(zoomLevel, true);
+	}
+
+	/**
+	 * Sets the new zoom level of the map
+	 *
+	 * @param zoomLevel desired zoom level
+	 * @param animated true if the transistion should be animated, false otherwise
+	 */
+	public void setZoomLevel(byte zoomLevel, boolean animated) {
 		if (zoomLevel < 0) {
 			throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
 		}
 		synchronized (this) {
-			setZoomLevelInternal(zoomLevel);
+			setZoomLevelInternal(zoomLevel,animated);
 		}
 		notifyObservers();
 	}
@@ -427,8 +439,12 @@ public class MapViewPosition extends Observable implements Persistable {
 	 * Changes the current zoom level by the given value if possible.
 	 */
 	public void zoom(byte zoomLevelDiff) {
+		zoom(zoomLevelDiff, true);
+	}
+
+	public void zoom(byte zoomLevelDiff,boolean animated) {
 		synchronized (this) {
-			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
+			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff,animated);
 		}
 		notifyObservers();
 	}
@@ -437,14 +453,20 @@ public class MapViewPosition extends Observable implements Persistable {
 	 * Increases the current zoom level by one if possible.
 	 */
 	public void zoomIn() {
-		zoom((byte) 1);
+		zoomIn(true);
+	}
+	public void zoomIn(boolean animated) {
+		zoom((byte) 1, animated);
 	}
 
 	/**
 	 * Decreases the current zoom level by one if possible.
 	 */
 	public void zoomOut() {
-		zoom((byte) -1);
+		zoomOut(true);
+	}
+	public void zoomOut(boolean animated) {
+		zoom((byte) -1, animated);
 	}
 
 	private void setCenterInternal(LatLong latLong) {
@@ -459,8 +481,20 @@ public class MapViewPosition extends Observable implements Persistable {
 	}
 
 	private void setZoomLevelInternal(int zoomLevel) {
+		this.setZoomLevelInternal(zoomLevel,true);
+	}
+
+	private void setZoomLevelInternal(int zoomLevel, boolean animated) {
 		this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
-		this.zoomAnimator.startAnimation(this.getScaleFactor(), Math.pow(2, this.zoomLevel));
+		if(animated) {
+			this.zoomAnimator.startAnimation(getScaleFactor(), Math.pow(2, this.zoomLevel));
+
+		} else {
+			this.setScaleFactor(Math.pow(2, this.zoomLevel));
+			this.setPivot(null);
+		}
+
+
 	}
 
 }
