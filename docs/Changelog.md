@@ -6,6 +6,7 @@
  - Multi-threaded map rendering
  - Hardware acceleration improvements
  - Touch gesture improvements and fixes
+ - Scale gesture through focal point
  - Geographic grid layer improvements
  - Java painting enhancements
  - Map writer tag-mapping improvements
@@ -17,6 +18,8 @@
  - External Map Rotation example improvements in Samples
  - LabelLayer improvements
  - Many other minor improvements and bugfixes
+
+[Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.2)
 
 ## Version 0.5.1
  **2015-03-18**
