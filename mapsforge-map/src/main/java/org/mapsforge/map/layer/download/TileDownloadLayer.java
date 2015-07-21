@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,8 +26,9 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.common.Observer;
 
-public class TileDownloadLayer extends TileLayer<DownloadJob> {
+public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observer {
 	private static final int DOWNLOAD_THREADS_MAX = 8;
 
 	private long cacheTimeToLive = 0;
@@ -115,8 +116,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 			}
 		} else {
 			if (this.tileDownloadThreads != null) {
-				for (int i = 0; i < tileDownloadThreads.length; ++i) {
-					this.tileDownloadThreads[i].interrupt();
+				for (final TileDownloadThread tileDownloadThread : tileDownloadThreads) {
+					tileDownloadThread.interrupt();
 				}
 			}
 		}
@@ -164,8 +165,29 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> {
 	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
 		if (bitmap.isExpired())
 			return true;
-		if (cacheTimeToLive == 0)
-			return false;
-		return ((bitmap.getTimestamp() + cacheTimeToLive) < System.currentTimeMillis());
+		return cacheTimeToLive != 0 && ((bitmap.getTimestamp() + cacheTimeToLive) < System.currentTimeMillis());
 	}
+
+	@Override
+	protected void onAdd() {
+		if (tileCache != null) {
+			tileCache.addObserver(this);
+		}
+
+		super.onAdd();
+	}
+
+	@Override
+	protected void onRemove() {
+		if (tileCache != null) {
+			tileCache.removeObserver(this);
+		}
+		super.onRemove();
+	}
+
+	@Override
+	public void onChange() {
+		this.requestRedraw();
+	}
+
 }

@@ -25,14 +25,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.Bitmap;
 
+import android.annotation.TargetApi;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 
 public class AndroidBitmap implements Bitmap {
 	private static final List<AndroidBitmap> BITMAP_LIST;
@@ -168,17 +169,18 @@ public class AndroidBitmap implements Bitmap {
 				if (BITMAP_LIST.contains(this)) {
 					BITMAP_LIST.remove(this);
 				} else {
-					LOGGER.log(Level.SEVERE, "BITMAP ALREADY REMOVED " + this.toString());
+					LOGGER.severe("BITMAP ALREADY REMOVED " + this.toString());
 				}
-				LOGGER.log(Level.INFO, "BITMAP COUNT " + Integer.toString(i) + " " + BITMAP_LIST.size());
+				LOGGER.info("BITMAP COUNT " + Integer.toString(i) + " " + BITMAP_LIST.size());
 			}
 		}
 		destroyBitmap();
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	protected void destroyBitmap() {
 		if (this.bitmap != null) {
-			if (org.mapsforge.map.android.util.AndroidUtil.HONEYCOMB_PLUS) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				synchronized (REUSABLE_BITMAPS) {
 					REUSABLE_BITMAPS.add(new SoftReference<android.graphics.Bitmap>(this.bitmap));
 				}

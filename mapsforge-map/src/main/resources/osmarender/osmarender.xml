@@ -7,7 +7,7 @@
 	</rule>
 
 	<rule e="way" k="natural" v="nosea">
-		<area fill="#F8F8F8"/>
+		<area fill="#F8F8F8" stroke="#F8F8F8" stroke-width="1.0"/>
 	</rule>
 
 	<!-- ways -->
@@ -195,14 +195,6 @@
 
 		<!-- natural -->
 		<rule e="way" k="natural" v="*">
-			<rule e="way" k="natural" v="coastline">
-				<rule e="way" k="*" v="*" closed="no">
-					<line stroke="#708599" stroke-width="2.0" />
-				</rule>
-				<rule e="way" k="*" v="*" closed="yes">
-					<area fill="#b5d6f1" stroke="#b5d6f1" stroke-width="0.4" />
-				</rule>
-			</rule>
 			<rule e="way" k="natural" v="glacier">
 				<area fill="#fafaff" stroke="#add8e6" stroke-width="0.8" />
 			</rule>

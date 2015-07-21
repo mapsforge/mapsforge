@@ -14,7 +14,11 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.scalebar.DefaultMapScaleBar;
+import org.mapsforge.map.scalebar.ImperialUnitAdapter;
+import org.mapsforge.map.scalebar.MetricUnitAdapter;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -40,15 +44,50 @@ public class RotateMapViewer extends OverlayMapViewer {
 				rotateView.postInvalidate();
 			}
 		});
+
+		Button zoomInButton = (Button) findViewById(R.id.zoomInButton);
+		zoomInButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mapView.getModel().mapViewPosition.zoomIn();
+			}
+		});
+
+		Button zoomOutButton = (Button) findViewById(R.id.zoomOutButton);
+		zoomOutButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mapView.getModel().mapViewPosition.zoomOut();
+			}
+		});
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void createMapViews() {
 		mapView = getMapView();
 		mapView.getModel().frameBufferModel.setOverdrawFactor(1.0d);
-		// mapView.getModel().init(this.preferencesFacade);
+		mapView.getModel().init(this.preferencesFacade);
 		mapView.setClickable(true);
+
+		// Use external scale bar
 		mapView.getMapScaleBar().setVisible(false);
+		MapScaleBarImpl mapScaleBar = new MapScaleBarImpl(
+				mapView.getModel().mapViewPosition,
+				mapView.getModel().mapViewDimension,
+				AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel);
+		mapScaleBar.setVisible(true);
+		mapScaleBar.setScaleBarMode(DefaultMapScaleBar.ScaleBarMode.BOTH);
+		mapScaleBar.setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
+		mapScaleBar.setSecondaryDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
+		MapScaleBarView mapScaleBarView = (MapScaleBarView) findViewById(R.id.mapScaleBarView);
+		mapScaleBarView.setMapScaleBar(mapScaleBar);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			if (mapView.isHardwareAccelerated()) {
+				mapView.getModel().mapViewPosition.addObserver(mapScaleBarView);
+			}
+		}
+
 		mapView.setBuiltInZoomControls(hasZoomControls());
 		mapView.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(getZoomLevelMax());
@@ -59,10 +98,6 @@ public class RotateMapViewer extends OverlayMapViewer {
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void createTileCaches() {
-		boolean threaded = sharedPreferences.getBoolean(
-				SamplesApplication.SETTING_TILECACHE_THREADING, true);
-		int queueSize = Integer.parseInt(sharedPreferences.getString(
-				SamplesApplication.SETTING_TILECACHE_QUEUESIZE, "4"));
 		boolean persistent = sharedPreferences.getBoolean(
 				SamplesApplication.SETTING_TILECACHE_PERSISTENCE, true);
 
@@ -81,8 +116,7 @@ public class RotateMapViewer extends OverlayMapViewer {
 				getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), hypot,
 				hypot,
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
-				threaded, queueSize, persistent));
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent));
 	}
 
 	@Override

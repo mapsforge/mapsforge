@@ -22,7 +22,6 @@ import org.mapsforge.map.writer.util.OSMUtils;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
 public class TDNode {
-	// private static final Logger LOGGER = Logger.getLogger(TDNode.class.getName());
 
 	private static final byte ZOOM_HOUSENUMBER = (byte) 18;
 

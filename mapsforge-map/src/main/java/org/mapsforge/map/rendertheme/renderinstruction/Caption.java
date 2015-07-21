@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -31,10 +31,12 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -51,13 +53,18 @@ public class Caption extends RenderInstruction {
 	private Position position;
 	private Display display;
 	private float dy;
-	private float dyScaled;
+	private final Map<Byte, Float> dyScaled;
+
 	private final Paint fill;
+	private final Map<Byte, Paint> fills;
+
 	private float fontSize;
 	private final float gap;
 	private final int maxTextWidth;
 	private int priority;
 	private final Paint stroke;
+	private final Map<Byte, Paint> strokes;
+
 	private TextKey textKey;
 	public static final float DEFAULT_GAP = 5f;
 
@@ -70,10 +77,14 @@ public class Caption extends RenderInstruction {
 		this.fill = graphicFactory.createPaint();
 		this.fill.setColor(Color.BLACK);
 		this.fill.setStyle(Style.FILL);
+		this.fills = new HashMap<>();
 
 		this.stroke = graphicFactory.createPaint();
 		this.stroke.setColor(Color.BLACK);
 		this.stroke.setStyle(Style.STROKE);
+		this.strokes = new HashMap<>();
+		this.dyScaled = new HashMap<>();
+
 
 		this.display = Display.IFSPACE;
 
@@ -130,7 +141,7 @@ public class Caption extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 
 		if (Display.NEVER == this.display) {
 			return;
@@ -142,19 +153,23 @@ public class Caption extends RenderInstruction {
 		}
 
 		float horizontalOffset = 0f;
-		float verticalOffset = this.dyScaled;
+
+		Float verticalOffset = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+		if (verticalOffset == null) {
+			verticalOffset = this.dy;
+		}
 
 		if (this.bitmap != null) {
 			horizontalOffset = computeHorizontalOffset();
-			verticalOffset = computeVerticalOffset();
+			verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
 		}
 
-		renderCallback.renderPointOfInterestCaption(poi, this.display, this.priority, caption, horizontalOffset, verticalOffset,
-				this.fill, this.stroke, this.position, this.maxTextWidth, tile);
+		renderCallback.renderPointOfInterestCaption(renderContext, this.display, this.priority, caption, horizontalOffset, verticalOffset,
+				getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, poi);
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
 
 		if (Display.NEVER == this.display) {
 			return;
@@ -166,27 +181,36 @@ public class Caption extends RenderInstruction {
 		}
 
 		float horizontalOffset = 0f;
-		float verticalOffset = this.dyScaled;
+		Float verticalOffset = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+		if (verticalOffset == null) {
+			verticalOffset = this.dy;
+		}
 
 		if (this.bitmap != null) {
 			horizontalOffset = computeHorizontalOffset();
-			verticalOffset = computeVerticalOffset();
+			verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
 		}
 
-		renderCallback.renderAreaCaption(way, this.display, this.priority, caption, horizontalOffset, verticalOffset,
-				this.fill, this.stroke, this.position, this.maxTextWidth);
+		renderCallback.renderAreaCaption(renderContext, this.display, this.priority, caption, horizontalOffset, verticalOffset,
+				getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, way);
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
-		this.fill.setTextSize(this.fontSize * scaleFactor);
-		this.stroke.setTextSize(this.fontSize * scaleFactor);
-		this.dyScaled = this.dy * scaleFactor;
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+		Paint f = graphicFactory.createPaint(this.fill);
+		f.setTextSize(this.fontSize * scaleFactor);
+		this.fills.put(zoomLevel, f);
+
+		Paint s = graphicFactory.createPaint(this.stroke);
+		s.setTextSize(this.fontSize * scaleFactor);
+		this.strokes.put(zoomLevel, s);
+
+		this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
 	}
 
 	private float computeHorizontalOffset() {
@@ -206,8 +230,8 @@ public class Caption extends RenderInstruction {
 		return 0;
 	}
 
-	private float computeVerticalOffset() {
-		float verticalOffset = this.dyScaled;
+	private float computeVerticalOffset(byte zoomLevel) {
+		float verticalOffset = this.dyScaled.get(zoomLevel);
 
 		if (Position.ABOVE == this.position
 				|| Position.ABOVE_LEFT == this.position
@@ -239,7 +263,6 @@ public class Caption extends RenderInstruction {
 				this.display = Display.fromString(value);
 			} else if (DY.equals(name)) {
 				this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
-				this.dyScaled = this.dy;
 			} else if (FONT_FAMILY.equals(name)) {
 				fontFamily = FontFamily.fromString(value);
 			} else if (FONT_STYLE.equals(name)) {
@@ -267,4 +290,19 @@ public class Caption extends RenderInstruction {
 		XmlUtils.checkMandatoryAttribute(elementName, K, this.textKey);
 	}
 
+	private Paint getFillPaint(byte zoomLevel) {
+		Paint paint = fills.get(zoomLevel);
+		if (paint == null) {
+			paint = this.fill;
+		}
+		return paint;
+	}
+
+	private Paint getStrokePaint(byte zoomLevel) {
+		Paint paint = strokes.get(zoomLevel);
+		if (paint == null) {
+			paint = this.stroke;
+		}
+		return paint;
+	}
 }

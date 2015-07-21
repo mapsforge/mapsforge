@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
- * Copyright © 2013-2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.ResourceBitmap;
@@ -86,13 +85,13 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 						Integer.valueOf(1));
 				RESOURCE_BITMAPS.put(hash, updated);
 				if (AndroidGraphicFactory.DEBUG_BITMAPS) {
-					LOGGER.log(Level.INFO, "RESOURCE BITMAP CREATE " + hash);
+					LOGGER.info("RESOURCE BITMAP CREATE " + hash);
 					rInstances.incrementAndGet();
 					synchronized (rBitmaps) {
 						rBitmaps.add(hash);
 					}
-					LOGGER.log(Level.INFO, "RESOURCE BITMAP ACC COUNT " + rInstances.get() + " " + rBitmaps.size());
-					LOGGER.log(Level.INFO, "RESOURCE BITMAP COUNT " + RESOURCE_BITMAPS.size());
+					LOGGER.info("RESOURCE BITMAP ACC COUNT " + rInstances.get() + " " + rBitmaps.size());
+					LOGGER.info("RESOURCE BITMAP COUNT " + RESOURCE_BITMAPS.size());
 				}
 				return bitmap;
 			}
@@ -115,16 +114,16 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 				RESOURCE_BITMAPS.remove(hash);
 				if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 					synchronized (rBitmaps) {
-						LOGGER.log(Level.INFO, "RESOURCE BITMAP DELETE " + hash);
+						LOGGER.info("RESOURCE BITMAP DELETE " + hash);
 						int i = rInstances.decrementAndGet();
 						if (rBitmaps.contains(hash)) {
 							rBitmaps.remove(hash);
 						} else {
-							LOGGER.log(Level.SEVERE, "RESOURCE BITMAP ALREADY REMOVED " + hash);
+							LOGGER.severe("RESOURCE BITMAP ALREADY REMOVED " + hash);
 						}
-						LOGGER.log(Level.INFO, "RESOURCE BITMAP ACC COUNT " + i + " " + rBitmaps.size());
+						LOGGER.info("RESOURCE BITMAP ACC COUNT " + i + " " + rBitmaps.size());
 					}
-					LOGGER.log(Level.INFO, "RESOURCE BITMAP COUNT " + RESOURCE_BITMAPS.size());
+					LOGGER.info("RESOURCE BITMAP COUNT " + RESOURCE_BITMAPS.size());
 				}
 				return true;
 			}

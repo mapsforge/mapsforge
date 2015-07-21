@@ -19,11 +19,13 @@ import java.util.Set;
 
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.model.common.ObservableInterface;
+import org.mapsforge.map.model.common.Observer;
 
 /**
  * Interface for tile image caches.
  */
-public interface TileCache {
+public interface TileCache extends ObservableInterface {
 
 	/**
 	 * @return true if this cache contains an image for the given key, false otherwise.

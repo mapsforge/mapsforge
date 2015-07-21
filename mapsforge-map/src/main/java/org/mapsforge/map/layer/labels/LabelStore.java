@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,7 +33,7 @@ public interface LabelStore {
 
 	/**
 	 * Returns a version number, which changes every time an update is made to the LabelStore.
-	 * @return
+	 * @return the version number
 	 */
 	abstract int getVersion();
 

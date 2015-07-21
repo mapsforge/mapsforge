@@ -18,7 +18,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -76,7 +75,7 @@ public final class TileInfo {
 			}
 			LOGGER.fine("loading of tile info data took " + (System.currentTimeMillis() - start) + " ms");
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "error loading tile info from file " + strInputFile);
+			LOGGER.severe("error loading tile info from file " + strInputFile);
 		}
 	}
 

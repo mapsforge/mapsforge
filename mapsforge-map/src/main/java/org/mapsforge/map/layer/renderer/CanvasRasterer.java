@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,8 +31,9 @@ import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.rendertheme.RenderContext;
 
-class CanvasRasterer {
+public class CanvasRasterer {
 	private final Canvas canvas;
 	private final Path path;
 	private final Matrix symbolMatrix;
@@ -43,21 +44,21 @@ class CanvasRasterer {
 		this.path = graphicFactory.createPath();
 	}
 
-	void destroy() {
+	public void destroy() {
 		this.canvas.destroy();
 	}
 
-	void drawWays(List<List<List<ShapePaintContainer>>> drawWays, Tile tile) {
-		int levelsPerLayer = drawWays.get(0).size();
+	void drawWays(RenderContext renderContext) {
+		int levelsPerLayer = renderContext.ways.get(0).size();
 
-		for (int layer = 0, layers = drawWays.size(); layer < layers; ++layer) {
-			List<List<ShapePaintContainer>> shapePaintContainers = drawWays.get(layer);
+		for (int layer = 0, layers = renderContext.ways.size(); layer < layers; ++layer) {
+			List<List<ShapePaintContainer>> shapePaintContainers = renderContext.ways.get(layer);
 
 			for (int level = 0; level < levelsPerLayer; ++level) {
 				List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
 				for (int index = wayList.size() - 1; index >= 0; --index) {
-					drawShapePaintContainer(wayList.get(index), tile);
+					drawShapePaintContainer(wayList.get(index));
 				}
 			}
 		}
@@ -141,7 +142,7 @@ class CanvasRasterer {
 		this.canvas.drawPath(this.path, shapePaintContainer.paint);
 	}
 
-	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer, Tile tile) {
+	private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
 		ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
 		switch (shapeType) {
 			case CIRCLE:

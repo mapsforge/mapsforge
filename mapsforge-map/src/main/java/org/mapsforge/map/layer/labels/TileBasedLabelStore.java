@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -76,7 +76,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	/**
 	 * Returns if a tile is in the current tile set and no data is stored for this tile.
 	 * @param tile the tile
-	 * @return
+	 * @return true if the tile is in the current tile set, but no data is stored for it.
 	 */
 	public synchronized boolean requiresTile(Tile tile) {
 		return this.lastVisibleTileSet.contains(tile) && !this.containsKey(tile);

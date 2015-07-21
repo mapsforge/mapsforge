@@ -2,6 +2,22 @@
 
 <wiki:toc />
 
+## New since 0.5.1
+ - Multi-threaded map rendering
+ - Hardware acceleration improvements
+ - Touch gesture improvements and fixes
+ - Geographic grid layer improvements
+ - Java painting enhancements
+ - Map writer tag-mapping improvements
+ - Render themes improvements
+ - Scale bar enhancements
+ - Zoom controls enhancements
+ - Map buffer size adjustable
+ - MyLocationOverlay moved in Samples
+ - External Map Rotation example improvements in Samples
+ - LabelLayer improvements
+ - Many other minor improvements and bugfixes
+
 ## Version 0.5.1
  **2015-03-18**
  - Same as 0.5.1-rc4

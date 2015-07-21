@@ -48,38 +48,6 @@ final class GeometryUtils {
 		return new Point((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2);
 	}
 
-	/**
-	 * Calculates the center of the minimum bounding rectangle for the given coordinates.
-	 *
-	 * @param coordinates
-	 *            the coordinates for which calculation should be done.
-	 * @return the center coordinates of the minimum bounding rectangle.
-	 */
-	static LatLong calculateCenterOfBoundingBox(LatLong[] coordinates) {
-		double pointXMin = coordinates[0].longitude;
-		double pointXMax = coordinates[0].longitude;
-		double pointYMin = coordinates[0].latitude;
-		double pointYMax = coordinates[0].latitude;
-
-		for (int i = 1; i < coordinates.length; ++i) {
-			LatLong immutablePoint = coordinates[i];
-			if (immutablePoint.longitude < pointXMin) {
-				pointXMin = immutablePoint.longitude;
-			} else if (immutablePoint.longitude > pointXMax) {
-				pointXMax = immutablePoint.longitude;
-			}
-
-			if (immutablePoint.latitude < pointYMin) {
-				pointYMin = immutablePoint.latitude;
-			} else if (immutablePoint.latitude > pointYMax) {
-				pointYMax = immutablePoint.latitude;
-			}
-		}
-
-		return new LatLong((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2, true);
-	}
-
-
 	private GeometryUtils() {
 		throw new IllegalStateException();
 	}

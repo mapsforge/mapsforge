@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +26,7 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -73,36 +74,36 @@ public class Symbol extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 
 		if (Display.NEVER == this.display) {
 			return;
 		}
 
 		if (getBitmap() != null) {
-			renderCallback.renderPointOfInterestSymbol(poi, this.display, this.priority, this.bitmap, tile);
+			renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, poi);
 		}
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
+	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
 
 		if (Display.NEVER == this.display) {
 			return;
 		}
 
 		if (this.getBitmap() != null) {
-			renderCallback.renderAreaSymbol(way, this.display, this.priority, this.bitmap);
+			renderCallback.renderAreaSymbol(renderContext, this.display, this.priority, this.bitmap, way);
 		}
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 	private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {

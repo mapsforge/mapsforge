@@ -3,7 +3,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.0.0'
+    classpath 'com.android.tools.build:gradle:1.1.3'
   }
 }
 
@@ -14,7 +14,7 @@ def filterProjects(filter) {
 
 allprojects {
   group = 'org.mapsforge'
-  version = '0.5.1'
+  version = 'dev-SNAPSHOT'
   ext.androidBuildVersionTools = "22"
   ext.jUnitVersion = "4.11"
   description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
@@ -23,7 +23,7 @@ allprojects {
 // no injection of functions, so via inheritance
 def androidMinSdk() { return 9 }
 def androidTargetSdk() { return 22 }
-def versionCode() { return 51 }
+def versionCode() { return 50 }
 def versionName() { return version }
 
 

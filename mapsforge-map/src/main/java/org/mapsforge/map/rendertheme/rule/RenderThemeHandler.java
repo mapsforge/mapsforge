@@ -65,12 +65,8 @@ public final class RenderThemeHandler {
 			inputStream = xmlRenderTheme.getRenderThemeAsStream();
 			pullParser.setInput(inputStream, null);
 			renderThemeHandler.processRenderTheme();
-			renderThemeHandler.renderTheme.incrementRefCount();
 			return renderThemeHandler.renderTheme;
 		} finally {
-			if (renderThemeHandler.renderTheme != null) {
-				renderThemeHandler.renderTheme.destroy();
-			}
 			IOUtils.closeQuietly(inputStream);
 		}
 	}

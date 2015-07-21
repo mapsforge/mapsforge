@@ -37,8 +37,8 @@ public class MapReadResult {
 	public final List<Way> ways;
 
 	MapReadResult(MapReadResultBuilder mapReadResultBuilder) {
-		this.pointOfInterests = mapReadResultBuilder.pointOfInterests;
-		this.ways = mapReadResultBuilder.ways;
-		this.isWater = mapReadResultBuilder.isWater;
+		this.pointOfInterests = mapReadResultBuilder.getPointOfInterests();
+		this.ways = mapReadResultBuilder.getWays();
+		this.isWater = mapReadResultBuilder.isWater();
 	}
 }

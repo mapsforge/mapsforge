@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -77,9 +77,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 	protected void createTileCaches() {
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
-				false, 0
-		));
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor()));
 	}
 
 }

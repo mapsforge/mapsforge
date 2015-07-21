@@ -56,21 +56,6 @@ public class MapFile implements MapDataStore {
 	private static final long BITMASK_INDEX_WATER = 0x8000000000L;
 
 	/**
-	 * Debug message prefix for the block signature.
-	 */
-	private static final String DEBUG_SIGNATURE_BLOCK = "block signature: ";
-
-	/**
-	 * Debug message prefix for the POI signature.
-	 */
-	private static final String DEBUG_SIGNATURE_POI = "POI signature: ";
-
-	/**
-	 * Debug message prefix for the way signature.
-	 */
-	private static final String DEBUG_SIGNATURE_WAY = "way signature: ";
-
-	/**
 	 * Default start zoom level.
 	 */
 	private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
@@ -253,7 +238,7 @@ public class MapFile implements MapDataStore {
 
 			this.timestamp = mapFile.lastModified();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			// make sure that the file is closed
 			closeFile();
 			throw new MapFileException(e.getMessage());
@@ -289,7 +274,7 @@ public class MapFile implements MapDataStore {
 			this.databaseIndexCache.destroy();
 			this.inputFile.close();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -320,7 +305,7 @@ public class MapFile implements MapDataStore {
 	 * @return the read map data.
 	 */
 	@Override
-	public MapReadResult readMapData(Tile tile) {
+	public synchronized MapReadResult readMapData(Tile tile) {
 		try {
 			QueryParameters queryParameters = new QueryParameters();
 			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
@@ -340,7 +325,7 @@ public class MapFile implements MapDataStore {
 			// overlap onto this tile.
 			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		}
 	}
@@ -432,16 +417,6 @@ public class MapFile implements MapDataStore {
 			wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
 			waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
-		}
-	}
-
-	/**
-	 * Logs the debug signatures of the current way and block.
-	 */
-	private void logDebugSignatures(String signatureBlock, String signatureWay) {
-		if (this.mapFileHeader.getMapFileInfo().debugFile) {
-			LOGGER.warning(DEBUG_SIGNATURE_WAY + signatureWay);
-			LOGGER.warning(DEBUG_SIGNATURE_BLOCK + signatureBlock);
 		}
 	}
 
@@ -550,7 +525,7 @@ public class MapFile implements MapDataStore {
 				} else if (currentBlockSize == 0) {
 					// the current block is empty, continue with the next block
 					continue;
-				} else if (currentBlockSize > ReadBuffer.MAXIMUM_BUFFER_SIZE) {
+				} else if (currentBlockSize > ReadBuffer.getMaximumBufferSize()) {
 					// the current block is too large, continue with the next block
 					LOGGER.warning("current block size too large: " + currentBlockSize);
 					continue;
@@ -581,14 +556,14 @@ public class MapFile implements MapDataStore {
 						mapReadResultBuilder.add(poiWayBundle);
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
-					LOGGER.log(Level.SEVERE, null, e);
+					LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		}
 
 		// the query is finished, was the water flag set for all blocks?
 		if (queryIsWater && queryReadWaterInfo) {
-			mapReadResultBuilder.isWater = true;
+			mapReadResultBuilder.setWater(true);
 		}
 
 		return mapReadResultBuilder.build();

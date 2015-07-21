@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,15 +24,6 @@ import org.mapsforge.map.model.MapViewPosition;
 public class JobQueueTest {
 
 	private static final int TILE_SIZE = 256;
-
-	private static void verifyInvalidRemove(JobQueue<Job> jobQueue, Job job) {
-		try {
-			jobQueue.remove(job);
-			Assert.fail("job: " + job);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
 
 	@Test
 	public void jobQueueTest() throws InterruptedException {
@@ -67,8 +58,5 @@ public class JobQueueTest {
 		jobQueue.remove(job2);
 		jobQueue.remove(job3);
 
-		verifyInvalidRemove(jobQueue, job1);
-		verifyInvalidRemove(jobQueue, job2);
-		verifyInvalidRemove(jobQueue, job3);
 	}
 }

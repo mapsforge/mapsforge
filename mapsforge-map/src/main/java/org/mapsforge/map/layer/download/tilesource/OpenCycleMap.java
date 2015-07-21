@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -40,17 +40,8 @@ public class OpenCycleMap extends AbstractTileSource {
 
 	@Override
 	public URL getTileUrl(Tile tile) throws MalformedURLException {
-		StringBuilder stringBuilder = new StringBuilder(32);
 
-		stringBuilder.append("/cycle/");
-		stringBuilder.append(tile.zoomLevel);
-		stringBuilder.append('/');
-		stringBuilder.append(tile.tileX);
-		stringBuilder.append('/');
-		stringBuilder.append(tile.tileY);
-		stringBuilder.append(".png");
-
-		return new URL(PROTOCOL, getHostName(), this.port, stringBuilder.toString());
+		return new URL(PROTOCOL, getHostName(), this.port, "/cycle/" + tile.zoomLevel + '/' + tile.tileX + '/' + tile.tileY + ".png");
 	}
 
 	@Override

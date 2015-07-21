@@ -1,8 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Christian Pesch
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014 Christian Pesch
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -45,6 +45,7 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
+import org.mapsforge.map.reader.ReadBuffer;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.swing.controller.MapViewComponentListener;
 import org.mapsforge.map.swing.controller.MouseEventListener;
@@ -64,10 +65,13 @@ public final class MapViewer {
 	 *            command line args: expects the map files as multiple parameters.
 	 */
 	public static void main(String[] args) {
+		// Increase read buffer limit
+		ReadBuffer.setMaximumBufferSize(6500000);
+
 		List<File> mapFiles = getMapFiles(args);
 		MapView mapView = createMapView();
-		TileCache tileCache = createTileCache();
-		final BoundingBox boundingBox = addLayers(mapView, mapFiles, tileCache);
+		TileCache[] tileCaches = new TileCache[mapFiles.size()];
+		final BoundingBox boundingBox = addLayers(mapView, mapFiles, tileCaches);
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		final Model model = mapView.getModel();
@@ -75,7 +79,7 @@ public final class MapViewer {
 
 		MainFrame mainFrame = new MainFrame();
 		mainFrame.add(mapView);
-		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, mapView, preferencesFacade, tileCache));
+		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, mapView, preferencesFacade, tileCaches));
 		mainFrame.setVisible(true);
 
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -88,13 +92,15 @@ public final class MapViewer {
 		});
 	}
 
-	private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, TileCache tileCache) {
+	private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, TileCache[] tileCaches) {
 		Layers layers = mapView.getLayerManager().getLayers();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
 		BoundingBox result = null;
-		for (File mapFile : mapFiles) {
-			TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache,
+		for (int i = 0; i < mapFiles.size(); i++) {
+			File mapFile = mapFiles.get(i);
+			tileCaches[i] = createTileCache(i);
+			TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCaches[i],
 					mapView.getModel().mapViewPosition, true, true, mapFile);
 			BoundingBox boundingBox = tileRendererLayer.getMapDataStore().boundingBox();
 			result = result == null ? boundingBox : result.extend(boundingBox);
@@ -123,9 +129,9 @@ public final class MapViewer {
 		return mapView;
 	}
 
-	private static TileCache createTileCache() {
+	private static TileCache createTileCache(int index) {
 		TileCache firstLevelTileCache = new InMemoryTileCache(128);
-		File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge");
+		File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge" + index);
 		TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
 		return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 	}

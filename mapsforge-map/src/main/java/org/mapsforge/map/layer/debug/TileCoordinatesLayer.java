@@ -36,7 +36,7 @@ import org.mapsforge.map.model.DisplayModel;
 public class TileCoordinatesLayer extends Layer {
 	private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		Paint paint = graphicFactory.createPaint();
-		paint.setColor(Color.BLACK);
+		paint.setColor(Color.RED);
 		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
 		paint.setTextSize(16 * displayModel.getScaleFactor());
 		return paint;
@@ -53,22 +53,23 @@ public class TileCoordinatesLayer extends Layer {
 	}
 
 	private final DisplayModel displayModel;
-	private final Paint paintFront, paintBack;
+	private final Paint paintBack, paintFront;
 
 	public TileCoordinatesLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
 		super();
 
 		this.displayModel = displayModel;
-		this.paintFront = createPaintFront(graphicFactory, displayModel);
+
 		this.paintBack = createPaintBack(graphicFactory, displayModel);
+		this.paintFront = createPaintFront(graphicFactory, displayModel);
 	}
 
 	public TileCoordinatesLayer(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
 		super();
 
 		this.displayModel = displayModel;
-		this.paintFront = paintFront;
 		this.paintBack = paintBack;
+		this.paintFront = paintFront;
 	}
 
 	@Override

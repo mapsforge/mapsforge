@@ -47,7 +47,7 @@ public class StackedLayersMapViewer extends RenderTheme4 {
 							secondRenderTheme, true, false));
 
 		} catch (IOException e) {
-			Log.e("ERROR", "Rendertheme not found");
+			Log.e(SamplesApplication.TAG, "Rendertheme not found");
 		}
 
 	}

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,7 +24,6 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.MapViewPositionObserver;
 import org.mapsforge.map.layer.overlay.Polyline;
-import org.mapsforge.map.util.MapPositionUtil;
 
 /**
  * An activity with a smaller mapview giving the position of the larger map
@@ -45,9 +45,7 @@ public class DualOverviewMapViewer extends DualMapViewer {
 			@Override
 			protected void setCenter() {
 				super.setCenter();
-				BoundingBox bbox = MapPositionUtil.getBoundingBox(DualOverviewMapViewer.this.mapView.getModel().mapViewPosition.getMapPosition(),
-								DualOverviewMapViewer.this.mapView.getDimension(),
-								DualOverviewMapViewer.this.mapView.getModel().displayModel.getTileSize());
+				BoundingBox bbox = DualOverviewMapViewer.this.mapView.getBoundingBox();
 				Paint paintStroke = Utils.createPaint(
 						AndroidGraphicFactory.INSTANCE.createColor(Color.RED),
 						2, Style.STROKE);

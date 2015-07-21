@@ -1,5 +1,6 @@
 /*
- * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,7 +16,6 @@
 package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 
@@ -36,4 +36,8 @@ public class DiagnosticsMapViewer extends RenderTheme4 {
 		mapView.getFpsCounter().setVisible(true);
 	}
 
+	@Override
+	protected boolean isZoomControlsAutoHide() {
+		return false;
+	}
 }

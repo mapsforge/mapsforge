@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -94,17 +95,25 @@ public class MapZoomControls implements Observer {
 	private static final int MSG_ZOOM_CONTROLS_HIDE = 0;
 
 	/**
-	 * Horizontal padding for the zoom controls.
+	 * Horizontal margin for the zoom controls.
 	 */
-	private static final int ZOOM_CONTROLS_HORIZONTAL_PADDING = 5;
+	private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+
+	/**
+	 * Vertical margin for the zoom controls.
+	 */
+	private static final int DEFAULT_VERTICAL_MARGIN = 0;
 
 	/**
 	 * Delay in milliseconds after which the zoom controls disappear.
 	 */
 	private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
 
-	private boolean gravityChanged;
+	private boolean autoHide;
+	private boolean layoutChanged;
 	private final MapView mapView;
+	private int marginHorizontal;
+	private int marginVertical;
 	private boolean showMapZoomControls;
 	private final ZoomControls zoomControls;
 	private int zoomControlsGravity;
@@ -115,6 +124,9 @@ public class MapZoomControls implements Observer {
 	public MapZoomControls(Context context, final MapView mapView) {
 		this.mapView = mapView;
 		this.zoomControls = new ZoomControls(context);
+		this.autoHide = true;
+		this.marginHorizontal = DEFAULT_HORIZONTAL_MARGIN;
+		this.marginVertical = DEFAULT_VERTICAL_MARGIN;
 		this.showMapZoomControls = true;
 		this.zoomLevelMax = DEFAULT_ZOOM_LEVEL_MAX;
 		this.zoomLevelMin = DEFAULT_ZOOM_LEVEL_MIN;
@@ -128,6 +140,14 @@ public class MapZoomControls implements Observer {
 		int wrapContent = android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 		LayoutParams layoutParams = new LayoutParams(wrapContent, wrapContent);
 		this.mapView.addView(this.zoomControls, layoutParams);
+	}
+
+	public int getMarginHorizontal() {
+		return marginHorizontal;
+	}
+
+	public int getMarginVertical() {
+		return marginVertical;
 	}
 
 	public int getMeasuredHeight() {
@@ -161,6 +181,13 @@ public class MapZoomControls implements Observer {
 	}
 
 	/**
+	 * @return true if the zoom controls hide automatically, false otherwise.
+	 */
+	public boolean isAutoHide() {
+		return this.autoHide;
+	}
+
+	/**
 	 * @return true if the zoom controls are visible, false otherwise.
 	 */
 	public boolean isShowMapZoomControls() {
@@ -168,7 +195,7 @@ public class MapZoomControls implements Observer {
 	}
 
 	public void layout(boolean changed, int left, int top, int right, int bottom) {
-		if (!changed && !this.gravityChanged) {
+		if (!changed && !this.layoutChanged) {
 			return;
 		}
 
@@ -181,7 +208,7 @@ public class MapZoomControls implements Observer {
 		int positionBottom = positionTop + zoomControlsHeight;
 
 		this.zoomControls.layout(positionLeft, positionTop, positionRight, positionBottom);
-		this.gravityChanged = false;
+		this.layoutChanged = false;
 	}
 
 	public void measure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -197,7 +224,7 @@ public class MapZoomControls implements Observer {
 			// no multitouch
 			return;
 		}
-		if (this.showMapZoomControls) {
+		if (this.showMapZoomControls && this.autoHide) {
 			switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					showZoomControls();
@@ -228,6 +255,31 @@ public class MapZoomControls implements Observer {
 	}
 
 	/**
+	 * @param autoHide
+	 *            true if the zoom controls hide automatically, false otherwise.
+	 */
+	public void setAutoHide(boolean autoHide) {
+		this.autoHide = autoHide;
+		if (!this.autoHide) {
+			showZoomControls();
+		}
+	}
+
+	public void setMarginHorizontal(int marginHorizontal) {
+		if (this.marginHorizontal != marginHorizontal) {
+			this.marginHorizontal = marginHorizontal;
+			this.layoutChanged = true;
+		}
+	}
+
+	public void setMarginVertical(int marginVertical) {
+		if (this.marginVertical != marginVertical) {
+			this.marginVertical = marginVertical;
+			this.layoutChanged = true;
+		}
+	}
+
+	/**
 	 * @param showMapZoomControls
 	 *            true if the zoom controls should be visible, false otherwise.
 	 */
@@ -246,7 +298,7 @@ public class MapZoomControls implements Observer {
 	public void setZoomControlsGravity(int zoomControlsGravity) {
 		if (this.zoomControlsGravity != zoomControlsGravity) {
 			this.zoomControlsGravity = zoomControlsGravity;
-			this.gravityChanged = true;
+			this.layoutChanged = true;
 		}
 	}
 
@@ -287,13 +339,13 @@ public class MapZoomControls implements Observer {
 		int gravity = this.zoomControlsGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
 		switch (gravity) {
 			case Gravity.LEFT:
-				return ZOOM_CONTROLS_HORIZONTAL_PADDING;
+				return marginHorizontal;
 
 			case Gravity.CENTER_HORIZONTAL:
 				return (right - left - zoomControlsWidth) / 2;
 
 			case Gravity.RIGHT:
-				return right - left - zoomControlsWidth - ZOOM_CONTROLS_HORIZONTAL_PADDING;
+				return right - left - zoomControlsWidth - marginHorizontal;
 		}
 
 		throw new IllegalArgumentException("unknown horizontal gravity: " + gravity);
@@ -303,13 +355,13 @@ public class MapZoomControls implements Observer {
 		int gravity = this.zoomControlsGravity & Gravity.VERTICAL_GRAVITY_MASK;
 		switch (gravity) {
 			case Gravity.TOP:
-				return 0;
+				return marginVertical;
 
 			case Gravity.CENTER_VERTICAL:
 				return (bottom - top - zoomControlsHeight) / 2;
 
 			case Gravity.BOTTOM:
-				return bottom - top - zoomControlsHeight;
+				return bottom - top - zoomControlsHeight - marginVertical;
 		}
 
 		throw new IllegalArgumentException("unknown vertical gravity: " + gravity);

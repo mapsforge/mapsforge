@@ -81,7 +81,6 @@ class AndroidCanvas implements Canvas {
 		if (paint.isTransparent()) {
 			return;
 		}
-
 		this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
 	}
 

@@ -44,9 +44,9 @@ public final class Utils {
 	 * @param a
 	 *            the current activity
 	 */
-	@TargetApi(11)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static void enableHome(Activity a) {
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			// Show the Up button in the action bar.
 			a.getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
@@ -63,16 +63,18 @@ public final class Utils {
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@SuppressWarnings("deprecation")
 	public static void setBackground(View view, Drawable background) {
-		if (android.os.Build.VERSION.SDK_INT >= 16) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			view.setBackground(background);
 		} else {
 			view.setBackgroundDrawable(background);
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	static Marker createMarker(Context c, int resourceIdentifier,
 			LatLong latLong) {
-		Drawable drawable = c.getResources().getDrawable(resourceIdentifier);
+		Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? c.getDrawable(resourceIdentifier) : c.getResources().getDrawable(resourceIdentifier);
 		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
 		return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2);
 	}
@@ -85,9 +87,11 @@ public final class Utils {
 		return paint;
 	}
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	static Marker createTappableMarker(final Context c, int resourceIdentifier,
 			LatLong latLong) {
-		Drawable drawable = c.getResources().getDrawable(resourceIdentifier);
+		Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? c.getDrawable(resourceIdentifier) : c.getResources().getDrawable(resourceIdentifier);
 		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
 		bitmap.incrementRefCount();
 		return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {

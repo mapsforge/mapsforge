@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.queue.Job;
+import org.mapsforge.map.model.common.Observer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -122,17 +123,17 @@ public class TileStore implements TileCache {
 	protected File findFile(Job key) {
 		// slow descent at the moment, better for debugging.
 		File l1 = new File(this.rootDirectory, Byte.toString(key.tile.zoomLevel));
-		if (l1 == null || !l1.isDirectory() || !l1.canRead()) {
+		if (!l1.isDirectory() || !l1.canRead()) {
 			LOGGER.info("Failed to find directory " + l1.getAbsolutePath());
 			return null;
 		}
 		File l2 = new File(l1, Long.toString(key.tile.tileX));
-		if (l2 == null || !l2.isDirectory() || !l2.canRead()) {
+		if (!l2.isDirectory() || !l2.canRead()) {
 			LOGGER.info("Failed to find directory " + l2.getAbsolutePath());
 			return null;
 		}
 		File l3 = new File(l2, Long.toString(key.tile.tileY) + this.suffix);
-		if (l3 == null || !l3.isFile() || !l3.canRead()) {
+		if (!l3.isFile() || !l3.canRead()) {
 			LOGGER.info("Failed to find file " + l3.getAbsolutePath());
 			return null;
 		}
@@ -145,4 +146,11 @@ public class TileStore implements TileCache {
 		// all tiles are always in the cache
 	}
 
+	@Override
+	public void addObserver(final Observer observer) {
+	}
+
+	@Override
+	public void removeObserver(final Observer observer) {
+	}
 }

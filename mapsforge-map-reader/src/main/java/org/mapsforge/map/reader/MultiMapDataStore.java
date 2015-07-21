@@ -55,6 +55,13 @@ public class MultiMapDataStore implements MapDataStore {
 		this.mapDatabases = new ArrayList<MapDataStore>();
 	}
 
+	/**
+	 * adds another mapDataStore
+	 * @param mapDataStore the mapDataStore to add
+	 * @param useStartZoomLevel if true, use the start zoom level of this mapDataStore as the start zoom level
+	 * @param useStartPosition if true, use the start position of this mapDataStore as the start position
+	 */
+
 	public void addMapDataStore(MapDataStore mapDataStore, boolean useStartZoomLevel, boolean useStartPosition) {
 		if (this.mapDatabases.contains(mapDataStore)) {
 			throw new IllegalArgumentException("Duplicate map database");
@@ -175,32 +182,37 @@ public class MultiMapDataStore implements MapDataStore {
 		for (MapDataStore mdb : mapDatabases) {
 			if (mdb.supportsTile(tile)) {
 				MapReadResult result = mdb.readMapData(tile);
-				mapReadResultBuilder.isWater &= result.isWater;
+				if (result == null) {
+					continue;
+				}
+				boolean isWater = mapReadResultBuilder.isWater() & result.isWater;
+				mapReadResultBuilder.setWater(isWater);
+
 
 				if (first) {
-					mapReadResultBuilder.ways.addAll(result.ways);
+					mapReadResultBuilder.getWays().addAll(result.ways);
 				} else {
 					if (deduplicate) {
 						for (Way way : result.ways) {
-							if (!mapReadResultBuilder.ways.contains(way)) {
-								mapReadResultBuilder.ways.add(way);
+							if (!mapReadResultBuilder.getWays().contains(way)) {
+								mapReadResultBuilder.getWays().add(way);
 							}
 						}
 					} else {
-						mapReadResultBuilder.ways.addAll(result.ways);
+						mapReadResultBuilder.getWays().addAll(result.ways);
 					}
 				}
 				if (first) {
-					mapReadResultBuilder.pointOfInterests.addAll(result.pointOfInterests);
+					mapReadResultBuilder.getPointOfInterests().addAll(result.pointOfInterests);
 				} else {
 					if (deduplicate) {
 						for (PointOfInterest poi : result.pointOfInterests) {
-							if (!mapReadResultBuilder.pointOfInterests.contains(poi)) {
-								mapReadResultBuilder.pointOfInterests.add(poi);
+							if (!mapReadResultBuilder.getPointOfInterests().contains(poi)) {
+								mapReadResultBuilder.getPointOfInterests().add(poi);
 							}
 						}
 					} else {
-						mapReadResultBuilder.pointOfInterests.addAll(result.pointOfInterests);
+						mapReadResultBuilder.getPointOfInterests().addAll(result.pointOfInterests);
 					}
 				}
 				first = false;

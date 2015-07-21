@@ -1,9 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 Christian Pesch
- * Copyright © 2014 Develar
- * Copyright © 2015 devemux86
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 Christian Pesch
+ * Copyright 2014 Develar
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -142,6 +142,12 @@ public class AwtGraphicFactory implements GraphicFactory {
 	public Paint createPaint() {
 		return new AwtPaint();
 	}
+
+	@Override
+	public Paint createPaint(Paint paint) {
+		return new AwtPaint(paint);
+	}
+
 
 	@Override
 	public Path createPath() {

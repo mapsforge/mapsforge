@@ -17,7 +17,6 @@ package org.mapsforge.map.layer.cache;
 
 import java.io.File;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.util.WorkingSetCache;
@@ -35,7 +34,7 @@ class FileWorkingSetCache<T> extends WorkingSetCache<T, File> {
 		if (size() > this.capacity) {
 			File file = eldest.getValue();
 			if (file != null && file.exists() && !file.delete()) {
-				LOGGER.log(Level.SEVERE, "could not delete file: " + file);
+				LOGGER.severe("could not delete file: " + file);
 			}
 			return true;
 		}

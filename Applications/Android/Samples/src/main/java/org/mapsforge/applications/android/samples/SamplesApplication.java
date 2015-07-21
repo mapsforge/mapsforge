@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,7 +16,7 @@
 package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.renderer.MapWorker;
+import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
 
@@ -39,9 +39,8 @@ public class SamplesApplication extends Application {
 	public static final String SETTING_WAYFILTERING = "wayfiltering";
 	public static final String SETTING_WAYFILTERING_DISTANCE = "wayfiltering_distance";
 	public static final String SETTING_TILECACHE_PERSISTENCE = "tilecache_persistence";
-	public static final String SETTING_TILECACHE_THREADING = "tilecache_threading";
-	public static final String SETTING_TILECACHE_QUEUESIZE = "tilecache_queuesize";
-	public static final String TAG = "SAMPLES APP";
+	public static final String SETTING_RENDERING_THREADS = "rendering_threads";
+	public static final String TAG = "Mapsforge Samples";
 
 
 	@Override
@@ -64,7 +63,9 @@ public class SamplesApplication extends Application {
 		if (MapFile.wayFilterEnabled) {
 			MapFile.wayFilterDistance = Integer.parseInt(preferences.getString(SETTING_WAYFILTERING_DISTANCE, "20"));
 		}
-		MapWorker.DEBUG_TIMING = preferences.getBoolean(SETTING_DEBUG_TIMING, false);
+		MapWorkerPool.DEBUG_TIMING = preferences.getBoolean(SETTING_DEBUG_TIMING, false);
+		MapWorkerPool.NUMBER_OF_THREADS = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(MapWorkerPool.DEFAULT_NUMBER_OF_THREADS)));
+
 	}
 
 }

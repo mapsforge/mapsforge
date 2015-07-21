@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright 2013-2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,7 +18,9 @@ import org.mapsforge.applications.android.samples.dummy.DummyContent;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.map.layer.overlay.Marker;
 
+import android.annotation.TargetApi;
 import android.graphics.Color;
+import android.os.Build;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -29,12 +31,14 @@ public class BubbleOverlay extends RenderTheme4 {
 
 	private Bitmap bubble;
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	protected void createLayers() {
 		super.createLayers();
 		for (DummyContent.DummyItem item : DummyContent.ITEMS) {
 			TextView bubbleView = new TextView(this);
-			Utils.setBackground(bubbleView, getResources().getDrawable(R.drawable.balloon_overlay_unfocused));
+			Utils.setBackground(bubbleView, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.balloon_overlay_unfocused) : getResources().getDrawable(R.drawable.balloon_overlay_unfocused));
 			bubbleView.setGravity(Gravity.CENTER);
 			bubbleView.setMaxEms(20);
 			bubbleView.setTextSize(15);

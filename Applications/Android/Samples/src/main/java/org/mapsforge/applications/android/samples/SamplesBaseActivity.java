@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,11 +33,10 @@ import android.widget.TextView;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.graphics.AndroidSvgBitmapStore;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.renderer.MapWorker;
+import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
@@ -92,14 +91,11 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	}
 
 	protected void createTileCaches() {
-		boolean threaded = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_THREADING, true);
-		int queueSize = Integer.parseInt(sharedPreferences.getString(SamplesApplication.SETTING_TILECACHE_QUEUESIZE, "4"));
 		boolean persistent = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_PERSISTENCE, true);
 
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(),
-				threaded, queueSize, persistent
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent
 		));
 	}
 
@@ -249,14 +245,15 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		if (SamplesApplication.SETTING_TEXTWIDTH.equals(key)) {
 			AndroidUtil.restartActivity(this);
 		}
-		if (SamplesApplication.SETTING_TILECACHE_QUEUESIZE.equals(key) || SamplesApplication.SETTING_TILECACHE_THREADING.equals(key)) {
-			AndroidUtil.restartActivity(this);
-		}
 		if (SETTING_SCALEBAR.equals(key)) {
 			setMapScaleBar();
 		}
 		if (SamplesApplication.SETTING_DEBUG_TIMING.equals(key)) {
-			MapWorker.DEBUG_TIMING = preferences.getBoolean(SamplesApplication.SETTING_DEBUG_TIMING, false);
+			MapWorkerPool.DEBUG_TIMING = preferences.getBoolean(SamplesApplication.SETTING_DEBUG_TIMING, false);
+		}
+		if (SamplesApplication.SETTING_RENDERING_THREADS.equals(key)) {
+			MapWorkerPool.NUMBER_OF_THREADS = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(MapWorkerPool.DEFAULT_NUMBER_OF_THREADS)));
+			AndroidUtil.restartActivity(this);
 		}
 		if (SamplesApplication.SETTING_WAYFILTERING_DISTANCE.equals(key) ||
 				SamplesApplication.SETTING_WAYFILTERING.equals(key)) {

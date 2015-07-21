@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -17,6 +17,8 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
@@ -24,12 +26,12 @@ import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
+import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -45,6 +47,7 @@ public class Area extends RenderInstruction {
 	private Bitmap shaderBitmap;
 	private String src;
 	private final Paint stroke;
+	private final Map<Byte, Paint> strokes;
 	private float strokeWidth;
 
 	public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -63,6 +66,8 @@ public class Area extends RenderInstruction {
 		this.stroke.setColor(Color.TRANSPARENT);
 		this.stroke.setStyle(Style.STROKE);
 		this.stroke.setStrokeCap(Cap.ROUND);
+
+		this.strokes = new HashMap<>();
 
 		extractValues(elementName, pullParser);
 	}
@@ -105,39 +110,58 @@ public class Area extends RenderInstruction {
 
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, PointOfInterest poi, Tile tile) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 		// do nothing
 	}
 
 	@Override
-	public void renderWay(RenderCallback renderCallback, PolylineContainer way) {
-		if (shaderBitmap == null && !bitmapInvalid) {
-			try {
-				shaderBitmap = createBitmap(relativePathPrefix, src);
-				if (shaderBitmap != null) {
-					this.fill.setBitmapShader(shaderBitmap);
-					shaderBitmap.decrementRefCount();
+	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+		synchronized (this) {
+			// this needs to be synchronized as we potentially set a shift in the shader and
+			// the shift is particular to the tile when rendered in multi-thread mode
+			Paint fillPaint = getFillPaint(renderContext.rendererJob.tile.zoomLevel);
+			if (shaderBitmap == null && !bitmapInvalid) {
+				try {
+					shaderBitmap = createBitmap(relativePathPrefix, src);
+					if (shaderBitmap != null) {
+						fillPaint.setBitmapShader(shaderBitmap);
+						shaderBitmap.decrementRefCount();
+					}
+				} catch (IOException ioException) {
+					bitmapInvalid = true;
 				}
-			} catch (IOException ioException) {
-				bitmapInvalid = true;
 			}
+
+			fillPaint.setBitmapShaderShift(way.getTile().getOrigin());
+
+			renderCallback.renderArea(renderContext, fillPaint, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, way);
 		}
-
-		this.fill.setBitmapShaderShift(way.getTile().getOrigin());
-
-		renderCallback.renderArea(way, this.fill, this.stroke, this.level);
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
 		if (this.stroke != null) {
-			this.stroke.setStrokeWidth(this.strokeWidth * scaleFactor);
+			Paint zlPaint = graphicFactory.createPaint(this.stroke);
+			zlPaint.setStrokeWidth(this.strokeWidth * scaleFactor);
+			this.strokes.put(zoomLevel, zlPaint);
 		}
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
 		// do nothing
+	}
+
+	private Paint getFillPaint(byte zoomLevel) {
+		return this.fill;
+	}
+
+	private Paint getStrokePaint(byte zoomLevel) {
+		Paint paint = strokes.get(zoomLevel);
+		if (paint == null) {
+			paint = this.stroke;
+		}
+		return paint;
 	}
 
 }

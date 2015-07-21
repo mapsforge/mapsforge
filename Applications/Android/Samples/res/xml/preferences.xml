@@ -30,7 +30,13 @@
         android:summary="@string/preferences_debug_timing_desc"
         android:key="debug_timing"
         android:defaultValue="false" />
-    <PreferenceCategory android:title="@string/preferences_category_wayfiltering">
+	<EditTextPreference
+		android:title="@string/preferences_rendering_threads"
+		android:summary="@string/preferences_rendering_threads_desc"
+		android:inputType="number"
+		android:key="rendering_threads" />
+
+	<PreferenceCategory android:title="@string/preferences_category_wayfiltering">
         <CheckBoxPreference
             android:title="@string/preferences_wayfiltering"
             android:summary="@string/preferences_wayfiltering_desc"
@@ -50,18 +56,6 @@
 		    android:summary="@string/preferences_tilecache_persistence_desc"
 		    android:key="tilecache_persistence"
 		    android:defaultValue="true" />
-        <CheckBoxPreference
-            android:title="@string/preferences_tilecache_threading"
-            android:summary="@string/preferences_tilecache_threading_desc"
-            android:key="tilecache_threading"
-            android:defaultValue="true" />
-        <EditTextPreference
-            android:defaultValue="4"
-            android:dependency="tilecache_threading"
-            android:title="@string/preferences_tilecache_queuelimit"
-            android:summary="@string/preferences_tilecache_queuelimit_desc"
-            android:inputType="number"
-            android:key="tilecache_queuesize" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Map Style for Rendertheme V4" android:key="renderthememenu">
 

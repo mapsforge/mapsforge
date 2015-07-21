@@ -30,6 +30,8 @@ import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.overlay.Polygon;
 import org.mapsforge.map.layer.overlay.Polyline;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.widget.Toast;
 
 /**
@@ -55,6 +57,8 @@ public class OverlayMapViewer extends RenderTheme4 {
 	protected LatLong latLong15 = new LatLong(52.526, 13.4345);
 
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	protected void addOverlayLayers(Layers layers) {
 
 		Polyline polyline = new Polyline(Utils.createPaint(
@@ -69,7 +73,7 @@ public class OverlayMapViewer extends RenderTheme4 {
 		// this illustrates that bitmap shaders can be used on a path, but then any dash effect
 		// will not be applied.
 		Paint shaderPaint = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 90, Style.STROKE);
-		shaderPaint.setBitmapShader(AndroidGraphicFactory.convertToBitmap(getResources().getDrawable(R.drawable.marker_green)));
+		shaderPaint.setBitmapShader(AndroidGraphicFactory.convertToBitmap(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_green) : getResources().getDrawable(R.drawable.marker_green)));
 
 		Polyline polylineWithShader = new Polyline(shaderPaint, AndroidGraphicFactory.INSTANCE, true);
 		List<LatLong> latLongs2 = polylineWithShader.getLatLongs();
@@ -95,7 +99,7 @@ public class OverlayMapViewer extends RenderTheme4 {
 		Paint paintFill2 = Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 2,
 				Style.FILL);
-		paintFill2.setBitmapShader(AndroidGraphicFactory.convertToBitmap(getResources().getDrawable(R.drawable.marker_green)));
+		paintFill2.setBitmapShader(AndroidGraphicFactory.convertToBitmap(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_green) : getResources().getDrawable(R.drawable.marker_green)));
 
 		Paint paintStroke2 = Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,
@@ -111,7 +115,7 @@ public class OverlayMapViewer extends RenderTheme4 {
 		Paint paintFill3 = Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 2,
 				Style.FILL);
-		paintFill3.setBitmapShader(AndroidGraphicFactory.convertToBitmap(getResources().getDrawable(R.drawable.marker_red)));
+		paintFill3.setBitmapShader(AndroidGraphicFactory.convertToBitmap(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_red) : getResources().getDrawable(R.drawable.marker_red)));
 
 		Paint paintStroke3 = Utils.createPaint(
 				AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,

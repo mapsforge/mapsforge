@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2013-2014 Ludwig M Brinckmann
+ * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -52,6 +53,10 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
 				this.mapView.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
 				AndroidGraphicFactory.INSTANCE);
 		mapView.getLayerManager().getLayers().add(this.downloadLayer);
-	}
 
+		mapView.getModel().mapViewPosition.setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
+		mapView.getModel().mapViewPosition.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
+		mapView.getMapZoomControls().setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
+		mapView.getMapZoomControls().setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
+	}
 }

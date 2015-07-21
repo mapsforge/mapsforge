@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +15,7 @@
  */
 package org.mapsforge.map.controller;
 
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
@@ -28,6 +30,11 @@ public class DummyMapView implements MapView {
 	@Override
 	public void destroy() {
 		// do nothing
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		return null;
 	}
 
 	@Override

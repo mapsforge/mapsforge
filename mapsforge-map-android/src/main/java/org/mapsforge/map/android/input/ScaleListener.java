@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,24 +15,29 @@
  */
 package org.mapsforge.map.android.input;
 
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.util.MapViewProjection;
 
 import android.view.ScaleGestureDetector;
 
 public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListener {
 	private static float threshold = 0.05f;
-	private final MapViewPosition mapViewPosition;
+	private float focusX, focusY;
+	private final MapView mapView;
+	private final MapViewProjection projection;
 	private float scaleFactorApplied;
 	private float scaleFactorCumulative;
 
 	/**
 	 * Creates a new ScaleListener for the given MapView.
 	 * 
-	 * @param mapViewPosition
-	 *            the MapViewPosition which should be scaled.
+	 * @param mapView
+	 *            the MapView which should be scaled.
 	 */
-	public ScaleListener(MapViewPosition mapViewPosition) {
-		this.mapViewPosition = mapViewPosition;
+	public ScaleListener(MapView mapView) {
+		this.mapView = mapView;
+		this.projection = new MapViewProjection(this.mapView);
 	}
 
 	@Override
@@ -41,7 +47,11 @@ public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListene
 		if (this.scaleFactorCumulative < this.scaleFactorApplied - threshold
 				|| this.scaleFactorCumulative > this.scaleFactorApplied + threshold) {
 			// hysteresis to avoid flickering
-			this.mapViewPosition.setScaleFactorAdjustment(scaleFactorCumulative);
+			try {
+				this.mapView.getModel().mapViewPosition.setPivot(projection.fromPixels(focusX, focusY));
+			} catch (Exception e) {
+			}
+			this.mapView.getModel().mapViewPosition.setScaleFactorAdjustment(scaleFactorCumulative);
 			this.scaleFactorApplied = this.scaleFactorCumulative;
 		}
 		return true;
@@ -49,6 +59,8 @@ public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListene
 
 	@Override
 	public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+		this.focusX = scaleGestureDetector.getFocusX();
+		this.focusY = scaleGestureDetector.getFocusY();
 		this.scaleFactorCumulative = 1f;
 		this.scaleFactorApplied = 1f;
 		return true;
@@ -56,8 +68,44 @@ public class ScaleListener implements ScaleGestureDetector.OnScaleGestureListene
 
 	@Override
 	public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
-		byte zoomLevelDiff = (byte) Math.round(Math.log(this.scaleFactorCumulative) / Math.log(2));
-		this.mapViewPosition.zoom(zoomLevelDiff);
+		double zoomLevelOffset = Math.log(this.scaleFactorCumulative) / Math.log(2);
+		byte zoomLevelDiff;
+		if (Math.abs(zoomLevelOffset) > 1) {
+			zoomLevelDiff = (byte) Math.round(zoomLevelOffset < 0 ? Math.floor(zoomLevelOffset) : Math.ceil(zoomLevelOffset));
+		} else {
+			zoomLevelDiff = (byte) Math.round(zoomLevelOffset);
+		}
+
+		if (zoomLevelDiff != 0) {
+			double moveHorizontal = 0, moveVertical = 0;
+			Point center = this.mapView.getModel().mapViewDimension.getDimension().getCenter();
+			if (zoomLevelDiff > 0) {
+				// Zoom in
+				for (int i = 1; i <= zoomLevelDiff; i++) {
+					if (this.mapView.getModel().mapViewPosition.getZoomLevel() + i > this.mapView.getModel().mapViewPosition.getZoomLevelMax()) {
+						break;
+					}
+					moveHorizontal += (center.x - focusX) / Math.pow(2, i);
+					moveVertical += (center.y - focusY) / Math.pow(2, i);
+				}
+			} else {
+				// Zoom out
+				for (int i = -1; i >= zoomLevelDiff; i--) {
+					if (this.mapView.getModel().mapViewPosition.getZoomLevel() + i < this.mapView.getModel().mapViewPosition.getZoomLevelMin()) {
+						break;
+					}
+					moveHorizontal -= (center.x - focusX) / Math.pow(2, i + 1);
+					moveVertical -= (center.y - focusY) / Math.pow(2, i + 1);
+				}
+			}
+			try {
+				this.mapView.getModel().mapViewPosition.setPivot(projection.fromPixels(focusX, focusY));
+			} catch (Exception e) {
+			}
+			this.mapView.getModel().mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
+		} else {
+			this.mapView.getModel().mapViewPosition.zoom(zoomLevelDiff);
+		}
 	}
 
 }

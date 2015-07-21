@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 Christian Pesch
+ * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,17 +25,17 @@ import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
-import java.io.IOException;
 
-public class TileRendererLayer extends TileLayer<RendererJob> {
+public class TileRendererLayer extends TileLayer<RendererJob> implements Observer {
 	private final DatabaseRenderer databaseRenderer;
 	private final GraphicFactory graphicFactory;
 	private final MapDataStore mapDataStore;
-	private MapWorker mapWorker;
+	private MapWorkerPool mapWorkerPool;
 	private RenderThemeFuture renderThemeFuture;
 	private float textScale;
 	private final TileBasedLabelStore tileBasedLabelStore;
@@ -85,18 +85,10 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	@Override
 	public void onDestroy() {
-		new DestroyThread(this.mapWorker, this.mapDataStore, this.databaseRenderer).start();
 		if (this.renderThemeFuture != null) {
-			if (renderThemeFuture.isDone()) {
-				try {
-					renderThemeFuture.get().destroy();
-				} catch (Exception e) {
-					// no-op, we are just cleaning up.
-				}
-			} else {
-				renderThemeFuture.cancel(true);
-			}
+			this.renderThemeFuture.decrementRefCount();
 		}
+		this.mapDataStore.close();
 		super.onDestroy();
 	}
 
@@ -105,12 +97,12 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		super.setDisplayModel(displayModel);
 		if (displayModel != null) {
 			compileRenderTheme();
-			this.mapWorker = new MapWorker(this.tileCache, this.jobQueue, this.databaseRenderer, this);
-			this.mapWorker.start();
+			this.mapWorkerPool = new MapWorkerPool(this.tileCache, this.jobQueue, this.databaseRenderer, this);
+			this.mapWorkerPool.start();
 		} else {
 			// if we do not have a displayModel any more we can stop rendering.
-			if (this.mapWorker != null) {
-				this.mapWorker.interrupt();
+			if (this.mapWorkerPool != null) {
+				this.mapWorkerPool.stop();
 			}
 		}
 	}
@@ -126,7 +118,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	protected void compileRenderTheme() {
 		this.renderThemeFuture = new RenderThemeFuture(this.graphicFactory, this.xmlRenderTheme, this.displayModel);
-		new Thread(this.renderThemeFuture).run();
+		new Thread(this.renderThemeFuture).start();
 	}
 
 	@Override
@@ -161,13 +153,20 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 
 	@Override
 	protected void onAdd() {
-		this.mapWorker.proceed();
+		this.mapWorkerPool.start();
+		if (tileCache != null) {
+			tileCache.addObserver(this);
+		}
+
 		super.onAdd();
 	}
 
 	@Override
 	protected void onRemove() {
-		this.mapWorker.pause();
+		this.mapWorkerPool.stop();
+		if (tileCache != null) {
+			tileCache.removeObserver(this);
+		}
 		super.onRemove();
 	}
 
@@ -179,4 +178,8 @@ public class TileRendererLayer extends TileLayer<RendererJob> {
 		}
 	}
 
+	@Override
+	public void onChange() {
+		this.requestRedraw();
+	}
 }

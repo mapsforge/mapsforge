@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,7 +20,13 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.Marker;
 
+import android.annotation.TargetApi;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -76,16 +83,18 @@ public class ChangingBitmaps extends RenderTheme4 {
 		super.destroyLayers();
 	}
 
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	public void onCreate(Bundle sis) {
-		Drawable drawableGreen = getResources().getDrawable(
-				R.drawable.marker_green);
-		Drawable drawableRed = getResources()
-				.getDrawable(R.drawable.marker_red);
-		bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableRed);
-		bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableGreen);
-		marker = new Marker(latLong, bitmapGreen, 0,
-				-bitmapGreen.getHeight() / 2);
+		Drawable drawableWhite = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_white) : getResources().getDrawable(R.drawable.marker_white);
+		Paint paint = new Paint();
+		paint.setAntiAlias(true);
+		paint.setColorFilter(new PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY));
+		bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableWhite, paint);
+		paint.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY));
+		bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableWhite, paint);
+		marker = new Marker(latLong, bitmapGreen, 0, -bitmapGreen.getHeight() / 2);
 		super.onCreate(sis);
 	}
 
