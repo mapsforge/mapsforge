@@ -24,7 +24,7 @@
 
 ## Version 0.5.X
 
-**Version 0.5.1 (2015-03-18)**
+#### Version 0.5.1 (2015-03-18)
 
 - Same as 0.5.1-rc4
 
@@ -57,7 +57,7 @@
 - External Map Rotation example in Samples.
 
 
-**Version 0.5.0 (2014-12-08)**
+#### Version 0.5.0 (2014-12-08)
 
 - Release 0.5.0 is, apart from minor documentation changes, identical to 0.5.0-rc4.
 
@@ -104,22 +104,22 @@
 
 ## Version 0.4.X
 
-**Version 0.4.3 (2014-05-10)**
+#### Version 0.4.3 (2014-05-10)
 
 - No functionality change, but mapsforge-map-android now build as a jar (not apklib) for Maven Central downloads.
 
 
-**Version 0.4.2 (2014-05-10)**
+#### Version 0.4.2 (2014-05-10)
 
 - No functionality change, but mapsforge build against mapsforge svg-android.
 
 
-**Version 0.4.1 (2014-05-10)**
+#### Version 0.4.1 (2014-05-10)
 
 - No functionality change, but version 0.4.1 is now available from Maven Central.
 
 
-**Version 0.4.0 (2014-05-05)**
+#### Version 0.4.0 (2014-05-05)
 
 Version 0.4.0 is what during a period was known as the 'rescue' branch. It is based on an extensive rewrite of the mapsforge library that is incompatible with the previous releases. The mapfile format however has not changed and map files from 0.3 can still be used. 
 
@@ -138,7 +138,7 @@ For a demonstration of the capabilities refer to the Samples app.
 
 ## Version 0.3.x
 
-**Version 0.3.0 (2012-03-18)**
+#### Version 0.3.0 (2012-03-18)
 
 - New version of the binary map file format, see [[Specification Binary Map File]].
 - New render theme API for custom map styles. ([issue 31](https://github.com/mapsforge/mapsforge/issues#issue/31))
@@ -154,7 +154,7 @@ For a demonstration of the capabilities refer to the Samples app.
 
 ## Version 0.2.x
 
-**Version 0.2.4 (2011-06-28)**
+#### Version 0.2.4 (2011-06-28)
 
 - AdvancedMapViewer now supports all location providers.
 - Snap to position can be toggled if current position is shown.
@@ -164,7 +164,7 @@ For a demonstration of the capabilities refer to the Samples app.
 - Many other minor improvements and bug fixes.
 
 
-**Version 0.2.3 (2011-05-12)**
+#### Version 0.2.3 (2011-05-12)
 
 - License change from GPL3 to LGPL3.
 - Added animations to the MapView when zooming in and out.
@@ -174,7 +174,7 @@ For a demonstration of the capabilities refer to the Samples app.
 - Many other minor improvements and bug fixes.
 
 
-**Version 0.2.2 (2011-03-22)**
+#### Version 0.2.2 (2011-03-22)
 
 - Improved the overlay API and implemented some new classes.
 - Better rendering of water areas and coastline situations.
@@ -187,7 +187,7 @@ For a demonstration of the capabilities refer to the Samples app.
 - Many other minor improvements and bug fixes.
 
 
-**Version 0.2.1 (2011-02-10)**
+#### Version 0.2.1 (2011-02-10)
 
 - Optimized binary map format, reduces the file size by 15-20%.
 - Rewritten overlay implementation with many new features and bug fixes.
@@ -200,7 +200,7 @@ For a demonstration of the capabilities refer to the Samples app.
 - Many other minor improvements and bug fixes.
 
 
-**Version 0.2.0 (2010-11-22)**
+#### Version 0.2.0 (2010-11-22)
 
 - New binary map format for more detailed and faster map rendering.
 - Overlay API to display points, ways and polygons on top of the map.
@@ -212,6 +212,6 @@ For a demonstration of the capabilities refer to the Samples app.
 
 ## Version 0.1.x
 
-**Version 0.1.0 (2010-06-27)**
+#### Version 0.1.0 (2010-06-27)
 
 - First public release, contains the android.map package.
