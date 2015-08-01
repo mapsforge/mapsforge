@@ -22,7 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
-import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class WindowCloseDialog extends WindowAdapter {
@@ -32,15 +31,13 @@ public class WindowCloseDialog extends WindowAdapter {
 	private final JFrame jFrame;
 	private final MapView mapView;
 	private final PreferencesFacade preferencesFacade;
-	private final TileCache[] tileCaches;
 
-	public WindowCloseDialog(JFrame jFrame, MapView mapView, PreferencesFacade preferencesFacade, TileCache[] tileCaches) {
+	public WindowCloseDialog(JFrame jFrame, MapView mapView, PreferencesFacade preferencesFacade) {
 		super();
 
 		this.jFrame = jFrame;
 		this.mapView = mapView;
 		this.preferencesFacade = preferencesFacade;
-		this.tileCaches = tileCaches;
 
 		jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
@@ -51,10 +48,7 @@ public class WindowCloseDialog extends WindowAdapter {
 
 		if (result == JOptionPane.YES_OPTION) {
 			this.mapView.getModel().save(this.preferencesFacade);
-			for (TileCache tileCache : tileCaches) {
-				tileCache.destroy();
-			}
-			this.mapView.destroy();
+			this.mapView.destroyAll();
 			this.jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		}
 	}
