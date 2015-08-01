@@ -36,6 +36,7 @@ import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
 public class MapView extends Container implements org.mapsforge.map.view.MapView {
+
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final long serialVersionUID = 1L;
 
@@ -73,6 +74,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		if (this.mapScaleBar != null) {
 			this.mapScaleBar.destroy();
 		}
+		this.getModel().mapViewPosition.destroy();
 	}
 
 	@Override
@@ -107,12 +109,6 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
-	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		this.mapScaleBar.destroy();
-		this.mapScaleBar=mapScaleBar;
-	}
-
-	@Override
 	public Model getModel() {
 		return this.model;
 	}
@@ -125,5 +121,11 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.frameBuffer.draw(graphicContext);
 		this.mapScaleBar.draw(graphicContext);
 		this.fpsCounter.draw(graphicContext);
+	}
+
+	@Override
+	public void setMapScaleBar(MapScaleBar mapScaleBar) {
+		this.mapScaleBar.destroy();
+		this.mapScaleBar=mapScaleBar;
 	}
 }

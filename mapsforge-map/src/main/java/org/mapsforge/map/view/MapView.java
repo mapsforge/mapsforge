@@ -22,6 +22,7 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
+
 	void destroy();
 
 	BoundingBox getBoundingBox();
@@ -29,10 +30,6 @@ public interface MapView {
 	Dimension getDimension();
 
 	FpsCounter getFpsCounter();
-
-	MapScaleBar getMapScaleBar();
-
-	void setMapScaleBar(MapScaleBar mapScaleBar);
 
 	/**
 	 * @return the FrameBuffer used in this MapView.
@@ -43,6 +40,8 @@ public interface MapView {
 
 	LayerManager getLayerManager();
 
+	MapScaleBar getMapScaleBar();
+
 	Model getModel();
 
 	int getWidth();
@@ -52,4 +51,5 @@ public interface MapView {
 	 */
 	void repaint();
 
+	void setMapScaleBar(MapScaleBar mapScaleBar);
 }

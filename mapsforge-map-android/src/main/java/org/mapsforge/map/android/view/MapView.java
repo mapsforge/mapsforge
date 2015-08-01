@@ -133,14 +133,6 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		return this.mapScaleBar;
 	}
 
-	@Override
-	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		if (this.mapScaleBar != null) {
-			this.mapScaleBar.destroy();
-		}
-		this.mapScaleBar = mapScaleBar;
-	}
-
 	/**
 	 * @return the zoom controls instance which is used in this MapView.
 	 */
@@ -151,6 +143,40 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	@Override
 	public Model getModel() {
 		return this.model;
+	}
+
+	@Override
+	protected void onDraw(Canvas androidCanvas) {
+		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
+		this.frameBuffer.draw(graphicContext);
+		if (this.mapScaleBar != null) {
+			this.mapScaleBar.draw(graphicContext);
+		}
+		this.fpsCounter.draw(graphicContext);
+		graphicContext.destroy();
+	}
+
+	@Override
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		this.mapZoomControls.layout(changed, left, top, right, bottom);
+	}
+
+	@Override
+	protected final void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		// find out how big the zoom controls should be
+		this.mapZoomControls.measure(
+				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
+				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST));
+
+		// make sure that MapView is big enough to display the zoom controls
+		setMeasuredDimension(Math.max(MeasureSpec.getSize(widthMeasureSpec), this.mapZoomControls.getMeasuredWidth()),
+				Math.max(MeasureSpec.getSize(heightMeasureSpec), this.mapZoomControls.getMeasuredHeight()));
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+	}
+
+	@Override
+	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
+		this.model.mapViewDimension.setDimension(new Dimension(width, height));
 	}
 
 	@Override
@@ -189,37 +215,10 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
-	protected void onDraw(Canvas androidCanvas) {
-		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
-		this.frameBuffer.draw(graphicContext);
+	public void setMapScaleBar(MapScaleBar mapScaleBar) {
 		if (this.mapScaleBar != null) {
-			this.mapScaleBar.draw(graphicContext);
+			this.mapScaleBar.destroy();
 		}
-		this.fpsCounter.draw(graphicContext);
-		graphicContext.destroy();
+		this.mapScaleBar = mapScaleBar;
 	}
-
-	@Override
-	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-		this.mapZoomControls.layout(changed, left, top, right, bottom);
-	}
-
-	@Override
-	protected final void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// find out how big the zoom controls should be
-		this.mapZoomControls.measure(
-				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
-				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST));
-
-		// make sure that MapView is big enough to display the zoom controls
-		setMeasuredDimension(Math.max(MeasureSpec.getSize(widthMeasureSpec), this.mapZoomControls.getMeasuredWidth()),
-				Math.max(MeasureSpec.getSize(heightMeasureSpec), this.mapZoomControls.getMeasuredHeight()));
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-	}
-
-	@Override
-	protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
-		this.model.mapViewDimension.setDimension(new Dimension(width, height));
-	}
-
 }
