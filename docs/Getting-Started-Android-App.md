@@ -71,19 +71,9 @@ Refer to the Samples app on how to read the initial position out of a mapfile or
 Whenever your activity changes, some cleanup operations have to be performed lest your app runs out of memory. 
 
     @Override
-    protected void onStop() {
-    	super.onStop();
-    	this.mapView.getLayerManager().getLayers().remove(this.tileRendererLayer);
-    	this.tileRendererLayer.onDestroy();
-    }
-    
-    @Override
     protected void onDestroy() {
     	super.onDestroy();
-    	this.tileCache.destroy();
-    	this.mapView.getModel().mapViewPosition.destroy();
-    	this.mapView.destroy();
-    	AndroidGraphicFactory.clearResourceMemoryCache();
+    	this.mapView.destroyAll();
     }
 
 ## All in one
@@ -157,19 +147,9 @@ Here comes the whole as a single file:
     	}
     
     	@Override
-    	protected void onStop() {
-    		super.onStop();
-    		this.mapView.getLayerManager().getLayers().remove(this.tileRendererLayer);
-    		this.tileRendererLayer.onDestroy();
-    	}
-    
-    	@Override
     	protected void onDestroy() {
     		super.onDestroy();
-    		this.tileCache.destroy();
-    		this.mapView.getModel().mapViewPosition.destroy();
-    		this.mapView.destroy();
-    		AndroidGraphicFactory.clearResourceMemoryCache();
+    		this.mapView.destroyAll();
     	}
     	
     	private File getMapFile() {
