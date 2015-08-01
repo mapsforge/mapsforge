@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -29,7 +30,6 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
-import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.util.LayerUtil;
@@ -193,5 +193,9 @@ public abstract class TileLayer<T extends Job> extends Layer {
 		}
 
 		return getCachedParentTile(parentTile, level - 1);
+	}
+
+	public TileCache getTileCache() {
+		return this.tileCache;
 	}
 }

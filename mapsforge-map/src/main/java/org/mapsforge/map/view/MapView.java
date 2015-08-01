@@ -23,7 +23,16 @@ import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
 
+	/**
+	 * Clear map view.
+	 */
 	void destroy();
+
+	/**
+	 * Clear all map view elements.<br/>
+	 * i.e. layers, tile cache, label store, map view, resources, etc.
+	 */
+	void destroyAll();
 
 	BoundingBox getBoundingBox();
 

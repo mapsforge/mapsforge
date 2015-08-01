@@ -33,6 +33,11 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
+	public void destroyAll() {
+		// do nothing
+	}
+
+	@Override
 	public BoundingBox getBoundingBox() {
 		return null;
 	}

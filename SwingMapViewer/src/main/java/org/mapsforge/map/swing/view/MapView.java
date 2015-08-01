@@ -27,7 +27,11 @@ import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.TileLayer;
+import org.mapsforge.map.layer.labels.LabelStore;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
@@ -66,6 +70,9 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 				this.model.displayModel);
 	}
 
+	/**
+	 * Clear map view.
+	 */
 	@Override
 	public void destroy() {
 		this.layerManager.interrupt();
@@ -75,6 +82,29 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 			this.mapScaleBar.destroy();
 		}
 		this.getModel().mapViewPosition.destroy();
+	}
+
+	/**
+	 * Clear all map view elements.<br/>
+	 * i.e. layers, tile cache, label store, map view, resources, etc.
+	 */
+	@Override
+	public void destroyAll() {
+		for (Layer layer : this.layerManager.getLayers()) {
+			this.layerManager.getLayers().remove(layer);
+			layer.onDestroy();
+			if (layer instanceof TileLayer) {
+				((TileLayer<?>) layer).getTileCache().destroy();
+			}
+			if (layer instanceof TileRendererLayer) {
+				LabelStore labelStore = ((TileRendererLayer) layer).getLabelStore();
+				if (labelStore != null) {
+					labelStore.clear();
+				}
+			}
+		}
+		destroy();
+		AwtGraphicFactory.clearResourceMemoryCache();
 	}
 
 	@Override
