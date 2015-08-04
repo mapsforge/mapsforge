@@ -23,8 +23,8 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 /**
  * Shows how to use a tile download layer.
- * The important thing here is that
- * the downloadLayer needs to be paused and resumed to fit into the Android life cycle.
+ * The important thing here is that the downloadLayer needs
+ * to be paused and resumed to fit into the Android life cycle.
  */
 public class DownloadLayerViewer extends SamplesBaseActivity {
 	protected TileDownloadLayer downloadLayer;
@@ -58,5 +58,12 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
 		mapView.getModel().mapViewPosition.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
 		mapView.getMapZoomControls().setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
+	}
+
+	@Override
+	protected void createMapViews() {
+		super.createMapViews();
+		// we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
+		this.mapView.getModel().displayModel.setFixedTileSize(256);
 	}
 }
