@@ -133,6 +133,12 @@ public class DualMapViewer extends RenderTheme4 {
 	}
 
 	@Override
+	protected void onDestroy() {
+		this.mapView2.destroyAll();
+		super.onDestroy();
+	}
+
+	@Override
 	protected void onPause() {
 		this.mapView2.getModel().save(this.preferencesFacade2);
 		this.preferencesFacade2.save();
