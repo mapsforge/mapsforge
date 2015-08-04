@@ -37,8 +37,8 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
 
 	@Override
 	public void onPause() {
-		super.onPause();
 		this.downloadLayer.onPause();
+		super.onPause();
 	}
 
 	@Override

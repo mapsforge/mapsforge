@@ -80,27 +80,4 @@ public class SimplestMapViewer extends MapViewerTemplate {
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
 				this.mapView.getModel().frameBufferModel.getOverdrawFactor()));
 	}
-
-	@Override
-	protected void destroyLayers() {
-		// do nothing, use destroyAll instead
-	}
-
-	@Override
-	protected void destroyMapViews() {
-		// do nothing, use destroyAll instead
-	}
-
-	@Override
-	protected void destroyTileCaches() {
-		// do nothing, use destroyAll instead
-	}
-
-	@Override
-	protected void onDestroy() {
-		this.mapView.destroyAll();
-
-		// We have overridden the partial destroy methods, doing nothing
-		super.onDestroy();
-	}
 }

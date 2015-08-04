@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,9 +13,9 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.applications.android.samples;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -29,7 +30,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -107,8 +107,8 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	}
 
 	protected void onDestroy() {
-		super.onDestroy();
 		this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+		super.onDestroy();
 	}
 
 	/*
@@ -130,7 +130,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 	}
 
-	@Deprecated
+	@SuppressLint("InflateParams")
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -167,6 +167,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
@@ -189,10 +190,10 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		return false;
 	}
 
-	@Deprecated
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPrepareDialog(int id, final Dialog dialog) {
-		if (id == this.DIALOG_ENTER_COORDINATES) {
+		if (id == DIALOG_ENTER_COORDINATES) {
 			MapViewPosition currentPosition = SamplesBaseActivity.this.mapView.getModel().mapViewPosition;
 			LatLong currentCenter = currentPosition.getCenter();
 			EditText editText = (EditText) dialog.findViewById(R.id.latitude);
