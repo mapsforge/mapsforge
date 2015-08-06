@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -340,11 +341,20 @@ public class MapViewPosition extends Observable implements Persistable {
 
 	/**
 	 * Sets the new center position and zoom level of the map.
+	 * <p/>
+	 * Note: The default zoom level changes are animated.
 	 */
 	public void setMapPosition(MapPosition mapPosition) {
+		setMapPosition(mapPosition, true);
+	}
+
+	/**
+	 * Sets the new center position and zoom level of the map.
+	 */
+	public void setMapPosition(MapPosition mapPosition, boolean animated) {
 		synchronized (this) {
 			setCenterInternal(mapPosition.latLong);
-			setZoomLevelInternal(mapPosition.zoomLevel);
+			setZoomLevelInternal(mapPosition.zoomLevel, animated);
 		}
 		notifyObservers();
 	}
