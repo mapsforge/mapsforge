@@ -33,6 +33,11 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
+	public void destroyAll() {
+		// do nothing
+	}
+
+	@Override
 	public BoundingBox getBoundingBox() {
 		return null;
 	}
@@ -63,6 +68,11 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
+	public MapScaleBar getMapScaleBar() {
+		return null;
+	}
+
+	@Override
 	public Model getModel() {
 		return null;
 	}
@@ -75,11 +85,6 @@ public class DummyMapView implements MapView {
 	@Override
 	public void repaint() {
 		++this.repaintCounter;
-	}
-
-	@Override
-	public MapScaleBar getMapScaleBar() {
-		return null;
 	}
 
 	@Override

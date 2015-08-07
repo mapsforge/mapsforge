@@ -73,16 +73,6 @@ public class ChangingBitmaps extends RenderTheme4 {
 		handler.post(bitmapChanger);
 	}
 
-	@Override
-	public void destroyLayers() {
-		handler.removeCallbacks(bitmapChanger);
-		// we need to increment the ref count here as otherwise the bitmap gets
-		// destroyed, but we might need to reuse it when this is only part of
-		// a pause/resume cycle.
-		current.incrementRefCount();
-		super.destroyLayers();
-	}
-
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	@Override
@@ -100,6 +90,11 @@ public class ChangingBitmaps extends RenderTheme4 {
 
 	@Override
 	public void onDestroy() {
+		handler.removeCallbacks(bitmapChanger);
+		// we need to increment the ref count here as otherwise the bitmap gets
+		// destroyed, but we might need to reuse it when this is only part of
+		// a pause/resume cycle.
+		current.incrementRefCount();
 		super.onDestroy();
 		bitmapRed.decrementRefCount();
 		bitmapGreen.decrementRefCount();

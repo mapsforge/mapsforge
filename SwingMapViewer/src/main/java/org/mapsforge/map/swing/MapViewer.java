@@ -70,8 +70,7 @@ public final class MapViewer {
 
 		List<File> mapFiles = getMapFiles(args);
 		MapView mapView = createMapView();
-		TileCache[] tileCaches = new TileCache[mapFiles.size()];
-		final BoundingBox boundingBox = addLayers(mapView, mapFiles, tileCaches);
+		final BoundingBox boundingBox = addLayers(mapView, mapFiles);
 
 		PreferencesFacade preferencesFacade = new JavaUtilPreferences(Preferences.userNodeForPackage(MapViewer.class));
 		final Model model = mapView.getModel();
@@ -79,7 +78,7 @@ public final class MapViewer {
 
 		MainFrame mainFrame = new MainFrame();
 		mainFrame.add(mapView);
-		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, mapView, preferencesFacade, tileCaches));
+		mainFrame.addWindowListener(new WindowCloseDialog(mainFrame, mapView, preferencesFacade));
 		mainFrame.setVisible(true);
 
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -92,15 +91,14 @@ public final class MapViewer {
 		});
 	}
 
-	private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, TileCache[] tileCaches) {
+	private static BoundingBox addLayers(MapView mapView, List<File> mapFiles) {
 		Layers layers = mapView.getLayerManager().getLayers();
 
 		// layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
 		BoundingBox result = null;
 		for (int i = 0; i < mapFiles.size(); i++) {
 			File mapFile = mapFiles.get(i);
-			tileCaches[i] = createTileCache(i);
-			TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCaches[i],
+			TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(i),
 					mapView.getModel().mapViewPosition, true, true, mapFile);
 			BoundingBox boundingBox = tileRendererLayer.getMapDataStore().boundingBox();
 			result = result == null ? boundingBox : result.extend(boundingBox);

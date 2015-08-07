@@ -22,17 +22,23 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
+
+	/**
+	 * Clear map view.
+	 */
 	void destroy();
+
+	/**
+	 * Clear all map view elements.<br/>
+	 * i.e. layers, tile cache, label store, map view, resources, etc.
+	 */
+	void destroyAll();
 
 	BoundingBox getBoundingBox();
 
 	Dimension getDimension();
 
 	FpsCounter getFpsCounter();
-
-	MapScaleBar getMapScaleBar();
-
-	void setMapScaleBar(MapScaleBar mapScaleBar);
 
 	/**
 	 * @return the FrameBuffer used in this MapView.
@@ -43,6 +49,8 @@ public interface MapView {
 
 	LayerManager getLayerManager();
 
+	MapScaleBar getMapScaleBar();
+
 	Model getModel();
 
 	int getWidth();
@@ -52,4 +60,5 @@ public interface MapView {
 	 */
 	void repaint();
 
+	void setMapScaleBar(MapScaleBar mapScaleBar);
 }

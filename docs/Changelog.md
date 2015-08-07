@@ -18,6 +18,7 @@
 - MyLocationOverlay moved in Samples
 - External Map Rotation example improvements in Samples
 - LabelLayer improvements
+- Simplified cleanup operation
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.2)
 

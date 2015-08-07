@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -65,18 +66,16 @@ public class DualMapnikMapViewer extends DualMapViewer {
 	}
 
 	@Override
-	protected void destroyMapViews() {
-		super.destroyMapViews();
+	protected void onDestroy() {
 		this.observer1.removeObserver();
 		this.observer2.removeObserver();
+		super.onDestroy();
 	}
 
 	@Override
 	protected void onPause() {
-		super.onPause();
 		this.downloadLayer.onPause();
-		this.mapView2.getModel().save(this.preferencesFacade2);
-		this.preferencesFacade.save();
+		super.onPause();
 	}
 
 	@Override

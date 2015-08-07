@@ -16,16 +16,14 @@
  */
 package org.mapsforge.map.android.util;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.os.Environment;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.AndroidPreferences;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
-import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
@@ -34,9 +32,9 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Environment;
 
 /**
  * A abstract template map viewer activity that provides a standard life cycle and
@@ -97,35 +95,6 @@ public abstract class MapViewerTemplate extends Activity  {
 	}
 
 	/**
-	 * Hook to destroy controls
-	 */
-	protected void destroyControls() {
-		// hook for control destruction
-	}
-
-	/**
-	 * Hook to destroy layers. By default we destroy every layer that
-	 * has been added to the layer manager.
-	 */
-	protected void destroyLayers() {
-		for (Layer layer : mapView.getLayerManager().getLayers()) {
-			mapView.getLayerManager().getLayers().remove(layer);
-			layer.onDestroy();
-		}
-	}
-
-	/**
-	 * Hook to destroy tile caches.
-	 * By default we destroy every tile cache that has been added to the tileCaches list.
-	 */
-	protected void destroyTileCaches() {
-		for (TileCache tileCache : tileCaches) {
-			tileCache.destroy();
-		}
-		tileCaches.clear();
-	}
-
-	/**
 	 * The MaxTextWidthFactor determines how long a text may be before it is line broken. The
 	 * default setting should be good enough for most apps.
 	 * @return the maximum text width factor for line breaking captions
@@ -176,14 +145,6 @@ public abstract class MapViewerTemplate extends Activity  {
 	 */
 	protected void createSharedPreferences() {
 		this.preferencesFacade = new AndroidPreferences(this.getSharedPreferences(getPersistableId(), MODE_PRIVATE));
-	}
-
-	/**
-	 * Clean up map views in the Android life cycle. By default all map views in the map view list
-	 * are destroyed.
-	 */
-	protected void destroyMapViews() {
-		mapView.destroy();
 	}
 
 	/**
@@ -309,9 +270,9 @@ public abstract class MapViewerTemplate extends Activity  {
 	 */
 	@Override
 	protected void onPause() {
-		super.onPause();
 		mapView.getModel().save(this.preferencesFacade);
 		this.preferencesFacade.save();
+		super.onPause();
 	}
 
 	/**
@@ -319,12 +280,9 @@ public abstract class MapViewerTemplate extends Activity  {
 	 */
 	@Override
 	protected void onDestroy() {
+		mapView.destroyAll();
+		tileCaches.clear();
 		super.onDestroy();
-		destroyControls();
-		destroyLayers();
-		destroyTileCaches();
-		destroyMapViews();
-		AndroidGraphicFactory.clearResourceMemoryCache();
 	}
 
 	/**

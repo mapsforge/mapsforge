@@ -43,4 +43,11 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
 		mapView.getMapZoomControls().setZoomLevelMin(onlineTileSource.getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(onlineTileSource.getZoomLevelMax());
 	}
+
+	@Override
+	protected void createMapViews() {
+		super.createMapViews();
+		// we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
+		this.mapView.getModel().displayModel.setFixedTileSize(256);
+	}
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,7 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.util.AndroidUtil;
@@ -23,6 +23,7 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 /**
  * The simplest form of creating a map viewer based on the MapViewerTemplate.
+ * It also demonstrates the use simplified cleanup operation at activity exit.
  */
 public class SimplestMapViewer extends MapViewerTemplate {
 
@@ -79,5 +80,4 @@ public class SimplestMapViewer extends MapViewerTemplate {
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
 				this.mapView.getModel().frameBufferModel.getOverdrawFactor()));
 	}
-
 }
