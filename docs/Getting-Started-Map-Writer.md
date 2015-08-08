@@ -61,7 +61,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 
 ## Plugin Installation
 
-- Download the  [map-writer plugin](http://ci.mapsforge.org/job/0.5.0-rc3/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0-rc3.jar) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
+- Download the  [map-writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT.jar) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
 1. Copy the downloaded plugin to $USER_HOME/.openstreetmap/osmosis/plugins (Linux) or Application Data\Openstreetmap\Osmosis\Plugins (Windows).
 1. Copy the downloaded plugin to subdirectory plugins in the current directory.
 1. Use the Osmosis parameter ‘-plugin <plugin_qualified_classname>’ to load the plugin. The qualified classname of the map-writer is ‘org.mapsforge.map.writer.osmosis.MapFileWriterPluginLoader’.
@@ -109,6 +109,12 @@ You need to be aware that this configuration only defines what data is to be inc
 Please report any bugs and feature requests via [Github issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
 ## Changelog
+
+### 0.5.2
+ - Some minor changes to tag-mapping.xml (administrative boundaries, national parks).
+
+### 0.5.1
+- No significant changes
 
 ### 0.5.0
 The mapfile format has not changed in 0.5.0, but the creation process has changed somewhat and it is recommended to use the latest version of the map file writer.
