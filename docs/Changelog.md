@@ -2,14 +2,25 @@
 
 <wiki:toc />
 
-## New since 0.5.1
+## New since 0.5.2
+
+- Many other minor improvements and bug fixes
+
+
+## Version 0.5.X
+
+**Version 0.5.2-rc2 (2015-08-08)**
+
+- Same as 0.5.2-rc1
+
+
+**Version 0.5.2-rc1 (2015-08-07)**
 
 - Multi-threaded map rendering
 - Hardware acceleration improvements
 - Touch gesture improvements and fixes
 - Scale gesture through focal point
 - Geographic grid layer improvements
-- Java painting enhancements
 - Map writer tag-mapping improvements
 - Render themes improvements
 - Scale bar enhancements
@@ -22,8 +33,6 @@
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.2)
 
-
-## Version 0.5.X
 
 #### Version 0.5.1 (2015-03-18)
 
