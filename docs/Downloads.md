@@ -1,8 +1,16 @@
 # Downloads for Developers
 
+# Release 0.5.2-rc2 Downloads
+
+These are the downloads for version 0.5.2-rc2 (2015-08-08)
+
+- [Samples 0.5.2-rc2 application](http://ci.mapsforge.org/job/0.5.2-rc2/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
+- [Release 0.5.2-rc2 jars](http://ci.mapsforge.org/job/0.5.2-rc2/)
+- [Writer plugin](http://ci.mapsforge.org/job/0.5.2-rc2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.2-rc2.jar) 
+
 # Release 0.5.1 Downloads
 
-These are the downloads for version 0.5.1, released 18 March 2015
+These are the downloads for version 0.5.1 (2015-03-18)
 
 - [Samples 0.5.1 application](http://ci.mapsforge.org/job/0.5.1/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Release 0.5.1 jars](http://ci.mapsforge.org/job/0.5.1/)
@@ -10,7 +18,7 @@ These are the downloads for version 0.5.1, released 18 March 2015
 
 # Release 0.5.0 Downloads
 
-These are the downloads for version 0.5.0:
+These are the downloads for version 0.5.0 (2014-12-08)
 
 - [Samples 0.5.0 application](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Release 0.5.0 jars](http://ci.mapsforge.org/job/release-0.5.0/)
@@ -28,7 +36,7 @@ The master branch contains the latest mapsforge version considered stable, but n
 
 - [Latest Samples application (master)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Latest Jars (master)](http://ci.mapsforge.org/job/master/)
-- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.1.jar)
+- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-master-SNAPSHOT.jar)
   
 # Latest Development Build Downloads
 
