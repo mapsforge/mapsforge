@@ -16,20 +16,20 @@
 
 **Version 0.5.2-rc1 (2015-08-07)**
 
-- Multi-threaded map rendering
-- Hardware acceleration improvements
-- Touch gesture improvements and fixes
-- Scale gesture through focal point
-- Geographic grid layer improvements
-- Map writer tag-mapping improvements
-- Render themes improvements
-- Scale bar enhancements
-- Zoom controls enhancements
-- Map buffer size adjustable
+- Multi-threaded map rendering [#73](https://github.com/mapsforge/mapsforge/issues/73)
+- Hardware acceleration improvements [#613](https://github.com/mapsforge/mapsforge/issues/613)
+- Touch gesture improvements and fixes [#616](https://github.com/mapsforge/mapsforge/issues/616)
+- Scale gesture through focal point [#626](https://github.com/mapsforge/mapsforge/issues/626)
+- Geographic grid layer improvements [#574](https://github.com/mapsforge/mapsforge/issues/574)
+- Map writer tag-mapping improvements [#339](https://github.com/mapsforge/mapsforge/issues/339) [#586](https://github.com/mapsforge/mapsforge/issues/586)
+- Render themes improvements [#608](https://github.com/mapsforge/mapsforge/issues/608) [#615](https://github.com/mapsforge/mapsforge/issues/615)
+- Scale bar enhancements [#597](https://github.com/mapsforge/mapsforge/issues/597)
+- Zoom controls enhancements [#598](https://github.com/mapsforge/mapsforge/issues/598)
+- Map buffer size adjustable [#619](https://github.com/mapsforge/mapsforge/issues/619)
 - MyLocationOverlay moved in Samples
-- External Map Rotation example improvements in Samples
-- LabelLayer improvements
-- Simplified cleanup operation
+- External Map Rotation example improvements in Samples [#637](https://github.com/mapsforge/mapsforge/issues/637)
+- LabelLayer improvements [#595](https://github.com/mapsforge/mapsforge/issues/595) [#639](https://github.com/mapsforge/mapsforge/issues/639) [#642](https://github.com/mapsforge/mapsforge/issues/642)
+- Simplified cleanup operation [#620](https://github.com/mapsforge/mapsforge/issues/620)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.2)
 
