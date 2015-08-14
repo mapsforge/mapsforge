@@ -26,8 +26,8 @@
 - Scale bar enhancements [#597](https://github.com/mapsforge/mapsforge/issues/597)
 - Zoom controls enhancements [#598](https://github.com/mapsforge/mapsforge/issues/598)
 - Map buffer size adjustable [#619](https://github.com/mapsforge/mapsforge/issues/619)
-- MyLocationOverlay moved in Samples
-- External Map Rotation example improvements in Samples [#637](https://github.com/mapsforge/mapsforge/issues/637)
+- MyLocationOverlay moved in Samples [#657](https://github.com/mapsforge/mapsforge/issues/657)
+- External Map Rotation example improvements [#637](https://github.com/mapsforge/mapsforge/issues/637)
 - LabelLayer improvements [#595](https://github.com/mapsforge/mapsforge/issues/595) [#639](https://github.com/mapsforge/mapsforge/issues/639) [#642](https://github.com/mapsforge/mapsforge/issues/642)
 - Simplified cleanup operation [#620](https://github.com/mapsforge/mapsforge/issues/620)
 - Many other minor improvements and bug fixes
