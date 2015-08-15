@@ -122,11 +122,22 @@ public abstract class Layer {
 
 	/**
 	 * Sets the visibility flag of this {@code Layer} to the given value.
+	 * <p/>
+	 * Note: By default a redraw will take place afterwards.
 	 */
 	public final void setVisible(boolean visible) {
+		setVisible(visible, true);
+	}
+
+	/**
+	 * Sets the visibility flag of this {@code Layer} to the given value.
+	 */
+	public final void setVisible(boolean visible, boolean redraw) {
 		this.visible = visible;
 
-		requestRedraw();
+		if (redraw) {
+			requestRedraw();
+		}
 	}
 
 	/**
