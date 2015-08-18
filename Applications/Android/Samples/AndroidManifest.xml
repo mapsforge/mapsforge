@@ -3,7 +3,7 @@
     package="org.mapsforge.applications.android.samples"
     android:installLocation="auto"
     android:versionCode="50"
-    android:versionName="master-SNAPSHOT" >
+    android:versionName="dev-SNAPSHOT" >
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -17,7 +17,6 @@
     <application
         android:name=".SamplesApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="false"
         android:label="Mapsforge Samples" >
         <activity android:name=".Samples" >
             <intent-filter>
