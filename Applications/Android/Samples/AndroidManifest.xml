@@ -17,6 +17,7 @@
     <application
         android:name=".SamplesApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:label="Mapsforge Samples" >
         <activity android:name=".Samples" >
             <intent-filter>
