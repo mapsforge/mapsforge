@@ -1,12 +1,12 @@
 # Downloads for Developers
 
-# Release 0.5.2-rc2 Downloads
+# Release 0.5.2-rc3 Downloads
 
-These are the downloads for version 0.5.2-rc2 (2015-08-08)
+These are the downloads for version 0.5.2-rc3 (2015-08-19)
 
-- [Samples 0.5.2-rc2 application](http://ci.mapsforge.org/job/0.5.2-rc2/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
-- [Release 0.5.2-rc2 jars](http://ci.mapsforge.org/job/0.5.2-rc2/)
-- [Writer plugin](http://ci.mapsforge.org/job/0.5.2-rc2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.2-rc2.jar) 
+- [Samples 0.5.2-rc3 application](http://ci.mapsforge.org/job/0.5.2-rc3/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
+- [Release 0.5.2-rc3 jars](http://ci.mapsforge.org/job/0.5.2-rc3/)
+- [Writer plugin](http://ci.mapsforge.org/job/0.5.2-rc3/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.2-rc3.jar) 
 
 # Release 0.5.1 Downloads
 
