@@ -23,7 +23,7 @@ allprojects {
 // no injection of functions, so via inheritance
 def androidMinSdk() { return 9 }
 def androidTargetSdk() { return 22 }
-def versionCode() { return 50 }
+def versionCode() { return 52 }
 def versionName() { return version }
 
 
