@@ -11,7 +11,7 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 |Tool|Version|
 |----|---|
 |Android Build Version Tools|22|
-|Gradle|2.2.1 if building with gradle|
+|Gradle|2.4.0 if building with gradle|
 |Maven|1.3.1 if building with maven|
 |Java|1.7 (1.8 is supported in maven builds)|
 
@@ -72,8 +72,6 @@ The SwingMapViewer is a simple Java only app useful for testing maps.
 ### Building mapsforge with Gradle
 
 Gradle is the new build system favoured by Google for Android builds. Android Studio, the new IDE provided by Google for building Android apps, integrates nicely with Gradle. 
-
-The current version for building mapsforge is Gradle 2.2.1.
 
 After checking out the code, a build from the command line should be as easy as 
 
