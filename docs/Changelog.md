@@ -9,9 +9,10 @@
 
 ## Version 0.5.X
 
-**Version 0.5.2 (2015-08-23)**
+#### Version 0.5.2 (2015-08-23)
 
-- Same as 0.5.2 
+- Same as 0.5.2-rc3
+
 
 **Version 0.5.2-rc3 (2015-08-19)**
 
