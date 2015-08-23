@@ -6,7 +6,7 @@ These are the downloads for version 0.5.2 (2015-08-23)
 
 - [Samples 0.5.2 application](http://ci.mapsforge.org/job/0.5.2/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Release 0.5.2 jars](http://ci.mapsforge.org/job/0.5.2/)
-- [Writer plugin](http://ci.mapsforge.org/job/0.5.2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.2.jar) 
+- [Writer plugin](http://ci.mapsforge.org/job/0.5.2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-release-0.5.2.jar) 
 
 # Release 0.5.1 Downloads
 
