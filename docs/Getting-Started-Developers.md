@@ -128,7 +128,7 @@ Each of the mapsforge modules is now configured as an Eclipse project and can be
 
 To build the Android sample application, you need to make a few adjustments:
 * Select `Project > Properties` from the menu.
-* In the dialog that opens, go to `Java Build Path Order and Export`. Make sure the entry for `M2_REPO/android/android/5.1_r1/android-5.1_r1.jar` is unchecked and all others are checked.
+* In the dialog that opens, go to `Java Build Path Order and Export`. Make sure the entry for `M2_REPO/android/android/6.0_r1/android-6.0_r1.jar` is unchecked and all others are checked.
 * Go to `Java Compiler` and set the compiler compliance level to 1.7.
 * Then clean the project (`Project > Clean`).
 

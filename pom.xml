@@ -110,7 +110,7 @@
 						<genDirectoryAidl>gen</genDirectoryAidl>
 						<extractDuplicates>true</extractDuplicates>
 						<sdk>
-							<platform>22</platform>
+							<platform>23</platform>
 						</sdk>
 					</configuration>
 				</plugin>
