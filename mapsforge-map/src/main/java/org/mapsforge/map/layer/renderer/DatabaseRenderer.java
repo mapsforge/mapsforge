@@ -118,7 +118,6 @@ public class DatabaseRenderer implements RenderCallback {
 	 *            the job that should be executed.
 	 */
 	public TileBitmap executeJob(RendererJob rendererJob) {
-
 		RenderTheme renderTheme;
 		try {
 			renderTheme = rendererJob.renderThemeFuture.get();
@@ -134,9 +133,11 @@ public class DatabaseRenderer implements RenderCallback {
 			if (renderBitmap(renderContext)) {
 				TileBitmap bitmap = null;
 
-				// NW Added isValid() call. This will stop the rendering if
-				// the map datasource is not valid (e.g. no mapfile loaded yet)
-				if (this.mapDatabase != null && this.mapDatabase.isValid()) {
+				// NW 260815 remove isValid() check, the new mapsforge design
+				// does not permit rendererlayers to run without a
+				// MapDataStore anyway. appears the MultiMapDataStore is now
+				// the way to deal with multiple files
+				if(this.mapDatabase != null) {
 					MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
 					processReadMapData(renderContext, mapReadResult);
 				}

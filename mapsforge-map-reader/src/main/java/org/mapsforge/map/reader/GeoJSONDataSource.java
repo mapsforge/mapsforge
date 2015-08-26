@@ -122,12 +122,6 @@ public class GeoJSONDataSource implements MapDataStore
         return quickfix.getBoundingBox();
     }
 
-    // isValid() implementation here: always return true for the moment 
-    public boolean isValid()
-    {
-        return true; 
-    }
-
     // NW in interface. We can't really "close" this as the web connection
     // is closed after we have read the geojson
     public void close()
