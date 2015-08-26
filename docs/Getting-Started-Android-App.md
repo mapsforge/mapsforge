@@ -164,7 +164,7 @@ Here comes the whole as a single file:
 This example shows how to use a custom render theme. Replace the code
 to set the OSMARENDER theme with code similar to the following:
 
-    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mapsforge_files";
+    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mapsforge_files/";
     ExternalRenderTheme theme = new ExternalRenderTheme (new File(dir + "freemap_v4.xml"));
     layer.setXmlRenderTheme(theme);
 
