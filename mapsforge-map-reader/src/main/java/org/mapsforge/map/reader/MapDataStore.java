@@ -70,4 +70,7 @@ public interface MapDataStore {
 	 */
 	boolean supportsTile(Tile tile);
 
+	// NW is it valid? Prevents attempted rendering with no mapfile
+	// without an exception
+	boolean isValid();
 }

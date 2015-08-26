@@ -21,6 +21,9 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
+// NW null mapfiles now allowed. (e.g. for geojson)
+// all later usage of mapFile checked for null to prevent errors
+
 public class RendererJob extends Job {
 	public final DisplayModel displayModel;
 	public boolean labelsOnly;
@@ -34,7 +37,7 @@ public class RendererJob extends Job {
 		super(tile, isTransparent);
 
 		if (mapFile == null) {
-			throw new IllegalArgumentException("mapFile must not be null");
+//			throw new IllegalArgumentException("mapFile must not be null");
 		} else if (textScale <= 0 || Float.isNaN(textScale)) {
 			throw new IllegalArgumentException("invalid textScale: " + textScale);
 		}
@@ -58,7 +61,10 @@ public class RendererJob extends Job {
 			return false;
 		}
 		RendererJob other = (RendererJob) obj;
-		if (!this.mapDataStore.equals(other.mapDataStore)) {
+		if ((this.mapDataStore==null && other.mapDataStore!=null) ||
+			(this.mapDataStore!=null && other.mapDataStore==null) ||
+			(this.mapDataStore!=null && other.mapDataStore!= null &&
+			!this.mapDataStore.equals(other.mapDataStore))) {
 			return false;
 		} else if (Float.floatToIntBits(this.textScale) != Float.floatToIntBits(other.textScale)) {
 			return false;
@@ -95,10 +101,13 @@ public class RendererJob extends Job {
 		this.labelsOnly = true;
 	}
 
+	// NW if mapDataStore is null use the hash code from the superclass
 	private int calculateHashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + this.mapDataStore.hashCode();
+		result = prime * result + 
+			(this.mapDataStore==null ? super.hashCode():
+			this.mapDataStore.hashCode());
 		result = prime * result + Float.floatToIntBits(this.textScale);
 		if (renderThemeFuture != null) {
 			result = prime * result + this.renderThemeFuture.hashCode();

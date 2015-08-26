@@ -134,7 +134,9 @@ public class DatabaseRenderer implements RenderCallback {
 			if (renderBitmap(renderContext)) {
 				TileBitmap bitmap = null;
 
-				if (this.mapDatabase != null) {
+				// NW Added isValid() call. This will stop the rendering if
+				// the map datasource is not valid (e.g. no mapfile loaded yet)
+				if (this.mapDatabase != null && this.mapDatabase.isValid()) {
 					MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
 					processReadMapData(renderContext, mapReadResult);
 				}

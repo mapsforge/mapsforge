@@ -34,6 +34,7 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DistanceUnitAdapter;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.reader.DownloadCache; // NW added
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -389,6 +390,20 @@ public final class AndroidUtil {
 			}
 			scaleBar.setDistanceUnitAdapter(primaryDistanceUnitAdapter);
 		}
+	}
+
+	// NW get the download cache
+	public static DownloadCache getDownloadCache(Context ctx, String name)
+	{
+		File dir = ctx.getExternalCacheDir();
+		if(dir!=null)
+		{
+			File f = new File(dir.getAbsolutePath()+"/"+name);
+			if(!f.exists())
+				f.mkdirs();
+			return new DownloadCache(f);
+		}
+		return null;
 	}
 
 	private AndroidUtil() {

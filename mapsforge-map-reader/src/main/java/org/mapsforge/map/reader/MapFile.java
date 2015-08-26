@@ -845,7 +845,19 @@ public class MapFile implements MapDataStore {
 		return zoomTable;
 	}
 
-
+	// NW is it valid?
+	// Renderers can call this and refuse to render if "not valid"
+	// (defined in MapDataSource abstract class). In this case, "not valid"
+	// is defined as no mapFileHeader yet.
+	// Rationale for this is to stop exceptions being thrown if rendering
+	// is tried with no mapfile. IMO a more natural thing to do is just not
+	// to render anything: IMX a lot of code has to be implemented
+	// by applications using mapsforge just to prevent an exception being
+	// thrown if we try to render with no mapfile! 
+	public boolean isValid()
+	{
+		return mapFileHeader!=null;
+	}
 	private MapFile() {
 		// only to create a dummy empty file.
 		databaseIndexCache = null;

@@ -220,4 +220,17 @@ public class MultiMapDataStore implements MapDataStore {
 		}
 		return new MapReadResult(mapReadResultBuilder);
 	}
+
+	// NW isValid() added
+	// checks all containing mapfiles are valid
+	public boolean isValid()
+	{
+		int nValid=0;
+		for(MapDataStore mds: mapDatabases)
+		{
+			if(mds.isValid())
+				nValid++;
+		}
+		return nValid>0 && nValid==mapDatabases.size();
+	}	
 }
