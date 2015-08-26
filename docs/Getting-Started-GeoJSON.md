@@ -5,85 +5,85 @@ It should be pointed out that this is an extremely early stage of development
 right now, and the rendering does not look at all good. Nonetheless the
 example below compiles and runs and shows a (rather messy) map.
 
-package freemap.mapsforgebasic;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.os.Environment;
-
-import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.view.MapView;
-import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.reader.GeoJSONDataSource;
-import org.mapsforge.map.reader.DownloadCache;
-import org.mapsforge.core.model.LatLong;
-
-import java.io.File;
-
-public class MainActivity extends Activity {
-
-    MapView mv;
-    TileCache tileCache;
-    TileRendererLayer layer;
-    GeoJSONDataSource ds;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        AndroidGraphicFactory.createInstance(this.getApplication());
-        mv = new MapView(this);
-
-        setContentView(mv);
-        mv.setBuiltInZoomControls(true);
-        mv.setClickable(true);
-
-        tileCache = AndroidUtil.createTileCache(this, "mapcache",
-                mv.getModel().displayModel.getTileSize(), 1f,
-                mv.getModel().frameBufferModel.getOverdrawFactor());
-
-        DownloadCache downloadCache = AndroidUtil.getDownloadCache (this, "gjtest");
-
-        ds = new GeoJSONDataSource("http://www.free-map.org.uk/fm/ws/tsvr.php",
-                "way=highway,natural&poi=natural,place,amenity&ext=20&contour=1&outProj=4326");
-
-
-        ds.setDownloadCache(downloadCache);
-
-    }
-
-    protected void onStart()
-    {
-        super.onStart();
-        try {
-            String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/opentrail/";
-            mv.getModel().mapViewPosition.setCenter(new LatLong(51.05, -0.72));
-            mv.getModel().mapViewPosition.setZoomLevel((byte) 14);
-
-
-            layer = new TileRendererLayer(tileCache, ds,
-                    mv.getModel().mapViewPosition, false, true,
-                    AndroidGraphicFactory.INSTANCE);
-
-            ExternalRenderTheme theme = new ExternalRenderTheme
-                    (new File(dir + "freemap_v4.xml"));
-            layer.setXmlRenderTheme(theme);
-            mv.getLayerManager().getLayers().add(layer);
+    package freemap.mapsforgebasic;
+    
+    import android.app.Activity;
+    import android.os.Bundle;
+    import android.os.Environment;
+    
+    import org.mapsforge.map.android.util.AndroidUtil;
+    import org.mapsforge.map.android.view.MapView;
+    import org.mapsforge.map.layer.cache.TileCache;
+    import org.mapsforge.map.layer.renderer.TileRendererLayer;
+    import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+    import org.mapsforge.map.reader.GeoJSONDataSource;
+    import org.mapsforge.map.reader.DownloadCache;
+    import org.mapsforge.core.model.LatLong;
+    
+    import java.io.File;
+    
+    public class MainActivity extends Activity {
+    
+        MapView mv;
+        TileCache tileCache;
+        TileRendererLayer layer;
+        GeoJSONDataSource ds;
+    
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+    
+            AndroidGraphicFactory.createInstance(this.getApplication());
+            mv = new MapView(this);
+    
+            setContentView(mv);
+            mv.setBuiltInZoomControls(true);
+            mv.setClickable(true);
+    
+            tileCache = AndroidUtil.createTileCache(this, "mapcache",
+                    mv.getModel().displayModel.getTileSize(), 1f,
+                    mv.getModel().frameBufferModel.getOverdrawFactor());
+    
+            DownloadCache downloadCache = AndroidUtil.getDownloadCache (this, "gjtest");
+    
+            ds = new GeoJSONDataSource("http://www.free-map.org.uk/fm/ws/tsvr.php",
+                    "way=highway,natural&poi=natural,place,amenity&ext=20&contour=1&outProj=4326");
+    
+    
+            ds.setDownloadCache(downloadCache);
+    
         }
-        catch(Exception e)
+    
+        protected void onStart()
         {
-            e.printStackTrace();
+            super.onStart();
+            try {
+                String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/opentrail/";
+                mv.getModel().mapViewPosition.setCenter(new LatLong(51.05, -0.72));
+                mv.getModel().mapViewPosition.setZoomLevel((byte) 14);
+    
+    
+                layer = new TileRendererLayer(tileCache, ds,
+                        mv.getModel().mapViewPosition, false, true,
+                        AndroidGraphicFactory.INSTANCE);
+    
+                ExternalRenderTheme theme = new ExternalRenderTheme
+                        (new File(dir + "freemap_v4.xml"));
+                layer.setXmlRenderTheme(theme);
+                mv.getLayerManager().getLayers().add(layer);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    
+        protected void onDestroy()
+        {
+            super.onDestroy();
+            mv.destroyAll();
         }
     }
-
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        mv.destroyAll();
-    }
-}
 
 Note the following on this example:
 * We create a GeoJSONDataSource object. This takes two parameters:
