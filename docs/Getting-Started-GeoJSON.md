@@ -54,8 +54,7 @@ example below compiles and runs and shows a (rather messy) map.
     
         }
     
-        protected void onStart()
-        {
+        protected void onStart() {
             super.onStart();
             try {
                 String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/opentrail/";
@@ -71,15 +70,12 @@ example below compiles and runs and shows a (rather messy) map.
                         (new File(dir + "freemap_v4.xml"));
                 layer.setXmlRenderTheme(theme);
                 mv.getLayerManager().getLayers().add(layer);
-            }
-            catch(Exception e)
-            {
+            } catch(Exception e) {
                 e.printStackTrace();
             }
         }
     
-        protected void onDestroy()
-        {
+        protected void onDestroy() {
             super.onDestroy();
             mv.destroyAll();
         }
