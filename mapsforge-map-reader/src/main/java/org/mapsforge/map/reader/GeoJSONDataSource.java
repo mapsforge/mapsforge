@@ -15,8 +15,8 @@ public class GeoJSONDataSource implements MapDataStore {
 
     byte startZoomLevel;
     DownloadCache cache;
-	BoundingBox boundingBox; // bounding box of all data so far
-	Byte lastRequestedZoomLevel;
+    BoundingBox boundingBox; // bounding box of all data so far
+    Byte lastRequestedZoomLevel;
 
     // queryString = any compulsory query string data needed by the server
     String server, queryString;
@@ -43,33 +43,33 @@ public class GeoJSONDataSource implements MapDataStore {
       HttpURLConnection conn=null;
       lastRequestedZoomLevel = tile.zoomLevel;
       try {
-      	if(cache!=null && cache.inCache(tile)) {
+          if(cache!=null && cache.inCache(tile)) {
             System.out.println("In cache: " + 
                 tile.tileX+","+tile.tileY+","+tile.zoomLevel);
             in  = cache.getInputStream(tile);
             // Pass in null as the used cache so that the reader doesn't
             // try to cache the tile as it's already there!
             MapReadResult result = doReadJSON(in, tile, null);
-			if(result!=null)
-				extendBoundingBox(tile);
-			return result;
-        	} else {    
-            	URL url = new URL (server + "?x="+
+            if(result!=null)
+                extendBoundingBox(tile);
+            return result;
+            } else {    
+                URL url = new URL (server + "?x="+
                     tile.tileX+"&y="+tile.tileY+"&z="+tile.zoomLevel+
-					(queryString==null ? "":"&"+queryString));
-            	System.out.println("Tile details: " + 
-            		tile.tileX+","+tile.tileY+","+tile.zoomLevel);
-            	conn = (HttpURLConnection)url.openConnection();
-            	in = conn.getInputStream();
-            	if(conn.getResponseCode()==200) {
-					MapReadResult result = doReadJSON(in, tile, cache);
-					if(result!=null)
-						extendBoundingBox(tile);
-					return result;
-            	}
-			}
+                    (queryString==null ? "":"&"+queryString));
+                System.out.println("Tile details: " + 
+                    tile.tileX+","+tile.tileY+","+tile.zoomLevel);
+                conn = (HttpURLConnection)url.openConnection();
+                in = conn.getInputStream();
+                if(conn.getResponseCode()==200) {
+                    MapReadResult result = doReadJSON(in, tile, cache);
+                    if(result!=null)
+                        extendBoundingBox(tile);
+                    return result;
+                }
+            }
        } catch(Exception e) {
-       		e.printStackTrace();
+               e.printStackTrace();
        }
         return null;
     }
@@ -92,22 +92,22 @@ public class GeoJSONDataSource implements MapDataStore {
     }
 
     // NW changed to fit interface
-	// the MapFile implementation either gets a start point from the mapfile
-	// header, or uses the centre point of the map, so we do the latter
+    // the MapFile implementation either gets a start point from the mapfile
+    // header, or uses the centre point of the map, so we do the latter
     public LatLong startPosition() {
         return boundingBox==null? null: boundingBox.getCenterPoint();
     }
 
-	// NW changed to fit interface
-	// Only appears to be used in DatabaseRenderer.getStartZoomLevel(),
-	// which returns a default zoom level if this returns null
-	// get it to return the last zoom level requested (or null if no requests)
+    // NW changed to fit interface
+    // Only appears to be used in DatabaseRenderer.getStartZoomLevel(),
+    // which returns a default zoom level if this returns null
+    // get it to return the last zoom level requested (or null if no requests)
     public  Byte startZoomLevel() {
         return lastRequestedZoomLevel;
     }
 
     // NW changed name to fit interface
-	// returns the current bounding box or an arbitrary zero-size one
+    // returns the current bounding box or an arbitrary zero-size one
     public BoundingBox boundingBox() {
         return boundingBox;
     }
@@ -118,22 +118,22 @@ public class GeoJSONDataSource implements MapDataStore {
         // do nothing
     }
 
-	// always return true as this is called before the data is requested
-	// (so the bounding box might be null at this point)
+    // always return true as this is called before the data is requested
+    // (so the bounding box might be null at this point)
     public boolean supportsTile(Tile tile) {
-		return true;
+        return true;
     }
 
-	// always get new tile for now
-	// again for a GeoJSONDataSource this isn't really relevant as the
-	// datasource time will never be more recent than the rendered tile
+    // always get new tile for now
+    // again for a GeoJSONDataSource this isn't really relevant as the
+    // datasource time will never be more recent than the rendered tile
     public long getDataTimestamp(Tile tile) {
         return System.currentTimeMillis();
     }
-	
-	private void extendBoundingBox(Tile tile) {
-		BoundingBox box = tile.getBoundingBox();
-		boundingBox = (boundingBox==null) ? box: boundingBox.extend(box);
-	}
+    
+    private void extendBoundingBox(Tile tile) {
+        BoundingBox box = tile.getBoundingBox();
+        boundingBox = (boundingBox==null) ? box: boundingBox.extend(box);
+    }
 }
 
