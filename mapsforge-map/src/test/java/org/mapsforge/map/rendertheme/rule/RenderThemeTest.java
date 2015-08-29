@@ -17,17 +17,13 @@ package org.mapsforge.map.rendertheme.rule;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.Tag;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.ExternalRenderTheme;
-import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -64,16 +60,16 @@ public class RenderThemeTest {
 		renderTheme.scaleStrokeWidth(12.34f, (byte) 12);
 		renderTheme.scaleTextSize(56.78f, (byte) 12);
 
-		RenderCallback renderCallback = new DummyRenderCallback();
+		// RenderCallback renderCallback = new DummyRenderCallback();
 
-		List<Tag> closedWayTags = Arrays.asList(new Tag("amenity", "parking"));
-		List<Tag> linearWayTags = Arrays.asList(new Tag("highway", "primary"), new Tag("oneway", "yes"));
-		List<Tag> nodeTags = Arrays.asList(new Tag("place", "city"), new Tag("highway", "turning_circle"));
+		// List<Tag> closedWayTags = Arrays.asList(new Tag("amenity", "parking"));
+		// List<Tag> linearWayTags = Arrays.asList(new Tag("highway", "primary"), new Tag("oneway", "yes"));
+		// List<Tag> nodeTags = Arrays.asList(new Tag("place", "city"), new Tag("highway", "turning_circle"));
 
 		for (byte zoomLevel = 0; zoomLevel < 25; ++zoomLevel) {
-		//	renderTheme.matchClosedWay(renderCallback, closedWayTags, zoomLevel, 256);
-		//	renderTheme.matchLinearWay(renderCallback, linearWayTags, zoomLevel);
-		//	renderTheme.matchNode(renderCallback, nodeTags, zoomLevel);
+			// renderTheme.matchClosedWay(renderCallback, closedWayTags, zoomLevel, 256);
+			// renderTheme.matchLinearWay(renderCallback, linearWayTags, zoomLevel);
+			// renderTheme.matchNode(renderCallback, nodeTags, zoomLevel);
 		}
 
 		renderTheme.destroy();

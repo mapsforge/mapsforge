@@ -82,6 +82,7 @@ public class Settings extends PreferenceActivity implements
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -114,6 +115,7 @@ public class Settings extends PreferenceActivity implements
 	}
 
 
+	@SuppressWarnings("deprecation")
 	private void createRenderthemeMenu() {
 		this.renderthemeMenu.removeAll();
 

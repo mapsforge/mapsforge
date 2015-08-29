@@ -14,8 +14,6 @@
  */
 package org.mapsforge.map.reader;
 
-import java.io.File;
-
 import org.junit.Test;
 
 public class MapFileDoubleDeltaEncodingTest {

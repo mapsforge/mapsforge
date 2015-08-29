@@ -54,7 +54,7 @@ public class PolylineContainer implements ShapeContainer {
 		this.isClosedWay = isClosedWay(way.latLongs[0]);
 	}
 
-	PolylineContainer(Point[] coordinates, Tile tile, List tags) {
+	PolylineContainer(Point[] coordinates, Tile tile, List<Tag> tags) {
 		this.coordinatesAbsolute = new Point[1][];
 		this.coordinatesRelativeToTile = null;
 		this.coordinatesAbsolute[0] = new Point[coordinates.length];

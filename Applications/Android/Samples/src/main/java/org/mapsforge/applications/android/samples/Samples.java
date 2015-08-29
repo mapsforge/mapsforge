@@ -15,6 +15,7 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
@@ -23,6 +24,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -44,13 +46,19 @@ public class Samples extends Activity {
 		return true;
 	}
 
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
 		switch (item.getItemId()) {
 		case R.id.menu_preferences:
 			intent = new Intent(this, Settings.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+			} else {
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			}
 			startActivity(intent);
 			return true;
 		}

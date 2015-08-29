@@ -16,7 +16,6 @@
 package org.mapsforge.map.reader;
 
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.reader.header.SubFileParameter;
 
 final class QueryCalculations {
 

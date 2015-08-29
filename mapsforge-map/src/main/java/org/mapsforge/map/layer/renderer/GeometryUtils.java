@@ -14,7 +14,6 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 
 final class GeometryUtils {

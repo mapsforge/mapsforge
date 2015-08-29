@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.map.layer.labels;
 
 import org.mapsforge.core.mapelements.MapElementContainer;
@@ -31,6 +30,7 @@ import java.util.Set;
  */
 
 public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementContainer>> implements LabelStore {
+	private static final long serialVersionUID = 1L;
 
 	private Set<Tile> lastVisibleTileSet;
 	private int version;

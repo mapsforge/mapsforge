@@ -85,9 +85,6 @@ public class RenderThemeFuture extends FutureTask<RenderTheme> {
 	}
 
 	public void incrementRefCount() {
-		int c = this.refCount.incrementAndGet();
+		this.refCount.incrementAndGet();
 	}
-
-
-
 }

@@ -22,7 +22,6 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
 public class MapFileWithDataTest {

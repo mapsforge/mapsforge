@@ -23,8 +23,6 @@ import java.util.Map;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.PointOfInterest;

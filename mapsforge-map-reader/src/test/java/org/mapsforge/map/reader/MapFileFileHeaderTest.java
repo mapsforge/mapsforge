@@ -20,7 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
-import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
 public class MapFileFileHeaderTest {

@@ -26,10 +26,6 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
-import org.mapsforge.map.rendertheme.XmlRenderTheme;
-
-import java.io.File;
 
 public class DownloadJobTest {
 	private static final int TILE_SIZE = 256;
@@ -73,7 +69,6 @@ public class DownloadJobTest {
 		Assert.assertNotEquals(downloadJob1, new Object());
 
 		MapFile mapFile = MapFile.TEST_MAP_FILE;
-		XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
 		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, null, new DisplayModel(), 1,
 				false, false));
 	}
