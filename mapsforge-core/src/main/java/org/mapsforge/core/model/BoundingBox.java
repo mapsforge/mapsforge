@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -91,6 +92,17 @@ public class BoundingBox implements Serializable {
 		this.maxLongitude = maxLongitude;
 	}
 
+	/**
+	 * @param latitude
+	 *            the latitude coordinate in degrees.
+	 * @param longitude
+	 *            the longitude coordinate in degrees.
+	 * @return true if this BoundingBox contains the given coordinates, false otherwise.
+	 */
+	public boolean contains(double latitude, double longitude) {
+		return this.minLatitude <= latitude && this.maxLatitude >= latitude
+				&& this.minLongitude <= longitude && this.maxLongitude >= longitude;
+	}
 
 	/**
 	 * @param latLong
@@ -98,8 +110,7 @@ public class BoundingBox implements Serializable {
 	 * @return true if this BoundingBox contains the given LatLong, false otherwise.
 	 */
 	public boolean contains(LatLong latLong) {
-		return this.minLatitude <= latLong.latitude && this.maxLatitude >= latLong.latitude
-				&& this.minLongitude <= latLong.longitude && this.maxLongitude >= latLong.longitude;
+		return contains(latLong.latitude, latLong.longitude);
 	}
 
 	@Override
