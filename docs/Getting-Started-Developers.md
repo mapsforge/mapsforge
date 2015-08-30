@@ -31,7 +31,7 @@ Mapsforge consists of the following core components:
 Extra Android components:
 
 - mapsforge-map-android: android specific elements.
-- [androidsvg](https://code.google.com/p/androidsvg/): SVG library for displaying SVG files as icons.
+- [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
 
 Extra Java components:
 
