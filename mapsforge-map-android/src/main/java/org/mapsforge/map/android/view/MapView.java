@@ -254,7 +254,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 
-	// NW convenience methods...
+	// NW convenience methods to simplify API
 	public void setCenter(LatLong latLong) {
 		this.model.mapViewPosition.setCenter(latLong);
 	}
