@@ -17,18 +17,18 @@ import org.json.JSONException;
 
 public class GeoJSONReader {
 
-	static class FeatureTests {
-		public static boolean isWaterFeature(String k, String v) {
-			return k.equals("natural") && v.equals("water") ||
-					k.equals("waterway");
-		}
-	
-		public static boolean isLandscapeFeature(String k, String v) {
-			return k.equals("natural") && v.equals("wood") ||
-					k.equals("landuse") && v.equals("forest") ||
-					k.equals("natural") && v.equals("heath");
-		}
-	}    
+    static class FeatureTests {
+        public static boolean isWaterFeature(String k, String v) {
+            return k.equals("natural") && v.equals("water") ||
+                    k.equals("waterway");
+        }
+    
+        public static boolean isLandscapeFeature(String k, String v) {
+            return k.equals("natural") && v.equals("wood") ||
+                    k.equals("landuse") && v.equals("forest") ||
+                    k.equals("natural") && v.equals("heath");
+        }
+    }    
 
     public GeoJSONReader() {
     }
@@ -48,11 +48,11 @@ public class GeoJSONReader {
         JSONObject data = new JSONObject(jsonString);
         JSONArray features = data.getJSONArray("features");
         System.out.println("Read " + features.length()+" features from JSON.");
-		byte layer;
+        byte layer;
         for    (int i=0; i<features.length(); i++) {
             JSONObject currentFeature = features.getJSONObject(i);
             String type = currentFeature.getString("type");
-			layer=(byte)4; // default for roads, paths etc
+            layer=(byte)4; // default for roads, paths etc
             if(type.equals("Feature")) {
                 JSONObject geometry = currentFeature.getJSONObject("geometry"),
                     properties = currentFeature.getJSONObject("properties");
@@ -60,13 +60,13 @@ public class GeoJSONReader {
                 Iterator it = properties.keys();
                 while(it.hasNext()) {
                     String k = (String)it.next(), v=properties.getString(k);
-					if(k.equals("contour")) {
-						layer=(byte)2; // contours under roads/paths
-					} else if (FeatureTests.isLandscapeFeature(k,v)) {
-						layer = (byte)1; // woods etc below contours
-					} else if (FeatureTests.isWaterFeature(k,v)) {
-						layer = (byte)3; // lakes above contours, below roads
-					}
+                    if(k.equals("contour")) {
+                        layer=(byte)2; // contours under roads/paths
+                    } else if (FeatureTests.isLandscapeFeature(k,v)) {
+                        layer = (byte)1; // woods etc below contours
+                    } else if (FeatureTests.isWaterFeature(k,v)) {
+                        layer = (byte)3; // lakes above contours, below roads
+                    }
                     tags.add(new Tag(k,v));                
                 }
 
