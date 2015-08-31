@@ -21,6 +21,10 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapDataStore;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
+// NW null mapfiles now allowed. (e.g. for geojson)
+// all later usage of mapFile checked for null to prevent errors
+// NW 260815 disallow null mapfiles again (see comments in DatabaseRenderer)
+
 public class RendererJob extends Job {
 	public final DisplayModel displayModel;
 	public boolean labelsOnly;
@@ -58,7 +62,7 @@ public class RendererJob extends Job {
 			return false;
 		}
 		RendererJob other = (RendererJob) obj;
-		if (!this.mapDataStore.equals(other.mapDataStore)) {
+		if ( !this.mapDataStore.equals(other.mapDataStore)) {
 			return false;
 		} else if (Float.floatToIntBits(this.textScale) != Float.floatToIntBits(other.textScale)) {
 			return false;

@@ -12,7 +12,7 @@
 
     <uses-sdk
         android:minSdkVersion="9"
-        android:targetSdkVersion="22" />
+        android:targetSdkVersion="21" />
 
     <application
         android:name=".SamplesApplication"

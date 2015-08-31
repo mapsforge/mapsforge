@@ -4,8 +4,9 @@
 
 ## New since 0.5.2
 
-- Many other minor improvements and bug fixes
-
+- (this fork only https://github.com/nickw1/mapsforge) GeoJSONDataSource to talk to a GeoJSON server
+- simplification of MapView API to provide setCenter(), setZoomLevel() and addLayer() methods
+- simplification of TileRendererLayer with 4-param constructor which assumes defaults for transparency (false) and labels (true)
 
 ## Version 0.5.X
 

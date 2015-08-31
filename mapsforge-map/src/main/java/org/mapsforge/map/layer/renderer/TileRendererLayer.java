@@ -46,6 +46,18 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 	 * @param tileCache cache where tiles are stored
 	 * @param mapDataStore the mapsforge map file
 	 * @param mapViewPosition the mapViewPosition to know which tiles to render
+	 * @param graphicFactory the graphicFactory to carry out platform specific operations
+	 */
+
+	public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
+		this(tileCache,mapDataStore,mapViewPosition,false,true,graphicFactory);
+	}
+
+	/**
+	 * Creates a TileRendererLayer.
+	 * @param tileCache cache where tiles are stored
+	 * @param mapDataStore the mapsforge map file
+	 * @param mapViewPosition the mapViewPosition to know which tiles to render
 	 * @param isTransparent true if the tile should have an alpha/transparency
 	 * @param renderLabels true if labels should be rendered onto tiles
 	 * @param graphicFactory the graphicFactory to carry out platform specific operations

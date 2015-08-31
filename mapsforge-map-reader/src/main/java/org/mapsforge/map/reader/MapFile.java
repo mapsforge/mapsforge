@@ -845,7 +845,6 @@ public class MapFile implements MapDataStore {
 		return zoomTable;
 	}
 
-
 	private MapFile() {
 		// only to create a dummy empty file.
 		databaseIndexCache = null;

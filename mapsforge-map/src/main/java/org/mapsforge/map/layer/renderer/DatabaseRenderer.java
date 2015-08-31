@@ -38,6 +38,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
@@ -118,7 +119,6 @@ public class DatabaseRenderer implements RenderCallback {
 	 *            the job that should be executed.
 	 */
 	public TileBitmap executeJob(RendererJob rendererJob) {
-
 		RenderTheme renderTheme;
 		try {
 			renderTheme = rendererJob.renderThemeFuture.get();
@@ -134,7 +134,11 @@ public class DatabaseRenderer implements RenderCallback {
 			if (renderBitmap(renderContext)) {
 				TileBitmap bitmap = null;
 
-				if (this.mapDatabase != null) {
+				// NW 260815 remove isValid() check, the new mapsforge design
+				// does not permit rendererlayers to run without a
+				// MapDataStore anyway. appears the MultiMapDataStore is now
+				// the way to deal with multiple files
+				if(this.mapDatabase != null) {
 					MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
 					processReadMapData(renderContext, mapReadResult);
 				}
@@ -160,11 +164,16 @@ public class DatabaseRenderer implements RenderCallback {
 
 				if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
 					// blank out all areas outside of map
-					Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(renderContext.rendererJob.tile);
-					if (!rendererJob.hasAlpha) {
-						renderContext.canvasRasterer.fillOutsideAreas(renderContext.renderTheme.getMapBackgroundOutside(), insideArea);
-					} else {
+					// NW check that bbox is not null, as with a 
+					// GeoJSONDataSource it might be if nothing loaded yet
+					BoundingBox bbox = this.mapDatabase.boundingBox();
+					if(bbox!=null) {
+						Rectangle insideArea = bbox.getPositionRelativeToTile(renderContext.rendererJob.tile);
+						if (!rendererJob.hasAlpha) {
+							renderContext.canvasRasterer.fillOutsideAreas(renderContext.renderTheme.getMapBackgroundOutside(), insideArea);
+						} else {
 						renderContext.canvasRasterer.fillOutsideAreas(Color.TRANSPARENT, insideArea);
+						}
 					}
 				}
 				return bitmap;
