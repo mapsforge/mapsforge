@@ -134,6 +134,62 @@ public class BoundingBox implements Serializable {
 	}
 
 	/**
+	 * @param boundingBox
+	 *            the BoundingBox which this BoundingBox should be extended if it is larger
+	 * @return a BoundingBox that covers this BoundingBox and the given BoundingBox.
+	 */
+	public BoundingBox extend(BoundingBox boundingBox) {
+		return new BoundingBox(Math.min(this.minLatitude, boundingBox.minLatitude),
+				Math.min(this.minLongitude, boundingBox.minLongitude),
+				Math.max(this.maxLatitude, boundingBox.maxLatitude),
+				Math.max(this.maxLongitude, boundingBox.maxLongitude));
+	}
+
+	/**
+	 * Creates a BoundingBox that is a fixed degree amount larger on all sides (but does not cross date line/poles).
+	 * @param verticalExpansion degree extension (must be >= 0)
+	 * @param horizontalExpansion degree extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if degrees == 0)
+	 */
+	public BoundingBox extend(double verticalExpansion, double horizontalExpansion) {
+		if (verticalExpansion == 0 && horizontalExpansion == 0) {
+			return this;
+		} else if (verticalExpansion < 0 || horizontalExpansion < 0) {
+			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
+		}
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+	/**
+	 * Creates a BoundingBox that is a fixed meter amount larger on all sides (but does not cross date line/poles).
+	 * @param meters extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if meters == 0)
+	 */
+	public BoundingBox extend(int meters) {
+		if (meters == 0) {
+			return this;
+		} else if (meters < 0) {
+			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
+		}
+
+		double verticalExpansion = LatLongUtils.latitudeDistance(meters);
+		double horizontalExpansion = LatLongUtils.longitudeDistance(meters, Math.max(Math.abs(minLatitude), Math.abs(maxLatitude)));
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+	/**
 	 * @return a new LatLong at the horizontal and vertical center of this BoundingBox.
 	 */
 	public LatLong getCenterPoint() {
@@ -236,46 +292,6 @@ public class BoundingBox implements Serializable {
 		}
 		return this.intersects(new BoundingBox(tmpMinLat, tmpMinLon, tmpMaxLat, tmpMaxLon));
 	}
-
-
-	/**
-	 * @param boundingBox
-	 *            the BoundingBox which this BoundingBox should be extended if it is larger
-	 * @return a BoundingBox that covers this BoundingBox and the given BoundingBox.
-	 */
-	public BoundingBox extend(BoundingBox boundingBox) {
-		return new BoundingBox(Math.min(this.minLatitude, boundingBox.minLatitude),
-				Math.min(this.minLongitude, boundingBox.minLongitude),
-				Math.max(this.maxLatitude, boundingBox.maxLatitude),
-				Math.max(this.maxLongitude, boundingBox.maxLongitude));
-	}
-
-	/**
-	 * Creates a BoundingBox that is a fixed meter amount larger on all sides (but does not cross date line/poles)
-	 * @param meters extension (must be >= 0)
-	 * @return an extended BoundingBox or this (if meters == 0)
-	 */
-	public BoundingBox extend(int meters) {
-
-		if (meters == 0) {
-			return this;
-		} else if (meters < 0) {
-			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
-		}
-
-
-		double verticalExpansion = LatLongUtils.latitudeDistance(meters);
-		double horizontalExpansion = LatLongUtils.longitudeDistance(meters, Math.max(Math.abs(minLatitude), Math.abs(maxLatitude)));
-
-		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
-		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
-		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
-		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
-
-		return new BoundingBox(minLat, minLon, maxLat, maxLon);
-	}
-
-
 
 	@Override
 	public String toString() {
