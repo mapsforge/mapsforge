@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
@@ -158,4 +159,20 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.mapScaleBar.destroy();
 		this.mapScaleBar=mapScaleBar;
 	}
+
+	
+
+	// NW convenience methods - assume same as in android
+	public void setCenter(LatLong latLong) {
+		this.model.mapViewPosition.setZoomLevel(zoomLevel);
+	}
+
+	public void setZoomLevel(byte zoomLevel) {
+		this.model.mapViewPosition.setZoomLevel(zoomLevel);
+	}
+
+	public void addLayer(Layer layer) {
+		this.layerManager.getLayers().add(layer);
+	}
+
 }
