@@ -48,7 +48,17 @@ public class BoundingBoxTest {
 	}
 
 	@Test
-	public void containsTest() {
+	public void containsCoordinatesTest() {
+		BoundingBox boundingBox = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
+
+		Assert.assertTrue(boundingBox.contains(MIN_LATITUDE, MIN_LONGITUDE));
+		Assert.assertTrue(boundingBox.contains(MAX_LATITUDE, MAX_LONGITUDE));
+		Assert.assertFalse(boundingBox.contains(MIN_LONGITUDE, MIN_LONGITUDE));
+		Assert.assertFalse(boundingBox.contains(MAX_LATITUDE, MAX_LATITUDE));
+	}
+
+	@Test
+	public void containsLatLongTest() {
 		BoundingBox boundingBox = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
 		LatLong latLong1 = new LatLong(MIN_LATITUDE, MIN_LONGITUDE, true);
 		LatLong latLong2 = new LatLong(MAX_LATITUDE, MAX_LONGITUDE, true);
@@ -78,6 +88,55 @@ public class BoundingBoxTest {
 		TestUtils.notEqualsTest(boundingBox1, boundingBox6);
 		TestUtils.notEqualsTest(boundingBox1, new Object());
 		TestUtils.notEqualsTest(boundingBox1, null);
+	}
+
+	@Test
+	public void extendBoundigBoxTest() {
+		BoundingBox boundingBox1 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox2 = new BoundingBox(MIN_LATITUDE - 1, MIN_LONGITUDE - 1, MAX_LATITUDE,
+				MAX_LONGITUDE);
+		BoundingBox boundingBox3 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE + 1,
+				MAX_LONGITUDE + 1);
+
+		Assert.assertEquals(boundingBox1, boundingBox1.extend(boundingBox1));
+		Assert.assertEquals(boundingBox2, boundingBox1.extend(boundingBox2));
+		Assert.assertEquals(boundingBox3, boundingBox1.extend(boundingBox3));
+	}
+
+	@Test
+	public void extendDegreesTest() {
+		BoundingBox boundingBox1 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox2 = new BoundingBox(MIN_LATITUDE - 1, MIN_LONGITUDE - 1, MAX_LATITUDE,
+				MAX_LONGITUDE);
+		BoundingBox boundingBox3 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE + 1,
+				MAX_LONGITUDE + 1);
+
+		Assert.assertEquals(boundingBox1, boundingBox1.extend(0, 0));
+		Assert.assertEquals(boundingBox2, boundingBox2.extend(0, 0));
+		Assert.assertEquals(boundingBox3, boundingBox3.extend(0, 0));
+
+		Assert.assertTrue(boundingBox1.extend(1, 1).contains(new LatLong(MIN_LATITUDE - 1, MAX_LONGITUDE + 1)));
+		Assert.assertTrue(boundingBox1.extend(1, 1).contains(new LatLong(MAX_LATITUDE + 1, MAX_LONGITUDE + 1)));
+		Assert.assertTrue(boundingBox1.extend(1, 1).contains(new LatLong(MAX_LATITUDE + 1, MIN_LONGITUDE - 1)));
+		Assert.assertTrue(boundingBox1.extend(1, 1).contains(new LatLong(MIN_LATITUDE - 1, MIN_LONGITUDE - 1)));
+	}
+
+	@Test
+	public void extendPercentTest() {
+		BoundingBox boundingBox1 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
+		BoundingBox boundingBox2 = new BoundingBox(MIN_LATITUDE - 1, MIN_LONGITUDE - 1, MAX_LATITUDE,
+				MAX_LONGITUDE);
+		BoundingBox boundingBox3 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE + 1,
+				MAX_LONGITUDE + 1);
+
+		Assert.assertEquals(boundingBox1, boundingBox1.extend(0));
+		Assert.assertEquals(boundingBox2, boundingBox2.extend(0));
+		Assert.assertEquals(boundingBox3, boundingBox3.extend(0));
+
+		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MIN_LATITUDE, MAX_LONGITUDE)));
+		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MAX_LATITUDE, MAX_LONGITUDE)));
+		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MAX_LATITUDE, MIN_LONGITUDE)));
+		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MIN_LATITUDE, MIN_LONGITUDE)));
 	}
 
 	@Test
@@ -161,38 +220,6 @@ public class BoundingBoxTest {
 		assertNoIntersection(boundingBox1, boundingBox6);
 		assertNoIntersection(boundingBox5, boundingBox6);
 	}
-
-	@Test
-	public void extendTest() {
-		BoundingBox boundingBox1 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		BoundingBox boundingBox2 = new BoundingBox(MIN_LATITUDE - 1, MIN_LONGITUDE - 1, MAX_LATITUDE,
-				MAX_LONGITUDE);
-		BoundingBox boundingBox3 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE + 1,
-				MAX_LONGITUDE + 1);
-
-		Assert.assertEquals(boundingBox1, boundingBox1.extend(boundingBox1));
-		Assert.assertEquals(boundingBox2, boundingBox1.extend(boundingBox2));
-		Assert.assertEquals(boundingBox3, boundingBox1.extend(boundingBox3));
-	}
-
-	@Test
-	public void extendPercentTest() {
-		BoundingBox boundingBox1 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
-		BoundingBox boundingBox2 = new BoundingBox(MIN_LATITUDE - 1, MIN_LONGITUDE - 1, MAX_LATITUDE,
-				MAX_LONGITUDE);
-		BoundingBox boundingBox3 = new BoundingBox(MIN_LATITUDE, MIN_LONGITUDE, MAX_LATITUDE + 1,
-				MAX_LONGITUDE + 1);
-
-		Assert.assertEquals(boundingBox1, boundingBox1.extend(0));
-		Assert.assertEquals(boundingBox2, boundingBox2.extend(0));
-		Assert.assertEquals(boundingBox3, boundingBox3.extend(0));
-
-		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MIN_LATITUDE, MAX_LONGITUDE)));
-		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MAX_LATITUDE, MAX_LONGITUDE)));
-		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MAX_LATITUDE, MIN_LONGITUDE)));
-		Assert.assertTrue(boundingBox1.extend(20).contains(new LatLong(MIN_LATITUDE, MIN_LONGITUDE)));
-	}
-
 
 	@Test
 	public void serializeTest() throws IOException, ClassNotFoundException {
