@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,7 +37,7 @@ public final class OSMUtils {
 
 	private static final int MAX_ELEVATION = 9000;
 
-	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-z]{2})");
+	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*)");
 
 	/**
 	 * Extracts known POI tags and returns their ids.
