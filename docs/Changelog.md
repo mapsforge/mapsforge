@@ -4,7 +4,8 @@
 
 ## New since 0.5.2
 
-- Map writer improved preferred language parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
+- Multilingual maps [#624](https://github.com/mapsforge/mapsforge/issues/624)
+- Map writer preferred languages improved parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
 - BoundingBox enhancements [#660](https://github.com/mapsforge/mapsforge/issues/660)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.3)
