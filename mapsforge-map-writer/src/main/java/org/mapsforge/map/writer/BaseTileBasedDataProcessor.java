@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -264,7 +265,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 	protected long maxWayID = Long.MIN_VALUE;
 	protected final TLongObjectHashMap<TLongArrayList> outerToInnerMapping;
 
-	protected final String preferredLanguage;
+    protected final List<String> preferredLanguages;
 	protected final boolean skipInvalidRelations;
 	protected TileGridLayout[] tileGridLayouts;
 
@@ -285,7 +286,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 		this.zoomIntervalConfiguration = configuration.getZoomIntervalConfiguration();
 		this.tileGridLayouts = new TileGridLayout[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()];
 		this.bboxEnlargement = configuration.getBboxEnlargement();
-		this.preferredLanguage = configuration.getPreferredLanguage();
+        this.preferredLanguages = configuration.getPreferredLanguages();
 		this.skipInvalidRelations = configuration.isSkipInvalidRelations();
 
 		this.outerToInnerMapping = new TLongObjectHashMap<>();

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +19,7 @@ import gnu.trove.set.TShortSet;
 import gnu.trove.set.hash.TShortHashSet;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.mapsforge.map.writer.OSMTagMapping;
@@ -53,15 +55,15 @@ public class TDWay {
 	 *            the way
 	 * @param resolver
 	 *            the resolver
-	 * @param preferredLanguage
-	 *            the preferred language or null if no preference
+	 * @param preferredLanguages
+	 *            the preferred language(s) or null if no preference
 	 * @return a new TDWay if it is valid, null otherwise
 	 */
-	public static TDWay fromWay(Way way, NodeResolver resolver, String preferredLanguage) {
+	public static TDWay fromWay(Way way, NodeResolver resolver, List<String> preferredLanguages) {
 		if (way == null)
 			return null;
 
-		SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(way, preferredLanguage);
+		SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(way, preferredLanguages);
 		short[] knownWayTags = OSMUtils.extractKnownWayTags(way);
 
 		// only ways with at least 2 way nodes are valid ways
