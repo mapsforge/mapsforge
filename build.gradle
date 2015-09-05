@@ -42,7 +42,6 @@ project.ext.javaprojects = ["mapsforge-core", "mapsforge-map-reader", "mapsforge
 configure(filterProjects(project.javaprojects)) { 
   apply plugin: 'java'	
   apply plugin: 'checkstyle'
-  apply plugin: 'pmd'
 
   dependencies {
     testCompile group: 'junit', name: 'junit', version:"$jUnitVersion"
@@ -57,11 +56,6 @@ configure(filterProjects(project.javaprojects)) {
 
   // set java source encoding, otherwise some tests fail
   [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-  pmd {
-    ruleSetFiles = files("../config/pmd/pmd_ruleset.xml") 
-    ignoreFailures = true
-  }
 } 
 
 // Configuration for Android projects
