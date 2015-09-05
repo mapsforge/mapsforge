@@ -221,10 +221,10 @@ public class MapWriterConfiguration {
 	}
 
 	/**
-	 * @return the preferredLanguage
+	 * @return the preferred language(s)
 	 */
-    public List<String> getPreferredLanguages() {
-        return this.preferredLanguages;
+	public List<String> getPreferredLanguages() {
+		return this.preferredLanguages;
 	}
 
 	/**
@@ -435,17 +435,19 @@ public class MapWriterConfiguration {
 	}
 
 	/**
-	 * @param preferredLanguage
-	 *            the preferredLanguage to set
+	 * If '-' is used then the behavior is the same as when preferred languages
+	 * are absent from the command line.
+	 * 
+	 * @param preferredLanguages
+	 *            the preferred language(s) to set separated with ','
 	 */
-	public void setPreferredLanguage(String preferredLanguage) {
-		if (preferredLanguage != null && !preferredLanguage.isEmpty()) {
-            if (preferredLanguage.charAt(0) == '-') {
-                this.preferredLanguages = null;
-            }
-            else {
-                this.preferredLanguages = Arrays.<String>asList(preferredLanguage.split(","));
-            }
+	public void setPreferredLanguages(String preferredLanguages) {
+		if (preferredLanguages != null && !preferredLanguages.isEmpty()) {
+			if (preferredLanguages.charAt(0) == '-') {
+				this.preferredLanguages = null;
+			} else {
+				this.preferredLanguages = Arrays.asList(preferredLanguages.split(","));
+			}
 		}
 	}
 

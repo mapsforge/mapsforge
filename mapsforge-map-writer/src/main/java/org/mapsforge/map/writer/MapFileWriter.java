@@ -404,7 +404,7 @@ public final class MapFileWriter {
 		if (configuration.hasMapStartZoomLevel()) {
 			infoByte |= BITMAP_MAP_START_ZOOM;
 		}
-		if (configuration.getPreferredLanguages() != null) {
+		if (configuration.getPreferredLanguages() != null && !configuration.getPreferredLanguages().isEmpty()) {
 			infoByte |= BITMAP_PREFERRED_LANGUAGE;
 		}
 		if (configuration.getComment() != null) {
@@ -559,12 +559,10 @@ public final class MapFileWriter {
 			int firstWayStartLat = wpr.getWayDataBlocks().get(0).getOuterWay().get(0).intValue();
 			int firstWayStartLon = wpr.getWayDataBlocks().get(0).getOuterWay().get(1).intValue();
 
-			wayBuffer
-					.put(Serializer.getVariableByteSigned(LatLongUtils.degreesToMicrodegrees(wpr.getLabelPosition().latitude)
-							- firstWayStartLat));
-			wayBuffer
-					.put(Serializer.getVariableByteSigned(LatLongUtils.degreesToMicrodegrees(wpr.getLabelPosition().longitude)
-							- firstWayStartLon));
+			wayBuffer.put(Serializer.getVariableByteSigned(LatLongUtils.degreesToMicrodegrees(wpr.getLabelPosition().latitude)
+					- firstWayStartLat));
+			wayBuffer.put(Serializer.getVariableByteSigned(LatLongUtils.degreesToMicrodegrees(wpr.getLabelPosition().longitude)
+					- firstWayStartLon));
 		}
 
 		if (wpr.getWayDataBlocks().size() > 1) {
@@ -660,14 +658,12 @@ public final class MapFileWriter {
 		}
 
 		// PREFERRED LANGUAGE
-		if (configuration.getPreferredLanguages() != null) {
-
-            List<String> preferredLanguages = configuration.getPreferredLanguages();
-            String langStr = preferredLanguages.get(0);
-            for (int i=1; i < preferredLanguages.size(); i++) {
-                langStr += ',' + preferredLanguages.get(i);
-            }
-            writeUTF8(langStr, containerHeaderBuffer);
+		if (configuration.getPreferredLanguages() != null && !configuration.getPreferredLanguages().isEmpty()) {
+			String langStr = "";
+			for (String preferredLanguage : configuration.getPreferredLanguages()) {
+				langStr += (langStr.length() > 0 ? "," : "") + preferredLanguage;
+			}
+			writeUTF8(langStr, containerHeaderBuffer);
 		}
 
 		// COMMENT
@@ -969,8 +965,7 @@ public final class MapFileWriter {
 
 	private static void writeTileSignature(TileCoordinate tileCoordinate, ByteBuffer tileBuffer) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(DEBUG_STRING_TILE_HEAD).append(tileCoordinate.getX()).append(",").append(tileCoordinate.getY())
-				.append(DEBUG_STRING_TILE_TAIL);
+		sb.append(DEBUG_STRING_TILE_HEAD).append(tileCoordinate.getX()).append(",").append(tileCoordinate.getY()).append(DEBUG_STRING_TILE_TAIL);
 		tileBuffer.put(sb.toString().getBytes(UTF8_CHARSET));
 		// append withespaces so that block has 32 bytes
 		appendWhitespace(DEBUG_BLOCK_SIZE - sb.toString().getBytes(UTF8_CHARSET).length, tileBuffer);

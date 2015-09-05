@@ -44,6 +44,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Way;
  * A TileBasedDataStore that uses the RAM as storage device for temporary data structures.
  */
 public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor {
+
 	/**
 	 * Creates a new instance of a {@link RAMTileBasedDataProcessor}.
 	 * 

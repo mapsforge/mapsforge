@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -192,7 +193,6 @@ public class MapFile implements MapDataStore {
 	private final ReadBuffer readBuffer;
 	private final long timestamp;
 
-
 	/* Only for testing, an empty file. */
 	public static final MapFile TEST_MAP_FILE = new MapFile();
 
@@ -208,7 +208,11 @@ public class MapFile implements MapDataStore {
 	public static boolean wayFilterEnabled = true;
 	public static int wayFilterDistance = 20;
 
-    public static String preferredLang = null;
+	/**
+	 * Preferred language to be set before reading the map data.
+	 * Reader uses it while retrieving the localized text from the feature multilingual string.
+	 */
+	public static String preferredLanguage = null;
 
 	/**
 	 * Opens the given map file, reads its header data and validates them.
@@ -365,30 +369,36 @@ public class MapFile implements MapDataStore {
 		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
 	}
 
-    // extract substring of preferredLang from multilingual string
-    // example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin";
-    static public String extractLang(String s) {
-        String[] langs = s.split("\r");
-        String fallback = null;
-        for (int i = 1; i < langs.length; i++) {
-            String[] lang = langs[i].split("\b");
-            if (lang.length == 2) {
-                if (lang[0].equals(preferredLang)) {
-                    // perfect match
-                    return lang[1];
-                } else if ((fallback == null) && !lang[0].contains("-") && !lang[0].contains("_") && (preferredLang.contains("-") || preferredLang.contains("_"))
-                        && (preferredLang.indexOf(lang[0]) == 0)) {
-                    // fall back to base ... e.g. zh-min-lan -> zh
-                    fallback = lang[1];
-                }
-            }
-        }
-        if (fallback != null) {
-            return fallback;
-        } else {
-            return langs[0];
-        }
-    }
+	/**
+	 * Extract substring of preferred language from multilingual string.<br/>
+	 * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
+	 * <p>
+	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
+	 */
+	public static String extractLocalized(String s) {
+		String[] langNames = s.split("\r");
+		String fallback = null;
+		for (int i = 1; i < langNames.length; i++) {
+			String[] langName = langNames[i].split("\b");
+			if (langName.length == 2) {
+				if (langName[0].equalsIgnoreCase(preferredLanguage)) {
+					// Perfect match
+					return langName[1];
+				} else if (fallback == null && !langName[0].contains("-") && !langName[0].contains("_")
+						&& (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
+						&& preferredLanguage.toLowerCase(Locale.ENGLISH).indexOf(langName[0].toLowerCase(Locale.ENGLISH)) == 0) {
+					// Fall back to base, e.g. zh-min-lan -> zh
+					fallback = langName[1];
+				}
+			}
+		}
+		if (fallback != null) {
+			return fallback;
+		} else {
+			return langNames[0];
+		}
+	}
+
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
 		// get the first way node latitude offset (VBE-S)
 		double wayNodeLatitude = tileLatitude
@@ -448,7 +458,7 @@ public class MapFile implements MapDataStore {
 	}
 
 	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                  BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
 		if (!processBlockSignature()) {
 			return null;
 		}
@@ -496,8 +506,7 @@ public class MapFile implements MapDataStore {
 		return new PoiWayBundle(pois, ways);
 	}
 
-	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                    BoundingBox boundingBox)
+	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter, BoundingBox boundingBox)
 			throws IOException {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
@@ -663,7 +672,7 @@ public class MapFile implements MapDataStore {
 
 			// check if the POI has a name
 			if (featureName) {
-                tags.add(new Tag(TAG_KEY_NAME, extractLang(this.readBuffer.readUTF8EncodedString())));
+				tags.add(new Tag(TAG_KEY_NAME, extractLocalized(this.readBuffer.readUTF8EncodedString())));
 			}
 
 			// check if the POI has a house number
@@ -726,8 +735,7 @@ public class MapFile implements MapDataStore {
 	}
 
 	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays,
-	                              BoundingBox boundingBox, boolean filterRequired,
-	                              double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, boolean filterRequired, double tileLatitude, double tileLongitude) {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
@@ -796,7 +804,7 @@ public class MapFile implements MapDataStore {
 
 			// check if the way has a name
 			if (featureName) {
-				tags.add(new Tag(TAG_KEY_NAME, this.readBuffer.readUTF8EncodedString()));
+				tags.add(new Tag(TAG_KEY_NAME, extractLocalized(this.readBuffer.readUTF8EncodedString())));
 			}
 
 			// check if the way has a house number
@@ -871,7 +879,6 @@ public class MapFile implements MapDataStore {
 
 		return zoomTable;
 	}
-
 
 	private MapFile() {
 		// only to create a dummy empty file.

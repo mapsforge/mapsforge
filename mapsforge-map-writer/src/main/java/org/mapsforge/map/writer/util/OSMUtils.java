@@ -86,14 +86,17 @@ public final class OSMUtils {
 
 	/**
 	 * Extracts special fields and returns their values as an array of strings.
+	 * <p>
+	 * If preferred languages is '*' then all names are stored.<br/>
+	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
 	 * 
 	 * @param entity
 	 *            the entity
-     * @param preferredLanguages
-     *            the preferred language(s)
+	 * @param preferredLanguages
+	 *            the preferred language(s)
 	 * @return a string array, [0] = name, [1] = ref, [2} = housenumber, [3] layer, [4] elevation, [5] relationType
 	 */
-    public static SpecialTagExtractionResult extractSpecialFields(Entity entity, List<String> preferredLanguages) {
+	public static SpecialTagExtractionResult extractSpecialFields(Entity entity, List<String> preferredLanguages) {
 		String name = null;
 		String ref = null;
 		String housenumber = null;
@@ -104,30 +107,7 @@ public final class OSMUtils {
 		if (entity.getTags() != null) {
 			for (Tag tag : entity.getTags()) {
 				String key = tag.getKey().toLowerCase(Locale.ENGLISH);
-
-                if (preferredLanguages == null) {
-                    if ("name".equals(key)) {
-					name = tag.getValue();
-                    }
-                } else if (key.regionMatches(0, "name", 0, 4)) {
-                    Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
-                    String tname;
-                    if ("name".equals(key)) {
-                        tname = tag.getValue();
-                        if (name == null) name = tname;
-                        else name = tag.getValue() + '\r' + name;
-                    }
-					else if (matcher.matches()) {
-					    String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
-                        if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
-                            tname = language + "\b";
-                            tname += tag.getValue();
-
-                            if (name == null) name = tname;
-                            else name += '\r' + tname;
-                        }
-					}
-				} else if ("piste:name".equals(key) && name == null) {
+				if ("piste:name".equals(key) && name == null) {
 					name = tag.getValue();
 				} else if ("addr:housenumber".equals(key)) {
 					housenumber = tag.getValue();
@@ -160,6 +140,20 @@ public final class OSMUtils {
 					}
 				} else if ("type".equals(key)) {
 					relationType = tag.getValue();
+				} else if (preferredLanguages == null) {
+					if ("name".equals(key)) {
+						name = tag.getValue();
+					}
+				} else if (key.regionMatches(0, "name", 0, 4)) {
+					Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+					if ("name".equals(key)) {
+						name = tag.getValue() + (name != null ? '\r' + name : ""); 
+					} else if (matcher.matches()) {
+						String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
+						if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
+							name = (name != null ? name + '\r' : "") + language + '\b' + tag.getValue();
+						}
+					}
 				}
 			}
 		}
@@ -206,9 +200,9 @@ public final class OSMUtils {
 					// most common railway lines from being detected as areas if they are closed.
 					// Since this method is only called if the first and last node are the same
 					// this should be safe
-					if ("rail".equals(value) || "tram".equals(value) || "subway".equals(value) ||
-						"monorail".equals(value) || "narrow_gauge".equals(value) || "preserved".equals(value)
-						|| "light_rail".equals(value) || "construction".equals(value)) {
+					if ("rail".equals(value) || "tram".equals(value) || "subway".equals(value)
+							|| "monorail".equals(value) || "narrow_gauge".equals(value) || "preserved".equals(value)
+							|| "light_rail".equals(value) || "construction".equals(value)) {
 						result = false;
 					}
 				}
@@ -216,7 +210,6 @@ public final class OSMUtils {
 		}
 		return result;
 	}
-
 
 	private OSMUtils() {
 	}
