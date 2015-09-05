@@ -46,7 +46,7 @@ final class RequiredFields {
 	/**
 	 * Version of the map file format which is supported by this implementation.
 	 */
-	private static final int SUPPORTED_FILE_VERSION = 3;
+	private static final int SUPPORTED_FILE_VERSION = 4;
 
 	static void readBoundingBox(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
 		double minLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
