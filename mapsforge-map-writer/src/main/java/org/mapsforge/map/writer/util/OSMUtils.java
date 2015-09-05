@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 devemux86
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +18,7 @@ package org.mapsforge.map.writer.util;
 
 import gnu.trove.list.array.TShortArrayList;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -87,12 +89,11 @@ public final class OSMUtils {
 	 * 
 	 * @param entity
 	 *            the entity
-	 * @param preferredLanguage
-	 *            the preferred language
+     * @param preferredLanguages
+     *            the preferred language(s)
 	 * @return a string array, [0] = name, [1] = ref, [2} = housenumber, [3] layer, [4] elevation, [5] relationType
 	 */
-	public static SpecialTagExtractionResult extractSpecialFields(Entity entity, String preferredLanguage) {
-		boolean foundPreferredLanguageName = false;
+    public static SpecialTagExtractionResult extractSpecialFields(Entity entity, List<String> preferredLanguages) {
 		String name = null;
 		String ref = null;
 		String housenumber = null;
@@ -103,8 +104,29 @@ public final class OSMUtils {
 		if (entity.getTags() != null) {
 			for (Tag tag : entity.getTags()) {
 				String key = tag.getKey().toLowerCase(Locale.ENGLISH);
-				if ("name".equals(key) && !foundPreferredLanguageName) {
+
+                if (preferredLanguages == null) {
+                    if ("name".equals(key)) {
 					name = tag.getValue();
+                    }
+                } else if (key.regionMatches(0, "name", 0, 4)) {
+                    Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+                    String tname;
+                    if ("name".equals(key)) {
+                        tname = tag.getValue();
+                        if (name == null) name = tname;
+                        else name = tag.getValue() + '\r' + name;
+                    }
+					else if (matcher.matches()) {
+					    String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
+                        if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
+                            tname = language + "\b";
+                            tname += tag.getValue();
+
+                            if (name == null) name = tname;
+                            else name += '\r' + tname;
+                        }
+					}
 				} else if ("piste:name".equals(key) && name == null) {
 					name = tag.getValue();
 				} else if ("addr:housenumber".equals(key)) {
@@ -138,15 +160,6 @@ public final class OSMUtils {
 					}
 				} else if ("type".equals(key)) {
 					relationType = tag.getValue();
-				} else if (preferredLanguage != null && !foundPreferredLanguageName) {
-					Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
-					if (matcher.matches()) {
-						String language = matcher.group(3);
-						if (language.equalsIgnoreCase(preferredLanguage)) {
-							name = tag.getValue();
-							foundPreferredLanguageName = true;
-						}
-					}
 				}
 			}
 		}
