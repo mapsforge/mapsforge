@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -51,11 +52,6 @@ final class OptionalFields {
 	private static final int HEADER_BITMASK_START_ZOOM_LEVEL = 0x20;
 
 	/**
-	 * The length of the language preference string.
-	 */
-	private static final int LANGUAGE_PREFERENCE_LENGTH = 2;
-
-	/**
 	 * Maximum valid start zoom level.
 	 */
 	private static final int START_ZOOM_LEVEL_MAX = 22;
@@ -90,11 +86,7 @@ final class OptionalFields {
 
 	private void readLanguagePreference(ReadBuffer readBuffer) {
 		if (this.hasLanguagePreference) {
-			String countryCode = readBuffer.readUTF8EncodedString();
-			if (countryCode.length() != LANGUAGE_PREFERENCE_LENGTH) {
-				throw new MapFileException("invalid language preference: " + countryCode);
-			}
-			this.languagePreference = countryCode;
+			this.languagePreference = readBuffer.readUTF8EncodedString();
 		}
 	}
 

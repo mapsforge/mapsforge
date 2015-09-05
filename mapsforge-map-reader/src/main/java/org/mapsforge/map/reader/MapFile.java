@@ -376,7 +376,15 @@ public class MapFile implements MapDataStore {
 	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
 	 */
 	public static String extractLocalized(String s) {
+		if (s == null || s.isEmpty()) {
+			return null;
+		}
+
 		String[] langNames = s.split("\r");
+		if (preferredLanguage == null || preferredLanguage.isEmpty()) {
+			return langNames[0];
+		}
+
 		String fallback = null;
 		for (int i = 1; i < langNames.length; i++) {
 			String[] langName = langNames[i].split("\b");
@@ -392,11 +400,7 @@ public class MapFile implements MapDataStore {
 				}
 			}
 		}
-		if (fallback != null) {
-			return fallback;
-		} else {
-			return langNames[0];
-		}
+		return (fallback != null) ? fallback : langNames[0];
 	}
 
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {

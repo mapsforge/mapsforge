@@ -140,7 +140,7 @@ public final class OSMUtils {
 					}
 				} else if ("type".equals(key)) {
 					relationType = tag.getValue();
-				} else if (preferredLanguages == null) {
+				} else if (preferredLanguages == null || preferredLanguages.isEmpty()) {
 					if ("name".equals(key)) {
 						name = tag.getValue();
 					}
