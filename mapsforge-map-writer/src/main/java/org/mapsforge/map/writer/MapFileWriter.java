@@ -404,7 +404,7 @@ public final class MapFileWriter {
 		if (configuration.hasMapStartZoomLevel()) {
 			infoByte |= BITMAP_MAP_START_ZOOM;
 		}
-		if (configuration.getPreferredLanguage() != null) {
+		if (configuration.getPreferredLanguages() != null) {
 			infoByte |= BITMAP_PREFERRED_LANGUAGE;
 		}
 		if (configuration.getComment() != null) {
@@ -660,8 +660,14 @@ public final class MapFileWriter {
 		}
 
 		// PREFERRED LANGUAGE
-		if (configuration.getPreferredLanguage() != null) {
-			writeUTF8(configuration.getPreferredLanguage(), containerHeaderBuffer);
+		if (configuration.getPreferredLanguages() != null) {
+
+            List<String> preferredLanguages = configuration.getPreferredLanguages();
+            String langStr = preferredLanguages.get(0);
+            for (int i=1; i < preferredLanguages.size(); i++) {
+                langStr += ',' + preferredLanguages.get(i);
+            }
+            writeUTF8(langStr, containerHeaderBuffer);
 		}
 
 		// COMMENT

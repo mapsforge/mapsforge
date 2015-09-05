@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -38,11 +39,11 @@ public class TDRelation {
 	 *            the relation
 	 * @param resolver
 	 *            the resolver
-	 * @param preferredLanguage
-	 *            the preferred language or null if no preference
+	 * @param preferredLanguages
+	 *            the preferred(s) language or null if no preference
 	 * @return a new TDRelation if all members are valid and the relation is of a known type, null otherwise
 	 */
-	public static TDRelation fromRelation(Relation relation, WayResolver resolver, String preferredLanguage) {
+	public static TDRelation fromRelation(Relation relation, WayResolver resolver, List<String> preferredLanguages) {
 		if (relation == null) {
 			return null;
 		}
@@ -51,7 +52,7 @@ public class TDRelation {
 			return null;
 		}
 
-		SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(relation, preferredLanguage);
+		SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(relation, preferredLanguages);
 		short[] knownWayTags = OSMUtils.extractKnownWayTags(relation);
 
 		// special tags
