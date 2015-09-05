@@ -289,7 +289,7 @@ public final class MapFileWriter {
 	private static final short BITMAP_MULTIPLE_WAY_BLOCKS = 8;
 	// bitmap flags for pois and ways
 	private static final short BITMAP_NAME = 128;
-	private static final short BITMAP_PREFERRED_LANGUAGE = 16;
+	private static final short BITMAP_PREFERRED_LANGUAGES = 16;
 
 	// bitmap flags for ways
 	private static final short BITMAP_REF = 32;
@@ -405,7 +405,7 @@ public final class MapFileWriter {
 			infoByte |= BITMAP_MAP_START_ZOOM;
 		}
 		if (configuration.getPreferredLanguages() != null && !configuration.getPreferredLanguages().isEmpty()) {
-			infoByte |= BITMAP_PREFERRED_LANGUAGE;
+			infoByte |= BITMAP_PREFERRED_LANGUAGES;
 		}
 		if (configuration.getComment() != null) {
 			infoByte |= BITMAP_COMMENT;
