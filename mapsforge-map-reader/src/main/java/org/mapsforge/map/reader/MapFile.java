@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014, 2015 devemux86
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -207,6 +208,8 @@ public class MapFile implements MapDataStore {
 	public static boolean wayFilterEnabled = true;
 	public static int wayFilterDistance = 20;
 
+    public static String preferredLang = null;
+
 	/**
 	 * Opens the given map file, reads its header data and validates them.
 	 *
@@ -362,6 +365,30 @@ public class MapFile implements MapDataStore {
 		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
 	}
 
+    // extract substring of preferredLang from multilingual string
+    // example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin";
+    static public String extractLang(String s) {
+        String[] langs = s.split("\r");
+        String fallback = null;
+        for (int i = 1; i < langs.length; i++) {
+            String[] lang = langs[i].split("\b");
+            if (lang.length == 2) {
+                if (lang[0].equals(preferredLang)) {
+                    // perfect match
+                    return lang[1];
+                } else if ((fallback == null) && !lang[0].contains("-") && !lang[0].contains("_") && (preferredLang.contains("-") || preferredLang.contains("_"))
+                        && (preferredLang.indexOf(lang[0]) == 0)) {
+                    // fall back to base ... e.g. zh-min-lan -> zh
+                    fallback = lang[1];
+                }
+            }
+        }
+        if (fallback != null) {
+            return fallback;
+        } else {
+            return langs[0];
+        }
+    }
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
 		// get the first way node latitude offset (VBE-S)
 		double wayNodeLatitude = tileLatitude
@@ -636,7 +663,7 @@ public class MapFile implements MapDataStore {
 
 			// check if the POI has a name
 			if (featureName) {
-				tags.add(new Tag(TAG_KEY_NAME, this.readBuffer.readUTF8EncodedString()));
+                tags.add(new Tag(TAG_KEY_NAME, extractLang(this.readBuffer.readUTF8EncodedString())));
 			}
 
 			// check if the POI has a house number
