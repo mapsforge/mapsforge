@@ -44,9 +44,14 @@ final class RequiredFields {
 	private static final String MERCATOR = "Mercator";
 
 	/**
-	 * Version of the map file format which is supported by this implementation.
+	 * Lowest version of the map file format supported by this implementation.
 	 */
-	private static final int SUPPORTED_FILE_VERSION = 4;
+	private static final int SUPPORTED_FILE_VERSION_MIN = 3;
+
+	/**
+	 * Highest version of the map file format supported by this implementation.
+	 */
+	private static final int SUPPORTED_FILE_VERSION_MAX = 4;
 
 	static void readBoundingBox(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
 		double minLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
@@ -73,7 +78,7 @@ final class RequiredFields {
 	static void readFileVersion(ReadBuffer readBuffer, MapFileInfoBuilder mapFileInfoBuilder) {
 		// get and check the file version (4 bytes)
 		int fileVersion = readBuffer.readInt();
-		if (fileVersion != SUPPORTED_FILE_VERSION) {
+		if (fileVersion < SUPPORTED_FILE_VERSION_MIN || fileVersion > SUPPORTED_FILE_VERSION_MAX) {
 			throw new MapFileException("unsupported file version: " + fileVersion);
 		}
 		mapFileInfoBuilder.fileVersion = fileVersion;
