@@ -18,6 +18,8 @@ package org.mapsforge.map.writer.util;
 
 import gnu.trove.list.array.TShortArrayList;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -97,6 +99,7 @@ public final class OSMUtils {
 	 * @return a string array, [0] = name, [1] = ref, [2} = housenumber, [3] layer, [4] elevation, [5] relationType
 	 */
 	public static SpecialTagExtractionResult extractSpecialFields(Entity entity, List<String> preferredLanguages) {
+		String defaultName = null;
 		String name = null;
 		String ref = null;
 		String housenumber = null;
@@ -105,9 +108,32 @@ public final class OSMUtils {
 		String relationType = null;
 
 		if (entity.getTags() != null) {
-			for (Tag tag : entity.getTags()) {
+			// Convert tag collection to a list and sort it
+			// i.e. making sure default 'name' comes before (for compare)
+			List<Tag> tags = new ArrayList<Tag>(entity.getTags());
+			Collections.sort(tags);
+			for (Tag tag : tags) {
 				String key = tag.getKey().toLowerCase(Locale.ENGLISH);
-				if ("piste:name".equals(key) && name == null) {
+				if (key.startsWith("name")) {
+					if (preferredLanguages == null || preferredLanguages.isEmpty()) {
+						if ("name".equals(key)) {
+							name = tag.getValue();
+						}
+					} else {
+						if ("name".equals(key)) {
+							defaultName = tag.getValue();
+							name = defaultName + (name != null ? '\r' + name : ""); 
+						} else if (!tag.getValue().equals(defaultName)) { // Same with default 'name'?
+							Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+							if (matcher.matches()) {
+								String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
+								if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
+									name = (name != null ? name + '\r' : "") + language + '\b' + tag.getValue();
+								}
+							}
+						}
+					}
+				} else if ("piste:name".equals(key) && name == null) {
 					name = tag.getValue();
 				} else if ("addr:housenumber".equals(key)) {
 					housenumber = tag.getValue();
@@ -140,20 +166,6 @@ public final class OSMUtils {
 					}
 				} else if ("type".equals(key)) {
 					relationType = tag.getValue();
-				} else if (preferredLanguages == null || preferredLanguages.isEmpty()) {
-					if ("name".equals(key)) {
-						name = tag.getValue();
-					}
-				} else if (key.regionMatches(0, "name", 0, 4)) {
-					Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
-					if ("name".equals(key)) {
-						name = tag.getValue() + (name != null ? '\r' + name : ""); 
-					} else if (matcher.matches()) {
-						String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
-						if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
-							name = (name != null ? name + '\r' : "") + language + '\b' + tag.getValue();
-						}
-					}
 				}
 			}
 		}
