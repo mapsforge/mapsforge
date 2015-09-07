@@ -19,6 +19,7 @@ package org.mapsforge.map.android.view;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
 import org.mapsforge.map.android.input.ScaleListener;
@@ -250,5 +251,17 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 			this.mapScaleBar.destroy();
 		}
 		this.mapScaleBar = mapScaleBar;
+	}
+
+	public void setCenter(LatLong center) {
+		this.model.mapViewPosition.setCenter(center);
+	}
+
+	public void setZoomLevel(byte zoomLevel) {
+		this.model.mapViewPosition.setZoomLevel(zoomLevel);
+	}
+
+	public void addLayer(Layer layer) {
+		this.layerManager.getLayers().add(layer);
 	}
 }

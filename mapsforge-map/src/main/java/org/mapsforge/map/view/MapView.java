@@ -17,6 +17,8 @@ package org.mapsforge.map.view;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
@@ -61,4 +63,10 @@ public interface MapView {
 	void repaint();
 
 	void setMapScaleBar(MapScaleBar mapScaleBar);
+
+	void setCenter(LatLong center);
+
+	void setZoomLevel(byte zoomLevel);
+
+	void addLayer(Layer layer);
 }
