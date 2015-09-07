@@ -96,6 +96,10 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 				GRAPHIC_FACTORY, this.model.displayModel);
 	}
 
+	public void addLayer(Layer layer) {
+		this.layerManager.getLayers().add(layer);
+	}
+
 	/**
 	 * Clear map view.
 	 */
@@ -241,6 +245,10 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.mapZoomControls.setShowMapZoomControls(showZoomControls);
 	}
 
+	public void setCenter(LatLong center) {
+		this.model.mapViewPosition.setCenter(center);
+	}
+
 	public void setGestureDetector(GestureDetector gestureDetector) {
 		this.gestureDetector = gestureDetector;
 	}
@@ -253,15 +261,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.mapScaleBar = mapScaleBar;
 	}
 
-	public void setCenter(LatLong center) {
-		this.model.mapViewPosition.setCenter(center);
-	}
-
 	public void setZoomLevel(byte zoomLevel) {
 		this.model.mapViewPosition.setZoomLevel(zoomLevel);
-	}
-
-	public void addLayer(Layer layer) {
-		this.layerManager.getLayers().add(layer);
 	}
 }

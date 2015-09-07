@@ -25,6 +25,8 @@ import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
 
+	void addLayer(Layer layer);
+
 	/**
 	 * Clear map view.
 	 */
@@ -62,11 +64,9 @@ public interface MapView {
 	 */
 	void repaint();
 
-	void setMapScaleBar(MapScaleBar mapScaleBar);
-
 	void setCenter(LatLong center);
 
-	void setZoomLevel(byte zoomLevel);
+	void setMapScaleBar(MapScaleBar mapScaleBar);
 
-	void addLayer(Layer layer);
+	void setZoomLevel(byte zoomLevel);
 }
