@@ -138,11 +138,39 @@ public class BoundingBox implements Serializable {
 	 *            the BoundingBox which this BoundingBox should be extended if it is larger
 	 * @return a BoundingBox that covers this BoundingBox and the given BoundingBox.
 	 */
-	public BoundingBox extend(BoundingBox boundingBox) {
+	public BoundingBox extendBoundingBox(BoundingBox boundingBox) {
 		return new BoundingBox(Math.min(this.minLatitude, boundingBox.minLatitude),
 				Math.min(this.minLongitude, boundingBox.minLongitude),
 				Math.max(this.maxLatitude, boundingBox.maxLatitude),
 				Math.max(this.maxLongitude, boundingBox.maxLongitude));
+	}
+
+	/**
+	 * Creates a BoundingBox extended up to coordinates (but does not cross date line/poles).
+	 * @param latitude up to the extension
+	 * @param longitude up to the extension
+	 * @return an extended BoundingBox or this (if contains coordinates)
+	 */
+	public BoundingBox extendCoordinates(double latitude, double longitude) {
+		if (contains(latitude, longitude)) {
+			return this;
+		}
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, Math.min(this.minLatitude, latitude));
+		double minLon = Math.max(-180, Math.min(this.minLongitude, longitude));
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, Math.max(this.maxLatitude, latitude));
+		double maxLon = Math.min(180, Math.max(this.maxLongitude, longitude));
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+	/**
+	 * Creates a BoundingBox extended up to <code>LatLong</code> (but does not cross date line/poles).
+	 * @param latLong coordinates up to the extension
+	 * @return an extended BoundingBox or this (if contains coordinates)
+	 */
+	public BoundingBox extendCoordinates(LatLong latLong) {
+		return extendCoordinates(latLong.latitude, latLong.longitude);
 	}
 
 	/**
@@ -151,7 +179,7 @@ public class BoundingBox implements Serializable {
 	 * @param horizontalExpansion degree extension (must be >= 0)
 	 * @return an extended BoundingBox or this (if degrees == 0)
 	 */
-	public BoundingBox extend(double verticalExpansion, double horizontalExpansion) {
+	public BoundingBox extendDegrees(double verticalExpansion, double horizontalExpansion) {
 		if (verticalExpansion == 0 && horizontalExpansion == 0) {
 			return this;
 		} else if (verticalExpansion < 0 || horizontalExpansion < 0) {
@@ -171,7 +199,7 @@ public class BoundingBox implements Serializable {
 	 * @param meters extension (must be >= 0)
 	 * @return an extended BoundingBox or this (if meters == 0)
 	 */
-	public BoundingBox extend(int meters) {
+	public BoundingBox extendMeters(int meters) {
 		if (meters == 0) {
 			return this;
 		} else if (meters < 0) {

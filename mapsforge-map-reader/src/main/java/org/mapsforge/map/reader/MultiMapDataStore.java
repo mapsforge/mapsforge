@@ -76,7 +76,7 @@ public class MultiMapDataStore implements MapDataStore {
 		if (null == this.boundingBox) {
 			this.boundingBox = mapDataStore.boundingBox();
 		} else {
-			this.boundingBox = this.boundingBox.extend(mapDataStore.boundingBox());
+			this.boundingBox = this.boundingBox.extendBoundingBox(mapDataStore.boundingBox());
 		}
 	}
 

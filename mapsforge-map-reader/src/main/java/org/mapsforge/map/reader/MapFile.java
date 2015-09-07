@@ -743,7 +743,7 @@ public class MapFile implements MapDataStore {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
-		BoundingBox wayFilterBbox = boundingBox.extend(wayFilterDistance);
+		BoundingBox wayFilterBbox = boundingBox.extendMeters(wayFilterDistance);
 
 		for (int elementCounter = numberOfWays; elementCounter != 0; --elementCounter) {
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
