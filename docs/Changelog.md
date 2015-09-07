@@ -9,7 +9,7 @@
 - BoundingBox enhancements [#660](https://github.com/mapsforge/mapsforge/issues/660)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.3)
-
+- Simplified MapView API [#662](https://github.com/mapsforge/mapsforge/issues/662)
 
 ## Version 0.5.X
 
