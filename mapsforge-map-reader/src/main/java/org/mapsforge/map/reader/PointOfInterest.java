@@ -39,7 +39,7 @@ public class PointOfInterest {
 	 */
 	public final List<Tag> tags;
 
-	PointOfInterest(byte layer, List<Tag> tags, LatLong position) {
+	public PointOfInterest(byte layer, List<Tag> tags, LatLong position) {
 		this.layer = layer;
 		this.tags = tags;
 		this.position = position;

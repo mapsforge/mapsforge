@@ -44,7 +44,7 @@ public class Way {
 	 */
 	public final List<Tag> tags;
 
-	Way(byte layer, List<Tag> tags, LatLong[][] latLongs, LatLong labelPosition) {
+	public Way(byte layer, List<Tag> tags, LatLong[][] latLongs, LatLong labelPosition) {
 		this.layer = layer;
 		this.tags = tags;
 		this.latLongs = latLongs;
