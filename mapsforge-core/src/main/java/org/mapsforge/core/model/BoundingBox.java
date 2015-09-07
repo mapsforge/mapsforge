@@ -17,6 +17,7 @@
 package org.mapsforge.core.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
@@ -84,6 +85,31 @@ public class BoundingBox implements Serializable {
 			throw new IllegalArgumentException("invalid latitude range: " + minLatitude + ' ' + maxLatitude);
 		} else if (minLongitude > maxLongitude) {
 			throw new IllegalArgumentException("invalid longitude range: " + minLongitude + ' ' + maxLongitude);
+		}
+
+		this.minLatitude = minLatitude;
+		this.minLongitude = minLongitude;
+		this.maxLatitude = maxLatitude;
+		this.maxLongitude = maxLongitude;
+	}
+
+	/**
+	 * @param latLongs
+	 *            the coordinates list.
+	 */
+	public BoundingBox(List<LatLong> latLongs) {
+		double minLatitude = Double.POSITIVE_INFINITY;
+		double minLongitude = Double.POSITIVE_INFINITY;
+		double maxLatitude = Double.NEGATIVE_INFINITY;
+		double maxLongitude = Double.NEGATIVE_INFINITY;
+		for (LatLong latLong : latLongs) {
+			double latitude = latLong.latitude;
+			double longitude = latLong.longitude;
+
+			minLatitude = Math.min(minLatitude, latitude);
+			minLongitude = Math.min(minLongitude, longitude);
+			maxLatitude = Math.max(maxLatitude, latitude);
+			maxLongitude = Math.max(maxLongitude, longitude);
 		}
 
 		this.minLatitude = minLatitude;
