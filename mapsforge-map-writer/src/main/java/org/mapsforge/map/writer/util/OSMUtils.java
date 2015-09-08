@@ -20,8 +20,10 @@ import gnu.trove.list.array.TShortArrayList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,7 +101,6 @@ public final class OSMUtils {
 	 * @return a string array, [0] = name, [1] = ref, [2} = housenumber, [3] layer, [4] elevation, [5] relationType
 	 */
 	public static SpecialTagExtractionResult extractSpecialFields(Entity entity, List<String> preferredLanguages) {
-		String defaultName = null;
 		String name = null;
 		String ref = null;
 		String housenumber = null;
@@ -108,10 +109,13 @@ public final class OSMUtils {
 		String relationType = null;
 
 		if (entity.getTags() != null) {
-			// Convert tag collection to a list and sort it
-			// i.e. making sure default 'name' comes before (for compare)
+			// Convert tag collection to list and sort it
+			// i.e. making sure default 'name' comes first
 			List<Tag> tags = new ArrayList<Tag>(entity.getTags());
 			Collections.sort(tags);
+
+			String defaultName = null;
+			List<String> restPreferredLanguages = (preferredLanguages != null) ? new ArrayList<String>(preferredLanguages) : null;
 			for (Tag tag : tags) {
 				String key = tag.getKey().toLowerCase(Locale.ENGLISH);
 				if (key.startsWith("name")) {
@@ -128,6 +132,7 @@ public final class OSMUtils {
 							if (matcher.matches()) {
 								String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
 								if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
+									restPreferredLanguages.remove(language);
 									name = (name != null ? name + '\r' : "") + language + '\b' + tag.getValue();
 								}
 							}
@@ -149,7 +154,7 @@ public final class OSMUtils {
 						layer = testLayer;
 					} catch (NumberFormatException e) {
 						LOGGER.finest("could not parse layer information to byte type: " + tag.getValue()
-								+ "\t entity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
+								+ "\tentity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
 					}
 				} else if ("ele".equals(key)) {
 					String strElevation = tag.getValue();
@@ -162,10 +167,39 @@ public final class OSMUtils {
 						}
 					} catch (NumberFormatException e) {
 						LOGGER.finest("could not parse elevation information to double type: " + tag.getValue()
-								+ "\t entity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
+								+ "\tentity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
 					}
 				} else if ("type".equals(key)) {
 					relationType = tag.getValue();
+				}
+			}
+
+			// Check rest preferred languages for fall back to base
+			if (restPreferredLanguages != null && !restPreferredLanguages.isEmpty()) {
+				Map<String, String> fallbacks = new HashMap<String, String>();
+				for (String preferredLanguage : restPreferredLanguages) {
+					for (Tag tag : tags) {
+						String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+						if (!key.startsWith("name")) {
+							continue;
+						}
+						if (tag.getValue().equals(defaultName)) { // Same with default 'name'?
+							continue;
+						}
+						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+						if (!matcher.matches()) {
+							continue;
+						}
+						String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
+						if (!fallbacks.containsKey(language) && !language.contains("-") && !language.contains("_")
+								&& (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
+								&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(language.toLowerCase(Locale.ENGLISH))) {
+							fallbacks.put(language, tag.getValue());
+						}
+					}
+				}
+				for (String language : fallbacks.keySet()) {
+					name = (name != null ? name + '\r' : "") + language + '\b' + fallbacks.get(language);
 				}
 			}
 		}

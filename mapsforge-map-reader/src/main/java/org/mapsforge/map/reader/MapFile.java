@@ -388,16 +388,20 @@ public class MapFile implements MapDataStore {
 		String fallback = null;
 		for (int i = 1; i < langNames.length; i++) {
 			String[] langName = langNames[i].split("\b");
-			if (langName.length == 2) {
-				if (langName[0].equalsIgnoreCase(preferredLanguage)) {
-					// Perfect match
-					return langName[1];
-				} else if (fallback == null && !langName[0].contains("-") && !langName[0].contains("_")
-						&& (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
-						&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
-					// Fall back to base, e.g. zh-min-lan -> zh
-					fallback = langName[1];
-				}
+			if (langName.length != 2) {
+				continue;
+			}
+
+			// Perfect match
+			if (langName[0].equalsIgnoreCase(preferredLanguage)) {
+				return langName[1];
+			}
+
+			// Fall back to base, e.g. zh-min-lan -> zh
+			if (fallback == null && !langName[0].contains("-") && !langName[0].contains("_")
+					&& (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
+					&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
+				fallback = langName[1];
 			}
 		}
 		return (fallback != null) ? fallback : langNames[0];
@@ -894,4 +898,3 @@ public class MapFile implements MapDataStore {
 		timestamp = System.currentTimeMillis();
 	}
 }
-

@@ -443,7 +443,7 @@ public class MapWriterConfiguration {
 	 */
 	public void setPreferredLanguages(String preferredLanguages) {
 		if (preferredLanguages != null && !preferredLanguages.isEmpty()) {
-			if (preferredLanguages.charAt(0) == '-') {
+			if (preferredLanguages.equals("-")) {
 				this.preferredLanguages = null;
 			} else {
 				this.preferredLanguages = Arrays.asList(preferredLanguages.split(","));
