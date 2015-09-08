@@ -34,11 +34,12 @@
 | 28 | OruxMaps | Map Viewer | Proprietary/Free | Closed | http://www.oruxmaps.com/ |
 | 29 | OSMapTuner | Map Viewer & Tag-Editor | Proprietary/Free | Closed | http://osmaptuner.salzburgresearch.at/ |
 | 30 | Pocket Coruna | Tourist guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo&hl=en |
-| 31 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
-| 32 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
-| 33 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
-| 34 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
-| 35 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
+| 31 | RouteConverter | GPS conversion and editing tool | GPL2/Free | Open | http://www.routeconverter.com/ |
+| 32 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
+| 33 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
+| 34 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
+| 35 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
+| 36 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
 
 
 You know an application that is missing here? Please inform us by sending a message via our public mapsforge-dev(https://groups.google.com/group/mapsforge-dev) mailing list.
