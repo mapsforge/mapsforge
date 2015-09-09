@@ -17,7 +17,7 @@
 | 11 | c:geo | Geocaching | Apache 2.0/Free | Open | https://github.com/cgeo/ |
 | 12 | Geopaparazzi| Digital Field Mapping for geology and engineering with GIS data import | GPL3/Free | Open | http://www.geopaparazzi.eu |
 | 13 | GPSSend | Live Tracking + Emergency Notification | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.tinkerpete.gps |
-| 14 | Hunt Cyprus | Map and navigation application for hunters | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=gr.talent.cyprusHunt |
+| 14 | Hunt Cyprus 16 | Map and navigation application for hunters | Proprietary/Commercial | Closed | https://play.google.com/store/apps/details?id=gr.talent.hunt.cyprus16 |
 | 15 | Locus | Multi-Function Map | Proprietary/Free and Premium | Closed | http://www.locusmap.eu/ |
 | 16 | Map GB | Offline map of Britain with postcode search | Proprietary/Free (in-app purchases) | Closed | https://play.google.com/store/apps/details?id=com.mapgb |
 | 17 | mappa | Tourist Map | Proprietary/Commercial | Closed | http://mynativeguide.com/ |
