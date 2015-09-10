@@ -398,8 +398,7 @@ public class MapFile implements MapDataStore {
 			}
 
 			// Fall back to base, e.g. zh-min-lan -> zh
-			if (fallback == null && !langName[0].contains("-") && !langName[0].contains("_")
-					&& (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
+			if (fallback == null && !langName[0].contains("-") && preferredLanguage.contains("-")
 					&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
 				fallback = langName[1];
 			}

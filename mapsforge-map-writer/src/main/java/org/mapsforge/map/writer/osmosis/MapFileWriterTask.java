@@ -59,7 +59,9 @@ public class MapFileWriterTask implements Sink {
 			properties.load(MapFileWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
 			configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
 					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
-			boolean multilingual = configuration.getPreferredLanguages() != null && configuration.getPreferredLanguages().size() > 1;
+			// If multilingual map then set newer map file version
+			boolean multilingual = configuration.getPreferredLanguages() != null && !configuration.getPreferredLanguages().isEmpty()
+					&& ("*".equals(configuration.getPreferredLanguages().get(0)) || configuration.getPreferredLanguages().size() > 1);
 			configuration.setFileSpecificationVersion(Integer.parseInt(properties
 					.getProperty(multilingual ? Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX : Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN)));
 

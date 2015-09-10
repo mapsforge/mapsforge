@@ -109,36 +109,85 @@ public final class OSMUtils {
 		String relationType = null;
 
 		if (entity.getTags() != null) {
-			// Convert tag collection to list and sort it
-			// i.e. making sure default 'name' comes first
-			List<Tag> tags = new ArrayList<Tag>(entity.getTags());
-			Collections.sort(tags);
+			// Process 'name' tags
+			boolean multilingual = preferredLanguages != null && !preferredLanguages.isEmpty()
+					&& ("*".equals(preferredLanguages.get(0)) || preferredLanguages.size() > 1);
+			if (multilingual) { // Multilingual map
+				// Convert tag collection to list and sort it
+				// i.e. making sure default 'name' comes first
+				List<Tag> tags = new ArrayList<Tag>(entity.getTags());
+				Collections.sort(tags);
 
-			String defaultName = null;
-			List<String> restPreferredLanguages = (preferredLanguages != null) ? new ArrayList<String>(preferredLanguages) : null;
-			for (Tag tag : tags) {
-				String key = tag.getKey().toLowerCase(Locale.ENGLISH);
-				if (key.startsWith("name")) {
-					if (preferredLanguages == null || preferredLanguages.isEmpty()) {
-						if ("name".equals(key)) {
-							name = tag.getValue();
+				String defaultName = null;
+				List<String> restPreferredLanguages = new ArrayList<String>(preferredLanguages);
+				for (Tag tag : tags) {
+					String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+					if ("name".equals(key)) { // Default 'name'
+						defaultName = tag.getValue();
+						name = defaultName; 
+					} else { // Localized name
+						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+						if (!matcher.matches()) {
+							continue;
 						}
-					} else {
-						if ("name".equals(key)) {
-							defaultName = tag.getValue();
-							name = defaultName + (name != null ? '\r' + name : ""); 
-						} else if (!tag.getValue().equals(defaultName)) { // Same with default 'name'?
+						if (tag.getValue().equals(defaultName)) { // Same with default 'name'?
+							continue;
+						}
+						String language = matcher.group(3).toLowerCase(Locale.ENGLISH).replace('_', '-');
+						if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
+							restPreferredLanguages.remove(language);
+							name = (name != null ? name + '\r' : "") + language + '\b' + tag.getValue();
+						}
+					}
+				}
+
+				// Check rest preferred languages for falling back to base
+				if (restPreferredLanguages != null && !restPreferredLanguages.isEmpty()) {
+					Map<String, String> fallbacks = new HashMap<String, String>();
+					for (String preferredLanguage : restPreferredLanguages) {
+						for (Tag tag : tags) {
+							String key = tag.getKey().toLowerCase(Locale.ENGLISH);
 							Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
-							if (matcher.matches()) {
-								String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
-								if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
-									restPreferredLanguages.remove(language);
-									name = (name != null ? name + '\r' : "") + language + '\b' + tag.getValue();
-								}
+							if (!matcher.matches()) {
+								continue;
+							}
+							if (tag.getValue().equals(defaultName)) { // Same with default 'name'?
+								continue;
+							}
+							String language = matcher.group(3).toLowerCase(Locale.ENGLISH).replace('_', '-');
+							if (!fallbacks.containsKey(language) && !language.contains("-") && preferredLanguage.contains("-")
+									&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(language.toLowerCase(Locale.ENGLISH))) {
+								fallbacks.put(language, tag.getValue());
 							}
 						}
 					}
-				} else if ("piste:name".equals(key) && name == null) {
+					for (String language : fallbacks.keySet()) {
+						name = (name != null ? name + '\r' : "") + language + '\b' + fallbacks.get(language);
+					}
+				}
+			} else { // Non multilingual map
+				boolean foundPreferredLanguageName = false;
+				for (Tag tag : entity.getTags()) {
+					String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+					if ("name".equals(key) && !foundPreferredLanguageName) {
+						name = tag.getValue();
+					} else if (preferredLanguages != null && preferredLanguages.size() == 1 && !foundPreferredLanguageName) {
+						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+						if (matcher.matches()) {
+							String language = matcher.group(3);
+							if (language.equalsIgnoreCase(preferredLanguages.get(0))) {
+								name = tag.getValue();
+								foundPreferredLanguageName = true;
+							}
+						}
+					}
+				}
+			}
+
+			// Process rest tags
+			for (Tag tag : entity.getTags()) {
+				String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+				if ("piste:name".equals(key) && name == null) {
 					name = tag.getValue();
 				} else if ("addr:housenumber".equals(key)) {
 					housenumber = tag.getValue();
@@ -154,7 +203,7 @@ public final class OSMUtils {
 						layer = testLayer;
 					} catch (NumberFormatException e) {
 						LOGGER.finest("could not parse layer information to byte type: " + tag.getValue()
-								+ "\tentity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
+								+ "\t entity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
 					}
 				} else if ("ele".equals(key)) {
 					String strElevation = tag.getValue();
@@ -167,39 +216,10 @@ public final class OSMUtils {
 						}
 					} catch (NumberFormatException e) {
 						LOGGER.finest("could not parse elevation information to double type: " + tag.getValue()
-								+ "\tentity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
+								+ "\t entity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
 					}
 				} else if ("type".equals(key)) {
 					relationType = tag.getValue();
-				}
-			}
-
-			// Check rest preferred languages for fall back to base
-			if (restPreferredLanguages != null && !restPreferredLanguages.isEmpty()) {
-				Map<String, String> fallbacks = new HashMap<String, String>();
-				for (String preferredLanguage : restPreferredLanguages) {
-					for (Tag tag : tags) {
-						String key = tag.getKey().toLowerCase(Locale.ENGLISH);
-						if (!key.startsWith("name")) {
-							continue;
-						}
-						if (tag.getValue().equals(defaultName)) { // Same with default 'name'?
-							continue;
-						}
-						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
-						if (!matcher.matches()) {
-							continue;
-						}
-						String language = matcher.group(3).toLowerCase(Locale.ENGLISH);
-						if (!fallbacks.containsKey(language) && !language.contains("-") && !language.contains("_")
-								&& (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
-								&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(language.toLowerCase(Locale.ENGLISH))) {
-							fallbacks.put(language, tag.getValue());
-						}
-					}
-				}
-				for (String language : fallbacks.keySet()) {
-					name = (name != null ? name + '\r' : "") + language + '\b' + fallbacks.get(language);
 				}
 			}
 		}
