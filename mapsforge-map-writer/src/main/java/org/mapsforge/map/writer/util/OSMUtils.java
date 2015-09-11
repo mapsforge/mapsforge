@@ -43,8 +43,7 @@ public final class OSMUtils {
 
 	private static final int MAX_ELEVATION = 9000;
 
-	// W3C XSD language pattern: http://www.w3.org/TR/xmlschema11-2/#language
-	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,8}([-_][a-zA-Z0-9]{1,8})*)");
+	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,3}(?:[-_][a-zA-Z0-9]{1,8})*)");
 
 	/**
 	 * Extracts known POI tags and returns their ids.
