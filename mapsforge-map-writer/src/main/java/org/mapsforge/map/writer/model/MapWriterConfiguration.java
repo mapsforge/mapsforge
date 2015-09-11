@@ -435,19 +435,12 @@ public class MapWriterConfiguration {
 	}
 
 	/**
-	 * If '-' is used then the behavior is the same as when preferred languages
-	 * are absent from the command line.
-	 * 
 	 * @param preferredLanguages
 	 *            the preferred language(s) to set separated with ','
 	 */
 	public void setPreferredLanguages(String preferredLanguages) {
 		if (preferredLanguages != null && !preferredLanguages.isEmpty()) {
-			if (preferredLanguages.equals("-")) {
-				this.preferredLanguages = null;
-			} else {
-				this.preferredLanguages = Arrays.asList(preferredLanguages.split(","));
-			}
+			this.preferredLanguages = Arrays.asList(preferredLanguages.split(","));
 		}
 	}
 

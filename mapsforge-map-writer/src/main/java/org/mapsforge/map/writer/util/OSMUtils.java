@@ -91,7 +91,6 @@ public final class OSMUtils {
 	/**
 	 * Extracts special fields and returns their values as an array of strings.
 	 * <p>
-	 * If preferred languages is '*' then all names are stored.<br/>
 	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
 	 * 
 	 * @param entity
@@ -110,9 +109,7 @@ public final class OSMUtils {
 
 		if (entity.getTags() != null) {
 			// Process 'name' tags
-			boolean multilingual = preferredLanguages != null && !preferredLanguages.isEmpty()
-					&& ("*".equals(preferredLanguages.get(0)) || preferredLanguages.size() > 1);
-			if (multilingual) { // Multilingual map
+			if (preferredLanguages != null && preferredLanguages.size() > 1) { // Multilingual map
 				// Convert tag collection to list and sort it
 				// i.e. making sure default 'name' comes first
 				List<Tag> tags = new ArrayList<Tag>(entity.getTags());
@@ -134,7 +131,7 @@ public final class OSMUtils {
 							continue;
 						}
 						String language = matcher.group(3).toLowerCase(Locale.ENGLISH).replace('_', '-');
-						if ("*".equals(preferredLanguages.get(0)) || preferredLanguages.contains(language)) {
+						if (preferredLanguages.contains(language)) {
 							restPreferredLanguages.remove(language);
 							name = (name != null ? name + '\r' : "") + language + '\b' + tag.getValue();
 						}
@@ -142,7 +139,7 @@ public final class OSMUtils {
 				}
 
 				// Check rest preferred languages for falling back to base
-				if (restPreferredLanguages != null && !restPreferredLanguages.isEmpty()) {
+				if (!restPreferredLanguages.isEmpty()) {
 					Map<String, String> fallbacks = new HashMap<String, String>();
 					for (String preferredLanguage : restPreferredLanguages) {
 						for (Tag tag : tags) {
@@ -155,8 +152,8 @@ public final class OSMUtils {
 								continue;
 							}
 							String language = matcher.group(3).toLowerCase(Locale.ENGLISH).replace('_', '-');
-							if (!fallbacks.containsKey(language) && !language.contains("-") && preferredLanguage.contains("-")
-									&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(language.toLowerCase(Locale.ENGLISH))) {
+							if (!fallbacks.containsKey(language) && !language.contains("-") && (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
+									&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(language)) {
 								fallbacks.put(language, tag.getValue());
 							}
 						}
@@ -171,7 +168,7 @@ public final class OSMUtils {
 					String key = tag.getKey().toLowerCase(Locale.ENGLISH);
 					if ("name".equals(key) && !foundPreferredLanguageName) {
 						name = tag.getValue();
-					} else if (preferredLanguages != null && preferredLanguages.size() == 1 && !foundPreferredLanguageName) {
+					} else if (preferredLanguages != null && !foundPreferredLanguageName) {
 						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
 						if (matcher.matches()) {
 							String language = matcher.group(3);
