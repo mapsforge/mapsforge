@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,16 +16,23 @@
  */
 package org.mapsforge.map.reader;
 
+import java.util.ArrayList;
+
 import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.Way;
 
 /**
  * An immutable container for the data returned by the {@link MapFile}.
  */
 public class MapFileReadResult extends MapReadResult {
 
-	public MapFileReadResult(MapReadResultBuilder mapReadResultBuilder) {
-		this.pointOfInterests = mapReadResultBuilder.getPointOfInterests();
-		this.ways = mapReadResultBuilder.getWays();
-		this.isWater = mapReadResultBuilder.isWater();
+	public MapFileReadResult() {
+		this.pointOfInterests = new ArrayList<>();
+		this.ways = new ArrayList<Way>();
+	}
+
+	public void add(PoiWayBundle poiWayBundle) {
+		this.pointOfInterests.addAll(poiWayBundle.pois);
+		this.ways.addAll(poiWayBundle.ways);
 	}
 }

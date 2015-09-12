@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.map.reader;
 
 import org.mapsforge.core.model.BoundingBox;
@@ -181,7 +180,7 @@ public class MultiMapDataStore implements MapDataStore {
 	}
 
 	private MapReadResult readMapData(Tile tile, boolean deduplicate) {
-		MapReadResultBuilder mapReadResultBuilder = new MapReadResultBuilder();
+		MapFileReadResult mapFileReadResult = new MapFileReadResult();
 		boolean first = true;
 		for (MapDataStore mdb : mapDatabases) {
 			if (mdb.supportsTile(tile)) {
@@ -189,39 +188,39 @@ public class MultiMapDataStore implements MapDataStore {
 				if (result == null) {
 					continue;
 				}
-				boolean isWater = mapReadResultBuilder.isWater() & result.isWater;
-				mapReadResultBuilder.setWater(isWater);
+				boolean isWater = mapFileReadResult.isWater & result.isWater;
+				mapFileReadResult.isWater = isWater;
 
 
 				if (first) {
-					mapReadResultBuilder.getWays().addAll(result.ways);
+					mapFileReadResult.ways.addAll(result.ways);
 				} else {
 					if (deduplicate) {
 						for (Way way : result.ways) {
-							if (!mapReadResultBuilder.getWays().contains(way)) {
-								mapReadResultBuilder.getWays().add(way);
+							if (!mapFileReadResult.ways.contains(way)) {
+								mapFileReadResult.ways.add(way);
 							}
 						}
 					} else {
-						mapReadResultBuilder.getWays().addAll(result.ways);
+						mapFileReadResult.ways.addAll(result.ways);
 					}
 				}
 				if (first) {
-					mapReadResultBuilder.getPointOfInterests().addAll(result.pointOfInterests);
+					mapFileReadResult.pointOfInterests.addAll(result.pointOfInterests);
 				} else {
 					if (deduplicate) {
 						for (PointOfInterest poi : result.pointOfInterests) {
-							if (!mapReadResultBuilder.getPointOfInterests().contains(poi)) {
-								mapReadResultBuilder.getPointOfInterests().add(poi);
+							if (!mapFileReadResult.pointOfInterests.contains(poi)) {
+								mapFileReadResult.pointOfInterests.add(poi);
 							}
 						}
 					} else {
-						mapReadResultBuilder.getPointOfInterests().addAll(result.pointOfInterests);
+						mapFileReadResult.pointOfInterests.addAll(result.pointOfInterests);
 					}
 				}
 				first = false;
 			}
 		}
-		return new MapFileReadResult(mapReadResultBuilder);
+		return mapFileReadResult;
 	}
 }

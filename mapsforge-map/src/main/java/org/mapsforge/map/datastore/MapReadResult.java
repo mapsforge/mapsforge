@@ -21,6 +21,7 @@ import java.util.List;
  * An immutable container for the data returned from a MapDataStore.
  */
 public class MapReadResult {
+
 	/**
 	 * True if the read area is completely covered by water, false otherwise.
 	 */
@@ -35,5 +36,4 @@ public class MapReadResult {
 	 * The read ways.
 	 */
 	public List<Way> ways;
-
 }

@@ -71,6 +71,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 				this.model.displayModel);
 	}
 
+	@Override
 	public void addLayer(Layer layer) {
 		this.layerManager.getLayers().add(layer);
 	}
@@ -158,6 +159,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.fpsCounter.draw(graphicContext);
 	}
 
+	@Override
 	public void setCenter(LatLong center) {
 		this.model.mapViewPosition.setCenter(center);
 	}
@@ -168,6 +170,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.mapScaleBar=mapScaleBar;
 	}
 
+	@Override
 	public void setZoomLevel(byte zoomLevel) {
 		this.model.mapViewPosition.setZoomLevel(zoomLevel);
 	}

@@ -521,7 +521,7 @@ public class MapFile implements MapDataStore {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
 
-		MapReadResultBuilder mapReadResultBuilder = new MapReadResultBuilder();
+		MapFileReadResult mapFileReadResult = new MapFileReadResult();
 
 		// read and process all blocks from top to bottom and from left to right
 		for (long row = queryParameters.fromBlockY; row <= queryParameters.toBlockY; ++row) {
@@ -599,7 +599,7 @@ public class MapFile implements MapDataStore {
 				try {
 					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox, tileLatitude, tileLongitude);
 					if (poiWayBundle != null) {
-						mapReadResultBuilder.add(poiWayBundle);
+						mapFileReadResult.add(poiWayBundle);
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
 					LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -609,10 +609,10 @@ public class MapFile implements MapDataStore {
 
 		// the query is finished, was the water flag set for all blocks?
 		if (queryIsWater && queryReadWaterInfo) {
-			mapReadResultBuilder.setWater(true);
+			mapFileReadResult.isWater = true;
 		}
 
-		return mapReadResultBuilder.build();
+		return mapFileReadResult;
 	}
 
 	/**
