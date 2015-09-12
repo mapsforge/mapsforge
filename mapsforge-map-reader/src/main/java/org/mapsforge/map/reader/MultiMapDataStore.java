@@ -19,6 +19,10 @@ package org.mapsforge.map.reader;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.datastore.Way;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,6 +222,6 @@ public class MultiMapDataStore implements MapDataStore {
 				first = false;
 			}
 		}
-		return new MapReadResult(mapReadResultBuilder);
+		return new MapFileReadResult(mapReadResultBuilder);
 	}
 }

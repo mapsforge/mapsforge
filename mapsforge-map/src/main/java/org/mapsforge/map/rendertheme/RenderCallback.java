@@ -19,7 +19,7 @@ import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
-import org.mapsforge.map.reader.PointOfInterest;
+import org.mapsforge.map.datastore.PointOfInterest;
 
 /**
  * Callback methods for rendering areas, ways and points of interest (POIs).

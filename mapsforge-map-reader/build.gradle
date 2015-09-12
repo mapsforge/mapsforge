@@ -3,6 +3,6 @@ jar {
 }
 
 dependencies {
-  compile project(":mapsforge-core")
+  compile project(":mapsforge-map")
 }
 

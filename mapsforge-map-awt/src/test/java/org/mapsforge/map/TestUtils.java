@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,19 +13,26 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.reader;
+package org.mapsforge.map;
 
-import org.mapsforge.map.datastore.PointOfInterest;
-import org.mapsforge.map.datastore.Way;
+import org.junit.Assert;
 
-import java.util.List;
+public final class TestUtils {
+	public static void equalsTest(Object object1, Object object2) {
+		Assert.assertEquals(object1, object1);
+		Assert.assertEquals(object2, object2);
 
-public class PoiWayBundle {
-	final List<PointOfInterest> pois;
-	final List<Way> ways;
+		Assert.assertEquals(object1.hashCode(), object2.hashCode());
+		Assert.assertEquals(object1, object2);
+		Assert.assertEquals(object2, object1);
+	}
 
-	public PoiWayBundle(List<PointOfInterest> pois, List<Way> ways) {
-		this.pois = pois;
-		this.ways = ways;
+	public static void notEqualsTest(Object object1, Object object2) {
+		Assert.assertNotEquals(object1, object2);
+		Assert.assertNotEquals(object2, object1);
+	}
+
+	private TestUtils() {
+		throw new IllegalArgumentException();
 	}
 }

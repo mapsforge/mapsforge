@@ -22,7 +22,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.reader.Way;
+import org.mapsforge.map.datastore.Way;
 
 /**
  * A PolylineContainer encapsulates the way data retrieved from a map file.

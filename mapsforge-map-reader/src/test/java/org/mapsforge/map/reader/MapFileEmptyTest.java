@@ -34,7 +34,7 @@ public class MapFileEmptyTest {
 			int tileY = MercatorProjection.latitudeToTileY(1, zoomLevel);
 			Tile tile = new Tile(tileX, tileY, zoomLevel, 256);
 
-			MapReadResult mapReadResult = mapFile.readMapData(tile);
+			MapFileReadResult mapReadResult = mapFile.readMapData(tile);
 
 			Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
 			Assert.assertTrue(mapReadResult.ways.isEmpty());

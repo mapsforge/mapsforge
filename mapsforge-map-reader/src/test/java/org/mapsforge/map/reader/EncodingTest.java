@@ -18,6 +18,7 @@ import org.junit.Assert;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.datastore.Way;
 
 final class EncodingTest {
 	private static final byte ZOOM_LEVEL = 8;
@@ -28,7 +29,7 @@ final class EncodingTest {
 		int tileY = MercatorProjection.latitudeToTileY(0, ZOOM_LEVEL);
 		Tile tile = new Tile(tileX, tileY, ZOOM_LEVEL, 256);
 
-		MapReadResult mapReadResult = mapFile.readMapData(tile);
+		MapFileReadResult mapReadResult = mapFile.readMapData(tile);
 		mapFile.close();
 
 		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());

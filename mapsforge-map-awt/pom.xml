@@ -24,6 +24,18 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.mapsforge</groupId>
+			<artifactId>mapsforge-map</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapsforge</groupId>
+			<artifactId>mapsforge-map-reader</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.kitfox.svg</groupId>
 			<artifactId>svg-salamander</artifactId>
 			<version>1.0</version>

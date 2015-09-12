@@ -31,7 +31,7 @@ import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.PointOfInterest;
+import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;

@@ -22,6 +22,8 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
 public class MapFileWithDataTest {
@@ -84,7 +86,7 @@ public class MapFileWithDataTest {
 			int tileY = MercatorProjection.latitudeToTileY(0.04, zoomLevel);
 			Tile tile = new Tile(tileX, tileY, zoomLevel, 256);
 
-			MapReadResult mapReadResult = mapFile.readMapData(tile);
+			MapFileReadResult mapReadResult = mapFile.readMapData(tile);
 
 			Assert.assertEquals(1, mapReadResult.pointOfInterests.size());
 			Assert.assertEquals(1, mapReadResult.ways.size());

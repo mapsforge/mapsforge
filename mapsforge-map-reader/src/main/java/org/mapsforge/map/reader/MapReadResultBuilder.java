@@ -14,6 +14,9 @@
  */
 package org.mapsforge.map.reader;
 
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.datastore.Way;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class MapReadResultBuilder {
 	private final List<Way> ways;
 
 	public MapReadResultBuilder() {
-		this.pointOfInterests = new ArrayList<PointOfInterest>();
+		this.pointOfInterests = new ArrayList<>();
 		this.ways = new ArrayList<Way>();
 	}
 
@@ -48,7 +51,7 @@ public class MapReadResultBuilder {
 		this.isWater = isWater;
 	}
 
-	public MapReadResult build() {
-		return new MapReadResult(this);
+	public MapFileReadResult build() {
+		return new MapFileReadResult(this);
 	}
 }

@@ -15,7 +15,7 @@
 package org.mapsforge.map.model;
 
 /**
- * Dummy DisplayModel that always delivers a fixed tile size for testing.
+ * FixedTileSizeDisplayModel that always delivers a fixed tile size, mostly for testing.
  */
 
 public class FixedTileSizeDisplayModel extends DisplayModel {
