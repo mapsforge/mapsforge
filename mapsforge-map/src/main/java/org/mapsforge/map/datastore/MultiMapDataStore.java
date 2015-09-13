@@ -13,15 +13,11 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.reader;
+package org.mapsforge.map.datastore;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.map.datastore.MapDataStore;
-import org.mapsforge.map.datastore.MapReadResult;
-import org.mapsforge.map.datastore.PointOfInterest;
-import org.mapsforge.map.datastore.Way;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +51,7 @@ public class MultiMapDataStore implements MapDataStore {
 
 	public MultiMapDataStore(DataPolicy dataPolicy) {
 		this.dataPolicy = dataPolicy;
-		this.mapDatabases = new ArrayList<MapDataStore>();
+		this.mapDatabases = new ArrayList<>();
 	}
 
 	/**
@@ -180,7 +176,7 @@ public class MultiMapDataStore implements MapDataStore {
 	}
 
 	private MapReadResult readMapData(Tile tile, boolean deduplicate) {
-		MapFileReadResult mapFileReadResult = new MapFileReadResult();
+		MapReadResult mapReadResult = new MapReadResult();
 		boolean first = true;
 		for (MapDataStore mdb : mapDatabases) {
 			if (mdb.supportsTile(tile)) {
@@ -188,39 +184,39 @@ public class MultiMapDataStore implements MapDataStore {
 				if (result == null) {
 					continue;
 				}
-				boolean isWater = mapFileReadResult.isWater & result.isWater;
-				mapFileReadResult.isWater = isWater;
+				boolean isWater = mapReadResult.isWater & result.isWater;
+				mapReadResult.isWater = isWater;
 
 
 				if (first) {
-					mapFileReadResult.ways.addAll(result.ways);
+					mapReadResult.ways.addAll(result.ways);
 				} else {
 					if (deduplicate) {
 						for (Way way : result.ways) {
-							if (!mapFileReadResult.ways.contains(way)) {
-								mapFileReadResult.ways.add(way);
+							if (!mapReadResult.ways.contains(way)) {
+								mapReadResult.ways.add(way);
 							}
 						}
 					} else {
-						mapFileReadResult.ways.addAll(result.ways);
+						mapReadResult.ways.addAll(result.ways);
 					}
 				}
 				if (first) {
-					mapFileReadResult.pointOfInterests.addAll(result.pointOfInterests);
+					mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
 				} else {
 					if (deduplicate) {
 						for (PointOfInterest poi : result.pointOfInterests) {
-							if (!mapFileReadResult.pointOfInterests.contains(poi)) {
-								mapFileReadResult.pointOfInterests.add(poi);
+							if (!mapReadResult.pointOfInterests.contains(poi)) {
+								mapReadResult.pointOfInterests.add(poi);
 							}
 						}
 					} else {
-						mapFileReadResult.pointOfInterests.addAll(result.pointOfInterests);
+						mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
 					}
 				}
 				first = false;
 			}
 		}
-		return mapFileReadResult;
+		return mapReadResult;
 	}
 }
