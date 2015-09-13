@@ -134,6 +134,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Low res world background" />
         <activity
+            android:name=".SimpleDataStoreMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Simple User Map Store" />
+        <activity
             android:name=".StackedLayersMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Multiple layers generated from same map" />

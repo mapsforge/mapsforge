@@ -172,6 +172,8 @@ public class Samples extends Activity {
 				}
 
 				));
+		linearLayout.addView(createButton(SimpleDataStoreMapViewer.class,
+				"Simple User DataStore", null));
 
 		linearLayout.addView(createLabel("Experiments"));
 		linearLayout.addView(createButton(RenderThemeChanger.class,
