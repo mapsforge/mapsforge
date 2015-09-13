@@ -37,9 +37,9 @@ final class OptionalFields {
 	private static final int HEADER_BITMASK_DEBUG = 0x80;
 
 	/**
-	 * Bitmask for the language preference field in the file header.
+	 * Bitmask for the language(s) preference field in the file header.
 	 */
-	private static final int HEADER_BITMASK_LANGUAGE_PREFERENCE = 0x10;
+	private static final int HEADER_BITMASK_LANGUAGES_PREFERENCE = 0x10;
 
 	/**
 	 * Bitmask for the start position field in the file header.
@@ -79,7 +79,7 @@ final class OptionalFields {
 		this.isDebugFile = (flags & HEADER_BITMASK_DEBUG) != 0;
 		this.hasStartPosition = (flags & HEADER_BITMASK_START_POSITION) != 0;
 		this.hasStartZoomLevel = (flags & HEADER_BITMASK_START_ZOOM_LEVEL) != 0;
-		this.hasLanguagesPreference = (flags & HEADER_BITMASK_LANGUAGE_PREFERENCE) != 0;
+		this.hasLanguagesPreference = (flags & HEADER_BITMASK_LANGUAGES_PREFERENCE) != 0;
 		this.hasComment = (flags & HEADER_BITMASK_COMMENT) != 0;
 		this.hasCreatedBy = (flags & HEADER_BITMASK_CREATED_BY) != 0;
 	}

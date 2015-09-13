@@ -112,7 +112,7 @@ Please report any bugs and feature requests via [Github issue tracker](https://g
 
 ### New since 0.5.2
 - Multilingual maps
-- Preferred languages improved parsing
+- Language improved parsing
 
 ### 0.5.2
  - Some minor changes to tag-mapping.xml (administrative boundaries, national parks).
