@@ -33,6 +33,8 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.PoiWayBundle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.reader.header.MapFileException;
@@ -315,7 +317,7 @@ public class MapFile implements MapDataStore {
 	 * @return the read map data.
 	 */
 	@Override
-	public synchronized MapFileReadResult readMapData(Tile tile) {
+	public synchronized MapReadResult readMapData(Tile tile) {
 		try {
 			QueryParameters queryParameters = new QueryParameters();
 			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
@@ -516,12 +518,12 @@ public class MapFile implements MapDataStore {
 		return new PoiWayBundle(pois, ways);
 	}
 
-	private MapFileReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter, BoundingBox boundingBox)
+	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter, BoundingBox boundingBox)
 			throws IOException {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
 
-		MapFileReadResult mapFileReadResult = new MapFileReadResult();
+		MapReadResult mapFileReadResult = new MapReadResult();
 
 		// read and process all blocks from top to bottom and from left to right
 		for (long row = queryParameters.fromBlockY; row <= queryParameters.toBlockY; ++row) {

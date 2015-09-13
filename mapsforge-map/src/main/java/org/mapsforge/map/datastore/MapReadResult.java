@@ -40,6 +40,12 @@ public class MapReadResult {
 
 	public MapReadResult() {
 		this.pointOfInterests = new ArrayList<>();
-		this.ways = new ArrayList<Way>();
+		this.ways = new ArrayList<>();
 	}
+
+	public void add(PoiWayBundle poiWayBundle) {
+		this.pointOfInterests.addAll(poiWayBundle.pois);
+		this.ways.addAll(poiWayBundle.ways);
+	}
+
 }

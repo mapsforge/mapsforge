@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.datastore.MapReadResult;
 
 public class MapFileEmptyTest {
 	private static final File MAP_FILE = new File("src/test/resources/empty/output.map");
@@ -34,7 +35,7 @@ public class MapFileEmptyTest {
 			int tileY = MercatorProjection.latitudeToTileY(1, zoomLevel);
 			Tile tile = new Tile(tileX, tileY, zoomLevel, 256);
 
-			MapFileReadResult mapReadResult = mapFile.readMapData(tile);
+			MapReadResult mapReadResult = mapFile.readMapData(tile);
 
 			Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
 			Assert.assertTrue(mapReadResult.ways.isEmpty());
