@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.datastore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,4 +37,9 @@ public class MapReadResult {
 	 * The read ways.
 	 */
 	public List<Way> ways;
+
+	public MapReadResult() {
+		this.pointOfInterests = new ArrayList<>();
+		this.ways = new ArrayList<Way>();
+	}
 }
