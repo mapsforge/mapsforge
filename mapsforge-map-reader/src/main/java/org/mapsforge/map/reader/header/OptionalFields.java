@@ -67,11 +67,11 @@ final class OptionalFields {
 	String createdBy;
 	final boolean hasComment;
 	final boolean hasCreatedBy;
-	final boolean hasLanguagePreference;
+	final boolean hasLanguagesPreference;
 	final boolean hasStartPosition;
 	final boolean hasStartZoomLevel;
 	final boolean isDebugFile;
-	String languagePreference;
+	String languagesPreference;
 	LatLong startPosition;
 	Byte startZoomLevel;
 
@@ -79,14 +79,14 @@ final class OptionalFields {
 		this.isDebugFile = (flags & HEADER_BITMASK_DEBUG) != 0;
 		this.hasStartPosition = (flags & HEADER_BITMASK_START_POSITION) != 0;
 		this.hasStartZoomLevel = (flags & HEADER_BITMASK_START_ZOOM_LEVEL) != 0;
-		this.hasLanguagePreference = (flags & HEADER_BITMASK_LANGUAGE_PREFERENCE) != 0;
+		this.hasLanguagesPreference = (flags & HEADER_BITMASK_LANGUAGE_PREFERENCE) != 0;
 		this.hasComment = (flags & HEADER_BITMASK_COMMENT) != 0;
 		this.hasCreatedBy = (flags & HEADER_BITMASK_CREATED_BY) != 0;
 	}
 
-	private void readLanguagePreference(ReadBuffer readBuffer) {
-		if (this.hasLanguagePreference) {
-			this.languagePreference = readBuffer.readUTF8EncodedString();
+	private void readLanguagesPreference(ReadBuffer readBuffer) {
+		if (this.hasLanguagesPreference) {
+			this.languagesPreference = readBuffer.readUTF8EncodedString();
 		}
 	}
 
@@ -119,7 +119,7 @@ final class OptionalFields {
 
 		readMapStartZoomLevel(readBuffer);
 
-		readLanguagePreference(readBuffer);
+		readLanguagesPreference(readBuffer);
 
 		if (this.hasComment) {
 			this.comment = readBuffer.readUTF8EncodedString();
