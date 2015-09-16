@@ -52,4 +52,9 @@ class AwtPath implements Path {
 	public void setFillRule(FillRule fillRule) {
 		this.path2D.setWindingRule(getWindingRule(fillRule));
 	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.path2D.getCurrentPoint() == null;
+	}
 }
