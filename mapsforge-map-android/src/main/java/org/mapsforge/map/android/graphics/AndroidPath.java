@@ -52,4 +52,9 @@ class AndroidPath implements Path {
 	public void setFillRule(FillRule fillRule) {
 		this.path.setFillType(getWindingRule(fillRule));
 	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.path.isEmpty();
+	}
 }

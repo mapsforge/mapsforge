@@ -22,4 +22,6 @@ public interface Path {
 	void moveTo(float x, float y);
 
 	void setFillRule(FillRule fillRule);
+
+	boolean isEmpty();
 }
