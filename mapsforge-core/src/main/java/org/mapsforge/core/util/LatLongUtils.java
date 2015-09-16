@@ -209,12 +209,13 @@ public final class LatLongUtils {
 		double pixelYMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, mapSize);
 		double zoomY = -Math.log(Math.abs(pixelYMax - pixelYMin) / dimension.height) / Math.log(2);
 		double zoom = Math.floor(Math.min(zoomX, zoomY));
-		if (zoom > Byte.MAX_VALUE)
-			return Byte.MAX_VALUE;
-		else if (zoom < 0)
+		if (zoom < 0) {
 			return 0;
-		else
-			return (byte) zoom;
+		}
+		if (zoom > Byte.MAX_VALUE) {
+			return Byte.MAX_VALUE;
+		}
+		return (byte) zoom;
 	}
 
 	private LatLongUtils() {
