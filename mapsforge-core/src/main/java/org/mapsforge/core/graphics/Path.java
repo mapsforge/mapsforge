@@ -20,6 +20,8 @@ public interface Path {
 
 	void close();
 
+	boolean isEmpty();
+
 	void lineTo(float x, float y);
 
 	void moveTo(float x, float y);
