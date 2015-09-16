@@ -15,31 +15,32 @@
 | 9 | Bladenight App | Tracking for inline skating events | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=fr.ocroquette.bladenight |
 | 10 | Cruiser | Android map and navigation application | Proprietary/Free | Closed | http://wiki.openstreetmap.org/wiki/Cruiser |
 | 11 | c:geo | Geocaching | Apache 2.0/Free | Open | https://github.com/cgeo/ |
-| 12 | Geopaparazzi| Digital Field Mapping for geology and engineering with GIS data import | GPL3/Free | Open | http://www.geopaparazzi.eu |
-| 13 | GPSSend | Live Tracking + Emergency Notification | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.tinkerpete.gps |
-| 14 | Hunt Cyprus 16 | Map and navigation application for hunters | Proprietary/Commercial | Closed | https://play.google.com/store/apps/details?id=gr.talent.hunt.cyprus16 |
-| 15 | Locus | Multi-Function Map | Proprietary/Free and Premium | Closed | http://www.locusmap.eu/ |
-| 16 | Map GB | Offline map of Britain with postcode search | Proprietary/Free (in-app purchases) | Closed | https://play.google.com/store/apps/details?id=com.mapgb |
-| 17 | mappa | Tourist Map | Proprietary/Commercial | Closed | http://mynativeguide.com/ |
-| 18 | Mapsforge Tile Server | Tile Server | MIT/Free | Open | https://github.com/develar/mapsforge-tile-server |
-| 19 | MapTag | Offline Location Sharing | Proprietary/Commercial | Closed | http://www.rockethub.com/projects/9335-maptag |
-| 20 | Mobile Atlas Creator | Creation of offline atlases | GPL/Free | Open | http://mobac.sourceforge.net/ |
-| 21 | Momentum Tracker | Fitness Application | Proprietary/Free and Premium | Closed | https://play.google.com/store/apps/details?id=com.momentum_tracker.android |
-| 22 | Nautilus Charts | Offline Nautical Charts plotting and positioning system | Proprietary/Commercial | Closed | https://play.google.com/store/apps/details?id=gr.talent.nautiluscharts |
-| 23 | Navi Cyprus | Map and navigation application | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi |
-| 24 | Nutiteq | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open | https://github.com/nutiteq/hellomap3d |
-| 25 | Offline City Map | Tourist Map | Proprietary/Commercial | Closed | http://topobyte.de/ |
-| 26 | Offline Maps | Tourist Map | Proprietary/Commercial | Closed | https://play.google.com/store/apps/developer?id=applantation.com |
-| 27 | OpenTrail | Freemap for Android | GPL/Free | Open | http://wiki.openstreetmap.org/wiki/OpenTrail |
-| 28 | OruxMaps | Map Viewer | Proprietary/Free | Closed | http://www.oruxmaps.com/ |
-| 29 | OSMapTuner | Map Viewer & Tag-Editor | Proprietary/Free | Closed | http://osmaptuner.salzburgresearch.at/ |
-| 30 | Pocket Coruna | Tourist guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo&hl=en |
-| 31 | RouteConverter | GPS conversion and editing tool | GPL2/Free | Open | http://www.routeconverter.com/ |
-| 32 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
-| 33 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
-| 34 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
-| 35 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
-| 36 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
+| 12 | ELEMNT | GPS bike computer | Proprietary/Commercial | Closed | http://eu.wahoofitness.com/devices/gps-bike-computer-elemnt.html |
+| 13 | Geopaparazzi| Digital Field Mapping for geology and engineering with GIS data import | GPL3/Free | Open | http://www.geopaparazzi.eu |
+| 14 | GPSSend | Live Tracking + Emergency Notification | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.tinkerpete.gps |
+| 15 | Hunt Cyprus | Map and navigation application for hunters | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=gr.talent.cyprusHunt |
+| 16 | Locus | Multi-Function Map | Proprietary/Free and Premium | Closed | http://www.locusmap.eu/ |
+| 17 | Map GB | Offline map of Britain with postcode search | Proprietary/Free (in-app purchases) | Closed | https://play.google.com/store/apps/details?id=com.mapgb |
+| 18 | mappa | Tourist Map | Proprietary/Commercial | Closed | http://mynativeguide.com/ |
+| 19 | Mapsforge Tile Server | Tile Server | MIT/Free | Open | https://github.com/develar/mapsforge-tile-server |
+| 20 | MapTag | Offline Location Sharing | Proprietary/Commercial | Closed | http://www.rockethub.com/projects/9335-maptag |
+| 21 | Mobile Atlas Creator | Creation of offline atlases | GPL/Free | Open | http://mobac.sourceforge.net/ |
+| 22 | Momentum Tracker | Fitness Application | Proprietary/Free and Premium | Closed | https://play.google.com/store/apps/details?id=com.momentum_tracker.android |
+| 23 | Nautilus Charts | Offline Nautical Charts plotting and positioning system | Proprietary/Commercial | Closed | https://play.google.com/store/apps/details?id=gr.talent.nautiluscharts |
+| 24 | Navi Cyprus | Map and navigation application | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi |
+| 25 | Nutiteq | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open | https://github.com/nutiteq/hellomap3d |
+| 26 | Offline City Map | Tourist Map | Proprietary/Commercial | Closed | http://topobyte.de/ |
+| 27 | Offline Maps | Tourist Map | Proprietary/Commercial | Closed | https://play.google.com/store/apps/developer?id=applantation.com |
+| 28 | OpenTrail | Freemap for Android | GPL/Free | Open | http://wiki.openstreetmap.org/wiki/OpenTrail |
+| 29 | OruxMaps | Map Viewer | Proprietary/Free | Closed | http://www.oruxmaps.com/ |
+| 30 | OSMapTuner | Map Viewer & Tag-Editor | Proprietary/Free | Closed | http://osmaptuner.salzburgresearch.at/ |
+| 31 | Pocket Coruna | Tourist guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo&hl=en |
+| 32 | RouteConverter | GPS conversion and editing tool | GPL2/Free | Open | http://www.routeconverter.com/ |
+| 33 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
+| 34 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
+| 35 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
+| 36 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
+| 37 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
 
 
 You know an application that is missing here? Please inform us by sending a message via our public mapsforge-dev(https://groups.google.com/group/mapsforge-dev) mailing list.
