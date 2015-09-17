@@ -10,7 +10,7 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 ## Requirements
 |Tool|Version|
 |----|---|
-|Android Build Version Tools|23|
+|Android Build Version Tools|23.0.1|
 |Gradle|2.4.0 if building with gradle|
 |Maven|1.3.1 if building with maven|
 |Java|1.7 (1.8 is supported in maven builds)|
