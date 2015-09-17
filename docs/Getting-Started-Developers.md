@@ -120,6 +120,9 @@ As Eclipse needs to know the path to your local maven repository, you have to ad
 After you have configured your Eclipse workspace, checked out the code and built the complete project (see the instructions above), execute the following command:
     mvn eclipse:eclipse
 
+Alternatively, you can use Gradle:
+    gradle eclipse
+
 This will tell maven to generate all missing Eclipse project files which are not checked in into our repository. It also ensures that all mapsforge projects use the same code formatter profile, compiler settings, file encoding, new line delimiters and so on.
 
 You should install the [Checkstyle](http://eclipse-cs.sourceforge.net/), [FindBugs](http://findbugs.sourceforge.net/downloads.html) and [PMD](http://pmd.sourceforge.net/integrations.html#eclipse) Eclipse plug-ins to regularly analyze the quality of the source code. The same set of rules is shared across all mapsforge modules. Running the above maven command will also copy the necessary configuration files into each project directory.

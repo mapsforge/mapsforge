@@ -33,6 +33,7 @@ subprojects {
   repositories {        
     mavenCentral()
   }
+  apply plugin: 'eclipse'
 }	    	    
 
 // Configuration for all plain Java projects
