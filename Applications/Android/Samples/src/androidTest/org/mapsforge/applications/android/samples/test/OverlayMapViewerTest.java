@@ -15,6 +15,7 @@ public class OverlayMapViewerTest extends ActivityInstrumentationTestCase2<Overl
 		super(OverlayMapViewer.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}

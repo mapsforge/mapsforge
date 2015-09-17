@@ -76,6 +76,7 @@ public class Samples extends Activity {
 			builder.setCancelable(true);
 			builder.setPositiveButton(R.string.startup_dontshowagain,
 					new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							preferences.edit().putBoolean(accepted, true)
 									.commit();
@@ -152,6 +153,7 @@ public class Samples extends Activity {
 							builder.setCancelable(true);
 							builder.setPositiveButton(R.string.downloadnowbutton,
 									new DialogInterface.OnClickListener() {
+										@Override
 										public void onClick(DialogInterface dialog, int which) {
 											// TODO show progress and wait for download
 											DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);

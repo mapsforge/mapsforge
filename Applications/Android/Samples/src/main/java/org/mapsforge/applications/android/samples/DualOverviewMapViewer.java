@@ -87,6 +87,7 @@ public class DualOverviewMapViewer extends DualMapViewer {
 	 * @return the screen ratio that the mapview takes up (for cache
 	 *         calculation)
 	 */
+	@Override
 	protected float getScreenRatio() {
 		return 1f;
 	}
@@ -95,6 +96,7 @@ public class DualOverviewMapViewer extends DualMapViewer {
 	 * @return the screen ratio that the mapview takes up (for cache
 	 *         calculation)
 	 */
+	@Override
 	protected float getScreenRatio2() {
 		return 0.1f;
 	}

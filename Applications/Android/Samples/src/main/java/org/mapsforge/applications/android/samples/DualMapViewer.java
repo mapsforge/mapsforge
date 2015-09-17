@@ -120,6 +120,7 @@ public class DualMapViewer extends RenderTheme4 {
 	 * @return the screen ratio that the mapview takes up (for cache
 	 *         calculation)
 	 */
+	@Override
 	protected float getScreenRatio() {
 		return 0.5f;
 	}

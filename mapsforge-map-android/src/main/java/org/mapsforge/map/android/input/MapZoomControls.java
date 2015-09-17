@@ -215,6 +215,7 @@ public class MapZoomControls implements Observer {
 		this.zoomControls.measure(widthMeasureSpec, heightMeasureSpec);
 	}
 
+	@Override
 	public void onChange() {
 		this.onZoomLevelChange(this.mapView.getModel().mapViewPosition.getZoomLevel());
 	}

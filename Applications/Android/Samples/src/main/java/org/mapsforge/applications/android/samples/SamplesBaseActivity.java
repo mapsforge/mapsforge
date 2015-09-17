@@ -90,6 +90,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		setMapScaleBar();
 	}
 
+	@Override
 	protected void createTileCaches() {
 		boolean persistent = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_PERSISTENCE, true);
 
@@ -102,10 +103,12 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	/**
 	 * @return the map file name to be used
 	 */
+	@Override
 	protected String getMapFileName() {
 		return "germany.map";
 	}
 
+	@Override
 	protected void onDestroy() {
 		this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
 		super.onDestroy();

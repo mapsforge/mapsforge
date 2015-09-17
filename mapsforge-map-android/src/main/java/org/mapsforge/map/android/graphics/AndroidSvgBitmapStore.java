@@ -56,6 +56,7 @@ public class AndroidSvgBitmapStore {
 			this.bitmap = bitmap;
 		}
 
+		@Override
 		public void run() {
 			String fileName = createFileName(this.hash);
 			try {

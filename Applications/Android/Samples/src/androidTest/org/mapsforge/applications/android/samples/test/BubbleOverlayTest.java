@@ -18,6 +18,7 @@ public class BubbleOverlayTest extends ActivityInstrumentationTestCase2<BubbleOv
 		super(BubbleOverlay.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}

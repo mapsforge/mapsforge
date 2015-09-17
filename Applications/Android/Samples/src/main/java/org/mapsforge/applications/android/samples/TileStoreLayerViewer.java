@@ -52,6 +52,7 @@ public class TileStoreLayerViewer extends RenderTheme4 {
 			builder.setCancelable(true);
 			builder.setPositiveButton(R.string.startup_dontshowagain,
 					new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							preferences.edit().putBoolean(accepted, true)
 									.commit();

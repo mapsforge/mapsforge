@@ -66,6 +66,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 	/**
 	 * Creates a simple tile renderer layer with the AndroidUtil helper.
 	 */
+	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
 				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true);
@@ -75,6 +76,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 	/**
 	 * Creates the tile cache with the AndroidUtil helper
 	 */
+	@Override
 	protected void createTileCaches() {
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
