@@ -7,8 +7,9 @@ pom.xml.next
 release.properties
 
 # Eclipse
-/.settings/
-/.project
+.settings/
+.project
+bin/
 
 # IntelliJ
 .idea/
