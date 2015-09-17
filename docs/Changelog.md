@@ -8,6 +8,7 @@
 - Writer language improved parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
 - MapDataStore extensibility [#668](https://github.com/mapsforge/mapsforge/issues/668)
 - BoundingBox enhancements [#660](https://github.com/mapsforge/mapsforge/issues/660)
+- Path enhancements [#676](https://github.com/mapsforge/mapsforge/issues/676)
 - Simplification of MapView API [#662](https://github.com/mapsforge/mapsforge/issues/662)
 - XSD repositioning, online validation [#672](https://github.com/mapsforge/mapsforge/issues/672)
 - Many other minor improvements and bug fixes
