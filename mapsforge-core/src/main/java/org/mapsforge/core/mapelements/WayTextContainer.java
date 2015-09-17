@@ -46,6 +46,7 @@ public class WayTextContainer extends MapElementContainer {
 				Math.max(point.x, end.x), Math.max(point.y, end.y)).envelope(textHeight/2d);
 	}
 
+	@Override
 	public void draw(Canvas canvas, Point origin, Matrix matrix) {
 		Point adjustedStart = xy.offset(-origin.x, -origin.y);
 		Point adjustedEnd = end.offset(-origin.x, -origin.y);

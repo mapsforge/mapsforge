@@ -55,6 +55,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 		this.version += 1;
 	}
 
+	@Override
 	public int getVersion() {
 		return this.version;
 	}

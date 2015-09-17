@@ -74,6 +74,7 @@ public class MapWorkerPool implements Runnable {
 		this.workers.shutdown();
 	}
 
+	@Override
 	public void run() {
 		try {
 			while (!inShutdown) {
@@ -101,6 +102,7 @@ public class MapWorkerPool implements Runnable {
 			this.rendererJob.renderThemeFuture.incrementRefCount();
 		}
 
+		@Override
 		public void run() {
 			TileBitmap bitmap = null;
 			try {

@@ -51,6 +51,7 @@ public class RenderThemeFuture extends FutureTask<RenderTheme> {
 			this.displayModel = displayModel;
 		}
 
+		@Override
 		public RenderTheme call() {
 			if (xmlRenderTheme == null || this.displayModel == null) {
 				return null;
