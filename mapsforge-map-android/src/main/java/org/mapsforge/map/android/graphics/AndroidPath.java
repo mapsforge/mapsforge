@@ -45,6 +45,11 @@ class AndroidPath implements Path {
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return this.path.isEmpty();
+	}
+
+	@Override
 	public void lineTo(float x, float y) {
 		this.path.lineTo(x, y);
 	}

@@ -45,6 +45,11 @@ class AwtPath implements Path {
 	}
 
 	@Override
+	public boolean isEmpty() {
+		return this.path2D.getCurrentPoint() == null;
+	}
+
+	@Override
 	public void lineTo(float x, float y) {
 		this.path2D.lineTo(x, y);
 	}
