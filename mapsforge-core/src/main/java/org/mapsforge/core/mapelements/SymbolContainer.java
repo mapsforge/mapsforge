@@ -71,6 +71,7 @@ public class SymbolContainer extends MapElementContainer {
 		return result;
 	}
 
+	@Override
 	public void draw(Canvas canvas, Point origin, Matrix matrix) {
 		matrix.reset();
 		// We cast to int for pixel perfect positioning

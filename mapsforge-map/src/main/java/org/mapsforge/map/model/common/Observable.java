@@ -21,6 +21,7 @@ public class Observable implements ObservableInterface {
 	private static final String OBSERVER_MUST_NOT_BE_NULL = "observer must not be null";
 	private final List<Observer> observers = new CopyOnWriteArrayList<Observer>();
 
+	@Override
 	public final void addObserver(Observer observer) {
 		if (observer == null) {
 			throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
@@ -30,6 +31,7 @@ public class Observable implements ObservableInterface {
 		this.observers.add(observer);
 	}
 
+	@Override
 	public final void removeObserver(Observer observer) {
 		if (observer == null) {
 			throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
