@@ -39,7 +39,7 @@ public abstract class MapScaleBar {
 	 */
 	private static final ScaleBarPosition DEFAULT_SCALE_BAR_POSITION = ScaleBarPosition.BOTTOM_LEFT;
 
-	private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+	private static final int DEFAULT_HORIZONTAL_MARGIN = 12;
 	private static final int DEFAULT_VERTICAL_MARGIN = 0;
 	private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
 

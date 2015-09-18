@@ -97,7 +97,7 @@ public class MapZoomControls implements Observer {
 	/**
 	 * Horizontal margin for the zoom controls.
 	 */
-	private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+	private static final int DEFAULT_HORIZONTAL_MARGIN = 12;
 
 	/**
 	 * Vertical margin for the zoom controls.
