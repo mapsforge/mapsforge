@@ -15,6 +15,7 @@ public class TileStoreViewerTest extends ActivityInstrumentationTestCase2<TileSt
 		super(TileStoreLayerViewer.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}

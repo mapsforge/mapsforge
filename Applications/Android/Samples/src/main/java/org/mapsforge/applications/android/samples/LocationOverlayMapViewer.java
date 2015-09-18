@@ -36,6 +36,7 @@ public class LocationOverlayMapViewer extends RenderTheme4 {
 		super.onPause();
 	}
 
+	@Override
 	public void onResume() {
 		super.onResume();
 		this.myLocationOverlay.enableMyLocation(true);

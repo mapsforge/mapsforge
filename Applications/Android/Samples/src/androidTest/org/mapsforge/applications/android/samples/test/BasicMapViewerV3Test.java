@@ -15,6 +15,7 @@ public class BasicMapViewerV3Test extends ActivityInstrumentationTestCase2<Basic
 		super(BasicMapViewerV3.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}
