@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
  * Copyright 2015 devemux86
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +17,7 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
@@ -65,5 +67,10 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
 		super.createMapViews();
 		// we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
 		this.mapView.getModel().displayModel.setFixedTileSize(256);
+	}
+
+	@Override
+	protected MapPosition getInitialPosition() {
+		return getDefaultInitialPosition();
 	}
 }
