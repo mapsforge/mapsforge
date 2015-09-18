@@ -21,6 +21,7 @@ allprojects {
 }
 
 // no injection of functions, so via inheritance
+def androidCompileSdk() { return 23 }
 def androidMinSdk() { return 9 }
 def androidTargetSdk() { return 22 }
 def versionCode() { return 52 }
@@ -90,7 +91,7 @@ configure(filterProjects(project.androidlibraryprojects)) {
 configure(filterProjects(project.androidprojects)) { 
 
   android {
-    compileSdkVersion androidTargetSdk()
+    compileSdkVersion androidCompileSdk()
     buildToolsVersion "$androidBuildVersionTools"
 
     compileOptions {
