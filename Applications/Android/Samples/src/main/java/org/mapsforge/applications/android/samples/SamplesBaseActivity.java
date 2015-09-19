@@ -33,6 +33,8 @@ import android.widget.TextView;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.input.MapZoomControls;
+import org.mapsforge.map.android.input.MapZoomControls.Orientation;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -86,8 +88,13 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	}
 
 	@Override
-	protected void createControls() {
+	protected void createControls()	{
 		setMapScaleBar();
+		mapView.getMapZoomControls().setControlOrientation(Orientation.VERTICAL_IN_OUT);
+		mapView.getMapZoomControls().setZoomInResource(R.drawable.zoom_control_in);
+		mapView.getMapZoomControls().setZoomOutResource(R.drawable.zoom_control_out);
+		mapView.getMapZoomControls().setMarginHorizontal(getResources().getDimensionPixelOffset(R.dimen.controls_margin));
+		mapView.getMapZoomControls().setMarginVertical(getResources().getDimensionPixelOffset(R.dimen.controls_margin));
 	}
 
 	@Override

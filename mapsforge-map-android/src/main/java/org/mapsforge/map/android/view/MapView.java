@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014, 2015 devemux86
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -45,8 +46,10 @@ import android.graphics.Canvas;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
@@ -92,6 +95,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.touchEventHandler = new TouchEventHandler(this, viewConfiguration, sgd);
 		this.touchEventHandler.addListener(touchGestureDetector);
 		this.mapZoomControls = new MapZoomControls(context, this);
+		this.addView(this.mapZoomControls, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
 				GRAPHIC_FACTORY, this.model.displayModel);
 	}
@@ -194,19 +198,44 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-		this.mapZoomControls.layout(changed, left, top, right, bottom);
+		if (mapZoomControls.getVisibility() != View.GONE) {
+			final int childGravity = this.mapZoomControls.getZoomControlsGravity();
+			final int childWidth = this.mapZoomControls.getMeasuredWidth();
+			final int childHeight = this.mapZoomControls.getMeasuredHeight();
+
+			final int childLeft;
+			switch (childGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
+				case Gravity.CENTER_HORIZONTAL:
+					childLeft = left + (right - left - childWidth) / 2;
+					break;
+				case Gravity.RIGHT:
+					childLeft = right - childWidth;
+					break;
+				case Gravity.LEFT:
+				default:
+					childLeft = left;
+			}
+
+			final int childTop;
+			switch (childGravity & Gravity.VERTICAL_GRAVITY_MASK) {
+				case Gravity.CENTER_VERTICAL:
+					childTop = top + (bottom - top - childHeight) / 2;
+					break;
+				case Gravity.BOTTOM:
+					childTop = bottom - childHeight;
+					break;
+				case Gravity.TOP:
+				default:
+					childTop = top;
+			}
+
+			this.mapZoomControls.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
+		}
 	}
 
 	@Override
 	protected final void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// find out how big the zoom controls should be
-		this.mapZoomControls.measure(
-				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST),
-				MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec), MeasureSpec.AT_MOST));
-
-		// make sure that MapView is big enough to display the zoom controls
-		setMeasuredDimension(Math.max(MeasureSpec.getSize(widthMeasureSpec), this.mapZoomControls.getMeasuredWidth()),
-				Math.max(MeasureSpec.getSize(heightMeasureSpec), this.mapZoomControls.getMeasuredHeight()));
+		measureChildren(widthMeasureSpec, heightMeasureSpec);
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
