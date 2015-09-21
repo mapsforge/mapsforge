@@ -15,6 +15,22 @@
  */
 package org.mapsforge.applications.android.samples;
 
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.input.MapZoomControls.Orientation;
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.android.util.MapViewerTemplate;
+import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.renderer.MapWorkerPool;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.reader.MapFile;
+import org.mapsforge.map.scalebar.ImperialUnitAdapter;
+import org.mapsforge.map.scalebar.MetricUnitAdapter;
+import org.mapsforge.map.scalebar.NauticalUnitAdapter;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,22 +46,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.input.MapZoomControls;
-import org.mapsforge.map.android.input.MapZoomControls.Orientation;
-import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.util.MapViewerTemplate;
-import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.renderer.MapWorkerPool;
-import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.scalebar.ImperialUnitAdapter;
-import org.mapsforge.map.scalebar.MetricUnitAdapter;
-import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
 /**
  * Code common to most activities in the Samples app.
@@ -90,7 +90,13 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	@Override
 	protected void createControls()	{
 		setMapScaleBar();
-		mapView.getMapZoomControls().setControlOrientation(Orientation.VERTICAL_IN_OUT);
+	}
+
+	@Override
+	protected void createMapViews() {
+		super.createMapViews();
+
+		mapView.getMapZoomControls().setZoomControlsOrientation(Orientation.VERTICAL_IN_OUT);
 		mapView.getMapZoomControls().setZoomInResource(R.drawable.zoom_control_in);
 		mapView.getMapZoomControls().setZoomOutResource(R.drawable.zoom_control_out);
 		mapView.getMapZoomControls().setMarginHorizontal(getResources().getDimensionPixelOffset(R.dimen.controls_margin));

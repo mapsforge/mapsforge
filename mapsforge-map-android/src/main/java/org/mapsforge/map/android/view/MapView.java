@@ -198,35 +198,37 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-		if (mapZoomControls.getVisibility() != View.GONE) {
+		if (this.mapZoomControls.getVisibility() == View.VISIBLE) {
 			final int childGravity = this.mapZoomControls.getZoomControlsGravity();
 			final int childWidth = this.mapZoomControls.getMeasuredWidth();
 			final int childHeight = this.mapZoomControls.getMeasuredHeight();
 
 			final int childLeft;
 			switch (childGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
+				case Gravity.LEFT:
+					childLeft = left;
+					break;
 				case Gravity.CENTER_HORIZONTAL:
 					childLeft = left + (right - left - childWidth) / 2;
 					break;
 				case Gravity.RIGHT:
+				default:
 					childLeft = right - childWidth;
 					break;
-				case Gravity.LEFT:
-				default:
-					childLeft = left;
 			}
 
 			final int childTop;
 			switch (childGravity & Gravity.VERTICAL_GRAVITY_MASK) {
+				case Gravity.TOP:
+					childTop = top;
+					break;
 				case Gravity.CENTER_VERTICAL:
 					childTop = top + (bottom - top - childHeight) / 2;
 					break;
 				case Gravity.BOTTOM:
+				default:
 					childTop = bottom - childHeight;
 					break;
-				case Gravity.TOP:
-				default:
-					childTop = top;
 			}
 
 			this.mapZoomControls.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
