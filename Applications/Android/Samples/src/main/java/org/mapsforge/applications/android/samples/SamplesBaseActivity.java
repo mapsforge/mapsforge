@@ -1,6 +1,7 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015 devemux86
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -59,6 +60,8 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	public static final String SETTING_SCALEBAR_BOTH = "both";
 	public static final String SETTING_SCALEBAR_NONE = "none";
 
+	public static final LatLong LATLONG_BERLIN = new LatLong(52.517037, 13.38886);
+
 	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
 	protected SharedPreferences sharedPreferences;
 
@@ -74,7 +77,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 
 	@Override
 	protected MapPosition getDefaultInitialPosition() {
-		return new MapPosition(new LatLong(52.517037, 13.38886), (byte) 12);
+		return new MapPosition(LATLONG_BERLIN, (byte) 12);
 	}
 
 	@Override

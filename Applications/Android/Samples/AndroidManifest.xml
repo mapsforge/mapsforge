@@ -46,6 +46,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="DownloadLayerViewer" />
         <activity
+            android:name=".AndroidViewMarkerViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="AndroidViewMarkerViewer" />
+        <activity
             android:name=".TileStoreLayerViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Tile Store Viewer" />

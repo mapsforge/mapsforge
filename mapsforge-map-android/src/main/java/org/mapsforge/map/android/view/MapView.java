@@ -21,6 +21,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
 import org.mapsforge.map.android.input.ScaleListener;
@@ -35,14 +36,17 @@ import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.Model;
+import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
+import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -53,7 +57,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
-public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView {
+public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView, Observer {
 
 	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
 
@@ -66,6 +70,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	private final MapZoomControls mapZoomControls;
 	private final Model model;
 	private final TouchEventHandler touchEventHandler;
+	private final MapViewProjection projection;
+	private final Handler handler = new Handler();
 
 	public MapView(Context context) {
 		this(context, null);
@@ -95,9 +101,12 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		this.touchEventHandler = new TouchEventHandler(this, viewConfiguration, sgd);
 		this.touchEventHandler.addListener(touchGestureDetector);
 		this.mapZoomControls = new MapZoomControls(context, this);
-		this.addView(this.mapZoomControls, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+		this.addView(this.mapZoomControls, new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
 				GRAPHIC_FACTORY, this.model.displayModel);
+		this.projection = new MapViewProjection(this);
+
+		model.mapViewPosition.addObserver(this);
 	}
 
 	@Override
@@ -233,6 +242,54 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 			this.mapZoomControls.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
 		}
+
+		final int count = getChildCount();
+		for (int i = 0; i < count; i++) {
+			final View child = getChildAt(i);
+			if (child.getVisibility() != View.GONE && checkLayoutParams(child.getLayoutParams())) {
+				final LayoutParams params = (LayoutParams) child.getLayoutParams();
+				final int childHeight = child.getMeasuredHeight();
+				final int childWidth = child.getMeasuredWidth();
+				final Point p = projection.toPixels(params.latLong);
+				if (p != null) {
+					int childLeft = (int) Math.round(p.x) + getPaddingLeft();
+					int childTop = (int) Math.round(p.y) + getPaddingTop();
+					switch (params.align) {
+						case TOP_LEFT:
+							break;
+						case TOP_CENTER:
+							childLeft -= childWidth / 2;
+							break;
+						case TOP_RIGHT:
+							childLeft -= childWidth;
+							break;
+						case CENTER_LEFT:
+							childTop -= childHeight / 2;
+							break;
+						case CENTER:
+							childLeft -= childWidth / 2;
+							childTop -= childHeight / 2;
+							break;
+						case CENTER_RIGHT:
+							childLeft -= childWidth;
+							childTop -= childHeight / 2;
+							break;
+						case BOTTOM_LEFT:
+							childTop -= childHeight;
+							break;
+						case BOTTOM_CENTER:
+							childLeft -= childWidth / 2;
+							childTop -= childHeight;
+							break;
+						case BOTTOM_RIGHT:
+							childLeft -= childWidth;
+							childTop -= childHeight;
+							break;
+					}
+					child.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -297,5 +354,129 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	@Override
 	public void setZoomLevel(byte zoomLevel) {
 		this.model.mapViewPosition.setZoomLevel(zoomLevel);
+	}
+
+	@Override
+	protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
+		return new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, null,
+				LayoutParams.Align.BOTTOM_CENTER);
+	}
+
+	@Override
+	public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
+		return new LayoutParams(getContext(), attrs);
+	}
+
+	@Override
+	protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+		return new LayoutParams(p);
+	}
+
+	@Override
+	protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+		return p instanceof LayoutParams;
+	}
+
+	@Override
+	public void onChange() {
+		handler.post(new Runnable() {
+			@Override
+			public void run() {
+				requestLayout();
+			}
+		});
+	}
+
+	/**
+	 * Used by views to tell MapView how they want to be laid out.
+	 */
+	public static class LayoutParams extends ViewGroup.LayoutParams {
+
+		/**
+		 * Alignment requested by a view.
+		 */
+		public enum Align {
+			/**
+			 * Location is at the top left the view.
+			 */
+			TOP_LEFT,
+
+			/**
+			 * Location is centered at the top of the view.
+			 */
+			TOP_CENTER,
+
+			/**
+			 * Location is at the top right the view.
+			 */
+			TOP_RIGHT,
+
+			/**
+			 * Location is at the center left the view.
+			 */
+			CENTER_LEFT,
+
+			/**
+			 * Location is centered at the center of the view.
+			 */
+			CENTER,
+
+			/**
+			 * Location is at the center right the view.
+			 */
+			CENTER_RIGHT,
+
+			/**
+			 * Location is at the bottom left of the view.
+			 */
+			BOTTOM_LEFT,
+
+			/**
+			 * Location is centered at the bottom of the view.
+			 */
+			BOTTOM_CENTER,
+
+			/**
+			 * Location is at the bottom right of the view.
+			 */
+			BOTTOM_RIGHT
+		}
+
+		/**
+		 * The location of the child within the map view.
+		 */
+		public LatLong latLong;
+
+		/**
+		 * The alignment of the view compared to the location.
+		 */
+		public Align align;
+
+		/**
+		 * Creates a new set of layout parameters for a child view of MapView.
+		 *
+		 * @param width
+		 *            the width of the child, either {@link #WRAP_CONTENT}, {@link #MATCH_PARENT} or a fixed size in pixels.
+		 * @param height
+		 *            the height of the child, either {@link #WRAP_CONTENT}, {@link #MATCH_PARENT} or a fixed size in pixels.
+		 * @param latLong
+		 *            the location of the child within the map view.
+		 * @param align
+		 *            the alignment of the view compared to the location.
+		 */
+		public LayoutParams(int width, int height, LatLong latLong, Align align) {
+			super(width, height);
+			this.latLong = latLong;
+			this.align = align;
+		}
+
+		public LayoutParams(Context c, AttributeSet attrs) {
+			super(c, attrs);
+			this.align = LayoutParams.Align.BOTTOM_CENTER;
+		}
+
+		public LayoutParams(ViewGroup.LayoutParams source) {
+			super(source);
+		}
 	}
 }
