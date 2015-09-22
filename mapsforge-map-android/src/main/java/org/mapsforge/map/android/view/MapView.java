@@ -115,8 +115,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	private final FrameBuffer frameBuffer;
 	private final FrameBufferController frameBufferController;
 	private GestureDetector gestureDetector;
-	private final Handler handler = new Handler();
 	private final LayerManager layerManager;
+	private final Handler layoutHandler = new Handler();
 	private MapScaleBar mapScaleBar;
 	private final MapViewProjection projection;
 	private final MapZoomControls mapZoomControls;
@@ -174,6 +174,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	 */
 	@Override
 	public void destroy() {
+		this.layoutHandler.removeCallbacksAndMessages(null);
 		this.layerManager.interrupt();
 		this.frameBufferController.destroy();
 		this.frameBuffer.destroy();
@@ -272,7 +273,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		for (int i = 0; i < count; i++) {
 			final View child = getChildAt(i);
 			if (!child.equals(this.mapZoomControls)) {
-				handler.post(new Runnable() {
+				layoutHandler.post(new Runnable() {
 					@Override
 					public void run() {
 						requestLayout();
