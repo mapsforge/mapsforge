@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015 devemux86
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -260,7 +261,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	}
 
 	/**
-	 * Moves the center position of the map by the given amount of pixels.
+	 * Animates the center position of the map by the given amount of pixels.
 	 * 
 	 * @param moveHorizontal
 	 *            the amount of pixels to move this MapViewPosition horizontally.
@@ -268,7 +269,7 @@ public class MapViewPosition extends Observable implements Persistable {
 	 *            the amount of pixels to move this MapViewPosition vertically.
 	 */
 	public void moveCenter(double moveHorizontal, double moveVertical) {
-		this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0);
+		this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0, true);
 	}
 
 	/**
@@ -278,8 +279,40 @@ public class MapViewPosition extends Observable implements Persistable {
 	 *            the amount of pixels to move this MapViewPosition horizontally.
 	 * @param moveVertical
 	 *            the amount of pixels to move this MapViewPosition vertically.
+	 * @param animated
+	 *            wether the move should be animated.
+	 */
+	public void moveCenter(double moveHorizontal, double moveVertical, boolean animated) {
+		this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0, animated);
+	}
+
+	/**
+	 * Animates the center position of the map by the given amount of pixels.
+	 * 
+	 * @param moveHorizontal
+	 *            the amount of pixels to move this MapViewPosition horizontally.
+	 * @param moveVertical
+	 *            the amount of pixels to move this MapViewPosition vertically.
+	 * @param zoomLevelDiff
+	 *            the difference in desired zoom level.
 	 */
 	public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff) {
+		moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff, true);
+	}
+
+	/**
+	 * Moves the center position of the map by the given amount of pixels.
+	 * 
+	 * @param moveHorizontal
+	 *            the amount of pixels to move this MapViewPosition horizontally.
+	 * @param moveVertical
+	 *            the amount of pixels to move this MapViewPosition vertically.
+	 * @param zoomLevelDiff
+	 *            the difference in desired zoom level.
+	 * @param animated
+	 *            wether the move should be animated.
+	 */
+	public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff, boolean animated) {
 		synchronized (this) {
 			long mapSize = MercatorProjection.getMapSize(this.zoomLevel, this.displayModel.getTileSize());
 			double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, mapSize)
@@ -292,7 +325,7 @@ public class MapViewPosition extends Observable implements Persistable {
 			double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, mapSize);
 			double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
 			setCenterInternal(new LatLong(newLatitude, newLongitude));
-			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
+			setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
 		}
 		notifyObservers();
 	}
@@ -511,10 +544,6 @@ public class MapViewPosition extends Observable implements Persistable {
 		}
 	}
 
-	private void setZoomLevelInternal(int zoomLevel) {
-		this.setZoomLevelInternal(zoomLevel, true);
-	}
-
 	private void setZoomLevelInternal(int zoomLevel, boolean animated) {
 		this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
 		if (animated) {
@@ -524,5 +553,4 @@ public class MapViewPosition extends Observable implements Persistable {
 			this.setPivot(null);
 		}
 	}
-
 }
