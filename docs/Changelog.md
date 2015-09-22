@@ -10,6 +10,7 @@
 - BoundingBox enhancements [#660](https://github.com/mapsforge/mapsforge/issues/660)
 - Path enhancements [#676](https://github.com/mapsforge/mapsforge/issues/676)
 - Customizable zoom controls [#700](https://github.com/mapsforge/mapsforge/issues/700)
+- Android View overlay [#680](https://github.com/mapsforge/mapsforge/issues/680)
 - Simplification of MapView API [#662](https://github.com/mapsforge/mapsforge/issues/662)
 - XSD repositioning, online validation [#672](https://github.com/mapsforge/mapsforge/issues/672)
 - Many other minor improvements and bug fixes

@@ -112,8 +112,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent
-		));
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent));
 	}
 
 	/**

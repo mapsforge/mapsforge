@@ -270,6 +270,7 @@ public class MapZoomControls extends LinearLayout implements Observer {
 	 */
 	public void setShowMapZoomControls(boolean showMapZoomControls) {
 		this.showMapZoomControls = showMapZoomControls;
+		setVisibility(showMapZoomControls ? View.VISIBLE : View.GONE);
 	}
 
 	/**
