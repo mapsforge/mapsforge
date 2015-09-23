@@ -24,7 +24,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
-import org.mapsforge.map.android.input.TouchGestureListener;
+import org.mapsforge.map.android.input.TouchGestureHandler;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
@@ -111,16 +111,16 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	private final FpsCounter fpsCounter;
 	private final FrameBuffer frameBuffer;
 	private final FrameBufferController frameBufferController;
-	private final GestureDetector touchGestureDetector;
-	private final TouchGestureListener gestureListener;
-	private final ScaleGestureDetector scaleGestureDetector;
-	private GestureDetector gestureDetector;
+	private final GestureDetector gestureDetector;
+	private GestureDetector gestureDetectorExternal;
 	private final LayerManager layerManager;
 	private final Handler layoutHandler = new Handler();
 	private MapScaleBar mapScaleBar;
-	private final MapViewProjection projection;
 	private final MapZoomControls mapZoomControls;
 	private final Model model;
+	private final MapViewProjection projection;
+	private final ScaleGestureDetector scaleGestureDetector;
+	private final TouchGestureHandler touchGestureHandler;
 
 	public MapView(Context context) {
 		this(context, null);
@@ -144,9 +144,10 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
 		MapViewController.create(this, this.model);
 
-		this.gestureListener = new TouchGestureListener(this);
-		this.touchGestureDetector = new GestureDetector(context, gestureListener);
-		this.scaleGestureDetector = new ScaleGestureDetector(context, gestureListener);
+		this.touchGestureHandler = new TouchGestureHandler(this);
+		this.gestureDetector = new GestureDetector(context, touchGestureHandler);
+		this.scaleGestureDetector = new ScaleGestureDetector(context, touchGestureHandler);
+
 		this.mapZoomControls = new MapZoomControls(context, this);
 		this.addView(this.mapZoomControls, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
@@ -171,7 +172,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	 */
 	@Override
 	public void destroy() {
-		this.gestureListener.destroy();
+		this.touchGestureHandler.destroy();
 		this.layoutHandler.removeCallbacksAndMessages(null);
 		this.layerManager.interrupt();
 		this.frameBufferController.destroy();
@@ -269,7 +270,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 		// Request layout for child views (besides zoom controls)
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
-			final View child = getChildAt(i);
+			View child = getChildAt(i);
 			if (!child.equals(this.mapZoomControls)) {
 				layoutHandler.post(new Runnable() {
 					@Override
@@ -397,20 +398,21 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent motionEvent) {
+	public boolean onTouchEvent(MotionEvent event) {
 		if (!isClickable()) {
 			return false;
 		}
 
-		this.mapZoomControls.onMapViewTouchEvent(motionEvent);
-		if (this.gestureDetector != null && this.gestureDetector.onTouchEvent(motionEvent)) {
+		this.mapZoomControls.onMapViewTouchEvent(event);
+		if (this.gestureDetectorExternal != null && this.gestureDetectorExternal.onTouchEvent(event)) {
 			return true;
 		}
 
-		final boolean gestureEventHandled = touchGestureDetector.onTouchEvent(motionEvent);
-		final boolean scaleGestureEventHandled = scaleGestureDetector.onTouchEvent(motionEvent);
-
-		return gestureEventHandled || scaleGestureEventHandled;
+		boolean retVal = this.scaleGestureDetector.onTouchEvent(event);
+		if (!this.scaleGestureDetector.isInProgress()) {
+			retVal = this.gestureDetector.onTouchEvent(event);
+		}
+		return retVal;
 	}
 
 	@Override
@@ -438,7 +440,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 	}
 
 	public void setGestureDetector(GestureDetector gestureDetector) {
-		this.gestureDetector = gestureDetector;
+		this.gestureDetectorExternal = gestureDetector;
 	}
 
 	@Override

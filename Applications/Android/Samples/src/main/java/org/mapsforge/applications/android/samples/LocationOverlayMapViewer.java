@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,20 +28,8 @@ import android.os.Build;
  * project is the file berlin.gpx that can be loaded in the Android Monitor to
  * simulate location data in the center of Berlin.
  */
-public class LocationOverlayMapViewer extends RenderTheme4 {
+public class LocationOverlayMapViewer extends DownloadLayerViewer {
 	private MyLocationOverlay myLocationOverlay;
-
-	@Override
-	public void onPause() {
-		myLocationOverlay.disableMyLocation();
-		super.onPause();
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-		this.myLocationOverlay.enableMyLocation(true);
-	}
 
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -57,5 +46,17 @@ public class LocationOverlayMapViewer extends RenderTheme4 {
 				this.mapView.getModel().mapViewPosition, bitmap);
 		this.myLocationOverlay.setSnapToLocationEnabled(true);
 		mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
+	}
+
+	@Override
+	public void onPause() {
+		myLocationOverlay.disableMyLocation();
+		super.onPause();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		this.myLocationOverlay.enableMyLocation(true);
 	}
 }
