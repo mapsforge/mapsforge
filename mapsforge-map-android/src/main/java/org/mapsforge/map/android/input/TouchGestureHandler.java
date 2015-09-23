@@ -101,7 +101,7 @@ public class TouchGestureHandler extends SimpleOnGestureListener implements Scal
 	@Override
 	public boolean onDown(MotionEvent e) {
 		this.isInScale = false;
-		this.flinger.abortAnimation();
+		this.flinger.forceFinished(true);
 		return true;
 	}
 
