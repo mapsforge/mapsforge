@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014, 2015 devemux86
  * Copyright 2015 lincomatic
  *
@@ -50,7 +50,7 @@ import org.mapsforge.map.reader.header.SubFileParameter;
  *
  * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
-public class MapFile implements MapDataStore {
+public class MapFile extends MapDataStore {
 
 	/**
 	 * Bitmask to extract the block offset from an index entry.
@@ -214,18 +214,24 @@ public class MapFile implements MapDataStore {
 	public static int wayFilterDistance = 20;
 
 	/**
-	 * Preferred language to be set before reading the map data.
-	 * Reader uses it while retrieving the localized text from the feature multilingual string.
-	 */
-	public static String preferredLanguage = null;
-
-	/**
-	 * Opens the given map file, reads its header data and validates them.
+	 * Opens the given map file, reads its header data and validates them. Uses default language.
 	 *
 	 * @param mapFile the map file.
 	 * @throws MapFileException if the given map file is null or invalid.
 	 */
 	public MapFile(File mapFile) {
+		this(mapFile, null);
+	}
+
+	/**
+	 * Opens the given map file, reads its header data and validates them.
+	 *
+	 * @param mapFile the map file.
+	 * @param language the language to use.
+	 * @throws MapFileException if the given map file is null or invalid.
+	 */
+	public MapFile(File mapFile, String language) {
+		super(language);
 		if (mapFile == null) {
 			throw new MapFileException("mapFile must not be null");
 		}
@@ -261,11 +267,12 @@ public class MapFile implements MapDataStore {
 	 * Opens the given map file, reads its header data and validates them.
 	 *
 	 * @param mapFileName the path of the map file.
+	 * @param language the language to use.
 	 * @throws MapFileException if the given map file is null or invalid or IOException if the file
 	 * cannot be opened.
 	 */
-	public MapFile(String mapFileName) {
-		this(new File(mapFileName));
+	public MapFile(String mapFileName, String language) {
+		this(new File(mapFileName), language);
 	}
 
 	@Override
@@ -380,7 +387,7 @@ public class MapFile implements MapDataStore {
 	 * <p>
 	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
 	 */
-	public static String extractLocalized(String s) {
+	private String extractLocalized(String s) {
 		if (s == null || s.isEmpty()) {
 			return null;
 		}

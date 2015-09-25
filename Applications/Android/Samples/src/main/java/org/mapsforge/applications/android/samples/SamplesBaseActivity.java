@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
  * Copyright 2015 Andreas Schildbach
  *
@@ -250,6 +250,11 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		if (SamplesApplication.SETTING_SCALE.equals(key)) {
 			this.mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
 			Log.d(SamplesApplication.TAG, "Tilesize now " + this.mapView.getModel().displayModel.getTileSize());
+			AndroidUtil.restartActivity(this);
+		}
+		if (SamplesApplication.SETTING_PREFERRED_LANGUAGE.equals(key)) {
+			String language = preferences.getString(SamplesApplication.SETTING_PREFERRED_LANGUAGE, null);
+			Log.d(SamplesApplication.TAG, "Preferred language now " + language);
 			AndroidUtil.restartActivity(this);
 		}
 		if (SamplesApplication.SETTING_TILECACHE_PERSISTENCE.equals(key)) {

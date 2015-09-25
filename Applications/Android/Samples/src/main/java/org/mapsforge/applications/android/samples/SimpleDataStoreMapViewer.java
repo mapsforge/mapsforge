@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,7 +32,7 @@ import java.util.List;
  * Illustrates the use of the MultiMapDataStore concept together with a non-mapfile data store.
  */
 
-class PointDataStore implements MapDataStore {
+class PointDataStore extends MapDataStore {
 
 	private final BoundingBox boundingBox = new BoundingBox(-90,-180,90,180);
 

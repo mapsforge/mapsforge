@@ -50,4 +50,20 @@
         <item>outdoor</item>
         <item>everything</item>
     </string-array>
+    <string-array name="pref_language_entries">
+        <item>Default</item>
+        <item>English</item>
+        <item>Deutsch</item>
+        <item>Francais</item>
+        <item>Español</item>
+        <item>Έλληνες</item>
+    </string-array>
+    <string-array name="pref_language_values" translatable="false">
+        <item></item>
+        <item>en</item>
+        <item>de</item>
+        <item>fr</item>
+        <item>es</item>
+        <item>el</item>
+    </string-array>
 </resources>

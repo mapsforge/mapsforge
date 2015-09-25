@@ -109,6 +109,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Long press triggers animation to point" />
         <activity
+            android:name=".MultiLingualMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Multi-lingual Map" />
+        <activity
             android:name=".MultiMapLowResWorld"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Low res world background" />

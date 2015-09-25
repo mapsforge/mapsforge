@@ -25,6 +25,15 @@
         android:defaultValue="both"
         android:entries="@array/pref_scalebar_entries"
         android:entryValues="@array/pref_scalebar_values"/>
+    <ListPreference
+        android:negativeButtonText="@string/cancelbutton"
+        android:title="@string/preferences_language"
+        android:summary="@string/preferences_language_desc"
+        android:key="language"
+        android:defaultValue=""
+        android:entries="@array/pref_language_entries"
+        android:entryValues="@array/pref_language_values"/>
+
     <CheckBoxPreference
         android:title="@string/preferences_debug_timing"
         android:summary="@string/preferences_debug_timing_desc"
@@ -36,7 +45,7 @@
 		android:inputType="number"
 		android:key="rendering_threads" />
 
-	<PreferenceCategory android:title="@string/preferences_category_wayfiltering">
+    <PreferenceCategory android:title="@string/preferences_category_wayfiltering">
         <CheckBoxPreference
             android:title="@string/preferences_wayfiltering"
             android:summary="@string/preferences_wayfiltering_desc"

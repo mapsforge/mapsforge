@@ -20,20 +20,43 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 
 /**
- * Abstracted out interface for data retrieval.
+ * Base class for map data retrieval.
  */
-public interface MapDataStore {
+
+public abstract class MapDataStore {
+
+	/**
+	 * the preferred language when extracting labels from this data store. The actual
+	 * implementation is up to the concrete implementation, which can also simply ignore
+	 * this setting.
+	 */
+	protected String preferredLanguage;
+
+	/**
+	 * Ctor for MapDataStore that will use default language.
+	 */
+	public MapDataStore() {
+		this(null);
+	}
+
+	/**
+	 * Ctor for MapDataStore setting preferred language.
+	 * @param language the preferred language or null if default language is used.
+	 */
+	public MapDataStore(String language) {
+		this.preferredLanguage = language;
+	}
 
 	/**
 	 * Returns the area for which data is supplied.
 	 * @return bounding box of area.
 	 */
-	BoundingBox boundingBox();
+	public abstract BoundingBox boundingBox();
 
 	/*
 	 * Closes the map database.
 	 */
-	void close();
+	public abstract void close();
 
 	/**
 	 * Returns the timestamp of the data used to render a specific tile.
@@ -42,32 +65,32 @@ public interface MapDataStore {
 	 *            A tile.
 	 * @return the timestamp of the data used to render the tile
 	 */
-	long getDataTimestamp(Tile tile);
+	public abstract long getDataTimestamp(Tile tile);
 
 	/**
 	 * Gets the initial map position.
 	 * @return the start position, if available.
 	 */
-	LatLong startPosition();
+	public abstract LatLong startPosition();
 
 	/**
 	 * Gets the initial zoom level.
 	 * @return the start zoom level.
 	 */
-	Byte startZoomLevel();
+	public abstract Byte startZoomLevel();
 
 	/**
 	 * Reads data for tile.
 	 * @param tile tile for which data is requested.
 	 * @return map data for the tile.
 	 */
-	MapReadResult readMapData(Tile tile);
+	public abstract MapReadResult readMapData(Tile tile);
 
 	/**
 	 * Returns true if MapDatabase contains tile.
 	 * @param tile tile to be rendered.
 	 * @return true if tile is part of database.
 	 */
-	boolean supportsTile(Tile tile);
+	public abstract boolean supportsTile(Tile tile);
 
 }

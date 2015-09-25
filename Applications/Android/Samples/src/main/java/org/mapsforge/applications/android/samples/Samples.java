@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2013-2015 Ludwig M Brinckmann
  * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -156,6 +156,7 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(SimpleDataStoreMapViewer.class, "Simple User DataStore", null));
 
 		linearLayout.addView(createLabel("Experiments"));
+		linearLayout.addView(createButton(MultiLingualMapViewer.class, "Multi-lingual maps", null));
 		linearLayout.addView(createButton(RenderThemeChanger.class, "Changing Renderthemes", null));
 		linearLayout.addView(createButton(TileSizeChanger.class, "Changing Tile Size", null));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class, "Stacked Tiles", null));

@@ -17,7 +17,7 @@ package org.mapsforge.map.reader;
 import org.junit.Test;
 
 public class MapFileSingleDeltaEncodingTest {
-	private static final MapFile MAP_FILE_SINGLE_DELTA = new MapFile("src/test/resources/single_delta_encoding/output.map");
+	private static final MapFile MAP_FILE_SINGLE_DELTA = new MapFile("src/test/resources/single_delta_encoding/output.map", null);
 
 	@Test
 	public void executeQueryTest() {

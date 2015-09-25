@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -35,7 +35,7 @@ import java.util.List;
  * is the most expensive operation and often it is actually faster to double paint objects as otherwise
  * all objects have to be compared with all others.
  */
-public class MultiMapDataStore implements MapDataStore {
+public class MultiMapDataStore extends MapDataStore {
 
 	public enum DataPolicy {
 		RETURN_FIRST, // return the first set of data
