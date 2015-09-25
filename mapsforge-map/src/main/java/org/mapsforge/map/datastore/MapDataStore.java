@@ -28,6 +28,43 @@ import java.util.Locale;
 public abstract class MapDataStore {
 
 	/**
+	 * Extracts substring of preferred language from multilingual string.<br/>
+	 * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
+	 * <p>
+	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.
+	 */
+	public static String extract(String s, String language) {
+		if (s == null || s.trim().isEmpty()) {
+			return null;
+		}
+
+		String[] langNames = s.split("\r");
+		if (language == null || language.trim().isEmpty()) {
+			return langNames[0];
+		}
+
+		String fallback = null;
+		for (int i = 1; i < langNames.length; i++) {
+			String[] langName = langNames[i].split("\b");
+			if (langName.length != 2) {
+				continue;
+			}
+
+			// Perfect match
+			if (langName[0].equalsIgnoreCase(language)) {
+				return langName[1];
+			}
+
+			// Fall back to base, e.g. zh-min-lan -> zh
+			if (fallback == null && !langName[0].contains("-") && (language.contains("-") || language.contains("_"))
+					&& language.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
+				fallback = langName[1];
+			}
+		}
+		return (fallback != null) ? fallback : langNames[0];
+	}
+
+	/**
 	 * the preferred language when extracting labels from this data store. The actual
 	 * implementation is up to the concrete implementation, which can also simply ignore
 	 * this setting.
@@ -61,48 +98,11 @@ public abstract class MapDataStore {
 	public abstract void close();
 
 	/**
-	 * Extracts substring of preferred language from multilingual string.<br/>
-	 * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
-	 * <p>
-	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.
-	 */
-	protected String extract(String s, String language) {
-		if (s == null || s.trim().isEmpty()) {
-			return null;
-		}
-
-		String[] langNames = s.split("\r");
-		if (language == null || language.trim().isEmpty()) {
-			return langNames[0];
-		}
-
-		String fallback = null;
-		for (int i = 1; i < langNames.length; i++) {
-			String[] langName = langNames[i].split("\b");
-			if (langName.length != 2) {
-				continue;
-			}
-
-			// Perfect match
-			if (langName[0].equalsIgnoreCase(language)) {
-				return langName[1];
-			}
-
-			// Fall back to base, e.g. zh-min-lan -> zh
-			if (fallback == null && !langName[0].contains("-") && (language.contains("-") || language.contains("_"))
-					&& language.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
-				fallback = langName[1];
-			}
-		}
-		return (fallback != null) ? fallback : langNames[0];
-	}
-
-	/**
 	 * Extracts substring of preferred language from multilingual string using
 	 * the preferredLanguage setting.
 	 */
 	protected String extractLocalized(String s) {
-		return extract(s, preferredLanguage);
+		return MapDataStore.extract(s, preferredLanguage);
 	}
 
 	/**

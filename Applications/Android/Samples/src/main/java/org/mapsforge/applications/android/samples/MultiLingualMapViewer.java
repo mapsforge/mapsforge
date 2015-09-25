@@ -46,8 +46,8 @@ public class MultiLingualMapViewer extends RenderTheme4 {
 			return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), userLanguage) {
 				@Override
 				protected String extractLocalized(String s) {
-					String local = super.extract(s, null);
-					String user = extract(s, userLanguage);
+					String local = MapDataStore.extract(s, null);
+					String user = MapDataStore.extract(s, userLanguage);
 					if (local.equals(user)) {
 						return local;
 					}
