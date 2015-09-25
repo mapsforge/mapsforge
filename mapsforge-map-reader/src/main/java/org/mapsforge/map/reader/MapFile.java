@@ -381,43 +381,6 @@ public class MapFile extends MapDataStore {
 		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
 	}
 
-	/**
-	 * Extract substring of preferred language from multilingual string.<br/>
-	 * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
-	 * <p>
-	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
-	 */
-	private String extractLocalized(String s) {
-		if (s == null || s.isEmpty()) {
-			return null;
-		}
-
-		String[] langNames = s.split("\r");
-		if (preferredLanguage == null || preferredLanguage.isEmpty()) {
-			return langNames[0];
-		}
-
-		String fallback = null;
-		for (int i = 1; i < langNames.length; i++) {
-			String[] langName = langNames[i].split("\b");
-			if (langName.length != 2) {
-				continue;
-			}
-
-			// Perfect match
-			if (langName[0].equalsIgnoreCase(preferredLanguage)) {
-				return langName[1];
-			}
-
-			// Fall back to base, e.g. zh-min-lan -> zh
-			if (fallback == null && !langName[0].contains("-") && (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
-					&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
-				fallback = langName[1];
-			}
-		}
-		return (fallback != null) ? fallback : langNames[0];
-	}
-
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
 		// get the first way node latitude offset (VBE-S)
 		double wayNodeLatitude = tileLatitude

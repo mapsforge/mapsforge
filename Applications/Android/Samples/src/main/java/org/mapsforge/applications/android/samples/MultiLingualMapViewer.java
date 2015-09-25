@@ -24,6 +24,10 @@ import java.io.File;
 /**
  * Demonstration of multilingual maps. Multilingual map must be loaded, the language options do
  * not come from the map file but from the settings menu.
+ *
+ * In the settings it is possible to specify to just return one language or a combination of the
+ * default and the user selected language. This is also an example how names can be styled prior to
+ * rendering.
  */
 public class MultiLingualMapViewer extends RenderTheme4 {
 
@@ -33,7 +37,23 @@ public class MultiLingualMapViewer extends RenderTheme4 {
 		if (language.isEmpty()) {
 			language = null;
 		}
-		Log.i(SamplesApplication.TAG, "Preferred language " + language);
-		return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), language);
+		final String userLanguage = language;
+		if (!sharedPreferences.getBoolean(SamplesApplication.SETTING_LANGUAGE_SHOWLOCAL, false)) {
+			Log.i(SamplesApplication.TAG, "Preferred language " + userLanguage);
+			return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), language);
+		} else {
+			Log.i(SamplesApplication.TAG, "Default + preferred language " + userLanguage );
+			return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), userLanguage) {
+				@Override
+				protected String extractLocalized(String s) {
+					String local = super.extract(s, null);
+					String user = extract(s, userLanguage);
+					if (local.equals(user)) {
+						return local;
+					}
+					return new StringBuilder(local).append( "(").append(user).append(")").toString();
+				}
+			};
+		}
 	}
 }

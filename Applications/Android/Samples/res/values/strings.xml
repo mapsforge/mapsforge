@@ -24,6 +24,10 @@
     <string name="preferences_language">Multilingual Map Language Selection</string>
     <string name="preferences_language_desc">Select language of multilingual map (multilingual map must be loaded)</string>
 
+    <string name="preferences_language_showlocal">Language Display Style</string>
+    <string name="preferences_language_showlocal_desc">Show both local and device language</string>
+
+
     <string name="preferences_scalebar">Scale bar</string>
     <string name="preferences_scalebar_desc">Set units system on the scale bar</string>
 

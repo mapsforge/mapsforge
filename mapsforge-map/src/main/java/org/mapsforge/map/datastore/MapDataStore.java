@@ -19,6 +19,8 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 
+import java.util.Locale;
+
 /**
  * Base class for map data retrieval.
  */
@@ -92,5 +94,49 @@ public abstract class MapDataStore {
 	 * @return true if tile is part of database.
 	 */
 	public abstract boolean supportsTile(Tile tile);
+
+	/**
+	 * Extracts substring of preferred language from multilingual string using the preferredLanguage setting.
+	 */
+	protected String extractLocalized(String s) {
+		return extract(s, preferredLanguage);
+	}
+
+	/**
+	 * Extract substring of preferred language from multilingual string.<br/>
+	 * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
+	 * <p>
+	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.
+	 */
+	protected String extract(String s, String language) {
+		if (s == null || s.isEmpty()) {
+			return null;
+		}
+
+		String[] langNames = s.split("\r");
+		if (language == null || language.isEmpty()) {
+			return langNames[0];
+		}
+
+		String fallback = null;
+		for (int i = 1; i < langNames.length; i++) {
+			String[] langName = langNames[i].split("\b");
+			if (langName.length != 2) {
+				continue;
+			}
+
+			// Perfect match
+			if (langName[0].equalsIgnoreCase(language)) {
+				return langName[1];
+			}
+
+			// Fall back to base, e.g. zh-min-lan -> zh
+			if (fallback == null && !langName[0].contains("-") && (language.contains("-") || language.contains("_"))
+					&& language.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
+				fallback = langName[1];
+			}
+		}
+		return (fallback != null) ? fallback : langNames[0];
+	}
 
 }

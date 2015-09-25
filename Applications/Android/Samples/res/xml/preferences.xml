@@ -29,10 +29,15 @@
         android:negativeButtonText="@string/cancelbutton"
         android:title="@string/preferences_language"
         android:summary="@string/preferences_language_desc"
-        android:key="language"
+        android:key="language_selection"
         android:defaultValue=""
-        android:entries="@array/pref_language_entries"
-        android:entryValues="@array/pref_language_values"/>
+        android:entries="@array/pref_language_selection_entries"
+        android:entryValues="@array/pref_language_selection_values"/>
+    <CheckBoxPreference
+        android:title="@string/preferences_language_showlocal"
+        android:summary="@string/preferences_language_showlocal_desc"
+        android:key="language_showlocal"
+        android:defaultValue="false" />
 
     <CheckBoxPreference
         android:title="@string/preferences_debug_timing"
