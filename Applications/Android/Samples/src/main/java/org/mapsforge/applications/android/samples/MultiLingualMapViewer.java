@@ -38,7 +38,7 @@ public class MultiLingualMapViewer extends RenderTheme4 {
 			language = null;
 		}
 		final String userLanguage = language;
-		if (!sharedPreferences.getBoolean(SamplesApplication.SETTING_LANGUAGE_SHOWLOCAL, false)) {
+		if (userLanguage == null || !sharedPreferences.getBoolean(SamplesApplication.SETTING_LANGUAGE_SHOWLOCAL, false)) {
 			Log.i(SamplesApplication.TAG, "Preferred language " + userLanguage);
 			return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), language);
 		} else {

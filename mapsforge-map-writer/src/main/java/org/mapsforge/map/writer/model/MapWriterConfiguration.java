@@ -439,7 +439,7 @@ public class MapWriterConfiguration {
 	 *            the preferred language(s) to set separated with ','
 	 */
 	public void setPreferredLanguages(String preferredLanguages) {
-		if (preferredLanguages != null && !preferredLanguages.isEmpty()) {
+		if (preferredLanguages != null && !preferredLanguages.trim().isEmpty()) {
 			this.preferredLanguages = Arrays.asList(preferredLanguages.split(","));
 		}
 	}

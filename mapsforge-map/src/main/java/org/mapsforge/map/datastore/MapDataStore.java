@@ -1,5 +1,7 @@
 /*
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.map.datastore;
 
 import org.mapsforge.core.model.BoundingBox;
@@ -24,7 +25,6 @@ import java.util.Locale;
 /**
  * Base class for map data retrieval.
  */
-
 public abstract class MapDataStore {
 
 	/**
@@ -61,60 +61,18 @@ public abstract class MapDataStore {
 	public abstract void close();
 
 	/**
-	 * Returns the timestamp of the data used to render a specific tile.
-	 *
-	 * @param tile
-	 *            A tile.
-	 * @return the timestamp of the data used to render the tile
-	 */
-	public abstract long getDataTimestamp(Tile tile);
-
-	/**
-	 * Gets the initial map position.
-	 * @return the start position, if available.
-	 */
-	public abstract LatLong startPosition();
-
-	/**
-	 * Gets the initial zoom level.
-	 * @return the start zoom level.
-	 */
-	public abstract Byte startZoomLevel();
-
-	/**
-	 * Reads data for tile.
-	 * @param tile tile for which data is requested.
-	 * @return map data for the tile.
-	 */
-	public abstract MapReadResult readMapData(Tile tile);
-
-	/**
-	 * Returns true if MapDatabase contains tile.
-	 * @param tile tile to be rendered.
-	 * @return true if tile is part of database.
-	 */
-	public abstract boolean supportsTile(Tile tile);
-
-	/**
-	 * Extracts substring of preferred language from multilingual string using the preferredLanguage setting.
-	 */
-	protected String extractLocalized(String s) {
-		return extract(s, preferredLanguage);
-	}
-
-	/**
-	 * Extract substring of preferred language from multilingual string.<br/>
+	 * Extracts substring of preferred language from multilingual string.<br/>
 	 * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
 	 * <p>
 	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.
 	 */
 	protected String extract(String s, String language) {
-		if (s == null || s.isEmpty()) {
+		if (s == null || s.trim().isEmpty()) {
 			return null;
 		}
 
 		String[] langNames = s.split("\r");
-		if (language == null || language.isEmpty()) {
+		if (language == null || language.trim().isEmpty()) {
 			return langNames[0];
 		}
 
@@ -138,5 +96,48 @@ public abstract class MapDataStore {
 		}
 		return (fallback != null) ? fallback : langNames[0];
 	}
+
+	/**
+	 * Extracts substring of preferred language from multilingual string using
+	 * the preferredLanguage setting.
+	 */
+	protected String extractLocalized(String s) {
+		return extract(s, preferredLanguage);
+	}
+
+	/**
+	 * Returns the timestamp of the data used to render a specific tile.
+	 *
+	 * @param tile
+	 *            A tile.
+	 * @return the timestamp of the data used to render the tile
+	 */
+	public abstract long getDataTimestamp(Tile tile);
+
+	/**
+	 * Reads data for tile.
+	 * @param tile tile for which data is requested.
+	 * @return map data for the tile.
+	 */
+	public abstract MapReadResult readMapData(Tile tile);
+
+	/**
+	 * Gets the initial map position.
+	 * @return the start position, if available.
+	 */
+	public abstract LatLong startPosition();
+
+	/**
+	 * Gets the initial zoom level.
+	 * @return the start zoom level.
+	 */
+	public abstract Byte startZoomLevel();
+
+	/**
+	 * Returns true if MapDatabase contains tile.
+	 * @param tile tile to be rendered.
+	 * @return true if tile is part of database.
+	 */
+	public abstract boolean supportsTile(Tile tile);
 
 }

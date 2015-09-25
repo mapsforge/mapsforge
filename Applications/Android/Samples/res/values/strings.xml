@@ -25,7 +25,7 @@
     <string name="preferences_language_desc">Select language of multilingual map (multilingual map must be loaded)</string>
 
     <string name="preferences_language_showlocal">Language Display Style</string>
-    <string name="preferences_language_showlocal_desc">Show both local and device language</string>
+    <string name="preferences_language_showlocal_desc">Show both local and preferred language</string>
 
 
     <string name="preferences_scalebar">Scale bar</string>

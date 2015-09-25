@@ -31,10 +31,9 @@ import java.util.List;
 /**
  * Illustrates the use of the MultiMapDataStore concept together with a non-mapfile data store.
  */
-
 class PointDataStore extends MapDataStore {
 
-	private final BoundingBox boundingBox = new BoundingBox(-90,-180,90,180);
+	private final BoundingBox boundingBox = new BoundingBox(-90, -180, 90, 180);
 
 	@Override
 	public BoundingBox boundingBox() {
@@ -49,16 +48,6 @@ class PointDataStore extends MapDataStore {
 	@Override
 	public long getDataTimestamp(final Tile tile) {
 		return 0;
-	}
-
-	@Override
-	public LatLong startPosition() {
-		return null;
-	}
-
-	@Override
-	public Byte startZoomLevel() {
-		return null;
 	}
 
 	@Override
@@ -77,16 +66,44 @@ class PointDataStore extends MapDataStore {
 	}
 
 	@Override
+	public LatLong startPosition() {
+		return null;
+	}
+
+	@Override
+	public Byte startZoomLevel() {
+		return null;
+	}
+
+	@Override
 	public boolean supportsTile(final Tile tile) {
 		return true;
 	}
 }
 
-
 public class SimpleDataStoreMapViewer extends RenderTheme4 {
 
 	private MultiMapDataStore multiMapDataStore;
 	private PointDataStore pointDataStore;
+
+	/**
+	 * @return the base map file.
+	 */
+	protected MapDataStore getBaseMapFile() {
+		return super.getMapFile();
+	}
+
+	@Override
+	public MapDataStore getMapFile() {
+		return this.multiMapDataStore;
+	}
+
+	/**
+	 * @return the user data store.
+	 */
+	protected MapDataStore getUserDataStore() {
+		return pointDataStore;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,24 +115,4 @@ public class SimpleDataStoreMapViewer extends RenderTheme4 {
 
 		super.onCreate(savedInstanceState);
 	}
-
-	@Override
-	public MapDataStore getMapFile() {
-		return this.multiMapDataStore;
-	}
-
-	/**
-	 * @return the base map file.
-	 */
-	protected MapDataStore getBaseMapFile() {
-		return super.getMapFile();
-	}
-
-	/**
-	 * @return the user data store.
-	 */
-	protected MapDataStore getUserDataStore() {
-		return pointDataStore;
-	}
-
 }

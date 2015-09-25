@@ -141,40 +141,6 @@ public class MultiMapDataStore extends MapDataStore {
 		throw new IllegalStateException("Invalid data policy for multi map database");
 	}
 
-	@Override
-	public LatLong startPosition() {
-		if (null != this.startPosition) {
-			return this.startPosition;
-		}
-		if (null != this.boundingBox) {
-			return this.boundingBox.getCenterPoint();
-		}
-		return null;
-	}
-
-	public void setStartPosition(LatLong startPosition) {
-		this.startPosition = startPosition;
-	}
-
-	@Override
-	public Byte startZoomLevel() {
-		return startZoomLevel;
-	}
-
-	public void setStartZoomLevel(byte startZoomLevel) {
-		this.startZoomLevel = startZoomLevel;
-	}
-
-	@Override
-	public boolean supportsTile(Tile tile) {
-		for (MapDataStore mdb : mapDatabases) {
-			if (mdb.supportsTile(tile)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private MapReadResult readMapData(Tile tile, boolean deduplicate) {
 		MapReadResult mapReadResult = new MapReadResult();
 		boolean first = true;
@@ -218,5 +184,39 @@ public class MultiMapDataStore extends MapDataStore {
 			}
 		}
 		return mapReadResult;
+	}
+
+	public void setStartPosition(LatLong startPosition) {
+		this.startPosition = startPosition;
+	}
+
+	public void setStartZoomLevel(byte startZoomLevel) {
+		this.startZoomLevel = startZoomLevel;
+	}
+
+	@Override
+	public LatLong startPosition() {
+		if (null != this.startPosition) {
+			return this.startPosition;
+		}
+		if (null != this.boundingBox) {
+			return this.boundingBox.getCenterPoint();
+		}
+		return null;
+	}
+
+	@Override
+	public Byte startZoomLevel() {
+		return startZoomLevel;
+	}
+
+	@Override
+	public boolean supportsTile(Tile tile) {
+		for (MapDataStore mdb : mapDatabases) {
+			if (mdb.supportsTile(tile)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
