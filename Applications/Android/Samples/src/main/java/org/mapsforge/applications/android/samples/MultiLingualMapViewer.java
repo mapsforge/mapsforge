@@ -51,7 +51,7 @@ public class MultiLingualMapViewer extends RenderTheme4 {
 					if (local.equals(user)) {
 						return local;
 					}
-					return new StringBuilder(local).append( "(").append(user).append(")").toString();
+					return new StringBuilder(local).append( " (").append(user).append(")").toString();
 				}
 			};
 		}
