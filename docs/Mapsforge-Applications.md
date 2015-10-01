@@ -35,12 +35,13 @@
 | 29 | OruxMaps | Map Viewer | Proprietary/Free | Closed | http://www.oruxmaps.com/ |
 | 30 | OSMapTuner | Map Viewer & Tag-Editor | Proprietary/Free | Closed | http://osmaptuner.salzburgresearch.at/ |
 | 31 | Pocket Coruna | Tourist guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo&hl=en |
-| 32 | RouteConverter | GPS conversion and editing tool | GPL2/Free | Open | http://www.routeconverter.com/ |
-| 33 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
-| 34 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
-| 35 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
-| 36 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
-| 37 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
+| 32 | Pocket Maps | Offline maps, routing & tracking functions | MIT/Free | Open | http://junjunguo.com/PocketMaps/ |
+| 33 | RouteConverter | GPS conversion and editing tool | GPL2/Free | Open | http://www.routeconverter.com/ |
+| 34 | Serval Maps | Collaborative Mapping using a Mesh Network | GPL3/Free | Open | http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page |
+| 35 | TingBY | City guide | Proprietary/Free | Closed | http://ting.by/ |
+| 36 | UtalTransitMap | Transport Guide | Proprietary/Free | Closed | https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap&hl=en |
+| 37 | Watertrack ECO | GPS Tracking on Germany Waterways | Proprietary/Free | Closed | http://watertrack.de/ |
+| 38 | Wikiloc | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed | http://www.wikiloc.com/outdoor-navigation-app |
 
 
 You know an application that is missing here? Please inform us by sending a message via our public mapsforge-dev(https://groups.google.com/group/mapsforge-dev) mailing list.
