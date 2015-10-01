@@ -26,7 +26,7 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.util.MapViewProjection;
 
 import android.os.Handler;
-import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.Scroller;
@@ -44,7 +44,7 @@ import android.widget.Scroller;
  * <li>Long press (overlay)</li>
  * </ul>
  */
-public class TouchGestureHandler extends SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener, Runnable {
+public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener, Runnable {
 
 	private final Scroller flinger;
 	private int flingLastX, flingLastY;
@@ -119,8 +119,8 @@ public class TouchGestureHandler extends SimpleOnGestureListener implements Scal
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-		// Quick scale (no long press)
-		if (!this.isInDoubleTap) {
+		// Normal or quick scale (no long press)
+		if (!this.isInScale && !this.isInDoubleTap) {
 			Point tapXY = new Point(e.getX(), e.getY());
 			LatLong tapLatLong = projection.fromPixels(tapXY.x, tapXY.y);
 			if (tapLatLong != null) {
