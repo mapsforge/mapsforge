@@ -13,6 +13,7 @@ release.properties
 # IntelliJ
 .idea/
 *.iml
+local.properties
 
 # Gradle
 build/
