@@ -160,6 +160,10 @@
                 android:value=".ItemListActivity" />
         </activity>
         <activity
+            android:name=".ClusterMapActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Marker Clustering" />
+        <activity
             android:name=".Settings"
             android:label="Settings"
             android:parentActivityName=".Samples" >
