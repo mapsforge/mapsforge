@@ -70,7 +70,7 @@ Javadoc
 On server add new directory for new release and update the main listing file.
 
 
-Devoloper Links
+Developer Links
 ---------------
 Add release information to the developer wikis.
 

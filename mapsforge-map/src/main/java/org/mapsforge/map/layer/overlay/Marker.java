@@ -110,6 +110,7 @@ public class Marker extends Layer {
 	/**
 	 * @return Gets the LatLong Position of the Object
 	 */
+	@Override
 	public synchronized LatLong getPosition() {
 		return this.latLong;
 	}

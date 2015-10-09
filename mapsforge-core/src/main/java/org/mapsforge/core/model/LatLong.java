@@ -72,6 +72,10 @@ public class LatLong implements Comparable<LatLong>, Serializable {
 		return 0;
 	}
 
+	/**
+	 * Returns the approximate distance in degrees between this location and the
+	 * given location, calculated in Euclidean space.
+	 */
 	public double distance(LatLong other) {
 		return Math.hypot(this.longitude - other.longitude, this.latitude - other.latitude);
 	}

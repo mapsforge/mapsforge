@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -43,6 +44,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Way;
  * A TileBasedDataStore that uses the RAM as storage device for temporary data structures.
  */
 public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor {
+
 	/**
 	 * Creates a new instance of a {@link RAMTileBasedDataProcessor}.
 	 * 
@@ -76,14 +78,14 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 
 	@Override
 	public void addNode(Node node) {
-		TDNode tdNode = TDNode.fromNode(node, this.preferredLanguage);
+		TDNode tdNode = TDNode.fromNode(node, this.preferredLanguages);
 		this.nodes.put(tdNode.getId(), tdNode);
 		addPOI(tdNode);
 	}
 
 	@Override
 	public void addRelation(Relation relation) {
-		TDRelation tdRelation = TDRelation.fromRelation(relation, this, this.preferredLanguage);
+		TDRelation tdRelation = TDRelation.fromRelation(relation, this, this.preferredLanguages);
 		if (tdRelation != null) {
 			this.multipolygons.put(relation.getId(), tdRelation);
 		}
@@ -91,7 +93,7 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 
 	@Override
 	public void addWay(Way way) {
-		TDWay tdWay = TDWay.fromWay(way, this, this.preferredLanguage);
+		TDWay tdWay = TDWay.fromWay(way, this, this.preferredLanguages);
 		if (tdWay == null) {
 			return;
 		}

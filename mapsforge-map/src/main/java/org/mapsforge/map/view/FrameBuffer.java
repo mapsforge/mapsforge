@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -76,9 +77,6 @@ public class FrameBuffer {
 			Bitmap bitmapTemp = this.bitmap1;
 			this.bitmap1 = this.bitmap2;
 			this.bitmap2 = bitmapTemp;
-			if (this.bitmap2 != null) {
-				this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
-			}
 		}
 		// taking this out of the synchronized region removes a deadlock potential
 		// at the small risk of an inconsistent zoom
@@ -93,6 +91,9 @@ public class FrameBuffer {
 	 * @return the bitmap of the second frame to draw on (may be null).
 	 */
 	public synchronized Bitmap getDrawingBitmap() {
+		if (this.bitmap2 != null) {
+			this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
+		}
 		return this.bitmap2;
 	}
 

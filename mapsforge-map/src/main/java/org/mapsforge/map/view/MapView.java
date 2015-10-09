@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,21 +15,34 @@
  */
 package org.mapsforge.map.view;
 
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
+
+	void addLayer(Layer layer);
+
+	/**
+	 * Clear map view.
+	 */
 	void destroy();
+
+	/**
+	 * Clear all map view elements.<br/>
+	 * i.e. layers, tile cache, label store, map view, resources, etc.
+	 */
+	void destroyAll();
+
+	BoundingBox getBoundingBox();
 
 	Dimension getDimension();
 
 	FpsCounter getFpsCounter();
-
-	MapScaleBar getMapScaleBar();
-
-	void setMapScaleBar(MapScaleBar mapScaleBar);
 
 	/**
 	 * @return the FrameBuffer used in this MapView.
@@ -39,6 +53,8 @@ public interface MapView {
 
 	LayerManager getLayerManager();
 
+	MapScaleBar getMapScaleBar();
+
 	Model getModel();
 
 	int getWidth();
@@ -48,4 +64,9 @@ public interface MapView {
 	 */
 	void repaint();
 
+	void setCenter(LatLong center);
+
+	void setMapScaleBar(MapScaleBar mapScaleBar);
+
+	void setZoomLevel(byte zoomLevel);
 }

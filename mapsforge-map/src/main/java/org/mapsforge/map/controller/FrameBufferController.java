@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -44,17 +45,25 @@ public final class FrameBufferController implements Observer {
 		return frameBufferController;
 	}
 
-	private static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
+	public static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
 		int width = (int) (mapViewDimension.width * overdrawFactor);
 		int height = (int) (mapViewDimension.height * overdrawFactor);
 		if (useSquareFrameBuffer) {
 			float aspectRatio = ((float) mapViewDimension.width) / mapViewDimension.height;
-			if (aspectRatio < maxAspectRatio && aspectRatio > maxAspectRatio / 1) {
+			if (aspectRatio < maxAspectRatio && aspectRatio > 1 / maxAspectRatio) {
 				width = Math.max(width, height);
 				height = width;
 			}
 		}
 		return new Dimension(width, height);
+	}
+
+	public static boolean isUseSquareFrameBuffer() {
+		return useSquareFrameBuffer;
+	}
+
+	public static void setUseSquareFrameBuffer(boolean useSquareFrameBuffer) {
+		FrameBufferController.useSquareFrameBuffer = useSquareFrameBuffer;
 	}
 
 	private final FrameBuffer frameBuffer;

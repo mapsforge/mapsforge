@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -50,6 +51,7 @@ import org.mapsforge.map.writer.util.GeoUtils;
 import com.vividsolutions.jts.geom.TopologyException;
 
 abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, NodeResolver, WayResolver {
+
 	protected class RelationHandler implements TObjectProcedure<TDRelation> {
 		private List<Deque<TDWay>> extractedPolygons;
 
@@ -264,7 +266,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 	protected long maxWayID = Long.MIN_VALUE;
 	protected final TLongObjectHashMap<TLongArrayList> outerToInnerMapping;
 
-	protected final String preferredLanguage;
+	protected final List<String> preferredLanguages;
 	protected final boolean skipInvalidRelations;
 	protected TileGridLayout[] tileGridLayouts;
 
@@ -285,7 +287,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 		this.zoomIntervalConfiguration = configuration.getZoomIntervalConfiguration();
 		this.tileGridLayouts = new TileGridLayout[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()];
 		this.bboxEnlargement = configuration.getBboxEnlargement();
-		this.preferredLanguage = configuration.getPreferredLanguage();
+		this.preferredLanguages = configuration.getPreferredLanguages();
 		this.skipInvalidRelations = configuration.isSkipInvalidRelations();
 
 		this.outerToInnerMapping = new TLongObjectHashMap<>();
@@ -304,7 +306,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 			TileCoordinate upperLeft = new TileCoordinate((int) MercatorProjection.longitudeToTileX(
 					this.boundingbox.minLongitude, this.zoomIntervalConfiguration.getBaseZoom(i)),
 					(int) MercatorProjection.latitudeToTileY(this.boundingbox.maxLatitude,
-							this.zoomIntervalConfiguration.getBaseZoom(i)),
+					this.zoomIntervalConfiguration.getBaseZoom(i)),
 					this.zoomIntervalConfiguration.getBaseZoom(i));
 			this.tileGridLayouts[i] = new TileGridLayout(upperLeft, computeNumberOfHorizontalTiles(i),
 					computeNumberOfVerticalTiles(i));
@@ -437,8 +439,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 				this.zoomIntervalConfiguration.getBaseZoom(zoomIntervalIndex));
 
 		long tileCoordinateTop = MercatorProjection.latitudeToTileY(this.boundingbox.maxLatitude,
-
-		this.zoomIntervalConfiguration.getBaseZoom(zoomIntervalIndex));
+				this.zoomIntervalConfiguration.getBaseZoom(zoomIntervalIndex));
 
 		assert tileCoordinateBottom >= tileCoordinateTop;
 		assert tileCoordinateBottom - tileCoordinateTop + 1 <= Integer.MAX_VALUE;

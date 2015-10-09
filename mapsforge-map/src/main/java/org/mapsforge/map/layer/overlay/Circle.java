@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -38,7 +39,6 @@ public class Circle extends Layer {
 	private Paint paintStroke;
 	private float radius;
 
-
 	/**
 	 * @param latLong
 	 *            the initial center point of this circle (may be null).
@@ -54,6 +54,7 @@ public class Circle extends Layer {
 	public Circle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
 		this(latLong, radius, paintFill, paintStroke, false);
 	}
+
 	/**
 	 * @param latLong
 	 *            the initial center point of this circle (may be null).
@@ -63,11 +64,12 @@ public class Circle extends Layer {
 	 *            the initial {@code Paint} used to fill this circle (may be null).
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this circle (may be null).
-	 * @param keepAligned if set to true it will keep the bitmap aligned with the map, to avoid
-	 *                    a moving effect of a bitmap shader.
+	 * @param keepAligned
+	 *            if set to true it will keep the bitmap aligned with the map,
+	 *            to avoid a moving effect of a bitmap shader.
 	 * @throws IllegalArgumentException
 	 *             if the given {@code radius} is negative or {@link Float#NaN}.
-
+	 *
 	 */
 	public Circle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke, boolean keepAligned) {
 		super();
@@ -141,6 +143,21 @@ public class Circle extends Layer {
 	}
 
 	/**
+	 * @return the non-negative radius of this circle in pixels.
+	 */
+	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
+		return (int) MercatorProjection.metersToPixels(this.radius, latitude, MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize()));
+	}
+
+	/**
+	 * @return true if it keeps the bitmap aligned with the map, to avoid a
+	 *         moving effect of a bitmap shader, false otherwise.
+	 */
+	public boolean isKeepAligned() {
+		return keepAligned;
+	}
+
+	/**
 	 * @param latLong
 	 *            the new center point of this circle (may be null).
 	 */
@@ -172,10 +189,6 @@ public class Circle extends Layer {
 	 */
 	public synchronized void setRadius(float radius) {
 		setRadiusInternal(radius);
-	}
-
-	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		return (int) MercatorProjection.metersToPixels(this.radius, latitude, MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize()));
 	}
 
 	private void setRadiusInternal(float radius) {

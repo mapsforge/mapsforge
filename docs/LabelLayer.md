@@ -25,7 +25,7 @@ The new approach
 
 As with other changes introduced, this is an incremental change that leaves user code as much unaffected as possible, but it also makes the implementation a little tricky. 
 
-  * The labels are retrieved from the map database in a tile by tile fashion. There is no way to retrieve labels by location. And as every single item has to be passed through the rendertheme mechanism this retrieval is relatively expensiv.
+  * The labels are retrieved from the map database in a tile by tile fashion. There is no way to retrieve labels by location. And as every single item has to be passed through the rendertheme mechanism this retrieval is relatively expensive.
   * The labels need to be redrawn for every redraw of the map. No everything can be done on the main UI thread. Computing the label placement is relatively expensive.
 
 The new implementation addresses this in the following way:
@@ -41,20 +41,14 @@ Notes for users
 TileRendererLayer:
 ------------------
 
-The TileRendererLayer now takes an additional argument of the TileBasedLabelStore, which receives the labels that the DatabaseRenderer produces. 
-A TileBasedLabelStore must be created first (alongside tile caches), it takes just one argument, its capacity. The minimum capacity can be established the same way as for the tile cache, e.g. in the BasicMapViewer example:
+The TileRendererLayer now takes an additional argument of the TileBasedLabelStore, which receives the labels that the DatabaseRenderer produces. Alongside the TileRendererLayer we need the LabelLayer.
 
-		this.tileBasedLabelStores.add(new TileBasedLabelStore(2 * AndroidUtil.getMinimumCacheSize(this, this.mapViews.get(0).getModel().displayModel.getTileSize(), this.mapViews.get(0)
-				.getModel().frameBufferModel.getOverdrawFactor(),this.getScreenRatio())));
-
-This then needs to passed into the TileRendererLayer and alongside the TileRendererLayer we need the LabelLayer.
 	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = Utils.createTileRendererLayer(this.tileCaches.get(0), this.tileBasedLabelStores.get(0),
-				this.mapViewPositions.get(0), getMapFile(), getRenderTheme(), false);
-		this.layerManagers.get(0).getLayers().add(tileRendererLayer);
-		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, this.tileBasedLabelStores.get(0));
-		this.layerManagers.get(0).getLayers().add(labelLayer);
-
+		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false);
+		mapView.getLayerManager().getLayers().add(tileRendererLayer);
+		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
+		mapView.getLayerManager().getLayers().add(labelLayer);
 	}
 
 If you do not want any labels, pass null for the TileBasedLabelStore to the TileRendererLayer.
@@ -63,15 +57,10 @@ Rendertheme Change:
 -------------------
 The priority attribute has been added to caption, pathText, lineSymbol and symbol. The default priority is 0, higher priorities are rendered first, lower priority elements later if space is still available. 
 
-
 Remaining Problems:
----------
+-------------------
 
   * Memory as usual: mapsforge sails close to OOM all the time and keeping the label data for all the visible tiles in memory can cause an app to OOM. Finding the right balance is difficult. 
-
-
-
-
 
 Notes for Rotation:
 -------------------
@@ -81,8 +70,4 @@ This is only one step towards a proper map rotation.
 One of the issues is that the calculation of the layout is quite expensive. For that reason it is precomputed in a separate thread, rather than on the UI thread. However, for rotation tis layout has to be done for every change in rotation as different labels will clash. This introduces some instability in the label layout as with different rotations different labels will be drawn. 
 A different approach would be to calculate the maximum radius of a label and assume it is actually not rectangular, but circular. That way the layout would not change with rotation and could be done only once for a set of tiles. It would also mean that the overlap of labels could be computed quicker: it is only combined radius < distance. With line-breaking labels that would be possible.
 
-It might also be that at the moment the center point of labels to the left/right/below/above symbols are calculated wrong and will not be correct for rotating maps. 
-
-
-
-
+It might also be that at the moment the center point of labels to the left/right/below/above symbols are calculated wrong and will not be correct for rotating maps.

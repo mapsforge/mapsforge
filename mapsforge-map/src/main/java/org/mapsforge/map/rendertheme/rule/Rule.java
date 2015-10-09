@@ -23,7 +23,7 @@ import java.util.Map;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
-import org.mapsforge.map.reader.PointOfInterest;
+import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
@@ -73,14 +73,14 @@ abstract class Rule {
 
 	abstract boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed);
 
-	void matchNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, List<RenderInstruction> matchingList, PointOfInterest pointOfInterest) {
-		if (matchesNode(pointOfInterest.tags, tile.zoomLevel)) {
+	void matchNode(RenderCallback renderCallback, final RenderContext renderContext, List<RenderInstruction> matchingList, PointOfInterest pointOfInterest) {
+		if (matchesNode(pointOfInterest.tags, renderContext.rendererJob.tile.zoomLevel)) {
 			for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-				this.renderInstructions.get(i).renderNode(renderCallback, renderContext, tile, pointOfInterest);
+				this.renderInstructions.get(i).renderNode(renderCallback, renderContext, pointOfInterest);
 				matchingList.add(this.renderInstructions.get(i));
 			}
 			for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-				this.subRules.get(i).matchNode(renderCallback, renderContext, tile, matchingList, pointOfInterest);
+				this.subRules.get(i).matchNode(renderCallback, renderContext, matchingList, pointOfInterest);
 			}
 		}
 	}
@@ -109,21 +109,21 @@ abstract class Rule {
 		}
 	}
 
-	void scaleStrokeWidth(float scaleFactor) {
+	void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
 		for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-			this.renderInstructions.get(i).scaleStrokeWidth(scaleFactor);
+			this.renderInstructions.get(i).scaleStrokeWidth(scaleFactor, zoomLevel);
 		}
 		for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-			this.subRules.get(i).scaleStrokeWidth(scaleFactor);
+			this.subRules.get(i).scaleStrokeWidth(scaleFactor, zoomLevel);
 		}
 	}
 
-	void scaleTextSize(float scaleFactor) {
+	void scaleTextSize(float scaleFactor, byte zoomLevel) {
 		for (int i = 0, n = this.renderInstructions.size(); i < n; ++i) {
-			this.renderInstructions.get(i).scaleTextSize(scaleFactor);
+			this.renderInstructions.get(i).scaleTextSize(scaleFactor, zoomLevel);
 		}
 		for (int i = 0, n = this.subRules.size(); i < n; ++i) {
-			this.subRules.get(i).scaleTextSize(scaleFactor);
+			this.subRules.get(i).scaleTextSize(scaleFactor, zoomLevel);
 		}
 	}
 }

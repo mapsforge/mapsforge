@@ -1,8 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 Christian Pesch
- * Copyright © 2014 devemux86
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014 Christian Pesch
+ * Copyright 2014 devemux86
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -207,7 +208,14 @@ public final class LatLongUtils {
 		double pixelYMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, mapSize);
 		double pixelYMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, mapSize);
 		double zoomY = -Math.log(Math.abs(pixelYMax - pixelYMin) / dimension.height) / Math.log(2);
-		return (byte) Math.max(0, Math.floor(Math.min(zoomX, zoomY)));
+		double zoom = Math.floor(Math.min(zoomX, zoomY));
+		if (zoom < 0) {
+			return 0;
+		}
+		if (zoom > Byte.MAX_VALUE) {
+			return Byte.MAX_VALUE;
+		}
+		return (byte) zoom;
 	}
 
 	private LatLongUtils() {

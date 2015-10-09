@@ -56,10 +56,6 @@ public abstract class AbstractTileSource implements TileSource {
 		this.port = port;
 	}
 
-	protected String getHostName() {
-		return this.hostNames[random.nextInt(this.hostNames.length)];
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -82,6 +78,10 @@ public abstract class AbstractTileSource implements TileSource {
 	@Override
 	public long getDefaultTimeToLive() {
 		return defaultTimeToLive;
+	}
+
+	protected String getHostName() {
+		return this.hostNames[random.nextInt(this.hostNames.length)];
 	}
 
 	@Override

@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-core</artifactId>
+			<artifactId>mapsforge-map</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

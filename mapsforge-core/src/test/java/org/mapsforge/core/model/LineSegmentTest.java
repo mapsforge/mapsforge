@@ -17,8 +17,6 @@ package org.mapsforge.core.model;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
-
 public class LineSegmentTest {
 
 	@Test
@@ -67,7 +65,7 @@ public class LineSegmentTest {
 	@Test
 	public void intersectionTest() {
 		Point point1 = new Point(1, 2);
-		Point point2 = new Point(1, 2);
+		// Point point2 = new Point(1, 2);
 		Point point3 = new Point(1, 1);
 		Point point4 = new Point(2, -22);
 		Point point5 = new Point(2, 22);

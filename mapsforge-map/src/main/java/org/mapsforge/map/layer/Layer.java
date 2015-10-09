@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -121,9 +122,22 @@ public abstract class Layer {
 
 	/**
 	 * Sets the visibility flag of this {@code Layer} to the given value.
+	 * <p/>
+	 * Note: By default a redraw will take place afterwards.
 	 */
 	public final void setVisible(boolean visible) {
+		setVisible(visible, true);
+	}
+
+	/**
+	 * Sets the visibility flag of this {@code Layer} to the given value.
+	 */
+	public final void setVisible(boolean visible, boolean redraw) {
 		this.visible = visible;
+
+		if (redraw) {
+			requestRedraw();
+		}
 	}
 
 	/**

@@ -7,7 +7,7 @@ dependencies {
     exclude(module: 'xercesImpl')
   }
   compile group: 'com.google.guava', name: 'guava', version:'17.0'
-  providedCompile group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version:'0.43.1' 
+  providedCompile group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version:'0.44.1' 
 }
 
 sourceSets.main.compileClasspath += configurations.providedCompile

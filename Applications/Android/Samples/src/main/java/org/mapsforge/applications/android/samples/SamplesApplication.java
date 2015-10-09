@@ -1,6 +1,6 @@
 /*
- * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2013-2015 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,7 +40,9 @@ public class SamplesApplication extends Application {
 	public static final String SETTING_WAYFILTERING_DISTANCE = "wayfiltering_distance";
 	public static final String SETTING_TILECACHE_PERSISTENCE = "tilecache_persistence";
 	public static final String SETTING_RENDERING_THREADS = "rendering_threads";
-	public static final String TAG = "SAMPLES APP";
+	public static final String SETTING_PREFERRED_LANGUAGE = "language_selection";
+	public static final String SETTING_LANGUAGE_SHOWLOCAL = "language_showlocal";
+	public static final String TAG = "Mapsforge Samples";
 
 
 	@Override

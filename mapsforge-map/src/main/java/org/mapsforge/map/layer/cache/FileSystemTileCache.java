@@ -62,6 +62,7 @@ public class FileSystemTileCache implements TileCache {
 	 * cached tile, after stripping the extension, is used as the lookup key.
 	 */
 	private class CacheDirectoryReader implements Runnable {
+		@Override
 		public void run() {
 			File[] zFiles = FileSystemTileCache.this.cacheDirectory.listFiles();
 			if (zFiles != null) {
@@ -275,7 +276,7 @@ public class FileSystemTileCache implements TileCache {
 			return null;
 		} catch (IOException e) {
 			remove(key);
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		} finally {
 			IOUtils.closeQuietly(inputStream);
@@ -349,6 +350,7 @@ public class FileSystemTileCache implements TileCache {
 		this.observable.notifyObservers();
 	}
 
+	@Override
 	public void setWorkingSet(Set<Job> workingSet) {
 		Set<String> workingSetInteger = new HashSet<String>();
 		for (Job job : workingSet) {

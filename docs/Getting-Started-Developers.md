@@ -10,8 +10,8 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 ## Requirements
 |Tool|Version|
 |----|---|
-|Android Build Version Tools|22|
-|Gradle|2.2.1 if building with gradle|
+|Android Build Version Tools|23.0.1|
+|Gradle|2.4.0 if building with gradle|
 |Maven|1.3.1 if building with maven|
 |Java|1.7 (1.8 is supported in maven builds)|
 
@@ -26,19 +26,21 @@ Mapsforge consists of the following core components:
 - mapsforge-core: platform unspecific general components and interfaces.
 - mapsforge-map: platform unspecific elements used for map display.
 - mapsforge-map-reader: platform unspecific code to read mapsforge map files.
-- kXML2: lightweight XML parser for render themes.
+- [kXML2](http://www.kxml.org/): lightweight XML parser for render themes.
 
 Extra Android components:
 
 - mapsforge-map-android: android specific elements.
-- androidsvg: SVG library for displaying SVG files as icons.
+- [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
 
 Extra Java components:
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
-- svg-salamander: SVG library for displaying SVG files as icons.
+- [svg-salamander](https://svgsalamander.java.net/): SVG library for displaying SVG files as icons.
  
 The jars build from the above components are required elements for a mapsforge application on Android or Java.
+
+External dependencies jars can be found at their respective sites or simply searching them in [Maven central repository](http://search.maven.org/).
 
 
 ### Branches
@@ -46,7 +48,7 @@ The jars build from the above components are required elements for a mapsforge a
 The mapsforge code has now been consolidated into two main branches as well as releases
 - **master**: the latest stable development branch. Use this if you want to use newer mapsforge functionality that has not yet been released, but you still want a certain stability.
 - **dev**: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
-- **0.5.1 release**: use this if you want to build applications built on top of well-tested and stable code.
+- **release**: use this if you want to build applications built on top of well-tested and stable code.
 
 Code before the 0.5.1 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
 
@@ -70,8 +72,6 @@ The SwingMapViewer is a simple Java only app useful for testing maps.
 ### Building mapsforge with Gradle
 
 Gradle is the new build system favoured by Google for Android builds. Android Studio, the new IDE provided by Google for building Android apps, integrates nicely with Gradle. 
-
-The current version for building mapsforge is Gradle 2.2.1.
 
 After checking out the code, a build from the command line should be as easy as 
 
@@ -120,6 +120,9 @@ As Eclipse needs to know the path to your local maven repository, you have to ad
 After you have configured your Eclipse workspace, checked out the code and built the complete project (see the instructions above), execute the following command:
     mvn eclipse:eclipse
 
+Alternatively, you can use Gradle:
+    gradle eclipse
+
 This will tell maven to generate all missing Eclipse project files which are not checked in into our repository. It also ensures that all mapsforge projects use the same code formatter profile, compiler settings, file encoding, new line delimiters and so on.
 
 You should install the [Checkstyle](http://eclipse-cs.sourceforge.net/), [FindBugs](http://findbugs.sourceforge.net/downloads.html) and [PMD](http://pmd.sourceforge.net/integrations.html#eclipse) Eclipse plug-ins to regularly analyze the quality of the source code. The same set of rules is shared across all mapsforge modules. Running the above maven command will also copy the necessary configuration files into each project directory.
@@ -128,7 +131,7 @@ Each of the mapsforge modules is now configured as an Eclipse project and can be
 
 To build the Android sample application, you need to make a few adjustments:
 * Select `Project > Properties` from the menu.
-* In the dialog that opens, go to `Java Build Path Order and Export`. Make sure the entry for `M2_REPO/android/android/5.1_r1/android-5.1_r1.jar` is unchecked and all others are checked.
+* In the dialog that opens, go to `Java Build Path Order and Export`. Make sure the entry for `M2_REPO/android/android/6.0_r1/android-6.0_r1.jar` is unchecked and all others are checked.
 * Go to `Java Compiler` and set the compiler compliance level to 1.7.
 * Then clean the project (`Project > Clean`).
 
@@ -142,6 +145,8 @@ Before you start working on an unresolved issue or try to implement a new featur
 
 You may also create a new issue on [Github](https://github.com/mapsforge/mapsforge/issues) or comment on an existing one to describe your ideas. We will then discuss the best way to realize your proposal and figure out how we can help you to get started quickly.
 
-If you are only requesting a small change in the code, you may attach a patch file to the corresponding issue, but it is best to create a pull request on Github. Make sure that your patch is derived from the latest version in our repository, otherwise we might be unable to apply it. Please follow our code and style conventions. Detailed information about them can be found in the [Project Conventions](Project-Conventions.md) article.
+If you are only requesting a small change in the code, you may attach a patch file to the corresponding issue, but it is best to create a pull request on Github. Make sure that your patch is derived from the latest version in our **dev** repository, otherwise we might be unable to apply it. Please follow our code and style conventions. Detailed information about them can be found in the [Project Conventions](Project-Conventions.md) article.
+
+Also please keep the pull request commits squashed, in order to avoid the clutter in repository and have only the finally changed files together. One way is described [here](http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html).
 
 Please note that the mapsforge project is licenced under the [GNU LGPL3 licence](http://www.gnu.org/licenses/lgpl.html). Thus, all your contributions are going to be published under this license.

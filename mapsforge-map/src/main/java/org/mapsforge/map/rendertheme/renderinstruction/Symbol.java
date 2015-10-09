@@ -20,11 +20,9 @@ import java.io.IOException;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
-
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.PointOfInterest;
+import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
@@ -74,14 +72,14 @@ public class Symbol extends RenderInstruction {
 	}
 
 	@Override
-	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, Tile tile, PointOfInterest poi) {
+	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 
 		if (Display.NEVER == this.display) {
 			return;
 		}
 
 		if (getBitmap() != null) {
-			renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, tile, poi);
+			renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, poi);
 		}
 	}
 
@@ -98,12 +96,12 @@ public class Symbol extends RenderInstruction {
 	}
 
 	@Override
-	public void scaleStrokeWidth(float scaleFactor) {
+	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 
 	@Override
-	public void scaleTextSize(float scaleFactor) {
+	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
 		// do nothing
 	}
 	private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {

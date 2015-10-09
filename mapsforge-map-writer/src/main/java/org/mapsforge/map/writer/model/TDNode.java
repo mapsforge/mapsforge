@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
 package org.mapsforge.map.writer.model;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.writer.OSMTagMapping;
@@ -22,7 +24,6 @@ import org.mapsforge.map.writer.util.OSMUtils;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
 public class TDNode {
-	// private static final Logger LOGGER = Logger.getLogger(TDNode.class.getName());
 
 	private static final byte ZOOM_HOUSENUMBER = (byte) 18;
 
@@ -33,12 +34,12 @@ public class TDNode {
 	 * 
 	 * @param node
 	 *            the osmosis entity
-	 * @param preferredLanguage
-	 *            the preferred language or null if no preference
+	 * @param preferredLanguages
+	 *            the preferred language(s) or null if no preference
 	 * @return a new TDNode
 	 */
-	public static TDNode fromNode(Node node, String preferredLanguage) {
-		SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(node, preferredLanguage);
+	public static TDNode fromNode(Node node, List<String> preferredLanguages) {
+		SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(node, preferredLanguages);
 		short[] knownWayTags = OSMUtils.extractKnownPOITags(node);
 
 		return new TDNode(node.getId(), LatLongUtils.degreesToMicrodegrees(node.getLatitude()),

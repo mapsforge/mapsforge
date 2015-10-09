@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014-2015 Ludwig M Brinckmann
- * Copyright © 2014 Christian Pesch
+ * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2014 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,7 +26,7 @@ import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
@@ -118,7 +118,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 
 	protected void compileRenderTheme() {
 		this.renderThemeFuture = new RenderThemeFuture(this.graphicFactory, this.xmlRenderTheme, this.displayModel);
-		new Thread(this.renderThemeFuture).run();
+		new Thread(this.renderThemeFuture).start();
 	}
 
 	@Override

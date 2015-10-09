@@ -1,7 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014, 2015 devemux86
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,6 +31,11 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.PoiWayBundle;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
@@ -43,7 +49,7 @@ import org.mapsforge.map.reader.header.SubFileParameter;
  *
  * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
-public class MapFile implements MapDataStore {
+public class MapFile extends MapDataStore {
 
 	/**
 	 * Bitmask to extract the block offset from an index entry.
@@ -54,21 +60,6 @@ public class MapFile implements MapDataStore {
 	 * Bitmask to extract the water information from an index entry.
 	 */
 	private static final long BITMASK_INDEX_WATER = 0x8000000000L;
-
-	/**
-	 * Debug message prefix for the block signature.
-	 */
-	private static final String DEBUG_SIGNATURE_BLOCK = "block signature: ";
-
-	/**
-	 * Debug message prefix for the POI signature.
-	 */
-	private static final String DEBUG_SIGNATURE_POI = "POI signature: ";
-
-	/**
-	 * Debug message prefix for the way signature.
-	 */
-	private static final String DEBUG_SIGNATURE_WAY = "way signature: ";
 
 	/**
 	 * Default start zoom level.
@@ -199,17 +190,8 @@ public class MapFile implements MapDataStore {
 	 */
 	private static final int WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 
-	private final IndexCache databaseIndexCache;
-	private final long fileSize;
-	private final RandomAccessFile inputFile;
-	private final MapFileHeader mapFileHeader;
-	private final ReadBuffer readBuffer;
-	private final long timestamp;
-
-
 	/* Only for testing, an empty file. */
 	public static final MapFile TEST_MAP_FILE = new MapFile();
-
 	/**
 	 * Way filtering reduces the number of ways returned to only those that are
 	 * relevant for the tile requested, leading to performance gains, but can
@@ -221,14 +203,44 @@ public class MapFile implements MapDataStore {
 	 */
 	public static boolean wayFilterEnabled = true;
 	public static int wayFilterDistance = 20;
+	private final IndexCache databaseIndexCache;
+	private final long fileSize;
+	private final RandomAccessFile inputFile;
+
+	private final MapFileHeader mapFileHeader;
+
+	private final ReadBuffer readBuffer;
+	private final long timestamp;
+
+	private MapFile() {
+		// only to create a dummy empty file.
+		databaseIndexCache = null;
+		fileSize = 0;
+		inputFile = null;
+		mapFileHeader = null;
+		readBuffer = null;
+		timestamp = System.currentTimeMillis();
+	}
 
 	/**
-	 * Opens the given map file, reads its header data and validates them.
+	 * Opens the given map file, reads its header data and validates them. Uses default language.
 	 *
 	 * @param mapFile the map file.
 	 * @throws MapFileException if the given map file is null or invalid.
 	 */
 	public MapFile(File mapFile) {
+		this(mapFile, null);
+	}
+
+	/**
+	 * Opens the given map file, reads its header data and validates them.
+	 *
+	 * @param mapFile the map file.
+	 * @param language the language to use (may be null).
+	 * @throws MapFileException if the given map file is null or invalid.
+	 */
+	public MapFile(File mapFile, String language) {
+		super(language);
 		if (mapFile == null) {
 			throw new MapFileException("mapFile must not be null");
 		}
@@ -253,7 +265,7 @@ public class MapFile implements MapDataStore {
 
 			this.timestamp = mapFile.lastModified();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			// make sure that the file is closed
 			closeFile();
 			throw new MapFileException(e.getMessage());
@@ -264,11 +276,12 @@ public class MapFile implements MapDataStore {
 	 * Opens the given map file, reads its header data and validates them.
 	 *
 	 * @param mapFileName the path of the map file.
+	 * @param language the language to use (may be null).
 	 * @throws MapFileException if the given map file is null or invalid or IOException if the file
 	 * cannot be opened.
 	 */
-	public MapFile(String mapFileName) {
-		this(new File(mapFileName));
+	public MapFile(String mapFileName, String language) {
+		this(new File(mapFileName), language);
 	}
 
 	@Override
@@ -289,92 +302,8 @@ public class MapFile implements MapDataStore {
 			this.databaseIndexCache.destroy();
 			this.inputFile.close();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, null, e);
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
-	}
-
-	/**
-	 * @return the metadata for the current map file.
-	 * @throws IllegalStateException
-	 *             if no map is currently opened.
-	 */
-	public MapFileInfo getMapFileInfo() {
-		return this.mapFileHeader.getMapFileInfo();
-	}
-
-	/**
-	 * Returns the creation timestamp of the map file.
-	 * @param tile not used, as all tiles will shared the same creation date.
-	 * @return the creation timestamp inside the map file.
-	 */
-	@Override
-	public long getDataTimestamp(Tile tile) {
-		return this.timestamp;
-	}
-
-	/**
-	 * Reads all map data for the area covered by the given tile at the tile zoom level.
-	 *
-	 * @param tile
-	 *            defines area and zoom level of read map data.
-	 * @return the read map data.
-	 */
-	@Override
-	public synchronized MapReadResult readMapData(Tile tile) {
-		try {
-			QueryParameters queryParameters = new QueryParameters();
-			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
-
-			// get and check the sub-file for the query zoom level
-			SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
-			if (subFileParameter == null) {
-				LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
-				return null;
-			}
-
-			queryParameters.calculateBaseTiles(tile, subFileParameter);
-			queryParameters.calculateBlocks(subFileParameter);
-
-			// we enlarge the bounding box for the tile slightly in order to retain any data that
-			// lies right on the border, some of this data needs to be drawn as the graphics will
-			// overlap onto this tile.
-			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, null, e);
-			return null;
-		}
-	}
-
-	/**
-	 * Restricts returns of data to zoom level range specified. This can be used to restrict
-	 * the use of this map data base when used in MultiMapDatabase settings.
-	 * @param minZoom minimum zoom level supported
-	 * @param maxZoom maximum zoom level supported
-	 */
-	public void restrictToZoomRange(byte minZoom, byte maxZoom) {
-		this.getMapFileInfo().zoomLevelMax = maxZoom;
-		this.getMapFileInfo().zoomLevelMin = minZoom;
-	}
-
-	@Override
-	public LatLong startPosition() {
-		if (null != getMapFileInfo().startPosition) {
-			return getMapFileInfo().startPosition;
-		}
-		return getMapFileInfo().boundingBox.getCenterPoint();
-	}
-
-	@Override
-	public Byte startZoomLevel() {
-		if (null != getMapFileInfo().startZoomLevel) {
-			return getMapFileInfo().startZoomLevel;
-		}
-		return DEFAULT_START_ZOOM_LEVEL;
-	}
-
-	@Override
-	public boolean supportsTile(Tile tile) {
-		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
 	}
 
 	private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
@@ -436,17 +365,37 @@ public class MapFile implements MapDataStore {
 	}
 
 	/**
-	 * Logs the debug signatures of the current way and block.
+	 * Returns the creation timestamp of the map file.
+	 * @param tile not used, as all tiles will shared the same creation date.
+	 * @return the creation timestamp inside the map file.
 	 */
-	private void logDebugSignatures(String signatureBlock, String signatureWay) {
-		if (this.mapFileHeader.getMapFileInfo().debugFile) {
-			LOGGER.warning(DEBUG_SIGNATURE_WAY + signatureWay);
-			LOGGER.warning(DEBUG_SIGNATURE_BLOCK + signatureBlock);
+	@Override
+	public long getDataTimestamp(Tile tile) {
+		return this.timestamp;
+	}
+
+	/**
+	 * @return the metadata for the current map file.
+	 * @throws IllegalStateException
+	 *             if no map is currently opened.
+	 */
+	public MapFileInfo getMapFileInfo() {
+		return this.mapFileHeader.getMapFileInfo();
+	}
+
+	/**
+	 * @return the map file supported languages (may be null).
+	 */
+	public String[] getMapLanguages() {
+		String languagesPreference = getMapFileInfo().languagesPreference;
+		if (languagesPreference != null && !languagesPreference.trim().isEmpty()) {
+			return languagesPreference.split(",");
 		}
+		return null;
 	}
 
 	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                  BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
 		if (!processBlockSignature()) {
 			return null;
 		}
@@ -494,13 +443,12 @@ public class MapFile implements MapDataStore {
 		return new PoiWayBundle(pois, ways);
 	}
 
-	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter,
-	                                    BoundingBox boundingBox)
+	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter, BoundingBox boundingBox)
 			throws IOException {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
 
-		MapReadResultBuilder mapReadResultBuilder = new MapReadResultBuilder();
+		MapReadResult mapFileReadResult = new MapReadResult();
 
 		// read and process all blocks from top to bottom and from left to right
 		for (long row = queryParameters.fromBlockY; row <= queryParameters.toBlockY; ++row) {
@@ -550,7 +498,7 @@ public class MapFile implements MapDataStore {
 				} else if (currentBlockSize == 0) {
 					// the current block is empty, continue with the next block
 					continue;
-				} else if (currentBlockSize > ReadBuffer.MAXIMUM_BUFFER_SIZE) {
+				} else if (currentBlockSize > ReadBuffer.getMaximumBufferSize()) {
 					// the current block is too large, continue with the next block
 					LOGGER.warning("current block size too large: " + currentBlockSize);
 					continue;
@@ -578,20 +526,20 @@ public class MapFile implements MapDataStore {
 				try {
 					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox, tileLatitude, tileLongitude);
 					if (poiWayBundle != null) {
-						mapReadResultBuilder.add(poiWayBundle);
+						mapFileReadResult.add(poiWayBundle);
 					}
 				} catch (ArrayIndexOutOfBoundsException e) {
-					LOGGER.log(Level.SEVERE, null, e);
+					LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		}
 
 		// the query is finished, was the water flag set for all blocks?
 		if (queryIsWater && queryReadWaterInfo) {
-			mapReadResultBuilder.isWater = true;
+			mapFileReadResult.isWater = true;
 		}
 
-		return mapReadResultBuilder.build();
+		return mapFileReadResult;
 	}
 
 	/**
@@ -661,7 +609,7 @@ public class MapFile implements MapDataStore {
 
 			// check if the POI has a name
 			if (featureName) {
-				tags.add(new Tag(TAG_KEY_NAME, this.readBuffer.readUTF8EncodedString()));
+				tags.add(new Tag(TAG_KEY_NAME, extractLocalized(this.readBuffer.readUTF8EncodedString())));
 			}
 
 			// check if the POI has a house number
@@ -724,12 +672,11 @@ public class MapFile implements MapDataStore {
 	}
 
 	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays,
-	                              BoundingBox boundingBox, boolean filterRequired,
-	                              double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, boolean filterRequired, double tileLatitude, double tileLongitude) {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
-		BoundingBox wayFilterBbox = boundingBox.extend(wayFilterDistance);
+		BoundingBox wayFilterBbox = boundingBox.extendMeters(wayFilterDistance);
 
 		for (int elementCounter = numberOfWays; elementCounter != 0; --elementCounter) {
 			if (this.mapFileHeader.getMapFileInfo().debugFile) {
@@ -794,7 +741,7 @@ public class MapFile implements MapDataStore {
 
 			// check if the way has a name
 			if (featureName) {
-				tags.add(new Tag(TAG_KEY_NAME, this.readBuffer.readUTF8EncodedString()));
+				tags.add(new Tag(TAG_KEY_NAME, extractLocalized(this.readBuffer.readUTF8EncodedString())));
 			}
 
 			// check if the way has a house number
@@ -827,6 +774,39 @@ public class MapFile implements MapDataStore {
 		}
 
 		return ways;
+	}
+
+	/**
+	 * Reads all map data for the area covered by the given tile at the tile zoom level.
+	 *
+	 * @param tile
+	 *            defines area and zoom level of read map data.
+	 * @return the read map data.
+	 */
+	@Override
+	public synchronized MapReadResult readMapData(Tile tile) {
+		try {
+			QueryParameters queryParameters = new QueryParameters();
+			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
+
+			// get and check the sub-file for the query zoom level
+			SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
+			if (subFileParameter == null) {
+				LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
+				return null;
+			}
+
+			queryParameters.calculateBaseTiles(tile, subFileParameter);
+			queryParameters.calculateBlocks(subFileParameter);
+
+			// we enlarge the bounding box for the tile slightly in order to retain any data that
+			// lies right on the border, some of this data needs to be drawn as the graphics will
+			// overlap onto this tile.
+			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			return null;
+		}
 	}
 
 	private LatLong readOptionalLabelPosition(double tileLatitude, double tileLongitude, boolean featureLabelPosition) {
@@ -870,15 +850,35 @@ public class MapFile implements MapDataStore {
 		return zoomTable;
 	}
 
+	/**
+	 * Restricts returns of data to zoom level range specified. This can be used to restrict
+	 * the use of this map data base when used in MultiMapDatabase settings.
+	 * @param minZoom minimum zoom level supported
+	 * @param maxZoom maximum zoom level supported
+	 */
+	public void restrictToZoomRange(byte minZoom, byte maxZoom) {
+		this.getMapFileInfo().zoomLevelMax = maxZoom;
+		this.getMapFileInfo().zoomLevelMin = minZoom;
+	}
 
-	private MapFile() {
-		// only to create a dummy empty file.
-		databaseIndexCache = null;
-		fileSize = 0;
-		inputFile = null;
-		mapFileHeader = null;
-		readBuffer = null;
-		timestamp = System.currentTimeMillis();
+	@Override
+	public LatLong startPosition() {
+		if (null != getMapFileInfo().startPosition) {
+			return getMapFileInfo().startPosition;
+		}
+		return getMapFileInfo().boundingBox.getCenterPoint();
+	}
+
+	@Override
+	public Byte startZoomLevel() {
+		if (null != getMapFileInfo().startZoomLevel) {
+			return getMapFileInfo().startZoomLevel;
+		}
+		return DEFAULT_START_ZOOM_LEVEL;
+	}
+
+	@Override
+	public boolean supportsTile(Tile tile) {
+		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
 	}
 }
-

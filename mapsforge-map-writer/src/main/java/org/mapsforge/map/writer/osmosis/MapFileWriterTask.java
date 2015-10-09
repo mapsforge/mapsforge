@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -58,8 +59,10 @@ public class MapFileWriterTask implements Sink {
 			properties.load(MapFileWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
 			configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
 					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
-			configuration.setFileSpecificationVersion(Integer.parseInt(properties
-					.getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION)));
+			// If multilingual map then set newer map file version
+			boolean multilingual = configuration.getPreferredLanguages() != null && configuration.getPreferredLanguages().size() > 1;
+			configuration.setFileSpecificationVersion(Integer.parseInt(properties.getProperty(
+					multilingual ? Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX : Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN)));
 
 			LOGGER.info("mapfile-writer version: " + configuration.getWriterVersion());
 			LOGGER.info("mapfile format specification version: " + configuration.getFileSpecificationVersion());

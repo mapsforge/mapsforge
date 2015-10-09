@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,12 +24,34 @@ import java.util.logging.Logger;
  * Reads from a {@link RandomAccessFile} into a buffer and decodes the data.
  */
 public class ReadBuffer {
-	/**
-	 * Maximum buffer size which is supported by this implementation.
-	 */
-	static final int MAXIMUM_BUFFER_SIZE = 2500000;
+
 	private static final String CHARSET_UTF8 = "UTF-8";
+	/**
+	 * Default maximum buffer size which is supported by this implementation.
+	 */
+	private static final int DEFAULT_MAXIMUM_BUFFER_SIZE = 2500000;
 	private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
+
+	private static int maximumBufferSize = DEFAULT_MAXIMUM_BUFFER_SIZE;
+
+	/**
+	 * Returns the maximum buffer size.
+	 * 
+	 * @return the maximum buffer size.
+	 */
+	public static synchronized int getMaximumBufferSize() {
+		return maximumBufferSize;
+	}
+
+	/**
+	 * Set the maximum buffer size.
+	 * 
+	 * @param maximumBufferSize
+	 *            the maximum buffer size to use.
+	 */
+	public static synchronized void setMaximumBufferSize(int maximumBufferSize) {
+		ReadBuffer.maximumBufferSize = maximumBufferSize;
+	}
 
 	private byte[] bufferData;
 	private int bufferPosition;
@@ -61,7 +84,7 @@ public class ReadBuffer {
 		// ensure that the read buffer is large enough
 		if (this.bufferData == null || this.bufferData.length < length) {
 			// ensure that the read buffer is not too large
-			if (length > MAXIMUM_BUFFER_SIZE) {
+			if (length > maximumBufferSize) {
 				LOGGER.warning("invalid read length: " + length);
 				return false;
 			}

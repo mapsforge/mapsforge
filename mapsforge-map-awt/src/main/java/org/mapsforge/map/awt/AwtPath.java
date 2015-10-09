@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,6 +37,16 @@ class AwtPath implements Path {
 	@Override
 	public void clear() {
 		this.path2D.reset();
+	}
+
+	@Override
+	public void close() {
+		this.path2D.closePath();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.path2D.getCurrentPoint() == null;
 	}
 
 	@Override

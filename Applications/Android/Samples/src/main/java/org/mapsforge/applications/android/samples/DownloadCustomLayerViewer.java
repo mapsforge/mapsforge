@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -37,6 +37,17 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
 				this.mapView.getModel().mapViewPosition, onlineTileSource,
 				AndroidGraphicFactory.INSTANCE);
 		mapView.getLayerManager().getLayers().add(this.downloadLayer);
+
+		mapView.getModel().mapViewPosition.setZoomLevelMin(onlineTileSource.getZoomLevelMin());
+		mapView.getModel().mapViewPosition.setZoomLevelMax(onlineTileSource.getZoomLevelMax());
+		mapView.getMapZoomControls().setZoomLevelMin(onlineTileSource.getZoomLevelMin());
+		mapView.getMapZoomControls().setZoomLevelMax(onlineTileSource.getZoomLevelMax());
 	}
 
+	@Override
+	protected void createMapViews() {
+		super.createMapViews();
+		// we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
+		this.mapView.getModel().displayModel.setFixedTileSize(256);
+	}
 }

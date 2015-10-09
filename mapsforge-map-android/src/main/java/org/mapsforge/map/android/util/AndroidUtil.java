@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,16 +17,19 @@
 package org.mapsforge.map.android.util;
 
 import java.io.File;
+import java.util.logging.Logger;
 
+import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DistanceUnitAdapter;
@@ -40,14 +43,13 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Looper;
 import android.os.StatFs;
-import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
 public final class AndroidUtil {
 
-	public static final boolean HONEYCOMB_PLUS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-	
+	private static final Logger LOGGER = Logger.getLogger(AndroidUtil.class.getName());
+
 	/**
 	 * Utility function to create a two-level tile cache along with its backends.
 	 * This is the compatibility version that by default creates a non-persistent cache.
@@ -58,7 +60,7 @@ public final class AndroidUtil {
 	 *            name for the directory, which will be created as a subdirectory of the default cache directory (as
 	 *            returned by {@link android.content.Context#getExternalCacheDir()}).
 	 * @param firstLevelSize
-	 *            size of the first level cache
+	 *            size of the first level cache (tiles number)
 	 * @param tileSize
 	 *            tile size
 	 * @return a new cache created on the external storage
@@ -76,16 +78,16 @@ public final class AndroidUtil {
 	 *            name for the directory, which will be created as a subdirectory of the default cache directory (as
 	 *            returned by {@link android.content.Context#getExternalCacheDir()}).
 	 * @param firstLevelSize
-	 *            size of the first level cache
+	 *            size of the first level cache (tiles number)
 	 * @param tileSize
 	 *            tile size
 	 * @param persistent
 	 *            whether the second level tile cache should be persistent
 	 * @return a new cache created on the external storage
 	 */
-	public static TileCache createExternalStorageTileCache(Context c, String id, int firstLevelSize, int tileSize,
-	                                                       boolean persistent) {
-		Log.d("TILECACHE INMEMORY SIZE", Integer.toString(firstLevelSize));
+	public static TileCache createExternalStorageTileCache(Context c,
+			String id, int firstLevelSize, int tileSize, boolean persistent) {
+		LOGGER.info("TILECACHE INMEMORY SIZE: " + Integer.toString(firstLevelSize));
 		TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
 		File cacheDir = c.getExternalCacheDir();
 		if (cacheDir != null) {
@@ -96,13 +98,13 @@ public final class AndroidUtil {
 				int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
 				if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
 					try {
-						Log.d("TILECACHE FILE SIZE", Integer.toString(tileCacheFiles));
+						LOGGER.info("TILECACHE FILE SIZE: " + Integer.toString(tileCacheFiles));
 
 						TileCache secondLevelTileCache = new FileSystemTileCache(tileCacheFiles, cacheDirectory,
 								org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE, persistent);
 						return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
 					} catch (IllegalArgumentException e) {
-						Log.w("TILECACHE", e.toString());
+						LOGGER.warning(e.getMessage());
 					}
 				}
 			}
@@ -128,8 +130,8 @@ public final class AndroidUtil {
 	 *            whether the second level tile cache should be persistent
 	 * @return a new cache created on the external storage
 	 */
-	public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw,
-	                                        boolean persistent) {
+	public static TileCache createTileCache(Context c, String id, int tileSize,
+			float screenRatio, double overdraw, boolean persistent) {
 		int cacheSize = Math.round(getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
 		return createExternalStorageTileCache(c, id, cacheSize, tileSize, persistent);
 	}
@@ -174,8 +176,8 @@ public final class AndroidUtil {
 	 *            whether the cache should be persistent
 	 * @return a new cache created on the external storage
 	 */
-	public static TileCache createTileCache(Context c, String id, int tileSize, int width, int height, double overdraw,
-	                                        boolean persistent) {
+	public static TileCache createTileCache(Context c, String id, int tileSize,
+			int width, int height, double overdraw, boolean persistent) {
 		int cacheSize = Math.round(getMinimumCacheSize(tileSize, overdraw, width, height));
 		return createExternalStorageTileCache(c, id, cacheSize, tileSize, persistent);
 	}
@@ -213,9 +215,10 @@ public final class AndroidUtil {
 	 * @param renderLabels    should usually be true
 	 * @return the layer
 	 */
-	public static TileRendererLayer createTileRendererLayer(TileCache tileCache,
-	                                                        MapViewPosition mapViewPosition, MapDataStore mapFile,
-	                                                        XmlRenderTheme renderTheme, boolean hasAlpha, boolean renderLabels) {
+	public static TileRendererLayer createTileRendererLayer(
+			TileCache tileCache, MapViewPosition mapViewPosition,
+			MapDataStore mapFile, XmlRenderTheme renderTheme, boolean hasAlpha,
+			boolean renderLabels) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
 				mapViewPosition, hasAlpha, renderLabels, AndroidGraphicFactory.INSTANCE);
 		tileRendererLayer.setXmlRenderTheme(renderTheme);
@@ -231,7 +234,7 @@ public final class AndroidUtil {
 
 	/**
 	 * @param cacheDirectoryName where the file system tile cache will be located
-	 * @param firstLevelSize     size of the first level cache, no point cache being smaller
+	 * @param firstLevelSize     size of the first level cache (tiles number), no point cache being smaller
 	 * @param tileSize           tile size
 	 * @return recommended number of files in FileSystemTileCache
 	 */
@@ -259,10 +262,10 @@ public final class AndroidUtil {
 	 * @return number of tiles that can be stored without running out of space
 	 */
 	@SuppressWarnings("deprecation")
-	@TargetApi(18)
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 	public static long getAvailableCacheSlots(String directory, int fileSize) {
 		StatFs statfs = new StatFs(directory);
-		if (android.os.Build.VERSION.SDK_INT >= 18) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 			return statfs.getAvailableBytes() / fileSize;
 		}
 		// problem is overflow with devices with large storage, so order is important here
@@ -274,6 +277,7 @@ public final class AndroidUtil {
 	/**
 	 * Compute the minimum cache size for a view. When the cache is created we do not actually
 	 * know the size of the mapview, so the screenRatio is an approximation of the required size.
+	 * For the view size we use the frame buffer calculated dimension.
 	 *
 	 * @param c              the context
 	 * @param tileSize       the tile size
@@ -282,13 +286,13 @@ public final class AndroidUtil {
 	 * @return the minimum cache size for the view
 	 */
 	@SuppressWarnings("deprecation")
-	@TargetApi(13)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public static int getMinimumCacheSize(Context c, int tileSize, double overdrawFactor, float screenRatio) {
 		WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		int height;
 		int width;
-		if (android.os.Build.VERSION.SDK_INT >= 13) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			Point p = new Point();
 			display.getSize(p);
 			height = p.y;
@@ -299,7 +303,7 @@ public final class AndroidUtil {
 			width = display.getWidth();
 		}
 
-		// height  * overdrawFactor / tileSize calculates the number of tiles that would cover
+		// height * overdrawFactor / tileSize calculates the number of tiles that would cover
 		// the view port, adding 1 is required since we can have part tiles on either side,
 		// adding 2 adds another row/column as spare and ensures that we will generally have
 		// a larger number of tiles in the cache than a TileLayer will render for a view.
@@ -307,12 +311,14 @@ public final class AndroidUtil {
 		// of a screen (the result can be too low if a MapView is very narrow).
 		// For any size we need a minimum of 4 (as the intersection of 4 tiles can always be in the
 		// middle of a view.
-		return (int) Math.max(4, screenRatio * (2 + (height * overdrawFactor / tileSize))
-				* (2 + (width * overdrawFactor / tileSize)));
+		Dimension dimension = FrameBufferController.calculateFrameBufferDimension(new Dimension(width, height), overdrawFactor);
+		return (int) Math.max(4, screenRatio * (2 + (dimension.height / tileSize))
+				* (2 + (dimension.width / tileSize)));
 	}
 
 	/**
 	 * Compute the minimum cache size for a view, using the size of the map view.
+	 * For the view size we use the frame buffer calculated dimension.
 	 *
 	 * @param tileSize       the tile size
 	 * @param overdrawFactor the overdraw factor applied to the mapview
@@ -321,23 +327,24 @@ public final class AndroidUtil {
 	 * @return the minimum cache size for the view
 	 */
 	public static int getMinimumCacheSize(int tileSize, double overdrawFactor, int width, int height) {
-		// height  * overdrawFactor / tileSize calculates the number of tiles that would cover
+		// height * overdrawFactor / tileSize calculates the number of tiles that would cover
 		// the view port, adding 1 is required since we can have part tiles on either side,
 		// adding 2 adds another row/column as spare and ensures that we will generally have
 		// a larger number of tiles in the cache than a TileLayer will render for a view.
 		// For any size we need a minimum of 4 (as the intersection of 4 tiles can always be in the
 		// middle of a view.
-		return (int) Math.max(4, (2 + (height * overdrawFactor / tileSize))
-				* (2 + (width * overdrawFactor / tileSize)));
+		Dimension dimension = FrameBufferController.calculateFrameBufferDimension(new Dimension(width, height), overdrawFactor);
+		return (int) Math.max(4, (2 + (dimension.height / tileSize))
+				* (2 + (dimension.width / tileSize)));
 	}
 
 	/**
 	 * Restarts activity, from http://stackoverflow.com/questions/1397361/how-do-i-restart-an-android-activity
 	 * @param activity the activity to restart
 	 */
-	@TargetApi(11)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static void restartActivity(Activity activity) {
-		if (Build.VERSION.SDK_INT >= 11) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			activity.recreate();
 		} else {
 			Intent intent = activity.getIntent();
@@ -361,9 +368,8 @@ public final class AndroidUtil {
 	 * @param secondaryDistanceUnitAdapter secondary scale
 	 */
 	public static void setMapScaleBar(MapView mapView,
-	                           DistanceUnitAdapter primaryDistanceUnitAdapter,
-	                           DistanceUnitAdapter secondaryDistanceUnitAdapter) {
-
+			DistanceUnitAdapter primaryDistanceUnitAdapter,
+			DistanceUnitAdapter secondaryDistanceUnitAdapter) {
 		if (null == primaryDistanceUnitAdapter && null == secondaryDistanceUnitAdapter) {
 			mapView.setMapScaleBar(null);
 		} else {

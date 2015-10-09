@@ -1,5 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -78,12 +79,6 @@ public class RenderThemeChanger extends RenderTheme4 {
 		this.changerThread.start();
 	}
 
-	@Override
-	protected void destroyLayers() {
-		this.changerThread.interrupt();
-		super.destroyLayers();
-	}
-
 	void changeRenderTheme() {
 		File[] renderThemes = Environment.getExternalStorageDirectory().listFiles(renderThemesFilter);
 		if (renderThemes.length > 0) {
@@ -106,5 +101,11 @@ public class RenderThemeChanger extends RenderTheme4 {
 				Log.i(SamplesApplication.TAG, "Could not open file " + nextTheme.getName());
 			}
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		this.changerThread.interrupt();
+		super.onDestroy();
 	}
 }

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,6 +26,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 
+import android.annotation.TargetApi;
 import android.graphics.BitmapShader;
 import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
@@ -35,12 +37,7 @@ import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 import android.os.Build;
 
-
 class AndroidPaint implements Paint {
-
-	// needed to record size of bitmap shader to compute the shift
-	private int shaderWidth;
-	private int shaderHeight;
 
 	private static android.graphics.Paint.Align getAndroidAlign(Align align) {
 		switch (align) {
@@ -80,7 +77,6 @@ class AndroidPaint implements Paint {
 
 		throw new IllegalArgumentException("unknown join: " + join);
 	}
-
 
 	private static android.graphics.Paint.Style getAndroidStyle(Style style) {
 		switch (style) {
@@ -123,27 +119,36 @@ class AndroidPaint implements Paint {
 		throw new IllegalArgumentException("unknown font family: " + fontFamily);
 	}
 
-	final android.graphics.Paint paint = new android.graphics.Paint();
+	final android.graphics.Paint paint;
+
+	// needed to record size of bitmap shader to compute the shift
+	private int shaderWidth;
+	private int shaderHeight;
+
+	// Avoid creating unnecessary objects
+	private final Rect rect = new Rect();
 
 	AndroidPaint() {
+		paint = new android.graphics.Paint();
 		this.paint.setAntiAlias(true);
 		this.paint.setStrokeCap(getAndroidCap(Cap.ROUND));
 		this.paint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
 		this.paint.setStyle(getAndroidStyle(Style.FILL));
 	}
 
+	AndroidPaint(Paint paint) {
+		this.paint = new android.graphics.Paint(((AndroidPaint) paint).paint);
+	}
+
 	@Override
 	public int getTextHeight(String text) {
-		Rect rect = new Rect();
 		this.paint.getTextBounds(text, 0, text.length(), rect);
 		return rect.height();
 	}
 
 	@Override
 	public int getTextWidth(String text) {
-		Rect rect = new Rect();
-		this.paint.getTextBounds(text, 0, text.length(), rect);
-		return rect.width();
+		return (int) this.paint.measureText(text);
 	}
 
 	@Override
@@ -151,6 +156,8 @@ class AndroidPaint implements Paint {
 		return this.paint.getShader() == null && this.paint.getAlpha() == 0;
 	}
 
+	@SuppressWarnings("unused")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {
 		if (bitmap == null) {

@@ -6,6 +6,14 @@ The best way to get started building an Android app with mapsforge is by studyin
 
 Here, however, we go through a very basic example of an app that simply displays a map rendered from a mapfile in the built-in render style.  
 
+# Hardware acceleration
+
+Mapsforge currently requires disabling hardware acceleration for the map view. This can be controlled in various levels, better described in Android [documentation](http://developer.android.com/guide/topics/graphics/hardware-accel.html#controlling).
+
+# Android manifest
+You'll need to have the appropriate permissions in manifest for tile cache to work properly:
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 # App Initialization
 
@@ -63,19 +71,9 @@ Refer to the Samples app on how to read the initial position out of a mapfile or
 Whenever your activity changes, some cleanup operations have to be performed lest your app runs out of memory. 
 
     @Override
-    protected void onStop() {
-    	super.onStop();
-    	this.mapView.getLayerManager().getLayers().remove(this.tileRendererLayer);
-    	this.tileRendererLayer.onDestroy();
-    }
-    
-    @Override
     protected void onDestroy() {
     	super.onDestroy();
-    	this.tileCache.destroy();
-    	this.mapView.getModel().mapViewPosition.destroy();
-    	this.mapView.destroy();
-    	AndroidGraphicFactory.clearResourceMemoryCache();
+    	this.mapView.destroyAll();
     }
 
 ## All in one
@@ -92,7 +90,7 @@ Here comes the whole as a single file:
     import org.mapsforge.map.android.view.MapView;
     import org.mapsforge.map.layer.cache.TileCache;
     import org.mapsforge.map.layer.renderer.TileRendererLayer;
-    import org.mapsforge.map.reader.MapDataStore;
+    import org.mapsforge.map.datastore.MapDataStore;
     import org.mapsforge.map.reader.MapFile;
     import org.mapsforge.map.rendertheme.InternalRenderTheme;
     
@@ -149,19 +147,9 @@ Here comes the whole as a single file:
     	}
     
     	@Override
-    	protected void onStop() {
-    		super.onStop();
-    		this.mapView.getLayerManager().getLayers().remove(this.tileRendererLayer);
-    		this.tileRendererLayer.onDestroy();
-    	}
-    
-    	@Override
     	protected void onDestroy() {
     		super.onDestroy();
-    		this.tileCache.destroy();
-    		this.mapView.getModel().mapViewPosition.destroy();
-    		this.mapView.destroy();
-    		AndroidGraphicFactory.clearResourceMemoryCache();
+    		this.mapView.destroyAll();
     	}
     	
     	private File getMapFile() {

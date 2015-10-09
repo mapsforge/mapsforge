@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,17 +23,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.CorruptedInputStreamException;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.util.IOUtils;
-import org.mapsforge.map.android.util.AndroidUtil;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 
 /**
  * On Android, managing and recycling the memory for bitmaps is important, but varies significantly between versions:
@@ -68,13 +67,13 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 
 	private static android.graphics.Bitmap getTileBitmapFromReusableSet(int tileSize, boolean isTransparent) {
 		int hash = composeHash(tileSize, isTransparent);
-		Set<SoftReference<Bitmap>> subSet = reusableTileBitmaps.get(hash);
 
-		if (subSet == null) {
-			return null;
-		}
-		android.graphics.Bitmap bitmap = null;
-		synchronized (subSet) {
+		synchronized (reusableTileBitmaps) {
+			Set<SoftReference<Bitmap>> subSet = reusableTileBitmaps.get(hash);
+			if (subSet == null) {
+				return null;
+			}
+			android.graphics.Bitmap bitmap = null;
 			final Iterator<SoftReference<android.graphics.Bitmap>> iterator = subSet.iterator();
 			android.graphics.Bitmap candidate;
 			while (iterator.hasNext()) {
@@ -92,8 +91,8 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 					iterator.remove();
 				}
 			}
+			return bitmap;
 		}
-		return bitmap;
 	}
 
 	private long expiration = 0;
@@ -118,12 +117,12 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 			// is triggered if the stream is not readable,
 			// so that it can be handled at this point, rather than later
 			// during bitmap painting
-			int w = this.bitmap.getWidth(); //NOSONAR
+			this.bitmap.getWidth(); //NOSONAR
 		} catch (Exception e) {
 			// this is really stupid, the runtime system actually throws a SocketTimeoutException,
 			// but we cannot catch it, because it is not declared, so we needed to catch the base
 			// class exception
-			LOGGER.log(Level.INFO, "TILEBITMAP ERROR " + e.toString());
+			LOGGER.info("TILEBITMAP ERROR " + e.toString());
 			this.bitmap = null; // need to null out to avoid recycling
 			IOUtils.closeQuietly(inputStream); // seems to improve memory usage
 			this.destroy();
@@ -131,9 +130,10 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	AndroidTileBitmap(int tileSize, boolean isTransparent) {
 		super();
-		if (AndroidUtil.HONEYCOMB_PLUS) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			this.bitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
 		}
 		if (this.bitmap == null) {
@@ -173,15 +173,16 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		super.destroy();
 		if (AndroidGraphicFactory.DEBUG_BITMAPS) {
 			int i = tileInstances.decrementAndGet();
-			LOGGER.log(Level.INFO, "TILEBITMAP COUNT " + Integer.toString(i));
+			LOGGER.info("TILEBITMAP COUNT " + Integer.toString(i));
 		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void destroyBitmap() {
 		if (this.bitmap != null) {
 			// bitmap can be null if there is an error creating it
-			if (AndroidUtil.HONEYCOMB_PLUS) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 				final int tileSize = this.getHeight();
 				synchronized (reusableTileBitmaps) {
 					int hash = composeHash(tileSize, this.bitmap.hasAlpha());
@@ -192,9 +193,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 						reusableTileBitmaps.put(hash, new HashSet<SoftReference<Bitmap>>());
 					}
 					Set<SoftReference<Bitmap>> sizeSpecificSet = reusableTileBitmaps.get(hash);
-					synchronized (sizeSpecificSet) {
-						sizeSpecificSet.add(new SoftReference<Bitmap>(this.bitmap));
-					}
+					sizeSpecificSet.add(new SoftReference<Bitmap>(this.bitmap));
 				}
 			} else {
 				this.bitmap.recycle();
@@ -203,7 +202,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		}
 	}
 
-	@TargetApi(11)
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private BitmapFactory.Options createTileBitmapFactoryOptions(int tileSize, boolean isTransparent) {
 		BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
 		if (isTransparent) {
@@ -211,7 +210,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 		} else {
 			bitmapFactoryOptions.inPreferredConfig = AndroidGraphicFactory.NON_TRANSPARENT_BITMAP;
 		}
-		if (org.mapsforge.map.android.util.AndroidUtil.HONEYCOMB_PLUS) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			android.graphics.Bitmap reusableBitmap = getTileBitmapFromReusableSet(tileSize, isTransparent);
 			if (reusableBitmap != null) {
 				bitmapFactoryOptions.inMutable = true;

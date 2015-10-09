@@ -13,13 +13,13 @@
     <TextView
         android:id="@+id/attribution"
         android:layout_width="fill_parent"
-        android:layout_height="10dip"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="1dip"
+        android:layout_marginBottom="@dimen/attribution_margin"
         android:gravity="center"
         android:singleLine="true"
         android:text="@string/copyright_osm"
         android:textColor="#000"
-        android:textSize="4pt" />
+        android:textSize="@dimen/attribution_size" />
 
 </RelativeLayout>

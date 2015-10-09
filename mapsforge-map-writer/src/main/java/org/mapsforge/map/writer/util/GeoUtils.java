@@ -97,10 +97,10 @@ public final class GeoUtils {
 			if (!geometry.isValid()) {
 				// this should stop the problem of non-noded intersections that trigger an error when
 				// clipping
-				LOGGER.log(Level.WARNING, "invalid geometry prior to tile clipping, trying to repair " + way.getId());
+				LOGGER.warning("invalid geometry prior to tile clipping, trying to repair " + way.getId());
 				geometry = JTSUtils.repairInvalidPolygon(geometry);
 				if (!geometry.isValid()) {
-					LOGGER.log(Level.WARNING, "invalid geometry even after attempt to fix " + way.getId());
+					LOGGER.warning("invalid geometry even after attempt to fix " + way.getId());
 				}
 			}
 			ret = tileBBJTS.intersection(geometry);
@@ -109,11 +109,11 @@ public final class GeoUtils {
 			// we need to investigate this more closely and write approriate test cases
 			// for now, I check whether the resulting polygon is valid and if not try to repair it
 			if ((ret instanceof Polygon || ret instanceof MultiPolygon) && !ret.isValid()) {
-				LOGGER.log(Level.WARNING, "clipped way is not valid, trying to repair it: " + way.getId());
+				LOGGER.warning("clipped way is not valid, trying to repair it: " + way.getId());
 				ret = JTSUtils.repairInvalidPolygon(ret);
 				if (ret == null) {
 					way.setInvalid(true);
-					LOGGER.log(Level.WARNING, "could not repair invalid polygon: " + way.getId());
+					LOGGER.warning("could not repair invalid polygon: " + way.getId());
 				}
 			}
 		} catch (TopologyException e) {
@@ -231,8 +231,7 @@ public final class GeoUtils {
 				}
 			}
 		} catch (TopologyException e) {
-			LOGGER.log(Level.FINE,
-					"encountered error during mapping of a way to corresponding tiles, way id: " + way.getId());
+			LOGGER.fine("encountered error during mapping of a way to corresponding tiles, way id: " + way.getId());
 			return Collections.emptySet();
 		}
 

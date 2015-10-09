@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,22 +21,27 @@ import java.awt.Graphics;
 
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
+import org.mapsforge.map.layer.TileLayer;
+import org.mapsforge.map.layer.labels.LabelStore;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
-import org.mapsforge.map.scalebar.DefaultMapScaleBar.ScaleBarMode;
-import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MapScaleBar;
-import org.mapsforge.map.scalebar.MetricUnitAdapter;
+import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
 public class MapView extends Container implements org.mapsforge.map.view.MapView {
+
 	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 	private static final long serialVersionUID = 1L;
 
@@ -64,11 +69,16 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
 				this.model.displayModel);
-		((DefaultMapScaleBar) this.mapScaleBar).setScaleBarMode(ScaleBarMode.BOTH);
-		((DefaultMapScaleBar) this.mapScaleBar).setDistanceUnitAdapter(MetricUnitAdapter.INSTANCE);
-		((DefaultMapScaleBar) this.mapScaleBar).setSecondaryDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
 	}
 
+	@Override
+	public void addLayer(Layer layer) {
+		this.layerManager.getLayers().add(layer);
+	}
+
+	/**
+	 * Clear map view.
+	 */
 	@Override
 	public void destroy() {
 		this.layerManager.interrupt();
@@ -77,6 +87,36 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		if (this.mapScaleBar != null) {
 			this.mapScaleBar.destroy();
 		}
+		this.getModel().mapViewPosition.destroy();
+	}
+
+	/**
+	 * Clear all map view elements.<br/>
+	 * i.e. layers, tile cache, label store, map view, resources, etc.
+	 */
+	@Override
+	public void destroyAll() {
+		for (Layer layer : this.layerManager.getLayers()) {
+			this.layerManager.getLayers().remove(layer);
+			layer.onDestroy();
+			if (layer instanceof TileLayer) {
+				((TileLayer<?>) layer).getTileCache().destroy();
+			}
+			if (layer instanceof TileRendererLayer) {
+				LabelStore labelStore = ((TileRendererLayer) layer).getLabelStore();
+				if (labelStore != null) {
+					labelStore.clear();
+				}
+			}
+		}
+		destroy();
+		AwtGraphicFactory.clearResourceMemoryCache();
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(),
+				getDimension(), this.model.displayModel.getTileSize());
 	}
 
 	@Override
@@ -105,12 +145,6 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
-	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		this.mapScaleBar.destroy();
-		this.mapScaleBar=mapScaleBar;
-	}
-
-	@Override
 	public Model getModel() {
 		return this.model;
 	}
@@ -123,5 +157,21 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 		this.frameBuffer.draw(graphicContext);
 		this.mapScaleBar.draw(graphicContext);
 		this.fpsCounter.draw(graphicContext);
+	}
+
+	@Override
+	public void setCenter(LatLong center) {
+		this.model.mapViewPosition.setCenter(center);
+	}
+
+	@Override
+	public void setMapScaleBar(MapScaleBar mapScaleBar) {
+		this.mapScaleBar.destroy();
+		this.mapScaleBar=mapScaleBar;
+	}
+
+	@Override
+	public void setZoomLevel(byte zoomLevel) {
+		this.model.mapViewPosition.setZoomLevel(zoomLevel);
 	}
 }

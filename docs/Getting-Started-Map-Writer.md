@@ -29,7 +29,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`bbox`|bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters)|minLat, minLon, maxLat, maxLon in exactly this order as degrees or microdegrees|(blank)|
 |`map-start-position`|write a start position to the file which is used, when the file is first opened in the MapViewer|latitude, longitude in degrees or microdegrees|(blank)|
 |`map-start-zoom`|write a start zoom level to the file which is used, when the file is first opened in the MapViewer|zoom level as integer in [0, 21]|(blank)|
-|`preferred-language`|will write names of geo objects in the preferred language to the file, this only works for objects which have been tagged for the preferred language|language code as as defined in ISO 639-1 or ISO 639-2|(blank)|
+|`preferred-languages`|If not specified, only the default language with no tag will be written to the file. If only one language is specified, it will be written if its tag is found, otherwise the default language will be written. If multiple comma separated languages are specified, the default language will be written, followed by the specified languages (if present and if different than the default).|language code as as defined in ISO 639-1 or ISO 639-2|(blank)|
 |`comment`|writes a comment to the file||(blank)|
 
 ### Advanced Options (only use when you know what you are doing)
@@ -61,7 +61,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 
 ## Plugin Installation
 
-- Download the  [map-writer plugin](http://ci.mapsforge.org/job/0.5.0-rc3/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0-rc3.jar) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
+- Download the  [map-writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT.jar) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
 1. Copy the downloaded plugin to $USER_HOME/.openstreetmap/osmosis/plugins (Linux) or Application Data\Openstreetmap\Osmosis\Plugins (Windows).
 1. Copy the downloaded plugin to subdirectory plugins in the current directory.
 1. Use the Osmosis parameter ‘-plugin <plugin_qualified_classname>’ to load the plugin. The qualified classname of the map-writer is ‘org.mapsforge.map.writer.osmosis.MapFileWriterPluginLoader’.
@@ -102,13 +102,23 @@ The old practice of implicitly assuming that the background is land-coloured and
 This section describes how to configure the ***known tag set*** via an XML file. The *known tag set* comprises all OSM tags (for ways and POIs) that are known to the renderer. You can use the XML configuration to define which subset of the known tag set should be included in the map file and to configure the zoom levels on which map objects first appear.
 
 The default internal tag mapping defined in https://github.com/mapsforge/mapsforge/blob/master/mapsforge-map-writer/src/main/config/tag-mapping.xml is kept in sync with the known tag set of the renderer. So, if you want to define your own custom mapping use the internal mapping as a reference.
-Please consult the XML-Schmea documentation of https://github.com/mapsforge/mapsforge/blob/master/mapsforge-map-writer/src/main/resources/tag-mapping.xsd to learn about how to implement your custom mapping. The XML-Schema is very easy to understand. We recommend to use Eclipse as an editor for XML as it allows for auto-completion if you provide an XML-Schema.
+Please consult the XML-Schema documentation of https://github.com/mapsforge/mapsforge/blob/dev/resources/tag-mapping.xsd to learn about how to implement your custom mapping. The XML-Schema is very easy to understand. We recommend to use Eclipse as an editor for XML as it allows for auto-completion if you provide an XML-Schema.
 
 You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article [## Feedback
 
 Please report any bugs and feature requests via [Github issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
 ## Changelog
+
+### New since 0.5.2
+- Multilingual maps
+- Language improved parsing
+
+### 0.5.2
+ - Some minor changes to tag-mapping.xml (administrative boundaries, national parks).
+
+### 0.5.1
+- No significant changes
 
 ### 0.5.0
 The mapfile format has not changed in 0.5.0, but the creation process has changed somewhat and it is recommended to use the latest version of the map file writer.

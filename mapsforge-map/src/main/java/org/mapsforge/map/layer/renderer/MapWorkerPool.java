@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.graphics.TileBitmap;
@@ -28,8 +30,14 @@ import org.mapsforge.map.layer.queue.JobQueue;
 
 public class MapWorkerPool implements Runnable {
 
-	public static final int DEFAULT_NUMBER_OF_THREADS = 6;
-	public static int NUMBER_OF_THREADS = DEFAULT_NUMBER_OF_THREADS;
+	// the default number of threads is one greater than the number of processors as one thread
+	// is likely to be blocked on I/O reading map data. Technically this value can change, so a
+	// better implementation, maybe one that also takes the available memory into account, would
+	// be good.
+	public static final int DEFAULT_NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors() + 1;
+	// For stability reasons (see #591), we set number of threads to 1
+	public static int NUMBER_OF_THREADS = 1;
+
 	public static boolean DEBUG_TIMING = false;
 
 	private final AtomicInteger concurrentJobs = new AtomicInteger();
@@ -67,6 +75,7 @@ public class MapWorkerPool implements Runnable {
 		this.workers.shutdown();
 	}
 
+	@Override
 	public void run() {
 		try {
 			while (!inShutdown) {
@@ -80,7 +89,7 @@ public class MapWorkerPool implements Runnable {
 				}
 			}
 		} catch (InterruptedException e) {
-			LOGGER.severe("MapWorkerPool interrupted " + e);
+			LOGGER.log(Level.SEVERE, "MapWorkerPool interrupted", e);
 			// should get restarted by the ExecutorService
 		}
 	}
@@ -94,6 +103,7 @@ public class MapWorkerPool implements Runnable {
 			this.rendererJob.renderThemeFuture.incrementRefCount();
 		}
 
+		@Override
 		public void run() {
 			TileBitmap bitmap = null;
 			try {
@@ -114,11 +124,11 @@ public class MapWorkerPool implements Runnable {
 					return;
 				}
 
-				if (bitmap != null) {
+				if (!rendererJob.labelsOnly && bitmap != null) {
 					MapWorkerPool.this.tileCache.put(rendererJob, bitmap);
 					MapWorkerPool.this.databaseRenderer.removeTileInProgress(rendererJob.tile);
-					MapWorkerPool.this.layer.requestRedraw();
 				}
+				MapWorkerPool.this.layer.requestRedraw();
 
 				if (DEBUG_TIMING) {
 					long end = System.currentTimeMillis();

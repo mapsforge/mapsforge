@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright © 2013-2014 Ludwig M Brinckmann
- * Copyright © 2014 devemux86
+ * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2014 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,6 +27,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  */
 public class LabelLayerMapViewer extends RenderTheme4 {
 
+	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
 				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false);

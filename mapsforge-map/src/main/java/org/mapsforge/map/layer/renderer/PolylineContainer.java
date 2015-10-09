@@ -22,7 +22,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.reader.Way;
+import org.mapsforge.map.datastore.Way;
 
 /**
  * A PolylineContainer encapsulates the way data retrieved from a map file.
@@ -54,7 +54,7 @@ public class PolylineContainer implements ShapeContainer {
 		this.isClosedWay = isClosedWay(way.latLongs[0]);
 	}
 
-	PolylineContainer(Point[] coordinates, Tile tile, List tags) {
+	PolylineContainer(Point[] coordinates, Tile tile, List<Tag> tags) {
 		this.coordinatesAbsolute = new Point[1][];
 		this.coordinatesRelativeToTile = null;
 		this.coordinatesAbsolute[0] = new Point[coordinates.length];

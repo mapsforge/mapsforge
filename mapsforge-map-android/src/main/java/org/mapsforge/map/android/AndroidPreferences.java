@@ -104,6 +104,7 @@ public class AndroidPreferences implements PreferencesFacade {
 
 	@Override
 	public synchronized void putLong(String key, long value) {
+		createEditor();
 		this.editor.putLong(key, value);
 	}
 

@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,7 +22,6 @@ import org.mapsforge.map.util.PausableThread;
 /**
  * Demonstration of changing between fixed and computed tile sizes.
  */
-
 public class TileSizeChanger extends RenderTheme4 {
 
 	private class ChangerThread extends PausableThread {
@@ -56,7 +55,7 @@ public class TileSizeChanger extends RenderTheme4 {
 		super.createControls();
 		this.changerThread = new ChangerThread();
 		this.changerThread.start();
-    }
+	}
 
 	@Override
 	protected void createLayers() {
@@ -66,23 +65,16 @@ public class TileSizeChanger extends RenderTheme4 {
 		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 	}
 
-    @Override
-    protected void destroyControls() {
-        super.destroyControls();
-        this.changerThread.interrupt();
-    }
-
-
 	void changeTileSize() {
-
 		Integer[] tileSizes = { 256, 120, 0, 120};
 
 		if (tileSizes.length > 0) {
 			iteration += 1;
 			// destroy and recreate the tile caches so that old storage is
 			// freed and a new tile cache is created based on the new tile size
-			destroyLayers();
-			destroyTileCaches();
+			mapView.getLayerManager().getLayers().remove(tileRendererLayer);
+			tileRendererLayer.onDestroy();
+			purgeTileCaches();
 
 			int tileSize = tileSizes[iteration % tileSizes.length];
 			this.mapView.getModel().displayModel.setFixedTileSize(tileSize);
@@ -93,5 +85,11 @@ public class TileSizeChanger extends RenderTheme4 {
 			this.mapView.getMapScaleBar().redrawScaleBar();
 			this.mapView.getLayerManager().redrawLayers();
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		this.changerThread.interrupt();
+		super.onDestroy();
 	}
 }

@@ -15,6 +15,7 @@ public class RenderThemeV4Test extends ActivityInstrumentationTestCase2<RenderTh
 		super(RenderTheme4.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,7 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
-import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class WindowCloseDialog extends WindowAdapter {
@@ -32,15 +31,13 @@ public class WindowCloseDialog extends WindowAdapter {
 	private final JFrame jFrame;
 	private final MapView mapView;
 	private final PreferencesFacade preferencesFacade;
-	private final TileCache tileCache;
 
-	public WindowCloseDialog(JFrame jFrame, MapView mapView, PreferencesFacade preferencesFacade, TileCache tileCache) {
+	public WindowCloseDialog(JFrame jFrame, MapView mapView, PreferencesFacade preferencesFacade) {
 		super();
 
 		this.jFrame = jFrame;
 		this.mapView = mapView;
 		this.preferencesFacade = preferencesFacade;
-		this.tileCache = tileCache;
 
 		jFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	}
@@ -51,8 +48,7 @@ public class WindowCloseDialog extends WindowAdapter {
 
 		if (result == JOptionPane.YES_OPTION) {
 			this.mapView.getModel().save(this.preferencesFacade);
-			this.tileCache.destroy();
-			this.mapView.destroy();
+			this.mapView.destroyAll();
 			this.jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		}
 	}

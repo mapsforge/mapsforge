@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -35,7 +36,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
 	private static final String PARAM_MAP_START_ZOOM = "map-start-zoom";
 	private static final String PARAM_OUTFILE = "file";
 	private static final String PARAM_POLYGON_CLIPPING = "polygon-clipping";
-	private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
+	private static final String PARAM_PREFERRED_LANGUAGES = "preferred-languages";
 	// private static final String PARAM_WAYNODE_COMPRESSION = "waynode-compression";
 	private static final String PARAM_SIMPLIFICATION_FACTOR = "simplification-factor";
 	private static final String PARAM_SKIP_INVALID_RELATIONS = "skip-invalid-relations";
@@ -70,7 +71,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
 		configuration.setBboxEnlargement(getIntegerArgument(taskConfig, PARAM_BBOX_ENLARGEMENT,
 				Constants.DEFAULT_PARAM_BBOX_ENLARGEMENT));
 
-		configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
+		configuration.setPreferredLanguages(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGES, null));
 		configuration
 				.addEncodingChoice(getStringArgument(taskConfig, PARAM_ENCODING, Constants.DEFAULT_PARAM_ENCODING));
 

@@ -15,6 +15,7 @@ public class DisplayModelTest extends ActivityInstrumentationTestCase2<DualMapVi
 		super(DualMapViewerWithDifferentDisplayModels.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}

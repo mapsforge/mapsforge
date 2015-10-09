@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Ludwig M Brinckmann
+ * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,9 +17,9 @@ package org.mapsforge.applications.android.samples;
 import android.content.Context;
 import android.os.Bundle;
 
-import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.reader.MultiMapDataStore;
+import org.mapsforge.map.datastore.MultiMapDataStore;
 
 import java.io.File;
 

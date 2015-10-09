@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,6 +37,7 @@ import org.mapsforge.map.layer.Layer;
  * and transparency.
  */
 public class Polyline extends Layer {
+
 	private final GraphicFactory graphicFactory;
 	private final boolean keepAligned;
 	private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
@@ -44,7 +46,8 @@ public class Polyline extends Layer {
 	/**
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this polyline (may be null).
-	 * @param graphicFactory the GraphicFactory
+	 * @param graphicFactory
+	 *            the GraphicFactory
 	 */
 	public Polyline(Paint paintStroke, GraphicFactory graphicFactory) {
 		this(paintStroke, graphicFactory, false);
@@ -53,9 +56,11 @@ public class Polyline extends Layer {
 	/**
 	 * @param paintStroke
 	 *            the initial {@code Paint} used to stroke this polyline (may be null).
-	 * @param graphicFactory the GraphicFactory
-	 * @param keepAligned if set to true it will keep the bitmap aligned with the map, to avoid
-	 *                    a moving effect of a bitmap shader.
+	 * @param graphicFactory
+	 *            the GraphicFactory
+	 * @param keepAligned
+	 *            if set to true it will keep the bitmap aligned with the map,
+	 *            to avoid a moving effect of a bitmap shader.
 	 */
 	public Polyline(Paint paintStroke, GraphicFactory graphicFactory, boolean keepAligned) {
 		super();
@@ -113,10 +118,19 @@ public class Polyline extends Layer {
 	}
 
 	/**
+	 * @return true if it keeps the bitmap aligned with the map, to avoid a
+	 *         moving effect of a bitmap shader, false otherwise.
+	 */
+	public boolean isKeepAligned() {
+		return keepAligned;
+	}
+
+	/**
 	 * @param paintStroke
 	 *            the new {@code Paint} used to stroke this polyline (may be null).
 	 */
 	public synchronized void setPaintStroke(Paint paintStroke) {
 		this.paintStroke = paintStroke;
 	}
+
 }
