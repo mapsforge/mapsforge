@@ -15,6 +15,7 @@ public class LocationOverlayTest extends ActivityInstrumentationTestCase2<Locati
 		super(LocationOverlayMapViewer.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}

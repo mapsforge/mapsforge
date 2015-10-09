@@ -1,5 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,7 +18,12 @@ package org.mapsforge.map.writer.util;
 
 import gnu.trove.list.array.TShortArrayList;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,7 +43,7 @@ public final class OSMUtils {
 
 	private static final int MAX_ELEVATION = 9000;
 
-	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-z]{2})");
+	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,3}(?:[-_][a-zA-Z0-9]{1,8})*)");
 
 	/**
 	 * Extracts known POI tags and returns their ids.
@@ -82,15 +89,16 @@ public final class OSMUtils {
 
 	/**
 	 * Extracts special fields and returns their values as an array of strings.
+	 * <p>
+	 * Use '\r' delimiter among names and '\b' delimiter between each language and name.  
 	 * 
 	 * @param entity
 	 *            the entity
-	 * @param preferredLanguage
-	 *            the preferred language
+	 * @param preferredLanguages
+	 *            the preferred language(s)
 	 * @return a string array, [0] = name, [1] = ref, [2} = housenumber, [3] layer, [4] elevation, [5] relationType
 	 */
-	public static SpecialTagExtractionResult extractSpecialFields(Entity entity, String preferredLanguage) {
-		boolean foundPreferredLanguageName = false;
+	public static SpecialTagExtractionResult extractSpecialFields(Entity entity, List<String> preferredLanguages) {
 		String name = null;
 		String ref = null;
 		String housenumber = null;
@@ -99,11 +107,83 @@ public final class OSMUtils {
 		String relationType = null;
 
 		if (entity.getTags() != null) {
+			// Process 'name' tags
+			if (preferredLanguages != null && preferredLanguages.size() > 1) { // Multilingual map
+				// Convert tag collection to list and sort it
+				// i.e. making sure default 'name' comes first
+				List<Tag> tags = new ArrayList<Tag>(entity.getTags());
+				Collections.sort(tags);
+
+				String defaultName = null;
+				List<String> restPreferredLanguages = new ArrayList<String>(preferredLanguages);
+				for (Tag tag : tags) {
+					String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+					if ("name".equals(key)) { // Default 'name'
+						defaultName = tag.getValue();
+						name = defaultName; 
+					} else { // Localized name
+						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+						if (!matcher.matches()) {
+							continue;
+						}
+						if (tag.getValue().equals(defaultName)) { // Same with default 'name'?
+							continue;
+						}
+						String language = matcher.group(3).toLowerCase(Locale.ENGLISH).replace('_', '-');
+						if (preferredLanguages.contains(language)) {
+							restPreferredLanguages.remove(language);
+							name = (name != null ? name + '\r' : "") + language + '\b' + tag.getValue();
+						}
+					}
+				}
+
+				// Check rest preferred languages for falling back to base
+				if (!restPreferredLanguages.isEmpty()) {
+					Map<String, String> fallbacks = new HashMap<String, String>();
+					for (String preferredLanguage : restPreferredLanguages) {
+						for (Tag tag : tags) {
+							String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+							Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+							if (!matcher.matches()) {
+								continue;
+							}
+							if (tag.getValue().equals(defaultName)) { // Same with default 'name'?
+								continue;
+							}
+							String language = matcher.group(3).toLowerCase(Locale.ENGLISH).replace('_', '-');
+							if (!fallbacks.containsKey(language) && !language.contains("-") && (preferredLanguage.contains("-") || preferredLanguage.contains("_"))
+									&& preferredLanguage.toLowerCase(Locale.ENGLISH).startsWith(language)) {
+								fallbacks.put(language, tag.getValue());
+							}
+						}
+					}
+					for (String language : fallbacks.keySet()) {
+						name = (name != null ? name + '\r' : "") + language + '\b' + fallbacks.get(language);
+					}
+				}
+			} else { // Non multilingual map
+				boolean foundPreferredLanguageName = false;
+				for (Tag tag : entity.getTags()) {
+					String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+					if ("name".equals(key) && !foundPreferredLanguageName) {
+						name = tag.getValue();
+					} else if (preferredLanguages != null && !foundPreferredLanguageName) {
+						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+						if (matcher.matches()) {
+							String language = matcher.group(3);
+							if (language.equalsIgnoreCase(preferredLanguages.get(0))) {
+								name = tag.getValue();
+								foundPreferredLanguageName = true;
+							}
+						}
+					}
+				}
+			}
+
+			// Process rest tags
 			for (Tag tag : entity.getTags()) {
 				String key = tag.getKey().toLowerCase(Locale.ENGLISH);
-				if ("name".equals(key) && !foundPreferredLanguageName) {
-					name = tag.getValue();
-				} else if ("piste:name".equals(key) && name == null) {
+				if ("piste:name".equals(key) && name == null) {
 					name = tag.getValue();
 				} else if ("addr:housenumber".equals(key)) {
 					housenumber = tag.getValue();
@@ -136,15 +216,6 @@ public final class OSMUtils {
 					}
 				} else if ("type".equals(key)) {
 					relationType = tag.getValue();
-				} else if (preferredLanguage != null && !foundPreferredLanguageName) {
-					Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
-					if (matcher.matches()) {
-						String language = matcher.group(3);
-						if (language.equalsIgnoreCase(preferredLanguage)) {
-							name = tag.getValue();
-							foundPreferredLanguageName = true;
-						}
-					}
 				}
 			}
 		}
@@ -191,9 +262,9 @@ public final class OSMUtils {
 					// most common railway lines from being detected as areas if they are closed.
 					// Since this method is only called if the first and last node are the same
 					// this should be safe
-					if ("rail".equals(value) || "tram".equals(value) || "subway".equals(value) ||
-						"monorail".equals(value) || "narrow_gauge".equals(value) || "preserved".equals(value)
-						|| "light_rail".equals(value) || "construction".equals(value)) {
+					if ("rail".equals(value) || "tram".equals(value) || "subway".equals(value)
+							|| "monorail".equals(value) || "narrow_gauge".equals(value) || "preserved".equals(value)
+							|| "light_rail".equals(value) || "construction".equals(value)) {
 						result = false;
 					}
 				}
@@ -201,7 +272,6 @@ public final class OSMUtils {
 		}
 		return result;
 	}
-
 
 	private OSMUtils() {
 	}

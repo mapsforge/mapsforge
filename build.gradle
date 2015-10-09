@@ -14,14 +14,16 @@ def filterProjects(filter) {
 
 allprojects {
     group = 'org.mapsforge'
-    version = 'master-SNAPSHOT'
+    version = 'dev-SNAPSHOT'
     ext.androidBuildVersionTools = "23.0.1"
     ext.jUnitVersion = "4.11"
     description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 }
 
 // no injection of functions, so via inheritance
-def androidMinSdk() { return 9 }
+def androidCompileSdk() { return 23 }
+
+def androidMinSdk() { return 10 }
 
 def androidTargetSdk() { return 22 }
 
@@ -35,6 +37,7 @@ subprojects {
     repositories {
         jcenter()
     }
+    apply plugin: 'eclipse'
 }
 
 // Configuration for all plain Java projects
@@ -44,7 +47,6 @@ project.ext.javaprojects = ["mapsforge-core", "mapsforge-map-reader", "mapsforge
 configure(filterProjects(project.javaprojects)) {
     apply plugin: 'java'
     apply plugin: 'checkstyle'
-    apply plugin: 'pmd'
     apply plugin: 'maven'
 
     dependencies {
@@ -60,11 +62,6 @@ configure(filterProjects(project.javaprojects)) {
 
     // set java source encoding, otherwise some tests fail
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-    pmd {
-        ruleSetFiles = files("../config/pmd/pmd_ruleset.xml")
-        ignoreFailures = true
-    }
 }
 
 // Configuration for Android projects
@@ -98,7 +95,7 @@ configure(filterProjects(project.androidlibraryprojects)) {
 configure(filterProjects(project.androidprojects)) {
 
     android {
-        compileSdkVersion androidTargetSdk()
+        compileSdkVersion androidCompileSdk()
         buildToolsVersion "$androidBuildVersionTools"
 
         compileOptions {

@@ -12,7 +12,7 @@
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
-		<targetJdk>1.6</targetJdk>
+		<targetJdk>1.7</targetJdk>
 	</properties>
 
 	<build>
@@ -35,25 +35,13 @@
 		<dependency>
 			<groupId>android</groupId>
 			<artifactId>android</artifactId>
-			<version>5.1_r1</version>
+			<version>6.0_r1</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-map-reader</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-map</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

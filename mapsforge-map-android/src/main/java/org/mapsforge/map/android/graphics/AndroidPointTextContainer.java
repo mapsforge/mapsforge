@@ -116,6 +116,8 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			case RIGHT:
 				boundary = new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
 				break;
+			default:
+				break;
 		}
 	}
 
@@ -153,6 +155,8 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				case BELOW_LEFT:
 				case BELOW_RIGHT:
 					textOffset = textHeight;
+					break;
+				default:
 					break;
 			}
 

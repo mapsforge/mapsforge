@@ -17,6 +17,8 @@ package org.mapsforge.map.controller;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
@@ -26,6 +28,11 @@ import org.mapsforge.map.view.MapView;
 
 public class DummyMapView implements MapView {
 	public int repaintCounter;
+
+	@Override
+	public void addLayer(Layer layer) {
+		// no-op
+	}
 
 	@Override
 	public void destroy() {
@@ -88,7 +95,17 @@ public class DummyMapView implements MapView {
 	}
 
 	@Override
+	public void setCenter(LatLong center) {
+		// no-op
+	}
+
+	@Override
 	public void setMapScaleBar(MapScaleBar mapScaleBar) {
+		// no-op
+	}
+
+	@Override
+	public void setZoomLevel(byte zoomLevel) {
 		// no-op
 	}
 }

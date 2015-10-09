@@ -90,7 +90,7 @@ Here comes the whole as a single file:
     import org.mapsforge.map.android.view.MapView;
     import org.mapsforge.map.layer.cache.TileCache;
     import org.mapsforge.map.layer.renderer.TileRendererLayer;
-    import org.mapsforge.map.reader.MapDataStore;
+    import org.mapsforge.map.datastore.MapDataStore;
     import org.mapsforge.map.reader.MapFile;
     import org.mapsforge.map.rendertheme.InternalRenderTheme;
     

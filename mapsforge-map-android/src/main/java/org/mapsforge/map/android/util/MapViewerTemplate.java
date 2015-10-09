@@ -27,7 +27,7 @@ import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
-import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;

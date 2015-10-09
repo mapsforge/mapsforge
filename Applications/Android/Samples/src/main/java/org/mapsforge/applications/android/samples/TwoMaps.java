@@ -14,15 +14,14 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import android.os.Environment;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import java.io.File;
+
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.reader.MapFile;
 
-import java.io.File;
+import android.os.Environment;
 
 /**
  * Two rendered maps overlaid in the same map view, e.g. for maps can be for different areas.

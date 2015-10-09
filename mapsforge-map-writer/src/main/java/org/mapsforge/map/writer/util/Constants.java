@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -56,9 +57,13 @@ public final class Constants {
 	 */
 	public static final int MAX_SIMPLIFICATION_BASE_ZOOM = 12;
 	/**
-	 * The name of the property that refers to the version of the map file specification.
+	 * The name of the property that refers to the lowest version of the map file specification supported by this implementation.
 	 */
-	public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION = "mapfile.specification.version";
+	public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN = "mapfile.specification.version.min";
+	/**
+	 * The name of the property that refers to the highest version of the map file specification supported by this implementation.
+	 */
+	public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX = "mapfile.specification.version.max";
 	/**
 	 * The name of the property that refers to the version of the map file writer.
 	 */

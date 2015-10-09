@@ -20,7 +20,6 @@ import java.util.Set;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.common.ObservableInterface;
-import org.mapsforge.map.model.common.Observer;
 
 /**
  * Interface for tile image caches.

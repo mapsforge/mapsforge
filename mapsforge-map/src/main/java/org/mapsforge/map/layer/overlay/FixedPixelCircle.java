@@ -66,8 +66,8 @@ public class FixedPixelCircle extends Circle {
 	/**
 	 * @return the non-negative radius of this circle in pixels.
 	 */
+	@Override
 	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
 		return (int) (this.getRadius() * this.displayModel.getScaleFactor());
 	}
-
 }

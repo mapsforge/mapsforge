@@ -27,8 +27,8 @@ import java.util.Set;
  * A layer can have translations, categories that will always be enabled
  * when the layer is selected as well as optional overlays.
  */
-
 public class XmlRenderThemeStyleLayer implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private final Set<String> categories;
 	private final String defaultLanguage;

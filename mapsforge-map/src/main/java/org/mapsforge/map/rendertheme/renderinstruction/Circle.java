@@ -15,22 +15,21 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
-import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.PointOfInterest;
+import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Represents a round area on the map.

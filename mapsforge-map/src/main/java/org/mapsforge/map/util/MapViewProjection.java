@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -44,8 +45,8 @@ public class MapViewProjection {
 		// what the user sees on the screen if an animation is in progress
 		MapPosition mapPosition = this.mapView.getModel().frameBufferModel.getMapPosition();
 
+		// this means somehow the mapview is not yet properly set up, see issue #308.
 		if (mapPosition == null) {
-			// this means somehow the mapview is not yet properly set up, see issue #308.
 			return null;
 		}
 
@@ -57,9 +58,14 @@ public class MapViewProjection {
 		pixelX -= this.mapView.getWidth() >> 1;
 		pixelY -= this.mapView.getHeight() >> 1;
 
-		// convert the pixel coordinates to a LatLong and return it
-		return new LatLong(MercatorProjection.pixelYToLatitude(pixelY + y, mapSize),
-				MercatorProjection.pixelXToLongitude(pixelX + x, mapSize));
+		// catch outer map limits
+		try {
+			// convert the pixel coordinates to a LatLong and return it
+			return new LatLong(MercatorProjection.pixelYToLatitude(pixelY + y, mapSize),
+					MercatorProjection.pixelXToLongitude(pixelX + x, mapSize));
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -103,6 +109,11 @@ public class MapViewProjection {
 		}
 
 		MapPosition mapPosition = this.mapView.getModel().mapViewPosition.getMapPosition();
+
+		// this means somehow the mapview is not yet properly set up, see issue #308.
+		if (mapPosition == null) {
+			return null;
+		}
 
 		// calculate the pixel coordinates of the top left corner
 		LatLong latLong = mapPosition.latLong;

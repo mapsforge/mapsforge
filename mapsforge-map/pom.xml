@@ -23,21 +23,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-map-reader</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-map-awt</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>

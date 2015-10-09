@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,9 +37,9 @@ final class OptionalFields {
 	private static final int HEADER_BITMASK_DEBUG = 0x80;
 
 	/**
-	 * Bitmask for the language preference field in the file header.
+	 * Bitmask for the language(s) preference field in the file header.
 	 */
-	private static final int HEADER_BITMASK_LANGUAGE_PREFERENCE = 0x10;
+	private static final int HEADER_BITMASK_LANGUAGES_PREFERENCE = 0x10;
 
 	/**
 	 * Bitmask for the start position field in the file header.
@@ -49,11 +50,6 @@ final class OptionalFields {
 	 * Bitmask for the start zoom level field in the file header.
 	 */
 	private static final int HEADER_BITMASK_START_ZOOM_LEVEL = 0x20;
-
-	/**
-	 * The length of the language preference string.
-	 */
-	private static final int LANGUAGE_PREFERENCE_LENGTH = 2;
 
 	/**
 	 * Maximum valid start zoom level.
@@ -71,11 +67,11 @@ final class OptionalFields {
 	String createdBy;
 	final boolean hasComment;
 	final boolean hasCreatedBy;
-	final boolean hasLanguagePreference;
+	final boolean hasLanguagesPreference;
 	final boolean hasStartPosition;
 	final boolean hasStartZoomLevel;
 	final boolean isDebugFile;
-	String languagePreference;
+	String languagesPreference;
 	LatLong startPosition;
 	Byte startZoomLevel;
 
@@ -83,18 +79,14 @@ final class OptionalFields {
 		this.isDebugFile = (flags & HEADER_BITMASK_DEBUG) != 0;
 		this.hasStartPosition = (flags & HEADER_BITMASK_START_POSITION) != 0;
 		this.hasStartZoomLevel = (flags & HEADER_BITMASK_START_ZOOM_LEVEL) != 0;
-		this.hasLanguagePreference = (flags & HEADER_BITMASK_LANGUAGE_PREFERENCE) != 0;
+		this.hasLanguagesPreference = (flags & HEADER_BITMASK_LANGUAGES_PREFERENCE) != 0;
 		this.hasComment = (flags & HEADER_BITMASK_COMMENT) != 0;
 		this.hasCreatedBy = (flags & HEADER_BITMASK_CREATED_BY) != 0;
 	}
 
-	private void readLanguagePreference(ReadBuffer readBuffer) {
-		if (this.hasLanguagePreference) {
-			String countryCode = readBuffer.readUTF8EncodedString();
-			if (countryCode.length() != LANGUAGE_PREFERENCE_LENGTH) {
-				throw new MapFileException("invalid language preference: " + countryCode);
-			}
-			this.languagePreference = countryCode;
+	private void readLanguagesPreference(ReadBuffer readBuffer) {
+		if (this.hasLanguagesPreference) {
+			this.languagesPreference = readBuffer.readUTF8EncodedString();
 		}
 	}
 
@@ -127,7 +119,7 @@ final class OptionalFields {
 
 		readMapStartZoomLevel(readBuffer);
 
-		readLanguagePreference(readBuffer);
+		readLanguagesPreference(readBuffer);
 
 		if (this.hasComment) {
 			this.comment = readBuffer.readUTF8EncodedString();

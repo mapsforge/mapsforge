@@ -14,13 +14,12 @@
  */
 package org.mapsforge.map.reader;
 
-import java.io.File;
-
 import org.junit.Assert;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.reader.header.MapFileException;
+import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.Way;
 
 final class EncodingTest {
 	private static final byte ZOOM_LEVEL = 8;

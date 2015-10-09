@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.core.util;
 
 import java.util.Set;
@@ -28,6 +27,8 @@ import java.util.Set;
  *            the type of the map value, see {@link java.util.Map}.
  */
 public class WorkingSetCache<K, V> extends LRUCache<K, V> {
+	private static final long serialVersionUID = 1L;
+
 	public WorkingSetCache(int capacity) {
 		super(capacity);
 	}
@@ -42,5 +43,4 @@ public class WorkingSetCache<K, V> extends LRUCache<K, V> {
 			this.get(key);
 		}
 	}
-
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +17,8 @@ package org.mapsforge.map.writer.model;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
@@ -42,7 +45,7 @@ public class MapWriterConfiguration {
 	private int mapStartZoomLevel;
 	private File outputFile;
 	private boolean polygonClipping;
-	private String preferredLanguage;
+	private List<String> preferredLanguages;
 
 	private double simplification;
 
@@ -218,10 +221,10 @@ public class MapWriterConfiguration {
 	}
 
 	/**
-	 * @return the preferredLanguage
+	 * @return the preferred language(s)
 	 */
-	public String getPreferredLanguage() {
-		return this.preferredLanguage;
+	public List<String> getPreferredLanguages() {
+		return this.preferredLanguages;
 	}
 
 	/**
@@ -432,12 +435,12 @@ public class MapWriterConfiguration {
 	}
 
 	/**
-	 * @param preferredLanguage
-	 *            the preferredLanguage to set
+	 * @param preferredLanguages
+	 *            the preferred language(s) to set separated with ','
 	 */
-	public void setPreferredLanguage(String preferredLanguage) {
-		if (preferredLanguage != null && !preferredLanguage.isEmpty()) {
-			this.preferredLanguage = preferredLanguage;
+	public void setPreferredLanguages(String preferredLanguages) {
+		if (preferredLanguages != null && !preferredLanguages.trim().isEmpty()) {
+			this.preferredLanguages = Arrays.asList(preferredLanguages.split(","));
 		}
 	}
 

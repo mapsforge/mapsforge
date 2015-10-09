@@ -146,6 +146,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
 	// destroy is the super method here, which will take care of bitmap accounting
 	// and call down into destroyBitmap when the resource bitmap needs to be destroyed
 
+	@Override
 	protected void destroyBitmap() {
 		if (this.bitmap != null) {
 			if (removeBitmap(this.hash)) {

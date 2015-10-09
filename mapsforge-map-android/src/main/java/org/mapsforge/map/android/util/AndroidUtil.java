@@ -29,7 +29,7 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DistanceUnitAdapter;

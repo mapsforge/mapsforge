@@ -1,6 +1,7 @@
 /*
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
+ * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +15,22 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.mapsforge.applications.android.samples;
+
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.input.MapZoomControls.Orientation;
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.android.util.MapViewerTemplate;
+import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.renderer.MapWorkerPool;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.reader.MapFile;
+import org.mapsforge.map.scalebar.ImperialUnitAdapter;
+import org.mapsforge.map.scalebar.MetricUnitAdapter;
+import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -30,20 +47,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.util.MapViewerTemplate;
-import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.renderer.MapWorkerPool;
-import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.scalebar.ImperialUnitAdapter;
-import org.mapsforge.map.scalebar.MetricUnitAdapter;
-import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
 /**
  * Code common to most activities in the Samples app.
@@ -56,6 +59,8 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	public static final String SETTING_SCALEBAR_NAUTICAL = "nautical";
 	public static final String SETTING_SCALEBAR_BOTH = "both";
 	public static final String SETTING_SCALEBAR_NONE = "none";
+
+	public static final LatLong LATLONG_BERLIN = new LatLong(52.517037, 13.38886);
 
 	protected static final int DIALOG_ENTER_COORDINATES = 2923878;
 	protected SharedPreferences sharedPreferences;
@@ -72,7 +77,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 
 	@Override
 	protected MapPosition getDefaultInitialPosition() {
-		return new MapPosition(new LatLong(52.517037, 13.38886), (byte) 12);
+		return new MapPosition(LATLONG_BERLIN, (byte) 12);
 	}
 
 	@Override
@@ -86,26 +91,39 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 	}
 
 	@Override
-	protected void createControls() {
+	protected void createControls()	{
 		setMapScaleBar();
 	}
 
+	@Override
+	protected void createMapViews() {
+		super.createMapViews();
+
+		mapView.getMapZoomControls().setZoomControlsOrientation(Orientation.VERTICAL_IN_OUT);
+		mapView.getMapZoomControls().setZoomInResource(R.drawable.zoom_control_in);
+		mapView.getMapZoomControls().setZoomOutResource(R.drawable.zoom_control_out);
+		mapView.getMapZoomControls().setMarginHorizontal(getResources().getDimensionPixelOffset(R.dimen.controls_margin));
+		mapView.getMapZoomControls().setMarginVertical(getResources().getDimensionPixelOffset(R.dimen.controls_margin));
+	}
+
+	@Override
 	protected void createTileCaches() {
 		boolean persistent = sharedPreferences.getBoolean(SamplesApplication.SETTING_TILECACHE_PERSISTENCE, true);
 
 		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
 				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent
-		));
+				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent));
 	}
 
 	/**
 	 * @return the map file name to be used
 	 */
+	@Override
 	protected String getMapFileName() {
 		return "germany.map";
 	}
 
+	@Override
 	protected void onDestroy() {
 		this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
 		super.onDestroy();
@@ -232,6 +250,11 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 		if (SamplesApplication.SETTING_SCALE.equals(key)) {
 			this.mapView.getModel().displayModel.setUserScaleFactor(DisplayModel.getDefaultUserScaleFactor());
 			Log.d(SamplesApplication.TAG, "Tilesize now " + this.mapView.getModel().displayModel.getTileSize());
+			AndroidUtil.restartActivity(this);
+		}
+		if (SamplesApplication.SETTING_PREFERRED_LANGUAGE.equals(key)) {
+			String language = preferences.getString(SamplesApplication.SETTING_PREFERRED_LANGUAGE, null);
+			Log.d(SamplesApplication.TAG, "Preferred language now " + language);
 			AndroidUtil.restartActivity(this);
 		}
 		if (SamplesApplication.SETTING_TILECACHE_PERSISTENCE.equals(key)) {

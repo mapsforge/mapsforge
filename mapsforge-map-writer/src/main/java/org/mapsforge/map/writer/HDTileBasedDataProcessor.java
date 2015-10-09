@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -47,6 +48,7 @@ import org.openstreetmap.osmosis.core.store.SingleClassObjectSerializationFactor
  * A TileBasedDataStore that uses the hard disk as storage device for temporary data structures.
  */
 public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
+
 	/**
 	 * Creates a new {@link HDTileBasedDataProcessor}.
 	 * 
@@ -95,7 +97,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 	@Override
 	public void addNode(Node node) {
 		this.indexedNodeStore.add(node.getId(), node);
-		TDNode tdNode = TDNode.fromNode(node, this.preferredLanguage);
+		TDNode tdNode = TDNode.fromNode(node, this.preferredLanguages);
 		addPOI(tdNode);
 	}
 
@@ -125,7 +127,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 		RelationHandler relationHandler = new RelationHandler();
 		while (relationReader.hasNext()) {
 			Relation entry = relationReader.next();
-			TDRelation tdRelation = TDRelation.fromRelation(entry, this, this.preferredLanguage);
+			TDRelation tdRelation = TDRelation.fromRelation(entry, this, this.preferredLanguages);
 			relationHandler.execute(tdRelation);
 		}
 
@@ -134,7 +136,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 		WayHandler wayHandler = new WayHandler();
 		while (wayReader.hasNext()) {
 			Way way = wayReader.next();
-			TDWay tdWay = TDWay.fromWay(way, this, this.preferredLanguage);
+			TDWay tdWay = TDWay.fromWay(way, this, this.preferredLanguages);
 			if (tdWay == null) {
 				continue;
 			}
@@ -174,7 +176,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 			long id = it.next();
 			TDWay tdWay = null;
 			try {
-				tdWay = TDWay.fromWay(this.wayIndexReader.get(id), this, this.preferredLanguage);
+				tdWay = TDWay.fromWay(this.wayIndexReader.get(id), this, this.preferredLanguages);
 			} catch (NoSuchIndexElementException e) {
 				LOGGER.finer("coastline way non-existing" + id);
 			}
@@ -201,7 +203,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 		}
 
 		try {
-			return TDNode.fromNode(this.nodeIndexReader.get(id), this.preferredLanguage);
+			return TDNode.fromNode(this.nodeIndexReader.get(id), this.preferredLanguages);
 		} catch (NoSuchIndexElementException e) {
 			LOGGER.finer("node cannot be found in index: " + id);
 			return null;
@@ -225,7 +227,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 		}
 
 		try {
-			return TDWay.fromWay(this.wayIndexReader.get(id), this, this.preferredLanguage);
+			return TDWay.fromWay(this.wayIndexReader.get(id), this, this.preferredLanguages);
 		} catch (NoSuchIndexElementException e) {
 			LOGGER.finer("way cannot be found in index: " + id);
 			return null;
@@ -283,7 +285,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 		final RAMTileData td = new RAMTileData();
 		TLongIterator it = hdt.getPois().iterator();
 		while (it.hasNext()) {
-			td.addPOI(TDNode.fromNode(this.nodeIndexReader.get(it.next()), this.preferredLanguage));
+			td.addPOI(TDNode.fromNode(this.nodeIndexReader.get(it.next()), this.preferredLanguages));
 		}
 
 		it = hdt.getWays().iterator();
@@ -291,7 +293,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 			TDWay way = null;
 			long id = it.next();
 			try {
-				way = TDWay.fromWay(this.wayIndexReader.get(id), this, this.preferredLanguage);
+				way = TDWay.fromWay(this.wayIndexReader.get(id), this, this.preferredLanguages);
 				td.addWay(way);
 			} catch (NoSuchIndexElementException e) {
 				// is it a virtual way?
@@ -328,7 +330,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 		for (long id : innerWayIDs) {
 			TDWay current = null;
 			try {
-				current = TDWay.fromWay(this.wayIndexReader.get(id), this, this.preferredLanguage);
+				current = TDWay.fromWay(this.wayIndexReader.get(id), this, this.preferredLanguages);
 			} catch (NoSuchIndexElementException e) {
 				current = this.virtualWays.get(id);
 				if (current == null) {

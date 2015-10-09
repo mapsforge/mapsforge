@@ -101,7 +101,7 @@ public final class MapViewer {
 			TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(i),
 					mapView.getModel().mapViewPosition, true, true, mapFile);
 			BoundingBox boundingBox = tileRendererLayer.getMapDataStore().boundingBox();
-			result = result == null ? boundingBox : result.extend(boundingBox);
+			result = result == null ? boundingBox : result.extendBoundingBox(boundingBox);
 			layers.add(tileRendererLayer);
 		}
 		if (SHOW_DEBUG_LAYERS) {

@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.AwtGraphicFactory;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
@@ -68,6 +69,11 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
 				this.model.displayModel);
+	}
+
+	@Override
+	public void addLayer(Layer layer) {
+		this.layerManager.getLayers().add(layer);
 	}
 
 	/**
@@ -154,8 +160,18 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 	}
 
 	@Override
+	public void setCenter(LatLong center) {
+		this.model.mapViewPosition.setCenter(center);
+	}
+
+	@Override
 	public void setMapScaleBar(MapScaleBar mapScaleBar) {
 		this.mapScaleBar.destroy();
 		this.mapScaleBar=mapScaleBar;
+	}
+
+	@Override
+	public void setZoomLevel(byte zoomLevel) {
+		this.model.mapViewPosition.setZoomLevel(zoomLevel);
 	}
 }

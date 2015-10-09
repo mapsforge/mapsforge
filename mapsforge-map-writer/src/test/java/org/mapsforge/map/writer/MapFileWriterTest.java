@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -44,7 +45,7 @@ public class MapFileWriterTest {
 		this.configuration.setSimplification(0.00001);
 		this.configuration.setDataProcessorType("ram");
 		this.configuration.setBboxEnlargement(10);
-		this.configuration.setPreferredLanguage("de");
+		this.configuration.setPreferredLanguages("en,de");
 		this.configuration.addEncodingChoice("auto");
 		this.configuration.validate();
 
@@ -60,16 +61,17 @@ public class MapFileWriterTest {
 		// 20 + 4 + 4 + 8 + 8 + 16 + 2
 		// + 9 ("Mercator")
 		// + 1 + 8 + 1
-		// + 3 ("de")
+		// + 6 ("en,de")
 		// + 17 ("i love mapsforge")
 		// + 5("test")
 		// + 2 + 19 ("amenity=university")
 		// + 2 + 14 + 18 ("natural=beach", natural=coastline")
 		// + 1
 		// + 3 * (3 + 8 + 8)
-		// == 219
-		Assert.assertEquals(219, headerLength);
+		// == 222
+		Assert.assertEquals(222, headerLength);
 	}
+
 	// @Test
 	// public void testProcessPOI() {
 	// fail("Not yet implemented");
