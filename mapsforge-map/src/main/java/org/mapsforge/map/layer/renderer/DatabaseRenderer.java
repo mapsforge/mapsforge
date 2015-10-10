@@ -51,7 +51,7 @@ import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.util.LayerUtil;
 
 /**
- * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.reader.MapFile}.
+ * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.datastore.MapDataStore}.
  */
 public class DatabaseRenderer implements RenderCallback {
 

@@ -85,7 +85,6 @@ public class MapFileHeader {
 	 *            the ReadBuffer for the file data.
 	 * @param fileSize
 	 *            the size of the map file in bytes.
-	 * @return a FileOpenResult containing an error message in case of a failure.
 	 * @throws IOException
 	 *             if an error occurs while reading the file.
 	 */
