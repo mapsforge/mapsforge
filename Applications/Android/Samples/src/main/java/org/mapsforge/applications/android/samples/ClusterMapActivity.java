@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Martin Vennekamp/*
+ * Copyright (C) 2014 Martin Vennekamp
  * Copyright 2015 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
