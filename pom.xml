@@ -10,7 +10,7 @@
 
 	<groupId>org.mapsforge</groupId>
 	<artifactId>mapsforge</artifactId>
-	<version>master-SNAPSHOT</version>
+	<version>dev-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<url>http://mapsforge.org</url>
 	<name>mapsforge</name>
