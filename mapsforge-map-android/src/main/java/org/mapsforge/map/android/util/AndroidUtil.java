@@ -17,6 +17,7 @@
 package org.mapsforge.map.android.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.mapsforge.core.model.Dimension;
@@ -35,20 +36,52 @@ import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DistanceUnitAdapter;
 import org.mapsforge.map.scalebar.MapScaleBar;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
+import android.support.v4.content.ContextCompat;
 import android.view.Display;
 import android.view.WindowManager;
 
 public final class AndroidUtil {
 
 	private static final Logger LOGGER = Logger.getLogger(AndroidUtil.class.getName());
+
+	/**
+	 * Returns if it is required to ask for runtime permission for accessing a directory.
+	 * @param context the activity asking
+	 * @param directory the directory accessed
+	 * @return true if runtime permission must be asked for
+	 */
+	public static boolean requestStoragePermissionRequired(Context context, File directory) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M // old permission system
+				|| ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { // permission already granted
+			return false;
+		}
+		try {
+			String canonicalPath = directory.getCanonicalPath();
+			// not sure if this covers all possibilities: file is freely accessible if it is in the application external cache or external files
+			// dir or somewhere else (e.g. internal storage) but not in the general external storage.
+			boolean mapFileInProtectedStorage = canonicalPath.startsWith(Environment.getExternalStorageDirectory().getCanonicalPath()) &&
+					!canonicalPath.startsWith(context.getExternalCacheDir().getCanonicalPath()) &&
+					!canonicalPath.startsWith(context.getExternalFilesDir(null).getCanonicalPath());
+			if (mapFileInProtectedStorage) {
+				return true;
+			}
+		} catch (IOException e) {
+			return true; // ?? it probably means the file cannot be found
+		}
+		return false;
+	}
+
 
 	/**
 	 * Utility function to create a two-level tile cache along with its backends.

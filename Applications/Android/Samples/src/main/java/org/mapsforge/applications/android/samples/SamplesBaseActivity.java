@@ -92,6 +92,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 
 	@Override
 	protected void createControls()	{
+		super.createControls();
 		setMapScaleBar();
 	}
 

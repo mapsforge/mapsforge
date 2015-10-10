@@ -32,20 +32,38 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 
 /**
  * A abstract template map viewer activity that provides a standard life cycle and
  * modification points for mapsforge-based map activities.
  */
-public abstract class MapViewerTemplate extends Activity  {
+public abstract class MapViewerTemplate extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
+	private final int PERMISSIONS_REQUEST_READ_STORAGE = 2234792;
 	protected MapView mapView;
 	protected PreferencesFacade preferencesFacade;
 	protected XmlRenderThemeStyleMenu renderThemeStyleMenu;
 	protected List<TileCache> tileCaches = new ArrayList<TileCache>();
+
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		switch (requestCode) {
+			case PERMISSIONS_REQUEST_READ_STORAGE: {
+				if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+					showDialogWhenPermissionDenied();
+					return;
+				}
+				createLayers();
+				createControls();
+			}
+		}
+	}
 
 	/*
 	 * Abstract methods that must be implemented.
@@ -91,7 +109,7 @@ public abstract class MapViewerTemplate extends Activity  {
 	 * You can add more controls.
 	 */
 	protected void createControls() {
-		// hook for control creation
+		initializePosition(mapView.getModel().mapViewPosition);
 	}
 
 	/**
@@ -136,7 +154,6 @@ public abstract class MapViewerTemplate extends Activity  {
 		mapView.getMapZoomControls().setAutoHide(isZoomControlsAutoHide());
 		mapView.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(getZoomLevelMax());
-		initializePosition(mapView.getModel().mapViewPosition);
 	}
 
 	/**
@@ -189,12 +206,24 @@ public abstract class MapViewerTemplate extends Activity  {
 	}
 
 	/**
+	 * Hook to check for Android Runtime Permissions.
+	 */
+	protected void checkPermissionsAndCreateLayersAndControls() {
+		if (AndroidUtil.requestStoragePermissionRequired(this, getMapFileDirectory())) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_STORAGE);
+		} else {
+			createLayers();
+			createControls();
+		}
+	}
+
+	/**
 	 * Combines map file directory and map file to a map file.
 	 * This method usually will not need to be changed.
 	 * @return a map file interface
 	 */
 	protected MapDataStore getMapFile() {
-		return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()));
+		return new MapFile(new File(getMapFileDirectory(), getMapFileName()));
 	}
 
 	/**
@@ -261,8 +290,7 @@ public abstract class MapViewerTemplate extends Activity  {
 		createSharedPreferences();
 		createMapViews();
 		createTileCaches();
-		createLayers();
-		createControls();
+		checkPermissionsAndCreateLayersAndControls();
 	}
 
 	/**
@@ -308,6 +336,16 @@ public abstract class MapViewerTemplate extends Activity  {
 	}
 
 	/**
+	 * Sample dialog shown when permission to read storage denied.
+	 */
+	protected void showDialogWhenPermissionDenied() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Warning");
+		builder.setMessage("Without granting access to storage you will not see a map");
+		builder.create().show();
+	}
+
+	/**
 	 * Creates a map view using an XML layout file supplied by getLayoutId() and finds
 	 * the map view component inside it with getMapViewId().
 	 * @return the Android MapView for this activity.
@@ -316,4 +354,5 @@ public abstract class MapViewerTemplate extends Activity  {
 		setContentView(getLayoutId());
 		return (MapView) findViewById(getMapViewId());
 	}
+
 }
