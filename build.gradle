@@ -25,7 +25,11 @@ def androidCompileSdk() { return 23 }
 
 def androidMinSdk() { return 10 }
 
-def androidTargetSdk() { return 22 }
+// this is the last SDK with the old permissions system, so this should not change in the future
+def androidTargetSdkOldPermissions() { return 22 }
+
+// moving forward we will target the latest SDK (that will all have the new permissions system)
+def androidTargetSdkRuntimePermissions() { return androidCompileSdk() }
 
 def versionCode() { return 52 }
 
@@ -73,6 +77,17 @@ project.ext.androidprojects = project.androidlibraryprojects + project.androidap
 
 configure(filterProjects(project.androidapkprojects)) {
     apply plugin: 'com.android.application'
+
+    android {
+	productFlavors {
+	    oldpermissions {
+	        targetSdkVersion androidTargetSdkOldPermissions()
+	    }
+	    runtimepermissions {
+	        targetSdkVersion androidTargetSdkRuntimePermissions()
+	    }
+	}
+    }
 }
 
 
@@ -107,7 +122,6 @@ configure(filterProjects(project.androidprojects)) {
             versionCode versionCode()
             versionName versionName()
             minSdkVersion androidMinSdk()
-            targetSdkVersion androidTargetSdk()
         }
 
         sourceSets {
