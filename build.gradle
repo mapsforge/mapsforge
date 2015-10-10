@@ -4,13 +4,13 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.3.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
     }
 }
 
 def filterProjects(filter) {
     return subprojects.findAll { project -> filter.contains(project.name) }
 }
-
 
 allprojects {
     group = 'org.mapsforge'
@@ -78,9 +78,9 @@ configure(filterProjects(project.androidapkprojects)) {
     apply plugin: 'com.android.application'
 }
 
-
 configure(filterProjects(project.androidlibraryprojects)) {
     apply plugin: 'android-library'
+    apply plugin: 'android-maven'
 
     android.libraryVariants.all { variant ->
         def name = variant.buildType.name
@@ -124,4 +124,3 @@ configure(filterProjects(project.androidprojects)) {
         }
     }
 } 
-
