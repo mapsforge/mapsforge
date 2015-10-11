@@ -2,20 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mainView"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
 
-    <org.mapsforge.applications.android.samples.RotateView
+    <org.mapsforge.applications.android.samples.rotation.RotateView
         android:id="@+id/rotateView"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent">
 
         <org.mapsforge.map.android.view.MapView
             android:id="@+id/mapView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
-    </org.mapsforge.applications.android.samples.RotateView>
+    </org.mapsforge.applications.android.samples.rotation.RotateView>
 
-    <org.mapsforge.applications.android.samples.MapScaleBarView
+    <org.mapsforge.applications.android.samples.scalebar.MapScaleBarView
         android:id="@+id/mapScaleBarView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,29 +23,31 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="5dp" />
 
-    <Button
+    <ImageButton
         android:id="@+id/zoomOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/rotateButton"
-        android:text="@string/zoomout_button" />
+        android:layout_alignParentRight="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/zoom_control_out" />
+
+    <ImageButton
+        android:id="@+id/zoomInButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/zoomOutButton"
+        android:layout_alignParentRight="true"
+        android:background="@android:color/transparent"
+        android:src="@drawable/zoom_control_in" />
 
     <Button
         android:id="@+id/rotateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/zoomInButton"
+        android:layout_toLeftOf="@+id/zoomOutButton"
         android:text="@string/rotate_button" />
-
-    <Button
-        android:id="@+id/zoomInButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="@string/zoomin_button" />
 
     <TextView
         android:id="@+id/attribution"

@@ -15,10 +15,25 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.mapsforge.applications.android.samples.markerclusterer;
+package org.mapsforge.applications.android.samples.cluster;
 
-public interface SelectionHandler<T extends GeoItem> {
-    T getSelectedItem();
+import org.mapsforge.core.model.LatLong;
 
-    void setSelectedItem(SelectionHandler<T> sender, T selectedItem);
+/**
+ * Utility Class to handle GeoItem for ClusterMarker
+ */
+public interface GeoItem {
+    /**
+     * getLatLong
+     *
+     * @return item location in LatLong.
+     */
+    LatLong getLatLong();
+
+    /**
+     * getTitle
+     *
+     * @return Title of the item, might be used as Caption text.
+     */
+    String getTitle();
 }

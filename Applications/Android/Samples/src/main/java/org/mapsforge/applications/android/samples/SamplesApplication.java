@@ -25,8 +25,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-
 public class SamplesApplication extends Application {
+
+	public static final String TAG = "Mapsforge Samples";
 
 	/*
 	 * type to use for maps to store in the external files directory
@@ -42,8 +43,6 @@ public class SamplesApplication extends Application {
 	public static final String SETTING_RENDERING_THREADS = "rendering_threads";
 	public static final String SETTING_PREFERRED_LANGUAGE = "language_selection";
 	public static final String SETTING_LANGUAGE_SHOWLOCAL = "language_showlocal";
-	public static final String TAG = "Mapsforge Samples";
-
 
 	@Override
 	public void onCreate() {
@@ -69,5 +68,4 @@ public class SamplesApplication extends Application {
 		MapWorkerPool.NUMBER_OF_THREADS = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(MapWorkerPool.DEFAULT_NUMBER_OF_THREADS)));
 
 	}
-
 }

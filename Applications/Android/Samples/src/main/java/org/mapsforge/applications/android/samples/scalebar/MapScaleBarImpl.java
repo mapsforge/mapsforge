@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.applications.android.samples;
+package org.mapsforge.applications.android.samples.scalebar;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicContext;

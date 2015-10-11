@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.mapsforge.applications.android.samples.markerclusterer;
+package org.mapsforge.applications.android.samples.cluster;
 
 import android.util.Log;
 
