@@ -14,12 +14,12 @@
  */
 package org.mapsforge.applications.android.samples.dummy;
 
+import org.mapsforge.core.model.LatLong;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.mapsforge.core.model.LatLong;
 
 /**
  * Helper class for providing sample content for user interfaces created by

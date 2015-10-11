@@ -43,6 +43,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Bitmaps automatically change" />
         <activity
+            android:name=".ClusterMapActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Marker Clustering" />
+        <activity
             android:name=".DiagnosticsMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="DiagnosticsMapViewer" />
@@ -176,10 +180,6 @@
             android:name=".ZoomToBounds"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Zooms to map bounds of overlay" />
-        <activity
-            android:name=".ClusterMapActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Marker Clustering" />
         <activity
             android:name=".Settings"
             android:configChanges="keyboardHidden|orientation|screenSize"

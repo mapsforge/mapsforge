@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2009 Huan Erdao
- * Copyright (C) 2014 Martin Vennekamp
+ * Copyright 2009 Huan Erdao
+ * Copyright 2014 Martin Vennekamp
  * Copyright 2015 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -19,6 +19,7 @@ package org.mapsforge.applications.android.samples.markerclusterer;
 
 import android.util.Log;
 
+import org.mapsforge.applications.android.samples.SamplesApplication;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
@@ -29,35 +30,36 @@ import org.mapsforge.map.layer.Layer;
 
 /**
  * Layer extended class to display Clustered Marker.
+ *
  * @param <T>
  */
 public class ClusterMarker<T extends GeoItem> extends Layer {
-	public final static String TAG = ClusterMarker.class.getSimpleName();
     /**
      * cluster object
      */
-    protected final Cluster<T> mCluster;
+    protected final Cluster<T> cluster;
     /**
      * icon marker type
      */
-    protected int mMarkerType = 0;
+    protected int markerType = 0;
 //    /**
 //     * the rectangle spanning around the bitmap of this ClusterMarer on the screen
 //     */
-//    protected Rectangle mBitmapRectangle; 
+//    protected Rectangle bitmapRectangle;
 
     /**
-     * Whether this marker should react on Tap (implement a working onTap 
+     * Whether this marker should react on Tap (implement a working onTap
      * Listener)
      */
     protected boolean ignoreOnTap;
-    
+
     private Bitmap bubble;
+
     /**
      * @param cluster a cluster to be rendered for this marker
      */
-    public ClusterMarker(Cluster<T> cluster, boolean ignoreOnTap ) {
-        this.mCluster = cluster;
+    public ClusterMarker(Cluster<T> cluster, boolean ignoreOnTap) {
+        this.cluster = cluster;
         this.ignoreOnTap = ignoreOnTap;
     }
 
@@ -65,83 +67,81 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
      * change icon bitmaps according to the state and content size.
      */
     private void setMarkerBitmap() {
-        for (mMarkerType = 0; mMarkerType < mCluster.getClusterManager().mMarkerIconBmps.size(); mMarkerType++) {
+        for (markerType = 0; markerType < cluster.getClusterManager().markerIconBmps.size(); markerType++) {
             // Check if the number of items in this cluster is below or equal the limit of the MarkerBitMap
-            if (mCluster.getItems().size() <= mCluster.getClusterManager()
-            		.mMarkerIconBmps.get(mMarkerType).getItemMax()) {
-               return;
+            if (cluster.getItems().size() <= cluster.getClusterManager()
+                    .markerIconBmps.get(markerType).getItemMax()) {
+                return;
             }
         }
-        // set the mMarkerType to maximum value ==> reduce mMarkerType by one.
-        mMarkerType--;
+        // set the markerType to maximum value ==> reduce markerType by one.
+        markerType--;
     }
 
     @Override
     public synchronized void draw(BoundingBox boundingBox, byte zoomLevel
             , org.mapsforge.core.graphics.Canvas canvas, Point topLeftPoint) {
-    	Boolean isSelected = isSelected();
-        if (mCluster.getClusterManager() == null ||
-        		mCluster.getClusterManager().isClustering ||
+        Boolean isSelected = isSelected();
+        if (cluster.getClusterManager() == null ||
+                cluster.getClusterManager().isClustering ||
                 this.getLatLong() == null) {
-        	return;
+            return;
         }
         setMarkerBitmap();
         long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
         double pixelX = MercatorProjection.longitudeToPixelX(this.getLatLong().longitude, mapSize);
         double pixelY = MercatorProjection.latitudeToPixelY(this.getLatLong().latitude, mapSize);
-//        if (mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getBitmap(isSelected) == null) {
+//        if (cluster.getClusterManager().markerIconBmps.get(markerType).getBitmap(isSelected) == null) {
 //        	return;
 //        }
         double halfBitmapWidth;
         double halfBitmapHeight;
-        try{
-	        halfBitmapWidth = mCluster.getClusterManager().mMarkerIconBmps
-	        		.get(mMarkerType).getBitmap(isSelected).getWidth() / 2f;
-	        halfBitmapHeight = mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getBitmap(isSelected).getHeight() / 2f;
+        try {
+            halfBitmapWidth = cluster.getClusterManager().markerIconBmps
+                    .get(markerType).getBitmap(isSelected).getWidth() / 2f;
+            halfBitmapHeight = cluster.getClusterManager().markerIconBmps.get(markerType).getBitmap(isSelected).getHeight() / 2f;
+        } catch (NullPointerException e) {
+            Log.e(SamplesApplication.TAG, e.getMessage(), e);
+            return;
         }
-        catch (NullPointerException e) {
-        	Log.e(TAG,e.getMessage() + e.getStackTrace());
-        	return;
-        }
-        int left = (int)(pixelX - topLeftPoint.x - halfBitmapWidth 
-        		+ mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getIconOffset().x);
-        int top = (int)(pixelY - topLeftPoint.y - halfBitmapHeight 
-        		+ mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getIconOffset().y);
+        int left = (int) (pixelX - topLeftPoint.x - halfBitmapWidth
+                + cluster.getClusterManager().markerIconBmps.get(markerType).getIconOffset().x);
+        int top = (int) (pixelY - topLeftPoint.y - halfBitmapHeight
+                + cluster.getClusterManager().markerIconBmps.get(markerType).getIconOffset().y);
         int right = (left
-        		+ mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getBitmap(isSelected)
-        		.getWidth());
-        int bottom = (top 
-        		+ mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getBitmap(isSelected)
-        		.getHeight());
+                + cluster.getClusterManager().markerIconBmps.get(markerType).getBitmap(isSelected)
+                .getWidth());
+        int bottom = (top
+                + cluster.getClusterManager().markerIconBmps.get(markerType).getBitmap(isSelected)
+                .getHeight());
         Rectangle mBitmapRectangle = new Rectangle(left, top, right, bottom);
         Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
         if (!canvasRectangle.intersects(mBitmapRectangle)) {
             return;
         }
         // Draw bitmap
-        canvas.drawBitmap(mCluster.getClusterManager().mMarkerIconBmps
-        		.get(mMarkerType).getBitmap(isSelected), (int)left, (int)top);
-        
+        canvas.drawBitmap(cluster.getClusterManager().markerIconBmps
+                .get(markerType).getBitmap(isSelected), (int) left, (int) top);
+
         // Draw Text
-        if (mMarkerType == 0 ) {
-        	// Draw bitmap
-        	bubble = MarkerBitmap.getBitmapFromTitle(mCluster.getTitle(),
-                    mCluster.getClusterManager().mMarkerIconBmps
-                            .get(mMarkerType).getPaint());
-            canvas.drawBitmap(bubble, 
-            		(int)(left + halfBitmapWidth - bubble.getWidth() / 2),
-            		(int)(top - bubble.getHeight() ));
+        if (markerType == 0) {
+            // Draw bitmap
+            bubble = MarkerBitmap.getBitmapFromTitle(cluster.getTitle(),
+                    cluster.getClusterManager().markerIconBmps
+                            .get(markerType).getPaint());
+            canvas.drawBitmap(bubble,
+                    (int) (left + halfBitmapWidth - bubble.getWidth() / 2),
+                    (int) (top - bubble.getHeight()));
+        } else {
+            int x = (int) (left + halfBitmapWidth);
+            int y = (int) (top + halfBitmapHeight
+                    + cluster.getClusterManager().markerIconBmps
+                    .get(markerType).getPaint().getTextHeight(cluster.getTitle()) / 2);
+            canvas.drawText(cluster.getTitle(), x, y,
+                    cluster.getClusterManager().markerIconBmps
+                            .get(markerType).getPaint());
         }
-        else {
-            int x = (int)(left + halfBitmapWidth);
-            int y = (int)(top + halfBitmapHeight 
-            		+ mCluster.getClusterManager().mMarkerIconBmps
-            			.get(mMarkerType).getPaint().getTextHeight(mCluster.getTitle()) / 2);
-            canvas.drawText(mCluster.getTitle(), x, y, 
-            		mCluster.getClusterManager().mMarkerIconBmps
-            			.get(mMarkerType).getPaint());
-        }
-        
+
     }
 
     /**
@@ -150,7 +150,7 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
      * @return GeoPoint object of current marker center.
      */
     public LatLong getLatLong() {
-        return mCluster.getLocation();
+        return cluster.getLocation();
     }
 
     /**
@@ -158,32 +158,32 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
      */
     @Override
     public LatLong getPosition() {
-        return  getLatLong();
+        return getLatLong();
     }
+
     @Override
     public synchronized boolean onTap(LatLong geoPoint, Point viewPosition,
-                         Point tapPoint) {
-    	if ( ignoreOnTap ) return false;
-    	// Log.w(TAG, "onTap is called...");
-        if (mCluster.getItems().size() == 1 && contains(viewPosition, tapPoint)) {
-            Log.w(TAG, "The Marker was touched with onTap: "
+                                      Point tapPoint) {
+        if (ignoreOnTap) return false;
+        // Log.w(TAG, "onTap is called...");
+        if (cluster.getItems().size() == 1 && contains(viewPosition, tapPoint)) {
+            Log.w(SamplesApplication.TAG, "The Marker was touched with onTap: "
                     + this.getPosition().toString());
-            mCluster.getClusterManager().setSelectedItem(null, mCluster.getItems().get(0));
+            cluster.getClusterManager().setSelectedItem(null, cluster.getItems().get(0));
             requestRedraw();
             return true;
-        }
-        else if ( contains(viewPosition, tapPoint) ) {
-        	StringBuilder mText = new StringBuilder(mCluster.getItems().size() + " items:");
-        	for ( int i = 0; i < mCluster.getItems().size(); i++ ) {
-        		mText.append("\n- ");
-        		mText.append( mCluster.getItems().get(i).getTitle());
-        		if ( i == 7 ) {
-        			mText.append("\n...");
-        			break;
-        		}
-        	}
-        	ClusterManager.toast.setText(mText);
-        	ClusterManager.toast.show();        	
+        } else if (contains(viewPosition, tapPoint)) {
+            StringBuilder mText = new StringBuilder(cluster.getItems().size() + " items:");
+            for (int i = 0; i < cluster.getItems().size(); i++) {
+                mText.append("\n- ");
+                mText.append(cluster.getItems().get(i).getTitle());
+                if (i == 7) {
+                    mText.append("\n...");
+                    break;
+                }
+            }
+            ClusterManager.toast.setText(mText);
+            ClusterManager.toast.show();
         }
         return false;
     }
@@ -191,43 +191,30 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
     public synchronized boolean contains(Point viewPosition, Point tapPoint) {
         return getBitmapRectangle(viewPosition).contains(tapPoint);
     }
-    
-    private Rectangle getBitmapRectangle(Point center){
-    	Boolean isSelected = isSelected();
-    	return new Rectangle(
-            center.x
-                    - (float) mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType)
-                    	.getBitmap(isSelected).getWidth()
-                    + mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getIconOffset().x,
-            center.y
-                    - (float) mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType)
-                    	.getBitmap(isSelected).getHeight()
-                    + mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getIconOffset().y,
-            center.x
-                    + (float) mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType)
-                    	.getBitmap(isSelected).getWidth()
-                    + mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getIconOffset().x,
-            center.y
-                    + (float) mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType)
-                    .getBitmap(isSelected).getHeight()
-                    + mCluster.getClusterManager().mMarkerIconBmps.get(mMarkerType).getIconOffset().y);
-}
-    public Boolean isSelected(){
-    	return (mCluster.getItems().size() == 1 && 
-    			mCluster.getItems().get(0) == mCluster.getClusterManager().getSelectedItem());
+
+    private Rectangle getBitmapRectangle(Point center) {
+        Boolean isSelected = isSelected();
+        return new Rectangle(
+                center.x
+                        - (float) cluster.getClusterManager().markerIconBmps.get(markerType)
+                        .getBitmap(isSelected).getWidth()
+                        + cluster.getClusterManager().markerIconBmps.get(markerType).getIconOffset().x,
+                center.y
+                        - (float) cluster.getClusterManager().markerIconBmps.get(markerType)
+                        .getBitmap(isSelected).getHeight()
+                        + cluster.getClusterManager().markerIconBmps.get(markerType).getIconOffset().y,
+                center.x
+                        + (float) cluster.getClusterManager().markerIconBmps.get(markerType)
+                        .getBitmap(isSelected).getWidth()
+                        + cluster.getClusterManager().markerIconBmps.get(markerType).getIconOffset().x,
+                center.y
+                        + (float) cluster.getClusterManager().markerIconBmps.get(markerType)
+                        .getBitmap(isSelected).getHeight()
+                        + cluster.getClusterManager().markerIconBmps.get(markerType).getIconOffset().y);
+    }
+
+    public Boolean isSelected() {
+        return (cluster.getItems().size() == 1 &&
+                cluster.getItems().get(0) == cluster.getClusterManager().getSelectedItem());
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2009 Huan Erdao
- * Copyright (C) 2014 Martin Vennekamp
+ * Copyright 2009 Huan Erdao
+ * Copyright 2014 Martin Vennekamp
  * Copyright 2015 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -21,20 +21,19 @@ import org.mapsforge.core.model.LatLong;
 
 /**
  * Utility Class to handle GeoItem for ClusterMarker
- * 
  */
 public interface GeoItem {
-	/**
-	 * getLatLong
-	 * 
-	 * @return item location in LatLong.
-	 */
-	public LatLong getLatLong();
+    /**
+     * getLatLong
+     *
+     * @return item location in LatLong.
+     */
+    LatLong getLatLong();
 
-	/**
-	 * getTitle
-	 * 
-	 * @return Title of the item, might be used as Caption text.
-	 */
-	public String getTitle();
+    /**
+     * getTitle
+     *
+     * @return Title of the item, might be used as Caption text.
+     */
+    String getTitle();
 }

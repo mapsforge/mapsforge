@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Martin Vennekamp
+ * Copyright 2014 Martin Vennekamp
  * Copyright 2015 mapsforge.org
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -13,10 +13,8 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.applications.android.samples;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,34 +40,13 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClusterMapActivity extends RenderTheme4 {
-    private static final String TAG = ClusterMapActivity.class.getSimpleName();
+    protected ClusterManager clusterer = null;
     private MenuItem displayItems;
     private MenuItem displayMoreItems;
     private MenuItem hideItems;
-    protected ClusterManager clusterer = null;
-
-    // sample geo items
-    //############################# internal class ####################################
-    protected class MyGeoItem implements GeoItem {
-        public String title;
-        public LatLong latLong;
-        public MyGeoItem(int _id, double lat, double lng) {
-            this.title = String.valueOf(_id);
-            this.latLong = new LatLong(lat,lng);
-        }
-        public MyGeoItem(String title, LatLong latLong) {
-            this.title = title;
-            this.latLong = latLong;
-        }
-        public LatLong getLatLong(){
-            return latLong;
-        }
-        public String getTitle(){
-            return String.valueOf(this.title);
-        }
-    }
     private MyGeoItem[] geoItems_ = {
             new MyGeoItem("1st Item", new LatLong(52.504266, 13.392996)),
             new MyGeoItem("2nd Item", new LatLong(52.514266, 13.392996)),
@@ -82,6 +59,69 @@ public class ClusterMapActivity extends RenderTheme4 {
             new MyGeoItem("9th Item", new LatLong(52.514266, 13.383796)),
             new MyGeoItem("10th Item", new LatLong(52.514266, 13.383700))
     };
+
+    private List<MarkerBitmap> getMarkerBitmap() {
+        ArrayList<MarkerBitmap> markerBitmaps = new ArrayList<MarkerBitmap>();
+        // prepare for marker icons.
+        Drawable balloon;
+        // small icon for maximum single item
+        balloon = getResources().getDrawable(R.drawable.marker_green);
+        Bitmap bitmap_climbing_peak = AndroidGraphicFactory.convertToBitmap(balloon);
+        bitmap_climbing_peak.incrementRefCount();
+        balloon = getResources().getDrawable(R.drawable.marker_red);
+        Bitmap marker_red_s = AndroidGraphicFactory.convertToBitmap(balloon);
+        marker_red_s.incrementRefCount();
+        Paint paint_1;
+        paint_1 = AndroidGraphicFactory.INSTANCE.createPaint();
+        paint_1.setStyle(Style.STROKE);
+        paint_1.setTextAlign(Align.CENTER);
+        FontFamily fontFamily = FontFamily.DEFAULT;
+        FontStyle fontStyle = FontStyle.BOLD;
+        paint_1.setTypeface(fontFamily, fontStyle);
+        paint_1.setColor(Color.RED);
+        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmap_climbing_peak, marker_red_s,
+                new Point(0, 0), 10f, 1, paint_1));
+        // small icon. for 10 or less items.
+        balloon = getResources().getDrawable(R.drawable.balloon_s_n);
+        Bitmap bitmap_balloon_s_n = AndroidGraphicFactory
+                .convertToBitmap(balloon);
+        bitmap_balloon_s_n.incrementRefCount();
+        balloon = getResources().getDrawable(R.drawable.balloon_s_s);
+        Bitmap bitmap_balloon_s_s = AndroidGraphicFactory
+                .convertToBitmap(balloon);
+        bitmap_balloon_s_s.incrementRefCount();
+        Paint paint_2;
+        paint_2 = AndroidGraphicFactory.INSTANCE.createPaint();
+        paint_2.setStyle(Style.STROKE);
+        paint_2.setTextAlign(Align.CENTER);
+        fontFamily = FontFamily.DEFAULT;
+        fontStyle = FontStyle.BOLD;
+        paint_2.setTypeface(fontFamily, fontStyle);
+        paint_2.setColor(Color.WHITE);
+        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmap_balloon_s_n,
+                bitmap_balloon_s_s, new Point(0, 0), 9f, 10, paint_2));
+        // large icon. 100 will be ignored.
+        balloon = getResources().getDrawable(R.drawable.balloon_m_n);
+        Bitmap bitmap_balloon_m_n = AndroidGraphicFactory
+                .convertToBitmap(balloon);
+        bitmap_balloon_m_n.incrementRefCount();
+        balloon = getResources().getDrawable(R.drawable.balloon_m_s);
+        Bitmap bitmap_balloon_m_s = AndroidGraphicFactory
+                .convertToBitmap(balloon);
+        bitmap_balloon_m_s.incrementRefCount();
+        Paint paint_3;
+        paint_3 = AndroidGraphicFactory.INSTANCE.createPaint();
+        paint_3.setStyle(Style.STROKE);
+        paint_3.setTextAlign(Align.CENTER);
+        fontFamily = FontFamily.DEFAULT;
+        fontStyle = FontStyle.BOLD;
+        paint_3.setTypeface(fontFamily, fontStyle);
+        paint_3.setColor(Color.WHITE);
+        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmap_balloon_m_n,
+                bitmap_balloon_m_s, new Point(0, 0), 11f, 100, paint_3));
+        return markerBitmaps;
+    }
+
     //##################sample geo items class ####################################
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +135,7 @@ public class ClusterMapActivity extends RenderTheme4 {
         // create clusterer instance
         clusterer = new ClusterManager(
                 mapView,
-                getMarkerBitmap(this),
+                getMarkerBitmap(),
                 getZoomLevelMax(),
                 false);
 
@@ -128,8 +168,8 @@ public class ClusterMapActivity extends RenderTheme4 {
 
     private void addMarker() {
 
-        if ( ManyDummyContent.MANYITEMS.size() == 0 ) {
-            Toast.makeText(getApplication(),"No items received...",Toast.LENGTH_LONG).show();
+        if (ManyDummyContent.MANYITEMS.size() == 0) {
+            Toast.makeText(getApplication(), "No items received...", Toast.LENGTH_LONG).show();
         }
         for (int i = 0; i < ManyDummyContent.MANYITEMS.size(); i++) {
             LatLong latLong = ManyDummyContent.MANYITEMS.get(i).location;
@@ -175,7 +215,7 @@ public class ClusterMapActivity extends RenderTheme4 {
                 // create clusterer instance
                 clusterer = new ClusterManager(
                         mapView,
-                        getMarkerBitmap(this),
+                        getMarkerBitmap(),
                         getZoomLevelMax(),
                         false);
 
@@ -230,66 +270,29 @@ public class ClusterMapActivity extends RenderTheme4 {
         return true;
     }
 
-    private static ArrayList<MarkerBitmap> getMarkerBitmap(Context context) {
-        ArrayList<MarkerBitmap> markerBitmaps = new ArrayList<MarkerBitmap>();
-        // prepare for marker icons.
-        Drawable balloon;
-        // small icon for maximum single item
-        balloon = context.getResources().getDrawable(R.drawable.marker_green);
-        Bitmap bitmap_climbing_peak = AndroidGraphicFactory.convertToBitmap(balloon);
-        bitmap_climbing_peak.incrementRefCount();
-        balloon = context.getResources().getDrawable(R.drawable.marker_red);
-        Bitmap marker_red_s = AndroidGraphicFactory.convertToBitmap(balloon);
-        marker_red_s.incrementRefCount();
-        Paint paint_1;
-        paint_1 = AndroidGraphicFactory.INSTANCE.createPaint();
-        paint_1.setStyle(Style.STROKE);
-        paint_1.setTextAlign(Align.CENTER);
-        FontFamily fontFamily = FontFamily.DEFAULT;
-        FontStyle fontStyle = FontStyle.BOLD;
-        paint_1.setTypeface(fontFamily, fontStyle);
-        paint_1.setColor(Color.RED);
-        markerBitmaps.add(new MarkerBitmap(context, bitmap_climbing_peak, marker_red_s,
-                new Point(0, 0), 10f, 1, paint_1));
-        // small icon. for 10 or less items.
-        balloon = context.getResources().getDrawable(R.drawable.balloon_s_n);
-        Bitmap bitmap_balloon_s_n = AndroidGraphicFactory
-                .convertToBitmap(balloon);
-        bitmap_balloon_s_n.incrementRefCount();
-        balloon = context.getResources().getDrawable(R.drawable.balloon_s_s);
-        Bitmap bitmap_balloon_s_s = AndroidGraphicFactory
-                .convertToBitmap(balloon);
-        bitmap_balloon_s_s.incrementRefCount();
-        Paint paint_2;
-        paint_2 = AndroidGraphicFactory.INSTANCE.createPaint();
-        paint_2.setStyle(Style.STROKE);
-        paint_2.setTextAlign(Align.CENTER);
-        fontFamily = FontFamily.DEFAULT;
-        fontStyle = FontStyle.BOLD;
-        paint_2.setTypeface(fontFamily, fontStyle);
-        paint_2.setColor(Color.WHITE);
-        markerBitmaps.add(new MarkerBitmap(context, bitmap_balloon_s_n,
-                bitmap_balloon_s_s, new Point(0, 0), 9f, 10,paint_2));
-        // large icon. 100 will be ignored.
-        balloon = context.getResources().getDrawable(R.drawable.balloon_m_n);
-        Bitmap bitmap_balloon_m_n = AndroidGraphicFactory
-                .convertToBitmap(balloon);
-        bitmap_balloon_m_n.incrementRefCount();
-        balloon = context.getResources().getDrawable(R.drawable.balloon_m_s);
-        Bitmap bitmap_balloon_m_s = AndroidGraphicFactory
-                .convertToBitmap(balloon);
-        bitmap_balloon_m_s.incrementRefCount();
-        Paint paint_3;
-        paint_3 = AndroidGraphicFactory.INSTANCE.createPaint();
-        paint_3.setStyle(Style.STROKE);
-        paint_3.setTextAlign(Align.CENTER);
-        fontFamily = FontFamily.DEFAULT;
-        fontStyle = FontStyle.BOLD;
-        paint_3.setTypeface(fontFamily, fontStyle);
-        paint_3.setColor(Color.WHITE);
-        markerBitmaps.add(new MarkerBitmap(context, bitmap_balloon_m_n,
-                bitmap_balloon_m_s, new Point(0, 0), 11f, 100,paint_3));
-        return markerBitmaps;
+    // sample geo items
+    //############################# internal class ####################################
+    protected class MyGeoItem implements GeoItem {
+        public String title;
+        public LatLong latLong;
+
+        public MyGeoItem(int _id, double lat, double lng) {
+            this.title = String.valueOf(_id);
+            this.latLong = new LatLong(lat, lng);
+        }
+
+        public MyGeoItem(String title, LatLong latLong) {
+            this.title = title;
+            this.latLong = latLong;
+        }
+
+        public LatLong getLatLong() {
+            return latLong;
+        }
+
+        public String getTitle() {
+            return String.valueOf(this.title);
+        }
     }
 
 }

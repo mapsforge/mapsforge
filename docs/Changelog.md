@@ -10,6 +10,7 @@
 - Android gestures total overhaul [#688](https://github.com/mapsforge/mapsforge/issues/688)
 - Android gesture: fling [#219](https://github.com/mapsforge/mapsforge/issues/219)
 - Android gesture: quick scale [#651](https://github.com/mapsforge/mapsforge/issues/651)
+- Marker clustering example [#669](https://github.com/mapsforge/mapsforge/issues/669)
 - BoundingBox enhancements [#660](https://github.com/mapsforge/mapsforge/issues/660)
 - Path enhancements [#676](https://github.com/mapsforge/mapsforge/issues/676)
 - Customizable zoom controls [#700](https://github.com/mapsforge/mapsforge/issues/700)
