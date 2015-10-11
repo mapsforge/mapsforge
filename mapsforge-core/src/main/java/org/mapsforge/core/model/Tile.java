@@ -201,7 +201,7 @@ public class Tile implements Serializable {
 
 	/**
 	 * Returns the tile to the right of this tile.
-	 * @return
+	 * @return tile to the right
 	 */
 	public Tile getRight() {
 		int x = tileX + 1;
@@ -211,6 +211,10 @@ public class Tile implements Serializable {
 		return new Tile(x, this.tileY, this.zoomLevel, this.tileSize);
 	}
 
+	/**
+	 * Returns the tile above this tile.
+	 * @return tile above
+	 */
 	public Tile getAbove() {
 		int y = tileY - 1;
 		if (y < 0) {
@@ -218,6 +222,11 @@ public class Tile implements Serializable {
 		}
 		return new Tile(this.tileX, y, this.zoomLevel, this.tileSize);
 	}
+
+	/**
+	 * Returns the tile below this tile.
+	 * @return tile below
+	 */
 
 	public Tile getBelow() {
 		int y = tileY + 1;
@@ -227,6 +236,10 @@ public class Tile implements Serializable {
 		return new Tile(this.tileX, y, this.zoomLevel, this.tileSize);
 	}
 
+	/**
+	 * Returns the tile above left
+	 * @return tile above left
+	 */
 	public Tile getAboveLeft() {
 		int y = tileY - 1;
 		int x = tileX - 1;
@@ -239,6 +252,10 @@ public class Tile implements Serializable {
 		return new Tile(x, y, this.zoomLevel, this.tileSize);
 	}
 
+	/**
+	 * Returns the tile above right
+	 * @return tile above right
+	 */
 	public Tile getAboveRight() {
 		int y = tileY - 1;
 		int x = tileX + 1;
@@ -251,6 +268,10 @@ public class Tile implements Serializable {
 		return new Tile(x, y, this.zoomLevel, this.tileSize);
 	}
 
+	/**
+	 * Returns the tile below left
+	 * @return tile below left
+	 */
 	public Tile getBelowLeft() {
 		int y = tileY + 1;
 		int x = tileX - 1;
@@ -263,6 +284,10 @@ public class Tile implements Serializable {
 		return new Tile(x, y, this.zoomLevel, this.tileSize);
 	}
 
+	/**
+	 * Returns the tile below right
+	 * @return tile below right
+	 */
 	public Tile getBelowRight() {
 		int y = tileY + 1;
 		int x = tileX + 1;

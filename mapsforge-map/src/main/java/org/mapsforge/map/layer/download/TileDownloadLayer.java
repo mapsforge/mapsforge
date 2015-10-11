@@ -60,7 +60,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
 	/**
 	 * Returns the time-to-live (TTL) for tiles in the cache, or 0 if not set.
 	 * <p>
-	 * Refer to {@link #isTileStale(TileBitmap)} for information on how the TTL is enforced.
+	 * Refer to {@link #isTileStale(Tile, TileBitmap)} for information on how the TTL is enforced.
 	 */
 	public long getCacheTimeToLive() {
 		return cacheTimeToLive;

@@ -21,7 +21,7 @@ import java.util.Random;
 /**
  * The abstract base class for tiles downloaded from a web server.
  * <p>
- * This class defines a default TTL for cached tiles, accessible through the {@link #getDefaultTTL()} method. The value
+ * This class defines a default TTL for cached tiles, accessible through the {@link #getDefaultTimeToLive()}  method. The value
  * here will be used as the initial TTL by the {@link org.mapsforge.map.layer.download.TileDownloadLayer} using this
  * tile source, but applications can change the TTL at any time (refer to
  * {@link org.mapsforge.map.layer.download.TileDownloadLayer} for details). The default value is set to one day, or
