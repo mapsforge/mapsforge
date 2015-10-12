@@ -34,9 +34,9 @@ public class MapWorkerPool implements Runnable {
 	// is likely to be blocked on I/O reading map data. Technically this value can change, so a
 	// better implementation, maybe one that also takes the available memory into account, would
 	// be good.
-	public static final int DEFAULT_NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors() + 1;
-	// For stability reasons (see #591), we set number of threads to 1
-	public static int NUMBER_OF_THREADS = 1;
+	// For stability reasons (see #591), we set default number of threads to 1
+	public static final int DEFAULT_NUMBER_OF_THREADS = 1;//Runtime.getRuntime().availableProcessors() + 1;
+	public static int NUMBER_OF_THREADS = DEFAULT_NUMBER_OF_THREADS;
 
 	public static boolean DEBUG_TIMING = false;
 
