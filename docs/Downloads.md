@@ -42,6 +42,7 @@ The master branch contains the latest mapsforge version considered stable, but n
 
 These are the latest development builds from the dev branch. Use this branch if you want the latest mapsforge features and are prepared for some instability.
 
-- [Latest Samples application (dev)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
+- [Latest Samples application (dev - old permissions)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-oldpermissions-debug.apk)
+- [Latest Samples application (dev - runtime permissions)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-runtimepermissions-debug.apk)
 - [Latest Jars (dev)](http://ci.mapsforge.org/job/dev/)
 - [Writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT.jar)
