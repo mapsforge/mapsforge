@@ -17,6 +17,7 @@
  */
 package org.mapsforge.applications.android.samples;
 
+
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
@@ -60,6 +61,15 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
 		mapView.getModel().mapViewPosition.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
 		mapView.getMapZoomControls().setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
+	}
+
+	/**
+	 * We do not need storage permission as we do not have a map file here.
+	 */
+	@Override
+	protected void checkPermissionsAndCreateLayersAndControls() {
+		createLayers();
+		createControls();
 	}
 
 	@Override
