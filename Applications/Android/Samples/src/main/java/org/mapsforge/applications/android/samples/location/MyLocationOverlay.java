@@ -30,12 +30,18 @@ import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.model.MapViewPosition;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 /**
  * A thread-safe {@link Layer} implementation to display the current location. NOTE: This code really does not reflect
@@ -44,10 +50,12 @@ import android.os.Bundle;
  * Play Services. Also note that MyLocationOverlay needs to be added to a view before requesting location updates
  * (otherwise no DisplayModel is set).
  */
-public class MyLocationOverlay extends Layer implements LocationListener {
+public class MyLocationOverlay extends Layer implements LocationListener, ActivityCompat.OnRequestPermissionsResultCallback {
+	private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2234796;
 	private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
 	private float minDistance = 0.0f;
 	private long minTime = 0;
+	private final Activity activity;
 
 	/**
 	 * @param location
@@ -86,22 +94,22 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	/**
 	 * Constructs a new {@code MyLocationOverlay} with the default circle paints.
 	 * 
-	 * @param context
-	 *            a reference to the application context.
+	 * @param activity
+	 *            a reference to the activity.
 	 * @param mapViewPosition
 	 *            the {@code MapViewPosition} whose location will be updated.
 	 * @param bitmap
 	 *            a bitmap to display at the current location (might be null).
 	 */
-	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Bitmap bitmap) {
-		this(context, mapViewPosition, bitmap, getDefaultCircleFill(), getDefaultCircleStroke());
+	public MyLocationOverlay(Activity activity, MapViewPosition mapViewPosition, Bitmap bitmap) {
+		this(activity, mapViewPosition, bitmap, getDefaultCircleFill(), getDefaultCircleStroke());
 	}
 
 	/**
 	 * Constructs a new {@code MyLocationOverlay} with the given circle paints.
 	 * 
-	 * @param context
-	 *            a reference to the application context.
+	 * @param activity
+	 *            a reference to the activity.
 	 * @param mapViewPosition
 	 *            the {@code MapViewPosition} whose location will be updated.
 	 * @param bitmap
@@ -111,12 +119,12 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	 * @param circleStroke
 	 *            the {@code Paint} used to stroke the circle that represents the accuracy of the current location (might be null).
 	 */
-	public MyLocationOverlay(Context context, MapViewPosition mapViewPosition, Bitmap bitmap, Paint circleFill,
+	public MyLocationOverlay(Activity activity, MapViewPosition mapViewPosition, Bitmap bitmap, Paint circleFill,
 			Paint circleStroke) {
 		super();
-
+		this.activity = activity;
 		this.mapViewPosition = mapViewPosition;
-		this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		this.locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
 		this.marker = new Marker(null, bitmap, 0, 0);
 		this.circle = new Circle(null, 0, circleFill, circleStroke);
 	}
@@ -127,7 +135,11 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	public synchronized void disableMyLocation() {
 		if (this.myLocationEnabled) {
 			this.myLocationEnabled = false;
-			this.locationManager.removeUpdates(this);
+			try {
+				this.locationManager.removeUpdates(this);
+			} catch (RuntimeException runtimeException) {
+				// do we need to catch security exceptions for this call on Android 6?
+			}
 			// TODO trigger redraw?
 		}
 	}
@@ -147,17 +159,10 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 	 * 
 	 * @param centerAtFirstFix
 	 *            whether the map should be centered to the first received location fix.
-	 * @return true if at least one location provider was found, false otherwise.
 	 */
-	public synchronized boolean enableMyLocation(boolean centerAtFirstFix) {
-		if (!enableBestAvailableProvider()) {
-			return false;
-		}
-
+	public synchronized void enableMyLocation(boolean centerAtFirstFix) {
+		enableBestAvailableProvider();
 		this.centerAtNextFix = centerAtFirstFix;
-		this.circle.setDisplayModel(this.displayModel);
-		this.marker.setDisplayModel(this.displayModel);
-		return true;
 	}
 
 	/**
@@ -257,18 +262,47 @@ public class MyLocationOverlay extends Layer implements LocationListener {
 		this.snapToLocationEnabled = snapToLocationEnabled;
 	}
 
-	private synchronized boolean enableBestAvailableProvider() {
-		disableMyLocation();
+	private synchronized void enableBestAvailableProvider() {
+		if (!accessFineLocationPermissionRequired(this.activity)) {
+			disableMyLocation();
 
-		boolean result = false;
-		for (String provider : this.locationManager.getProviders(true)) {
-			if (LocationManager.GPS_PROVIDER.equals(provider)
-					|| LocationManager.NETWORK_PROVIDER.equals(provider)) {
-				result = true;
-				this.locationManager.requestLocationUpdates(provider, minTime, minDistance, this);
+			this.circle.setDisplayModel(this.displayModel);
+			this.marker.setDisplayModel(this.displayModel);
+
+			boolean result = false;
+			for (String provider : this.locationManager.getProviders(true)) {
+				if (LocationManager.GPS_PROVIDER.equals(provider)
+						|| LocationManager.NETWORK_PROVIDER.equals(provider)) {
+					result = true;
+					this.locationManager.requestLocationUpdates(provider, minTime, minDistance, this);
+				}
+			}
+			this.myLocationEnabled = result;
+		} else {
+			ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+		}
+	}
+
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		switch (requestCode) {
+			case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+				if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+					return;
+				}
+				enableBestAvailableProvider();
 			}
 		}
-		this.myLocationEnabled = result;
-		return result;
 	}
+
+	/**
+	 * Returns if it is required to ask for runtime permission for accessing the fine location
+	 * @param context the activity asking
+	 * @return true if runtime permission must be asked for
+	 */
+	private boolean accessFineLocationPermissionRequired(Context context) {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+				&& ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+	}
+
+
 }
