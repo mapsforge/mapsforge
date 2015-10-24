@@ -65,7 +65,7 @@ public class Way {
 			return false;
 		} else if (this.labelPosition == null && other.labelPosition != null) {
 			return false;
-		} else if (this.labelPosition!= null && this.labelPosition.equals(other.labelPosition)) {
+		} else if (this.labelPosition!= null && !this.labelPosition.equals(other.labelPosition)) {
 			return false;
 		} else if (this.latLongs.length != other.latLongs.length) {
 			return false;
