@@ -38,7 +38,7 @@ public class ModelTest {
 		model.mapViewPosition.setMapPosition(mapPosition1);
 		Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
 
-		PreferencesFacade preferencesFacade = new DummyPreferencesFacade();
+		PreferencesFacade preferencesFacade = new DummyPreferences();
 		model.save(preferencesFacade);
 
 		model.mapViewPosition.setMapPosition(mapPosition2);

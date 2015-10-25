@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.mapsforge.map.model.common.PreferencesFacade;
 
-class DummyPreferencesFacade implements PreferencesFacade {
+class DummyPreferences implements PreferencesFacade {
 	private final Map<String, Object> map = new HashMap<String, Object>();
 
 	@Override

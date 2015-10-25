@@ -18,7 +18,7 @@ package org.mapsforge.applications.android.samples;
 
 import java.io.File;
 
-import org.mapsforge.map.android.AndroidPreferences;
+import org.mapsforge.map.android.util.AndroidPreferences;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;

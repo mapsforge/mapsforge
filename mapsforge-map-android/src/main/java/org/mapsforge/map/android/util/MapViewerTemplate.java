@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.android.AndroidPreferences;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
