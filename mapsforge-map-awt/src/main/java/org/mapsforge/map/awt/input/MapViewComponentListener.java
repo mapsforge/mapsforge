@@ -12,22 +12,19 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.swing.controller;
+package org.mapsforge.map.awt.input;
+
+import org.mapsforge.map.awt.view.MapView;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-import org.mapsforge.map.model.MapViewDimension;
-import org.mapsforge.map.swing.view.MapView;
-
 public class MapViewComponentListener implements ComponentListener {
 	private final MapView mapView;
-	private final MapViewDimension mapViewDimension;
 
-	public MapViewComponentListener(MapView mapView, MapViewDimension mapViewDimension) {
+	public MapViewComponentListener(MapView mapView) {
 		this.mapView = mapView;
-		this.mapViewDimension = mapViewDimension;
 	}
 
 	@Override
@@ -43,7 +40,7 @@ public class MapViewComponentListener implements ComponentListener {
 	@Override
 	public void componentResized(ComponentEvent componentEvent) {
 		Dimension size = this.mapView.getSize();
-		this.mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
+		this.mapView.getModel().mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
 	}
 
 	@Override

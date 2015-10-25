@@ -12,31 +12,23 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.swing.controller;
+package org.mapsforge.map.awt.input;
+
+import org.mapsforge.map.model.MapViewPosition;
 
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
 import javax.swing.SwingUtilities;
 
-import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.model.Model;
-
-public class MouseEventListener implements MouseListener, MouseMotionListener, MouseWheelListener {
+public class MouseEventListener extends MouseAdapter {
 	private Point lastDragPoint;
 	private final MapViewPosition mapViewPosition;
 
-	public MouseEventListener(Model model) {
-		this.mapViewPosition = model.mapViewPosition;
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent mouseEvent) {
-		// do nothing
+	public MouseEventListener(MapViewPosition mapViewPosition) {
+		this.mapViewPosition = mapViewPosition;
 	}
 
 	@Override
@@ -50,21 +42,6 @@ public class MouseEventListener implements MouseListener, MouseMotionListener, M
 			}
 			this.lastDragPoint = point;
 		}
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent mouseEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void mouseExited(MouseEvent mouseEvent) {
-		// do nothing
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent mouseEvent) {
-		// do nothing
 	}
 
 	@Override

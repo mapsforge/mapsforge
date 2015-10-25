@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.awt;
+package org.mapsforge.map.awt.graphics;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
@@ -56,7 +56,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 		int textWidth = this.paintFront.getTextWidth(this.text);
 		if (textWidth > maxTextWidth) {
 			AttributedString attrString = new AttributedString(this.text);
-			AwtPaint awtPaintFront = AwtGraphicFactory.getPaint(this.paintFront);
+			org.mapsforge.map.awt.graphics.AwtPaint awtPaintFront = org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintFront);
 			attrString.addAttribute(TextAttribute.FOREGROUND, awtPaintFront.color);
 			attrString.addAttribute(TextAttribute.FONT, awtPaintFront.font);
 			AttributedCharacterIterator paragraph = attrString.getIterator();
@@ -106,7 +106,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 					throw new IllegalArgumentException("No position for drawing PointTextContainer");
 				}
 				if (this.paintBack != null) {
-					awtCanvas.setColorAndStroke(AwtGraphicFactory.getPaint(this.paintBack));
+					awtCanvas.setColorAndStroke(org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintBack));
 					AffineTransform affineTransform = new AffineTransform();
 					affineTransform.translate(posX, posY);
 					awtCanvas.getGraphicObject().draw(layout.getOutline(affineTransform));

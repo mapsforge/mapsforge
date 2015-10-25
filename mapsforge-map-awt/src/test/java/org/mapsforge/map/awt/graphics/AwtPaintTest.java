@@ -12,13 +12,14 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.awt;
+package org.mapsforge.map.awt.graphics;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.map.awt.graphics.AwtPaint;
 
 public class AwtPaintTest {
 	@Test
@@ -29,7 +30,7 @@ public class AwtPaintTest {
 		paint.setColor(Color.TRANSPARENT);
 		Assert.assertTrue(paint.isTransparent());
 
-		Bitmap bitmap = AwtGraphicFactory.INSTANCE.createBitmap(1, 1);
+		Bitmap bitmap = org.mapsforge.map.awt.graphics.AwtGraphicFactory.INSTANCE.createBitmap(1, 1);
 		paint.setBitmapShader(bitmap);
 		Assert.assertFalse(paint.isTransparent());
 	}

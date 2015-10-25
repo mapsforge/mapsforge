@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.awt;
+package org.mapsforge.map.awt.graphics;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -49,7 +49,7 @@ public class AwtGraphicFactory implements GraphicFactory {
 	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
 	public static GraphicContext createGraphicContext(Graphics graphics) {
-		return new AwtCanvas((Graphics2D) graphics);
+		return new org.mapsforge.map.awt.graphics.AwtCanvas((Graphics2D) graphics);
 	}
 
 	static AffineTransform getAffineTransform(Matrix matrix) {
@@ -120,7 +120,7 @@ public class AwtGraphicFactory implements GraphicFactory {
 
 	@Override
 	public Canvas createCanvas() {
-		return new AwtCanvas();
+		return new org.mapsforge.map.awt.graphics.AwtCanvas();
 	}
 
 	@Override
