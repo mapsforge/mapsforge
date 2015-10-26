@@ -79,8 +79,6 @@ public final class MapViewer {
 		final BoundingBox boundingBox = addLayers(mapView, mapFiles);
 
 		final PreferencesFacade preferencesFacade = new JavaPreferences(Preferences.userNodeForPackage(MapViewer.class));
-		final Model model = mapView.getModel();
-		model.init(preferencesFacade);
 
 		final JFrame frame = new JFrame();
 		frame.setTitle("MapViewer");
@@ -88,8 +86,6 @@ public final class MapViewer {
 		frame.pack();
 		frame.setSize(new Dimension(800, 600));
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		frame.setVisible(true);
-
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -103,11 +99,13 @@ public final class MapViewer {
 
 			@Override
 			public void windowOpened(WindowEvent e) {
-				byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox,
-						model.displayModel.getTileSize());
+				final Model model = mapView.getModel();
+				// model.init(preferencesFacade);
+				byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
 				model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
 			}
 		});
+		frame.setVisible(true);
 	}
 
 	private static BoundingBox addLayers(MapView mapView, List<File> mapFiles) {
@@ -136,12 +134,6 @@ public final class MapViewer {
 		if (SHOW_DEBUG_LAYERS) {
 			mapView.getFpsCounter().setVisible(true);
 		}
-		mapView.addComponentListener(new MapViewComponentListener(mapView));
-
-		MouseEventListener mouseEventListener = new MouseEventListener(mapView.getModel().mapViewPosition);
-		mapView.addMouseListener(mouseEventListener);
-		mapView.addMouseMotionListener(mouseEventListener);
-		mapView.addMouseWheelListener(mouseEventListener);
 
 		return mapView;
 	}

@@ -25,8 +25,9 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.SwingUtilities;
 
 public class MouseEventListener extends MouseAdapter {
-	private Point lastDragPoint;
 	private final MapViewPosition mapViewPosition;
+
+	private Point lastDragPoint;
 
 	public MouseEventListener(MapViewPosition mapViewPosition) {
 		this.mapViewPosition = mapViewPosition;

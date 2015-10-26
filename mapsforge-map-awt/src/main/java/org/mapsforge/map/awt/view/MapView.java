@@ -22,6 +22,8 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
+import org.mapsforge.map.awt.input.MapViewComponentListener;
+import org.mapsforge.map.awt.input.MouseEventListener;
 import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.controller.LayerManagerController;
 import org.mapsforge.map.controller.MapViewController;
@@ -69,6 +71,13 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
 		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
 				this.model.displayModel);
+
+		addComponentListener(new MapViewComponentListener(this));
+
+		MouseEventListener mouseEventListener = new MouseEventListener(this.model.mapViewPosition);
+		addMouseListener(mouseEventListener);
+		addMouseMotionListener(mouseEventListener);
+		addMouseWheelListener(mouseEventListener);
 	}
 
 	@Override
