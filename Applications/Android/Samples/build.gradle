@@ -1,8 +1,7 @@
 apply plugin: 'android'
 
 dependencies {
-  compile project(":mapsforge-map-android")
-  compile 'com.android.support:support-v4:23.0.1'
+  compile project(":mapsforge-map-android-extras")
   androidTestCompile group: 'com.jayway.android.robotium', name: 'robotium-solo', version:'5.2.1'
 }
 

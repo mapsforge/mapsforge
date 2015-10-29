@@ -8,7 +8,7 @@
 		<version>dev-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>mapsforge-map-android</artifactId>
+	<artifactId>mapsforge-map-android-extras</artifactId>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
@@ -41,14 +41,8 @@
 
 		<dependency>
 			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-map-reader</artifactId>
+			<artifactId>mapsforge-map-android</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.caverock</groupId>
-			<artifactId>androidsvg</artifactId>
-			<version>1.2.2-beta-1</version>
 		</dependency>
 
 		<dependency>
@@ -56,5 +50,10 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>android.support</groupId>
+			<artifactId>compatibility-v4</artifactId>
+			<version>23.0.1</version>
+		</dependency>
 	</dependencies>
 </project>

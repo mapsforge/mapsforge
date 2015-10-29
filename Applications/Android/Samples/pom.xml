@@ -111,7 +111,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-map-android</artifactId>
+			<artifactId>mapsforge-map-android-extras</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
