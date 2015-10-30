@@ -16,7 +16,6 @@ package org.mapsforge.map.android.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import android.Manifest;
 import android.content.Context;
@@ -27,7 +26,25 @@ import android.support.v4.content.ContextCompat;
 
 public final class AndroidSupportUtil {
 
-	private static final Logger LOGGER = Logger.getLogger(AndroidSupportUtil.class.getName());
+
+
+	/*
+	 * Returns if it is required to ask for runtime permission for accessing the coarse location
+	 * @param context the activity asking
+	 * @return true if runtime permission must be asked for
+	 */
+	public static boolean runtimePermissionRequiredForAccessCoarseLocation(Context context) {
+		return runtimePermissionRequired(context, Manifest.permission.ACCESS_COARSE_LOCATION);
+	}
+
+	/*
+	 * Returns if it is required to ask for runtime permission for accessing the fine location
+	 * @param context the activity asking
+	 * @return true if runtime permission must be asked for
+	 */
+	public static boolean runtimePermissionRequiredForAccessFineLocationContext(Context context) {
+		return runtimePermissionRequired(context, Manifest.permission.ACCESS_FINE_LOCATION);
+	}
 
 	/**
 	 * Returns if it is required to ask for runtime permission for accessing a directory.
@@ -35,25 +52,25 @@ public final class AndroidSupportUtil {
 	 * @param directory the directory accessed
 	 * @return true if runtime permission must be asked for
 	 */
-	public static boolean requestStoragePermissionRequired(Context context, File directory) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M // old permission system
-				|| ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) { // permission already granted
-			return false;
-		}
-		try {
-			String canonicalPath = directory.getCanonicalPath();
-			// not sure if this covers all possibilities: file is freely accessible if it is in the application external cache or external files
-			// dir or somewhere else (e.g. internal storage) but not in the general external storage.
-			boolean mapFileInProtectedStorage = canonicalPath.startsWith(Environment.getExternalStorageDirectory().getCanonicalPath()) &&
-					!canonicalPath.startsWith(context.getExternalCacheDir().getCanonicalPath()) &&
-					!canonicalPath.startsWith(context.getExternalFilesDir(null).getCanonicalPath());
-			if (mapFileInProtectedStorage) {
-				return true;
+	public static boolean runtimePermissionRequiredForReadExternalStorage(Context context, File directory) {
+		if (runtimePermissionRequired(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+			try {
+				String canonicalPath = directory.getCanonicalPath();
+				// not sure if this covers all possibilities: file is freely accessible if it is in the application external cache or external files
+				// dir or somewhere else (e.g. internal storage) but not in the general external storage.
+				return canonicalPath.startsWith(Environment.getExternalStorageDirectory().getCanonicalPath()) &&
+						!canonicalPath.startsWith(context.getExternalCacheDir().getCanonicalPath()) &&
+						!canonicalPath.startsWith(context.getExternalFilesDir(null).getCanonicalPath());
+			} catch (IOException e) {
+				return true; // ?? it probably means the file cannot be found
 			}
-		} catch (IOException e) {
-			return true; // ?? it probably means the file cannot be found
 		}
 		return false;
+	}
+
+	public static boolean runtimePermissionRequired(Context context, String permission) {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+				&& ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED;
 	}
 
 	private AndroidSupportUtil() {

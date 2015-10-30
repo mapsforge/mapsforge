@@ -24,7 +24,7 @@ import android.support.v4.app.ActivityCompat;
  */
 public abstract class MapViewerTemplateRuntimePermissions extends MapViewerTemplate implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-	private final int PERMISSIONS_REQUEST_READ_STORAGE = 2234792;
+	private final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
 
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 		switch (requestCode) {
@@ -43,7 +43,7 @@ public abstract class MapViewerTemplateRuntimePermissions extends MapViewerTempl
 	 * Hook to check for Android Runtime Permissions.
 	 */
 	protected void checkPermissionsAndCreateLayersAndControls() {
-		if (AndroidSupportUtil.requestStoragePermissionRequired(this, getMapFileDirectory())) {
+		if (AndroidSupportUtil.runtimePermissionRequiredForReadExternalStorage(this, getMapFileDirectory())) {
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_STORAGE);
 		} else {
 			createLayers();
