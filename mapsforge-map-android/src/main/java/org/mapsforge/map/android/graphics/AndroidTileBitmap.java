@@ -117,7 +117,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
 			// is triggered if the stream is not readable,
 			// so that it can be handled at this point, rather than later
 			// during bitmap painting
-			int w = this.bitmap.getWidth(); //NOSONAR
+			this.bitmap.getWidth(); //NOSONAR
 		} catch (Exception e) {
 			// this is really stupid, the runtime system actually throws a SocketTimeoutException,
 			// but we cannot catch it, because it is not declared, so we needed to catch the base

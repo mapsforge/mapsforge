@@ -56,9 +56,9 @@ public class MapFileInfo {
 	public final int fileVersion;
 
 	/**
-	 * The preferred language for names as defined in ISO 3166-1 (may be null).
+	 * The preferred language(s) separated with ',' for names as defined in ISO 639-1 or ISO 639-2 (may be null).
 	 */
-	public final String languagePreference;
+	public final String languagesPreference;
 
 	/**
 	 * The date of the map data in milliseconds since January 1, 1970.
@@ -109,7 +109,7 @@ public class MapFileInfo {
 		this.debugFile = mapFileInfoBuilder.optionalFields.isDebugFile;
 		this.fileSize = mapFileInfoBuilder.fileSize;
 		this.fileVersion = mapFileInfoBuilder.fileVersion;
-		this.languagePreference = mapFileInfoBuilder.optionalFields.languagePreference;
+		this.languagesPreference = mapFileInfoBuilder.optionalFields.languagesPreference;
 		this.boundingBox = mapFileInfoBuilder.boundingBox;
 		this.mapDate = mapFileInfoBuilder.mapDate;
 		this.numberOfSubFiles = mapFileInfoBuilder.numberOfSubFiles;

@@ -22,12 +22,11 @@ import java.util.List;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.android.AndroidPreferences;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
-import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
@@ -91,7 +90,7 @@ public abstract class MapViewerTemplate extends Activity  {
 	 * You can add more controls.
 	 */
 	protected void createControls() {
-		// hook for control creation
+		initializePosition(mapView.getModel().mapViewPosition);
 	}
 
 	/**
@@ -136,7 +135,6 @@ public abstract class MapViewerTemplate extends Activity  {
 		mapView.getMapZoomControls().setAutoHide(isZoomControlsAutoHide());
 		mapView.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
 		mapView.getMapZoomControls().setZoomLevelMax(getZoomLevelMax());
-		initializePosition(mapView.getModel().mapViewPosition);
 	}
 
 	/**
@@ -252,6 +250,16 @@ public abstract class MapViewerTemplate extends Activity  {
 	}
 
 	/**
+	 * Hook to check for Android Runtime Permissions. There is no check here, as
+	 * see the @MapViewerTemplateRuntimePermissions for an implementation that works with
+	 * Runtime Permissions.
+	 */
+	protected void checkPermissionsAndCreateLayersAndControls() {
+		createLayers();
+		createControls();
+	}
+
+	/**
 	 * Android Activity life cycle method.
 	 * @param savedInstanceState
 	 */
@@ -261,9 +269,9 @@ public abstract class MapViewerTemplate extends Activity  {
 		createSharedPreferences();
 		createMapViews();
 		createTileCaches();
-		createLayers();
-		createControls();
+		checkPermissionsAndCreateLayersAndControls();
 	}
+
 
 	/**
 	 * Android Activity life cycle method.

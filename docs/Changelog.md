@@ -4,8 +4,23 @@
 
 ## New since 0.5.2
 
+- Multilingual maps [#624](https://github.com/mapsforge/mapsforge/issues/624)
+- Writer language improved parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
+- MapDataStore extensibility [#668](https://github.com/mapsforge/mapsforge/issues/668)
+- Android gestures total overhaul [#688](https://github.com/mapsforge/mapsforge/issues/688)
+- Android gesture: fling [#219](https://github.com/mapsforge/mapsforge/issues/219)
+- Android gesture: quick scale [#651](https://github.com/mapsforge/mapsforge/issues/651)
+- Marker clustering example [#669](https://github.com/mapsforge/mapsforge/issues/669)
+- BoundingBox enhancements [#660](https://github.com/mapsforge/mapsforge/issues/660)
+- Path enhancements [#676](https://github.com/mapsforge/mapsforge/issues/676)
+- Customizable zoom controls [#700](https://github.com/mapsforge/mapsforge/issues/700)
+- Android View overlay [#680](https://github.com/mapsforge/mapsforge/issues/680)
+- Simplification of MapView API [#662](https://github.com/mapsforge/mapsforge/issues/662)
+- AWT library reorganization [#714](https://github.com/mapsforge/mapsforge/issues/714)
+- XSD repositioning for online validation [#672](https://github.com/mapsforge/mapsforge/issues/672)
+- Android 6 / SDK 23 / Runtime permission support [#704](https://github.com/mapsforge/mapsforge/issues/704)
 - Many other minor improvements and bug fixes
-
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.3)
 
 ## Version 0.5.X
 

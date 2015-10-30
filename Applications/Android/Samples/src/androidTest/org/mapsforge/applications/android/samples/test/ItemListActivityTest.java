@@ -19,6 +19,7 @@ public class ItemListActivityTest extends ActivityInstrumentationTestCase2<ItemL
 		super(ItemListActivity.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}

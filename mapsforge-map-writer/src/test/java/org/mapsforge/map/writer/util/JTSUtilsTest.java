@@ -31,7 +31,7 @@ public class JTSUtilsTest {
 		// Some of these tests do not really make sense, as not everything that is a closed line
 		// should be a polygon in OSM.
 		String testfile = "invalid-polygon.wkt";
-		String expectedfile = "invalid-polygon-repaired.wkt";
+		// String expectedfile = "invalid-polygon-repaired.wkt";
 
 		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
 		Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));

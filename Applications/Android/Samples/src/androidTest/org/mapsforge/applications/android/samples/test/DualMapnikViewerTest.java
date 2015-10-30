@@ -15,6 +15,7 @@ public class DualMapnikViewerTest extends ActivityInstrumentationTestCase2<DualM
 		super(DualMapnikMapViewer.class);
 	}
 
+	@Override
 	public void setUp() throws Exception {
 		this.solo = new Solo(getInstrumentation(), getActivity());
 	}

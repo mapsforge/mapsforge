@@ -37,6 +37,8 @@ public class BubbleOverlay extends RenderTheme4 {
 	@Override
 	protected void createLayers() {
 		super.createLayers();
+
+		// Bubble overlays
 		for (DummyContent.DummyItem item : DummyContent.ITEMS) {
 			TextView bubbleView = new TextView(this);
 			Utils.setBackground(bubbleView, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.balloon_overlay_unfocused) : getResources().getDrawable(R.drawable.balloon_overlay_unfocused));
@@ -61,11 +63,5 @@ public class BubbleOverlay extends RenderTheme4 {
 	protected void onDestroy() {
 		bubble.decrementRefCount();
 		super.onDestroy();
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
 	}
 }

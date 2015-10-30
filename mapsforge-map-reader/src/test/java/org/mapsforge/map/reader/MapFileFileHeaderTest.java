@@ -20,7 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
-import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
 public class MapFileFileHeaderTest {
@@ -29,7 +28,7 @@ public class MapFileFileHeaderTest {
 	private static final String CREATED_BY = "mapsforge-map-writer-0.3.1-SNAPSHOT";
 	private static final int FILE_SIZE = 709;
 	private static final int FILE_VERSION = 3;
-	private static final String LANGUAGE_PREFERENCE = "en";
+	private static final String LANGUAGES_PREFERENCE = "en";
 	private static final long MAP_DATE = 1335871456973L;
 	private static final File MAP_FILE = new File("src/test/resources/file_header/output.map");
 	private static final int NUMBER_OF_SUBFILES = 3;
@@ -59,7 +58,7 @@ public class MapFileFileHeaderTest {
 		Assert.assertFalse(mapFileInfo.debugFile);
 		Assert.assertEquals(START_POSITION, mapFileInfo.startPosition);
 		Assert.assertEquals(START_ZOOM_LEVEL, mapFileInfo.startZoomLevel);
-		Assert.assertEquals(LANGUAGE_PREFERENCE, mapFileInfo.languagePreference);
+		Assert.assertEquals(LANGUAGES_PREFERENCE, mapFileInfo.languagesPreference);
 		Assert.assertEquals(COMMENT, mapFileInfo.comment);
 		Assert.assertEquals(CREATED_BY, mapFileInfo.createdBy);
 	}

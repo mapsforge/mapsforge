@@ -17,9 +17,9 @@ package org.mapsforge.applications.android.samples;
 import android.content.Context;
 import android.os.Bundle;
 
-import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.reader.MultiMapDataStore;
+import org.mapsforge.map.datastore.MultiMapDataStore;
 
 import java.io.File;
 

@@ -1,5 +1,5 @@
 # Maven
-target/
+target
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -7,17 +7,20 @@ pom.xml.next
 release.properties
 
 # Eclipse
-/.settings/
-/.project
+.settings
+bin
+gen
+.classpath
+.project
 
 # IntelliJ
-.idea/
+.idea
 *.iml
 local.properties
 
 # Gradle
-build/
-.gradle/
+build
+.gradle
 
 # Emacs
 *~

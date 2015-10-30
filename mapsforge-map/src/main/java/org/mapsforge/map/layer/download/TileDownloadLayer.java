@@ -60,7 +60,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
 	/**
 	 * Returns the time-to-live (TTL) for tiles in the cache, or 0 if not set.
 	 * <p>
-	 * Refer to {@link #isTileStale(TileBitmap)} for information on how the TTL is enforced.
+	 * Refer to {@link #isTileStale(Tile, TileBitmap)} for information on how the TTL is enforced.
 	 */
 	public long getCacheTimeToLive() {
 		return cacheTimeToLive;
@@ -94,8 +94,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
 	 * Sets the time-to-live (TTL) for tiles in the cache.
 	 * <p>
 	 * The initial TTL is obtained by calling the {@link org.mapsforge.map.layer.download.tilesource.TileSource}'s
-	 * {@link org.mapsforge.map.layer.download.tilesource.TileSource#getDefaultTTL()} method. Refer to
-	 * {@link #isTileStale(TileBitmap)} for information on how the TTL is enforced.
+	 * {@link TileSource#getDefaultTimeToLive()} ()} method. Refer to
+	 * {@link #isTileStale(Tile, TileBitmap)} for information on how the TTL is enforced.
 	 * 
 	 * @param ttl
 	 *            The TTL. If set to 0, no TTL will be enforced.

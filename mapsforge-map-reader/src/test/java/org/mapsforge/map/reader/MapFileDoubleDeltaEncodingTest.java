@@ -14,12 +14,10 @@
  */
 package org.mapsforge.map.reader;
 
-import java.io.File;
-
 import org.junit.Test;
 
 public class MapFileDoubleDeltaEncodingTest {
-	private static final MapFile MAP_FILE_DOUBLE_DELTA = new MapFile("src/test/resources/double_delta_encoding/output.map");
+	private static final MapFile MAP_FILE_DOUBLE_DELTA = new MapFile("src/test/resources/double_delta_encoding/output.map", null);
 
 	@Test
 	public void executeQueryTest() {

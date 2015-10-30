@@ -26,6 +26,7 @@ import java.util.Map;
  * Android Intent mechanism.
  */
 public class XmlRenderThemeStyleMenu implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private final Map<String, XmlRenderThemeStyleLayer> layers;
 	private final String defaultLanguage;

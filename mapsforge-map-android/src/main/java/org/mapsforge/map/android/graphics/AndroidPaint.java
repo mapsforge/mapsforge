@@ -156,6 +156,7 @@ class AndroidPaint implements Paint {
 		return this.paint.getShader() == null && this.paint.getAlpha() == 0;
 	}
 
+	@SuppressWarnings("unused")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {

@@ -18,7 +18,7 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.reader.MapDataStore;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 public class RendererJob extends Job {

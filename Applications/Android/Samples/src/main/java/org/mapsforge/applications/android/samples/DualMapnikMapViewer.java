@@ -50,6 +50,7 @@ public class DualMapnikMapViewer extends DualMapViewer {
 				this.mapView2.getModel().mapViewPosition, this.mapView.getModel().mapViewPosition);
 	}
 
+	@Override
 	protected TileCache createTileCache2() {
 		int tileSize = this.mapView2.getModel().displayModel
 				.getTileSize();

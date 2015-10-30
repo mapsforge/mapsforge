@@ -18,7 +18,7 @@ package org.mapsforge.applications.android.samples;
 
 import java.io.File;
 
-import org.mapsforge.map.android.AndroidPreferences;
+import org.mapsforge.map.android.util.AndroidPreferences;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -120,6 +120,7 @@ public class DualMapViewer extends RenderTheme4 {
 	 * @return the screen ratio that the mapview takes up (for cache
 	 *         calculation)
 	 */
+	@Override
 	protected float getScreenRatio() {
 		return 0.5f;
 	}

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +17,7 @@
 package org.mapsforge.core.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
@@ -91,6 +93,42 @@ public class BoundingBox implements Serializable {
 		this.maxLongitude = maxLongitude;
 	}
 
+	/**
+	 * @param latLongs
+	 *            the coordinates list.
+	 */
+	public BoundingBox(List<LatLong> latLongs) {
+		double minLatitude = Double.POSITIVE_INFINITY;
+		double minLongitude = Double.POSITIVE_INFINITY;
+		double maxLatitude = Double.NEGATIVE_INFINITY;
+		double maxLongitude = Double.NEGATIVE_INFINITY;
+		for (LatLong latLong : latLongs) {
+			double latitude = latLong.latitude;
+			double longitude = latLong.longitude;
+
+			minLatitude = Math.min(minLatitude, latitude);
+			minLongitude = Math.min(minLongitude, longitude);
+			maxLatitude = Math.max(maxLatitude, latitude);
+			maxLongitude = Math.max(maxLongitude, longitude);
+		}
+
+		this.minLatitude = minLatitude;
+		this.minLongitude = minLongitude;
+		this.maxLatitude = maxLatitude;
+		this.maxLongitude = maxLongitude;
+	}
+
+	/**
+	 * @param latitude
+	 *            the latitude coordinate in degrees.
+	 * @param longitude
+	 *            the longitude coordinate in degrees.
+	 * @return true if this BoundingBox contains the given coordinates, false otherwise.
+	 */
+	public boolean contains(double latitude, double longitude) {
+		return this.minLatitude <= latitude && this.maxLatitude >= latitude
+				&& this.minLongitude <= longitude && this.maxLongitude >= longitude;
+	}
 
 	/**
 	 * @param latLong
@@ -98,8 +136,7 @@ public class BoundingBox implements Serializable {
 	 * @return true if this BoundingBox contains the given LatLong, false otherwise.
 	 */
 	public boolean contains(LatLong latLong) {
-		return this.minLatitude <= latLong.latitude && this.maxLatitude >= latLong.latitude
-				&& this.minLongitude <= latLong.longitude && this.maxLongitude >= latLong.longitude;
+		return contains(latLong.latitude, latLong.longitude);
 	}
 
 	@Override
@@ -120,6 +157,90 @@ public class BoundingBox implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @param boundingBox
+	 *            the BoundingBox which this BoundingBox should be extended if it is larger
+	 * @return a BoundingBox that covers this BoundingBox and the given BoundingBox.
+	 */
+	public BoundingBox extendBoundingBox(BoundingBox boundingBox) {
+		return new BoundingBox(Math.min(this.minLatitude, boundingBox.minLatitude),
+				Math.min(this.minLongitude, boundingBox.minLongitude),
+				Math.max(this.maxLatitude, boundingBox.maxLatitude),
+				Math.max(this.maxLongitude, boundingBox.maxLongitude));
+	}
+
+	/**
+	 * Creates a BoundingBox extended up to coordinates (but does not cross date line/poles).
+	 * @param latitude up to the extension
+	 * @param longitude up to the extension
+	 * @return an extended BoundingBox or this (if contains coordinates)
+	 */
+	public BoundingBox extendCoordinates(double latitude, double longitude) {
+		if (contains(latitude, longitude)) {
+			return this;
+		}
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, Math.min(this.minLatitude, latitude));
+		double minLon = Math.max(-180, Math.min(this.minLongitude, longitude));
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, Math.max(this.maxLatitude, latitude));
+		double maxLon = Math.min(180, Math.max(this.maxLongitude, longitude));
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+	/**
+	 * Creates a BoundingBox extended up to <code>LatLong</code> (but does not cross date line/poles).
+	 * @param latLong coordinates up to the extension
+	 * @return an extended BoundingBox or this (if contains coordinates)
+	 */
+	public BoundingBox extendCoordinates(LatLong latLong) {
+		return extendCoordinates(latLong.latitude, latLong.longitude);
+	}
+
+	/**
+	 * Creates a BoundingBox that is a fixed degree amount larger on all sides (but does not cross date line/poles).
+	 * @param verticalExpansion degree extension (must be >= 0)
+	 * @param horizontalExpansion degree extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if degrees == 0)
+	 */
+	public BoundingBox extendDegrees(double verticalExpansion, double horizontalExpansion) {
+		if (verticalExpansion == 0 && horizontalExpansion == 0) {
+			return this;
+		} else if (verticalExpansion < 0 || horizontalExpansion < 0) {
+			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
+		}
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
+	}
+
+	/**
+	 * Creates a BoundingBox that is a fixed meter amount larger on all sides (but does not cross date line/poles).
+	 * @param meters extension (must be >= 0)
+	 * @return an extended BoundingBox or this (if meters == 0)
+	 */
+	public BoundingBox extendMeters(int meters) {
+		if (meters == 0) {
+			return this;
+		} else if (meters < 0) {
+			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
+		}
+
+		double verticalExpansion = LatLongUtils.latitudeDistance(meters);
+		double horizontalExpansion = LatLongUtils.longitudeDistance(meters, Math.max(Math.abs(minLatitude), Math.abs(maxLatitude)));
+
+		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
+		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
+		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
+		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
+
+		return new BoundingBox(minLat, minLon, maxLat, maxLon);
 	}
 
 	/**
@@ -225,46 +346,6 @@ public class BoundingBox implements Serializable {
 		}
 		return this.intersects(new BoundingBox(tmpMinLat, tmpMinLon, tmpMaxLat, tmpMaxLon));
 	}
-
-
-	/**
-	 * @param boundingBox
-	 *            the BoundingBox which this BoundingBox should be extended if it is larger
-	 * @return a BoundingBox that covers this BoundingBox and the given BoundingBox.
-	 */
-	public BoundingBox extend(BoundingBox boundingBox) {
-		return new BoundingBox(Math.min(this.minLatitude, boundingBox.minLatitude),
-				Math.min(this.minLongitude, boundingBox.minLongitude),
-				Math.max(this.maxLatitude, boundingBox.maxLatitude),
-				Math.max(this.maxLongitude, boundingBox.maxLongitude));
-	}
-
-	/**
-	 * Creates a BoundingBox that is a fixed meter amount larger on all sides (but does not cross date line/poles)
-	 * @param meters extension (must be >= 0)
-	 * @return an extended BoundingBox or this (if meters == 0)
-	 */
-	public BoundingBox extend(int meters) {
-
-		if (meters == 0) {
-			return this;
-		} else if (meters < 0) {
-			throw new IllegalArgumentException("BoundingBox extend operation does not accept negative values");
-		}
-
-
-		double verticalExpansion = LatLongUtils.latitudeDistance(meters);
-		double horizontalExpansion = LatLongUtils.longitudeDistance(meters, Math.max(Math.abs(minLatitude), Math.abs(maxLatitude)));
-
-		double minLat = Math.max(MercatorProjection.LATITUDE_MIN, this.minLatitude - verticalExpansion);
-		double minLon = Math.max(-180, this.minLongitude - horizontalExpansion);
-		double maxLat = Math.min(MercatorProjection.LATITUDE_MAX, this.maxLatitude + verticalExpansion);
-		double maxLon = Math.min(180, this.maxLongitude + horizontalExpansion);
-
-		return new BoundingBox(minLat, minLon, maxLat, maxLon);
-	}
-
-
 
 	@Override
 	public String toString() {
