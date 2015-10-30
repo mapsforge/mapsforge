@@ -2,16 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.mapsforge.applications.android.samples"
     android:installLocation="auto"
-    android:versionCode="52"
-    android:versionName="dev-SNAPSHOT" >
+    android:versionCode="60"
+    android:versionName="dev-SNAPSHOT">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-
-    
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-                     android:maxSdkVersion="18" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -20,10 +19,10 @@
     <application
         android:name=".SamplesApplication"
         android:allowBackup="true"
-        android:label="Mapsforge Samples" >
+        android:label="Mapsforge Samples">
         <activity
             android:name=".Samples"
-            android:configChanges="keyboardHidden|orientation|screenSize" >
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -86,7 +85,7 @@
             android:name=".ItemDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Fragments Item Details"
-            android:parentActivityName=".ItemListActivity" >
+            android:parentActivityName=".ItemListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ItemListActivity" />
@@ -95,7 +94,7 @@
             android:name=".ItemListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Fragments Item List"
-            android:parentActivityName="org.mapsforge.applications.android.samples.Samples" >
+            android:parentActivityName="org.mapsforge.applications.android.samples.Samples">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.mapsforge.applications.android.samples.Samples" />
@@ -184,7 +183,7 @@
             android:name=".Settings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Settings"
-            android:parentActivityName=".Samples" >
+            android:parentActivityName=".Samples">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Samples" />
