@@ -34,7 +34,8 @@ These are the downloads for old versions. If possible use the newer release, we 
 
 The master branch contains the latest mapsforge version considered stable, but not yet released. Use this branch if you want to stay up-to-date with mapsforge stable versions.
 
-- [Latest Samples application (master)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
+- [Latest Samples application (master - old permissions)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-oldpermissions-debug.apk)
+- [Latest Samples application (master - runtime permissions)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-runtimepermissions-debug.apk)
 - [Latest Jars (master)](http://ci.mapsforge.org/job/master/)
 - [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-master-SNAPSHOT.jar)
   
