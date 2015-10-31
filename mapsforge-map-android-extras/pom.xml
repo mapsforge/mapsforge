@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
-		<version>master-SNAPSHOT</version>
+		<version>0.6.0-rc1</version>
 	</parent>
 
 	<artifactId>mapsforge-map-android-extras</artifactId>
