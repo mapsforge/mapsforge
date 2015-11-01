@@ -2,7 +2,9 @@
 
 <wiki:toc />
 
-## New since 0.5.2
+## Version 0.6.X
+
+**Version 0.6.0-rc1 (2015-11-01)**
 
 - Multilingual maps [#624](https://github.com/mapsforge/mapsforge/issues/624)
 - Writer language improved parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
@@ -21,6 +23,7 @@
 - Android 6 / SDK 23 / Runtime permission support [#704](https://github.com/mapsforge/mapsforge/issues/704)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.3)
+
 
 ## Version 0.5.X
 
