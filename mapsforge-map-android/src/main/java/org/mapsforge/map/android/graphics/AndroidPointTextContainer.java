@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,8 +23,8 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
@@ -33,17 +33,16 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
 	private StaticLayout frontLayout;
 	private StaticLayout backLayout;
-	private float boxWidth;
-	private float boxHeight;
 
 	AndroidPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                          SymbolContainer symbolContainer, Position position, int maxTextWidth) {
 		super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
+		final float boxWidth, boxHeight;
 		if (this.textWidth > this.maxTextWidth) {
 
 			// if the text is too wide its layout is done by the Android StaticLayout class,
-			// which automagically inserts line breaks. There is not a whole lot of useful
+			// which automatically inserts line breaks. There is not a whole lot of useful
 			// documentation of this class.
 			// For below and above placements the text is center-aligned, for left on the right
 			// and for right on the left.
@@ -72,7 +71,9 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			// strange Android behaviour: if alignment is set to center, then
 			// text is rendered with right alignment if using StaticLayout
 			frontTextPaint.setTextAlign(android.graphics.Paint.Align.LEFT);
-			backTextPaint.setTextAlign(android.graphics.Paint.Align.LEFT);
+			if (this.paintBack != null) {
+				backTextPaint.setTextAlign(android.graphics.Paint.Align.LEFT);
+			}
 
 			frontLayout = new StaticLayout(this.text, frontTextPaint, this.maxTextWidth, alignment, 1, 0, false);
 			backLayout = null;
@@ -80,12 +81,12 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				backLayout = new StaticLayout(this.text, backTextPaint, this.maxTextWidth, alignment, 1, 0, false);
 			}
 
-			this.boxWidth = frontLayout.getWidth();
-			this.boxHeight = frontLayout.getHeight();
+			boxWidth = frontLayout.getWidth();
+			boxHeight = frontLayout.getHeight();
 
 		} else {
-			this.boxWidth = textWidth;
-			this.boxHeight = textHeight;
+			boxWidth = textWidth;
+			boxHeight = textHeight;
 		}
 
 		switch (this.position) {
