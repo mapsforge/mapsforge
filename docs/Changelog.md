@@ -27,7 +27,7 @@
 - XSD repositioning for online validation [#672](https://github.com/mapsforge/mapsforge/issues/672)
 - Android 6 / SDK 23 / Runtime permission support [#704](https://github.com/mapsforge/mapsforge/issues/704)
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.3)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.0)
 
 
 ## Version 0.5.X
