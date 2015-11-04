@@ -42,7 +42,7 @@ public final class AndroidSupportUtil {
 	 * @param context the activity asking
 	 * @return true if runtime permission must be asked for
 	 */
-	public static boolean runtimePermissionRequiredForAccessFineLocationContext(Context context) {
+	public static boolean runtimePermissionRequiredForAccessFineLocation(Context context) {
 		return runtimePermissionRequired(context, Manifest.permission.ACCESS_FINE_LOCATION);
 	}
 
