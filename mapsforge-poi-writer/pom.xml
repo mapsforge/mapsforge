@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.mapsforge</groupId>
+		<artifactId>mapsforge</artifactId>
+		<version>dev-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>mapsforge-poi-writer</artifactId>
+
+	<properties>
+		<poi.writer.version>${project.version}</poi.writer.version>
+		<rootDirectory>../</rootDirectory>
+		<targetJdk>1.7</targetJdk>
+	</properties>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/config</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-jar</id>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<echo message="Copying jar file to osmosis plugin dir" />
+								<copy overwrite="true"
+									file="${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar"
+									todir="${osmosis.plugin.dir}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${osmosis.plugin.dir}</directory>
+							<includes>
+								<include>${project.artifactId}*.jar</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>linux-build</id>
+			<activation>
+				<os>
+					<family>Linux</family>
+				</os>
+			</activation>
+			<properties>
+				<osmosis.plugin.dir>${user.home}/.openstreetmap/osmosis/plugins/</osmosis.plugin.dir>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>osx-build</id>
+			<activation>
+				<os>
+					<name>mac os x</name>
+				</os>
+			</activation>
+			<properties>
+				<osmosis.plugin.dir>${user.home}/.openstreetmap/osmosis/plugins/</osmosis.plugin.dir>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>windows-build</id>
+			<activation>
+				<os>
+					<family>Windows</family>
+				</os>
+			</activation>
+			<properties>
+				<osmosis.plugin.dir>${env.APPDATA}/Openstreetmap/Osmosis/Plugins</osmosis.plugin.dir>
+			</properties>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.8.11.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openstreetmap.osmosis</groupId>
+			<artifactId>osmosis-core</artifactId>
+			<version>0.44.1</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+</project>

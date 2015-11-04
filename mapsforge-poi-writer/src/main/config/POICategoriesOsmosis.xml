@@ -1,0 +1,1355 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- http://wiki.openstreetmap.org/wiki/Map_Features -->
+<category xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" title="root"
+    xmlns="http://www.example.org/test" xsi:schemaLocation="http://www.example.org/test test.xsd ">
+
+    <!-- Amenities -->
+    <!-- See: http://wiki.openstreetmap.org/w/index.php?title=Key:amenity&oldid=608028 -->
+
+    <category title="Amenities">
+        <category title="Food">
+            <category title="Restaurants">
+                <mapping tag="amenity=restaurant" />
+            </category>
+            <category title="Food counter areas">
+                <mapping tag="amenity=food_court" />
+            </category>
+            <category title="Fast food restaurants">
+                <mapping tag="amenity=fast_food" />
+            </category>
+            <category title="Drinking water sources">
+                <mapping tag="amenity=drinking_water" />
+            </category>
+            <category title="Public grills">
+                <mapping tag="amenity=bbq" />
+            </category>
+            <category title="Pubs">
+                <mapping tag="amenity=pub" />
+            </category>
+            <category title="Bars">
+                <mapping tag="amenity=bar" />
+            </category>
+            <category title="Cafes">
+                <mapping tag="amenity=cafe" />
+            </category>
+            <category title="Beer gardens">
+                <mapping tag="amenity=beer_garden" />
+            </category>
+            <category title="Ice cream shops">
+                <mapping tag="amenity=ice_cream" />
+                <mapping tag="shop=ice_cream" />
+            </category>
+        </category>
+        <category title="Education institutes">
+            <category title="Kindergartens">
+                <mapping tag="amenity=kindergarten" />
+            </category>
+            <category title="School grounds">
+                <mapping tag="amenity=school" />
+            </category>
+            <category title="College campus or buildings">
+                <mapping tag="amenity=college" />
+            </category>
+            <category title="Public libraries">
+                <mapping tag="amenity=library" />
+            </category>
+            <category title="University campus or buildings">
+                <mapping tag="amenity=university" />
+            </category>
+        </category>
+        <category title="Transportation">
+            <category title="Ferry terminals">
+                <mapping tag="amenity=ferry_terminal" />
+            </category>
+            <category title="Bicyle parking places">
+                <mapping tag="amenity=bicycle_parking" />
+            </category>
+            <category title="Bicycle rental stations">
+                <mapping tag="amenity=bicycle_rental" />
+            </category>
+            <category title="Bus stations">
+                <mapping tag="amenity=bus_station" />
+            </category>
+            <category title="Car rental stations">
+                <mapping tag="amenity=car_rental" />
+            </category>
+            <category title="Car sharing stations">
+                <mapping tag="amenity=car_sharing" />
+            </category>
+            <category title="Car washing stations">
+                <mapping tag="amenity=car_wash" />
+            </category>
+            <category title="Fuel stations">
+                <mapping tag="amenity=fuel" />
+            </category>
+            <category title="Containers holding a mixture of salt and grit">
+                <mapping tag="amenity=grit_bin" />
+            </category>
+            <category title="Car parks">
+                <mapping tag="amenity=parking" />
+            </category>
+            <category title="A single parking space">
+                <mapping tag="amenity=parking_space" />
+            </category>
+            <category title="Entrances / Exits to underground parking facilities">
+                <mapping tag="amenity=parking_entrance" />
+            </category>
+            <category title="Taxi stands">
+                <mapping tag="amenity=taxi" />
+            </category>
+            <category title="Electric vehicle charging facilities">
+                <mapping tag="amenity=ev_charging" />
+            </category>
+        </category>
+        <category title="Financial institutes">
+            <category title="ATMs and cash points">
+                <mapping tag="amenity=atm" />
+            </category>
+            <category title="Banks">
+                <mapping tag="amenity=bank" />
+            </category>
+            <category title="Currency exchange places">
+                <mapping tag="amenity=bureau_de_change" />
+            </category>
+        </category>
+        <category title="Healthcare">
+            <category title="Pharmacies">
+                <mapping tag="amenity=pharmacy" />
+            </category>
+            <category title="Hospitals">
+                <mapping tag="amenity=hospital" />
+            </category>
+            <category title="Places to drop babies for remorse">
+                <mapping tag="amenity=baby_hatch" />
+            </category>
+            <category title="Dentists">
+                <mapping tag="amenity=dentist" />
+            </category>
+            <category title="Doctors's practises">
+                <mapping tag="amenity=doctors" />
+            </category>
+            <category title="Nursing homes">
+                <mapping tag="amenity=nursing_home" />
+            </category>
+            <category title="Social Facilities">
+                <mapping tag="amenity=social_facility" />
+            </category>
+            <category title="Veterinary clinics">
+                <mapping tag="amenity=veterinary" />
+            </category>
+        </category>
+        <category title="Entertainment, arts and culture">
+            <category title="Arts centers">
+                <mapping tag="amenity=arts_centre" />
+            </category>
+            <category title="Cinemas">
+                <mapping tag="amenity=cinema" />
+            </category>
+            <category title="Community centers">
+                <mapping tag="amenity=community_centre" />
+            </category>
+            <category title="Social centers">
+                <mapping tag="amenity=social_centre" />
+            </category>
+            <category title="Fountains">
+                <mapping tag="amenity=fountain" />
+            </category>
+            <category title="Nightclubs (Dancing)">
+                <mapping tag="amenity=nightclub" />
+            </category>
+            <category title="Strip clubs">
+                <mapping tag="amenity=stripclub" />
+            </category>
+            <category title="TV, radio or recording studios">
+                <mapping tag="amenity=studio" />
+            </category>
+            <category title="Theatres and operas">
+                <mapping tag="amenity=theatre" />
+            </category>
+        </category>
+        <category title="Other amenities">
+            <category title="Public benches">
+                <mapping tag="amenity=bench" />
+            </category>
+            <category title="Brothels">
+                <mapping tag="amenity=brothel" />
+            </category>
+            <category title="Public visible clocks">
+                <mapping tag="amenity=clock" />
+            </category>
+            <category title="Court houses">
+                <mapping tag="amenity=court_house" />
+            </category>
+            <category title="Crematoriums">
+                <mapping tag="amenity=crematorium" />
+            </category>
+            <category title="Embassies">
+                <mapping tag="amenity=embassy" />
+            </category>
+            <category title="Fire stations">
+                <mapping tag="amenity=fire_station" />
+            </category>
+            <category title="Grave yards">
+                <mapping tag="amenity=grave_yard" />
+            </category>
+            <category title="Hunting stands">
+                <mapping tag="amenity=hunting_stand" />
+            </category>
+            <category title="Marketplaces">
+                <mapping tag="amenity=market_place" />
+            </category>
+            <category title="Churches, mosques, temples">
+                <mapping tag="amenity=place_of_worship" />
+            </category>
+            <category title="Police stations">
+                <mapping tag="amenity=police" />
+            </category>
+            <category title="Post boxes">
+                <mapping tag="amenity=post_box" />
+            </category>
+            <category title="Post offices">
+                <mapping tag="amenity=post_office" />
+            </category>
+            <category title="Prisons (not including schools)">
+                <mapping tag="amenity=prison" />
+            </category>
+            <category title="Public buildings">
+                <mapping tag="amenity=public_building" />
+            </category>
+            <category title="Recycling facilities">
+                <mapping tag="amenity=recycling" />
+            </category>
+            <category title="Saunas">
+                <mapping tag="amenity=sauna" />
+            </category>
+            <category title="Bad weather shelters">
+                <mapping tag="amenity=shelter" />
+            </category>
+            <category title="Public telephones">
+                <mapping tag="amenity=telephone" />
+            </category>
+            <category title="Public toilets">
+                <mapping tag="amenity=toilets" />
+            </category>
+            <category title="Town hall buildings">
+                <mapping tag="amenity=townhall" />
+            </category>
+            <category title="Vending machines">
+                <mapping tag="amenity=vending_machine" />
+            </category>
+            <category title="Garbage cans">
+                <mapping tag="amenity=waste_basket" />
+            </category>
+            <category title="Garbage containers">
+                <mapping tag="amenity=waste_disposal" />
+            </category>
+            <category title="Water places for animals">
+                <mapping tag="amenity=watering_place" />
+            </category>
+        </category>
+    </category>
+
+    <!-- Aerialway -->
+
+    <!-- Aeroway -->
+    <category title="Airport POIs">
+        <category title="Airport gates">
+            <mapping tag="aeroway=gate"></mapping>
+        </category>
+        <category title="Helipads">
+            <mapping tag="aeroway=helipad"></mapping>
+        </category>
+        <category title="Terminals">
+            <mapping tag="aeroway=terminal"></mapping>
+        </category>
+    </category>
+
+    <!-- Barrier -->
+    <category title="Barriers">
+        <category title="Kerbs">
+            <mapping tag="barrier=kerb"></mapping>
+        </category>
+        <category title="Blocks">
+            <mapping tag="barrier=block"></mapping>
+        </category>
+        <category title="Bollards">
+            <mapping tag="barrier=bollard"></mapping>
+        </category>
+        <category title="Border controls">
+            <mapping tag="barrier=border_control"></mapping>
+        </category>
+        <category title="Cattle grids">
+            <mapping tag="barrier=cattle_grid"></mapping>
+        </category>
+        <category title="Chains">
+            <mapping tag="barrier=chain"></mapping>
+        </category>
+        <category title="Cycle barriers">
+            <mapping tag="barrier=cycle_barrier"></mapping>
+        </category>
+        <category title="Motorcycle barriers">
+            <mapping tag="barrier=motorcycle_barrier"></mapping>
+        </category>
+        <category title="Debris barriers">
+            <mapping tag="barrier=debris"></mapping>
+        </category>
+        <category title="Entrance barriers">
+            <mapping tag="barrier=entrance"></mapping>
+        </category>
+        <category title="Full-height turnstiles">
+            <mapping tag="barrier=full-height_turnstile"></mapping>
+        </category>
+        <category title="Gates">
+            <mapping tag="barrier=gate"></mapping>
+        </category>
+        <category title="Horse stiles">
+            <mapping tag="barrier=horse_stile"></mapping>
+        </category>
+        <category title="Jersey barriers">
+            <mapping tag="barrier=jersey_barrier"></mapping>
+        </category>
+        <category title="Kent carriage gap">
+            <mapping tag="barrier=kent_carriage_gap"></mapping>
+        </category>
+        <category title="Kissing gates">
+            <mapping tag="barrier=kissing_gate"></mapping>
+        </category>
+        <category title="Lift gate">
+            <mapping tag="barrier=lift_gate"></mapping>
+        </category>
+        <category title="Logs">
+            <mapping tag="barrier=log"></mapping>
+        </category>
+        <category title="Ropes">
+            <mapping tag="barrier=rope"></mapping>
+        </category>
+        <category title="Sally Ports">
+            <mapping tag="barrier=sally_port"></mapping>
+        </category>
+        <category title="Spikes">
+            <mapping tag="barrier=spike"></mapping>
+        </category>
+        <category title="Stiles">
+            <mapping tag="barrier=stile"></mapping>
+        </category>
+        <category title="Swing gates">
+            <mapping tag="barrier=swing_gate"></mapping>
+        </category>
+        <category title="Toll booths">
+            <mapping tag="barrier=toll_booth"></mapping>
+        </category>
+        <category title="Trunstiles">
+            <mapping tag="barrier=turnstile"></mapping>
+        </category>
+    </category>
+
+    <!-- Building -->
+
+    <!-- Craft -->
+    <category title="Crafting">
+        <category title="Agricultural engines">
+            <mapping tag="craft=agricultural_engines"></mapping>
+        </category>
+        <category title="Basket Makers">
+            <mapping tag="craft=basket_maker"></mapping>
+        </category>
+        <category title="Beekeepers">
+            <mapping tag="craft=beekeeper"></mapping>
+        </category>
+        <category title="Blacksmithes">
+            <mapping tag="craft=blacksmith"></mapping>
+        </category>
+        <category title="Breweries">
+            <mapping tag="craft=brewery"></mapping>
+        </category>
+        <category title="Boat builders">
+            <mapping tag="craft=boat builders"></mapping>
+        </category>
+        <category title="Bonfires">
+            <mapping tag="craft=bonfire"></mapping>
+        </category>
+        <category title="Bookbinders">
+            <mapping tag="craft=bookbinder"></mapping>
+        </category>
+        <category title="Carpenters">
+            <mapping tag="craft=carpenter"></mapping>
+        </category>
+        <category title="Carpet layers">
+            <mapping tag="craft=carpet_layer"></mapping>
+        </category>
+        <category title="Caterers">
+            <mapping tag="craft=caterer"></mapping>
+        </category>
+        <category title="Clockmakers">
+            <mapping tag="craft=clockmaker"></mapping>
+        </category>
+        <category title="Confectioneries">
+            <mapping tag="craft=confectionery"></mapping>
+        </category>
+        <category title="Dressmakers">
+            <mapping tag="craft=dressmaker"></mapping>
+        </category>
+        <category title="Electricians">
+            <mapping tag="craft=electrician"></mapping>
+        </category>
+        <category title="Falleses">
+            <mapping tag="craft=falles"></mapping>
+        </category>
+        <category title="Gardeners">
+            <mapping tag="craft=gardener"></mapping>
+        </category>
+        <category title="Glazieries">
+            <mapping tag="craft=glaziery"></mapping>
+        </category>
+        <category title="Handicrafts">
+            <mapping tag="craft=handicraft"></mapping>
+        </category>
+        <category title="Heating, Ventilating and Air Condition">
+            <mapping tag="craft=hvac"></mapping>
+        </category>
+        <category title="Insulations">
+            <mapping tag="craft=insulation"></mapping>
+        </category>
+        <category title="Jewellers">
+            <mapping tag="craft=jeweller"></mapping>
+        </category>
+        <category title="Locksmithes">
+            <mapping tag="craft=locksmith"></mapping>
+        </category>
+        <category title="Key cutters">
+            <mapping tag="craft=key_cutter"></mapping>
+        </category>
+        <category title="Metal constructions">
+            <mapping tag="craft=metal_construction"></mapping>
+        </category>
+        <category title="Opticians">
+            <mapping tag="craft=optician"></mapping>
+        </category>
+        <category title="Painters">
+            <mapping tag="craft=painter"></mapping>
+        </category>
+        <category title="Parquet layers">
+            <mapping tag="craft=parquet_layer"></mapping>
+        </category>
+        <category title="Photographers">
+            <mapping tag="craft=photographer"></mapping>
+        </category>
+        <category title="Photographic laboratory">
+            <mapping tag="craft=photographic_laboratory"></mapping>
+        </category>
+        <category title="Plasterers">
+            <mapping tag="craft=plasterer"></mapping>
+        </category>
+        <category title="Plumbers">
+            <mapping tag="craft=plumber"></mapping>
+        </category>
+        <category title="Potteries">
+            <mapping tag="craft=pottery"></mapping>
+        </category>
+        <category title="Riggers">
+            <mapping tag="craft=rigger"></mapping>
+        </category>
+        <category title="Roofers">
+            <mapping tag="craft=roofer"></mapping>
+        </category>
+        <category title="Saddlers">
+            <mapping tag="craft=saddler"></mapping>
+        </category>
+        <category title="Sailmakers">
+            <mapping tag="craft=sailmaker"></mapping>
+        </category>
+        <category title="Sawmills">
+            <mapping tag="craft=sawmill"></mapping>
+        </category>
+        <category title="Scaffolders">
+            <mapping tag="craft=sacffolder"></mapping>
+        </category>
+        <category title="Sculptors">
+            <mapping tag="craft=sculptor"></mapping>
+        </category>
+        <category title="Shoemakers">
+            <mapping tag="craft=shoemaker"></mapping>
+        </category>
+        <category title="Stand builders">
+            <mapping tag="craft=stand_builder"></mapping>
+        </category>
+        <category title="Stonemason">
+            <mapping tag="craft=stonemason"></mapping>
+        </category>
+        <category title="Sun protections">
+            <mapping tag="craft=Sun protection"></mapping>
+        </category>
+        <category title="Sweeps">
+            <mapping tag="craft=sweep"></mapping>
+        </category>
+        <category title="Taylors">
+            <mapping tag="craft=tailor"></mapping>
+        </category>
+        <category title="Tilers">
+            <mapping tag="craft=tiler"></mapping>
+        </category>
+        <category title="Tinsmithes">
+            <mapping tag="craft=tinsmith"></mapping>
+        </category>
+        <category title="Upholsterers">
+            <mapping tag="craft=upholsterer"></mapping>
+        </category>
+        <category title="Watchmakers">
+            <mapping tag="craft=watchmamker"></mapping>
+        </category>
+    </category>
+
+    <!-- Emergency -->
+    <category title="Emergency">
+        <category title="Ambulance stations">
+            <mapping tag="emergency=ambulance_station"></mapping>
+        </category>
+        <category title="Fire extinguishers">
+            <mapping tag="emergency=fire_extinguisher"></mapping>
+        </category>
+        <category title="Fire flappers">
+            <mapping tag="emergency=fire_flapper"></mapping>
+        </category>
+        <category title="Fire hoses">
+            <mapping tag="emergency=Fire hose"></mapping>
+        </category>
+        <category title="Fire hydrants">
+            <mapping tag="emergency=fire_hydrant"></mapping>
+        </category>
+        <category title="Emergency phones">
+            <mapping tag="emergency=phone"></mapping>
+        </category>
+        <category title="SES stations">
+            <mapping tag="emergency=ses_station"></mapping>
+        </category>
+        <category title="Sirens">
+            <mapping tag="emergency=siren"></mapping>
+        </category>
+    </category>
+
+    <!-- Geological -->
+    <category title="Geological">
+        <category title="Outcrops">
+            <mapping tag="geological=outcrop"></mapping>
+        </category>
+        <category title="Paleantological sites">
+            <mapping tag="geological=paleantological"></mapping>
+        </category>
+    </category>
+
+    <!-- Highway -->
+    <category title="Highway">
+        <category title="Bus stops">
+            <mapping tag="highway=bus_stop"></mapping>
+        </category>
+        <category title="Crossings">
+            <mapping tag="highway=crossing"></mapping>
+        </category>
+        <category title="Emergency access points">
+            <mapping tag="highway=emergency_access_point"></mapping>
+        </category>
+        <category title="Fords">
+            <mapping tag="highway=ford"></mapping>
+        </category>
+        <!-- <category title="Give ways"> <mapping tag="highway=give_way"></mapping>
+            </category> -->
+        <!-- emergency=phone -->
+        <category title="Mini roundabouts">
+            <mapping tag="highway=mini_roundabout"></mapping>
+        </category>
+        <category title="Motorway junctions">
+            <mapping tag="highway=motorway_junction"></mapping>
+        </category>
+        <category title="Passing spaces">
+            <mapping tag="highway=passing_place"></mapping>
+        </category>
+        <category title="Rest arease">
+            <mapping tag="highway=rest_area"></mapping>
+        </category>
+        <category title="Speed cameras">
+            <mapping tag="highway=speed_camera"></mapping>
+        </category>
+        <!-- <category title="Street lamps"> <mapping tag="highway=street_lamp"></mapping>
+            </category> -->
+        <category title="Service stations">
+            <mapping tag="highway=services"></mapping>
+        </category>
+        <!-- <category title="Stop signs"> <mapping tag="highway=stop"></mapping>
+            </category> -->
+        <!-- <category title="Traffic signals"> <mapping tag="highway=traffic_signal"></mapping>
+            </category> -->
+        <category title="Turning cycles">
+            <mapping tag="highway=turning_cycle"></mapping>
+        </category>
+    </category>
+
+    <!-- Historic -->
+    <category title="Historic">
+        <category title="Archaeological sites">
+            <mapping tag="historic=archaeological"></mapping>
+        </category>
+        <category title="Battlefields">
+            <mapping tag="historic=battlefield"></mapping>
+        </category>
+        <category title="Boundary stones">
+            <mapping tag="historic=Boundary stone"></mapping>
+        </category>
+        <category title="Castles">
+            <mapping tag="historic=castle"></mapping>
+        </category>
+        <category title="City gates">
+            <mapping tag="historic=city gate"></mapping>
+        </category>
+        <category title="Forts">
+            <mapping tag="historic=fort"></mapping>
+        </category>
+        <category title="Memorials">
+            <mapping tag="historic=memorial"></mapping>
+        </category>
+        <category title="Monuments">
+            <mapping tag="historic=monument"></mapping>
+        </category>
+        <category title="Ruins">
+            <mapping tag="historic=ruins"></mapping>
+        </category>
+        <category title="Rune stones">
+            <mapping tag="historic=runes_stone"></mapping>
+        </category>
+        <category title="Wayside crosses">
+            <mapping tag="historic=wayside_cross"></mapping>
+        </category>
+        <category title="Wayside shrines">
+            <mapping tag="historic=wayside_shrine"></mapping>
+        </category>
+        <category title="Wrecks">
+            <mapping tag="historic=wreck"></mapping>
+        </category>
+    </category>
+
+    <!-- Leisure -->
+    <category title="Leisure">
+        <!-- <category title="Common"> <mapping tag="leisure=common"></mapping>
+            </category> -->
+        <category title="Dancing places">
+            <mapping tag="leisure=dance"></mapping>
+        </category>
+        <category title="Dog parks">
+            <mapping tag="leisure=dog_park"></mapping>
+        </category>
+        <category title="Fishing sites">
+            <mapping tag="leisure=fishing"></mapping>
+        </category>
+        <category title="Gardens">
+            <mapping tag="leisure=garden"></mapping>
+        </category>
+        <category title="Golf courses">
+            <mapping tag="leisure=golf_course"></mapping>
+        </category>
+        <category title="Ice rinks">
+            <mapping tag="leisure=ice_rink"></mapping>
+        </category>
+        <category title="Marinas">
+            <mapping tag="leisure=marina"></mapping>
+        </category>
+        <category title="Miniature golf places">
+            <mapping tag="leisure=miniature_golf"></mapping>
+        </category>
+        <category title="Nature reserves">
+            <mapping tag="leisure=nature_reserve"></mapping>
+        </category>
+        <category title="Parks">
+            <mapping tag="leisure=park"></mapping>
+        </category>
+        <category title="Pitches">
+            <mapping tag="leisure=pitch"></mapping>
+        </category>
+        <category title="Playgrounds">
+            <mapping tag="leisure=playground"></mapping>
+        </category>
+        <category title="Slipways">
+            <mapping tag="leisure=slipway"></mapping>
+        </category>
+        <category title="Sports centres">
+            <mapping tag="leisure=sports_centre"></mapping>
+        </category>
+        <category title="Stadiums">
+            <mapping tag="leisure=stadium"></mapping>
+        </category>
+        <category title="Swimming pools">
+            <mapping tag="leisure=swimming_pool"></mapping>
+        </category>
+        <category title="Tracks">
+            <mapping tag="leisure=track"></mapping>
+        </category>
+        <category title="Water parks">
+            <mapping tag="leisure=water_park"></mapping>
+        </category>
+    </category>
+
+    <!-- Man Made -->
+    <category title="Man Made">
+        <category title="Adits">
+            <mapping tag="man_made=adit"></mapping>
+        </category>
+        <category title="Beacons">
+            <mapping tag="man_made=beacon"></mapping>
+        </category>
+        <category title="Chimneys">
+            <mapping tag="man_made=chimney"></mapping>
+        </category>
+        <category title="Cranes">
+            <mapping tag="man_made=crane"></mapping>
+        </category>
+        <category title="Flagpoles">
+            <mapping tag="man_made=flagpole"></mapping>
+        </category>
+        <category title="Lighthouses">
+            <mapping tag="man_made=lighthouse"></mapping>
+        </category>
+        <category title="Mineshafts">
+            <mapping tag="man_made=mineshafts"></mapping>
+        </category>
+        <category title="Monitoring stations">
+            <mapping tag="man_made=monitoring_station"></mapping>
+        </category>
+        <category title="Petroleum wells">
+            <mapping tag="man_made=petroleum_wells"></mapping>
+        </category>
+        <category title="Covered water reservoirs">
+            <mapping tag="man_made=reservoir_covered"></mapping>
+        </category>
+        <category title="Storage tanks">
+            <mapping tag="man_made=storage tank"></mapping>
+        </category>
+        <category title="Surveillance cameras">
+            <mapping tag="man_made=surveillance"></mapping>
+        </category>
+        <category title="Survey points">
+            <mapping tag="man_made=survey_point"></mapping>
+        </category>
+        <category title="Towers">
+            <mapping tag="man_made=tower"></mapping>
+        </category>
+        <category title="Wastewater plants">
+            <mapping tag="man_made=wastewater_plant"></mapping>
+        </category>
+        <category title="Watermills">
+            <mapping tag="man_made=watermill"></mapping>
+        </category>
+        <category title="Water towers">
+            <mapping tag="man_made=water_tower"></mapping>
+        </category>
+        <category title="Water works">
+            <mapping tag="man_made=water_works"></mapping>
+        </category>
+        <category title="Water well">
+            <mapping tag="man_made=water_well"></mapping>
+        </category>
+        <category title="Windmills">
+            <mapping tag="man_made=windmill"></mapping>
+        </category>
+        <category title="Works">
+            <mapping tag="man_made=works"></mapping>
+        </category>
+        <category title="">
+            <mapping tag="man_made="></mapping>
+        </category>
+    </category>
+
+    <!-- Military -->
+    <category title="Military">
+        <category title="Military Airfields">
+            <mapping tag="military=airfields"></mapping>
+        </category>
+        <category title="Bunkers">
+            <mapping tag="military=bunker"></mapping>
+        </category>
+        <category title="Barracks">
+            <mapping tag="military=barrack"></mapping>
+        </category>
+        <category title="Dangerous Areas">
+            <mapping tag="military=danger_area"></mapping>
+        </category>
+        <category title="Naval bases">
+            <mapping tag="military=naval_base"></mapping>
+        </category>
+        <category title="Firing / bombing ranges">
+            <mapping tag="military=range"></mapping>
+        </category>
+    </category>
+
+    <!-- Natural -->
+
+    <!-- Office -->
+    <category title="Office">
+        <category title="Accountants">
+            <mapping tag="office=accountant"></mapping>
+        </category>
+        <category title="Administrative">
+            <mapping tag="office=administrative"></mapping>
+        </category>
+        <category title="Architects">
+            <mapping tag="office="></mapping>
+        </category>
+        <category title="Camping">
+            <mapping tag="office=camping"></mapping>
+        </category>
+        <category title="Company">
+            <mapping tag="office=company"></mapping>
+        </category>
+        <category title="Educational institutions">
+            <mapping tag="office=educational_institution"></mapping>
+        </category>
+        <category title="Employment agencies">
+            <mapping tag="office=employment_agency"></mapping>
+        </category>
+        <category title="Estate agents">
+            <mapping tag="office=estate_agent"></mapping>
+        </category>
+        <category title="Government">
+            <mapping tag="office=government"></mapping>
+        </category>
+        <category title="Insurance">
+            <mapping tag="office=insurance"></mapping>
+        </category>
+        <category title="IT">
+            <mapping tag="office=it"></mapping>
+        </category>
+        <category title="Lawyers">
+            <mapping tag="office=lawyer"></mapping>
+        </category>
+        <category title="Newspapers">
+            <mapping tag="office=newspaper"></mapping>
+        </category>
+        <category title="Non-government organisations">
+            <mapping tag="office=ngo"></mapping>
+        </category>
+        <category title="Political parties">
+            <mapping tag="office=political_party"></mapping>
+        </category>
+        <category title="Quasi non-government organisation">
+            <mapping tag="office=quango"></mapping>
+        </category>
+        <category title="Research">
+            <mapping tag="office=research"></mapping>
+        </category>
+        <category title="Telecommunication">
+            <mapping tag="office=telecommunication"></mapping>
+        </category>
+        <category title="Travel agents">
+            <mapping tag="office=travel_agent"></mapping>
+        </category>
+    </category>
+
+    <!-- Places -->
+
+    <!-- Power -->
+
+    <!-- Public Transport -->
+    <category title="Public Transport">
+        <category title="Platforms">
+            <mapping tag="public_transport=platform"></mapping>
+        </category>
+        <category title="Stations">
+            <mapping tag="public_transport=station"></mapping>
+        </category>
+        <category title="Stop positions">
+            <mapping tag="public_transport=stop_position"></mapping>
+        </category>
+    </category>
+
+    <!-- Railway -->
+
+    <!-- Route -->
+
+    <!-- Shop -->
+    <category title="Shop">
+        <category title="Alcohol">
+            <mapping tag="shop=alcohol"></mapping>
+        </category>
+        <category title="Anime">
+            <mapping tag="shop=Anime"></mapping>
+        </category>
+        <category title="Baby goods">
+            <mapping tag="shop=baby_goods"></mapping>
+        </category>
+        <category title="Bakeries">
+            <mapping tag="shop=bakery"></mapping>
+        </category>
+        <category title="Bathroom furnishing">
+            <mapping tag="shop=bathroom_furnishing"></mapping>
+        </category>
+        <category title="Beauty">
+            <mapping tag="shop=beauty"></mapping>
+        </category>
+        <category title="Beds">
+            <mapping tag="shop=bed"></mapping>
+        </category>
+        <category title="Beverages">
+            <mapping tag="shop=beverages"></mapping>
+        </category>
+        <category title="Bicycles">
+            <mapping tag="shop=bicycle"></mapping>
+        </category>
+        <category title="Books">
+            <mapping tag="shop=books"></mapping>
+        </category>
+        <category title="Boutiques">
+            <mapping tag="shop=boutique"></mapping>
+        </category>
+        <category title="Butchers">
+            <mapping tag="shop=butcher"></mapping>
+        </category>
+        <category title="Cars">
+            <mapping tag="shop=car"></mapping>
+        </category>
+        <category title="Car repairs">
+            <mapping tag="shop=car_repair"></mapping>
+        </category>
+        <category title="Car parts">
+            <mapping tag="shop=car_parts"></mapping>
+        </category>
+        <category title="Carpets">
+            <mapping tag="shop=carpet"></mapping>
+        </category>
+        <category title="Charity">
+            <mapping tag="shop=charity"></mapping>
+        </category>
+        <category title="Chemists">
+            <mapping tag="shop=chemist"></mapping>
+            <mapping tag="shop=drugstore"></mapping>
+        </category>
+        <category title="Clothes">
+            <mapping tag="shop=clothes"></mapping>
+        </category>
+        <category title="Computers">
+            <mapping tag="shop=computer"></mapping>
+        </category>
+        <category title="Confectionery shops">
+            <mapping tag="shop=confectionery"></mapping>
+        </category>
+        <category title="Convenience">
+            <mapping tag="shop=convenience"></mapping>
+        </category>
+        <category title="Copyshops">
+            <mapping tag="shop=copyshop"></mapping>
+        </category>
+        <category title="Curtains">
+            <mapping tag="shop=curtain"></mapping>
+        </category>
+        <category title="Delis">
+            <mapping tag="shop=deli"></mapping>
+        </category>
+        <category title="Department stores">
+            <mapping tag="shop=department_store"></mapping>
+        </category>
+        <category title="Dives">
+            <mapping tag="shop=dive"></mapping>
+        </category>
+        <category title="Dry cleaning">
+            <mapping tag="shop=dry_cleaning"></mapping>
+        </category>
+        <category title="DIY">
+            <mapping tag="shop=doityourself"></mapping>
+            <mapping tag="shop=trade"></mapping>
+        </category>
+        <category title="Electronics">
+            <mapping tag="shop=electronics"></mapping>
+        </category>
+        <category title="Erotic">
+            <mapping tag="shop=erotic"></mapping>
+        </category>
+        <category title="Fabric">
+            <mapping tag="shop=fabric"></mapping>
+        </category>
+        <category title="Farms">
+            <mapping tag="shop=farm"></mapping>
+        </category>
+        <category title="Florists">
+            <mapping tag="shop=florist"></mapping>
+        </category>
+        <category title="Frames">
+            <mapping tag="shop=frame"></mapping>
+        </category>
+        <category title="Furnances">
+            <mapping tag="shop=furnance"></mapping>
+        </category>
+        <category title="Funeral directors">
+            <mapping tag="shop=funeral_directors"></mapping>
+        </category>
+        <category title="Furniture">
+            <mapping tag="shop=furniture"></mapping>
+        </category>
+        <category title="Garden centres">
+            <mapping tag="shop=garden_centre"></mapping>
+        </category>
+        <category title="Gas">
+            <mapping tag="shop=gas"></mapping>
+        </category>
+        <category title="General">
+            <mapping tag="shop=general"></mapping>
+        </category>
+        <category title="Gifts">
+            <mapping tag="shop=gift"></mapping>
+        </category>
+        <category title="Glazieriy shops">
+            <mapping tag="shop=glaziery"></mapping>
+        </category>
+        <category title="Green grocers">
+            <mapping tag="shop=greengrocer"></mapping>
+        </category>
+        <category title="Hairdressers">
+            <mapping tag="shop=hairdresser"></mapping>
+        </category>
+        <category title="Hardware">
+            <mapping tag="shop=hardware"></mapping>
+        </category>
+        <category title="Hearing aids">
+            <mapping tag="shop=hearing_aids"></mapping>
+        </category>
+        <category title="Herbalists">
+            <mapping tag="shop=herbalist"></mapping>
+        </category>
+        <category title="Hifi">
+            <mapping tag="shop=hifi"></mapping>
+        </category>
+        <category title="Hunting">
+            <mapping tag="shop=hunting"></mapping>
+        </category>
+        <category title="Interior decoration">
+            <mapping tag="shop=interior_decoration"></mapping>
+        </category>
+        <category title="Jeweleries">
+            <mapping tag="shop=jewelery"></mapping>
+        </category>
+        <category title="Kiosks">
+            <mapping tag="shop=kiosk"></mapping>
+        </category>
+        <category title="Kitchens">
+            <mapping tag="shop=kitchen"></mapping>
+        </category>
+        <category title="Laundries">
+            <mapping tag="shop=laundry"></mapping>
+        </category>
+        <category title="Malls">
+            <mapping tag="shop=mall"></mapping>
+        </category>
+        <category title="Massages">
+            <mapping tag="shop=massage"></mapping>
+        </category>
+        <category title="Mobile phones">
+            <mapping tag="shop=mobile_phone"></mapping>
+        </category>
+        <category title="Money lenders">
+            <mapping tag="shop=money_lender"></mapping>
+        </category>
+        <category title="Motorcycles">
+            <mapping tag="shop=motorcycle"></mapping>
+        </category>
+        <category title="Musical intruments">
+            <mapping tag="shop=musical_instrument"></mapping>
+        </category>
+        <category title="Newsagents">
+            <mapping tag="shop=newsagent"></mapping>
+        </category>
+        <category title="Optician shops">
+            <mapping tag="shop=optician"></mapping>
+        </category>
+        <category title="Organics">
+            <mapping tag="shop=organic"></mapping>
+        </category>
+        <category title="Outdoor">
+            <mapping tag="shop=outdoor"></mapping>
+        </category>
+        <category title="Paints">
+            <mapping tag="shop=paints"></mapping>
+        </category>
+        <category title="Pawnbrokers">
+            <mapping tag="shop=pawnbroker"></mapping>
+        </category>
+        <category title="Pets">
+            <mapping tag="shop=pet"></mapping>
+        </category>
+        <category title="Radio technics">
+            <mapping tag="shop=radiotechnics"></mapping>
+        </category>
+        <category title="Seafood / Fish">
+            <mapping tag="shop=seafood"></mapping>
+            <mapping tag="shop=fish"></mapping>
+        </category>
+        <category title="Second hand">
+            <mapping tag="shop=second_hand"></mapping>
+        </category>
+        <category title="Shoes">
+            <mapping tag="shop=shoes"></mapping>
+        </category>
+        <category title="Sports">
+            <mapping tag="shop=sports"></mapping>
+        </category>
+        <category title="Stationeries">
+            <mapping tag="shop=stationery"></mapping>
+        </category>
+        <category title="Supermarkets">
+            <mapping tag="shop=supermarket"></mapping>
+        </category>
+        <category title="Tatoos">
+            <mapping tag="shop=tatoo"></mapping>
+        </category>
+        <category title="Tickets">
+            <mapping tag="shop=ticket"></mapping>
+        </category>
+        <category title="Tobacco">
+            <mapping tag="shop=tobacco"></mapping>
+        </category>
+        <category title="Toys">
+            <mapping tag="shop=toys"></mapping>
+        </category>
+        <!-- Trade == DIY -->
+        <category title="Vacant">
+            <mapping tag="shop=vacant"></mapping>
+        </category>
+        <category title="Vacuum cleaners">
+            <mapping tag="shop=vacuum_cleaner"></mapping>
+        </category>
+        <category title="Variety stores">
+            <mapping tag="shop=variety_store"></mapping>
+        </category>
+        <category title="Videos">
+            <mapping tag="shop=video"></mapping>
+        </category>
+        <category title="Window blinds">
+            <mapping tag="shop=window_blind"></mapping>
+        </category>
+    </category>
+
+    <!-- Sport -->
+    <category title="Sport">
+        <category title="Bowling">
+            <mapping tag="sport=9-pin"></mapping>
+            <mapping tag="sport=10-pin"></mapping>
+        </category>
+        <category title="American football">
+            <mapping tag="sport=american_football"></mapping>
+        </category>
+        <category title="Archery">
+            <mapping tag="sport=archery"></mapping>
+        </category>
+        <category title="Athletics">
+            <mapping tag="sport=athletics"></mapping>
+        </category>
+        <category title="Australian football">
+            <mapping tag="sport=australian_football"></mapping>
+        </category>
+        <category title="BASE">
+            <mapping tag="sport=BASE"></mapping>
+        </category>
+        <category title="Badminton">
+            <mapping tag="sport=badminton"></mapping>
+        </category>
+        <category title="Baseball">
+            <mapping tag="sport=baseball"></mapping>
+        </category>
+        <category title="Basketball">
+            <mapping tag="sport=basketball"></mapping>
+        </category>
+        <category title="Beach volleyball">
+            <mapping tag="sport=beachvolleyball"></mapping>
+        </category>
+        <category title="BMX">
+            <mapping tag="sport=bmx"></mapping>
+        </category>
+        <category title="Boules">
+            <mapping tag="sport=boules"></mapping>
+        </category>
+        <category title="Bowls">
+            <mapping tag="sport=bowls"></mapping>
+        </category>
+        <category title="Canadian football">
+            <mapping tag="sport=canadian_football"></mapping>
+        </category>
+        <category title="Canoe">
+            <mapping tag="sport=canoe"></mapping>
+        </category>
+        <category title="Chess">
+            <mapping tag="sport=chess"></mapping>
+        </category>
+        <category title="Climbing">
+            <mapping tag="sport=climbing"></mapping>
+        </category>
+        <category title="Cricket">
+            <mapping tag="sport=cricket"></mapping>
+        </category>
+        <category title="Cricket nets">
+            <mapping tag="sport=cricket_nets"></mapping>
+        </category>
+        <category title="Croquet">
+            <mapping tag="sport=croquet"></mapping>
+        </category>
+        <category title="Cycling">
+            <mapping tag="sport=cycling"></mapping>
+        </category>
+        <category title="Diving">
+            <mapping tag="sport=diving"></mapping>
+        </category>
+        <category title="Dog racing">
+            <mapping tag="sport=dog_racing"></mapping>
+        </category>
+        <category title="Fencing">
+            <mapping tag="sport=fencing"></mapping>
+        </category>
+        <category title="Equestrian">
+            <mapping tag="sport=equestrian"></mapping>
+        </category>
+        <category title="Gaelic games">
+            <mapping tag="sport=gaelic_games"></mapping>
+        </category>
+        <category title="Golf">
+            <mapping tag="sport=golf"></mapping>
+        </category>
+        <category title="Gymnastics">
+            <mapping tag="sport=gymnastics"></mapping>
+        </category>
+        <category title="Hockey">
+            <mapping tag="sport=hockey"></mapping>
+        </category>
+        <category title="Horseshoes">
+            <mapping tag="sport=horseshoes"></mapping>
+        </category>
+        <category title="Horse racing">
+            <mapping tag="sport=horse_racing"></mapping>
+        </category>
+        <category title="Ice stock">
+            <mapping tag="sport=ice_stock"></mapping>
+        </category>
+        <category title="Karting">
+            <mapping tag="sport=karting"></mapping>
+        </category>
+        <category title="Korfball">
+            <mapping tag="sport=korfball"></mapping>
+        </category>
+        <category title="Motor">
+            <mapping tag="sport=motor"></mapping>
+        </category>
+        <category title="Multi">
+            <mapping tag="sport=multi"></mapping>
+        </category>
+        <category title="Orienteering">
+            <mapping tag="sport=orienteering"></mapping>
+        </category>
+        <category title="Paddle tennis">
+            <mapping tag="sport=paddle_tennis"></mapping>
+        </category>
+        <category title="Paragliding">
+            <mapping tag="sport=paragliding"></mapping>
+        </category>
+        <category title="Free flying">
+            <mapping tag="sport=free_flying"></mapping>
+        </category>
+        <category title="Pelota">
+            <mapping tag="sport=pelota"></mapping>
+        </category>
+        <category title="Racquet">
+            <mapping tag="sport=racquet"></mapping>
+        </category>
+        <category title="Rowing">
+            <mapping tag="sport=rowing"></mapping>
+        </category>
+        <category title="Rugby">
+            <mapping tag="sport=rugby_league"></mapping>
+            <mapping tag="sport=rugby_union"></mapping>
+        </category>
+        <category title="Shooting">
+            <mapping tag="sport=shooting"></mapping>
+        </category>
+        <category title="Ice skating">
+            <mapping tag="sport=skating"></mapping>
+        </category>
+        <category title="Skateboarding">
+            <mapping tag="sport=skateboard"></mapping>
+        </category>
+        <category title="Skiing">
+            <mapping tag="sport=skiing"></mapping>
+        </category>
+        <category title="Soccer">
+            <mapping tag="sport=soccer"></mapping>
+        </category>
+        <category title="Surfing">
+            <mapping tag="sport=surfing"></mapping>
+        </category>
+        <category title="Swimming">
+            <mapping tag="sport=swimming"></mapping>
+        </category>
+        <category title="Table tennis">
+            <mapping tag="sport=table_tennis"></mapping>
+        </category>
+        <category title="Handball">
+            <mapping tag="sport=team_handball"></mapping>
+        </category>
+        <category title="Tennis courts">
+            <mapping tag="sport=tennis"></mapping>
+        </category>
+        <category title="Toboggan">
+            <mapping tag="sport=toboggan"></mapping>
+        </category>
+        <category title="Volleyball">
+            <mapping tag="sport=volleyball"></mapping>
+        </category>
+        <category title="Water ski">
+            <mapping tag="sport=water_ski"></mapping>
+        </category>
+    </category>
+
+    <!-- Tourism -->
+    <category title="Tourism">
+        <category title="Alpine huts">
+            <mapping tag="tourism=alpine_hut"></mapping>
+        </category>
+        <category title="Attractions">
+            <mapping tag="tourism=attraction"></mapping>
+        </category>
+        <category title="Artworks">
+            <mapping tag="tourism=artworks"></mapping>
+        </category>
+        <category title="Camp sites">
+            <mapping tag="tourism=camp_site"></mapping>
+        </category>
+        <category title="Caravan sites">
+            <mapping tag="tourism=caravan_site"></mapping>
+        </category>
+        <category title="Chalets">
+            <mapping tag="tourism=chalet"></mapping>
+        </category>
+        <category title="Guest houses">
+            <mapping tag="tourism=guest_house"></mapping>
+        </category>
+        <category title="Hostels">
+            <mapping tag="tourism=hostel"></mapping>
+        </category>
+        <category title="Hotels">
+            <mapping tag="tourism=hotel"></mapping>
+        </category>
+        <category title="Information">
+            <mapping tag="tourism=information"></mapping>
+        </category>
+        <category title="Motels">
+            <mapping tag="tourism=motel"></mapping>
+        </category>
+        <category title="Museums">
+            <mapping tag="tourism=museum"></mapping>
+        </category>
+        <category title="Picnic sites">
+            <mapping tag="tourism=picnic_site"></mapping>
+        </category>
+        <category title="Theme parks">
+            <mapping tag="tourism=theme park"></mapping>
+        </category>
+        <category title="Viewpoints">
+            <mapping tag="tourism=viewpoint"></mapping>
+        </category>
+        <category title="Zoos">
+            <mapping tag="tourism=zoo"></mapping>
+        </category>
+        <!-- tourism=yes? -->
+    </category>
+    <!-- Waterway -->
+
+</category>

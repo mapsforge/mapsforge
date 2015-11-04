@@ -1,0 +1,25 @@
+<?xml version="1.0" ?><!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 1.0"
+    "http://jpf.sourceforge.net/plugin_1_0.dtd">
+<plugin id="org.mapsforge.map.poi-writer" version="${poi.writer.version}">
+
+    <requires>
+        <!-- these are plugins we require. Usually only org.openstreetmap.osmosis.core.plugin.Core
+            will be required. -->
+        <import plugin-id="org.openstreetmap.osmosis.core.plugin.Core" reverse-lookup="false" />
+    </requires>
+
+    <!--These are library-files we require including our own code. -->
+    <runtime>
+        <library id="mycode" path="/" type="code" />
+    </runtime>
+
+    <!-- This is where our plugin plugs into. The extension-point 'task' with
+        a subclass of PluginLoader named 'WriteOSMBinPlugin' that tells Osmosis what
+        tasks are provided. -->
+    <extension id="org.mapsforge.PoiWriter" plugin-id="org.openstreetmap.osmosis.core.plugin.Core"
+        point-id="Task">
+        <parameter id="name" value="poi-writer" />
+        <parameter id="class" value="org.mapsforge.poi.writer.osmosis.MapsforgePluginLoader" />
+    </extension>
+
+</plugin>
