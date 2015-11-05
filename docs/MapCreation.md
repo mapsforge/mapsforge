@@ -1,6 +1,6 @@
 # Map creation (with coastlines)
 
-Processing of coastlines was part of Mapsforge's rendering engine, running live on (mobile) devices. Since many versions ago it was removed, so that all coastline processing can take place in advance as part of map creation.
+Processing of coastlines was part of Mapsforge rendering engine, running live on (mobile) devices. Since many versions ago it was removed, so that all coastline processing can take place in advance as part of map creation.
 
 The workaround requires no real changes to the map-writer nor the map-reader, as it just uses the render theme mechanism.
 
@@ -20,7 +20,7 @@ This produces, depending on the bounds, a much smaller coastline shapefile. We u
 
 Then we convert the resulting shapefile with [shp2osm.py](https://github.com/mapsforge/mapsforge-mapcreator/blob/master/shape2osm.py) and slight modifications (as are always required with shp2osm). We set:
 
-```
+```python
 fixed_tags = {
   'natural': 'nosea',
 }
@@ -34,7 +34,7 @@ We now have an OSM XML file with land represented as polygons with the tag "natu
 
 For the sea we create an osm file with a rectangle having the bounds of the map:
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6">
 	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459320" version="1" lon="$LEFT" lat="$BOTTOM" />
@@ -79,7 +79,7 @@ The bounding box parameters are now those for the desired map, this will cut off
 
 For this to work correctly, only the tag-mapping.xml file needed to be modified by adding:
 
-```
+```xml
 <osm-tag key="natural" value="sea" zoom-appear="0" />
 <osm-tag key="natural" value="nosea" zoom-appear="0" />
 ```
@@ -94,7 +94,7 @@ This finishes the map creation process.
 
 On the reader side, the only change required is to display the land areas correctly by changing the render theme:
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://mapsforge.org/renderTheme .../renderTheme-v4.xsd"
