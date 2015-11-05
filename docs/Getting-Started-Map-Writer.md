@@ -110,7 +110,7 @@ Please report any bugs and feature requests via [Github issue tracker](https://g
 
 ## Changelog
 
-### New since 0.5.2
+### 0.6.0
 - Multilingual maps
 - Language improved parsing
 
