@@ -19,5 +19,5 @@
 // Generated on: 2011.10.14 at 05:47:04 PM MESZ 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.example.org/test", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://mapsforge.org/poi-mapping", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.mapsforge.poi.writer.osmosis.jaxb;
