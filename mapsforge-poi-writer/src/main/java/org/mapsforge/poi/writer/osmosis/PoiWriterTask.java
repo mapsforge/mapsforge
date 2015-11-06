@@ -18,6 +18,7 @@ package org.mapsforge.poi.writer.osmosis;
 
 import org.mapsforge.mapmaker.logging.LoggerWrapper;
 import org.mapsforge.mapmaker.logging.ProgressManager;
+import org.mapsforge.poi.writer.util.Constants;
 import org.mapsforge.storage.poi.PoiCategory;
 import org.mapsforge.storage.poi.PoiCategoryFilter;
 import org.mapsforge.storage.poi.PoiCategoryManager;
@@ -29,6 +30,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -37,6 +39,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +50,6 @@ import java.util.logging.Logger;
  */
 public class PoiWriterTask implements Sink {
 	private static final Logger LOGGER = LoggerWrapper.getLogger(PoiWriterTask.class.getName());
-	private static final String VERSION = "0.0.1";
 	private final ProgressManager progressManager;
 
 	// For debug purposes only (at least for now)
@@ -88,7 +90,16 @@ public class PoiWriterTask implements Sink {
 	 *            Object that sends progress messages to a GUI.
 	 */
 	public PoiWriterTask(String outputFilePath, String categoryConfigPath, ProgressManager progressManager) {
-		LOGGER.info("Mapsforge POI writer version " + VERSION);
+		Properties properties = new Properties();
+		try {
+			properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
+			String writerVersion = Constants.CREATOR_NAME + "-"
+					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION);
+
+			LOGGER.info("poi-writer version: " + writerVersion);
+		} catch (IOException e) {
+			throw new RuntimeException("could not find default properties", e);
+		}
 		LOGGER.setLevel(Level.FINE);
 
 		this.progressManager = progressManager;
@@ -222,7 +233,7 @@ public class PoiWriterTask implements Sink {
 	@Override
 	public void complete() {
 		commit();
-		LOGGER.info("Added " + this.nodesAdded + " POIs");
+		LOGGER.info("Added " + this.nodesAdded + " POIs.");
 		this.progressManager.setMessage("Done.");
 	}
 

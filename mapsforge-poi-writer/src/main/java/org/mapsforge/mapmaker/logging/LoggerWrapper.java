@@ -41,7 +41,7 @@ public class LoggerWrapper extends Logger {
 	 * @return A logger that forwards messages to a {@link ProgressManager}.
 	 */
 	public synchronized static LoggerWrapper getLogger(String name) {
-		System.out.println("getLogger: " + name);
+		//System.out.println("getLogger: " + name);
 		LogManager lm = LogManager.getLogManager();
 		Logger l = lm.getLogger(name);
 
