@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,7 +22,7 @@ import org.mapsforge.storage.poi.PoiCategory;
 import org.mapsforge.storage.poi.PoiCategoryManager;
 import org.mapsforge.storage.poi.UnknownPoiCategoryException;
 
-import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Stack;
@@ -38,6 +39,7 @@ import javax.xml.bind.Unmarshaller;
  */
 class TagMappingResolver {
 	private static final Logger LOGGER = Logger.getLogger(TagMappingResolver.class.getName());
+
 	private final PoiCategoryManager categoryManager;
 
 	/** Maps a tag to a category's title */
@@ -51,28 +53,25 @@ class TagMappingResolver {
 	 * @param categoryManager
 	 *            The category manager for loading a category tree.
 	 */
-	TagMappingResolver(String configFilePath, PoiCategoryManager categoryManager) {
+	TagMappingResolver(URL configFilePath, PoiCategoryManager categoryManager) {
 		this.categoryManager = categoryManager;
-		this.tagMap = new HashMap<String, String>();
-		this.mappingTags = new TreeSet<String>();
+		this.tagMap = new HashMap<>();
+		this.mappingTags = new TreeSet<>();
 
 		// Read root category from XML
-		final File f = new File(configFilePath);
-
-		JAXBContext ctx = null;
-		Unmarshaller um = null;
+		JAXBContext ctx;
+		Unmarshaller um;
 		Category xmlRootCategory = null;
-
 		try {
 			ctx = JAXBContext.newInstance(Category.class);
 			um = ctx.createUnmarshaller();
-			xmlRootCategory = (Category) um.unmarshal(f);
+			xmlRootCategory = (Category) um.unmarshal(configFilePath);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 
 		LOGGER.info("Adding tag mappings...");
-		Stack<Category> categories = new Stack<Category>();
+		Stack<Category> categories = new Stack<>();
 		categories.push(xmlRootCategory);
 
 		// Add mappings from tag to category title
@@ -84,7 +83,6 @@ class TagMappingResolver {
 					LOGGER.finer("'" + m.getTag() + "' --> '" + c.getTitle() + "'");
 					this.tagMap.put(m.getTag(), c.getTitle());
 				}
-
 			}
 		}
 
@@ -106,8 +104,6 @@ class TagMappingResolver {
 			return null;
 		}
 
-		PoiCategory ret = this.categoryManager.getPoiCategoryByTitle(categoryName);
-
-		return ret;
+		return this.categoryManager.getPoiCategoryByTitle(categoryName);
 	}
 }

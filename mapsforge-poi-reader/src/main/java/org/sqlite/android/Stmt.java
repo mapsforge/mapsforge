@@ -331,7 +331,6 @@ public class Stmt {
 			try {
 				colCount = column_count();
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			mColumns = new String[colCount];
@@ -339,7 +338,6 @@ public class Stmt {
 				try {
 					mColumns[i] = column_name(i);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -374,7 +372,6 @@ public class Stmt {
 	// cursor.addRow(rowObject);
 	// }
 	// } catch (Exception e) {
-	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// }
 	// return cursor;

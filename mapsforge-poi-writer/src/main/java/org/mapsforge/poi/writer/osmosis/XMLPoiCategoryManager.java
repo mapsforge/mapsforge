@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,7 +20,7 @@ import org.mapsforge.storage.poi.DoubleLinkedPoiCategory;
 import org.mapsforge.storage.poi.PoiCategory;
 import org.mapsforge.storage.poi.PoiCategoryManager;
 
-import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.logging.Logger;
@@ -38,34 +39,30 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
 	 * @param configFilePath
 	 *            Path to POI category XML file containing the category tree configuration.
 	 */
-	XMLPoiCategoryManager(String configFilePath) {
+	XMLPoiCategoryManager(URL configFilePath) {
 		LOGGER.info("Loading POI categories from XML...");
 
-		this.titleMap = new HashMap<String, DoubleLinkedPoiCategory>();
+		this.titleMap = new HashMap<>();
 
 		// Read root category from XML
-		final File f = new File(configFilePath);
-
-		JAXBContext ctx = null;
-		Unmarshaller um = null;
+		JAXBContext ctx;
+		Unmarshaller um;
 		Category xmlRoot = null;
 		try {
 			ctx = JAXBContext.newInstance(Category.class);
 			um = ctx.createUnmarshaller();
-			xmlRoot = (Category) um.unmarshal(f);
-
+			xmlRoot = (Category) um.unmarshal(configFilePath);
 		} catch (JAXBException e) {
 			e.printStackTrace();
 			LOGGER.severe("Could not load POI category configuration from XML.");
 		}
 
-		LinkedList<Category> currentXMLNode = new LinkedList<Category>();
-		DoubleLinkedPoiCategory parent = null;
-		DoubleLinkedPoiCategory child = null;
+		LinkedList<Category> currentXMLNode = new LinkedList<>();
+		DoubleLinkedPoiCategory parent;
+		DoubleLinkedPoiCategory child;
 		// Create categories
 		currentXMLNode.push(xmlRoot);
 		while (!currentXMLNode.isEmpty()) {
-
 			parent = createOrGetPoiCategory(currentXMLNode.getFirst().getTitle());
 			titleMap.put(parent.getTitle(), parent);
 

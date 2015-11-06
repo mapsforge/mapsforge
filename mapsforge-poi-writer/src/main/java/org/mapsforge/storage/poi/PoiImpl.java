@@ -53,7 +53,6 @@ public class PoiImpl implements PointOfInterest {
 
 	@Override
 	public String getUrl() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

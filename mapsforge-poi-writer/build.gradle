@@ -12,7 +12,7 @@ jar {
     from('src/main/config/') {
         include 'default.properties'
         include 'plugin.xml'
-        include 'POICategoriesOsmosis.xml'
+        include 'poi-mapping.xml'
         include 'osmosis-plugins.conf'
         filter {
             line -> line.replace('${poi.writer.version}', version)
