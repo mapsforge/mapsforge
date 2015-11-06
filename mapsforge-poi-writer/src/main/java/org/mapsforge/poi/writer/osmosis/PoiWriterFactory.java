@@ -28,15 +28,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * This class is used for creating {@link POIWriterTask}s.
+ * This class is used for creating {@link PoiWriterTask}s.
  */
-public class POIWriterFactory extends TaskManagerFactory {
+public class PoiWriterFactory extends TaskManagerFactory {
 	private static final String GUI_PROGRESS_MANAGER_CLASS_NAME = "org.mapsforge.mapmaker.gui.ProgressGUI";
 
 	/**
 	 * Default constructor.
 	 */
-	public POIWriterFactory() {
+	public PoiWriterFactory() {
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class POIWriterFactory extends TaskManagerFactory {
 		LoggerWrapper.setDefaultProgressManager(progressManager);
 
 		// The creation task
-		Sink task = new POIWriterTask(outputFilePath, categoryConfigFilePath, progressManager);
+		Sink task = new PoiWriterTask(outputFilePath, categoryConfigFilePath, progressManager);
 
 		return new SinkManager(taskConfig.getId(), task, taskConfig.getPipeArgs());
 	}

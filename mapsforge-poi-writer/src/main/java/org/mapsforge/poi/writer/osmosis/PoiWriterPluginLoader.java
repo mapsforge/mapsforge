@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,11 +21,16 @@ import org.openstreetmap.osmosis.core.plugin.PluginLoader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapsforgePluginLoader implements PluginLoader {
+/**
+ * The Osmosis PluginLoader for the poi-writer osmosis plugin.
+ */
+public class PoiWriterPluginLoader implements PluginLoader {
 	@Override
 	public Map<String, TaskManagerFactory> loadTaskFactories() {
-		HashMap<String, TaskManagerFactory> map = new HashMap<String, TaskManagerFactory>();
-		map.put("poi-writer", new POIWriterFactory());
+		PoiWriterFactory poiWriterFactory = new PoiWriterFactory();
+		HashMap<String, TaskManagerFactory> map = new HashMap<>();
+		map.put("poi-writer", poiWriterFactory);
+		map.put("pw", poiWriterFactory);
 		return map;
 	}
 }

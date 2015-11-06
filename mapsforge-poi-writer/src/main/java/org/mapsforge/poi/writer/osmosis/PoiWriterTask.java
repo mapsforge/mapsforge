@@ -45,8 +45,8 @@ import java.util.logging.Logger;
  * This task reads Nodes from an OSM stream and writes them to a SQLite3 database. Nodes can be filtered and grouped by
  * categories by using an XML definition.
  */
-public class POIWriterTask implements Sink {
-	private static final Logger LOGGER = LoggerWrapper.getLogger(POIWriterTask.class.getName());
+public class PoiWriterTask implements Sink {
+	private static final Logger LOGGER = LoggerWrapper.getLogger(PoiWriterTask.class.getName());
 	private static final String VERSION = "0.0.1";
 	private final ProgressManager progressManager;
 
@@ -78,7 +78,7 @@ public class POIWriterTask implements Sink {
 	/**
 	 * This method writes all nodes that can be mapped to a specific category and whose category is in a given whitelist
 	 * to a SQLite3 database. The category tree and tag mappings are retrieved from an XML file.
-	 * 
+	 *
 	 * @param outputFilePath
 	 *            Path to the database file that should be written. The file name should end with ".poi".
 	 * @param categoryConfigPath
@@ -87,7 +87,7 @@ public class POIWriterTask implements Sink {
 	 * @param progressManager
 	 *            Object that sends progress messages to a GUI.
 	 */
-	public POIWriterTask(String outputFilePath, String categoryConfigPath, ProgressManager progressManager) {
+	public PoiWriterTask(String outputFilePath, String categoryConfigPath, ProgressManager progressManager) {
 		LOGGER.info("Mapsforge POI writer version " + VERSION);
 		LOGGER.setLevel(Level.FINE);
 

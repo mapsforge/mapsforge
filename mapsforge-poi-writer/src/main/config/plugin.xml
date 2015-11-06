@@ -19,7 +19,7 @@
     <extension id="org.mapsforge.PoiWriter" plugin-id="org.openstreetmap.osmosis.core.plugin.Core"
         point-id="Task">
         <parameter id="name" value="poi-writer" />
-        <parameter id="class" value="org.mapsforge.poi.writer.osmosis.MapsforgePluginLoader" />
+        <parameter id="class" value="org.mapsforge.poi.writer.osmosis.PoiWriterPluginLoader" />
     </extension>
 
 </plugin>
