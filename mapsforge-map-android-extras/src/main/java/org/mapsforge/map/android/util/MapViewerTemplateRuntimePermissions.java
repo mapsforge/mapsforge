@@ -26,6 +26,7 @@ public abstract class MapViewerTemplateRuntimePermissions extends MapViewerTempl
 
 	private final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
 
+	@Override
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 		switch (requestCode) {
 			case PERMISSIONS_REQUEST_READ_STORAGE: {

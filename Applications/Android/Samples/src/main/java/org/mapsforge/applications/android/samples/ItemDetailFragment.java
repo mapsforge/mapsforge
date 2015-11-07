@@ -19,6 +19,7 @@ import java.io.File;
 
 import org.mapsforge.applications.android.samples.dummy.DummyContent;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.util.AndroidSupportUtil;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.LayerManager;
@@ -28,8 +29,11 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,6 +91,49 @@ public class ItemDetailFragment extends Fragment {
 			this.mapView.getFpsCounter().setVisible(true);
 			this.mapView.getMapScaleBar().setVisible(true);
 
+			createLayers();
+
+		}
+
+		return rootView;
+	}
+
+	@Override
+	public void onDestroy() {
+		if (this.mapView != null) {
+			this.mapView.destroyAll();
+		}
+		AndroidGraphicFactory.clearResourceMemoryCache();
+		super.onDestroy();
+	}
+
+
+	private final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
+
+	/**
+	 * Note that this is the Fragment method, not one from the compatibility lib
+	 * @param requestCode
+	 * @param permissions
+	 * @param grantResults
+	 */
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		switch (requestCode) {
+			case PERMISSIONS_REQUEST_READ_STORAGE: {
+				if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+					// permission is not granted, the app should do something meaningful here.
+					return;
+				}
+				createLayers();
+			}
+		}
+	}
+
+	protected void createLayers() {
+		if (AndroidSupportUtil.runtimePermissionRequiredForReadExternalStorage(this.getActivity(), getMapFileDirectory())) {
+			// note that this the Fragment method, not compat lib
+			requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_STORAGE);
+		} else {
 			LayerManager layerManager = this.mapView.getLayerManager();
 			Layers layers = layerManager.getLayers();
 
@@ -101,27 +148,17 @@ public class ItemDetailFragment extends Fragment {
 			layers.add(AndroidUtil.createTileRendererLayer(this.tileCache,
 					mapViewPosition, getMapFile(),
 					InternalRenderTheme.OSMARENDER, false, true));
-
 		}
 
-		return rootView;
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		if (this.mapView != null) {
-			this.mapView.destroy();
-		}
-		if (this.tileCache != null) {
-			this.tileCache.destroy();
-		}
-		AndroidGraphicFactory.clearResourceMemoryCache();
 	}
 
 	protected MapFile getMapFile() {
-		return new MapFile(new File(Environment.getExternalStorageDirectory(),
+		return new MapFile(new File(getMapFileDirectory(),
 				this.getMapFileName()));
+	}
+
+	protected File getMapFileDirectory() {
+		return Environment.getExternalStorageDirectory();
 	}
 
 	protected String getMapFileName() {
