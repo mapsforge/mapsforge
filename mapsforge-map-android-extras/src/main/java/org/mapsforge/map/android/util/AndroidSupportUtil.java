@@ -16,6 +16,7 @@ package org.mapsforge.map.android.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import android.Manifest;
 import android.content.Context;
@@ -26,7 +27,11 @@ import android.support.v4.content.ContextCompat;
 
 public final class AndroidSupportUtil {
 
+	private static final Logger LOGGER = Logger.getLogger(AndroidSupportUtil.class.getName());
 
+	private AndroidSupportUtil() {
+		// no-op, for privacy
+	}
 
 	/*
 	 * Returns if it is required to ask for runtime permission for accessing the coarse location
@@ -62,6 +67,7 @@ public final class AndroidSupportUtil {
 						!canonicalPath.startsWith(context.getExternalCacheDir().getCanonicalPath()) &&
 						!canonicalPath.startsWith(context.getExternalFilesDir(null).getCanonicalPath());
 			} catch (IOException e) {
+				LOGGER.warning("Directory access exception " + directory.toString() + e.getMessage());
 				return true; // ?? it probably means the file cannot be found
 			}
 		}
@@ -71,10 +77,6 @@ public final class AndroidSupportUtil {
 	public static boolean runtimePermissionRequired(Context context, String permission) {
 		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 				&& ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED;
-	}
-
-	private AndroidSupportUtil() {
-		// no-op, for privacy
 	}
 
 }

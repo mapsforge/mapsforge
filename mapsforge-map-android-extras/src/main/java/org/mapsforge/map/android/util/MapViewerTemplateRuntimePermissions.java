@@ -19,30 +19,34 @@ import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 
+import java.util.logging.Logger;
+
 /**
  * An extension to the MapViewerTemplate that supports the runtime permissions introduced in Android 6.
  */
 public abstract class MapViewerTemplateRuntimePermissions extends MapViewerTemplate implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-	private final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
+	private static final Logger LOGGER = Logger.getLogger(MapViewerTemplateRuntimePermissions.class.getName());
+	private static final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		switch (requestCode) {
-			case PERMISSIONS_REQUEST_READ_STORAGE: {
-				if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-					showDialogWhenPermissionDenied();
-					return;
-				}
-				createLayers();
-				createControls();
+		if (PERMISSIONS_REQUEST_READ_STORAGE == requestCode) {
+			if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+				showDialogWhenPermissionDenied();
+				return;
 			}
+			createLayers();
+			createControls();
+		} else {
+			LOGGER.warning("Unexpected result from permission request " + requestCode);
 		}
 	}
 
 	/**
 	 * Hook to check for Android Runtime Permissions.
 	 */
+	@Override
 	protected void checkPermissionsAndCreateLayersAndControls() {
 		if (AndroidSupportUtil.runtimePermissionRequiredForReadExternalStorage(this, getMapFileDirectory())) {
 			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_STORAGE);
