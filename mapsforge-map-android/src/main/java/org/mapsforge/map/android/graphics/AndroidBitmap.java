@@ -155,7 +155,7 @@ public class AndroidBitmap implements Bitmap {
 
 	}
 
-	protected final boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height, Config config) {
+	protected final boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height) {
 		if (candidate.getWidth() == width && candidate.getHeight() == height) {
 			return true;
 		}
@@ -203,7 +203,7 @@ public class AndroidBitmap implements Bitmap {
 					candidate = iterator.next().get();
 					if (null != candidate && candidate.isMutable()) {
 						// Check to see it the item can be used for inBitmap.
-						if (canUseBitmap(candidate, width, height, config)) {
+						if (canUseBitmap(candidate, width, height)) {
 							result = candidate;
 							// Remove from reusable set so it can't be used again.
 							iterator.remove();

@@ -140,7 +140,6 @@ public class AndroidPointTextContainer extends PointTextContainer {
 				this.backLayout.draw(androidCanvas);
 			}
 			this.frontLayout.draw(androidCanvas);
-			//debugDrawBounds(androidCanvas, (float) -boundary.left, (float) -boundary.top);
 			androidCanvas.restore();
 		} else {
 			// the origin of the text is the base line, so we need to make adjustments
