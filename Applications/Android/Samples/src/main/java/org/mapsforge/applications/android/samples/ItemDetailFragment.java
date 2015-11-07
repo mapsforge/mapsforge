@@ -103,7 +103,6 @@ public class ItemDetailFragment extends Fragment {
 		if (this.mapView != null) {
 			this.mapView.destroyAll();
 		}
-		AndroidGraphicFactory.clearResourceMemoryCache();
 		super.onDestroy();
 	}
 
