@@ -38,9 +38,8 @@ public abstract class MapViewerTemplateRuntimePermissions extends MapViewerTempl
 			}
 			createLayers();
 			createControls();
-		} else {
-			LOGGER.warning("Unexpected result from permission request " + requestCode);
 		}
+		super.onRequestPermissionsResult(requestCode,permissions,grantResults);
 	}
 
 	/**

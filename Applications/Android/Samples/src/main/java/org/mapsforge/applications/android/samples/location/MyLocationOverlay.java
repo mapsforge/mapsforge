@@ -25,6 +25,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.util.AndroidSupportUtil;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.Marker;
@@ -33,15 +34,12 @@ import org.mapsforge.map.model.MapViewPosition;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 
 /**
  * A thread-safe {@link Layer} implementation to display the current location. NOTE: This code really does not reflect
@@ -263,46 +261,34 @@ public class MyLocationOverlay extends Layer implements LocationListener, Activi
 	}
 
 	private synchronized void enableBestAvailableProvider() {
-		if (!accessFineLocationPermissionRequired(this.activity)) {
-			disableMyLocation();
-
-			this.circle.setDisplayModel(this.displayModel);
-			this.marker.setDisplayModel(this.displayModel);
-
-			boolean result = false;
-			for (String provider : this.locationManager.getProviders(true)) {
-				if (LocationManager.GPS_PROVIDER.equals(provider)
-						|| LocationManager.NETWORK_PROVIDER.equals(provider)) {
-					result = true;
-					this.locationManager.requestLocationUpdates(provider, minTime, minDistance, this);
-				}
-			}
-			this.myLocationEnabled = result;
+		if (!AndroidSupportUtil.runtimePermissionRequiredForAccessFineLocation(this.activity)) {
+			enableBestAvailableProviderPermissionGranted();
 		} else {
 			ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 		}
 	}
 
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		switch (requestCode) {
-			case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-				if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-					return;
-				}
-				enableBestAvailableProvider();
+	private void enableBestAvailableProviderPermissionGranted() {
+		disableMyLocation();
+
+		this.circle.setDisplayModel(this.displayModel);
+		this.marker.setDisplayModel(this.displayModel);
+
+		boolean result = false;
+		for (String provider : this.locationManager.getProviders(true)) {
+			if (LocationManager.GPS_PROVIDER.equals(provider)
+					|| LocationManager.NETWORK_PROVIDER.equals(provider)) {
+				result = true;
+				this.locationManager.requestLocationUpdates(provider, minTime, minDistance, this);
 			}
 		}
+		this.myLocationEnabled = result;
 	}
 
-	/**
-	 * Returns if it is required to ask for runtime permission for accessing the fine location
-	 * @param context the activity asking
-	 * @return true if runtime permission must be asked for
-	 */
-	private boolean accessFineLocationPermissionRequired(Context context) {
-		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-				&& ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED;
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		if (PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION == requestCode && AndroidSupportUtil.verifyPermissions(grantResults)) {
+			enableBestAvailableProviderPermissionGranted();
+		}
 	}
-
 
 }
