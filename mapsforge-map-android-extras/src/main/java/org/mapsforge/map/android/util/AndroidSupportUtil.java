@@ -16,6 +16,7 @@ package org.mapsforge.map.android.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import android.Manifest;
 import android.content.Context;
@@ -26,7 +27,11 @@ import android.support.v4.content.ContextCompat;
 
 public final class AndroidSupportUtil {
 
+	private static final Logger LOGGER = Logger.getLogger(AndroidSupportUtil.class.getName());
 
+	private AndroidSupportUtil() {
+		// no-op, for privacy
+	}
 
 	/*
 	 * Returns if it is required to ask for runtime permission for accessing the coarse location
@@ -42,7 +47,7 @@ public final class AndroidSupportUtil {
 	 * @param context the activity asking
 	 * @return true if runtime permission must be asked for
 	 */
-	public static boolean runtimePermissionRequiredForAccessFineLocationContext(Context context) {
+	public static boolean runtimePermissionRequiredForAccessFineLocation(Context context) {
 		return runtimePermissionRequired(context, Manifest.permission.ACCESS_FINE_LOCATION);
 	}
 
@@ -62,6 +67,7 @@ public final class AndroidSupportUtil {
 						!canonicalPath.startsWith(context.getExternalCacheDir().getCanonicalPath()) &&
 						!canonicalPath.startsWith(context.getExternalFilesDir(null).getCanonicalPath());
 			} catch (IOException e) {
+				LOGGER.warning("Directory access exception " + directory.toString() + e.getMessage());
 				return true; // ?? it probably means the file cannot be found
 			}
 		}
@@ -73,8 +79,41 @@ public final class AndroidSupportUtil {
 				&& ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED;
 	}
 
-	private AndroidSupportUtil() {
-		// no-op, for privacy
-	}
+	/**
+	 * Check that all given permissions have been granted by verifying that each entry in the
+	 * given array is of the value {@link PackageManager#PERMISSION_GRANTED}.
+	 *
+	 * Copyright 2015 The Android Open Source Project
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 *     http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 * From
+	 * https://github.com/googlesamples/android-RuntimePermissions/blob/master/Application/src/main/java/com/example/android/system/runtimepermissions/PermissionUtil.java
+	 *
+	 */
 
+	public static boolean verifyPermissions(int[] grantResults) {
+		// At least one result must be checked.
+		if(grantResults.length < 1){
+			return false;
+		}
+
+		// Verify that each required permission has been granted, otherwise return false.
+		for (int result : grantResults) {
+			if (result != PackageManager.PERMISSION_GRANTED) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

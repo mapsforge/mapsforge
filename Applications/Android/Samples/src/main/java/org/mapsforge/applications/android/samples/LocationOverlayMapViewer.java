@@ -50,14 +50,19 @@ public class LocationOverlayMapViewer extends DownloadLayerViewer {
 	}
 
 	@Override
-	public void onPause() {
-		myLocationOverlay.disableMyLocation();
-		super.onPause();
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		myLocationOverlay.onRequestPermissionsResult(requestCode, permissions, grantResults);
 	}
 
 	@Override
-	public void onResume() {
-		super.onResume();
+	protected void onStart() {
+		super.onStart();
 		this.myLocationOverlay.enableMyLocation(true);
+	}
+
+	@Override
+	protected void onStop() {
+		myLocationOverlay.disableMyLocation();
+		super.onStop();
 	}
 }

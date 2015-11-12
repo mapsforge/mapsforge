@@ -10,7 +10,7 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 ## Requirements
 |Tool|Version|
 |----|---|
-|Android Build Version Tools|23.0.1|
+|Android Build Version Tools|23.0.2|
 |Gradle|2.4.0 if building with gradle|
 |Maven|1.3.1 if building with maven|
 |Java|1.7 (1.8 is supported in maven builds)|
@@ -31,12 +31,13 @@ Mapsforge consists of the following core components:
 Extra Android components:
 
 - mapsforge-map-android: android specific elements.
+- mapsforge-map-android-extras: android extra elements.
 - [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
 
 Extra Java components:
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
-- [svg-salamander](https://svgsalamander.java.net/): SVG library for displaying SVG files as icons.
+- [svg-salamander](https://svgsalamander.java.net/): SVG library for displaying SVG files as icons. Improved jar can be found at the site.
  
 The jars build from the above components are required elements for a mapsforge application on Android or Java.
 

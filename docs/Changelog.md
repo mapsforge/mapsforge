@@ -4,6 +4,11 @@
 
 ## Version 0.6.X
 
+**New since 0.6.0-rc1**
+
+- Minor improvements and bug fixes
+
+
 **Version 0.6.0-rc1 (2015-11-01)**
 
 - Multilingual maps [#624](https://github.com/mapsforge/mapsforge/issues/624)

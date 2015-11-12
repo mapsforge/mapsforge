@@ -47,7 +47,7 @@ public class ClusterMapActivity extends RenderTheme4 {
     private MenuItem displayItems;
     private MenuItem displayMoreItems;
     private MenuItem hideItems;
-    private MyGeoItem[] geoItems_ = {
+    private MyGeoItem[] geoItems = {
             new MyGeoItem("1st Item", new LatLong(52.504266, 13.392996)),
             new MyGeoItem("2nd Item", new LatLong(52.514266, 13.392996)),
             new MyGeoItem("3rd Item", new LatLong(52.524266, 13.392996)),
@@ -61,64 +61,62 @@ public class ClusterMapActivity extends RenderTheme4 {
     };
 
     private List<MarkerBitmap> getMarkerBitmap() {
-        ArrayList<MarkerBitmap> markerBitmaps = new ArrayList<MarkerBitmap>();
+        List<MarkerBitmap> markerBitmaps = new ArrayList<MarkerBitmap>();
         // prepare for marker icons.
         Drawable balloon;
         // small icon for maximum single item
         balloon = getResources().getDrawable(R.drawable.marker_green);
-        Bitmap bitmap_climbing_peak = AndroidGraphicFactory.convertToBitmap(balloon);
-        bitmap_climbing_peak.incrementRefCount();
+        Bitmap bitmapClimbingPeak = AndroidGraphicFactory.convertToBitmap(balloon);
+        bitmapClimbingPeak.incrementRefCount();
         balloon = getResources().getDrawable(R.drawable.marker_red);
-        Bitmap marker_red_s = AndroidGraphicFactory.convertToBitmap(balloon);
-        marker_red_s.incrementRefCount();
-        Paint paint_1;
-        paint_1 = AndroidGraphicFactory.INSTANCE.createPaint();
-        paint_1.setStyle(Style.STROKE);
-        paint_1.setTextAlign(Align.CENTER);
+        Bitmap markerRedS = AndroidGraphicFactory.convertToBitmap(balloon);
+        markerRedS.incrementRefCount();
+        Paint paint1;
+        paint1 = AndroidGraphicFactory.INSTANCE.createPaint();
+        paint1.setStyle(Style.STROKE);
+        paint1.setTextAlign(Align.CENTER);
         FontFamily fontFamily = FontFamily.DEFAULT;
         FontStyle fontStyle = FontStyle.BOLD;
-        paint_1.setTypeface(fontFamily, fontStyle);
-        paint_1.setColor(Color.RED);
-        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmap_climbing_peak, marker_red_s,
-                new Point(0, 0), 10f, 1, paint_1));
+        paint1.setTypeface(fontFamily, fontStyle);
+        paint1.setColor(Color.RED);
+        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmapClimbingPeak, markerRedS,
+                new Point(0, 0), 10f, 1, paint1));
         // small icon. for 10 or less items.
         balloon = getResources().getDrawable(R.drawable.balloon_s_n);
-        Bitmap bitmap_balloon_s_n = AndroidGraphicFactory
+        Bitmap bitmapBalloonSN = AndroidGraphicFactory
                 .convertToBitmap(balloon);
-        bitmap_balloon_s_n.incrementRefCount();
+        bitmapBalloonSN.incrementRefCount();
         balloon = getResources().getDrawable(R.drawable.balloon_s_s);
-        Bitmap bitmap_balloon_s_s = AndroidGraphicFactory
-                .convertToBitmap(balloon);
-        bitmap_balloon_s_s.incrementRefCount();
-        Paint paint_2;
-        paint_2 = AndroidGraphicFactory.INSTANCE.createPaint();
-        paint_2.setStyle(Style.STROKE);
-        paint_2.setTextAlign(Align.CENTER);
+        Bitmap bitmapBalloonSS = AndroidGraphicFactory.convertToBitmap(balloon);
+        bitmapBalloonSS.incrementRefCount();
+        Paint paint2;
+        paint2 = AndroidGraphicFactory.INSTANCE.createPaint();
+        paint2.setStyle(Style.STROKE);
+        paint2.setTextAlign(Align.CENTER);
         fontFamily = FontFamily.DEFAULT;
         fontStyle = FontStyle.BOLD;
-        paint_2.setTypeface(fontFamily, fontStyle);
-        paint_2.setColor(Color.WHITE);
-        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmap_balloon_s_n,
-                bitmap_balloon_s_s, new Point(0, 0), 9f, 10, paint_2));
+        paint2.setTypeface(fontFamily, fontStyle);
+        paint2.setColor(Color.WHITE);
+        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmapBalloonSN,
+                bitmapBalloonSS, new Point(0, 0), 9f, 10, paint2));
         // large icon. 100 will be ignored.
         balloon = getResources().getDrawable(R.drawable.balloon_m_n);
-        Bitmap bitmap_balloon_m_n = AndroidGraphicFactory
-                .convertToBitmap(balloon);
-        bitmap_balloon_m_n.incrementRefCount();
+        Bitmap bitmapBalloonMN = AndroidGraphicFactory.convertToBitmap(balloon);
+        bitmapBalloonMN.incrementRefCount();
         balloon = getResources().getDrawable(R.drawable.balloon_m_s);
-        Bitmap bitmap_balloon_m_s = AndroidGraphicFactory
+        Bitmap bitmapBalloonMS = AndroidGraphicFactory
                 .convertToBitmap(balloon);
-        bitmap_balloon_m_s.incrementRefCount();
-        Paint paint_3;
-        paint_3 = AndroidGraphicFactory.INSTANCE.createPaint();
-        paint_3.setStyle(Style.STROKE);
-        paint_3.setTextAlign(Align.CENTER);
+        bitmapBalloonMS.incrementRefCount();
+        Paint paint3;
+        paint3 = AndroidGraphicFactory.INSTANCE.createPaint();
+        paint3.setStyle(Style.STROKE);
+        paint3.setTextAlign(Align.CENTER);
         fontFamily = FontFamily.DEFAULT;
         fontStyle = FontStyle.BOLD;
-        paint_3.setTypeface(fontFamily, fontStyle);
-        paint_3.setColor(Color.WHITE);
-        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmap_balloon_m_n,
-                bitmap_balloon_m_s, new Point(0, 0), 11f, 100, paint_3));
+        paint3.setTypeface(fontFamily, fontStyle);
+        paint3.setColor(Color.WHITE);
+        markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmapBalloonMN,
+                bitmapBalloonMS, new Point(0, 0), 11f, 100, paint3));
         return markerBitmaps;
     }
 
@@ -146,8 +144,8 @@ public class ClusterMapActivity extends RenderTheme4 {
         // what the user sees on the screen if an animation is in progress
         this.mapView.getModel().frameBufferModel.addObserver(clusterer);
         // add geoitems for clustering
-        for (int i = 0; i < geoItems_.length; i++) {
-            clusterer.addItem(geoItems_[i]);
+        for (int i = 0; i < geoItems.length; i++) {
+            clusterer.addItem(geoItems[i]);
         }
     }
 
@@ -168,7 +166,7 @@ public class ClusterMapActivity extends RenderTheme4 {
 
     private void addMarker() {
 
-        if (ManyDummyContent.MANYITEMS.size() == 0) {
+        if (ManyDummyContent.MANYITEMS.isEmpty()) {
             Toast.makeText(getApplication(), "No items received...", Toast.LENGTH_LONG).show();
         }
         for (int i = 0; i < ManyDummyContent.MANYITEMS.size(); i++) {
@@ -226,8 +224,8 @@ public class ClusterMapActivity extends RenderTheme4 {
                 // what the user sees on the screen if an animation is in progress
                 this.mapView.getModel().frameBufferModel.addObserver(clusterer);
                 // add geoitems for clustering
-                for (int i = 0; i < geoItems_.length; i++) {
-                    clusterer.addItem(geoItems_[i]);
+                for (int i = 0; i < geoItems.length; i++) {
+                    clusterer.addItem(geoItems[i]);
                 }
                 // now redraw the cluster. it will create markers.
                 clusterer.redraw();

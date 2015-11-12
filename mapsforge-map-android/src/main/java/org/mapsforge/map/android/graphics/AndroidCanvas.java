@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -86,6 +86,9 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void drawText(String text, int x, int y, Paint paint) {
+		if (text == null || text.trim().isEmpty()) {
+			return;
+		}
 		if (paint.isTransparent()) {
 			return;
 		}
@@ -94,6 +97,9 @@ class AndroidCanvas implements Canvas {
 
 	@Override
 	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
+		if (text == null || text.trim().isEmpty()) {
+			return;
+		}
 		if (paint.isTransparent()) {
 			return;
 		}

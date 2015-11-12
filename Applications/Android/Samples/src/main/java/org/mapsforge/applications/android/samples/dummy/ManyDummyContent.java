@@ -29,7 +29,6 @@ import org.mapsforge.core.model.LatLong;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,8 +48,8 @@ public class ManyDummyContent extends DummyContent {
      * An array of many sample (dummy) items.
      */
     public static final List<DummyItem> MANYITEMS = new ArrayList<DummyItem>();
-    private final static String searchPart1 = "http://nominatim.openstreetmap.org/search.php?q=Hotel&addressdetails=1&limit=99&viewbox=";
-    private final static String searchPart2 = "&bounded=1&format=json";
+    private static final String searchPart1 = "http://nominatim.openstreetmap.org/search.php?q=Hotel&addressdetails=1&limit=99&viewbox=";
+    private static final String searchPart2 = "&bounded=1&format=json";
     // A handler to broadcast the data change from the AsyncTask to the activity.
     private Handler handler;
 
@@ -81,11 +80,11 @@ public class ManyDummyContent extends DummyContent {
     }
 
     // Uploads XML from nominatim.openstreetmap.org, parses it, and  create DummyItems from it
-    private ArrayList<DummyItem> loadXmlFromNetwork(String urlString) throws IOException {
-        String jString = null;
+    private List<DummyItem> loadXmlFromNetwork(String urlString) throws IOException {
+        String jString;
         // Instantiate the parser
         List<Entry> entries = null;
-        ArrayList<DummyItem> rtnArray = new ArrayList<DummyItem>();
+        List<DummyItem> rtnArray = new ArrayList<DummyItem>();
         BufferedReader streamReader = null;
         try {
             streamReader = new BufferedReader(downloadUrl(urlString));
@@ -144,10 +143,7 @@ public class ManyDummyContent extends DummyContent {
     // Given a string representation of a URL, sets up a connection and gets
     // an input stream.
     private InputStreamReader downloadUrl(String urlString) throws IOException {
-        URL url = null;
-        Reader stream = null;
-        BufferedReader streamReader = null;
-        url = new URL(urlString);
+        URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000 /* milliseconds */);
         conn.setConnectTimeout(15000 /* milliseconds */);
@@ -203,7 +199,7 @@ public class ManyDummyContent extends DummyContent {
             /**
              * An array of sample (dummy) items.
              */
-            List<DummyItem> someItems = new ArrayList<DummyItem>();
+            List<DummyItem> someItems;
             try {
                 for (String url : urls) {
                     someItems = loadXmlFromNetwork(url);

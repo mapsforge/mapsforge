@@ -82,8 +82,6 @@ public final class MercatorProjection {
 
 	/**
 	 * Get LatLong from Pixels.
-	 *
-	 * @author Stephan Brandt <stephan@contagt.com>
 	 */
 	public static LatLong fromPixelsWithScaleFactor(double pixelX, double pixelY, double scaleFactor, int tileSize) {
 		return new LatLong(pixelYToLatitudeWithScaleFactor(pixelY, scaleFactor, tileSize),
@@ -92,8 +90,6 @@ public final class MercatorProjection {
 
 	/**
 	 * Get LatLong from Pixels.
-	 * 
-	 * @author Stephan Brandt <stephan@contagt.com>
 	 */
 	public static LatLong fromPixels(double pixelX, double pixelY, long mapSize) {
 		return new LatLong(pixelYToLatitude(pixelY, mapSize),
