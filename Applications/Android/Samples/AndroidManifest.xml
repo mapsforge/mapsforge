@@ -3,7 +3,7 @@
     package="org.mapsforge.applications.android.samples"
     android:installLocation="auto"
     android:versionCode="60"
-    android:versionName="0.6.0-rc2">
+    android:versionName="master-SNAPSHOT">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
