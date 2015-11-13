@@ -4,7 +4,7 @@
 
 ## Version 0.6.X
 
-**New since 0.6.0-rc1**
+**Version 0.6.0-rc2 (2015-11-13)**
 
 - Minor improvements and bug fixes
 
