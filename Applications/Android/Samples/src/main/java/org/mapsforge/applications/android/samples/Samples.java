@@ -146,6 +146,7 @@ public class Samples extends Activity {
 
 		linearLayout.addView(createLabel("Experiments"));
 		linearLayout.addView(createButton(MultiLingualMapViewer.class, "Multi-lingual maps", null));
+		linearLayout.addView(createButton(ReverseGeocodeViewer.class, "Reverse Geocoding", null));
 		linearLayout.addView(createButton(RenderThemeChanger.class, "Changing Renderthemes", null));
 		linearLayout.addView(createButton(TileSizeChanger.class, "Changing Tile Size", null));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class, "Stacked Tiles", null));

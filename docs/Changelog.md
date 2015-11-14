@@ -2,6 +2,12 @@
 
 <wiki:toc />
 
+## New since 0.6.0
+
+- Reverse Geocoding example
+- Many other minor improvements and bug fixes
+
+
 ## Version 0.6.X
 
 #### Version 0.6.0 (2015-11-25)

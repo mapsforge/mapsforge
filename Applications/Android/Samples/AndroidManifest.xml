@@ -148,6 +148,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Automatically changes between renderthemes on SDCard" />
         <activity
+            android:name=".ReverseGeocodeViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Reverse Geocoding with long press" />
+        <activity
             android:name=".RotateMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Map Rotation (external)" />

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,14 +16,14 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import java.util.List;
-
-import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.Way;
+
+import java.util.List;
 
 /**
  * A PolylineContainer encapsulates the way data retrieved from a map file.
@@ -51,7 +52,7 @@ public class PolylineContainer implements ShapeContainer {
 		this.tile = tile;
 		layer = way.layer;
 		this.way = way;
-		this.isClosedWay = isClosedWay(way.latLongs[0]);
+		this.isClosedWay = LatLongUtils.isClosedWay(way.latLongs[0]);
 	}
 
 	PolylineContainer(Point[] coordinates, Tile tile, List<Tag> tags) {
@@ -122,9 +123,4 @@ public class PolylineContainer implements ShapeContainer {
 	public Tile getTile() {
 		return tile;
 	}
-
-	private boolean isClosedWay(LatLong[] latLongs) {
-		return latLongs[0].distance(latLongs[latLongs.length -1]) < 0.000000001;
-	}
-
 }

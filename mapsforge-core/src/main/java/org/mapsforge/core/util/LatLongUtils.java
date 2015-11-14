@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -18,13 +18,13 @@
  */
 package org.mapsforge.core.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * A utility class to convert, parse and validate geographical latitude/longitude coordinates.
@@ -64,6 +64,24 @@ public final class LatLongUtils {
 	private static final String DELIMITER = ",";
 
 	/**
+	 * Find if the given point lies within this polygon.<br/>
+	 * See http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+	 *
+	 * @return true if this polygon contains the given point, false otherwise.
+	 */
+	public static boolean contains(LatLong[] latLongs, LatLong latLong) {
+		boolean result = false;
+		for (int i = 0, j = latLongs.length - 1; i < latLongs.length; j = i++) {
+			if ((latLongs[i].latitude > latLong.latitude) != (latLongs[j].latitude > latLong.latitude)
+					&& (latLong.longitude < (latLongs[j].longitude - latLongs[i].longitude) * (latLong.latitude - latLongs[i].latitude)
+					/ (latLongs[j].latitude - latLongs[i].latitude) + latLongs[i].longitude)) {
+				result = !result;
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * Converts a coordinate from degrees to microdegrees (degrees * 10^6). No validation is performed.
 	 * 
 	 * @param coordinate
@@ -87,6 +105,15 @@ public final class LatLongUtils {
 	public static LatLong fromString(String latLongString) {
 		double[] coordinates = parseCoordinateString(latLongString, 2);
 		return new LatLong(coordinates[0], coordinates[1], true);
+	}
+
+	/**
+	 * Find if this way is closed.
+	 *
+	 * @return true if this way is closed, false otherwise.
+	 */
+	public static boolean isClosedWay(LatLong[] latLongs) {
+		return latLongs[0].distance(latLongs[latLongs.length -1]) < 0.000000001;
 	}
 
 	/**
