@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright (c) 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -307,34 +308,53 @@ public final class GeoUtils {
 			for (int i = 0; i < mp.getNumGeometries(); i++) {
 				Polygon p = (Polygon) mp.getGeometryN(i);
 				List<Integer> outer = toCoordinateList(p.getExteriorRing());
-				List<List<Integer>> inner = new ArrayList<>();
-				for (int j = 0; j < p.getNumInteriorRing(); j++) {
-					inner.add(toCoordinateList(p.getInteriorRingN(j)));
+				if (outer.size() / 2 > 0) {
+					List<List<Integer>> inner = new ArrayList<>();
+					for (int j = 0; j < p.getNumInteriorRing(); j++) {
+						List<Integer> innr = toCoordinateList(p.getInteriorRingN(j));
+						if (innr.size() / 2 > 0) {
+							inner.add(innr);
+						}
+					}
+					res.add(new WayDataBlock(outer, inner));
 				}
-				res.add(new WayDataBlock(outer, inner));
 			}
 		} else if (geometry instanceof Polygon) {
 			Polygon p = (Polygon) geometry;
 			List<Integer> outer = toCoordinateList(p.getExteriorRing());
-			List<List<Integer>> inner = new ArrayList<>();
-			for (int i = 0; i < p.getNumInteriorRing(); i++) {
-				inner.add(toCoordinateList(p.getInteriorRingN(i)));
+			if (outer.size() / 2 > 0) {
+				List<List<Integer>> inner = new ArrayList<>();
+				for (int i = 0; i < p.getNumInteriorRing(); i++) {
+					List<Integer> innr = toCoordinateList(p.getInteriorRingN(i));
+					if (innr.size() / 2 > 0) {
+						inner.add(innr);
+					}
+				}
+				res.add(new WayDataBlock(outer, inner));
 			}
-			res.add(new WayDataBlock(outer, inner));
 		} else if (geometry instanceof MultiLineString) {
 			MultiLineString ml = (MultiLineString) geometry;
 			for (int i = 0; i < ml.getNumGeometries(); i++) {
 				LineString l = (LineString) ml.getGeometryN(i);
-				res.add(new WayDataBlock(toCoordinateList(l), null));
+				List<Integer> outer = toCoordinateList(l);
+				if (outer.size() / 2 > 0) {
+					res.add(new WayDataBlock(outer, null));
+				}
 			}
 		} else if (geometry instanceof LinearRing || geometry instanceof LineString) {
-			res.add(new WayDataBlock(toCoordinateList(geometry), null));
+			List<Integer> outer = toCoordinateList(geometry);
+			if (outer.size() / 2 > 0) {
+				res.add(new WayDataBlock(outer, null));
+			}
 		} else if (geometry instanceof GeometryCollection) {
 			GeometryCollection gc = (GeometryCollection) geometry;
 			for (int i = 0; i < gc.getNumGeometries(); i++) {
 				List<WayDataBlock> recursiveResult = toWayDataBlockList(gc.getGeometryN(i));
 				for (WayDataBlock wayDataBlock : recursiveResult) {
-					res.add(wayDataBlock);
+					List<Integer> outer = wayDataBlock.getOuterWay();
+					if (outer.size() / 2 > 0) {
+						res.add(wayDataBlock);
+					}
 				}
 			}
 		}
