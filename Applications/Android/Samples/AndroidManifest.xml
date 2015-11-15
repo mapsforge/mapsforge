@@ -140,6 +140,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="OverlayWithoutBaseMapViewer" />
         <activity
+            android:name=".PoiSearchViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="POI search with long press" />
+        <activity
             android:name=".RenderTheme4"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="RenderTheme V4" />

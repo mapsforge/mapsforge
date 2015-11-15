@@ -31,6 +31,7 @@
 					<resourceDirectory>${basedir}/res</resourceDirectory>
 					<assetsDirectory>${basedir}/assets</assetsDirectory>
 					<androidManifestFile>${basedir}/AndroidManifest.xml</androidManifestFile>
+					<nativeLibrariesDirectory>${basedir}/src/main/jniLibs</nativeLibrariesDirectory>
 				</configuration>
 				<extensions>true</extensions>
 			</plugin>
@@ -112,6 +113,12 @@
 		<dependency>
 			<groupId>org.mapsforge</groupId>
 			<artifactId>mapsforge-map-android-extras</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mapsforge</groupId>
+			<artifactId>mapsforge-poi-reader</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

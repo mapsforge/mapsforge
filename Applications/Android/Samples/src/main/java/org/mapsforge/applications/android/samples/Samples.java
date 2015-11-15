@@ -153,6 +153,12 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(NoXMLLayout.class, "Without XML Layout", null));
 		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer", null));
 		linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Osmarender (deprecated)", null));
+		linearLayout.addView(createButton(PoiSearchViewer.class, "POI search (alpha)", new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startupDialog("poi", R.string.startup_message_poi, PoiSearchViewer.class);
+			}
+		}));
 		linearLayout.addView(createButton(ClusterMapActivity.class, "Marker clustering (alpha)", null));
 	}
 
