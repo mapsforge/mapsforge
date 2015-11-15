@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright (c) 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -979,7 +980,11 @@ public final class MapFileWriter {
 	private static void writeWay(List<Integer> wayNodes, int currentTileLat, int currentTileLon, ByteBuffer buffer) {
 		// write the amount of way nodes to the file
 		// wayBuffer
-		buffer.put(Serializer.getVariableByteUnsigned(wayNodes.size() / 2));
+		int wayNodeCount = wayNodes.size() / 2;
+		if (wayNodeCount < 2) {
+			LOGGER.log(Level.WARNING,"Invalid way node count: " + wayNodeCount);
+		}
+		buffer.put(Serializer.getVariableByteUnsigned(wayNodeCount));
 
 		// write the way nodes:
 		// the first node is always stored with four bytes
