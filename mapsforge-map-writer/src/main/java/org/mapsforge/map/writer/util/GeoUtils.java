@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright (c) 2015 lincomatic
+ * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,22 +15,6 @@
  */
 package org.mapsforge.map.writer.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.util.LatLongUtils;
-import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.map.writer.model.TDNode;
-import org.mapsforge.map.writer.model.TDWay;
-import org.mapsforge.map.writer.model.TileCoordinate;
-import org.mapsforge.map.writer.model.WayDataBlock;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -44,6 +28,22 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
+
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
+import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.writer.model.TDNode;
+import org.mapsforge.map.writer.model.TDWay;
+import org.mapsforge.map.writer.model.TileCoordinate;
+import org.mapsforge.map.writer.model.WayDataBlock;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provides utility functions for the maps preprocessing.
