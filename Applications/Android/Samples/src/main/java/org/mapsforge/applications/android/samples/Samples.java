@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -161,8 +161,8 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(TileSizeChanger.class, "Changing Tile Size", null));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class, "Stacked Tiles", null));
 		linearLayout.addView(createButton(NoXMLLayout.class, "Without XML Layout", null));
+		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer", null));
 		linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Osmarender (deprecated)", null));
-		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer (alpha)", null));
 		linearLayout.addView(createButton(ClusterMapActivity.class, "Marker clustering (alpha)", null));
 
 	}
