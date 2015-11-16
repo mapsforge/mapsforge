@@ -4,6 +4,10 @@
 
 ## Version 0.6.X
 
+**New since 0.6.0-rc2**
+
+- Fix invalid number of way nodes [#645](https://github.com/mapsforge/mapsforge/issues/645)
+
 **Version 0.6.0-rc2 (2015-11-13)**
 
 - Minor improvements and bug fixes

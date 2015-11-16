@@ -104,7 +104,9 @@ This section describes how to configure the ***known tag set*** via an XML file.
 The default internal tag mapping defined in https://github.com/mapsforge/mapsforge/blob/master/mapsforge-map-writer/src/main/config/tag-mapping.xml is kept in sync with the known tag set of the renderer. So, if you want to define your own custom mapping use the internal mapping as a reference.
 Please consult the XML-Schema documentation of https://github.com/mapsforge/mapsforge/blob/dev/resources/tag-mapping.xsd to learn about how to implement your custom mapping. The XML-Schema is very easy to understand. We recommend to use Eclipse as an editor for XML as it allows for auto-completion if you provide an XML-Schema.
 
-You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article [## Feedback
+You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article.
+
+## Feedback
 
 Please report any bugs and feature requests via [Github issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
@@ -113,6 +115,7 @@ Please report any bugs and feature requests via [Github issue tracker](https://g
 ### 0.6.0
 - Multilingual maps
 - Language improved parsing
+- Fix invalid number of way nodes
 
 ### 0.5.2
  - Some minor changes to tag-mapping.xml (administrative boundaries, national parks).
