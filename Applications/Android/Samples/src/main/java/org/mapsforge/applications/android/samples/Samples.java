@@ -30,7 +30,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -78,8 +77,7 @@ public class Samples extends Activity {
 					new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					preferences.edit().putBoolean(accepted, true)
-					.commit();
+					preferences.edit().putBoolean(accepted, true).commit();
 				}
 			});
 			builder.setMessage(R.string.startup_message);
@@ -110,7 +108,31 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(LocationOverlayMapViewer.class, "Location Overlay", null));
 		linearLayout.addView(createButton(ChangingBitmaps.class, "Changing Bitmaps", null));
 		linearLayout.addView(createButton(OverlayWithoutBaseMapViewer.class, "Just Overlays, No Map", null));
-		linearLayout.addView(createButton(TwoMaps.class, "Two Maps Overlaid", null));
+		linearLayout.addView(createButton(TwoMaps.class, "Two Maps Overlaid", new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Show a warning startup message to install a second map
+				final SharedPreferences preferences = getSharedPreferences("twomaps", Activity.MODE_PRIVATE);
+				final String accepted = "accepted";
+				if (!preferences.getBoolean(accepted, false)) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(Samples.this);
+					builder.setTitle("Warning");
+					builder.setCancelable(true);
+					builder.setPositiveButton(R.string.startup_dontshowagain,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									preferences.edit().putBoolean(accepted, true).commit();
+									startActivity(new Intent(Samples.this, TwoMaps.class));
+								}
+							});
+					builder.setMessage(R.string.startup_message_twomaps);
+					builder.show();
+				} else {
+					startActivity(new Intent(Samples.this, TwoMaps.class));
+				}
+			}
+		}));
 
 		linearLayout.addView(createLabel("User Interaction"));
 		linearLayout.addView(createButton(LongPressAction.class, "Long Press Action", null));
@@ -125,7 +147,7 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(DualMapViewerWithClampedTileSizes.class, "Clamped Tile Sizes", null));
 		linearLayout.addView(createButton(DualMapnikMapViewer.class, "Tied Maps", null));
 		linearLayout.addView(createButton(DualOverviewMapViewer.class, "Overview Map", null));
-		linearLayout.addView(createButton(MultiMapLowResWorld.class, "Low Res World Background", new OnClickListener() {
+		linearLayout.addView(createButton(MultiMapLowResWorld.class, "Low Res World Background", new View.OnClickListener() {
 			@Override
 			public void onClick(final View v) {
 				if (!MultiMapLowResWorld.getWorldMapFile(Samples.this).exists()) {
@@ -167,7 +189,7 @@ public class Samples extends Activity {
 
 	}
 
-	private Button createButton(final Class<?> clazz, String text, final OnClickListener customListener) {
+	private Button createButton(final Class<?> clazz, String text, final View.OnClickListener customListener) {
 		Button button = new Button(this);
 		if (text == null) {
 			button.setText(clazz.getSimpleName());
@@ -175,7 +197,7 @@ public class Samples extends Activity {
 			button.setText(text);
 		}
 		if (customListener == null) {
-			button.setOnClickListener(new OnClickListener() {
+			button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					startActivity(new Intent(Samples.this, clazz));
