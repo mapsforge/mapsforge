@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,7 +15,7 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import java.io.File;
+import android.os.Environment;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
@@ -26,48 +26,17 @@ import org.mapsforge.map.layer.cache.TileStore;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.tilestore.TileStoreLayer;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.os.Environment;
+import java.io.File;
 
 /**
  * Shows how to use a tile store layer.
  */
 public class TileStoreLayerViewer extends RenderTheme4 {
-	private TileStoreLayer tileStoreLayer;
-
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		// show a warning startup message to install a tile store
-		final SharedPreferences preferences = getSharedPreferences(
-				"tilestore", Activity.MODE_PRIVATE);
-		final String accepted = "tilestore";
-		if (!preferences.getBoolean(accepted, false)) {
-			final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Warning");
-			builder.setCancelable(true);
-			builder.setPositiveButton(R.string.startup_dontshowagain,
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							preferences.edit().putBoolean(accepted, true)
-									.commit();
-						}
-					});
-			builder.setMessage(R.string.startup_message_tilestore);
-			builder.create().show();
-		}
-	}
-
 	@Override
 	protected void createLayers() {
-		this.tileStoreLayer = new TileStoreLayer(this.tileCaches.get(0),
+		TileStoreLayer tileStoreLayer = new TileStoreLayer(this.tileCaches.get(0),
 				this.mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE, false);
-		mapView.getLayerManager().getLayers().add(this.tileStoreLayer);
+		mapView.getLayerManager().getLayers().add(tileStoreLayer);
 	}
 
 	@Override
@@ -88,5 +57,4 @@ public class TileStoreLayerViewer extends RenderTheme4 {
 				this.mapView.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio()));
 		this.tileCaches.add(new TwoLevelTileCache(memoryTileCache, tileStore));
 	}
-
 }

@@ -62,7 +62,6 @@ public abstract class MapViewerTemplateRuntimePermissions extends MapViewerTempl
 		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Warning");
 		builder.setMessage("Without granting access to storage you will not see a map");
-		builder.create().show();
+		builder.show();
 	}
-
 }

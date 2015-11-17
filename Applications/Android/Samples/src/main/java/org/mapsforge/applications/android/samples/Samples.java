@@ -81,7 +81,7 @@ public class Samples extends Activity {
 				}
 			});
 			builder.setMessage(R.string.startup_message);
-			builder.create().show();
+			builder.show();
 		}
 	}
 
@@ -98,7 +98,31 @@ public class Samples extends Activity {
 		linearLayout.addView(createLabel("Raster Maps"));
 		linearLayout.addView(createButton(DownloadLayerViewer.class, "Downloading Mapnik", null));
 		linearLayout.addView(createButton(DownloadCustomLayerViewer.class, "Custom Tile Source", null));
-		linearLayout.addView(createButton(TileStoreLayerViewer.class, "Tile Store (TMS)", null));
+		linearLayout.addView(createButton(TileStoreLayerViewer.class, "Tile Store (TMS)", new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Show a warning startup message to install a tile store
+				final SharedPreferences preferences = getSharedPreferences("tilestore", Activity.MODE_PRIVATE);
+				final String accepted = "accepted";
+				if (!preferences.getBoolean(accepted, false)) {
+					final AlertDialog.Builder builder = new AlertDialog.Builder(Samples.this);
+					builder.setTitle("Warning");
+					builder.setCancelable(true);
+					builder.setPositiveButton(R.string.startup_dontshowagain,
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									preferences.edit().putBoolean(accepted, true).commit();
+									startActivity(new Intent(Samples.this, TileStoreLayerViewer.class));
+								}
+							});
+					builder.setMessage(R.string.startup_message_tilestore);
+					builder.show();
+				} else {
+					startActivity(new Intent(Samples.this, TileStoreLayerViewer.class));
+				}
+			}
+		}));
 
 		linearLayout.addView(createLabel("Overlays"));
 		linearLayout.addView(createButton(OverlayMapViewer.class, "Overlay", null));
@@ -169,7 +193,7 @@ public class Samples extends Activity {
 						}
 					});
 					builder.setMessage(R.string.startup_message_multimap);
-					builder.create().show();
+					builder.show();
 				} else {
 					startActivity(new Intent(Samples.this, MultiMapLowResWorld.class));
 				}
