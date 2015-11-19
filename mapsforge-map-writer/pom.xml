@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.mapsforge</groupId>
 		<artifactId>mapsforge</artifactId>
-		<version>0.6.0-rc3</version>
+		<version>master-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
