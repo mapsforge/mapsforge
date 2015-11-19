@@ -1,13 +1,13 @@
 # Downloads for Developers
 
-# Release 0.6.0-rc2 Downloads
+# Release 0.6.0-rc3 Downloads
 
-These are the downloads for version 0.6.0-rc2 (2015-11-13)
+These are the downloads for version 0.6.0-rc3 (2015-11-19)
 
-- [Samples 0.6.0-rc2 application (old permissions)](http://ci.mapsforge.org/job/0.6.0-rc2/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-oldpermissions-debug.apk)
-- [Samples 0.6.0-rc2 application (runtime permissions)](http://ci.mapsforge.org/job/0.6.0-rc2/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-runtimepermissions-debug.apk)
-- [Release 0.6.0-rc2 jars](http://ci.mapsforge.org/job/0.6.0-rc2/)
-- [Writer plugin](http://ci.mapsforge.org/job/0.6.0-rc2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.6.0-rc2.jar)
+- [Samples 0.6.0-rc3 application (old permissions)](http://ci.mapsforge.org/job/0.6.0-rc3/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-oldpermissions-debug.apk)
+- [Samples 0.6.0-rc3 application (runtime permissions)](http://ci.mapsforge.org/job/0.6.0-rc3/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-runtimepermissions-debug.apk)
+- [Release 0.6.0-rc3 jars](http://ci.mapsforge.org/job/0.6.0-rc3/)
+- [Writer plugin](http://ci.mapsforge.org/job/0.6.0-rc3/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.6.0-rc3.jar)
 
 # Release 0.5.2 Downloads
 
