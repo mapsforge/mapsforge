@@ -29,7 +29,6 @@ import android.os.Environment;
  * this, with the new MultiMapDataStore class.
  */
 public class TwoMaps extends RenderTheme4 {
-
 	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
@@ -66,11 +65,10 @@ public class TwoMaps extends RenderTheme4 {
 	 * @return the map file name for the second view
 	 */
 	protected String getMapFileName2() {
-		return "mapsforgesecond.map";
+		return "second.map";
 	}
 
 	protected String getPersistableId2() {
 		return this.getPersistableId() + "-2";
 	}
-
 }

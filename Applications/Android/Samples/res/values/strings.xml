@@ -3,20 +3,20 @@
 
     <string name="copyright_osm">Map data © OpenStreetMap contributors</string>
 
-   	<string name="menu_preferences">Settings</string>
+    <string name="menu_preferences">Settings</string>
     <string name="menu_position_enter_coordinates">Map Position</string>
     <string name="menu_svgclear">Clear SVG icon cache</string>
 
-	<string name="cancelbutton">Cancel</string>
-   	<string name="okbutton">OK</string>
-	<string name="downloadnowbutton">OK</string>
-	<string name="rotate_button">Rotate</string>
-	<string name="zoomin_button">+</string>
-	<string name="zoomout_button">-</string>
-		
-	<string name="latitude">Latitude</string>
-	<string name="longitude">Longitude</string>
-	<string name="zoomlevel">Zoom Level</string>
+    <string name="cancelbutton">Cancel</string>
+    <string name="okbutton">OK</string>
+    <string name="downloadnowbutton">OK</string>
+    <string name="rotate_button">Rotate</string>
+    <string name="zoomin_button">+</string>
+    <string name="zoomout_button">-</string>
+
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="zoomlevel">Zoom Level</string>
 
     <string name="preferences_scale">Display Scale</string>
     <string name="preferences_scale_desc">Adjust scale of the map display</string>
@@ -41,8 +41,8 @@
     <string name="preferences_wayfiltering_distance_desc">The higher the number the less artifacts, but slower.</string>
 
     <string name="preferences_category_tilecache">Tilecache</string>
-	<string name="preferences_tilecache_persistence">Persistence</string>
-	<string name="preferences_tilecache_persistence_desc">Keep tiles over activity restart.</string>
+    <string name="preferences_tilecache_persistence">Persistence</string>
+    <string name="preferences_tilecache_persistence_desc">Keep tiles over activity restart.</string>
     <string name="preferences_tilecache_threading">Threading</string>
     <string name="preferences_tilecache_threading_desc">Threading makes the app more responsive, with some risk.</string>
     <string name="preferences_tilecache_queuelimit">Queue limit</string>
@@ -89,8 +89,9 @@
     <string name="dialog_location_title">Coordinates</string>
 
     <string name="startup_dontshowagain">Don\'t show again</string>
-    <string name="startup_message">To run this samples app, you need any map with filename germany.map installed on the sdcard.</string>
+    <string name="startup_message">To run this samples app, you need any map with filename germany.map installed on storage.</string>
     <string name="startup_message_tilestore">To run this sample activity, you need a TMS tile store at /sdcard/tilestore. Sample data in the Samples/data directory.</string>
-	<string name="startup_message_multimap">To run this sample activity, you need to download a low-resolution world map first.</string>
+    <string name="startup_message_multimap">To run this sample activity, you need to download a low-resolution world map first.</string>
+    <string name="startup_message_twomaps">To run this sample activity, you need also a map with filename second.map installed on storage.</string>
 
 </resources>
