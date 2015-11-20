@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -57,7 +58,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	private final double longitude;
 
 	/**
-	 * The RegEx pattern to read WKT points
+	 * The RegEx pattern to read WKT points.
 	 */
 	private static Pattern wktPointPattern = Pattern
 			.compile(".*POINT\\s?\\(([\\d\\.]+)\\s([\\d\\.]+)\\).*");
@@ -65,7 +66,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	/**
 	 * Constructs a new GeoCoordinate with the given latitude and longitude values, measured in
 	 * degrees.
-	 * 
+	 *
 	 * @param latitude
 	 *            the latitude value in degrees.
 	 * @param longitude
@@ -81,7 +82,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	/**
 	 * Constructs a new GeoCoordinate with the given latitude and longitude values, measured in
 	 * microdegrees.
-	 * 
+	 *
 	 * @param latitudeE6
 	 *            the latitude value in microdegrees.
 	 * @param longitudeE6
@@ -95,15 +96,15 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	}
 
 	/**
-	 * Constructs a new GeoCoordinate from a Well-Known-Text (WKT) representation of a point For
-	 * example: POINT(13.4125 52.52235)
-	 * 
-	 * WKT is used in PostGIS and other spatial databases
-	 * 
+	 * Constructs a new GeoCoordinate from a Well-Known-Text (WKT) representation of a point.
+	 * For example: POINT(13.4125 52.52235)
+	 *
+	 * WKT is used in PostGIS and other spatial databases.
+	 *
 	 * @param wellKnownText
 	 *            is the WKT point which describes the new GeoCoordinate, this needs to be in
 	 *            degrees using a WGS84 representation. The coordinate order in the POINT is
-	 *            defined as POINT(long lat)
+	 *            defined as POINT(long lat).
 	 */
 	public GeoCoordinate(String wellKnownText) {
 		Matcher m = wktPointPattern.matcher(wellKnownText);
@@ -117,7 +118,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	 * longitude values (also ';', ':' and whitespace work as separator). First latitude and
 	 * longitude are interpreted as measured in degrees. If the coordinate is invalid, it is
 	 * tried to interpret values as measured in microdegrees.
-	 * 
+	 *
 	 * @param latLonString
 	 *            the String containing the latitude and longitude values
 	 * @return the GeoCoordinate
@@ -125,11 +126,11 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	 *             if the latLonString could not be interpreted as a coordinate
 	 */
 	public static GeoCoordinate fromString(String latLonString) {
-		String[] splitted = latLonString.split("[,;:\\s]");
-		if (splitted.length != 2)
+		String[] split = latLonString.split("[,;:\\s]");
+		if (split.length != 2)
 			throw new IllegalArgumentException("cannot read coordinate, not a valid format");
-		double latitude = Double.parseDouble(splitted[0]);
-		double longitude = Double.parseDouble(splitted[1]);
+		double latitude = Double.parseDouble(split[0]);
+		double longitude = Double.parseDouble(split[1]);
 		try {
 			return new GeoCoordinate(latitude, longitude);
 		} catch (IllegalArgumentException e) {
@@ -140,7 +141,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 
 	/**
 	 * Checks the given latitude value and throws an exception if the value is out of range.
-	 * 
+	 *
 	 * @param lat
 	 *            the latitude value that should be checked.
 	 * @return the latitude value.
@@ -159,7 +160,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 
 	/**
 	 * Checks the given longitude value and throws an exception if the value is out of range.
-	 * 
+	 *
 	 * @param lon
 	 *            the longitude value that should be checked.
 	 * @return the longitude value.
@@ -178,7 +179,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 
 	/**
 	 * Returns the latitude value of this coordinate.
-	 * 
+	 *
 	 * @return the latitude value of this coordinate.
 	 */
 	public double getLatitude() {
@@ -187,7 +188,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 
 	/**
 	 * Returns the longitude value of this coordinate.
-	 * 
+	 *
 	 * @return the longitude value of this coordinate.
 	 */
 	public double getLongitude() {
@@ -196,7 +197,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 
 	/**
 	 * Returns the latitude value in microdegrees of this coordinate.
-	 * 
+	 *
 	 * @return the latitude value in microdegrees of this coordinate.
 	 */
 	public int getLatitudeE6() {
@@ -205,7 +206,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 
 	/**
 	 * Returns the longitude value in microdegrees of this coordinate.
-	 * 
+	 *
 	 * @return the longitude value in microdegrees of this coordinate.
 	 */
 	public int getLongitudeE6() {
@@ -213,10 +214,10 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	}
 
 	/**
-	 * Calculate the spherical distance from this GeoCoordinate to another
-	 * 
-	 * Use vincentyDistance for more accuracy but less performance
-	 * 
+	 * Calculate the spherical distance from this GeoCoordinate to another.
+	 *
+	 * Use vincentyDistance for more accuracy but less performance.
+	 *
 	 * @param other
 	 *            The GeoCoordinate to calculate the distance to
 	 * @return the distance in meters as a double
@@ -227,12 +228,12 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 
 	/**
 	 * Calculate the spherical distance between two GeoCoordinates in meters using the Haversine
-	 * formula
-	 * 
+	 * formula.
+	 *
 	 * This calculation is done using the assumption, that the earth is a sphere, it is not
 	 * though. If you need a higher precision and can afford a longer execution time you might
-	 * want to use vincentyDistance
-	 * 
+	 * want to use vincentyDistance.
+	 *
 	 * @param gc1
 	 *            first GeoCoordinate
 	 * @param gc2
@@ -253,11 +254,11 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	/**
 	 * Calculate the spherical distance between two GeoCoordinates in meters using the Haversine
 	 * formula.
-	 * 
+	 *
 	 * This calculation is done using the assumption, that the earth is a sphere, it is not
 	 * though. If you need a higher precision and can afford a longer execution time you might
 	 * want to use vincentyDistance
-	 * 
+	 *
 	 * @param lon1
 	 *            longitude of first coordinate
 	 * @param lat1
@@ -266,7 +267,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	 *            longitude of second coordinate
 	 * @param lat2
 	 *            latitude of second coordinate
-	 * 
+	 *
 	 * @return distance in meters as a double
 	 * @throws IllegalArgumentException
 	 *             if one of the arguments is null
@@ -277,12 +278,12 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1))
 				* Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-		return c * WGS84.EQUATORIALRADIUS;
+		return c * WGS84.EQUATORIAL_RADIUS;
 	}
 
 	/**
 	 * Distance based on the assumption that the earth is a sphere.
-	 * 
+	 *
 	 * @param lon1
 	 *            longitude of 1st coordinate.
 	 * @param lat1
@@ -299,10 +300,10 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	}
 
 	/**
-	 * Calculate the spherical distance from this GeoCoordinate to another
-	 * 
-	 * Use "distance" for faster computation with less accuracy
-	 * 
+	 * Calculate the spherical distance from this GeoCoordinate to another.
+	 *
+	 * Use "distance" for faster computation with less accuracy.
+	 *
 	 * @param other
 	 *            The GeoCoordinate to calculate the distance to
 	 * @return the distance in meters as a double
@@ -314,24 +315,24 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	/**
 	 * Calculates geodetic distance between two GeoCoordinates using Vincenty inverse formula
 	 * for ellipsoids. This is very accurate but consumes more resources and time than the
-	 * sphericalDistance method
-	 * 
+	 * sphericalDistance method.
+	 *
 	 * Adaptation of Chriss Veness' JavaScript Code on
 	 * http://www.movable-type.co.uk/scripts/latlong-vincenty.html
-	 * 
+	 *
 	 * Paper: Vincenty inverse formula - T Vincenty, "Direct and Inverse Solutions of Geodesics
 	 * on the Ellipsoid with application of nested equations", Survey Review, vol XXII no 176,
 	 * 1975 (http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf)
-	 * 
+	 *
 	 * @param gc1
 	 *            first GeoCoordinate
 	 * @param gc2
 	 *            second GeoCoordinate
-	 * 
+	 *
 	 * @return distance in meters between points as a double
 	 */
 	public static double vincentyDistance(GeoCoordinate gc1, GeoCoordinate gc2) {
-		double f = 1 / WGS84.INVERSEFLATTENING;
+		double f = 1 / WGS84.INVERSE_FLATTENING;
 		double L = Math.toRadians(gc2.getLongitude() - gc1.getLongitude());
 		double U1 = Math.atan((1 - f) * Math.tan(Math.toRadians(gc1.getLatitude())));
 		double U2 = Math.atan((1 - f) * Math.tan(Math.toRadians(gc2.getLatitude())));
@@ -365,43 +366,43 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 					* f
 					* sinAlpha
 					* (sigma + C * sinSigma
-							* (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+					* (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
 		} while (Math.abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
 
 		if (iterLimit == 0)
 			return 0; // formula failed to converge
 
 		double uSq = cosSqAlpha
-				* (Math.pow(WGS84.EQUATORIALRADIUS, 2) - Math.pow(WGS84.POLARRADIUS, 2))
-				/ Math.pow(WGS84.POLARRADIUS, 2);
+				* (Math.pow(WGS84.EQUATORIAL_RADIUS, 2) - Math.pow(WGS84.POLAR_RADIUS, 2))
+				/ Math.pow(WGS84.POLAR_RADIUS, 2);
 		double A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
 		double B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
 		double deltaSigma = B
 				* sinSigma
 				* (cos2SigmaM + B
-						/ 4
-						* (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) - B / 6 * cos2SigmaM
-								* (-3 + 4 * sinSigma * sinSigma)
-								* (-3 + 4 * cos2SigmaM * cos2SigmaM)));
-		double s = WGS84.POLARRADIUS * A * (sigma - deltaSigma);
+				/ 4
+				* (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) - B / 6 * cos2SigmaM
+				* (-3 + 4 * sinSigma * sinSigma)
+				* (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+		double s = WGS84.POLAR_RADIUS * A * (sigma - deltaSigma);
 
 		return s;
 	}
 
 	/**
 	 * Calculate the amount of degrees of latitude for a given distance in meters.
-	 * 
+	 *
 	 * @param meters
 	 *            distance in meters
 	 * @return latitude degrees
 	 */
 	public static double latitudeDistance(int meters) {
-		return (meters * 360) / (2 * Math.PI * WGS84.EQUATORIALRADIUS);
+		return (meters * 360) / (2 * Math.PI * WGS84.EQUATORIAL_RADIUS);
 	}
 
 	/**
 	 * Calculate the amount of degrees of longitude for a given distance in meters.
-	 * 
+	 *
 	 * @param meters
 	 *            distance in meters
 	 * @param latitude
@@ -410,12 +411,12 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	 */
 	public static double longitudeDistance(int meters, double latitude) {
 		return (meters * 360)
-				/ (2 * Math.PI * WGS84.EQUATORIALRADIUS * Math.cos(Math.toRadians(latitude)));
+				/ (2 * Math.PI * WGS84.EQUATORIAL_RADIUS * Math.cos(Math.toRadians(latitude)));
 	}
 
 	/**
 	 * Calculate the amount of degrees of longitude for a given distance in meters.
-	 * 
+	 *
 	 * @param meters
 	 *            distance in meters
 	 * @param latitude
@@ -424,13 +425,13 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 	 */
 	public static double longitudeDistance(int meters, int latitude) {
 		return (meters * 360)
-				/ (2 * Math.PI * WGS84.EQUATORIALRADIUS * Math.cos(Math
-						.toRadians(intToDouble(latitude))));
+				/ (2 * Math.PI * WGS84.EQUATORIAL_RADIUS * Math.cos(Math
+				.toRadians(intToDouble(latitude))));
 	}
 
 	/**
 	 * Converts a coordinate from degrees to microdegrees.
-	 * 
+	 *
 	 * @param coordinate
 	 *            the coordinate in degrees.
 	 * @return the coordinate in microdegrees.
@@ -441,7 +442,7 @@ public class GeoCoordinate implements Comparable<GeoCoordinate> {
 
 	/**
 	 * Converts a coordinate from microdegrees to degrees.
-	 * 
+	 *
 	 * @param coordinate
 	 *            the coordinate in microdegrees.
 	 * @return the coordinate in degrees.

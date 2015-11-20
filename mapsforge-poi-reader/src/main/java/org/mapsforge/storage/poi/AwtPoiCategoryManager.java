@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -12,20 +12,13 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.mapmaker.logging;
+package org.mapsforge.storage.poi;
 
-public interface ProgressManager {
-	void setMessage(String message);
-	
-	void appendLogMessage(String message, boolean isErrorMessage);
-
-	void tick();
-
-	void initProgressBar(int minVal, int maxVal);
-
-	void updateProgressBar(int newVal);
-
-	void start();
-
-	void finish();
+/**
+ * A {@link PoiCategoryManager} implementation using a SQLite database via JDBC.
+ * <p/>
+ * This class can only be used within AWT.
+ */
+public class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
+    // TODO Implement
 }

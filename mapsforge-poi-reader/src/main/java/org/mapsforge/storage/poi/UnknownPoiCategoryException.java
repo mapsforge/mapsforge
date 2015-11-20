@@ -16,8 +16,8 @@
 package org.mapsforge.storage.poi;
 
 /**
- * This exception is thrown whenever the {@link PoiCategoryManager} cannot find a category for a given
- * tag.
+ * This exception is thrown whenever the {@link PoiCategoryManager} cannot find a category for a
+ * given tag.
  */
 public class UnknownPoiCategoryException extends Exception {
 	private static final long serialVersionUID = 1L;

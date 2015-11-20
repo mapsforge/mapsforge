@@ -1,6 +1,7 @@
 configurations { providedCompile }
 
 dependencies {
+    compile project(":mapsforge-poi-reader")
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
     providedCompile group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.44.1'
 }

@@ -19,37 +19,36 @@ package org.mapsforge.storage.poi;
 import java.util.Collection;
 
 /**
- * This class represents a category for {@link PointOfInterest}. Every {@link PoiCategory} should have a
- * unique title so that for two {@link PoiCategory}s a and b a.equals(b) if and only if
+ * This class represents a category for {@link PointOfInterest}. Every {@link PoiCategory} should
+ * have a unique title so that for two {@link PoiCategory}s a and b a.equals(b) if and only if
  * a.title.equalsIgnoreCase(b.title).
  */
 public interface PoiCategory {
-	/**
-	 * @return title of this category.
-	 */
-	String getTitle();
-
-	/**
-	 * @return parent category of this category or null if this category has no parent.
-	 */
-	PoiCategory getParent();
-
-	/**
-	 * Sets the node's parent node.
-	 * 
-	 * @param parent
-	 *            The category node to be set as parent.
-	 */
-	void setParent(PoiCategory parent);
-
 	/**
 	 * @return All child categories of the category or null if this category has no children.
 	 */
 	Collection<PoiCategory> getChildren();
 
 	/**
-	 * 
 	 * @return The category's id.
 	 */
 	int getID();
+
+	/**
+	 * @return The parent category of this category or null if this category has no parent.
+	 */
+	PoiCategory getParent();
+
+	/**
+	 * @return The title of this category.
+	 */
+	String getTitle();
+
+	/**
+	 * Sets the category's parent category.
+	 *
+	 * @param parent
+	 *            The category to be set as parent.
+	 */
+	void setParent(PoiCategory parent);
 }

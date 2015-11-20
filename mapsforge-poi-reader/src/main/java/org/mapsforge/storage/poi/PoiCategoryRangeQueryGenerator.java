@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,56 +19,22 @@ package org.mapsforge.storage.poi;
 import java.util.Collection;
 
 /**
- * This class generates a prepared SQL query for retrieving POIs filtered by a given {@link PoiCategoryFilter}.
+ * This class generates a prepared SQL query for retrieving POIs filtered by a given
+ * {@link PoiCategoryFilter}.
  */
-public class PoiCategoryRangeQueryGenerator {
-	private static final String SELECT_QUERY_STRING = "SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
-			+ "FROM poi_index "
-			+ "JOIN poi_data ON poi_index.id = poi_data.id "
-			+ "WHERE ("
-			+ "minLat <= ? AND "
-			+ "minLon <= ? AND " + "minLat >= ? AND " + "minLon >= ?)";
+final class PoiCategoryRangeQueryGenerator {
+	private static final String SELECT_QUERY_STRING =
+			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
+					+ "FROM poi_index "
+					+ "JOIN poi_data ON poi_index.id = poi_data.id "
+					+ "WHERE ("
+					+ "minLat <= ? AND "
+					+ "minLon <= ? AND "
+					+ "minLat >= ? AND "
+					+ "minLon >= ?)";
 
-	// TODO limit?
-	static String getSQLSelectString(PoiCategoryFilter filter) {
-		StringBuilder sb = new StringBuilder(SELECT_QUERY_STRING);
-		sb.append(getSQLWhereClauseString(filter));
-		sb.append(' ').append("LIMIT ?;");
-		return sb.toString();
-	}
-
-	/**
-	 * Gets the WHERE clause for the SQL query that looks up POI entries.
-	 * 
-	 * @param filter
-	 *            The filter object for determining all wanted categories.
-	 * @return A string like <code>WHERE id BETWEEN 2 AND 5 OR BETWEEN 10 AND 12</code>.
-	 */
-	private static String getSQLWhereClauseString(PoiCategoryFilter filter) {
-		int[] intervals = getCategoryIDIntervals(filter);
-
-		if (intervals.length == 0) {
-			return "";
-		}
-
-		StringBuilder sb = new StringBuilder();
-		sb.append(" AND (");
-		// foreach interval
-		for (int i = 0; i < intervals.length; i += 2) {
-
-			// Element has two siblings
-			sb.append("poi_data.category > ").append(intervals[i]).append(" AND poi_data.category <= ")
-					.append(intervals[i + 1]);
-
-			// append OR if it is not the last interval
-			if (i != intervals.length - 2) {
-				sb.append(" OR ");
-			}
-		}
-
-		sb.append(')');
-
-		return sb.toString();
+	private PoiCategoryRangeQueryGenerator() {
+		// no-op, for privacy
 	}
 
 	/**
@@ -81,10 +48,8 @@ public class PoiCategoryRangeQueryGenerator {
 		int[] ret = new int[superCategories.size() * 2];
 		int i = 0;
 
-		PoiCategory sibling = null;
-
 		for (PoiCategory c : superCategories) {
-			sibling = PoiCategoryRangeQueryGenerator.getLeftSibling(c);
+			PoiCategory sibling = PoiCategoryRangeQueryGenerator.getLeftSibling(c);
 
 			if (sibling == null) {
 				ret[i] = -1;
@@ -103,8 +68,8 @@ public class PoiCategoryRangeQueryGenerator {
 	/**
 	 * @param c1
 	 *            Category whose nearest left-hand side sibling should be returned.
-	 * @return The category's nearest left-hand side sibling or <code>null</code> if <code>c1</code> is the leftmost
-	 *         category on its level.
+	 * @return The category's nearest left-hand side sibling or <code>null</code> if <code>c1</code>
+	 *         is the leftmost category on its level.
 	 */
 	private static PoiCategory getLeftSibling(PoiCategory c1) {
 		PoiCategory ret = null;
@@ -127,10 +92,41 @@ public class PoiCategoryRangeQueryGenerator {
 		return ret;
 	}
 
-	// public static void main(String[] args) throws UnknownPoiCategoryException {
-	// PoiCategory root = CategoryTreeBuilder.createAndGetBalancedConfiguration();
-	// PoiCategoryManager cm = new CategoryManagerTest.MockPoiCategoryManager(root);
-	//
-	// System.out.println(getLeftSibling(cm.getPoiCategoryByID(11)));
-	// }
+	// TODO limit?
+	static String getSQLSelectString(PoiCategoryFilter filter) {
+		return SELECT_QUERY_STRING + getSQLWhereClauseString(filter) + ' ' + "LIMIT ?;";
+	}
+
+	/**
+	 * Gets the WHERE clause for the SQL query that looks up POI entries.
+	 *
+	 * @param filter
+	 *            The filter object for determining all wanted categories.
+	 * @return A string like <code>WHERE id BETWEEN 2 AND 5 OR BETWEEN 10 AND 12</code>.
+	 */
+	private static String getSQLWhereClauseString(PoiCategoryFilter filter) {
+		int[] intervals = getCategoryIDIntervals(filter);
+
+		if (intervals.length == 0) {
+			return "";
+		}
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(" AND (");
+		// foreach interval
+		for (int i = 0; i < intervals.length; i += 2) {
+			// Element has two siblings
+			sb.append("poi_data.category > ").append(intervals[i])
+					.append(" AND poi_data.category <= ").append(intervals[i + 1]);
+
+			// append OR if it is not the last interval
+			if (i != intervals.length - 2) {
+				sb.append(" OR ");
+			}
+		}
+
+		sb.append(')');
+
+		return sb.toString();
+	}
 }

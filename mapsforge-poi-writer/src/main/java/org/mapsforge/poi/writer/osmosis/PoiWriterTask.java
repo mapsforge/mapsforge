@@ -16,8 +16,8 @@
  */
 package org.mapsforge.poi.writer.osmosis;
 
-import org.mapsforge.mapmaker.logging.LoggerWrapper;
-import org.mapsforge.mapmaker.logging.ProgressManager;
+import org.mapsforge.poi.writer.logging.LoggerWrapper;
+import org.mapsforge.poi.writer.logging.ProgressManager;
 import org.mapsforge.poi.writer.util.Constants;
 import org.mapsforge.storage.poi.PoiCategory;
 import org.mapsforge.storage.poi.PoiCategoryFilter;
@@ -37,6 +37,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -45,18 +46,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This task reads Nodes from an OSM stream and writes them to a SQLite3 database. Nodes can be filtered and grouped by
- * categories by using an XML definition.
+ * This task reads Nodes from an OSM stream and writes them to a SQLite database.
+ * Nodes can be filtered and grouped by categories by using an XML definition.
  */
 public class PoiWriterTask implements Sink {
 	private static final Logger LOGGER = LoggerWrapper.getLogger(PoiWriterTask.class.getName());
+
 	private final ProgressManager progressManager;
 
 	// For debug purposes only (at least for now)
 	private static final boolean INCLUDE_META_DATA = false;
 
 	// Available categories
-	private final PoiCategoryManager cm;
+	private final PoiCategoryManager categoryManager;
 
 	// Mappings
 	private final TagMappingResolver tagMappingResolver;
@@ -73,14 +75,16 @@ public class PoiWriterTask implements Sink {
 	private PreparedStatement pStmt2 = null;
 
 	/**
-	 * This method writes all nodes that can be mapped to a specific category and whose category is in a given whitelist
-	 * to a SQLite3 database. The category tree and tag mappings are retrieved from an XML file.
+	 * This method writes all nodes that can be mapped to a specific category and whose category is
+	 * in a given whitelist to a SQLite database. The category tree and tag mappings are retrieved
+	 * from an XML file.
 	 *
 	 * @param outputFilePath
-	 *            Path to the database file that should be written. The file name should end with ".poi".
+	 *            Path to the database file that should be written. The file name should end with
+	 *            ".poi".
 	 * @param configFilePath
-	 *            The XML configuration file containing the category tree and tag mappings. You can use
-	 *            "poi-mapping.xml" from the mapsforge library here.
+	 *            The XML configuration file containing the category tree and tag mappings. You can
+	 *            use "poi-mapping.xml" from the mapsforge library here.
 	 * @param progressManager
 	 *            Object that sends progress messages to a GUI.
 	 */
@@ -100,15 +104,15 @@ public class PoiWriterTask implements Sink {
 		this.progressManager = progressManager;
 
 		// Get categories defined in XML
-		this.cm = new XMLPoiCategoryManager(configFilePath);
+		this.categoryManager = new XMLPoiCategoryManager(configFilePath);
 
 		// Get tag -> POI mapper
-		this.tagMappingResolver = new TagMappingResolver(configFilePath, this.cm);
+		this.tagMappingResolver = new TagMappingResolver(configFilePath, this.categoryManager);
 
-		// Set accepted categories (Allow all categories)
+		// Set accepted categories (allow all categories)
 		this.categoryFilter = new WhitelistPoiCategoryFilter();
 		try {
-			this.categoryFilter.addCategory(this.cm.getRootCategory());
+			this.categoryFilter.addCategory(this.categoryManager.getRootCategory());
 		} catch (UnknownPoiCategoryException e) {
 			LOGGER.warning("Could not add category to filter: " + e.getMessage());
 		}
@@ -122,84 +126,6 @@ public class PoiWriterTask implements Sink {
 
 		this.progressManager.initProgressBar(0, 0);
 		this.progressManager.setMessage("Creating POI database");
-	}
-
-	private void prepareDatabase(String path) throws ClassNotFoundException, SQLException, UnknownPoiCategoryException {
-		Class.forName("org.sqlite.JDBC");
-		this.conn = DriverManager.getConnection("jdbc:sqlite:" + path);
-		this.conn.setAutoCommit(false);
-
-		Statement stmt = this.conn.createStatement();
-
-		// CREATE TABLES
-		stmt.executeUpdate("DROP TABLE IF EXISTS poi_index;");
-		stmt.executeUpdate("DROP TABLE IF EXISTS poi_data;");
-		stmt.executeUpdate("DROP TABLE IF EXISTS poi_categories;");
-		// stmt.executeUpdate("DROP INDEX IF EXISTS poi_categories_index;");
-		stmt.executeUpdate("CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);");
-		stmt.executeUpdate("CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));");
-		stmt.executeUpdate("CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));");
-		// stmt.executeUpdate("CREATE INDEX poi_categories_index ON poi_categories (id);");
-
-		this.pStmt = this.conn.prepareStatement("INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);");
-		this.pStmt2 = this.conn.prepareStatement("INSERT INTO poi_data VALUES (?, ?, ?);");
-		PreparedStatement pStmt3 = this.conn.prepareStatement("INSERT INTO poi_categories VALUES (?, ?, ?);");
-
-		// INSERT CATEGORIES
-		PoiCategory root = this.cm.getRootCategory();
-		pStmt3.setLong(1, root.getID());
-		pStmt3.setBytes(2, root.getTitle().getBytes());
-		pStmt3.setNull(3, 0);
-		pStmt3.addBatch();
-
-		Stack<PoiCategory> children = new Stack<>();
-		children.push(root);
-		while (!children.isEmpty()) {
-			for (PoiCategory c : children.pop().getChildren()) {
-				pStmt3.setLong(1, c.getID());
-				pStmt3.setBytes(2, c.getTitle().getBytes());
-				pStmt3.setInt(3, c.getParent().getID());
-				pStmt3.addBatch();
-				children.push(c);
-			}
-		}
-		pStmt3.executeBatch();
-		this.conn.commit();
-	}
-
-	private void writePOI(long id, double latitude, double longitude, HashMap<String, String> poiData,
-			PoiCategory category) {
-		try {
-			// Index data
-			this.pStmt.setLong(1, id);
-			this.pStmt.setDouble(2, latitude);
-			this.pStmt.setDouble(3, latitude);
-			this.pStmt.setDouble(4, longitude);
-			this.pStmt.setDouble(5, longitude);
-
-			// POI data
-			this.pStmt2.setLong(1, id);
-
-			// If all important data should be written to db
-			// TODO Use PBF here
-			if (INCLUDE_META_DATA) {
-				this.pStmt2.setBytes(2, tagsToString(poiData).getBytes());
-			} else {
-				// If name tag is set
-				if (poiData.get("name") != null) {
-					this.pStmt2.setBytes(2, poiData.get("name").getBytes());
-				} else {
-					this.pStmt2.setNull(2, 0);
-				}
-			}
-
-			this.pStmt2.setInt(3, category.getID());
-
-			this.pStmt.addBatch();
-			this.pStmt2.addBatch();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void commit() {
@@ -233,12 +159,47 @@ public class PoiWriterTask implements Sink {
 		// nothing to do here
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void release() {
-		// do nothing here
+	private void prepareDatabase(String path) throws ClassNotFoundException, SQLException, UnknownPoiCategoryException {
+		Class.forName("org.sqlite.JDBC");
+		this.conn = DriverManager.getConnection("jdbc:sqlite:" + path);
+		this.conn.setAutoCommit(false);
+
+		Statement stmt = this.conn.createStatement();
+
+		// CREATE TABLES
+		stmt.executeUpdate("DROP TABLE IF EXISTS poi_index;");
+		stmt.executeUpdate("DROP TABLE IF EXISTS poi_data;");
+		// stmt.executeUpdate("DROP INDEX IF EXISTS poi_categories_index;");
+		stmt.executeUpdate("DROP TABLE IF EXISTS poi_categories;");
+		stmt.executeUpdate("CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));");
+		// stmt.executeUpdate("CREATE INDEX poi_categories_index ON poi_categories (id);");
+		stmt.executeUpdate("CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));");
+		stmt.executeUpdate("CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);");
+
+		this.pStmt = this.conn.prepareStatement("INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);");
+		this.pStmt2 = this.conn.prepareStatement("INSERT INTO poi_data VALUES (?, ?, ?);");
+		PreparedStatement pStmt3 = this.conn.prepareStatement("INSERT INTO poi_categories VALUES (?, ?, ?);");
+
+		// INSERT CATEGORIES
+		PoiCategory root = this.categoryManager.getRootCategory();
+		pStmt3.setLong(1, root.getID());
+		pStmt3.setBytes(2, root.getTitle().getBytes());
+		pStmt3.setNull(3, 0);
+		pStmt3.addBatch();
+
+		Stack<PoiCategory> children = new Stack<>();
+		children.push(root);
+		while (!children.isEmpty()) {
+			for (PoiCategory c : children.pop().getChildren()) {
+				pStmt3.setLong(1, c.getID());
+				pStmt3.setBytes(2, c.getTitle().getBytes());
+				pStmt3.setInt(3, c.getParent().getID());
+				pStmt3.addBatch();
+				children.push(c);
+			}
+		}
+		pStmt3.executeBatch();
+		this.conn.commit();
 	}
 
 	/**
@@ -254,46 +215,51 @@ public class PoiWriterTask implements Sink {
 		}
 	}
 
-	private void processNode(Node n) {
+	private void processNode(Node node) {
 		// Only add nodes that have data
-		if (n.getTags().size() != 0) {
-			Tag t;
-			PoiCategory pc = null;
-			HashMap<String, String> tagMap = new HashMap<>(20, 1.0f);
-			String tag = null;
+		if (!node.getTags().isEmpty()) {
+			Map<String, String> tagMap = new HashMap<>(20, 1.0f);
+			String tagStr = null;
 
-			// Get nodes tag and name / URL
-			for (Tag tag1 : n.getTags()) {
-				t = tag1;
-
-				// Save this tag
-				if (this.tagMappingResolver.getMappingTags().contains(t.getKey())) {
-					tag = t.getKey() + "=" + t.getValue();
+			// Get node's tag and name / URL
+			for (Tag tag : node.getTags()) {
+				if (this.tagMappingResolver.getMappingTags().contains(tag.getKey())) {
+					// Save this tag
+					tagStr = tag.getKey() + "=" + tag.getValue();
 				} else {
-					// Save the nodes data
-					tagMap.put(t.getKey(), t.getValue());
+					// Save the node's data
+					tagMap.put(tag.getKey(), tag.getValue());
 				}
 			}
 
 			// Check if there is a POI category for this tag and add POI to DB
 			try {
 				// Get category from tag
-				if (tag != null) {
-					pc = this.tagMappingResolver.getCategoryFromTag(tag);
+				PoiCategory pc = null;
+				if (tagStr != null) {
+					pc = this.tagMappingResolver.getCategoryFromTag(tagStr);
 				}
 
 				// Add node if its category matches
 				if (pc != null && this.categoryFilter.isAcceptedCategory(pc)) {
-					writePOI(n.getId(), n.getLatitude(), n.getLongitude(), tagMap, pc);
+					writePOI(node.getId(), node.getLatitude(), node.getLongitude(), tagMap, pc);
 					++this.nodesAdded;
 				}
 			} catch (UnknownPoiCategoryException e) {
-				LOGGER.warning("The '" + tag + "' tag refers to a POI that does not exist: " + e.getMessage());
+				LOGGER.warning("The '" + tagStr + "' tag refers to a POI that does not exist: " + e.getMessage());
 			}
 		}
 	}
 
-	private static String tagsToString(HashMap<String, String> tagMap) {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void release() {
+		// do nothing here
+	}
+
+	private static String tagsToString(Map<String, String> tagMap) {
 		StringBuilder sb = new StringBuilder();
 
 		for (String key : tagMap.keySet()) {
@@ -306,5 +272,40 @@ public class PoiWriterTask implements Sink {
 		}
 
 		return sb.toString();
+	}
+
+	private void writePOI(long id, double latitude, double longitude, Map<String, String> poiData,
+						  PoiCategory category) {
+		try {
+			// Index data
+			this.pStmt.setLong(1, id);
+			this.pStmt.setDouble(2, latitude);
+			this.pStmt.setDouble(3, latitude);
+			this.pStmt.setDouble(4, longitude);
+			this.pStmt.setDouble(5, longitude);
+
+			// POI data
+			this.pStmt2.setLong(1, id);
+
+			// If all important data should be written to db
+			// TODO Use PBF here
+			if (INCLUDE_META_DATA) {
+				this.pStmt2.setBytes(2, tagsToString(poiData).getBytes());
+			} else {
+				// If name tag is set
+				if (poiData.get("name") != null) {
+					this.pStmt2.setBytes(2, poiData.get("name").getBytes());
+				} else {
+					this.pStmt2.setNull(2, Types.NULL);
+				}
+			}
+
+			this.pStmt2.setInt(3, category.getID());
+
+			this.pStmt.addBatch();
+			this.pStmt2.addBatch();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

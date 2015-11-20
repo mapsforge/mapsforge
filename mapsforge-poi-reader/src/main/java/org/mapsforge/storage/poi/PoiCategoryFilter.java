@@ -22,36 +22,32 @@ import java.util.Collection;
  */
 public interface PoiCategoryFilter {
 	/**
-	 * Returns true if a POIs category is accepted and therefore shall be added
-	 * to the map file.
-	 * 
-	 * @param category
-	 *            The POI's category.
-	 * @return true if a POIs category is accepted and therefore shall be added
-	 *         to the map file.
-	 */
-	boolean isAcceptedCategory(PoiCategory category);
-
-	/**
-	 * Adds a category to the white list.
-	 * 
+	 * Adds a category to the whitelist.
+	 *
 	 * @param category
 	 *            The category to be added.
 	 */
 	void addCategory(PoiCategory category);
 
 	/**
-	 * 
 	 * @return Set of all categories that are accepted by this filter.
 	 */
 	Collection<PoiCategory> getAcceptedCategories();
 
 	/**
-	 * Returns a set of top-level categories for all accepted categories. These
-	 * are all accepted categories whose parent category is null or not an
-	 * accepted category.
-	 * 
+	 * Returns a set of top-level categories for all accepted categories. These are all accepted
+	 * categories whose parent category is null or not an accepted category.
+	 *
 	 * @return Set of top-level categories for all accepted categories.
 	 */
 	Collection<PoiCategory> getAcceptedSuperCategories();
+
+	/**
+	 * Returns true if a POI's category is accepted and therefore shall be added to the poi file.
+	 *
+	 * @param category
+	 *            The POI's category.
+	 * @return true if a POI's category is accepted and therefore shall be added to the poi file.
+	 */
+	boolean isAcceptedCategory(PoiCategory category);
 }

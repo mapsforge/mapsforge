@@ -18,10 +18,25 @@ package org.mapsforge.storage.poi;
 import org.mapsforge.core.GeoCoordinate;
 
 /**
- * This class represents a point of interest. Every POI should be uniquely identifiable by its id so that for two POIs a
- * and b a.equals(b) if and only if a.id == b.id.
+ * This class represents a point of interest. Every POI should be uniquely identifiable by its id so
+ * that for two POIs a and b a.equals(b) if and only if a.id == b.id.
  */
 public interface PointOfInterest {
+	/**
+	 * @return category of this point of interest.
+	 */
+	PoiCategory getCategory();
+
+	/**
+	 * @return binary data of this point of interest.
+	 */
+	String getData();
+
+	/**
+	 * @return {@link GeoCoordinate} of this point of interest.
+	 */
+	GeoCoordinate getGeoCoordinate();
+
 	/**
 	 * @return id of this point of interest.
 	 */
@@ -38,22 +53,7 @@ public interface PointOfInterest {
 	double getLongitude();
 
 	/**
-	 * @return binary data of this point of interest.
-	 */
-	String getData();
-
-	/**
 	 * @return url of this point of interest.
 	 */
 	String getUrl();
-
-	/**
-	 * @return category of this point of interest.
-	 */
-	PoiCategory getCategory();
-
-	/**
-	 * @return {@link GeoCoordinate} of this point of interest.
-	 */
-	GeoCoordinate getGeoCoordinate();
 }

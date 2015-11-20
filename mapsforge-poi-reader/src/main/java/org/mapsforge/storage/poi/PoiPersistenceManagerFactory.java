@@ -17,17 +17,16 @@
 package org.mapsforge.storage.poi;
 
 /**
- * Factory providing methods for instantiating {@link PoiPersistenceManager} implementations. This class
- * is needed to differ between Android and PC implementations.
+ * Factory providing methods for instantiating {@link PoiPersistenceManager} implementations.
+ * This class is needed to differ between Android and Awt implementations.
  */
 public class PoiPersistenceManagerFactory {
 	/**
 	 * @param poiFilePath
 	 *            Path to a .poi file.
-	 * @return {@link PoiPersistenceManager} using an underlying SQLite3 database.
+	 * @return {@link PoiPersistenceManager} using an underlying SQLite database.
 	 */
-	public static PoiPersistenceManager getSQLitePoiPersistenceManager(
-			String poiFilePath) {
-		return new SQLitePoiPersistenceManager(poiFilePath);
+	public static PoiPersistenceManager getSQLitePoiPersistenceManager(String poiFilePath) {
+		return new AndroidPoiPersistenceManager(poiFilePath);
 	}
 }

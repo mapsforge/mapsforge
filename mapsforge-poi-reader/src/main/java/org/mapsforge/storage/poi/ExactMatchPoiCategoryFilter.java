@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
  * Copyright 2010, 2011, 2012 Karsten Groll
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,24 +18,20 @@ package org.mapsforge.storage.poi;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
- * A category filter that accepts all categories added to it. Unless {@link WhitelistPoiCategoryFilter} no child
- * categories of an added category are accepted.
+ * A category filter that accepts all categories added to it. Unless
+ * {@link WhitelistPoiCategoryFilter} no child categories of an added category are accepted.
  */
 public class ExactMatchPoiCategoryFilter implements PoiCategoryFilter {
-	private HashSet<PoiCategory> whiteList;
+	private final Set<PoiCategory> whiteList;
 
 	/**
 	 * Default constructor.
 	 */
 	public ExactMatchPoiCategoryFilter() {
-		this.whiteList = new HashSet<PoiCategory>();
-	}
-
-	@Override
-	public boolean isAcceptedCategory(PoiCategory category) {
-		return this.whiteList.contains(category);
+		this.whiteList = new HashSet<>();
 	}
 
 	@Override
@@ -50,5 +47,10 @@ public class ExactMatchPoiCategoryFilter implements PoiCategoryFilter {
 	@Override
 	public Collection<PoiCategory> getAcceptedSuperCategories() {
 		return this.whiteList;
+	}
+
+	@Override
+	public boolean isAcceptedCategory(PoiCategory category) {
+		return this.whiteList.contains(category);
 	}
 }

@@ -24,9 +24,11 @@ import org.mapsforge.storage.poi.UnknownPoiCategoryException;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
@@ -34,8 +36,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 /**
- * This class maps a given tag (e.g. amenity=restaurant) to a certain {@link PoiCategory}. The mapping configuration is
- * read from a XML file.
+ * This class maps a given tag (e.g. amenity=restaurant) to a certain {@link PoiCategory}.
+ * The mapping configuration is read from a XML file.
  */
 class TagMappingResolver {
 	private static final Logger LOGGER = Logger.getLogger(TagMappingResolver.class.getName());
@@ -43,7 +45,7 @@ class TagMappingResolver {
 	private final PoiCategoryManager categoryManager;
 
 	/** Maps a tag to a category's title */
-	private HashMap<String, String> tagMap;
+	private Map<String, String> tagMap;
 
 	private Set<String> mappingTags;
 
@@ -67,7 +69,7 @@ class TagMappingResolver {
 			um = ctx.createUnmarshaller();
 			xmlRootCategory = (Category) um.unmarshal(configFilePath);
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Could not load POI category configuration from XML.", e);
 		}
 
 		LOGGER.info("Adding tag mappings...");
@@ -93,17 +95,18 @@ class TagMappingResolver {
 		LOGGER.info("Tag mappings have been added.");
 	}
 
-	Set<String> getMappingTags() {
-		return this.mappingTags;
-	}
-
 	PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
 		String categoryName = this.tagMap.get(tag);
+
 		// Tag not found?
 		if (categoryName == null) {
 			return null;
 		}
 
 		return this.categoryManager.getPoiCategoryByTitle(categoryName);
+	}
+
+	Set<String> getMappingTags() {
+		return this.mappingTags;
 	}
 }

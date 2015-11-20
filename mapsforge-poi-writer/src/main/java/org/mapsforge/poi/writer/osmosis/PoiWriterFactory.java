@@ -16,9 +16,9 @@
  */
 package org.mapsforge.poi.writer.osmosis;
 
-import org.mapsforge.mapmaker.logging.DummyProgressManager;
-import org.mapsforge.mapmaker.logging.LoggerWrapper;
-import org.mapsforge.mapmaker.logging.ProgressManager;
+import org.mapsforge.poi.writer.logging.DummyProgressManager;
+import org.mapsforge.poi.writer.logging.LoggerWrapper;
+import org.mapsforge.poi.writer.logging.ProgressManager;
 import org.mapsforge.poi.writer.util.Constants;
 import org.openstreetmap.osmosis.core.pipeline.common.TaskConfiguration;
 import org.openstreetmap.osmosis.core.pipeline.common.TaskManager;
@@ -27,8 +27,6 @@ import org.openstreetmap.osmosis.core.pipeline.v0_6.SinkManager;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -36,7 +34,7 @@ import java.net.URL;
  * This class is used for creating {@link PoiWriterTask}s.
  */
 public class PoiWriterFactory extends TaskManagerFactory {
-	private static final String GUI_PROGRESS_MANAGER_CLASS_NAME = "org.mapsforge.mapmaker.gui.ProgressGUI";
+	// private static final String GUI_PROGRESS_MANAGER_CLASS_NAME = "org.mapsforge.mapmaker.gui.ProgressGUI";
 
 	private static final String PARAM_OUTFILE = "file";
 	private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
@@ -56,12 +54,12 @@ public class PoiWriterFactory extends TaskManagerFactory {
 		URL configFilePath = loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
 
 		// If set to true, progress messages will be forwarded to a GUI message handler
-		boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);
+		// boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);
 
 		ProgressManager progressManager = new DummyProgressManager();
 
 		// Use graphical progress manager if plugin is called from map maker GUI
-		if (guiMode) {
+		/*if (guiMode) {
 			try {
 				Class<?> clazz = Class.forName(GUI_PROGRESS_MANAGER_CLASS_NAME);
 				Method method = clazz.getMethod("getInstance");
@@ -69,10 +67,10 @@ public class PoiWriterFactory extends TaskManagerFactory {
 
 				System.out.println("Progress manager (plugin): " + o);
 				progressManager = (ProgressManager) o;
-			} catch (ClassNotFoundException | SecurityException | IllegalAccessException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 
 		// Tell the logger which progress manager to use
 		LoggerWrapper.setDefaultProgressManager(progressManager);
@@ -89,7 +87,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
 	 * @param file
 	 *            the path to the output file
 	 */
-	public URL loadTagMappingFile(String file) {
+	private URL loadTagMappingFile(String file) {
 		if (file != null) {
 			File f = new File(file);
 			if (!f.exists()) {

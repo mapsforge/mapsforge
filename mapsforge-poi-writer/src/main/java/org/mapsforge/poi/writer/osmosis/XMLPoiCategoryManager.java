@@ -23,6 +23,8 @@ import org.mapsforge.storage.poi.PoiCategoryManager;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
@@ -33,7 +35,7 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
 	private static final Logger LOGGER = Logger.getLogger(XMLPoiCategoryManager.class.getName());
 
 	private DoubleLinkedPoiCategory root = null;
-	private HashMap<String, DoubleLinkedPoiCategory> titleMap = null;
+	private Map<String, DoubleLinkedPoiCategory> titleMap = null;
 
 	/**
 	 * @param configFilePath
@@ -47,27 +49,26 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
 		// Read root category from XML
 		JAXBContext ctx;
 		Unmarshaller um;
-		Category xmlRoot = null;
+		Category xmlRootCategory = null;
 		try {
 			ctx = JAXBContext.newInstance(Category.class);
 			um = ctx.createUnmarshaller();
-			xmlRoot = (Category) um.unmarshal(configFilePath);
+			xmlRootCategory = (Category) um.unmarshal(configFilePath);
 		} catch (JAXBException e) {
-			e.printStackTrace();
-			LOGGER.severe("Could not load POI category configuration from XML.");
+			LOGGER.log(Level.SEVERE, "Could not load POI category configuration from XML.", e);
 		}
 
 		LinkedList<Category> currentXMLNode = new LinkedList<>();
 		DoubleLinkedPoiCategory parent;
 		DoubleLinkedPoiCategory child;
 		// Create categories
-		currentXMLNode.push(xmlRoot);
+		currentXMLNode.push(xmlRootCategory);
 		while (!currentXMLNode.isEmpty()) {
 			parent = createOrGetPoiCategory(currentXMLNode.getFirst().getTitle());
 			titleMap.put(parent.getTitle(), parent);
 
 			// Set root node
-			if (currentXMLNode.getFirst() == xmlRoot) {
+			if (currentXMLNode.getFirst() == xmlRootCategory) {
 				this.root = parent;
 			}
 

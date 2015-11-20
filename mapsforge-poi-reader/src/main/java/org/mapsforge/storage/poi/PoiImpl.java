@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,6 +33,21 @@ public class PoiImpl implements PointOfInterest {
 	}
 
 	@Override
+	public PoiCategory getCategory() {
+		return this.category;
+	}
+
+	@Override
+	public String getData() {
+		return this.name;
+	}
+
+	@Override
+	public GeoCoordinate getGeoCoordinate() {
+		return new GeoCoordinate(this.latitude, this.longitude);
+	}
+
+	@Override
 	public long getId() {
 		return this.id;
 	}
@@ -47,30 +63,13 @@ public class PoiImpl implements PointOfInterest {
 	}
 
 	@Override
-	public String getData() {
-		return this.name;
-	}
-
-	@Override
 	public String getUrl() {
 		return "";
 	}
 
 	@Override
-	public PoiCategory getCategory() {
-		return this.category;
-	}
-
-	@Override
-	public GeoCoordinate getGeoCoordinate() {
-		return new GeoCoordinate(this.latitude, this.longitude);
-	}
-
-	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("POI: (").append(this.latitude).append(',').append(this.longitude);
-		sb.append(") ").append(this.name).append(' ').append(this.category.getID());
-		return sb.toString();
+		return "POI: (" + this.latitude + ',' + this.longitude + ") " + this.name + ' '
+				+ this.category.getID();
 	}
 }

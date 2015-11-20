@@ -12,11 +12,20 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.storage.poi;
+package org.mapsforge.poi.writer.logging;
 
-/**
- * A {@link PoiCategoryManager} implementation using a SQLite3 database via JDBC.
- */
-public class PCPoiCategoryManager extends AbstractPoiCategoryManager {
-	// TODO Implement
+public interface ProgressManager {
+	void appendLogMessage(String message, boolean isErrorMessage);
+
+	void finish();
+
+	void initProgressBar(int minVal, int maxVal);
+
+	void setMessage(String message);
+
+	void start();
+
+	void tick();
+
+	void updateProgressBar(int newVal);
 }

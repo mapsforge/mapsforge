@@ -16,15 +16,15 @@
 package org.mapsforge.storage.poi;
 
 /**
- * A category manager is a storage for {@link PoiCategory}s. It manages the categories' hierarchy in a
- * tree structure. Adding and deleting categories should be done via this interface.
+ * A category manager is a storage for {@link PoiCategory}s. It manages the categories' hierarchy in
+ * a tree structure. Adding and deleting categories should be done via this interface.
  */
 public interface PoiCategoryManager {
 	/**
 	 * Returns a category given by its ID or throws an exception if this category does not exist.
-	 * 
+	 *
 	 * @param id
-	 *            A categories ID.
+	 *            The category's ID.
 	 * @return The category having this ID or null.
 	 * @throws UnknownPoiCategoryException
 	 *             if the category has not been added to the {@link PoiCategoryManager}.
@@ -32,8 +32,9 @@ public interface PoiCategoryManager {
 	PoiCategory getPoiCategoryByID(int id) throws UnknownPoiCategoryException;
 
 	/**
-	 * Returns a category given by unique title or throws an exception if this category does not exist.
-	 * 
+	 * Returns a category given by unique title or throws an exception if this category does not
+	 * exist.
+	 *
 	 * @param title
 	 *            The category's title
 	 * @return The category c with <code>c.title.equalsIgnoreCase(title)</code>.
@@ -44,7 +45,7 @@ public interface PoiCategoryManager {
 
 	/**
 	 * Returns the category tree's root.
-	 * 
+	 *
 	 * @return The tree's root category or null if the tree is empty.
 	 * @throws UnknownPoiCategoryException
 	 *             if the category has not been added to the {@link PoiCategoryManager}.

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,22 +21,24 @@ import org.sqlite.android.Exception;
 import org.sqlite.android.Stmt;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * A category manager that reads and stores categories from a SQLite database using the Android SQLite3 wrapper. (This
- * class can only be used within Android.)
+ * A {@link PoiCategoryManager} implementation using a SQLite database via wrapper.
+ * <p/>
+ * This class can only be used within Android.
  */
 public class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 	private Stmt loadCategoriesStatement = null;
 
 	/**
 	 * @param db
-	 *            SQLite3 database object. (Using SQLite wrapper for Android.)
+	 *            SQLite database object. (Using SQLite wrapper for Android).
 	 */
 	public AndroidPoiCategoryManager(Database db) {
 		// Log.d(LOG_TAG, "Initializing category manager");
-		this.categoryMap = new TreeMap<Integer, PoiCategory>();
+		this.categoryMap = new TreeMap<>();
 
 		try {
 			this.loadCategoriesStatement = db.prepare("SELECT * FROM poi_categories ORDER BY id ASC;");
@@ -51,39 +54,33 @@ public class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 	}
 
 	/**
-	 * Load categories from Database
-	 * 
+	 * Load categories from database.
+	 *
 	 * @throws UnknownPoiCategoryException
 	 *             if a category cannot be retrieved by its ID or unique name.
 	 */
 	private void loadCategories() throws UnknownPoiCategoryException {
-		PoiCategory pc = null;
-
-		// Column values
-		int categoryID = 0;
-		String categoryTitle = "";
-		int categoryParentID = 0;
-
 		// Maximum ID (for root node)
 		int maxID = 0;
 
-		// Maps POIs to their parents ID
-		HashMap<PoiCategory, Integer> parentMap = new HashMap<PoiCategory, Integer>();
+		// Maps categories to their parent IDs
+		Map<PoiCategory, Integer> parentMap = new HashMap<>();
 
 		try {
 			this.loadCategoriesStatement.reset();
 			while (this.loadCategoriesStatement.step()) {
-				categoryID = this.loadCategoriesStatement.column_int(0);
-				categoryTitle = this.loadCategoriesStatement.column_string(1);
-				categoryParentID = this.loadCategoriesStatement.column_int(2);
+				// Column values
+				int categoryID = this.loadCategoriesStatement.column_int(0);
+				String categoryTitle = this.loadCategoriesStatement.column_string(1);
+				int categoryParentID = this.loadCategoriesStatement.column_int(2);
 
 				// Log.d(LOG_TAG, categoryID + "|" + categoryTitle + "|" + categoryParentID);
 
-				pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
-				this.categoryMap.put(new Integer(categoryID), pc);
+				PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
+				this.categoryMap.put(categoryID, pc);
 
 				// category --> parent ID
-				parentMap.put(pc, new Integer(categoryParentID));
+				parentMap.put(pc, categoryParentID);
 
 				// check for root node
 				if (categoryID > maxID) {
@@ -99,8 +96,7 @@ public class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 
 		// Assign parent categories;
 		for (PoiCategory c : parentMap.keySet()) {
-			c.setParent(getPoiCategoryByID(parentMap.get(c).intValue()));
+			c.setParent(getPoiCategoryByID(parentMap.get(c)));
 		}
-
 	}
 }

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
  * Copyright 2010, 2011, 2012 Karsten Groll
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,13 +16,13 @@
  */
 package org.mapsforge.storage.poi;
 
-import java.util.TreeMap;
+import java.util.Map;
 
 /**
- * Abstract implementation for the {@link PoiCategoryManager} interface. This implementation provides functionality for
- * getting categories by their ID / name.
+ * Abstract implementation for the {@link PoiCategoryManager} interface. This implementation
+ * provides functionality for getting categories by their ID / name.
  */
-public class AbstractPoiCategoryManager implements PoiCategoryManager {
+public abstract class AbstractPoiCategoryManager implements PoiCategoryManager {
 	/**
 	 * The hierarchies root category.
 	 */
@@ -29,22 +30,21 @@ public class AbstractPoiCategoryManager implements PoiCategoryManager {
 	/**
 	 * Maps category IDs to categories.
 	 */
-	protected TreeMap<Integer, PoiCategory> categoryMap = null;
+	protected Map<Integer, PoiCategory> categoryMap = null;
 
 	@Override
 	public PoiCategory getPoiCategoryByID(int id) throws UnknownPoiCategoryException {
-		if (this.categoryMap.get(new Integer(id)) == null) {
+		if (this.categoryMap.get(id) == null) {
 			throw new UnknownPoiCategoryException();
 		}
 
-		return this.categoryMap.get(new Integer(id));
+		return this.categoryMap.get(id);
 	}
 
 	@Override
 	public PoiCategory getPoiCategoryByTitle(String title) throws UnknownPoiCategoryException {
-		for (Integer key : this.categoryMap.keySet()) {
+		for (int key : this.categoryMap.keySet()) {
 			if (this.categoryMap.get(key).getTitle().equalsIgnoreCase(title)) {
-
 				return this.categoryMap.get(key);
 			}
 		}

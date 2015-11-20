@@ -13,24 +13,19 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.mapmaker.logging;
+package org.mapsforge.poi.writer.logging;
 
 /**
  * A progress manager doing nothing when the application calls a progress update.
  */
 public class DummyProgressManager implements ProgressManager {
 	@Override
-	public void setMessage(String message) {
-		// empty by purpose
-	}
-
-	@Override
 	public void appendLogMessage(String message, boolean isErrorMessage) {
 		// empty by purpose
 	}
 
 	@Override
-	public void tick() {
+	public void finish() {
 		// empty by purpose
 	}
 
@@ -40,7 +35,7 @@ public class DummyProgressManager implements ProgressManager {
 	}
 
 	@Override
-	public void updateProgressBar(int newVal) {
+	public void setMessage(String message) {
 		// empty by purpose
 	}
 
@@ -50,7 +45,12 @@ public class DummyProgressManager implements ProgressManager {
 	}
 
 	@Override
-	public void finish() {
+	public void tick() {
+		// empty by purpose
+	}
+
+	@Override
+	public void updateProgressBar(int newVal) {
 		// empty by purpose
 	}
 }

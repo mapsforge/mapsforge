@@ -125,6 +125,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.mapsforge</groupId>
+			<artifactId>mapsforge-poi-reader</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.xerial</groupId>
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.8.11.2</version>
