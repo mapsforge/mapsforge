@@ -16,14 +16,14 @@
  */
 package org.mapsforge.poi.writer.osmosis;
 
+import org.mapsforge.poi.storage.PoiCategory;
+import org.mapsforge.poi.storage.PoiCategoryFilter;
+import org.mapsforge.poi.storage.PoiCategoryManager;
+import org.mapsforge.poi.storage.UnknownPoiCategoryException;
+import org.mapsforge.poi.storage.WhitelistPoiCategoryFilter;
 import org.mapsforge.poi.writer.logging.LoggerWrapper;
 import org.mapsforge.poi.writer.logging.ProgressManager;
 import org.mapsforge.poi.writer.util.Constants;
-import org.mapsforge.storage.poi.PoiCategory;
-import org.mapsforge.storage.poi.PoiCategoryFilter;
-import org.mapsforge.storage.poi.PoiCategoryManager;
-import org.mapsforge.storage.poi.UnknownPoiCategoryException;
-import org.mapsforge.storage.poi.WhitelistPoiCategoryFilter;
 import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.Entity;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
@@ -52,10 +52,10 @@ import java.util.logging.Logger;
 public class PoiWriterTask implements Sink {
 	private static final Logger LOGGER = LoggerWrapper.getLogger(PoiWriterTask.class.getName());
 
-	private final ProgressManager progressManager;
-
 	// For debug purposes only (at least for now)
 	private static final boolean INCLUDE_META_DATA = false;
+
+	private final ProgressManager progressManager;
 
 	// Available categories
 	private final PoiCategoryManager categoryManager;
@@ -259,7 +259,7 @@ public class PoiWriterTask implements Sink {
 		// do nothing here
 	}
 
-	private static String tagsToString(Map<String, String> tagMap) {
+	private String tagsToString(Map<String, String> tagMap) {
 		StringBuilder sb = new StringBuilder();
 
 		for (String key : tagMap.keySet()) {

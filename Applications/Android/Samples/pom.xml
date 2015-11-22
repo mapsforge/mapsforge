@@ -118,7 +118,7 @@
 
 		<dependency>
 			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-poi-reader</artifactId>
+			<artifactId>mapsforge-poi-android</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

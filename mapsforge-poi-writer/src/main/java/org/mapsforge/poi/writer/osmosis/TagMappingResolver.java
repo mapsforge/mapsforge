@@ -16,11 +16,11 @@
  */
 package org.mapsforge.poi.writer.osmosis;
 
+import org.mapsforge.poi.storage.PoiCategory;
+import org.mapsforge.poi.storage.PoiCategoryManager;
+import org.mapsforge.poi.storage.UnknownPoiCategoryException;
 import org.mapsforge.poi.writer.osmosis.jaxb.Category;
 import org.mapsforge.poi.writer.osmosis.jaxb.Mapping;
-import org.mapsforge.storage.poi.PoiCategory;
-import org.mapsforge.storage.poi.PoiCategoryManager;
-import org.mapsforge.storage.poi.UnknownPoiCategoryException;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -45,9 +45,9 @@ class TagMappingResolver {
 	private final PoiCategoryManager categoryManager;
 
 	/** Maps a tag to a category's title */
-	private Map<String, String> tagMap;
+	private final Map<String, String> tagMap;
 
-	private Set<String> mappingTags;
+	private final Set<String> mappingTags;
 
 	/**
 	 * @param configFilePath

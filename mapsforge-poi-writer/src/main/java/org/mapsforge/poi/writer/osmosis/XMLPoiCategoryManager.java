@@ -15,10 +15,10 @@
  */
 package org.mapsforge.poi.writer.osmosis;
 
+import org.mapsforge.poi.storage.DoubleLinkedPoiCategory;
+import org.mapsforge.poi.storage.PoiCategory;
+import org.mapsforge.poi.storage.PoiCategoryManager;
 import org.mapsforge.poi.writer.osmosis.jaxb.Category;
-import org.mapsforge.storage.poi.DoubleLinkedPoiCategory;
-import org.mapsforge.storage.poi.PoiCategory;
-import org.mapsforge.storage.poi.PoiCategoryManager;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
 	private static final Logger LOGGER = Logger.getLogger(XMLPoiCategoryManager.class.getName());
 
 	private DoubleLinkedPoiCategory root = null;
-	private Map<String, DoubleLinkedPoiCategory> titleMap = null;
+	private final Map<String, DoubleLinkedPoiCategory> titleMap;
 
 	/**
 	 * @param configFilePath

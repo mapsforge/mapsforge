@@ -27,12 +27,14 @@
 	<modules>
 		<module>mapsforge-core</module>
 		<module>mapsforge-map</module>
+		<module>mapsforge-map-reader</module>
 		<module>mapsforge-map-android</module>
 		<module>mapsforge-map-android-extras</module>
 		<module>mapsforge-map-awt</module>
-		<module>mapsforge-map-reader</module>
 		<module>mapsforge-map-writer</module>
-		<module>mapsforge-poi-reader</module>
+		<module>mapsforge-poi</module>
+		<module>mapsforge-poi-android</module>
+		<module>mapsforge-poi-awt</module>
 		<module>mapsforge-poi-writer</module>
 		<module>Applications/Android/Samples</module>
 		<module>SwingMapViewer</module>

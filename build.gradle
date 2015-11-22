@@ -46,7 +46,7 @@ subprojects {
 
 // Configuration for all plain Java projects
 
-project.ext.javaprojects = ["mapsforge-core", "mapsforge-map-reader", "mapsforge-map", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi-reader", "mapsforge-poi-writer", "SwingMapViewer"]
+project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "SwingMapViewer"]
 
 configure(filterProjects(project.javaprojects)) {
     apply plugin: 'java'
@@ -69,7 +69,7 @@ configure(filterProjects(project.javaprojects)) {
 }
 
 // Configuration for Android projects
-project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras"]
+project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras", "mapsforge-poi-android"]
 project.ext.androidapkprojects = ["Samples"]
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 

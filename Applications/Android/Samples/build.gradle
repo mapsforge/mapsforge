@@ -2,7 +2,7 @@ apply plugin: 'android'
 
 dependencies {
     compile project(":mapsforge-map-android-extras")
-    compile project(":mapsforge-poi-reader")
+    compile project(":mapsforge-poi-android")
     androidTestCompile group: 'com.jayway.android.robotium', name: 'robotium-solo', version: '5.5.2'
 }
 

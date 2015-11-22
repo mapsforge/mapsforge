@@ -126,7 +126,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-poi-reader</artifactId>
+			<artifactId>mapsforge-poi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
