@@ -49,22 +49,12 @@ class AwtPoiPersistenceManager implements PoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findInRect(GeoCoordinate p1, GeoCoordinate p2, String categoryName, int limit) {
-		return null;
-	}
-
-	@Override
 	public Collection<PointOfInterest> findInRectWithFilter(GeoCoordinate p1, GeoCoordinate p2, PoiCategoryFilter categoryFilter, int limit) {
 		return null;
 	}
 
 	@Override
 	public Collection<PointOfInterest> findNearPosition(GeoCoordinate point, int distance, int limit) {
-		return null;
-	}
-
-	@Override
-	public Collection<PointOfInterest> findNearPosition(GeoCoordinate point, int distance, String categoryName, int limit) {
 		return null;
 	}
 

@@ -92,7 +92,6 @@ public final class PoiCategoryRangeQueryGenerator {
 		return ret;
 	}
 
-	// TODO limit?
 	public static String getSQLSelectString(PoiCategoryFilter filter) {
 		return SELECT_QUERY_STRING + getSQLWhereClauseString(filter) + ' ' + "LIMIT ?;";
 	}

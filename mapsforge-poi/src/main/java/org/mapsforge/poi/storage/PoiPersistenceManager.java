@@ -51,25 +51,6 @@ public interface PoiPersistenceManager {
 	Collection<PointOfInterest> findInRect(GeoCoordinate p1, GeoCoordinate p2, int limit);
 
 	/**
-	 * Find all {@link PointOfInterest} of the given {@link PoiCategory} in a rectangle specified by
-	 * the two given {@link GeoCoordinate}s.
-	 *
-	 * @param p1
-	 *            {@link GeoCoordinate} specifying one corner of the rectangle. (minLat, minLon)
-	 * @param p2
-	 *            {@link GeoCoordinate} specifying one corner of the rectangle. (maxLat, maxLon)
-	 * @param categoryName
-	 *            unique title of {@link PoiCategory} the returned {@link PointOfInterest} should
-	 *            belong to.
-	 * @param limit
-	 *            max number of {@link PointOfInterest} to be returned.
-	 * @return {@link Collection} of {@link PointOfInterest} of the given {@link PoiCategory}
-	 *         contained in the rectangle specified by the two given {@link GeoCoordinate}s.
-	 */
-	Collection<PointOfInterest> findInRect(GeoCoordinate p1, GeoCoordinate p2, String categoryName,
-										   int limit);
-
-	/**
 	 * Find all {@link PointOfInterest} in a rectangle specified by the two given
 	 * {@link GeoCoordinate}s. Only the POIs that are allowed by the {@link PoiCategoryFilter}
 	 * object will be returned.
@@ -102,25 +83,6 @@ public interface PoiPersistenceManager {
 	 * @return {@link Collection} of {@link PointOfInterest} near the given position.
 	 */
 	Collection<PointOfInterest> findNearPosition(GeoCoordinate point, int distance, int limit);
-
-	/**
-	 * Fetch {@link PointOfInterest} of the given {@link PoiCategory} from underlying storage near a
-	 * given position.
-	 *
-	 * @param point
-	 *            {@link GeoCoordinate} center of the search.
-	 * @param distance
-	 *            in meters
-	 * @param categoryName
-	 *            unique title of {@link PoiCategory} the returned {@link PointOfInterest} should
-	 *            belong to.
-	 * @param limit
-	 *            max number of {@link PointOfInterest} to be returned.
-	 * @return {@link Collection} of {@link PointOfInterest} of the given {@link PoiCategory} near
-	 *         the given position.
-	 */
-	Collection<PointOfInterest> findNearPosition(GeoCoordinate point, int distance,
-												 String categoryName, int limit);
 
 	/**
 	 * Fetch {@link PointOfInterest} from underlying storage near a given position. Only the POIs

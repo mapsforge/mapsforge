@@ -28,6 +28,8 @@ import org.sqlite.android.Stmt;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A {@link PoiCategoryManager} implementation using a SQLite database via wrapper.
@@ -35,6 +37,8 @@ import java.util.TreeMap;
  * This class can only be used within Android.
  */
 class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
+	private static final Logger LOGGER = Logger.getLogger(AndroidPoiCategoryManager.class.getName());
+
 	private Stmt loadCategoriesStatement = null;
 
 	/**
@@ -42,19 +46,18 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 	 *            SQLite database object. (Using SQLite wrapper for Android).
 	 */
 	AndroidPoiCategoryManager(Database db) {
-		// Log.d(LOG_TAG, "Initializing category manager");
 		this.categoryMap = new TreeMap<>();
 
 		try {
 			this.loadCategoriesStatement = db.prepare("SELECT * FROM poi_categories ORDER BY id ASC;");
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		try {
 			loadCategories();
 		} catch (UnknownPoiCategoryException e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -79,8 +82,6 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 				String categoryTitle = this.loadCategoriesStatement.column_string(1);
 				int categoryParentID = this.loadCategoriesStatement.column_int(2);
 
-				// Log.d(LOG_TAG, categoryID + "|" + categoryTitle + "|" + categoryParentID);
-
 				PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
 				this.categoryMap.put(categoryID, pc);
 
@@ -93,7 +94,7 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		// Set root category

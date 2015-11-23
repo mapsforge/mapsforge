@@ -31,6 +31,8 @@ import org.sqlite.android.Stmt;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A {@link PoiPersistenceManager} implementation using a SQLite database via wrapper.
@@ -38,6 +40,8 @@ import java.util.List;
  * This class can only be used within Android.
  */
 class AndroidPoiPersistenceManager implements PoiPersistenceManager {
+	private static final Logger LOGGER = Logger.getLogger(AndroidPoiPersistenceManager.class.getName());
+
 	// Number of tables needed for db verification
 	private static final int NUMBER_OF_TABLES = 3;
 
@@ -97,7 +101,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			this.deletePoiStatement1 = this.db.prepare("DELETE FROM poi_index WHERE id == ?;");
 			this.deletePoiStatement2 = this.db.prepare("DELETE FROM poi_data WHERE id == ?;");
 		} catch (Exception e) {
-			// TODO Android error handling
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		this.ret = new ArrayList<>();
@@ -111,7 +115,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			try {
 				this.findInBoxStatement.close();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -119,7 +123,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			try {
 				this.findByIDStatement.close();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -127,7 +131,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			try {
 				this.insertPoiStatement1.close();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -135,7 +139,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			try {
 				this.insertPoiStatement2.close();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -143,7 +147,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			try {
 				this.deletePoiStatement1.close();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -151,7 +155,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			try {
 				this.deletePoiStatement2.close();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -159,7 +163,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			try {
 				this.isValidDBStatement.close();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -168,7 +172,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			try {
 				this.db.close();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 	}
@@ -185,16 +189,14 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 		try {
 			this.db.open(this.dbFilePath, 0666);
 		} catch (Exception e) {
-			// Log.e(LOG_TAG, e.getMessage(), e);
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		if (!isValidDataBase()) {
 			try {
-				// Log.d(LOG_TAG, "Creating tables");
 				createTables();
 			} catch (Exception e) {
-				// TODO Android error handling
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 	}
@@ -226,8 +228,6 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			this.findInBoxStatement.bind(4, p1.getLongitude());
 			this.findInBoxStatement.bind(5, limit);
 
-			// TODO externalize to getPoiByStatement
-
 			while (this.findInBoxStatement.step()) {
 				long id = this.findInBoxStatement.column_long(0);
 				double lat = this.findInBoxStatement.column_double(1);
@@ -239,21 +239,14 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 					this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
 					this.ret.add(this.poi);
 				} catch (UnknownPoiCategoryException e) {
-					e.printStackTrace();
+					LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
-			// TODO Android error handling
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		return this.ret;
-	}
-
-	@Override
-	public Collection<PointOfInterest> findInRect(GeoCoordinate p1, GeoCoordinate p2,
-												  String categoryName, int limit) {
-		// TODO Implement
-		return null;
 	}
 
 	@Override
@@ -275,8 +268,6 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			stmt.bind(4, p1.getLongitude());
 			stmt.bind(5, limit);
 
-			// TODO externalize to getPoiByStatement
-
 			while (stmt.step()) {
 				long id = stmt.column_long(0);
 				double lat = stmt.column_double(1);
@@ -288,11 +279,11 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 					this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
 					this.ret.add(this.poi);
 				} catch (UnknownPoiCategoryException e) {
-					e.printStackTrace();
+					LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
-			// TODO Android error handling
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		return this.ret;
@@ -306,17 +297,6 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 		double maxLon = point.getLongitude() + GeoCoordinate.longitudeDistance(distance, point.getLatitude());
 
 		return findInRect(new GeoCoordinate(minLat, minLon), new GeoCoordinate(maxLat, maxLon), limit);
-	}
-
-	@Override
-	public Collection<PointOfInterest> findNearPosition(GeoCoordinate point, int distance,
-														String categoryName, int limit) {
-		double minLat = point.getLatitude() - GeoCoordinate.latitudeDistance(distance);
-		double minLon = point.getLongitude() - GeoCoordinate.longitudeDistance(distance, point.getLatitude());
-		double maxLat = point.getLatitude() + GeoCoordinate.latitudeDistance(distance);
-		double maxLon = point.getLongitude() + GeoCoordinate.longitudeDistance(distance, point.getLatitude());
-
-		return findInRect(new GeoCoordinate(minLat, minLon), new GeoCoordinate(maxLat, maxLon), categoryName, limit);
 	}
 
 	@Override
@@ -343,8 +323,6 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 
 			this.findByIDStatement.bind(1, poiID);
 
-			// TODO externalize to getPoiFromStatement
-
 			if (this.findByIDStatement.step()) {
 				long id = this.findByIDStatement.column_long(0);
 				double lat = this.findByIDStatement.column_double(1);
@@ -355,12 +333,11 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 				try {
 					this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
 				} catch (UnknownPoiCategoryException e) {
-					e.printStackTrace();
+					LOGGER.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		} catch (Exception e) {
-			// Log.e(LOG_TAG, "getPointById: " + e.getMessage(), e);
-			e.printStackTrace();
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		return this.poi;
@@ -390,15 +367,12 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			this.insertPoiStatement2.bind(2, p.getData());
 			this.insertPoiStatement2.bind(3, p.getCategory().getID());
 
-			// Log.d(LOG_TAG, "INSERT INTO poi_data VALUES (" + p.getId() + ", '" + p.getName() + "' "
-			// + p.getCategory().getID() + ");");
-
 			this.insertPoiStatement1.step();
 			this.insertPoiStatement2.step();
 
 			this.db.exec("COMMIT", null);
 		} catch (Exception e) {
-			// TODO Android error handling
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -428,7 +402,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 
 			this.db.exec("COMMIT", null);
 		} catch (Exception e) {
-			// TODO Android error handling
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
@@ -440,7 +414,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			this.isValidDBStatement = this.db.prepare("SELECT count(name) " + "FROM sqlite_master "
 					+ "WHERE name IN " + "('poi_index', 'poi_data', 'poi_categories');");
 		} catch (Exception e) {
-			// TODO Android error handling
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		// Check for table names
@@ -451,7 +425,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 				numTables = this.isValidDBStatement.column_int(0);
 			}
 		} catch (Exception e) {
-			// TODO Android error handling
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
 		return numTables == NUMBER_OF_TABLES;
@@ -475,7 +449,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 
 			this.db.exec("COMMIT", null);
 		} catch (Exception e) {
-			// TODO Android error handling
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 
