@@ -11,7 +11,7 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 |Tool|Version|
 |----|---|
 |Android Build Version Tools|23.0.2|
-|Gradle|2.4.0 if building with gradle|
+|Gradle|2.8.0 if building with gradle|
 |Maven|1.3.1 if building with maven|
 |Java|1.7 (1.8 is supported in maven builds)|
 
@@ -132,7 +132,7 @@ Each of the mapsforge modules is now configured as an Eclipse project and can be
 
 To build the Android sample application, you need to make a few adjustments:
 * Select `Project > Properties` from the menu.
-* In the dialog that opens, go to `Java Build Path Order and Export`. Make sure the entry for `M2_REPO/android/android/6.0_r1/android-6.0_r1.jar` is unchecked and all others are checked.
+* In the dialog that opens, go to `Java Build Path Order and Export`. Make sure the entry for `M2_REPO/android/android/6.0_r2/android-6.0_r2.jar` is unchecked and all others are checked.
 * Go to `Java Compiler` and set the compiler compliance level to 1.7.
 * Then clean the project (`Project > Clean`).
 
