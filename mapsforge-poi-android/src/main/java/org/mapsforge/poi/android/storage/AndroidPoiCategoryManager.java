@@ -39,8 +39,6 @@ import java.util.logging.Logger;
 class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 	private static final Logger LOGGER = Logger.getLogger(AndroidPoiCategoryManager.class.getName());
 
-	private Stmt loadCategoriesStatement = null;
-
 	/**
 	 * @param db
 	 *            SQLite database object. (Using SQLite wrapper for Android).
@@ -49,13 +47,7 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 		this.categoryMap = new TreeMap<>();
 
 		try {
-			this.loadCategoriesStatement = db.prepare("SELECT * FROM poi_categories ORDER BY id ASC;");
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-
-		try {
-			loadCategories();
+			loadCategories(db);
 		} catch (UnknownPoiCategoryException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -67,7 +59,7 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 	 * @throws UnknownPoiCategoryException
 	 *             if a category cannot be retrieved by its ID or unique name.
 	 */
-	private void loadCategories() throws UnknownPoiCategoryException {
+	private void loadCategories(Database db) throws UnknownPoiCategoryException {
 		// Maximum ID (for root node)
 		int maxID = 0;
 
@@ -75,12 +67,13 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 		Map<PoiCategory, Integer> parentMap = new HashMap<>();
 
 		try {
-			this.loadCategoriesStatement.reset();
-			while (this.loadCategoriesStatement.step()) {
+			Stmt stmt = db.prepare(SELECT_STATEMENT);
+			stmt.reset();
+			while (stmt.step()) {
 				// Column values
-				int categoryID = this.loadCategoriesStatement.column_int(0);
-				String categoryTitle = this.loadCategoriesStatement.column_string(1);
-				int categoryParentID = this.loadCategoriesStatement.column_int(2);
+				int categoryID = stmt.column_int(0);
+				String categoryTitle = stmt.column_string(1);
+				int categoryParentID = stmt.column_int(2);
 
 				PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
 				this.categoryMap.put(categoryID, pc);
@@ -93,6 +86,7 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 					maxID = categoryID;
 				}
 			}
+			stmt.close();
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}

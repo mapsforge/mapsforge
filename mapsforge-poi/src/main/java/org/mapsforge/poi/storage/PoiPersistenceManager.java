@@ -59,7 +59,7 @@ public interface PoiPersistenceManager {
 	 *            {@link GeoCoordinate} specifying one corner of the rectangle. (minLat, minLon)
 	 * @param p2
 	 *            {@link GeoCoordinate} specifying one corner of the rectangle. (maxLat, maxLon)
-	 * @param categoryFilter
+	 * @param filter
 	 *            POI category filter object that helps determining whether a POI should be added to
 	 *            the set or not.
 	 * @param limit
@@ -69,7 +69,7 @@ public interface PoiPersistenceManager {
 	 *         {@link GeoCoordinate}s.
 	 */
 	Collection<PointOfInterest> findInRectWithFilter(GeoCoordinate p1, GeoCoordinate p2,
-													 PoiCategoryFilter categoryFilter, int limit);
+													 PoiCategoryFilter filter, int limit);
 
 	/**
 	 * Fetch {@link PointOfInterest} from underlying storage near a given position.
@@ -92,7 +92,7 @@ public interface PoiPersistenceManager {
 	 *            {@link GeoCoordinate} center of the search.
 	 * @param distance
 	 *            in meters
-	 * @param categoryFilter
+	 * @param filter
 	 *            POI category filter object that helps determining whether a POI should be added to
 	 *            the set or not.
 	 * @param limit
@@ -101,8 +101,7 @@ public interface PoiPersistenceManager {
 	 *         {@link PoiCategoryFilter} near the given position.
 	 */
 	Collection<PointOfInterest> findNearPositionWithFilter(GeoCoordinate point, int distance,
-														   PoiCategoryFilter categoryFilter,
-														   int limit);
+														   PoiCategoryFilter filter, int limit);
 
 	/**
 	 * @param poiID

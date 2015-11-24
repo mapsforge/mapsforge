@@ -170,14 +170,14 @@ public class PoiWriterTask implements Sink {
 		Statement stmt = this.conn.createStatement();
 
 		// CREATE TABLES
-		stmt.executeUpdate("DROP TABLE IF EXISTS poi_index;");
-		stmt.executeUpdate("DROP TABLE IF EXISTS poi_data;");
-		// stmt.executeUpdate("DROP INDEX IF EXISTS poi_categories_index;");
-		stmt.executeUpdate("DROP TABLE IF EXISTS poi_categories;");
-		stmt.executeUpdate("CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));");
-		// stmt.executeUpdate("CREATE INDEX poi_categories_index ON poi_categories (id);");
-		stmt.executeUpdate("CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));");
-		stmt.executeUpdate("CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);");
+		stmt.execute("DROP TABLE IF EXISTS poi_index;");
+		stmt.execute("DROP TABLE IF EXISTS poi_data;");
+		// stmt.execute("DROP INDEX IF EXISTS poi_categories_index;");
+		stmt.execute("DROP TABLE IF EXISTS poi_categories;");
+		stmt.execute("CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));");
+		// stmt.execute("CREATE INDEX poi_categories_index ON poi_categories (id);");
+		stmt.execute("CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));");
+		stmt.execute("CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);");
 
 		this.pStmt = this.conn.prepareStatement("INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);");
 		this.pStmt2 = this.conn.prepareStatement("INSERT INTO poi_data VALUES (?, ?, ?);");

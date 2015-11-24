@@ -17,8 +17,8 @@
 package org.mapsforge.poi.android.storage;
 
 import org.mapsforge.core.model.GeoCoordinate;
+import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiCategoryManager;
 import org.mapsforge.poi.storage.PoiCategoryRangeQueryGenerator;
 import org.mapsforge.poi.storage.PoiImpl;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
@@ -28,9 +28,7 @@ import org.sqlite.android.Database;
 import org.sqlite.android.Exception;
 import org.sqlite.android.Stmt;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,15 +37,10 @@ import java.util.logging.Logger;
  * <p/>
  * This class can only be used within Android.
  */
-class AndroidPoiPersistenceManager implements PoiPersistenceManager {
+class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	private static final Logger LOGGER = Logger.getLogger(AndroidPoiPersistenceManager.class.getName());
 
-	// Number of tables needed for db verification
-	private static final int NUMBER_OF_TABLES = 3;
-
-	private final String dbFilePath;
 	private Database db = null;
-	private PoiCategoryManager categoryManager = null;
 
 	private Stmt findInBoxStatement = null;
 	private Stmt findByIDStatement = null;
@@ -57,17 +50,13 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 	private Stmt deletePoiStatement2 = null;
 	private Stmt isValidDBStatement = null;
 
-	// Containers for return values
-	private final List<PointOfInterest> ret;
-	private PointOfInterest poi;
-
 	/**
 	 * @param dbFilePath
 	 *            Path to SQLite file containing POI data. If the file does not exist the file and
 	 *            its tables will be created.
 	 */
 	AndroidPoiPersistenceManager(String dbFilePath) {
-		this.dbFilePath = dbFilePath;
+		super(dbFilePath);
 
 		// Open / create POI database
 		createOrOpenDBFile();
@@ -78,33 +67,21 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 		// Queries
 		try {
 			// Finds POIs by a given bounding box
-			this.findInBoxStatement = this.db
-					.prepare("SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
-							+ "FROM poi_index "
-							+ "JOIN poi_data ON poi_index.id = poi_data.id "
-							+ "WHERE "
-							+ "minLat <= ? AND " + "minLon <= ? AND " + "minLat >= ? AND " + "minLon >= ? LIMIT ?");
+			this.findInBoxStatement = this.db.prepare(FIND_IN_BOX_STATEMENT);
 
 			// Finds a POI by its unique ID
-			this.findByIDStatement = this.db
-					.prepare("SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
-							+ "FROM poi_index "
-							+ "JOIN poi_data ON poi_index.id = poi_data.id "
-							+ "WHERE "
-							+ "poi_index.id = ?;");
+			this.findByIDStatement = this.db.prepare(FIND_BY_ID_STATEMENT);
 
 			// Inserts a POI into index and adds its data
-			this.insertPoiStatement1 = this.db.prepare("INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);");
-			this.insertPoiStatement2 = this.db.prepare("INSERT INTO poi_data VALUES (?, ?, ?);");
+			this.insertPoiStatement1 = this.db.prepare(INSERT_INDEX_STATEMENT);
+			this.insertPoiStatement2 = this.db.prepare(INSERT_DATA_STATEMENT);
 
 			// Deletes a POI given by its ID
-			this.deletePoiStatement1 = this.db.prepare("DELETE FROM poi_index WHERE id == ?;");
-			this.deletePoiStatement2 = this.db.prepare("DELETE FROM poi_data WHERE id == ?;");
+			this.deletePoiStatement1 = this.db.prepare(DELETE_INDEX_STATEMENT);
+			this.deletePoiStatement2 = this.db.prepare(DELETE_DATA_STATEMENT);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
-
-		this.ret = new ArrayList<>();
 	}
 
 	@Override
@@ -184,7 +161,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 		// FIXME This method causes a crash on native level if the file cannot be created.
 		// (Use Java methods to avoid this).
 
-		// Create or open File
+		// Create or open file
 		this.db = new Database();
 		try {
 			this.db.open(this.dbFilePath, 0666);
@@ -201,15 +178,17 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 		}
 	}
 
+	/**
+	 * DB open created a new file, so let's create its tables.
+	 */
 	private void createTables() throws Exception {
-		// db.open() created a new file, so let's create its tables
-		this.db.exec("DROP TABLE IF EXISTS poi_index;", null);
-		this.db.exec("DROP TABLE IF EXISTS poi_data;", null);
-		this.db.exec("DROP TABLE IF EXISTS poi_categories;", null);
+		this.db.exec(DROP_INDEX_STATEMENT, null);
+		this.db.exec(DROP_DATA_STATEMENT, null);
+		this.db.exec(DROP_CATEGORIES_STATEMENT, null);
 
-		this.db.exec("CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));", null);
-		this.db.exec("CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));", null);
-		this.db.exec("CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);", null);
+		this.db.exec(CREATE_CATEGORIES_STATEMENT, null);
+		this.db.exec(CREATE_DATA_STATEMENT, null);
+		this.db.exec(CREATE_INDEX_STATEMENT, null);
 	}
 
 	@Override
@@ -290,28 +269,6 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findNearPosition(GeoCoordinate point, int distance, int limit) {
-		double minLat = point.getLatitude() - GeoCoordinate.latitudeDistance(distance);
-		double minLon = point.getLongitude() - GeoCoordinate.longitudeDistance(distance, point.getLatitude());
-		double maxLat = point.getLatitude() + GeoCoordinate.latitudeDistance(distance);
-		double maxLon = point.getLongitude() + GeoCoordinate.longitudeDistance(distance, point.getLatitude());
-
-		return findInRect(new GeoCoordinate(minLat, minLon), new GeoCoordinate(maxLat, maxLon), limit);
-	}
-
-	@Override
-	public Collection<PointOfInterest> findNearPositionWithFilter(GeoCoordinate point, int distance,
-																  PoiCategoryFilter categoryFilter,
-																  int limit) {
-		double minLat = point.getLatitude() - GeoCoordinate.latitudeDistance(distance);
-		double minLon = point.getLongitude() - GeoCoordinate.longitudeDistance(distance, point.getLatitude());
-		double maxLat = point.getLatitude() + GeoCoordinate.latitudeDistance(distance);
-		double maxLon = point.getLongitude() + GeoCoordinate.longitudeDistance(distance, point.getLatitude());
-
-		return findInRectWithFilter(new GeoCoordinate(minLat, minLon), new GeoCoordinate(maxLat, maxLon), categoryFilter, limit);
-	}
-
-	@Override
 	public PointOfInterest findPointByID(long poiID) {
 		// Clear previous results
 		this.poi = null;
@@ -344,12 +301,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 	}
 
 	@Override
-	public PoiCategoryManager getCategoryManager() {
-		return this.categoryManager;
-	}
-
-	@Override
-	public void insertPointOfInterest(PointOfInterest p) {
+	public void insertPointOfInterest(PointOfInterest poi) {
 		try {
 			this.insertPoiStatement1.reset();
 			this.insertPoiStatement1.clear_bindings();
@@ -357,20 +309,21 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			this.insertPoiStatement2.clear_bindings();
 
 			this.db.exec("BEGIN;", null);
-			this.insertPoiStatement1.bind(1, p.getId());
-			this.insertPoiStatement1.bind(2, p.getLatitude());
-			this.insertPoiStatement1.bind(3, p.getLatitude());
-			this.insertPoiStatement1.bind(4, p.getLongitude());
-			this.insertPoiStatement1.bind(5, p.getLongitude());
 
-			this.insertPoiStatement2.bind(1, p.getId());
-			this.insertPoiStatement2.bind(2, p.getData());
-			this.insertPoiStatement2.bind(3, p.getCategory().getID());
+			this.insertPoiStatement1.bind(1, poi.getId());
+			this.insertPoiStatement1.bind(2, poi.getLatitude());
+			this.insertPoiStatement1.bind(3, poi.getLatitude());
+			this.insertPoiStatement1.bind(4, poi.getLongitude());
+			this.insertPoiStatement1.bind(5, poi.getLongitude());
+
+			this.insertPoiStatement2.bind(1, poi.getId());
+			this.insertPoiStatement2.bind(2, poi.getData());
+			this.insertPoiStatement2.bind(3, poi.getCategory().getID());
 
 			this.insertPoiStatement1.step();
 			this.insertPoiStatement2.step();
 
-			this.db.exec("COMMIT", null);
+			this.db.exec("COMMIT;", null);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -385,22 +338,23 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 			this.insertPoiStatement2.clear_bindings();
 
 			this.db.exec("BEGIN;", null);
-			for (PointOfInterest p : pois) {
-				this.insertPoiStatement1.bind(1, p.getId());
-				this.insertPoiStatement1.bind(2, p.getLatitude());
-				this.insertPoiStatement1.bind(3, p.getLatitude());
-				this.insertPoiStatement1.bind(4, p.getLongitude());
-				this.insertPoiStatement1.bind(5, p.getLongitude());
 
-				this.insertPoiStatement2.bind(1, p.getId());
-				this.insertPoiStatement2.bind(2, p.getData());
-				this.insertPoiStatement2.bind(3, p.getCategory().getID());
+			for (PointOfInterest poi : pois) {
+				this.insertPoiStatement1.bind(1, poi.getId());
+				this.insertPoiStatement1.bind(2, poi.getLatitude());
+				this.insertPoiStatement1.bind(3, poi.getLatitude());
+				this.insertPoiStatement1.bind(4, poi.getLongitude());
+				this.insertPoiStatement1.bind(5, poi.getLongitude());
+
+				this.insertPoiStatement2.bind(1, poi.getId());
+				this.insertPoiStatement2.bind(2, poi.getData());
+				this.insertPoiStatement2.bind(3, poi.getCategory().getID());
 
 				this.insertPoiStatement1.step();
 				this.insertPoiStatement2.step();
 			}
 
-			this.db.exec("COMMIT", null);
+			this.db.exec("COMMIT;", null);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -411,8 +365,7 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 	 */
 	private boolean isValidDataBase() {
 		try {
-			this.isValidDBStatement = this.db.prepare("SELECT count(name) " + "FROM sqlite_master "
-					+ "WHERE name IN " + "('poi_index', 'poi_data', 'poi_categories');");
+			this.isValidDBStatement = this.db.prepare(VALID_DB_STATEMENT);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -432,29 +385,24 @@ class AndroidPoiPersistenceManager implements PoiPersistenceManager {
 	}
 
 	@Override
-	public void removePointOfInterest(PointOfInterest aPoi) {
+	public void removePointOfInterest(PointOfInterest poi) {
 		try {
 			this.deletePoiStatement1.reset();
 			this.deletePoiStatement1.clear_bindings();
 			this.deletePoiStatement2.reset();
 			this.deletePoiStatement2.clear_bindings();
 
-			this.db.exec("BEGIN", null);
+			this.db.exec("BEGIN;", null);
 
-			this.deletePoiStatement1.bind(1, aPoi.getId());
-			this.deletePoiStatement2.bind(1, aPoi.getId());
+			this.deletePoiStatement1.bind(1, poi.getId());
+			this.deletePoiStatement2.bind(1, poi.getId());
 
 			this.deletePoiStatement1.step();
 			this.deletePoiStatement2.step();
 
-			this.db.exec("COMMIT", null);
+			this.db.exec("COMMIT;", null);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
-	}
-
-	@Override
-	public void setCategoryManager(PoiCategoryManager categoryManager) {
-		this.categoryManager = categoryManager;
 	}
 }

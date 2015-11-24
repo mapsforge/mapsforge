@@ -15,7 +15,20 @@
 package org.mapsforge.poi.awt.storage;
 
 import org.mapsforge.poi.storage.AbstractPoiCategoryManager;
+import org.mapsforge.poi.storage.DoubleLinkedPoiCategory;
+import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryManager;
+import org.mapsforge.poi.storage.UnknownPoiCategoryException;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A {@link PoiCategoryManager} implementation using a SQLite database via JDBC.
@@ -23,5 +36,67 @@ import org.mapsforge.poi.storage.PoiCategoryManager;
  * This class can only be used within AWT.
  */
 class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
-    // TODO Implement
+	private static final Logger LOGGER = Logger.getLogger(AwtPoiCategoryManager.class.getName());
+
+	/**
+	 * @param conn
+	 *			SQLite connection. (Using SQLite JDBC for AWT).
+	 */
+	AwtPoiCategoryManager(Connection conn) {
+		this.categoryMap = new TreeMap<>();
+
+		try {
+			loadCategories(conn);
+		} catch (UnknownPoiCategoryException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Load categories from database.
+	 *
+	 * @throws UnknownPoiCategoryException
+	 *			 if a category cannot be retrieved by its ID or unique name.
+	 */
+	private void loadCategories(Connection conn) throws UnknownPoiCategoryException {
+		// Maximum ID (for root node)
+		int maxID = 0;
+
+		// Maps categories to their parent IDs
+		Map<PoiCategory, Integer> parentMap = new HashMap<>();
+
+		try {
+			PreparedStatement stmt = conn.prepareStatement(SELECT_STATEMENT);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				// Column values
+				int categoryID = rs.getInt(1);
+				String categoryTitle = rs.getString(2);
+				int categoryParentID = rs.getInt(3);
+
+				PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
+				this.categoryMap.put(categoryID, pc);
+
+				// category --> parent ID
+				parentMap.put(pc, categoryParentID);
+
+				// check for root node
+				if (categoryID > maxID) {
+					maxID = categoryID;
+				}
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+
+		// Set root category
+		this.rootCategory = getPoiCategoryByID(maxID);
+
+		// Assign parent categories;
+		for (PoiCategory c : parentMap.keySet()) {
+			c.setParent(getPoiCategoryByID(parentMap.get(c)));
+		}
+	}
 }

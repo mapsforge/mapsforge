@@ -1,6 +1,6 @@
 # POI API
 
-This article describes how to use the POI API from the mapsforge POI library on your Android device (Java will follow).
+This article describes how to use the POI API from the mapsforge POI library.
 
 **The library is still in alpha state and is very likely to change.** It came from the `prototypes` branch. If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
 

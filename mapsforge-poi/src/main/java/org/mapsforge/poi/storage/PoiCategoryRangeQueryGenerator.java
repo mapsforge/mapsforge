@@ -23,15 +23,15 @@ import java.util.Collection;
  * {@link PoiCategoryFilter}.
  */
 public final class PoiCategoryRangeQueryGenerator {
-	private static final String SELECT_QUERY_STRING =
+	private static final String SELECT_STATEMENT =
 			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
 					+ "FROM poi_index "
 					+ "JOIN poi_data ON poi_index.id = poi_data.id "
-					+ "WHERE ("
+					+ "WHERE "
 					+ "minLat <= ? AND "
 					+ "minLon <= ? AND "
 					+ "minLat >= ? AND "
-					+ "minLon >= ?)";
+					+ "minLon >= ?";
 
 	private PoiCategoryRangeQueryGenerator() {
 		// no-op, for privacy
@@ -93,7 +93,7 @@ public final class PoiCategoryRangeQueryGenerator {
 	}
 
 	public static String getSQLSelectString(PoiCategoryFilter filter) {
-		return SELECT_QUERY_STRING + getSQLWhereClauseString(filter) + ' ' + "LIMIT ?;";
+		return SELECT_STATEMENT + getSQLWhereClauseString(filter) + ' ' + "LIMIT ?;";
 	}
 
 	/**
