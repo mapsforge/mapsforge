@@ -15,11 +15,10 @@
 - Fix invalid number of way nodes [#645](https://github.com/mapsforge/mapsforge/issues/645)
 - Minor improvements and bug fixes
 
-
 **Version 0.6.0-rc2 (2015-11-13)**
 
+- Map creation with coastlines [documentation](docs/MapCreation.md)
 - Minor improvements and bug fixes
-
 
 **Version 0.6.0-rc1 (2015-11-01)**
 
@@ -41,23 +40,19 @@
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.0)
 
-
 ## Version 0.5.X
 
 #### Version 0.5.2 (2015-08-23)
 
 - Same as 0.5.2-rc3
 
-
 **Version 0.5.2-rc3 (2015-08-19)**
 
 - Minor improvements and bug fixes
 
-
 **Version 0.5.2-rc2 (2015-08-08)**
 
 - Same as 0.5.2-rc1
-
 
 **Version 0.5.2-rc1 (2015-08-07)**
 
@@ -78,30 +73,25 @@
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.2)
 
-
 #### Version 0.5.1 (2015-03-18)
 
 - Same as 0.5.1-rc4
 
-
 **Version 0.5.1-rc4 (2015-03-04)**
 
 - Fix for build of SwingMapViewer with new SVG libraries
- 
 
 **Version 0.5.1-rc3 (2015-03-03)**
 
 - SVG rendering for Java with SVG Salamander
 - Internal rendertheme (osmarender) using SVG symbols by default
 - Resource memory/file cache: common clear methods
- 
 
 **Version 0.5.1-rc2 (2015-03-03)**
 
 - Fix for NPE when using persistent tile cache.
 - Doc updates
 
- 
 **Version 0.5.1-rc1 (2015-02-25)**
 
 - Support for more general map data sources through [MapDataStore interface and MultiMapDataStore class](MapDataStore.md)
@@ -111,11 +101,9 @@
 - Geographic grid layer.
 - External Map Rotation example in Samples.
 
-
 #### Version 0.5.0 (2014-12-08)
 
 - Release 0.5.0 is, apart from minor documentation changes, identical to 0.5.0-rc4.
-
 
 **Version 0.5.0-rc4 (2014-12-05)**
 
@@ -123,7 +111,6 @@
 - Fix for #332 (invalid geometries in map writer).
 - Fix for #549 (ordering of label drawing).
 - Documentation updates. 
-
 
 **Version 0.5.0-rc3 (2014-11-27)**
 
@@ -137,12 +124,10 @@
 - Improved documentation integrated into git.
 - Move to github.
 
-
 **Version 0.5.0-rc2 (2014-10-16)**
 
 - Fixes to Rendertheme V4 with most notably improved tiling of area shaders.
 - Smaller internal bug fixes and software updates.
-
 
 **Version 0.5.0-rc1 (2014-10-04)**
 
@@ -156,23 +141,19 @@
 - Caching of rendered SVG symbols & delayed rendering.
 - Simplify map writer plugin installation in Osmosis.
 
-
 ## Version 0.4.X
 
 #### Version 0.4.3 (2014-05-10)
 
 - No functionality change, but mapsforge-map-android now build as a jar (not apklib) for Maven Central downloads.
 
-
 #### Version 0.4.2 (2014-05-10)
 
 - No functionality change, but mapsforge build against mapsforge svg-android.
 
-
 #### Version 0.4.1 (2014-05-10)
 
 - No functionality change, but version 0.4.1 is now available from Maven Central.
-
 
 #### Version 0.4.0 (2014-05-05)
 
@@ -190,7 +171,6 @@ Version 0.4.0 is what during a period was known as the 'rescue' branch. It is ba
 
 For a demonstration of the capabilities refer to the Samples app.
 
-
 ## Version 0.3.x
 
 #### Version 0.3.0 (2012-03-18)
@@ -206,7 +186,6 @@ For a demonstration of the capabilities refer to the Samples app.
 - Moved the map-reader code to a new, Android-independent subproject.
 - Many other minor improvements and bug fixes.
 
-
 ## Version 0.2.x
 
 #### Version 0.2.4 (2011-06-28)
@@ -218,7 +197,6 @@ For a demonstration of the capabilities refer to the Samples app.
 - Added metadata API for map files.
 - Many other minor improvements and bug fixes.
 
-
 #### Version 0.2.3 (2011-05-12)
 
 - License change from GPL3 to LGPL3.
@@ -227,7 +205,6 @@ For a demonstration of the capabilities refer to the Samples app.
 - Rendering of symbols along ways, used for example on one-way roads.
 - The maximum zoom level of the MapView may now be set at runtime.
 - Many other minor improvements and bug fixes.
-
 
 #### Version 0.2.2 (2011-03-22)
 
@@ -241,7 +218,6 @@ For a demonstration of the capabilities refer to the Samples app.
 - Started to make the map tile cache on the memory card persistent.
 - Many other minor improvements and bug fixes.
 
-
 #### Version 0.2.1 (2011-02-10)
 
 - Optimized binary map format, reduces the file size by 15-20%.
@@ -254,7 +230,6 @@ For a demonstration of the capabilities refer to the Samples app.
 - Better rendering of coastline and water areas.
 - Many other minor improvements and bug fixes.
 
-
 #### Version 0.2.0 (2010-11-22)
 
 - New binary map format for more detailed and faster map rendering.
@@ -263,7 +238,6 @@ For a demonstration of the capabilities refer to the Samples app.
 - The MapView now supports multi-touch and new tile download modes.
 - First release of the Osmosis plugin to generate binary map files.
 - Many other minor improvements and bug fixes.
-
 
 ## Version 0.1.x
 
