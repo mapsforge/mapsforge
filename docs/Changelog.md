@@ -17,7 +17,7 @@
 
 **Version 0.6.0-rc2 (2015-11-13)**
 
-- Map creation with coastlines [documentation](docs/MapCreation.md)
+- Map creation with coastlines [documentation](MapCreation.md)
 - Minor improvements and bug fixes
 
 **Version 0.6.0-rc1 (2015-11-01)**
