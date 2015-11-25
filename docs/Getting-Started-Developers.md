@@ -51,7 +51,7 @@ The mapsforge code has now been consolidated into two main branches as well as r
 - **dev**: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
 - **release**: use this if you want to build applications built on top of well-tested and stable code.
 
-Code before the 0.5.1 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
+Code before the 0.6.0 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
 
 ## Development Applications
 
@@ -72,15 +72,15 @@ The SwingMapViewer is a simple Java only app useful for testing maps.
 
 ### Building mapsforge with Gradle
 
-Gradle is the new build system favoured by Google for Android builds. Android Studio, the new IDE provided by Google for building Android apps, integrates nicely with Gradle. 
+Gradle is the new build system favoured by Google for Android builds. Android Studio, the new IDE provided by Google for building Android apps, integrates nicely with Gradle. We use the Gradle Wrapper script, which also installs the required version of Gradle.
 
 After checking out the code, a build from the command line should be as easy as 
 
-    gradle clean build
+    ./gradlew clean build
 
 If you want to skip the tests, run 
 
-    gradle clean assemble
+    ./gradlew clean assemble
 
 After the build completes successfully you will find the Samples app in the directory Applications/Android/Samples/build/apk. Currently the build results in unsigned apks.  
 
@@ -91,7 +91,7 @@ Android Studio integrates tightly with gradle. The easiest way to create a new a
 
 ### Building mapsforge with Maven
 
-A second way to build mapsforge is using maven. This was the original way of building mapsforge.
+A second way to build mapsforge is using maven. This was the original way of building mapsforge. We still maintain this, but as Google does not actively support it, we discourage its use. New developments, certainly for Android, should use Gradle.
 
 The mapsforge project uses the free [Apache maven](http://maven.apache.org/) tool to automatize the build process. Only version 3.1.1 and up can be used. If you want to learn more about maven, please refer to the [official documentation](http://maven.apache.org/guides/index.html).
 
@@ -107,6 +107,8 @@ During the build process, maven compiles, tests and packages all modules in the 
 
 
 ### Start developing with Eclipse
+
+Note that Google has announced that it will not support Eclipse any more in the near future. Google has published a guide to [migrate a project from Eclipse to Android Studio](https://developer.android.com/sdk/installing/migrate.html). 
 
 If you want to contribute to the mapsforge project, we recommend to use the latest stable version of the [Eclipse IDE](http://eclipse.org/).
 
