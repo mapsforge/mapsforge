@@ -4,6 +4,12 @@
 
 ## Version 0.6.X
 
+#### Version 0.6.0 (2015-11-25)
+
+- Upgrade of Android version for maven to 6.0_r2
+- Upgrade of build tools to Gradle 2.8, Android Gradle Plugin 1.5
+- Otherwise identical to 0.6.0-rc3
+
 **Version 0.6.0-rc3 (2015-11-19)**
 
 - Fix invalid number of way nodes [#645](https://github.com/mapsforge/mapsforge/issues/645)
