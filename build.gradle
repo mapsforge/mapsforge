@@ -14,7 +14,7 @@ def filterProjects(filter) {
 
 allprojects {
     group = 'org.mapsforge'
-    version = 'master-SNAPSHOT'
+    version = '0.6.0'
     ext.androidBuildVersionTools = "23.0.2"
     ext.jUnitVersion = "4.11"
     description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
@@ -31,7 +31,7 @@ def androidTargetSdkOldPermissions() { return 22 }
 // moving forward we will target the latest SDK (that will all have the new permissions system)
 def androidTargetSdkRuntimePermissions() { return androidCompileSdk() }
 
-def versionCode() { return 52 }
+def versionCode() { return 60 }
 
 def versionName() { return version }
 
