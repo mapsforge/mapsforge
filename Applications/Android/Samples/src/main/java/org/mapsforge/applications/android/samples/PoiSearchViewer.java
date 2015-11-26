@@ -114,7 +114,7 @@ public class PoiSearchViewer extends RenderTheme4 {
 			}
 
 			for (PointOfInterest pointOfInterest : pointOfInterests) {
-				Log.d(SamplesApplication.TAG, pointOfInterest.toString());
+				// Log.d(SamplesApplication.TAG, pointOfInterest.toString());
 				LatLong latLong = new LatLong(pointOfInterest.getLatitude(), pointOfInterest.getLongitude());
 				float circleSize = 16 * PoiSearchViewer.this.mapView.getModel().displayModel.getScaleFactor();
 				Circle circle = new FixedPixelCircle(latLong, circleSize, Utils.createPaint(

@@ -24,8 +24,6 @@ import java.util.Stack;
 
 /**
  * Whitelist category filter that accepts all categories and their sub-categories in the whitelist.
- * <p/>
- * <strong>Warning: This class is bugged, there is an endless loop in getAcceptedCategories.</strong>
  */
 public class WhitelistPoiCategoryFilter implements PoiCategoryFilter {
 	/**
@@ -107,7 +105,7 @@ public class WhitelistPoiCategoryFilter implements PoiCategoryFilter {
 			return isAcceptedCategory(category.getParent());
 		}
 
-		// Neither this, nor parent
+		// Neither this, nor parents
 		return false;
 	}
 }

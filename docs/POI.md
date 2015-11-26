@@ -2,7 +2,9 @@
 
 This article describes how to use the POI API from the mapsforge POI library.
 
-**The library is still in alpha state and is very likely to change.** It came from the `prototypes` branch. If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
+**The library is still in alpha state and is very likely to change.** It came from the `prototypes` branch.
+
+If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
 ## Introduction
 
@@ -64,7 +66,7 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 
 The API supports POI search inside a specified rectangle or near a given position.
 
-Using category filters accepting all categories added to them, with or without their sub-categories in the whitelist.
+You can use category filters that accept all categories added to them.
 
 ### POI DB Schema
 

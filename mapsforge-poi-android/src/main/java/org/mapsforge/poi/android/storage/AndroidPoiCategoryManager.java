@@ -91,10 +91,11 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
-		// Set root category
+		// Set root category and remove it from parents map
 		this.rootCategory = getPoiCategoryByID(maxID);
+		parentMap.remove(this.rootCategory);
 
-		// Assign parent categories;
+		// Assign parent categories
 		for (PoiCategory c : parentMap.keySet()) {
 			c.setParent(getPoiCategoryByID(parentMap.get(c)));
 		}
