@@ -13,12 +13,12 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.poi.writer.osmosis;
+package org.mapsforge.poi.writer;
 
 import org.mapsforge.poi.storage.DoubleLinkedPoiCategory;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryManager;
-import org.mapsforge.poi.writer.osmosis.jaxb.Category;
+import org.mapsforge.poi.writer.jaxb.Category;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-class XMLPoiCategoryManager implements PoiCategoryManager {
+public class XMLPoiCategoryManager implements PoiCategoryManager {
 	private static final Logger LOGGER = Logger.getLogger(XMLPoiCategoryManager.class.getName());
 
 	private DoubleLinkedPoiCategory root = null;
@@ -41,7 +41,7 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
 	 * @param configFilePath
 	 *            Path to POI category XML file containing the category tree configuration.
 	 */
-	XMLPoiCategoryManager(URL configFilePath) {
+	public XMLPoiCategoryManager(URL configFilePath) {
 		LOGGER.info("Loading POI categories from XML...");
 
 		this.titleMap = new HashMap<>();
@@ -79,27 +79,6 @@ class XMLPoiCategoryManager implements PoiCategoryManager {
 				currentXMLNode.add(c);
 			}
 		}
-
-		// DEBUG
-		// this.root = new DoubleLinkedPoiCategory("root", null);
-		//
-		// PoiCategory amr = createOrGetPoiCategory("amenity root");
-		// createOrGetPoiCategory("amenity root").setParent(this.root);
-		//
-		// PoiCategory anr = createOrGetPoiCategory("another root");
-		// createOrGetPoiCategory("another root").setParent(this.root);
-		//
-		// PoiCategory rest = createOrGetPoiCategory("restaurants");
-		// rest.setParent(amr);
-		//
-		// PoiCategory blubb = createOrGetPoiCategory("blubb");
-		// blubb.setParent(anr);
-		//
-		// PoiCategory ff = createOrGetPoiCategory("ff");
-		// ff.setParent(rest);
-		//
-		// PoiCategory sushi = createOrGetPoiCategory("sushi");
-		// sushi.setParent(rest);
 
 		DoubleLinkedPoiCategory.calculateCategoryIDs(this.root, 0);
 		// System.out.println(DoubleLinkedPoiCategory.getGraphVizString(this.root));

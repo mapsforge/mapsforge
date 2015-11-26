@@ -19,6 +19,7 @@ package org.mapsforge.poi.writer.osmosis;
 import org.mapsforge.poi.writer.logging.DummyProgressManager;
 import org.mapsforge.poi.writer.logging.LoggerWrapper;
 import org.mapsforge.poi.writer.logging.ProgressManager;
+import org.mapsforge.poi.writer.model.PoiWriterConfiguration;
 import org.mapsforge.poi.writer.util.Constants;
 import org.openstreetmap.osmosis.core.pipeline.common.TaskConfiguration;
 import org.openstreetmap.osmosis.core.pipeline.common.TaskManager;
@@ -26,32 +27,18 @@ import org.openstreetmap.osmosis.core.pipeline.common.TaskManagerFactory;
 import org.openstreetmap.osmosis.core.pipeline.v0_6.SinkManager;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
- * This class is used for creating {@link PoiWriterTask}s.
+ * Factory for the POI writer osmosis plugin.
  */
 public class PoiWriterFactory extends TaskManagerFactory {
-	// private static final String GUI_PROGRESS_MANAGER_CLASS_NAME = "org.mapsforge.mapmaker.gui.ProgressGUI";
-
 	private static final String PARAM_OUTFILE = "file";
 	private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
 
-	/**
-	 * Default constructor.
-	 */
-	public PoiWriterFactory() {
-	}
-
 	@Override
 	protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {
-		// Output file
-		String outputFilePath = getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE);
-
-		// XML file containing a POI category configuration
-		URL configFilePath = loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
+		PoiWriterConfiguration configuration = new PoiWriterConfiguration();
+		configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
+		configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
 
 		// If set to true, progress messages will be forwarded to a GUI message handler
 		// boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);
@@ -75,38 +62,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
 		// Tell the logger which progress manager to use
 		LoggerWrapper.setDefaultProgressManager(progressManager);
 
-		// The creation task
-		Sink task = new PoiWriterTask(outputFilePath, configFilePath, progressManager);
-
+		Sink task = new PoiWriterTask(configuration, progressManager);
 		return new SinkManager(taskConfig.getId(), task, taskConfig.getPipeArgs());
-	}
-
-	/**
-	 * Convenience method.
-	 *
-	 * @param file
-	 *            the path to the output file
-	 */
-	private URL loadTagMappingFile(String file) {
-		if (file != null) {
-			File f = new File(file);
-			if (!f.exists()) {
-				throw new IllegalArgumentException("tag mapping file parameter points to a file that does not exist");
-			}
-			if (f.isDirectory()) {
-				throw new IllegalArgumentException("tag mapping file parameter points to a directory, must be a file");
-			} else if (!f.canRead()) {
-				throw new IllegalArgumentException(
-						"tag mapping file parameter points to a file we have no read permissions");
-			}
-
-			try {
-				return f.toURI().toURL();
-			} catch (MalformedURLException e) {
-				throw new RuntimeException(e);
-			}
-		} else {
-			return PoiWriterTask.class.getClassLoader().getResource("poi-mapping.xml");
-		}
 	}
 }

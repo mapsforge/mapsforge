@@ -20,7 +20,7 @@
 //
 
 
-package org.mapsforge.poi.writer.osmosis.jaxb;
+package org.mapsforge.poi.writer.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

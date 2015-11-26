@@ -20,7 +20,7 @@
 //
 
 
-package org.mapsforge.poi.writer.osmosis.jaxb;
+package org.mapsforge.poi.writer.jaxb;
 
 import java.util.ArrayList;
 import java.util.List;

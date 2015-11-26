@@ -21,8 +21,11 @@ import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiCategoryManager;
 import org.mapsforge.poi.storage.UnknownPoiCategoryException;
 import org.mapsforge.poi.storage.WhitelistPoiCategoryFilter;
+import org.mapsforge.poi.writer.TagMappingResolver;
+import org.mapsforge.poi.writer.XMLPoiCategoryManager;
 import org.mapsforge.poi.writer.logging.LoggerWrapper;
 import org.mapsforge.poi.writer.logging.ProgressManager;
+import org.mapsforge.poi.writer.model.PoiWriterConfiguration;
 import org.mapsforge.poi.writer.util.Constants;
 import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.Entity;
@@ -31,7 +34,6 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -82,16 +84,14 @@ public class PoiWriterTask implements Sink {
 	 * in a given whitelist to a SQLite database. The category tree and tag mappings are retrieved
 	 * from an XML file.
 	 *
-	 * @param outputFilePath
-	 *            Path to the database file that should be written. The file name should end with
-	 *            ".poi".
-	 * @param configFilePath
-	 *            The XML configuration file containing the category tree and tag mappings. You can
-	 *            use "poi-mapping.xml" from the mapsforge library here.
+	 * @param configuration
+	 *            Configuration for the POI writer.
 	 * @param progressManager
 	 *            Object that sends progress messages to a GUI.
 	 */
-	public PoiWriterTask(String outputFilePath, URL configFilePath, ProgressManager progressManager) {
+	public PoiWriterTask(PoiWriterConfiguration configuration, ProgressManager progressManager) {
+		this.progressManager = progressManager;
+
 		Properties properties = new Properties();
 		try {
 			properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
@@ -104,13 +104,11 @@ public class PoiWriterTask implements Sink {
 		}
 		LOGGER.setLevel(Level.FINE);
 
-		this.progressManager = progressManager;
-
 		// Get categories defined in XML
-		this.categoryManager = new XMLPoiCategoryManager(configFilePath);
+		this.categoryManager = new XMLPoiCategoryManager(configuration.getTagMapping());
 
 		// Get tag -> POI mapper
-		this.tagMappingResolver = new TagMappingResolver(configFilePath, this.categoryManager);
+		this.tagMappingResolver = new TagMappingResolver(configuration.getTagMapping(), this.categoryManager);
 
 		// Set accepted categories (allow all categories)
 		this.categoryFilter = new WhitelistPoiCategoryFilter();
@@ -122,7 +120,7 @@ public class PoiWriterTask implements Sink {
 
 		// Create database and add categories
 		try {
-			prepareDatabase(outputFilePath);
+			prepareDatabase(configuration.getOutputFile().getAbsolutePath());
 		} catch (ClassNotFoundException | SQLException | UnknownPoiCategoryException e) {
 			e.printStackTrace();
 		}

@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.poi.writer.osmosis;
+package org.mapsforge.poi.writer;
 
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryManager;
 import org.mapsforge.poi.storage.UnknownPoiCategoryException;
-import org.mapsforge.poi.writer.osmosis.jaxb.Category;
-import org.mapsforge.poi.writer.osmosis.jaxb.Mapping;
+import org.mapsforge.poi.writer.jaxb.Category;
+import org.mapsforge.poi.writer.jaxb.Mapping;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ import javax.xml.bind.Unmarshaller;
  * This class maps a given tag (e.g. amenity=restaurant) to a certain {@link PoiCategory}.
  * The mapping configuration is read from a XML file.
  */
-class TagMappingResolver {
+public class TagMappingResolver {
 	private static final Logger LOGGER = Logger.getLogger(TagMappingResolver.class.getName());
 
 	private final PoiCategoryManager categoryManager;
@@ -55,7 +55,7 @@ class TagMappingResolver {
 	 * @param categoryManager
 	 *            The category manager for loading a category tree.
 	 */
-	TagMappingResolver(URL configFilePath, PoiCategoryManager categoryManager) {
+	public TagMappingResolver(URL configFilePath, PoiCategoryManager categoryManager) {
 		this.categoryManager = categoryManager;
 		this.tagMap = new HashMap<>();
 		this.mappingTags = new TreeSet<>();
@@ -95,7 +95,7 @@ class TagMappingResolver {
 		LOGGER.info("Tag mappings have been added.");
 	}
 
-	PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
+	public PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
 		String categoryName = this.tagMap.get(tag);
 
 		// Tag not found?
@@ -106,7 +106,7 @@ class TagMappingResolver {
 		return this.categoryManager.getPoiCategoryByTitle(categoryName);
 	}
 
-	Set<String> getMappingTags() {
+	public Set<String> getMappingTags() {
 		return this.mappingTags;
 	}
 }

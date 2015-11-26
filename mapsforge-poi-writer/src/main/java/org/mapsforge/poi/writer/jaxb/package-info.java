@@ -20,4 +20,4 @@
 //
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "http://mapsforge.org/poi-mapping", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
-package org.mapsforge.poi.writer.osmosis.jaxb;
+package org.mapsforge.poi.writer.jaxb;
