@@ -42,11 +42,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This task reads Nodes from an OSM stream and writes them to a SQLite database.
@@ -58,8 +61,11 @@ public class PoiWriterTask implements Sink {
 	// For debug purposes only (at least for now)
 	private static final boolean INCLUDE_META_DATA = false;
 
+	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,3}(?:[-_][a-zA-Z0-9]{1,8})*)");
+
 	private static final Charset UTF8_CHARSET = Charset.forName("utf8");
 
+	private final PoiWriterConfiguration configuration;
 	private final ProgressManager progressManager;
 
 	// Available categories
@@ -90,6 +96,7 @@ public class PoiWriterTask implements Sink {
 	 *            Object that sends progress messages to a GUI.
 	 */
 	public PoiWriterTask(PoiWriterConfiguration configuration, ProgressManager progressManager) {
+		this.configuration = configuration;
 		this.progressManager = progressManager;
 
 		Properties properties = new Properties();
@@ -229,7 +236,7 @@ public class PoiWriterTask implements Sink {
 					tagStr = tag.getKey() + "=" + tag.getValue();
 				} else {
 					// Save the node's data
-					tagMap.put(tag.getKey(), tag.getValue());
+					tagMap.put(tag.getKey().toLowerCase(Locale.ENGLISH), tag.getValue());
 				}
 			}
 
@@ -265,7 +272,7 @@ public class PoiWriterTask implements Sink {
 
 		for (String key : tagMap.keySet()) {
 			// Skip some tags
-			if (key.equalsIgnoreCase("amenity") || key.equalsIgnoreCase("created_by")) {
+			if (key.equalsIgnoreCase("created_by")) {
 				continue;
 			}
 
@@ -293,9 +300,26 @@ public class PoiWriterTask implements Sink {
 			if (INCLUDE_META_DATA) {
 				this.pStmt2.setBytes(2, tagsToString(poiData).getBytes(UTF8_CHARSET));
 			} else {
+				// Use preferred language
+				boolean foundPreferredLanguageName = false;
+				String name = null;
+				for (String key : poiData.keySet()) {
+					if ("name".equals(key) && !foundPreferredLanguageName) {
+						name = poiData.get(key);
+					} else if (configuration.getPreferredLanguage() != null && !foundPreferredLanguageName) {
+						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
+						if (matcher.matches()) {
+							String language = matcher.group(3);
+							if (language.equalsIgnoreCase(configuration.getPreferredLanguage())) {
+								name = poiData.get(key);
+								foundPreferredLanguageName = true;
+							}
+						}
+					}
+				}
 				// If name tag is set
-				if (poiData.get("name") != null) {
-					this.pStmt2.setBytes(2, poiData.get("name").getBytes(UTF8_CHARSET));
+				if (name != null) {
+					this.pStmt2.setBytes(2, name.getBytes(UTF8_CHARSET));
 				} else {
 					this.pStmt2.setNull(2, Types.NULL);
 				}

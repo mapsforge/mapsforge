@@ -25,6 +25,7 @@ import java.net.URL;
  */
 public class PoiWriterConfiguration {
 	private File outputFile;
+	private String preferredLanguage;
 	private URL tagMapping;
 
 	/**
@@ -52,6 +53,13 @@ public class PoiWriterConfiguration {
 	 */
 	public File getOutputFile() {
 		return this.outputFile;
+	}
+
+	/**
+	 * @return the preferred language
+	 */
+	public String getPreferredLanguage() {
+		return this.preferredLanguage;
 	}
 
 	/**
@@ -96,5 +104,15 @@ public class PoiWriterConfiguration {
 	 */
 	public void setOutputFile(File outputFile) {
 		this.outputFile = outputFile;
+	}
+
+	/**
+	 * @param preferredLanguage
+	 *            the preferred language to set
+	 */
+	public void setPreferredLanguage(String preferredLanguage) {
+		if (preferredLanguage != null && !preferredLanguage.isEmpty()) {
+			this.preferredLanguage = preferredLanguage;
+		}
 	}
 }

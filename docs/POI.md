@@ -10,7 +10,7 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 
 _Points of Interest_ (POIs) are points with a given position, category and data. A POI database is used to store a set of POIs and to search for POIs within a given area.
 
-The mapsforge POI library uses SQLite for storing POIs. For efficiency reasons Android's SQLite implementation is not used. Instead a [custom wrapper](http://code.google.com/p/sqlite3-android/) is used to provide a SQLite implementation with [R-tree](https://www.sqlite.org/rtree.html) functionality. Another successfully tested option is [SpatiaLite](https://www.gaia-gis.it/fossil/libspatialite/index), a spatial extension to SQLite.
+The mapsforge POI library uses SQLite for storing POIs. For efficiency reasons Android's SQLite implementation is not used. Instead a custom wrapper is used to provide a SQLite implementation with R-tree functionality. Another successfully tested option is SpatiaLite, an advanced spatial extension to SQLite.
 
 All reading and writing operations are done via classes implementing the `PoiPersistenceManager` interface. This allows adding, removing and changing POIs at any time. POI categories can be defined on creation time only. Categories are implemented as trees and can be accessed via classes implementing the `PoiCategoryManager` interface.
 
@@ -24,21 +24,32 @@ This section provides you with information how to create a POI database, how to 
 
 ### Creating a POI Database
 
-The POI writer is implemented as an Osmosis plugin and does not depend on any mapsforge libraries. However, for this tutorial it is necessary to checkout and install the latest libraries.
+The POI writer is implemented as an Osmosis plugin. For this tutorial it is necessary to checkout and install the latest libraries.
 
-It is also necessary to install Osmosis. Plugin installation is similar to map-writer plugin, so see its [guide](Getting-Started-Map-Writer.md#plugin-installation) for detailed instructions. You should now have a fully working environment for developing apps using the POI API.
+It is also necessary to install Osmosis. Plugin installation is similar to map-writer plugin, you can see its [guide](Getting-Started-Map-Writer.md#plugin-installation) for detailed instructions. You should now have a fully working environment for developing apps using the POI API.
 
 To convert OSM data to a POI database execute the following command:
 
 ```bash
-$OSMOSIS_HOME/bin/osmosis --rb file=your_map_file.osm.pbf --poi-writer file=your_database.poi tag-conf-file=poi-mapping.xml
+$OSMOSIS_HOME/bin/osmosis --rb file=your_map_file.osm.pbf --poi-writer file=your_database.poi preferred-language=en tag-conf-file=poi-mapping.xml
 ```
 
-The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin should handle the data that was read from the given OSM stream. Its options are:
-- The `file` option defines the output file. By convention we use the file ending `.poi`.
-- The `tag-conf-file` option defines a path to a XML configuration file that contains mappings from OSM tags to category names and a hierarchy of those categories. If not specified, the internal default poi mapping is used. You can read more about this in the further sections.
+The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin should handle the data that was read from the given OSM stream.
 
-Note: The default language with no tag will be written to the file. Multilingual POIs is an incubating feature.
+#### Basic Options
+
+|**Option**|**Description**|**Valid values**|**Default value**|
+|----------|---------------|----------------|-----------------|
+|`file`|Path to the output file, the file will be overwritten if existent. By convention we use the file ending `poi`.||mapsforge.poi|
+|`preferred-language`|If not specified, only the default language with no tag will be written to the file. If a language is specified, it will be written if its tag is found, otherwise the default language will be written.|language code as defined in ISO 639-1 or ISO 639-2|(blank)|
+
+Note: Multilingual POIs is an incubating feature.
+
+#### Advanced Options (only use when you know what you are doing)
+
+|**Option**|**Description**|**Valid values**|**Default value**|
+|----------|---------------|----------------|-----------------|
+|`tag-conf-file`|Path to an XML configuration file that contains mappings from OSM tags to category names and a hierarchy of those categories.|path to an XML file|(blank) internal default poi mapping is used|
 
 ### Example
 
