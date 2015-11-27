@@ -4,9 +4,8 @@
 
 ## New since 0.6.0
 
-- Reverse Geocoding example
+- Reverse Geocoding example [#727](https://github.com/mapsforge/mapsforge/issues/727)
 - Many other minor improvements and bug fixes
-
 
 ## Version 0.6.X
 
