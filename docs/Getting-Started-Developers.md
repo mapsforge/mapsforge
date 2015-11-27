@@ -1,4 +1,3 @@
-
 # Getting Started
 
 **A quick description for developers of how to get started with mapsforge.**
@@ -26,23 +25,26 @@ Mapsforge consists of the following core components:
 - mapsforge-core: platform unspecific general components and interfaces.
 - mapsforge-map: platform unspecific elements used for map display.
 - mapsforge-map-reader: platform unspecific code to read mapsforge map files.
+- mapsforge-poi: platform unspecific poi elements.
 - [kXML2](http://www.kxml.org/): lightweight XML parser for render themes.
 
 Extra Android components:
 
-- mapsforge-map-android: android specific elements.
-- mapsforge-map-android-extras: android extra elements.
+- mapsforge-map-android: android specific map elements.
+- mapsforge-map-android-extras: android extra map elements.
+- mapsforge-poi-android: android specific poi elements.
 - [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
 
 Extra Java components:
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
+- mapsforge-poi-awt: java specific poi elements.
 - [svg-salamander](https://svgsalamander.java.net/): SVG library for displaying SVG files as icons. Improved jar can be found at the site.
- 
+- [xerial/sqlite-jdbc](https://github.com/xerial/sqlite-jdbc): SQLite JDBC library for accessing and creating SQLite database files in Java.
+
 The jars build from the above components are required elements for a mapsforge application on Android or Java.
 
 External dependencies jars can be found at their respective sites or simply searching them in [Maven central repository](http://search.maven.org/).
-
 
 ### Branches
 
@@ -88,7 +90,6 @@ After the build completes successfully you will find the Samples app in the dire
 
 Android Studio integrates tightly with gradle. The easiest way to create a new application is to follow the example of the Samples app. 
 
-
 ### Building mapsforge with Maven
 
 A second way to build mapsforge is using maven. This was the original way of building mapsforge. We still maintain this, but as Google does not actively support it, we discourage its use. New developments, certainly for Android, should use Gradle.
@@ -104,7 +105,6 @@ This will tell maven to delete any pre-existing generated files and directories 
 In the beginning, maven automatically downloads all missing plug-ins and files. Depending on the speed of your Internet connection, this may take some time. All downloaded files are stored locally in a special maven directory to avoid downloading them again at each build.
 
 During the build process, maven compiles, tests and packages all modules in the correct order. A new directory `target` is created for each module which contains – among test reports and other generated files – the new artifacts. Eventually these artifacts are installed in your local repository so that you can use them in other maven projects.
-
 
 ### Start developing with Eclipse
 
