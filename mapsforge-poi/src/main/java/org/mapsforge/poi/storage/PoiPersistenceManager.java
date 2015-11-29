@@ -111,6 +111,13 @@ public interface PoiPersistenceManager {
 	PointOfInterest findPointByID(long poiID);
 
 	/**
+	 * @param pattern
+	 *            the pattern to search in points of interest names.
+	 * @return {@link Collection} of {@link PointOfInterest} whose names match the given pattern.
+	 */
+	Collection<PointOfInterest> findPointsByName(String pattern);
+
+	/**
 	 * @return The persistence manager's category manager for retrieving and editing POI categories.
 	 */
 	PoiCategoryManager getCategoryManager();

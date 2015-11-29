@@ -44,6 +44,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
 	private Stmt findInBoxStatement = null;
 	private Stmt findByIDStatement = null;
+	private Stmt findByNameStatement = null;
 	private Stmt insertPoiStatement1 = null;
 	private Stmt insertPoiStatement2 = null;
 	private Stmt deletePoiStatement1 = null;
@@ -72,6 +73,9 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			// Finds a POI by its unique ID
 			this.findByIDStatement = this.db.prepare(FIND_BY_ID_STATEMENT);
 
+			// Finds POIs by name
+			this.findByNameStatement = this.db.prepare(FIND_BY_NAME_STATEMENT);
+
 			// Inserts a POI into index and adds its data
 			this.insertPoiStatement1 = this.db.prepare(INSERT_INDEX_STATEMENT);
 			this.insertPoiStatement2 = this.db.prepare(INSERT_DATA_STATEMENT);
@@ -99,6 +103,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		if (this.findByIDStatement != null) {
 			try {
 				this.findByIDStatement.close();
+			} catch (Exception e) {
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			}
+		}
+
+		if (this.findByNameStatement != null) {
+			try {
+				this.findByNameStatement.close();
 			} catch (Exception e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
@@ -298,6 +310,39 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		}
 
 		return this.poi;
+	}
+
+	@Override
+	public Collection<PointOfInterest> findPointsByName(String pattern) {
+		// Clear previous results
+		this.ret.clear();
+
+		// Query
+		try {
+			this.findByNameStatement.reset();
+			this.findByNameStatement.clear_bindings();
+
+			this.findByNameStatement.bind(1, pattern);
+
+			while (this.findByNameStatement.step()) {
+				long id = this.findByNameStatement.column_long(0);
+				double lat = this.findByNameStatement.column_double(1);
+				double lon = this.findByNameStatement.column_double(2);
+				String data = this.findByNameStatement.column_string(3);
+				int categoryID = this.findByNameStatement.column_int(4);
+
+				try {
+					this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
+					this.ret.add(this.poi);
+				} catch (UnknownPoiCategoryException e) {
+					LOGGER.log(Level.SEVERE, e.getMessage(), e);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+
+		return this.ret;
 	}
 
 	@Override

@@ -42,6 +42,12 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 					+ "JOIN poi_data ON poi_index.id = poi_data.id "
 					+ "WHERE "
 					+ "poi_index.id = ?;";
+	protected static final String FIND_BY_NAME_STATEMENT =
+			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
+					+ "FROM poi_index "
+					+ "JOIN poi_data ON poi_index.id = poi_data.id "
+					+ "WHERE "
+					+ "poi_data.data LIKE ?;";
 	protected static final String FIND_IN_BOX_STATEMENT =
 			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
 					+ "FROM poi_index "
