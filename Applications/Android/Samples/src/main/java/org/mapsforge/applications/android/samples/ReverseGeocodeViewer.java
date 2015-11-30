@@ -26,10 +26,13 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.util.MapViewProjection;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Reverse Geocoding with long press.
@@ -56,6 +59,10 @@ public class ReverseGeocodeViewer extends RenderTheme4 {
 		};
 		tileRendererLayer.setXmlRenderTheme(getRenderTheme());
 		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
+
+		// Add a grid layer for debug
+		this.mapView.getLayerManager().getLayers()
+				.add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
 	}
 
 	@Override
@@ -66,20 +73,33 @@ public class ReverseGeocodeViewer extends RenderTheme4 {
 	}
 
 	private void onLongPress(LatLong tapLatLong, Point tapXY) {
-		// Reads all map data for the area covered by the given tile at the tile zoom level
-		int tileX = MercatorProjection.longitudeToTileX(tapLatLong.longitude, this.mapView.getModel().mapViewPosition.getZoomLevel());
-		int tileY = MercatorProjection.latitudeToTileY(tapLatLong.latitude, this.mapView.getModel().mapViewPosition.getZoomLevel());
-		Tile tile = new Tile(tileX, tileY, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
-		MapReadResult mapReadResult = getMapFile().readMapData(tile);
+		// Reads all POIs for the area covered by the tiles under touch at the tiles zoom level
+		float touchRadius = TOUCH_RADIUS * this.mapView.getModel().displayModel.getScaleFactor();
+		long mapSize = MercatorProjection.getMapSize(this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+		double pixelX = MercatorProjection.longitudeToPixelX(tapLatLong.longitude, mapSize);
+		double pixelY = MercatorProjection.latitudeToPixelY(tapLatLong.latitude, mapSize);
+		int tileXMin = MercatorProjection.pixelXToTileX(pixelX - touchRadius, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+		int tileXMax = MercatorProjection.pixelXToTileX(pixelX + touchRadius, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+		int tileYMin = MercatorProjection.pixelYToTileY(pixelY - touchRadius, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+		int tileYMax = MercatorProjection.pixelYToTileY(pixelY + touchRadius, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+		Set<PointOfInterest> pointOfInterests = new HashSet<>();
+		for (int tileX = tileXMin; tileX <= tileXMax; tileX++) {
+			for (int tileY = tileYMin; tileY <= tileYMax; tileY++) {
+				Tile tile = new Tile(tileX, tileY, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+				MapReadResult mapReadResult = getMapFile().readMapData(tile);
+				for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
+					pointOfInterests.add(pointOfInterest);
+				}
+			}
+		}
 
 		StringBuilder sb = new StringBuilder();
 
 		// Filter POIs
 		sb.append("*** POIS ***");
-		List<PointOfInterest> pointOfInterests = mapReadResult.pointOfInterests;
 		for (PointOfInterest pointOfInterest : pointOfInterests) {
 			Point layerXY = this.projection.toPixels(pointOfInterest.position);
-			if (layerXY.distance(tapXY) > TOUCH_RADIUS * this.mapView.getModel().displayModel.getScaleFactor()) {
+			if (layerXY.distance(tapXY) > touchRadius) {
 				continue;
 			}
 			sb.append("\n");
@@ -89,9 +109,15 @@ public class ReverseGeocodeViewer extends RenderTheme4 {
 			}
 		}
 
+		// Reads all ways for the area covered by the touched tile at the tile zoom level
+		int tileX = MercatorProjection.longitudeToTileX(tapLatLong.longitude, this.mapView.getModel().mapViewPosition.getZoomLevel());
+		int tileY = MercatorProjection.latitudeToTileY(tapLatLong.latitude, this.mapView.getModel().mapViewPosition.getZoomLevel());
+		Tile tile = new Tile(tileX, tileY, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+		MapReadResult mapReadResult = getMapFile().readMapData(tile);
+		List<Way> ways = mapReadResult.ways;
+
 		// Filter ways
 		sb.append("\n\n").append("*** WAYS ***");
-		List<Way> ways = mapReadResult.ways;
 		for (Way way : ways) {
 			if (!LatLongUtils.isClosedWay(way.latLongs[0])
 					|| !LatLongUtils.contains(way.latLongs[0], tapLatLong)) {
