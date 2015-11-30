@@ -14,6 +14,8 @@ The mapsforge POI library uses SQLite for storing POIs. For efficiency reasons A
 
 All reading and writing operations are done via classes implementing the `PoiPersistenceManager` interface. This allows adding, removing and changing POIs at any time. POI categories can be defined on creation time only. Categories are implemented as trees and can be accessed via classes implementing the `PoiCategoryManager` interface.
 
+Externally you can use your favorite SQLite manager for browsing the database on your computer. A working example is [spatialite-gui](https://www.gaia-gis.it/fossil/spatialite_gui/index).
+
 ## Quick Start
 
 This section provides you with information how to create a POI database, how to use it for POI search and how to visualize the results. It is recommended that you first get familiar with:
