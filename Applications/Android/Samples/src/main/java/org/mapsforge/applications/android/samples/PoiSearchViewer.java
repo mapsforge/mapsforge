@@ -37,6 +37,7 @@ import org.mapsforge.poi.storage.PoiCategoryManager;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 
 /**
@@ -74,13 +75,15 @@ public class PoiSearchViewer extends RenderTheme4 {
 		redrawLayers();
 
 		// POI search
-		new PoiSearchTask(POI_CATEGORY).execute(this.mapView.getBoundingBox());
+		new PoiSearchTask(this, POI_CATEGORY).execute(this.mapView.getBoundingBox());
 	}
 
-	private class PoiSearchTask extends AsyncTask<BoundingBox, Void, Collection<PointOfInterest>> {
+	private static class PoiSearchTask extends AsyncTask<BoundingBox, Void, Collection<PointOfInterest>> {
+		private final WeakReference<PoiSearchViewer> activityRef;
 		private final String category;
 
-		private PoiSearchTask(String category) {
+		private PoiSearchTask(PoiSearchViewer activity, String category) {
+			this.activityRef = new WeakReference<>(activity);
 			this.category = category;
 		}
 
@@ -108,7 +111,11 @@ public class PoiSearchViewer extends RenderTheme4 {
 
 		@Override
 		protected void onPostExecute(Collection<PointOfInterest> pointOfInterests) {
-			Toast.makeText(PoiSearchViewer.this, category + ": " + (pointOfInterests != null ? pointOfInterests.size() : 0), Toast.LENGTH_SHORT).show();
+			PoiSearchViewer activity = activityRef.get();
+			if (activity == null) {
+				return;
+			}
+			Toast.makeText(activity, category + ": " + (pointOfInterests != null ? pointOfInterests.size() : 0), Toast.LENGTH_SHORT).show();
 			if (pointOfInterests == null) {
 				return;
 			}
@@ -116,13 +123,12 @@ public class PoiSearchViewer extends RenderTheme4 {
 			for (PointOfInterest pointOfInterest : pointOfInterests) {
 				// Log.d(SamplesApplication.TAG, pointOfInterest.toString());
 				LatLong latLong = new LatLong(pointOfInterest.getLatitude(), pointOfInterest.getLongitude());
-				float circleSize = 16 * PoiSearchViewer.this.mapView.getModel().displayModel.getScaleFactor();
-				Circle circle = new FixedPixelCircle(latLong, circleSize, Utils.createPaint(
+				Circle circle = new FixedPixelCircle(latLong, 16, Utils.createPaint(
 						AndroidGraphicFactory.INSTANCE.createColor(128, 255, 0, 0), 0, Style.FILL),
 						null);
-				PoiSearchViewer.this.mapView.getLayerManager().getLayers().add(circle);
+				activity.mapView.getLayerManager().getLayers().add(circle);
 			}
-			redrawLayers();
+			activity.redrawLayers();
 		}
 	}
 }
