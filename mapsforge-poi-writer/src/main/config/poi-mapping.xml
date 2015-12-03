@@ -1140,8 +1140,8 @@
         <category title="Australian football">
             <mapping tag="sport=australian_football" />
         </category>
-        <category title="BASE">
-            <mapping tag="sport=BASE" />
+        <category title="BASE jumping">
+            <mapping tag="sport=base" />
         </category>
         <category title="Badminton">
             <mapping tag="sport=badminton" />
