@@ -755,9 +755,6 @@
         <category title="Works">
             <mapping tag="man_made=works" />
         </category>
-        <category title="">
-            <mapping tag="man_made=" />
-        </category>
     </category>
 
     <!-- Military -->
