@@ -17,6 +17,7 @@
 package org.mapsforge.poi.storage;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -104,6 +105,27 @@ public class DoubleLinkedPoiCategory implements PoiCategory {
 		rootNode.id = newMax;
 
 		return newMax + 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Collection<PoiCategory> deepChildren() {
+		// Use a Set in case of joint sub-trees
+		Collection<PoiCategory> ret = new HashSet<>();
+		Stack<PoiCategory> stack = new Stack<>();
+
+		stack.push(this);
+
+		while (!stack.isEmpty()) {
+			for (PoiCategory c : stack.pop().getChildren()) {
+				ret.add(c);
+				stack.push(c);
+			}
+		}
+
+		return ret;
 	}
 
 	/**

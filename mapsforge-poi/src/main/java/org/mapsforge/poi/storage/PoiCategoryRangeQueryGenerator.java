@@ -17,6 +17,7 @@
 package org.mapsforge.poi.storage;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * This class generates a prepared SQL query for retrieving POIs filtered by a given
@@ -38,62 +39,14 @@ public final class PoiCategoryRangeQueryGenerator {
 	}
 
 	/**
+	 * Gets the SQL query that looks up POI entries.
+	 *
 	 * @param filter
 	 *            The filter object for determining all wanted categories.
-	 * @return Array with two elements as a half open interval: <code>(min ID, max ID]</code>
+	 * @return The SQL query.
 	 */
-	private static int[] getCategoryIDIntervals(PoiCategoryFilter filter) {
-		Collection<PoiCategory> superCategories = filter.getAcceptedSuperCategories();
-
-		int[] ret = new int[superCategories.size() * 2];
-		int i = 0;
-
-		for (PoiCategory c : superCategories) {
-			PoiCategory sibling = PoiCategoryRangeQueryGenerator.getLeftSibling(c);
-
-			if (sibling == null) {
-				ret[i] = -1;
-				ret[i + 1] = c.getID();
-			} else {
-				ret[i] = sibling.getID();
-				ret[i + 1] = c.getID();
-			}
-
-			i += 2;
-		}
-
-		return ret;
-	}
-
-	/**
-	 * @param c1
-	 *            Category whose nearest left-hand side sibling should be returned.
-	 * @return The category's nearest left-hand side sibling or <code>null</code> if <code>c1</code>
-	 *         is the leftmost category on its level.
-	 */
-	private static PoiCategory getLeftSibling(PoiCategory c1) {
-		PoiCategory ret = null;
-
-		if (c1.getParent() == null) {
-			return null;
-		}
-
-		int maxID = -1;
-
-		// TODO Modify algorithm for non-sorted sets
-		for (PoiCategory c : c1.getParent().getChildren()) {
-			// Found a left sibling
-			if (c.getID() < c1.getID() && c.getID() > maxID) {
-				maxID = c.getID();
-				ret = c;
-			}
-		}
-
-		return ret;
-	}
-
 	public static String getSQLSelectString(PoiCategoryFilter filter) {
-		return SELECT_STATEMENT + getSQLWhereClauseString(filter) + ' ' + "LIMIT ?;";
+		return SELECT_STATEMENT + getSQLWhereClauseString(filter) + " LIMIT ?;";
 	}
 
 	/**
@@ -101,30 +54,43 @@ public final class PoiCategoryRangeQueryGenerator {
 	 *
 	 * @param filter
 	 *            The filter object for determining all wanted categories.
-	 * @return A string like <code>WHERE id BETWEEN 2 AND 5 OR BETWEEN 10 AND 12</code>.
+	 * @return The WHERE clause.
 	 */
 	private static String getSQLWhereClauseString(PoiCategoryFilter filter) {
-		int[] intervals = getCategoryIDIntervals(filter);
+		Collection<PoiCategory> superCategories = filter.getAcceptedSuperCategories();
 
-		if (intervals.length == 0) {
+		if (superCategories.isEmpty()) {
 			return "";
 		}
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(" AND (");
-		// foreach interval
-		for (int i = 0; i < intervals.length; i += 2) {
-			// Element has two siblings
-			sb.append("poi_data.category > ").append(intervals[i])
-					.append(" AND poi_data.category <= ").append(intervals[i + 1]);
+		// for each super category
+		for (Iterator<PoiCategory> superCatIter = superCategories.iterator(); superCatIter.hasNext(); ) {
+			PoiCategory superCat = superCatIter.next();
 
-			// append OR if it is not the last interval
-			if (i != intervals.length - 2) {
+			// All child categories of the super category, including their children
+			Collection<PoiCategory> categories = superCat.deepChildren();
+			// Don't forget the super category itself in the search!
+			categories.add(superCat);
+
+			sb.append("poi_data.category IN (");
+			// for each category
+			for (Iterator<PoiCategory> catIter = categories.iterator(); catIter.hasNext(); ) {
+				PoiCategory cat = catIter.next();
+				sb.append(cat.getID());
+				if (catIter.hasNext()) {
+					sb.append(", ");
+				}
+			}
+			sb.append(")");
+
+			// append OR if it is not the last
+			if (superCatIter.hasNext()) {
 				sb.append(" OR ");
 			}
 		}
-
-		sb.append(')');
+		sb.append(")");
 
 		return sb.toString();
 	}

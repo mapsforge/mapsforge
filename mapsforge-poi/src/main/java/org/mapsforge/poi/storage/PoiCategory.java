@@ -2,6 +2,7 @@
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 weise
  * Copyright 2010, 2011 Karsten Groll
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,7 +26,12 @@ import java.util.Collection;
  */
 public interface PoiCategory {
 	/**
-	 * @return All child categories of the category or null if this category has no children.
+	 * @return All child categories of the category, including their children.
+	 */
+	Collection<PoiCategory> deepChildren();
+
+	/**
+	 * @return All child categories of the category.
 	 */
 	Collection<PoiCategory> getChildren();
 
