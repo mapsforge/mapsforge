@@ -7,6 +7,7 @@
 - POI Search [#728](https://github.com/mapsforge/mapsforge/issues/728)
 - Reverse Geocoding example [#727](https://github.com/mapsforge/mapsforge/issues/727)
 - Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.1)
 
 ## Version 0.6.X
 
