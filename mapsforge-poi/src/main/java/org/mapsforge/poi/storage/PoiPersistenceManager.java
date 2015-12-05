@@ -38,50 +38,24 @@ public interface PoiPersistenceManager {
 
 	/**
 	 * Find all {@link PointOfInterest} in a rectangle specified by the given {@link BoundingBox}.
-	 *
-	 * @param bb
-	 *            {@link BoundingBox} specifying the rectangle.
-	 * @param limit
-	 *            max number of {@link PointOfInterest} to be returned.
-	 * @return {@link Collection} of {@link PointOfInterest} contained in the rectangle specified by
-	 *         the two given {@link LatLong}s.
-	 */
-	Collection<PointOfInterest> findInRect(BoundingBox bb, int limit);
-
-	/**
-	 * Find all {@link PointOfInterest} in a rectangle specified by the given {@link BoundingBox}.
 	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object will be returned.
 	 *
 	 * @param bb
 	 *            {@link BoundingBox} specifying the rectangle.
 	 * @param filter
 	 *            POI category filter object that helps determining whether a POI should be added to
-	 *            the set or not.
+	 *            the set or not (may be null).
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} matching a given
 	 *         {@link PoiCategoryFilter} contained in the rectangle specified by the two given
 	 *         {@link LatLong}s.
 	 */
-	Collection<PointOfInterest> findInRectWithFilter(BoundingBox bb, PoiCategoryFilter filter,
-													 int limit);
+	Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, int limit);
 
 	/**
 	 * Fetch {@link PointOfInterest} from underlying storage near a given position.
-	 *
-	 * @param point
-	 *            {@link LatLong} center of the search.
-	 * @param distance
-	 *            in meters
-	 * @param limit
-	 *            max number of {@link PointOfInterest} to be returned.
-	 * @return {@link Collection} of {@link PointOfInterest} near the given position.
-	 */
-	Collection<PointOfInterest> findNearPosition(LatLong point, int distance, int limit);
-
-	/**
-	 * Fetch {@link PointOfInterest} from underlying storage near a given position. Only the POIs
-	 * that are allowed by the {@link PoiCategoryFilter} object will be returned.
+	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object will be returned.
 	 *
 	 * @param point
 	 *            {@link LatLong} center of the search.
@@ -89,14 +63,14 @@ public interface PoiPersistenceManager {
 	 *            in meters
 	 * @param filter
 	 *            POI category filter object that helps determining whether a POI should be added to
-	 *            the set or not.
+	 *            the set or not (may be null).
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} matching a given
 	 *         {@link PoiCategoryFilter} near the given position.
 	 */
-	Collection<PointOfInterest> findNearPositionWithFilter(LatLong point, int distance,
-														   PoiCategoryFilter filter, int limit);
+	Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
+												 PoiCategoryFilter filter, int limit);
 
 	/**
 	 * @param poiID

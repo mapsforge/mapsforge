@@ -90,24 +90,14 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 	}
 
 	@Override
-	public Collection<PointOfInterest> findNearPosition(LatLong point, int distance, int limit) {
+	public Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
+														PoiCategoryFilter filter, int limit) {
 		double minLat = point.getLatitude() - LatLongUtils.latitudeDistance(distance);
 		double minLon = point.getLongitude() - LatLongUtils.longitudeDistance(distance, point.getLatitude());
 		double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
 		double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
 
-		return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), limit);
-	}
-
-	@Override
-	public Collection<PointOfInterest> findNearPositionWithFilter(LatLong point, int distance,
-																  PoiCategoryFilter filter, int limit) {
-		double minLat = point.getLatitude() - LatLongUtils.latitudeDistance(distance);
-		double minLon = point.getLongitude() - LatLongUtils.longitudeDistance(distance, point.getLatitude());
-		double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
-		double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
-
-		return findInRectWithFilter(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, limit);
+		return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, limit);
 	}
 
 	@Override

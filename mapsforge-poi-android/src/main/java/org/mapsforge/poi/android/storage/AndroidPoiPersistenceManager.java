@@ -204,51 +204,16 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findInRect(BoundingBox bb, int limit) {
+	public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
+												  int limit) {
 		// Clear previous results
 		this.ret.clear();
 
 		// Query
 		try {
-			this.findInBoxStatement.reset();
-			this.findInBoxStatement.clear_bindings();
-
-			this.findInBoxStatement.bind(1, bb.maxLatitude);
-			this.findInBoxStatement.bind(2, bb.maxLongitude);
-			this.findInBoxStatement.bind(3, bb.minLatitude);
-			this.findInBoxStatement.bind(4, bb.minLongitude);
-			this.findInBoxStatement.bind(5, limit);
-
-			while (this.findInBoxStatement.step()) {
-				long id = this.findInBoxStatement.column_long(0);
-				double lat = this.findInBoxStatement.column_double(1);
-				double lon = this.findInBoxStatement.column_double(2);
-				String data = this.findInBoxStatement.column_string(3);
-				int categoryID = this.findInBoxStatement.column_int(4);
-
-				try {
-					this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
-					this.ret.add(this.poi);
-				} catch (UnknownPoiCategoryException e) {
-					LOGGER.log(Level.SEVERE, e.getMessage(), e);
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-
-		return this.ret;
-	}
-
-	@Override
-	public Collection<PointOfInterest> findInRectWithFilter(BoundingBox bb,
-															PoiCategoryFilter filter, int limit) {
-		// Clear previous results
-		this.ret.clear();
-
-		// Query
-		try {
-			Stmt stmt = this.db.prepare(PoiCategoryRangeQueryGenerator.getSQLSelectString(filter));
+			Stmt stmt = (filter != null
+					? this.db.prepare(PoiCategoryRangeQueryGenerator.getSQLSelectString(filter))
+					: this.findInBoxStatement);
 
 			stmt.reset();
 			stmt.clear_bindings();
