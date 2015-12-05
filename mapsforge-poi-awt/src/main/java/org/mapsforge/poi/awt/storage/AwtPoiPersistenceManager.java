@@ -17,7 +17,6 @@ package org.mapsforge.poi.awt.storage;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiCategoryRangeQueryGenerator;
 import org.mapsforge.poi.storage.PoiImpl;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
@@ -43,9 +42,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
 	private Connection conn = null;
 
-	private PreparedStatement findInBoxStatement = null;
 	private PreparedStatement findByIDStatement = null;
-	private PreparedStatement findByNameStatement = null;
 	private PreparedStatement insertPoiStatement1 = null;
 	private PreparedStatement insertPoiStatement2 = null;
 	private PreparedStatement deletePoiStatement1 = null;
@@ -68,14 +65,8 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
 		// Queries
 		try {
-			// Finds POIs by a given bounding box
-			this.findInBoxStatement = this.conn.prepareStatement(FIND_IN_BOX_STATEMENT);
-
 			// Finds a POI by its unique ID
 			this.findByIDStatement = this.conn.prepareStatement(FIND_BY_ID_STATEMENT);
-
-			// Finds POIs by name
-			this.findByNameStatement = this.conn.prepareStatement(FIND_BY_NAME_STATEMENT);
 
 			// Inserts a POI into index and adds its data
 			this.insertPoiStatement1 = this.conn.prepareStatement(INSERT_INDEX_STATEMENT);
@@ -89,29 +80,16 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() {
 		// Close statements
 
-		if (this.findInBoxStatement != null) {
-			try {
-				this.findInBoxStatement.close();
-			} catch (SQLException e) {
-				LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			}
-		}
-
 		if (this.findByIDStatement != null) {
 			try {
 				this.findByIDStatement.close();
-			} catch (SQLException e) {
-				LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			}
-		}
-
-		if (this.findByNameStatement != null) {
-			try {
-				this.findByNameStatement.close();
 			} catch (SQLException e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
@@ -204,17 +182,18 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		stmt.close();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
-												  int limit) {
+												  String pattern, int limit) {
 		// Clear previous results
 		this.ret.clear();
 
 		// Query
 		try {
-			PreparedStatement stmt = (filter != null
-					? this.conn.prepareStatement(PoiCategoryRangeQueryGenerator.getSQLSelectString(filter))
-					: this.findInBoxStatement);
+			PreparedStatement stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pattern));
 
 			stmt.clearParameters();
 
@@ -222,7 +201,10 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			stmt.setDouble(2, bb.maxLongitude);
 			stmt.setDouble(3, bb.minLatitude);
 			stmt.setDouble(4, bb.minLongitude);
-			stmt.setInt(5, limit);
+			if (pattern != null) {
+				stmt.setString(5, pattern);
+			}
+			stmt.setInt(pattern != null ? 6 : 5, limit);
 
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -247,6 +229,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		return this.ret;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PointOfInterest findPointByID(long poiID) {
 		// Clear previous results
@@ -280,40 +265,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		return this.poi;
 	}
 
-	@Override
-	public Collection<PointOfInterest> findPointsByName(String pattern) {
-		// Clear previous results
-		this.ret.clear();
-
-		// Query
-		try {
-			this.findByNameStatement.clearParameters();
-
-			this.findByNameStatement.setString(1, pattern);
-
-			ResultSet rs = this.findByNameStatement.executeQuery();
-			while (rs.next()) {
-				long id = rs.getLong(1);
-				double lat = rs.getDouble(2);
-				double lon = rs.getDouble(3);
-				String data = rs.getString(4);
-				int categoryID = rs.getInt(5);
-
-				try {
-					this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
-					this.ret.add(this.poi);
-				} catch (UnknownPoiCategoryException e) {
-					LOGGER.log(Level.SEVERE, e.getMessage(), e);
-				}
-			}
-			rs.close();
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-
-		return this.ret;
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void insertPointOfInterest(PointOfInterest poi) {
 		try {
@@ -343,6 +297,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void insertPointsOfInterest(Collection<PointOfInterest> pois) {
 		try {
@@ -400,6 +357,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		return numTables == NUMBER_OF_TABLES;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removePointOfInterest(PointOfInterest poi) {
 		try {

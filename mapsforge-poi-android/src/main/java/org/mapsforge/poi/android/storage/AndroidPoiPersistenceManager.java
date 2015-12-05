@@ -19,7 +19,6 @@ package org.mapsforge.poi.android.storage;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiCategoryRangeQueryGenerator;
 import org.mapsforge.poi.storage.PoiImpl;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
@@ -42,9 +41,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
 	private Database db = null;
 
-	private Stmt findInBoxStatement = null;
 	private Stmt findByIDStatement = null;
-	private Stmt findByNameStatement = null;
 	private Stmt insertPoiStatement1 = null;
 	private Stmt insertPoiStatement2 = null;
 	private Stmt deletePoiStatement1 = null;
@@ -67,14 +64,8 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
 		// Queries
 		try {
-			// Finds POIs by a given bounding box
-			this.findInBoxStatement = this.db.prepare(FIND_IN_BOX_STATEMENT);
-
 			// Finds a POI by its unique ID
 			this.findByIDStatement = this.db.prepare(FIND_BY_ID_STATEMENT);
-
-			// Finds POIs by name
-			this.findByNameStatement = this.db.prepare(FIND_BY_NAME_STATEMENT);
 
 			// Inserts a POI into index and adds its data
 			this.insertPoiStatement1 = this.db.prepare(INSERT_INDEX_STATEMENT);
@@ -88,29 +79,16 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() {
 		// Close statements
 
-		if (this.findInBoxStatement != null) {
-			try {
-				this.findInBoxStatement.close();
-			} catch (Exception e) {
-				LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			}
-		}
-
 		if (this.findByIDStatement != null) {
 			try {
 				this.findByIDStatement.close();
-			} catch (Exception e) {
-				LOGGER.log(Level.SEVERE, e.getMessage(), e);
-			}
-		}
-
-		if (this.findByNameStatement != null) {
-			try {
-				this.findByNameStatement.close();
 			} catch (Exception e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
@@ -203,17 +181,18 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		this.db.exec(CREATE_INDEX_STATEMENT, null);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
-												  int limit) {
+												  String pattern, int limit) {
 		// Clear previous results
 		this.ret.clear();
 
 		// Query
 		try {
-			Stmt stmt = (filter != null
-					? this.db.prepare(PoiCategoryRangeQueryGenerator.getSQLSelectString(filter))
-					: this.findInBoxStatement);
+			Stmt stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, pattern));
 
 			stmt.reset();
 			stmt.clear_bindings();
@@ -222,7 +201,10 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			stmt.bind(2, bb.maxLongitude);
 			stmt.bind(3, bb.minLatitude);
 			stmt.bind(4, bb.minLongitude);
-			stmt.bind(5, limit);
+			if (pattern != null) {
+				stmt.bind(5, pattern);
+			}
+			stmt.bind(pattern != null ? 6 : 5, limit);
 
 			while (stmt.step()) {
 				long id = stmt.column_long(0);
@@ -245,6 +227,9 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		return this.ret;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PointOfInterest findPointByID(long poiID) {
 		// Clear previous results
@@ -277,39 +262,9 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		return this.poi;
 	}
 
-	@Override
-	public Collection<PointOfInterest> findPointsByName(String pattern) {
-		// Clear previous results
-		this.ret.clear();
-
-		// Query
-		try {
-			this.findByNameStatement.reset();
-			this.findByNameStatement.clear_bindings();
-
-			this.findByNameStatement.bind(1, pattern);
-
-			while (this.findByNameStatement.step()) {
-				long id = this.findByNameStatement.column_long(0);
-				double lat = this.findByNameStatement.column_double(1);
-				double lon = this.findByNameStatement.column_double(2);
-				String data = this.findByNameStatement.column_string(3);
-				int categoryID = this.findByNameStatement.column_int(4);
-
-				try {
-					this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
-					this.ret.add(this.poi);
-				} catch (UnknownPoiCategoryException e) {
-					LOGGER.log(Level.SEVERE, e.getMessage(), e);
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-
-		return this.ret;
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void insertPointOfInterest(PointOfInterest poi) {
 		try {
@@ -339,6 +294,9 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void insertPointsOfInterest(Collection<PointOfInterest> pois) {
 		try {
@@ -394,6 +352,9 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		return numTables == NUMBER_OF_TABLES;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void removePointOfInterest(PointOfInterest poi) {
 		try {

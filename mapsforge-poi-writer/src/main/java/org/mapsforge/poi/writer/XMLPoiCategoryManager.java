@@ -97,6 +97,9 @@ public class XMLPoiCategoryManager implements PoiCategoryManager {
 		return ret;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PoiCategory getPoiCategoryByID(int id) {
 		PoiCategory ret = null;
@@ -110,11 +113,17 @@ public class XMLPoiCategoryManager implements PoiCategoryManager {
 		return ret;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PoiCategory getPoiCategoryByTitle(String title) {
 		return this.titleMap.get(title);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PoiCategory getRootCategory() {
 		return this.root;

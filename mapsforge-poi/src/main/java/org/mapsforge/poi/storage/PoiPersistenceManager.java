@@ -38,24 +38,29 @@ public interface PoiPersistenceManager {
 
 	/**
 	 * Find all {@link PointOfInterest} in a rectangle specified by the given {@link BoundingBox}.
-	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object will be returned.
+	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the name
+	 * pattern will be returned.
 	 *
 	 * @param bb
 	 *            {@link BoundingBox} specifying the rectangle.
 	 * @param filter
 	 *            POI category filter object that helps determining whether a POI should be added to
 	 *            the set or not (may be null).
+	 * @param pattern
+	 *            the pattern to search in points of interest names (may be null).
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} matching a given
-	 *         {@link PoiCategoryFilter} contained in the rectangle specified by the two given
-	 *         {@link LatLong}s.
+	 *         {@link PoiCategoryFilter} and name pattern contained in the rectangle specified by
+	 *         the given {@link BoundingBox}.
 	 */
-	Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, int limit);
+	Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, String pattern,
+										   int limit);
 
 	/**
 	 * Fetch {@link PointOfInterest} from underlying storage near a given position.
-	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object will be returned.
+	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the name
+	 * pattern will be returned.
 	 *
 	 * @param point
 	 *            {@link LatLong} center of the search.
@@ -64,13 +69,16 @@ public interface PoiPersistenceManager {
 	 * @param filter
 	 *            POI category filter object that helps determining whether a POI should be added to
 	 *            the set or not (may be null).
+	 * @param pattern
+	 *            the pattern to search in points of interest names (may be null).
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} matching a given
-	 *         {@link PoiCategoryFilter} near the given position.
+	 *         {@link PoiCategoryFilter} and name pattern near the given position.
 	 */
 	Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
-												 PoiCategoryFilter filter, int limit);
+												 PoiCategoryFilter filter, String pattern,
+												 int limit);
 
 	/**
 	 * @param poiID
@@ -78,13 +86,6 @@ public interface PoiPersistenceManager {
 	 * @return a single {@link PointOfInterest} p where p.id == poiID.
 	 */
 	PointOfInterest findPointByID(long poiID);
-
-	/**
-	 * @param pattern
-	 *            the pattern to search in points of interest names.
-	 * @return {@link Collection} of {@link PointOfInterest} whose names match the given pattern.
-	 */
-	Collection<PointOfInterest> findPointsByName(String pattern);
 
 	/**
 	 * @return The persistence manager's category manager for retrieving and editing POI categories.

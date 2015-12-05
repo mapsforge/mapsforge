@@ -34,6 +34,9 @@ public abstract class AbstractPoiCategoryManager implements PoiCategoryManager {
 	 */
 	protected Map<Integer, PoiCategory> categoryMap = null;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PoiCategory getPoiCategoryByID(int id) throws UnknownPoiCategoryException {
 		if (this.categoryMap.get(id) == null) {
@@ -43,6 +46,9 @@ public abstract class AbstractPoiCategoryManager implements PoiCategoryManager {
 		return this.categoryMap.get(id);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PoiCategory getPoiCategoryByTitle(String title) throws UnknownPoiCategoryException {
 		for (int key : this.categoryMap.keySet()) {
@@ -54,6 +60,9 @@ public abstract class AbstractPoiCategoryManager implements PoiCategoryManager {
 		throw new UnknownPoiCategoryException();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PoiCategory getRootCategory() throws UnknownPoiCategoryException {
 		if (this.rootCategory == null) {

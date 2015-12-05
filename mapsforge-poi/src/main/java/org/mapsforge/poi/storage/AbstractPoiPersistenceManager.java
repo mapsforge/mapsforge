@@ -44,12 +44,7 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 					+ "JOIN poi_data ON poi_index.id = poi_data.id "
 					+ "WHERE "
 					+ "poi_index.id = ?;";
-	protected static final String FIND_BY_NAME_STATEMENT =
-			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
-					+ "FROM poi_index "
-					+ "JOIN poi_data ON poi_index.id = poi_data.id "
-					+ "WHERE "
-					+ "poi_data.data LIKE ?;";
+	protected static final String FIND_BY_NAME_CLAUSE = " AND poi_data.data LIKE ?";
 	protected static final String FIND_IN_BOX_STATEMENT =
 			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
 					+ "FROM poi_index "
@@ -58,7 +53,7 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 					+ "minLat <= ? AND "
 					+ "minLon <= ? AND "
 					+ "minLat >= ? AND "
-					+ "minLon >= ? LIMIT ?";
+					+ "minLon >= ?";
 
 	protected static final String INSERT_INDEX_STATEMENT = "INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);";
 	protected static final String INSERT_DATA_STATEMENT = "INSERT INTO poi_data VALUES (?, ?, ?);";
@@ -89,22 +84,48 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 		this.ret = new ArrayList<>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
-														PoiCategoryFilter filter, int limit) {
+														PoiCategoryFilter filter, String pattern,
+														int limit) {
 		double minLat = point.getLatitude() - LatLongUtils.latitudeDistance(distance);
 		double minLon = point.getLongitude() - LatLongUtils.longitudeDistance(distance, point.getLatitude());
 		double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
 		double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
 
-		return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, limit);
+		return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, pattern, limit);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PoiCategoryManager getCategoryManager() {
 		return this.categoryManager;
 	}
 
+	/**
+	 * Gets the SQL query that looks up POI entries.
+	 *
+	 * @param filter
+	 *            The filter object for determining all wanted categories (may be null).
+	 * @param pattern
+	 *            the pattern to search in points of interest names (may be null).
+	 * @return The SQL query.
+	 */
+	public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
+		if (filter != null) {
+			return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, pattern);
+		}
+		return FIND_IN_BOX_STATEMENT + (pattern != null ? FIND_BY_NAME_CLAUSE : "") + " LIMIT ?;";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setCategoryManager(PoiCategoryManager categoryManager) {
 		this.categoryManager = categoryManager;

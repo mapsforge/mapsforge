@@ -77,9 +77,9 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 
 ### Filtered Search
 
-The API supports POI search inside a specified rectangle or near a given position, also by name.
+The API supports POI search inside a specified rectangle, near a given position or by a name pattern.
 
-You can use category filters that accept the categories added to them.
+You can also use category filters for filtering the results based on the categories added to them.
 
 ### POI DB Schema
 

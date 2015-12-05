@@ -24,16 +24,6 @@ import java.util.Iterator;
  * {@link PoiCategoryFilter}.
  */
 public final class PoiCategoryRangeQueryGenerator {
-	private static final String SELECT_STATEMENT =
-			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
-					+ "FROM poi_index "
-					+ "JOIN poi_data ON poi_index.id = poi_data.id "
-					+ "WHERE "
-					+ "minLat <= ? AND "
-					+ "minLon <= ? AND "
-					+ "minLat >= ? AND "
-					+ "minLon >= ?";
-
 	private PoiCategoryRangeQueryGenerator() {
 		// no-op, for privacy
 	}
@@ -43,10 +33,14 @@ public final class PoiCategoryRangeQueryGenerator {
 	 *
 	 * @param filter
 	 *            The filter object for determining all wanted categories.
+	 * @param pattern
+	 *            the pattern to search in points of interest names (may be null).
 	 * @return The SQL query.
 	 */
-	public static String getSQLSelectString(PoiCategoryFilter filter) {
-		return SELECT_STATEMENT + getSQLWhereClauseString(filter) + " LIMIT ?;";
+	public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
+		return AbstractPoiPersistenceManager.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter)
+				+ (pattern != null ? AbstractPoiPersistenceManager.FIND_BY_NAME_CLAUSE : "")
+				+ " LIMIT ?;";
 	}
 
 	/**
