@@ -17,6 +17,7 @@
  */
 package org.mapsforge.poi.storage;
 
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 
 import java.util.Collection;
@@ -36,29 +37,23 @@ public interface PoiPersistenceManager {
 	void close();
 
 	/**
-	 * Find all {@link PointOfInterest} in a rectangle specified by the two given
-	 * {@link LatLong}s.
+	 * Find all {@link PointOfInterest} in a rectangle specified by the given {@link BoundingBox}.
 	 *
-	 * @param p1
-	 *            {@link LatLong} specifying one corner of the rectangle. (minLat, minLon)
-	 * @param p2
-	 *            {@link LatLong} specifying one corner of the rectangle. (maxLat, maxLon)
+	 * @param bb
+	 *            {@link BoundingBox} specifying the rectangle.
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} contained in the rectangle specified by
 	 *         the two given {@link LatLong}s.
 	 */
-	Collection<PointOfInterest> findInRect(LatLong p1, LatLong p2, int limit);
+	Collection<PointOfInterest> findInRect(BoundingBox bb, int limit);
 
 	/**
-	 * Find all {@link PointOfInterest} in a rectangle specified by the two given
-	 * {@link LatLong}s. Only the POIs that are allowed by the {@link PoiCategoryFilter}
-	 * object will be returned.
+	 * Find all {@link PointOfInterest} in a rectangle specified by the given {@link BoundingBox}.
+	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object will be returned.
 	 *
-	 * @param p1
-	 *            {@link LatLong} specifying one corner of the rectangle. (minLat, minLon)
-	 * @param p2
-	 *            {@link LatLong} specifying one corner of the rectangle. (maxLat, maxLon)
+	 * @param bb
+	 *            {@link BoundingBox} specifying the rectangle.
 	 * @param filter
 	 *            POI category filter object that helps determining whether a POI should be added to
 	 *            the set or not.
@@ -68,8 +63,8 @@ public interface PoiPersistenceManager {
 	 *         {@link PoiCategoryFilter} contained in the rectangle specified by the two given
 	 *         {@link LatLong}s.
 	 */
-	Collection<PointOfInterest> findInRectWithFilter(LatLong p1, LatLong p2,
-													 PoiCategoryFilter filter, int limit);
+	Collection<PointOfInterest> findInRectWithFilter(BoundingBox bb, PoiCategoryFilter filter,
+													 int limit);
 
 	/**
 	 * Fetch {@link PointOfInterest} from underlying storage near a given position.

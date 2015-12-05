@@ -14,7 +14,7 @@
  */
 package org.mapsforge.poi.awt.storage;
 
-import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiCategoryRangeQueryGenerator;
@@ -205,7 +205,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findInRect(LatLong p1, LatLong p2, int limit) {
+	public Collection<PointOfInterest> findInRect(BoundingBox bb, int limit) {
 		// Clear previous results
 		this.ret.clear();
 
@@ -213,10 +213,10 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		try {
 			this.findInBoxStatement.clearParameters();
 
-			this.findInBoxStatement.setDouble(1, p2.getLatitude());
-			this.findInBoxStatement.setDouble(2, p2.getLongitude());
-			this.findInBoxStatement.setDouble(3, p1.getLatitude());
-			this.findInBoxStatement.setDouble(4, p1.getLongitude());
+			this.findInBoxStatement.setDouble(1, bb.maxLatitude);
+			this.findInBoxStatement.setDouble(2, bb.maxLongitude);
+			this.findInBoxStatement.setDouble(3, bb.minLatitude);
+			this.findInBoxStatement.setDouble(4, bb.minLongitude);
 			this.findInBoxStatement.setInt(5, limit);
 
 			ResultSet rs = this.findInBoxStatement.executeQuery();
@@ -243,7 +243,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findInRectWithFilter(LatLong p1, LatLong p2,
+	public Collection<PointOfInterest> findInRectWithFilter(BoundingBox bb,
 															PoiCategoryFilter filter, int limit) {
 		// Clear previous results
 		this.ret.clear();
@@ -254,10 +254,10 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
 			stmt.clearParameters();
 
-			stmt.setDouble(1, p2.getLatitude());
-			stmt.setDouble(2, p2.getLongitude());
-			stmt.setDouble(3, p1.getLatitude());
-			stmt.setDouble(4, p1.getLongitude());
+			stmt.setDouble(1, bb.maxLatitude);
+			stmt.setDouble(2, bb.maxLongitude);
+			stmt.setDouble(3, bb.minLatitude);
+			stmt.setDouble(4, bb.minLongitude);
 			stmt.setInt(5, limit);
 
 			ResultSet rs = stmt.executeQuery();

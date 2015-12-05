@@ -16,7 +16,7 @@
  */
 package org.mapsforge.poi.android.storage;
 
-import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiCategoryRangeQueryGenerator;
@@ -204,7 +204,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findInRect(LatLong p1, LatLong p2, int limit) {
+	public Collection<PointOfInterest> findInRect(BoundingBox bb, int limit) {
 		// Clear previous results
 		this.ret.clear();
 
@@ -213,10 +213,10 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			this.findInBoxStatement.reset();
 			this.findInBoxStatement.clear_bindings();
 
-			this.findInBoxStatement.bind(1, p2.getLatitude());
-			this.findInBoxStatement.bind(2, p2.getLongitude());
-			this.findInBoxStatement.bind(3, p1.getLatitude());
-			this.findInBoxStatement.bind(4, p1.getLongitude());
+			this.findInBoxStatement.bind(1, bb.maxLatitude);
+			this.findInBoxStatement.bind(2, bb.maxLongitude);
+			this.findInBoxStatement.bind(3, bb.minLatitude);
+			this.findInBoxStatement.bind(4, bb.minLongitude);
 			this.findInBoxStatement.bind(5, limit);
 
 			while (this.findInBoxStatement.step()) {
@@ -241,7 +241,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findInRectWithFilter(LatLong p1, LatLong p2,
+	public Collection<PointOfInterest> findInRectWithFilter(BoundingBox bb,
 															PoiCategoryFilter filter, int limit) {
 		// Clear previous results
 		this.ret.clear();
@@ -253,10 +253,10 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			stmt.reset();
 			stmt.clear_bindings();
 
-			stmt.bind(1, p2.getLatitude());
-			stmt.bind(2, p2.getLongitude());
-			stmt.bind(3, p1.getLatitude());
-			stmt.bind(4, p1.getLongitude());
+			stmt.bind(1, bb.maxLatitude);
+			stmt.bind(2, bb.maxLongitude);
+			stmt.bind(3, bb.minLatitude);
+			stmt.bind(4, bb.minLongitude);
 			stmt.bind(5, limit);
 
 			while (stmt.step()) {

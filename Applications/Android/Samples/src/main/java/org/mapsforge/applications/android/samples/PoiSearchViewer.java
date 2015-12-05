@@ -94,10 +94,7 @@ public class PoiSearchViewer extends RenderTheme4 {
 				PoiCategoryManager categoryManager = persistenceManager.getCategoryManager();
 				PoiCategoryFilter categoryFilter = new ExactMatchPoiCategoryFilter();
 				categoryFilter.addCategory(categoryManager.getPoiCategoryByTitle(this.category));
-				return persistenceManager.findInRectWithFilter(
-						new LatLong(params[0].minLatitude, params[0].minLongitude),
-						new LatLong(params[0].maxLatitude, params[0].maxLongitude),
-						categoryFilter, Integer.MAX_VALUE);
+				return persistenceManager.findInRectWithFilter(params[0], categoryFilter, Integer.MAX_VALUE);
 			} catch (Throwable t) {
 				Log.e(SamplesApplication.TAG, t.getMessage(), t);
 			} finally {

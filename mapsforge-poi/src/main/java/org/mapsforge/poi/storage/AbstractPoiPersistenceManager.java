@@ -14,6 +14,7 @@
  */
 package org.mapsforge.poi.storage;
 
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.util.LatLongUtils;
 
@@ -95,7 +96,7 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 		double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
 		double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
 
-		return findInRect(new LatLong(minLat, minLon), new LatLong(maxLat, maxLon), limit);
+		return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), limit);
 	}
 
 	@Override
@@ -106,7 +107,7 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 		double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
 		double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
 
-		return findInRectWithFilter(new LatLong(minLat, minLon), new LatLong(maxLat, maxLon), filter, limit);
+		return findInRectWithFilter(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, limit);
 	}
 
 	@Override
