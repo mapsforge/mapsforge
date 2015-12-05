@@ -82,22 +82,24 @@
             <category title="Fuel stations">
                 <mapping tag="amenity=fuel" />
             </category>
-            <category title="Containers holding a mixture of salt and grit">
+            <!--<category title="Containers holding a mixture of salt and grit">
                 <mapping tag="amenity=grit_bin" />
-            </category>
+            </category>-->
             <category title="Car parks">
                 <mapping tag="amenity=parking" />
             </category>
-            <category title="A single parking space">
+            <!--<category title="A single parking space">
                 <mapping tag="amenity=parking_space" />
-            </category>
-            <category title="Entrances / Exits to underground parking facilities">
+            </category>-->
+            <!--<category title="Entrances / Exits to underground parking facilities">
                 <mapping tag="amenity=parking_entrance" />
-            </category>
+            </category>-->
             <category title="Taxi stands">
                 <mapping tag="amenity=taxi" />
             </category>
             <category title="Electric vehicle charging facilities">
+                <mapping tag="amenity=charging_station" />
+                <!-- Deprecated tag -->
                 <mapping tag="amenity=ev_charging" />
             </category>
         </category>
@@ -118,6 +120,8 @@
             </category>
             <category title="Hospitals">
                 <mapping tag="amenity=hospital" />
+                <!-- Added -->
+                <mapping tag="amenity=clinic" />
             </category>
             <category title="Places to drop babies for remorse">
                 <mapping tag="amenity=baby_hatch" />
@@ -131,9 +135,10 @@
             <category title="Nursing homes">
                 <mapping tag="amenity=nursing_home" />
             </category>
-            <category title="Social Facilities">
+            <!-- TODO There are a lot of different social facilities -->
+            <!--<category title="Social Facilities">
                 <mapping tag="amenity=social_facility" />
-            </category>
+            </category>-->
             <category title="Veterinary clinics">
                 <mapping tag="amenity=veterinary" />
             </category>
@@ -148,9 +153,9 @@
             <category title="Community centers">
                 <mapping tag="amenity=community_centre" />
             </category>
-            <category title="Social centers">
-                <mapping tag="amenity=social_centre" />
-            </category>
+            <!--<category title="Social centers">
+                <mapping tag="amenity=social_centre" /> 
+            </category>-->
             <category title="Fountains">
                 <mapping tag="amenity=fountain" />
             </category>
@@ -160,9 +165,9 @@
             <category title="Strip clubs">
                 <mapping tag="amenity=stripclub" />
             </category>
-            <category title="TV, radio or recording studios">
+            <!--<category title="TV, radio or recording studios">
                 <mapping tag="amenity=studio" />
-            </category>
+            </category>-->
             <category title="Theatres and operas">
                 <mapping tag="amenity=theatre" />
             </category>
@@ -171,12 +176,13 @@
             <category title="Public benches">
                 <mapping tag="amenity=bench" />
             </category>
+            <!-- Why not.. -->
             <category title="Brothels">
                 <mapping tag="amenity=brothel" />
             </category>
-            <category title="Public visible clocks">
+            <!--<category title="Public visible clocks">
                 <mapping tag="amenity=clock" />
-            </category>
+            </category>-->
             <category title="Court houses">
                 <mapping tag="amenity=court_house" />
             </category>
@@ -213,15 +219,17 @@
             <category title="Prisons (not including schools)">
                 <mapping tag="amenity=prison" />
             </category>
-            <category title="Public buildings">
+            <!-- Not enough -->
+            <!--<category title="Public buildings">
                 <mapping tag="amenity=public_building" />
-            </category>
+            </category>-->
             <category title="Recycling facilities">
                 <mapping tag="amenity=recycling" />
             </category>
             <category title="Saunas">
                 <mapping tag="amenity=sauna" />
             </category>
+            <!-- There are a lot of different shelter_type, how to define those ?? -->
             <category title="Bad weather shelters">
                 <mapping tag="amenity=shelter" />
             </category>
@@ -234,18 +242,22 @@
             <category title="Town halls">
                 <mapping tag="amenity=townhall" />
             </category>
-            <category title="Vending machines">
+            <!-- TODO Not specific enough, have better would be vending=#### under appropriate category -->
+            <!--<category title="Vending machines">
                 <mapping tag="amenity=vending_machine" />
-            </category>
-            <category title="Garbage cans">
+            </category>-->
+            <!-- Too many nodes, no need for this, everyone is able to look for one -->
+            <!--<category title="Garbage cans">
                 <mapping tag="amenity=waste_basket" />
-            </category>
-            <category title="Garbage containers">
+            </category>-->
+            <!-- Too many nodes, no need for this, everyone is able to look for one -->
+            <!--<category title="Garbage containers">
                 <mapping tag="amenity=waste_disposal" />
-            </category>
-            <category title="Water places for animals">
+            </category>-->
+            <!-- drinking_water is enough -->
+            <!--<category title="Water places for animals">
                 <mapping tag="amenity=watering_place" />
-            </category>
+            </category>-->
         </category>
     </category>
 
@@ -253,6 +265,16 @@
 
     <!-- Aeroway -->
     <category title="Airport POIs">
+        <!-- Added start -->
+        <category title="Airports">
+            <mapping tag="aeroway=aerodrome" />
+            <mapping tag="aeroway=airport" />
+        </category>
+        <category title="Airport terminals">
+            <mapping tag="aeroway=terminal" />
+        </category>
+        <!-- Added end -->
+        <!-- Questionable, does this really add valuable information? Would effect tag-mapping too!! -->
         <category title="Airport gates">
             <mapping tag="aeroway=gate" />
         </category>
@@ -264,9 +286,10 @@
         </category>
     </category>
 
+    <!-- See annotation in #736 -->
     <!-- Barrier -->
     <category title="Barriers">
-        <category title="Kerbs">
+        <!--<category title="Kerbs">
             <mapping tag="barrier=kerb" />
         </category>
         <category title="Blocks">
@@ -274,11 +297,11 @@
         </category>
         <category title="Bollards">
             <mapping tag="barrier=bollard" />
-        </category>
+        </category>-->
         <category title="Border controls">
             <mapping tag="barrier=border_control" />
         </category>
-        <category title="Cattle grids">
+        <!--<category title="Cattle grids">
             <mapping tag="barrier=cattle_grid" />
         </category>
         <category title="Chains">
@@ -340,7 +363,7 @@
         </category>
         <category title="Turnstiles">
             <mapping tag="barrier=turnstile" />
-        </category>
+        </category>-->
     </category>
 
     <!-- Building -->
@@ -542,33 +565,33 @@
         <category title="Bus stops">
             <mapping tag="highway=bus_stop" />
         </category>
-        <category title="Crossings">
+        <!--<category title="Crossings">
             <mapping tag="highway=crossing" />
-        </category>
-        <category title="Emergency access points">
+        </category>-->
+        <!--<category title="Emergency access points">
             <mapping tag="highway=emergency_access_point" />
-        </category>
-        <category title="Fords">
+        </category>-->
+        <!--<category title="Fords">
             <mapping tag="highway=ford" />
-        </category>
+        </category>-->
         <!--<category title="Give ways">
             <mapping tag="highway=give_way" />
         </category>-->
-        <category title="Mini roundabouts">
+        <!--<category title="Mini roundabouts">
             <mapping tag="highway=mini_roundabout" />
-        </category>
+        </category>-->
         <category title="Motorway junctions">
             <mapping tag="highway=motorway_junction" />
         </category>
-        <category title="Passing spaces">
+        <!--<category title="Passing spaces">
             <mapping tag="highway=passing_place" />
-        </category>
+        </category>-->
         <category title="Rest areas">
             <mapping tag="highway=rest_area" />
         </category>
-        <category title="Speed cameras">
+        <!--<category title="Speed cameras">
             <mapping tag="highway=speed_camera" />
-        </category>
+        </category>-->
         <!--<category title="Street lamps">
             <mapping tag="highway=street_lamp" />
         </category>-->
@@ -581,9 +604,9 @@
         <!--<category title="Traffic signals">
             <mapping tag="highway=traffic_signal" />
         </category>-->
-        <category title="Turning cycles">
+        <!--<category title="Turning cycles">
             <mapping tag="highway=turning_cycle" />
-        </category>
+        </category>-->
     </category>
 
     <!-- Historic -->
@@ -701,38 +724,42 @@
         <category title="Chimneys">
             <mapping tag="man_made=chimney" />
         </category>
-        <category title="Cranes">
+        <!--<category title="Cranes">
             <mapping tag="man_made=crane" />
-        </category>
-        <category title="Flagpoles">
+        </category>-->
+        <!--<category title="Flagpoles">
             <mapping tag="man_made=flagpole" />
-        </category>
+        </category>-->
         <category title="Lighthouses">
             <mapping tag="man_made=lighthouse" />
         </category>
         <category title="Mineshafts">
             <mapping tag="man_made=mineshaft" />
         </category>
-        <category title="Monitoring stations">
+        <!--<category title="Monitoring stations">
             <mapping tag="man_made=monitoring_station" />
-        </category>
+        </category>-->
         <category title="Petroleum wells">
             <mapping tag="man_made=petroleum_wells" />
         </category>
         <category title="Covered water reservoirs">
             <mapping tag="man_made=reservoir_covered" />
         </category>
-        <category title="Storage tanks">
+        <!--<category title="Storage tanks">
             <mapping tag="man_made=storage tank" />
-        </category>
-        <category title="Surveillance cameras">
+        </category>-->
+        <!--<category title="Surveillance cameras">
             <mapping tag="man_made=surveillance" />
-        </category>
+        </category>-->
         <category title="Survey points">
             <mapping tag="man_made=survey_point" />
         </category>
         <category title="Towers">
             <mapping tag="man_made=tower" />
+            <!-- OpenAndroMaps specific -->
+            <mapping tag="tower=communication" />
+            <!-- OpenAndroMaps specific -->
+            <mapping tag="tower=observation" />
         </category>
         <category title="Wastewater plants">
             <mapping tag="man_made=wastewater_plant" />
@@ -751,6 +778,8 @@
         </category>
         <category title="Windmills">
             <mapping tag="man_made=windmill" />
+            <!-- OpenAndroMaps specific -->
+            <mapping tag="tower=windmill" />
         </category>
         <category title="Works">
             <mapping tag="man_made=works" />
@@ -780,69 +809,106 @@
     </category>
 
     <!-- Natural -->
+    <category title="Natural">
+        <category title="Peak">
+            <mapping tag="natural=peak" />
+        </category>
+        <category title="Vulcano">
+            <mapping tag="natural=vulcano" />
+        </category>
+        <category title="Geyser">
+            <mapping tag="natural=geyser" />
+        </category>
+        <category title="Spring">
+            <mapping tag="natural=spring" />
+        </category>
+    </category>
 
     <!-- Office -->
     <category title="Office">
-        <category title="Accountants">
+        <!--<category title="Accountants">
             <mapping tag="office=accountant" />
-        </category>
+        </category>-->
         <category title="Administrative">
             <mapping tag="office=administrative" />
         </category>
-        <category title="Architects">
+        <!--<category title="Architects">
             <mapping tag="office=" />
-        </category>
-        <category title="Camping">
+        </category>-->
+        <!-- See camp_site -->
+        <!--<category title="Camping">
             <mapping tag="office=camping" />
-        </category>
-        <category title="Company">
+        </category>-->
+        <!-- Maybe later on.. -->
+        <!--<category title="Company">
             <mapping tag="office=company" />
-        </category>
-        <category title="Educational institutions">
+        </category>-->
+        <!--<category title="Educational institutions">
             <mapping tag="office=educational_institution" />
-        </category>
-        <category title="Employment agencies">
+        </category>-->
+        <!--<category title="Employment agencies">
             <mapping tag="office=employment_agency" />
-        </category>
-        <category title="Estate agents">
+        </category>-->
+        <!--<category title="Estate agents">
             <mapping tag="office=estate_agent" />
-        </category>
+        </category>-->
         <category title="Government">
             <mapping tag="office=government" />
         </category>
-        <category title="Insurance">
+        <!--<category title="Insurance">
             <mapping tag="office=insurance" />
-        </category>
-        <category title="IT">
+        </category>-->
+        <!--<category title="IT">
             <mapping tag="office=it" />
-        </category>
-        <category title="Lawyers">
+        </category>-->
+        <!--<category title="Lawyers">
             <mapping tag="office=lawyer" />
-        </category>
-        <category title="Newspapers">
+        </category>-->
+        <!--<category title="Newspapers">
             <mapping tag="office=newspaper" />
-        </category>
-        <category title="Non-government organisations">
+        </category>-->
+        <!--<category title="Non-government organisations">
             <mapping tag="office=ngo" />
-        </category>
-        <category title="Political parties">
+        </category>-->
+        <!--<category title="Political parties">
             <mapping tag="office=political_party" />
-        </category>
-        <category title="Quasi non-government organisation">
+        </category>-->
+        <!--<category title="Quasi non-government organisation">
             <mapping tag="office=quango" />
-        </category>
-        <category title="Research">
+        </category>-->
+        <!--<category title="Research">
             <mapping tag="office=research" />
-        </category>
-        <category title="Telecommunication">
+        </category>-->
+        <!--<category title="Telecommunication">
             <mapping tag="office=telecommunication" />
-        </category>
+        </category>-->
         <category title="Travel agents">
             <mapping tag="office=travel_agent" />
         </category>
     </category>
 
-    <!-- Places -->
+    <!-- Places / added OAM -->
+    <category title="Places">
+        <category title="Cities">
+            <mapping tag="place=city" />
+        </category>
+        <category title="Towns">
+            <mapping tag="place=town" />
+            <mapping tag="place=suburb" />
+            <mapping tag="place=neighbourhood" />
+            <mapping tag="place=neighborhood" />
+        </category>
+        <category title="Villages">
+            <mapping tag="place=village" />
+        </category>
+        <category title="Hamlets">
+            <mapping tag="place=hamlet" />
+        </category>
+        <category title="Isolated dwellings">
+            <mapping tag="place=isolated_dwelling" />
+            <mapping tag="place=farm" />
+        </category>
+    </category>
 
     <!-- Power -->
 
@@ -860,10 +926,12 @@
     </category>
 
     <!-- Railway -->
+    <!-- TODO -->
 
     <!-- Route -->
 
     <!-- Shop -->
+    <!-- TODO This should be cleared up further -->
     <category title="Shop">
         <category title="Alcohol">
             <mapping tag="shop=alcohol" />
@@ -1105,15 +1173,15 @@
         <category title="Toys">
             <mapping tag="shop=toys" />
         </category>
-        <category title="Vacant">
+        <!--<category title="Vacant">
             <mapping tag="shop=vacant" />
-        </category>
+        </category>-->
         <category title="Vacuum cleaners">
             <mapping tag="shop=vacuum_cleaner" />
         </category>
-        <category title="Variety stores">
+        <!--<category title="Variety stores">
             <mapping tag="shop=variety_store" />
-        </category>
+        </category>-->
         <category title="Videos">
             <mapping tag="shop=video" />
         </category>
@@ -1316,6 +1384,9 @@
         <category title="Caravan sites">
             <mapping tag="tourism=caravan_site" />
         </category>
+        <category title="Water point">
+            <mapping tag="amenity=water_point" />
+        </category>
         <category title="Chalets">
             <mapping tag="tourism=chalet" />
         </category>
@@ -1336,6 +1407,8 @@
         </category>
         <category title="Museums">
             <mapping tag="tourism=museum" />
+            <!-- Added -->
+            <mapping tag="amenity=museum" />
         </category>
         <category title="Picnic sites">
             <mapping tag="tourism=picnic_site" />
@@ -1354,6 +1427,40 @@
         </category>-->
     </category>
 
-    <!-- Waterway -->
+    <!-- Waterway / added OAM -->
+    <category title="Waterways">
+        <category title="Rapids">
+            <mapping tag="waterway=rapids" />
+            <mapping tag="natural=rapids" />
+        </category>
+        <category title="Waterfalls">
+            <mapping tag="waterway=waterfall" />
+            <mapping tag="natural=waterfall" />
+        </category>
+        <category title="Water points">
+            <mapping tag="waterway=water_point" />
+            <mapping tag="amenity=water_point" />
+        </category>
+
+    </category>
+
+    <!-- Bicycle / added  OAM -->
+    <category title="Bicycle related">
+        <category title="Cycle parking places">
+            <mapping tag="amenity=bicycle_parking" />
+        </category>
+        <category title="Cycle rental stations">
+            <mapping tag="amenity=bicycle_rental" />
+        </category>
+        <category title="Cycle shops">
+            <mapping tag="shop=bicycle" />
+        </category>
+        <category title="Cycle vending">
+            <mapping tag="vending=bicycle_tube" />
+        </category>
+        <category title="Cycle self repair">
+            <mapping tag="amenity=bicycle_repair_station" />
+        </category>
+    </category>
 
 </category>
