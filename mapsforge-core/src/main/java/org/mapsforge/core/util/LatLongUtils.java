@@ -93,7 +93,7 @@ public final class LatLongUtils {
 
 	/**
 	 * Converts a coordinate from degrees to microdegrees (degrees * 10^6). No validation is performed.
-	 * 
+	 *
 	 * @param coordinate
 	 *            the coordinate in degrees.
 	 * @return the coordinate in microdegrees (degrees * 10^6).
@@ -105,7 +105,7 @@ public final class LatLongUtils {
 	/**
 	 * Creates a new LatLong from a comma-separated string of coordinates in the order latitude, longitude. All
 	 * coordinate values must be in degrees.
-	 * 
+	 *
 	 * @param latLongString
 	 *            the string that describes the LatLong.
 	 * @return a new LatLong with the given coordinates.
@@ -128,7 +128,7 @@ public final class LatLongUtils {
 
 	/**
 	 * Calculates the amount of degrees of latitude for a given distance in meters.
-	 * 
+	 *
 	 * @param meters
 	 *            distance in meters
 	 * @return latitude degrees
@@ -139,7 +139,7 @@ public final class LatLongUtils {
 
 	/**
 	 * Calculates the amount of degrees of longitude for a given distance in meters.
-	 * 
+	 *
 	 * @param meters
 	 *            distance in meters
 	 * @param latitude
@@ -152,7 +152,7 @@ public final class LatLongUtils {
 
 	/**
 	 * Converts a coordinate from microdegrees (degrees * 10^6) to degrees. No validation is performed.
-	 * 
+	 *
 	 * @param coordinate
 	 *            the coordinate in microdegrees (degrees * 10^6).
 	 * @return the coordinate in degrees.
@@ -163,7 +163,7 @@ public final class LatLongUtils {
 
 	/**
 	 * Parses a given number of comma-separated coordinate values from the supplied string.
-	 * 
+	 *
 	 * @param coordinatesString
 	 *            a comma-separated string of coordinate values.
 	 * @param numberOfCoordinates
@@ -201,33 +201,170 @@ public final class LatLongUtils {
 	}
 
 	/**
+	 * Calculate the spherical distance between two LatLongs in meters using the Haversine
+	 * formula.
+	 *
+	 * This calculation is done using the assumption, that the earth is a sphere, it is not
+	 * though. If you need a higher precision and can afford a longer execution time you might
+	 * want to use vincentyDistance.
+	 *
+	 * @param latLong1
+	 *            first LatLong
+	 * @param latLong2
+	 *            second LatLong
+	 * @return distance in meters as a double
+	 * @throws IllegalArgumentException
+	 *             if one of the arguments is null
+	 */
+	public static double sphericalDistance(LatLong latLong1, LatLong latLong2)
+			throws IllegalArgumentException {
+		if (latLong1 == null || latLong2 == null) {
+			throw new IllegalArgumentException(
+					"The LatLongs for distance calculations may not be null.");
+		}
+		return sphericalDistance(latLong1.getLatitude(), latLong1.getLongitude(),
+				latLong2.getLatitude(), latLong2.getLongitude());
+	}
+
+	/**
+	 * Calculate the spherical distance between two LatLongs in meters using the Haversine
+	 * formula.
+	 *
+	 * This calculation is done using the assumption, that the earth is a sphere, it is not
+	 * though. If you need a higher precision and can afford a longer execution time you might
+	 * want to use vincentyDistance
+	 *
+	 * @param lat1
+	 *            latitude of first coordinate
+	 * @param lon1
+	 *            longitude of first coordinate
+	 * @param lat2
+	 *            latitude of second coordinate
+	 * @param lon2
+	 *            longitude of second coordinate
+	 *
+	 * @return distance in meters as a double
+	 * @throws IllegalArgumentException
+	 *             if one of the arguments is null
+	 */
+	public static double sphericalDistance(double lat1, double lon1, double lat2, double lon2) {
+		double dLat = Math.toRadians(lat2 - lat1);
+		double dLon = Math.toRadians(lon2 - lon1);
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1))
+				* Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		return c * LatLongUtils.EQUATORIAL_RADIUS;
+	}
+
+	/**
 	 * @param latitude
 	 *            the latitude coordinate in degrees which should be validated.
+	 * @return the latitude value
 	 * @throws IllegalArgumentException
 	 *             if the latitude coordinate is invalid or {@link Double#NaN}.
 	 */
-	public static void validateLatitude(double latitude) {
+	public static double validateLatitude(double latitude) {
 		if (Double.isNaN(latitude) || latitude < LATITUDE_MIN || latitude > LATITUDE_MAX) {
 			throw new IllegalArgumentException("invalid latitude: " + latitude);
 		}
+		return latitude;
 	}
 
 	/**
 	 * @param longitude
 	 *            the longitude coordinate in degrees which should be validated.
+	 * @return the longitude value
 	 * @throws IllegalArgumentException
 	 *             if the longitude coordinate is invalid or {@link Double#NaN}.
 	 */
-	public static void validateLongitude(double longitude) {
+	public static double validateLongitude(double longitude) {
 		if (Double.isNaN(longitude) || longitude < LONGITUDE_MIN || longitude > LONGITUDE_MAX) {
 			throw new IllegalArgumentException("invalid longitude: " + longitude);
 		}
+		return longitude;
+	}
+
+	/**
+	 * Calculates geodetic distance between two LatLongs using Vincenty inverse formula
+	 * for ellipsoids. This is very accurate but consumes more resources and time than the
+	 * sphericalDistance method.
+	 *
+	 * Adaptation of Chriss Veness' JavaScript Code on
+	 * http://www.movable-type.co.uk/scripts/latlong-vincenty.html
+	 *
+	 * Paper: Vincenty inverse formula - T Vincenty, "Direct and Inverse Solutions of Geodesics
+	 * on the Ellipsoid with application of nested equations", Survey Review, vol XXII no 176,
+	 * 1975 (http://www.ngs.noaa.gov/PUBS_LIB/inverse.pdf)
+	 *
+	 * @param latLong1
+	 *            first LatLong
+	 * @param latLong2
+	 *            second LatLong
+	 *
+	 * @return distance in meters between points as a double
+	 */
+	public static double vincentyDistance(LatLong latLong1, LatLong latLong2) {
+		double f = 1 / LatLongUtils.INVERSE_FLATTENING;
+		double L = Math.toRadians(latLong2.getLongitude() - latLong1.getLongitude());
+		double U1 = Math.atan((1 - f) * Math.tan(Math.toRadians(latLong1.getLatitude())));
+		double U2 = Math.atan((1 - f) * Math.tan(Math.toRadians(latLong2.getLatitude())));
+		double sinU1 = Math.sin(U1), cosU1 = Math.cos(U1);
+		double sinU2 = Math.sin(U2), cosU2 = Math.cos(U2);
+
+		double lambda = L, lambdaP, iterLimit = 100;
+
+		double cosSqAlpha = 0, sinSigma = 0, cosSigma = 0, cos2SigmaM = 0, sigma = 0, sinLambda = 0, sinAlpha = 0, cosLambda = 0;
+		do {
+			sinLambda = Math.sin(lambda);
+			cosLambda = Math.cos(lambda);
+			sinSigma = Math.sqrt((cosU2 * sinLambda) * (cosU2 * sinLambda)
+					+ (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda)
+					* (cosU1 * sinU2 - sinU1 * cosU2 * cosLambda));
+			if (sinSigma == 0)
+				return 0; // co-incident points
+			cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
+			sigma = Math.atan2(sinSigma, cosSigma);
+			sinAlpha = cosU1 * cosU2 * sinLambda / sinSigma;
+			cosSqAlpha = 1 - sinAlpha * sinAlpha;
+			if (cosSqAlpha != 0) {
+				cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
+			} else {
+				cos2SigmaM = 0;
+			}
+			double C = f / 16 * cosSqAlpha * (4 + f * (4 - 3 * cosSqAlpha));
+			lambdaP = lambda;
+			lambda = L
+					+ (1 - C)
+					* f
+					* sinAlpha
+					* (sigma + C * sinSigma
+					* (cos2SigmaM + C * cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM)));
+		} while (Math.abs(lambda - lambdaP) > 1e-12 && --iterLimit > 0);
+
+		if (iterLimit == 0)
+			return 0; // formula failed to converge
+
+		double uSq = cosSqAlpha
+				* (Math.pow(LatLongUtils.EQUATORIAL_RADIUS, 2) - Math.pow(LatLongUtils.POLAR_RADIUS, 2))
+				/ Math.pow(LatLongUtils.POLAR_RADIUS, 2);
+		double A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
+		double B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
+		double deltaSigma = B
+				* sinSigma
+				* (cos2SigmaM + B
+				/ 4
+				* (cosSigma * (-1 + 2 * cos2SigmaM * cos2SigmaM) - B / 6 * cos2SigmaM
+				* (-3 + 4 * sinSigma * sinSigma)
+				* (-3 + 4 * cos2SigmaM * cos2SigmaM)));
+		double s = LatLongUtils.POLAR_RADIUS * A * (sigma - deltaSigma);
+
+		return s;
 	}
 
 	/**
 	 * Calculates the zoom level that allows to display the {@link BoundingBox} on a view with the {@link Dimension} and
 	 * tile size.
-	 * 
+	 *
 	 * @param dimension
 	 *            the {@link Dimension} of the view.
 	 * @param boundingBox

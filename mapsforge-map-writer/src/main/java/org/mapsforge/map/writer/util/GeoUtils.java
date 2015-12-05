@@ -446,9 +446,9 @@ public final class GeoUtils {
 		ArrayList<Integer> result = new ArrayList<>();
 
 		for (int j = 0; j < jtsCoords.length; j++) {
-			LatLong geoCoord = new LatLong(jtsCoords[j].y, jtsCoords[j].x);
-			result.add(Integer.valueOf(LatLongUtils.degreesToMicrodegrees(geoCoord.latitude)));
-			result.add(Integer.valueOf(LatLongUtils.degreesToMicrodegrees(geoCoord.longitude)));
+			LatLong latLong = new LatLong(jtsCoords[j].y, jtsCoords[j].x);
+			result.add(Integer.valueOf(LatLongUtils.degreesToMicrodegrees(latLong.latitude)));
+			result.add(Integer.valueOf(LatLongUtils.degreesToMicrodegrees(latLong.longitude)));
 		}
 
 		return result;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2010, 2011, 2012 Patrick Jungermann
  * Copyright 2010, 2011, 2012 Eike Send
  * Copyright 2015 devemux86
@@ -101,7 +101,7 @@ public class LatLongTest {
 		LatLong islaGenovesa = new LatLong(0d, -90d);
 
 		// These points are as far apart as they could be, half way around the earth
-		double spherical = LatLong.sphericalDistance(nearSriLanka, islaGenovesa);
+		double spherical = LatLongUtils.sphericalDistance(nearSriLanka, islaGenovesa);
 		assertEquals(EARTH_EQUATOR_CIRCUMFERENCE / 2, spherical, 0d);
 	}
 
@@ -112,7 +112,7 @@ public class LatLongTest {
 		// These coordinates are 1/4 Earth circumference from zero on the equator
 		LatLong islaGenovesa = new LatLong(0d, -90d);
 
-		double spherical = LatLong.sphericalDistance(zeroZero, islaGenovesa);
+		double spherical = LatLongUtils.sphericalDistance(zeroZero, islaGenovesa);
 		assertEquals(EARTH_EQUATOR_CIRCUMFERENCE / 4, spherical, 0d);
 	}
 
@@ -123,7 +123,7 @@ public class LatLongTest {
 		// These coordinates are 1/4 Earth circumference from zero on the equator
 		LatLong nearSriLanka = new LatLong(0d, 90d);
 
-		double spherical = LatLong.sphericalDistance(zeroZero, nearSriLanka);
+		double spherical = LatLongUtils.sphericalDistance(zeroZero, nearSriLanka);
 		assertEquals(EARTH_EQUATOR_CIRCUMFERENCE / 4, spherical, 0d);
 	}
 
@@ -134,7 +134,7 @@ public class LatLongTest {
 		// Calculating the distance between the north pole and the equator
 		LatLong northPole = new LatLong(90d, 0d);
 
-		double spherical = LatLong.sphericalDistance(zeroZero, northPole);
+		double spherical = LatLongUtils.sphericalDistance(zeroZero, northPole);
 		assertEquals(EARTH_EQUATOR_CIRCUMFERENCE / 4, spherical, 0d);
 	}
 
@@ -147,8 +147,8 @@ public class LatLongTest {
 
 		// On the equator the result of the different distance calculation methods should be
 		// about the same
-		double spherical = LatLong.sphericalDistance(zeroZero, nearSriLanka);
-		double vincenty = LatLong.vincentyDistance(zeroZero, nearSriLanka);
+		double spherical = LatLongUtils.sphericalDistance(zeroZero, nearSriLanka);
+		double vincenty = LatLongUtils.vincentyDistance(zeroZero, nearSriLanka);
 		assertEquals(spherical, vincenty, 1E-4);
 	}
 
@@ -159,7 +159,7 @@ public class LatLongTest {
 		// These coordinates are 1/4 Earth circumference from zero on the equator
 		LatLong nearSriLanka = new LatLong(0d, 90d);
 
-		double vincenty = LatLong.vincentyDistance(zeroZero, nearSriLanka);
+		double vincenty = LatLongUtils.vincentyDistance(zeroZero, nearSriLanka);
 		assertEquals(EARTH_EQUATOR_CIRCUMFERENCE / 4, vincenty, 1E-4);
 	}
 
@@ -170,7 +170,7 @@ public class LatLongTest {
 		// Calculating the distance between the north pole and the equator
 		LatLong northPole = new LatLong(90d, 0d);
 
-		double vincenty = LatLong.vincentyDistance(zeroZero, northPole);
+		double vincenty = LatLongUtils.vincentyDistance(zeroZero, northPole);
 		assertEquals(DISTANCE_POLE_TO_EQUATOR, vincenty, 1);
 	}
 
@@ -181,37 +181,37 @@ public class LatLongTest {
 		// Check if the distance from pole to pole works as well in the vincentyDistance
 		LatLong southPole = new LatLong(-90d, 0d);
 
-		double vincenty = LatLong.vincentyDistance(southPole, northPole);
+		double vincenty = LatLongUtils.vincentyDistance(southPole, northPole);
 		assertEquals(2 * DISTANCE_POLE_TO_EQUATOR, vincenty, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void validateLatitude_higherThanMaxValue_throwException() {
-		LatLong.validateLatitude(LatLong.LATITUDE_MAX + 1);
+		LatLongUtils.validateLatitude(LatLongUtils.LATITUDE_MAX + 1);
 	}
 
 	@Test
 	public void validateLatitude_legalValue_returnThatValue() {
-		assertEquals(10d, LatLong.validateLatitude(10d), 0d);
+		assertEquals(10d, LatLongUtils.validateLatitude(10d), 0d);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void validateLatitude_lowerThanMinValue_throwException() {
-		LatLong.validateLatitude(LatLong.LATITUDE_MIN - 1);
+		LatLongUtils.validateLatitude(LatLongUtils.LATITUDE_MIN - 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void validateLongitude_higherThanMaxValue_throwException() {
-		LatLong.validateLatitude(LatLong.LONGITUDE_MAX + 1);
+		LatLongUtils.validateLatitude(LatLongUtils.LONGITUDE_MAX + 1);
 	}
 
 	@Test
 	public void validateLongitude_legalValue_returnThatValue() {
-		assertEquals(10d, LatLong.validateLongitude(10d), 0d);
+		assertEquals(10d, LatLongUtils.validateLongitude(10d), 0d);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void validateLongitude_lowerThanMinValue_throwException() {
-		LatLong.validateLatitude(LatLong.LONGITUDE_MIN - 1);
+		LatLongUtils.validateLatitude(LatLongUtils.LONGITUDE_MIN - 1);
 	}
 }

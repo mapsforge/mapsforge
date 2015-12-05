@@ -15,6 +15,7 @@
 package org.mapsforge.poi.storage;
 
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.util.LatLongUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,10 +90,10 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 
 	@Override
 	public Collection<PointOfInterest> findNearPosition(LatLong point, int distance, int limit) {
-		double minLat = point.getLatitude() - LatLong.latitudeDistance(distance);
-		double minLon = point.getLongitude() - LatLong.longitudeDistance(distance, point.getLatitude());
-		double maxLat = point.getLatitude() + LatLong.latitudeDistance(distance);
-		double maxLon = point.getLongitude() + LatLong.longitudeDistance(distance, point.getLatitude());
+		double minLat = point.getLatitude() - LatLongUtils.latitudeDistance(distance);
+		double minLon = point.getLongitude() - LatLongUtils.longitudeDistance(distance, point.getLatitude());
+		double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
+		double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
 
 		return findInRect(new LatLong(minLat, minLon), new LatLong(maxLat, maxLon), limit);
 	}
@@ -100,10 +101,10 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 	@Override
 	public Collection<PointOfInterest> findNearPositionWithFilter(LatLong point, int distance,
 																  PoiCategoryFilter filter, int limit) {
-		double minLat = point.getLatitude() - LatLong.latitudeDistance(distance);
-		double minLon = point.getLongitude() - LatLong.longitudeDistance(distance, point.getLatitude());
-		double maxLat = point.getLatitude() + LatLong.latitudeDistance(distance);
-		double maxLon = point.getLongitude() + LatLong.longitudeDistance(distance, point.getLatitude());
+		double minLat = point.getLatitude() - LatLongUtils.latitudeDistance(distance);
+		double minLon = point.getLongitude() - LatLongUtils.longitudeDistance(distance, point.getLatitude());
+		double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
+		double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
 
 		return findInRectWithFilter(new LatLong(minLat, minLon), new LatLong(maxLat, maxLon), filter, limit);
 	}
