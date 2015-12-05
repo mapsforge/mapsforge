@@ -42,20 +42,20 @@ public class QueueItemSchedulerTest {
 			QueueItem<Job> queueItem = new QueueItem<Job>(job);
 			Assert.assertEquals(0, queueItem.getPriority(), 0);
 
-			MapPosition mapPosition = new MapPosition(new LatLong(0, 0, true), (byte) 0);
+			MapPosition mapPosition = new MapPosition(new LatLong(0, 0), (byte) 0);
 			QueueItemScheduler.schedule(createCollection(queueItem), mapPosition, tileSize);
 			Assert.assertEquals(0, queueItem.getPriority(), 0);
 
-			mapPosition = new MapPosition(new LatLong(0, 180, true), (byte) 0);
+			mapPosition = new MapPosition(new LatLong(0, 180), (byte) 0);
 			QueueItemScheduler.schedule(createCollection(queueItem), mapPosition, tileSize);
 			int halfTileSize = tileSize / 2;
 			Assert.assertEquals(halfTileSize, queueItem.getPriority(), 0);
 
-			mapPosition = new MapPosition(new LatLong(0, -180, true), (byte) 0);
+			mapPosition = new MapPosition(new LatLong(0, -180), (byte) 0);
 			QueueItemScheduler.schedule(createCollection(queueItem), mapPosition, tileSize);
 			Assert.assertEquals(halfTileSize, queueItem.getPriority(), 0);
 
-			mapPosition = new MapPosition(new LatLong(0, 0, true), (byte) 1);
+			mapPosition = new MapPosition(new LatLong(0, 0), (byte) 1);
 			QueueItemScheduler.schedule(createCollection(queueItem), mapPosition, tileSize);
 			double expectedPriority = Math.hypot(halfTileSize, halfTileSize)
 					+ QueueItemScheduler.PENALTY_PER_ZOOM_LEVEL * tileSize;

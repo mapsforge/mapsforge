@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.GeoCoordinate;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -96,8 +95,8 @@ public class PoiSearchViewer extends RenderTheme4 {
 				PoiCategoryFilter categoryFilter = new ExactMatchPoiCategoryFilter();
 				categoryFilter.addCategory(categoryManager.getPoiCategoryByTitle(this.category));
 				return persistenceManager.findInRectWithFilter(
-						new GeoCoordinate(params[0].minLatitude, params[0].minLongitude),
-						new GeoCoordinate(params[0].maxLatitude, params[0].maxLongitude),
+						new LatLong(params[0].minLatitude, params[0].minLongitude),
+						new LatLong(params[0].maxLatitude, params[0].maxLongitude),
 						categoryFilter, Integer.MAX_VALUE);
 			} catch (Throwable t) {
 				Log.e(SamplesApplication.TAG, t.getMessage(), t);

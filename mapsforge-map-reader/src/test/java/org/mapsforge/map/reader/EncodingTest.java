@@ -36,10 +36,10 @@ final class EncodingTest {
 		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
 		Assert.assertEquals(1, mapReadResult.ways.size());
 
-		LatLong latLong1 = new LatLong(0.0, 0.0, true);
-		LatLong latLong2 = new LatLong(0.0, 0.1, true);
-		LatLong latLong3 = new LatLong(-0.1, 0.1, true);
-		LatLong latLong4 = new LatLong(-0.1, 0.0, true);
+		LatLong latLong1 = new LatLong(0.0, 0.0);
+		LatLong latLong2 = new LatLong(0.0, 0.1);
+		LatLong latLong3 = new LatLong(-0.1, 0.1);
+		LatLong latLong4 = new LatLong(-0.1, 0.0);
 		LatLong[][] latLongsExpected = new LatLong[][] { { latLong1, latLong2, latLong3, latLong4, latLong1 } };
 
 		Way way = mapReadResult.ways.get(0);

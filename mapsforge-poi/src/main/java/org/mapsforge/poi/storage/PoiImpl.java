@@ -15,7 +15,7 @@
  */
 package org.mapsforge.poi.storage;
 
-import org.mapsforge.core.model.GeoCoordinate;
+import org.mapsforge.core.model.LatLong;
 
 public class PoiImpl implements PointOfInterest {
 	private final long id;
@@ -43,8 +43,8 @@ public class PoiImpl implements PointOfInterest {
 	}
 
 	@Override
-	public GeoCoordinate getGeoCoordinate() {
-		return new GeoCoordinate(this.latitude, this.longitude);
+	public LatLong getLatLong() {
+		return new LatLong(this.latitude, this.longitude);
 	}
 
 	@Override

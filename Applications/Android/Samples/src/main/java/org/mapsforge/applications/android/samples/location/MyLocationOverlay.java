@@ -61,7 +61,7 @@ public class MyLocationOverlay extends Layer implements LocationListener, Activi
 	 * @return a new LatLong with the geographical coordinates taken from the given location.
 	 */
 	public static LatLong locationToLatLong(Location location) {
-		return new LatLong(location.getLatitude(), location.getLongitude(), true);
+		return new LatLong(location.getLatitude(), location.getLongitude());
 	}
 
 	private static Paint getDefaultCircleFill() {

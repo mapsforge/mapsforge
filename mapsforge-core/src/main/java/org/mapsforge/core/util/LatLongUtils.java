@@ -37,6 +37,16 @@ public final class LatLongUtils {
 	public static final double EQUATORIAL_RADIUS = 6378137.0;
 
 	/**
+	 * The flattening factor of the earth's ellipsoid is required for distance computation.
+	 */
+	public static final double INVERSE_FLATTENING = 298.257223563;
+
+	/**
+	 * Polar radius of earth is required for distance computation.
+	 */
+	public static final double POLAR_RADIUS = 6356752.3142;
+
+	/**
 	 * Maximum possible latitude coordinate.
 	 */
 	public static final double LATITUDE_MAX = 90;
@@ -104,7 +114,7 @@ public final class LatLongUtils {
 	 */
 	public static LatLong fromString(String latLongString) {
 		double[] coordinates = parseCoordinateString(latLongString, 2);
-		return new LatLong(coordinates[0], coordinates[1], true);
+		return new LatLong(coordinates[0], coordinates[1]);
 	}
 
 	/**
@@ -113,7 +123,7 @@ public final class LatLongUtils {
 	 * @return true if this way is closed, false otherwise.
 	 */
 	public static boolean isClosedWay(LatLong[] latLongs) {
-		return latLongs[0].distance(latLongs[latLongs.length -1]) < 0.000000001;
+		return latLongs[0].sphericalDistance(latLongs[latLongs.length -1]) < 0.000000001;
 	}
 
 	/**

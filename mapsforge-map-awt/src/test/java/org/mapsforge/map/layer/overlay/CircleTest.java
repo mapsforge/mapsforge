@@ -45,7 +45,7 @@ public class CircleTest {
 
 	@Test
 	public void constructorTest() {
-		LatLong latLong = new LatLong(0, 0, true);
+		LatLong latLong = new LatLong(0, 0);
 		int radius = 3;
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
@@ -72,7 +72,7 @@ public class CircleTest {
 			Point point = new Point(0, 0);
 			circle.draw(boundingBox, (byte) 0, canvas, point);
 
-			circle.setLatLong(new LatLong(0, 0, true));
+			circle.setLatLong(new LatLong(0, 0));
 			circle.draw(boundingBox, (byte) 0, canvas, point);
 
 			circle.setRadius(1);
@@ -88,7 +88,7 @@ public class CircleTest {
 
 	@Test
 	public void setterTest() {
-		LatLong latLong = new LatLong(1, 2, true);
+		LatLong latLong = new LatLong(1, 2);
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 

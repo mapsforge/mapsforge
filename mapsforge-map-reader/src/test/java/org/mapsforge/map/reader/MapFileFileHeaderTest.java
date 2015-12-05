@@ -33,7 +33,7 @@ public class MapFileFileHeaderTest {
 	private static final File MAP_FILE = new File("src/test/resources/file_header/output.map");
 	private static final int NUMBER_OF_SUBFILES = 3;
 	private static final String PROJECTION_NAME = "Mercator";
-	private static final LatLong START_POSITION = new LatLong(0.15, 0.25, true);
+	private static final LatLong START_POSITION = new LatLong(0.15, 0.25);
 	private static final Byte START_ZOOM_LEVEL = Byte.valueOf((byte) 16);
 	private static final int TILE_PIXEL_SIZE = 256;
 

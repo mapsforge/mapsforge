@@ -14,13 +14,10 @@
  */
 package org.mapsforge.core.model;
 
-import java.io.Serializable;
-
 /**
  * A MapPosition represents an immutable pair of {@link LatLong} and zoom level.
  */
-public class MapPosition implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class MapPosition {
 
 	/**
 	 * The geographical coordinates of the map center.

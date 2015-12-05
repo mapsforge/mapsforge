@@ -15,7 +15,7 @@
  */
 package org.mapsforge.poi.storage;
 
-import org.mapsforge.core.model.GeoCoordinate;
+import org.mapsforge.core.model.LatLong;
 
 /**
  * This class represents a point of interest. Every POI should be uniquely identifiable by its id so
@@ -33,9 +33,9 @@ public interface PointOfInterest {
 	String getData();
 
 	/**
-	 * @return {@link GeoCoordinate} of this point of interest.
+	 * @return {@link LatLong} of this point of interest.
 	 */
-	GeoCoordinate getGeoCoordinate();
+	LatLong getLatLong();
 
 	/**
 	 * @return id of this point of interest.

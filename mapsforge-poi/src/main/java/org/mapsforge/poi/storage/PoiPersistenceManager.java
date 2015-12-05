@@ -17,7 +17,7 @@
  */
 package org.mapsforge.poi.storage;
 
-import org.mapsforge.core.model.GeoCoordinate;
+import org.mapsforge.core.model.LatLong;
 
 import java.util.Collection;
 
@@ -37,28 +37,28 @@ public interface PoiPersistenceManager {
 
 	/**
 	 * Find all {@link PointOfInterest} in a rectangle specified by the two given
-	 * {@link GeoCoordinate}s.
+	 * {@link LatLong}s.
 	 *
 	 * @param p1
-	 *            {@link GeoCoordinate} specifying one corner of the rectangle. (minLat, minLon)
+	 *            {@link LatLong} specifying one corner of the rectangle. (minLat, minLon)
 	 * @param p2
-	 *            {@link GeoCoordinate} specifying one corner of the rectangle. (maxLat, maxLon)
+	 *            {@link LatLong} specifying one corner of the rectangle. (maxLat, maxLon)
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} contained in the rectangle specified by
-	 *         the two given {@link GeoCoordinate}s.
+	 *         the two given {@link LatLong}s.
 	 */
-	Collection<PointOfInterest> findInRect(GeoCoordinate p1, GeoCoordinate p2, int limit);
+	Collection<PointOfInterest> findInRect(LatLong p1, LatLong p2, int limit);
 
 	/**
 	 * Find all {@link PointOfInterest} in a rectangle specified by the two given
-	 * {@link GeoCoordinate}s. Only the POIs that are allowed by the {@link PoiCategoryFilter}
+	 * {@link LatLong}s. Only the POIs that are allowed by the {@link PoiCategoryFilter}
 	 * object will be returned.
 	 *
 	 * @param p1
-	 *            {@link GeoCoordinate} specifying one corner of the rectangle. (minLat, minLon)
+	 *            {@link LatLong} specifying one corner of the rectangle. (minLat, minLon)
 	 * @param p2
-	 *            {@link GeoCoordinate} specifying one corner of the rectangle. (maxLat, maxLon)
+	 *            {@link LatLong} specifying one corner of the rectangle. (maxLat, maxLon)
 	 * @param filter
 	 *            POI category filter object that helps determining whether a POI should be added to
 	 *            the set or not.
@@ -66,30 +66,30 @@ public interface PoiPersistenceManager {
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} matching a given
 	 *         {@link PoiCategoryFilter} contained in the rectangle specified by the two given
-	 *         {@link GeoCoordinate}s.
+	 *         {@link LatLong}s.
 	 */
-	Collection<PointOfInterest> findInRectWithFilter(GeoCoordinate p1, GeoCoordinate p2,
+	Collection<PointOfInterest> findInRectWithFilter(LatLong p1, LatLong p2,
 													 PoiCategoryFilter filter, int limit);
 
 	/**
 	 * Fetch {@link PointOfInterest} from underlying storage near a given position.
 	 *
 	 * @param point
-	 *            {@link GeoCoordinate} center of the search.
+	 *            {@link LatLong} center of the search.
 	 * @param distance
 	 *            in meters
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} near the given position.
 	 */
-	Collection<PointOfInterest> findNearPosition(GeoCoordinate point, int distance, int limit);
+	Collection<PointOfInterest> findNearPosition(LatLong point, int distance, int limit);
 
 	/**
 	 * Fetch {@link PointOfInterest} from underlying storage near a given position. Only the POIs
 	 * that are allowed by the {@link PoiCategoryFilter} object will be returned.
 	 *
 	 * @param point
-	 *            {@link GeoCoordinate} center of the search.
+	 *            {@link LatLong} center of the search.
 	 * @param distance
 	 *            in meters
 	 * @param filter
@@ -100,7 +100,7 @@ public interface PoiPersistenceManager {
 	 * @return {@link Collection} of {@link PointOfInterest} matching a given
 	 *         {@link PoiCategoryFilter} near the given position.
 	 */
-	Collection<PointOfInterest> findNearPositionWithFilter(GeoCoordinate point, int distance,
+	Collection<PointOfInterest> findNearPositionWithFilter(LatLong point, int distance,
 														   PoiCategoryFilter filter, int limit);
 
 	/**

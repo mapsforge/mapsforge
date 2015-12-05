@@ -95,7 +95,7 @@ final class OptionalFields {
 			double mapStartLatitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
 			double mapStartLongitude = LatLongUtils.microdegreesToDegrees(readBuffer.readInt());
 			try {
-				this.startPosition = new LatLong(mapStartLatitude, mapStartLongitude, true);
+				this.startPosition = new LatLong(mapStartLatitude, mapStartLongitude);
 			} catch (IllegalArgumentException e) {
 				throw new MapFileException(e.getMessage());
 			}

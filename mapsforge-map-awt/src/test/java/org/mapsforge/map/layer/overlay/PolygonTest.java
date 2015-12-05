@@ -55,8 +55,8 @@ public class PolygonTest {
 			Point point = new Point(0, 0);
 			polygon.draw(boundingBox, (byte) 0, canvas, point);
 
-			polygon.getLatLongs().add(new LatLong(0, 0, true));
-			polygon.getLatLongs().add(new LatLong(1, 1, true));
+			polygon.getLatLongs().add(new LatLong(0, 0));
+			polygon.getLatLongs().add(new LatLong(1, 1));
 			polygon.draw(boundingBox, (byte) 0, canvas, point);
 
 			polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
@@ -67,7 +67,7 @@ public class PolygonTest {
 
 	@Test
 	public void setterTest() {
-		LatLong latLong = new LatLong(0, 0, true);
+		LatLong latLong = new LatLong(0, 0);
 		Paint paintFill = GRAPHIC_FACTORY.createPaint();
 		Paint paintStroke = GRAPHIC_FACTORY.createPaint();
 

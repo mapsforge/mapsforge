@@ -14,7 +14,7 @@
  */
 package org.mapsforge.poi.awt.storage;
 
-import org.mapsforge.core.model.GeoCoordinate;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiCategoryRangeQueryGenerator;
@@ -205,7 +205,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findInRect(GeoCoordinate p1, GeoCoordinate p2, int limit) {
+	public Collection<PointOfInterest> findInRect(LatLong p1, LatLong p2, int limit) {
 		// Clear previous results
 		this.ret.clear();
 
@@ -243,7 +243,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	@Override
-	public Collection<PointOfInterest> findInRectWithFilter(GeoCoordinate p1, GeoCoordinate p2,
+	public Collection<PointOfInterest> findInRectWithFilter(LatLong p1, LatLong p2,
 															PoiCategoryFilter filter, int limit) {
 		// Clear previous results
 		this.ret.clear();

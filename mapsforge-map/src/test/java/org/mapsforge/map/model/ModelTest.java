@@ -31,8 +31,8 @@ public class ModelTest {
 
 	@Test
 	public void saveAndInitTest() {
-		MapPosition mapPosition1 = new MapPosition(new LatLong(1, 1, true), (byte) 1);
-		MapPosition mapPosition2 = new MapPosition(new LatLong(2, 2, true), (byte) 2);
+		MapPosition mapPosition1 = new MapPosition(new LatLong(1, 1), (byte) 1);
+		MapPosition mapPosition2 = new MapPosition(new LatLong(2, 2), (byte) 2);
 
 		Model model = new Model();
 		model.mapViewPosition.setMapPosition(mapPosition1);

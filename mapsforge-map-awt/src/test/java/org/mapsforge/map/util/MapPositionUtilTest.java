@@ -32,7 +32,7 @@ public class MapPositionUtilTest {
 	@Test
 	public void getBoundingBoxTest() {
 		for (int tileSize : TILE_SIZES) {
-			MapPosition mapPosition = new MapPosition(new LatLong(0, 0, true), (byte) 0);
+			MapPosition mapPosition = new MapPosition(new LatLong(0, 0), (byte) 0);
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 
@@ -43,12 +43,12 @@ public class MapPositionUtilTest {
 			Assert.assertEquals(expectedBoundingBox,
 					MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
 
-			mapPosition = new MapPosition(new LatLong(0, 90, true), (byte) 0);
+			mapPosition = new MapPosition(new LatLong(0, 90), (byte) 0);
 			expectedBoundingBox = new BoundingBox(latitudeMin, -90, latitudeMax, 180);
 			Assert.assertEquals(expectedBoundingBox,
 					MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
 
-			mapPosition = new MapPosition(new LatLong(90, -180, true), (byte) 0);
+			mapPosition = new MapPosition(new LatLong(90, -180), (byte) 0);
 			expectedBoundingBox = new BoundingBox(0, -180, latitudeMax, 0);
 			Assert.assertEquals(expectedBoundingBox,
 					MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
@@ -58,7 +58,7 @@ public class MapPositionUtilTest {
 	@Test
 	public void getTopLeftPointTest() {
 		for (int tileSize : TILE_SIZES) {
-			MapPosition mapPosition = new MapPosition(new LatLong(0, 0, true), (byte) 0);
+			MapPosition mapPosition = new MapPosition(new LatLong(0, 0), (byte) 0);
 			Canvas canvas = GRAPHIC_FACTORY.createCanvas();
 			canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
 
@@ -66,7 +66,7 @@ public class MapPositionUtilTest {
 			Assert.assertEquals(expectedPoint,
 					MapPositionUtil.getTopLeftPoint(mapPosition, canvas.getDimension(), tileSize));
 
-			mapPosition = new MapPosition(new LatLong(0, 90, true), (byte) 1);
+			mapPosition = new MapPosition(new LatLong(0, 90), (byte) 1);
 			expectedPoint = new Point(tileSize, (float) tileSize / 2);
 			Assert.assertEquals(expectedPoint,
 					MapPositionUtil.getTopLeftPoint(mapPosition, canvas.getDimension(), tileSize));
