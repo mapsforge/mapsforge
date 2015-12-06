@@ -329,9 +329,10 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	/**
-	 * @return True if the database is a valid POI database.
+	 * {@inheritDoc}
 	 */
-	private boolean isValidDataBase() {
+	@Override
+	public boolean isValidDataBase() {
 		try {
 			this.isValidDBStatement = this.db.prepare(VALID_DB_STATEMENT);
 		} catch (Exception e) {

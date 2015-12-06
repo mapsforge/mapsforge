@@ -109,6 +109,11 @@ public interface PoiPersistenceManager {
 	void insertPointsOfInterest(Collection<PointOfInterest> pois);
 
 	/**
+	 * @return true if the database is a valid POI database.
+	 */
+	boolean isValidDataBase();
+
+	/**
 	 * Removes a point of interest from storage.
 	 *
 	 * @param poi
