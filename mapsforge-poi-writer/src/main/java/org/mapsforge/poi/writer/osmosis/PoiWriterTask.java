@@ -38,6 +38,7 @@ import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
@@ -136,16 +137,11 @@ public class PoiWriterTask implements Sink {
 		this.progressManager.setMessage("Creating POI database");
 	}
 
-	private void commit() {
+	private void commit() throws SQLException {
 		this.progressManager.setMessage("Committing...");
-		try {
-			this.pStmt.executeBatch();
-			this.pStmt2.executeBatch();
-			this.conn.commit();
-			this.conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		this.pStmt.executeBatch();
+		this.pStmt2.executeBatch();
+		this.conn.commit();
 	}
 
 	/**
@@ -153,9 +149,47 @@ public class PoiWriterTask implements Sink {
 	 */
 	@Override
 	public void complete() {
-		commit();
+		try {
+			commit();
+			finalizeDatabase();
+			this.conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		LOGGER.info("Added " + this.nodesAdded + " POIs.");
 		this.progressManager.setMessage("Done.");
+	}
+
+	/**
+	 * Finalize database, i.e. remove categories without POIs and children.
+	 */
+	private void finalizeDatabase() throws SQLException {
+		LOGGER.info("Finalizing database...");
+		this.conn.setAutoCommit(true);
+		PreparedStatement pStmtPoi = this.conn.prepareStatement("SELECT COUNT(*) FROM poi_data WHERE category = ?;");
+		PreparedStatement pStmtChildren = this.conn.prepareStatement("SELECT COUNT(*) FROM poi_categories WHERE parent = ?;");
+		PreparedStatement pStmtDel = this.conn.prepareStatement("DELETE FROM poi_categories WHERE id = ?;");
+		Statement stmt = this.conn.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT id FROM poi_categories ORDER BY id;");
+		while (rs.next()) {
+			int id = rs.getInt(1);
+			pStmtPoi.setInt(1, id);
+			ResultSet rsPoi = pStmtPoi.executeQuery();
+			if (rsPoi.next()) {
+				long nPoi = rsPoi.getLong(1);
+				if (nPoi == 0) {
+					pStmtChildren.setInt(1, id);
+					ResultSet rsChildren = pStmtChildren.executeQuery();
+					if (rsChildren.next()) {
+						long nChildren = rsChildren.getLong(1);
+						if (nChildren == 0) {
+							pStmtDel.setInt(1, id);
+							pStmtDel.executeUpdate();
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/*

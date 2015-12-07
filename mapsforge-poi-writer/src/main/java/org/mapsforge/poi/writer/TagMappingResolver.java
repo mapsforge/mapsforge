@@ -92,7 +92,6 @@ public class TagMappingResolver {
 		for (String tag : this.tagMap.keySet()) {
 			this.mappingTags.add(tag.split("=")[0]);
 		}
-		LOGGER.info("Tag mappings have been added.");
 	}
 
 	public PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {

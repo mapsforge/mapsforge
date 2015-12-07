@@ -31,8 +31,8 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 	protected static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));";
 	protected static final String CREATE_INDEX_STATEMENT = "CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);";
 
-	protected static final String DELETE_DATA_STATEMENT = "DELETE FROM poi_data WHERE id == ?;";
-	protected static final String DELETE_INDEX_STATEMENT = "DELETE FROM poi_index WHERE id == ?;";
+	protected static final String DELETE_DATA_STATEMENT = "DELETE FROM poi_data WHERE id = ?;";
+	protected static final String DELETE_INDEX_STATEMENT = "DELETE FROM poi_index WHERE id = ?;";
 
 	protected static final String DROP_CATEGORIES_STATEMENT = "DROP TABLE IF EXISTS poi_categories;";
 	protected static final String DROP_DATA_STATEMENT = "DROP TABLE IF EXISTS poi_data;";
