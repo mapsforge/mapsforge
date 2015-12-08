@@ -27,16 +27,16 @@ import java.util.List;
  * provides functionality for accessing the SQLite database.
  */
 public abstract class AbstractPoiPersistenceManager implements PoiPersistenceManager {
-	protected static final String CREATE_CATEGORIES_STATEMENT = "CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));";
-	protected static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));";
-	protected static final String CREATE_INDEX_STATEMENT = "CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);";
+	public static final String CREATE_CATEGORIES_STATEMENT = "CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));";
+	public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));";
+	public static final String CREATE_INDEX_STATEMENT = "CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);";
 
 	protected static final String DELETE_DATA_STATEMENT = "DELETE FROM poi_data WHERE id = ?;";
 	protected static final String DELETE_INDEX_STATEMENT = "DELETE FROM poi_index WHERE id = ?;";
 
-	protected static final String DROP_CATEGORIES_STATEMENT = "DROP TABLE IF EXISTS poi_categories;";
-	protected static final String DROP_DATA_STATEMENT = "DROP TABLE IF EXISTS poi_data;";
-	protected static final String DROP_INDEX_STATEMENT = "DROP TABLE IF EXISTS poi_index;";
+	public static final String DROP_CATEGORIES_STATEMENT = "DROP TABLE IF EXISTS poi_categories;";
+	public static final String DROP_DATA_STATEMENT = "DROP TABLE IF EXISTS poi_data;";
+	public static final String DROP_INDEX_STATEMENT = "DROP TABLE IF EXISTS poi_index;";
 
 	protected static final String FIND_BY_ID_STATEMENT =
 			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
@@ -55,8 +55,9 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 					+ "minLat >= ? AND "
 					+ "minLon >= ?";
 
-	protected static final String INSERT_INDEX_STATEMENT = "INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);";
-	protected static final String INSERT_DATA_STATEMENT = "INSERT INTO poi_data VALUES (?, ?, ?);";
+	public static final String INSERT_CATEGORIES_STATEMENT = "INSERT INTO poi_categories VALUES (?, ?, ?);";
+	public static final String INSERT_DATA_STATEMENT = "INSERT INTO poi_data VALUES (?, ?, ?);";
+	public static final String INSERT_INDEX_STATEMENT = "INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);";
 
 	protected static final String VALID_DB_STATEMENT = "SELECT count(name) "
 			+ "FROM sqlite_master "

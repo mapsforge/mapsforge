@@ -16,6 +16,7 @@
  */
 package org.mapsforge.poi.writer.osmosis;
 
+import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiCategoryManager;
@@ -209,18 +210,16 @@ public class PoiWriterTask implements Sink {
 		Statement stmt = this.conn.createStatement();
 
 		// CREATE TABLES
-		stmt.execute("DROP TABLE IF EXISTS poi_index;");
-		stmt.execute("DROP TABLE IF EXISTS poi_data;");
-		// stmt.execute("DROP INDEX IF EXISTS poi_categories_index;");
-		stmt.execute("DROP TABLE IF EXISTS poi_categories;");
-		stmt.execute("CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));");
-		// stmt.execute("CREATE INDEX poi_categories_index ON poi_categories (id);");
-		stmt.execute("CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));");
-		stmt.execute("CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);");
+		stmt.execute(AbstractPoiPersistenceManager.DROP_INDEX_STATEMENT);
+		stmt.execute(AbstractPoiPersistenceManager.DROP_DATA_STATEMENT);
+		stmt.execute(AbstractPoiPersistenceManager.DROP_CATEGORIES_STATEMENT);
+		stmt.execute(AbstractPoiPersistenceManager.CREATE_CATEGORIES_STATEMENT);
+		stmt.execute(AbstractPoiPersistenceManager.CREATE_DATA_STATEMENT);
+		stmt.execute(AbstractPoiPersistenceManager.CREATE_INDEX_STATEMENT);
 
-		this.pStmt = this.conn.prepareStatement("INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);");
-		this.pStmt2 = this.conn.prepareStatement("INSERT INTO poi_data VALUES (?, ?, ?);");
-		PreparedStatement pStmt3 = this.conn.prepareStatement("INSERT INTO poi_categories VALUES (?, ?, ?);");
+		this.pStmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.INSERT_INDEX_STATEMENT);
+		this.pStmt2 = this.conn.prepareStatement(AbstractPoiPersistenceManager.INSERT_DATA_STATEMENT);
+		PreparedStatement pStmt3 = this.conn.prepareStatement(AbstractPoiPersistenceManager.INSERT_CATEGORIES_STATEMENT);
 
 		// INSERT CATEGORIES
 		PoiCategory root = this.categoryManager.getRootCategory();
