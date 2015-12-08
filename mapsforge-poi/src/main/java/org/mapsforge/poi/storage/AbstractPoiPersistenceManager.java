@@ -28,7 +28,7 @@ import java.util.List;
  */
 public abstract class AbstractPoiPersistenceManager implements PoiPersistenceManager {
 	public static final String CREATE_CATEGORIES_STATEMENT = "CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));";
-	public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id LONG, data BLOB, category INT, PRIMARY KEY (id));";
+	public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id LONG, data VARCHAR, category INT, PRIMARY KEY (id));";
 	public static final String CREATE_INDEX_STATEMENT = "CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);";
 
 	protected static final String DELETE_DATA_STATEMENT = "DELETE FROM poi_data WHERE id = ?;";

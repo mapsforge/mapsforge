@@ -61,7 +61,7 @@ The sources for those libraries are located in the `sqlite3-android` folder. To 
 
 With everything set up you can check the 'POI search' example in Samples for:
 - How a database is opened for read-write access. Any access to the database is encapsulated via classes implementing `PoiPersistenceManager`. The instantiation of these classes is done via a factory class. The categories and their hierarchy are maintained via classes implementing `PoiCategoryManager`. The category configuration is read-only.
-- The `PoiPersistenceManager` object is used for querying the POIs in various ways. The query returns a collection of `PointOfInterest` objects. These are containers that contain a POI's position, ID, category and additional data. Additional data are stored as a byte array and can be arbitrary. There is no specification for the encoding of those data. The current implementation stores the POI's name as an UTF-8 encoded string in the data field.
+- The `PoiPersistenceManager` object is used for querying the POIs in various ways. The query returns a collection of `PointOfInterest` objects. These are containers that contain a POI's position, ID, category and additional data. Additional data are stored as a string and can be arbitrary. There is no specification for the encoding of those data. The current implementation stores the POI's name as an UTF-8 encoded string in the data field.
 - It is always a good idea to close an open database when there will be no more operations on it. This can simply be done by the `close()` method.
 - With this done you can simply retrieve the POIs and add them as overlays.
 

@@ -35,7 +35,6 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -64,8 +63,6 @@ public class PoiWriterTask implements Sink {
 	private static final boolean INCLUDE_META_DATA = false;
 
 	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,3}(?:[-_][a-zA-Z0-9]{1,8})*)");
-
-	private static final Charset UTF8_CHARSET = Charset.forName("utf8");
 
 	private final PoiWriterConfiguration configuration;
 	private final ProgressManager progressManager;
@@ -224,7 +221,7 @@ public class PoiWriterTask implements Sink {
 		// INSERT CATEGORIES
 		PoiCategory root = this.categoryManager.getRootCategory();
 		pStmt3.setLong(1, root.getID());
-		pStmt3.setBytes(2, root.getTitle().getBytes(UTF8_CHARSET));
+		pStmt3.setString(2, root.getTitle());
 		pStmt3.setNull(3, 0);
 		pStmt3.addBatch();
 
@@ -233,7 +230,7 @@ public class PoiWriterTask implements Sink {
 		while (!children.isEmpty()) {
 			for (PoiCategory c : children.pop().getChildren()) {
 				pStmt3.setLong(1, c.getID());
-				pStmt3.setBytes(2, c.getTitle().getBytes(UTF8_CHARSET));
+				pStmt3.setString(2, c.getTitle());
 				pStmt3.setInt(3, c.getParent().getID());
 				pStmt3.addBatch();
 				children.push(c);
@@ -331,7 +328,7 @@ public class PoiWriterTask implements Sink {
 			// If all important data should be written to db
 			// TODO Use PBF here
 			if (INCLUDE_META_DATA) {
-				this.pStmt2.setBytes(2, tagsToString(poiData).getBytes(UTF8_CHARSET));
+				this.pStmt2.setString(2, tagsToString(poiData));
 			} else {
 				// Use preferred language
 				boolean foundPreferredLanguageName = false;
@@ -352,7 +349,7 @@ public class PoiWriterTask implements Sink {
 				}
 				// If name tag is set
 				if (name != null) {
-					this.pStmt2.setBytes(2, name.getBytes(UTF8_CHARSET));
+					this.pStmt2.setString(2, name);
 				} else {
 					this.pStmt2.setNull(2, Types.NULL);
 				}
