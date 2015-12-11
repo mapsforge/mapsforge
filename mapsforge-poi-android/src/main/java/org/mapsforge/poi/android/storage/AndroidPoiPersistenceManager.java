@@ -50,14 +50,15 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
 	/**
 	 * @param dbFilePath
-	 *            Path to SQLite file containing POI data. If the file does not exist the file and
-	 *            its tables will be created.
+	 *            Path to SQLite file containing POI data.
+	 * @param create
+	 *            If the file does not exist it may be created and filled.
 	 */
-	AndroidPoiPersistenceManager(String dbFilePath) {
-		super(dbFilePath);
+	AndroidPoiPersistenceManager(String dbFilePath, boolean create) {
+		super();
 
 		// Open / create POI database
-		createOrOpenDBFile();
+		createOrOpenDBFile(dbFilePath, create);
 
 		// Load categories from database
 		this.categoryManager = new AndroidPoiCategoryManager(this.db);
@@ -145,21 +146,25 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	/**
-	 * If the file does not exist it will be created and filled.
+	 * @param dbFilePath
+	 *            Path to SQLite file containing POI data.
+	 * @param create
+	 *            If the file does not exist it may be created and filled.
 	 */
-	private void createOrOpenDBFile() {
+	private void createOrOpenDBFile(String dbFilePath, boolean create) {
 		// FIXME This method causes a crash on native level if the file cannot be created.
 		// (Use Java methods to avoid this).
 
-		// Create or open file
+		// Open file
 		this.db = new Database();
 		try {
-			this.db.open(this.dbFilePath, 0666);
+			this.db.open(dbFilePath, 0666);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
-		if (!isValidDataBase()) {
+		// Create file
+		if (!isValidDataBase() && create) {
 			try {
 				createTables();
 			} catch (Exception e) {
@@ -179,6 +184,8 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		this.db.exec(CREATE_CATEGORIES_STATEMENT, null);
 		this.db.exec(CREATE_DATA_STATEMENT, null);
 		this.db.exec(CREATE_INDEX_STATEMENT, null);
+
+		this.db.exec("COMMIT;", null);
 	}
 
 	/**

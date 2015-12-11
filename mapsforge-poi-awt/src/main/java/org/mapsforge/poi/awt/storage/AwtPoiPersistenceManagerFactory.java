@@ -23,10 +23,22 @@ import org.mapsforge.poi.storage.PoiPersistenceManager;
 public class AwtPoiPersistenceManagerFactory {
 	/**
 	 * @param poiFilePath
-	 *            Path to a .poi file.
+	 *            Path to a .poi file. If the file does not exist it will be created and filled.
 	 * @return {@link PoiPersistenceManager} using an underlying SQLite database.
 	 */
 	public static PoiPersistenceManager getPoiPersistenceManager(String poiFilePath) {
-		return new AwtPoiPersistenceManager(poiFilePath);
+		return getPoiPersistenceManager(poiFilePath, true);
+	}
+
+	/**
+	 * @param poiFilePath
+	 *            Path to a .poi file.
+	 * @param create
+	 *            If the file does not exist it may be created and filled.
+	 * @return {@link PoiPersistenceManager} using an underlying SQLite database.
+	 */
+	public static PoiPersistenceManager getPoiPersistenceManager(String poiFilePath,
+																 boolean create) {
+		return new AwtPoiPersistenceManager(poiFilePath, create);
 	}
 }

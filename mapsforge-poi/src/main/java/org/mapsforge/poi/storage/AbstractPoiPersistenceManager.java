@@ -67,21 +67,13 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 	// Number of tables needed for db verification
 	protected static final int NUMBER_OF_TABLES = 3;
 
-	protected final String dbFilePath;
 	protected PoiCategoryManager categoryManager = null;
 
 	// Containers for return values
 	protected final List<PointOfInterest> ret;
 	protected PointOfInterest poi = null;
 
-	/**
-	 * @param dbFilePath
-	 *            Path to SQLite file containing POI data. If the file does not exist the file and
-	 *            its tables will be created.
-	 */
-	protected AbstractPoiPersistenceManager(String dbFilePath) {
-		this.dbFilePath = dbFilePath;
-
+	protected AbstractPoiPersistenceManager() {
 		this.ret = new ArrayList<>();
 	}
 

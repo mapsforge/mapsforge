@@ -51,14 +51,15 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
 	/**
 	 * @param dbFilePath
-	 *            Path to SQLite file containing POI data. If the file does not exist the file and
-	 *            its tables will be created.
+	 *            Path to SQLite file containing POI data.
+	 * @param create
+	 *            If the file does not exist it may be created and filled.
 	 */
-	AwtPoiPersistenceManager(String dbFilePath) {
-		super(dbFilePath);
+	AwtPoiPersistenceManager(String dbFilePath, boolean create) {
+		super();
 
 		// Open / create POI database
-		createOrOpenDBFile();
+		createOrOpenDBFile(dbFilePath, create);
 
 		// Load categories from database
 		this.categoryManager = new AwtPoiCategoryManager(this.conn);
@@ -146,19 +147,23 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	}
 
 	/**
-	 * If the file does not exist it will be created and filled.
+	 * @param dbFilePath
+	 *            Path to SQLite file containing POI data.
+	 * @param create
+	 *            If the file does not exist it may be created and filled.
 	 */
-	private void createOrOpenDBFile() {
-		// Create or open file
+	private void createOrOpenDBFile(String dbFilePath, boolean create) {
+		// Open file
 		try {
 			Class.forName("org.sqlite.JDBC");
-			this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.dbFilePath);
+			this.conn = DriverManager.getConnection("jdbc:sqlite:" + dbFilePath);
 			this.conn.setAutoCommit(false);
 		} catch (ClassNotFoundException | SQLException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
-		if (!isValidDataBase()) {
+		// Create file
+		if (!isValidDataBase() && create) {
 			try {
 				createTables();
 			} catch (SQLException e) {
@@ -172,6 +177,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	 */
 	private void createTables() throws SQLException {
 		Statement stmt = this.conn.createStatement();
+
 		stmt.execute(DROP_INDEX_STATEMENT);
 		stmt.execute(DROP_DATA_STATEMENT);
 		stmt.execute(DROP_CATEGORIES_STATEMENT);
@@ -179,6 +185,8 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		stmt.execute(CREATE_CATEGORIES_STATEMENT);
 		stmt.execute(CREATE_DATA_STATEMENT);
 		stmt.execute(CREATE_INDEX_STATEMENT);
+
+		stmt.execute("COMMIT;");
 		stmt.close();
 	}
 
