@@ -117,7 +117,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
         this.mapView = mapView;
         // set to impossible values to trigger clustering at first onChange
         oldZoolLevel = -1;
-        oldCenterLatLong = new LatLong(-180.0, -180.0);
+        oldCenterLatLong = new LatLong(-90.0, -180.0);
 //		// Check correct order of the makerbitmaps within the list
 //		for (int i = 1; i < markerBitmaps.size(); i++) {
 //			if (markerBitmaps.get(i - 1).getItemMax() > markerBitmaps.get(i)
