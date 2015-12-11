@@ -137,7 +137,7 @@ public final class LatLongUtils {
 	 * @return true if this way is closed, false otherwise.
 	 */
 	public static boolean isClosedWay(LatLong[] latLongs) {
-		return latLongs[0].sphericalDistance(latLongs[latLongs.length -1]) < 0.000000001;
+		return latLongs[0].distance(latLongs[latLongs.length -1]) < 0.000000001;
 	}
 
 	/**
