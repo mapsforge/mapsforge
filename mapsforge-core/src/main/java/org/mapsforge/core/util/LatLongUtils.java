@@ -103,6 +103,20 @@ public final class LatLongUtils {
 	}
 
 	/**
+	 * Calculate the Euclidean distance between two LatLongs in degrees using the Pythagorean
+	 * theorem.
+	 *
+	 * @param latLong1
+	 *            first LatLong
+	 * @param latLong2
+	 *            second LatLong
+	 * @return distance in degrees as a double
+	 */
+	public static double distance(LatLong latLong1, LatLong latLong2) {
+		return Math.hypot(latLong1.longitude - latLong2.longitude, latLong1.latitude - latLong2.latitude);
+	}
+
+	/**
 	 * Creates a new LatLong from a comma-separated string of coordinates in the order latitude, longitude. All
 	 * coordinate values must be in degrees.
 	 *
@@ -213,45 +227,12 @@ public final class LatLongUtils {
 	 * @param latLong2
 	 *            second LatLong
 	 * @return distance in meters as a double
-	 * @throws IllegalArgumentException
-	 *             if one of the arguments is null
 	 */
-	public static double sphericalDistance(LatLong latLong1, LatLong latLong2)
-			throws IllegalArgumentException {
-		if (latLong1 == null || latLong2 == null) {
-			throw new IllegalArgumentException(
-					"The LatLongs for distance calculations may not be null.");
-		}
-		return sphericalDistance(latLong1.getLatitude(), latLong1.getLongitude(),
-				latLong2.getLatitude(), latLong2.getLongitude());
-	}
-
-	/**
-	 * Calculate the spherical distance between two LatLongs in meters using the Haversine
-	 * formula.
-	 *
-	 * This calculation is done using the assumption, that the earth is a sphere, it is not
-	 * though. If you need a higher precision and can afford a longer execution time you might
-	 * want to use vincentyDistance
-	 *
-	 * @param lat1
-	 *            latitude of first coordinate
-	 * @param lon1
-	 *            longitude of first coordinate
-	 * @param lat2
-	 *            latitude of second coordinate
-	 * @param lon2
-	 *            longitude of second coordinate
-	 *
-	 * @return distance in meters as a double
-	 * @throws IllegalArgumentException
-	 *             if one of the arguments is null
-	 */
-	public static double sphericalDistance(double lat1, double lon1, double lat2, double lon2) {
-		double dLat = Math.toRadians(lat2 - lat1);
-		double dLon = Math.toRadians(lon2 - lon1);
-		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(lat1))
-				* Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+	public static double sphericalDistance(LatLong latLong1, LatLong latLong2) {
+		double dLat = Math.toRadians(latLong2.latitude - latLong1.latitude);
+		double dLon = Math.toRadians(latLong2.longitude - latLong1.longitude);
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(Math.toRadians(latLong1.latitude))
+				* Math.cos(Math.toRadians(latLong2.latitude)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		return c * LatLongUtils.EQUATORIAL_RADIUS;
 	}

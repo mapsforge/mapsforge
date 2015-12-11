@@ -88,6 +88,17 @@ public class LatLong implements Comparable<LatLong> {
 		return 0;
 	}
 
+	/**
+	 * Calculate the Euclidean distance from this LatLong to another.
+	 *
+	 * @param other
+	 *            The LatLong to calculate the distance to
+	 * @return the distance in degrees as a double
+	 */
+	public double distance(LatLong other) {
+		return LatLongUtils.distance(this, other);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
