@@ -140,6 +140,22 @@ To build the Android sample application, you need to make a few adjustments:
 
 Without these steps, you may have issues with the app crashing with a `java.lang.NoClassDefFoundError` exception. If that happens, carry out the above steps and build again.
 
+### JitPack
+
+We support also [JitPack](https://jitpack.io/#mapsforge/mapsforge) for publishing Mapsforge. This can be used for our releases but it's also useful for using SNAPSHOT builds in your application (which are not in Maven central).
+
+For example in order to include the `mapsforge-core` module `master-SNAPSHOT` with Gradle.
+
+Add as repository:
+
+`maven { url "https://jitpack.io" }`
+
+And declare as dependency:
+
+`compile 'com.github.mapsforge.mapsforge:mapsforge-core:master-SNAPSHOT'`
+
+The same syntax applies for all Mapsforge modules. And with similar way you can declare the dependencies in Maven too.
+
 ## How to contribute
 
 As an open source project, we welcome new contributors and appreciate your help.
