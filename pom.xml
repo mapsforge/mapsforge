@@ -33,6 +33,7 @@
 		<module>mapsforge-map-awt</module>
 		<module>mapsforge-map-writer</module>
 		<module>mapsforge-poi</module>
+		<module>sqlite3-android</module>
 		<module>mapsforge-poi-android</module>
 		<module>mapsforge-poi-awt</module>
 		<module>mapsforge-poi-writer</module>
