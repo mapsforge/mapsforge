@@ -1,8 +1,0 @@
-http://code.google.com/p/sqlite3-android/
-Apache Licence 2.0
-
-Installation:
-  0) (ndk-7 Linux x86 only:) Replace /path/to/android-ndk/prebuilt/linux-x86/awk with your distributions awk. (Simply create a symlink.) 
-  1) /path/to/android-ndk/ndk-build
-  
-  The library should now be in <project root>/libs/.

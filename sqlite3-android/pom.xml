@@ -8,7 +8,7 @@
 		<version>dev-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>mapsforge-poi-android</artifactId>
+	<artifactId>sqlite3-android</artifactId>
 
 	<properties>
 		<rootDirectory>../</rootDirectory>
@@ -37,18 +37,6 @@
 			<artifactId>android</artifactId>
 			<version>6.0_r2</version>
 			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mapsforge</groupId>
-			<artifactId>mapsforge-poi</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mapsforge</groupId>
-			<artifactId>sqlite3-android</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

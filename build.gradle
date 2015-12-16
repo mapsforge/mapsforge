@@ -69,7 +69,7 @@ configure(filterProjects(project.javaprojects)) {
 }
 
 // Configuration for Android projects
-project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras", "mapsforge-poi-android"]
+project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras", "sqlite3-android", "mapsforge-poi-android"]
 project.ext.androidapkprojects = ["Samples"]
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 
