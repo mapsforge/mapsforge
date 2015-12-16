@@ -299,7 +299,9 @@ public class MapFile extends MapDataStore {
 	 */
 	private void closeFile() {
 		try {
-			this.databaseIndexCache.destroy();
+			if (this.databaseIndexCache != null) {
+				this.databaseIndexCache.destroy();
+			}
 			this.inputFile.close();
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
