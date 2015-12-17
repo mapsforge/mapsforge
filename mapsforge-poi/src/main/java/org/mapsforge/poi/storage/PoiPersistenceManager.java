@@ -93,6 +93,11 @@ public interface PoiPersistenceManager {
 	PoiCategoryManager getCategoryManager();
 
 	/**
+	 * @return the metadata for the current POI file.
+	 */
+	PoiFileInfo getPoiFileInfo();
+
+	/**
 	 * Inserts a single {@link PointOfInterest} into storage.
 	 *
 	 * @param poi

@@ -47,6 +47,7 @@ public final class DbConstants {
 					+ "minLon <= ? AND "
 					+ "minLat >= ? AND "
 					+ "minLon >= ?";
+	public static final String FIND_METADATA_STATEMENT = "SELECT name, value FROM metadata;";
 
 	public static final String INSERT_CATEGORIES_STATEMENT = "INSERT INTO poi_categories VALUES (?, ?, ?);";
 	public static final String INSERT_DATA_STATEMENT = "INSERT INTO poi_data VALUES (?, ?, ?);";

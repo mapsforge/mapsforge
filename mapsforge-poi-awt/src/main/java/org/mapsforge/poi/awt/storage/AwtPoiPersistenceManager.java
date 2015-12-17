@@ -18,6 +18,8 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
+import org.mapsforge.poi.storage.PoiFileInfo;
+import org.mapsforge.poi.storage.PoiFileInfoBuilder;
 import org.mapsforge.poi.storage.PoiImpl;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
@@ -49,6 +51,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	private PreparedStatement deletePoiStatement1 = null;
 	private PreparedStatement deletePoiStatement2 = null;
 	private PreparedStatement isValidDBStatement = null;
+	private PreparedStatement metadataStatement = null;
 
 	/**
 	 * @param dbFilePath
@@ -77,6 +80,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			// Deletes a POI given by its ID
 			this.deletePoiStatement1 = this.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
 			this.deletePoiStatement2 = this.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
+
+			// Metadata
+			this.metadataStatement = this.conn.prepareStatement(DbConstants.FIND_METADATA_STATEMENT);
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -132,6 +138,14 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		if (this.isValidDBStatement != null) {
 			try {
 				this.isValidDBStatement.close();
+			} catch (SQLException e) {
+				LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			}
+		}
+
+		if (this.metadataStatement != null) {
+			try {
+				this.metadataStatement.close();
 			} catch (SQLException e) {
 				LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			}
@@ -274,6 +288,51 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		}
 
 		return this.poi;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public PoiFileInfo getPoiFileInfo() {
+		PoiFileInfoBuilder poiFileInfoBuilder = new PoiFileInfoBuilder();
+
+		// Query
+		try {
+			ResultSet rs = this.metadataStatement.executeQuery();
+			while (rs.next()) {
+				String name = rs.getString(1);
+
+				switch (name) {
+					case DbConstants.METADATA_BOUNDS:
+						String bounds = rs.getString(2);
+						if (bounds != null) {
+							poiFileInfoBuilder.bounds = BoundingBox.fromString(bounds);
+						}
+						break;
+					case DbConstants.METADATA_COMMENT:
+						poiFileInfoBuilder.comment = rs.getString(2);
+						break;
+					case DbConstants.METADATA_DATE:
+						poiFileInfoBuilder.date = rs.getLong(2);
+						break;
+					case DbConstants.METADATA_LANGUAGE:
+						poiFileInfoBuilder.language = rs.getString(2);
+						break;
+					case DbConstants.METADATA_VERSION:
+						poiFileInfoBuilder.version = rs.getInt(2);
+						break;
+					case DbConstants.METADATA_WRITER:
+						poiFileInfoBuilder.writer = rs.getString(2);
+						break;
+				}
+			}
+			rs.close();
+		} catch (SQLException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+		}
+
+		return poiFileInfoBuilder.build();
 	}
 
 	/**
