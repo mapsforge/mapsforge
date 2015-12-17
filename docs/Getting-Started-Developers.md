@@ -33,8 +33,8 @@ Extra Android components:
 - mapsforge-map-android: android specific map elements.
 - mapsforge-map-android-extras: android extra map elements.
 - mapsforge-poi-android: android specific poi elements.
-- sqlite3-android: SQLite wrapper for accessing and creating SQLite database files in Android.
 - [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
+- sqlite3-android: SQLite wrapper for accessing and creating SQLite database files in Android.
 
 Extra Java components:
 

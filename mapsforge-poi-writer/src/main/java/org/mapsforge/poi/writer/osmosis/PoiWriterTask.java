@@ -16,6 +16,7 @@
  */
 package org.mapsforge.poi.writer.osmosis;
 
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
@@ -254,38 +255,46 @@ public class PoiWriterTask implements Sink {
 	}
 
 	private void processNode(Node node) {
+		// Only add nodes that fall within the bounding box (if set)
+		BoundingBox bb = configuration.getBboxConfiguration();
+		if (bb != null && !bb.contains(node.getLatitude(), node.getLongitude())) {
+			return;
+		}
+
 		// Only add nodes that have data
-		if (!node.getTags().isEmpty()) {
-			Map<String, String> tagMap = new HashMap<>(20, 1.0f);
-			String tagStr = null;
+		if (node.getTags().isEmpty()) {
+			return;
+		}
 
-			// Get node's tag and name / URL
-			for (Tag tag : node.getTags()) {
-				if (this.tagMappingResolver.getMappingTags().contains(tag.getKey())) {
-					// Save this tag
-					tagStr = tag.getKey() + "=" + tag.getValue();
-				} else {
-					// Save the node's data
-					tagMap.put(tag.getKey().toLowerCase(Locale.ENGLISH), tag.getValue());
-				}
+		Map<String, String> tagMap = new HashMap<>(20, 1.0f);
+		String tagStr = null;
+
+		// Get node's tag and name / URL
+		for (Tag tag : node.getTags()) {
+			if (this.tagMappingResolver.getMappingTags().contains(tag.getKey())) {
+				// Save this tag
+				tagStr = tag.getKey() + "=" + tag.getValue();
+			} else {
+				// Save the node's data
+				tagMap.put(tag.getKey().toLowerCase(Locale.ENGLISH), tag.getValue());
+			}
+		}
+
+		// Check if there is a POI category for this tag and add POI to DB
+		try {
+			// Get category from tag
+			PoiCategory pc = null;
+			if (tagStr != null) {
+				pc = this.tagMappingResolver.getCategoryFromTag(tagStr);
 			}
 
-			// Check if there is a POI category for this tag and add POI to DB
-			try {
-				// Get category from tag
-				PoiCategory pc = null;
-				if (tagStr != null) {
-					pc = this.tagMappingResolver.getCategoryFromTag(tagStr);
-				}
-
-				// Add node if its category matches
-				if (pc != null && this.categoryFilter.isAcceptedCategory(pc)) {
-					writePOI(node.getId(), node.getLatitude(), node.getLongitude(), tagMap, pc);
-					++this.nodesAdded;
-				}
-			} catch (UnknownPoiCategoryException e) {
-				LOGGER.warning("The '" + tagStr + "' tag refers to a POI that does not exist: " + e.getMessage());
+			// Add node if its category matches
+			if (pc != null && this.categoryFilter.isAcceptedCategory(pc)) {
+				writePOI(node.getId(), node.getLatitude(), node.getLongitude(), tagMap, pc);
+				++this.nodesAdded;
 			}
+		} catch (UnknownPoiCategoryException e) {
+			LOGGER.warning("The '" + tagStr + "' tag refers to a POI that does not exist: " + e.getMessage());
 		}
 	}
 

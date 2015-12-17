@@ -66,7 +66,7 @@ public class MapWriterConfiguration {
 	 */
 	public void addBboxConfiguration(String bbox) {
 		if (bbox != null) {
-			setBboxConfiguration(org.mapsforge.core.model.BoundingBox.fromString(bbox));
+			setBboxConfiguration(BoundingBox.fromString(bbox));
 		}
 	}
 

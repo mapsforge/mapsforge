@@ -14,6 +14,7 @@
  */
 package org.mapsforge.poi.writer.model;
 
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.writer.osmosis.PoiWriterTask;
 
 import java.io.File;
@@ -24,9 +25,23 @@ import java.net.URL;
  * Configuration for the POI writer.
  */
 public class PoiWriterConfiguration {
+	private BoundingBox bboxConfiguration;
 	private File outputFile;
 	private String preferredLanguage;
 	private URL tagMapping;
+
+	/**
+	 * Convenience method.
+	 *
+	 * @param bbox
+	 *            the bounding box specification in format minLat, minLon, maxLat, maxLon in exactly this order as
+	 *            degrees
+	 */
+	public void addBboxConfiguration(String bbox) {
+		if (bbox != null) {
+			setBboxConfiguration(BoundingBox.fromString(bbox));
+		}
+	}
 
 	/**
 	 * Convenience method.
@@ -46,6 +61,13 @@ public class PoiWriterConfiguration {
 
 			setOutputFile(f);
 		}
+	}
+
+	/**
+	 * @return the bboxConfiguration
+	 */
+	public BoundingBox getBboxConfiguration() {
+		return this.bboxConfiguration;
 	}
 
 	/**
@@ -96,6 +118,14 @@ public class PoiWriterConfiguration {
 		} else {
 			this.tagMapping = PoiWriterTask.class.getClassLoader().getResource("poi-mapping.xml");
 		}
+	}
+
+	/**
+	 * @param bboxConfiguration
+	 *            the bboxConfiguration to set
+	 */
+	public void setBboxConfiguration(BoundingBox bboxConfiguration) {
+		this.bboxConfiguration = bboxConfiguration;
 	}
 
 	/**
