@@ -179,6 +179,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	private void createTables() throws SQLException {
 		Statement stmt = this.conn.createStatement();
 
+		stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
 		stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
 		stmt.execute(DbConstants.DROP_DATA_STATEMENT);
 		stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
@@ -186,6 +187,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
 		stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
 		stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
+		stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
 
 		stmt.execute("COMMIT;");
 		stmt.close();

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -34,7 +35,6 @@ public class MapWriterConfiguration {
 	private String comment;
 
 	private String dataProcessorType;
-	private long date;
 
 	private boolean debugStrings;
 	private EncodingChoice encodingChoice;
@@ -176,13 +176,6 @@ public class MapWriterConfiguration {
 	 */
 	public String getDataProcessorType() {
 		return this.dataProcessorType;
-	}
-
-	/**
-	 * @return the date
-	 */
-	public long getDate() {
-		return this.date;
 	}
 
 	/**
@@ -360,14 +353,6 @@ public class MapWriterConfiguration {
 	 */
 	public void setDataProcessorType(String dataProcessorType) {
 		this.dataProcessorType = dataProcessorType;
-	}
-
-	/**
-	 * @param date
-	 *            the date to set
-	 */
-	public void setDate(long date) {
-		this.date = date;
 	}
 
 	/**

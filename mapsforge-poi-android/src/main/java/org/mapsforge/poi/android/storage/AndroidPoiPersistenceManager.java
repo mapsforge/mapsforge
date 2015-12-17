@@ -178,6 +178,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	 * DB open created a new file, so let's create its tables.
 	 */
 	private void createTables() throws Exception {
+		this.db.exec(DbConstants.DROP_METADATA_STATEMENT, null);
 		this.db.exec(DbConstants.DROP_INDEX_STATEMENT, null);
 		this.db.exec(DbConstants.DROP_DATA_STATEMENT, null);
 		this.db.exec(DbConstants.DROP_CATEGORIES_STATEMENT, null);
@@ -185,6 +186,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		this.db.exec(DbConstants.CREATE_CATEGORIES_STATEMENT, null);
 		this.db.exec(DbConstants.CREATE_DATA_STATEMENT, null);
 		this.db.exec(DbConstants.CREATE_INDEX_STATEMENT, null);
+		this.db.exec(DbConstants.CREATE_METADATA_STATEMENT, null);
 
 		this.db.exec("COMMIT;", null);
 	}

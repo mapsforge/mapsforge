@@ -151,6 +151,7 @@ public class PoiWriterTask implements Sink {
 		try {
 			commit();
 			finalizeDatabase();
+			writeMetadata();
 			this.conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -208,12 +209,14 @@ public class PoiWriterTask implements Sink {
 		Statement stmt = this.conn.createStatement();
 
 		// CREATE TABLES
+		stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
 		stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
 		stmt.execute(DbConstants.DROP_DATA_STATEMENT);
 		stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
 		stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
 		stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
 		stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
+		stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
 
 		this.pStmt = this.conn.prepareStatement(DbConstants.INSERT_INDEX_STATEMENT);
 		this.pStmt2 = this.conn.prepareStatement(DbConstants.INSERT_DATA_STATEMENT);
@@ -321,6 +324,44 @@ public class PoiWriterTask implements Sink {
 		}
 
 		return sb.toString();
+	}
+
+	private void writeMetadata() throws SQLException {
+		LOGGER.info("Writing metadata...");
+		this.conn.setAutoCommit(false);
+		PreparedStatement pStmtMetadata = this.conn.prepareStatement(DbConstants.INSERT_METADATA_STATEMENT);
+
+		// Bounds
+		pStmtMetadata.setString(1, DbConstants.METADATA_BOUNDS);
+		BoundingBox bb = configuration.getBboxConfiguration();
+		if (bb != null) {
+			pStmtMetadata.setString(2, bb.minLatitude + "," + bb.minLongitude + "," + bb.maxLatitude + "," + bb.maxLongitude);
+		} else {
+			pStmtMetadata.setNull(2, Types.NULL);
+		}
+		pStmtMetadata.addBatch();
+
+		// Date
+		pStmtMetadata.setString(1, DbConstants.METADATA_DATE);
+		pStmtMetadata.setLong(2, System.currentTimeMillis());
+		pStmtMetadata.addBatch();
+
+		// Language
+		pStmtMetadata.setString(1, DbConstants.METADATA_LANGUAGE);
+		if (configuration.getPreferredLanguage() != null) {
+			pStmtMetadata.setString(2, configuration.getPreferredLanguage());
+		} else {
+			pStmtMetadata.setNull(2, Types.NULL);
+		}
+		pStmtMetadata.addBatch();
+
+		// Writer
+		pStmtMetadata.setString(1, DbConstants.METADATA_WRITER);
+		pStmtMetadata.setString(2, configuration.getWriterVersion());
+		pStmtMetadata.addBatch();
+
+		pStmtMetadata.executeBatch();
+		this.conn.commit();
 	}
 
 	private void writePOI(long id, double latitude, double longitude, Map<String, String> poiData,

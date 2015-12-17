@@ -21,6 +21,7 @@ public final class DbConstants {
 	public static final String CREATE_CATEGORIES_STATEMENT = "CREATE TABLE poi_categories (id INTEGER, name TEXT, parent INTEGER, PRIMARY KEY (id));";
 	public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id INTEGER, data TEXT, category INT, PRIMARY KEY (id));";
 	public static final String CREATE_INDEX_STATEMENT = "CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);";
+	public static final String CREATE_METADATA_STATEMENT = "CREATE TABLE metadata (name TEXT, value TEXT);";
 
 	public static final String DELETE_DATA_STATEMENT = "DELETE FROM poi_data WHERE id = ?;";
 	public static final String DELETE_INDEX_STATEMENT = "DELETE FROM poi_index WHERE id = ?;";
@@ -28,6 +29,7 @@ public final class DbConstants {
 	public static final String DROP_CATEGORIES_STATEMENT = "DROP TABLE IF EXISTS poi_categories;";
 	public static final String DROP_DATA_STATEMENT = "DROP TABLE IF EXISTS poi_data;";
 	public static final String DROP_INDEX_STATEMENT = "DROP TABLE IF EXISTS poi_index;";
+	public static final String DROP_METADATA_STATEMENT = "DROP TABLE IF EXISTS metadata;";
 
 	public static final String FIND_BY_ID_STATEMENT =
 			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
@@ -49,14 +51,20 @@ public final class DbConstants {
 	public static final String INSERT_CATEGORIES_STATEMENT = "INSERT INTO poi_categories VALUES (?, ?, ?);";
 	public static final String INSERT_DATA_STATEMENT = "INSERT INTO poi_data VALUES (?, ?, ?);";
 	public static final String INSERT_INDEX_STATEMENT = "INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);";
+	public static final String INSERT_METADATA_STATEMENT = "INSERT INTO metadata VALUES (?, ?);";
 
-	// Number of tables needed for db verification
-	public static final int NUMBER_OF_TABLES = 3;
+	public static final String METADATA_BOUNDS = "bounds";
+	public static final String METADATA_DATE = "date";
+	public static final String METADATA_LANGUAGE = "language";
+	public static final String METADATA_WRITER = "writer";
+
+	// Number of tables needed for DB verification
+	public static final int NUMBER_OF_TABLES = 4;
 
 	public static final String VALID_DB_STATEMENT = "SELECT count(name) "
 			+ "FROM sqlite_master "
 			+ "WHERE name IN "
-			+ "('poi_categories', 'poi_data', 'poi_index');";
+			+ "('metadata', 'poi_categories', 'poi_data', 'poi_index');";
 
 	private DbConstants() {
 		throw new IllegalStateException();

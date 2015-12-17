@@ -88,3 +88,4 @@ The DB schema consists of:
 - `poi_categories` with the categories tree
 - `poi_data` with the POI information
 - Virtual & shadow correlated tables holding the R-tree index
+- `metadata` with the DB metadata
