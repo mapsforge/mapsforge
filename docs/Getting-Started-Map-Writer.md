@@ -44,7 +44,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`simplification-factor`|simplifies ways and polygons with a topology preserving algorithm similar to the Douglas Peucker algorithm, using as the maximum distance difference value the given simplification factor (evaluated in pixels on max zoom level of a base zoom level); on base zoom levels higher than 12, no simplification is computed|positive real number|2.5|
 |`bbox-enlargement`|amount of meters used for enlarging bounding boxes in computations|positive integer|20|
 |`zoom-interval-conf`|configure the zoom intervals used in this file, configuration is given in the form: baseZoomA, minZoomA, maxZoomA, baseZoomB, minZoomB, maxZoomB,..., baseZoomN, minZoomN, maxZoomN, in most cases you do **not** need to alter the standard configuration|intervals must not overlap and must not contain gaps|5,0,7,10,8,11,14,12,21|
-|`debug-file`|switch for writing debug information to the file, *do **not activate** this option unless you know what you are doing*|true/false|false|
+|`debug-file`|switch for writing debug information to the file, _do **not activate** this option unless you know what you are doing_|true/false|false|
 
 ### Examples
 

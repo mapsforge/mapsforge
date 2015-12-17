@@ -27,46 +27,6 @@ import java.util.List;
  * provides functionality for accessing the SQLite database.
  */
 public abstract class AbstractPoiPersistenceManager implements PoiPersistenceManager {
-	public static final String CREATE_CATEGORIES_STATEMENT = "CREATE TABLE poi_categories (id INTEGER, name VARCHAR, parent INTEGER, PRIMARY KEY (id));";
-	public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id LONG, data VARCHAR, category INT, PRIMARY KEY (id));";
-	public static final String CREATE_INDEX_STATEMENT = "CREATE VIRTUAL TABLE poi_index USING rtree(id, minLat, maxLat, minLon, maxLon);";
-
-	protected static final String DELETE_DATA_STATEMENT = "DELETE FROM poi_data WHERE id = ?;";
-	protected static final String DELETE_INDEX_STATEMENT = "DELETE FROM poi_index WHERE id = ?;";
-
-	public static final String DROP_CATEGORIES_STATEMENT = "DROP TABLE IF EXISTS poi_categories;";
-	public static final String DROP_DATA_STATEMENT = "DROP TABLE IF EXISTS poi_data;";
-	public static final String DROP_INDEX_STATEMENT = "DROP TABLE IF EXISTS poi_index;";
-
-	protected static final String FIND_BY_ID_STATEMENT =
-			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
-					+ "FROM poi_index "
-					+ "JOIN poi_data ON poi_index.id = poi_data.id "
-					+ "WHERE "
-					+ "poi_index.id = ?;";
-	protected static final String FIND_BY_NAME_CLAUSE = " AND poi_data.data LIKE ?";
-	protected static final String FIND_IN_BOX_STATEMENT =
-			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
-					+ "FROM poi_index "
-					+ "JOIN poi_data ON poi_index.id = poi_data.id "
-					+ "WHERE "
-					+ "minLat <= ? AND "
-					+ "minLon <= ? AND "
-					+ "minLat >= ? AND "
-					+ "minLon >= ?";
-
-	public static final String INSERT_CATEGORIES_STATEMENT = "INSERT INTO poi_categories VALUES (?, ?, ?);";
-	public static final String INSERT_DATA_STATEMENT = "INSERT INTO poi_data VALUES (?, ?, ?);";
-	public static final String INSERT_INDEX_STATEMENT = "INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);";
-
-	protected static final String VALID_DB_STATEMENT = "SELECT count(name) "
-			+ "FROM sqlite_master "
-			+ "WHERE name IN "
-			+ "('poi_index', 'poi_data', 'poi_categories');";
-
-	// Number of tables needed for db verification
-	protected static final int NUMBER_OF_TABLES = 3;
-
 	protected PoiCategoryManager categoryManager = null;
 
 	// Containers for return values
@@ -109,11 +69,11 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 	 *            the pattern to search in points of interest names (may be null).
 	 * @return The SQL query.
 	 */
-	public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
+	protected static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
 		if (filter != null) {
 			return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, pattern);
 		}
-		return FIND_IN_BOX_STATEMENT + (pattern != null ? FIND_BY_NAME_CLAUSE : "") + " LIMIT ?;";
+		return DbConstants.FIND_IN_BOX_STATEMENT + (pattern != null ? DbConstants.FIND_BY_NAME_CLAUSE : "") + " LIMIT ?;";
 	}
 
 	/**

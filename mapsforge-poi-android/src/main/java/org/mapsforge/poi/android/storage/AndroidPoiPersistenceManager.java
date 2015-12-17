@@ -18,6 +18,7 @@ package org.mapsforge.poi.android.storage;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
+import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiImpl;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
@@ -66,15 +67,15 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		// Queries
 		try {
 			// Finds a POI by its unique ID
-			this.findByIDStatement = this.db.prepare(FIND_BY_ID_STATEMENT);
+			this.findByIDStatement = this.db.prepare(DbConstants.FIND_BY_ID_STATEMENT);
 
 			// Inserts a POI into index and adds its data
-			this.insertPoiStatement1 = this.db.prepare(INSERT_INDEX_STATEMENT);
-			this.insertPoiStatement2 = this.db.prepare(INSERT_DATA_STATEMENT);
+			this.insertPoiStatement1 = this.db.prepare(DbConstants.INSERT_INDEX_STATEMENT);
+			this.insertPoiStatement2 = this.db.prepare(DbConstants.INSERT_DATA_STATEMENT);
 
 			// Deletes a POI given by its ID
-			this.deletePoiStatement1 = this.db.prepare(DELETE_INDEX_STATEMENT);
-			this.deletePoiStatement2 = this.db.prepare(DELETE_DATA_STATEMENT);
+			this.deletePoiStatement1 = this.db.prepare(DbConstants.DELETE_INDEX_STATEMENT);
+			this.deletePoiStatement2 = this.db.prepare(DbConstants.DELETE_DATA_STATEMENT);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -177,13 +178,13 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	 * DB open created a new file, so let's create its tables.
 	 */
 	private void createTables() throws Exception {
-		this.db.exec(DROP_INDEX_STATEMENT, null);
-		this.db.exec(DROP_DATA_STATEMENT, null);
-		this.db.exec(DROP_CATEGORIES_STATEMENT, null);
+		this.db.exec(DbConstants.DROP_INDEX_STATEMENT, null);
+		this.db.exec(DbConstants.DROP_DATA_STATEMENT, null);
+		this.db.exec(DbConstants.DROP_CATEGORIES_STATEMENT, null);
 
-		this.db.exec(CREATE_CATEGORIES_STATEMENT, null);
-		this.db.exec(CREATE_DATA_STATEMENT, null);
-		this.db.exec(CREATE_INDEX_STATEMENT, null);
+		this.db.exec(DbConstants.CREATE_CATEGORIES_STATEMENT, null);
+		this.db.exec(DbConstants.CREATE_DATA_STATEMENT, null);
+		this.db.exec(DbConstants.CREATE_INDEX_STATEMENT, null);
 
 		this.db.exec("COMMIT;", null);
 	}
@@ -341,7 +342,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	@Override
 	public boolean isValidDataBase() {
 		try {
-			this.isValidDBStatement = this.db.prepare(VALID_DB_STATEMENT);
+			this.isValidDBStatement = this.db.prepare(DbConstants.VALID_DB_STATEMENT);
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -357,7 +358,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
-		return numTables == NUMBER_OF_TABLES;
+		return numTables == DbConstants.NUMBER_OF_TABLES;
 	}
 
 	/**

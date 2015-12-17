@@ -29,6 +29,7 @@ public class PoiWriterConfiguration {
 	private File outputFile;
 	private String preferredLanguage;
 	private URL tagMapping;
+	private String writerVersion;
 
 	/**
 	 * Convenience method.
@@ -64,7 +65,7 @@ public class PoiWriterConfiguration {
 	}
 
 	/**
-	 * @return the bboxConfiguration
+	 * @return the bounding box configuration
 	 */
 	public BoundingBox getBboxConfiguration() {
 		return this.bboxConfiguration;
@@ -89,6 +90,13 @@ public class PoiWriterConfiguration {
 	 */
 	public URL getTagMapping() {
 		return this.tagMapping;
+	}
+
+	/**
+	 * @return the writer version
+	 */
+	public String getWriterVersion() {
+		return this.writerVersion;
 	}
 
 	/**
@@ -122,7 +130,7 @@ public class PoiWriterConfiguration {
 
 	/**
 	 * @param bboxConfiguration
-	 *            the bboxConfiguration to set
+	 *            the bounding box configuration to set
 	 */
 	public void setBboxConfiguration(BoundingBox bboxConfiguration) {
 		this.bboxConfiguration = bboxConfiguration;
@@ -144,5 +152,13 @@ public class PoiWriterConfiguration {
 		if (preferredLanguage != null && !preferredLanguage.isEmpty()) {
 			this.preferredLanguage = preferredLanguage;
 		}
+	}
+
+	/**
+	 * @param writerVersion
+	 *            the writer version to set
+	 */
+	public void setWriterVersion(String writerVersion) {
+		this.writerVersion = writerVersion;
 	}
 }

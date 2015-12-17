@@ -16,6 +16,7 @@ package org.mapsforge.poi.awt.storage;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
+import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiImpl;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
@@ -67,15 +68,15 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 		// Queries
 		try {
 			// Finds a POI by its unique ID
-			this.findByIDStatement = this.conn.prepareStatement(FIND_BY_ID_STATEMENT);
+			this.findByIDStatement = this.conn.prepareStatement(DbConstants.FIND_BY_ID_STATEMENT);
 
 			// Inserts a POI into index and adds its data
-			this.insertPoiStatement1 = this.conn.prepareStatement(INSERT_INDEX_STATEMENT);
-			this.insertPoiStatement2 = this.conn.prepareStatement(INSERT_DATA_STATEMENT);
+			this.insertPoiStatement1 = this.conn.prepareStatement(DbConstants.INSERT_INDEX_STATEMENT);
+			this.insertPoiStatement2 = this.conn.prepareStatement(DbConstants.INSERT_DATA_STATEMENT);
 
 			// Deletes a POI given by its ID
-			this.deletePoiStatement1 = this.conn.prepareStatement(DELETE_INDEX_STATEMENT);
-			this.deletePoiStatement2 = this.conn.prepareStatement(DELETE_DATA_STATEMENT);
+			this.deletePoiStatement1 = this.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
+			this.deletePoiStatement2 = this.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -178,13 +179,13 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	private void createTables() throws SQLException {
 		Statement stmt = this.conn.createStatement();
 
-		stmt.execute(DROP_INDEX_STATEMENT);
-		stmt.execute(DROP_DATA_STATEMENT);
-		stmt.execute(DROP_CATEGORIES_STATEMENT);
+		stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
+		stmt.execute(DbConstants.DROP_DATA_STATEMENT);
+		stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
 
-		stmt.execute(CREATE_CATEGORIES_STATEMENT);
-		stmt.execute(CREATE_DATA_STATEMENT);
-		stmt.execute(CREATE_INDEX_STATEMENT);
+		stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
+		stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
+		stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
 
 		stmt.execute("COMMIT;");
 		stmt.close();
@@ -345,7 +346,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 	@Override
 	public boolean isValidDataBase() {
 		try {
-			this.isValidDBStatement = this.conn.prepareStatement(VALID_DB_STATEMENT);
+			this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT);
 		} catch (SQLException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
@@ -363,7 +364,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 		}
 
-		return numTables == NUMBER_OF_TABLES;
+		return numTables == DbConstants.NUMBER_OF_TABLES;
 	}
 
 	/**

@@ -17,7 +17,7 @@
 package org.mapsforge.poi.writer.osmosis;
 
 import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
+import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiCategoryManager;
@@ -102,10 +102,10 @@ public class PoiWriterTask implements Sink {
 		Properties properties = new Properties();
 		try {
 			properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
-			String writerVersion = Constants.CREATOR_NAME + "-"
-					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION);
+			configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
+					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
 
-			LOGGER.info("poi-writer version: " + writerVersion);
+			LOGGER.info("poi-writer version: " + configuration.getWriterVersion());
 		} catch (IOException e) {
 			throw new RuntimeException("could not find default properties", e);
 		}
@@ -208,16 +208,16 @@ public class PoiWriterTask implements Sink {
 		Statement stmt = this.conn.createStatement();
 
 		// CREATE TABLES
-		stmt.execute(AbstractPoiPersistenceManager.DROP_INDEX_STATEMENT);
-		stmt.execute(AbstractPoiPersistenceManager.DROP_DATA_STATEMENT);
-		stmt.execute(AbstractPoiPersistenceManager.DROP_CATEGORIES_STATEMENT);
-		stmt.execute(AbstractPoiPersistenceManager.CREATE_CATEGORIES_STATEMENT);
-		stmt.execute(AbstractPoiPersistenceManager.CREATE_DATA_STATEMENT);
-		stmt.execute(AbstractPoiPersistenceManager.CREATE_INDEX_STATEMENT);
+		stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
+		stmt.execute(DbConstants.DROP_DATA_STATEMENT);
+		stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
+		stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
+		stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
+		stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
 
-		this.pStmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.INSERT_INDEX_STATEMENT);
-		this.pStmt2 = this.conn.prepareStatement(AbstractPoiPersistenceManager.INSERT_DATA_STATEMENT);
-		PreparedStatement pStmt3 = this.conn.prepareStatement(AbstractPoiPersistenceManager.INSERT_CATEGORIES_STATEMENT);
+		this.pStmt = this.conn.prepareStatement(DbConstants.INSERT_INDEX_STATEMENT);
+		this.pStmt2 = this.conn.prepareStatement(DbConstants.INSERT_DATA_STATEMENT);
+		PreparedStatement pStmt3 = this.conn.prepareStatement(DbConstants.INSERT_CATEGORIES_STATEMENT);
 
 		// INSERT CATEGORIES
 		PoiCategory root = this.categoryManager.getRootCategory();
@@ -249,8 +249,10 @@ public class PoiWriterTask implements Sink {
 		Entity e = entityContainer.getEntity();
 		LOGGER.finest("Processing entity: " + e.toString());
 
-		if (e instanceof Node) {
-			processNode((Node) e);
+		switch (e.getType()) {
+			case Node:
+				processNode((Node) e);
+				break;
 		}
 	}
 

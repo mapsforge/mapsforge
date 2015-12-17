@@ -38,8 +38,8 @@ public final class PoiCategoryRangeQueryGenerator {
 	 * @return The SQL query.
 	 */
 	public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
-		return AbstractPoiPersistenceManager.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter)
-				+ (pattern != null ? AbstractPoiPersistenceManager.FIND_BY_NAME_CLAUSE : "")
+		return DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter)
+				+ (pattern != null ? DbConstants.FIND_BY_NAME_CLAUSE : "")
 				+ " LIMIT ?;";
 	}
 
