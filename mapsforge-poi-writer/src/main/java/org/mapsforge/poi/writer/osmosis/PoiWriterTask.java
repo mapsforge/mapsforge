@@ -341,6 +341,15 @@ public class PoiWriterTask implements Sink {
 		}
 		pStmtMetadata.addBatch();
 
+		// Comment
+		pStmtMetadata.setString(1, DbConstants.METADATA_COMMENT);
+		if (configuration.getComment() != null) {
+			pStmtMetadata.setString(2, configuration.getComment());
+		} else {
+			pStmtMetadata.setNull(2, Types.NULL);
+		}
+		pStmtMetadata.addBatch();
+
 		// Date
 		pStmtMetadata.setString(1, DbConstants.METADATA_DATE);
 		pStmtMetadata.setLong(2, System.currentTimeMillis());

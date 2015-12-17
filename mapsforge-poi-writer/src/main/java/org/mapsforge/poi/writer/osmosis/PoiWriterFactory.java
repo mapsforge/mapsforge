@@ -32,6 +32,7 @@ import org.openstreetmap.osmosis.core.task.v0_6.Sink;
  */
 public class PoiWriterFactory extends TaskManagerFactory {
 	private static final String PARAM_BBOX = "bbox";
+	private static final String PARAM_COMMENT = "comment";
 	private static final String PARAM_OUTFILE = "file";
 	private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
 	private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
@@ -40,6 +41,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
 	protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {
 		PoiWriterConfiguration configuration = new PoiWriterConfiguration();
 		configuration.addBboxConfiguration(getStringArgument(taskConfig, PARAM_BBOX, null));
+		configuration.setComment(getStringArgument(taskConfig, PARAM_COMMENT, null));
 		configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
 		configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
 		configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));

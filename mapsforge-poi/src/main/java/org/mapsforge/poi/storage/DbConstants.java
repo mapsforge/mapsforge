@@ -54,6 +54,7 @@ public final class DbConstants {
 	public static final String INSERT_METADATA_STATEMENT = "INSERT INTO metadata VALUES (?, ?);";
 
 	public static final String METADATA_BOUNDS = "bounds";
+	public static final String METADATA_COMMENT = "comment";
 	public static final String METADATA_DATE = "date";
 	public static final String METADATA_LANGUAGE = "language";
 	public static final String METADATA_WRITER = "writer";

@@ -26,6 +26,7 @@ import java.net.URL;
  */
 public class PoiWriterConfiguration {
 	private BoundingBox bboxConfiguration;
+	private String comment;
 	private File outputFile;
 	private String preferredLanguage;
 	private URL tagMapping;
@@ -69,6 +70,13 @@ public class PoiWriterConfiguration {
 	 */
 	public BoundingBox getBboxConfiguration() {
 		return this.bboxConfiguration;
+	}
+
+	/**
+	 * @return the comment
+	 */
+	public String getComment() {
+		return this.comment;
 	}
 
 	/**
@@ -134,6 +142,16 @@ public class PoiWriterConfiguration {
 	 */
 	public void setBboxConfiguration(BoundingBox bboxConfiguration) {
 		this.bboxConfiguration = bboxConfiguration;
+	}
+
+	/**
+	 * @param comment
+	 *            the comment to set
+	 */
+	public void setComment(String comment) {
+		if (comment != null && !comment.isEmpty()) {
+			this.comment = comment;
+		}
 	}
 
 	/**
