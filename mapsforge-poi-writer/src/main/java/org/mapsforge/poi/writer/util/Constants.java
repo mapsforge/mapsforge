@@ -27,6 +27,10 @@ public final class Constants {
 	 */
 	public static final String DEFAULT_PARAM_OUTFILE = "mapsforge.poi";
 	/**
+	 * The name of the property that refers to the version of the map file specification.
+	 */
+	public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION = "poi.specification.version";
+	/**
 	 * The name of the property that refers to the version of the POI writer.
 	 */
 	public static final String PROPERTY_NAME_WRITER_VERSION = "poi.writer.version";

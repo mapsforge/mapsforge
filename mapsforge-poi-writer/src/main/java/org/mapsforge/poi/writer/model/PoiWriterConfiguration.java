@@ -27,6 +27,7 @@ import java.net.URL;
 public class PoiWriterConfiguration {
 	private BoundingBox bboxConfiguration;
 	private String comment;
+	private int fileSpecificationVersion;
 	private File outputFile;
 	private String preferredLanguage;
 	private URL tagMapping;
@@ -77,6 +78,13 @@ public class PoiWriterConfiguration {
 	 */
 	public String getComment() {
 		return this.comment;
+	}
+
+	/**
+	 * @return the file specification version
+	 */
+	public int getFileSpecificationVersion() {
+		return this.fileSpecificationVersion;
 	}
 
 	/**
@@ -152,6 +160,14 @@ public class PoiWriterConfiguration {
 		if (comment != null && !comment.isEmpty()) {
 			this.comment = comment;
 		}
+	}
+
+	/**
+	 * @param fileSpecificationVersion
+	 *            the file specification version to set
+	 */
+	public void setFileSpecificationVersion(int fileSpecificationVersion) {
+		this.fileSpecificationVersion = fileSpecificationVersion;
 	}
 
 	/**

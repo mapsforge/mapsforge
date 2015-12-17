@@ -104,8 +104,11 @@ public class PoiWriterTask implements Sink {
 			properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
 			configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
 					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
+			configuration.setFileSpecificationVersion(Integer.parseInt(properties
+					.getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION)));
 
 			LOGGER.info("poi-writer version: " + configuration.getWriterVersion());
+			LOGGER.info("poi format specification version: " + configuration.getFileSpecificationVersion());
 		} catch (IOException e) {
 			throw new RuntimeException("could not find default properties", e);
 		}
@@ -362,6 +365,11 @@ public class PoiWriterTask implements Sink {
 		} else {
 			pStmtMetadata.setNull(2, Types.NULL);
 		}
+		pStmtMetadata.addBatch();
+
+		// Version
+		pStmtMetadata.setString(1, DbConstants.METADATA_VERSION);
+		pStmtMetadata.setInt(2, configuration.getFileSpecificationVersion());
 		pStmtMetadata.addBatch();
 
 		// Writer

@@ -90,3 +90,9 @@ The DB schema consists of:
 - `poi_data` with the POI information
 - Virtual & shadow correlated tables holding the R-tree index
 - `metadata` with the DB metadata
+
+## Version history
+
+|**Version**|**Date**|**Changes**|
+|-----------|--------|-----------|
+|1|2015-11-04|Initial release of the specification|

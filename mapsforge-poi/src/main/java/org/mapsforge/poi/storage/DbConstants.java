@@ -57,6 +57,7 @@ public final class DbConstants {
 	public static final String METADATA_COMMENT = "comment";
 	public static final String METADATA_DATE = "date";
 	public static final String METADATA_LANGUAGE = "language";
+	public static final String METADATA_VERSION = "version";
 	public static final String METADATA_WRITER = "writer";
 
 	// Number of tables needed for DB verification
