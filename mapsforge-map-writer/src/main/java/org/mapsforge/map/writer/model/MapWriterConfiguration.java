@@ -138,6 +138,18 @@ public class MapWriterConfiguration {
 
 	/**
 	 * Convenience method.
+	 *
+	 * @param preferredLanguages
+	 *            the preferred language(s) separated with ','
+	 */
+	public void addPreferredLanguages(String preferredLanguages) {
+		if (preferredLanguages != null && !preferredLanguages.trim().isEmpty()) {
+			setPreferredLanguages(Arrays.asList(preferredLanguages.split(",")));
+		}
+	}
+
+	/**
+	 * Convenience method.
 	 * 
 	 * @param zoomIntervalConfiguaration
 	 *            the zoom interval configuration
@@ -421,12 +433,10 @@ public class MapWriterConfiguration {
 
 	/**
 	 * @param preferredLanguages
-	 *            the preferred language(s) to set separated with ','
+	 *            the preferred language(s) to set
 	 */
-	public void setPreferredLanguages(String preferredLanguages) {
-		if (preferredLanguages != null && !preferredLanguages.trim().isEmpty()) {
-			this.preferredLanguages = Arrays.asList(preferredLanguages.split(","));
-		}
+	public void setPreferredLanguages(List<String> preferredLanguages) {
+		this.preferredLanguages = preferredLanguages;
 	}
 
 	/**

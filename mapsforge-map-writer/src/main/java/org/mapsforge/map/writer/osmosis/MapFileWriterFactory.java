@@ -71,7 +71,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
 		configuration.setBboxEnlargement(getIntegerArgument(taskConfig, PARAM_BBOX_ENLARGEMENT,
 				Constants.DEFAULT_PARAM_BBOX_ENLARGEMENT));
 
-		configuration.setPreferredLanguages(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGES, null));
+		configuration.addPreferredLanguages(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGES, null));
 		configuration
 				.addEncodingChoice(getStringArgument(taskConfig, PARAM_ENCODING, Constants.DEFAULT_PARAM_ENCODING));
 

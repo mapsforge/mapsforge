@@ -270,13 +270,6 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 	protected final boolean skipInvalidRelations;
 	protected TileGridLayout[] tileGridLayouts;
 
-	// public BaseTileBasedDataProcessor(double minLat, double maxLat, double minLon, double maxLon,
-	// ZoomIntervalConfiguration zoomIntervalConfiguration, int bboxEnlargement, String preferredLanguage) {
-	// this(new Rect(minLon, maxLon, minLat, maxLat), zoomIntervalConfiguration, bboxEnlargement,
-	// preferredLanguage);
-	//
-	// }
-
 	protected final Map<TileCoordinate, TLongHashSet> tilesToCoastlines;
 
 	protected final ZoomIntervalConfiguration zoomIntervalConfiguration;
