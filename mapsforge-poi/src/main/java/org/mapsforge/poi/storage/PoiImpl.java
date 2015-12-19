@@ -17,59 +17,75 @@ package org.mapsforge.poi.storage;
 
 import org.mapsforge.core.model.LatLong;
 
+/**
+ * Implementation for the {@link PointOfInterest} interface.
+ */
 public class PoiImpl implements PointOfInterest {
 	private final long id;
 	private final double latitude;
 	private final double longitude;
-	private final String name;
+	private final String data;
 	private final PoiCategory category;
 
-	public PoiImpl(long id, double latitude, double longitude, String name, PoiCategory category) {
+	public PoiImpl(long id, double latitude, double longitude, String data, PoiCategory category) {
 		this.id = id;
 		this.latitude = latitude;
 		this.longitude = longitude;
-		this.name = name;
+		this.data = data;
 		this.category = category;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PoiCategory getCategory() {
 		return this.category;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getData() {
-		return this.name;
+		return this.data;
 	}
 
-	@Override
-	public LatLong getLatLong() {
-		return new LatLong(this.latitude, this.longitude);
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public long getId() {
 		return this.id;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getLatitude() {
 		return this.latitude;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public LatLong getLatLong() {
+		return new LatLong(this.latitude, this.longitude);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public double getLongitude() {
 		return this.longitude;
 	}
 
 	@Override
-	public String getUrl() {
-		return "";
-	}
-
-	@Override
 	public String toString() {
-		return "POI: (" + this.latitude + ',' + this.longitude + ") " + this.name + ' '
+		return "POI: (" + this.latitude + ',' + this.longitude + ") " + this.data + ' '
 				+ this.category.getID();
 	}
 }

@@ -24,6 +24,7 @@ import org.mapsforge.poi.writer.jaxb.Mapping;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -37,7 +38,7 @@ import javax.xml.bind.Unmarshaller;
 
 /**
  * This class maps a given tag (e.g. amenity=restaurant) to a certain {@link PoiCategory}.
- * The mapping configuration is read from a XML file.
+ * The mapping configuration is read from an XML file.
  */
 public class TagMappingResolver {
 	private static final Logger LOGGER = Logger.getLogger(TagMappingResolver.class.getName());
@@ -47,6 +48,7 @@ public class TagMappingResolver {
 	/** Maps a tag to a category's title */
 	private final Map<String, String> tagMap;
 
+	/** Unique mapping tags */
 	private final Set<String> mappingTags;
 
 	/**
@@ -60,6 +62,8 @@ public class TagMappingResolver {
 		this.tagMap = new HashMap<>();
 		this.mappingTags = new TreeSet<>();
 
+		LOGGER.info("Adding tag mappings...");
+
 		// Read root category from XML
 		JAXBContext ctx;
 		Unmarshaller um;
@@ -72,29 +76,29 @@ public class TagMappingResolver {
 			LOGGER.log(Level.SEVERE, "Could not load POI category configuration from XML.", e);
 		}
 
-		LOGGER.info("Adding tag mappings...");
+		// Add mappings from tag to category title
 		Stack<Category> categories = new Stack<>();
 		categories.push(xmlRootCategory);
-
-		// Add mappings from tag to category title
 		while (!categories.isEmpty()) {
 			for (Category c : categories.pop().getCategory()) {
 				categories.push(c);
 
 				for (Mapping m : c.getMapping()) {
-					LOGGER.finer("'" + m.getTag() + "' --> '" + c.getTitle() + "'");
-					this.tagMap.put(m.getTag(), c.getTitle());
+					String tag = m.getTag().toLowerCase(Locale.ENGLISH);
+					LOGGER.finer("'" + tag + "' --> '" + c.getTitle() + "'");
+					this.tagMap.put(tag, c.getTitle());
 				}
 			}
 		}
 
-		// For each mapping's tag: Split and save key (uniquely)
+		// For each mapping's tag: split and save key (uniquely)
 		for (String tag : this.tagMap.keySet()) {
 			this.mappingTags.add(tag.split("=")[0]);
 		}
 	}
 
 	public PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
+		tag = tag.toLowerCase(Locale.ENGLISH);
 		String categoryName = this.tagMap.get(tag);
 
 		// Tag not found?

@@ -43,12 +43,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,17 +107,18 @@ public class PoiWriterTask implements Sink {
 			configuration.setFileSpecificationVersion(Integer.parseInt(properties
 					.getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION)));
 
-			LOGGER.info("poi-writer version: " + configuration.getWriterVersion());
-			LOGGER.info("poi format specification version: " + configuration.getFileSpecificationVersion());
+			LOGGER.info("POI writer version: " + configuration.getWriterVersion());
+			LOGGER.info("POI format specification version: " + configuration.getFileSpecificationVersion());
 		} catch (IOException e) {
-			throw new RuntimeException("could not find default properties", e);
+			throw new RuntimeException("Could not find default properties", e);
+		} catch (NumberFormatException e) {
+			throw new RuntimeException("POI format specification version is not an integer", e);
 		}
-		LOGGER.setLevel(Level.FINE);
 
 		// Get categories defined in XML
 		this.categoryManager = new XMLPoiCategoryManager(configuration.getTagMapping());
 
-		// Get tag -> POI mapper
+		// Tag -> POI mapper
 		this.tagMappingResolver = new TagMappingResolver(configuration.getTagMapping(), this.categoryManager);
 
 		// Set accepted categories (allow all categories)
@@ -135,11 +136,13 @@ public class PoiWriterTask implements Sink {
 			e.printStackTrace();
 		}
 
+		LOGGER.info("Creating POI database...");
 		this.progressManager.initProgressBar(0, 0);
 		this.progressManager.setMessage("Creating POI database");
 	}
 
 	private void commit() throws SQLException {
+		LOGGER.info("Committing...");
 		this.progressManager.setMessage("Committing...");
 		this.pStmt.executeBatch();
 		this.pStmt2.executeBatch();
@@ -151,6 +154,11 @@ public class PoiWriterTask implements Sink {
 	 */
 	@Override
 	public void complete() {
+		NumberFormat nfMegabyte = NumberFormat.getInstance();
+		NumberFormat nfCounts = NumberFormat.getInstance();
+		nfCounts.setGroupingUsed(true);
+		nfMegabyte.setMaximumFractionDigits(2);
+
 		try {
 			commit();
 			finalizeDatabase();
@@ -159,8 +167,13 @@ public class PoiWriterTask implements Sink {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		LOGGER.info("Added " + this.nodesAdded + " POIs.");
+
+		LOGGER.info("Added " + nfCounts.format(this.nodesAdded) + " POIs.");
 		this.progressManager.setMessage("Done.");
+
+		LOGGER.info("Estimated memory consumption: "
+				+ nfMegabyte.format(+((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / Math
+				.pow(1024, 2))) + "MB");
 	}
 
 	/**
@@ -277,14 +290,15 @@ public class PoiWriterTask implements Sink {
 		Map<String, String> tagMap = new HashMap<>(20, 1.0f);
 		String tagStr = null;
 
-		// Get node's tag and name / URL
+		// Get node's tag and data
 		for (Tag tag : node.getTags()) {
-			if (this.tagMappingResolver.getMappingTags().contains(tag.getKey())) {
+			String key = tag.getKey().toLowerCase(Locale.ENGLISH);
+			if (this.tagMappingResolver.getMappingTags().contains(key)) {
 				// Save this tag
-				tagStr = tag.getKey() + "=" + tag.getValue();
+				tagStr = key + "=" + tag.getValue();
 			} else {
 				// Save the node's data
-				tagMap.put(tag.getKey().toLowerCase(Locale.ENGLISH), tag.getValue());
+				tagMap.put(key, tag.getValue());
 			}
 		}
 
@@ -395,7 +409,6 @@ public class PoiWriterTask implements Sink {
 			this.pStmt2.setLong(1, id);
 
 			// If all important data should be written to db
-			// TODO Use PBF here
 			if (INCLUDE_META_DATA) {
 				this.pStmt2.setString(2, tagsToString(poiData));
 			} else {

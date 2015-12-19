@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 weise
+ * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,8 +19,8 @@ package org.mapsforge.poi.storage;
 import org.mapsforge.core.model.LatLong;
 
 /**
- * This class represents a point of interest. Every POI should be uniquely identifiable by its id so
- * that for two POIs a and b a.equals(b) if and only if a.id == b.id.
+ * This class represents a point of interest. Every POI should be uniquely identifiable by its id,
+ * so that for two POIs a and b, a.equals(b) if and only if a.id == b.id.
  */
 public interface PointOfInterest {
 	/**
@@ -28,14 +29,9 @@ public interface PointOfInterest {
 	PoiCategory getCategory();
 
 	/**
-	 * @return binary data of this point of interest.
+	 * @return data of this point of interest.
 	 */
 	String getData();
-
-	/**
-	 * @return {@link LatLong} of this point of interest.
-	 */
-	LatLong getLatLong();
 
 	/**
 	 * @return id of this point of interest.
@@ -48,12 +44,12 @@ public interface PointOfInterest {
 	double getLatitude();
 
 	/**
+	 * @return {@link LatLong} of this point of interest.
+	 */
+	LatLong getLatLong();
+
+	/**
 	 * @return longitude of this point of interest
 	 */
 	double getLongitude();
-
-	/**
-	 * @return url of this point of interest.
-	 */
-	String getUrl();
 }

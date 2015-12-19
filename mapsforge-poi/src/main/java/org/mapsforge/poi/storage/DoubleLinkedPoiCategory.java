@@ -82,7 +82,7 @@ public class DoubleLinkedPoiCategory implements PoiCategory {
 	}
 
 	/**
-	 * This method calculates an unique ID for all nodes in the tree. For each node's 'n' ID named
+	 * This method calculates a unique ID for all nodes in the tree. For each node's 'n' ID named
 	 * 'ID_'n at depth 'd' the following invariants must be true:
 	 * <ul>
 	 * <li>ID > max(ID of all child nodes)</li>

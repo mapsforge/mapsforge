@@ -31,20 +31,25 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+/**
+ * A {@link PoiCategoryManager} implementation that reads a category configuration from an XML file.
+ */
 public class XMLPoiCategoryManager implements PoiCategoryManager {
 	private static final Logger LOGGER = Logger.getLogger(XMLPoiCategoryManager.class.getName());
 
-	private DoubleLinkedPoiCategory root = null;
+	/** Maps a category's title to a category */
 	private final Map<String, DoubleLinkedPoiCategory> titleMap;
+
+	private DoubleLinkedPoiCategory root = null;
 
 	/**
 	 * @param configFilePath
 	 *            Path to POI category XML file containing the category tree configuration.
 	 */
 	public XMLPoiCategoryManager(URL configFilePath) {
-		LOGGER.info("Loading POI categories from XML...");
-
 		this.titleMap = new HashMap<>();
+
+		LOGGER.info("Loading POI categories from XML...");
 
 		// Read root category from XML
 		JAXBContext ctx;
@@ -58,11 +63,10 @@ public class XMLPoiCategoryManager implements PoiCategoryManager {
 			LOGGER.log(Level.SEVERE, "Could not load POI category configuration from XML.", e);
 		}
 
-		LinkedList<Category> currentXMLNode = new LinkedList<>();
-		DoubleLinkedPoiCategory parent;
-		DoubleLinkedPoiCategory child;
 		// Create categories
+		LinkedList<Category> currentXMLNode = new LinkedList<>();
 		currentXMLNode.push(xmlRootCategory);
+		DoubleLinkedPoiCategory parent, child;
 		while (!currentXMLNode.isEmpty()) {
 			parent = createOrGetPoiCategory(currentXMLNode.getFirst().getTitle());
 			titleMap.put(parent.getTitle(), parent);
@@ -80,7 +84,9 @@ public class XMLPoiCategoryManager implements PoiCategoryManager {
 			}
 		}
 
+		// Calculate a unique ID for all nodes in the tree
 		DoubleLinkedPoiCategory.calculateCategoryIDs(this.root, 0);
+
 		// System.out.println(DoubleLinkedPoiCategory.getGraphVizString(this.root));
 	}
 
