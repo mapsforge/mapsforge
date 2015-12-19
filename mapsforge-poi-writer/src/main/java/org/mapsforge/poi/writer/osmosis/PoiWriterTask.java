@@ -16,6 +16,11 @@
  */
 package org.mapsforge.poi.writer.osmosis;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategory;
@@ -33,6 +38,8 @@ import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.Entity;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
+import org.openstreetmap.osmosis.core.domain.v0_6.Way;
+import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 import org.openstreetmap.osmosis.core.task.v0_6.Sink;
 
 import java.io.IOException;
@@ -53,6 +60,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import gnu.trove.map.hash.TLongObjectHashMap;
+
 /**
  * This task reads Nodes from an OSM stream and writes them to a SQLite database.
  * Nodes can be filtered and grouped by categories by using an XML definition.
@@ -63,10 +72,21 @@ public class PoiWriterTask implements Sink {
 	// For debug purposes only (at least for now)
 	private static final boolean INCLUDE_META_DATA = false;
 
+	private static final int BATCH_LIMIT = 1000;
+
+	/**
+	 * The minimum amount of nodes required for a valid closed polygon.
+	 */
+	private static final int MIN_NODES_POLYGON = 4;
+
+	private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+
 	private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,3}(?:[-_][a-zA-Z0-9]{1,8})*)");
 
 	private final PoiWriterConfiguration configuration;
 	private final ProgressManager progressManager;
+
+	private final TLongObjectHashMap<Node> nodes;
 
 	// Available categories
 	private final PoiCategoryManager categoryManager;
@@ -78,7 +98,7 @@ public class PoiWriterTask implements Sink {
 	private final PoiCategoryFilter categoryFilter;
 
 	// Statistics
-	private int nodesAdded = 0;
+	private int poiAdded = 0;
 
 	// Database
 	private Connection conn = null;
@@ -99,6 +119,8 @@ public class PoiWriterTask implements Sink {
 		this.configuration = configuration;
 		this.progressManager = progressManager;
 
+		this.nodes = new TLongObjectHashMap<>();
+
 		Properties properties = new Properties();
 		try {
 			properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
@@ -115,6 +137,8 @@ public class PoiWriterTask implements Sink {
 			throw new RuntimeException("POI format specification version is not an integer", e);
 		}
 
+		LOGGER.info("Loading POI categories from XML...");
+
 		// Get categories defined in XML
 		this.categoryManager = new XMLPoiCategoryManager(configuration.getTagMapping());
 
@@ -128,6 +152,8 @@ public class PoiWriterTask implements Sink {
 		} catch (UnknownPoiCategoryException e) {
 			LOGGER.warning("Could not add category to filter: " + e.getMessage());
 		}
+
+		LOGGER.info("Adding tag mappings...");
 
 		// Create database and add categories
 		try {
@@ -168,7 +194,7 @@ public class PoiWriterTask implements Sink {
 			e.printStackTrace();
 		}
 
-		LOGGER.info("Added " + nfCounts.format(this.nodesAdded) + " POIs.");
+		LOGGER.info("Added " + nfCounts.format(this.poiAdded) + " POIs.");
 		this.progressManager.setMessage("Done.");
 
 		LOGGER.info("Estimated memory consumption: "
@@ -265,39 +291,51 @@ public class PoiWriterTask implements Sink {
 	 */
 	@Override
 	public void process(EntityContainer entityContainer) {
-		Entity e = entityContainer.getEntity();
-		LOGGER.finest("Processing entity: " + e.toString());
+		Entity entity = entityContainer.getEntity();
+		LOGGER.finest("Processing entity: " + entity.toString());
 
-		switch (e.getType()) {
+		switch (entity.getType()) {
 			case Node:
-				processNode((Node) e);
+				Node node = (Node) entity;
+				if (this.configuration.isWays()) {
+					this.nodes.put(node.getId(), node);
+				}
+				processEntity(node, node.getLatitude(), node.getLongitude());
+				break;
+			case Way:
+				if (this.configuration.isWays()) {
+					processWay((Way) entity);
+				}
 				break;
 		}
+
+		// Hint to GC
+		entity = null;
 	}
 
-	private void processNode(Node node) {
-		// Only add nodes that fall within the bounding box (if set)
-		BoundingBox bb = configuration.getBboxConfiguration();
-		if (bb != null && !bb.contains(node.getLatitude(), node.getLongitude())) {
+	private void processEntity(Entity entity, double latitude, double longitude) {
+		// Only add entities that fall within the bounding box (if set)
+		BoundingBox bb = this.configuration.getBboxConfiguration();
+		if (bb != null && !bb.contains(latitude, longitude)) {
 			return;
 		}
 
-		// Only add nodes that have data
-		if (node.getTags().isEmpty()) {
+		// Only add entities that have data
+		if (entity.getTags().isEmpty()) {
 			return;
 		}
 
 		Map<String, String> tagMap = new HashMap<>(20, 1.0f);
 		String tagStr = null;
 
-		// Get node's tag and data
-		for (Tag tag : node.getTags()) {
+		// Get entity's tag and data
+		for (Tag tag : entity.getTags()) {
 			String key = tag.getKey().toLowerCase(Locale.ENGLISH);
 			if (this.tagMappingResolver.getMappingTags().contains(key)) {
 				// Save this tag
 				tagStr = key + "=" + tag.getValue();
 			} else {
-				// Save the node's data
+				// Save the entity's data
 				tagMap.put(key, tag.getValue());
 			}
 		}
@@ -310,14 +348,62 @@ public class PoiWriterTask implements Sink {
 				pc = this.tagMappingResolver.getCategoryFromTag(tagStr);
 			}
 
-			// Add node if its category matches
+			// Add entity if its category matches
 			if (pc != null && this.categoryFilter.isAcceptedCategory(pc)) {
-				writePOI(node.getId(), node.getLatitude(), node.getLongitude(), tagMap, pc);
-				++this.nodesAdded;
+				++this.poiAdded;
+				writePOI(this.poiAdded, latitude, longitude, tagMap, pc);
 			}
 		} catch (UnknownPoiCategoryException e) {
 			LOGGER.warning("The '" + tagStr + "' tag refers to a POI that does not exist: " + e.getMessage());
 		}
+	}
+
+	/**
+	 * Only process ways that are polygons.
+	 */
+	private void processWay(Way way) {
+		// The first and the last way node are the same
+		if (!way.isClosed()) {
+			return;
+		}
+
+		// The way has at least 4 way nodes
+		if (way.getWayNodes().size() < MIN_NODES_POLYGON) {
+			LOGGER.finer("Found closed polygon with fewer than 4 way nodes. Way id: " + way.getId());
+			return;
+		}
+
+		// Retrieve way nodes
+		boolean validWay = true;
+		Node[] wayNodes = new Node[way.getWayNodes().size()];
+		int i = 0;
+		for (WayNode wayNode : way.getWayNodes()) {
+			wayNodes[i] = this.nodes.get(wayNode.getNodeId());
+			if (wayNodes[i] == null) {
+				validWay = false;
+				LOGGER.finer("Unknown way node " + wayNode.getNodeId() + " in way " + way.getId());
+			}
+			i++;
+		}
+
+		// For a valid way all way nodes must be existent in the input data
+		if (!validWay) {
+			return;
+		}
+
+		// Convert the way to a JTS polygon
+		Coordinate[] coordinates = new Coordinate[wayNodes.length];
+		for (int j = 0; j < wayNodes.length; j++) {
+			Node wayNode = wayNodes[j];
+			coordinates[j] = new Coordinate(wayNode.getLongitude(), wayNode.getLatitude());
+		}
+		Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
+
+		// Compute the centroid of the polygon
+		Point centroid = polygon.getCentroid();
+
+		// Process the way
+		processEntity(way, centroid.getY(), centroid.getX());
 	}
 
 	/**
@@ -350,7 +436,7 @@ public class PoiWriterTask implements Sink {
 
 		// Bounds
 		pStmtMetadata.setString(1, DbConstants.METADATA_BOUNDS);
-		BoundingBox bb = configuration.getBboxConfiguration();
+		BoundingBox bb = this.configuration.getBboxConfiguration();
 		if (bb != null) {
 			pStmtMetadata.setString(2, bb.minLatitude + "," + bb.minLongitude + "," + bb.maxLatitude + "," + bb.maxLongitude);
 		} else {
@@ -360,8 +446,8 @@ public class PoiWriterTask implements Sink {
 
 		// Comment
 		pStmtMetadata.setString(1, DbConstants.METADATA_COMMENT);
-		if (configuration.getComment() != null) {
-			pStmtMetadata.setString(2, configuration.getComment());
+		if (this.configuration.getComment() != null) {
+			pStmtMetadata.setString(2, this.configuration.getComment());
 		} else {
 			pStmtMetadata.setNull(2, Types.NULL);
 		}
@@ -374,8 +460,8 @@ public class PoiWriterTask implements Sink {
 
 		// Language
 		pStmtMetadata.setString(1, DbConstants.METADATA_LANGUAGE);
-		if (configuration.getPreferredLanguage() != null) {
-			pStmtMetadata.setString(2, configuration.getPreferredLanguage());
+		if (this.configuration.getPreferredLanguage() != null) {
+			pStmtMetadata.setString(2, this.configuration.getPreferredLanguage());
 		} else {
 			pStmtMetadata.setNull(2, Types.NULL);
 		}
@@ -383,12 +469,12 @@ public class PoiWriterTask implements Sink {
 
 		// Version
 		pStmtMetadata.setString(1, DbConstants.METADATA_VERSION);
-		pStmtMetadata.setInt(2, configuration.getFileSpecificationVersion());
+		pStmtMetadata.setInt(2, this.configuration.getFileSpecificationVersion());
 		pStmtMetadata.addBatch();
 
 		// Writer
 		pStmtMetadata.setString(1, DbConstants.METADATA_WRITER);
-		pStmtMetadata.setString(2, configuration.getWriterVersion());
+		pStmtMetadata.setString(2, this.configuration.getWriterVersion());
 		pStmtMetadata.addBatch();
 
 		pStmtMetadata.executeBatch();
@@ -408,7 +494,7 @@ public class PoiWriterTask implements Sink {
 			// POI data
 			this.pStmt2.setLong(1, id);
 
-			// If all important data should be written to db
+			// If all important data should be written to DB
 			if (INCLUDE_META_DATA) {
 				this.pStmt2.setString(2, tagsToString(poiData));
 			} else {
@@ -418,11 +504,11 @@ public class PoiWriterTask implements Sink {
 				for (String key : poiData.keySet()) {
 					if ("name".equals(key) && !foundPreferredLanguageName) {
 						name = poiData.get(key);
-					} else if (configuration.getPreferredLanguage() != null && !foundPreferredLanguageName) {
+					} else if (this.configuration.getPreferredLanguage() != null && !foundPreferredLanguageName) {
 						Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
 						if (matcher.matches()) {
 							String language = matcher.group(3);
-							if (language.equalsIgnoreCase(configuration.getPreferredLanguage())) {
+							if (language.equalsIgnoreCase(this.configuration.getPreferredLanguage())) {
 								name = poiData.get(key);
 								foundPreferredLanguageName = true;
 							}
@@ -441,6 +527,14 @@ public class PoiWriterTask implements Sink {
 
 			this.pStmt.addBatch();
 			this.pStmt2.addBatch();
+
+			if (this.poiAdded % BATCH_LIMIT == 0) {
+				this.pStmt.executeBatch();
+				this.pStmt2.executeBatch();
+
+				this.pStmt.clearBatch();
+				this.pStmt2.clearBatch();
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -36,6 +36,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
 	private static final String PARAM_OUTFILE = "file";
 	private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
 	private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
+	private static final String PARAM_WAYS = "ways";
 
 	@Override
 	protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {
@@ -45,6 +46,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
 		configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
 		configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
 		configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
+		configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, true));
 
 		// If set to true, progress messages will be forwarded to a GUI message handler
 		// boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);

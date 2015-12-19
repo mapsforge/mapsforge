@@ -29,7 +29,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`bbox`|bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters)|minLat, minLon, maxLat, maxLon in exactly this order as degrees|(blank)|
 |`map-start-position`|write a start position to the file which is used, when the file is first opened in the MapViewer|latitude, longitude in degrees|(blank)|
 |`map-start-zoom`|write a start zoom level to the file which is used, when the file is first opened in the MapViewer|zoom level as integer in [0, 21]|(blank)|
-|`preferred-languages`|If not specified, only the default language with no tag will be written to the file. If only one language is specified, it will be written if its tag is found, otherwise the default language will be written. If multiple comma separated languages are specified, the default language will be written, followed by the specified languages (if present and if different than the default).|language code as as defined in ISO 639-1 or ISO 639-2|(blank)|
+|`preferred-languages`|If not specified, only the default language with no tag will be written to the file. If only one language is specified, it will be written if its tag is found, otherwise the default language will be written. If multiple comma separated languages are specified, the default language will be written, followed by the specified languages (if present and if different than the default).|language code as defined in ISO 639-1 or ISO 639-2|(blank)|
 |`comment`|writes a comment to the file||(blank)|
 
 ### Advanced Options (only use when you know what you are doing)

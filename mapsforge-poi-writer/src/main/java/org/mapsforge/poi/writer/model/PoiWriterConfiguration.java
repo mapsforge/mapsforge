@@ -31,6 +31,7 @@ public class PoiWriterConfiguration {
 	private File outputFile;
 	private String preferredLanguage;
 	private URL tagMapping;
+	private boolean ways;
 	private String writerVersion;
 
 	/**
@@ -116,6 +117,13 @@ public class PoiWriterConfiguration {
 	}
 
 	/**
+	 * @return the ways
+	 */
+	public boolean isWays() {
+		return ways;
+	}
+
+	/**
 	 * Convenience method.
 	 *
 	 * @param file
@@ -186,6 +194,14 @@ public class PoiWriterConfiguration {
 		if (preferredLanguage != null && !preferredLanguage.isEmpty()) {
 			this.preferredLanguage = preferredLanguage;
 		}
+	}
+
+	/**
+	 * @param ways
+	 *            the ways to set
+	 */
+	public void setWays(boolean ways) {
+		this.ways = ways;
 	}
 
 	/**

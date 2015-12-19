@@ -49,8 +49,6 @@ public class XMLPoiCategoryManager implements PoiCategoryManager {
 	public XMLPoiCategoryManager(URL configFilePath) {
 		this.titleMap = new HashMap<>();
 
-		LOGGER.info("Loading POI categories from XML...");
-
 		// Read root category from XML
 		JAXBContext ctx;
 		Unmarshaller um;

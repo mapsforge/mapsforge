@@ -62,8 +62,6 @@ public class TagMappingResolver {
 		this.tagMap = new HashMap<>();
 		this.mappingTags = new TreeSet<>();
 
-		LOGGER.info("Adding tag mappings...");
-
 		// Read root category from XML
 		JAXBContext ctx;
 		Unmarshaller um;
