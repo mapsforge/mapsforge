@@ -16,6 +16,8 @@
 package org.mapsforge.map.writer;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +47,10 @@ public class MapFileWriterTest {
 		this.configuration.setSimplification(0.00001);
 		this.configuration.setDataProcessorType("ram");
 		this.configuration.setBboxEnlargement(10);
-		this.configuration.setPreferredLanguages("en,de");
+		List<String> preferredLanguages = new ArrayList<>(2);
+		preferredLanguages.add("en");
+		preferredLanguages.add("de");
+		this.configuration.setPreferredLanguages(preferredLanguages);
 		this.configuration.addEncodingChoice("auto");
 		this.configuration.validate();
 
