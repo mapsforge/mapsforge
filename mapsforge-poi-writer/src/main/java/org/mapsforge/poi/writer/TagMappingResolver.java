@@ -40,7 +40,7 @@ import javax.xml.bind.Unmarshaller;
  * This class maps a given tag (e.g. amenity=restaurant) to a certain {@link PoiCategory}.
  * The mapping configuration is read from an XML file.
  */
-public class TagMappingResolver {
+class TagMappingResolver {
 	private static final Logger LOGGER = Logger.getLogger(TagMappingResolver.class.getName());
 
 	private final PoiCategoryManager categoryManager;
@@ -57,7 +57,7 @@ public class TagMappingResolver {
 	 * @param categoryManager
 	 *            The category manager for loading a category tree.
 	 */
-	public TagMappingResolver(URL configFilePath, PoiCategoryManager categoryManager) {
+	TagMappingResolver(URL configFilePath, PoiCategoryManager categoryManager) {
 		this.categoryManager = categoryManager;
 		this.tagMap = new HashMap<>();
 		this.mappingTags = new TreeSet<>();
@@ -95,7 +95,7 @@ public class TagMappingResolver {
 		}
 	}
 
-	public PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
+	PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
 		tag = tag.toLowerCase(Locale.ENGLISH);
 		String categoryName = this.tagMap.get(tag);
 
@@ -107,7 +107,7 @@ public class TagMappingResolver {
 		return this.categoryManager.getPoiCategoryByTitle(categoryName);
 	}
 
-	public Set<String> getMappingTags() {
+	Set<String> getMappingTags() {
 		return this.mappingTags;
 	}
 }

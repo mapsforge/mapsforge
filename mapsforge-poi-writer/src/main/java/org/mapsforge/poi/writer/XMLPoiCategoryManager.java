@@ -34,7 +34,7 @@ import javax.xml.bind.Unmarshaller;
 /**
  * A {@link PoiCategoryManager} implementation that reads a category configuration from an XML file.
  */
-public class XMLPoiCategoryManager implements PoiCategoryManager {
+class XMLPoiCategoryManager implements PoiCategoryManager {
 	private static final Logger LOGGER = Logger.getLogger(XMLPoiCategoryManager.class.getName());
 
 	/** Maps a category's title to a category */
@@ -46,7 +46,7 @@ public class XMLPoiCategoryManager implements PoiCategoryManager {
 	 * @param configFilePath
 	 *            Path to POI category XML file containing the category tree configuration.
 	 */
-	public XMLPoiCategoryManager(URL configFilePath) {
+	XMLPoiCategoryManager(URL configFilePath) {
 		this.titleMap = new HashMap<>();
 
 		// Read root category from XML
