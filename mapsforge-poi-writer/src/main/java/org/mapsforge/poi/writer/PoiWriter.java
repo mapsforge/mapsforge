@@ -347,6 +347,7 @@ public final class PoiWriter {
 			if (wayNodes[i] == null) {
 				validWay = false;
 				LOGGER.finer("Unknown way node " + wayNode.getNodeId() + " in way " + way.getId());
+				break;
 			}
 			i++;
 		}

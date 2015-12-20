@@ -43,9 +43,9 @@ The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin sh
 |**Option**|**Description**|**Valid values**|**Default value**|
 |----------|---------------|----------------|-----------------|
 |`file`|Path to the output file, the file will be overwritten if existent. By convention we use the file ending `poi`.||mapsforge.poi|
-|`bbox`|Bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters)|minLat, minLon, maxLat, maxLon in exactly this order as degrees|(blank)|
+|`bbox`|Bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters).|minLat, minLon, maxLat, maxLon in exactly this order as degrees|(blank)|
 |`preferred-language`|If not specified, only the default language with no tag will be written to the file. If a language is specified, it will be written if its tag is found, otherwise the default language will be written.|language code as defined in ISO 639-1 or ISO 639-2|(blank)|
-|`comment`|Writes a comment to the file||(blank)|
+|`comment`|Writes a comment to the file.||(blank)|
 
 Note: Multilingual POIs is an incubating feature.
 
