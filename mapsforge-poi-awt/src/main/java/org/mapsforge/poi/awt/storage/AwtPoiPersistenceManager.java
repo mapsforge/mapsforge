@@ -269,7 +269,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 			this.findByIDStatement.setLong(1, poiID);
 
 			ResultSet rs = this.findByIDStatement.executeQuery();
-			while (rs.next()) {
+			if (rs.next()) {
 				long id = rs.getLong(1);
 				double lat = rs.getDouble(2);
 				double lon = rs.getDouble(3);

@@ -20,6 +20,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
@@ -52,8 +53,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import gnu.trove.map.hash.TLongObjectHashMap;
-
 /**
  * Reads entities from an OSM stream and writes them to a SQLite database.
  * Entities can be filtered and grouped by categories by using an XML definition.
@@ -77,7 +76,7 @@ public final class PoiWriter {
 	// For debug purposes only (at least for now)
 	private static final boolean INCLUDE_META_DATA = false;
 
-	private static final int BATCH_LIMIT = 1000;
+	private static final int BATCH_LIMIT = 1024;
 
 	/**
 	 * The minimum amount of nodes required for a valid closed polygon.
@@ -91,8 +90,6 @@ public final class PoiWriter {
 	private final PoiWriterConfiguration configuration;
 	private final ProgressManager progressManager;
 
-	private final TLongObjectHashMap<Node> nodes;
-
 	// Available categories
 	private final PoiCategoryManager categoryManager;
 
@@ -103,26 +100,28 @@ public final class PoiWriter {
 	private final PoiCategoryFilter categoryFilter;
 
 	// Statistics
+	private int nNodes = 0;
+	private int nWays = 0;
 	private int poiAdded = 0;
 
 	// Database
 	private Connection conn = null;
-	private PreparedStatement pStmt = null;
-	private PreparedStatement pStmt2 = null;
+	private PreparedStatement pStmtData = null;
+	private PreparedStatement pStmtIndex = null;
+	private PreparedStatement pStmtNodesC = null;
+	private PreparedStatement pStmtNodesR = null;
 
 	private PoiWriter(PoiWriterConfiguration configuration, ProgressManager progressManager) {
 		this.configuration = configuration;
 		this.progressManager = progressManager;
 
-		this.nodes = new TLongObjectHashMap<>();
-
 		LOGGER.info("Loading POI categories from XML...");
 
 		// Get categories defined in XML
-		this.categoryManager = new XMLPoiCategoryManager(configuration.getTagMapping());
+		this.categoryManager = new XMLPoiCategoryManager(this.configuration.getTagMapping());
 
 		// Tag -> POI mapper
-		this.tagMappingResolver = new TagMappingResolver(configuration.getTagMapping(), this.categoryManager);
+		this.tagMappingResolver = new TagMappingResolver(this.configuration.getTagMapping(), this.categoryManager);
 
 		// Set accepted categories (allow all categories)
 		this.categoryFilter = new WhitelistPoiCategoryFilter();
@@ -136,7 +135,7 @@ public final class PoiWriter {
 
 		// Create database and add categories
 		try {
-			prepareDatabase(configuration.getOutputFile().getAbsolutePath());
+			prepareDatabase();
 		} catch (ClassNotFoundException | SQLException | UnknownPoiCategoryException e) {
 			e.printStackTrace();
 		}
@@ -146,14 +145,31 @@ public final class PoiWriter {
 		this.progressManager.setMessage("Creating POI database");
 	}
 
+	/**
+	 * Cleanup database, i.e. drop temp tables.
+	 */
+	private void cleanup() throws SQLException {
+		LOGGER.info("Cleaning database...");
+		this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
+		Statement stmt = this.conn.createStatement();
+		stmt.execute(DbConstants.DROP_NODES_STATEMENT);
+		this.conn.close();
+	}
+
+	/**
+	 * Commit changes.
+	 */
 	private void commit() throws SQLException {
 		LOGGER.info("Committing...");
 		this.progressManager.setMessage("Committing...");
-		this.pStmt.executeBatch();
-		this.pStmt2.executeBatch();
+		this.pStmtIndex.executeBatch();
+		this.pStmtData.executeBatch();
 		this.conn.commit();
 	}
 
+	/**
+	 * Complete task.
+	 */
 	public void complete() {
 		NumberFormat nfMegabyte = NumberFormat.getInstance();
 		NumberFormat nfCounts = NumberFormat.getInstance();
@@ -165,6 +181,10 @@ public final class PoiWriter {
 			finalizeDatabase();
 			writeMetadata();
 			this.conn.close();
+
+			// Maintenance
+			cleanup();
+			optimizeDatabase();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -182,7 +202,6 @@ public final class PoiWriter {
 	 */
 	private void finalizeDatabase() throws SQLException {
 		LOGGER.info("Finalizing database...");
-		this.conn.setAutoCommit(true);
 		PreparedStatement pStmtChildren = this.conn.prepareStatement("SELECT COUNT(*) FROM poi_categories WHERE parent = ?;");
 		PreparedStatement pStmtPoi = this.conn.prepareStatement("SELECT COUNT(*) FROM poi_data WHERE category = ?;");
 		PreparedStatement pStmtDel = this.conn.prepareStatement("DELETE FROM poi_categories WHERE id = ?;");
@@ -209,14 +228,51 @@ public final class PoiWriter {
 		}
 	}
 
-	private void prepareDatabase(String path) throws ClassNotFoundException, SQLException, UnknownPoiCategoryException {
+	/**
+	 * Find a <code>Node</code> by its ID.
+	 */
+	public LatLong findNodeById(long id) {
+		try {
+			this.pStmtNodesR.setLong(1, id);
+
+			ResultSet rs = this.pStmtNodesR.executeQuery();
+			if (rs.next()) {
+				double lat = rs.getDouble(1);
+				double lon = rs.getDouble(2);
+
+				return new LatLong(lat, lon);
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Optimize database.
+	 */
+	private void optimizeDatabase() throws SQLException {
+		LOGGER.info("Optimizing database...");
+		this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
+		Statement stmt = this.conn.createStatement();
+		stmt.execute("VACUUM;");
+		this.conn.close();
+	}
+
+	/**
+	 * Prepare database.
+	 */
+	private void prepareDatabase() throws ClassNotFoundException, SQLException, UnknownPoiCategoryException {
 		Class.forName("org.sqlite.JDBC");
-		this.conn = DriverManager.getConnection("jdbc:sqlite:" + path);
+		this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
 		this.conn.setAutoCommit(false);
 
 		Statement stmt = this.conn.createStatement();
 
-		// CREATE TABLES
+		// Create tables
+		stmt.execute(DbConstants.DROP_NODES_STATEMENT);
 		stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
 		stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
 		stmt.execute(DbConstants.DROP_DATA_STATEMENT);
@@ -225,33 +281,40 @@ public final class PoiWriter {
 		stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
 		stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
 		stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
+		stmt.execute(DbConstants.CREATE_NODES_STATEMENT);
 
-		this.pStmt = this.conn.prepareStatement(DbConstants.INSERT_INDEX_STATEMENT);
-		this.pStmt2 = this.conn.prepareStatement(DbConstants.INSERT_DATA_STATEMENT);
-		PreparedStatement pStmt3 = this.conn.prepareStatement(DbConstants.INSERT_CATEGORIES_STATEMENT);
+		this.pStmtData = this.conn.prepareStatement(DbConstants.INSERT_DATA_STATEMENT);
+		this.pStmtIndex = this.conn.prepareStatement(DbConstants.INSERT_INDEX_STATEMENT);
 
-		// INSERT CATEGORIES
+		this.pStmtNodesC = this.conn.prepareStatement(DbConstants.INSERT_NODES_STATEMENT);
+		this.pStmtNodesR = this.conn.prepareStatement(DbConstants.FIND_NODES_STATEMENT);
+
+		// Insert categories
+		PreparedStatement pStmt = this.conn.prepareStatement(DbConstants.INSERT_CATEGORIES_STATEMENT);
 		PoiCategory root = this.categoryManager.getRootCategory();
-		pStmt3.setLong(1, root.getID());
-		pStmt3.setString(2, root.getTitle());
-		pStmt3.setNull(3, 0);
-		pStmt3.addBatch();
+		pStmt.setLong(1, root.getID());
+		pStmt.setString(2, root.getTitle());
+		pStmt.setNull(3, 0);
+		pStmt.addBatch();
 
 		Stack<PoiCategory> children = new Stack<>();
 		children.push(root);
 		while (!children.isEmpty()) {
 			for (PoiCategory c : children.pop().getChildren()) {
-				pStmt3.setLong(1, c.getID());
-				pStmt3.setString(2, c.getTitle());
-				pStmt3.setInt(3, c.getParent().getID());
-				pStmt3.addBatch();
+				pStmt.setLong(1, c.getID());
+				pStmt.setString(2, c.getTitle());
+				pStmt.setInt(3, c.getParent().getID());
+				pStmt.addBatch();
 				children.push(c);
 			}
 		}
-		pStmt3.executeBatch();
+		pStmt.executeBatch();
 		this.conn.commit();
 	}
 
+	/**
+	 * Process task.
+	 */
 	public void process(EntityContainer entityContainer) {
 		Entity entity = entityContainer.getEntity();
 		LOGGER.finest("Processing entity: " + entity.toString());
@@ -259,14 +322,30 @@ public final class PoiWriter {
 		switch (entity.getType()) {
 			case Node:
 				Node node = (Node) entity;
+				if (this.nNodes == 0) {
+					LOGGER.info("Processing nodes...");
+				}
+				++this.nNodes;
 				if (this.configuration.isWays()) {
-					this.nodes.put(node.getId(), node);
+					writeNode(node);
 				}
 				processEntity(node, node.getLatitude(), node.getLongitude());
 				break;
 			case Way:
 				if (this.configuration.isWays()) {
-					processWay((Way) entity);
+					Way way = (Way) entity;
+					if (this.nWays == 0) {
+						LOGGER.info("Processing ways...");
+						try {
+							// Write rest nodes
+							this.pStmtNodesC.executeBatch();
+							this.pStmtNodesC.clearBatch();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+					}
+					++this.nWays;
+					processWay(way);
 				}
 				break;
 		}
@@ -276,7 +355,7 @@ public final class PoiWriter {
 	}
 
 	/**
-	 * Process a generic entity using the given location coordinates.
+	 * Process an <code>Entity</code> using the given coordinates.
 	 */
 	private void processEntity(Entity entity, double latitude, double longitude) {
 		// Only add entities that fall within the bounding box (if set)
@@ -324,7 +403,7 @@ public final class PoiWriter {
 	}
 
 	/**
-	 * Only process ways that are polygons.
+	 * Process a <code>Way</code> (only polygons).
 	 */
 	private void processWay(Way way) {
 		// The first and the last way node are the same
@@ -340,10 +419,10 @@ public final class PoiWriter {
 
 		// Retrieve way nodes
 		boolean validWay = true;
-		Node[] wayNodes = new Node[way.getWayNodes().size()];
+		LatLong[] wayNodes = new LatLong[way.getWayNodes().size()];
 		int i = 0;
 		for (WayNode wayNode : way.getWayNodes()) {
-			wayNodes[i] = this.nodes.get(wayNode.getNodeId());
+			wayNodes[i] = findNodeById(wayNode.getNodeId());
 			if (wayNodes[i] == null) {
 				validWay = false;
 				LOGGER.finer("Unknown way node " + wayNode.getNodeId() + " in way " + way.getId());
@@ -360,8 +439,8 @@ public final class PoiWriter {
 		// Convert the way to a JTS polygon
 		Coordinate[] coordinates = new Coordinate[wayNodes.length];
 		for (int j = 0; j < wayNodes.length; j++) {
-			Node wayNode = wayNodes[j];
-			coordinates[j] = new Coordinate(wayNode.getLongitude(), wayNode.getLatitude());
+			LatLong wayNode = wayNodes[j];
+			coordinates[j] = new Coordinate(wayNode.longitude, wayNode.latitude);
 		}
 		Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
 
@@ -375,6 +454,9 @@ public final class PoiWriter {
 		processEntity(way, centroid.getY(), centroid.getX());
 	}
 
+	/**
+	 * Convert tags to a string representation.
+	 */
 	private String tagsToString(Map<String, String> tagMap) {
 		StringBuilder sb = new StringBuilder();
 
@@ -384,15 +466,20 @@ public final class PoiWriter {
 				continue;
 			}
 
-			sb.append(key).append('=').append(tagMap.get(key)).append(';');
+			if (sb.length() > 0) {
+				sb.append(';');
+			}
+			sb.append(key).append('=').append(tagMap.get(key));
 		}
 
 		return sb.toString();
 	}
 
+	/**
+	 * Write the metadata to the database.
+	 */
 	private void writeMetadata() throws SQLException {
 		LOGGER.info("Writing metadata...");
-		this.conn.setAutoCommit(false);
 		PreparedStatement pStmtMetadata = this.conn.prepareStatement(DbConstants.INSERT_METADATA_STATEMENT);
 
 		// Bounds
@@ -442,22 +529,45 @@ public final class PoiWriter {
 		this.conn.commit();
 	}
 
-	private void writePOI(long id, double latitude, double longitude, Map<String, String> poiData,
-						  PoiCategory category) {
+	/**
+	 * Write a <code>Node</code> to the database.
+	 */
+	private void writeNode(Node node) {
+		try {
+			this.pStmtNodesC.setLong(1, node.getId());
+			this.pStmtNodesC.setDouble(2, node.getLatitude());
+			this.pStmtNodesC.setDouble(3, node.getLongitude());
+
+			this.pStmtNodesC.addBatch();
+
+			if (this.nNodes % BATCH_LIMIT == 0) {
+				this.pStmtNodesC.executeBatch();
+
+				this.pStmtNodesC.clearBatch();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Write a POI to the database.
+	 */
+	private void writePOI(long id, double latitude, double longitude, Map<String, String> poiData, PoiCategory category) {
 		try {
 			// Index data
-			this.pStmt.setLong(1, id);
-			this.pStmt.setDouble(2, latitude);
-			this.pStmt.setDouble(3, latitude);
-			this.pStmt.setDouble(4, longitude);
-			this.pStmt.setDouble(5, longitude);
+			this.pStmtIndex.setLong(1, id);
+			this.pStmtIndex.setDouble(2, latitude);
+			this.pStmtIndex.setDouble(3, latitude);
+			this.pStmtIndex.setDouble(4, longitude);
+			this.pStmtIndex.setDouble(5, longitude);
 
 			// POI data
-			this.pStmt2.setLong(1, id);
+			this.pStmtData.setLong(1, id);
 
 			// If all important data should be written to DB
 			if (INCLUDE_META_DATA) {
-				this.pStmt2.setString(2, tagsToString(poiData));
+				this.pStmtData.setString(2, tagsToString(poiData));
 			} else {
 				// Use preferred language
 				boolean foundPreferredLanguageName = false;
@@ -478,23 +588,23 @@ public final class PoiWriter {
 				}
 				// If name tag is set
 				if (name != null) {
-					this.pStmt2.setString(2, name);
+					this.pStmtData.setString(2, name);
 				} else {
-					this.pStmt2.setNull(2, Types.NULL);
+					this.pStmtData.setNull(2, Types.NULL);
 				}
 			}
 
-			this.pStmt2.setInt(3, category.getID());
+			this.pStmtData.setInt(3, category.getID());
 
-			this.pStmt.addBatch();
-			this.pStmt2.addBatch();
+			this.pStmtIndex.addBatch();
+			this.pStmtData.addBatch();
 
 			if (this.poiAdded % BATCH_LIMIT == 0) {
-				this.pStmt.executeBatch();
-				this.pStmt2.executeBatch();
+				this.pStmtIndex.executeBatch();
+				this.pStmtData.executeBatch();
 
-				this.pStmt.clearBatch();
-				this.pStmt2.clearBatch();
+				this.pStmtIndex.clearBatch();
+				this.pStmtData.clearBatch();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
