@@ -367,6 +367,9 @@ public final class PoiWriter {
 
 		// Compute the centroid of the polygon
 		Point centroid = polygon.getCentroid();
+		if (centroid == null) {
+			return;
+		}
 
 		// Process the way
 		processEntity(way, centroid.getY(), centroid.getX());
