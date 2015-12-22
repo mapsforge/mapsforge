@@ -31,6 +31,7 @@ import org.openstreetmap.osmosis.core.task.v0_6.Sink;
  * Factory for the POI writer osmosis plugin.
  */
 public class PoiWriterFactory extends TaskManagerFactory {
+	private static final String PARAM_ALL_TAGS = "all-tags";
 	private static final String PARAM_BBOX = "bbox";
 	private static final String PARAM_COMMENT = "comment";
 	private static final String PARAM_OUTFILE = "file";
@@ -41,6 +42,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
 	@Override
 	protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {
 		PoiWriterConfiguration configuration = new PoiWriterConfiguration();
+		configuration.setAllTags(getBooleanArgument(taskConfig, PARAM_ALL_TAGS, false));
 		configuration.addBboxConfiguration(getStringArgument(taskConfig, PARAM_BBOX, null));
 		configuration.setComment(getStringArgument(taskConfig, PARAM_COMMENT, null));
 		configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));

@@ -44,10 +44,9 @@ The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin sh
 |----------|---------------|----------------|-----------------|
 |`file`|Path to the output file, the file will be overwritten if existent. By convention we use the file ending `poi`.||mapsforge.poi|
 |`bbox`|Bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters).|minLat, minLon, maxLat, maxLon in exactly this order as degrees|(blank)|
+|`all-tags`|Export all tags. If false only the name will be exported.|true/false|false|
 |`preferred-language`|If not specified, only the default language with no tag will be written to the file. If a language is specified, it will be written if its tag is found, otherwise the default language will be written.|language code as defined in ISO 639-1 or ISO 639-2|(blank)|
 |`comment`|Writes a comment to the file.||(blank)|
-
-Note: Multilingual POIs is an incubating feature.
 
 #### Advanced Options (only use when you know what you are doing)
 
@@ -64,7 +63,7 @@ The sources for those libraries are located in the `sqlite3-android` folder. To 
 
 With everything set up you can check the 'POI search' example in Samples for:
 - How a database is opened for read-write access. Any access to the database is encapsulated via classes implementing `PoiPersistenceManager`. The instantiation of these classes is done via a factory class. The categories and their hierarchy are maintained via classes implementing `PoiCategoryManager`. The category configuration is read-only.
-- The `PoiPersistenceManager` object is used for querying the POIs in various ways. The query returns a collection of `PointOfInterest` objects. These are containers that contain a POI's position, ID, category and additional data. Additional data are stored as a string and can be arbitrary. There is no specification for the encoding of those data. The current implementation stores the POI's name as an UTF-8 encoded string in the data field.
+- The `PoiPersistenceManager` object is used for querying the POIs in various ways. The query returns a collection of `PointOfInterest` objects. These are containers that contain a POI's position, ID, category and additional data. Additional data are stored as a string and can be arbitrary. There is no specification for the encoding of those data. The current implementation stores the POI's tags as an UTF-8 encoded string in the data field.
 - It is always a good idea to close an open database when there will be no more operations on it. This can simply be done by the `close()` method.
 - With this done you can simply retrieve the POIs and add them as overlays.
 
@@ -80,7 +79,7 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 
 ### Filtered Search
 
-The API supports POI search inside a specified rectangle, near a given position or by a name pattern.
+The API supports POI search inside a specified rectangle, near a given position or by a data pattern.
 
 You can also use category filters for filtering the results based on the categories added to them.
 

@@ -45,10 +45,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.text.NumberFormat;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,9 +72,6 @@ public final class PoiWriter {
 	}
 
 	private static final Logger LOGGER = LoggerWrapper.getLogger(PoiWriter.class.getName());
-
-	// For debug purposes only (at least for now)
-	private static final boolean INCLUDE_META_DATA = false;
 
 	private static final int BATCH_LIMIT = 1024;
 
@@ -360,7 +357,8 @@ public final class PoiWriter {
 			return;
 		}
 
-		Map<String, String> tagMap = new HashMap<>(20, 1.0f);
+		// Collect the POI tags in a sorted manner
+		Map<String, String> tagMap = new TreeMap<>();
 		String tagStr = null;
 
 		// Get entity's tag and data
@@ -369,10 +367,9 @@ public final class PoiWriter {
 			if (this.tagMappingResolver.getMappingTags().contains(key)) {
 				// Save this tag
 				tagStr = key + "=" + tag.getValue();
-			} else {
-				// Save the entity's data
-				tagMap.put(key, tag.getValue());
 			}
+			// Save the entity's data
+			tagMap.put(key, tag.getValue());
 		}
 
 		// Check if there is a POI category for this tag and add POI to DB
@@ -446,23 +443,20 @@ public final class PoiWriter {
 	}
 
 	/**
-	 * Convert tags to a string representation.
+	 * Convert tags to a string representation using '\r' delimiter.
 	 */
 	private String tagsToString(Map<String, String> tagMap) {
 		StringBuilder sb = new StringBuilder();
-
 		for (String key : tagMap.keySet()) {
 			// Skip some tags
 			if (key.equalsIgnoreCase("created_by")) {
 				continue;
 			}
-
 			if (sb.length() > 0) {
-				sb.append(';');
+				sb.append('\r');
 			}
 			sb.append(key).append('=').append(tagMap.get(key));
 		}
-
 		return sb.toString();
 	}
 
@@ -557,7 +551,7 @@ public final class PoiWriter {
 			this.pStmtData.setLong(1, id);
 
 			// If all important data should be written to DB
-			if (INCLUDE_META_DATA) {
+			if (this.configuration.isAllTags()) {
 				this.pStmtData.setString(2, tagsToString(poiData));
 			} else {
 				// Use preferred language

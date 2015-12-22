@@ -16,6 +16,11 @@
 package org.mapsforge.poi.storage;
 
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Tag;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Implementation for the {@link PointOfInterest} interface.
@@ -81,6 +86,71 @@ public class PoiImpl implements PointOfInterest {
 	@Override
 	public double getLongitude() {
 		return this.longitude;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getName() {
+		return getName(Locale.getDefault().getLanguage());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getName(String language) {
+		List<Tag> tags = getTags();
+
+		if (language != null && language.trim().length() > 0) {
+			// Exact match
+			String nameStr = "name:" + language.toLowerCase(Locale.ENGLISH);
+			for (Tag tag : tags) {
+				if (nameStr.equalsIgnoreCase(tag.key)) {
+					return tag.value;
+				}
+			}
+
+			// Fall back to base
+			String baseLanguage = language.split("[-_]")[0];
+			nameStr = "name:" + baseLanguage.toLowerCase(Locale.ENGLISH);
+			for (Tag tag : tags) {
+				if (nameStr.equalsIgnoreCase(tag.key)) {
+					return tag.value;
+				}
+			}
+		}
+
+		// Default name
+		for (Tag tag : tags) {
+			if ("name".equalsIgnoreCase(tag.key)) {
+				return tag.value;
+			}
+		}
+
+		if (tags.isEmpty()) {
+			return data;
+		}
+
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Tag> getTags() {
+		List<Tag> tags = new ArrayList<>();
+		if (this.data != null && this.data.trim().length() > 0) {
+			String[] split = this.data.split("\r");
+			for (String s : split) {
+				if (s.indexOf(Tag.KEY_VALUE_SEPARATOR) > -1) {
+					tags.add(new Tag(s));
+				}
+			}
+		}
+		return tags;
 	}
 
 	@Override

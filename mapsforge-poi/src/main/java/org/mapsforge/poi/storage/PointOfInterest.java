@@ -17,6 +17,9 @@
 package org.mapsforge.poi.storage;
 
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Tag;
+
+import java.util.List;
 
 /**
  * This class represents a point of interest. Every POI should be uniquely identifiable by its id,
@@ -52,4 +55,19 @@ public interface PointOfInterest {
 	 * @return longitude of this point of interest
 	 */
 	double getLongitude();
+
+	/**
+	 * @return name of this point of interest at default locale
+	 */
+	String getName();
+
+	/**
+	 * @return name of this point of interest at preferred language
+	 */
+	String getName(String language);
+
+	/**
+	 * @return tags of this point of interest.
+	 */
+	List<Tag> getTags();
 }

@@ -25,6 +25,7 @@ import java.net.URL;
  * Configuration for the POI writer.
  */
 public class PoiWriterConfiguration {
+	private boolean allTags;
 	private BoundingBox bboxConfiguration;
 	private String comment;
 	private int fileSpecificationVersion;
@@ -117,6 +118,13 @@ public class PoiWriterConfiguration {
 	}
 
 	/**
+	 * @return the all tags
+	 */
+	public boolean isAllTags() {
+		return allTags;
+	}
+
+	/**
 	 * @return the ways
 	 */
 	public boolean isWays() {
@@ -150,6 +158,14 @@ public class PoiWriterConfiguration {
 		} else {
 			this.tagMapping = PoiWriterTask.class.getClassLoader().getResource("poi-mapping.xml");
 		}
+	}
+
+	/**
+	 * @param allTags
+	 *            the all tags to set
+	 */
+	public void setAllTags(boolean allTags) {
+		this.allTags = allTags;
 	}
 
 	/**
