@@ -115,7 +115,7 @@ public final class PoiWriter {
 		this.configuration = configuration;
 		this.progressManager = progressManager;
 
-		LOGGER.info("Loading POI categories from XML...");
+		LOGGER.info("Loading categories...");
 
 		// Get categories defined in XML
 		this.categoryManager = new XMLPoiCategoryManager(this.configuration.getTagMapping());
@@ -146,17 +146,6 @@ public final class PoiWriter {
 	}
 
 	/**
-	 * Cleanup database, i.e. drop temp tables.
-	 */
-	private void cleanup() throws SQLException {
-		LOGGER.info("Cleaning database...");
-		this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
-		Statement stmt = this.conn.createStatement();
-		stmt.execute(DbConstants.DROP_NODES_STATEMENT);
-		this.conn.close();
-	}
-
-	/**
 	 * Commit changes.
 	 */
 	private void commit() throws SQLException {
@@ -178,13 +167,11 @@ public final class PoiWriter {
 
 		try {
 			commit();
-			finalizeDatabase();
+			filterCategories();
 			writeMetadata();
 			this.conn.close();
 
-			// Maintenance
-			cleanup();
-			optimizeDatabase();
+			postProcess();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -198,10 +185,10 @@ public final class PoiWriter {
 	}
 
 	/**
-	 * Finalize database, i.e. remove categories without POIs and children.
+	 * Filter categories, i.e. without POIs and children.
 	 */
-	private void finalizeDatabase() throws SQLException {
-		LOGGER.info("Finalizing database...");
+	private void filterCategories() throws SQLException {
+		LOGGER.info("Filtering categories...");
 		PreparedStatement pStmtChildren = this.conn.prepareStatement("SELECT COUNT(*) FROM poi_categories WHERE parent = ?;");
 		PreparedStatement pStmtPoi = this.conn.prepareStatement("SELECT COUNT(*) FROM poi_data WHERE category = ?;");
 		PreparedStatement pStmtDel = this.conn.prepareStatement("DELETE FROM poi_categories WHERE id = ?;");
@@ -231,7 +218,7 @@ public final class PoiWriter {
 	/**
 	 * Find a <code>Node</code> by its ID.
 	 */
-	public LatLong findNodeById(long id) {
+	public LatLong findNodeByID(long id) {
 		try {
 			this.pStmtNodesR.setLong(1, id);
 
@@ -251,13 +238,17 @@ public final class PoiWriter {
 	}
 
 	/**
-	 * Optimize database.
+	 * Post-process.
 	 */
-	private void optimizeDatabase() throws SQLException {
-		LOGGER.info("Optimizing database...");
+	private void postProcess() throws SQLException {
+		LOGGER.info("Post-processing...");
+
 		this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
-		Statement stmt = this.conn.createStatement();
-		stmt.execute("VACUUM;");
+		this.conn.createStatement().execute(DbConstants.DROP_NODES_STATEMENT);
+		this.conn.close();
+
+		this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
+		this.conn.createStatement().execute("VACUUM;");
 		this.conn.close();
 	}
 
@@ -422,7 +413,7 @@ public final class PoiWriter {
 		LatLong[] wayNodes = new LatLong[way.getWayNodes().size()];
 		int i = 0;
 		for (WayNode wayNode : way.getWayNodes()) {
-			wayNodes[i] = findNodeById(wayNode.getNodeId());
+			wayNodes[i] = findNodeByID(wayNode.getNodeId());
 			if (wayNodes[i] == null) {
 				validWay = false;
 				LOGGER.finer("Unknown way node " + wayNode.getNodeId() + " in way " + way.getId());

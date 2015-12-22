@@ -66,14 +66,14 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
 	 * @param filter
 	 *            The filter object for determining all wanted categories (may be null).
 	 * @param pattern
-	 *            the pattern to search in points of interest names (may be null).
+	 *            the pattern to search in points of interest data (may be null).
 	 * @return The SQL query.
 	 */
 	protected static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
 		if (filter != null) {
 			return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, pattern);
 		}
-		return DbConstants.FIND_IN_BOX_STATEMENT + (pattern != null ? DbConstants.FIND_BY_NAME_CLAUSE : "") + " LIMIT ?;";
+		return DbConstants.FIND_IN_BOX_STATEMENT + (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "") + " LIMIT ?;";
 	}
 
 	/**

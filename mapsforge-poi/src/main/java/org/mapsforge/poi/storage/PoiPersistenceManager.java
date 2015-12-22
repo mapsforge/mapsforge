@@ -38,7 +38,7 @@ public interface PoiPersistenceManager {
 
 	/**
 	 * Find all {@link PointOfInterest} in a rectangle specified by the given {@link BoundingBox}.
-	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the name
+	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the data
 	 * pattern will be returned.
 	 *
 	 * @param bb
@@ -47,11 +47,11 @@ public interface PoiPersistenceManager {
 	 *            POI category filter object that helps determining whether a POI should be added to
 	 *            the set or not (may be null).
 	 * @param pattern
-	 *            the pattern to search in points of interest names (may be null).
+	 *            the pattern to search in points of interest data (may be null).
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} matching a given
-	 *         {@link PoiCategoryFilter} and name pattern contained in the rectangle specified by
+	 *         {@link PoiCategoryFilter} and data pattern contained in the rectangle specified by
 	 *         the given {@link BoundingBox}.
 	 */
 	Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, String pattern,
@@ -59,7 +59,7 @@ public interface PoiPersistenceManager {
 
 	/**
 	 * Fetch {@link PointOfInterest} from underlying storage near a given position.
-	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the name
+	 * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the data
 	 * pattern will be returned.
 	 *
 	 * @param point
@@ -70,11 +70,11 @@ public interface PoiPersistenceManager {
 	 *            POI category filter object that helps determining whether a POI should be added to
 	 *            the set or not (may be null).
 	 * @param pattern
-	 *            the pattern to search in points of interest names (may be null).
+	 *            the pattern to search in points of interest data (may be null).
 	 * @param limit
 	 *            max number of {@link PointOfInterest} to be returned.
 	 * @return {@link Collection} of {@link PointOfInterest} matching a given
-	 *         {@link PoiCategoryFilter} and name pattern near the given position.
+	 *         {@link PoiCategoryFilter} and data pattern near the given position.
 	 */
 	Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
 												 PoiCategoryFilter filter, String pattern,

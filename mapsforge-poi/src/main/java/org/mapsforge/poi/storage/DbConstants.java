@@ -33,13 +33,13 @@ public final class DbConstants {
 	public static final String DROP_METADATA_STATEMENT = "DROP TABLE IF EXISTS metadata;";
 	public static final String DROP_NODES_STATEMENT = "DROP TABLE IF EXISTS nodes;";
 
+	public static final String FIND_BY_DATA_CLAUSE = " AND poi_data.data LIKE ?";
 	public static final String FIND_BY_ID_STATEMENT =
 			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
 					+ "FROM poi_index "
 					+ "JOIN poi_data ON poi_index.id = poi_data.id "
 					+ "WHERE "
 					+ "poi_index.id = ?;";
-	public static final String FIND_BY_NAME_CLAUSE = " AND poi_data.data LIKE ?";
 	public static final String FIND_IN_BOX_STATEMENT =
 			"SELECT poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_data.category "
 					+ "FROM poi_index "

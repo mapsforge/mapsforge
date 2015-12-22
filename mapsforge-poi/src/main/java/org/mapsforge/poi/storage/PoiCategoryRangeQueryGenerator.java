@@ -39,7 +39,7 @@ public final class PoiCategoryRangeQueryGenerator {
 	 */
 	public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
 		return DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter)
-				+ (pattern != null ? DbConstants.FIND_BY_NAME_CLAUSE : "")
+				+ (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "")
 				+ " LIMIT ?;";
 	}
 
