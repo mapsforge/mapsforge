@@ -51,7 +51,7 @@ public class PoiWriterTask implements Sink {
 	public PoiWriterTask(PoiWriterConfiguration configuration, ProgressManager progressManager) {
 		Properties properties = new Properties();
 		try {
-			properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
+			properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("mapsforge-poi.properties"));
 			configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
 					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
 			configuration.setFileSpecificationVersion(Integer.parseInt(properties

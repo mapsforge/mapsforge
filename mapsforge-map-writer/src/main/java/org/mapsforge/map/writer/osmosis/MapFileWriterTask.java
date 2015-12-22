@@ -56,7 +56,7 @@ public class MapFileWriterTask implements Sink {
 
 		Properties properties = new Properties();
 		try {
-			properties.load(MapFileWriterTask.class.getClassLoader().getResourceAsStream("default.properties"));
+			properties.load(MapFileWriterTask.class.getClassLoader().getResourceAsStream("mapsforge-map.properties"));
 			configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
 					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
 			// If multilingual map then set newer map file version
