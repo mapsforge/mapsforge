@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
@@ -41,11 +42,14 @@ import java.util.Collection;
 
 /**
  * POI search.<br/>
- * Long press to search inside visible bounding box.
+ * Long press on map to search inside visible bounding box.<br/>
+ * Tap on POIs to show their name (in device's locale).
  */
 public class PoiSearchViewer extends RenderTheme4 {
 	private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/germany.poi";
-	private static final String POI_CATEGORY = "Restaurants";
+	private static final String POI_CATEGORY = "Embassies";
+
+	private static final Paint CIRCLE = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(128, 255, 0, 0), 0, Style.FILL);
 
 	@Override
 	protected void createLayers() {
@@ -78,11 +82,11 @@ public class PoiSearchViewer extends RenderTheme4 {
 	}
 
 	private static class PoiSearchTask extends AsyncTask<BoundingBox, Void, Collection<PointOfInterest>> {
-		private final WeakReference<PoiSearchViewer> activityRef;
+		private final WeakReference<PoiSearchViewer> weakActivity;
 		private final String category;
 
 		private PoiSearchTask(PoiSearchViewer activity, String category) {
-			this.activityRef = new WeakReference<>(activity);
+			this.weakActivity = new WeakReference<>(activity);
 			this.category = category;
 		}
 
@@ -107,7 +111,7 @@ public class PoiSearchViewer extends RenderTheme4 {
 
 		@Override
 		protected void onPostExecute(Collection<PointOfInterest> pointOfInterests) {
-			PoiSearchViewer activity = activityRef.get();
+			final PoiSearchViewer activity = weakActivity.get();
 			if (activity == null) {
 				return;
 			}
@@ -116,12 +120,17 @@ public class PoiSearchViewer extends RenderTheme4 {
 				return;
 			}
 
-			for (PointOfInterest pointOfInterest : pointOfInterests) {
-				// Log.d(SamplesApplication.TAG, pointOfInterest.toString());
-				LatLong latLong = new LatLong(pointOfInterest.getLatitude(), pointOfInterest.getLongitude());
-				Circle circle = new FixedPixelCircle(latLong, 16, Utils.createPaint(
-						AndroidGraphicFactory.INSTANCE.createColor(128, 255, 0, 0), 0, Style.FILL),
-						null);
+			for (final PointOfInterest pointOfInterest : pointOfInterests) {
+				Circle circle = new FixedPixelCircle(pointOfInterest.getLatLong(), 16, CIRCLE, null) {
+					@Override
+					public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+						if (this.contains(layerXY, tapXY)) {
+							Toast.makeText(activity, pointOfInterest.getName(), Toast.LENGTH_SHORT).show();
+							return true;
+						}
+						return false;
+					}
+				};
 				activity.mapView.getLayerManager().getLayers().add(circle);
 			}
 			activity.redrawLayers();
