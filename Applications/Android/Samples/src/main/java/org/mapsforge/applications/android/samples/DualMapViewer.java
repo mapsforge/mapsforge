@@ -49,7 +49,7 @@ public class DualMapViewer extends RenderTheme4 {
 		this.mapView2.getLayerManager()
 				.getLayers().add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
 						this.mapView2.getModel().mapViewPosition, getMapFile2(),
-						getRenderTheme2(), false, true));
+						getRenderTheme2(), false, true, false));
 	}
 
 	@Override

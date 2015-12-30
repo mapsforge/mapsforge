@@ -115,7 +115,8 @@ final class WayDecorator {
 	 * Finds the segments of a line along which a name can be drawn and then adds WayTextContainers
 	 * to the list of drawable items.
 	 *
-	 * @param tile the tile on which the text will be drawn.
+	 * @param upperLeft the tile in the upper left corner of the drawing pane
+	 * @param lowerRight the tile in the lower right corner of the drawing pane
 	 * @param text the text to draw
 	 * @param priority priority of the text
 	 * @param dy if 0, then a line  parallel to the coordinates will be calculated first
@@ -124,8 +125,9 @@ final class WayDecorator {
 	 * @param coordinates the list of way coordinates
 	 * @param currentLabels the list of labels to which a new WayTextContainer will be added
 	 */
-	static void renderText(Tile tile, String text, Display display, int priority, float dy, Paint fill, Paint stroke, Point[][] coordinates,
-			List<MapElementContainer> currentLabels) {
+	static void renderText(Tile upperLeft, Tile lowerRight, String text, Display display, int priority, float dy,
+	                       Paint fill, Paint stroke, Point[][] coordinates,
+	                       List<MapElementContainer> currentLabels) {
 
 		// Calculate the way name length plus some margin of safety
 		int wayNameWidth = (stroke == null) ? fill.getTextWidth(text) + WAYNAME_SAFETY_MARGIN*2 : stroke.getTextWidth(text) + WAYNAME_SAFETY_MARGIN*2;
@@ -134,7 +136,7 @@ final class WayDecorator {
 		// We make the tile smaller because otherwise we sometimes write the text beyond the tile boundary
 		// (e.g. a road that runs parallel just below a tile boundary)
 		double textHeight = (stroke == null) ? fill.getTextHeight(text) : stroke.getTextHeight(text);
-		final Rectangle tileBoundary = tile.getBoundaryAbsolute().envelope(-textHeight);
+		final Rectangle tileBoundary = Tile.getBoundaryAbsolute(upperLeft, lowerRight).envelope(-textHeight);
 
 		int skipPixels = 0;
 

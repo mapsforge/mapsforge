@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014, 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -212,14 +212,15 @@ public final class AndroidUtil {
 	 * @param renderTheme     the render theme to use
 	 * @param hasAlpha        if the layer is transparent (more memory)
 	 * @param renderLabels    should usually be true
+	 * @param cacheLabels    should usually be false
 	 * @return the layer
 	 */
 	public static TileRendererLayer createTileRendererLayer(
 			TileCache tileCache, MapViewPosition mapViewPosition,
 			MapDataStore mapFile, XmlRenderTheme renderTheme, boolean hasAlpha,
-			boolean renderLabels) {
+			boolean renderLabels, boolean cacheLabels) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
-				mapViewPosition, hasAlpha, renderLabels, AndroidGraphicFactory.INSTANCE);
+				mapViewPosition, hasAlpha, renderLabels, cacheLabels, AndroidGraphicFactory.INSTANCE);
 		tileRendererLayer.setXmlRenderTheme(renderTheme);
 		return tileRendererLayer;
 	}

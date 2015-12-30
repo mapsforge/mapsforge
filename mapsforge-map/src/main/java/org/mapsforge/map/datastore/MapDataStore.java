@@ -115,12 +115,95 @@ public abstract class MapDataStore {
 	public abstract long getDataTimestamp(Tile tile);
 
 	/**
+	 * Reads only labels for tile. Labels are pois as well as ways that carry a name tag.
+	 * It is permissible for the MapDataStore to return more data.
+	 * This default implementation returns all map data, which is inefficient, but works.
+	 * @param tile tile for which data is requested.
+	 * @return label data for the tile.
+	 */
+	public MapReadResult readLabels(Tile tile) {
+		return readMapData(tile);
+	}
+
+	/**
+	 * Reads data for an area defined by the tile in the upper left and the tile in
+	 * the lower right corner. The default implementation combines the results from
+	 * all tiles, a possibly inefficient solution.
+	 * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
+	 *
+	 * @param upperLeft tile that defines the upper left corner of the requested area.
+	 * @param lowerRight tile that defines the lower right corner of the requested area.
+	 * @return map data for the tile.
+	 */
+	public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
+		assert upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY;
+		MapReadResult result = new MapReadResult();
+		for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
+			for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
+				Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
+				result.add(readLabels(current), false);
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * Reads data for tile.
 	 * @param tile tile for which data is requested.
 	 * @return map data for the tile.
 	 */
 	public abstract MapReadResult readMapData(Tile tile);
 
+	/**
+	 * Reads data for an area defined by the tile in the upper left and the tile in
+	 * the lower right corner. The default implementation combines the results from
+	 * all tiles, a possibly inefficient solution.
+	 * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
+	 *
+	 * @param upperLeft tile that defines the upper left corner of the requested area.
+	 * @param lowerRight tile that defines the lower right corner of the requested area.
+	 * @return map data for the tile.
+	 */
+	public MapReadResult readMapData(Tile upperLeft, Tile lowerRight) {
+		assert upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY;
+		MapReadResult result = new MapReadResult();
+		for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
+			for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
+				Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
+				result.add(readMapData(current), false);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Reads only POI data for tile.
+	 * @param tile tile for which data is requested.
+	 * @return poi data for the tile.
+	 */
+	public abstract MapReadResult readPoiData(Tile tile);
+
+	/**
+	 * Reads POI data for an area defined by the tile in the upper left and the tile in
+	 * the lower right corner. The default implementation combines the results from
+	 * all tiles, a possibly inefficient solution.
+	 * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
+	 *
+	 * @param upperLeft tile that defines the upper left corner of the requested area.
+	 * @param lowerRight tile that defines the lower right corner of the requested area.
+	 * @return map data for the tile.
+	 */
+	public MapReadResult readPoiData(Tile upperLeft, Tile lowerRight) {
+		assert upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY;
+		MapReadResult result = new MapReadResult();
+		for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
+			for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
+				Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
+				result.add(readPoiData(current), false);
+			}
+		}
+		return result;
+	}
 	/**
 	 * Gets the initial map position.
 	 * @return the start position, if available.

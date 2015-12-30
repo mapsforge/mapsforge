@@ -83,7 +83,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
 	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true);
+				mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
 		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 
 		// needed only for samples to hook into Settings.

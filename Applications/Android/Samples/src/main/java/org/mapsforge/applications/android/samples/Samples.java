@@ -151,7 +151,8 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(TileSizeChanger.class, "Changing Tile Size", null));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class, "Stacked Tiles", null));
 		linearLayout.addView(createButton(NoXMLLayout.class, "Without XML Layout", null));
-		linearLayout.addView(createButton(LabelLayerMapViewer.class, "Separate LabelLayer", null));
+		linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewer.class, "Separate LabelLayer using MapDataStore", null));
+		linearLayout.addView(createButton(LabelLayerUsingLabelCacheMapViewer.class, "Separate LabelLayer using LabelStore", null));
 		linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Osmarender (deprecated)", null));
 		linearLayout.addView(createButton(PoiSearchViewer.class, "POI search (alpha)", new View.OnClickListener() {
 			@Override

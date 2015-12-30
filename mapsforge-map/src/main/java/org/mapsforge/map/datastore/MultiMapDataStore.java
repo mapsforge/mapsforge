@@ -143,7 +143,6 @@ public class MultiMapDataStore extends MapDataStore {
 
 	private MapReadResult readMapData(Tile tile, boolean deduplicate) {
 		MapReadResult mapReadResult = new MapReadResult();
-		boolean first = true;
 		for (MapDataStore mdb : mapDatabases) {
 			if (mdb.supportsTile(tile)) {
 				MapReadResult result = mdb.readMapData(tile);
@@ -152,35 +151,42 @@ public class MultiMapDataStore extends MapDataStore {
 				}
 				boolean isWater = mapReadResult.isWater & result.isWater;
 				mapReadResult.isWater = isWater;
+				mapReadResult.add(result, deduplicate);
+			}
+		}
+		return mapReadResult;
+	}
 
-
-				if (first) {
-					mapReadResult.ways.addAll(result.ways);
-				} else {
-					if (deduplicate) {
-						for (Way way : result.ways) {
-							if (!mapReadResult.ways.contains(way)) {
-								mapReadResult.ways.add(way);
-							}
-						}
-					} else {
-						mapReadResult.ways.addAll(result.ways);
+	@Override
+	public MapReadResult readPoiData(Tile tile) {
+		switch (this.dataPolicy) {
+			case RETURN_FIRST:
+				for (MapDataStore mdb : mapDatabases) {
+					if (mdb.supportsTile(tile)) {
+						return mdb.readPoiData(tile);
 					}
 				}
-				if (first) {
-					mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
-				} else {
-					if (deduplicate) {
-						for (PointOfInterest poi : result.pointOfInterests) {
-							if (!mapReadResult.pointOfInterests.contains(poi)) {
-								mapReadResult.pointOfInterests.add(poi);
-							}
-						}
-					} else {
-						mapReadResult.pointOfInterests.addAll(result.pointOfInterests);
-					}
+				return null;
+			case RETURN_ALL:
+				return readPoiData(tile, false);
+			case DEDUPLICATE:
+				return readPoiData(tile, true);
+		}
+		throw new IllegalStateException("Invalid data policy for multi map database");
+
+	}
+
+	private MapReadResult readPoiData(Tile tile, boolean deduplicate) {
+		MapReadResult mapReadResult = new MapReadResult();
+		for (MapDataStore mdb : mapDatabases) {
+			if (mdb.supportsTile(tile)) {
+				MapReadResult result = mdb.readPoiData(tile);
+				if (result == null) {
+					continue;
 				}
-				first = false;
+				boolean isWater = mapReadResult.isWater & result.isWater;
+				mapReadResult.isWater = isWater;
+				mapReadResult.add(result, deduplicate);
 			}
 		}
 		return mapReadResult;

@@ -158,7 +158,7 @@ public final class MapViewer {
 			TileCache tileCache,
 			MapViewPosition mapViewPosition, boolean isTransparent, boolean renderLabels, File mapFile) {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile), mapViewPosition, isTransparent,
-				renderLabels, GRAPHIC_FACTORY);
+				renderLabels, false, GRAPHIC_FACTORY);
 		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 		return tileRendererLayer;
 	}

@@ -30,8 +30,19 @@ final class EncodingTest {
 		int tileY = MercatorProjection.latitudeToTileY(0, ZOOM_LEVEL);
 		Tile tile = new Tile(tileX, tileY, ZOOM_LEVEL, 256);
 
-		MapReadResult mapReadResult = mapFile.readMapData(tile);
-		mapFile.close();
+		// read all labels data, ways should be empty as in the example the way does not carry a name tag
+		MapReadResult mapReadResult = mapFile.readLabels(tile);
+		Assert.assertFalse(mapReadResult == null);
+		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+		Assert.assertTrue(mapReadResult.ways.isEmpty());
+
+		// read only poi data, ways should be empty
+		mapReadResult = mapFile.readPoiData(tile);
+		Assert.assertFalse(mapReadResult == null);
+		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+		Assert.assertTrue(mapReadResult.ways.isEmpty());
+
+		mapReadResult = mapFile.readMapData(tile);
 
 		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
 		Assert.assertEquals(1, mapReadResult.ways.size());
@@ -44,6 +55,8 @@ final class EncodingTest {
 
 		Way way = mapReadResult.ways.get(0);
 		Assert.assertArrayEquals(latLongsExpected, way.latLongs);
+
+		mapFile.close();
 	}
 
 	private EncodingTest() {

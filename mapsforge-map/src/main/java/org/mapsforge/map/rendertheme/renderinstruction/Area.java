@@ -131,7 +131,7 @@ public class Area extends RenderInstruction {
 				}
 			}
 
-			fillPaint.setBitmapShaderShift(way.getTile().getOrigin());
+			fillPaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
 
 			renderCallback.renderArea(renderContext, fillPaint, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, way);
 		}

@@ -44,7 +44,7 @@ public class StackedLayersMapViewer extends RenderTheme4 {
 					.getLayers()
 					.add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
 							this.mapView.getModel().mapViewPosition, getMapFile(),
-							secondRenderTheme, true, false));
+							secondRenderTheme, true, true, false));
 
 		} catch (IOException e) {
 			Log.e(SamplesApplication.TAG, "Rendertheme not found");

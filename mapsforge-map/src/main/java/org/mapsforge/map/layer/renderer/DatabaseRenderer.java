@@ -16,99 +16,60 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.mapelements.MapElementContainer;
-import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
-import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
-import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
-import org.mapsforge.map.datastore.PointOfInterest;
-import org.mapsforge.map.datastore.Way;
-import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
-import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.util.LayerUtil;
 
 /**
  * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.datastore.MapDataStore}.
  */
-public class DatabaseRenderer implements RenderCallback {
+public class DatabaseRenderer extends StandardRenderer {
 
-	private static final Byte DEFAULT_START_ZOOM_LEVEL = (byte) 12;
 	private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
-	private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
-	private static final byte ZOOM_MAX = 22;
-
-	private static Point[] getTilePixelCoordinates(int tileSize) {
-		Point[] result = new Point[5];
-		result[0] = new Point(0, 0);
-		result[1] = new Point(tileSize, 0);
-		result[2] = new Point(tileSize, tileSize);
-		result[3] = new Point(0, tileSize);
-		result[4] = result[0];
-		return result;
-	}
-
-	private final GraphicFactory graphicFactory;
 	private final TileBasedLabelStore labelStore;
-	private final MapDataStore mapDatabase;
 	private final boolean renderLabels;
 	private final TileCache tileCache;
 	private final TileDependencies tileDependencies;
 
 	/**
-	 * Constructs a new DatabaseRenderer that will not draw labels, instead it stores the label
-	 * information in the labelStore for drawing by a LabelLayer.
-	 * 
-	 * @param mapDatabase
-	 *            the MapDatabase from which the map data will be read.
-	 */
-	public DatabaseRenderer(MapDataStore mapDatabase,
-			GraphicFactory graphicFactory, TileBasedLabelStore labelStore) {
-		this.mapDatabase = mapDatabase;
-		this.graphicFactory = graphicFactory;
-		this.labelStore = labelStore;
-		this.renderLabels = false;
-		this.tileCache = null;
-		this.tileDependencies = null;
-	}
-
-	/**
-	 * Constructs a new DatabaseRenderer that will draw labels onto the tiles.
+	 * Constructs a new DatabaseRenderer.
+	 * There are three possible configurations:
+	 * 1) render labels directly onto tiles: renderLabels == true && tileCache != null
+	 * 2) do not render labels but cache them: renderLabels == false && labelStore != null
+	 * 3) do not render or cache labels: renderLabels == false && labelStore == null
 	 *
-	 * @param mapFile
-	 *            the MapDatabase from which the map data will be read.
+	 * @param mapDataStore the data source.
+	 * @param graphicFactory the graphic factory.
+	 * @param tileCache where tiles are cached (needed if labels are drawn directly onto tiles, otherwise null)
+	 * @param labelStore where labels are cached.
+	 * @param renderLabels if labels should be rendered.
 	 */
-	public DatabaseRenderer(MapDataStore mapFile,
-			GraphicFactory graphicFactory, TileCache tileCache) {
-		this.mapDatabase = mapFile;
-		this.graphicFactory = graphicFactory;
-
-		this.labelStore = null;
-		this.renderLabels = true;
+	public DatabaseRenderer(MapDataStore mapDataStore,
+			GraphicFactory graphicFactory, TileCache tileCache, TileBasedLabelStore labelStore, boolean renderLabels) {
+		super(mapDataStore, graphicFactory, renderLabels);
 		this.tileCache = tileCache;
-		this.tileDependencies = new TileDependencies();
+		this.labelStore = labelStore;
+		this.renderLabels = renderLabels;
+		if (!renderLabels) {
+			this.tileDependencies = null;
+		} else {
+			this.tileDependencies = new TileDependencies();
+		}
 	}
 
 	/**
@@ -119,29 +80,21 @@ public class DatabaseRenderer implements RenderCallback {
 	 */
 	public TileBitmap executeJob(RendererJob rendererJob) {
 
-		RenderTheme renderTheme;
-		try {
-			renderTheme = rendererJob.renderThemeFuture.get();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "Error to retrieve render theme from future", e);
-			return null;
-		}
-
 		RenderContext renderContext = null;
 		try {
-			renderContext = new RenderContext(renderTheme, rendererJob, new CanvasRasterer(graphicFactory));
+			renderContext = new RenderContext(rendererJob, new CanvasRasterer(graphicFactory));
 
 			if (renderBitmap(renderContext)) {
 				TileBitmap bitmap = null;
 
-				if (this.mapDatabase != null) {
-					MapReadResult mapReadResult = this.mapDatabase.readMapData(rendererJob.tile);
+				if (this.mapDataStore != null) {
+					MapReadResult mapReadResult = this.mapDataStore.readMapData(rendererJob.tile);
 					processReadMapData(renderContext, mapReadResult);
 				}
 
 				if (!rendererJob.labelsOnly) {
-					bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
-					bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(renderContext.rendererJob.tile));
+					bitmap = this.graphicFactory.createTileBitmap(rendererJob.tile.tileSize, rendererJob.hasAlpha);
+					bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(rendererJob.tile));
 					renderContext.canvasRasterer.setCanvasBitmap(bitmap);
 					if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != renderContext.renderTheme.getMapBackground()) {
 						renderContext.canvasRasterer.fill(renderContext.renderTheme.getMapBackground());
@@ -149,18 +102,19 @@ public class DatabaseRenderer implements RenderCallback {
 					renderContext.canvasRasterer.drawWays(renderContext);
 				}
 
-				if (renderLabels) {
+				if (this.renderLabels) {
 					Set<MapElementContainer> labelsToDraw = processLabels(renderContext);
 					// now draw the ways and the labels
-					renderContext.canvasRasterer.drawMapElements(labelsToDraw, renderContext.rendererJob.tile);
-				} else {
+					renderContext.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
+				}
+				if (this.labelStore != null) {
 					// store elements for this tile in the label cache
-					this.labelStore.storeMapItems(renderContext.rendererJob.tile, renderContext.labels);
+					this.labelStore.storeMapItems(rendererJob.tile, renderContext.labels);
 				}
 
 				if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
 					// blank out all areas outside of map
-					Rectangle insideArea = this.mapDatabase.boundingBox().getPositionRelativeToTile(renderContext.rendererJob.tile);
+					Rectangle insideArea = this.mapDataStore.boundingBox().getPositionRelativeToTile(rendererJob.tile);
 					if (!rendererJob.hasAlpha) {
 						renderContext.canvasRasterer.fillOutsideAreas(renderContext.renderTheme.getMapBackgroundOutside(), insideArea);
 					} else {
@@ -171,6 +125,9 @@ public class DatabaseRenderer implements RenderCallback {
 			}
 			// outside of map area with background defined:
 			return createBackgroundBitmap(renderContext);
+		} catch (Exception e) {
+			LOGGER.warning(e.getMessage());
+			return null;
 		} finally {
 			if (renderContext != null) {
 				renderContext.destroy();
@@ -179,35 +136,9 @@ public class DatabaseRenderer implements RenderCallback {
 	}
 
 	public MapDataStore getMapDatabase() {
-		return this.mapDatabase;
+		return this.mapDataStore;
 	}
 
-	/**
-	 * @return the start point (may be null).
-	 */
-	public LatLong getStartPosition() {
-		if (this.mapDatabase != null) {
-			return this.mapDatabase.startPosition();
-		}
-		return null;
-	}
-
-	/**
-	 * @return the start zoom level (may be null).
-	 */
-	public Byte getStartZoomLevel() {
-		if (this.mapDatabase != null && null != this.mapDatabase.startZoomLevel()) {
-			return this.mapDatabase.startZoomLevel();
-		}
-		return DEFAULT_START_ZOOM_LEVEL;
-	}
-
-	/**
-	 * @return the maximum zoom level.
-	 */
-	public byte getZoomLevelMax() {
-		return ZOOM_MAX;
-	}
 
 	void removeTileInProgress(Tile tile) {
 		if (this.tileDependencies != null) {
@@ -215,65 +146,6 @@ public class DatabaseRenderer implements RenderCallback {
 		}
 	}
 
-	@Override
-	public void renderArea(final RenderContext renderContext, Paint fill, Paint stroke, int level, PolylineContainer way) {
-		renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(way, stroke));
-		renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(way, fill));
-	}
-
-	@Override
-	public void renderAreaCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PolylineContainer way) {
-		Point centerPoint = way.getCenterAbsolute().offset(horizontalOffset, verticalOffset);
-		renderContext.labels.add(this.graphicFactory.createPointTextContainer(centerPoint, display, priority, caption, fill, stroke, null, position, maxTextWidth));
-	}
-
-	@Override
-	public void renderAreaSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PolylineContainer way) {
-		Point centerPosition = way.getCenterAbsolute();
-
-		renderContext.labels.add(new SymbolContainer(centerPosition, display, priority, symbol));
-	}
-
-	@Override
-	public void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PointOfInterest poi) {
-		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
-
-		renderContext.labels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), display, priority, caption, fill,
-				stroke, null, position, maxTextWidth));
-	}
-
-	@Override
-	public void renderPointOfInterestCircle(final RenderContext renderContext, float radius, Paint fill, Paint stroke, int level, PointOfInterest poi) {
-		Point poiPosition = MercatorProjection.getPixelRelativeToTile(poi.position, renderContext.rendererJob.tile);
-		renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(new CircleContainer(poiPosition, radius), stroke));
-		renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(new CircleContainer(poiPosition, radius), fill));
-	}
-
-	@Override
-	public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PointOfInterest poi) {
-		Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
-		renderContext.labels.add(new SymbolContainer(poiPosition, display, priority, symbol));
-	}
-
-	@Override
-	public void renderWay(final RenderContext renderContext, Paint stroke, float dy, int level, PolylineContainer way) {
-		renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(way, stroke, dy));
-	}
-
-	@Override
-	public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
-		WayDecorator.renderSymbol(symbol, display, priority, dy, alignCenter, repeat, repeatGap,
-				repeatStart, rotate, way.getCoordinatesAbsolute(), renderContext.labels);
-	}
-
-	@Override
-	public void renderWayText(final RenderContext renderContext, Display display, int priority, String textKey, float dy, Paint fill, Paint stroke, PolylineContainer way) {
-		WayDecorator.renderText(way.getTile(), textKey, display, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), renderContext.labels);
-	}
-
-	boolean renderBitmap(RenderContext renderContext) {
-		return !renderContext.renderTheme.hasMapBackgroundOutside() || this.mapDatabase.supportsTile(renderContext.rendererJob.tile);
-	}
 
 	/**
 	 * Draws a bitmap just with outside colour, used for bitmaps outside of map area.
@@ -367,46 +239,5 @@ public class DatabaseRenderer implements RenderCallback {
 		}
 		return labelsToDraw;
 	}
-
-	private void processReadMapData(final RenderContext renderContext, MapReadResult mapReadResult) {
-		if (mapReadResult == null) {
-			return;
-		}
-
-		for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-			renderPointOfInterest(renderContext, pointOfInterest);
-		}
-
-		for (Way way : mapReadResult.ways) {
-			renderWay(renderContext, new PolylineContainer(way, renderContext.rendererJob.tile));
-		}
-
-		if (mapReadResult.isWater) {
-			renderWaterBackground(renderContext);
-		}
-	}
-
-	private void renderPointOfInterest(final RenderContext renderContext, PointOfInterest pointOfInterest) {
-		renderContext.setDrawingLayers(pointOfInterest.layer);
-		renderContext.renderTheme.matchNode(this, renderContext, pointOfInterest);
-	}
-
-	private void renderWaterBackground(final RenderContext renderContext) {
-		renderContext.setDrawingLayers((byte) 0);
-		Point[] coordinates = getTilePixelCoordinates(renderContext.rendererJob.tile.tileSize);
-		PolylineContainer way = new PolylineContainer(coordinates, renderContext.rendererJob.tile, Arrays.asList(TAG_NATURAL_WATER));
-		renderContext.renderTheme.matchClosedWay(this, renderContext, way);
-	}
-
-	private void renderWay(final RenderContext renderContext, PolylineContainer way) {
-		renderContext.setDrawingLayers(way.getLayer());
-
-		if (way.isClosedWay()) {
-			renderContext.renderTheme.matchClosedWay(this, renderContext, way);
-		} else {
-			renderContext.renderTheme.matchLinearWay(this, renderContext, way);
-		}
-	}
-
 
 }

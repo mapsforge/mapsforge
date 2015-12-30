@@ -73,7 +73,7 @@ public class RenderThemeChanger extends RenderTheme4 {
 	protected void createLayers() {
 		tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
 				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
-				false, true);
+				false, true, false);
 		mapView.getLayerManager().getLayers().add(tileRendererLayer);
 		this.changerThread = new ChangerThread();
 		this.changerThread.start();
@@ -94,7 +94,7 @@ public class RenderThemeChanger extends RenderTheme4 {
 				tileCaches.get(0).destroy();
 				tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
 						mapView.getModel().mapViewPosition, getMapFile(), nextRenderTheme,
-						false, false);
+						false, true, false);
 				mapView.getLayerManager().getLayers().add(tileRendererLayer);
 				mapView.getLayerManager().redrawLayers();
 			} catch (FileNotFoundException e) {

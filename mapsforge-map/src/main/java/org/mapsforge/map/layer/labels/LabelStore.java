@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,7 +19,6 @@ import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Tile;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * The LabelStore is an abstract store for labels from which it is possible to retrieve a priority-ordered
@@ -29,18 +28,19 @@ public interface LabelStore {
 	/**
 	 * Clears the data.
 	 */
-	abstract void clear();
+	void clear();
 
 	/**
 	 * Returns a version number, which changes every time an update is made to the LabelStore.
 	 * @return the version number
 	 */
-	abstract int getVersion();
+	int getVersion();
 
 	/**
 	 * Gets the items that are visible on a set of tiles.
-	 * @param tiles the set of tiles to get the labels for
-	 * @return a list of MapElements that are visible on the tiles
+	 * @param upperLeft tile in upper left corner of visible area.
+	 * @param lowerRight tile in lower right corner of visible area.
+	 * @return a list of MapElements that are visible on the tiles.
 	 */
-	abstract List<MapElementContainer> getVisibleItems(Set<Tile> tiles);
+	List<MapElementContainer> getVisibleItems(Tile upperLeft, Tile lowerRight);
 }

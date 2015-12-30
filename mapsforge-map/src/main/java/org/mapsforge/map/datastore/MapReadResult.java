@@ -48,4 +48,28 @@ public class MapReadResult {
 		this.ways.addAll(poiWayBundle.ways);
 	}
 
+	/**
+	 * Adds other MapReadResult by combining pois and ways. Optionally, deduplication can
+	 * be requested (much more expensive).
+	 * @param other the MapReadResult to add to this.
+	 * @param deduplicate true if check for duplicates is required.
+	 */
+	public void add(MapReadResult other, boolean deduplicate) {
+		if (deduplicate) {
+			for (PointOfInterest poi : other.pointOfInterests) {
+				if (!this.pointOfInterests.contains(poi)) {
+					this.pointOfInterests.add(poi);
+				}
+			}
+			for (Way way : other.ways) {
+				if (!this.ways.contains(way)) {
+					this.ways.add(way);
+				}
+			}
+		} else {
+			this.pointOfInterests.addAll(other.pointOfInterests);
+			this.ways.addAll(other.ways);
+		}
+	}
+
 }

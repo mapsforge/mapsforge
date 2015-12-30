@@ -69,7 +69,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
 	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true);
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
 		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 	}
 

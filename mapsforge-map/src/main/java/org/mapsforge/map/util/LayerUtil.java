@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -51,6 +51,42 @@ public final class LayerUtil {
 		}
 
 		return tilePositions;
+	}
+
+	/**
+	 * Upper left tile for an area.
+	 * @param boundingBox the area boundingBox
+	 * @param zoomLevel the zoom level.
+	 * @param tileSize the tile size.
+	 * @return the tile at the upper left of the bbox.
+	 */
+	public static Tile getUpperLeft(BoundingBox boundingBox, byte zoomLevel, int tileSize) {
+		int tileLeft = MercatorProjection.longitudeToTileX(boundingBox.minLongitude, zoomLevel);
+		int tileTop = MercatorProjection.latitudeToTileY(boundingBox.maxLatitude, zoomLevel);
+		return new Tile(tileLeft, tileTop, zoomLevel, tileSize);
+	}
+
+	/**
+	 * Lower right tile for an area.
+	 * @param boundingBox the area boundingBox
+	 * @param zoomLevel the zoom level.
+	 * @param tileSize the tile size.
+	 * @return the tile at the lower right of the bbox.
+	 */
+	public static Tile getLowerRight(BoundingBox boundingBox, byte zoomLevel, int tileSize) {
+		int tileRight = MercatorProjection.longitudeToTileX(boundingBox.maxLongitude, zoomLevel);
+		int tileBottom = MercatorProjection.latitudeToTileY(boundingBox.minLatitude, zoomLevel);
+		return new Tile(tileRight, tileBottom, zoomLevel, tileSize);
+	}
+
+	public static Set<Tile> getTiles(Tile upperLeft, Tile lowerRight) {
+		Set<Tile> tiles = new HashSet<Tile>();
+		for (int tileY = upperLeft.tileY; tileY <= lowerRight.tileY; ++tileY) {
+			for (int tileX = upperLeft.tileX; tileX <= lowerRight.tileX; ++tileX) {
+				tiles.add(new Tile(tileX, tileY, upperLeft.zoomLevel, upperLeft.tileSize));
+			}
+		}
+		return tiles;
 	}
 
 	public static Set<Tile> getTiles(BoundingBox boundingBox, byte zoomLevel, int tileSize) {

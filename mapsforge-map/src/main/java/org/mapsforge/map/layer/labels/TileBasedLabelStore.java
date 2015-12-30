@@ -61,7 +61,11 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
 	}
 
 	@Override
-	public synchronized List<MapElementContainer> getVisibleItems(Set<Tile> tiles) {
+	public synchronized List<MapElementContainer> getVisibleItems(Tile upperLeft, Tile lowerRight) {
+		return getVisibleItems(LayerUtil.getTiles(upperLeft, lowerRight));
+	}
+
+	private synchronized List<MapElementContainer> getVisibleItems(Set<Tile> tiles) {
 
 		lastVisibleTileSet = tiles;
 

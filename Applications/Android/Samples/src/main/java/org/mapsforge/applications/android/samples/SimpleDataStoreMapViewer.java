@@ -66,6 +66,21 @@ class PointDataStore extends MapDataStore {
 	}
 
 	@Override
+	public MapReadResult readPoiData(final Tile tile) {
+
+		// a dummy operation that puts a fake turning_circle into the middle of each tile.
+		// this is just to not having to change the rendertheme
+		MapReadResult result = new MapReadResult();
+		result.pointOfInterests = new ArrayList<>();
+		result.ways = new ArrayList<>();
+		Tag tag = new Tag("highway", "turning_circle");
+		List<Tag> tags = new ArrayList<>();
+		tags.add(tag);
+		result.pointOfInterests.add(new PointOfInterest((byte) 5, tags, tile.getBoundingBox().getCenterPoint()));
+		return result;
+	}
+
+	@Override
 	public LatLong startPosition() {
 		return null;
 	}

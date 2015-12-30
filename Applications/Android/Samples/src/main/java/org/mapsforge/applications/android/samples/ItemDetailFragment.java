@@ -146,7 +146,7 @@ public class ItemDetailFragment extends Fragment {
 			mapViewPosition.setCenter(this.dummyItem.location);
 			layers.add(AndroidUtil.createTileRendererLayer(this.tileCache,
 					mapViewPosition, getMapFile(),
-					InternalRenderTheme.OSMARENDER, false, true));
+					InternalRenderTheme.OSMARENDER, false, true, false));
 		}
 
 	}

@@ -1,7 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,21 +16,24 @@ package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.layer.labels.MapDataStoreLabelStore;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
- * A map viewer that draws the labels onto a single separate layer. The LabelLayer remains
- * experimental code and has some notable speed issues. Its use in production is currently not
- * recommended.
+ * A map viewer that draws the labels onto a single separate layer. The LabelLayer used in this example
+ * caches the read results per tile to combine the results for the whole screen. 
  */
-public class LabelLayerMapViewer extends RenderTheme4 {
+public class LabelLayerUsingMapDataStoreMapViewer extends RenderTheme4 {
 
 	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false);
+				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, false);
 		mapView.getLayerManager().getLayers().add(tileRendererLayer);
-		org.mapsforge.map.layer.labels.LabelLayer labelLayer = new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
+		MapDataStoreLabelStore labelStore = new MapDataStoreLabelStore(getMapFile(), tileRendererLayer.getRenderThemeFuture(),
+				tileRendererLayer.getTextScale(), tileRendererLayer.getDisplayModel(), AndroidGraphicFactory.INSTANCE);
+		org.mapsforge.map.layer.labels.LabelLayer labelLayer =
+				new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
 		mapView.getLayerManager().getLayers().add(labelLayer);
 	}
 

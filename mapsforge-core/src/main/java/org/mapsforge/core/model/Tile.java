@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,6 +27,28 @@ import java.util.Set;
  */
 public class Tile implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Return the BoundingBox of a rectangle of tiles defined by upper left and lower right tile.
+	 * @param upperLeft tile in upper left corner.
+	 * @param lowerRight tile in lower right corner.
+	 * @return BoundingBox defined by the area around upperLeft and lowerRight Tile.
+	 */
+	public static BoundingBox getBoundingBox(Tile upperLeft, Tile lowerRight) {
+		BoundingBox ul = upperLeft.getBoundingBox();
+		BoundingBox lr = lowerRight.getBoundingBox();
+		return ul.extendBoundingBox(lr);
+	}
+
+	/**
+	 * Extend of the area defined by the two tiles in absolute coordinates.
+	 * @param upperLeft tile in upper left corner of area.
+	 * @param lowerRight tile in lower right corner of area.
+	 * @return rectangle with the absolute coordinates.
+	 */
+	public static Rectangle getBoundaryAbsolute(Tile upperLeft, Tile lowerRight) {
+		return new Rectangle(upperLeft.getOrigin().x, upperLeft.getOrigin().y, lowerRight.getOrigin().x + upperLeft.tileSize, lowerRight.getOrigin().y + upperLeft.tileSize);
+	}
 
 	/**
 	 * @return the maximum valid tile number for the given zoom level, 2<sup>zoomLevel</sup> -1.

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -59,6 +59,38 @@ class QueryParameters {
 			this.useTileBitmask = false;
 		}
 	}
+
+	public void calculateBaseTiles(Tile upperLeft, Tile lowerRight, SubFileParameter subFileParameter) {
+		if (upperLeft.zoomLevel < subFileParameter.baseZoomLevel) {
+			// here we need to combine multiple base tiles
+			int zoomLevelDifference = subFileParameter.baseZoomLevel - upperLeft.zoomLevel;
+			this.fromBaseTileX = upperLeft.tileX << zoomLevelDifference;
+			this.fromBaseTileY = upperLeft.tileY << zoomLevelDifference;
+			this.toBaseTileX = lowerRight.tileX << zoomLevelDifference;
+			this.toBaseTileY = lowerRight.tileY << zoomLevelDifference;
+			this.useTileBitmask = false;
+		} else if (upperLeft.zoomLevel > subFileParameter.baseZoomLevel) {
+			// we might have more than just one base tile as we might span boundaries
+			int zoomLevelDifference = upperLeft.zoomLevel - subFileParameter.baseZoomLevel;
+			this.fromBaseTileX = upperLeft.tileX >>> zoomLevelDifference;
+			this.fromBaseTileY = upperLeft.tileY >>> zoomLevelDifference;
+			this.toBaseTileX = lowerRight.tileX >>> zoomLevelDifference;
+			this.toBaseTileY = lowerRight.tileY >>> zoomLevelDifference;
+			// TODO understand what is going on here. The tileBitmask is used to extract just
+			// the data from the base tiles that is relevant for the area, but how can this work
+			// for a set of tiles, so not using tileBitmask for the moment.
+			this.useTileBitmask = false;
+			//this.queryTileBitmask = QueryCalculations.calculateTileBitmask(tile, zoomLevelDifference);
+		} else {
+			// we are on the base zoom level, so we just need all tiles in range
+			this.fromBaseTileX = upperLeft.tileX;
+			this.fromBaseTileY = upperLeft.tileY;
+			this.toBaseTileX = lowerRight.tileX;
+			this.toBaseTileY = lowerRight.tileY;
+			this.useTileBitmask = false;
+		}
+	}
+
 
 	public void calculateBlocks(SubFileParameter subFileParameter) {
 		// calculate the blocks in the file which need to be read

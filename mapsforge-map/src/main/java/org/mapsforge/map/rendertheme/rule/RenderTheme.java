@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -122,8 +123,7 @@ public class RenderTheme {
 	 *  @param renderCallback
 	 *            the callback implementation which will be executed on each match.
 	 * @param renderContext
-	 * @param poi
- *            the point of interest.
+	 * @param poi the point of interest.
 	 */
 	public synchronized void matchNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
 		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(poi.tags, renderContext.rendererJob.tile.zoomLevel, Closed.NO);
@@ -200,7 +200,7 @@ public class RenderTheme {
 	}
 
 	private synchronized void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
-		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getTile().zoomLevel, closed);
+		MatchingCacheKey matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getUpperLeft().zoomLevel, closed);
 
 		List<RenderInstruction> matchingList = this.wayMatchingCache.get(matchingCacheKey);
 		if (matchingList != null) {
@@ -214,7 +214,7 @@ public class RenderTheme {
 		// cache miss
 		matchingList = new ArrayList<RenderInstruction>();
 		for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-			this.rulesList.get(i).matchWay(renderCallback, way, way.getTile(), closed, matchingList, renderContext);
+			this.rulesList.get(i).matchWay(renderCallback, way, way.getUpperLeft(), closed, matchingList, renderContext);
 		}
 
 		this.wayMatchingCache.put(matchingCacheKey, matchingList);

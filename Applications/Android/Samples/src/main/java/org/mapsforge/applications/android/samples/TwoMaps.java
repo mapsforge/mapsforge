@@ -32,10 +32,10 @@ public class TwoMaps extends RenderTheme4 {
 	@Override
 	protected void createLayers() {
 		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true);
+				mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
 		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 		TileRendererLayer tileRendererLayer2 = AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
-				mapView.getModel().mapViewPosition, getMapFile2(), getRenderTheme(), true, true);
+				mapView.getModel().mapViewPosition, getMapFile2(), getRenderTheme(), true, true, false);
 		this.mapView.getLayerManager().getLayers().add(tileRendererLayer2);
 
 		// needed only for samples to hook into Settings.

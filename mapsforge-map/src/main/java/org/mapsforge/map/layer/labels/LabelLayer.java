@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,6 +30,7 @@ import java.util.Set;
 
 public class LabelLayer extends Layer {
 
+
 	private final LabelStore labelStore;
 	private final Matrix matrix;
 	private List<MapElementContainer> elementsToDraw;
@@ -40,17 +41,21 @@ public class LabelLayer extends Layer {
 	public LabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
 		this.labelStore = labelStore;
 		this.matrix = graphicFactory.createMatrix();
+		this.lastLabelStoreVersion = -1;
 	}
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 
-		Set<Tile> currentTileSet = LayerUtil.getTiles(boundingBox, zoomLevel, displayModel.getTileSize());
+		Tile upperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
+		Tile lowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
+		Set<Tile> currentTileSet = LayerUtil.getTiles(upperLeft, lowerRight);
 		if (!currentTileSet.equals(lastTileSet) || lastLabelStoreVersion != labelStore.getVersion()) {
 			// only need to get new data set if either set of tiles changed or the label store
 			lastTileSet = currentTileSet;
 			lastLabelStoreVersion = labelStore.getVersion();
-			List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(currentTileSet);
+			List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(upperLeft, lowerRight);
+
 			elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
 
 			// TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out

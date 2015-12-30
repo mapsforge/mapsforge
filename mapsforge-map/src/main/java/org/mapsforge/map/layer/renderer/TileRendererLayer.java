@@ -28,6 +28,7 @@ import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 
@@ -48,28 +49,27 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 	 * @param mapViewPosition the mapViewPosition to know which tiles to render
 	 * @param isTransparent true if the tile should have an alpha/transparency
 	 * @param renderLabels true if labels should be rendered onto tiles
+	 * @param cacheLabels true if labels should be cached in a LabelStore
 	 * @param graphicFactory the graphicFactory to carry out platform specific operations
 	 */
 	public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition, boolean isTransparent,
-	                         boolean renderLabels, GraphicFactory graphicFactory) {
+	                         boolean renderLabels, boolean cacheLabels, GraphicFactory graphicFactory) {
 		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
 		this.graphicFactory = graphicFactory;
 		this.mapDataStore = mapDataStore;
-		if (renderLabels) {
-			this.tileBasedLabelStore = null;
-			this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileCache);
-		} else {
+		if (cacheLabels) {
 			this.tileBasedLabelStore = new TileBasedLabelStore(tileCache.getCapacityFirstLevel());
-			this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileBasedLabelStore);
+		} else {
+			this.tileBasedLabelStore = null;
 		}
+		this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileCache, tileBasedLabelStore, renderLabels||cacheLabels);
 		this.textScale = 1;
 	}
 
 	/**
-	 * If the labels are not rendered onto the tile directly, they are stored in a LabelStore for
-	 * rendering on a separate Layer.
-	 * @return the LabelStore used for storing labels, null if labels are rendered onto tiles directly.
+	 * Labels can be stored in a LabelStore for rendering on a separate Layer.
+	 * @return the LabelStore used for storing labels, null otherwise.
 	 */
 	public LabelStore getLabelStore() {
 		return tileBasedLabelStore;
@@ -119,6 +119,10 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 	protected void compileRenderTheme() {
 		this.renderThemeFuture = new RenderThemeFuture(this.graphicFactory, this.xmlRenderTheme, this.displayModel);
 		new Thread(this.renderThemeFuture).start();
+	}
+
+	public RenderThemeFuture getRenderThemeFuture() {
+		return this.renderThemeFuture;
 	}
 
 	@Override

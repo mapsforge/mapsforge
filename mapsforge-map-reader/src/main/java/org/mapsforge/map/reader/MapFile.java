@@ -212,6 +212,14 @@ public class MapFile extends MapDataStore {
 	private final ReadBuffer readBuffer;
 	private final long timestamp;
 
+	/**
+	 * The Selector enum is used to specify which data subset is to be retrieved from a MapFile:
+	 * ALL: all data (as in version 0.6.0)
+	 * POIS: only poi data, no ways (new after 0.6.0)
+	 * LABELS: poi data and ways that have a name (new after 0.6.0)
+	 */
+	private enum Selector { ALL, POIS, LABELS };
+
 	private MapFile() {
 		// only to create a dummy empty file.
 		databaseIndexCache = null;
@@ -397,7 +405,7 @@ public class MapFile extends MapDataStore {
 	}
 
 	private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
-			BoundingBox boundingBox, double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, double tileLatitude, double tileLongitude, Selector selector) {
 		if (!processBlockSignature()) {
 			return null;
 		}
@@ -428,24 +436,31 @@ public class MapFile extends MapDataStore {
 			return null;
 		}
 
-		// finished reading POIs, check if the current buffer position is valid
-		if (this.readBuffer.getBufferPosition() > firstWayOffset) {
-			LOGGER.warning("invalid buffer position: " + this.readBuffer.getBufferPosition());
-			return null;
-		}
+		List<Way> ways;
+		if (Selector.POIS == selector) {
+			ways = new ArrayList<>();
+		} else {
+			// finished reading POIs, check if the current buffer position is valid
+			if (this.readBuffer.getBufferPosition() > firstWayOffset) {
+				LOGGER.warning("invalid buffer position: " + this.readBuffer.getBufferPosition());
+				return null;
+			}
 
-		// move the pointer to the first way
-		this.readBuffer.setBufferPosition(firstWayOffset);
+			// move the pointer to the first way
+			this.readBuffer.setBufferPosition(firstWayOffset);
 
-		List<Way> ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox, filterRequired, tileLatitude, tileLongitude);
-		if (ways == null) {
-			return null;
+			ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox,
+					filterRequired, tileLatitude, tileLongitude, selector);
+			if (ways == null) {
+				return null;
+			}
 		}
 
 		return new PoiWayBundle(pois, ways);
 	}
 
-	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter, BoundingBox boundingBox)
+	private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter,
+	                                    BoundingBox boundingBox, Selector selector)
 			throws IOException {
 		boolean queryIsWater = true;
 		boolean queryReadWaterInfo = false;
@@ -526,7 +541,8 @@ public class MapFile extends MapDataStore {
 						subFileParameter.baseZoomLevel);
 
 				try {
-					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox, tileLatitude, tileLongitude);
+					PoiWayBundle poiWayBundle = processBlock(queryParameters, subFileParameter, boundingBox,
+							tileLatitude, tileLongitude, selector);
 					if (poiWayBundle != null) {
 						mapFileReadResult.add(poiWayBundle);
 					}
@@ -674,7 +690,7 @@ public class MapFile extends MapDataStore {
 	}
 
 	private List<Way> processWays(QueryParameters queryParameters, int numberOfWays,
-			BoundingBox boundingBox, boolean filterRequired, double tileLatitude, double tileLongitude) {
+			BoundingBox boundingBox, boolean filterRequired, double tileLatitude, double tileLongitude, Selector selector) {
 		List<Way> ways = new ArrayList<Way>();
 		Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
@@ -770,12 +786,37 @@ public class MapFile extends MapDataStore {
 					if (filterRequired && wayFilterEnabled && !wayFilterBbox.intersectsArea(wayNodes)) {
 						continue;
 					}
-					ways.add(new Way(layer, tags, wayNodes, labelPosition));
+					if (featureName || Selector.ALL == selector) {
+						ways.add(new Way(layer, tags, wayNodes, labelPosition));
+					}
 				}
 			}
 		}
 
 		return ways;
+	}
+
+	/**
+	 * Reads only labels for tile.
+	 * @param tile tile for which data is requested.
+	 * @return label data for the tile.
+	 */
+	public MapReadResult readLabels(Tile tile) {
+		return readMapData(tile, Selector.LABELS);
+	}
+
+	/**
+	 * Reads data for an area defined by the tile in the upper left and the tile in
+	 * the lower right corner. The default implementation combines the results from
+	 * all tiles, a possibly inefficient solution.
+	 * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
+	 *
+	 * @param upperLeft tile that defines the upper left corner of the requested area.
+	 * @param lowerRight tile that defines the lower right corner of the requested area.
+	 * @return map data for the tile.
+	 */
+	public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
+		return readLabels(upperLeft, lowerRight, Selector.LABELS);
 	}
 
 	/**
@@ -786,10 +827,35 @@ public class MapFile extends MapDataStore {
 	 * @return the read map data.
 	 */
 	@Override
-	public synchronized MapReadResult readMapData(Tile tile) {
+	public MapReadResult readMapData(Tile tile) {
+		return readMapData(tile, Selector.ALL);
+	}
+
+	@Override
+	public MapReadResult readPoiData(Tile tile) {
+		return readMapData(tile, Selector.POIS);
+	}
+
+	/**
+	 * Reads POI data for an area defined by the tile in the upper left and the tile in
+	 * the lower right corner.
+	 * This implementation takes the data storage of a MapFile into account for greater efficiency.
+	 *
+	 * @param upperLeft tile that defines the upper left corner of the requested area.
+	 * @param lowerRight tile that defines the lower right corner of the requested area.
+	 * @return map data for the tile.
+	 */
+	@Override
+	public MapReadResult readPoiData(Tile upperLeft, Tile lowerRight) {
+		return readLabels(upperLeft, lowerRight, Selector.POIS);
+	}
+
+
+	private MapReadResult readLabels(Tile upperLeft, Tile lowerRight, Selector selector) {
+		assert upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY;
 		try {
 			QueryParameters queryParameters = new QueryParameters();
-			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
+			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(upperLeft.zoomLevel);
 
 			// get and check the sub-file for the query zoom level
 			SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
@@ -798,18 +864,19 @@ public class MapFile extends MapDataStore {
 				return null;
 			}
 
-			queryParameters.calculateBaseTiles(tile, subFileParameter);
+			queryParameters.calculateBaseTiles(upperLeft, lowerRight, subFileParameter);
 			queryParameters.calculateBlocks(subFileParameter);
 
 			// we enlarge the bounding box for the tile slightly in order to retain any data that
 			// lies right on the border, some of this data needs to be drawn as the graphics will
 			// overlap onto this tile.
-			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox());
+			return processBlocks(queryParameters, subFileParameter, Tile.getBoundingBox(upperLeft, lowerRight), Selector.LABELS);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, e.getMessage(), e);
 			return null;
 		}
 	}
+
 
 	private LatLong readOptionalLabelPosition(double tileLatitude, double tileLongitude, boolean featureLabelPosition) {
 		if (featureLabelPosition) {
@@ -882,5 +949,31 @@ public class MapFile extends MapDataStore {
 	@Override
 	public boolean supportsTile(Tile tile) {
 		return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
+	}
+
+
+	private synchronized MapReadResult readMapData(Tile tile, Selector selector) {
+		try {
+			QueryParameters queryParameters = new QueryParameters();
+			queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
+
+			// get and check the sub-file for the query zoom level
+			SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
+			if (subFileParameter == null) {
+				LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
+				return null;
+			}
+
+			queryParameters.calculateBaseTiles(tile, subFileParameter);
+			queryParameters.calculateBlocks(subFileParameter);
+
+			// we enlarge the bounding box for the tile slightly in order to retain any data that
+			// lies right on the border, some of this data needs to be drawn as the graphics will
+			// overlap onto this tile.
+			return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox(), selector);
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage(), e);
+			return null;
+		}
 	}
 }

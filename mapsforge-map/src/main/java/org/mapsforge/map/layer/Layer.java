@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -17,6 +17,7 @@
 package org.mapsforge.map.layer;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
@@ -109,6 +110,13 @@ public abstract class Layer {
 		}
 	}
 
+	/**
+	 * Getter for DisplayModel.
+	 * @return the display model.
+	 */
+	public synchronized DisplayModel getDisplayModel() {
+		return this.displayModel;
+	}
 	/**
 	 * The DisplayModel comes from a MapView, so is generally not known when the layer itself is created. Maybe a better
 	 * way would be to have a MapView as a parameter when creating a layer.

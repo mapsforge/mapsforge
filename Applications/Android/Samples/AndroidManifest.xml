@@ -104,9 +104,13 @@
                 android:value="org.mapsforge.applications.android.samples.Samples" />
         </activity>
         <activity
-            android:name=".LabelLayerMapViewer"
+            android:name=".LabelLayerUsingMapDataStoreMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="BasicMapViewer Labels on Tiles" />
+            android:label="Separate LabelLayer using MapDataStore" />
+        <activity
+            android:name=".LabelLayerUsingLabelCacheMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Separate LabelLayer using LabelStore" />
         <activity
             android:name=".LocationOverlayMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"

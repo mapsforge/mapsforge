@@ -98,7 +98,7 @@ public class Line extends RenderInstruction {
 
 		if (shaderBitmap != null) {
 			strokePaint.setBitmapShader(shaderBitmap);
-			strokePaint.setBitmapShaderShift(way.getTile().getOrigin());
+			strokePaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
 		}
 
 		Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);

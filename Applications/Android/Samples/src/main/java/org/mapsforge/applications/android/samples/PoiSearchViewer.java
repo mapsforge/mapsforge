@@ -56,7 +56,7 @@ public class PoiSearchViewer extends RenderTheme4 {
 		TileRendererLayer tileRendererLayer = new TileRendererLayer(
 				this.tileCaches.get(0), getMapFile(),
 				this.mapView.getModel().mapViewPosition,
-				false, true, AndroidGraphicFactory.INSTANCE) {
+				false, true, false, AndroidGraphicFactory.INSTANCE) {
 			@Override
 			public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
 				PoiSearchViewer.this.onLongPress();
