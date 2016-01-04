@@ -136,7 +136,9 @@ public abstract class MapDataStore {
 	 * @return map data for the tile.
 	 */
 	public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
-		assert upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY;
+		if (upperLeft.tileX > lowerRight.tileX || upperLeft.tileY > lowerRight.tileY) {
+			new IllegalArgumentException("upperLeft tile must be above and left of lowerRight tile");
+		}
 		MapReadResult result = new MapReadResult();
 		for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
 			for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
@@ -165,7 +167,9 @@ public abstract class MapDataStore {
 	 * @return map data for the tile.
 	 */
 	public MapReadResult readMapData(Tile upperLeft, Tile lowerRight) {
-		assert upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY;
+		if (upperLeft.tileX > lowerRight.tileX || upperLeft.tileY > lowerRight.tileY) {
+			new IllegalArgumentException("upperLeft tile must be above and left of lowerRight tile");
+		}
 		MapReadResult result = new MapReadResult();
 		for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
 			for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
@@ -194,7 +198,9 @@ public abstract class MapDataStore {
 	 * @return map data for the tile.
 	 */
 	public MapReadResult readPoiData(Tile upperLeft, Tile lowerRight) {
-		assert upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY;
+		if (upperLeft.tileX > lowerRight.tileX || upperLeft.tileY > lowerRight.tileY) {
+			new IllegalArgumentException("upperLeft tile must be above and left of lowerRight tile");
+		}
 		MapReadResult result = new MapReadResult();
 		for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
 			for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {

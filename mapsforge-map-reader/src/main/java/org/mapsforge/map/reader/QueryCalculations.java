@@ -44,6 +44,17 @@ final class QueryCalculations {
 		}
 	}
 
+	static int calculateTileBitmask(Tile upperLeft, Tile lowerRight, int zoomLevelDifference) {
+		int bitmask = 0;
+		for (int x = upperLeft.tileX; x <= lowerRight.tileX; x++) {
+			for (int y = upperLeft.tileY; y <= lowerRight.tileY; y++) {
+				Tile current = new Tile(x, y, upperLeft.zoomLevel, upperLeft.tileSize);
+				bitmask |= calculateTileBitmask(current, zoomLevelDifference);
+			}
+		}
+		return bitmask;
+	}
+
 	private static int getFirstLevelTileBitmask(Tile tile) {
 		if (tile.tileX % 2 == 0 && tile.tileY % 2 == 0) {
 			// upper left quadrant

@@ -66,8 +66,8 @@ class QueryParameters {
 			int zoomLevelDifference = subFileParameter.baseZoomLevel - upperLeft.zoomLevel;
 			this.fromBaseTileX = upperLeft.tileX << zoomLevelDifference;
 			this.fromBaseTileY = upperLeft.tileY << zoomLevelDifference;
-			this.toBaseTileX = lowerRight.tileX << zoomLevelDifference;
-			this.toBaseTileY = lowerRight.tileY << zoomLevelDifference;
+			this.toBaseTileX = (lowerRight.tileX << zoomLevelDifference) + (1 << zoomLevelDifference) - 1;
+			this.toBaseTileY = (lowerRight.tileY << zoomLevelDifference) + (1 << zoomLevelDifference) - 1;
 			this.useTileBitmask = false;
 		} else if (upperLeft.zoomLevel > subFileParameter.baseZoomLevel) {
 			// we might have more than just one base tile as we might span boundaries
@@ -79,8 +79,8 @@ class QueryParameters {
 			// TODO understand what is going on here. The tileBitmask is used to extract just
 			// the data from the base tiles that is relevant for the area, but how can this work
 			// for a set of tiles, so not using tileBitmask for the moment.
-			this.useTileBitmask = false;
-			//this.queryTileBitmask = QueryCalculations.calculateTileBitmask(tile, zoomLevelDifference);
+			this.useTileBitmask = true;
+			this.queryTileBitmask = QueryCalculations.calculateTileBitmask(upperLeft, lowerRight, zoomLevelDifference);
 		} else {
 			// we are on the base zoom level, so we just need all tiles in range
 			this.fromBaseTileX = upperLeft.tileX;
@@ -101,4 +101,43 @@ class QueryParameters {
 		this.toBlockY = Math.min(this.toBaseTileY - subFileParameter.boundaryTileTop,
 				subFileParameter.blocksHeight - 1);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (!(obj instanceof QueryParameters)) {
+			return false;
+		}
+		QueryParameters other = (QueryParameters) obj;
+		return fromBaseTileX == other.fromBaseTileX &&
+				fromBlockX == other.fromBlockX &&
+				fromBaseTileY == other.fromBaseTileY &&
+				fromBlockY == other.fromBlockY &&
+				queryTileBitmask == other.queryTileBitmask &&
+				queryZoomLevel == other.queryZoomLevel &&
+				toBaseTileX == other.toBaseTileX &&
+				toBaseTileY == other.toBaseTileY &&
+				toBlockX == other.toBlockX &&
+				toBlockY == other.toBlockY &&
+				useTileBitmask == other.useTileBitmask;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 7;
+	   	result = 31 * result + (int) (this.fromBaseTileX ^ (this.fromBaseTileX >>> 16));
+		result = 31 * result + (int) (this.fromBaseTileY ^ (this.fromBaseTileY >>> 16));
+		result = 31 * result + (int) (this.toBaseTileX ^ (this.toBaseTileX >>> 16));
+		result = 31 * result + (int) (this.toBaseTileY ^ (this.toBaseTileY >>> 16));
+		result = 31 * result + (int) (this.fromBlockX ^ (this.fromBlockX >>> 16));
+		result = 31 * result + (int) (this.fromBlockY ^ (this.fromBlockY >>> 16));
+		result = 31 * result + (int) (this.toBlockX ^ (this.toBlockX >>> 16));
+		result = 31 * result + (int) (this.toBlockY ^ (this.toBlockY >>> 16));
+		result = 31 * result + this.queryZoomLevel;
+		result = 31 * result + this.queryTileBitmask;
+		return result;
+	}
+
 }
