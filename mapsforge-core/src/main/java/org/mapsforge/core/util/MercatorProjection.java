@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013 Stephan Brandt <stephan@contagt.com>
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -280,6 +281,22 @@ public final class MercatorProjection {
 	 *
 	 * @param longitude
 	 *            the longitude coordinate that should be converted.
+	 * @param zoomLevel
+	 *            the zoom level at which the coordinate should be converted.
+	 * @param tileSize
+	 *            the tile size
+	 * @return the pixel X coordinate of the longitude value.
+	 */
+	public static double longitudeToPixelX(double longitude, byte zoomLevel, int tileSize) {
+		long mapSize = getMapSize(zoomLevel, tileSize);
+		return (longitude + 180) / 360 * mapSize;
+	}
+
+	/**
+	 * Converts a longitude coordinate (in degrees) to a pixel X coordinate at a certain zoom level.
+	 *
+	 * @param longitude
+	 *            the longitude coordinate that should be converted.
 	 * @param mapSize
 	 *            precomputed size of map.
 	 * @return the pixel X coordinate of the longitude value.
@@ -287,7 +304,6 @@ public final class MercatorProjection {
 	public static double longitudeToPixelX(double longitude, long mapSize) {
 		return (longitude + 180) / 360 * mapSize;
 	}
-
 
     /**
 	 * Converts a longitude coordinate (in degrees) to the tile X number at a certain scale factor.
@@ -312,7 +328,7 @@ public final class MercatorProjection {
 	 * @return the tile X number of the longitude value.
 	 */
 	public static int longitudeToTileX(double longitude, byte zoomLevel) {
-		return pixelXToTileX(longitudeToPixelX(longitude, getMapSize(zoomLevel, DUMMY_TILE_SIZE)), zoomLevel, DUMMY_TILE_SIZE);
+		return pixelXToTileX(longitudeToPixelX(longitude, zoomLevel, DUMMY_TILE_SIZE), zoomLevel, DUMMY_TILE_SIZE);
 	}
 
 	/**
