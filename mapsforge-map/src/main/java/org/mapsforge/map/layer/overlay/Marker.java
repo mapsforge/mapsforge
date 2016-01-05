@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -61,7 +62,7 @@ public class Marker extends Layer {
 
 	@Override
 	public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		if (this.latLong == null || this.bitmap == null) {
+		if (this.latLong == null || this.bitmap == null || this.bitmap.isDestroyed()) {
 			return;
 		}
 

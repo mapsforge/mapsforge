@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2014 Develar
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -74,6 +74,11 @@ public class AwtBitmap implements Bitmap {
 	@Override
 	public void incrementRefCount() {
 		// no-op
+	}
+
+	@Override
+	public boolean isDestroyed() {
+		return this.bufferedImage == null;
 	}
 
 	@Override
