@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2014-2016 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,16 +26,16 @@ import org.mapsforge.map.util.LayerUtil;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class LabelLayer extends Layer {
 
 
-	private final LabelStore labelStore;
-	private final Matrix matrix;
-	private List<MapElementContainer> elementsToDraw;
-	private Set<Tile> lastTileSet;
-	private int lastLabelStoreVersion;
+	protected final LabelStore labelStore;
+	protected final Matrix matrix;
+	protected List<MapElementContainer> elementsToDraw;
+	protected Tile upperLeft;
+	protected Tile lowerRight;
+	protected int lastLabelStoreVersion;
 
 
 	public LabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
@@ -47,12 +47,13 @@ public class LabelLayer extends Layer {
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
 
-		Tile upperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
-		Tile lowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
-		Set<Tile> currentTileSet = LayerUtil.getTiles(upperLeft, lowerRight);
-		if (!currentTileSet.equals(lastTileSet) || lastLabelStoreVersion != labelStore.getVersion()) {
+		Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
+		Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
+		if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
+				|| lastLabelStoreVersion != labelStore.getVersion()) {
 			// only need to get new data set if either set of tiles changed or the label store
-			lastTileSet = currentTileSet;
+			this.upperLeft = newUpperLeft;
+			this.lowerRight = newLowerRight;
 			lastLabelStoreVersion = labelStore.getVersion();
 			List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(upperLeft, lowerRight);
 
@@ -66,9 +67,14 @@ public class LabelLayer extends Layer {
 			Collections.sort(elementsToDraw);
 		}
 
+		draw(canvas, topLeftPoint);
+	}
+
+	protected void draw(Canvas canvas, Point topLeftPoint) {
 		for (MapElementContainer item : elementsToDraw) {
 			item.draw(canvas, topLeftPoint, this.matrix);
 		}
+
 	}
 
 }

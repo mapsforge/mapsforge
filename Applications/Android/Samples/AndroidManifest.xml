@@ -108,6 +108,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Separate LabelLayer using MapDataStore" />
         <activity
+            android:name=".LabelLayerUsingMapDataStoreMapViewerThreaded"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Threaded LabelLayer using MapDataStore" />
+        <activity
             android:name=".LabelLayerUsingLabelCacheMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Separate LabelLayer using LabelStore" />

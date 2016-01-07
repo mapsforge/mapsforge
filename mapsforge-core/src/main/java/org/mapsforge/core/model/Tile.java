@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2014-2016 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -48,6 +48,21 @@ public class Tile implements Serializable {
 	 */
 	public static Rectangle getBoundaryAbsolute(Tile upperLeft, Tile lowerRight) {
 		return new Rectangle(upperLeft.getOrigin().x, upperLeft.getOrigin().y, lowerRight.getOrigin().x + upperLeft.tileSize, lowerRight.getOrigin().y + upperLeft.tileSize);
+	}
+
+	/**
+	 * Returns true if two tile areas, defined by upper left and lower right tiles, overlap.
+	 * @param upperLeft tile in upper left corner of area 1.
+	 * @param lowerRight tile in lower right corner of area 1.
+	 * @param upperLeftOther tile in upper left corner of area 2.
+	 * @param lowerRightOther tile in lower right corner of area 2.
+	 * @return true if the areas overlap, false if zoom levels differ or areas do not overlap.
+	 */
+	public static boolean tileAreasOverlap(Tile upperLeft, Tile lowerRight, Tile upperLeftOther, Tile lowerRightOther) {
+		if (upperLeft.zoomLevel != upperLeftOther.zoomLevel || lowerRight.zoomLevel != lowerRightOther.zoomLevel) {
+			return false;
+		}
+		return getBoundaryAbsolute(upperLeft, lowerRight).intersects(getBoundaryAbsolute(upperLeftOther, lowerRightOther));
 	}
 
 	/**
