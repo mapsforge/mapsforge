@@ -37,22 +37,22 @@ import java.util.concurrent.Future;
  */
 public class ThreadedLabelLayer extends LabelLayer {
 
-	ExecutorService thread;
+	ExecutorService executorService;
 	Future<?> future;
 	Tile requestedUpperLeft;
 	Tile requestedLowerRight;
 
 	public ThreadedLabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
 		super(graphicFactory, labelStore);
-		thread = Executors.newSingleThreadExecutor();
+		this.executorService = Executors.newSingleThreadExecutor();
 	}
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
-		Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
+		Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, this.displayModel.getTileSize());
+		Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, this.displayModel.getTileSize());
 		if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
-				|| lastLabelStoreVersion != labelStore.getVersion()) {
+				|| this.lastLabelStoreVersion != this.labelStore.getVersion()) {
 			getData(newUpperLeft, newLowerRight);
 		}
 
@@ -64,7 +64,7 @@ public class ThreadedLabelLayer extends LabelLayer {
 	}
 
 	protected void getData(final Tile upperLeft, final Tile lowerRight) {
-		if (upperLeft.equals(requestedUpperLeft) && lowerRight.equals(requestedLowerRight)) {
+		if (upperLeft.equals(this.requestedUpperLeft) && lowerRight.equals(this.requestedLowerRight)) {
 			// same data already requested
 			return;
 		}
@@ -78,7 +78,7 @@ public class ThreadedLabelLayer extends LabelLayer {
 			this.future.cancel(false);
 		}
 
-		this.future = thread.submit(new Runnable() {
+		this.future = executorService.submit(new Runnable() {
 			public void run() {
 				List<MapElementContainer> visibleItems = ThreadedLabelLayer.this.labelStore.getVisibleItems(upperLeft, lowerRight);
 
@@ -99,4 +99,8 @@ public class ThreadedLabelLayer extends LabelLayer {
 		});
 	}
 
+	@Override
+	public void onDestroy() {
+		this.executorService.shutdownNow();
+	}
 }

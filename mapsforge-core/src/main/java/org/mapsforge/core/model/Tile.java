@@ -52,6 +52,8 @@ public class Tile implements Serializable {
 
 	/**
 	 * Returns true if two tile areas, defined by upper left and lower right tiles, overlap.
+	 * Precondition: zoom levels of upperLeft/lowerRight and upperLeftOther/lowerRightOther are the
+	 * same.
 	 * @param upperLeft tile in upper left corner of area 1.
 	 * @param lowerRight tile in lower right corner of area 1.
 	 * @param upperLeftOther tile in upper left corner of area 2.
@@ -59,8 +61,11 @@ public class Tile implements Serializable {
 	 * @return true if the areas overlap, false if zoom levels differ or areas do not overlap.
 	 */
 	public static boolean tileAreasOverlap(Tile upperLeft, Tile lowerRight, Tile upperLeftOther, Tile lowerRightOther) {
-		if (upperLeft.zoomLevel != upperLeftOther.zoomLevel || lowerRight.zoomLevel != lowerRightOther.zoomLevel) {
+		if (upperLeft.zoomLevel != upperLeftOther.zoomLevel) {
 			return false;
+		}
+		if (upperLeft.equals(upperLeftOther) && lowerRight.equals(lowerRightOther)) {
+			return true;
 		}
 		return getBoundaryAbsolute(upperLeft, lowerRight).intersects(getBoundaryAbsolute(upperLeftOther, lowerRightOther));
 	}
