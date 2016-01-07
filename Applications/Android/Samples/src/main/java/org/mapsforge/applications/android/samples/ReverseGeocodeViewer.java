@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -86,7 +86,7 @@ public class ReverseGeocodeViewer extends RenderTheme4 {
 		for (int tileX = tileXMin; tileX <= tileXMax; tileX++) {
 			for (int tileY = tileYMin; tileY <= tileYMax; tileY++) {
 				Tile tile = new Tile(tileX, tileY, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
-				MapReadResult mapReadResult = getMapFile().readMapData(tile);
+				MapReadResult mapReadResult = getMapFile().readPoiData(tile);
 				for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
 					pointOfInterests.add(pointOfInterest);
 				}
@@ -113,7 +113,7 @@ public class ReverseGeocodeViewer extends RenderTheme4 {
 		int tileX = MercatorProjection.longitudeToTileX(tapLatLong.longitude, this.mapView.getModel().mapViewPosition.getZoomLevel());
 		int tileY = MercatorProjection.latitudeToTileY(tapLatLong.latitude, this.mapView.getModel().mapViewPosition.getZoomLevel());
 		Tile tile = new Tile(tileX, tileY, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
-		MapReadResult mapReadResult = getMapFile().readMapData(tile);
+		MapReadResult mapReadResult = getMapFile().readLabels(tile);
 		List<Way> ways = mapReadResult.ways;
 
 		// Filter ways
