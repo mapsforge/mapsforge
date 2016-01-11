@@ -15,8 +15,6 @@ sourceSets.test.compileClasspath += configurations.providedCompile
 sourceSets.test.runtimeClasspath += configurations.providedCompile
 
 jar {
-    classifier = 'jar-with-dependencies'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     from('src/main/config/') {
         include 'mapsforge-map.properties'
         include 'osmosis-plugins.conf'
@@ -26,4 +24,14 @@ jar {
             line -> line.replace('${mapfile.writer.version}', version)
         }
     }
+}
+
+task fatJar(type: Jar, dependsOn: classes) {
+    classifier = 'jar-with-dependencies'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+artifacts {
+    archives fatJar
 }

@@ -2,12 +2,3 @@ dependencies {
     compile project(":mapsforge-poi")
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
 }
-
-task fatJar(type: Jar) {
-    classifier = 'jar-with-dependencies'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
-
-artifacts {
-    archives fatJar
-}

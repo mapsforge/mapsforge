@@ -4,9 +4,11 @@ dependencies {
     testCompile project(":mapsforge-map")
 }
 
-task fatJar(type: Jar) {
+task fatJar(type: Jar, dependsOn: classes) {
     classifier = 'jar-with-dependencies'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+    with jar
 }
 
 artifacts {
