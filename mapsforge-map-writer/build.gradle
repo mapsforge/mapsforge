@@ -15,6 +15,7 @@ sourceSets.test.compileClasspath += configurations.providedCompile
 sourceSets.test.runtimeClasspath += configurations.providedCompile
 
 jar {
+    classifier = 'jar-with-dependencies'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     from('src/main/config/') {
         include 'mapsforge-map.properties'

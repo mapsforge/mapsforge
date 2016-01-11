@@ -12,6 +12,7 @@ dependencies {
 sourceSets.main.compileClasspath += configurations.providedCompile
 
 jar {
+    classifier = 'jar-with-dependencies'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     from('src/main/config/') {
         include 'mapsforge-poi.properties'
