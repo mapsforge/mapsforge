@@ -2,3 +2,12 @@ dependencies {
     compile project(":mapsforge-poi")
     compile project(":sqlite3-android")
 }
+
+task fatJar(type: Jar) {
+    classifier = 'jar-with-dependencies'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+artifacts {
+    archives fatJar
+}

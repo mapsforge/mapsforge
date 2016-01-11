@@ -1,4 +1,13 @@
 dependencies {
-  compile project(":mapsforge-map-reader")
-  compile group: 'com.caverock', name: 'androidsvg', version:'1.2.2-beta-1'
+    compile project(":mapsforge-map-reader")
+    compile group: 'com.caverock', name: 'androidsvg', version: '1.2.2-beta-1'
+}
+
+task fatJar(type: Jar) {
+    classifier = 'jar-with-dependencies'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+artifacts {
+    archives fatJar
 }

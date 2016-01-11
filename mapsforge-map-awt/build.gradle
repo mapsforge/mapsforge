@@ -1,5 +1,14 @@
 dependencies {
-  compile project(":mapsforge-map-reader")
-  compile group: 'com.kitfox.svg', name: 'svg-salamander', version:'1.0'
-  testCompile project(":mapsforge-map")
+    compile project(":mapsforge-map-reader")
+    compile group: 'com.kitfox.svg', name: 'svg-salamander', version: '1.0'
+    testCompile project(":mapsforge-map")
+}
+
+task fatJar(type: Jar) {
+    classifier = 'jar-with-dependencies'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+artifacts {
+    archives fatJar
 }
