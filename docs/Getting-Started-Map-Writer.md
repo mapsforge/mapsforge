@@ -61,7 +61,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 
 ## Plugin Installation
 
-- Download the  [map-writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT.jar) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
+- Download the [map-writer plugin](Downloads.md) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
 1. Copy the downloaded plugin to $USER_HOME/.openstreetmap/osmosis/plugins (Linux) or Application Data\Openstreetmap\Osmosis\Plugins (Windows).
 1. Copy the downloaded plugin to subdirectory plugins in the current directory.
 1. Use the Osmosis parameter ‘-plugin <plugin_qualified_classname>’ to load the plugin. The qualified classname of the map-writer is ‘org.mapsforge.map.writer.osmosis.MapFileWriterPluginLoader’.

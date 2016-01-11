@@ -55,5 +55,5 @@ These are the latest development builds from the dev branch. Use this branch if 
 - [Latest Samples application (dev - old permissions)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-oldpermissions-debug.apk)
 - [Latest Samples application (dev - runtime permissions)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-runtimepermissions-debug.apk)
 - [Latest Jars (dev)](http://ci.mapsforge.org/job/dev/)
-- [Map writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT.jar)
-- [POI writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-dev-SNAPSHOT.jar)
+- [Map writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT-jar-with-dependencies.jar)
+- [POI writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-dev-SNAPSHOT-jar-with-dependencies.jar)
