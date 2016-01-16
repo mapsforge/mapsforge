@@ -74,7 +74,7 @@ public class AndroidBitmap implements Bitmap {
 		}
 	}
 
-	AndroidBitmap(android.graphics.Bitmap bitmap) {
+	public AndroidBitmap(android.graphics.Bitmap bitmap) {
 		this();
 		if (bitmap.isRecycled()) {
 			throw new IllegalArgumentException("bitmap is already recycled");
