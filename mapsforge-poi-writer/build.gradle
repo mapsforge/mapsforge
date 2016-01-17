@@ -13,10 +13,6 @@ sourceSets.main.compileClasspath += configurations.providedCompile
 
 jar {
     from('src/main/config/') {
-        include 'mapsforge-poi.properties'
-        include 'osmosis-plugins.conf'
-        include 'plugin.xml'
-        include 'poi-mapping.xml'
         filter {
             line -> line.replace('${poi.writer.version}', version)
         }
