@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mapsforge/mapsforge.svg?branch=master)](https://travis-ci.org/mapsforge/mapsforge)
+
 The mapsforge project provides free and open software for the rendering of maps based on OpenStreetMap data. Currently, we offer a library for ad-hoc map rendering on Android devices and in Java stand-alone applications.
 
 **The current stable release is 0.6.0. See the [changelog](docs/Changelog.md) for details, [download official 0.6.0 binaries](docs/Downloads.md).**
