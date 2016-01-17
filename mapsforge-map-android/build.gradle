@@ -1,4 +1,18 @@
 dependencies {
-  compile project(":mapsforge-map-reader")
-  compile group: 'com.caverock', name: 'androidsvg', version:'1.2.2-beta-1'
+    compile project(":mapsforge-map-reader")
+    compile group: 'com.caverock', name: 'androidsvg', version: '1.2.2-beta-1'
+}
+
+android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    if (name.equals("debug")) {
+        print "Skipping debug jar"
+        return; // Skip debug builds.
+    }
+    def task = project.tasks.create "fatJar${name.capitalize()}", Jar
+    task.classifier = 'jar-with-dependencies'
+    task.dependsOn variant.javaCompile
+    task.from variant.javaCompile.destinationDir
+    task.from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    artifacts.add('archives', task);
 }
