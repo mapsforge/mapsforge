@@ -28,7 +28,7 @@ This section provides you with information how to create a POI database, how to 
 
 The POI writer is implemented as an Osmosis plugin. For this tutorial it is necessary to checkout and install the latest libraries.
 
-It is also necessary to install Osmosis. [poi-writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-dev-SNAPSHOT.jar) installation is similar to map-writer plugin, you can see its [guide](Getting-Started-Map-Writer.md#plugin-installation) for detailed instructions. You should now have a fully working environment for developing apps using the POI API.
+It is also necessary to install Osmosis. [poi-writer plugin](Downloads.md) installation is similar to map-writer plugin, you can see its [guide](Getting-Started-Map-Writer.md#plugin-installation) for detailed instructions. You should now have a fully working environment for developing apps using the POI API.
 
 To convert OSM data to a POI database execute the following command:
 
