@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Ludwig M Brinckmann
+ * Copyright 2015-2016 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,15 +19,12 @@ import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 
-import java.util.logging.Logger;
-
 /**
  * An extension to the MapViewerTemplate that supports the runtime permissions introduced in Android 6.
  */
 public abstract class MapViewerTemplateRuntimePermissions extends MapViewerTemplate implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-	private static final Logger LOGGER = Logger.getLogger(MapViewerTemplateRuntimePermissions.class.getName());
-	private static final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
+	protected static final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
