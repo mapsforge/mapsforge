@@ -104,6 +104,10 @@
                 android:value="org.mapsforge.applications.android.samples.Samples" />
         </activity>
         <activity
+            android:name=".LabelLayerUsingLabelCacheMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Separate LabelLayer using LabelStore" />
+        <activity
             android:name=".LabelLayerUsingMapDataStoreMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Separate LabelLayer using MapDataStore" />
@@ -111,10 +115,6 @@
             android:name=".LabelLayerUsingMapDataStoreMapViewerThreaded"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Threaded LabelLayer using MapDataStore" />
-        <activity
-            android:name=".LabelLayerUsingLabelCacheMapViewer"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Separate LabelLayer using LabelStore" />
         <activity
             android:name=".LocationOverlayMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -135,6 +135,10 @@
             android:name=".MultiMapLowResWorld"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Low res world background" />
+        <activity
+            android:name=".NightModeViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Night mode" />
         <activity
             android:name=".NoXMLLayout"
             android:configChanges="keyboardHidden|orientation|screenSize"

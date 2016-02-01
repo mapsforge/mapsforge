@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,16 +15,6 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.font.TextLayout;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
@@ -34,17 +24,39 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Dimension;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.LookupOp;
+import java.awt.image.ShortLookupTable;
+
 class AwtCanvas implements Canvas {
 	private static final String UNKNOWN_STYLE = "unknown style: ";
 
 	private BufferedImage bufferedImage;
 	private Graphics2D graphics2D;
+	private final BufferedImageOp invertOp3, invertOp4;
 
 	AwtCanvas() {
-		// do nothing
+		short[] invert = new short[256];
+		short[] straight = new short[256];
+		for (int i = 0; i < 256; i++) {
+			invert[i] = (short) (255 - i);
+			straight[i] = (short) i;
+		}
+		this.invertOp3 = new LookupOp(new ShortLookupTable(0, invert), null);
+		this.invertOp4 = new LookupOp(new ShortLookupTable(0, new short[][]{invert, invert, invert, straight}), null);
 	}
 
 	AwtCanvas(Graphics2D graphics2D) {
+		this();
 		this.graphics2D = graphics2D;
 		enableAntiAliasing();
 	}
@@ -60,9 +72,43 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
+	public void drawBitmap(Bitmap bitmap, int left, int top, boolean invert) {
+		BufferedImage src = AwtGraphicFactory.getBufferedImage(bitmap);
+		if (invert) {
+			BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+			switch (src.getColorModel().getNumComponents()) {
+				case 3:
+					src = this.invertOp3.filter(src, dest);
+					break;
+				case 4:
+					src = this.invertOp4.filter(src, dest);
+					break;
+			}
+		}
+		this.graphics2D.drawImage(src, left, top, null);
+	}
+
+	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
 		this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
 				AwtGraphicFactory.getAffineTransform(matrix));
+	}
+
+	@Override
+	public void drawBitmap(Bitmap bitmap, Matrix matrix, boolean invert) {
+		BufferedImage src = AwtGraphicFactory.getBufferedImage(bitmap);
+		if (invert) {
+			BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+			switch (src.getColorModel().getNumComponents()) {
+				case 3:
+					src = this.invertOp3.filter(src, dest);
+					break;
+				case 4:
+					src = this.invertOp4.filter(src, dest);
+					break;
+			}
+		}
+		this.graphics2D.drawRenderedImage(src, AwtGraphicFactory.getAffineTransform(matrix));
 	}
 
 	@Override

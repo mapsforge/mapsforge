@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -78,6 +78,7 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(RenderTheme4.class, "Map Viewer Rendertheme V4", null));
 		linearLayout.addView(createButton(DiagnosticsMapViewer.class, "Diagnostics", null));
 		linearLayout.addView(createButton(SimplestMapViewer.class, "Simplest Map Viewer", null));
+		linearLayout.addView(createButton(MultiLingualMapViewer.class, "Multi-lingual maps", null));
 
 		linearLayout.addView(createLabel("Raster Maps"));
 		linearLayout.addView(createButton(DownloadLayerViewer.class, "Downloading Mapnik", null));
@@ -145,8 +146,8 @@ public class Samples extends Activity {
 		linearLayout.addView(createButton(SimpleDataStoreMapViewer.class, "Simple User DataStore", null));
 
 		linearLayout.addView(createLabel("Experiments"));
-		linearLayout.addView(createButton(MultiLingualMapViewer.class, "Multi-lingual maps", null));
 		linearLayout.addView(createButton(ReverseGeocodeViewer.class, "Reverse Geocoding", null));
+		linearLayout.addView(createButton(NightModeViewer.class, "Night mode", null));
 		linearLayout.addView(createButton(RenderThemeChanger.class, "Changing Renderthemes", null));
 		linearLayout.addView(createButton(TileSizeChanger.class, "Changing Tile Size", null));
 		linearLayout.addView(createButton(StackedLayersMapViewer.class, "Stacked Tiles", null));

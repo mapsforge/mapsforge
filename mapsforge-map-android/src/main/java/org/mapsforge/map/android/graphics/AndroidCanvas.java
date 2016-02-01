@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +16,11 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.Region;
+
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
@@ -24,14 +29,17 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Dimension;
 
-import android.graphics.PorterDuff;
-import android.graphics.Region;
-
-
 class AndroidCanvas implements Canvas {
+	private static final float[] INVERT_MATRIX = {
+			-1, 0, 0, 0, 255,
+			0, -1, 0, 0, 255,
+			0, 0, -1, 0, 255,
+			0, 0, 0, 1, 0
+	};
 
 	android.graphics.Canvas canvas;
 	private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
+	private final ColorFilter invertFilter = new ColorMatrixColorFilter(INVERT_MATRIX);
 
 	AndroidCanvas() {
 		this.canvas = new android.graphics.Canvas();
@@ -55,8 +63,30 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
+	public void drawBitmap(Bitmap bitmap, int left, int top, boolean invert) {
+		if (invert) {
+			bitmapPaint.setColorFilter(invertFilter);
+		}
+		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
+		if (invert) {
+			bitmapPaint.setColorFilter(null);
+		}
+	}
+
+	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
 		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+	}
+
+	@Override
+	public void drawBitmap(Bitmap bitmap, Matrix matrix, boolean invert) {
+		if (invert) {
+			bitmapPaint.setColorFilter(invertFilter);
+		}
+		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+		if (invert) {
+			bitmapPaint.setColorFilter(null);
+		}
 	}
 
 	@Override

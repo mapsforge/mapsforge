@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,14 +19,12 @@ package org.mapsforge.core.graphics;
 public interface GraphicContext {
 	void drawBitmap(Bitmap bitmap, int left, int top);
 
+	void drawBitmap(Bitmap bitmap, int left, int top, boolean invert);
+
 	void drawBitmap(Bitmap bitmap, Matrix matrix);
 
-	/**
-	 * @param x
-	 *            the horizontal center coordinate of the circle.
-	 * @param y
-	 *            the vertical center coordinate of the circle.
-	 */
+	void drawBitmap(Bitmap bitmap, Matrix matrix, boolean invert);
+
 	void drawCircle(int x, int y, int radius, Paint paint);
 
 	void drawLine(int x1, int y1, int x2, int y2, Paint paint);

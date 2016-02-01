@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,9 +26,7 @@ import org.mapsforge.map.model.common.Observable;
  * cater for user needs or application development (maybe a small map and large map, or to prevent upscaling for
  * downloaded tiles that do not scale well).
  */
-
 public class DisplayModel extends Observable {
-
 	private static final int DEFAULT_BACKGROUND_COLOR = 0xffeeeeee; // format AARRGGBB
 	private static final int DEFAULT_TILE_SIZE = 256;
 	private static final float DEFAULT_MAX_TEXT_WIDTH_FACTOR = 0.7f;
@@ -77,14 +75,12 @@ public class DisplayModel extends Observable {
 	}
 
 	private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
-
+	private boolean colorInvert;
 	private int fixedTileSize;
-
 	private int maxTextWidth = DEFAULT_MAX_TEXT_WIDTH;
 	private float maxTextWidthFactor = DEFAULT_MAX_TEXT_WIDTH_FACTOR;
 	private int tileSize = DEFAULT_TILE_SIZE;
 	private int tileSizeMultiple = 64;
-
 	private float userScaleFactor = defaultUserScaleFactor;
 
 	public DisplayModel() {
@@ -166,6 +162,13 @@ public class DisplayModel extends Observable {
 		return this.userScaleFactor;
 	}
 
+	/**
+	 * Is the map rendering inverted via color filtering.
+	 */
+	public synchronized boolean isColorInvert() {
+		return colorInvert;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -188,6 +191,13 @@ public class DisplayModel extends Observable {
 	 */
 	public synchronized void setBackgroundColor(int color) {
 		this.backgroundColor = color;
+	}
+
+	/**
+	 * Invert map rendering via color filtering.
+	 */
+	public synchronized void setColorInvert(boolean colorInvert) {
+		this.colorInvert = colorInvert;
 	}
 
 	/**

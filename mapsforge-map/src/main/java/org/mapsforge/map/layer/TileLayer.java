@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -104,7 +104,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 					this.jobQueue.add(job);
 				}
 				retrieveLabelsOnly(job);
-				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y));
+				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.displayModel.isColorInvert());
 				bitmap.decrementRefCount();
 			}
 		}
@@ -118,7 +118,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 	public synchronized void setDisplayModel(DisplayModel displayModel) {
 		super.setDisplayModel(displayModel);
 		if (displayModel != null && this.hasJobQueue) {
-			this.jobQueue = new JobQueue<T>(this.mapViewPosition, this.displayModel);
+			this.jobQueue = new JobQueue<>(this.mapViewPosition, this.displayModel);
 		} else {
 			this.jobQueue = null;
 		}
@@ -170,7 +170,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.matrix.scale(scaleFactor, scaleFactor);
 
 				canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-				canvas.drawBitmap(bitmap, this.matrix);
+				canvas.drawBitmap(bitmap, this.matrix, this.displayModel.isColorInvert());
 				canvas.resetClip();
 				bitmap.decrementRefCount();
 			}
