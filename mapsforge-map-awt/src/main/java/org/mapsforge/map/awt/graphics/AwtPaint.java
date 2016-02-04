@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -37,7 +37,6 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 
 public class AwtPaint implements Paint {
-
 	private static int getCap(Cap cap) {
 		switch (cap) {
 			case BUTT:
@@ -134,6 +133,11 @@ public class AwtPaint implements Paint {
 		this.strokeWidth = ap.strokeWidth;
 		this.textSize = ap.textSize;
 		this.strokeDasharray = ap.strokeDasharray;
+	}
+
+	@Override
+	public int getColor() {
+		return this.color.getRGB();
 	}
 
 	@Override

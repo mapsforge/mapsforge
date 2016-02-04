@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,16 +16,16 @@
  */
 package org.mapsforge.core.mapelements;
 
-
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public class WayTextContainer extends MapElementContainer {
-
 	private final Paint paintFront;
 	private final Paint paintBack;
 	private final String text;
@@ -47,20 +48,34 @@ public class WayTextContainer extends MapElementContainer {
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
 		Point adjustedStart = xy.offset(-origin.x, -origin.y);
 		Point adjustedEnd = end.offset(-origin.x, -origin.y);
 
 		if (this.paintBack != null) {
+			int color = this.paintBack.getColor();
+			if (filter != Filter.NONE) {
+				this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
+			}
 			canvas.drawTextRotated(text, (int) (adjustedStart.x),
-				(int) (adjustedStart.y),
-				(int) (adjustedEnd.x),
-				(int) (adjustedEnd.y), this.paintBack);
+					(int) (adjustedStart.y),
+					(int) (adjustedEnd.x),
+					(int) (adjustedEnd.y), this.paintBack);
+			if (filter != Filter.NONE) {
+				this.paintBack.setColor(color);
+			}
+		}
+		int color = this.paintFront.getColor();
+		if (filter != Filter.NONE) {
+			this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
 		}
 		canvas.drawTextRotated(text, (int) (adjustedStart.x),
 				(int) (adjustedStart.y),
 				(int) (adjustedEnd.x),
 				(int) (adjustedEnd.y), this.paintFront);
+		if (filter != Filter.NONE) {
+			this.paintFront.setColor(color);
+		}
 	}
 
 	@Override
@@ -71,5 +86,4 @@ public class WayTextContainer extends MapElementContainer {
 		stringBuilder.append(this.text);
 		return stringBuilder.toString();
 	}
-
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +18,7 @@ package org.mapsforge.core.mapelements;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
@@ -35,7 +37,6 @@ import org.mapsforge.core.model.Rectangle;
  * drawn.
  */
 public abstract class MapElementContainer implements Comparable<MapElementContainer> {
-
 	protected Rectangle boundary;
 	protected Rectangle boundaryAbsolute;
 	protected Display display;
@@ -54,7 +55,6 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 	 * @param other
 	 * @return priority order
 	 */
-
 	@Override
 	public int compareTo(MapElementContainer other) {
 		if (this.priority < other.priority) {
@@ -84,13 +84,9 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 
 	/**
 	 * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
-	 * using the matrix if rotation is required.
-	 *
-	 * @param canvas
-	 * @param origin
-	 * @param matrix
+	 * using the matrix if rotation is required. Additionally a color filter can be applied.
 	 */
-	public abstract void draw(Canvas canvas, Point origin, Matrix matrix);
+	public abstract void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter);
 
 	/**
 	 * Gets the pixel absolute boundary for this element.
@@ -150,5 +146,4 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 		stringBuilder.append(this.priority);
 		return stringBuilder.toString();
 	}
-
 }

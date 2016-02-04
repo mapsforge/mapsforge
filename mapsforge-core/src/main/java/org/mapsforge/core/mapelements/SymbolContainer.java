@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,12 +19,12 @@ package org.mapsforge.core.mapelements;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public class SymbolContainer extends MapElementContainer {
-
 	final boolean alignCenter;
 	public Bitmap symbol;
 	public final float theta;
@@ -72,7 +72,7 @@ public class SymbolContainer extends MapElementContainer {
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
 		matrix.reset();
 		// We cast to int for pixel perfect positioning
 		matrix.translate((int) (this.xy.x - origin.x + boundary.left), (int) (this.xy.y - origin.y + boundary.top));
@@ -81,7 +81,6 @@ public class SymbolContainer extends MapElementContainer {
 		} else {
 			matrix.rotate(theta);
 		}
-		canvas.drawBitmap(this.symbol, matrix);
+		canvas.drawBitmap(this.symbol, matrix, filter);
 	}
-
 }

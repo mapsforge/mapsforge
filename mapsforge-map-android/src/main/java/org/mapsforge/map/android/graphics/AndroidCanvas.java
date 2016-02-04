@@ -71,10 +71,8 @@ class AndroidCanvas implements Canvas {
 				break;
 		}
 		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
-		switch (filter) {
-			case INVERT:
-				bitmapPaint.setColorFilter(null);
-				break;
+		if (filter != Filter.NONE) {
+			bitmapPaint.setColorFilter(null);
 		}
 	}
 
@@ -91,10 +89,8 @@ class AndroidCanvas implements Canvas {
 				break;
 		}
 		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
-		switch (filter) {
-			case INVERT:
-				bitmapPaint.setColorFilter(null);
-				break;
+		if (filter != Filter.NONE) {
+			bitmapPaint.setColorFilter(null);
 		}
 	}
 

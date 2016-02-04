@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,6 +24,7 @@ import java.util.Set;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
@@ -40,8 +42,8 @@ public class CanvasRasterer {
 
 	public CanvasRasterer(GraphicFactory graphicFactory) {
 		this.canvas = graphicFactory.createCanvas();
-		this.symbolMatrix = graphicFactory.createMatrix();
 		this.path = graphicFactory.createPath();
+		this.symbolMatrix = graphicFactory.createMatrix();
 	}
 
 	public void destroy() {
@@ -68,13 +70,14 @@ public class CanvasRasterer {
 		// we have a set of all map elements (needed so we do not draw elements twice),
 		// but we need to draw in priority order as we now allow overlaps. So we
 		// convert into list, then sort, then draw.
-		List<MapElementContainer> elementsAsList = new ArrayList<MapElementContainer>(elements);
+		List<MapElementContainer> elementsAsList = new ArrayList<>(elements);
 		// draw elements in order of priority: lower priority first, so more important
 		// elements will be drawn on top (in case of display=true) items.
 		Collections.sort(elementsAsList);
 
 		for (MapElementContainer element : elementsAsList) {
-			element.draw(canvas, tile.getOrigin(), this.symbolMatrix);
+			// The color filtering takes place in TileLayer
+			element.draw(canvas, tile.getOrigin(), this.symbolMatrix, Filter.NONE);
 		}
 	}
 
@@ -147,12 +150,11 @@ public class CanvasRasterer {
 		switch (shapeType) {
 			case CIRCLE:
 				drawCircleContainer(shapePaintContainer);
-				return;
-
+				break;
 			case POLYLINE:
 				PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
 				drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
-				return;
+				break;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +17,8 @@ package org.mapsforge.map.awt.graphics;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.mapelements.PointTextContainer;
@@ -34,17 +36,14 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
 public class AwtPointTextContainer extends PointTextContainer {
-
 	AwtPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                      SymbolContainer symbolContainer, Position position, int maxTextWidth) {
 		super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
-
 		this.boundary = computeBoundary();
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix) {
-
+	public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
 		if (this.paintFront.isTransparent() && (this.paintBack == null || this.paintBack.isTransparent())) {
 			return;
 		}
@@ -55,6 +54,10 @@ public class AwtPointTextContainer extends PointTextContainer {
 
 		int textWidth = this.paintFront.getTextWidth(this.text);
 		if (textWidth > maxTextWidth) {
+			int colorF = this.paintFront.getColor();
+			if (filter != Filter.NONE) {
+				this.paintFront.setColor(GraphicUtils.filterColor(colorF, filter));
+			}
 			AttributedString attrString = new AttributedString(this.text);
 			org.mapsforge.map.awt.graphics.AwtPaint awtPaintFront = org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintFront);
 			attrString.addAttribute(TextAttribute.FOREGROUND, awtPaintFront.color);
@@ -106,27 +109,47 @@ public class AwtPointTextContainer extends PointTextContainer {
 					throw new IllegalArgumentException("No position for drawing PointTextContainer");
 				}
 				if (this.paintBack != null) {
+					int colorB = this.paintBack.getColor();
+					if (filter != Filter.NONE) {
+						this.paintBack.setColor(GraphicUtils.filterColor(colorB, filter));
+					}
 					awtCanvas.setColorAndStroke(org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintBack));
 					AffineTransform affineTransform = new AffineTransform();
 					affineTransform.translate(posX, posY);
 					awtCanvas.getGraphicObject().draw(layout.getOutline(affineTransform));
+					if (filter != Filter.NONE) {
+						this.paintBack.setColor(colorB);
+					}
 				}
 				layout.draw(awtCanvas.getGraphicObject(), posX, posY);
 				drawPosY += layout.getAscent() + layout.getDescent() + layout.getLeading();
+				if (filter != Filter.NONE) {
+					this.paintFront.setColor(colorF);
+				}
 			}
 		} else {
 			if (this.paintBack != null) {
+				int color = this.paintBack.getColor();
+				if (filter != Filter.NONE) {
+					this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
+				}
 				canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintBack);
+				if (filter != Filter.NONE) {
+					this.paintBack.setColor(color);
+				}
+			}
+			int color = this.paintFront.getColor();
+			if (filter != Filter.NONE) {
+				this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
 			}
 			canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintFront);
+			if (filter != Filter.NONE) {
+				this.paintFront.setColor(color);
+			}
 		}
-
-
 	}
 
-
 	private Rectangle computeBoundary() {
-
 		int lines = this.textWidth / maxTextWidth + 1;
 		double boxWidth = this.textWidth;
 		double boxHeight = this.textHeight;

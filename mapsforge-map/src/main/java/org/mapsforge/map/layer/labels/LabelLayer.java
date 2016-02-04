@@ -1,5 +1,6 @@
 /*
  * Copyright 2014-2016 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,15 +29,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class LabelLayer extends Layer {
-
-
 	protected final LabelStore labelStore;
 	protected final Matrix matrix;
 	protected List<MapElementContainer> elementsToDraw;
 	protected Tile upperLeft;
 	protected Tile lowerRight;
 	protected int lastLabelStoreVersion;
-
 
 	public LabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
 		this.labelStore = labelStore;
@@ -46,7 +44,6 @@ public class LabelLayer extends Layer {
 
 	@Override
 	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-
 		Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
 		Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
 		if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
@@ -72,11 +69,7 @@ public class LabelLayer extends Layer {
 
 	protected void draw(Canvas canvas, Point topLeftPoint) {
 		for (MapElementContainer item : elementsToDraw) {
-			item.draw(canvas, topLeftPoint, this.matrix);
+			item.draw(canvas, topLeftPoint, this.matrix, this.displayModel.getFilter());
 		}
-
 	}
-
 }
-
-

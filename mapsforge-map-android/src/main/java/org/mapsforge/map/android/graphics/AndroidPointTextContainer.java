@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,6 +21,8 @@ import android.text.TextPaint;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
@@ -30,9 +32,8 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public class AndroidPointTextContainer extends PointTextContainer {
-
-	private StaticLayout frontLayout;
 	private StaticLayout backLayout;
+	private StaticLayout frontLayout;
 
 	AndroidPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
 	                          SymbolContainer symbolContainer, Position position, int maxTextWidth) {
@@ -40,7 +41,6 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
 		final float boxWidth, boxHeight;
 		if (this.textWidth > this.maxTextWidth) {
-
 			// if the text is too wide its layout is done by the Android StaticLayout class,
 			// which automatically inserts line breaks. There is not a whole lot of useful
 			// documentation of this class.
@@ -83,7 +83,6 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
 			boxWidth = frontLayout.getWidth();
 			boxHeight = frontLayout.getHeight();
-
 		} else {
 			boxWidth = textWidth;
 			boxHeight = textHeight;
@@ -123,7 +122,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 	}
 
 	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix) {
+	public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
 		if (!this.isVisible) {
 			return;
 		}
@@ -137,9 +136,23 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			androidCanvas.translate((float) (this.xy.x - origin.x + boundary.left), (float) (this.xy.y - origin.y + boundary.top));
 
 			if (this.backLayout != null) {
+				int color = this.backLayout.getPaint().getColor();
+				if (filter != Filter.NONE) {
+					this.backLayout.getPaint().setColor(GraphicUtils.filterColor(color, filter));
+				}
 				this.backLayout.draw(androidCanvas);
+				if (filter != Filter.NONE) {
+					this.backLayout.getPaint().setColor(color);
+				}
+			}
+			int color = this.frontLayout.getPaint().getColor();
+			if (filter != Filter.NONE) {
+				this.frontLayout.getPaint().setColor(GraphicUtils.filterColor(color, filter));
 			}
 			this.frontLayout.draw(androidCanvas);
+			if (filter != Filter.NONE) {
+				this.frontLayout.getPaint().setColor(color);
+			}
 			androidCanvas.restore();
 		} else {
 			// the origin of the text is the base line, so we need to make adjustments
@@ -164,9 +177,23 @@ public class AndroidPointTextContainer extends PointTextContainer {
 			float adjustedY = (float) (this.xy.y - origin.y) + textOffset;
 
 			if (this.paintBack != null) {
+				int color = this.paintBack.getColor();
+				if (filter != Filter.NONE) {
+					this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
+				}
 				androidCanvas.drawText(this.text, adjustedX, adjustedY, AndroidGraphicFactory.getPaint(this.paintBack));
+				if (filter != Filter.NONE) {
+					this.paintBack.setColor(color);
+				}
+			}
+			int color = this.paintFront.getColor();
+			if (filter != Filter.NONE) {
+				this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
 			}
 			androidCanvas.drawText(this.text, adjustedX, adjustedY, AndroidGraphicFactory.getPaint(this.paintFront));
+			if (filter != Filter.NONE) {
+				this.paintFront.setColor(color);
+			}
 		}
 	}
 }
