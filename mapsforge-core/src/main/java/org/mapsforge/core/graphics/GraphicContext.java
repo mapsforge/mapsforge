@@ -19,11 +19,11 @@ package org.mapsforge.core.graphics;
 public interface GraphicContext {
 	void drawBitmap(Bitmap bitmap, int left, int top);
 
-	void drawBitmap(Bitmap bitmap, int left, int top, boolean invert);
+	void drawBitmap(Bitmap bitmap, int left, int top, Filter filter);
 
 	void drawBitmap(Bitmap bitmap, Matrix matrix);
 
-	void drawBitmap(Bitmap bitmap, Matrix matrix, boolean invert);
+	void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter);
 
 	void drawCircle(int x, int y, int radius, Paint paint);
 

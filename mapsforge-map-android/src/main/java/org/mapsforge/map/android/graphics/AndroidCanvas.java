@@ -24,6 +24,7 @@ import android.graphics.Region;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -63,13 +64,17 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, int left, int top, boolean invert) {
-		if (invert) {
-			bitmapPaint.setColorFilter(invertFilter);
+	public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
+		switch (filter) {
+			case INVERT:
+				bitmapPaint.setColorFilter(invertFilter);
+				break;
 		}
 		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
-		if (invert) {
-			bitmapPaint.setColorFilter(null);
+		switch (filter) {
+			case INVERT:
+				bitmapPaint.setColorFilter(null);
+				break;
 		}
 	}
 
@@ -79,13 +84,17 @@ class AndroidCanvas implements Canvas {
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, Matrix matrix, boolean invert) {
-		if (invert) {
-			bitmapPaint.setColorFilter(invertFilter);
+	public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+		switch (filter) {
+			case INVERT:
+				bitmapPaint.setColorFilter(invertFilter);
+				break;
 		}
 		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
-		if (invert) {
-			bitmapPaint.setColorFilter(null);
+		switch (filter) {
+			case INVERT:
+				bitmapPaint.setColorFilter(null);
+				break;
 		}
 	}
 

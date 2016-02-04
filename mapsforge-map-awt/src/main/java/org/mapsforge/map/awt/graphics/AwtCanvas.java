@@ -18,6 +18,7 @@ package org.mapsforge.map.awt.graphics;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -72,18 +73,20 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, int left, int top, boolean invert) {
+	public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
 		BufferedImage src = AwtGraphicFactory.getBufferedImage(bitmap);
-		if (invert) {
-			BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-			switch (src.getColorModel().getNumComponents()) {
-				case 3:
-					src = this.invertOp3.filter(src, dest);
-					break;
-				case 4:
-					src = this.invertOp4.filter(src, dest);
-					break;
-			}
+		switch (filter) {
+			case INVERT:
+				BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+				switch (src.getColorModel().getNumComponents()) {
+					case 3:
+						src = this.invertOp3.filter(src, dest);
+						break;
+					case 4:
+						src = this.invertOp4.filter(src, dest);
+						break;
+				}
+				break;
 		}
 		this.graphics2D.drawImage(src, left, top, null);
 	}
@@ -95,18 +98,20 @@ class AwtCanvas implements Canvas {
 	}
 
 	@Override
-	public void drawBitmap(Bitmap bitmap, Matrix matrix, boolean invert) {
+	public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
 		BufferedImage src = AwtGraphicFactory.getBufferedImage(bitmap);
-		if (invert) {
-			BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-			switch (src.getColorModel().getNumComponents()) {
-				case 3:
-					src = this.invertOp3.filter(src, dest);
-					break;
-				case 4:
-					src = this.invertOp4.filter(src, dest);
-					break;
-			}
+		switch (filter) {
+			case INVERT:
+				BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+				switch (src.getColorModel().getNumComponents()) {
+					case 3:
+						src = this.invertOp3.filter(src, dest);
+						break;
+					case 4:
+						src = this.invertOp4.filter(src, dest);
+						break;
+				}
+				break;
 		}
 		this.graphics2D.drawRenderedImage(src, AwtGraphicFactory.getAffineTransform(matrix));
 	}
