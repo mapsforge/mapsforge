@@ -104,14 +104,13 @@ public abstract class TileLayer<T extends Job> extends Layer {
 					this.jobQueue.add(job);
 				}
 				retrieveLabelsOnly(job);
-				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y));
+				canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.displayModel.getFilter());
 				bitmap.decrementRefCount();
 			}
 		}
 		if (this.hasJobQueue) {
 			this.jobQueue.notifyWorkers();
 		}
-
 	}
 
 	@Override
@@ -170,7 +169,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 				this.matrix.scale(scaleFactor, scaleFactor);
 
 				canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-				canvas.drawBitmap(bitmap, this.matrix);
+				canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
 				canvas.resetClip();
 				bitmap.decrementRefCount();
 			}

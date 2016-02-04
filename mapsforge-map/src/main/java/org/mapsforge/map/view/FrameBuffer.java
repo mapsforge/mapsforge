@@ -67,7 +67,7 @@ public class FrameBuffer {
 	public synchronized void draw(GraphicContext graphicContext) {
 		graphicContext.fillColor(this.displayModel.getBackgroundColor());
 		if (this.bitmap1 != null) {
-			graphicContext.drawBitmap(this.bitmap1, this.matrix, this.displayModel.getFilter());
+			graphicContext.drawBitmap(this.bitmap1, this.matrix);
 		}
 	}
 
