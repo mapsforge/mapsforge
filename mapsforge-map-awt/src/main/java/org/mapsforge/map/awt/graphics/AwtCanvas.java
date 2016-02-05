@@ -29,12 +29,14 @@ import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.color.ColorSpace;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorConvertOp;
 import java.awt.image.LookupOp;
 import java.awt.image.ShortLookupTable;
 
@@ -43,23 +45,64 @@ class AwtCanvas implements Canvas {
 
 	private BufferedImage bufferedImage;
 	private Graphics2D graphics2D;
-	private final BufferedImageOp invertOp3, invertOp4;
+	private BufferedImageOp grayscaleOp, invertOp, invertOp4;
 
 	AwtCanvas() {
+		createFilters();
+	}
+
+	AwtCanvas(Graphics2D graphics2D) {
+		this.graphics2D = graphics2D;
+		enableAntiAliasing();
+
+		createFilters();
+	}
+
+	private BufferedImage applyFilter(BufferedImage src, Filter filter) {
+		if (filter == Filter.NONE) {
+			return src;
+		}
+		BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+		switch (filter) {
+			case GRAYSCALE:
+				this.grayscaleOp.filter(src, dest);
+				break;
+			case GRAYSCALE_INVERT:
+				this.grayscaleOp.filter(src, dest);
+				switch (dest.getColorModel().getNumComponents()) {
+					case 3:
+						this.invertOp.filter(dest, dest);
+						break;
+					case 4:
+						this.invertOp4.filter(dest, dest);
+						break;
+				}
+				break;
+			case INVERT:
+				switch (src.getColorModel().getNumComponents()) {
+					case 3:
+						this.invertOp.filter(src, dest);
+						break;
+					case 4:
+						this.invertOp4.filter(src, dest);
+						break;
+				}
+				break;
+		}
+		return dest;
+	}
+
+	private void createFilters() {
+		this.grayscaleOp = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+
 		short[] invert = new short[256];
 		short[] straight = new short[256];
 		for (int i = 0; i < 256; i++) {
 			invert[i] = (short) (255 - i);
 			straight[i] = (short) i;
 		}
-		this.invertOp3 = new LookupOp(new ShortLookupTable(0, invert), null);
+		this.invertOp = new LookupOp(new ShortLookupTable(0, invert), null);
 		this.invertOp4 = new LookupOp(new ShortLookupTable(0, new short[][]{invert, invert, invert, straight}), null);
-	}
-
-	AwtCanvas(Graphics2D graphics2D) {
-		this();
-		this.graphics2D = graphics2D;
-		enableAntiAliasing();
 	}
 
 	@Override
@@ -74,21 +117,7 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
-		BufferedImage src = AwtGraphicFactory.getBufferedImage(bitmap);
-		switch (filter) {
-			case INVERT:
-				BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-				switch (src.getColorModel().getNumComponents()) {
-					case 3:
-						src = this.invertOp3.filter(src, dest);
-						break;
-					case 4:
-						src = this.invertOp4.filter(src, dest);
-						break;
-				}
-				break;
-		}
-		this.graphics2D.drawImage(src, left, top, null);
+		this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBufferedImage(bitmap), filter), left, top, null);
 	}
 
 	@Override
@@ -99,21 +128,7 @@ class AwtCanvas implements Canvas {
 
 	@Override
 	public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
-		BufferedImage src = AwtGraphicFactory.getBufferedImage(bitmap);
-		switch (filter) {
-			case INVERT:
-				BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-				switch (src.getColorModel().getNumComponents()) {
-					case 3:
-						src = this.invertOp3.filter(src, dest);
-						break;
-					case 4:
-						src = this.invertOp4.filter(src, dest);
-						break;
-				}
-				break;
-		}
-		this.graphics2D.drawRenderedImage(src, AwtGraphicFactory.getAffineTransform(matrix));
+		this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBufferedImage(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
 	}
 
 	@Override

@@ -15,5 +15,5 @@
 package org.mapsforge.core.graphics;
 
 public enum Filter {
-	INVERT, NONE
+	GRAYSCALE, GRAYSCALE_INVERT, INVERT, NONE
 }

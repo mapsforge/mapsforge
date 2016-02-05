@@ -35,6 +35,12 @@ public final class GraphicUtils {
 		int g = (color >> 8) & 0xFF;
 		int b = color & 0xFF;
 		switch (filter) {
+			case GRAYSCALE:
+				r = g = b = (int) (0.213f * r + 0.715f * g + 0.072f * b);
+				break;
+			case GRAYSCALE_INVERT:
+				r = g = b = 255 - (int) (0.213f * r + 0.715f * g + 0.072f * b);
+				break;
 			case INVERT:
 				r = 255 - r;
 				g = 255 - g;
