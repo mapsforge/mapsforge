@@ -45,7 +45,7 @@ Extra Java components:
 
 The jars build from the above components are required elements for a mapsforge application on Android or Java.
 
-External dependencies jars can be found at their respective sites or simply searching them in [Maven central repository](http://search.maven.org/).
+External dependencies jars can be found at their respective sites or in Maven central repository.
 
 ### Branches
 
@@ -54,7 +54,7 @@ The mapsforge code has now been consolidated into two main branches as well as r
 - **dev**: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
 - **release**: use this if you want to build applications built on top of well-tested and stable code.
 
-Code before the 0.6.0 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
+Code before latest release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged.
 
 ## Development Applications
 
@@ -140,22 +140,6 @@ To build the Android sample application, you need to make a few adjustments:
 * Then clean the project (`Project > Clean`).
 
 Without these steps, you may have issues with the app crashing with a `java.lang.NoClassDefFoundError` exception. If that happens, carry out the above steps and build again.
-
-### JitPack
-
-We support also [JitPack](https://jitpack.io/#mapsforge/mapsforge) for publishing Mapsforge. This can be used for our releases but it's also useful for using SNAPSHOT builds in your application (which are not in Maven central).
-
-For example in order to include the `mapsforge-core` module `master-SNAPSHOT` with Gradle.
-
-Add as repository:
-
-`maven { url "https://jitpack.io" }`
-
-And declare as dependency:
-
-`compile 'com.github.mapsforge.mapsforge:mapsforge-core:master-SNAPSHOT'`
-
-The same syntax applies for all Mapsforge modules. And with similar way you can declare the dependencies in Maven too.
 
 ## How to contribute
 
