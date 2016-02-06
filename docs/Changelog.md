@@ -9,6 +9,7 @@
 - LabelLayer improved implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
 - Color filters in map rendering [#778](https://github.com/mapsforge/mapsforge/issues/778)
 - Night mode example [#777](https://github.com/mapsforge/mapsforge/issues/777)
+- Jar with dependencies building [#767](https://github.com/mapsforge/mapsforge/issues/767)
 - Improve code formatting [#782](https://github.com/mapsforge/mapsforge/issues/782)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.1)
