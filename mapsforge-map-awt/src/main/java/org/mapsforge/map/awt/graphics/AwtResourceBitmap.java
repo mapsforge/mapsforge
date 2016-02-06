@@ -15,20 +15,20 @@
  */
 package org.mapsforge.map.awt.graphics;
 
+import org.mapsforge.core.graphics.ResourceBitmap;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.mapsforge.core.graphics.ResourceBitmap;
-
 public class AwtResourceBitmap extends AwtBitmap implements ResourceBitmap {
 
-	AwtResourceBitmap(InputStream inputStream) throws IOException {
-		super(inputStream);
-	}
+    AwtResourceBitmap(InputStream inputStream) throws IOException {
+        super(inputStream);
+    }
 
-	AwtResourceBitmap(BufferedImage bufferedImage) {
-		super(bufferedImage);
-	}
+    AwtResourceBitmap(BufferedImage bufferedImage) {
+        super(bufferedImage);
+    }
 
 }

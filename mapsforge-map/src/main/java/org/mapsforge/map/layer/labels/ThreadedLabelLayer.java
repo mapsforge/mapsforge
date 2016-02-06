@@ -37,70 +37,70 @@ import java.util.concurrent.Future;
  */
 public class ThreadedLabelLayer extends LabelLayer {
 
-	ExecutorService executorService;
-	Future<?> future;
-	Tile requestedUpperLeft;
-	Tile requestedLowerRight;
+    ExecutorService executorService;
+    Future<?> future;
+    Tile requestedUpperLeft;
+    Tile requestedLowerRight;
 
-	public ThreadedLabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
-		super(graphicFactory, labelStore);
-		this.executorService = Executors.newSingleThreadExecutor();
-	}
+    public ThreadedLabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
+        super(graphicFactory, labelStore);
+        this.executorService = Executors.newSingleThreadExecutor();
+    }
 
-	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, this.displayModel.getTileSize());
-		Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, this.displayModel.getTileSize());
-		if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
-				|| this.lastLabelStoreVersion != this.labelStore.getVersion()) {
-			getData(newUpperLeft, newLowerRight);
-		}
+    @Override
+    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+        Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, this.displayModel.getTileSize());
+        Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, this.displayModel.getTileSize());
+        if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
+                || this.lastLabelStoreVersion != this.labelStore.getVersion()) {
+            getData(newUpperLeft, newLowerRight);
+        }
 
-		if (this.upperLeft != null && Tile.tileAreasOverlap(this.upperLeft, this.lowerRight, newUpperLeft, newLowerRight)) {
-			// draw data if the area of data overlaps, even if the areas are not the same. This
-			// is to make layer more responsive.
-			draw(canvas, topLeftPoint);
-		}
-	}
+        if (this.upperLeft != null && Tile.tileAreasOverlap(this.upperLeft, this.lowerRight, newUpperLeft, newLowerRight)) {
+            // draw data if the area of data overlaps, even if the areas are not the same. This
+            // is to make layer more responsive.
+            draw(canvas, topLeftPoint);
+        }
+    }
 
-	protected void getData(final Tile upperLeft, final Tile lowerRight) {
-		if (upperLeft.equals(this.requestedUpperLeft) && lowerRight.equals(this.requestedLowerRight)) {
-			// same data already requested
-			return;
-		}
+    protected void getData(final Tile upperLeft, final Tile lowerRight) {
+        if (upperLeft.equals(this.requestedUpperLeft) && lowerRight.equals(this.requestedLowerRight)) {
+            // same data already requested
+            return;
+        }
 
-		this.requestedUpperLeft = upperLeft;
-		this.requestedLowerRight = lowerRight;
+        this.requestedUpperLeft = upperLeft;
+        this.requestedLowerRight = lowerRight;
 
-		if (this.future != null) {
-			// we only want a single item in the queue, no point retrieving data that is not required
-			// any more
-			this.future.cancel(false);
-		}
+        if (this.future != null) {
+            // we only want a single item in the queue, no point retrieving data that is not required
+            // any more
+            this.future.cancel(false);
+        }
 
-		this.future = executorService.submit(new Runnable() {
-			public void run() {
-				List<MapElementContainer> visibleItems = ThreadedLabelLayer.this.labelStore.getVisibleItems(upperLeft, lowerRight);
+        this.future = executorService.submit(new Runnable() {
+            public void run() {
+                List<MapElementContainer> visibleItems = ThreadedLabelLayer.this.labelStore.getVisibleItems(upperLeft, lowerRight);
 
-				ThreadedLabelLayer.this.elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
+                ThreadedLabelLayer.this.elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
 
-				// TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out
-				// what LayerUtil.collisionFreeOrdered gave us is a list where highest priority comes first,
-				// so we need to reverse that in order to
-				// draw elements in order of priority: lower priority first, so more important
-				// elements will be drawn on top (in case of display=true) items.
-				Collections.sort(ThreadedLabelLayer.this.elementsToDraw);
-				ThreadedLabelLayer.this.upperLeft = upperLeft;
-				ThreadedLabelLayer.this.lowerRight = lowerRight;
-				ThreadedLabelLayer.this.lastLabelStoreVersion = labelStore.getVersion();
-				ThreadedLabelLayer.this.requestRedraw();
+                // TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out
+                // what LayerUtil.collisionFreeOrdered gave us is a list where highest priority comes first,
+                // so we need to reverse that in order to
+                // draw elements in order of priority: lower priority first, so more important
+                // elements will be drawn on top (in case of display=true) items.
+                Collections.sort(ThreadedLabelLayer.this.elementsToDraw);
+                ThreadedLabelLayer.this.upperLeft = upperLeft;
+                ThreadedLabelLayer.this.lowerRight = lowerRight;
+                ThreadedLabelLayer.this.lastLabelStoreVersion = labelStore.getVersion();
+                ThreadedLabelLayer.this.requestRedraw();
 
-			}
-		});
-	}
+            }
+        });
+    }
 
-	@Override
-	public void onDestroy() {
-		this.executorService.shutdownNow();
-	}
+    @Override
+    public void onDestroy() {
+        this.executorService.shutdownNow();
+    }
 }

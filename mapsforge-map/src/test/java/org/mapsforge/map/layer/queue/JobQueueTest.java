@@ -23,40 +23,40 @@ import org.mapsforge.map.model.MapViewPosition;
 
 public class JobQueueTest {
 
-	private static final int TILE_SIZE = 256;
+    private static final int TILE_SIZE = 256;
 
-	@Test
-	public void jobQueueTest() throws InterruptedException {
-		MapViewPosition mapViewPosition = new MapViewPosition(new FixedTileSizeDisplayModel(256));
-		JobQueue<Job> jobQueue = new JobQueue<Job>(mapViewPosition, new FixedTileSizeDisplayModel(256));
-		Assert.assertEquals(0, jobQueue.size());
+    @Test
+    public void jobQueueTest() throws InterruptedException {
+        MapViewPosition mapViewPosition = new MapViewPosition(new FixedTileSizeDisplayModel(256));
+        JobQueue<Job> jobQueue = new JobQueue<Job>(mapViewPosition, new FixedTileSizeDisplayModel(256));
+        Assert.assertEquals(0, jobQueue.size());
 
-		Tile tile1 = new Tile(0, 0, (byte) 1, TILE_SIZE);
-		Tile tile2 = new Tile(0, 0, (byte) 0, TILE_SIZE);
-		Tile tile3 = new Tile(0, 0, (byte) 2, TILE_SIZE);
+        Tile tile1 = new Tile(0, 0, (byte) 1, TILE_SIZE);
+        Tile tile2 = new Tile(0, 0, (byte) 0, TILE_SIZE);
+        Tile tile3 = new Tile(0, 0, (byte) 2, TILE_SIZE);
 
-		Job job1 = new Job(tile1, false);
-		Job job2 = new Job(tile2, false);
-		Job job3 = new Job(tile3, false);
-		jobQueue.add(job1);
-		jobQueue.add(job2);
-		jobQueue.add(job3);
-		Assert.assertEquals(3, jobQueue.size());
+        Job job1 = new Job(tile1, false);
+        Job job2 = new Job(tile2, false);
+        Job job3 = new Job(tile3, false);
+        jobQueue.add(job1);
+        jobQueue.add(job2);
+        jobQueue.add(job3);
+        Assert.assertEquals(3, jobQueue.size());
 
-		jobQueue.add(job1);
-		Assert.assertEquals(3, jobQueue.size());
+        jobQueue.add(job1);
+        Assert.assertEquals(3, jobQueue.size());
 
-		jobQueue.notifyWorkers();
+        jobQueue.notifyWorkers();
 
-		Assert.assertEquals(job2, jobQueue.get());
-		Assert.assertEquals(job1, jobQueue.get());
-		Assert.assertEquals(job3, jobQueue.get());
+        Assert.assertEquals(job2, jobQueue.get());
+        Assert.assertEquals(job1, jobQueue.get());
+        Assert.assertEquals(job3, jobQueue.get());
 
-		Assert.assertEquals(0, jobQueue.size());
+        Assert.assertEquals(0, jobQueue.size());
 
-		jobQueue.remove(job1);
-		jobQueue.remove(job2);
-		jobQueue.remove(job3);
+        jobQueue.remove(job1);
+        jobQueue.remove(job2);
+        jobQueue.remove(job3);
 
-	}
+    }
 }

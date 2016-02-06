@@ -16,6 +16,8 @@
  */
 package org.mapsforge.map.awt.graphics;
 
+import org.mapsforge.core.graphics.Bitmap;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -27,79 +29,77 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-import org.mapsforge.core.graphics.Bitmap;
-
 public class AwtBitmap implements Bitmap {
-	BufferedImage bufferedImage;
+    BufferedImage bufferedImage;
 
-	public AwtBitmap(InputStream inputStream) throws IOException {
-		this.bufferedImage = ImageIO.read(inputStream);
-		if (this.bufferedImage == null) {
-			throw new IOException("ImageIO filed to read inputStream");
-		}
-	}
+    public AwtBitmap(InputStream inputStream) throws IOException {
+        this.bufferedImage = ImageIO.read(inputStream);
+        if (this.bufferedImage == null) {
+            throw new IOException("ImageIO filed to read inputStream");
+        }
+    }
 
-	public AwtBitmap(int width, int height) {
-		this(width, height, true);
-	}
+    public AwtBitmap(int width, int height) {
+        this(width, height, true);
+    }
 
-	public AwtBitmap(int width, int height, boolean hasAlpha) {
-		this(new BufferedImage(width, height, hasAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB));
-	}
+    public AwtBitmap(int width, int height, boolean hasAlpha) {
+        this(new BufferedImage(width, height, hasAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB));
+    }
 
-	public AwtBitmap(BufferedImage bufferedImage) {
-		this.bufferedImage = bufferedImage;
-	}
+    public AwtBitmap(BufferedImage bufferedImage) {
+        this.bufferedImage = bufferedImage;
+    }
 
-	@Override
-	public void compress(OutputStream outputStream) throws IOException {
-		ImageIO.write(this.bufferedImage, "png", outputStream);
-	}
+    @Override
+    public void compress(OutputStream outputStream) throws IOException {
+        ImageIO.write(this.bufferedImage, "png", outputStream);
+    }
 
-	@Override
-	public void decrementRefCount() {
-		// no-op
-	}
+    @Override
+    public void decrementRefCount() {
+        // no-op
+    }
 
-	@Override
-	public int getHeight() {
-		return this.bufferedImage.getHeight();
-	}
+    @Override
+    public int getHeight() {
+        return this.bufferedImage.getHeight();
+    }
 
-	@Override
-	public int getWidth() {
-		return this.bufferedImage.getWidth();
-	}
+    @Override
+    public int getWidth() {
+        return this.bufferedImage.getWidth();
+    }
 
-	@Override
-	public void incrementRefCount() {
-		// no-op
-	}
+    @Override
+    public void incrementRefCount() {
+        // no-op
+    }
 
-	@Override
-	public boolean isDestroyed() {
-		return this.bufferedImage == null;
-	}
+    @Override
+    public boolean isDestroyed() {
+        return this.bufferedImage == null;
+    }
 
-	@Override
-	public void scaleTo(int width, int height) {
-		BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D graphics = resizedImage.createGraphics();
-		graphics.setComposite(AlphaComposite.Src);
-		graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		graphics.drawImage(bufferedImage, 0, 0, width, height, null);
-		graphics.dispose();
-		this.bufferedImage = resizedImage;
-	}
+    @Override
+    public void scaleTo(int width, int height) {
+        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = resizedImage.createGraphics();
+        graphics.setComposite(AlphaComposite.Src);
+        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.drawImage(bufferedImage, 0, 0, width, height, null);
+        graphics.dispose();
+        this.bufferedImage = resizedImage;
+    }
 
-	@Override
-	public void setBackgroundColor(int color) {
-		Graphics2D graphics = bufferedImage.createGraphics();
-		graphics.setColor(new Color(color, true));
-		graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-		graphics.dispose();
-	}
+    @Override
+    public void setBackgroundColor(int color) {
+        Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setColor(new Color(color, true));
+        graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        graphics.dispose();
+    }
 
 }

@@ -14,61 +14,61 @@
  */
 package org.mapsforge.core.model;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class DimensionTest {
-	private static final String POINT_TO_STRING = "width=1, height=2";
+    private static final String POINT_TO_STRING = "width=1, height=2";
 
-	private static Dimension createDimension(int width, int height) {
-		return new Dimension(width, height);
-	}
+    private static Dimension createDimension(int width, int height) {
+        return new Dimension(width, height);
+    }
 
-	private static void verifyInvalid(int width, int height) {
-		try {
-			createDimension(width, height);
-			Assert.fail("width: " + width + ", height: " + height);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyInvalid(int width, int height) {
+        try {
+            createDimension(width, height);
+            Assert.fail("width: " + width + ", height: " + height);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void constructorTest() {
-		Dimension dimension = new Dimension(0, 0);
-		Assert.assertEquals(0, dimension.width);
-		Assert.assertEquals(0, dimension.height);
+    @Test
+    public void constructorTest() {
+        Dimension dimension = new Dimension(0, 0);
+        Assert.assertEquals(0, dimension.width);
+        Assert.assertEquals(0, dimension.height);
 
-		verifyInvalid(-1, 0);
-		verifyInvalid(0, -1);
-	}
+        verifyInvalid(-1, 0);
+        verifyInvalid(0, -1);
+    }
 
-	@Test
-	public void equalsTest() {
-		Dimension dimension1 = new Dimension(1, 2);
-		Dimension dimension2 = new Dimension(1, 2);
-		Dimension dimension3 = new Dimension(1, 1);
-		Dimension dimension4 = new Dimension(2, 2);
+    @Test
+    public void equalsTest() {
+        Dimension dimension1 = new Dimension(1, 2);
+        Dimension dimension2 = new Dimension(1, 2);
+        Dimension dimension3 = new Dimension(1, 1);
+        Dimension dimension4 = new Dimension(2, 2);
 
-		TestUtils.equalsTest(dimension1, dimension2);
+        TestUtils.equalsTest(dimension1, dimension2);
 
-		TestUtils.notEqualsTest(dimension1, dimension3);
-		TestUtils.notEqualsTest(dimension1, dimension4);
-		TestUtils.notEqualsTest(dimension1, new Object());
-		TestUtils.notEqualsTest(dimension1, null);
-	}
+        TestUtils.notEqualsTest(dimension1, dimension3);
+        TestUtils.notEqualsTest(dimension1, dimension4);
+        TestUtils.notEqualsTest(dimension1, new Object());
+        TestUtils.notEqualsTest(dimension1, null);
+    }
 
-	@Test
-	public void serializeTest() throws IOException, ClassNotFoundException {
-		Dimension dimension = new Dimension(1, 2);
-		TestUtils.serializeTest(dimension);
-	}
+    @Test
+    public void serializeTest() throws IOException, ClassNotFoundException {
+        Dimension dimension = new Dimension(1, 2);
+        TestUtils.serializeTest(dimension);
+    }
 
-	@Test
-	public void toStringTest() {
-		Dimension dimension = new Dimension(1, 2);
-		Assert.assertEquals(POINT_TO_STRING, dimension.toString());
-	}
+    @Test
+    public void toStringTest() {
+        Dimension dimension = new Dimension(1, 2);
+        Assert.assertEquals(POINT_TO_STRING, dimension.toString());
+    }
 }

@@ -24,36 +24,36 @@ import java.io.File;
 /**
  * Demonstration of multilingual maps. Multilingual map must be loaded, the language options do
  * not come from the map file but from the settings menu.
- *
+ * <p/>
  * In the settings it is possible to specify to just return one language or a combination of the
  * default and the user selected language. This is also an example how names can be styled prior to
  * rendering.
  */
 public class MultiLingualMapViewer extends RenderTheme4 {
 
-	@Override
-	protected MapDataStore getMapFile() {
-		String language = sharedPreferences.getString(SamplesApplication.SETTING_PREFERRED_LANGUAGE, null);
-		if (language.isEmpty()) {
-			language = null;
-		}
-		final String userLanguage = language;
-		if (userLanguage == null || !sharedPreferences.getBoolean(SamplesApplication.SETTING_LANGUAGE_SHOWLOCAL, false)) {
-			Log.i(SamplesApplication.TAG, "Preferred language " + userLanguage);
-			return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), language);
-		} else {
-			Log.i(SamplesApplication.TAG, "Default + preferred language " + userLanguage );
-			return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), userLanguage) {
-				@Override
-				protected String extractLocalized(String s) {
-					String local = MapDataStore.extract(s, null);
-					String user = MapDataStore.extract(s, userLanguage);
-					if (local.equals(user)) {
-						return local;
-					}
-					return new StringBuilder(local).append( " (").append(user).append(")").toString();
-				}
-			};
-		}
-	}
+    @Override
+    protected MapDataStore getMapFile() {
+        String language = sharedPreferences.getString(SamplesApplication.SETTING_PREFERRED_LANGUAGE, null);
+        if (language.isEmpty()) {
+            language = null;
+        }
+        final String userLanguage = language;
+        if (userLanguage == null || !sharedPreferences.getBoolean(SamplesApplication.SETTING_LANGUAGE_SHOWLOCAL, false)) {
+            Log.i(SamplesApplication.TAG, "Preferred language " + userLanguage);
+            return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), language);
+        } else {
+            Log.i(SamplesApplication.TAG, "Default + preferred language " + userLanguage);
+            return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), userLanguage) {
+                @Override
+                protected String extractLocalized(String s) {
+                    String local = MapDataStore.extract(s, null);
+                    String user = MapDataStore.extract(s, userLanguage);
+                    if (local.equals(user)) {
+                        return local;
+                    }
+                    return new StringBuilder(local).append(" (").append(user).append(")").toString();
+                }
+            };
+        }
+    }
 }

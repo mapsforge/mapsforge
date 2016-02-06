@@ -15,9 +15,9 @@
 package org.mapsforge.map.scalebar;
 
 public interface DistanceUnitAdapter {
-	double getMeterRatio();
+    double getMeterRatio();
 
-	int[] getScaleBarValues();
+    int[] getScaleBarValues();
 
-	String getScaleText(int mapScaleValue);
+    String getScaleText(int mapScaleValue);
 }

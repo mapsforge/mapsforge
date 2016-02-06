@@ -18,14 +18,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class IOUtilsTest {
-	@Test
-	public void closeQuietlyTest() {
-		IOUtils.closeQuietly(null);
+    @Test
+    public void closeQuietlyTest() {
+        IOUtils.closeQuietly(null);
 
-		DummyCloseable dummyCloseable = new DummyCloseable();
-		IOUtils.closeQuietly(dummyCloseable);
-		Assert.assertTrue(dummyCloseable.closed);
+        DummyCloseable dummyCloseable = new DummyCloseable();
+        IOUtils.closeQuietly(dummyCloseable);
+        Assert.assertTrue(dummyCloseable.closed);
 
-		IOUtils.closeQuietly(dummyCloseable);
-	}
+        IOUtils.closeQuietly(dummyCloseable);
+    }
 }

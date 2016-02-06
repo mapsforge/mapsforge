@@ -15,62 +15,62 @@
  */
 package org.mapsforge.map.datastore;
 
-import java.util.List;
-
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
+
+import java.util.List;
 
 /**
  * An immutable container for all data associated with a single point of interest node (POI).
  */
 public class PointOfInterest {
-	/**
-	 * The layer of this POI + 5 (to avoid negative values).
-	 */
-	public final byte layer;
+    /**
+     * The layer of this POI + 5 (to avoid negative values).
+     */
+    public final byte layer;
 
-	/**
-	 * The position of this POI.
-	 */
-	public final LatLong position;
+    /**
+     * The position of this POI.
+     */
+    public final LatLong position;
 
-	/**
-	 * The tags of this POI.
-	 */
-	public final List<Tag> tags;
+    /**
+     * The tags of this POI.
+     */
+    public final List<Tag> tags;
 
-	public PointOfInterest(byte layer, List<Tag> tags, LatLong position) {
-		this.layer = layer;
-		this.tags = tags;
-		this.position = position;
-	}
+    public PointOfInterest(byte layer, List<Tag> tags, LatLong position) {
+        this.layer = layer;
+        this.tags = tags;
+        this.position = position;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!(obj instanceof PointOfInterest)) {
-			return false;
-		}
-		PointOfInterest other = (PointOfInterest) obj;
-		if (this.layer != other.layer) {
-			return false;
-		} else if (!this.tags.equals(other.tags)) {
-			return false;
-		} else if (!this.position.equals(other.position)) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof PointOfInterest)) {
+            return false;
+        }
+        PointOfInterest other = (PointOfInterest) obj;
+        if (this.layer != other.layer) {
+            return false;
+        } else if (!this.tags.equals(other.tags)) {
+            return false;
+        } else if (!this.position.equals(other.position)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + layer;
-		result = prime * result + tags.hashCode();
-		result = prime * result + position.hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + layer;
+        result = prime * result + tags.hashCode();
+        result = prime * result + position.hashCode();
+        return result;
+    }
 
 }

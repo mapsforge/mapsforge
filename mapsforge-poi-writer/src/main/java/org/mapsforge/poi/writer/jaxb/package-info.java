@@ -18,6 +18,4 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2011.10.14 at 05:47:04 PM MESZ 
 //
-
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://mapsforge.org/poi-mapping", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
-package org.mapsforge.poi.writer.jaxb;
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://mapsforge.org/poi-mapping", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED) package org.mapsforge.poi.writer.jaxb;

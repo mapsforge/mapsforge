@@ -26,124 +26,126 @@ import org.mapsforge.core.model.Rectangle;
 /**
  * The MapElementContainer is the abstract base class for annotations that can be placed on the
  * map, e.g. labels and icons.
- *
+ * <p/>
  * A MapElementContainer has a central pivot point, which denotes the geographic point for the entity
  * translated into absolute map pixels. The boundary denotes the space that the item requires
  * around this central point.
- *
+ * <p/>
  * A MapElementContainer has a priority (higher value means higher priority) that should be used to determine
  * the drawing order, i.e. elements with higher priority should be drawn before elements with lower
  * priority. If there is not enough space on the map, elements with lower priority should then not be
  * drawn.
  */
 public abstract class MapElementContainer implements Comparable<MapElementContainer> {
-	protected Rectangle boundary;
-	protected Rectangle boundaryAbsolute;
-	protected Display display;
-	protected final int priority;
-	protected final Point xy;
+    protected Rectangle boundary;
+    protected Rectangle boundaryAbsolute;
+    protected Display display;
+    protected final int priority;
+    protected final Point xy;
 
-	protected MapElementContainer(Point xy, Display display, int priority) {
-		this.xy = xy;
-		this.display = display;
-		this.priority = priority;
-	}
+    protected MapElementContainer(Point xy, Display display, int priority) {
+        this.xy = xy;
+        this.display = display;
+        this.priority = priority;
+    }
 
-	/**
-	 * Compares elements according to their priority.
-	 *
-	 * @param other
-	 * @return priority order
-	 */
-	@Override
-	public int compareTo(MapElementContainer other) {
-		if (this.priority < other.priority) {
-			return -1;
-		}
-		if (this.priority > other.priority) {
-			return 1;
-		}
-		return 0;
-	}
+    /**
+     * Compares elements according to their priority.
+     *
+     * @param other
+     * @return priority order
+     */
+    @Override
+    public int compareTo(MapElementContainer other) {
+        if (this.priority < other.priority) {
+            return -1;
+        }
+        if (this.priority > other.priority) {
+            return 1;
+        }
+        return 0;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!(obj instanceof MapElementContainer)) {
-			return false;
-		}
-		MapElementContainer other = (MapElementContainer) obj;
-		if (this.priority != other.priority) {
-			return false;
-		} else if (!this.xy.equals(other.xy)) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof MapElementContainer)) {
+            return false;
+        }
+        MapElementContainer other = (MapElementContainer) obj;
+        if (this.priority != other.priority) {
+            return false;
+        } else if (!this.xy.equals(other.xy)) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
-	 * using the matrix if rotation is required. Additionally a color filter can be applied.
-	 */
-	public abstract void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter);
+    /**
+     * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
+     * using the matrix if rotation is required. Additionally a color filter can be applied.
+     */
+    public abstract void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter);
 
-	/**
-	 * Gets the pixel absolute boundary for this element.
-	 *
-	 * @return Rectangle with absolute pixel coordinates.
-	 */
-	protected Rectangle getBoundaryAbsolute() {
-		if (boundaryAbsolute == null) {
-			boundaryAbsolute = this.boundary.shift(xy);
-		}
-		return boundaryAbsolute;
-	}
+    /**
+     * Gets the pixel absolute boundary for this element.
+     *
+     * @return Rectangle with absolute pixel coordinates.
+     */
+    protected Rectangle getBoundaryAbsolute() {
+        if (boundaryAbsolute == null) {
+            boundaryAbsolute = this.boundary.shift(xy);
+        }
+        return boundaryAbsolute;
+    }
 
-	public boolean intersects(Rectangle rectangle) {
-		return this.getBoundaryAbsolute().intersects(rectangle);
-	}
+    public boolean intersects(Rectangle rectangle) {
+        return this.getBoundaryAbsolute().intersects(rectangle);
+    }
 
-	/**
-	 * Returns if MapElementContainers clash with each other
-	 * @param other element to test against
-	 * @return true if they overlap
-	 */
-	public boolean clashesWith(MapElementContainer other) {
-		// if either of the elements is always drawn, the elements do not clash
-		if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
-			return false;
-		}
- 		return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
-	}
+    /**
+     * Returns if MapElementContainers clash with each other
+     *
+     * @param other element to test against
+     * @return true if they overlap
+     */
+    public boolean clashesWith(MapElementContainer other) {
+        // if either of the elements is always drawn, the elements do not clash
+        if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
+            return false;
+        }
+        return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
+    }
 
-	@Override
-	public int hashCode() {
-		int result = 7;
-		result = 31 * result + xy.hashCode();
-		result = 31 * result + priority;
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = 7;
+        result = 31 * result + xy.hashCode();
+        result = 31 * result + priority;
+        return result;
+    }
 
-	/**
-	 * Gets the center point of this element.
-	 * @return Point with absolute center pixel coordinates.
-	 */
-	public Point getPoint() {
-		return this.xy;
-	}
+    /**
+     * Gets the center point of this element.
+     *
+     * @return Point with absolute center pixel coordinates.
+     */
+    public Point getPoint() {
+        return this.xy;
+    }
 
-	public int getPriority() {
-		return priority;
-	}
+    public int getPriority() {
+        return priority;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("xy=");
-		stringBuilder.append(this.xy);
-		stringBuilder.append(", priority=");
-		stringBuilder.append(this.priority);
-		return stringBuilder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("xy=");
+        stringBuilder.append(this.xy);
+        stringBuilder.append(", priority=");
+        stringBuilder.append(this.priority);
+        return stringBuilder.toString();
+    }
 }

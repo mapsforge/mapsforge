@@ -20,9 +20,9 @@ import org.mapsforge.core.graphics.Filter;
  * Night mode map rendering via color filtering.
  */
 public class NightModeViewer extends RenderTheme4 {
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		this.mapView.getModel().displayModel.setFilter(Filter.INVERT);
-	}
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+        this.mapView.getModel().displayModel.setFilter(Filter.INVERT);
+    }
 }

@@ -15,52 +15,52 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import java.awt.geom.Path2D;
-
 import org.mapsforge.core.graphics.FillRule;
 import org.mapsforge.core.graphics.Path;
 
+import java.awt.geom.Path2D;
+
 class AwtPath implements Path {
-	private static int getWindingRule(FillRule fillRule) {
-		switch (fillRule) {
-			case EVEN_ODD:
-				return Path2D.WIND_EVEN_ODD;
-			case NON_ZERO:
-				return Path2D.WIND_NON_ZERO;
-		}
+    private static int getWindingRule(FillRule fillRule) {
+        switch (fillRule) {
+            case EVEN_ODD:
+                return Path2D.WIND_EVEN_ODD;
+            case NON_ZERO:
+                return Path2D.WIND_NON_ZERO;
+        }
 
-		throw new IllegalArgumentException("unknown fill rule:" + fillRule);
-	}
+        throw new IllegalArgumentException("unknown fill rule:" + fillRule);
+    }
 
-	final Path2D path2D = new Path2D.Float();
+    final Path2D path2D = new Path2D.Float();
 
-	@Override
-	public void clear() {
-		this.path2D.reset();
-	}
+    @Override
+    public void clear() {
+        this.path2D.reset();
+    }
 
-	@Override
-	public void close() {
-		this.path2D.closePath();
-	}
+    @Override
+    public void close() {
+        this.path2D.closePath();
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return this.path2D.getCurrentPoint() == null;
-	}
+    @Override
+    public boolean isEmpty() {
+        return this.path2D.getCurrentPoint() == null;
+    }
 
-	@Override
-	public void lineTo(float x, float y) {
-		this.path2D.lineTo(x, y);
-	}
+    @Override
+    public void lineTo(float x, float y) {
+        this.path2D.lineTo(x, y);
+    }
 
-	@Override
-	public void moveTo(float x, float y) {
-		this.path2D.moveTo(x, y);
-	}
+    @Override
+    public void moveTo(float x, float y) {
+        this.path2D.moveTo(x, y);
+    }
 
-	@Override
-	public void setFillRule(FillRule fillRule) {
-		this.path2D.setWindingRule(getWindingRule(fillRule));
-	}
+    @Override
+    public void setFillRule(FillRule fillRule) {
+        this.path2D.setWindingRule(getWindingRule(fillRule));
+    }
 }

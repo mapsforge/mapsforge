@@ -15,39 +15,39 @@
  */
 package org.mapsforge.map.layer.download;
 
-import java.net.URL;
-
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 
+import java.net.URL;
+
 class InvalidTileSource implements TileSource {
-	@Override
-	public long getDefaultTimeToLive() {
-		throw new AssertionError();
-	}
+    @Override
+    public long getDefaultTimeToLive() {
+        throw new AssertionError();
+    }
 
-	@Override
-	public int getParallelRequestsLimit() {
-		throw new AssertionError();
-	}
+    @Override
+    public int getParallelRequestsLimit() {
+        throw new AssertionError();
+    }
 
-	@Override
-	public URL getTileUrl(Tile tile) {
-		throw new AssertionError();
-	}
+    @Override
+    public URL getTileUrl(Tile tile) {
+        throw new AssertionError();
+    }
 
-	@Override
-	public byte getZoomLevelMax() {
-		throw new AssertionError();
-	}
+    @Override
+    public byte getZoomLevelMax() {
+        throw new AssertionError();
+    }
 
-	@Override
-	public byte getZoomLevelMin() {
-		throw new AssertionError();
-	}
+    @Override
+    public byte getZoomLevelMin() {
+        throw new AssertionError();
+    }
 
-	@Override
-	public boolean hasAlpha() {
-		return false;
-	}
+    @Override
+    public boolean hasAlpha() {
+        return false;
+    }
 }

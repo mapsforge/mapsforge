@@ -21,33 +21,31 @@ import java.util.Collection;
  * Interface for filtering accepted POIs based on their tag.
  */
 public interface PoiCategoryFilter {
-	/**
-	 * Adds a category to the whitelist.
-	 *
-	 * @param category
-	 *            The category to be added.
-	 */
-	void addCategory(PoiCategory category);
+    /**
+     * Adds a category to the whitelist.
+     *
+     * @param category The category to be added.
+     */
+    void addCategory(PoiCategory category);
 
-	/**
-	 * @return Set of all categories that are accepted by this filter.
-	 */
-	Collection<PoiCategory> getAcceptedCategories();
+    /**
+     * @return Set of all categories that are accepted by this filter.
+     */
+    Collection<PoiCategory> getAcceptedCategories();
 
-	/**
-	 * Returns a set of top-level categories for all accepted categories. These are all accepted
-	 * categories whose parent category is null or not an accepted category.
-	 *
-	 * @return Set of top-level categories for all accepted categories.
-	 */
-	Collection<PoiCategory> getAcceptedSuperCategories();
+    /**
+     * Returns a set of top-level categories for all accepted categories. These are all accepted
+     * categories whose parent category is null or not an accepted category.
+     *
+     * @return Set of top-level categories for all accepted categories.
+     */
+    Collection<PoiCategory> getAcceptedSuperCategories();
 
-	/**
-	 * Returns true if a POI's category is accepted and therefore shall be added to the poi file.
-	 *
-	 * @param category
-	 *            The POI's category.
-	 * @return true if a POI's category is accepted and therefore shall be added to the poi file.
-	 */
-	boolean isAcceptedCategory(PoiCategory category);
+    /**
+     * Returns true if a POI's category is accepted and therefore shall be added to the poi file.
+     *
+     * @param category The POI's category.
+     * @return true if a POI's category is accepted and therefore shall be added to the poi file.
+     */
+    boolean isAcceptedCategory(PoiCategory category);
 }

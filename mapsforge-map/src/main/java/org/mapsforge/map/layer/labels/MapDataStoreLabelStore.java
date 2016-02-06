@@ -38,63 +38,63 @@ import java.util.List;
 
 public class MapDataStoreLabelStore implements LabelStore {
 
-	final float textScale;
-	final RenderThemeFuture renderThemeFuture;
-	final StandardRenderer standardRenderer;
-	final DisplayModel displayModel;
+    final float textScale;
+    final RenderThemeFuture renderThemeFuture;
+    final StandardRenderer standardRenderer;
+    final DisplayModel displayModel;
 
-	public MapDataStoreLabelStore(MapDataStore mapDataStore, RenderThemeFuture renderThemeFuture, float textScale, DisplayModel displayModel, GraphicFactory graphicFactory) {
+    public MapDataStoreLabelStore(MapDataStore mapDataStore, RenderThemeFuture renderThemeFuture, float textScale, DisplayModel displayModel, GraphicFactory graphicFactory) {
 
-		this.textScale = textScale;
-		this.renderThemeFuture = renderThemeFuture;
-		// TODO what about way symbols, we have the problem that ways without names but symbols will not be included.
-		this.standardRenderer = new StandardRenderer(mapDataStore, graphicFactory, true);
-		this.displayModel = displayModel;
-	}
+        this.textScale = textScale;
+        this.renderThemeFuture = renderThemeFuture;
+        // TODO what about way symbols, we have the problem that ways without names but symbols will not be included.
+        this.standardRenderer = new StandardRenderer(mapDataStore, graphicFactory, true);
+        this.displayModel = displayModel;
+    }
 
-	@Override
-	public void clear() {
-	}
+    @Override
+    public void clear() {
+    }
 
-	@Override
-	public int getVersion() {
-		// the mapDataStore cannot change, so version will always be the same.
-		return 0;
-	}
+    @Override
+    public int getVersion() {
+        // the mapDataStore cannot change, so version will always be the same.
+        return 0;
+    }
 
-	@Override
-	public synchronized List<MapElementContainer> getVisibleItems(Tile upperLeft, Tile lowerRight) {
+    @Override
+    public synchronized List<MapElementContainer> getVisibleItems(Tile upperLeft, Tile lowerRight) {
 
-		try {
-			RendererJob rendererJob = new RendererJob(upperLeft, this.standardRenderer.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, true, true);
-			RenderContext renderContext = new RenderContext(rendererJob, new CanvasRasterer(standardRenderer.graphicFactory));
+        try {
+            RendererJob rendererJob = new RendererJob(upperLeft, this.standardRenderer.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, true, true);
+            RenderContext renderContext = new RenderContext(rendererJob, new CanvasRasterer(standardRenderer.graphicFactory));
 
-			MapReadResult mapReadResult = standardRenderer.mapDataStore.readLabels(upperLeft, lowerRight);
+            MapReadResult mapReadResult = standardRenderer.mapDataStore.readLabels(upperLeft, lowerRight);
 
-			if (mapReadResult == null) {
-				return new ArrayList<>();
-			}
+            if (mapReadResult == null) {
+                return new ArrayList<>();
+            }
 
-			for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-				renderContext.setDrawingLayers(pointOfInterest.layer);
-				renderContext.rendererJob.renderThemeFuture.get().matchNode(standardRenderer, renderContext, pointOfInterest);
-			}
-			for (Way way : mapReadResult.ways) {
-				PolylineContainer polylineContainer = new PolylineContainer(way, upperLeft, lowerRight);
-				renderContext.setDrawingLayers(polylineContainer.getLayer());
+            for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
+                renderContext.setDrawingLayers(pointOfInterest.layer);
+                renderContext.rendererJob.renderThemeFuture.get().matchNode(standardRenderer, renderContext, pointOfInterest);
+            }
+            for (Way way : mapReadResult.ways) {
+                PolylineContainer polylineContainer = new PolylineContainer(way, upperLeft, lowerRight);
+                renderContext.setDrawingLayers(polylineContainer.getLayer());
 
-				if (polylineContainer.isClosedWay()) {
-					renderContext.renderTheme.matchClosedWay(standardRenderer, renderContext, polylineContainer);
-				} else {
-					renderContext.renderTheme.matchLinearWay(standardRenderer, renderContext, polylineContainer);
-				}
-			}
+                if (polylineContainer.isClosedWay()) {
+                    renderContext.renderTheme.matchClosedWay(standardRenderer, renderContext, polylineContainer);
+                } else {
+                    renderContext.renderTheme.matchLinearWay(standardRenderer, renderContext, polylineContainer);
+                }
+            }
 
-			return renderContext.labels;
-		} catch (Exception e) {
-			return new ArrayList<>();
-		}
+            return renderContext.labels;
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
 
-	}
+    }
 
 }

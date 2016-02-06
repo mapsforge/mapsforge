@@ -23,9 +23,9 @@ import org.mapsforge.core.model.LatLong;
 
 public class MoveAnimation extends LongPressAction {
 
-	@Override
-	protected void onLongPress(LatLong position) {
-		this.mapView.getModel().mapViewPosition.animateTo(position);
-	}
+    @Override
+    protected void onLongPress(LatLong position) {
+        this.mapView.getModel().mapViewPosition.animateTo(position);
+    }
 
 }

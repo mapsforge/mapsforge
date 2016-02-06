@@ -31,33 +31,33 @@ import org.openstreetmap.osmosis.core.task.v0_6.Sink;
  * Factory for the POI writer osmosis plugin.
  */
 public class PoiWriterFactory extends TaskManagerFactory {
-	private static final String PARAM_ALL_TAGS = "all-tags";
-	private static final String PARAM_BBOX = "bbox";
-	private static final String PARAM_COMMENT = "comment";
-	private static final String PARAM_OUTFILE = "file";
-	private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
-	private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
-	private static final String PARAM_WAYS = "ways";
+    private static final String PARAM_ALL_TAGS = "all-tags";
+    private static final String PARAM_BBOX = "bbox";
+    private static final String PARAM_COMMENT = "comment";
+    private static final String PARAM_OUTFILE = "file";
+    private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
+    private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
+    private static final String PARAM_WAYS = "ways";
 
-	@Override
-	protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {
-		PoiWriterConfiguration configuration = new PoiWriterConfiguration();
-		configuration.setAllTags(getBooleanArgument(taskConfig, PARAM_ALL_TAGS, false));
-		configuration.addBboxConfiguration(getStringArgument(taskConfig, PARAM_BBOX, null));
-		configuration.setComment(getStringArgument(taskConfig, PARAM_COMMENT, null));
-		configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
-		configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
-		configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
-		configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, false));
+    @Override
+    protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {
+        PoiWriterConfiguration configuration = new PoiWriterConfiguration();
+        configuration.setAllTags(getBooleanArgument(taskConfig, PARAM_ALL_TAGS, false));
+        configuration.addBboxConfiguration(getStringArgument(taskConfig, PARAM_BBOX, null));
+        configuration.setComment(getStringArgument(taskConfig, PARAM_COMMENT, null));
+        configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
+        configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
+        configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
+        configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, false));
 
-		// If set to true, progress messages will be forwarded to a GUI message handler
-		// boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);
+        // If set to true, progress messages will be forwarded to a GUI message handler
+        // boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);
 
-		ProgressManager progressManager = new DummyProgressManager();
+        ProgressManager progressManager = new DummyProgressManager();
 
-		// Use graphical progress manager if plugin is called from map maker GUI
-		/*if (guiMode) {
-			try {
+        // Use graphical progress manager if plugin is called from map maker GUI
+        /*if (guiMode) {
+            try {
 				Class<?> clazz = Class.forName(GUI_PROGRESS_MANAGER_CLASS_NAME);
 				Method method = clazz.getMethod("getInstance");
 				Object o = method.invoke(clazz);
@@ -69,10 +69,10 @@ public class PoiWriterFactory extends TaskManagerFactory {
 			}
 		}*/
 
-		// Tell the logger which progress manager to use
-		LoggerWrapper.setDefaultProgressManager(progressManager);
+        // Tell the logger which progress manager to use
+        LoggerWrapper.setDefaultProgressManager(progressManager);
 
-		Sink task = new PoiWriterTask(configuration, progressManager);
-		return new SinkManager(taskConfig.getId(), task, taskConfig.getPipeArgs());
-	}
+        Sink task = new PoiWriterTask(configuration, progressManager);
+        return new SinkManager(taskConfig.getId(), task, taskConfig.getPipeArgs());
+    }
 }

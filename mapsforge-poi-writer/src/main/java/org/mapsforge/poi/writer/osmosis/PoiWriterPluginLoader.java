@@ -25,12 +25,12 @@ import java.util.Map;
  * The Osmosis PluginLoader for the poi-writer osmosis plugin.
  */
 public class PoiWriterPluginLoader implements PluginLoader {
-	@Override
-	public Map<String, TaskManagerFactory> loadTaskFactories() {
-		PoiWriterFactory poiWriterFactory = new PoiWriterFactory();
-		Map<String, TaskManagerFactory> map = new HashMap<>();
-		map.put("poi-writer", poiWriterFactory);
-		map.put("pw", poiWriterFactory);
-		return map;
-	}
+    @Override
+    public Map<String, TaskManagerFactory> loadTaskFactories() {
+        PoiWriterFactory poiWriterFactory = new PoiWriterFactory();
+        Map<String, TaskManagerFactory> map = new HashMap<>();
+        map.put("poi-writer", poiWriterFactory);
+        map.put("pw", poiWriterFactory);
+        return map;
+    }
 }

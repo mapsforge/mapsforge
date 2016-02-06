@@ -24,9 +24,9 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
  */
 public class BasicMapViewerV3 extends SamplesBaseActivity {
 
-	@Override
-	protected XmlRenderTheme getRenderTheme() {
-		return InternalRenderTheme.OSMARENDER;
-	}
+    @Override
+    protected XmlRenderTheme getRenderTheme() {
+        return InternalRenderTheme.OSMARENDER;
+    }
 
 }

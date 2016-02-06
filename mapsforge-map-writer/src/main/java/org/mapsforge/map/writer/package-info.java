@@ -16,11 +16,10 @@
  * The mapsforge-map-writer tool comes as a plugin for <a href="http://wiki.openstreetmap.org/wiki/Osmosis">osmosis</a>.
  * A detailed documentation of the installation procedure and its use is provided
  * on the mapsforge project <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Getting-Started-Map-Writer.md">website</a>.
- * <p>
+ * <p/>
  * This software is a part of the <a href="http://mapsforge.org/" target="_top">mapsforge</a> project and
  * distributed under the <a href="http://www.gnu.org/licenses/lgpl.html" target="_top">LGPL3 license</a>. All
  * map data (c) <a href="http://www.openstreetmap.org/" target="_top">OpenStreetMap</a> contributors, <a
  * href="http://creativecommons.org/licenses/by-sa/2.0/" target="_top">CC-BY-SA license</a>.
  */
 package org.mapsforge.map.writer;
-

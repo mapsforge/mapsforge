@@ -15,45 +15,42 @@
 package org.mapsforge.map.writer.model;
 
 public class TileGridLayout {
-	private final int amountTilesHorizontal;
-	private final int amountTilesVertical;
-	private final TileCoordinate upperLeft;
+    private final int amountTilesHorizontal;
+    private final int amountTilesVertical;
+    private final TileCoordinate upperLeft;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param upperLeft
-	 *            the upper left tile coordinate
-	 * @param amountTilesHorizontal
-	 *            the amount of columns
-	 * @param amountTilesVertical
-	 *            the amount of rows
-	 */
-	public TileGridLayout(TileCoordinate upperLeft, int amountTilesHorizontal, int amountTilesVertical) {
-		super();
-		this.upperLeft = upperLeft;
-		this.amountTilesHorizontal = amountTilesHorizontal;
-		this.amountTilesVertical = amountTilesVertical;
-	}
+    /**
+     * Constructor.
+     *
+     * @param upperLeft             the upper left tile coordinate
+     * @param amountTilesHorizontal the amount of columns
+     * @param amountTilesVertical   the amount of rows
+     */
+    public TileGridLayout(TileCoordinate upperLeft, int amountTilesHorizontal, int amountTilesVertical) {
+        super();
+        this.upperLeft = upperLeft;
+        this.amountTilesHorizontal = amountTilesHorizontal;
+        this.amountTilesVertical = amountTilesVertical;
+    }
 
-	/**
-	 * @return the amountTilesHorizontal
-	 */
-	public int getAmountTilesHorizontal() {
-		return this.amountTilesHorizontal;
-	}
+    /**
+     * @return the amountTilesHorizontal
+     */
+    public int getAmountTilesHorizontal() {
+        return this.amountTilesHorizontal;
+    }
 
-	/**
-	 * @return the amountTilesVertical
-	 */
-	public int getAmountTilesVertical() {
-		return this.amountTilesVertical;
-	}
+    /**
+     * @return the amountTilesVertical
+     */
+    public int getAmountTilesVertical() {
+        return this.amountTilesVertical;
+    }
 
-	/**
-	 * @return the upperLeft
-	 */
-	public TileCoordinate getUpperLeft() {
-		return this.upperLeft;
-	}
+    /**
+     * @return the upperLeft
+     */
+    public TileCoordinate getUpperLeft() {
+        return this.upperLeft;
+    }
 }

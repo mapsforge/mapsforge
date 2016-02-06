@@ -25,32 +25,32 @@ import java.util.Set;
  * {@link WhitelistPoiCategoryFilter} no child categories of an added category are accepted.
  */
 public class ExactMatchPoiCategoryFilter implements PoiCategoryFilter {
-	private final Set<PoiCategory> whiteList;
+    private final Set<PoiCategory> whiteList;
 
-	/**
-	 * Default constructor.
-	 */
-	public ExactMatchPoiCategoryFilter() {
-		this.whiteList = new HashSet<>();
-	}
+    /**
+     * Default constructor.
+     */
+    public ExactMatchPoiCategoryFilter() {
+        this.whiteList = new HashSet<>();
+    }
 
-	@Override
-	public void addCategory(PoiCategory category) {
-		this.whiteList.add(category);
-	}
+    @Override
+    public void addCategory(PoiCategory category) {
+        this.whiteList.add(category);
+    }
 
-	@Override
-	public Collection<PoiCategory> getAcceptedCategories() {
-		return this.whiteList;
-	}
+    @Override
+    public Collection<PoiCategory> getAcceptedCategories() {
+        return this.whiteList;
+    }
 
-	@Override
-	public Collection<PoiCategory> getAcceptedSuperCategories() {
-		return this.whiteList;
-	}
+    @Override
+    public Collection<PoiCategory> getAcceptedSuperCategories() {
+        return this.whiteList;
+    }
 
-	@Override
-	public boolean isAcceptedCategory(PoiCategory category) {
-		return this.whiteList.contains(category);
-	}
+    @Override
+    public boolean isAcceptedCategory(PoiCategory category) {
+        return this.whiteList.contains(category);
+    }
 }

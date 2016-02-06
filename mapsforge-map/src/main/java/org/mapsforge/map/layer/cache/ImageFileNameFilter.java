@@ -18,14 +18,14 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 final class ImageFileNameFilter implements FilenameFilter {
-	static final FilenameFilter INSTANCE = new ImageFileNameFilter();
+    static final FilenameFilter INSTANCE = new ImageFileNameFilter();
 
-	private ImageFileNameFilter() {
-		// do nothing
-	}
+    private ImageFileNameFilter() {
+        // do nothing
+    }
 
-	@Override
-	public boolean accept(File directory, String fileName) {
-		return fileName.endsWith(FileSystemTileCache.FILE_EXTENSION);
-	}
+    @Override
+    public boolean accept(File directory, String fileName) {
+        return fileName.endsWith(FileSystemTileCache.FILE_EXTENSION);
+    }
 }

@@ -26,86 +26,85 @@ import java.util.Stack;
  * Whitelist category filter that accepts all categories and their sub-categories in the whitelist.
  */
 public class WhitelistPoiCategoryFilter implements PoiCategoryFilter {
-	/**
-	 * Whitelist containing all elements (and implicitly their child elements) that will be accepted
-	 * by this filter.
-	 */
-	private final List<PoiCategory> whiteList;
+    /**
+     * Whitelist containing all elements (and implicitly their child elements) that will be accepted
+     * by this filter.
+     */
+    private final List<PoiCategory> whiteList;
 
-	/**
-	 * Default constructor.
-	 */
-	public WhitelistPoiCategoryFilter() {
-		this.whiteList = new ArrayList<>();
-	}
+    /**
+     * Default constructor.
+     */
+    public WhitelistPoiCategoryFilter() {
+        this.whiteList = new ArrayList<>();
+    }
 
-	/**
-	 * Adds a POI category to the whitelist. A parent category (e.g. amenity_food) automatically white
-	 * lists its sub-categories. (Example: If amenity_food is in the whitelist and fast_food is a child
-	 * category of amenity_food, then the filter will also accept POIs of category fast_food).
-	 *
-	 * @param category
-	 *            The category to be added to the whitelist.
-	 */
-	@Override
-	public void addCategory(PoiCategory category) {
-		this.whiteList.add(category);
-	}
+    /**
+     * Adds a POI category to the whitelist. A parent category (e.g. amenity_food) automatically white
+     * lists its sub-categories. (Example: If amenity_food is in the whitelist and fast_food is a child
+     * category of amenity_food, then the filter will also accept POIs of category fast_food).
+     *
+     * @param category The category to be added to the whitelist.
+     */
+    @Override
+    public void addCategory(PoiCategory category) {
+        this.whiteList.add(category);
+    }
 
-	/**
-	 * @return All elements in the whitelist, including their children.
-	 */
-	@Override
-	public Collection<PoiCategory> getAcceptedCategories() {
-		// Use a Set in case of joint sub-trees
-		Collection<PoiCategory> ret = new HashSet<>();
-		Stack<PoiCategory> stack = new Stack<>();
+    /**
+     * @return All elements in the whitelist, including their children.
+     */
+    @Override
+    public Collection<PoiCategory> getAcceptedCategories() {
+        // Use a Set in case of joint sub-trees
+        Collection<PoiCategory> ret = new HashSet<>();
+        Stack<PoiCategory> stack = new Stack<>();
 
-		// Assumption: whiteList sub-trees are disjoint; otherwise this algorithm is not optimal.
-		for (PoiCategory wlCategory : this.whiteList) {
-			stack.push(wlCategory);
-		}
+        // Assumption: whiteList sub-trees are disjoint; otherwise this algorithm is not optimal.
+        for (PoiCategory wlCategory : this.whiteList) {
+            stack.push(wlCategory);
+        }
 
-		while (!stack.isEmpty()) {
-			PoiCategory c = stack.pop();
-			ret.add(c);
+        while (!stack.isEmpty()) {
+            PoiCategory c = stack.pop();
+            ret.add(c);
 
-			for (PoiCategory child : c.getChildren()) {
-				stack.push(child);
-			}
-		}
+            for (PoiCategory child : c.getChildren()) {
+                stack.push(child);
+            }
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
-	@Override
-	public Collection<PoiCategory> getAcceptedSuperCategories() {
-		Collection<PoiCategory> ret = new HashSet<>();
-		Collection<PoiCategory> acceptedCategories = this.getAcceptedCategories();
+    @Override
+    public Collection<PoiCategory> getAcceptedSuperCategories() {
+        Collection<PoiCategory> ret = new HashSet<>();
+        Collection<PoiCategory> acceptedCategories = this.getAcceptedCategories();
 
-		for (PoiCategory c : this.whiteList) {
-			// Check if category is a super category (= root of an accepted category's sub-tree)
-			if (c.getParent() == null || !acceptedCategories.contains(c.getParent())) {
-				ret.add(c);
-			}
-		}
+        for (PoiCategory c : this.whiteList) {
+            // Check if category is a super category (= root of an accepted category's sub-tree)
+            if (c.getParent() == null || !acceptedCategories.contains(c.getParent())) {
+                ret.add(c);
+            }
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
-	@Override
-	public boolean isAcceptedCategory(PoiCategory category) {
-		// Found category
-		if (this.whiteList.contains(category)) {
-			return true;
-		}
+    @Override
+    public boolean isAcceptedCategory(PoiCategory category) {
+        // Found category
+        if (this.whiteList.contains(category)) {
+            return true;
+        }
 
-		// Check if parent category is accepted
-		if (category.getParent() != null) {
-			return isAcceptedCategory(category.getParent());
-		}
+        // Check if parent category is accepted
+        if (category.getParent() != null) {
+            return isAcceptedCategory(category.getParent());
+        }
 
-		// Neither this, nor parents
-		return false;
-	}
+        // Neither this, nor parents
+        return false;
+    }
 }

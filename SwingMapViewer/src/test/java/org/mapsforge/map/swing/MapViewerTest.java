@@ -18,21 +18,21 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MapViewerTest {
-	private static void verifyInvalidArguments(String[] args) {
-		try {
-			MapViewer.main(args);
-			Assert.fail();
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyInvalidArguments(String[] args) {
+        try {
+            MapViewer.main(args);
+            Assert.fail();
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void mainTest() {
-		String[] args = new String[] {};
-		verifyInvalidArguments(args);
+    @Test
+    public void mainTest() {
+        String[] args = new String[]{};
+        verifyInvalidArguments(args);
 
-		args = new String[] { "file/not/found.map" };
-		verifyInvalidArguments(args);
-	}
+        args = new String[]{"file/not/found.map"};
+        verifyInvalidArguments(args);
+    }
 }

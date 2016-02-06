@@ -15,19 +15,19 @@
 package org.mapsforge.map.rendertheme.rule;
 
 final class ElementWayMatcher implements ElementMatcher {
-	static final ElementWayMatcher INSTANCE = new ElementWayMatcher();
+    static final ElementWayMatcher INSTANCE = new ElementWayMatcher();
 
-	private ElementWayMatcher() {
-		// do nothing
-	}
+    private ElementWayMatcher() {
+        // do nothing
+    }
 
-	@Override
-	public boolean isCoveredBy(ElementMatcher elementMatcher) {
-		return elementMatcher.matches(Element.WAY);
-	}
+    @Override
+    public boolean isCoveredBy(ElementMatcher elementMatcher) {
+        return elementMatcher.matches(Element.WAY);
+    }
 
-	@Override
-	public boolean matches(Element element) {
-		return element == Element.WAY;
-	}
+    @Override
+    public boolean matches(Element element) {
+        return element == Element.WAY;
+    }
 }

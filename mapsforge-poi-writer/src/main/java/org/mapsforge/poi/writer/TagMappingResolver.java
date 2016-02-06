@@ -41,73 +41,75 @@ import javax.xml.bind.Unmarshaller;
  * The mapping configuration is read from an XML file.
  */
 class TagMappingResolver {
-	private static final Logger LOGGER = Logger.getLogger(TagMappingResolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TagMappingResolver.class.getName());
 
-	private final PoiCategoryManager categoryManager;
+    private final PoiCategoryManager categoryManager;
 
-	/** Maps a tag to a category's title */
-	private final Map<String, String> tagMap;
+    /**
+     * Maps a tag to a category's title
+     */
+    private final Map<String, String> tagMap;
 
-	/** Unique mapping tags */
-	private final Set<String> mappingTags;
+    /**
+     * Unique mapping tags
+     */
+    private final Set<String> mappingTags;
 
-	/**
-	 * @param configFilePath
-	 *            Path to the XML file containing the tag to POI mappings.
-	 * @param categoryManager
-	 *            The category manager for loading a category tree.
-	 */
-	TagMappingResolver(URL configFilePath, PoiCategoryManager categoryManager) {
-		this.categoryManager = categoryManager;
-		this.tagMap = new HashMap<>();
-		this.mappingTags = new TreeSet<>();
+    /**
+     * @param configFilePath  Path to the XML file containing the tag to POI mappings.
+     * @param categoryManager The category manager for loading a category tree.
+     */
+    TagMappingResolver(URL configFilePath, PoiCategoryManager categoryManager) {
+        this.categoryManager = categoryManager;
+        this.tagMap = new HashMap<>();
+        this.mappingTags = new TreeSet<>();
 
-		// Read root category from XML
-		JAXBContext ctx;
-		Unmarshaller um;
-		Category xmlRootCategory = null;
-		try {
-			ctx = JAXBContext.newInstance(Category.class);
-			um = ctx.createUnmarshaller();
-			xmlRootCategory = (Category) um.unmarshal(configFilePath);
-		} catch (JAXBException e) {
-			LOGGER.log(Level.SEVERE, "Could not load POI category configuration from XML.", e);
-		}
+        // Read root category from XML
+        JAXBContext ctx;
+        Unmarshaller um;
+        Category xmlRootCategory = null;
+        try {
+            ctx = JAXBContext.newInstance(Category.class);
+            um = ctx.createUnmarshaller();
+            xmlRootCategory = (Category) um.unmarshal(configFilePath);
+        } catch (JAXBException e) {
+            LOGGER.log(Level.SEVERE, "Could not load POI category configuration from XML.", e);
+        }
 
-		// Add mappings from tag to category title
-		Stack<Category> categories = new Stack<>();
-		categories.push(xmlRootCategory);
-		while (!categories.isEmpty()) {
-			for (Category c : categories.pop().getCategory()) {
-				categories.push(c);
+        // Add mappings from tag to category title
+        Stack<Category> categories = new Stack<>();
+        categories.push(xmlRootCategory);
+        while (!categories.isEmpty()) {
+            for (Category c : categories.pop().getCategory()) {
+                categories.push(c);
 
-				for (Mapping m : c.getMapping()) {
-					String tag = m.getTag().toLowerCase(Locale.ENGLISH);
-					LOGGER.finer("'" + tag + "' --> '" + c.getTitle() + "'");
-					this.tagMap.put(tag, c.getTitle());
-				}
-			}
-		}
+                for (Mapping m : c.getMapping()) {
+                    String tag = m.getTag().toLowerCase(Locale.ENGLISH);
+                    LOGGER.finer("'" + tag + "' --> '" + c.getTitle() + "'");
+                    this.tagMap.put(tag, c.getTitle());
+                }
+            }
+        }
 
-		// For each mapping's tag: split and save key (uniquely)
-		for (String tag : this.tagMap.keySet()) {
-			this.mappingTags.add(tag.split("=")[0]);
-		}
-	}
+        // For each mapping's tag: split and save key (uniquely)
+        for (String tag : this.tagMap.keySet()) {
+            this.mappingTags.add(tag.split("=")[0]);
+        }
+    }
 
-	PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
-		tag = tag.toLowerCase(Locale.ENGLISH);
-		String categoryName = this.tagMap.get(tag);
+    PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
+        tag = tag.toLowerCase(Locale.ENGLISH);
+        String categoryName = this.tagMap.get(tag);
 
-		// Tag not found?
-		if (categoryName == null) {
-			return null;
-		}
+        // Tag not found?
+        if (categoryName == null) {
+            return null;
+        }
 
-		return this.categoryManager.getPoiCategoryByTitle(categoryName);
-	}
+        return this.categoryManager.getPoiCategoryByTitle(categoryName);
+    }
 
-	Set<String> getMappingTags() {
-		return this.mappingTags;
-	}
+    Set<String> getMappingTags() {
+        return this.mappingTags;
+    }
 }

@@ -19,23 +19,23 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 
 public final class LayerManagerController implements Observer {
-	public static LayerManagerController create(LayerManager layerManager, Model model) {
-		LayerManagerController layerManagerController = new LayerManagerController(layerManager);
+    public static LayerManagerController create(LayerManager layerManager, Model model) {
+        LayerManagerController layerManagerController = new LayerManagerController(layerManager);
 
-		model.mapViewDimension.addObserver(layerManagerController);
-		model.mapViewPosition.addObserver(layerManagerController);
+        model.mapViewDimension.addObserver(layerManagerController);
+        model.mapViewPosition.addObserver(layerManagerController);
 
-		return layerManagerController;
-	}
+        return layerManagerController;
+    }
 
-	private final LayerManager layerManager;
+    private final LayerManager layerManager;
 
-	private LayerManagerController(LayerManager layerManager) {
-		this.layerManager = layerManager;
-	}
+    private LayerManagerController(LayerManager layerManager) {
+        this.layerManager = layerManager;
+    }
 
-	@Override
-	public void onChange() {
-		this.layerManager.redrawLayers();
-	}
+    @Override
+    public void onChange() {
+        this.layerManager.redrawLayers();
+    }
 }

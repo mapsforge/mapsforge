@@ -14,22 +14,22 @@
  */
 package org.mapsforge.map.writer.osmosis;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openstreetmap.osmosis.core.pipeline.common.TaskManagerFactory;
 import org.openstreetmap.osmosis.core.plugin.PluginLoader;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Osmosis PluginLoader for the mapfile-writer osmosis plugin.
  */
 public class MapFileWriterPluginLoader implements PluginLoader {
-	@Override
-	public Map<String, TaskManagerFactory> loadTaskFactories() {
-		MapFileWriterFactory mapFileWriterFactory = new MapFileWriterFactory();
-		HashMap<String, TaskManagerFactory> map = new HashMap<>();
-		map.put("mapfile-writer", mapFileWriterFactory);
-		map.put("mw", mapFileWriterFactory);
-		return map;
-	}
+    @Override
+    public Map<String, TaskManagerFactory> loadTaskFactories() {
+        MapFileWriterFactory mapFileWriterFactory = new MapFileWriterFactory();
+        HashMap<String, TaskManagerFactory> map = new HashMap<>();
+        map.put("mapfile-writer", mapFileWriterFactory);
+        map.put("mw", mapFileWriterFactory);
+        return map;
+    }
 }

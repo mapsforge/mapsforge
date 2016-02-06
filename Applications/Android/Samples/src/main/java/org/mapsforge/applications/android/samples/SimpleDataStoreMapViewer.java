@@ -22,8 +22,8 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
-import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.MultiMapDataStore;
+import org.mapsforge.map.datastore.PointOfInterest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,101 +33,101 @@ import java.util.List;
  */
 class PointDataStore extends MapDataStore {
 
-	private final BoundingBox boundingBox = new BoundingBox(-90, -180, 90, 180);
+    private final BoundingBox boundingBox = new BoundingBox(-90, -180, 90, 180);
 
-	@Override
-	public BoundingBox boundingBox() {
-		return boundingBox;
-	}
+    @Override
+    public BoundingBox boundingBox() {
+        return boundingBox;
+    }
 
-	@Override
-	public void close() {
-		// no-op
-	}
+    @Override
+    public void close() {
+        // no-op
+    }
 
-	@Override
-	public long getDataTimestamp(final Tile tile) {
-		return 0;
-	}
+    @Override
+    public long getDataTimestamp(final Tile tile) {
+        return 0;
+    }
 
-	@Override
-	public MapReadResult readMapData(final Tile tile) {
+    @Override
+    public MapReadResult readMapData(final Tile tile) {
 
-		// a dummy operation that puts a fake turning_circle into the middle of each tile.
-		// this is just to not having to change the rendertheme
-		MapReadResult result = new MapReadResult();
-		result.pointOfInterests = new ArrayList<>();
-		result.ways = new ArrayList<>();
-		Tag tag = new Tag("highway", "turning_circle");
-		List<Tag> tags = new ArrayList<>();
-		tags.add(tag);
-		result.pointOfInterests.add(new PointOfInterest((byte) 5, tags, tile.getBoundingBox().getCenterPoint()));
-		return result;
-	}
+        // a dummy operation that puts a fake turning_circle into the middle of each tile.
+        // this is just to not having to change the rendertheme
+        MapReadResult result = new MapReadResult();
+        result.pointOfInterests = new ArrayList<>();
+        result.ways = new ArrayList<>();
+        Tag tag = new Tag("highway", "turning_circle");
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
+        result.pointOfInterests.add(new PointOfInterest((byte) 5, tags, tile.getBoundingBox().getCenterPoint()));
+        return result;
+    }
 
-	@Override
-	public MapReadResult readPoiData(final Tile tile) {
+    @Override
+    public MapReadResult readPoiData(final Tile tile) {
 
-		// a dummy operation that puts a fake turning_circle into the middle of each tile.
-		// this is just to not having to change the rendertheme
-		MapReadResult result = new MapReadResult();
-		result.pointOfInterests = new ArrayList<>();
-		result.ways = new ArrayList<>();
-		Tag tag = new Tag("highway", "turning_circle");
-		List<Tag> tags = new ArrayList<>();
-		tags.add(tag);
-		result.pointOfInterests.add(new PointOfInterest((byte) 5, tags, tile.getBoundingBox().getCenterPoint()));
-		return result;
-	}
+        // a dummy operation that puts a fake turning_circle into the middle of each tile.
+        // this is just to not having to change the rendertheme
+        MapReadResult result = new MapReadResult();
+        result.pointOfInterests = new ArrayList<>();
+        result.ways = new ArrayList<>();
+        Tag tag = new Tag("highway", "turning_circle");
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
+        result.pointOfInterests.add(new PointOfInterest((byte) 5, tags, tile.getBoundingBox().getCenterPoint()));
+        return result;
+    }
 
-	@Override
-	public LatLong startPosition() {
-		return null;
-	}
+    @Override
+    public LatLong startPosition() {
+        return null;
+    }
 
-	@Override
-	public Byte startZoomLevel() {
-		return null;
-	}
+    @Override
+    public Byte startZoomLevel() {
+        return null;
+    }
 
-	@Override
-	public boolean supportsTile(final Tile tile) {
-		return true;
-	}
+    @Override
+    public boolean supportsTile(final Tile tile) {
+        return true;
+    }
 }
 
 public class SimpleDataStoreMapViewer extends RenderTheme4 {
 
-	private MultiMapDataStore multiMapDataStore;
-	private PointDataStore pointDataStore;
+    private MultiMapDataStore multiMapDataStore;
+    private PointDataStore pointDataStore;
 
-	/**
-	 * @return the base map file.
-	 */
-	protected MapDataStore getBaseMapFile() {
-		return super.getMapFile();
-	}
+    /**
+     * @return the base map file.
+     */
+    protected MapDataStore getBaseMapFile() {
+        return super.getMapFile();
+    }
 
-	@Override
-	public MapDataStore getMapFile() {
-		return this.multiMapDataStore;
-	}
+    @Override
+    public MapDataStore getMapFile() {
+        return this.multiMapDataStore;
+    }
 
-	/**
-	 * @return the user data store.
-	 */
-	protected MapDataStore getUserDataStore() {
-		return pointDataStore;
-	}
+    /**
+     * @return the user data store.
+     */
+    protected MapDataStore getUserDataStore() {
+        return pointDataStore;
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
-		pointDataStore = new PointDataStore();
-		multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
-		multiMapDataStore.addMapDataStore(getBaseMapFile(), true, true);
-		multiMapDataStore.addMapDataStore(getUserDataStore(), false, false);
+        pointDataStore = new PointDataStore();
+        multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+        multiMapDataStore.addMapDataStore(getBaseMapFile(), true, true);
+        multiMapDataStore.addMapDataStore(getUserDataStore(), false, false);
 
-		super.onCreate(savedInstanceState);
-	}
+        super.onCreate(savedInstanceState);
+    }
 }

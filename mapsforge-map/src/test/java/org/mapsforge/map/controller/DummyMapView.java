@@ -27,85 +27,85 @@ import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
 public class DummyMapView implements MapView {
-	public int repaintCounter;
+    public int repaintCounter;
 
-	@Override
-	public void addLayer(Layer layer) {
-		// no-op
-	}
+    @Override
+    public void addLayer(Layer layer) {
+        // no-op
+    }
 
-	@Override
-	public void destroy() {
-		// do nothing
-	}
+    @Override
+    public void destroy() {
+        // do nothing
+    }
 
-	@Override
-	public void destroyAll() {
-		// do nothing
-	}
+    @Override
+    public void destroyAll() {
+        // do nothing
+    }
 
-	@Override
-	public BoundingBox getBoundingBox() {
-		return null;
-	}
+    @Override
+    public BoundingBox getBoundingBox() {
+        return null;
+    }
 
-	@Override
-	public Dimension getDimension() {
-		return null;
-	}
+    @Override
+    public Dimension getDimension() {
+        return null;
+    }
 
-	@Override
-	public FpsCounter getFpsCounter() {
-		return null;
-	}
+    @Override
+    public FpsCounter getFpsCounter() {
+        return null;
+    }
 
-	@Override
-	public FrameBuffer getFrameBuffer() {
-		return null;
-	}
+    @Override
+    public FrameBuffer getFrameBuffer() {
+        return null;
+    }
 
-	@Override
-	public int getHeight() {
-		return 0;
-	}
+    @Override
+    public int getHeight() {
+        return 0;
+    }
 
-	@Override
-	public LayerManager getLayerManager() {
-		return null;
-	}
+    @Override
+    public LayerManager getLayerManager() {
+        return null;
+    }
 
-	@Override
-	public MapScaleBar getMapScaleBar() {
-		return null;
-	}
+    @Override
+    public MapScaleBar getMapScaleBar() {
+        return null;
+    }
 
-	@Override
-	public Model getModel() {
-		return null;
-	}
+    @Override
+    public Model getModel() {
+        return null;
+    }
 
-	@Override
-	public int getWidth() {
-		return 0;
-	}
+    @Override
+    public int getWidth() {
+        return 0;
+    }
 
-	@Override
-	public void repaint() {
-		++this.repaintCounter;
-	}
+    @Override
+    public void repaint() {
+        ++this.repaintCounter;
+    }
 
-	@Override
-	public void setCenter(LatLong center) {
-		// no-op
-	}
+    @Override
+    public void setCenter(LatLong center) {
+        // no-op
+    }
 
-	@Override
-	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		// no-op
-	}
+    @Override
+    public void setMapScaleBar(MapScaleBar mapScaleBar) {
+        // no-op
+    }
 
-	@Override
-	public void setZoomLevel(byte zoomLevel) {
-		// no-op
-	}
+    @Override
+    public void setZoomLevel(byte zoomLevel) {
+        // no-op
+    }
 }

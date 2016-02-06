@@ -22,39 +22,39 @@ import org.mapsforge.map.TestUtils;
 
 public class JobTest {
 
-	private static final int TILE_SIZE = 256;
+    private static final int TILE_SIZE = 256;
 
-	private static Job createJob(Tile tile) {
-		return new Job(tile, false);
-	}
+    private static Job createJob(Tile tile) {
+        return new Job(tile, false);
+    }
 
-	private static void verifyInvalidConstructor(Tile tile) {
-		try {
-			createJob(tile);
-			Assert.fail("tile: " + tile);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyInvalidConstructor(Tile tile) {
+        try {
+            createJob(tile);
+            Assert.fail("tile: " + tile);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void equalsTest() {
-		Job job1 = new Job(new Tile(0, 1, (byte) 2, TILE_SIZE), false);
-		Job job2 = new Job(new Tile(0, 1, (byte) 2, TILE_SIZE), false);
-		Job job3 = new Job(new Tile(0, 0, (byte) 0, TILE_SIZE), false);
+    @Test
+    public void equalsTest() {
+        Job job1 = new Job(new Tile(0, 1, (byte) 2, TILE_SIZE), false);
+        Job job2 = new Job(new Tile(0, 1, (byte) 2, TILE_SIZE), false);
+        Job job3 = new Job(new Tile(0, 0, (byte) 0, TILE_SIZE), false);
 
-		TestUtils.equalsTest(job1, job2);
+        TestUtils.equalsTest(job1, job2);
 
-		Assert.assertNotEquals(job1, job3);
-		Assert.assertNotEquals(job3, job1);
-		Assert.assertNotEquals(job1, new Object());
-	}
+        Assert.assertNotEquals(job1, job3);
+        Assert.assertNotEquals(job3, job1);
+        Assert.assertNotEquals(job1, new Object());
+    }
 
-	@Test
-	public void jobTest() {
-		Job job = createJob(new Tile(0, 1, (byte) 2, TILE_SIZE));
-		Assert.assertEquals(new Tile(0, 1, (byte) 2, TILE_SIZE), job.tile);
+    @Test
+    public void jobTest() {
+        Job job = createJob(new Tile(0, 1, (byte) 2, TILE_SIZE));
+        Assert.assertEquals(new Tile(0, 1, (byte) 2, TILE_SIZE), job.tile);
 
-		verifyInvalidConstructor(null);
-	}
+        verifyInvalidConstructor(null);
+    }
 }

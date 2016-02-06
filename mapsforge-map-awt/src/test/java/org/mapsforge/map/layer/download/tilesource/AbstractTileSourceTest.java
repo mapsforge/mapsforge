@@ -20,48 +20,48 @@ import org.junit.Test;
 import org.mapsforge.map.TestUtils;
 
 public class AbstractTileSourceTest {
-	private static AbstractTileSource create(String[] hostNames, int port) {
-		return new OpenStreetMapMapnik(hostNames, port);
-	}
+    private static AbstractTileSource create(String[] hostNames, int port) {
+        return new OpenStreetMapMapnik(hostNames, port);
+    }
 
-	private static void verifyInvalidConstructor(String[] hostNames, int port) {
-		try {
-			create(hostNames, port);
-			String names = "Empty host names";
-			if (hostNames != null) {
-				StringBuilder builder = new StringBuilder();
-				for (String s : hostNames) {
-					builder.append(s);
-				}
-				names = builder.toString();
-			}
-			Assert.fail("hostName: " + names + ", port: " + port);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyInvalidConstructor(String[] hostNames, int port) {
+        try {
+            create(hostNames, port);
+            String names = "Empty host names";
+            if (hostNames != null) {
+                StringBuilder builder = new StringBuilder();
+                for (String s : hostNames) {
+                    builder.append(s);
+                }
+                names = builder.toString();
+            }
+            Assert.fail("hostName: " + names + ", port: " + port);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void constructorTest() {
-		create(new String[] {"hostname"}, 0);
+    @Test
+    public void constructorTest() {
+        create(new String[]{"hostname"}, 0);
 
-		verifyInvalidConstructor(null, 0);
-		verifyInvalidConstructor(new String[] {""}, 0);
-		verifyInvalidConstructor(new String[] {"hostname", ""}, 0);
-		verifyInvalidConstructor(new String[] {"hostname"}, -1);
-		verifyInvalidConstructor(new String[] {"hostname"}, Integer.MAX_VALUE);
-	}
+        verifyInvalidConstructor(null, 0);
+        verifyInvalidConstructor(new String[]{""}, 0);
+        verifyInvalidConstructor(new String[]{"hostname", ""}, 0);
+        verifyInvalidConstructor(new String[]{"hostname"}, -1);
+        verifyInvalidConstructor(new String[]{"hostname"}, Integer.MAX_VALUE);
+    }
 
-	@Test
-	public void equalsTest() {
-		AbstractTileSource abstractTileSource1 = OpenStreetMapMapnik.INSTANCE;
-		AbstractTileSource abstractTileSource2 = OpenStreetMapMapnik.INSTANCE;
-		AbstractTileSource abstractTileSource3 = OpenCycleMap.INSTANCE;
+    @Test
+    public void equalsTest() {
+        AbstractTileSource abstractTileSource1 = OpenStreetMapMapnik.INSTANCE;
+        AbstractTileSource abstractTileSource2 = OpenStreetMapMapnik.INSTANCE;
+        AbstractTileSource abstractTileSource3 = OpenCycleMap.INSTANCE;
 
-		TestUtils.equalsTest(abstractTileSource1, abstractTileSource2);
+        TestUtils.equalsTest(abstractTileSource1, abstractTileSource2);
 
-		Assert.assertNotEquals(abstractTileSource1, abstractTileSource3);
-		Assert.assertNotEquals(abstractTileSource3, abstractTileSource1);
-		Assert.assertNotEquals(abstractTileSource1, new Object());
-	}
+        Assert.assertNotEquals(abstractTileSource1, abstractTileSource3);
+        Assert.assertNotEquals(abstractTileSource3, abstractTileSource1);
+        Assert.assertNotEquals(abstractTileSource1, new Object());
+    }
 }

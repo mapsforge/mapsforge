@@ -20,35 +20,30 @@ package org.mapsforge.poi.storage;
  * a tree structure. Adding and deleting categories should be done via this interface.
  */
 public interface PoiCategoryManager {
-	/**
-	 * Returns a category given by its ID or throws an exception if this category does not exist.
-	 *
-	 * @param id
-	 *            The category's ID.
-	 * @return The category having this ID or null.
-	 * @throws UnknownPoiCategoryException
-	 *             if the category has not been added to the {@link PoiCategoryManager}.
-	 */
-	PoiCategory getPoiCategoryByID(int id) throws UnknownPoiCategoryException;
+    /**
+     * Returns a category given by its ID or throws an exception if this category does not exist.
+     *
+     * @param id The category's ID.
+     * @return The category having this ID or null.
+     * @throws UnknownPoiCategoryException if the category has not been added to the {@link PoiCategoryManager}.
+     */
+    PoiCategory getPoiCategoryByID(int id) throws UnknownPoiCategoryException;
 
-	/**
-	 * Returns a category given by unique title or throws an exception if this category does not
-	 * exist.
-	 *
-	 * @param title
-	 *            The category's title
-	 * @return The category c with <code>c.title.equalsIgnoreCase(title)</code>.
-	 * @throws UnknownPoiCategoryException
-	 *             if the category has not been added to the {@link PoiCategoryManager}.
-	 */
-	PoiCategory getPoiCategoryByTitle(String title) throws UnknownPoiCategoryException;
+    /**
+     * Returns a category given by unique title or throws an exception if this category does not
+     * exist.
+     *
+     * @param title The category's title
+     * @return The category c with <code>c.title.equalsIgnoreCase(title)</code>.
+     * @throws UnknownPoiCategoryException if the category has not been added to the {@link PoiCategoryManager}.
+     */
+    PoiCategory getPoiCategoryByTitle(String title) throws UnknownPoiCategoryException;
 
-	/**
-	 * Returns the category tree's root.
-	 *
-	 * @return The tree's root category or null if the tree is empty.
-	 * @throws UnknownPoiCategoryException
-	 *             if the category has not been added to the {@link PoiCategoryManager}.
-	 */
-	PoiCategory getRootCategory() throws UnknownPoiCategoryException;
+    /**
+     * Returns the category tree's root.
+     *
+     * @return The tree's root category or null if the tree is empty.
+     * @throws UnknownPoiCategoryException if the category has not been added to the {@link PoiCategoryManager}.
+     */
+    PoiCategory getRootCategory() throws UnknownPoiCategoryException;
 }

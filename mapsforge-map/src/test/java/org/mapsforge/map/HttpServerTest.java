@@ -14,12 +14,6 @@
  */
 package org.mapsforge.map;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -31,56 +25,62 @@ import org.mortbay.jetty.servlet.DefaultServlet;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.resource.FileResource;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
+
 public class HttpServerTest {
-	private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
+    private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
-	private final File httpRoot = new File(TMP_DIR, getClass().getSimpleName() + System.currentTimeMillis());
-	private final Server server = new Server(0);
+    private final File httpRoot = new File(TMP_DIR, getClass().getSimpleName() + System.currentTimeMillis());
+    private final Server server = new Server(0);
 
-	protected HttpServerTest() {
-		// do nothing
-	}
+    protected HttpServerTest() {
+        // do nothing
+    }
 
-	@After
-	public final void afterTest() throws Exception {
-		try {
-			this.server.stop();
-			this.server.join();
-		} finally {
-			FileUtils.deleteDirectory(this.httpRoot);
-		}
-	}
+    @After
+    public final void afterTest() throws Exception {
+        try {
+            this.server.stop();
+            this.server.join();
+        } finally {
+            FileUtils.deleteDirectory(this.httpRoot);
+        }
+    }
 
-	@Before
-	public final void beforeTest() throws Exception {
-		Assert.assertFalse(this.httpRoot.exists());
-		Assert.assertTrue(this.httpRoot.mkdirs());
+    @Before
+    public final void beforeTest() throws Exception {
+        Assert.assertFalse(this.httpRoot.exists());
+        Assert.assertTrue(this.httpRoot.mkdirs());
 
-		Context context = new Context(this.server, "/", Context.SESSIONS);
-		context.setBaseResource(new FileResource(new URL("file://" + this.httpRoot.getAbsolutePath())));
-		context.setContextPath("/");
-		context.addServlet(new ServletHolder(new DefaultServlet()), "/*");
+        Context context = new Context(this.server, "/", Context.SESSIONS);
+        context.setBaseResource(new FileResource(new URL("file://" + this.httpRoot.getAbsolutePath())));
+        context.setContextPath("/");
+        context.addServlet(new ServletHolder(new DefaultServlet()), "/*");
 
-		this.server.setHandler(context);
-		this.server.start();
-	}
+        this.server.setHandler(context);
+        this.server.start();
+    }
 
-	protected final void addFile(String path, File file) throws IOException {
-		File fileCopy = new File(this.httpRoot, path);
-		Assert.assertFalse(fileCopy.exists());
-		if (!fileCopy.getParentFile().exists()) {
-			Assert.assertTrue(fileCopy.getParentFile().mkdirs());
-		}
+    protected final void addFile(String path, File file) throws IOException {
+        File fileCopy = new File(this.httpRoot, path);
+        Assert.assertFalse(fileCopy.exists());
+        if (!fileCopy.getParentFile().exists()) {
+            Assert.assertTrue(fileCopy.getParentFile().mkdirs());
+        }
 
-		OutputStream outputStream = new FileOutputStream(fileCopy);
-		try {
-			outputStream.write(FileUtils.readFileToByteArray(file));
-		} finally {
-			IOUtils.closeQuietly(outputStream);
-		}
-	}
+        OutputStream outputStream = new FileOutputStream(fileCopy);
+        try {
+            outputStream.write(FileUtils.readFileToByteArray(file));
+        } finally {
+            IOUtils.closeQuietly(outputStream);
+        }
+    }
 
-	protected final int getPort() {
-		return this.server.getConnectors()[0].getLocalPort();
-	}
+    protected final int getPort() {
+        return this.server.getConnectors()[0].getLocalPort();
+    }
 }

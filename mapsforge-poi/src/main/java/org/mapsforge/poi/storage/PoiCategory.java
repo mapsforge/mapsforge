@@ -25,36 +25,35 @@ import java.util.Collection;
  * a.title.equalsIgnoreCase(b.title).
  */
 public interface PoiCategory {
-	/**
-	 * @return All child categories of the category, including their children.
-	 */
-	Collection<PoiCategory> deepChildren();
+    /**
+     * @return All child categories of the category, including their children.
+     */
+    Collection<PoiCategory> deepChildren();
 
-	/**
-	 * @return All child categories of the category.
-	 */
-	Collection<PoiCategory> getChildren();
+    /**
+     * @return All child categories of the category.
+     */
+    Collection<PoiCategory> getChildren();
 
-	/**
-	 * @return The category's id.
-	 */
-	int getID();
+    /**
+     * @return The category's id.
+     */
+    int getID();
 
-	/**
-	 * @return The parent category of this category or null if this category has no parent.
-	 */
-	PoiCategory getParent();
+    /**
+     * @return The parent category of this category or null if this category has no parent.
+     */
+    PoiCategory getParent();
 
-	/**
-	 * @return The title of this category.
-	 */
-	String getTitle();
+    /**
+     * @return The title of this category.
+     */
+    String getTitle();
 
-	/**
-	 * Sets the category's parent category.
-	 *
-	 * @param parent
-	 *            The category to be set as parent.
-	 */
-	void setParent(PoiCategory parent);
+    /**
+     * Sets the category's parent category.
+     *
+     * @param parent The category to be set as parent.
+     */
+    void setParent(PoiCategory parent);
 }

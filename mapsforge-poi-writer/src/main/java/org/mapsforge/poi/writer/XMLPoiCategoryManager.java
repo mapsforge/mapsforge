@@ -35,101 +35,102 @@ import javax.xml.bind.Unmarshaller;
  * A {@link PoiCategoryManager} implementation that reads a category configuration from an XML file.
  */
 class XMLPoiCategoryManager implements PoiCategoryManager {
-	private static final Logger LOGGER = Logger.getLogger(XMLPoiCategoryManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(XMLPoiCategoryManager.class.getName());
 
-	/** Maps a category's title to a category */
-	private final Map<String, DoubleLinkedPoiCategory> titleMap;
+    /**
+     * Maps a category's title to a category
+     */
+    private final Map<String, DoubleLinkedPoiCategory> titleMap;
 
-	private DoubleLinkedPoiCategory root = null;
+    private DoubleLinkedPoiCategory root = null;
 
-	/**
-	 * @param configFilePath
-	 *            Path to POI category XML file containing the category tree configuration.
-	 */
-	XMLPoiCategoryManager(URL configFilePath) {
-		this.titleMap = new HashMap<>();
+    /**
+     * @param configFilePath Path to POI category XML file containing the category tree configuration.
+     */
+    XMLPoiCategoryManager(URL configFilePath) {
+        this.titleMap = new HashMap<>();
 
-		// Read root category from XML
-		JAXBContext ctx;
-		Unmarshaller um;
-		Category xmlRootCategory = null;
-		try {
-			ctx = JAXBContext.newInstance(Category.class);
-			um = ctx.createUnmarshaller();
-			xmlRootCategory = (Category) um.unmarshal(configFilePath);
-		} catch (JAXBException e) {
-			LOGGER.log(Level.SEVERE, "Could not load POI category configuration from XML.", e);
-		}
+        // Read root category from XML
+        JAXBContext ctx;
+        Unmarshaller um;
+        Category xmlRootCategory = null;
+        try {
+            ctx = JAXBContext.newInstance(Category.class);
+            um = ctx.createUnmarshaller();
+            xmlRootCategory = (Category) um.unmarshal(configFilePath);
+        } catch (JAXBException e) {
+            LOGGER.log(Level.SEVERE, "Could not load POI category configuration from XML.", e);
+        }
 
-		// Create categories
-		LinkedList<Category> currentXMLNode = new LinkedList<>();
-		currentXMLNode.push(xmlRootCategory);
-		DoubleLinkedPoiCategory parent, child;
-		while (!currentXMLNode.isEmpty()) {
-			parent = createOrGetPoiCategory(currentXMLNode.getFirst().getTitle());
-			titleMap.put(parent.getTitle(), parent);
+        // Create categories
+        LinkedList<Category> currentXMLNode = new LinkedList<>();
+        currentXMLNode.push(xmlRootCategory);
+        DoubleLinkedPoiCategory parent, child;
+        while (!currentXMLNode.isEmpty()) {
+            parent = createOrGetPoiCategory(currentXMLNode.getFirst().getTitle());
+            titleMap.put(parent.getTitle(), parent);
 
-			// Set root node
-			if (currentXMLNode.getFirst() == xmlRootCategory) {
-				this.root = parent;
-			}
+            // Set root node
+            if (currentXMLNode.getFirst() == xmlRootCategory) {
+                this.root = parent;
+            }
 
-			for (Category c : currentXMLNode.pop().getCategory()) {
-				child = createOrGetPoiCategory(c.getTitle());
-				child.setParent(parent);
+            for (Category c : currentXMLNode.pop().getCategory()) {
+                child = createOrGetPoiCategory(c.getTitle());
+                child.setParent(parent);
 
-				currentXMLNode.add(c);
-			}
-		}
+                currentXMLNode.add(c);
+            }
+        }
 
-		// Calculate a unique ID for all nodes in the tree
-		DoubleLinkedPoiCategory.calculateCategoryIDs(this.root, 0);
+        // Calculate a unique ID for all nodes in the tree
+        DoubleLinkedPoiCategory.calculateCategoryIDs(this.root, 0);
 
-		// System.out.println(DoubleLinkedPoiCategory.getGraphVizString(this.root));
-	}
+        // System.out.println(DoubleLinkedPoiCategory.getGraphVizString(this.root));
+    }
 
-	private DoubleLinkedPoiCategory createOrGetPoiCategory(String title) {
-		DoubleLinkedPoiCategory ret = this.titleMap.get(title);
+    private DoubleLinkedPoiCategory createOrGetPoiCategory(String title) {
+        DoubleLinkedPoiCategory ret = this.titleMap.get(title);
 
-		// Category does not exist -> create it
-		if (ret == null) {
-			ret = new DoubleLinkedPoiCategory(title, null);
-			LOGGER.finer("Added category: " + ret);
-			this.titleMap.put(title, ret);
-		}
+        // Category does not exist -> create it
+        if (ret == null) {
+            ret = new DoubleLinkedPoiCategory(title, null);
+            LOGGER.finer("Added category: " + ret);
+            this.titleMap.put(title, ret);
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PoiCategory getPoiCategoryByID(int id) {
-		PoiCategory ret = null;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PoiCategory getPoiCategoryByID(int id) {
+        PoiCategory ret = null;
 
-		for (String key : this.titleMap.keySet()) {
-			if ((ret = this.titleMap.get(key)).getID() == id) {
-				break;
-			}
-		}
+        for (String key : this.titleMap.keySet()) {
+            if ((ret = this.titleMap.get(key)).getID() == id) {
+                break;
+            }
+        }
 
-		return ret;
-	}
+        return ret;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PoiCategory getPoiCategoryByTitle(String title) {
-		return this.titleMap.get(title);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PoiCategory getPoiCategoryByTitle(String title) {
+        return this.titleMap.get(title);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PoiCategory getRootCategory() {
-		return this.root;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PoiCategory getRootCategory() {
+        return this.root;
+    }
 }

@@ -30,80 +30,80 @@ import org.mapsforge.map.layer.overlay.Polyline;
  * view.
  */
 public class DualOverviewMapViewer extends DualMapViewer {
-	private MapViewPositionObserver observer;
+    private MapViewPositionObserver observer;
 
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
 
-		this.mapView2.getModel().mapViewPosition.setZoomLevel((byte) 12);
+        this.mapView2.getModel().mapViewPosition.setZoomLevel((byte) 12);
 
-		this.observer = new MapViewPositionObserver(this.mapView.getModel().mapViewPosition,
-				this.mapView2.getModel().mapViewPosition) {
-			Polyline lastLine;
+        this.observer = new MapViewPositionObserver(this.mapView.getModel().mapViewPosition,
+                this.mapView2.getModel().mapViewPosition) {
+            Polyline lastLine;
 
-			@Override
-			protected void setCenter() {
-				super.setCenter();
-				BoundingBox bbox = DualOverviewMapViewer.this.mapView.getBoundingBox();
-				Paint paintStroke = Utils.createPaint(
-						AndroidGraphicFactory.INSTANCE.createColor(Color.RED),
-						2, Style.STROKE);
-				Polyline polygon = new Polyline(paintStroke,
-						AndroidGraphicFactory.INSTANCE);
-				polygon.getLatLongs().add(
-						new LatLong(bbox.minLatitude, bbox.minLongitude));
-				polygon.getLatLongs().add(
-						new LatLong(bbox.minLatitude, bbox.maxLongitude));
-				polygon.getLatLongs().add(
-						new LatLong(bbox.maxLatitude, bbox.maxLongitude));
-				polygon.getLatLongs().add(
-						new LatLong(bbox.maxLatitude, bbox.minLongitude));
-				polygon.getLatLongs().add(
-						new LatLong(bbox.minLatitude, bbox.minLongitude));
-				if (this.lastLine != null) {
-					DualOverviewMapViewer.this.mapView2.getLayerManager().getLayers()
-							.remove(this.lastLine);
-				}
-				DualOverviewMapViewer.this.mapView2.getLayerManager()
-						.getLayers().add(polygon);
-				this.lastLine = polygon;
-			}
+            @Override
+            protected void setCenter() {
+                super.setCenter();
+                BoundingBox bbox = DualOverviewMapViewer.this.mapView.getBoundingBox();
+                Paint paintStroke = Utils.createPaint(
+                        AndroidGraphicFactory.INSTANCE.createColor(Color.RED),
+                        2, Style.STROKE);
+                Polyline polygon = new Polyline(paintStroke,
+                        AndroidGraphicFactory.INSTANCE);
+                polygon.getLatLongs().add(
+                        new LatLong(bbox.minLatitude, bbox.minLongitude));
+                polygon.getLatLongs().add(
+                        new LatLong(bbox.minLatitude, bbox.maxLongitude));
+                polygon.getLatLongs().add(
+                        new LatLong(bbox.maxLatitude, bbox.maxLongitude));
+                polygon.getLatLongs().add(
+                        new LatLong(bbox.maxLatitude, bbox.minLongitude));
+                polygon.getLatLongs().add(
+                        new LatLong(bbox.minLatitude, bbox.minLongitude));
+                if (this.lastLine != null) {
+                    DualOverviewMapViewer.this.mapView2.getLayerManager().getLayers()
+                            .remove(this.lastLine);
+                }
+                DualOverviewMapViewer.this.mapView2.getLayerManager()
+                        .getLayers().add(polygon);
+                this.lastLine = polygon;
+            }
 
-			@Override
-			protected void setZoom() {
-				// do not change zoom, the overview stays zoomed out
-			}
-		};
-	}
+            @Override
+            protected void setZoom() {
+                // do not change zoom, the overview stays zoomed out
+            }
+        };
+    }
 
-	@Override
-	protected int getLayoutId() {
-		// provides a layout with two mapViews
-		return R.layout.dualoverviewmapviewer;
-	}
+    @Override
+    protected int getLayoutId() {
+        // provides a layout with two mapViews
+        return R.layout.dualoverviewmapviewer;
+    }
 
-	/**
-	 * @return the screen ratio that the mapview takes up (for cache
-	 *         calculation)
-	 */
-	@Override
-	protected float getScreenRatio() {
-		return 1f;
-	}
+    /**
+     * @return the screen ratio that the mapview takes up (for cache
+     * calculation)
+     */
+    @Override
+    protected float getScreenRatio() {
+        return 1f;
+    }
 
-	/**
-	 * @return the screen ratio that the mapview takes up (for cache
-	 *         calculation)
-	 */
-	@Override
-	protected float getScreenRatio2() {
-		return 0.1f;
-	}
+    /**
+     * @return the screen ratio that the mapview takes up (for cache
+     * calculation)
+     */
+    @Override
+    protected float getScreenRatio2() {
+        return 0.1f;
+    }
 
-	@Override
-	protected void onDestroy() {
-		this.observer.removeObserver();
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        this.observer.removeObserver();
+        super.onDestroy();
+    }
 }

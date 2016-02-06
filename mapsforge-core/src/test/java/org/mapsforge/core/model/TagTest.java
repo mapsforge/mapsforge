@@ -15,68 +15,68 @@
  */
 package org.mapsforge.core.model;
 
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+
 public class TagTest {
-	private static final String KEY = "foo";
-	private static final String TAG_TO_STRING = "key=foo, value=bar";
-	private static final String VALUE = "bar";
+    private static final String KEY = "foo";
+    private static final String TAG_TO_STRING = "key=foo, value=bar";
+    private static final String VALUE = "bar";
 
-	@Test
-	public void constructorTest() {
-		Tag tag1 = new Tag(KEY + '=' + VALUE);
-		Tag tag2 = new Tag(KEY, VALUE);
+    @Test
+    public void constructorTest() {
+        Tag tag1 = new Tag(KEY + '=' + VALUE);
+        Tag tag2 = new Tag(KEY, VALUE);
 
-		TestUtils.equalsTest(tag1, tag2);
-	}
+        TestUtils.equalsTest(tag1, tag2);
+    }
 
-	@Test
-	public void compareToTest() {
-		Tag tag1 = new Tag(KEY, VALUE);
-		Tag tag2 = new Tag(KEY, VALUE);
-		Tag tag3 = new Tag(KEY, KEY);
-		Tag tag4 = new Tag(VALUE, VALUE);
+    @Test
+    public void compareToTest() {
+        Tag tag1 = new Tag(KEY, VALUE);
+        Tag tag2 = new Tag(KEY, VALUE);
+        Tag tag3 = new Tag(KEY, KEY);
+        Tag tag4 = new Tag(VALUE, VALUE);
 
-		Assert.assertTrue(tag1.compareTo(tag2) == 0);
-		Assert.assertTrue(tag1.compareTo(tag3) < 0);
-		Assert.assertTrue(tag1.compareTo(tag4) > 0);
-	}
+        Assert.assertTrue(tag1.compareTo(tag2) == 0);
+        Assert.assertTrue(tag1.compareTo(tag3) < 0);
+        Assert.assertTrue(tag1.compareTo(tag4) > 0);
+    }
 
-	@Test
-	public void equalsTest() {
-		Tag tag1 = new Tag(KEY, VALUE);
-		Tag tag2 = new Tag(KEY, VALUE);
-		Tag tag3 = new Tag(KEY, KEY);
-		Tag tag4 = new Tag(VALUE, VALUE);
+    @Test
+    public void equalsTest() {
+        Tag tag1 = new Tag(KEY, VALUE);
+        Tag tag2 = new Tag(KEY, VALUE);
+        Tag tag3 = new Tag(KEY, KEY);
+        Tag tag4 = new Tag(VALUE, VALUE);
 
-		TestUtils.equalsTest(tag1, tag2);
+        TestUtils.equalsTest(tag1, tag2);
 
-		TestUtils.notEqualsTest(tag1, tag3);
-		TestUtils.notEqualsTest(tag1, tag4);
-		TestUtils.notEqualsTest(tag1, new Object());
-		TestUtils.notEqualsTest(tag1, null);
-	}
+        TestUtils.notEqualsTest(tag1, tag3);
+        TestUtils.notEqualsTest(tag1, tag4);
+        TestUtils.notEqualsTest(tag1, new Object());
+        TestUtils.notEqualsTest(tag1, null);
+    }
 
-	@Test
-	public void fieldTest() {
-		Tag tag = new Tag(KEY, VALUE);
+    @Test
+    public void fieldTest() {
+        Tag tag = new Tag(KEY, VALUE);
 
-		Assert.assertEquals(KEY, tag.key);
-		Assert.assertEquals(VALUE, tag.value);
-	}
+        Assert.assertEquals(KEY, tag.key);
+        Assert.assertEquals(VALUE, tag.value);
+    }
 
-	@Test
-	public void serializeTest() throws IOException, ClassNotFoundException {
-		Tag tag = new Tag(KEY, VALUE);
-		TestUtils.serializeTest(tag);
-	}
+    @Test
+    public void serializeTest() throws IOException, ClassNotFoundException {
+        Tag tag = new Tag(KEY, VALUE);
+        TestUtils.serializeTest(tag);
+    }
 
-	@Test
-	public void toStringTest() {
-		Tag tag = new Tag(KEY, VALUE);
-		Assert.assertEquals(TAG_TO_STRING, tag.toString());
-	}
+    @Test
+    public void toStringTest() {
+        Tag tag = new Tag(KEY, VALUE);
+        Assert.assertEquals(TAG_TO_STRING, tag.toString());
+    }
 }

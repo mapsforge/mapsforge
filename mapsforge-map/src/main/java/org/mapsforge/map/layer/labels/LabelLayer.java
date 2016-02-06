@@ -17,8 +17,8 @@ package org.mapsforge.map.layer.labels;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
@@ -29,47 +29,47 @@ import java.util.Collections;
 import java.util.List;
 
 public class LabelLayer extends Layer {
-	protected final LabelStore labelStore;
-	protected final Matrix matrix;
-	protected List<MapElementContainer> elementsToDraw;
-	protected Tile upperLeft;
-	protected Tile lowerRight;
-	protected int lastLabelStoreVersion;
+    protected final LabelStore labelStore;
+    protected final Matrix matrix;
+    protected List<MapElementContainer> elementsToDraw;
+    protected Tile upperLeft;
+    protected Tile lowerRight;
+    protected int lastLabelStoreVersion;
 
-	public LabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
-		this.labelStore = labelStore;
-		this.matrix = graphicFactory.createMatrix();
-		this.lastLabelStoreVersion = -1;
-	}
+    public LabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
+        this.labelStore = labelStore;
+        this.matrix = graphicFactory.createMatrix();
+        this.lastLabelStoreVersion = -1;
+    }
 
-	@Override
-	public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-		Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
-		Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
-		if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
-				|| lastLabelStoreVersion != labelStore.getVersion()) {
-			// only need to get new data set if either set of tiles changed or the label store
-			this.upperLeft = newUpperLeft;
-			this.lowerRight = newLowerRight;
-			lastLabelStoreVersion = labelStore.getVersion();
-			List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(upperLeft, lowerRight);
+    @Override
+    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+        Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
+        Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
+        if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
+                || lastLabelStoreVersion != labelStore.getVersion()) {
+            // only need to get new data set if either set of tiles changed or the label store
+            this.upperLeft = newUpperLeft;
+            this.lowerRight = newLowerRight;
+            lastLabelStoreVersion = labelStore.getVersion();
+            List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(upperLeft, lowerRight);
 
-			elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
+            elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
 
-			// TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out
-			// what LayerUtil.collisionFreeOrdered gave us is a list where highest priority comes first,
-			// so we need to reverse that in order to
-			// draw elements in order of priority: lower priority first, so more important
-			// elements will be drawn on top (in case of display=true) items.
-			Collections.sort(elementsToDraw);
-		}
+            // TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out
+            // what LayerUtil.collisionFreeOrdered gave us is a list where highest priority comes first,
+            // so we need to reverse that in order to
+            // draw elements in order of priority: lower priority first, so more important
+            // elements will be drawn on top (in case of display=true) items.
+            Collections.sort(elementsToDraw);
+        }
 
-		draw(canvas, topLeftPoint);
-	}
+        draw(canvas, topLeftPoint);
+    }
 
-	protected void draw(Canvas canvas, Point topLeftPoint) {
-		for (MapElementContainer item : elementsToDraw) {
-			item.draw(canvas, topLeftPoint, this.matrix, this.displayModel.getFilter());
-		}
-	}
+    protected void draw(Canvas canvas, Point topLeftPoint) {
+        for (MapElementContainer item : elementsToDraw) {
+            item.draw(canvas, topLeftPoint, this.matrix, this.displayModel.getFilter());
+        }
+    }
 }

@@ -34,70 +34,68 @@ import java.util.logging.Logger;
  * Entities can be filtered and grouped by categories by using an XML definition.
  */
 public class PoiWriterTask implements Sink {
-	private static final Logger LOGGER = LoggerWrapper.getLogger(PoiWriterTask.class.getName());
+    private static final Logger LOGGER = LoggerWrapper.getLogger(PoiWriterTask.class.getName());
 
-	private final PoiWriter poiWriter;
+    private final PoiWriter poiWriter;
 
-	/**
-	 * Writes all entities that can be mapped to a specific category and which category is in a
-	 * given whitelist to a SQLite database. The category tree and tag mappings are retrieved from
-	 * an XML file.
-	 *
-	 * @param configuration
-	 *            Configuration for the POI writer.
-	 * @param progressManager
-	 *            Object that sends progress messages to a GUI.
-	 */
-	public PoiWriterTask(PoiWriterConfiguration configuration, ProgressManager progressManager) {
-		Properties properties = new Properties();
-		try {
-			properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("mapsforge-poi.properties"));
-			configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
-					+ properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
-			configuration.setFileSpecificationVersion(Integer.parseInt(properties
-					.getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION)));
+    /**
+     * Writes all entities that can be mapped to a specific category and which category is in a
+     * given whitelist to a SQLite database. The category tree and tag mappings are retrieved from
+     * an XML file.
+     *
+     * @param configuration   Configuration for the POI writer.
+     * @param progressManager Object that sends progress messages to a GUI.
+     */
+    public PoiWriterTask(PoiWriterConfiguration configuration, ProgressManager progressManager) {
+        Properties properties = new Properties();
+        try {
+            properties.load(PoiWriterTask.class.getClassLoader().getResourceAsStream("mapsforge-poi.properties"));
+            configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
+                    + properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
+            configuration.setFileSpecificationVersion(Integer.parseInt(properties
+                    .getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION)));
 
-			LOGGER.info("POI writer version: " + configuration.getWriterVersion());
-			LOGGER.info("POI format specification version: " + configuration.getFileSpecificationVersion());
-		} catch (IOException e) {
-			throw new RuntimeException("Could not find default properties", e);
-		} catch (NumberFormatException e) {
-			throw new RuntimeException("POI format specification version is not an integer", e);
-		}
+            LOGGER.info("POI writer version: " + configuration.getWriterVersion());
+            LOGGER.info("POI format specification version: " + configuration.getFileSpecificationVersion());
+        } catch (IOException e) {
+            throw new RuntimeException("Could not find default properties", e);
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("POI format specification version is not an integer", e);
+        }
 
-		this.poiWriter = PoiWriter.newInstance(configuration, progressManager);
-	}
+        this.poiWriter = PoiWriter.newInstance(configuration, progressManager);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void complete() {
-		this.poiWriter.complete();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void complete() {
+        this.poiWriter.complete();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.openstreetmap.osmosis.core.task.v0_6.Initializable#initialize(java.util.Map)
-	 */
-	@Override
-	public void initialize(Map<String, Object> metadata) {
-		// nothing to do here
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.openstreetmap.osmosis.core.task.v0_6.Initializable#initialize(java.util.Map)
+     */
+    @Override
+    public void initialize(Map<String, Object> metadata) {
+        // nothing to do here
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void process(EntityContainer entityContainer) {
-		this.poiWriter.process(entityContainer);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void process(EntityContainer entityContainer) {
+        this.poiWriter.process(entityContainer);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void release() {
-		// do nothing here
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void release() {
+        // do nothing here
+    }
 }

@@ -18,21 +18,21 @@ package org.mapsforge.map;
 import org.junit.Assert;
 
 public final class TestUtils {
-	public static void equalsTest(Object object1, Object object2) {
-		Assert.assertEquals(object1, object1);
-		Assert.assertEquals(object2, object2);
+    public static void equalsTest(Object object1, Object object2) {
+        Assert.assertEquals(object1, object1);
+        Assert.assertEquals(object2, object2);
 
-		Assert.assertEquals(object1.hashCode(), object2.hashCode());
-		Assert.assertEquals(object1, object2);
-		Assert.assertEquals(object2, object1);
-	}
+        Assert.assertEquals(object1.hashCode(), object2.hashCode());
+        Assert.assertEquals(object1, object2);
+        Assert.assertEquals(object2, object1);
+    }
 
-	public static void notEqualsTest(Object object1, Object object2) {
-		Assert.assertNotEquals(object1, object2);
-		Assert.assertNotEquals(object2, object1);
-	}
+    public static void notEqualsTest(Object object1, Object object2) {
+        Assert.assertNotEquals(object1, object2);
+        Assert.assertNotEquals(object2, object1);
+    }
 
-	private TestUtils() {
-		throw new IllegalArgumentException();
-	}
+    private TestUtils() {
+        throw new IllegalArgumentException();
+    }
 }

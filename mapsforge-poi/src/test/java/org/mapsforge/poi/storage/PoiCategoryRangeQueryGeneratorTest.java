@@ -22,54 +22,53 @@ import org.junit.Test;
  * This class tests the {@link PoiCategoryRangeQueryGenerator} class for common use cases.
  */
 public class PoiCategoryRangeQueryGeneratorTest {
-	private PoiCategory flatRoot;
-	private PoiCategory balancedRoot;
-	private PoiCategoryManager flatCm;
-	private PoiCategoryManager balancedCm;
+    private PoiCategory flatRoot;
+    private PoiCategory balancedRoot;
+    private PoiCategoryManager flatCm;
+    private PoiCategoryManager balancedCm;
 
-	@Before
-	public void init() {
-		this.flatRoot = CategoryTreeBuilder.createAndGetFlatConfiguration();
-		this.flatCm = new PoiCategoryManagerTest.MockPoiCategoryManager(this.flatRoot);
+    @Before
+    public void init() {
+        this.flatRoot = CategoryTreeBuilder.createAndGetFlatConfiguration();
+        this.flatCm = new PoiCategoryManagerTest.MockPoiCategoryManager(this.flatRoot);
 
-		this.balancedRoot = CategoryTreeBuilder.createAndGetBalancedConfiguration();
-		this.balancedCm = new PoiCategoryManagerTest.MockPoiCategoryManager(this.balancedRoot);
+        this.balancedRoot = CategoryTreeBuilder.createAndGetBalancedConfiguration();
+        this.balancedCm = new PoiCategoryManagerTest.MockPoiCategoryManager(this.balancedRoot);
 
-		System.out.println("=====8<=====");
-		System.out.println(DoubleLinkedPoiCategory.getGraphVizString((DoubleLinkedPoiCategory) this.balancedRoot));
-		System.out.println("============");
-	}
+        System.out.println("=====8<=====");
+        System.out.println(DoubleLinkedPoiCategory.getGraphVizString((DoubleLinkedPoiCategory) this.balancedRoot));
+        System.out.println("============");
+    }
 
-	/**
-	 * Select all categories by adding the root category to a whitelist filter.
-	 */
-	// @Test
-	public void selectAllFromFlatHierarchy() {
-		PoiCategoryFilter filter = new WhitelistPoiCategoryFilter();
-		filter.addCategory(this.flatRoot);
+    /**
+     * Select all categories by adding the root category to a whitelist filter.
+     */
+    // @Test
+    public void selectAllFromFlatHierarchy() {
+        PoiCategoryFilter filter = new WhitelistPoiCategoryFilter();
+        filter.addCategory(this.flatRoot);
 
-		String query = PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, null);
+        String query = PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, null);
 
-		System.out.println("Query: " + query);
+        System.out.println("Query: " + query);
 
-		// TODO add assertions
-	}
+        // TODO add assertions
+    }
 
-	/**
-	 * Select all categories by adding the root category to a whitelist filter.
-	 *
-	 * @throws UnknownPoiCategoryException
-	 *             if a category cannot be found by its name or ID.
-	 */
-	@Test
-	public void selectTwoFromBalancedHierarchy() throws UnknownPoiCategoryException {
-		PoiCategoryFilter filter = new WhitelistPoiCategoryFilter();
-		filter.addCategory(this.balancedCm.getPoiCategoryByTitle("l1_1"));
-		filter.addCategory(this.balancedCm.getPoiCategoryByTitle("l1_2"));
+    /**
+     * Select all categories by adding the root category to a whitelist filter.
+     *
+     * @throws UnknownPoiCategoryException if a category cannot be found by its name or ID.
+     */
+    @Test
+    public void selectTwoFromBalancedHierarchy() throws UnknownPoiCategoryException {
+        PoiCategoryFilter filter = new WhitelistPoiCategoryFilter();
+        filter.addCategory(this.balancedCm.getPoiCategoryByTitle("l1_1"));
+        filter.addCategory(this.balancedCm.getPoiCategoryByTitle("l1_2"));
 
-		String query = PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, null);
-		System.out.println("Query: " + query);
+        String query = PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, null);
+        System.out.println("Query: " + query);
 
-		// TODO add assertions
-	}
+        // TODO add assertions
+    }
 }

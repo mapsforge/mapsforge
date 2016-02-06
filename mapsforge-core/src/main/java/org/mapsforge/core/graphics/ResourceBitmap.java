@@ -15,5 +15,5 @@
 package org.mapsforge.core.graphics;
 
 public interface ResourceBitmap extends Bitmap {
-	// only different behaviour
+    // only different behaviour
 }

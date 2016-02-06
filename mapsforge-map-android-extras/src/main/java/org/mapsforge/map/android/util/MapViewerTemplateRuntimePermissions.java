@@ -24,41 +24,41 @@ import android.support.v4.app.ActivityCompat;
  */
 public abstract class MapViewerTemplateRuntimePermissions extends MapViewerTemplate implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-	protected static final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
+    protected static final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
 
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		if (PERMISSIONS_REQUEST_READ_STORAGE == requestCode) {
-			if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-				showDialogWhenPermissionDenied();
-				return;
-			}
-			createLayers();
-			createControls();
-		}
-		super.onRequestPermissionsResult(requestCode,permissions,grantResults);
-	}
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (PERMISSIONS_REQUEST_READ_STORAGE == requestCode) {
+            if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                showDialogWhenPermissionDenied();
+                return;
+            }
+            createLayers();
+            createControls();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
-	/**
-	 * Hook to check for Android Runtime Permissions.
-	 */
-	@Override
-	protected void checkPermissionsAndCreateLayersAndControls() {
-		if (AndroidSupportUtil.runtimePermissionRequiredForReadExternalStorage(this, getMapFileDirectory())) {
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_STORAGE);
-		} else {
-			createLayers();
-			createControls();
-		}
-	}
+    /**
+     * Hook to check for Android Runtime Permissions.
+     */
+    @Override
+    protected void checkPermissionsAndCreateLayersAndControls() {
+        if (AndroidSupportUtil.runtimePermissionRequiredForReadExternalStorage(this, getMapFileDirectory())) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_STORAGE);
+        } else {
+            createLayers();
+            createControls();
+        }
+    }
 
-	/**
-	 * Sample dialog shown when permission to read storage denied.
-	*/
-	protected void showDialogWhenPermissionDenied() {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Warning");
-		builder.setMessage("Without granting access to storage you will not see a map");
-		builder.show();
-	}
+    /**
+     * Sample dialog shown when permission to read storage denied.
+     */
+    protected void showDialogWhenPermissionDenied() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Warning");
+        builder.setMessage("Without granting access to storage you will not see a map");
+        builder.show();
+    }
 }

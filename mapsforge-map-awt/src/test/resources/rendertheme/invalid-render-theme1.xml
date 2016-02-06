@@ -1,3 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	version="3" foo="bar" />
+<rendertheme xmlns="http://mapsforge.org/renderTheme" version="3" foo="bar" />

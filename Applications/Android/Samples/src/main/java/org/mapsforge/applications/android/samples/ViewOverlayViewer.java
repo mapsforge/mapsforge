@@ -15,44 +15,44 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import org.mapsforge.applications.android.samples.dummy.DummyContent;
-import org.mapsforge.map.android.view.MapView;
-
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.mapsforge.applications.android.samples.dummy.DummyContent;
+import org.mapsforge.map.android.view.MapView;
+
 /**
  * Basic map viewer that shows <code>View</code>s with content at a few locations.
  */
 public class ViewOverlayViewer extends RenderTheme4 {
 
-	@SuppressLint("InflateParams")
-	@Override
-	protected void createLayers() {
-		super.createLayers();
+    @SuppressLint("InflateParams")
+    @Override
+    protected void createLayers() {
+        super.createLayers();
 
-		// View overlays
-		final LayoutInflater inflater = LayoutInflater.from(this);
-		for (final DummyContent.DummyItem item : DummyContent.ITEMS) {
-			final Button button = (Button) inflater.inflate(R.layout.pointer_bubble, null);
-			button.setText(item.text);
-			button.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Toast.makeText(ViewOverlayViewer.this, item.text, Toast.LENGTH_SHORT).show();
-				}
-			});
-			this.mapView.addView(button, new MapView.LayoutParams(MapView.LayoutParams.WRAP_CONTENT, MapView.LayoutParams.WRAP_CONTENT,
-					item.location, MapView.LayoutParams.Alignment.BOTTOM_CENTER));
-		}
-	}
+        // View overlays
+        final LayoutInflater inflater = LayoutInflater.from(this);
+        for (final DummyContent.DummyItem item : DummyContent.ITEMS) {
+            final Button button = (Button) inflater.inflate(R.layout.pointer_bubble, null);
+            button.setText(item.text);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(ViewOverlayViewer.this, item.text, Toast.LENGTH_SHORT).show();
+                }
+            });
+            this.mapView.addView(button, new MapView.LayoutParams(MapView.LayoutParams.WRAP_CONTENT, MapView.LayoutParams.WRAP_CONTENT,
+                    item.location, MapView.LayoutParams.Alignment.BOTTOM_CENTER));
+        }
+    }
 
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
-	}
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+        this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
+    }
 }

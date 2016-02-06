@@ -7,7 +7,7 @@
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".ItemListActivity" >
+    tools:context=".ItemListActivity">
 
     <!--
     This layout is a two-pane layout for the Items

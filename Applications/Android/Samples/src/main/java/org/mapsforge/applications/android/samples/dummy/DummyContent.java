@@ -24,60 +24,60 @@ import java.util.Map;
 /**
  * Helper class for providing sample content for user interfaces created by
  * Android template wizards.
- * <p>
+ * <p/>
  */
 public class DummyContent {
-	/**
-	 * A dummy item representing a piece of content.
-	 */
-	public static class DummyItem {
-		public final String content;
-		public final String id;
-		public final LatLong location;
-		public final String text;
+    /**
+     * A dummy item representing a piece of content.
+     */
+    public static class DummyItem {
+        public final String content;
+        public final String id;
+        public final LatLong location;
+        public final String text;
 
-		public DummyItem(String id, String content, LatLong location,
-				String text) {
-			this.id = id;
-			this.content = content;
-			this.location = location;
-			this.text = text;
-		}
+        public DummyItem(String id, String content, LatLong location,
+                         String text) {
+            this.id = id;
+            this.content = content;
+            this.location = location;
+            this.text = text;
+        }
 
-		@Override
-		public String toString() {
-			return this.content;
-		}
-	}
+        @Override
+        public String toString() {
+            return this.content;
+        }
+    }
 
-	/**
-	 * A map of sample (dummy) items, by ID.
-	 */
-	public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+    /**
+     * A map of sample (dummy) items, by ID.
+     */
+    public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
 
-	/**
-	 * An array of sample (dummy) items.
-	 */
-	public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+    /**
+     * An array of sample (dummy) items.
+     */
+    public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
 
-	static {
-		addItem(new DummyItem("1", "Brandenburger Tor", new LatLong(52.516,
-				13.378), "This is the famous Brandenburger Tor"));
-		addItem(new DummyItem("2", "Checkpoint Charlie", new LatLong(52.507,
-				13.390), "This used to be the famous Checkpoint Charlie"));
-		addItem(new DummyItem(
-				"3",
-				"Savigny Platz",
-				new LatLong(52.505, 13.322),
-				"This is a square in Berlin with a longer text that does not really say anything at all and you would see more of the map if this useless text was not here."));
-	}
+    static {
+        addItem(new DummyItem("1", "Brandenburger Tor", new LatLong(52.516,
+                13.378), "This is the famous Brandenburger Tor"));
+        addItem(new DummyItem("2", "Checkpoint Charlie", new LatLong(52.507,
+                13.390), "This used to be the famous Checkpoint Charlie"));
+        addItem(new DummyItem(
+                "3",
+                "Savigny Platz",
+                new LatLong(52.505, 13.322),
+                "This is a square in Berlin with a longer text that does not really say anything at all and you would see more of the map if this useless text was not here."));
+    }
 
-	private static void addItem(DummyItem item) {
-		ITEMS.add(item);
-		ITEM_MAP.put(item.id, item);
-	}
+    private static void addItem(DummyItem item) {
+        ITEMS.add(item);
+        ITEM_MAP.put(item.id, item);
+    }
 
-	protected DummyContent() {
-		// no-op
-	}
+    protected DummyContent() {
+        // no-op
+    }
 }

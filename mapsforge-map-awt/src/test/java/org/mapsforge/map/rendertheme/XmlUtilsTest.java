@@ -21,48 +21,48 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 
 public class XmlUtilsTest {
-	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+    private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
-	private static void verifyEqualColor(Color color, String colorString) {
-		Assert.assertEquals(GRAPHIC_FACTORY.createColor(color), XmlUtils.getColor(GRAPHIC_FACTORY, colorString));
-	}
+    private static void verifyEqualColor(Color color, String colorString) {
+        Assert.assertEquals(GRAPHIC_FACTORY.createColor(color), XmlUtils.getColor(GRAPHIC_FACTORY, colorString));
+    }
 
-	private static void verifyInvalidgetColor(String colorString) {
-		try {
-			XmlUtils.getColor(GRAPHIC_FACTORY, colorString);
-			Assert.fail("colorString: " + colorString);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyInvalidgetColor(String colorString) {
+        try {
+            XmlUtils.getColor(GRAPHIC_FACTORY, colorString);
+            Assert.fail("colorString: " + colorString);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void getColorTest() {
-		verifyEqualColor(Color.RED, "#FF0000");
-		verifyEqualColor(Color.RED, "#FFFF0000");
-		verifyEqualColor(Color.GREEN, "#00ff00");
-		verifyEqualColor(Color.BLUE, "#Ff0000Ff");
+    @Test
+    public void getColorTest() {
+        verifyEqualColor(Color.RED, "#FF0000");
+        verifyEqualColor(Color.RED, "#FFFF0000");
+        verifyEqualColor(Color.GREEN, "#00ff00");
+        verifyEqualColor(Color.BLUE, "#Ff0000Ff");
 
-		verifyEqualColor(Color.BLACK, "#ff000000");
-		verifyEqualColor(Color.WHITE, "#ffFFff");
-		verifyEqualColor(Color.TRANSPARENT, "#00000000");
+        verifyEqualColor(Color.BLACK, "#ff000000");
+        verifyEqualColor(Color.WHITE, "#ffFFff");
+        verifyEqualColor(Color.TRANSPARENT, "#00000000");
 
-		verifyInvalidgetColor("#FF000");
-		verifyInvalidgetColor("#00FF000");
+        verifyInvalidgetColor("#FF000");
+        verifyInvalidgetColor("#00FF000");
 
-		verifyInvalidgetColor("FF0000");
-		verifyInvalidgetColor("00FF0000");
+        verifyInvalidgetColor("FF0000");
+        verifyInvalidgetColor("00FF0000");
 
-		verifyInvalidgetColor("#FF00000");
-		verifyInvalidgetColor("#00FF00000");
+        verifyInvalidgetColor("#FF00000");
+        verifyInvalidgetColor("#00FF00000");
 
-		verifyInvalidgetColor(" #FF0000");
-		verifyInvalidgetColor("# FF0000");
-		verifyInvalidgetColor("#FF0000 ");
+        verifyInvalidgetColor(" #FF0000");
+        verifyInvalidgetColor("# FF0000");
+        verifyInvalidgetColor("#FF0000 ");
 
-		verifyInvalidgetColor("#FFGGFF");
-		verifyInvalidgetColor("#FFggFF");
+        verifyInvalidgetColor("#FFGGFF");
+        verifyInvalidgetColor("#FFggFF");
 
-		verifyInvalidgetColor("");
-	}
+        verifyInvalidgetColor("");
+    }
 }

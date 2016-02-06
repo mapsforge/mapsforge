@@ -18,13 +18,13 @@ import java.io.Closeable;
 import java.io.IOException;
 
 class DummyCloseable implements Closeable {
-	boolean closed;
+    boolean closed;
 
-	@Override
-	public void close() throws IOException {
-		if (this.closed) {
-			throw new IOException();
-		}
-		this.closed = true;
-	}
+    @Override
+    public void close() throws IOException {
+        if (this.closed) {
+            throw new IOException();
+        }
+        this.closed = true;
+    }
 }

@@ -18,8 +18,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2011.10.14 at 05:47:04 PM MESZ 
 //
-
-
 package org.mapsforge.poi.writer.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,12 +27,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * Java class for anonymous complex type.
+ * <p/>
+ * The following schema fragment specifies the expected content contained within this class.
+ * <p/>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -44,25 +41,20 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "mapping")
 public class Mapping {
-
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "anySimpleType")
     protected String tag;
 
     /**
      * Gets the value of the tag property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getTag() {
         return tag;
@@ -70,14 +62,11 @@ public class Mapping {
 
     /**
      * Sets the value of the tag property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setTag(String value) {
         this.tag = value;
     }
-
 }

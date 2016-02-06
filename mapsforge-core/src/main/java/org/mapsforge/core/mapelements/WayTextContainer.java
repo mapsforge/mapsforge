@@ -26,64 +26,64 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public class WayTextContainer extends MapElementContainer {
-	private final Paint paintFront;
-	private final Paint paintBack;
-	private final String text;
-	private final Point end;
+    private final Paint paintFront;
+    private final Paint paintBack;
+    private final String text;
+    private final Point end;
 
-	public WayTextContainer(Point point, Point end, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
-		super(point, display, priority);
-		this.text = text;
-		this.paintFront = paintFront;
-		this.paintBack = paintBack;
-		this.end = end;
+    public WayTextContainer(Point point, Point end, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
+        super(point, display, priority);
+        this.text = text;
+        this.paintFront = paintFront;
+        this.paintBack = paintBack;
+        this.end = end;
 
-		this.boundary = null;
-		// a way text container should always run left to right, but I leave this in because it might matter
-		// if we support right-to-left text.
-		// we also need to make the container larger by textHeight as otherwise the end points do
-		// not correctly reflect the size of the text on screen
-		this.boundaryAbsolute = new Rectangle(Math.min(point.x, end.x), Math.min(point.y, end.y),
-				Math.max(point.x, end.x), Math.max(point.y, end.y)).envelope(textHeight/2d);
-	}
+        this.boundary = null;
+        // a way text container should always run left to right, but I leave this in because it might matter
+        // if we support right-to-left text.
+        // we also need to make the container larger by textHeight as otherwise the end points do
+        // not correctly reflect the size of the text on screen
+        this.boundaryAbsolute = new Rectangle(Math.min(point.x, end.x), Math.min(point.y, end.y),
+                Math.max(point.x, end.x), Math.max(point.y, end.y)).envelope(textHeight / 2d);
+    }
 
-	@Override
-	public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
-		Point adjustedStart = xy.offset(-origin.x, -origin.y);
-		Point adjustedEnd = end.offset(-origin.x, -origin.y);
+    @Override
+    public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
+        Point adjustedStart = xy.offset(-origin.x, -origin.y);
+        Point adjustedEnd = end.offset(-origin.x, -origin.y);
 
-		if (this.paintBack != null) {
-			int color = this.paintBack.getColor();
-			if (filter != Filter.NONE) {
-				this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
-			}
-			canvas.drawTextRotated(text, (int) (adjustedStart.x),
-					(int) (adjustedStart.y),
-					(int) (adjustedEnd.x),
-					(int) (adjustedEnd.y), this.paintBack);
-			if (filter != Filter.NONE) {
-				this.paintBack.setColor(color);
-			}
-		}
-		int color = this.paintFront.getColor();
-		if (filter != Filter.NONE) {
-			this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
-		}
-		canvas.drawTextRotated(text, (int) (adjustedStart.x),
-				(int) (adjustedStart.y),
-				(int) (adjustedEnd.x),
-				(int) (adjustedEnd.y), this.paintFront);
-		if (filter != Filter.NONE) {
-			this.paintFront.setColor(color);
-		}
-	}
+        if (this.paintBack != null) {
+            int color = this.paintBack.getColor();
+            if (filter != Filter.NONE) {
+                this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
+            }
+            canvas.drawTextRotated(text, (int) (adjustedStart.x),
+                    (int) (adjustedStart.y),
+                    (int) (adjustedEnd.x),
+                    (int) (adjustedEnd.y), this.paintBack);
+            if (filter != Filter.NONE) {
+                this.paintBack.setColor(color);
+            }
+        }
+        int color = this.paintFront.getColor();
+        if (filter != Filter.NONE) {
+            this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
+        }
+        canvas.drawTextRotated(text, (int) (adjustedStart.x),
+                (int) (adjustedStart.y),
+                (int) (adjustedEnd.x),
+                (int) (adjustedEnd.y), this.paintFront);
+        if (filter != Filter.NONE) {
+            this.paintFront.setColor(color);
+        }
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(super.toString());
-		stringBuilder.append(", text=");
-		stringBuilder.append(this.text);
-		return stringBuilder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(super.toString());
+        stringBuilder.append(", text=");
+        stringBuilder.append(this.text);
+        return stringBuilder.toString();
+    }
 }

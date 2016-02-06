@@ -20,38 +20,34 @@ import java.util.Map;
 /**
  * An LRUCache with a fixed size and an access-order policy. Old mappings are automatically removed from the cache when
  * new mappings are added. This implementation uses an {@link LinkedHashMap} internally.
- * 
- * @param <K>
- *            the type of the map key, see {@link Map}.
- * @param <V>
- *            the type of the map value, see {@link Map}.
+ *
+ * @param <K> the type of the map key, see {@link Map}.
+ * @param <V> the type of the map value, see {@link Map}.
  */
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
-	private static final float LOAD_FACTOR = 0.6f;
-	private static final long serialVersionUID = 1L;
+    private static final float LOAD_FACTOR = 0.6f;
+    private static final long serialVersionUID = 1L;
 
-	private static int calculateInitialCapacity(int capacity) {
-		if (capacity < 0) {
-			throw new IllegalArgumentException("capacity must not be negative: " + capacity);
-		}
-		return (int) (capacity / LOAD_FACTOR) + 2;
-	}
+    private static int calculateInitialCapacity(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("capacity must not be negative: " + capacity);
+        }
+        return (int) (capacity / LOAD_FACTOR) + 2;
+    }
 
-	public final int capacity;
+    public final int capacity;
 
-	/**
-	 * @param capacity
-	 *            the maximum capacity of this cache.
-	 * @throws IllegalArgumentException
-	 *             if the capacity is negative.
-	 */
-	public LRUCache(int capacity) {
-		super(calculateInitialCapacity(capacity), LOAD_FACTOR, true);
-		this.capacity = capacity;
-	}
+    /**
+     * @param capacity the maximum capacity of this cache.
+     * @throws IllegalArgumentException if the capacity is negative.
+     */
+    public LRUCache(int capacity) {
+        super(calculateInitialCapacity(capacity), LOAD_FACTOR, true);
+        this.capacity = capacity;
+    }
 
-	@Override
-	protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-		return size() > this.capacity;
-	}
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() > this.capacity;
+    }
 }

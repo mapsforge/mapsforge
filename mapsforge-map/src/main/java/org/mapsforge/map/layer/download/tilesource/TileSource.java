@@ -15,40 +15,40 @@
  */
 package org.mapsforge.map.layer.download.tilesource;
 
+import org.mapsforge.core.model.Tile;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.mapsforge.core.model.Tile;
-
 public interface TileSource {
-	/**
-	 * Returns the default time-to-live (TTL) for cached tiles.
-	 */
-	long getDefaultTimeToLive();
+    /**
+     * Returns the default time-to-live (TTL) for cached tiles.
+     */
+    long getDefaultTimeToLive();
 
-	/**
-	 * @return the maximum number of parallel requests which this {@code TileSource} supports.
-	 */
-	int getParallelRequestsLimit();
+    /**
+     * @return the maximum number of parallel requests which this {@code TileSource} supports.
+     */
+    int getParallelRequestsLimit();
 
-	/**
-	 * @return the download URL for the given {@code Tile}.
-	 */
-	URL getTileUrl(Tile tile) throws MalformedURLException;
+    /**
+     * @return the download URL for the given {@code Tile}.
+     */
+    URL getTileUrl(Tile tile) throws MalformedURLException;
 
-	/**
-	 * @return the maximum zoom level which this {@code TileSource} supports.
-	 */
-	byte getZoomLevelMax();
+    /**
+     * @return the maximum zoom level which this {@code TileSource} supports.
+     */
+    byte getZoomLevelMax();
 
-	/**
-	 * @return the minimum zoom level which this {@code TileSource} supports.
-	 */
-	byte getZoomLevelMin();
+    /**
+     * @return the minimum zoom level which this {@code TileSource} supports.
+     */
+    byte getZoomLevelMin();
 
-	/**
-	 * @return the if the {@code TileSource} supports transparent images.
-	 */
-	boolean hasAlpha();
+    /**
+     * @return the if the {@code TileSource} supports transparent images.
+     */
+    boolean hasAlpha();
 
 }

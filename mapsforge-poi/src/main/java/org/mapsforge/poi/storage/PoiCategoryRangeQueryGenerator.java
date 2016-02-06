@@ -24,68 +24,65 @@ import java.util.Iterator;
  * {@link PoiCategoryFilter}.
  */
 public final class PoiCategoryRangeQueryGenerator {
-	private PoiCategoryRangeQueryGenerator() {
-		// no-op, for privacy
-	}
+    private PoiCategoryRangeQueryGenerator() {
+        // no-op, for privacy
+    }
 
-	/**
-	 * Gets the SQL query that looks up POI entries.
-	 *
-	 * @param filter
-	 *            The filter object for determining all wanted categories.
-	 * @param pattern
-	 *            the pattern to search in points of interest names (may be null).
-	 * @return The SQL query.
-	 */
-	public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
-		return DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter)
-				+ (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "")
-				+ " LIMIT ?;";
-	}
+    /**
+     * Gets the SQL query that looks up POI entries.
+     *
+     * @param filter  The filter object for determining all wanted categories.
+     * @param pattern the pattern to search in points of interest names (may be null).
+     * @return The SQL query.
+     */
+    public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
+        return DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter)
+                + (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "")
+                + " LIMIT ?;";
+    }
 
-	/**
-	 * Gets the WHERE clause for the SQL query that looks up POI entries.
-	 *
-	 * @param filter
-	 *            The filter object for determining all wanted categories.
-	 * @return The WHERE clause.
-	 */
-	private static String getSQLWhereClauseString(PoiCategoryFilter filter) {
-		Collection<PoiCategory> superCategories = filter.getAcceptedSuperCategories();
+    /**
+     * Gets the WHERE clause for the SQL query that looks up POI entries.
+     *
+     * @param filter The filter object for determining all wanted categories.
+     * @return The WHERE clause.
+     */
+    private static String getSQLWhereClauseString(PoiCategoryFilter filter) {
+        Collection<PoiCategory> superCategories = filter.getAcceptedSuperCategories();
 
-		if (superCategories.isEmpty()) {
-			return "";
-		}
+        if (superCategories.isEmpty()) {
+            return "";
+        }
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(" AND (");
-		// for each super category
-		for (Iterator<PoiCategory> superCatIter = superCategories.iterator(); superCatIter.hasNext(); ) {
-			PoiCategory superCat = superCatIter.next();
+        StringBuilder sb = new StringBuilder();
+        sb.append(" AND (");
+        // for each super category
+        for (Iterator<PoiCategory> superCatIter = superCategories.iterator(); superCatIter.hasNext(); ) {
+            PoiCategory superCat = superCatIter.next();
 
-			// All child categories of the super category, including their children
-			Collection<PoiCategory> categories = superCat.deepChildren();
-			// Don't forget the super category itself in the search!
-			categories.add(superCat);
+            // All child categories of the super category, including their children
+            Collection<PoiCategory> categories = superCat.deepChildren();
+            // Don't forget the super category itself in the search!
+            categories.add(superCat);
 
-			sb.append("poi_data.category IN (");
-			// for each category
-			for (Iterator<PoiCategory> catIter = categories.iterator(); catIter.hasNext(); ) {
-				PoiCategory cat = catIter.next();
-				sb.append(cat.getID());
-				if (catIter.hasNext()) {
-					sb.append(", ");
-				}
-			}
-			sb.append(")");
+            sb.append("poi_data.category IN (");
+            // for each category
+            for (Iterator<PoiCategory> catIter = categories.iterator(); catIter.hasNext(); ) {
+                PoiCategory cat = catIter.next();
+                sb.append(cat.getID());
+                if (catIter.hasNext()) {
+                    sb.append(", ");
+                }
+            }
+            sb.append(")");
 
-			// append OR if it is not the last
-			if (superCatIter.hasNext()) {
-				sb.append(" OR ");
-			}
-		}
-		sb.append(")");
+            // append OR if it is not the last
+            if (superCatIter.hasNext()) {
+                sb.append(" OR ");
+            }
+        }
+        sb.append(")");
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 }

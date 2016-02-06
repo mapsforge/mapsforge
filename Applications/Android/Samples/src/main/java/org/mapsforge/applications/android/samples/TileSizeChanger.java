@@ -24,72 +24,72 @@ import org.mapsforge.map.util.PausableThread;
  */
 public class TileSizeChanger extends RenderTheme4 {
 
-	private class ChangerThread extends PausableThread {
-		private static final int ROTATION_TIME = 10000;
+    private class ChangerThread extends PausableThread {
+        private static final int ROTATION_TIME = 10000;
 
-		@Override
-		protected void doWork() throws InterruptedException {
-			sleep(ROTATION_TIME);
-			TileSizeChanger.this.changeTileSize();
-		}
+        @Override
+        protected void doWork() throws InterruptedException {
+            sleep(ROTATION_TIME);
+            TileSizeChanger.this.changeTileSize();
+        }
 
-		@Override
-		protected ThreadPriority getThreadPriority() {
-			return ThreadPriority.ABOVE_NORMAL;
-		}
+        @Override
+        protected ThreadPriority getThreadPriority() {
+            return ThreadPriority.ABOVE_NORMAL;
+        }
 
-		@Override
-		protected boolean hasWork() {
-			return true;
-		}
+        @Override
+        protected boolean hasWork() {
+            return true;
+        }
 
-	}
+    }
 
-	private ChangerThread changerThread;
-	private int iteration;
+    private ChangerThread changerThread;
+    private int iteration;
 
-	private TileRendererLayer tileRendererLayer;
+    private TileRendererLayer tileRendererLayer;
 
-	@Override
-	protected void createControls() {
-		super.createControls();
-		this.changerThread = new ChangerThread();
-		this.changerThread.start();
-	}
+    @Override
+    protected void createControls() {
+        super.createControls();
+        this.changerThread = new ChangerThread();
+        this.changerThread.start();
+    }
 
-	@Override
-	protected void createLayers() {
-		tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
-				false, true, false);
-		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
-	}
+    @Override
+    protected void createLayers() {
+        tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+                this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
+                false, true, false);
+        this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
+    }
 
-	void changeTileSize() {
-		Integer[] tileSizes = { 256, 120, 0, 120};
+    void changeTileSize() {
+        Integer[] tileSizes = {256, 120, 0, 120};
 
-		if (tileSizes.length > 0) {
-			iteration += 1;
-			// destroy and recreate the tile caches so that old storage is
-			// freed and a new tile cache is created based on the new tile size
-			mapView.getLayerManager().getLayers().remove(tileRendererLayer);
-			tileRendererLayer.onDestroy();
-			purgeTileCaches();
+        if (tileSizes.length > 0) {
+            iteration += 1;
+            // destroy and recreate the tile caches so that old storage is
+            // freed and a new tile cache is created based on the new tile size
+            mapView.getLayerManager().getLayers().remove(tileRendererLayer);
+            tileRendererLayer.onDestroy();
+            purgeTileCaches();
 
-			int tileSize = tileSizes[iteration % tileSizes.length];
-			this.mapView.getModel().displayModel.setFixedTileSize(tileSize);
+            int tileSize = tileSizes[iteration % tileSizes.length];
+            this.mapView.getModel().displayModel.setFixedTileSize(tileSize);
 
-			createTileCaches();
-			createLayers();
+            createTileCaches();
+            createLayers();
 
-			this.mapView.getMapScaleBar().redrawScaleBar();
-			this.mapView.getLayerManager().redrawLayers();
-		}
-	}
+            this.mapView.getMapScaleBar().redrawScaleBar();
+            this.mapView.getLayerManager().redrawLayers();
+        }
+    }
 
-	@Override
-	protected void onDestroy() {
-		this.changerThread.interrupt();
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        this.changerThread.interrupt();
+        super.onDestroy();
+    }
 }

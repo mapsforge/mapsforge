@@ -20,5 +20,5 @@ package org.mapsforge.poi.storage;
  * given tag.
  */
 public class UnknownPoiCategoryException extends Exception {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 }

@@ -18,52 +18,52 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MapPositionTest {
-	private static final String MAP_POSITION_TO_STRING = "latLong=latitude=1.0, longitude=2.0, zoomLevel=3";
+    private static final String MAP_POSITION_TO_STRING = "latLong=latitude=1.0, longitude=2.0, zoomLevel=3";
 
-	private static MapPosition invokeConstructor(LatLong latLong, byte zoomLevel) {
-		return new MapPosition(latLong, zoomLevel);
-	}
+    private static MapPosition invokeConstructor(LatLong latLong, byte zoomLevel) {
+        return new MapPosition(latLong, zoomLevel);
+    }
 
-	private static void verifyBadConstructor(LatLong latLong, byte zoomLevel) {
-		try {
-			invokeConstructor(latLong, zoomLevel);
-			Assert.fail("latLong: " + latLong + ", zoomLevel: " + zoomLevel);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyBadConstructor(LatLong latLong, byte zoomLevel) {
+        try {
+            invokeConstructor(latLong, zoomLevel);
+            Assert.fail("latLong: " + latLong + ", zoomLevel: " + zoomLevel);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void badConstructorTest() {
-		verifyBadConstructor(new LatLong(1.0, 2.0), (byte) -1);
-		verifyBadConstructor(null, (byte) 0);
-	}
+    @Test
+    public void badConstructorTest() {
+        verifyBadConstructor(new LatLong(1.0, 2.0), (byte) -1);
+        verifyBadConstructor(null, (byte) 0);
+    }
 
-	@Test
-	public void equalsTest() {
-		MapPosition mapPosition1 = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
-		MapPosition mapPosition2 = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
-		MapPosition mapPosition3 = new MapPosition(new LatLong(1.0, 2.0), (byte) 0);
-		MapPosition mapPosition4 = new MapPosition(LatLong.fromMicroDegrees(0, 0), (byte) 3);
+    @Test
+    public void equalsTest() {
+        MapPosition mapPosition1 = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+        MapPosition mapPosition2 = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+        MapPosition mapPosition3 = new MapPosition(new LatLong(1.0, 2.0), (byte) 0);
+        MapPosition mapPosition4 = new MapPosition(LatLong.fromMicroDegrees(0, 0), (byte) 3);
 
-		TestUtils.equalsTest(mapPosition1, mapPosition2);
+        TestUtils.equalsTest(mapPosition1, mapPosition2);
 
-		TestUtils.notEqualsTest(mapPosition1, mapPosition3);
-		TestUtils.notEqualsTest(mapPosition1, mapPosition4);
-		TestUtils.notEqualsTest(mapPosition1, new Object());
-		TestUtils.notEqualsTest(mapPosition1, null);
-	}
+        TestUtils.notEqualsTest(mapPosition1, mapPosition3);
+        TestUtils.notEqualsTest(mapPosition1, mapPosition4);
+        TestUtils.notEqualsTest(mapPosition1, new Object());
+        TestUtils.notEqualsTest(mapPosition1, null);
+    }
 
-	@Test
-	public void fieldsTest() {
-		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
-		Assert.assertEquals(new LatLong(1.0, 2.0), mapPosition.latLong);
-		Assert.assertEquals(3, mapPosition.zoomLevel);
-	}
+    @Test
+    public void fieldsTest() {
+        MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+        Assert.assertEquals(new LatLong(1.0, 2.0), mapPosition.latLong);
+        Assert.assertEquals(3, mapPosition.zoomLevel);
+    }
 
-	@Test
-	public void toStringTest() {
-		MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
-		Assert.assertEquals(MAP_POSITION_TO_STRING, mapPosition.toString());
-	}
+    @Test
+    public void toStringTest() {
+        MapPosition mapPosition = new MapPosition(new LatLong(1.0, 2.0), (byte) 3);
+        Assert.assertEquals(MAP_POSITION_TO_STRING, mapPosition.toString());
+    }
 }

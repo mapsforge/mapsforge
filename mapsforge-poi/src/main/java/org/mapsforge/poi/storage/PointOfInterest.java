@@ -26,48 +26,48 @@ import java.util.List;
  * so that for two POIs a and b, a.equals(b) if and only if a.id == b.id.
  */
 public interface PointOfInterest {
-	/**
-	 * @return category of this point of interest.
-	 */
-	PoiCategory getCategory();
+    /**
+     * @return category of this point of interest.
+     */
+    PoiCategory getCategory();
 
-	/**
-	 * @return data of this point of interest.
-	 */
-	String getData();
+    /**
+     * @return data of this point of interest.
+     */
+    String getData();
 
-	/**
-	 * @return id of this point of interest.
-	 */
-	long getId();
+    /**
+     * @return id of this point of interest.
+     */
+    long getId();
 
-	/**
-	 * @return latitude of this point of interest.
-	 */
-	double getLatitude();
+    /**
+     * @return latitude of this point of interest.
+     */
+    double getLatitude();
 
-	/**
-	 * @return {@link LatLong} of this point of interest.
-	 */
-	LatLong getLatLong();
+    /**
+     * @return {@link LatLong} of this point of interest.
+     */
+    LatLong getLatLong();
 
-	/**
-	 * @return longitude of this point of interest
-	 */
-	double getLongitude();
+    /**
+     * @return longitude of this point of interest
+     */
+    double getLongitude();
 
-	/**
-	 * @return name of this point of interest at default locale
-	 */
-	String getName();
+    /**
+     * @return name of this point of interest at default locale
+     */
+    String getName();
 
-	/**
-	 * @return name of this point of interest at preferred language
-	 */
-	String getName(String language);
+    /**
+     * @return name of this point of interest at preferred language
+     */
+    String getName(String language);
 
-	/**
-	 * @return tags of this point of interest.
-	 */
-	List<Tag> getTags();
+    /**
+     * @return tags of this point of interest.
+     */
+    List<Tag> getTags();
 }

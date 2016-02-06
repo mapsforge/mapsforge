@@ -14,32 +14,30 @@
  */
 package org.mapsforge.map.reader;
 
-import java.io.File;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.reader.header.SubFileParameter;
 
 public class QueryCalculationsTest {
-	private static final MapFile MAP_FILE_SINGLE_DELTA = new MapFile("src/test/resources/single_delta_encoding/output.map", null);
-	private static final byte ZOOM_LEVEL_MAX = 25;
-	private static final int ZOOM_LEVEL_MIN = 0;
+    private static final MapFile MAP_FILE_SINGLE_DELTA = new MapFile("src/test/resources/single_delta_encoding/output.map", null);
+    private static final byte ZOOM_LEVEL_MAX = 25;
+    private static final int ZOOM_LEVEL_MIN = 0;
 
-	@Test
-	public void calculationsTestTest() {
-		MapFile mapFile = MAP_FILE_SINGLE_DELTA;
+    @Test
+    public void calculationsTestTest() {
+        MapFile mapFile = MAP_FILE_SINGLE_DELTA;
 
-		for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
-			QueryParameters single = new QueryParameters();
-			QueryParameters multi = new QueryParameters();
-			SubFileParameter subFileParameter = mapFile.getMapFileHeader().getSubFileParameter(single.queryZoomLevel);
-			Tile tile = new Tile(zoomLevel, zoomLevel, zoomLevel, 256);
-			single.calculateBaseTiles(tile, subFileParameter);
-			multi.calculateBaseTiles(tile, tile, subFileParameter);
-			Assert.assertEquals(single, multi);
-		}
+        for (byte zoomLevel = ZOOM_LEVEL_MIN; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
+            QueryParameters single = new QueryParameters();
+            QueryParameters multi = new QueryParameters();
+            SubFileParameter subFileParameter = mapFile.getMapFileHeader().getSubFileParameter(single.queryZoomLevel);
+            Tile tile = new Tile(zoomLevel, zoomLevel, zoomLevel, 256);
+            single.calculateBaseTiles(tile, subFileParameter);
+            multi.calculateBaseTiles(tile, tile, subFileParameter);
+            Assert.assertEquals(single, multi);
+        }
 
-		mapFile.close();
-	}
+        mapFile.close();
+    }
 }

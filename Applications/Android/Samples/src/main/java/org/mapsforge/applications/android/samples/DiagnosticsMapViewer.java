@@ -24,20 +24,20 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
  */
 public class DiagnosticsMapViewer extends RenderTheme4 {
 
-	@Override
-	protected void createLayers() {
-		super.createLayers();
+    @Override
+    protected void createLayers() {
+        super.createLayers();
 
-		// add a grid layer and a layer showing tile coordinates
-		mapView.getLayerManager().getLayers()
-				.add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
-		mapView.getLayerManager().getLayers()
-				.add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
-		mapView.getFpsCounter().setVisible(true);
-	}
+        // add a grid layer and a layer showing tile coordinates
+        mapView.getLayerManager().getLayers()
+                .add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+        mapView.getLayerManager().getLayers()
+                .add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+        mapView.getFpsCounter().setVisible(true);
+    }
 
-	@Override
-	protected boolean isZoomControlsAutoHide() {
-		return false;
-	}
+    @Override
+    protected boolean isZoomControlsAutoHide() {
+        return false;
+    }
 }

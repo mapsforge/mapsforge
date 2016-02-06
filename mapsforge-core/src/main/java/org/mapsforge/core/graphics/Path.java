@@ -16,15 +16,15 @@
 package org.mapsforge.core.graphics;
 
 public interface Path {
-	void clear();
+    void clear();
 
-	void close();
+    void close();
 
-	boolean isEmpty();
+    boolean isEmpty();
 
-	void lineTo(float x, float y);
+    void lineTo(float x, float y);
 
-	void moveTo(float x, float y);
+    void moveTo(float x, float y);
 
-	void setFillRule(FillRule fillRule);
+    void setFillRule(FillRule fillRule);
 }

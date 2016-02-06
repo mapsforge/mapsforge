@@ -25,42 +25,42 @@ import java.awt.event.MouseWheelEvent;
 import javax.swing.SwingUtilities;
 
 public class MouseEventListener extends MouseAdapter {
-	private final MapViewPosition mapViewPosition;
+    private final MapViewPosition mapViewPosition;
 
-	private Point lastDragPoint;
+    private Point lastDragPoint;
 
-	public MouseEventListener(MapViewPosition mapViewPosition) {
-		this.mapViewPosition = mapViewPosition;
-	}
+    public MouseEventListener(MapViewPosition mapViewPosition) {
+        this.mapViewPosition = mapViewPosition;
+    }
 
-	@Override
-	public void mouseDragged(MouseEvent mouseEvent) {
-		if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
-			Point point = mouseEvent.getPoint();
-			if (this.lastDragPoint != null) {
-				int moveHorizontal = point.x - this.lastDragPoint.x;
-				int moveVertical = point.y - this.lastDragPoint.y;
-				this.mapViewPosition.moveCenter(moveHorizontal, moveVertical);
-			}
-			this.lastDragPoint = point;
-		}
-	}
+    @Override
+    public void mouseDragged(MouseEvent mouseEvent) {
+        if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
+            Point point = mouseEvent.getPoint();
+            if (this.lastDragPoint != null) {
+                int moveHorizontal = point.x - this.lastDragPoint.x;
+                int moveVertical = point.y - this.lastDragPoint.y;
+                this.mapViewPosition.moveCenter(moveHorizontal, moveVertical);
+            }
+            this.lastDragPoint = point;
+        }
+    }
 
-	@Override
-	public void mousePressed(MouseEvent mouseEvent) {
-		if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
-			this.lastDragPoint = mouseEvent.getPoint();
-		}
-	}
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+        if (SwingUtilities.isLeftMouseButton(mouseEvent)) {
+            this.lastDragPoint = mouseEvent.getPoint();
+        }
+    }
 
-	@Override
-	public void mouseReleased(MouseEvent mouseEvent) {
-		this.lastDragPoint = null;
-	}
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+        this.lastDragPoint = null;
+    }
 
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
-		byte zoomLevelDiff = (byte) -mouseWheelEvent.getWheelRotation();
-		this.mapViewPosition.zoom(zoomLevelDiff);
-	}
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+        byte zoomLevelDiff = (byte) -mouseWheelEvent.getWheelRotation();
+        this.mapViewPosition.zoom(zoomLevelDiff);
+    }
 }

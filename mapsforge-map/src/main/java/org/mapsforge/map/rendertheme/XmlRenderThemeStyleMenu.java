@@ -26,44 +26,44 @@ import java.util.Map;
  * Android Intent mechanism.
  */
 public class XmlRenderThemeStyleMenu implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final Map<String, XmlRenderThemeStyleLayer> layers;
-	private final String defaultLanguage;
-	private final String defaultValue;
-	private final String id;
+    private final Map<String, XmlRenderThemeStyleLayer> layers;
+    private final String defaultLanguage;
+    private final String defaultValue;
+    private final String id;
 
-	public XmlRenderThemeStyleMenu(String id, String defaultLanguage, String defaultValue) {
-		this.defaultLanguage = defaultLanguage;
-		this.defaultValue = defaultValue;
-		this.id = id;
-		this.layers = new LinkedHashMap<String, XmlRenderThemeStyleLayer>();
-	}
+    public XmlRenderThemeStyleMenu(String id, String defaultLanguage, String defaultValue) {
+        this.defaultLanguage = defaultLanguage;
+        this.defaultValue = defaultValue;
+        this.id = id;
+        this.layers = new LinkedHashMap<String, XmlRenderThemeStyleLayer>();
+    }
 
-	public XmlRenderThemeStyleLayer createLayer(String id, boolean visible, boolean enabled) {
-		XmlRenderThemeStyleLayer style = new XmlRenderThemeStyleLayer(id, visible, enabled, this.defaultLanguage);
-		this.layers.put(id, style);
-		return style;
-	}
+    public XmlRenderThemeStyleLayer createLayer(String id, boolean visible, boolean enabled) {
+        XmlRenderThemeStyleLayer style = new XmlRenderThemeStyleLayer(id, visible, enabled, this.defaultLanguage);
+        this.layers.put(id, style);
+        return style;
+    }
 
-	public XmlRenderThemeStyleLayer getLayer(String id) {
-		return this.layers.get(id);
-	}
+    public XmlRenderThemeStyleLayer getLayer(String id) {
+        return this.layers.get(id);
+    }
 
-	public Map<String, XmlRenderThemeStyleLayer> getLayers() {
-		return this.layers;
-	}
+    public Map<String, XmlRenderThemeStyleLayer> getLayers() {
+        return this.layers;
+    }
 
-	public String getDefaultLanguage() {
-		return this.defaultLanguage;
-	}
+    public String getDefaultLanguage() {
+        return this.defaultLanguage;
+    }
 
-	public String getDefaultValue() {
-		return this.defaultValue;
-	}
+    public String getDefaultValue() {
+        return this.defaultValue;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
 }

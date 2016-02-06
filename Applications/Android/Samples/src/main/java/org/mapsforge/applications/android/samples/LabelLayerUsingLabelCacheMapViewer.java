@@ -18,8 +18,6 @@ package org.mapsforge.applications.android.samples;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
-import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
@@ -28,13 +26,13 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  */
 public class LabelLayerUsingLabelCacheMapViewer extends RenderTheme4 {
 
-	@Override
-	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, true);
-		mapView.getLayerManager().getLayers().add(tileRendererLayer);
-		org.mapsforge.map.layer.labels.LabelLayer labelLayer = new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
-		mapView.getLayerManager().getLayers().add(labelLayer);
-	}
+    @Override
+    protected void createLayers() {
+        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+                this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, true);
+        mapView.getLayerManager().getLayers().add(tileRendererLayer);
+        org.mapsforge.map.layer.labels.LabelLayer labelLayer = new org.mapsforge.map.layer.labels.LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
+        mapView.getLayerManager().getLayers().add(labelLayer);
+    }
 
 }

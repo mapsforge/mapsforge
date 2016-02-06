@@ -14,44 +14,44 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-import java.util.List;
-
 import org.mapsforge.core.model.Tag;
 
+import java.util.List;
+
 final class AnyMatcher implements ElementMatcher, AttributeMatcher, ClosedMatcher {
-	static final AnyMatcher INSTANCE = new AnyMatcher();
+    static final AnyMatcher INSTANCE = new AnyMatcher();
 
-	private AnyMatcher() {
-		// do nothing
-	}
+    private AnyMatcher() {
+        // do nothing
+    }
 
-	@Override
-	public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
-		return attributeMatcher == this;
-	}
+    @Override
+    public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
+        return attributeMatcher == this;
+    }
 
-	@Override
-	public boolean isCoveredBy(ClosedMatcher closedMatcher) {
-		return closedMatcher == this;
-	}
+    @Override
+    public boolean isCoveredBy(ClosedMatcher closedMatcher) {
+        return closedMatcher == this;
+    }
 
-	@Override
-	public boolean isCoveredBy(ElementMatcher elementMatcher) {
-		return elementMatcher == this;
-	}
+    @Override
+    public boolean isCoveredBy(ElementMatcher elementMatcher) {
+        return elementMatcher == this;
+    }
 
-	@Override
-	public boolean matches(Closed closed) {
-		return true;
-	}
+    @Override
+    public boolean matches(Closed closed) {
+        return true;
+    }
 
-	@Override
-	public boolean matches(Element element) {
-		return true;
-	}
+    @Override
+    public boolean matches(Element element) {
+        return true;
+    }
 
-	@Override
-	public boolean matches(List<Tag> tags) {
-		return true;
-	}
+    @Override
+    public boolean matches(List<Tag> tags) {
+        return true;
+    }
 }

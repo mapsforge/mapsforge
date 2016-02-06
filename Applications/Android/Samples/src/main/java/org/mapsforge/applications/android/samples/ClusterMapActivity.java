@@ -24,10 +24,10 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
-import org.mapsforge.applications.android.samples.dummy.ManyDummyContent;
 import org.mapsforge.applications.android.samples.cluster.ClusterManager;
 import org.mapsforge.applications.android.samples.cluster.GeoItem;
 import org.mapsforge.applications.android.samples.cluster.MarkerBitmap;
+import org.mapsforge.applications.android.samples.dummy.ManyDummyContent;
 import org.mapsforge.core.graphics.Align;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;

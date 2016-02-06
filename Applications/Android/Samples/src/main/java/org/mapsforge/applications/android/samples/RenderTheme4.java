@@ -35,63 +35,63 @@ import java.util.Set;
 public class RenderTheme4 extends SamplesBaseActivity implements XmlRenderThemeMenuCallback {
 
 
-	@Override
-	protected XmlRenderTheme getRenderTheme() {
-		try {
-			return new AssetsRenderTheme(this, getRenderThemePrefix(), getRenderThemeFile(), this);
-		} catch (IOException e) {
-			Log.e(SamplesApplication.TAG, "Render theme failure " + e.toString());
-		}
-		return null;
-	}
+    @Override
+    protected XmlRenderTheme getRenderTheme() {
+        try {
+            return new AssetsRenderTheme(this, getRenderThemePrefix(), getRenderThemeFile(), this);
+        } catch (IOException e) {
+            Log.e(SamplesApplication.TAG, "Render theme failure " + e.toString());
+        }
+        return null;
+    }
 
-	protected String getRenderThemePrefix() {
-		return "";
-	}
+    protected String getRenderThemePrefix() {
+        return "";
+    }
 
-	@Override
-	public Set<String> getCategories(XmlRenderThemeStyleMenu menuStyle) {
-		this.renderThemeStyleMenu = menuStyle;
-		String id = this.sharedPreferences.getString(this.renderThemeStyleMenu.getId(),
-				this.renderThemeStyleMenu.getDefaultValue());
+    @Override
+    public Set<String> getCategories(XmlRenderThemeStyleMenu menuStyle) {
+        this.renderThemeStyleMenu = menuStyle;
+        String id = this.sharedPreferences.getString(this.renderThemeStyleMenu.getId(),
+                this.renderThemeStyleMenu.getDefaultValue());
 
-		XmlRenderThemeStyleLayer baseLayer = this.renderThemeStyleMenu.getLayer(id);
-		if (baseLayer == null) {
-			Log.w(SamplesApplication.TAG, "Invalid style " + id);
-			return null;
-		}
-		Set<String> result = baseLayer.getCategories();
+        XmlRenderThemeStyleLayer baseLayer = this.renderThemeStyleMenu.getLayer(id);
+        if (baseLayer == null) {
+            Log.w(SamplesApplication.TAG, "Invalid style " + id);
+            return null;
+        }
+        Set<String> result = baseLayer.getCategories();
 
-		// add the categories from overlays that are enabled
-		for (XmlRenderThemeStyleLayer overlay : baseLayer.getOverlays()) {
-			if (this.sharedPreferences.getBoolean(overlay.getId(), overlay.isEnabled())) {
-				result.addAll(overlay.getCategories());
-			}
-		}
+        // add the categories from overlays that are enabled
+        for (XmlRenderThemeStyleLayer overlay : baseLayer.getOverlays()) {
+            if (this.sharedPreferences.getBoolean(overlay.getId(), overlay.isEnabled())) {
+                result.addAll(overlay.getCategories());
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	protected String getRenderThemeFile() {
-		return "renderthemes/rendertheme-v4.xml";
-	}
+    protected String getRenderThemeFile() {
+        return "renderthemes/rendertheme-v4.xml";
+    }
 
 
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-		super.onSharedPreferenceChanged(preferences, key);
-		// difficult to know which render theme options have changed since we
-		// do not know all the keys, so we just purge the caches and redraw
-		// the map whenever there is a change in the settings.
-		// TODO: for real applications it is essential to know when the style menu has
-		// changed. It would be good to find a way of identifying when a key is
-		// for the style menu.
-		Log.i(SamplesApplication.TAG, "Purging tile caches");
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+        super.onSharedPreferenceChanged(preferences, key);
+        // difficult to know which render theme options have changed since we
+        // do not know all the keys, so we just purge the caches and redraw
+        // the map whenever there is a change in the settings.
+        // TODO: for real applications it is essential to know when the style menu has
+        // changed. It would be good to find a way of identifying when a key is
+        // for the style menu.
+        Log.i(SamplesApplication.TAG, "Purging tile caches");
 
-		for (TileCache tileCache : tileCaches) {
-			tileCache.purge();
-		}
-		AndroidUtil.restartActivity(this);
-	}
+        for (TileCache tileCache : tileCaches) {
+            tileCache.purge();
+        }
+        AndroidUtil.restartActivity(this);
+    }
 
 }

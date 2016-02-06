@@ -25,20 +25,20 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 
 public class DualMapViewerWithClampedTileSizes extends DualMapViewerWithDifferentDisplayModels {
 
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		mapView.getModel().displayModel.setTileSizeMultiple(200);
-		mapView2.getModel().displayModel.setTileSizeMultiple(100);
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+        mapView.getModel().displayModel.setTileSizeMultiple(200);
+        mapView2.getModel().displayModel.setTileSizeMultiple(100);
 
-		Log.d(SamplesApplication.TAG, "TILESIZE 1: " + Integer.toString(mapView.getModel().displayModel.getTileSize()));
-		Log.d(SamplesApplication.TAG, "TILESIZE 2: " + Integer.toString(mapView2.getModel().displayModel.getTileSize()));
-	}
+        Log.d(SamplesApplication.TAG, "TILESIZE 1: " + Integer.toString(mapView.getModel().displayModel.getTileSize()));
+        Log.d(SamplesApplication.TAG, "TILESIZE 2: " + Integer.toString(mapView2.getModel().displayModel.getTileSize()));
+    }
 
-	@Override
-	protected void createLayers() {
-		super.createLayers();
-		mapView.getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
-		mapView2.getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView2.getModel().displayModel));
-	}
+    @Override
+    protected void createLayers() {
+        super.createLayers();
+        mapView.getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+        mapView2.getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView2.getModel().displayModel));
+    }
 }

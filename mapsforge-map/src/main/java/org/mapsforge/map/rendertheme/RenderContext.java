@@ -27,89 +27,87 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- *
  * A RenderContext contains all the information and data to render a map area, it is passed between
  * calls in order to avoid local data stored in the DatabaseRenderer.
- *
  */
 public class RenderContext {
 
-	private static final byte LAYERS = 11;
+    private static final byte LAYERS = 11;
 
-	private static final double STROKE_INCREASE = 1.5;
-	private static final byte STROKE_MIN_ZOOM_LEVEL = 12;
-	public final RendererJob rendererJob;
-	public final RenderTheme renderTheme;
+    private static final double STROKE_INCREASE = 1.5;
+    private static final byte STROKE_MIN_ZOOM_LEVEL = 12;
+    public final RendererJob rendererJob;
+    public final RenderTheme renderTheme;
 
-	// Configuration that drives the rendering
-	public final CanvasRasterer canvasRasterer;
+    // Configuration that drives the rendering
+    public final CanvasRasterer canvasRasterer;
 
-	// Data generated for the rendering process
-	private List<List<ShapePaintContainer>> drawingLayers;
-	public final List<MapElementContainer> labels;
-	public final List<List<List<ShapePaintContainer>>> ways;
+    // Data generated for the rendering process
+    private List<List<ShapePaintContainer>> drawingLayers;
+    public final List<MapElementContainer> labels;
+    public final List<List<List<ShapePaintContainer>>> ways;
 
 
-	public RenderContext(RendererJob rendererJob, CanvasRasterer canvasRasterer) throws InterruptedException, ExecutionException {
-		this.rendererJob = rendererJob;
-		this.labels = new LinkedList<>();
-		this.canvasRasterer = canvasRasterer;
-		this.renderTheme = rendererJob.renderThemeFuture.get();
-		this.renderTheme.scaleTextSize(rendererJob.textScale, rendererJob.tile.zoomLevel);
-		this.ways = createWayLists();
-		setScaleStrokeWidth(this.rendererJob.tile.zoomLevel);
-	}
+    public RenderContext(RendererJob rendererJob, CanvasRasterer canvasRasterer) throws InterruptedException, ExecutionException {
+        this.rendererJob = rendererJob;
+        this.labels = new LinkedList<>();
+        this.canvasRasterer = canvasRasterer;
+        this.renderTheme = rendererJob.renderThemeFuture.get();
+        this.renderTheme.scaleTextSize(rendererJob.textScale, rendererJob.tile.zoomLevel);
+        this.ways = createWayLists();
+        setScaleStrokeWidth(this.rendererJob.tile.zoomLevel);
+    }
 
-	public void destroy() {
-		this.canvasRasterer.destroy();
-	}
+    public void destroy() {
+        this.canvasRasterer.destroy();
+    }
 
-	public void setDrawingLayers(byte layer) {
-		if (layer < 0) {
-			layer =  0;
-		} else if (layer >= RenderContext.LAYERS) {
-			layer = RenderContext.LAYERS - 1;
-		}
-		this.drawingLayers = ways.get(layer);
-	}
+    public void setDrawingLayers(byte layer) {
+        if (layer < 0) {
+            layer = 0;
+        } else if (layer >= RenderContext.LAYERS) {
+            layer = RenderContext.LAYERS - 1;
+        }
+        this.drawingLayers = ways.get(layer);
+    }
 
-	public void addToCurrentDrawingLayer(int level, ShapePaintContainer element) {
-		this.drawingLayers.get(level).add(element);
-	}
+    public void addToCurrentDrawingLayer(int level, ShapePaintContainer element) {
+        this.drawingLayers.get(level).add(element);
+    }
 
-	/**
-	 * Just a way of generating a hash key for a tile if only the RendererJob is known.
-	 * @param tile the tile that changes
-	 * @return a RendererJob based on the current one, only tile changes
-	 */
-	public RendererJob otherTile(Tile tile) {
-		return new RendererJob(tile, this.rendererJob.mapDataStore, this.rendererJob.renderThemeFuture, this.rendererJob.displayModel,
-				this.rendererJob.textScale, this.rendererJob.hasAlpha, this.rendererJob.labelsOnly);
-	}
+    /**
+     * Just a way of generating a hash key for a tile if only the RendererJob is known.
+     *
+     * @param tile the tile that changes
+     * @return a RendererJob based on the current one, only tile changes
+     */
+    public RendererJob otherTile(Tile tile) {
+        return new RendererJob(tile, this.rendererJob.mapDataStore, this.rendererJob.renderThemeFuture, this.rendererJob.displayModel,
+                this.rendererJob.textScale, this.rendererJob.hasAlpha, this.rendererJob.labelsOnly);
+    }
 
-	private List<List<List<ShapePaintContainer>>> createWayLists() {
-		List<List<List<ShapePaintContainer>>> result = new ArrayList<>(LAYERS);
-		int levels = this.renderTheme.getLevels();
+    private List<List<List<ShapePaintContainer>>> createWayLists() {
+        List<List<List<ShapePaintContainer>>> result = new ArrayList<>(LAYERS);
+        int levels = this.renderTheme.getLevels();
 
-		for (byte i = LAYERS - 1; i >= 0; --i) {
-			List<List<ShapePaintContainer>> innerWayList = new ArrayList<>(levels);
-			for (int j = levels - 1; j >= 0; --j) {
-				innerWayList.add(new ArrayList<ShapePaintContainer>(0));
-			}
-			result.add(innerWayList);
-		}
-		return result;
-	}
+        for (byte i = LAYERS - 1; i >= 0; --i) {
+            List<List<ShapePaintContainer>> innerWayList = new ArrayList<>(levels);
+            for (int j = levels - 1; j >= 0; --j) {
+                innerWayList.add(new ArrayList<ShapePaintContainer>(0));
+            }
+            result.add(innerWayList);
+        }
+        return result;
+    }
 
-	/**
-	 * Sets the scale stroke factor for the given zoom level.
-	 *
-	 * @param zoomLevel
-	 *            the zoom level for which the scale stroke factor should be set.
-	 */
-	private void setScaleStrokeWidth(byte zoomLevel) {
-		int zoomLevelDiff = Math.max(zoomLevel - STROKE_MIN_ZOOM_LEVEL, 0);
-		this.renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff), this.rendererJob.tile.zoomLevel);
-	}
+    /**
+     * Sets the scale stroke factor for the given zoom level.
+     *
+     * @param zoomLevel the zoom level for which the scale stroke factor should be set.
+     */
+    private void setScaleStrokeWidth(byte zoomLevel) {
+        int zoomLevelDiff = Math.max(zoomLevel - STROKE_MIN_ZOOM_LEVEL, 0);
+        this.renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff), this.rendererJob.tile.zoomLevel);
+    }
 
 }

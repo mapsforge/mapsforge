@@ -16,13 +16,13 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import org.mapsforge.applications.android.samples.location.MyLocationOverlay;
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-
 import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+
+import org.mapsforge.applications.android.samples.location.MyLocationOverlay;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 
 /**
  * MapViewer that shows current position. In the data directory of the Samples
@@ -30,39 +30,39 @@ import android.os.Build;
  * simulate location data in the center of Berlin.
  */
 public class LocationOverlayMapViewer extends DownloadLayerViewer {
-	private MyLocationOverlay myLocationOverlay;
+    private MyLocationOverlay myLocationOverlay;
 
-	@SuppressWarnings("deprecation")
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	@Override
-	protected void createLayers() {
-		super.createLayers();
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void createLayers() {
+        super.createLayers();
 
-		// a marker to show at the position
-		Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_red) : getResources().getDrawable(R.drawable.marker_red);
-		Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
+        // a marker to show at the position
+        Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_red) : getResources().getDrawable(R.drawable.marker_red);
+        Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
 
-		// create the overlay and tell it to follow the location
-		this.myLocationOverlay = new MyLocationOverlay(this,
-				this.mapView.getModel().mapViewPosition, bitmap);
-		this.myLocationOverlay.setSnapToLocationEnabled(true);
-		mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
-	}
+        // create the overlay and tell it to follow the location
+        this.myLocationOverlay = new MyLocationOverlay(this,
+                this.mapView.getModel().mapViewPosition, bitmap);
+        this.myLocationOverlay.setSnapToLocationEnabled(true);
+        mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
+    }
 
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		myLocationOverlay.onRequestPermissionsResult(requestCode, permissions, grantResults);
-	}
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        myLocationOverlay.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		this.myLocationOverlay.enableMyLocation(true);
-	}
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.myLocationOverlay.enableMyLocation(true);
+    }
 
-	@Override
-	protected void onStop() {
-		myLocationOverlay.disableMyLocation();
-		super.onStop();
-	}
+    @Override
+    protected void onStop() {
+        myLocationOverlay.disableMyLocation();
+        super.onStop();
+    }
 }

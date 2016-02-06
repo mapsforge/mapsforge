@@ -27,59 +27,63 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
  */
 public class SimplestMapViewer extends MapViewerTemplate {
 
-	/**
-	 * This MapViewer uses the deprecated built-in osmarender theme.
-	 * @return the render theme to use
-	 */
-	@Override
-	protected XmlRenderTheme getRenderTheme() {
-		return InternalRenderTheme.OSMARENDER;
-	}
+    /**
+     * This MapViewer uses the deprecated built-in osmarender theme.
+     *
+     * @return the render theme to use
+     */
+    @Override
+    protected XmlRenderTheme getRenderTheme() {
+        return InternalRenderTheme.OSMARENDER;
+    }
 
-	/**
-	 * This MapViewer uses the standard xml layout in the Samples app.
-	 * @return
-	 */
-	@Override
-	protected int getLayoutId() {
-		return R.layout.mapviewer;
-	}
+    /**
+     * This MapViewer uses the standard xml layout in the Samples app.
+     *
+     * @return
+     */
+    @Override
+    protected int getLayoutId() {
+        return R.layout.mapviewer;
+    }
 
-	/**
-	 * The id of the mapview inside the layout.
-	 * @return the id of the MapView inside the layout.
-	 */
-	@Override
-	protected int getMapViewId() {
-		return R.id.mapView;
-	}
+    /**
+     * The id of the mapview inside the layout.
+     *
+     * @return the id of the MapView inside the layout.
+     */
+    @Override
+    protected int getMapViewId() {
+        return R.id.mapView;
+    }
 
-	/**
-	 * The name of the map file.
-	 * @return map file name
-	 */
-	@Override
-	protected String getMapFileName() {
-		return "germany.map";
-	}
+    /**
+     * The name of the map file.
+     *
+     * @return map file name
+     */
+    @Override
+    protected String getMapFileName() {
+        return "germany.map";
+    }
 
-	/**
-	 * Creates a simple tile renderer layer with the AndroidUtil helper.
-	 */
-	@Override
-	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
-		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
-	}
+    /**
+     * Creates a simple tile renderer layer with the AndroidUtil helper.
+     */
+    @Override
+    protected void createLayers() {
+        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+                this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
+        this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
+    }
 
-	/**
-	 * Creates the tile cache with the AndroidUtil helper
-	 */
-	@Override
-	protected void createTileCaches() {
-		this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
-				this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
-				this.mapView.getModel().frameBufferModel.getOverdrawFactor()));
-	}
+    /**
+     * Creates the tile cache with the AndroidUtil helper
+     */
+    @Override
+    protected void createTileCaches() {
+        this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
+                this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
+                this.mapView.getModel().frameBufferModel.getOverdrawFactor()));
+    }
 }

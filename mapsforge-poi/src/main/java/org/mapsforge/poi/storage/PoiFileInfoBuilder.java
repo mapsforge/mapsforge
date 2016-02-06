@@ -17,14 +17,14 @@ package org.mapsforge.poi.storage;
 import org.mapsforge.core.model.BoundingBox;
 
 public class PoiFileInfoBuilder {
-	public BoundingBox bounds;
-	public String comment;
-	public long date;
-	public String language;
-	public int version;
-	public String writer;
+    public BoundingBox bounds;
+    public String comment;
+    public long date;
+    public String language;
+    public int version;
+    public String writer;
 
-	public PoiFileInfo build() {
-		return new PoiFileInfo(this);
-	}
+    public PoiFileInfo build() {
+        return new PoiFileInfo(this);
+    }
 }

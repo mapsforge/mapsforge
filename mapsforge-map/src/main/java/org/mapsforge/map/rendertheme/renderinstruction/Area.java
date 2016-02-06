@@ -16,151 +16,150 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents a closed polygon on the map.
  */
 public class Area extends RenderInstruction {
-	private boolean bitmapInvalid;
-	private final Paint fill;
-	private final int level;
-	private final String relativePathPrefix;
-	private Bitmap shaderBitmap;
-	private String src;
-	private final Paint stroke;
-	private final Map<Byte, Paint> strokes;
-	private float strokeWidth;
+    private boolean bitmapInvalid;
+    private final Paint fill;
+    private final int level;
+    private final String relativePathPrefix;
+    private Bitmap shaderBitmap;
+    private String src;
+    private final Paint stroke;
+    private final Map<Byte, Paint> strokes;
+    private float strokeWidth;
 
-	public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-	            XmlPullParser pullParser, int level, String relativePathPrefix) throws IOException, XmlPullParserException {
-		super(graphicFactory, displayModel);
+    public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+                XmlPullParser pullParser, int level, String relativePathPrefix) throws IOException, XmlPullParserException {
+        super(graphicFactory, displayModel);
 
-		this.level = level;
-		this.relativePathPrefix = relativePathPrefix;
+        this.level = level;
+        this.relativePathPrefix = relativePathPrefix;
 
-		this.fill = graphicFactory.createPaint();
-		this.fill.setColor(Color.TRANSPARENT);
-		this.fill.setStyle(Style.FILL);
-		this.fill.setStrokeCap(Cap.ROUND);
+        this.fill = graphicFactory.createPaint();
+        this.fill.setColor(Color.TRANSPARENT);
+        this.fill.setStyle(Style.FILL);
+        this.fill.setStrokeCap(Cap.ROUND);
 
-		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(Color.TRANSPARENT);
-		this.stroke.setStyle(Style.STROKE);
-		this.stroke.setStrokeCap(Cap.ROUND);
+        this.stroke = graphicFactory.createPaint();
+        this.stroke.setColor(Color.TRANSPARENT);
+        this.stroke.setStyle(Style.STROKE);
+        this.stroke.setStrokeCap(Cap.ROUND);
 
-		this.strokes = new HashMap<>();
+        this.strokes = new HashMap<>();
 
-		extractValues(elementName, pullParser);
-	}
+        extractValues(elementName, pullParser);
+    }
 
-	@Override
-	public void destroy() {
-		// no-op
-	}
+    @Override
+    public void destroy() {
+        // no-op
+    }
 
-	private void extractValues(String elementName,
-	                           XmlPullParser pullParser) throws IOException, XmlPullParserException {
-		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
-			String name = pullParser.getAttributeName(i);
-			String value = pullParser.getAttributeValue(i);
+    private void extractValues(String elementName,
+                               XmlPullParser pullParser) throws IOException, XmlPullParserException {
+        for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+            String name = pullParser.getAttributeName(i);
+            String value = pullParser.getAttributeValue(i);
 
-			if (SRC.equals(name)) {
-				this.src = value;
-			} else if (CAT.equals(name)) {
-				this.category = value;
-			} else if (FILL.equals(name)) {
-				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
-			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
-			} else if (SYMBOL_HEIGHT.equals(name)) {
-				this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
-			} else if (SYMBOL_PERCENT.equals(name)) {
-				this.percent = XmlUtils.parseNonNegativeInteger(name, value);
-			} else if (SYMBOL_SCALING.equals(name)) {
-				this.scaling = fromValue(value);
-			} else if (SYMBOL_WIDTH.equals(name)) {
-				this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
-			} else if (STROKE_WIDTH.equals(name)) {
-				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
-			} else {
-				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
-			}
-		}
-	}
+            if (SRC.equals(name)) {
+                this.src = value;
+            } else if (CAT.equals(name)) {
+                this.category = value;
+            } else if (FILL.equals(name)) {
+                this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (STROKE.equals(name)) {
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (SYMBOL_HEIGHT.equals(name)) {
+                this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (SYMBOL_PERCENT.equals(name)) {
+                this.percent = XmlUtils.parseNonNegativeInteger(name, value);
+            } else if (SYMBOL_SCALING.equals(name)) {
+                this.scaling = fromValue(value);
+            } else if (SYMBOL_WIDTH.equals(name)) {
+                this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (STROKE_WIDTH.equals(name)) {
+                this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+            } else {
+                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+            }
+        }
+    }
 
 
+    @Override
+    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
+        // do nothing
+    }
 
-	@Override
-	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
-		// do nothing
-	}
+    @Override
+    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+        synchronized (this) {
+            // this needs to be synchronized as we potentially set a shift in the shader and
+            // the shift is particular to the tile when rendered in multi-thread mode
+            Paint fillPaint = getFillPaint(renderContext.rendererJob.tile.zoomLevel);
+            if (shaderBitmap == null && !bitmapInvalid) {
+                try {
+                    shaderBitmap = createBitmap(relativePathPrefix, src);
+                    if (shaderBitmap != null) {
+                        fillPaint.setBitmapShader(shaderBitmap);
+                        shaderBitmap.decrementRefCount();
+                    }
+                } catch (IOException ioException) {
+                    bitmapInvalid = true;
+                }
+            }
 
-	@Override
-	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-		synchronized (this) {
-			// this needs to be synchronized as we potentially set a shift in the shader and
-			// the shift is particular to the tile when rendered in multi-thread mode
-			Paint fillPaint = getFillPaint(renderContext.rendererJob.tile.zoomLevel);
-			if (shaderBitmap == null && !bitmapInvalid) {
-				try {
-					shaderBitmap = createBitmap(relativePathPrefix, src);
-					if (shaderBitmap != null) {
-						fillPaint.setBitmapShader(shaderBitmap);
-						shaderBitmap.decrementRefCount();
-					}
-				} catch (IOException ioException) {
-					bitmapInvalid = true;
-				}
-			}
+            fillPaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
 
-			fillPaint.setBitmapShaderShift(way.getUpperLeft().getOrigin());
+            renderCallback.renderArea(renderContext, fillPaint, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, way);
+        }
+    }
 
-			renderCallback.renderArea(renderContext, fillPaint, getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, way);
-		}
-	}
+    @Override
+    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        if (this.stroke != null) {
+            Paint zlPaint = graphicFactory.createPaint(this.stroke);
+            zlPaint.setStrokeWidth(this.strokeWidth * scaleFactor);
+            this.strokes.put(zoomLevel, zlPaint);
+        }
+    }
 
-	@Override
-	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-		if (this.stroke != null) {
-			Paint zlPaint = graphicFactory.createPaint(this.stroke);
-			zlPaint.setStrokeWidth(this.strokeWidth * scaleFactor);
-			this.strokes.put(zoomLevel, zlPaint);
-		}
-	}
+    @Override
+    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+        // do nothing
+    }
 
-	@Override
-	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-		// do nothing
-	}
+    private Paint getFillPaint(byte zoomLevel) {
+        return this.fill;
+    }
 
-	private Paint getFillPaint(byte zoomLevel) {
-		return this.fill;
-	}
-
-	private Paint getStrokePaint(byte zoomLevel) {
-		Paint paint = strokes.get(zoomLevel);
-		if (paint == null) {
-			paint = this.stroke;
-		}
-		return paint;
-	}
+    private Paint getStrokePaint(byte zoomLevel) {
+        Paint paint = strokes.get(zoomLevel);
+        if (paint == null) {
+            paint = this.stroke;
+        }
+        return paint;
+    }
 
 }

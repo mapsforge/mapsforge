@@ -15,10 +15,6 @@
  */
 package org.mapsforge.map.rendertheme;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -27,54 +23,58 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class ExternalRenderThemeTest {
-	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
-	private static final String RESOURCE_FOLDER = "src/test/resources/rendertheme/";
+    private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+    private static final String RESOURCE_FOLDER = "src/test/resources/rendertheme/";
 
-	private static void equalsTest(Object object1, Object object2) {
-		Assert.assertEquals(object1.hashCode(), object2.hashCode());
-		Assert.assertEquals(object1, object2);
-		Assert.assertEquals(object2, object1);
-	}
+    private static void equalsTest(Object object1, Object object2) {
+        Assert.assertEquals(object1.hashCode(), object2.hashCode());
+        Assert.assertEquals(object1, object2);
+        Assert.assertEquals(object2, object1);
+    }
 
-	private static ExternalRenderTheme invokeConstructor(File file) throws FileNotFoundException {
-		return new ExternalRenderTheme(file);
-	}
+    private static ExternalRenderTheme invokeConstructor(File file) throws FileNotFoundException {
+        return new ExternalRenderTheme(file);
+    }
 
-	private static void verifyInvalid(String filePath) {
-		try {
-			invokeConstructor(new File(filePath));
-			Assert.fail();
-		} catch (FileNotFoundException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyInvalid(String filePath) {
+        try {
+            invokeConstructor(new File(filePath));
+            Assert.fail();
+        } catch (FileNotFoundException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void equalsTest() throws FileNotFoundException {
-		File renderThemeFile = new File(RESOURCE_FOLDER, "empty-render-theme.xml");
-		ExternalRenderTheme externalRenderTheme1 = new ExternalRenderTheme(renderThemeFile);
-		ExternalRenderTheme externalRenderTheme2 = new ExternalRenderTheme(renderThemeFile);
-		ExternalRenderTheme externalRenderTheme3 = new ExternalRenderTheme(new File(RESOURCE_FOLDER,
-				"test-render-theme.xml"));
+    @Test
+    public void equalsTest() throws FileNotFoundException {
+        File renderThemeFile = new File(RESOURCE_FOLDER, "empty-render-theme.xml");
+        ExternalRenderTheme externalRenderTheme1 = new ExternalRenderTheme(renderThemeFile);
+        ExternalRenderTheme externalRenderTheme2 = new ExternalRenderTheme(renderThemeFile);
+        ExternalRenderTheme externalRenderTheme3 = new ExternalRenderTheme(new File(RESOURCE_FOLDER,
+                "test-render-theme.xml"));
 
-		equalsTest(externalRenderTheme1, externalRenderTheme2);
+        equalsTest(externalRenderTheme1, externalRenderTheme2);
 
-		Assert.assertFalse(externalRenderTheme1.equals(externalRenderTheme3));
-		Assert.assertFalse(externalRenderTheme3.equals(externalRenderTheme1));
-		Assert.assertFalse(externalRenderTheme1.equals(new Object()));
-	}
+        Assert.assertFalse(externalRenderTheme1.equals(externalRenderTheme3));
+        Assert.assertFalse(externalRenderTheme3.equals(externalRenderTheme1));
+        Assert.assertFalse(externalRenderTheme1.equals(new Object()));
+    }
 
-	@Test
-	public void invalidRenderThemeFileTest() {
-		verifyInvalid("foo");
-		verifyInvalid("src");
-	}
+    @Test
+    public void invalidRenderThemeFileTest() {
+        verifyInvalid("foo");
+        verifyInvalid("src");
+    }
 
-	@Test
-	public void validRenderThemeFileTest() throws XmlPullParserException, IOException {
-		File renderThemeFile = new File(RESOURCE_FOLDER, "empty-render-theme.xml");
-		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(renderThemeFile);
-		Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
-	}
+    @Test
+    public void validRenderThemeFileTest() throws XmlPullParserException, IOException {
+        File renderThemeFile = new File(RESOURCE_FOLDER, "empty-render-theme.xml");
+        XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(renderThemeFile);
+        Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
+    }
 }

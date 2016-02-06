@@ -14,123 +14,123 @@
  */
 package org.mapsforge.map.layer.download.tilesource;
 
+import org.mapsforge.core.model.Tile;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.mapsforge.core.model.Tile;
-
 public class OnlineTileSource extends AbstractTileSource {
-	private boolean alpha = false;
-	private String baseUrl = "/";
-	private String extension = "png";
-	private String name;
-	private int parallelRequestsLimit = 8;
-	private String protocol = "http";
-	private int tileSize = 256;
-	private byte zoomLevelMax = 18;
-	private byte zoomLevelMin = 0;
+    private boolean alpha = false;
+    private String baseUrl = "/";
+    private String extension = "png";
+    private String name;
+    private int parallelRequestsLimit = 8;
+    private String protocol = "http";
+    private int tileSize = 256;
+    private byte zoomLevelMax = 18;
+    private byte zoomLevelMin = 0;
 
-	public OnlineTileSource(String[] hostNames, int port) {
-		super(hostNames, port);
-	}
+    public OnlineTileSource(String[] hostNames, int port) {
+        super(hostNames, port);
+    }
 
-	public String getBaseUrl() {
-		return baseUrl;
-	}
+    public String getBaseUrl() {
+        return baseUrl;
+    }
 
-	public String getExtension() {
-		return extension;
-	}
+    public String getExtension() {
+        return extension;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public int getParallelRequestsLimit() {
-		return parallelRequestsLimit;
-	}
+    @Override
+    public int getParallelRequestsLimit() {
+        return parallelRequestsLimit;
+    }
 
-	public String getProtocol() {
-		return protocol;
-	}
+    public String getProtocol() {
+        return protocol;
+    }
 
-	public int getTileSize() {
-		return tileSize;
-	}
+    public int getTileSize() {
+        return tileSize;
+    }
 
-	@Override
-	public URL getTileUrl(Tile tile) throws MalformedURLException {
-		StringBuilder stringBuilder = new StringBuilder(32);
+    @Override
+    public URL getTileUrl(Tile tile) throws MalformedURLException {
+        StringBuilder stringBuilder = new StringBuilder(32);
 
-		stringBuilder.append(baseUrl);
-		stringBuilder.append(tile.zoomLevel);
-		stringBuilder.append('/');
-		stringBuilder.append(tile.tileX);
-		stringBuilder.append('/');
-		stringBuilder.append(tile.tileY);
-		stringBuilder.append('.').append(extension);
+        stringBuilder.append(baseUrl);
+        stringBuilder.append(tile.zoomLevel);
+        stringBuilder.append('/');
+        stringBuilder.append(tile.tileX);
+        stringBuilder.append('/');
+        stringBuilder.append(tile.tileY);
+        stringBuilder.append('.').append(extension);
 
-		return new URL(this.protocol, getHostName(), this.port, stringBuilder.toString());
-	}
+        return new URL(this.protocol, getHostName(), this.port, stringBuilder.toString());
+    }
 
-	@Override
-	public byte getZoomLevelMax() {
-		return zoomLevelMax;
-	}
+    @Override
+    public byte getZoomLevelMax() {
+        return zoomLevelMax;
+    }
 
-	@Override
-	public byte getZoomLevelMin() {
-		return zoomLevelMin;
-	}
+    @Override
+    public byte getZoomLevelMin() {
+        return zoomLevelMin;
+    }
 
-	@Override
-	public boolean hasAlpha() {
-		return alpha;
-	}
+    @Override
+    public boolean hasAlpha() {
+        return alpha;
+    }
 
-	public OnlineTileSource setAlpha(boolean alpha) {
-		this.alpha = alpha;
-		return this;
-	}
+    public OnlineTileSource setAlpha(boolean alpha) {
+        this.alpha = alpha;
+        return this;
+    }
 
-	public OnlineTileSource setBaseUrl(String baseUrl) {
-		this.baseUrl = baseUrl;
-		return this;
-	}
+    public OnlineTileSource setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        return this;
+    }
 
-	public OnlineTileSource setExtension(String extension) {
-		this.extension = extension;
-		return this;
-	}
+    public OnlineTileSource setExtension(String extension) {
+        this.extension = extension;
+        return this;
+    }
 
-	public OnlineTileSource setName(String name) {
-		this.name = name;
-		return this;
-	}
+    public OnlineTileSource setName(String name) {
+        this.name = name;
+        return this;
+    }
 
-	public OnlineTileSource setParallelRequestsLimit(int parallelRequestsLimit) {
-		this.parallelRequestsLimit = parallelRequestsLimit;
-		return this;
-	}
+    public OnlineTileSource setParallelRequestsLimit(int parallelRequestsLimit) {
+        this.parallelRequestsLimit = parallelRequestsLimit;
+        return this;
+    }
 
-	public OnlineTileSource setProtocol(String protocol) {
-		this.protocol = protocol;
-		return this;
-	}
+    public OnlineTileSource setProtocol(String protocol) {
+        this.protocol = protocol;
+        return this;
+    }
 
-	public OnlineTileSource setTileSize(int tileSize) {
-		this.tileSize = tileSize;
-		return this;
-	}
+    public OnlineTileSource setTileSize(int tileSize) {
+        this.tileSize = tileSize;
+        return this;
+    }
 
-	public OnlineTileSource setZoomLevelMax(byte zoomLevelMax) {
-		this.zoomLevelMax = zoomLevelMax;
-		return this;
-	}
+    public OnlineTileSource setZoomLevelMax(byte zoomLevelMax) {
+        this.zoomLevelMax = zoomLevelMax;
+        return this;
+    }
 
-	public OnlineTileSource setZoomLevelMin(byte zoomLevelMin) {
-		this.zoomLevelMin = zoomLevelMin;
-		return this;
-	}
+    public OnlineTileSource setZoomLevelMin(byte zoomLevelMin) {
+        this.zoomLevelMin = zoomLevelMin;
+        return this;
+    }
 }

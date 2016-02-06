@@ -15,53 +15,53 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import org.mapsforge.applications.android.samples.dummy.DummyContent;
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.map.layer.overlay.Marker;
-
 import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import org.mapsforge.applications.android.samples.dummy.DummyContent;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.map.layer.overlay.Marker;
+
 /**
  * Basic map viewer that shows bubbles with content at a few locations.
  */
 public class BubbleOverlay extends RenderTheme4 {
 
-	private Bitmap bubble;
+    private Bitmap bubble;
 
-	@SuppressWarnings("deprecation")
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	@Override
-	protected void createLayers() {
-		super.createLayers();
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void createLayers() {
+        super.createLayers();
 
-		// Bubble overlays
-		for (DummyContent.DummyItem item : DummyContent.ITEMS) {
-			TextView bubbleView = new TextView(this);
-			Utils.setBackground(bubbleView, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.balloon_overlay_unfocused) : getResources().getDrawable(R.drawable.balloon_overlay_unfocused));
-			bubbleView.setGravity(Gravity.CENTER);
-			bubbleView.setMaxEms(20);
-			bubbleView.setTextSize(15);
-			bubbleView.setTextColor(Color.BLACK);
-			bubbleView.setText(item.text);
-			bubble = Utils.viewToBitmap(this, bubbleView);
-			bubble.incrementRefCount();
-			this.mapView.getLayerManager().getLayers().add(new Marker(item.location, bubble, 0, -bubble.getHeight() / 2));
-		}
-	}
+        // Bubble overlays
+        for (DummyContent.DummyItem item : DummyContent.ITEMS) {
+            TextView bubbleView = new TextView(this);
+            Utils.setBackground(bubbleView, Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.balloon_overlay_unfocused) : getResources().getDrawable(R.drawable.balloon_overlay_unfocused));
+            bubbleView.setGravity(Gravity.CENTER);
+            bubbleView.setMaxEms(20);
+            bubbleView.setTextSize(15);
+            bubbleView.setTextColor(Color.BLACK);
+            bubbleView.setText(item.text);
+            bubble = Utils.viewToBitmap(this, bubbleView);
+            bubble.incrementRefCount();
+            this.mapView.getLayerManager().getLayers().add(new Marker(item.location, bubble, 0, -bubble.getHeight() / 2));
+        }
+    }
 
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
-	}
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+        this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
+    }
 
-	@Override
-	protected void onDestroy() {
-		bubble.decrementRefCount();
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        bubble.decrementRefCount();
+        super.onDestroy();
+    }
 }

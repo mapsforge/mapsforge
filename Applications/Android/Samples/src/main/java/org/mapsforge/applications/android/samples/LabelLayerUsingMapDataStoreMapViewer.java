@@ -27,19 +27,19 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  */
 public class LabelLayerUsingMapDataStoreMapViewer extends RenderTheme4 {
 
-	@Override
-	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, false);
-		mapView.getLayerManager().getLayers().add(tileRendererLayer);
-		MapDataStoreLabelStore labelStore = new MapDataStoreLabelStore(getMapFile(), tileRendererLayer.getRenderThemeFuture(),
-				tileRendererLayer.getTextScale(), tileRendererLayer.getDisplayModel(), AndroidGraphicFactory.INSTANCE);
-		LabelLayer labelLayer = createLabelLayer(labelStore);
-		mapView.getLayerManager().getLayers().add(labelLayer);
-	}
+    @Override
+    protected void createLayers() {
+        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+                this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, false);
+        mapView.getLayerManager().getLayers().add(tileRendererLayer);
+        MapDataStoreLabelStore labelStore = new MapDataStoreLabelStore(getMapFile(), tileRendererLayer.getRenderThemeFuture(),
+                tileRendererLayer.getTextScale(), tileRendererLayer.getDisplayModel(), AndroidGraphicFactory.INSTANCE);
+        LabelLayer labelLayer = createLabelLayer(labelStore);
+        mapView.getLayerManager().getLayers().add(labelLayer);
+    }
 
-	protected LabelLayer createLabelLayer(LabelStore labelStore) {
-		return new LabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
-	}
+    protected LabelLayer createLabelLayer(LabelStore labelStore) {
+        return new LabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
+    }
 
 }

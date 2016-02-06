@@ -44,147 +44,147 @@ import java.awt.Graphics;
 
 public class MapView extends Container implements org.mapsforge.map.view.MapView {
 
-	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
-	private static final long serialVersionUID = 1L;
+    private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+    private static final long serialVersionUID = 1L;
 
-	private final FpsCounter fpsCounter;
-	private final FrameBuffer frameBuffer;
-	private final FrameBufferController frameBufferController;
-	private final LayerManager layerManager;
-	private MapScaleBar mapScaleBar;
-	private final Model model;
+    private final FpsCounter fpsCounter;
+    private final FrameBuffer frameBuffer;
+    private final FrameBufferController frameBufferController;
+    private final LayerManager layerManager;
+    private MapScaleBar mapScaleBar;
+    private final Model model;
 
-	public MapView() {
-		super();
+    public MapView() {
+        super();
 
-		this.model = new Model();
+        this.model = new Model();
 
-		this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
-		this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-		this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
+        this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
+        this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
-		this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
-		this.layerManager.start();
-		LayerManagerController.create(this.layerManager, this.model);
+        this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
+        this.layerManager.start();
+        LayerManagerController.create(this.layerManager, this.model);
 
-		MapViewController.create(this, this.model);
+        MapViewController.create(this, this.model);
 
-		this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
-				this.model.displayModel);
+        this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
+                this.model.displayModel);
 
-		addComponentListener(new MapViewComponentListener(this));
+        addComponentListener(new MapViewComponentListener(this));
 
-		MouseEventListener mouseEventListener = new MouseEventListener(this.model.mapViewPosition);
-		addMouseListener(mouseEventListener);
-		addMouseMotionListener(mouseEventListener);
-		addMouseWheelListener(mouseEventListener);
-	}
+        MouseEventListener mouseEventListener = new MouseEventListener(this.model.mapViewPosition);
+        addMouseListener(mouseEventListener);
+        addMouseMotionListener(mouseEventListener);
+        addMouseWheelListener(mouseEventListener);
+    }
 
-	@Override
-	public void addLayer(Layer layer) {
-		this.layerManager.getLayers().add(layer);
-	}
+    @Override
+    public void addLayer(Layer layer) {
+        this.layerManager.getLayers().add(layer);
+    }
 
-	/**
-	 * Clear map view.
-	 */
-	@Override
-	public void destroy() {
-		this.layerManager.interrupt();
-		this.frameBufferController.destroy();
-		this.frameBuffer.destroy();
-		if (this.mapScaleBar != null) {
-			this.mapScaleBar.destroy();
-		}
-		this.getModel().mapViewPosition.destroy();
-	}
+    /**
+     * Clear map view.
+     */
+    @Override
+    public void destroy() {
+        this.layerManager.interrupt();
+        this.frameBufferController.destroy();
+        this.frameBuffer.destroy();
+        if (this.mapScaleBar != null) {
+            this.mapScaleBar.destroy();
+        }
+        this.getModel().mapViewPosition.destroy();
+    }
 
-	/**
-	 * Clear all map view elements.<br/>
-	 * i.e. layers, tile cache, label store, map view, resources, etc.
-	 */
-	@Override
-	public void destroyAll() {
-		for (Layer layer : this.layerManager.getLayers()) {
-			this.layerManager.getLayers().remove(layer);
-			layer.onDestroy();
-			if (layer instanceof TileLayer) {
-				((TileLayer<?>) layer).getTileCache().destroy();
-			}
-			if (layer instanceof TileRendererLayer) {
-				LabelStore labelStore = ((TileRendererLayer) layer).getLabelStore();
-				if (labelStore != null) {
-					labelStore.clear();
-				}
-			}
-		}
-		destroy();
-		AwtGraphicFactory.clearResourceMemoryCache();
-	}
+    /**
+     * Clear all map view elements.<br/>
+     * i.e. layers, tile cache, label store, map view, resources, etc.
+     */
+    @Override
+    public void destroyAll() {
+        for (Layer layer : this.layerManager.getLayers()) {
+            this.layerManager.getLayers().remove(layer);
+            layer.onDestroy();
+            if (layer instanceof TileLayer) {
+                ((TileLayer<?>) layer).getTileCache().destroy();
+            }
+            if (layer instanceof TileRendererLayer) {
+                LabelStore labelStore = ((TileRendererLayer) layer).getLabelStore();
+                if (labelStore != null) {
+                    labelStore.clear();
+                }
+            }
+        }
+        destroy();
+        AwtGraphicFactory.clearResourceMemoryCache();
+    }
 
-	@Override
-	public BoundingBox getBoundingBox() {
-		return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(),
-				getDimension(), this.model.displayModel.getTileSize());
-	}
+    @Override
+    public BoundingBox getBoundingBox() {
+        return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(),
+                getDimension(), this.model.displayModel.getTileSize());
+    }
 
-	@Override
-	public Dimension getDimension() {
-		return new Dimension(getWidth(), getHeight());
-	}
+    @Override
+    public Dimension getDimension() {
+        return new Dimension(getWidth(), getHeight());
+    }
 
-	@Override
-	public FpsCounter getFpsCounter() {
-		return this.fpsCounter;
-	}
+    @Override
+    public FpsCounter getFpsCounter() {
+        return this.fpsCounter;
+    }
 
-	@Override
-	public FrameBuffer getFrameBuffer() {
-		return this.frameBuffer;
-	}
+    @Override
+    public FrameBuffer getFrameBuffer() {
+        return this.frameBuffer;
+    }
 
-	@Override
-	public LayerManager getLayerManager() {
-		return this.layerManager;
-	}
+    @Override
+    public LayerManager getLayerManager() {
+        return this.layerManager;
+    }
 
-	@Override
-	public MapScaleBar getMapScaleBar() {
-		return this.mapScaleBar;
-	}
+    @Override
+    public MapScaleBar getMapScaleBar() {
+        return this.mapScaleBar;
+    }
 
-	@Override
-	public Model getModel() {
-		return this.model;
-	}
+    @Override
+    public Model getModel() {
+        return this.model;
+    }
 
-	@Override
-	public void paint(Graphics graphics) {
-		super.paint(graphics);
+    @Override
+    public void paint(Graphics graphics) {
+        super.paint(graphics);
 
-		GraphicContext graphicContext = AwtGraphicFactory.createGraphicContext(graphics);
-		this.frameBuffer.draw(graphicContext);
-		if (this.mapScaleBar != null) {
-			this.mapScaleBar.draw(graphicContext);
-		}
-		this.fpsCounter.draw(graphicContext);
-	}
+        GraphicContext graphicContext = AwtGraphicFactory.createGraphicContext(graphics);
+        this.frameBuffer.draw(graphicContext);
+        if (this.mapScaleBar != null) {
+            this.mapScaleBar.draw(graphicContext);
+        }
+        this.fpsCounter.draw(graphicContext);
+    }
 
-	@Override
-	public void setCenter(LatLong center) {
-		this.model.mapViewPosition.setCenter(center);
-	}
+    @Override
+    public void setCenter(LatLong center) {
+        this.model.mapViewPosition.setCenter(center);
+    }
 
-	@Override
-	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		if (this.mapScaleBar != null) {
-			this.mapScaleBar.destroy();
-		}
-		this.mapScaleBar = mapScaleBar;
-	}
+    @Override
+    public void setMapScaleBar(MapScaleBar mapScaleBar) {
+        if (this.mapScaleBar != null) {
+            this.mapScaleBar.destroy();
+        }
+        this.mapScaleBar = mapScaleBar;
+    }
 
-	@Override
-	public void setZoomLevel(byte zoomLevel) {
-		this.model.mapViewPosition.setZoomLevel(zoomLevel);
-	}
+    @Override
+    public void setZoomLevel(byte zoomLevel) {
+        this.model.mapViewPosition.setZoomLevel(zoomLevel);
+    }
 }

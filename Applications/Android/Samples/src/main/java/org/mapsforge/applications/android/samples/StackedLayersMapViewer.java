@@ -14,14 +14,14 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import java.io.IOException;
+import android.util.Log;
 
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
-import android.util.Log;
+import java.io.IOException;
 
 /**
  * An activity with two tile renderer layers stacked on top of each other using
@@ -32,41 +32,41 @@ import android.util.Log;
 
 public class StackedLayersMapViewer extends RenderTheme4 {
 
-	@Override
-	protected void createLayers() {
-		super.createLayers();
-		try {
+    @Override
+    protected void createLayers() {
+        super.createLayers();
+        try {
 
-			XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "",
-					"renderthemes/onlybuildings.xml", null);
+            XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "",
+                    "renderthemes/onlybuildings.xml", null);
 
-			this.mapView.getLayerManager()
-					.getLayers()
-					.add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
-							this.mapView.getModel().mapViewPosition, getMapFile(),
-							secondRenderTheme, true, true, false));
+            this.mapView.getLayerManager()
+                    .getLayers()
+                    .add(AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
+                            this.mapView.getModel().mapViewPosition, getMapFile(),
+                            secondRenderTheme, true, true, false));
 
-		} catch (IOException e) {
-			Log.e(SamplesApplication.TAG, "Rendertheme not found");
-		}
+        } catch (IOException e) {
+            Log.e(SamplesApplication.TAG, "Rendertheme not found");
+        }
 
-	}
+    }
 
-	@Override
-	protected void createTileCaches() {
-		super.createTileCaches();
-		TileCache tileCache2 = AndroidUtil.createTileCache(this,
-				getPersistableId2(),
-				this.mapView.getModel().displayModel.getTileSize(),
-				this.getScreenRatio(),
-				this.mapView.getModel().frameBufferModel
-						.getOverdrawFactor());
-		this.tileCaches.add(tileCache2);
-	}
+    @Override
+    protected void createTileCaches() {
+        super.createTileCaches();
+        TileCache tileCache2 = AndroidUtil.createTileCache(this,
+                getPersistableId2(),
+                this.mapView.getModel().displayModel.getTileSize(),
+                this.getScreenRatio(),
+                this.mapView.getModel().frameBufferModel
+                        .getOverdrawFactor());
+        this.tileCaches.add(tileCache2);
+    }
 
 
-	protected String getPersistableId2() {
-		return this.getPersistableId() + "-2";
-	}
+    protected String getPersistableId2() {
+        return this.getPersistableId() + "-2";
+    }
 
 }

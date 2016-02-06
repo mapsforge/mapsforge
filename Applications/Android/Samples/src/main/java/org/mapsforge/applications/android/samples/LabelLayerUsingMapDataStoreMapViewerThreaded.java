@@ -25,10 +25,10 @@ import org.mapsforge.map.layer.labels.ThreadedLabelLayer;
  */
 public class LabelLayerUsingMapDataStoreMapViewerThreaded extends LabelLayerUsingMapDataStoreMapViewer {
 
-	@Override
-	protected LabelLayer createLabelLayer(LabelStore labelStore) {
-		return new ThreadedLabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
-	}
+    @Override
+    protected LabelLayer createLabelLayer(LabelStore labelStore) {
+        return new ThreadedLabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
+    }
 
 
 }

@@ -17,31 +17,31 @@
 package org.mapsforge.core.graphics;
 
 public interface GraphicContext {
-	void drawBitmap(Bitmap bitmap, int left, int top);
+    void drawBitmap(Bitmap bitmap, int left, int top);
 
-	void drawBitmap(Bitmap bitmap, int left, int top, Filter filter);
+    void drawBitmap(Bitmap bitmap, int left, int top, Filter filter);
 
-	void drawBitmap(Bitmap bitmap, Matrix matrix);
+    void drawBitmap(Bitmap bitmap, Matrix matrix);
 
-	void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter);
+    void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter);
 
-	void drawCircle(int x, int y, int radius, Paint paint);
+    void drawCircle(int x, int y, int radius, Paint paint);
 
-	void drawLine(int x1, int y1, int x2, int y2, Paint paint);
+    void drawLine(int x1, int y1, int x2, int y2, Paint paint);
 
-	void drawPath(Path path, Paint paint);
+    void drawPath(Path path, Paint paint);
 
-	void drawText(String text, int x, int y, Paint paint);
+    void drawText(String text, int x, int y, Paint paint);
 
-	void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint);
+    void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint);
 
-	void fillColor(Color color);
+    void fillColor(Color color);
 
-	void fillColor(int color);
+    void fillColor(int color);
 
-	void resetClip();
+    void resetClip();
 
-	void setClip(int left, int top, int width, int height);
+    void setClip(int left, int top, int width, int height);
 
-	void setClipDifference(int left, int top, int width, int height);
+    void setClipDifference(int left, int top, int width, int height);
 }

@@ -22,9 +22,9 @@ import java.util.Set;
  */
 public interface XmlRenderThemeMenuCallback {
 
-	/*
-	 * Called when the stylemenu section of the xml file has been parsed
-	 */
-	Set<String> getCategories(XmlRenderThemeStyleMenu style);
+    /*
+     * Called when the stylemenu section of the xml file has been parsed
+     */
+    Set<String> getCategories(XmlRenderThemeStyleMenu style);
 
 }

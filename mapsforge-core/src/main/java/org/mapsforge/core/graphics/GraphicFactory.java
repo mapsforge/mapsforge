@@ -23,35 +23,35 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface GraphicFactory {
-	Bitmap createBitmap(int width, int height);
+    Bitmap createBitmap(int width, int height);
 
-	Bitmap createBitmap(int width, int height, boolean isTransparent);
+    Bitmap createBitmap(int width, int height, boolean isTransparent);
 
-	Canvas createCanvas();
+    Canvas createCanvas();
 
-	int createColor(Color color);
+    int createColor(Color color);
 
-	int createColor(int alpha, int red, int green, int blue);
+    int createColor(int alpha, int red, int green, int blue);
 
-	Matrix createMatrix();
+    Matrix createMatrix();
 
-	Paint createPaint();
+    Paint createPaint();
 
-	Paint createPaint(Paint paint);
+    Paint createPaint(Paint paint);
 
-	Path createPath();
+    Path createPath();
 
-	PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
-	                                            SymbolContainer symbolContainer, Position position, int maxTextWidth);
+    PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+                                                SymbolContainer symbolContainer, Position position, int maxTextWidth);
 
-	ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
+    ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
 
-	TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
+    TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
 
-	TileBitmap createTileBitmap(int tileSize, boolean isTransparent);
+    TileBitmap createTileBitmap(int tileSize, boolean isTransparent);
 
-	InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
+    InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException;
 
-	ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException;
+    ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException;
 
 }

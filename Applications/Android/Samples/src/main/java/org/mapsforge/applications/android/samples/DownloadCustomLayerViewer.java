@@ -23,31 +23,31 @@ import org.mapsforge.map.layer.download.tilesource.OnlineTileSource;
  */
 public class DownloadCustomLayerViewer extends DownloadLayerViewer {
 
-	@Override
-	protected void createLayers() {
-		OnlineTileSource onlineTileSource = new OnlineTileSource(new String[]{
-				"otile1.mqcdn.com", "otile2.mqcdn.com", "otile3.mqcdn.com",
-				"otile4.mqcdn.com"}, 80);
-		onlineTileSource.setName("MapQuest").setAlpha(false)
-				.setBaseUrl("/tiles/1.0.0/map/").setExtension("png")
-				.setParallelRequestsLimit(8).setProtocol("http")
-				.setTileSize(256).setZoomLevelMax((byte) 18)
-				.setZoomLevelMin((byte) 0);
-		this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, onlineTileSource,
-				AndroidGraphicFactory.INSTANCE);
-		mapView.getLayerManager().getLayers().add(this.downloadLayer);
+    @Override
+    protected void createLayers() {
+        OnlineTileSource onlineTileSource = new OnlineTileSource(new String[]{
+                "otile1.mqcdn.com", "otile2.mqcdn.com", "otile3.mqcdn.com",
+                "otile4.mqcdn.com"}, 80);
+        onlineTileSource.setName("MapQuest").setAlpha(false)
+                .setBaseUrl("/tiles/1.0.0/map/").setExtension("png")
+                .setParallelRequestsLimit(8).setProtocol("http")
+                .setTileSize(256).setZoomLevelMax((byte) 18)
+                .setZoomLevelMin((byte) 0);
+        this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
+                this.mapView.getModel().mapViewPosition, onlineTileSource,
+                AndroidGraphicFactory.INSTANCE);
+        mapView.getLayerManager().getLayers().add(this.downloadLayer);
 
-		mapView.getModel().mapViewPosition.setZoomLevelMin(onlineTileSource.getZoomLevelMin());
-		mapView.getModel().mapViewPosition.setZoomLevelMax(onlineTileSource.getZoomLevelMax());
-		mapView.getMapZoomControls().setZoomLevelMin(onlineTileSource.getZoomLevelMin());
-		mapView.getMapZoomControls().setZoomLevelMax(onlineTileSource.getZoomLevelMax());
-	}
+        mapView.getModel().mapViewPosition.setZoomLevelMin(onlineTileSource.getZoomLevelMin());
+        mapView.getModel().mapViewPosition.setZoomLevelMax(onlineTileSource.getZoomLevelMax());
+        mapView.getMapZoomControls().setZoomLevelMin(onlineTileSource.getZoomLevelMin());
+        mapView.getMapZoomControls().setZoomLevelMax(onlineTileSource.getZoomLevelMax());
+    }
 
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		// we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
-		this.mapView.getModel().displayModel.setFixedTileSize(256);
-	}
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+        // we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
+        this.mapView.getModel().displayModel.setFixedTileSize(256);
+    }
 }

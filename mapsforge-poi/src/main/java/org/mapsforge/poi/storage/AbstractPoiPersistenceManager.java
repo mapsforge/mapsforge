@@ -27,60 +27,58 @@ import java.util.List;
  * provides functionality for accessing the SQLite database.
  */
 public abstract class AbstractPoiPersistenceManager implements PoiPersistenceManager {
-	protected PoiCategoryManager categoryManager = null;
+    protected PoiCategoryManager categoryManager = null;
 
-	// Containers for return values
-	protected final List<PointOfInterest> ret;
-	protected PointOfInterest poi = null;
+    // Containers for return values
+    protected final List<PointOfInterest> ret;
+    protected PointOfInterest poi = null;
 
-	protected AbstractPoiPersistenceManager() {
-		this.ret = new ArrayList<>();
-	}
+    protected AbstractPoiPersistenceManager() {
+        this.ret = new ArrayList<>();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
-														PoiCategoryFilter filter, String pattern,
-														int limit) {
-		double minLat = point.getLatitude() - LatLongUtils.latitudeDistance(distance);
-		double minLon = point.getLongitude() - LatLongUtils.longitudeDistance(distance, point.getLatitude());
-		double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
-		double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
+                                                        PoiCategoryFilter filter, String pattern,
+                                                        int limit) {
+        double minLat = point.getLatitude() - LatLongUtils.latitudeDistance(distance);
+        double minLon = point.getLongitude() - LatLongUtils.longitudeDistance(distance, point.getLatitude());
+        double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
+        double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
 
-		return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, pattern, limit);
-	}
+        return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, pattern, limit);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PoiCategoryManager getCategoryManager() {
-		return this.categoryManager;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PoiCategoryManager getCategoryManager() {
+        return this.categoryManager;
+    }
 
-	/**
-	 * Gets the SQL query that looks up POI entries.
-	 *
-	 * @param filter
-	 *            The filter object for determining all wanted categories (may be null).
-	 * @param pattern
-	 *            the pattern to search in points of interest data (may be null).
-	 * @return The SQL query.
-	 */
-	protected static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
-		if (filter != null) {
-			return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, pattern);
-		}
-		return DbConstants.FIND_IN_BOX_STATEMENT + (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "") + " LIMIT ?;";
-	}
+    /**
+     * Gets the SQL query that looks up POI entries.
+     *
+     * @param filter  The filter object for determining all wanted categories (may be null).
+     * @param pattern the pattern to search in points of interest data (may be null).
+     * @return The SQL query.
+     */
+    protected static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
+        if (filter != null) {
+            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, pattern);
+        }
+        return DbConstants.FIND_IN_BOX_STATEMENT + (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "") + " LIMIT ?;";
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setCategoryManager(PoiCategoryManager categoryManager) {
-		this.categoryManager = categoryManager;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setCategoryManager(PoiCategoryManager categoryManager) {
+        this.categoryManager = categoryManager;
+    }
 }

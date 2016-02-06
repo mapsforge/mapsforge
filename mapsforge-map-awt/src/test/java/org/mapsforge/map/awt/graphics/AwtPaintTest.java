@@ -19,19 +19,18 @@ import org.junit.Test;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.map.awt.graphics.AwtPaint;
 
 public class AwtPaintTest {
-	@Test
-	public void isTransparentTest() {
-		Paint paint = new AwtPaint();
-		Assert.assertFalse(paint.isTransparent());
+    @Test
+    public void isTransparentTest() {
+        Paint paint = new AwtPaint();
+        Assert.assertFalse(paint.isTransparent());
 
-		paint.setColor(Color.TRANSPARENT);
-		Assert.assertTrue(paint.isTransparent());
+        paint.setColor(Color.TRANSPARENT);
+        Assert.assertTrue(paint.isTransparent());
 
-		Bitmap bitmap = org.mapsforge.map.awt.graphics.AwtGraphicFactory.INSTANCE.createBitmap(1, 1);
-		paint.setBitmapShader(bitmap);
-		Assert.assertFalse(paint.isTransparent());
-	}
+        Bitmap bitmap = org.mapsforge.map.awt.graphics.AwtGraphicFactory.INSTANCE.createBitmap(1, 1);
+        paint.setBitmapShader(bitmap);
+        Assert.assertFalse(paint.isTransparent());
+    }
 }

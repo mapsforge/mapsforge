@@ -28,102 +28,101 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
  * Demonstrates how to enable a LongPress on a layer.
- *
+ * <p/>
  * In this example a long press creates/removes
  * circles, a tap on a circle toggles the colour between red and green.
- * 
  */
 public class LongPressAction extends RenderTheme4 {
 
-	private static final Paint GREEN = Utils.createPaint(
-			AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0,
-			Style.FILL);
-	private static final Paint RED = Utils.createPaint(
-			AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 0,
-			Style.FILL);
-	private static final Paint BLACK = Utils.createPaint(
-			AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 0,
-			Style.FILL);
+    private static final Paint GREEN = Utils.createPaint(
+            AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0,
+            Style.FILL);
+    private static final Paint RED = Utils.createPaint(
+            AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 0,
+            Style.FILL);
+    private static final Paint BLACK = Utils.createPaint(
+            AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 0,
+            Style.FILL);
 
-	private int i;
+    private int i;
 
-	@Override
-	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = new TileRendererLayer(
-				this.tileCaches.get(0), getMapFile(),
-				this.mapView.getModel().mapViewPosition,
-				false, true, false,
-				org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
-			@Override
-			public boolean onLongPress(LatLong tapLatLong, Point thisXY,
-					Point tapXY) {
-				LongPressAction.this.onLongPress(tapLatLong);
-				return true;
-			}
-		};
-		tileRendererLayer.setXmlRenderTheme(this.getRenderTheme());
-		mapView.getLayerManager().getLayers().add(tileRendererLayer);
-		BLACK.setTextSize(22);
-	}
+    @Override
+    protected void createLayers() {
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(
+                this.tileCaches.get(0), getMapFile(),
+                this.mapView.getModel().mapViewPosition,
+                false, true, false,
+                org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE) {
+            @Override
+            public boolean onLongPress(LatLong tapLatLong, Point thisXY,
+                                       Point tapXY) {
+                LongPressAction.this.onLongPress(tapLatLong);
+                return true;
+            }
+        };
+        tileRendererLayer.setXmlRenderTheme(this.getRenderTheme());
+        mapView.getLayerManager().getLayers().add(tileRendererLayer);
+        BLACK.setTextSize(22);
+    }
 
-	protected void onLongPress(final LatLong position) {
-		float circleSize = 20 * this.mapView.getModel().displayModel
-				.getScaleFactor();
+    protected void onLongPress(final LatLong position) {
+        float circleSize = 20 * this.mapView.getModel().displayModel
+                .getScaleFactor();
 
-		i += 1;
+        i += 1;
 
-		FixedPixelCircle tappableCircle = new FixedPixelCircle(position,
-				circleSize, GREEN, null) {
+        FixedPixelCircle tappableCircle = new FixedPixelCircle(position,
+                circleSize, GREEN, null) {
 
-			int count = i;
+            int count = i;
 
-			@Override
-			public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas
-					canvas, Point topLeftPoint) {
-				super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+            @Override
+            public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas
+                    canvas, Point topLeftPoint) {
+                super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
 
-				long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
+                long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
 
-				int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, mapSize) - topLeftPoint.x);
-				int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, mapSize) - topLeftPoint.y);
-				String text = Integer.toString(count);
-				canvas.drawText(text, pixelX - BLACK.getTextWidth(text) / 2, pixelY + BLACK.getTextHeight(text) / 2, BLACK);
-			}
+                int pixelX = (int) (MercatorProjection.longitudeToPixelX(position.longitude, mapSize) - topLeftPoint.x);
+                int pixelY = (int) (MercatorProjection.latitudeToPixelY(position.latitude, mapSize) - topLeftPoint.y);
+                String text = Integer.toString(count);
+                canvas.drawText(text, pixelX - BLACK.getTextWidth(text) / 2, pixelY + BLACK.getTextHeight(text) / 2, BLACK);
+            }
 
-			@Override
-			public boolean onLongPress(LatLong geoPoint, Point viewPosition,
-					Point tapPoint) {
-				if (this.contains(viewPosition, tapPoint)) {
-					LongPressAction.this.mapView.getLayerManager()
-							.getLayers().remove(this);
-					LongPressAction.this.mapView.getLayerManager()
-							.redrawLayers();
-					return true;
-				}
-				return false;
-			}
+            @Override
+            public boolean onLongPress(LatLong geoPoint, Point viewPosition,
+                                       Point tapPoint) {
+                if (this.contains(viewPosition, tapPoint)) {
+                    LongPressAction.this.mapView.getLayerManager()
+                            .getLayers().remove(this);
+                    LongPressAction.this.mapView.getLayerManager()
+                            .redrawLayers();
+                    return true;
+                }
+                return false;
+            }
 
-			@Override
-			public boolean onTap(LatLong geoPoint, Point viewPosition,
-					Point tapPoint) {
-				if (this.contains(viewPosition, tapPoint)) {
-					toggleColor();
-					this.requestRedraw();
-					return true;
-				}
-				return false;
-			}
+            @Override
+            public boolean onTap(LatLong geoPoint, Point viewPosition,
+                                 Point tapPoint) {
+                if (this.contains(viewPosition, tapPoint)) {
+                    toggleColor();
+                    this.requestRedraw();
+                    return true;
+                }
+                return false;
+            }
 
-			private void toggleColor() {
-				if (this.getPaintFill().equals(LongPressAction.GREEN)) {
-					this.setPaintFill(LongPressAction.RED);
-				} else {
-					this.setPaintFill(LongPressAction.GREEN);
-				}
-			}
-		};
-		this.mapView.getLayerManager().getLayers().add(tappableCircle);
-		tappableCircle.requestRedraw();
+            private void toggleColor() {
+                if (this.getPaintFill().equals(LongPressAction.GREEN)) {
+                    this.setPaintFill(LongPressAction.RED);
+                } else {
+                    this.setPaintFill(LongPressAction.GREEN);
+                }
+            }
+        };
+        this.mapView.getLayerManager().getLayers().add(tappableCircle);
+        tappableCircle.requestRedraw();
 
-	}
+    }
 }

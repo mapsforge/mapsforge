@@ -15,19 +15,19 @@
 package org.mapsforge.map.rendertheme.rule;
 
 final class LinearWayMatcher implements ClosedMatcher {
-	static final LinearWayMatcher INSTANCE = new LinearWayMatcher();
+    static final LinearWayMatcher INSTANCE = new LinearWayMatcher();
 
-	private LinearWayMatcher() {
-		// do nothing
-	}
+    private LinearWayMatcher() {
+        // do nothing
+    }
 
-	@Override
-	public boolean isCoveredBy(ClosedMatcher closedMatcher) {
-		return closedMatcher.matches(Closed.NO);
-	}
+    @Override
+    public boolean isCoveredBy(ClosedMatcher closedMatcher) {
+        return closedMatcher.matches(Closed.NO);
+    }
 
-	@Override
-	public boolean matches(Closed closed) {
-		return closed == Closed.NO;
-	}
+    @Override
+    public boolean matches(Closed closed) {
+        return closed == Closed.NO;
+    }
 }

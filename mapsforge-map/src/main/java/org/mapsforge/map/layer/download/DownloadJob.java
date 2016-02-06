@@ -20,32 +20,32 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.queue.Job;
 
 public class DownloadJob extends Job {
-	public final TileSource tileSource;
+    public final TileSource tileSource;
 
-	public DownloadJob(Tile tile, TileSource tileSource) {
-		super(tile, tileSource.hasAlpha());
+    public DownloadJob(Tile tile, TileSource tileSource) {
+        super(tile, tileSource.hasAlpha());
 
-		this.tileSource = tileSource;
-	}
+        this.tileSource = tileSource;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!super.equals(obj)) {
-			return false;
-		} else if (!(obj instanceof DownloadJob)) {
-			return false;
-		}
-		DownloadJob other = (DownloadJob) obj;
-		return this.tileSource.equals(other.tileSource);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!super.equals(obj)) {
+            return false;
+        } else if (!(obj instanceof DownloadJob)) {
+            return false;
+        }
+        DownloadJob other = (DownloadJob) obj;
+        return this.tileSource.equals(other.tileSource);
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + this.tileSource.hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + this.tileSource.hashCode();
+        return result;
+    }
 }

@@ -24,93 +24,93 @@ import org.junit.Test;
  * the category hierarchy.
  */
 public class DoubleLinkedPoiCategoryTest {
-	private PoiCategory root;
-	private PoiCategory restaurants;
-	private PoiCategory shops;
-	private PoiCategory fastFood;
-	private PoiCategory bars;
-	private PoiCategory electronics;
-	private PoiCategory clothes;
+    private PoiCategory root;
+    private PoiCategory restaurants;
+    private PoiCategory shops;
+    private PoiCategory fastFood;
+    private PoiCategory bars;
+    private PoiCategory electronics;
+    private PoiCategory clothes;
 
-	/**
-	 * Checks whether the categories are connected correctly.
-	 */
-	@Test
-	public void checkCategoryHierarchy() {
-		// Root category should not have any parents
-		Assert.assertEquals(null, this.root.getParent());
+    /**
+     * Checks whether the categories are connected correctly.
+     */
+    @Test
+    public void checkCategoryHierarchy() {
+        // Root category should not have any parents
+        Assert.assertEquals(null, this.root.getParent());
 
-		// Root category should have two direct children
-		Assert.assertEquals(2, this.root.getChildren().size());
+        // Root category should have two direct children
+        Assert.assertEquals(2, this.root.getChildren().size());
 
-		// Root category's children should be "restaurants" and "shops"
-		Assert.assertTrue(this.root.getChildren().contains(this.restaurants));
-		Assert.assertTrue(this.root.getChildren().contains(this.shops));
+        // Root category's children should be "restaurants" and "shops"
+        Assert.assertTrue(this.root.getChildren().contains(this.restaurants));
+        Assert.assertTrue(this.root.getChildren().contains(this.shops));
 
-		// "restaurants" and "shops" should have "root" as their parent category
-		Assert.assertEquals(this.root, this.restaurants.getParent());
-		Assert.assertEquals(this.root, this.shops.getParent());
+        // "restaurants" and "shops" should have "root" as their parent category
+        Assert.assertEquals(this.root, this.restaurants.getParent());
+        Assert.assertEquals(this.root, this.shops.getParent());
 
-		// "restaurants" should have two direct children
-		Assert.assertEquals(2, this.restaurants.getChildren().size());
+        // "restaurants" should have two direct children
+        Assert.assertEquals(2, this.restaurants.getChildren().size());
 
-		// "shops" should have two direct children
-		Assert.assertEquals(2, this.shops.getChildren().size());
+        // "shops" should have two direct children
+        Assert.assertEquals(2, this.shops.getChildren().size());
 
-		// "restaurants" children should be "fastFood" and "bars"
-		Assert.assertTrue(this.restaurants.getChildren().contains(this.fastFood));
-		Assert.assertTrue(this.restaurants.getChildren().contains(this.bars));
+        // "restaurants" children should be "fastFood" and "bars"
+        Assert.assertTrue(this.restaurants.getChildren().contains(this.fastFood));
+        Assert.assertTrue(this.restaurants.getChildren().contains(this.bars));
 
-		// "shops" children should be "electronics" and "clothes"
-		Assert.assertTrue(this.shops.getChildren().contains(this.electronics));
-		Assert.assertTrue(this.shops.getChildren().contains(this.clothes));
+        // "shops" children should be "electronics" and "clothes"
+        Assert.assertTrue(this.shops.getChildren().contains(this.electronics));
+        Assert.assertTrue(this.shops.getChildren().contains(this.clothes));
 
-		// "fastFood" and "bars" should have "restaurants" as their parent category
-		Assert.assertEquals(this.restaurants, this.fastFood.getParent());
-		Assert.assertEquals(this.restaurants, this.bars.getParent());
+        // "fastFood" and "bars" should have "restaurants" as their parent category
+        Assert.assertEquals(this.restaurants, this.fastFood.getParent());
+        Assert.assertEquals(this.restaurants, this.bars.getParent());
 
-		// "electronic" and "clothes" should have "shops" as their parent category
-		Assert.assertEquals(this.shops, this.electronics.getParent());
-		Assert.assertEquals(this.shops, this.clothes.getParent());
-	}
+        // "electronic" and "clothes" should have "shops" as their parent category
+        Assert.assertEquals(this.shops, this.electronics.getParent());
+        Assert.assertEquals(this.shops, this.clothes.getParent());
+    }
 
-	/**
-	 * Checks for correct assignment of category IDs.
-	 */
-	@Test
-	public void checkCategoryIDs() {
-		Assert.assertEquals(0, this.fastFood.getID());
-		Assert.assertEquals(1, this.bars.getID());
-		Assert.assertEquals(2, this.restaurants.getID());
-		Assert.assertEquals(3, this.electronics.getID());
-		Assert.assertEquals(4, this.clothes.getID());
-		Assert.assertEquals(5, this.shops.getID());
-		Assert.assertEquals(6, this.root.getID());
-	}
+    /**
+     * Checks for correct assignment of category IDs.
+     */
+    @Test
+    public void checkCategoryIDs() {
+        Assert.assertEquals(0, this.fastFood.getID());
+        Assert.assertEquals(1, this.bars.getID());
+        Assert.assertEquals(2, this.restaurants.getID());
+        Assert.assertEquals(3, this.electronics.getID());
+        Assert.assertEquals(4, this.clothes.getID());
+        Assert.assertEquals(5, this.shops.getID());
+        Assert.assertEquals(6, this.root.getID());
+    }
 
-	private void createCategoryIDs() {
-		DoubleLinkedPoiCategory.calculateCategoryIDs((DoubleLinkedPoiCategory) this.root, 0);
-	}
+    private void createCategoryIDs() {
+        DoubleLinkedPoiCategory.calculateCategoryIDs((DoubleLinkedPoiCategory) this.root, 0);
+    }
 
-	private void createCategoryTree() {
-		this.root = new DoubleLinkedPoiCategory("root", null);
+    private void createCategoryTree() {
+        this.root = new DoubleLinkedPoiCategory("root", null);
 
-		this.restaurants = new DoubleLinkedPoiCategory("restaurants", this.root);
-		this.shops = new DoubleLinkedPoiCategory("shops", this.root);
+        this.restaurants = new DoubleLinkedPoiCategory("restaurants", this.root);
+        this.shops = new DoubleLinkedPoiCategory("shops", this.root);
 
-		this.fastFood = new DoubleLinkedPoiCategory("fastFood", this.restaurants);
-		this.bars = new DoubleLinkedPoiCategory("bars", this.restaurants);
+        this.fastFood = new DoubleLinkedPoiCategory("fastFood", this.restaurants);
+        this.bars = new DoubleLinkedPoiCategory("bars", this.restaurants);
 
-		this.electronics = new DoubleLinkedPoiCategory("electronics", this.shops);
-		this.clothes = new DoubleLinkedPoiCategory("clothes", this.shops);
-	}
+        this.electronics = new DoubleLinkedPoiCategory("electronics", this.shops);
+        this.clothes = new DoubleLinkedPoiCategory("clothes", this.shops);
+    }
 
-	/**
-	 * Creates mock data.
-	 */
-	@Before
-	public void init() {
-		createCategoryTree();
-		createCategoryIDs();
-	}
+    /**
+     * Creates mock data.
+     */
+    @Before
+    public void init() {
+        createCategoryTree();
+        createCategoryIDs();
+    }
 }

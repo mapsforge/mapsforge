@@ -20,35 +20,36 @@ import java.io.InputStream;
  * Enumeration of all internal rendering themes.
  */
 public enum InternalRenderTheme implements XmlRenderTheme {
-	/**
-	 * A render-theme similar to the OpenStreetMap Osmarender style.
-	 * 
-	 * @see <a href="http://wiki.openstreetmap.org/wiki/Osmarender">Osmarender</a>
-	 */
-	OSMARENDER("/osmarender/", "osmarender.xml");
+    /**
+     * A render-theme similar to the OpenStreetMap Osmarender style.
+     *
+     * @see <a href="http://wiki.openstreetmap.org/wiki/Osmarender">Osmarender</a>
+     */
+    OSMARENDER("/osmarender/", "osmarender.xml");
 
-	private final String absolutePath;
-	private final String file;
+    private final String absolutePath;
+    private final String file;
 
-	private InternalRenderTheme(String absolutePath, String file) {
-		this.absolutePath = absolutePath;
-		this.file = file;
-	}
+    private InternalRenderTheme(String absolutePath, String file) {
+        this.absolutePath = absolutePath;
+        this.file = file;
+    }
 
-	@Override
-	public XmlRenderThemeMenuCallback getMenuCallback() {
-		return null;
-	}
-	/**
-	 * @return the prefix for all relative resource paths.
-	 */
-	@Override
-	public String getRelativePathPrefix() {
-		return this.absolutePath;
-	}
+    @Override
+    public XmlRenderThemeMenuCallback getMenuCallback() {
+        return null;
+    }
 
-	@Override
-	public InputStream getRenderThemeAsStream() {
-		return getClass().getResourceAsStream(this.absolutePath + this.file);
-	}
+    /**
+     * @return the prefix for all relative resource paths.
+     */
+    @Override
+    public String getRelativePathPrefix() {
+        return this.absolutePath;
+    }
+
+    @Override
+    public InputStream getRenderThemeAsStream() {
+        return getClass().getResourceAsStream(this.absolutePath + this.file);
+    }
 }

@@ -23,52 +23,52 @@ import java.util.Map;
  * provides functionality for getting categories by their ID / name.
  */
 public abstract class AbstractPoiCategoryManager implements PoiCategoryManager {
-	protected static final String SELECT_STATEMENT = "SELECT * FROM poi_categories ORDER BY id ASC;";
+    protected static final String SELECT_STATEMENT = "SELECT * FROM poi_categories ORDER BY id ASC;";
 
-	/**
-	 * The hierarchies root category.
-	 */
-	protected PoiCategory rootCategory = null;
-	/**
-	 * Maps category IDs to categories.
-	 */
-	protected Map<Integer, PoiCategory> categoryMap = null;
+    /**
+     * The hierarchies root category.
+     */
+    protected PoiCategory rootCategory = null;
+    /**
+     * Maps category IDs to categories.
+     */
+    protected Map<Integer, PoiCategory> categoryMap = null;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PoiCategory getPoiCategoryByID(int id) throws UnknownPoiCategoryException {
-		if (this.categoryMap.get(id) == null) {
-			throw new UnknownPoiCategoryException();
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PoiCategory getPoiCategoryByID(int id) throws UnknownPoiCategoryException {
+        if (this.categoryMap.get(id) == null) {
+            throw new UnknownPoiCategoryException();
+        }
 
-		return this.categoryMap.get(id);
-	}
+        return this.categoryMap.get(id);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PoiCategory getPoiCategoryByTitle(String title) throws UnknownPoiCategoryException {
-		for (int key : this.categoryMap.keySet()) {
-			if (this.categoryMap.get(key).getTitle().equalsIgnoreCase(title)) {
-				return this.categoryMap.get(key);
-			}
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PoiCategory getPoiCategoryByTitle(String title) throws UnknownPoiCategoryException {
+        for (int key : this.categoryMap.keySet()) {
+            if (this.categoryMap.get(key).getTitle().equalsIgnoreCase(title)) {
+                return this.categoryMap.get(key);
+            }
+        }
 
-		throw new UnknownPoiCategoryException();
-	}
+        throw new UnknownPoiCategoryException();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PoiCategory getRootCategory() throws UnknownPoiCategoryException {
-		if (this.rootCategory == null) {
-			throw new UnknownPoiCategoryException();
-		}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PoiCategory getRootCategory() throws UnknownPoiCategoryException {
+        if (this.rootCategory == null) {
+            throw new UnknownPoiCategoryException();
+        }
 
-		return this.rootCategory;
-	}
+        return this.rootCategory;
+    }
 }

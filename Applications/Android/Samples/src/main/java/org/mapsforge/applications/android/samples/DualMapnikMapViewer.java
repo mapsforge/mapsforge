@@ -28,60 +28,60 @@ import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
  * An activity with two {@link MapView MapViews} tied to each other.
  */
 public class DualMapnikMapViewer extends DualMapViewer {
-	private TileDownloadLayer downloadLayer;
-	private MapViewPositionObserver observer1;
-	private MapViewPositionObserver observer2;
+    private TileDownloadLayer downloadLayer;
+    private MapViewPositionObserver observer1;
+    private MapViewPositionObserver observer2;
 
-	@Override
-	protected void createLayers2() {
-		this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(1),
-				this.mapView2.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
-				AndroidGraphicFactory.INSTANCE);
-		this.mapView2.getLayerManager().getLayers().add(this.downloadLayer);
-	}
+    @Override
+    protected void createLayers2() {
+        this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(1),
+                this.mapView2.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
+                AndroidGraphicFactory.INSTANCE);
+        this.mapView2.getLayerManager().getLayers().add(this.downloadLayer);
+    }
 
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		// any position change in one view will be reflected in the other
-		this.observer1 = new MapViewPositionObserver(
-				this.mapView.getModel().mapViewPosition, this.mapView2.getModel().mapViewPosition);
-		this.observer2 = new MapViewPositionObserver(
-				this.mapView2.getModel().mapViewPosition, this.mapView.getModel().mapViewPosition);
-	}
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+        // any position change in one view will be reflected in the other
+        this.observer1 = new MapViewPositionObserver(
+                this.mapView.getModel().mapViewPosition, this.mapView2.getModel().mapViewPosition);
+        this.observer2 = new MapViewPositionObserver(
+                this.mapView2.getModel().mapViewPosition, this.mapView.getModel().mapViewPosition);
+    }
 
-	@Override
-	protected TileCache createTileCache2() {
-		int tileSize = this.mapView2.getModel().displayModel
-				.getTileSize();
-		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
-				getScreenRatio2(),
-				this.mapView2.getModel().frameBufferModel
-						.getOverdrawFactor());
-	}
+    @Override
+    protected TileCache createTileCache2() {
+        int tileSize = this.mapView2.getModel().displayModel
+                .getTileSize();
+        return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
+                getScreenRatio2(),
+                this.mapView2.getModel().frameBufferModel
+                        .getOverdrawFactor());
+    }
 
-	@Override
-	protected void createTileCaches() {
-		super.createTileCaches();
-		this.tileCaches.add(createTileCache2());
-	}
+    @Override
+    protected void createTileCaches() {
+        super.createTileCaches();
+        this.tileCaches.add(createTileCache2());
+    }
 
-	@Override
-	protected void onDestroy() {
-		this.observer1.removeObserver();
-		this.observer2.removeObserver();
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        this.observer1.removeObserver();
+        this.observer2.removeObserver();
+        super.onDestroy();
+    }
 
-	@Override
-	protected void onPause() {
-		this.downloadLayer.onPause();
-		super.onPause();
-	}
+    @Override
+    protected void onPause() {
+        this.downloadLayer.onPause();
+        super.onPause();
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		this.downloadLayer.onResume();
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.downloadLayer.onResume();
+    }
 }

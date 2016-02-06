@@ -24,35 +24,35 @@ import org.mapsforge.map.model.common.Observer;
  * map views where one is supposed to follow the other.
  */
 public class MapViewPositionObserver implements Observer {
-	private final MapViewPosition observable;
-	private final MapViewPosition observer;
+    private final MapViewPosition observable;
+    private final MapViewPosition observer;
 
-	public MapViewPositionObserver(MapViewPosition observable, MapViewPosition observer) {
-		this.observable = observable;
-		this.observer = observer;
-		observable.addObserver(this);
-	}
+    public MapViewPositionObserver(MapViewPosition observable, MapViewPosition observer) {
+        this.observable = observable;
+        this.observer = observer;
+        observable.addObserver(this);
+    }
 
-	@Override
-	public void onChange() {
-		setCenter();
-		setZoom();
-	}
+    @Override
+    public void onChange() {
+        setCenter();
+        setZoom();
+    }
 
-	protected void setCenter() {
-		// need to check to avoid circular notifications
-		if (!this.observable.getCenter().equals(this.observer.getCenter())) {
-			this.observer.setCenter(this.observable.getCenter());
-		}
-	}
+    protected void setCenter() {
+        // need to check to avoid circular notifications
+        if (!this.observable.getCenter().equals(this.observer.getCenter())) {
+            this.observer.setCenter(this.observable.getCenter());
+        }
+    }
 
-	protected void setZoom() {
-		if (this.observable.getZoomLevel() != this.observer.getZoomLevel()) {
-			this.observer.setZoomLevel(this.observable.getZoomLevel());
-		}
-	}
+    protected void setZoom() {
+        if (this.observable.getZoomLevel() != this.observer.getZoomLevel()) {
+            this.observer.setZoomLevel(this.observable.getZoomLevel());
+        }
+    }
 
-	public void removeObserver() {
-		this.observable.removeObserver(this);
-	}
+    public void removeObserver() {
+        this.observable.removeObserver(this);
+    }
 }

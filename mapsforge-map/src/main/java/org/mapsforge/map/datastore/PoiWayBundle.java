@@ -17,11 +17,11 @@ package org.mapsforge.map.datastore;
 import java.util.List;
 
 public class PoiWayBundle {
-	final List<PointOfInterest> pois;
-	final List<Way> ways;
+    final List<PointOfInterest> pois;
+    final List<Way> ways;
 
-	public PoiWayBundle(List<PointOfInterest> pois, List<Way> ways) {
-		this.pois = pois;
-		this.ways = ways;
-	}
+    public PoiWayBundle(List<PointOfInterest> pois, List<Way> ways) {
+        this.pois = pois;
+        this.ways = ways;
+    }
 }

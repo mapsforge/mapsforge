@@ -19,25 +19,25 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public interface Bitmap {
-	void compress(OutputStream outputStream) throws IOException;
+    void compress(OutputStream outputStream) throws IOException;
 
-	void decrementRefCount();
+    void decrementRefCount();
 
-	/**
-	 * @return the height of this bitmap in pixels.
-	 */
-	int getHeight();
+    /**
+     * @return the height of this bitmap in pixels.
+     */
+    int getHeight();
 
-	/**
-	 * @return the width of this bitmap in pixels.
-	 */
-	int getWidth();
+    /**
+     * @return the width of this bitmap in pixels.
+     */
+    int getWidth();
 
-	void incrementRefCount();
+    void incrementRefCount();
 
-	boolean isDestroyed();
+    boolean isDestroyed();
 
-	void scaleTo(int width, int height);
+    void scaleTo(int width, int height);
 
-	void setBackgroundColor(int color);
+    void setBackgroundColor(int color);
 }

@@ -20,42 +20,42 @@ import org.mapsforge.core.model.BoundingBox;
  * Contains the immutable metadata of a POI file.
  */
 public class PoiFileInfo {
-	/**
-	 * The bounding box of the POI file (may be null).
-	 */
-	public final BoundingBox bounds;
+    /**
+     * The bounding box of the POI file (may be null).
+     */
+    public final BoundingBox bounds;
 
-	/**
-	 * The comment field of the POI file (may be null).
-	 */
-	public final String comment;
+    /**
+     * The comment field of the POI file (may be null).
+     */
+    public final String comment;
 
-	/**
-	 * The date of the POI data in milliseconds since January 1, 1970.
-	 */
-	public final long date;
+    /**
+     * The date of the POI data in milliseconds since January 1, 1970.
+     */
+    public final long date;
 
-	/**
-	 * The preferred language for names as defined in ISO 639-1 or ISO 639-2 (may be null).
-	 */
-	public final String language;
+    /**
+     * The preferred language for names as defined in ISO 639-1 or ISO 639-2 (may be null).
+     */
+    public final String language;
 
-	/**
-	 * The file version number of the POI file.
-	 */
-	public final int version;
+    /**
+     * The file version number of the POI file.
+     */
+    public final int version;
 
-	/**
-	 * The writer field of the POI file.
-	 */
-	public final String writer;
+    /**
+     * The writer field of the POI file.
+     */
+    public final String writer;
 
-	PoiFileInfo(PoiFileInfoBuilder poiFileInfoBuilder) {
-		this.bounds = poiFileInfoBuilder.bounds;
-		this.comment = poiFileInfoBuilder.comment;
-		this.date = poiFileInfoBuilder.date;
-		this.language = poiFileInfoBuilder.language;
-		this.version = poiFileInfoBuilder.version;
-		this.writer = poiFileInfoBuilder.writer;
-	}
+    PoiFileInfo(PoiFileInfoBuilder poiFileInfoBuilder) {
+        this.bounds = poiFileInfoBuilder.bounds;
+        this.comment = poiFileInfoBuilder.comment;
+        this.date = poiFileInfoBuilder.date;
+        this.language = poiFileInfoBuilder.language;
+        this.version = poiFileInfoBuilder.version;
+        this.writer = poiFileInfoBuilder.writer;
+    }
 }

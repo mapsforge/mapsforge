@@ -14,17 +14,17 @@
  */
 package org.mapsforge.map.layer.cache;
 
-import java.io.FilenameFilter;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ImageFileNameFilterTest {
-	@Test
-	public void acceptTest() {
-		FilenameFilter filenameFilter = ImageFileNameFilter.INSTANCE;
+import java.io.FilenameFilter;
 
-		Assert.assertFalse(filenameFilter.accept(null, "preferences.bar"));
-		Assert.assertTrue(filenameFilter.accept(null, "preferences" + FileSystemTileCache.FILE_EXTENSION));
-	}
+public class ImageFileNameFilterTest {
+    @Test
+    public void acceptTest() {
+        FilenameFilter filenameFilter = ImageFileNameFilter.INSTANCE;
+
+        Assert.assertFalse(filenameFilter.accept(null, "preferences.bar"));
+        Assert.assertTrue(filenameFilter.accept(null, "preferences" + FileSystemTileCache.FILE_EXTENSION));
+    }
 }

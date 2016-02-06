@@ -33,55 +33,55 @@ import java.io.File;
  * should download this automatically.
  */
 public class MultiMapLowResWorld extends RenderTheme4 {
-	private MultiMapDataStore multiMapDataStore;
-	private MapFile worldMapFile;
+    private MultiMapDataStore multiMapDataStore;
+    private MapFile worldMapFile;
 
-	@Override
-	public MapDataStore getMapFile() {
-		return this.multiMapDataStore;
-	}
+    @Override
+    public MapDataStore getMapFile() {
+        return this.multiMapDataStore;
+    }
 
-	/**
-	 * @return the first map file.
-	 */
-	protected MapDataStore getMapFile1() {
-		return super.getMapFile();
-	}
+    /**
+     * @return the first map file.
+     */
+    protected MapDataStore getMapFile1() {
+        return super.getMapFile();
+    }
 
-	/**
-	 * @return the second map file.
-	 */
-	protected MapDataStore getMapFile2() {
-		return this.worldMapFile;
-	}
+    /**
+     * @return the second map file.
+     */
+    protected MapDataStore getMapFile2() {
+        return this.worldMapFile;
+    }
 
-	/**
-	 * @return the low res world map file.
-	 */
-	public static File getWorldMapFile(Context context) {
-		return new File(context.getExternalFilesDir(SamplesApplication.MAPS), getWorldMapFileName());
-	}
+    /**
+     * @return the low res world map file.
+     */
+    public static File getWorldMapFile(Context context) {
+        return new File(context.getExternalFilesDir(SamplesApplication.MAPS), getWorldMapFileName());
+    }
 
-	/**
-	 * @return the name of the low res world map file.
-	 */
-	public static String getWorldMapFileName() {
-		return "world.map";
-	}
+    /**
+     * @return the name of the low res world map file.
+     */
+    public static String getWorldMapFileName() {
+        return "world.map";
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		worldMapFile = new MapFile(getWorldMapFile(this)) {
-			@Override
-			public boolean supportsTile(Tile tile) {
-				// Example low res world map has sufficient detail up to zoom level 7
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        worldMapFile = new MapFile(getWorldMapFile(this)) {
+            @Override
+            public boolean supportsTile(Tile tile) {
+                // Example low res world map has sufficient detail up to zoom level 7
                 return tile.zoomLevel <= 7 && super.supportsTile(tile);
             }
-		};
-		multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
-		multiMapDataStore.addMapDataStore(getMapFile1(), true, true);
-		multiMapDataStore.addMapDataStore(getMapFile2(), false, false);
+        };
+        multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+        multiMapDataStore.addMapDataStore(getMapFile1(), true, true);
+        multiMapDataStore.addMapDataStore(getMapFile2(), false, false);
 
-		super.onCreate(savedInstanceState);
-	}
+        super.onCreate(savedInstanceState);
+    }
 }

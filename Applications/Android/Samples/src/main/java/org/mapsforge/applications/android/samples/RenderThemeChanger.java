@@ -15,9 +15,8 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
+import android.os.Environment;
+import android.util.Log;
 
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.ExternalRenderThemeUsingJarResources;
@@ -25,8 +24,9 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.util.PausableThread;
 
-import android.os.Environment;
-import android.util.Log;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 
 /**
  * Demonstration of changing render themes. This activity checks for .xml files
@@ -34,78 +34,78 @@ import android.util.Log;
  */
 public class RenderThemeChanger extends RenderTheme4 {
 
-	private class ChangerThread extends PausableThread {
-		private static final int ROTATION_TIME = 10000; // milli secs to display a theme
+    private class ChangerThread extends PausableThread {
+        private static final int ROTATION_TIME = 10000; // milli secs to display a theme
 
-		@Override
-		protected void doWork() throws InterruptedException {
-			RenderThemeChanger.this.changeRenderTheme();
-			sleep(ROTATION_TIME);
-		}
+        @Override
+        protected void doWork() throws InterruptedException {
+            RenderThemeChanger.this.changeRenderTheme();
+            sleep(ROTATION_TIME);
+        }
 
-		@Override
-		protected ThreadPriority getThreadPriority() {
-			return ThreadPriority.ABOVE_NORMAL;
-		}
+        @Override
+        protected ThreadPriority getThreadPriority() {
+            return ThreadPriority.ABOVE_NORMAL;
+        }
 
-		@Override
-		protected boolean hasWork() {
-			return true;
-		}
+        @Override
+        protected boolean hasWork() {
+            return true;
+        }
 
-	}
+    }
 
-	private ChangerThread changerThread;
-	private int iteration;
-	private FilenameFilter renderThemesFilter = new FilenameFilter() {
-		@Override
-		public boolean accept(File file, String s) {
-			if (s.endsWith(".xml")) {
-				return true;
-			}
-			return false;
-		}
-	};
+    private ChangerThread changerThread;
+    private int iteration;
+    private FilenameFilter renderThemesFilter = new FilenameFilter() {
+        @Override
+        public boolean accept(File file, String s) {
+            if (s.endsWith(".xml")) {
+                return true;
+            }
+            return false;
+        }
+    };
 
-	private TileRendererLayer tileRendererLayer;
+    private TileRendererLayer tileRendererLayer;
 
-	@Override
-	protected void createLayers() {
-		tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
-				false, true, false);
-		mapView.getLayerManager().getLayers().add(tileRendererLayer);
-		this.changerThread = new ChangerThread();
-		this.changerThread.start();
-	}
+    @Override
+    protected void createLayers() {
+        tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+                this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
+                false, true, false);
+        mapView.getLayerManager().getLayers().add(tileRendererLayer);
+        this.changerThread = new ChangerThread();
+        this.changerThread.start();
+    }
 
-	void changeRenderTheme() {
-		File[] renderThemes = Environment.getExternalStorageDirectory().listFiles(renderThemesFilter);
-		if (renderThemes.length > 0) {
-			File nextTheme = renderThemes[iteration % renderThemes.length];
-			iteration += 1;
-			try {
-				XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(nextTheme);
-				Log.i(SamplesApplication.TAG, "Loading new render theme " + nextTheme.getName());
-				// there should really be a simpler way to just change the
-				// render theme safely
-				mapView.getLayerManager().getLayers().remove(tileRendererLayer);
-				tileRendererLayer.onDestroy();
-				tileCaches.get(0).destroy();
-				tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
-						mapView.getModel().mapViewPosition, getMapFile(), nextRenderTheme,
-						false, true, false);
-				mapView.getLayerManager().getLayers().add(tileRendererLayer);
-				mapView.getLayerManager().redrawLayers();
-			} catch (FileNotFoundException e) {
-				Log.i(SamplesApplication.TAG, "Could not open file " + nextTheme.getName());
-			}
-		}
-	}
+    void changeRenderTheme() {
+        File[] renderThemes = Environment.getExternalStorageDirectory().listFiles(renderThemesFilter);
+        if (renderThemes.length > 0) {
+            File nextTheme = renderThemes[iteration % renderThemes.length];
+            iteration += 1;
+            try {
+                XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(nextTheme);
+                Log.i(SamplesApplication.TAG, "Loading new render theme " + nextTheme.getName());
+                // there should really be a simpler way to just change the
+                // render theme safely
+                mapView.getLayerManager().getLayers().remove(tileRendererLayer);
+                tileRendererLayer.onDestroy();
+                tileCaches.get(0).destroy();
+                tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
+                        mapView.getModel().mapViewPosition, getMapFile(), nextRenderTheme,
+                        false, true, false);
+                mapView.getLayerManager().getLayers().add(tileRendererLayer);
+                mapView.getLayerManager().redrawLayers();
+            } catch (FileNotFoundException e) {
+                Log.i(SamplesApplication.TAG, "Could not open file " + nextTheme.getName());
+            }
+        }
+    }
 
-	@Override
-	protected void onDestroy() {
-		this.changerThread.interrupt();
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        this.changerThread.interrupt();
+        super.onDestroy();
+    }
 }

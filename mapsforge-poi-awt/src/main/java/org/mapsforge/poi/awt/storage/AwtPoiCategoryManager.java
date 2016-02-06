@@ -36,68 +36,66 @@ import java.util.logging.Logger;
  * This class can only be used within AWT.
  */
 class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
-	private static final Logger LOGGER = Logger.getLogger(AwtPoiCategoryManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AwtPoiCategoryManager.class.getName());
 
-	/**
-	 * @param conn
-	 *			SQLite connection. (Using SQLite JDBC for AWT).
-	 */
-	AwtPoiCategoryManager(Connection conn) {
-		this.categoryMap = new TreeMap<>();
+    /**
+     * @param conn SQLite connection. (Using SQLite JDBC for AWT).
+     */
+    AwtPoiCategoryManager(Connection conn) {
+        this.categoryMap = new TreeMap<>();
 
-		try {
-			loadCategories(conn);
-		} catch (UnknownPoiCategoryException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-	}
+        try {
+            loadCategories(conn);
+        } catch (UnknownPoiCategoryException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+    }
 
-	/**
-	 * Load categories from database.
-	 *
-	 * @throws UnknownPoiCategoryException
-	 *			 if a category cannot be retrieved by its ID or unique name.
-	 */
-	private void loadCategories(Connection conn) throws UnknownPoiCategoryException {
-		// Maximum ID (for root node)
-		int maxID = 0;
+    /**
+     * Load categories from database.
+     *
+     * @throws UnknownPoiCategoryException if a category cannot be retrieved by its ID or unique name.
+     */
+    private void loadCategories(Connection conn) throws UnknownPoiCategoryException {
+        // Maximum ID (for root node)
+        int maxID = 0;
 
-		// Maps categories to their parent IDs
-		Map<PoiCategory, Integer> parentMap = new HashMap<>();
+        // Maps categories to their parent IDs
+        Map<PoiCategory, Integer> parentMap = new HashMap<>();
 
-		try {
-			PreparedStatement stmt = conn.prepareStatement(SELECT_STATEMENT);
-			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				// Column values
-				int categoryID = rs.getInt(1);
-				String categoryTitle = rs.getString(2);
-				int categoryParentID = rs.getInt(3);
+        try {
+            PreparedStatement stmt = conn.prepareStatement(SELECT_STATEMENT);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                // Column values
+                int categoryID = rs.getInt(1);
+                String categoryTitle = rs.getString(2);
+                int categoryParentID = rs.getInt(3);
 
-				PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
-				this.categoryMap.put(categoryID, pc);
+                PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
+                this.categoryMap.put(categoryID, pc);
 
-				// category --> parent ID
-				parentMap.put(pc, categoryParentID);
+                // category --> parent ID
+                parentMap.put(pc, categoryParentID);
 
-				// check for root node
-				if (categoryID > maxID) {
-					maxID = categoryID;
-				}
-			}
-			rs.close();
-			stmt.close();
-		} catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
+                // check for root node
+                if (categoryID > maxID) {
+                    maxID = categoryID;
+                }
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
 
-		// Set root category and remove it from parents map
-		this.rootCategory = getPoiCategoryByID(maxID);
-		parentMap.remove(this.rootCategory);
+        // Set root category and remove it from parents map
+        this.rootCategory = getPoiCategoryByID(maxID);
+        parentMap.remove(this.rootCategory);
 
-		// Assign parent categories
-		for (PoiCategory c : parentMap.keySet()) {
-			c.setParent(getPoiCategoryByID(parentMap.get(c)));
-		}
-	}
+        // Assign parent categories
+        for (PoiCategory c : parentMap.keySet()) {
+            c.setParent(getPoiCategoryByID(parentMap.get(c)));
+        }
+    }
 }

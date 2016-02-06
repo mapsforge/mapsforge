@@ -22,20 +22,21 @@ import org.mapsforge.map.android.view.MapView;
  */
 public class NoXMLLayout extends RenderTheme4 {
 
-	/**
-	 * In this class we instantiate the MapView directly using this class,
-	 * without using an XML layout file.
-	 * @return
-	 */
-	@Override
-	protected MapView getMapView() {
-		MapView mv = new MapView(this);
-		setContentView(mv);
-		return mv;
-	}
+    /**
+     * In this class we instantiate the MapView directly using this class,
+     * without using an XML layout file.
+     *
+     * @return
+     */
+    @Override
+    protected MapView getMapView() {
+        MapView mv = new MapView(this);
+        setContentView(mv);
+        return mv;
+    }
 
-	@Override
-	public void setContentView() {
-		// no-op, we have already set the map view in getMapView()
-	}
+    @Override
+    public void setContentView() {
+        // no-op, we have already set the map view in getMapView()
+    }
 }

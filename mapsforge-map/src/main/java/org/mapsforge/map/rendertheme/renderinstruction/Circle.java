@@ -15,142 +15,142 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Represents a round area on the map.
  */
 public class Circle extends RenderInstruction {
-	private final Paint fill;
-	private final Map<Byte, Paint> fills;
-	private final int level;
-	private float radius;
-	private float renderRadius;
-	private final Map<Byte, Float> renderRadiusScaled;
-	private boolean scaleRadius;
-	private final Paint stroke;
-	private final Map<Byte, Paint> strokes;
-	private float strokeWidth;
+    private final Paint fill;
+    private final Map<Byte, Paint> fills;
+    private final int level;
+    private float radius;
+    private float renderRadius;
+    private final Map<Byte, Float> renderRadiusScaled;
+    private boolean scaleRadius;
+    private final Paint stroke;
+    private final Map<Byte, Paint> strokes;
+    private float strokeWidth;
 
-	public Circle(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-	       XmlPullParser pullParser, int level) throws XmlPullParserException {
-		super(graphicFactory, displayModel);
-		this.level = level;
+    public Circle(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+                  XmlPullParser pullParser, int level) throws XmlPullParserException {
+        super(graphicFactory, displayModel);
+        this.level = level;
 
-		this.fill = graphicFactory.createPaint();
-		this.fill.setColor(Color.TRANSPARENT);
-		this.fill.setStyle(Style.FILL);
-		this.fills = new HashMap<>();
+        this.fill = graphicFactory.createPaint();
+        this.fill.setColor(Color.TRANSPARENT);
+        this.fill.setStyle(Style.FILL);
+        this.fills = new HashMap<>();
 
-		this.stroke = graphicFactory.createPaint();
-		this.stroke.setColor(Color.TRANSPARENT);
-		this.stroke.setStyle(Style.STROKE);
-		this.strokes = new HashMap<>();
-		this.renderRadiusScaled = new HashMap<>();
+        this.stroke = graphicFactory.createPaint();
+        this.stroke.setColor(Color.TRANSPARENT);
+        this.stroke.setStyle(Style.STROKE);
+        this.strokes = new HashMap<>();
+        this.renderRadiusScaled = new HashMap<>();
 
-		extractValues(graphicFactory, displayModel, elementName, pullParser);
+        extractValues(graphicFactory, displayModel, elementName, pullParser);
 
 
-		if (!this.scaleRadius) {
-			this.renderRadius = this.radius;
-			this.stroke.setStrokeWidth(this.strokeWidth);
-		}
-	}
+        if (!this.scaleRadius) {
+            this.renderRadius = this.radius;
+            this.stroke.setStrokeWidth(this.strokeWidth);
+        }
+    }
 
-	@Override
-	public void destroy() {
-		// no-op
-	}
+    @Override
+    public void destroy() {
+        // no-op
+    }
 
-	@Override
-	public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
-		renderCallback.renderPointOfInterestCircle(renderContext, getRenderRadius(renderContext.rendererJob.tile.zoomLevel), getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, poi);
-	}
+    @Override
+    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
+        renderCallback.renderPointOfInterestCircle(renderContext, getRenderRadius(renderContext.rendererJob.tile.zoomLevel), getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, poi);
+    }
 
-	@Override
-	public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-		// do nothing
-	}
+    @Override
+    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+        // do nothing
+    }
 
-	@Override
-	public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-		if (this.scaleRadius) {
-			this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
-			if (this.stroke != null) {
-				Paint s = graphicFactory.createPaint(stroke);
-				s.setStrokeWidth(this.strokeWidth * scaleFactor);
-				strokes.put(zoomLevel, s);
-			}
-		}
-	}
+    @Override
+    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        if (this.scaleRadius) {
+            this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
+            if (this.stroke != null) {
+                Paint s = graphicFactory.createPaint(stroke);
+                s.setStrokeWidth(this.strokeWidth * scaleFactor);
+                strokes.put(zoomLevel, s);
+            }
+        }
+    }
 
-	@Override
-	public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-		// do nothing
-	}
+    @Override
+    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+        // do nothing
+    }
 
-	private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-	                           XmlPullParser pullParser) throws XmlPullParserException {
-		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
-			String name = pullParser.getAttributeName(i);
-			String value = pullParser.getAttributeValue(i);
+    private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+                               XmlPullParser pullParser) throws XmlPullParserException {
+        for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+            String name = pullParser.getAttributeName(i);
+            String value = pullParser.getAttributeValue(i);
 
-			if (RADIUS.equals(name) || (XmlUtils.supportOlderRenderThemes && R.equals(name))) {
-				this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value)) * displayModel.getScaleFactor();
-			} else if (SCALE_RADIUS.equals(name)) {
-				this.scaleRadius = Boolean.parseBoolean(value);
-			} else if (CAT.equals(name)) {
-				this.category = value;
-			} else if (FILL.equals(name)) {
-				this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
-			} else if (STROKE.equals(name)) {
-				this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
-			} else if (STROKE_WIDTH.equals(name)) {
-				this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
-			} else {
-				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
-			}
-		}
+            if (RADIUS.equals(name) || (XmlUtils.supportOlderRenderThemes && R.equals(name))) {
+                this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value)) * displayModel.getScaleFactor();
+            } else if (SCALE_RADIUS.equals(name)) {
+                this.scaleRadius = Boolean.parseBoolean(value);
+            } else if (CAT.equals(name)) {
+                this.category = value;
+            } else if (FILL.equals(name)) {
+                this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (STROKE.equals(name)) {
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (STROKE_WIDTH.equals(name)) {
+                this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+            } else {
+                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+            }
+        }
 
-		XmlUtils.checkMandatoryAttribute(elementName, RADIUS, this.radius);
-	}
+        XmlUtils.checkMandatoryAttribute(elementName, RADIUS, this.radius);
+    }
 
-	private Paint getFillPaint(byte zoomLevel) {
-		Paint paint = fills.get(zoomLevel);
-		if (paint == null) {
-			paint = this.fill;
-		}
-		return paint;
-	}
+    private Paint getFillPaint(byte zoomLevel) {
+        Paint paint = fills.get(zoomLevel);
+        if (paint == null) {
+            paint = this.fill;
+        }
+        return paint;
+    }
 
-	private Paint getStrokePaint(byte zoomLevel) {
-		Paint paint = strokes.get(zoomLevel);
-		if (paint == null) {
-			paint = this.stroke;
-		}
-		return paint;
-	}
+    private Paint getStrokePaint(byte zoomLevel) {
+        Paint paint = strokes.get(zoomLevel);
+        if (paint == null) {
+            paint = this.stroke;
+        }
+        return paint;
+    }
 
-	private float getRenderRadius(byte zoomLevel) {
-		Float radius = renderRadiusScaled.get(zoomLevel);
-		if (radius == null) {
-			radius = this.renderRadius;
-		}
-		return radius;
-	}
+    private float getRenderRadius(byte zoomLevel) {
+        Float radius = renderRadiusScaled.get(zoomLevel);
+        if (radius == null) {
+            radius = this.renderRadius;
+        }
+        return radius;
+    }
 
 }

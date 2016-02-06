@@ -37,67 +37,65 @@ import java.util.logging.Logger;
  * This class can only be used within Android.
  */
 class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
-	private static final Logger LOGGER = Logger.getLogger(AndroidPoiCategoryManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AndroidPoiCategoryManager.class.getName());
 
-	/**
-	 * @param db
-	 *            SQLite database object. (Using SQLite wrapper for Android).
-	 */
-	AndroidPoiCategoryManager(Database db) {
-		this.categoryMap = new TreeMap<>();
+    /**
+     * @param db SQLite database object. (Using SQLite wrapper for Android).
+     */
+    AndroidPoiCategoryManager(Database db) {
+        this.categoryMap = new TreeMap<>();
 
-		try {
-			loadCategories(db);
-		} catch (UnknownPoiCategoryException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
-	}
+        try {
+            loadCategories(db);
+        } catch (UnknownPoiCategoryException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+    }
 
-	/**
-	 * Load categories from database.
-	 *
-	 * @throws UnknownPoiCategoryException
-	 *             if a category cannot be retrieved by its ID or unique name.
-	 */
-	private void loadCategories(Database db) throws UnknownPoiCategoryException {
-		// Maximum ID (for root node)
-		int maxID = 0;
+    /**
+     * Load categories from database.
+     *
+     * @throws UnknownPoiCategoryException if a category cannot be retrieved by its ID or unique name.
+     */
+    private void loadCategories(Database db) throws UnknownPoiCategoryException {
+        // Maximum ID (for root node)
+        int maxID = 0;
 
-		// Maps categories to their parent IDs
-		Map<PoiCategory, Integer> parentMap = new HashMap<>();
+        // Maps categories to their parent IDs
+        Map<PoiCategory, Integer> parentMap = new HashMap<>();
 
-		try {
-			Stmt stmt = db.prepare(SELECT_STATEMENT);
-			stmt.reset();
-			while (stmt.step()) {
-				// Column values
-				int categoryID = stmt.column_int(0);
-				String categoryTitle = stmt.column_string(1);
-				int categoryParentID = stmt.column_int(2);
+        try {
+            Stmt stmt = db.prepare(SELECT_STATEMENT);
+            stmt.reset();
+            while (stmt.step()) {
+                // Column values
+                int categoryID = stmt.column_int(0);
+                String categoryTitle = stmt.column_string(1);
+                int categoryParentID = stmt.column_int(2);
 
-				PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
-				this.categoryMap.put(categoryID, pc);
+                PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
+                this.categoryMap.put(categoryID, pc);
 
-				// category --> parent ID
-				parentMap.put(pc, categoryParentID);
+                // category --> parent ID
+                parentMap.put(pc, categoryParentID);
 
-				// check for root node
-				if (categoryID > maxID) {
-					maxID = categoryID;
-				}
-			}
-			stmt.close();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		}
+                // check for root node
+                if (categoryID > maxID) {
+                    maxID = categoryID;
+                }
+            }
+            stmt.close();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
 
-		// Set root category and remove it from parents map
-		this.rootCategory = getPoiCategoryByID(maxID);
-		parentMap.remove(this.rootCategory);
+        // Set root category and remove it from parents map
+        this.rootCategory = getPoiCategoryByID(maxID);
+        parentMap.remove(this.rootCategory);
 
-		// Assign parent categories
-		for (PoiCategory c : parentMap.keySet()) {
-			c.setParent(getPoiCategoryByID(parentMap.get(c)));
-		}
-	}
+        // Assign parent categories
+        for (PoiCategory c : parentMap.keySet()) {
+            c.setParent(getPoiCategoryByID(parentMap.get(c)));
+        }
+    }
 }

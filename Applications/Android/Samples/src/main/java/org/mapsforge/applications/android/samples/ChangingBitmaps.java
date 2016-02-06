@@ -15,11 +15,6 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.layer.overlay.Marker;
-
 import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -30,73 +25,78 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.overlay.Marker;
+
 /**
  * A map viewer demonstrating changing bitmap drawables: every two seconds the
  * view changes the bitmap.
  */
 public class ChangingBitmaps extends RenderTheme4 {
 
-	final class BitmapChanger implements Runnable {
-		@Override
-		public void run() {
-			if (current != null) {
-				// since we want to keep the green bitmap around, we have to increment
-				// its ref count, otherwise it gets recycled automatically when it is
-				// replaced with the other colour.
-				current.incrementRefCount();
-			}
-			if (bitmapGreen.equals(current)) {
-				marker.setBitmap(bitmapRed);
-				current = bitmapRed;
-			} else {
-				marker.setBitmap(bitmapGreen);
-				current = bitmapGreen;
-			}
-			redrawLayers();
-			handler.postDelayed(this, 2000);
-		}
-	}
+    final class BitmapChanger implements Runnable {
+        @Override
+        public void run() {
+            if (current != null) {
+                // since we want to keep the green bitmap around, we have to increment
+                // its ref count, otherwise it gets recycled automatically when it is
+                // replaced with the other colour.
+                current.incrementRefCount();
+            }
+            if (bitmapGreen.equals(current)) {
+                marker.setBitmap(bitmapRed);
+                current = bitmapRed;
+            } else {
+                marker.setBitmap(bitmapGreen);
+                current = bitmapGreen;
+            }
+            redrawLayers();
+            handler.postDelayed(this, 2000);
+        }
+    }
 
-	BitmapChanger bitmapChanger;
-	Bitmap bitmapGreen;
-	Bitmap bitmapRed;
-	Bitmap current;
-	final Handler handler = new Handler();
-	final LatLong latLong = new LatLong(52.5, 13.4);
-	Marker marker;
+    BitmapChanger bitmapChanger;
+    Bitmap bitmapGreen;
+    Bitmap bitmapRed;
+    Bitmap current;
+    final Handler handler = new Handler();
+    final LatLong latLong = new LatLong(52.5, 13.4);
+    Marker marker;
 
-	@Override
-	public void createLayers() {
-		super.createLayers();
-		mapView.getLayerManager().getLayers().add(marker);
-		bitmapChanger = new BitmapChanger();
-		handler.post(bitmapChanger);
-	}
+    @Override
+    public void createLayers() {
+        super.createLayers();
+        mapView.getLayerManager().getLayers().add(marker);
+        bitmapChanger = new BitmapChanger();
+        handler.post(bitmapChanger);
+    }
 
-	@SuppressWarnings("deprecation")
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-	@Override
-	public void onCreate(Bundle sis) {
-		Drawable drawableWhite = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_white) : getResources().getDrawable(R.drawable.marker_white);
-		Paint paint = new Paint();
-		paint.setAntiAlias(true);
-		paint.setColorFilter(new PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY));
-		bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableWhite, paint);
-		paint.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY));
-		bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableWhite, paint);
-		marker = new Marker(latLong, bitmapGreen, 0, -bitmapGreen.getHeight() / 2);
-		super.onCreate(sis);
-	}
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onCreate(Bundle sis) {
+        Drawable drawableWhite = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_white) : getResources().getDrawable(R.drawable.marker_white);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColorFilter(new PorterDuffColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY));
+        bitmapGreen = AndroidGraphicFactory.convertToBitmap(drawableWhite, paint);
+        paint.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY));
+        bitmapRed = AndroidGraphicFactory.convertToBitmap(drawableWhite, paint);
+        marker = new Marker(latLong, bitmapGreen, 0, -bitmapGreen.getHeight() / 2);
+        super.onCreate(sis);
+    }
 
-	@Override
-	public void onDestroy() {
-		handler.removeCallbacks(bitmapChanger);
-		// we need to increment the ref count here as otherwise the bitmap gets
-		// destroyed, but we might need to reuse it when this is only part of
-		// a pause/resume cycle.
-		current.incrementRefCount();
-		super.onDestroy();
-		bitmapRed.decrementRefCount();
-		bitmapGreen.decrementRefCount();
-	}
+    @Override
+    public void onDestroy() {
+        handler.removeCallbacks(bitmapChanger);
+        // we need to increment the ref count here as otherwise the bitmap gets
+        // destroyed, but we might need to reuse it when this is only part of
+        // a pause/resume cycle.
+        current.incrementRefCount();
+        super.onDestroy();
+        bitmapRed.decrementRefCount();
+        bitmapGreen.decrementRefCount();
+    }
 }

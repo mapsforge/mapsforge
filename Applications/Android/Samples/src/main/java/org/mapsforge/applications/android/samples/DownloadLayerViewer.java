@@ -30,57 +30,57 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
  * to be paused and resumed to fit into the Android life cycle.
  */
 public class DownloadLayerViewer extends SamplesBaseActivity {
-	protected TileDownloadLayer downloadLayer;
+    protected TileDownloadLayer downloadLayer;
 
-	@Override
-	protected XmlRenderTheme getRenderTheme() {
-		// no render theme needed here
-		return null;
-	}
+    @Override
+    protected XmlRenderTheme getRenderTheme() {
+        // no render theme needed here
+        return null;
+    }
 
-	@Override
-	public void onPause() {
-		this.downloadLayer.onPause();
-		super.onPause();
-	}
+    @Override
+    public void onPause() {
+        this.downloadLayer.onPause();
+        super.onPause();
+    }
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		this.downloadLayer.onResume();
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.downloadLayer.onResume();
+    }
 
-	@Override
-	protected void createLayers() {
-		this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
-				AndroidGraphicFactory.INSTANCE);
-		mapView.getLayerManager().getLayers().add(this.downloadLayer);
+    @Override
+    protected void createLayers() {
+        this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
+                this.mapView.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
+                AndroidGraphicFactory.INSTANCE);
+        mapView.getLayerManager().getLayers().add(this.downloadLayer);
 
-		mapView.getModel().mapViewPosition.setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
-		mapView.getModel().mapViewPosition.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
-		mapView.getMapZoomControls().setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
-		mapView.getMapZoomControls().setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
-	}
+        mapView.getModel().mapViewPosition.setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
+        mapView.getModel().mapViewPosition.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
+        mapView.getMapZoomControls().setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
+        mapView.getMapZoomControls().setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
+    }
 
-	/**
-	 * We do not need storage permission as we do not have a map file here.
-	 */
-	@Override
-	protected void checkPermissionsAndCreateLayersAndControls() {
-		createLayers();
-		createControls();
-	}
+    /**
+     * We do not need storage permission as we do not have a map file here.
+     */
+    @Override
+    protected void checkPermissionsAndCreateLayersAndControls() {
+        createLayers();
+        createControls();
+    }
 
-	@Override
-	protected void createMapViews() {
-		super.createMapViews();
-		// we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
-		this.mapView.getModel().displayModel.setFixedTileSize(256);
-	}
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+        // we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
+        this.mapView.getModel().displayModel.setFixedTileSize(256);
+    }
 
-	@Override
-	protected MapPosition getInitialPosition() {
-		return getDefaultInitialPosition();
-	}
+    @Override
+    protected MapPosition getInitialPosition() {
+        return getDefaultInitialPosition();
+    }
 }

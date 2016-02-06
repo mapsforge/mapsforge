@@ -14,9 +14,6 @@
  */
 package org.mapsforge.applications.android.samples.scalebar;
 
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.model.common.Observer;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -24,40 +21,43 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.model.common.Observer;
+
 public class MapScaleBarView extends View implements Observer {
 
-	private MapScaleBarImpl mapScaleBar;
+    private MapScaleBarImpl mapScaleBar;
 
-	public MapScaleBarView(Context context) {
-		this(context, null);
-	}
+    public MapScaleBarView(Context context) {
+        this(context, null);
+    }
 
-	public MapScaleBarView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public MapScaleBarView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	@Override
-	public void onChange() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			if (isHardwareAccelerated()) {
-				postInvalidate();
-			}
-		}
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    public void onChange() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (isHardwareAccelerated()) {
+                postInvalidate();
+            }
+        }
+    }
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(canvas);
-		mapScaleBar.draw(graphicContext);
-	}
+    @Override
+    protected void onDraw(Canvas canvas) {
+        org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(canvas);
+        mapScaleBar.draw(graphicContext);
+    }
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		setMeasuredDimension(mapScaleBar.getMapScaleBitmap().getWidth(), mapScaleBar.getMapScaleBitmap().getHeight());
-	}
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(mapScaleBar.getMapScaleBitmap().getWidth(), mapScaleBar.getMapScaleBitmap().getHeight());
+    }
 
-	public void setMapScaleBar(MapScaleBarImpl mapScaleBar) {
-		this.mapScaleBar = mapScaleBar;
-	}
+    public void setMapScaleBar(MapScaleBarImpl mapScaleBar) {
+        this.mapScaleBar = mapScaleBar;
+    }
 }

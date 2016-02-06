@@ -28,48 +28,48 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
 
 public class DownloadJobTest {
-	private static final int TILE_SIZE = 256;
+    private static final int TILE_SIZE = 256;
 
-	private static DownloadJob createDownloadJob(Tile tile, TileSource tileSource) {
-		return new DownloadJob(tile, tileSource);
-	}
+    private static DownloadJob createDownloadJob(Tile tile, TileSource tileSource) {
+        return new DownloadJob(tile, tileSource);
+    }
 
-	private static void verifyInvalidConstructor(Tile tile, TileSource tileSource) {
-		try {
-			createDownloadJob(tile, tileSource);
-			Assert.fail("tile: " + tile + ", tileSource: " + tileSource);
-		} catch (NullPointerException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyInvalidConstructor(Tile tile, TileSource tileSource) {
+        try {
+            createDownloadJob(tile, tileSource);
+            Assert.fail("tile: " + tile + ", tileSource: " + tileSource);
+        } catch (NullPointerException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void downloadJobTest() {
-		Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
-		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+    @Test
+    public void downloadJobTest() {
+        Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
+        TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 
-		DownloadJob downloadJob = createDownloadJob(tile, tileSource);
-		Assert.assertEquals(tile, downloadJob.tile);
-		Assert.assertEquals(tileSource, downloadJob.tileSource);
+        DownloadJob downloadJob = createDownloadJob(tile, tileSource);
+        Assert.assertEquals(tile, downloadJob.tile);
+        Assert.assertEquals(tileSource, downloadJob.tileSource);
 
-		verifyInvalidConstructor(tile, null);
-	}
+        verifyInvalidConstructor(tile, null);
+    }
 
-	@Test
-	public void equalsTest() {
-		Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
-		DownloadJob downloadJob1 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
-		DownloadJob downloadJob2 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
-		DownloadJob downloadJob3 = new DownloadJob(tile, OpenCycleMap.INSTANCE);
+    @Test
+    public void equalsTest() {
+        Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
+        DownloadJob downloadJob1 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
+        DownloadJob downloadJob2 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
+        DownloadJob downloadJob3 = new DownloadJob(tile, OpenCycleMap.INSTANCE);
 
-		TestUtils.equalsTest(downloadJob1, downloadJob2);
+        TestUtils.equalsTest(downloadJob1, downloadJob2);
 
-		Assert.assertNotEquals(downloadJob1, downloadJob3);
-		Assert.assertNotEquals(downloadJob3, downloadJob1);
-		Assert.assertNotEquals(downloadJob1, new Object());
+        Assert.assertNotEquals(downloadJob1, downloadJob3);
+        Assert.assertNotEquals(downloadJob3, downloadJob1);
+        Assert.assertNotEquals(downloadJob1, new Object());
 
-		MapFile mapFile = MapFile.TEST_MAP_FILE;
-		Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, null, new DisplayModel(), 1,
-				false, false));
-	}
+        MapFile mapFile = MapFile.TEST_MAP_FILE;
+        Assert.assertNotEquals(downloadJob1, new RendererJob(tile, mapFile, null, new DisplayModel(), 1,
+                false, false));
+    }
 }

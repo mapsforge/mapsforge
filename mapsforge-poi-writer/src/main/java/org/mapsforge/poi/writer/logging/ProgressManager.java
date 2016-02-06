@@ -15,17 +15,17 @@
 package org.mapsforge.poi.writer.logging;
 
 public interface ProgressManager {
-	void appendLogMessage(String message, boolean isErrorMessage);
+    void appendLogMessage(String message, boolean isErrorMessage);
 
-	void finish();
+    void finish();
 
-	void initProgressBar(int minVal, int maxVal);
+    void initProgressBar(int minVal, int maxVal);
 
-	void setMessage(String message);
+    void setMessage(String message);
 
-	void start();
+    void start();
 
-	void tick();
+    void tick();
 
-	void updateProgressBar(int newVal);
+    void updateProgressBar(int newVal);
 }

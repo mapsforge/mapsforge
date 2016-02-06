@@ -25,48 +25,48 @@ import org.mapsforge.map.scalebar.MapScaleBar;
 
 public interface MapView {
 
-	void addLayer(Layer layer);
+    void addLayer(Layer layer);
 
-	/**
-	 * Clear map view.
-	 */
-	void destroy();
+    /**
+     * Clear map view.
+     */
+    void destroy();
 
-	/**
-	 * Clear all map view elements.<br/>
-	 * i.e. layers, tile cache, label store, map view, resources, etc.
-	 */
-	void destroyAll();
+    /**
+     * Clear all map view elements.<br/>
+     * i.e. layers, tile cache, label store, map view, resources, etc.
+     */
+    void destroyAll();
 
-	BoundingBox getBoundingBox();
+    BoundingBox getBoundingBox();
 
-	Dimension getDimension();
+    Dimension getDimension();
 
-	FpsCounter getFpsCounter();
+    FpsCounter getFpsCounter();
 
-	/**
-	 * @return the FrameBuffer used in this MapView.
-	 */
-	FrameBuffer getFrameBuffer();
+    /**
+     * @return the FrameBuffer used in this MapView.
+     */
+    FrameBuffer getFrameBuffer();
 
-	int getHeight();
+    int getHeight();
 
-	LayerManager getLayerManager();
+    LayerManager getLayerManager();
 
-	MapScaleBar getMapScaleBar();
+    MapScaleBar getMapScaleBar();
 
-	Model getModel();
+    Model getModel();
 
-	int getWidth();
+    int getWidth();
 
-	/**
-	 * Requests a redrawing as soon as possible.
-	 */
-	void repaint();
+    /**
+     * Requests a redrawing as soon as possible.
+     */
+    void repaint();
 
-	void setCenter(LatLong center);
+    void setCenter(LatLong center);
 
-	void setMapScaleBar(MapScaleBar mapScaleBar);
+    void setMapScaleBar(MapScaleBar mapScaleBar);
 
-	void setZoomLevel(byte zoomLevel);
+    void setZoomLevel(byte zoomLevel);
 }

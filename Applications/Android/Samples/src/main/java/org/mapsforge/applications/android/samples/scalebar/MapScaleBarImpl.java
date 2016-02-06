@@ -24,34 +24,34 @@ import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 
 public class MapScaleBarImpl extends DefaultMapScaleBar {
 
-	private final MapViewDimension mapViewDimension;
+    private final MapViewDimension mapViewDimension;
 
-	public MapScaleBarImpl(MapViewPosition mapViewPosition,
-			MapViewDimension mapViewDimension, GraphicFactory graphicFactory,
-			DisplayModel displayModel) {
-		super(mapViewPosition, mapViewDimension, graphicFactory, displayModel);
-		this.mapViewDimension = mapViewDimension;
-	}
+    public MapScaleBarImpl(MapViewPosition mapViewPosition,
+                           MapViewDimension mapViewDimension, GraphicFactory graphicFactory,
+                           DisplayModel displayModel) {
+        super(mapViewPosition, mapViewDimension, graphicFactory, displayModel);
+        this.mapViewDimension = mapViewDimension;
+    }
 
-	@Override
-	public void draw(GraphicContext graphicContext) {
-		if (!this.isVisible()) {
-			return;
-		}
+    @Override
+    public void draw(GraphicContext graphicContext) {
+        if (!this.isVisible()) {
+            return;
+        }
 
-		if (this.mapViewDimension.getDimension() == null) {
-			return;
-		}
+        if (this.mapViewDimension.getDimension() == null) {
+            return;
+        }
 
-		if (this.isRedrawNecessary()) {
-			redraw(this.mapScaleCanvas);
-			this.redrawNeeded = false;
-		}
+        if (this.isRedrawNecessary()) {
+            redraw(this.mapScaleCanvas);
+            this.redrawNeeded = false;
+        }
 
-		graphicContext.drawBitmap(this.mapScaleBitmap, 0, 0);
-	}
+        graphicContext.drawBitmap(this.mapScaleBitmap, 0, 0);
+    }
 
-	public Bitmap getMapScaleBitmap() {
-		return this.mapScaleBitmap;
-	}
+    public Bitmap getMapScaleBitmap() {
+        return this.mapScaleBitmap;
+    }
 }

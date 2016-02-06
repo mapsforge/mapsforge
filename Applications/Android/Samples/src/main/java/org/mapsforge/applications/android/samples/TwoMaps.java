@@ -14,14 +14,14 @@
  */
 package org.mapsforge.applications.android.samples;
 
-import java.io.File;
+import android.os.Environment;
 
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.reader.MapFile;
 
-import android.os.Environment;
+import java.io.File;
 
 /**
  * Two rendered maps overlaid in the same map view, e.g. for maps can be for different areas.
@@ -29,46 +29,46 @@ import android.os.Environment;
  * this, with the new MultiMapDataStore class.
  */
 public class TwoMaps extends RenderTheme4 {
-	@Override
-	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
-		this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
-		TileRendererLayer tileRendererLayer2 = AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
-				mapView.getModel().mapViewPosition, getMapFile2(), getRenderTheme(), true, true, false);
-		this.mapView.getLayerManager().getLayers().add(tileRendererLayer2);
+    @Override
+    protected void createLayers() {
+        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+                mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
+        this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
+        TileRendererLayer tileRendererLayer2 = AndroidUtil.createTileRendererLayer(this.tileCaches.get(1),
+                mapView.getModel().mapViewPosition, getMapFile2(), getRenderTheme(), true, true, false);
+        this.mapView.getLayerManager().getLayers().add(tileRendererLayer2);
 
-		// needed only for samples to hook into Settings.
-		setMaxTextWidthFactor();
-	}
+        // needed only for samples to hook into Settings.
+        setMaxTextWidthFactor();
+    }
 
-	protected TileCache createTileCache2() {
-		int tileSize = this.mapView.getModel().displayModel.getTileSize();
-		return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
-				getScreenRatio(), this.mapView.getModel().frameBufferModel.getOverdrawFactor());
-	}
+    protected TileCache createTileCache2() {
+        int tileSize = this.mapView.getModel().displayModel.getTileSize();
+        return AndroidUtil.createTileCache(this, getPersistableId2(), tileSize,
+                getScreenRatio(), this.mapView.getModel().frameBufferModel.getOverdrawFactor());
+    }
 
-	@Override
-	protected void createTileCaches() {
-		super.createTileCaches();
-		this.tileCaches.add(createTileCache2());
-	}
+    @Override
+    protected void createTileCaches() {
+        super.createTileCaches();
+        this.tileCaches.add(createTileCache2());
+    }
 
-	/**
-	 * @return the map file for the second view
-	 */
-	protected MapFile getMapFile2() {
-		return new MapFile(new File(Environment.getExternalStorageDirectory(), this.getMapFileName2()));
-	}
+    /**
+     * @return the map file for the second view
+     */
+    protected MapFile getMapFile2() {
+        return new MapFile(new File(Environment.getExternalStorageDirectory(), this.getMapFileName2()));
+    }
 
-	/**
-	 * @return the map file name for the second view
-	 */
-	protected String getMapFileName2() {
-		return "second.map";
-	}
+    /**
+     * @return the map file name for the second view
+     */
+    protected String getMapFileName2() {
+        return "second.map";
+    }
 
-	protected String getPersistableId2() {
-		return this.getPersistableId() + "-2";
-	}
+    protected String getPersistableId2() {
+        return this.getPersistableId() + "-2";
+    }
 }

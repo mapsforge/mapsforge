@@ -18,8 +18,6 @@
 // Any modifications to this file will be lost upon recompilation of the source schema. 
 // Generated on: 2011.10.14 at 05:47:04 PM MESZ 
 //
-
-
 package org.mapsforge.poi.writer.jaxb;
 
 import java.util.ArrayList;
@@ -32,12 +30,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
- * <p>Java class for anonymous complex type.
- * 
- * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * Java class for anonymous complex type.
+ * <p/>
+ * The following schema fragment specifies the expected content contained within this class.
+ * <p/>
  * <pre>
  * &lt;complexType>
  *   &lt;complexContent>
@@ -51,17 +48,14 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "category",
-    "mapping"
+        "category",
+        "mapping"
 })
 @XmlRootElement(name = "category")
 public class Category {
-
     protected List<Category> category;
     protected List<Mapping> mapping;
     @XmlAttribute(required = true)
@@ -70,25 +64,19 @@ public class Category {
 
     /**
      * Gets the value of the category property.
-     * 
-     * <p>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the category property.
-     * 
-     * <p>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getCategory().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link Category }
-     * 
-     * 
      */
     public List<Category> getCategory() {
         if (category == null) {
@@ -99,25 +87,19 @@ public class Category {
 
     /**
      * Gets the value of the mapping property.
-     * 
-     * <p>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the mapping property.
-     * 
-     * <p>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getMapping().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link Mapping }
-     * 
-     * 
      */
     public List<Mapping> getMapping() {
         if (mapping == null) {
@@ -128,11 +110,9 @@ public class Category {
 
     /**
      * Gets the value of the title property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getTitle() {
         return title;
@@ -140,14 +120,11 @@ public class Category {
 
     /**
      * Sets the value of the title property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setTitle(String value) {
         this.title = value;
     }
-
 }

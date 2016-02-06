@@ -23,110 +23,109 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.view.MapView;
 
 public class MapViewProjection {
-	private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions";
+    private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions";
 
-	private final MapView mapView;
+    private final MapView mapView;
 
-	public MapViewProjection(MapView mapView) {
-		this.mapView = mapView;
-	}
+    public MapViewProjection(MapView mapView) {
+        this.mapView = mapView;
+    }
 
-	/**
-	 * Computes the geographic coordinates of a screen point.
-	 * 
-	 * @return the coordinates of the x/y point
-	 */
-	public LatLong fromPixels(double x, double y) {
-		if (this.mapView.getWidth() <= 0 || this.mapView.getHeight() <= 0) {
-			return null;
-		}
+    /**
+     * Computes the geographic coordinates of a screen point.
+     *
+     * @return the coordinates of the x/y point
+     */
+    public LatLong fromPixels(double x, double y) {
+        if (this.mapView.getWidth() <= 0 || this.mapView.getHeight() <= 0) {
+            return null;
+        }
 
-		// this uses the framebuffer position, the mapview position can be out of sync with
-		// what the user sees on the screen if an animation is in progress
-		MapPosition mapPosition = this.mapView.getModel().frameBufferModel.getMapPosition();
+        // this uses the framebuffer position, the mapview position can be out of sync with
+        // what the user sees on the screen if an animation is in progress
+        MapPosition mapPosition = this.mapView.getModel().frameBufferModel.getMapPosition();
 
-		// this means somehow the mapview is not yet properly set up, see issue #308.
-		if (mapPosition == null) {
-			return null;
-		}
+        // this means somehow the mapview is not yet properly set up, see issue #308.
+        if (mapPosition == null) {
+            return null;
+        }
 
-		// calculate the pixel coordinates of the top left corner
-		LatLong latLong = mapPosition.latLong;
-		long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
-		pixelX -= this.mapView.getWidth() >> 1;
-		pixelY -= this.mapView.getHeight() >> 1;
+        // calculate the pixel coordinates of the top left corner
+        LatLong latLong = mapPosition.latLong;
+        long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
+        double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
+        double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
+        pixelX -= this.mapView.getWidth() >> 1;
+        pixelY -= this.mapView.getHeight() >> 1;
 
-		// catch outer map limits
-		try {
-			// convert the pixel coordinates to a LatLong and return it
-			return new LatLong(MercatorProjection.pixelYToLatitude(pixelY + y, mapSize),
-					MercatorProjection.pixelXToLongitude(pixelX + x, mapSize));
-		} catch (Exception e) {
-			return null;
-		}
-	}
+        // catch outer map limits
+        try {
+            // convert the pixel coordinates to a LatLong and return it
+            return new LatLong(MercatorProjection.pixelYToLatitude(pixelY + y, mapSize),
+                    MercatorProjection.pixelXToLongitude(pixelX + x, mapSize));
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
-	/**
-	 * Computes vertical extend of the map view.
-	 * 
-	 * @return the latitude span of the map in degrees
-	 */
-	public double getLatitudeSpan() {
-		if (this.mapView.getWidth() > 0 && this.mapView.getHeight() > 0) {
-			LatLong top = fromPixels(0, 0);
-			LatLong bottom = fromPixels(0, this.mapView.getHeight());
-			return Math.abs(top.latitude - bottom.latitude);
-		}
-		throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
-	}
+    /**
+     * Computes vertical extend of the map view.
+     *
+     * @return the latitude span of the map in degrees
+     */
+    public double getLatitudeSpan() {
+        if (this.mapView.getWidth() > 0 && this.mapView.getHeight() > 0) {
+            LatLong top = fromPixels(0, 0);
+            LatLong bottom = fromPixels(0, this.mapView.getHeight());
+            return Math.abs(top.latitude - bottom.latitude);
+        }
+        throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
+    }
 
-	/**
-	 * Computes horizontal extend of the map view.
-	 * 
-	 * @return the longitude span of the map in degrees
-	 */
-	public double getLongitudeSpan() {
-		if (this.mapView.getWidth() > 0 && this.mapView.getHeight() > 0) {
-			LatLong left = fromPixels(0, 0);
-			LatLong right = fromPixels(this.mapView.getWidth(), 0);
-			return Math.abs(left.longitude - right.longitude);
-		}
-		throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
-	}
+    /**
+     * Computes horizontal extend of the map view.
+     *
+     * @return the longitude span of the map in degrees
+     */
+    public double getLongitudeSpan() {
+        if (this.mapView.getWidth() > 0 && this.mapView.getHeight() > 0) {
+            LatLong left = fromPixels(0, 0);
+            LatLong right = fromPixels(this.mapView.getWidth(), 0);
+            return Math.abs(left.longitude - right.longitude);
+        }
+        throw new IllegalStateException(INVALID_MAP_VIEW_DIMENSIONS);
+    }
 
-	/**
-	 * Converts geographic coordinates to view x/y coordinates in the map view.
-	 * 
-	 * @param in
-	 *            the geographic coordinates
-	 * @return x/y view coordinates for the given location
-	 */
-	public Point toPixels(LatLong in) {
-		if (in == null || this.mapView.getWidth() <= 0 || this.mapView.getHeight() <= 0) {
-			return null;
-		}
+    /**
+     * Converts geographic coordinates to view x/y coordinates in the map view.
+     *
+     * @param in the geographic coordinates
+     * @return x/y view coordinates for the given location
+     */
+    public Point toPixels(LatLong in) {
+        if (in == null || this.mapView.getWidth() <= 0 || this.mapView.getHeight() <= 0) {
+            return null;
+        }
 
-		MapPosition mapPosition = this.mapView.getModel().mapViewPosition.getMapPosition();
+        MapPosition mapPosition = this.mapView.getModel().mapViewPosition.getMapPosition();
 
-		// this means somehow the mapview is not yet properly set up, see issue #308.
-		if (mapPosition == null) {
-			return null;
-		}
+        // this means somehow the mapview is not yet properly set up, see issue #308.
+        if (mapPosition == null) {
+            return null;
+        }
 
-		// calculate the pixel coordinates of the top left corner
-		LatLong latLong = mapPosition.latLong;
-		long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
-		double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
-		double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
-		pixelX -= this.mapView.getWidth() >> 1;
-		pixelY -= this.mapView.getHeight() >> 1;
+        // calculate the pixel coordinates of the top left corner
+        LatLong latLong = mapPosition.latLong;
+        long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
+        double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
+        double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
+        pixelX -= this.mapView.getWidth() >> 1;
+        pixelY -= this.mapView.getHeight() >> 1;
 
-		// create a new point and return it
-		return new Point(
-				(int) (MercatorProjection.longitudeToPixelX(in.longitude, mapSize) - pixelX),
-				(int) (MercatorProjection.latitudeToPixelY(in.latitude, mapSize) - pixelY));
-	}
+        // create a new point and return it
+        return new Point(
+                (int) (MercatorProjection.longitudeToPixelX(in.longitude, mapSize) - pixelX),
+                (int) (MercatorProjection.latitudeToPixelY(in.latitude, mapSize) - pixelY));
+    }
 
 }

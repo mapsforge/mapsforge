@@ -18,24 +18,24 @@ package org.mapsforge.poi.writer.util;
  * Defines some constants.
  */
 public final class Constants {
-	/**
-	 * The name of the POI writer.
-	 */
-	public static final String CREATOR_NAME = "mapsforge-poi-writer";
-	/**
-	 * Default name for out file.
-	 */
-	public static final String DEFAULT_PARAM_OUTFILE = "mapsforge.poi";
-	/**
-	 * The name of the property that refers to the version of the map file specification.
-	 */
-	public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION = "poi.specification.version";
-	/**
-	 * The name of the property that refers to the version of the POI writer.
-	 */
-	public static final String PROPERTY_NAME_WRITER_VERSION = "poi.writer.version";
+    /**
+     * The name of the POI writer.
+     */
+    public static final String CREATOR_NAME = "mapsforge-poi-writer";
+    /**
+     * Default name for out file.
+     */
+    public static final String DEFAULT_PARAM_OUTFILE = "mapsforge.poi";
+    /**
+     * The name of the property that refers to the version of the map file specification.
+     */
+    public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION = "poi.specification.version";
+    /**
+     * The name of the property that refers to the version of the POI writer.
+     */
+    public static final String PROPERTY_NAME_WRITER_VERSION = "poi.writer.version";
 
-	private Constants() {
-		throw new IllegalStateException();
-	}
+    private Constants() {
+        throw new IllegalStateException();
+    }
 }
