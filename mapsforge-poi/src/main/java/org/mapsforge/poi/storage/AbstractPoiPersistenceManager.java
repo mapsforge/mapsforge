@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -44,10 +44,10 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
     public Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
                                                         PoiCategoryFilter filter, String pattern,
                                                         int limit) {
-        double minLat = point.getLatitude() - LatLongUtils.latitudeDistance(distance);
-        double minLon = point.getLongitude() - LatLongUtils.longitudeDistance(distance, point.getLatitude());
-        double maxLat = point.getLatitude() + LatLongUtils.latitudeDistance(distance);
-        double maxLon = point.getLongitude() + LatLongUtils.longitudeDistance(distance, point.getLatitude());
+        double minLat = point.latitude - LatLongUtils.latitudeDistance(distance);
+        double minLon = point.longitude - LatLongUtils.longitudeDistance(distance, point.latitude);
+        double maxLat = point.latitude + LatLongUtils.latitudeDistance(distance);
+        double maxLon = point.longitude + LatLongUtils.longitudeDistance(distance, point.latitude);
 
         return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, pattern, limit);
     }

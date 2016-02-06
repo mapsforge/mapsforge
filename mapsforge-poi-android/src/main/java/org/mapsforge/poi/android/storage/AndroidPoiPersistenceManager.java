@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,7 +22,6 @@ import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
 import org.mapsforge.poi.storage.PoiFileInfo;
 import org.mapsforge.poi.storage.PoiFileInfoBuilder;
-import org.mapsforge.poi.storage.PoiImpl;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
 import org.mapsforge.poi.storage.UnknownPoiCategoryException;
@@ -234,7 +233,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 int categoryID = stmt.column_int(4);
 
                 try {
-                    this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
+                    this.poi = new PointOfInterest(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
                     this.ret.add(this.poi);
                 } catch (UnknownPoiCategoryException e) {
                     LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -270,7 +269,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 int categoryID = this.findByIDStatement.column_int(4);
 
                 try {
-                    this.poi = new PoiImpl(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
+                    this.poi = new PointOfInterest(id, lat, lon, data, this.categoryManager.getPoiCategoryByID(categoryID));
                 } catch (UnknownPoiCategoryException e) {
                     LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
