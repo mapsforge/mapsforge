@@ -41,6 +41,17 @@ public class PointOfInterest {
         this.category = category;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof PointOfInterest)) {
+            return false;
+        }
+        PointOfInterest other = (PointOfInterest) obj;
+        return this.id == other.id;
+    }
+
     /**
      * @return category of this point of interest.
      */
