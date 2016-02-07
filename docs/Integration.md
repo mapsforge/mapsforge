@@ -22,7 +22,7 @@ compile 'com.caverock:androidsvg:1.2.2-beta-1'
 
 Optionally:
 ```groovy
-compile 'org.mapsforge:mapsforge-map-android-extras:0.6.0@aar'
+compile 'org.mapsforge:mapsforge-map-android-extras:0.6.0'
 ```
 
 #### 1.3 Java
