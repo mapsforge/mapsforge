@@ -1,4 +1,3 @@
-
 # Getting Started
 
 **A quick description for developers of how to get started with mapsforge.**
@@ -41,8 +40,7 @@ Extra Java components:
  
 The jars build from the above components are required elements for a mapsforge application on Android or Java.
 
-External dependencies jars can be found at their respective sites or simply searching them in [Maven central repository](http://search.maven.org/).
-
+External dependencies jars can be found at their respective sites or in Maven central repository.
 
 ### Branches
 
@@ -51,7 +49,7 @@ The mapsforge code has now been consolidated into two main branches as well as r
 - **dev**: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
 - **release**: use this if you want to build applications built on top of well-tested and stable code.
 
-Code before the 0.6.0 release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged. 
+Code before latest release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged.
 
 ## Development Applications
 
@@ -88,7 +86,6 @@ After the build completes successfully you will find the Samples app in the dire
 
 Android Studio integrates tightly with gradle. The easiest way to create a new application is to follow the example of the Samples app. 
 
-
 ### Building mapsforge with Maven
 
 A second way to build mapsforge is using maven. This was the original way of building mapsforge. We still maintain this, but as Google does not actively support it, we discourage its use. New developments, certainly for Android, should use Gradle.
@@ -104,7 +101,6 @@ This will tell maven to delete any pre-existing generated files and directories 
 In the beginning, maven automatically downloads all missing plug-ins and files. Depending on the speed of your Internet connection, this may take some time. All downloaded files are stored locally in a special maven directory to avoid downloading them again at each build.
 
 During the build process, maven compiles, tests and packages all modules in the correct order. A new directory `target` is created for each module which contains – among test reports and other generated files – the new artifacts. Eventually these artifacts are installed in your local repository so that you can use them in other maven projects.
-
 
 ### Start developing with Eclipse
 
@@ -139,22 +135,6 @@ To build the Android sample application, you need to make a few adjustments:
 * Then clean the project (`Project > Clean`).
 
 Without these steps, you may have issues with the app crashing with a `java.lang.NoClassDefFoundError` exception. If that happens, carry out the above steps and build again.
-
-### JitPack
-
-We support also [JitPack](https://jitpack.io/#mapsforge/mapsforge) for publishing Mapsforge. This can be used for our releases but it's also useful for using SNAPSHOT builds in your application (which are not in Maven central).
-
-For example in order to include the `mapsforge-core` module `master-SNAPSHOT` with Gradle.
-
-Add as repository:
-
-`maven { url "https://jitpack.io" }`
-
-And declare as dependency:
-
-`compile 'com.github.mapsforge.mapsforge:mapsforge-core:master-SNAPSHOT'`
-
-The same syntax applies for all Mapsforge modules. And with similar way you can declare the dependencies in Maven too.
 
 ## How to contribute
 

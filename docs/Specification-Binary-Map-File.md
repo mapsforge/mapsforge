@@ -1,8 +1,6 @@
 
 # Specification: Mapsforge Binary Map File Format
 
-<wiki:toc />
-
 ## Conceptual design
 
 The *mapsforge binary map file format* is designed for map rendering on devices with limited resources like mobile phones.

@@ -1,7 +1,5 @@
 # Changelog
 
-<wiki:toc />
-
 ## Version 0.6.X
 
 #### Version 0.6.0 (2015-11-25)
