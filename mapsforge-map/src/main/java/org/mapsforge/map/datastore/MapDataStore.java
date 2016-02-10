@@ -18,8 +18,10 @@ package org.mapsforge.map.datastore;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -236,5 +238,16 @@ public abstract class MapDataStore {
      * @return true if tile is part of database.
      */
     public abstract boolean supportsTile(Tile tile);
+
+    /**
+     * Returns true if a way should be included in the result set for readLabels()
+     * By default only ways with names, house numbers or a ref are included in the result set
+     * of readLabels(). This is to reduce the set of ways as much as possible to save memory.
+     * @param tags the tags associated with the way
+     * @return true if the way should be included in the result set
+     */
+    public boolean wayAsLabelTagFilter(List<Tag> tags) {
+        return false;
+    }
 
 }

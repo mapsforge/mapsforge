@@ -818,7 +818,7 @@ public class MapFile extends MapDataStore {
                     if (filterRequired && wayFilterEnabled && !wayFilterBbox.intersectsArea(wayNodes)) {
                         continue;
                     }
-                    if (Selector.ALL == selector || featureName || featureHouseNumber || featureRef) {
+                    if (Selector.ALL == selector || featureName || featureHouseNumber || featureRef || wayAsLabelTagFilter(tags)) {
                         ways.add(new Way(layer, tags, wayNodes, labelPosition));
                     }
                 }
