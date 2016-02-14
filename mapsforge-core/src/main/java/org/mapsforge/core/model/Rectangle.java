@@ -47,6 +47,18 @@ public class Rectangle implements Serializable {
         return this.left <= point.x && this.right >= point.x && this.top <= point.y && this.bottom >= point.y;
     }
 
+    /**
+     * Enlarges the Rectangle sides individually
+     * @param left left enlargement
+     * @param top top enlargement
+     * @param right right enlargement
+     * @param bottom bottom enlargement
+     * @return
+     */
+    public Rectangle enlarge(double left, double top, double right, double bottom) {
+        return new Rectangle(this.left - left, this.top - top, this.right + right, this.bottom + bottom);
+    }
+
     public Rectangle envelope(double padding) {
         return new Rectangle(this.left - padding, this.top - padding, this.right + padding, this.bottom + padding);
     }

@@ -44,7 +44,7 @@ public class WayTextContainer extends MapElementContainer {
         // we also need to make the container larger by textHeight as otherwise the end points do
         // not correctly reflect the size of the text on screen
         this.boundaryAbsolute = new Rectangle(Math.min(point.x, end.x), Math.min(point.y, end.y),
-                Math.max(point.x, end.x), Math.max(point.y, end.y)).envelope(textHeight / 2d);
+                Math.max(point.x, end.x), Math.max(point.y, end.y)).enlarge(0d, textHeight / 2d, 0d, textHeight / 2d);
     }
 
     @Override

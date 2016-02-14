@@ -32,7 +32,7 @@ final class WayDecorator {
     /**
      * A safety margin that keeps way names out of intersections.
      */
-    private static final int WAYNAME_SAFETY_MARGIN = 10;
+    private static final int WAYNAME_SAFETY_MARGIN = 5;
 
     static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, boolean alignCenter,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
@@ -136,7 +136,7 @@ final class WayDecorator {
         // We make the tile smaller because otherwise we sometimes write the text beyond the tile boundary
         // (e.g. a road that runs parallel just below a tile boundary)
         double textHeight = (stroke == null) ? fill.getTextHeight(text) : stroke.getTextHeight(text);
-        final Rectangle tileBoundary = Tile.getBoundaryAbsolute(upperLeft, lowerRight).envelope(-textHeight);
+        final Rectangle tileBoundary = Tile.getBoundaryAbsolute(upperLeft, lowerRight);
 
         int skipPixels = 0;
 
@@ -182,10 +182,11 @@ final class WayDecorator {
                 continue;
             }
 
+            // calculate the position so that we center the name in the middle of a segment:
+            double offset = (segmentLengthInPixel - wayNameWidth) / 2d;
             // now calculate the actually used part of the segment to ensure the bbox of the waytext container
-            // is as small as possible. The offset at the beginning/end is to ensure that we are a bit off the center
-            // of an intersection (otherwise we have more collisions at the intersection)
-            LineSegment actuallyUsedSegment = drawableSegment.subSegment(WAYNAME_SAFETY_MARGIN, wayNameWidth - WAYNAME_SAFETY_MARGIN);
+            // is as small as possible.
+            LineSegment actuallyUsedSegment = drawableSegment.subSegment(offset, wayNameWidth - WAYNAME_SAFETY_MARGIN * 2);
             // check to prevent inverted way names
             if (actuallyUsedSegment.start.x <= actuallyUsedSegment.end.x) {
                 currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, display, priority, text, fill, stroke, textHeight));
@@ -193,7 +194,8 @@ final class WayDecorator {
                 currentLabels.add(new WayTextContainer(actuallyUsedSegment.end, actuallyUsedSegment.start, display, priority, text, fill, stroke, textHeight));
             }
 
-            skipPixels = wayNameWidth;
+            // arbitrary distance, but should not depend on length of name
+            skipPixels = WAYNAME_SAFETY_MARGIN * 10;
         }
     }
 
