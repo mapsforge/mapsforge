@@ -133,8 +133,6 @@ final class WayDecorator {
         int wayNameWidth = (stroke == null) ? fill.getTextWidth(text) + WAYNAME_SAFETY_MARGIN * 2 : stroke.getTextWidth(text) + WAYNAME_SAFETY_MARGIN * 2;
 
         // Compute the tile boundary on which we render the name.
-        // We make the tile smaller because otherwise we sometimes write the text beyond the tile boundary
-        // (e.g. a road that runs parallel just below a tile boundary)
         double textHeight = (stroke == null) ? fill.getTextHeight(text) : stroke.getTextHeight(text);
         final Rectangle tileBoundary = Tile.getBoundaryAbsolute(upperLeft, lowerRight);
 
