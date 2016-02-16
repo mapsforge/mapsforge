@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,7 +24,6 @@ import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.util.JavaPreferences;
 import org.mapsforge.map.awt.view.MapView;
-import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
@@ -108,7 +107,13 @@ public final class MapViewer {
     private static BoundingBox addLayers(MapView mapView, List<File> mapFiles) {
         Layers layers = mapView.getLayerManager().getLayers();
 
-        // layers.add(createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition));
+        // Raster
+        /*TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(0), mapView.getModel().mapViewPosition);
+        layers.add(tileDownloadLayer);
+        tileDownloadLayer.start();
+        BoundingBox result = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);*/
+
+        // Vector
         BoundingBox result = null;
         for (int i = 0; i < mapFiles.size(); i++) {
             File mapFile = mapFiles.get(i);
@@ -118,10 +123,13 @@ public final class MapViewer {
             result = result == null ? boundingBox : result.extendBoundingBox(boundingBox);
             layers.add(tileRendererLayer);
         }
+
+        // Debug
         if (SHOW_DEBUG_LAYERS) {
             layers.add(new TileGridLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
             layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
         }
+
         return result;
     }
 
@@ -143,12 +151,9 @@ public final class MapViewer {
     }
 
     @SuppressWarnings("unused")
-    private static Layer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
+    private static TileDownloadLayer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
         TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-        TileDownloadLayer tileDownloadLayer = new TileDownloadLayer(tileCache, mapViewPosition, tileSource,
-                GRAPHIC_FACTORY);
-        tileDownloadLayer.start();
-        return tileDownloadLayer;
+        return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY);
     }
 
     private static TileRendererLayer createTileRendererLayer(
