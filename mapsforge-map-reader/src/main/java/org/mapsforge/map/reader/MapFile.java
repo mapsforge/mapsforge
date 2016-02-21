@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2015 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,7 +51,7 @@ import java.util.logging.Logger;
  * @see <a href="https://github.com/mapsforge/mapsforge/blob/master/docs/Specification-Binary-Map-File.md">Specification</a>
  */
 public class MapFile extends MapDataStore {
-
+    private static final Logger LOGGER = Logger.getLogger(MapFile.class.getName());
     /* Only for testing, an empty file. */
     public static final MapFile TEST_MAP_FILE = new MapFile();
     /**
@@ -64,7 +65,7 @@ public class MapFile extends MapDataStore {
     /**
      * Default start zoom level.
      */
-    private static final Byte DEFAULT_START_ZOOM_LEVEL = Byte.valueOf((byte) 12);
+    private static final byte DEFAULT_START_ZOOM_LEVEL = 12;
     /**
      * Amount of cache blocks that the index cache should store.
      */
@@ -73,7 +74,6 @@ public class MapFile extends MapDataStore {
      * Error message for an invalid first way offset.
      */
     private static final String INVALID_FIRST_WAY_OFFSET = "invalid first way offset: ";
-    private static final Logger LOGGER = Logger.getLogger(MapFile.class.getName());
     /**
      * Bitmask for the optional POI feature "elevation".
      */
@@ -98,6 +98,9 @@ public class MapFile extends MapDataStore {
      * Bitmask for the number of POI tags.
      */
     private static final int POI_NUMBER_OF_TAGS_BITMASK = 0x0f;
+    /**
+     * Read only access mode.
+     */
     private static final String READ_ONLY_MODE = "r";
     /**
      * Length of the debug signature at the beginning of each block.
@@ -174,12 +177,11 @@ public class MapFile extends MapDataStore {
      */
     public static boolean wayFilterEnabled = true;
     public static int wayFilterDistance = 20;
+
     private final IndexCache databaseIndexCache;
     private final long fileSize;
     private final RandomAccessFile inputFile;
-
     private final MapFileHeader mapFileHeader;
-
     private final ReadBuffer readBuffer;
     private final long timestamp;
 
@@ -266,6 +268,78 @@ public class MapFile extends MapDataStore {
     }
 
     /**
+     * Closes the map file and destroys all internal caches. Has no effect if no map file is currently opened.
+     */
+    private void closeFile() {
+        try {
+            if (this.databaseIndexCache != null) {
+                this.databaseIndexCache.destroy();
+            }
+            this.inputFile.close();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+    }
+
+    private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
+        // get the first way node latitude offset (VBE-S)
+        double wayNodeLatitude = tileLatitude
+                + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+        // get the first way node longitude offset (VBE-S)
+        double wayNodeLongitude = tileLongitude
+                + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+        // store the first way node
+        waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+
+        double previousSingleDeltaLatitude = 0;
+        double previousSingleDeltaLongitude = 0;
+
+        for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
+            // get the way node latitude double-delta offset (VBE-S)
+            double doubleDeltaLatitude = LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+            // get the way node longitude double-delta offset (VBE-S)
+            double doubleDeltaLongitude = LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+            double singleDeltaLatitude = doubleDeltaLatitude + previousSingleDeltaLatitude;
+            double singleDeltaLongitude = doubleDeltaLongitude + previousSingleDeltaLongitude;
+
+            wayNodeLatitude = wayNodeLatitude + singleDeltaLatitude;
+            wayNodeLongitude = wayNodeLongitude + singleDeltaLongitude;
+
+            waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+
+            previousSingleDeltaLatitude = singleDeltaLatitude;
+            previousSingleDeltaLongitude = singleDeltaLongitude;
+        }
+    }
+
+    private void decodeWayNodesSingleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
+        // get the first way node latitude single-delta offset (VBE-S)
+        double wayNodeLatitude = tileLatitude
+                + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+        // get the first way node longitude single-delta offset (VBE-S)
+        double wayNodeLongitude = tileLongitude
+                + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+        // store the first way node
+        waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+
+        for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
+            // get the way node latitude offset (VBE-S)
+            wayNodeLatitude = wayNodeLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+            // get the way node longitude offset (VBE-S)
+            wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+            waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+        }
+    }
+
+    /**
      * Returns the creation timestamp of the map file.
      *
      * @param tile not used, as all tiles will shared the same creation date.
@@ -301,164 +375,80 @@ public class MapFile extends MapDataStore {
         return null;
     }
 
-    /**
-     * Restricts returns of data to zoom level range specified. This can be used to restrict
-     * the use of this map data base when used in MultiMapDatabase settings.
-     *
-     * @param minZoom minimum zoom level supported
-     * @param maxZoom maximum zoom level supported
-     */
-    public void restrictToZoomRange(byte minZoom, byte maxZoom) {
-        this.getMapFileInfo().zoomLevelMax = maxZoom;
-        this.getMapFileInfo().zoomLevelMin = minZoom;
-    }
-
-    /**
-     * Reads only labels for tile.
-     *
-     * @param tile tile for which data is requested.
-     * @return label data for the tile.
-     */
-    public MapReadResult readLabels(Tile tile) {
-        return readMapData(tile, tile, Selector.LABELS);
-    }
-
-    /**
-     * Reads data for an area defined by the tile in the upper left and the tile in
-     * the lower right corner. The default implementation combines the results from
-     * all tiles, a possibly inefficient solution.
-     * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
-     *
-     * @param upperLeft  tile that defines the upper left corner of the requested area.
-     * @param lowerRight tile that defines the lower right corner of the requested area.
-     * @return map data for the tile.
-     */
-    public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
-        return readMapData(upperLeft, lowerRight, Selector.LABELS);
-    }
-
-    /**
-     * Reads all map data for the area covered by the given tile at the tile zoom level.
-     *
-     * @param tile defines area and zoom level of read map data.
-     * @return the read map data.
-     */
-    @Override
-    public MapReadResult readMapData(Tile tile) {
-        return readMapData(tile, tile, Selector.ALL);
-    }
-
-    @Override
-    public MapReadResult readPoiData(Tile tile) {
-        return readMapData(tile, tile, Selector.POIS);
-    }
-
-    /**
-     * Reads POI data for an area defined by the tile in the upper left and the tile in
-     * the lower right corner.
-     * This implementation takes the data storage of a MapFile into account for greater efficiency.
-     *
-     * @param upperLeft  tile that defines the upper left corner of the requested area.
-     * @param lowerRight tile that defines the lower right corner of the requested area.
-     * @return map data for the tile.
-     */
-    @Override
-    public MapReadResult readPoiData(Tile upperLeft, Tile lowerRight) {
-        return readMapData(upperLeft, lowerRight, Selector.POIS);
-    }
-
-    @Override
-    public LatLong startPosition() {
-        if (null != getMapFileInfo().startPosition) {
-            return getMapFileInfo().startPosition;
+    private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
+                                      BoundingBox boundingBox, double tileLatitude, double tileLongitude, Selector selector) {
+        if (!processBlockSignature()) {
+            return null;
         }
-        return getMapFileInfo().boundingBox.getCenterPoint();
-    }
 
-    @Override
-    public Byte startZoomLevel() {
-        if (null != getMapFileInfo().startZoomLevel) {
-            return getMapFileInfo().startZoomLevel;
+        int[][] zoomTable = readZoomTable(subFileParameter);
+        int zoomTableRow = queryParameters.queryZoomLevel - subFileParameter.zoomLevelMin;
+        int poisOnQueryZoomLevel = zoomTable[zoomTableRow][0];
+        int waysOnQueryZoomLevel = zoomTable[zoomTableRow][1];
+
+        // get the relative offset to the first stored way in the block
+        int firstWayOffset = this.readBuffer.readUnsignedInt();
+        if (firstWayOffset < 0) {
+            LOGGER.warning(INVALID_FIRST_WAY_OFFSET + firstWayOffset);
+            return null;
         }
-        return DEFAULT_START_ZOOM_LEVEL;
-    }
 
-    @Override
-    public boolean supportsTile(Tile tile) {
-        return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
-    }
-
-    /**
-     * Closes the map file and destroys all internal caches. Has no effect if no map file is currently opened.
-     */
-    private void closeFile() {
-        try {
-            if (this.databaseIndexCache != null) {
-                this.databaseIndexCache.destroy();
-            }
-            this.inputFile.close();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        // add the current buffer position to the relative first way offset
+        firstWayOffset += this.readBuffer.getBufferPosition();
+        if (firstWayOffset > this.readBuffer.getBufferSize()) {
+            LOGGER.warning(INVALID_FIRST_WAY_OFFSET + firstWayOffset);
+            return null;
         }
-    }
 
-    private synchronized MapReadResult readMapData(Tile tile, Selector selector) {
-        try {
-            QueryParameters queryParameters = new QueryParameters();
-            queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(tile.zoomLevel);
+        boolean filterRequired = queryParameters.queryZoomLevel > subFileParameter.baseZoomLevel;
 
-            // get and check the sub-file for the query zoom level
-            SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
-            if (subFileParameter == null) {
-                LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
+        List<PointOfInterest> pois = processPOIs(tileLatitude, tileLongitude, poisOnQueryZoomLevel, boundingBox, filterRequired);
+        if (pois == null) {
+            return null;
+        }
+
+        List<Way> ways;
+        if (Selector.POIS == selector) {
+            ways = Collections.emptyList();
+        } else {
+            // finished reading POIs, check if the current buffer position is valid
+            if (this.readBuffer.getBufferPosition() > firstWayOffset) {
+                LOGGER.warning("invalid buffer position: " + this.readBuffer.getBufferPosition());
                 return null;
             }
 
-            queryParameters.calculateBaseTiles(tile, subFileParameter);
-            queryParameters.calculateBlocks(subFileParameter);
+            // move the pointer to the first way
+            this.readBuffer.setBufferPosition(firstWayOffset);
 
-            // we enlarge the bounding box for the tile slightly in order to retain any data that
-            // lies right on the border, some of this data needs to be drawn as the graphics will
-            // overlap onto this tile.
-            return processBlocks(queryParameters, subFileParameter, tile.getBoundingBox(), selector);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            return null;
-        }
-    }
-
-    private MapReadResult readMapData(Tile upperLeft, Tile lowerRight, Selector selector) {
-        if (upperLeft.tileX > lowerRight.tileX || upperLeft.tileY > lowerRight.tileY) {
-            new IllegalArgumentException("upperLeft tile must be above and left of lowerRight tile");
-        }
-
-        try {
-            QueryParameters queryParameters = new QueryParameters();
-            queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(upperLeft.zoomLevel);
-
-            // get and check the sub-file for the query zoom level
-            SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
-            if (subFileParameter == null) {
-                LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
+            ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox,
+                    filterRequired, tileLatitude, tileLongitude, selector);
+            if (ways == null) {
                 return null;
             }
-
-            queryParameters.calculateBaseTiles(upperLeft, lowerRight, subFileParameter);
-            queryParameters.calculateBlocks(subFileParameter);
-
-            // we enlarge the bounding box for the tile slightly in order to retain any data that
-            // lies right on the border, some of this data needs to be drawn as the graphics will
-            // overlap onto this tile.
-            return processBlocks(queryParameters, subFileParameter, Tile.getBoundingBox(upperLeft, lowerRight), selector);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            return null;
         }
+
+        return new PoiWayBundle(pois, ways);
+    }
+
+    /**
+     * Processes the block signature, if present.
+     *
+     * @return true if the block signature could be processed successfully, false otherwise.
+     */
+    private boolean processBlockSignature() {
+        if (this.mapFileHeader.getMapFileInfo().debugFile) {
+            // get and check the block signature
+            String signatureBlock = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_BLOCK);
+            if (!signatureBlock.startsWith("###TileStart")) {
+                LOGGER.warning("invalid block signature: " + signatureBlock);
+                return false;
+            }
+        }
+        return true;
     }
 
     private MapReadResult processBlocks(QueryParameters queryParameters, SubFileParameter subFileParameter,
-                                        BoundingBox boundingBox, Selector selector)
-            throws IOException {
+                                        BoundingBox boundingBox, Selector selector) throws IOException {
         boolean queryIsWater = true;
         boolean queryReadWaterInfo = false;
 
@@ -557,98 +547,8 @@ public class MapFile extends MapDataStore {
         return mapFileReadResult;
     }
 
-    private PoiWayBundle processBlock(QueryParameters queryParameters, SubFileParameter subFileParameter,
-                                      BoundingBox boundingBox, double tileLatitude, double tileLongitude, Selector selector) {
-        if (!processBlockSignature()) {
-            return null;
-        }
-
-        int[][] zoomTable = readZoomTable(subFileParameter);
-        int zoomTableRow = queryParameters.queryZoomLevel - subFileParameter.zoomLevelMin;
-        int poisOnQueryZoomLevel = zoomTable[zoomTableRow][0];
-        int waysOnQueryZoomLevel = zoomTable[zoomTableRow][1];
-
-        // get the relative offset to the first stored way in the block
-        int firstWayOffset = this.readBuffer.readUnsignedInt();
-        if (firstWayOffset < 0) {
-            LOGGER.warning(INVALID_FIRST_WAY_OFFSET + firstWayOffset);
-            return null;
-        }
-
-        // add the current buffer position to the relative first way offset
-        firstWayOffset += this.readBuffer.getBufferPosition();
-        if (firstWayOffset > this.readBuffer.getBufferSize()) {
-            LOGGER.warning(INVALID_FIRST_WAY_OFFSET + firstWayOffset);
-            return null;
-        }
-
-        boolean filterRequired = queryParameters.queryZoomLevel > subFileParameter.baseZoomLevel;
-
-        List<PointOfInterest> pois = processPOIs(tileLatitude, tileLongitude, poisOnQueryZoomLevel, boundingBox, filterRequired);
-        if (pois == null) {
-            return null;
-        }
-
-        List<Way> ways;
-        if (Selector.POIS == selector) {
-            ways = new ArrayList<>();
-        } else {
-            // finished reading POIs, check if the current buffer position is valid
-            if (this.readBuffer.getBufferPosition() > firstWayOffset) {
-                LOGGER.warning("invalid buffer position: " + this.readBuffer.getBufferPosition());
-                return null;
-            }
-
-            // move the pointer to the first way
-            this.readBuffer.setBufferPosition(firstWayOffset);
-
-            ways = processWays(queryParameters, waysOnQueryZoomLevel, boundingBox,
-                    filterRequired, tileLatitude, tileLongitude, selector);
-            if (ways == null) {
-                return null;
-            }
-        }
-
-        return new PoiWayBundle(pois, ways);
-    }
-
-    /**
-     * Processes the block signature, if present.
-     *
-     * @return true if the block signature could be processed successfully, false otherwise.
-     */
-    private boolean processBlockSignature() {
-        if (this.mapFileHeader.getMapFileInfo().debugFile) {
-            // get and check the block signature
-            String signatureBlock = this.readBuffer.readUTF8EncodedString(SIGNATURE_LENGTH_BLOCK);
-            if (!signatureBlock.startsWith("###TileStart")) {
-                LOGGER.warning("invalid block signature: " + signatureBlock);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private int[][] readZoomTable(SubFileParameter subFileParameter) {
-        int rows = subFileParameter.zoomLevelMax - subFileParameter.zoomLevelMin + 1;
-        int[][] zoomTable = new int[rows][2];
-
-        int cumulatedNumberOfPois = 0;
-        int cumulatedNumberOfWays = 0;
-
-        for (int row = 0; row < rows; ++row) {
-            cumulatedNumberOfPois += this.readBuffer.readUnsignedInt();
-            cumulatedNumberOfWays += this.readBuffer.readUnsignedInt();
-
-            zoomTable[row][0] = cumulatedNumberOfPois;
-            zoomTable[row][1] = cumulatedNumberOfWays;
-        }
-
-        return zoomTable;
-    }
-
     private List<PointOfInterest> processPOIs(double tileLatitude, double tileLongitude, int numberOfPois, BoundingBox boundingBox, boolean filterRequired) {
-        List<PointOfInterest> pois = new ArrayList<PointOfInterest>();
+        List<PointOfInterest> pois = new ArrayList<>();
         Tag[] poiTags = this.mapFileHeader.getMapFileInfo().poiTags;
 
         for (int elementCounter = numberOfPois; elementCounter != 0; --elementCounter) {
@@ -675,7 +575,7 @@ public class MapFile extends MapDataStore {
             // bit 5-8 represent the number of tag IDs
             byte numberOfTags = (byte) (specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 
-            List<Tag> tags = new ArrayList<Tag>();
+            List<Tag> tags = new ArrayList<>();
 
             // get the tag IDs (VBE-U)
             for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
@@ -721,9 +621,47 @@ public class MapFile extends MapDataStore {
         return pois;
     }
 
+    private LatLong[][] processWayDataBlock(double tileLatitude, double tileLongitude, boolean doubleDeltaEncoding) {
+        // get and check the number of way coordinate blocks (VBE-U)
+        int numberOfWayCoordinateBlocks = this.readBuffer.readUnsignedInt();
+        if (numberOfWayCoordinateBlocks < 1 || numberOfWayCoordinateBlocks > Short.MAX_VALUE) {
+            LOGGER.warning("invalid number of way coordinate blocks: " + numberOfWayCoordinateBlocks);
+            return null;
+        }
+
+        // create the array which will store the different way coordinate blocks
+        LatLong[][] wayCoordinates = new LatLong[numberOfWayCoordinateBlocks][];
+
+        // read the way coordinate blocks
+        for (int coordinateBlock = 0; coordinateBlock < numberOfWayCoordinateBlocks; ++coordinateBlock) {
+            // get and check the number of way nodes (VBE-U)
+            int numberOfWayNodes = this.readBuffer.readUnsignedInt();
+            if (numberOfWayNodes < 2 || numberOfWayNodes > Short.MAX_VALUE) {
+                LOGGER.warning("invalid number of way nodes: " + numberOfWayNodes);
+                // returning null here will actually leave the tile blank as the
+                // position on the ReadBuffer will not be advanced correctly. However,
+                // it will not crash the app.
+                return null;
+            }
+
+            // create the array which will store the current way segment
+            LatLong[] waySegment = new LatLong[numberOfWayNodes];
+
+            if (doubleDeltaEncoding) {
+                decodeWayNodesDoubleDelta(waySegment, tileLatitude, tileLongitude);
+            } else {
+                decodeWayNodesSingleDelta(waySegment, tileLatitude, tileLongitude);
+            }
+
+            wayCoordinates[coordinateBlock] = waySegment;
+        }
+
+        return wayCoordinates;
+    }
+
     private List<Way> processWays(QueryParameters queryParameters, int numberOfWays,
                                   BoundingBox boundingBox, boolean filterRequired, double tileLatitude, double tileLongitude, Selector selector) {
-        List<Way> ways = new ArrayList<Way>();
+        List<Way> ways = new ArrayList<>();
         Tag[] wayTags = this.mapFileHeader.getMapFileInfo().wayTags;
 
         BoundingBox wayFilterBbox = boundingBox.extendMeters(wayFilterDistance);
@@ -767,7 +705,7 @@ public class MapFile extends MapDataStore {
             // bit 5-8 represent the number of tag IDs
             byte numberOfTags = (byte) (specialByte & WAY_NUMBER_OF_TAGS_BITMASK);
 
-            List<Tag> tags = new ArrayList<Tag>();
+            List<Tag> tags = new ArrayList<>();
 
             for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
                 int tagId = this.readBuffer.readUnsignedInt();
@@ -828,6 +766,70 @@ public class MapFile extends MapDataStore {
         return ways;
     }
 
+    /**
+     * Reads only labels for tile.
+     *
+     * @param tile tile for which data is requested.
+     * @return label data for the tile.
+     */
+    public MapReadResult readLabels(Tile tile) {
+        return readMapData(tile, tile, Selector.LABELS);
+    }
+
+    /**
+     * Reads data for an area defined by the tile in the upper left and the tile in
+     * the lower right corner. The default implementation combines the results from
+     * all tiles, a possibly inefficient solution.
+     * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
+     *
+     * @param upperLeft  tile that defines the upper left corner of the requested area.
+     * @param lowerRight tile that defines the lower right corner of the requested area.
+     * @return map data for the tile.
+     */
+    public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
+        return readMapData(upperLeft, lowerRight, Selector.LABELS);
+    }
+
+    /**
+     * Reads all map data for the area covered by the given tile at the tile zoom level.
+     *
+     * @param tile defines area and zoom level of read map data.
+     * @return the read map data.
+     */
+    @Override
+    public MapReadResult readMapData(Tile tile) {
+        return readMapData(tile, tile, Selector.ALL);
+    }
+
+    private MapReadResult readMapData(Tile upperLeft, Tile lowerRight, Selector selector) {
+        if (upperLeft.tileX > lowerRight.tileX || upperLeft.tileY > lowerRight.tileY) {
+            new IllegalArgumentException("upperLeft tile must be above and left of lowerRight tile");
+        }
+
+        try {
+            QueryParameters queryParameters = new QueryParameters();
+            queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(upperLeft.zoomLevel);
+
+            // get and check the sub-file for the query zoom level
+            SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
+            if (subFileParameter == null) {
+                LOGGER.warning("no sub-file for zoom level: " + queryParameters.queryZoomLevel);
+                return null;
+            }
+
+            queryParameters.calculateBaseTiles(upperLeft, lowerRight, subFileParameter);
+            queryParameters.calculateBlocks(subFileParameter);
+
+            // we enlarge the bounding box for the tile slightly in order to retain any data that
+            // lies right on the border, some of this data needs to be drawn as the graphics will
+            // overlap onto this tile.
+            return processBlocks(queryParameters, subFileParameter, Tile.getBoundingBox(upperLeft, lowerRight), selector);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            return null;
+        }
+    }
+
     private LatLong readOptionalLabelPosition(double tileLatitude, double tileLongitude, boolean featureLabelPosition) {
         if (featureLabelPosition) {
             // get the label position latitude offset (VBE-S)
@@ -851,100 +853,74 @@ public class MapFile extends MapDataStore {
         return 1;
     }
 
-    private LatLong[][] processWayDataBlock(double tileLatitude, double tileLongitude, boolean doubleDeltaEncoding) {
-        // get and check the number of way coordinate blocks (VBE-U)
-        int numberOfWayCoordinateBlocks = this.readBuffer.readUnsignedInt();
-        if (numberOfWayCoordinateBlocks < 1 || numberOfWayCoordinateBlocks > Short.MAX_VALUE) {
-            LOGGER.warning("invalid number of way coordinate blocks: " + numberOfWayCoordinateBlocks);
-            return null;
-        }
-
-        // create the array which will store the different way coordinate blocks
-        LatLong[][] wayCoordinates = new LatLong[numberOfWayCoordinateBlocks][];
-
-        // read the way coordinate blocks
-        for (int coordinateBlock = 0; coordinateBlock < numberOfWayCoordinateBlocks; ++coordinateBlock) {
-            // get and check the number of way nodes (VBE-U)
-            int numberOfWayNodes = this.readBuffer.readUnsignedInt();
-            if (numberOfWayNodes < 2 || numberOfWayNodes > Short.MAX_VALUE) {
-                LOGGER.warning("invalid number of way nodes: " + numberOfWayNodes);
-                // returning null here will actually leave the tile blank as the
-                // position on the ReadBuffer will not be advanced correctly. However,
-                // it will not crash the app.
-                return null;
-            }
-
-            // create the array which will store the current way segment
-            LatLong[] waySegment = new LatLong[numberOfWayNodes];
-
-            if (doubleDeltaEncoding) {
-                decodeWayNodesDoubleDelta(waySegment, tileLatitude, tileLongitude);
-            } else {
-                decodeWayNodesSingleDelta(waySegment, tileLatitude, tileLongitude);
-            }
-
-            wayCoordinates[coordinateBlock] = waySegment;
-        }
-
-        return wayCoordinates;
+    @Override
+    public MapReadResult readPoiData(Tile tile) {
+        return readMapData(tile, tile, Selector.POIS);
     }
 
-    private void decodeWayNodesDoubleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
-        // get the first way node latitude offset (VBE-S)
-        double wayNodeLatitude = tileLatitude
-                + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
-
-        // get the first way node longitude offset (VBE-S)
-        double wayNodeLongitude = tileLongitude
-                + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
-
-        // store the first way node
-        waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
-
-        double previousSingleDeltaLatitude = 0;
-        double previousSingleDeltaLongitude = 0;
-
-        for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
-            // get the way node latitude double-delta offset (VBE-S)
-            double doubleDeltaLatitude = LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
-
-            // get the way node longitude double-delta offset (VBE-S)
-            double doubleDeltaLongitude = LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
-
-            double singleDeltaLatitude = doubleDeltaLatitude + previousSingleDeltaLatitude;
-            double singleDeltaLongitude = doubleDeltaLongitude + previousSingleDeltaLongitude;
-
-            wayNodeLatitude = wayNodeLatitude + singleDeltaLatitude;
-            wayNodeLongitude = wayNodeLongitude + singleDeltaLongitude;
-
-            waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
-
-            previousSingleDeltaLatitude = singleDeltaLatitude;
-            previousSingleDeltaLongitude = singleDeltaLongitude;
-        }
+    /**
+     * Reads POI data for an area defined by the tile in the upper left and the tile in
+     * the lower right corner.
+     * This implementation takes the data storage of a MapFile into account for greater efficiency.
+     *
+     * @param upperLeft  tile that defines the upper left corner of the requested area.
+     * @param lowerRight tile that defines the lower right corner of the requested area.
+     * @return map data for the tile.
+     */
+    @Override
+    public MapReadResult readPoiData(Tile upperLeft, Tile lowerRight) {
+        return readMapData(upperLeft, lowerRight, Selector.POIS);
     }
 
-    private void decodeWayNodesSingleDelta(LatLong[] waySegment, double tileLatitude, double tileLongitude) {
-        // get the first way node latitude single-delta offset (VBE-S)
-        double wayNodeLatitude = tileLatitude
-                + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+    private int[][] readZoomTable(SubFileParameter subFileParameter) {
+        int rows = subFileParameter.zoomLevelMax - subFileParameter.zoomLevelMin + 1;
+        int[][] zoomTable = new int[rows][2];
 
-        // get the first way node longitude single-delta offset (VBE-S)
-        double wayNodeLongitude = tileLongitude
-                + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+        int cumulatedNumberOfPois = 0;
+        int cumulatedNumberOfWays = 0;
 
-        // store the first way node
-        waySegment[0] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+        for (int row = 0; row < rows; ++row) {
+            cumulatedNumberOfPois += this.readBuffer.readUnsignedInt();
+            cumulatedNumberOfWays += this.readBuffer.readUnsignedInt();
 
-        for (int wayNodesIndex = 1; wayNodesIndex < waySegment.length; ++wayNodesIndex) {
-            // get the way node latitude offset (VBE-S)
-            wayNodeLatitude = wayNodeLatitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
-
-            // get the way node longitude offset (VBE-S)
-            wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
-
-            waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
+            zoomTable[row][0] = cumulatedNumberOfPois;
+            zoomTable[row][1] = cumulatedNumberOfWays;
         }
+
+        return zoomTable;
+    }
+
+    /**
+     * Restricts returns of data to zoom level range specified. This can be used to restrict
+     * the use of this map data base when used in MultiMapDatabase settings.
+     *
+     * @param minZoom minimum zoom level supported
+     * @param maxZoom maximum zoom level supported
+     */
+    public void restrictToZoomRange(byte minZoom, byte maxZoom) {
+        this.getMapFileInfo().zoomLevelMax = maxZoom;
+        this.getMapFileInfo().zoomLevelMin = minZoom;
+    }
+
+    @Override
+    public LatLong startPosition() {
+        if (null != getMapFileInfo().startPosition) {
+            return getMapFileInfo().startPosition;
+        }
+        return getMapFileInfo().boundingBox.getCenterPoint();
+    }
+
+    @Override
+    public Byte startZoomLevel() {
+        if (null != getMapFileInfo().startZoomLevel) {
+            return getMapFileInfo().startZoomLevel;
+        }
+        return DEFAULT_START_ZOOM_LEVEL;
+    }
+
+    @Override
+    public boolean supportsTile(Tile tile) {
+        return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
     }
 
     /**
@@ -956,5 +932,4 @@ public class MapFile extends MapDataStore {
     private enum Selector {
         ALL, POIS, LABELS
     }
-
 }
