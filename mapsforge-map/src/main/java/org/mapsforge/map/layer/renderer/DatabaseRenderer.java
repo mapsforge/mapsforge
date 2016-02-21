@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,8 +39,8 @@ import java.util.logging.Logger;
  * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.datastore.MapDataStore}.
  */
 public class DatabaseRenderer extends StandardRenderer {
-
     private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
+
     private final TileBasedLabelStore labelStore;
     private final boolean renderLabels;
     private final TileCache tileCache;
@@ -58,10 +58,11 @@ public class DatabaseRenderer extends StandardRenderer {
      * @param tileCache      where tiles are cached (needed if labels are drawn directly onto tiles, otherwise null)
      * @param labelStore     where labels are cached.
      * @param renderLabels   if labels should be rendered.
+     * @param cacheLabels    if labels should be cached.
      */
-    public DatabaseRenderer(MapDataStore mapDataStore,
-                            GraphicFactory graphicFactory, TileCache tileCache, TileBasedLabelStore labelStore, boolean renderLabels) {
-        super(mapDataStore, graphicFactory, renderLabels);
+    public DatabaseRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, TileCache tileCache,
+                            TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels) {
+        super(mapDataStore, graphicFactory, renderLabels || cacheLabels);
         this.tileCache = tileCache;
         this.labelStore = labelStore;
         this.renderLabels = renderLabels;
@@ -78,7 +79,6 @@ public class DatabaseRenderer extends StandardRenderer {
      * @param rendererJob the job that should be executed.
      */
     public TileBitmap executeJob(RendererJob rendererJob) {
-
         RenderContext renderContext = null;
         try {
             renderContext = new RenderContext(rendererJob, new CanvasRasterer(graphicFactory));
@@ -138,13 +138,11 @@ public class DatabaseRenderer extends StandardRenderer {
         return this.mapDataStore;
     }
 
-
     void removeTileInProgress(Tile tile) {
         if (this.tileDependencies != null) {
             this.tileDependencies.removeTileInProgress(tile);
         }
     }
-
 
     /**
      * Draws a bitmap just with outside colour, used for bitmaps outside of map area.
@@ -165,8 +163,7 @@ public class DatabaseRenderer extends StandardRenderer {
     private Set<MapElementContainer> processLabels(RenderContext renderContext) {
         // if we are drawing the labels per tile, we need to establish which tile-overlapping
         // elements need to be drawn.
-
-        Set<MapElementContainer> labelsToDraw = new HashSet<MapElementContainer>();
+        Set<MapElementContainer> labelsToDraw = new HashSet<>();
 
         synchronized (tileDependencies) {
             // first we need to get the labels from the adjacent tiles if they have already been drawn
@@ -174,7 +171,7 @@ public class DatabaseRenderer extends StandardRenderer {
             // of priority clashes as a part of them has alread been drawn.
             Set<Tile> neighbours = renderContext.rendererJob.tile.getNeighbours();
             Iterator<Tile> tileIterator = neighbours.iterator();
-            Set<MapElementContainer> undrawableElements = new HashSet<MapElementContainer>();
+            Set<MapElementContainer> undrawableElements = new HashSet<>();
 
             tileDependencies.addTileInProgress(renderContext.rendererJob.tile);
             while (tileIterator.hasNext()) {
@@ -239,5 +236,4 @@ public class DatabaseRenderer extends StandardRenderer {
         }
         return labelsToDraw;
     }
-
 }

@@ -118,7 +118,7 @@ public final class MapViewer {
         for (int i = 0; i < mapFiles.size(); i++) {
             File mapFile = mapFiles.get(i);
             TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(i),
-                    mapView.getModel().mapViewPosition, true, true, mapFile);
+                    mapView.getModel().mapViewPosition, true, true, false, mapFile);
             BoundingBox boundingBox = tileRendererLayer.getMapDataStore().boundingBox();
             result = result == null ? boundingBox : result.extendBoundingBox(boundingBox);
             layers.add(tileRendererLayer);
@@ -156,11 +156,10 @@ public final class MapViewer {
         return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY);
     }
 
-    private static TileRendererLayer createTileRendererLayer(
-            TileCache tileCache,
-            MapViewPosition mapViewPosition, boolean isTransparent, boolean renderLabels, File mapFile) {
+    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
+                                                             boolean isTransparent, boolean renderLabels, boolean cacheLabels, File mapFile) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile), mapViewPosition, isTransparent,
-                renderLabels, false, GRAPHIC_FACTORY);
+                renderLabels, cacheLabels, GRAPHIC_FACTORY);
         tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
         return tileRendererLayer;
     }

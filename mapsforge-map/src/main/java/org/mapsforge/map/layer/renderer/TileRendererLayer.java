@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,7 +31,6 @@ import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
-
 public class TileRendererLayer extends TileLayer<RendererJob> implements Observer {
     private final DatabaseRenderer databaseRenderer;
     private final GraphicFactory graphicFactory;
@@ -52,8 +52,9 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
      * @param cacheLabels     true if labels should be cached in a LabelStore
      * @param graphicFactory  the graphicFactory to carry out platform specific operations
      */
-    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition, boolean isTransparent,
-                             boolean renderLabels, boolean cacheLabels, GraphicFactory graphicFactory) {
+    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition,
+                             boolean isTransparent, boolean renderLabels, boolean cacheLabels,
+                             GraphicFactory graphicFactory) {
         super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
         this.graphicFactory = graphicFactory;
@@ -63,7 +64,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
         } else {
             this.tileBasedLabelStore = null;
         }
-        this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileCache, tileBasedLabelStore, renderLabels || cacheLabels);
+        this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileCache, tileBasedLabelStore, renderLabels, cacheLabels);
         this.textScale = 1;
     }
 

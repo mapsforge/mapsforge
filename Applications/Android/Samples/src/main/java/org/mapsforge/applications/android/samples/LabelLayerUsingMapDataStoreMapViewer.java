@@ -26,7 +26,6 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  * retrieves the data from the MapDataStore for the visible tile area, no caching involved.
  */
 public class LabelLayerUsingMapDataStoreMapViewer extends RenderTheme4 {
-
     @Override
     protected void createLayers() {
         TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
@@ -41,5 +40,4 @@ public class LabelLayerUsingMapDataStoreMapViewer extends RenderTheme4 {
     protected LabelLayer createLabelLayer(LabelStore labelStore) {
         return new LabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
     }
-
 }

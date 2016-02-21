@@ -24,11 +24,8 @@ import org.mapsforge.map.layer.labels.ThreadedLabelLayer;
  * uses a separate thread to retrieve the data from the MapDataStore to be more responsive.
  */
 public class LabelLayerUsingMapDataStoreMapViewerThreaded extends LabelLayerUsingMapDataStoreMapViewer {
-
     @Override
     protected LabelLayer createLabelLayer(LabelStore labelStore) {
         return new ThreadedLabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
     }
-
-
 }
