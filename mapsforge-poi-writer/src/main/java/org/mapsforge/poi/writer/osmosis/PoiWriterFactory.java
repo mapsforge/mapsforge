@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -42,13 +42,13 @@ public class PoiWriterFactory extends TaskManagerFactory {
     @Override
     protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {
         PoiWriterConfiguration configuration = new PoiWriterConfiguration();
-        configuration.setAllTags(getBooleanArgument(taskConfig, PARAM_ALL_TAGS, false));
+        configuration.setAllTags(getBooleanArgument(taskConfig, PARAM_ALL_TAGS, true));
         configuration.addBboxConfiguration(getStringArgument(taskConfig, PARAM_BBOX, null));
         configuration.setComment(getStringArgument(taskConfig, PARAM_COMMENT, null));
         configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
         configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
         configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
-        configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, false));
+        configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, true));
 
         // If set to true, progress messages will be forwarded to a GUI message handler
         // boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);
