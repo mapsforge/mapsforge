@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,12 +22,11 @@ import org.mapsforge.map.layer.download.tilesource.OnlineTileSource;
  * Shows how to use a custom tile download layer.
  */
 public class DownloadCustomLayerViewer extends DownloadLayerViewer {
-
     @Override
     protected void createLayers() {
         OnlineTileSource onlineTileSource = new OnlineTileSource(new String[]{
-                "otile1.mqcdn.com", "otile2.mqcdn.com", "otile3.mqcdn.com",
-                "otile4.mqcdn.com"}, 80);
+                "otile1.mqcdn.com", "otile2.mqcdn.com", "otile3.mqcdn.com", "otile4.mqcdn.com"},
+                80);
         onlineTileSource.setName("MapQuest").setAlpha(false)
                 .setBaseUrl("/tiles/1.0.0/map/").setExtension("png")
                 .setParallelRequestsLimit(8).setProtocol("http")
@@ -49,5 +48,15 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
         super.createMapViews();
         // we need to set a fixed size tile as the raster tiles come at a fixed size and not being blurry
         this.mapView.getModel().displayModel.setFixedTileSize(256);
+    }
+
+    @Override
+    protected byte getZoomLevelMax() {
+        return mapView.getModel().mapViewPosition.getZoomLevelMax();
+    }
+
+    @Override
+    protected byte getZoomLevelMin() {
+        return mapView.getModel().mapViewPosition.getZoomLevelMin();
     }
 }

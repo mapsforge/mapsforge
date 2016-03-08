@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -17,7 +17,6 @@
  */
 package org.mapsforge.applications.android.samples;
 
-
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
@@ -32,22 +31,13 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 public class DownloadLayerViewer extends SamplesBaseActivity {
     protected TileDownloadLayer downloadLayer;
 
+    /**
+     * We do not need storage permission as we do not have a map file here.
+     */
     @Override
-    protected XmlRenderTheme getRenderTheme() {
-        // no render theme needed here
-        return null;
-    }
-
-    @Override
-    public void onPause() {
-        this.downloadLayer.onPause();
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        this.downloadLayer.onResume();
+    protected void checkPermissionsAndCreateLayersAndControls() {
+        createLayers();
+        createControls();
     }
 
     @Override
@@ -63,15 +53,6 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
         mapView.getMapZoomControls().setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
     }
 
-    /**
-     * We do not need storage permission as we do not have a map file here.
-     */
-    @Override
-    protected void checkPermissionsAndCreateLayersAndControls() {
-        createLayers();
-        createControls();
-    }
-
     @Override
     protected void createMapViews() {
         super.createMapViews();
@@ -82,5 +63,33 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
     @Override
     protected MapPosition getInitialPosition() {
         return getDefaultInitialPosition();
+    }
+
+    @Override
+    protected XmlRenderTheme getRenderTheme() {
+        // no render theme needed here
+        return null;
+    }
+
+    @Override
+    protected byte getZoomLevelMax() {
+        return mapView.getModel().mapViewPosition.getZoomLevelMax();
+    }
+
+    @Override
+    protected byte getZoomLevelMin() {
+        return mapView.getModel().mapViewPosition.getZoomLevelMin();
+    }
+
+    @Override
+    public void onPause() {
+        this.downloadLayer.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.downloadLayer.onResume();
     }
 }
