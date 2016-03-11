@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -63,6 +63,7 @@ public final class DbConstants {
     public static final String METADATA_DATE = "date";
     public static final String METADATA_LANGUAGE = "language";
     public static final String METADATA_VERSION = "version";
+    public static final String METADATA_WAYS = "ways";
     public static final String METADATA_WRITER = "writer";
 
     // Number of tables needed for DB verification

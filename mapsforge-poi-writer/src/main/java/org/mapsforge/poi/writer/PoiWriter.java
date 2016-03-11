@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -491,7 +491,7 @@ public final class PoiWriter {
 
         // Language
         pStmtMetadata.setString(1, DbConstants.METADATA_LANGUAGE);
-        if (this.configuration.getPreferredLanguage() != null) {
+        if (!this.configuration.isAllTags() && this.configuration.getPreferredLanguage() != null) {
             pStmtMetadata.setString(2, this.configuration.getPreferredLanguage());
         } else {
             pStmtMetadata.setNull(2, Types.NULL);
@@ -501,6 +501,11 @@ public final class PoiWriter {
         // Version
         pStmtMetadata.setString(1, DbConstants.METADATA_VERSION);
         pStmtMetadata.setInt(2, this.configuration.getFileSpecificationVersion());
+        pStmtMetadata.addBatch();
+
+        // Ways
+        pStmtMetadata.setString(1, DbConstants.METADATA_WAYS);
+        pStmtMetadata.setString(2, Boolean.toString(this.configuration.isWays()));
         pStmtMetadata.addBatch();
 
         // Writer
