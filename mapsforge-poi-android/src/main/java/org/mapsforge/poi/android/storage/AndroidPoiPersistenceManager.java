@@ -312,6 +312,9 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     case DbConstants.METADATA_VERSION:
                         poiFileInfoBuilder.version = this.metadataStatement.column_int(1);
                         break;
+                    case DbConstants.METADATA_WAYS:
+                        poiFileInfoBuilder.ways = Boolean.parseBoolean(this.metadataStatement.column_string(1));
+                        break;
                     case DbConstants.METADATA_WRITER:
                         poiFileInfoBuilder.writer = this.metadataStatement.column_string(1);
                         break;

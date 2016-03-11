@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +22,7 @@ public class PoiFileInfoBuilder {
     public long date;
     public String language;
     public int version;
+    public boolean ways;
     public String writer;
 
     public PoiFileInfo build() {

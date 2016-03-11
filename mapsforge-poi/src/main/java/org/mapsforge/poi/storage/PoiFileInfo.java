@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -46,6 +46,11 @@ public class PoiFileInfo {
     public final int version;
 
     /**
+     * True if the POI file includes ways, false otherwise.
+     */
+    public final boolean ways;
+
+    /**
      * The writer field of the POI file.
      */
     public final String writer;
@@ -56,6 +61,7 @@ public class PoiFileInfo {
         this.date = poiFileInfoBuilder.date;
         this.language = poiFileInfoBuilder.language;
         this.version = poiFileInfoBuilder.version;
+        this.ways = poiFileInfoBuilder.ways;
         this.writer = poiFileInfoBuilder.writer;
     }
 }

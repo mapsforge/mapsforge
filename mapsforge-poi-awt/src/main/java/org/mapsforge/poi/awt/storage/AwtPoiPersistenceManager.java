@@ -317,6 +317,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     case DbConstants.METADATA_VERSION:
                         poiFileInfoBuilder.version = rs.getInt(2);
                         break;
+                    case DbConstants.METADATA_WAYS:
+                        poiFileInfoBuilder.ways = Boolean.parseBoolean(rs.getString(2));
+                        break;
                     case DbConstants.METADATA_WRITER:
                         poiFileInfoBuilder.writer = rs.getString(2);
                         break;
