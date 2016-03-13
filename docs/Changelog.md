@@ -2,14 +2,15 @@
 
 ## New since 0.6.0
 
-- POI Search [#728](https://github.com/mapsforge/mapsforge/issues/728)
+- POI API [#728](https://github.com/mapsforge/mapsforge/issues/728)
 - Reverse Geocoding example [#727](https://github.com/mapsforge/mapsforge/issues/727)
-- LabelLayer improved implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
+- LabelLayer enhanced implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
 - Color filters in map rendering [#778](https://github.com/mapsforge/mapsforge/issues/778)
 - Night mode example [#777](https://github.com/mapsforge/mapsforge/issues/777)
 - Library integration [documentation](Integration.md) [#781](https://github.com/mapsforge/mapsforge/issues/781)
 - Jar with dependencies building [#767](https://github.com/mapsforge/mapsforge/issues/767)
-- Improve code formatting [#782](https://github.com/mapsforge/mapsforge/issues/782)
+- Sample applications reorganization [#724](https://github.com/mapsforge/mapsforge/issues/724)
+- Code formatting improvements [#782](https://github.com/mapsforge/mapsforge/issues/782)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.1)
 

@@ -40,8 +40,8 @@
         <module>mapsforge-poi-android</module>
         <module>mapsforge-poi-awt</module>
         <module>mapsforge-poi-writer</module>
-        <module>Applications/Android/Samples</module>
-        <module>SwingMapViewer</module>
+        <module>mapsforge-samples-android</module>
+        <module>mapsforge-samples-awt</module>
     </modules>
 
     <scm>

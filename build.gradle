@@ -46,7 +46,7 @@ subprojects {
 
 // Configuration for all plain Java projects
 
-project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "SwingMapViewer"]
+project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "mapsforge-samples-awt"]
 
 configure(filterProjects(project.javaprojects)) {
     apply plugin: 'java'
@@ -70,7 +70,7 @@ configure(filterProjects(project.javaprojects)) {
 
 // Configuration for Android projects
 project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras", "sqlite3-android", "mapsforge-poi-android"]
-project.ext.androidapkprojects = ["Samples"]
+project.ext.androidapkprojects = ["mapsforge-samples-android"]
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 
 // TODO get checkstyle and pmd working for android (right now it does not work out of the box, so better wait for official fix)
