@@ -25,7 +25,6 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.Observer;
-import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.MapView;
 
 import java.util.ArrayList;
@@ -195,8 +194,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
         } else if (maxClusteringZoom >= mapView.getModel().mapViewPosition
                 .getZoomLevel()) {
             // else add to a cluster;
-            MapViewProjection proj = new MapViewProjection(mapView);
-            Point pos = proj.toPixels(item.getLatLong());
+            Point pos = mapView.getMapViewProjection().toPixels(item.getLatLong());
             // check existing cluster
 //			Log.i(TAG,"spublic synchronized void addItem(T item) {...... (3)");
             synchronized (clusters) {
@@ -213,7 +211,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
                             .getLatLong();
                     if (gpCenter == null)
                         throw new IllegalArgumentException();
-                    Point ptCenter = proj.toPixels(gpCenter);
+                    Point ptCenter = mapView.getMapViewProjection().toPixels(gpCenter);
                     // find a cluster which contains the marker.
                     if (pos.distance(ptCenter) <= GRIDSIZE
                     /*
@@ -276,7 +274,6 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
      */
     protected synchronized BoundingBox getCurBounds() {
         if (currBoundingBox == null) {
-            MapViewProjection projection = new MapViewProjection(mapView);
             if (mapView == null) {
                 throw new NullPointerException("mapView == null");
             }
@@ -286,10 +283,10 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
                         + mapView.getWidth() + " || " + mapView.getHeight());
             }
             /** North-West geo point of the bound */
-            LatLong nw_ = projection.fromPixels(0, 0);
+            LatLong nw_ = mapView.getMapViewProjection().fromPixels(0, 0);
 //			Log.e(TAG, " nw_.latitude => " + nw_.latitude + " nw_.longitude => " + nw_.longitude );
             /** South-East geo point of the bound */
-            LatLong se_ = projection.fromPixels(mapView.getWidth(),
+            LatLong se_ = mapView.getMapViewProjection().fromPixels(mapView.getWidth(),
                     mapView.getHeight());
 //			Log.e(TAG, " se_.latitude => " + se_.latitude + " se_.longitude => " + se_.longitude );
             if (se_.latitude > nw_.latitude) {
@@ -351,10 +348,9 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
         } else {
             // react on position changes
             MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
-            MapViewProjection projection = new MapViewProjection(mapView);
 
-            Point posOld = projection.toPixels(oldCenterLatLong);
-            Point posNew = projection.toPixels(mapViewPosition.getCenter());
+            Point posOld = mapView.getMapViewProjection().toPixels(oldCenterLatLong);
+            Point posNew = mapView.getMapViewProjection().toPixels(mapViewPosition.getCenter());
             if (posOld != null && posOld.distance(posNew) > GRIDSIZE / 2) {
                 // Log.d(TAG, "moving...");
                 oldCenterLatLong = mapViewPosition.getCenter();

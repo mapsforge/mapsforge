@@ -28,7 +28,6 @@ import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.util.MapViewProjection;
 
 import java.util.HashSet;
 import java.util.List;
@@ -42,8 +41,6 @@ import java.util.Set;
  */
 public class ReverseGeocodeViewer extends RenderTheme4 {
     private static final int TOUCH_RADIUS = 32 / 2;
-
-    private MapViewProjection projection;
 
     @Override
     protected void createLayers() {
@@ -63,13 +60,6 @@ public class ReverseGeocodeViewer extends RenderTheme4 {
         // Add a grid layer for debug
         this.mapView.getLayerManager().getLayers()
                 .add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
-    }
-
-    @Override
-    protected void createMapViews() {
-        super.createMapViews();
-
-        this.projection = new MapViewProjection(this.mapView);
     }
 
     private void onLongPress(LatLong tapLatLong, Point tapXY) {
@@ -98,7 +88,7 @@ public class ReverseGeocodeViewer extends RenderTheme4 {
         // Filter POIs
         sb.append("*** POIS ***");
         for (PointOfInterest pointOfInterest : pointOfInterests) {
-            Point layerXY = this.projection.toPixels(pointOfInterest.position);
+            Point layerXY = this.mapView.getMapViewProjection().toPixels(pointOfInterest.position);
             if (layerXY.distance(tapXY) > touchRadius) {
                 continue;
             }

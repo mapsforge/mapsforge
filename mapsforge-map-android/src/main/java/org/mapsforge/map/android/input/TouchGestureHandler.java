@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2014 Jordan Black
  * Copyright 2015 Andreas Schildbach
  *
@@ -29,7 +29,6 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.model.MapViewPosition;
-import org.mapsforge.map.util.MapViewProjection;
 
 /**
  * Central handling of touch gestures.
@@ -53,12 +52,10 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     private boolean isInDoubleTap, isInScale;
     private final MapView mapView;
     private LatLong pivot;
-    private final MapViewProjection projection;
     private float scaleFactorCumulative;
 
     public TouchGestureHandler(MapView mapView) {
         this.mapView = mapView;
-        this.projection = new MapViewProjection(this.mapView);
         this.flinger = new Scroller(mapView.getContext());
     }
 
@@ -83,7 +80,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                         byte zoomLevelDiff = 1;
                         double moveHorizontal = (center.x - e.getX()) / Math.pow(2, zoomLevelDiff);
                         double moveVertical = (center.y - e.getY()) / Math.pow(2, zoomLevelDiff);
-                        LatLong pivot = projection.fromPixels(e.getX(), e.getY());
+                        LatLong pivot = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
                         if (pivot != null) {
                             mapViewPosition.setPivot(pivot);
                             mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
@@ -122,11 +119,11 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         // Normal or quick scale (no long press)
         if (!this.isInScale && !this.isInDoubleTap) {
             Point tapXY = new Point(e.getX(), e.getY());
-            LatLong tapLatLong = projection.fromPixels(tapXY.x, tapXY.y);
+            LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
             if (tapLatLong != null) {
                 for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
                     Layer layer = this.mapView.getLayerManager().getLayers().get(i);
-                    Point layerXY = projection.toPixels(layer.getPosition());
+                    Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
                     if (layer.onLongPress(tapLatLong, layerXY, tapXY)) {
                         break;
                     }
@@ -154,7 +151,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         } else {
             this.focusX = detector.getFocusX();
             this.focusY = detector.getFocusY();
-            this.pivot = projection.fromPixels(focusX, focusY);
+            this.pivot = this.mapView.getMapViewProjection().fromPixels(focusX, focusY);
         }
         return true;
     }
@@ -216,11 +213,11 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         Point tapXY = new Point(e.getX(), e.getY());
-        LatLong tapLatLong = projection.fromPixels(tapXY.x, tapXY.y);
+        LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
         if (tapLatLong != null) {
             for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
                 Layer layer = this.mapView.getLayerManager().getLayers().get(i);
-                Point layerXY = projection.toPixels(layer.getPosition());
+                Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
                 if (layer.onTap(tapLatLong, layerXY, tapXY)) {
                     return true;
                 }

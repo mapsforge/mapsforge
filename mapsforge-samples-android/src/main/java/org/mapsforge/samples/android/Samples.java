@@ -146,6 +146,12 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(SimpleDataStoreMapViewer.class, "Simple User DataStore", null));
 
         linearLayout.addView(createLabel("Experiments"));
+        linearLayout.addView(createButton(PoiSearchViewer.class, "POI search (beta)", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startupDialog("poi", R.string.startup_message_poi, PoiSearchViewer.class);
+            }
+        }));
         linearLayout.addView(createButton(ReverseGeocodeViewer.class, "Reverse Geocoding", null));
         linearLayout.addView(createButton(NightModeViewer.class, "Night mode", null));
         linearLayout.addView(createButton(RenderThemeChanger.class, "Changing Renderthemes", null));
@@ -156,12 +162,6 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewerThreaded.class, "Threaded LabelLayer using MapDataStore", null));
         linearLayout.addView(createButton(LabelLayerUsingLabelCacheMapViewer.class, "Separate LabelLayer using LabelStore", null));
         linearLayout.addView(createButton(BasicMapViewerV3.class, "Old Osmarender (deprecated)", null));
-        linearLayout.addView(createButton(PoiSearchViewer.class, "POI search (beta)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startupDialog("poi", R.string.startup_message_poi, PoiSearchViewer.class);
-            }
-        }));
         linearLayout.addView(createButton(ClusterMapActivity.class, "Marker clustering (alpha)", null));
     }
 
