@@ -29,18 +29,15 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
                 80);
         onlineTileSource.setName("MapQuest").setAlpha(false)
                 .setBaseUrl("/tiles/1.0.0/map/").setExtension("png")
-                .setParallelRequestsLimit(8).setProtocol("http")
-                .setTileSize(256).setZoomLevelMax((byte) 18)
-                .setZoomLevelMin((byte) 0);
+                .setParallelRequestsLimit(8).setProtocol("http").setTileSize(256)
+                .setZoomLevelMax((byte) 18).setZoomLevelMin((byte) 0);
         this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
                 this.mapView.getModel().mapViewPosition, onlineTileSource,
                 AndroidGraphicFactory.INSTANCE);
         mapView.getLayerManager().getLayers().add(this.downloadLayer);
 
-        mapView.getModel().mapViewPosition.setZoomLevelMin(onlineTileSource.getZoomLevelMin());
-        mapView.getModel().mapViewPosition.setZoomLevelMax(onlineTileSource.getZoomLevelMax());
-        mapView.getMapZoomControls().setZoomLevelMin(onlineTileSource.getZoomLevelMin());
-        mapView.getMapZoomControls().setZoomLevelMax(onlineTileSource.getZoomLevelMax());
+        mapView.setZoomLevelMin(onlineTileSource.getZoomLevelMin());
+        mapView.setZoomLevelMax(onlineTileSource.getZoomLevelMax());
     }
 
     @Override

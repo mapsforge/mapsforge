@@ -7,6 +7,7 @@
 - LabelLayer enhanced implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
 - Color filters in map rendering [#778](https://github.com/mapsforge/mapsforge/issues/778)
 - Night mode example [#777](https://github.com/mapsforge/mapsforge/issues/777)
+- Zoom level limits central handling [#646](https://github.com/mapsforge/mapsforge/issues/646)
 - Java onTap layer listener [#774](https://github.com/mapsforge/mapsforge/issues/774)
 - Library integration [documentation](Integration.md) [#781](https://github.com/mapsforge/mapsforge/issues/781)
 - Jar with dependencies building [#767](https://github.com/mapsforge/mapsforge/issues/767)

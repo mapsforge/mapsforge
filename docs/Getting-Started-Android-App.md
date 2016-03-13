@@ -30,13 +30,13 @@ A MapView is an Android View (or ViewGroup) that displays a mapsforge map. You c
     this.mapView = new MapView(this);
     setContentView(this.mapView);
 
-We then make some simple adjustments, such as showing a scale bar and setting up the zoom buttons:
+We then make some simple adjustments, such as showing a scale bar, zoom controls and setting zoom limits:
 
     this.mapView.setClickable(true);
     this.mapView.getMapScaleBar().setVisible(true);
     this.mapView.setBuiltInZoomControls(true);
-    this.mapView.getMapZoomControls().setZoomLevelMin((byte) 10);
-    this.mapView.getMapZoomControls().setZoomLevelMax((byte) 20);
+    this.mapView.setZoomLevelMin((byte) 10);
+    this.mapView.setZoomLevelMax((byte) 20);
 
 ## Create a TileCache
 
@@ -59,10 +59,10 @@ On its own a tileRendererLayer does not know where to display the map, so we nee
 
 ## Specifying the Position
 
-The map also needs to know which area to display and at what zoom level. This is set via a MapViewPosition:
+The map also needs to know which area to display and at what zoom level:
 
-    this.mapView.getModel().mapViewPosition.setCenter(new LatLong(52.517037, 13.38886));
-    this.mapView.getModel().mapViewPosition.setZoomLevel((byte) 12);
+    this.mapView.setCenter(new LatLong(52.517037, 13.38886));
+    this.mapView.setZoomLevel((byte) 12);
 
 Refer to the Samples app on how to read the initial position out of a mapfile or how to store the current position when a user leaves your app.
 
@@ -120,8 +120,8 @@ Here comes the whole as a single file:
     		this.mapView.setClickable(true);
     		this.mapView.getMapScaleBar().setVisible(true);
     		this.mapView.setBuiltInZoomControls(true);
-    		this.mapView.getMapZoomControls().setZoomLevelMin((byte) 10);
-    		this.mapView.getMapZoomControls().setZoomLevelMax((byte) 20);
+    		this.mapView.setZoomLevelMin((byte) 10);
+    		this.mapView.setZoomLevelMax((byte) 20);
     
     		// create a tile cache of suitable size
     		this.tileCache = AndroidUtil.createTileCache(this, "mapcache",
@@ -133,8 +133,8 @@ Here comes the whole as a single file:
     	protected void onStart() {
     		super.onStart();
     		
-    		this.mapView.getModel().mapViewPosition.setCenter(new LatLong(52.517037, 13.38886));
-    		this.mapView.getModel().mapViewPosition.setZoomLevel((byte) 12);
+    		this.mapView.setCenter(new LatLong(52.517037, 13.38886));
+    		this.mapView.setZoomLevel((byte) 12);
     
     		// tile renderer layer using internal render theme
     		MapDataStore mapDataStore = new MapFile(getMapFile());

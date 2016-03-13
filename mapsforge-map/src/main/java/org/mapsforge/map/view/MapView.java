@@ -72,4 +72,8 @@ public interface MapView {
     void setMapScaleBar(MapScaleBar mapScaleBar);
 
     void setZoomLevel(byte zoomLevel);
+
+    void setZoomLevelMax(byte zoomLevelMax);
+
+    void setZoomLevelMin(byte zoomLevelMin);
 }

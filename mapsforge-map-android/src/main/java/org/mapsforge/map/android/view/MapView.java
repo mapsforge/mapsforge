@@ -262,7 +262,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     @Override
     public MapViewProjection getMapViewProjection() {
-        return mapViewProjection;
+        return this.mapViewProjection;
     }
 
     @Override
@@ -453,5 +453,17 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     @Override
     public void setZoomLevel(byte zoomLevel) {
         this.model.mapViewPosition.setZoomLevel(zoomLevel);
+    }
+
+    @Override
+    public void setZoomLevelMax(byte zoomLevelMax) {
+        this.model.mapViewPosition.setZoomLevelMax(zoomLevelMax);
+        this.mapZoomControls.setZoomLevelMax(zoomLevelMax);
+    }
+
+    @Override
+    public void setZoomLevelMin(byte zoomLevelMin) {
+        this.model.mapViewPosition.setZoomLevelMin(zoomLevelMin);
+        this.mapZoomControls.setZoomLevelMin(zoomLevelMin);
     }
 }

@@ -114,7 +114,9 @@ public final class Samples {
         /*TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(0), mapView.getModel().mapViewPosition);
         layers.add(tileDownloadLayer);
         tileDownloadLayer.start();
-        BoundingBox result = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);*/
+        BoundingBox result = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
+        mapView.setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
+        mapView.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());*/
 
         // Vector
         BoundingBox result = null;
