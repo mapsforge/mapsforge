@@ -309,6 +309,13 @@ public class MapFile extends MapDataStore {
             wayNodeLatitude = wayNodeLatitude + singleDeltaLatitude;
             wayNodeLongitude = wayNodeLongitude + singleDeltaLongitude;
 
+            // Decoding near international date line can return values slightly outside valid [-180°, 180°] due to calculation precision
+            if (wayNodeLongitude < LatLongUtils.LONGITUDE_MIN) {
+                wayNodeLongitude = LatLongUtils.LONGITUDE_MIN;
+            } else if (wayNodeLongitude > LatLongUtils.LONGITUDE_MAX) {
+                wayNodeLongitude = LatLongUtils.LONGITUDE_MAX;
+            }
+
             waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
 
             previousSingleDeltaLatitude = singleDeltaLatitude;
@@ -334,6 +341,13 @@ public class MapFile extends MapDataStore {
 
             // get the way node longitude offset (VBE-S)
             wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
+
+            // Decoding near international date line can return values slightly outside valid [-180°, 180°] due to calculation precision
+            if (wayNodeLongitude < LatLongUtils.LONGITUDE_MIN) {
+                wayNodeLongitude = LatLongUtils.LONGITUDE_MIN;
+            } else if (wayNodeLongitude > LatLongUtils.LONGITUDE_MAX) {
+                wayNodeLongitude = LatLongUtils.LONGITUDE_MAX;
+            }
 
             waySegment[wayNodesIndex] = new LatLong(wayNodeLatitude, wayNodeLongitude);
         }
