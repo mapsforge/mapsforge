@@ -89,6 +89,7 @@ public final class Samples {
                 if (result == JOptionPane.YES_OPTION) {
                     mapView.getModel().save(preferencesFacade);
                     mapView.destroyAll();
+                    AwtGraphicFactory.clearResourceMemoryCache();
                     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 }
             }

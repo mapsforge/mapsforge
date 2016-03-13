@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -199,7 +199,6 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
             }
         }
         destroy();
-        AndroidGraphicFactory.clearResourceMemoryCache();
     }
 
     @Override

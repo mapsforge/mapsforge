@@ -74,6 +74,7 @@ Whenever your activity changes, some cleanup operations have to be performed les
     protected void onDestroy() {
     	super.onDestroy();
     	this.mapView.destroyAll();
+    	AndroidGraphicFactory.clearResourceMemoryCache();
     }
 
 ## All in one
@@ -150,6 +151,7 @@ Here comes the whole as a single file:
     	protected void onDestroy() {
     		super.onDestroy();
     		this.mapView.destroyAll();
+    		AndroidGraphicFactory.clearResourceMemoryCache();
     	}
     	
     	private File getMapFile() {

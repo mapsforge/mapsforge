@@ -119,7 +119,6 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
             }
         }
         destroy();
-        AwtGraphicFactory.clearResourceMemoryCache();
     }
 
     @Override
