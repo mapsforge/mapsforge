@@ -5,6 +5,7 @@ import com.robotium.solo.Solo;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.samples.android.R;
 
 public class TestUtils {
 
