@@ -36,6 +36,7 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
+import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 
@@ -52,6 +53,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     private final FrameBufferController frameBufferController;
     private final LayerManager layerManager;
     private MapScaleBar mapScaleBar;
+    private final MapViewProjection mapViewProjection;
     private final Model model;
 
     public MapView() {
@@ -72,9 +74,11 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
         this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension, GRAPHIC_FACTORY,
                 this.model.displayModel);
 
+        this.mapViewProjection = new MapViewProjection(this);
+
         addComponentListener(new MapViewComponentListener(this));
 
-        MouseEventListener mouseEventListener = new MouseEventListener(this.model.mapViewPosition);
+        MouseEventListener mouseEventListener = new MouseEventListener(this);
         addMouseListener(mouseEventListener);
         addMouseMotionListener(mouseEventListener);
         addMouseWheelListener(mouseEventListener);
@@ -150,6 +154,11 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     @Override
     public MapScaleBar getMapScaleBar() {
         return this.mapScaleBar;
+    }
+
+    @Override
+    public MapViewProjection getMapViewProjection() {
+        return mapViewProjection;
     }
 
     @Override

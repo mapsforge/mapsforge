@@ -19,7 +19,9 @@ package org.mapsforge.samples.awt;
 
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.util.JavaPreferences;
@@ -154,13 +156,25 @@ public final class Samples {
     @SuppressWarnings("unused")
     private static TileDownloadLayer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
         TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-        return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY);
+        return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY) {
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                System.out.println("Tap on: " + tapLatLong);
+                return true;
+            }
+        };
     }
 
     private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
                                                              boolean isTransparent, boolean renderLabels, boolean cacheLabels, File mapFile) {
-        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile), mapViewPosition, isTransparent,
-                renderLabels, cacheLabels, GRAPHIC_FACTORY);
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile),
+                mapViewPosition, isTransparent, renderLabels, cacheLabels, GRAPHIC_FACTORY) {
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                System.out.println("Tap on: " + tapLatLong);
+                return true;
+            }
+        };
         tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
         return tileRendererLayer;
     }

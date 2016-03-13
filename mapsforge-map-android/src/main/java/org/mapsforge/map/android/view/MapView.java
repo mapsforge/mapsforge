@@ -112,9 +112,9 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     private final LayerManager layerManager;
     private final Handler layoutHandler = new Handler();
     private MapScaleBar mapScaleBar;
+    private final MapViewProjection mapViewProjection;
     private final MapZoomControls mapZoomControls;
     private final Model model;
-    private final MapViewProjection projection;
     private final ScaleGestureDetector scaleGestureDetector;
     private final TouchGestureHandler touchGestureHandler;
 
@@ -148,7 +148,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.addView(this.mapZoomControls, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         this.mapScaleBar = new DefaultMapScaleBar(this.model.mapViewPosition, this.model.mapViewDimension,
                 GRAPHIC_FACTORY, this.model.displayModel);
-        this.projection = new MapViewProjection(this);
+        this.mapViewProjection = new MapViewProjection(this);
 
         model.mapViewPosition.addObserver(this);
     }
@@ -261,6 +261,11 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     }
 
     @Override
+    public MapViewProjection getMapViewProjection() {
+        return mapViewProjection;
+    }
+
+    @Override
     public void onChange() {
         // Request layout for child views (besides zoom controls)
         int count = getChildCount();
@@ -339,7 +344,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
                 MapView.LayoutParams params = (MapView.LayoutParams) child.getLayoutParams();
                 int childWidth = child.getMeasuredWidth();
                 int childHeight = child.getMeasuredHeight();
-                Point point = projection.toPixels(params.latLong);
+                Point point = mapViewProjection.toPixels(params.latLong);
                 if (point != null) {
                     int childLeft = getPaddingLeft() + (int) Math.round(point.x);
                     int childTop = getPaddingTop() + (int) Math.round(point.y);

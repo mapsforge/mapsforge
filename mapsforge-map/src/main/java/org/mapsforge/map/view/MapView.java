@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +22,7 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.util.MapViewProjection;
 
 public interface MapView {
 
@@ -54,6 +55,8 @@ public interface MapView {
     LayerManager getLayerManager();
 
     MapScaleBar getMapScaleBar();
+
+    MapViewProjection getMapViewProjection();
 
     Model getModel();
 
