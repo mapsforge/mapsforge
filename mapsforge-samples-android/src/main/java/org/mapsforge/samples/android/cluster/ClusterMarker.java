@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.samples.android.cluster;
 
 import android.util.Log;
@@ -43,7 +42,7 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
      */
     protected int markerType = 0;
 //    /**
-//     * the rectangle spanning around the bitmap of this ClusterMarer on the screen
+//     * the rectangle spanning around the bitmap of this ClusterMarker on the screen
 //     */
 //    protected Rectangle bitmapRectangle;
 
@@ -182,8 +181,10 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
                     break;
                 }
             }
-            ClusterManager.toast.setText(mText);
-            ClusterManager.toast.show();
+            if (ClusterManager.toast != null) {
+                ClusterManager.toast.setText(mText);
+                ClusterManager.toast.show();
+            }
         }
         return false;
     }
