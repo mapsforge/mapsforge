@@ -34,17 +34,16 @@ import org.mapsforge.map.model.MapViewPosition;
  * Central handling of touch gestures.
  * <ul>
  * <li>Scroll (pan)</li>
+ * <li>Fling</li>
  * <li>Scale</li>
  * <li>Scale with focus</li>
  * <li>Quick scale (double tap + swipe)</li>
- * <li>Fling</li>
  * <li>Double tap (zoom with focus)</li>
  * <li>Tap (overlay)</li>
  * <li>Long press (overlay)</li>
  * </ul>
  */
 public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener, Runnable {
-
     private final Scroller flinger;
     private int flingLastX, flingLastY;
     private float focusX, focusY;
@@ -52,6 +51,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     private boolean isInDoubleTap, isInScale;
     private final MapView mapView;
     private LatLong pivot;
+    private boolean scaleEnabled = true;
     private float scaleFactorCumulative;
 
     public TouchGestureHandler(MapView mapView) {
@@ -61,6 +61,16 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     public void destroy() {
         this.handler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * Get state of scale gestures:<br/>
+     * - Scale<br/>
+     * - Scale with focus<br/>
+     * - Quick scale (double tap + swipe)
+     */
+    public boolean isScaleEnabled() {
+        return scaleEnabled;
     }
 
     @Override
@@ -142,6 +152,10 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
+        if (!scaleEnabled) {
+            return false;
+        }
+
         this.isInScale = true;
         this.scaleFactorCumulative = 1f;
 
@@ -235,5 +249,15 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         if (flingerRunning) {
             this.handler.post(this);
         }
+    }
+
+    /**
+     * Set state of scale gestures:<br/>
+     * - Scale<br/>
+     * - Scale with focus<br/>
+     * - Quick scale (double tap + swipe)
+     */
+    public void setScaleEnabled(boolean scaleEnabled) {
+        this.scaleEnabled = scaleEnabled;
     }
 }

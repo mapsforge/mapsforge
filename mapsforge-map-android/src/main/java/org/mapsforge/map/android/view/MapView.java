@@ -248,6 +248,11 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         return this.mapScaleBar;
     }
 
+    @Override
+    public MapViewProjection getMapViewProjection() {
+        return this.mapViewProjection;
+    }
+
     /**
      * @return the zoom controls instance which is used in this MapView.
      */
@@ -260,9 +265,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         return this.model;
     }
 
-    @Override
-    public MapViewProjection getMapViewProjection() {
-        return this.mapViewProjection;
+    public TouchGestureHandler getTouchGestureHandler() {
+        return touchGestureHandler;
     }
 
     @Override
