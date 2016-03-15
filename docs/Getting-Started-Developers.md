@@ -140,3 +140,7 @@ To build the Android sample application, you need to make a few adjustments:
 * Then clean the project (`Project > Clean`).
 
 Without these steps, you may have issues with the app crashing with a `java.lang.NoClassDefFoundError` exception. If that happens, carry out the above steps and build again.
+
+## How to contribute
+
+[Guidelines](../CONTRIBUTING.md) for repository contributors.
