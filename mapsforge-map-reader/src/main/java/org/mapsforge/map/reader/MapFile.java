@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
- * Copyright 2015 lincomatic
+ * Copyright 2015-2016 lincomatic
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -310,9 +310,11 @@ public class MapFile extends MapDataStore {
             wayNodeLongitude = wayNodeLongitude + singleDeltaLongitude;
 
             // Decoding near international date line can return values slightly outside valid [-180°, 180°] due to calculation precision
-            if (wayNodeLongitude < LatLongUtils.LONGITUDE_MIN) {
+            if (wayNodeLongitude < LatLongUtils.LONGITUDE_MIN
+                    && (LatLongUtils.LONGITUDE_MIN - wayNodeLongitude) < 0.001) {
                 wayNodeLongitude = LatLongUtils.LONGITUDE_MIN;
-            } else if (wayNodeLongitude > LatLongUtils.LONGITUDE_MAX) {
+            } else if (wayNodeLongitude > LatLongUtils.LONGITUDE_MAX
+                    && (wayNodeLongitude - LatLongUtils.LONGITUDE_MAX) < 0.001) {
                 wayNodeLongitude = LatLongUtils.LONGITUDE_MAX;
             }
 
@@ -343,9 +345,11 @@ public class MapFile extends MapDataStore {
             wayNodeLongitude = wayNodeLongitude + LatLongUtils.microdegreesToDegrees(this.readBuffer.readSignedInt());
 
             // Decoding near international date line can return values slightly outside valid [-180°, 180°] due to calculation precision
-            if (wayNodeLongitude < LatLongUtils.LONGITUDE_MIN) {
+            if (wayNodeLongitude < LatLongUtils.LONGITUDE_MIN
+                    && (LatLongUtils.LONGITUDE_MIN - wayNodeLongitude) < 0.001) {
                 wayNodeLongitude = LatLongUtils.LONGITUDE_MIN;
-            } else if (wayNodeLongitude > LatLongUtils.LONGITUDE_MAX) {
+            } else if (wayNodeLongitude > LatLongUtils.LONGITUDE_MAX
+                    && (wayNodeLongitude - LatLongUtils.LONGITUDE_MAX) < 0.001) {
                 wayNodeLongitude = LatLongUtils.LONGITUDE_MAX;
             }
 
