@@ -56,7 +56,7 @@ class TileDownloadThread extends PausableThread {
         DownloadJob downloadJob = this.jobQueue.get();
 
         try {
-            if (!this.tileCache.containsKey(downloadJob)) {
+            if (!this.tileCache.containsKey(downloadJob) || downloadJob.isForce()) {
                 downloadTile(downloadJob);
             }
         } catch (IOException e) {
@@ -79,7 +79,6 @@ class TileDownloadThread extends PausableThread {
     private void downloadTile(DownloadJob downloadJob) throws IOException {
         TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicFactory);
         TileBitmap bitmap = tileDownloader.downloadImage();
-
         if (!isInterrupted() && bitmap != null) {
             bitmap.scaleTo(this.displayModel.getTileSize(), this.displayModel.getTileSize());
             this.tileCache.put(downloadJob, bitmap);

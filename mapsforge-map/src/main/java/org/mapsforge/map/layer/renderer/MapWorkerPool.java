@@ -80,12 +80,10 @@ public class MapWorkerPool implements Runnable {
         try {
             while (!inShutdown) {
                 RendererJob rendererJob = this.jobQueue.get(NUMBER_OF_THREADS);
-                if (!this.tileCache.containsKey(rendererJob) || rendererJob.labelsOnly) {
-                    if (!inShutdown) {
-                        workers.execute(new MapWorker(rendererJob));
-                    } else {
-                        jobQueue.remove(rendererJob);
-                    }
+                if (!this.tileCache.containsKey(rendererJob) || rendererJob.labelsOnly || rendererJob.isForce()) {
+                    workers.execute(new MapWorker(rendererJob));
+                } else {
+                    jobQueue.remove(rendererJob);
                 }
             }
         } catch (InterruptedException e) {

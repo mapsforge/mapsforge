@@ -24,6 +24,7 @@ public class Job {
     public final boolean hasAlpha;
     public final Tile tile;
     private final String key;
+    private boolean force;
 
     private static String composeKey(byte z, long x, long y) {
         return String.valueOf(z) + File.separatorChar + x + File.separatorChar + y;
@@ -41,6 +42,15 @@ public class Job {
         this.tile = tile;
         this.hasAlpha = hasAlpha;
         this.key = composeKey(this.tile.zoomLevel, this.tile.tileX, this.tile.tileY);
+        this.force = false;
+    }
+
+    public void setForce(boolean b) {
+        this.force = b;
+    }
+
+    public boolean isForce() {
+        return this.force;
     }
 
     @Override
