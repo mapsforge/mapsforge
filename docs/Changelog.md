@@ -8,6 +8,7 @@
 - LabelLayer enhanced implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
 - Color filters in map rendering [#778](https://github.com/mapsforge/mapsforge/issues/778)
 - Night mode example [#777](https://github.com/mapsforge/mapsforge/issues/777)
+- Map writer improved area heuristics [#788](https://github.com/mapsforge/mapsforge/issues/788) [#795](https://github.com/mapsforge/mapsforge/issues/795)
 - Zoom level limits central handling [#646](https://github.com/mapsforge/mapsforge/issues/646)
 - Android gestures options [#705](https://github.com/mapsforge/mapsforge/issues/705)
 - Java onTap layer listener [#774](https://github.com/mapsforge/mapsforge/issues/774)
