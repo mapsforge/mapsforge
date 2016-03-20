@@ -124,5 +124,7 @@ public interface RenderCallback {
      * @param fill          the paint to be used for rendering the text.
      * @param stroke
      */
-    void renderWayText(final RenderContext renderContext, Display display, int priority, String text, float dy, Paint fill, Paint stroke, PolylineContainer way);
+    void renderWayText(final RenderContext renderContext, Display display, int priority, String text,
+                       float dy, Paint fill, Paint stroke,
+                       boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way);
 }

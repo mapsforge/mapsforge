@@ -48,6 +48,11 @@ public class PathText extends RenderInstruction {
     private int priority;
     private final Paint stroke;
     private final Map<Byte, Paint> strokes;
+    private boolean repeat;
+    private float repeatGap;
+    private float repeatStart;
+    private boolean rotate;
+
 
     private TextKey textKey;
 
@@ -59,6 +64,9 @@ public class PathText extends RenderInstruction {
         this.fill.setStyle(Style.FILL);
         this.fill.setTextAlign(Align.CENTER);
         this.fills = new HashMap<>();
+        this.rotate = true;
+        this.repeatGap = 50;
+        this.repeatStart = 10;
 
         this.stroke = graphicFactory.createPaint();
         this.stroke.setColor(Color.BLACK);
@@ -98,8 +106,11 @@ public class PathText extends RenderInstruction {
             dyScale = this.dy;
         }
 
-        renderCallback.renderWayText(renderContext, this.display, this.priority, caption, dyScale, getFillPaint(renderContext.rendererJob.tile.zoomLevel),
-                getStrokePaint(renderContext.rendererJob.tile.zoomLevel), way);
+        renderCallback.renderWayText(renderContext, this.display, this.priority, caption, dyScale,
+                getFillPaint(renderContext.rendererJob.tile.zoomLevel),
+                getStrokePaint(renderContext.rendererJob.tile.zoomLevel),
+                this.repeat, this.repeatGap, this.repeatStart, this.rotate,
+                way);
     }
 
     @Override
@@ -144,6 +155,14 @@ public class PathText extends RenderInstruction {
                 this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else if (FILL.equals(name)) {
                 this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (REPEAT.equals(name)) {
+                this.repeat = Boolean.parseBoolean(value);
+            } else if (REPEAT_GAP.equals(name)) {
+                this.repeatGap = Float.parseFloat(value) * displayModel.getScaleFactor();
+            } else if (REPEAT_START.equals(name)) {
+                this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
+            } else if (ROTATE.equals(name)) {
+                this.rotate = Boolean.parseBoolean(value);
             } else if (PRIORITY.equals(name)) {
                 this.priority = Integer.parseInt(value);
             } else if (STROKE.equals(name)) {

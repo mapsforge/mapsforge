@@ -149,9 +149,11 @@ public class StandardRenderer implements RenderCallback {
     }
 
     @Override
-    public void renderWayText(final RenderContext renderContext, Display display, int priority, String textKey, float dy, Paint fill, Paint stroke, PolylineContainer way) {
+    public void renderWayText(final RenderContext renderContext, Display display, int priority, String textKey, float dy, Paint fill, Paint stroke,
+                              boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
         if (renderLabels) {
-            WayDecorator.renderText(way.getUpperLeft(), way.getLowerRight(), textKey, display, priority, dy, fill, stroke, way.getCoordinatesAbsolute(), renderContext.labels);
+            WayDecorator.renderText(way.getUpperLeft(), way.getLowerRight(), textKey, display, priority, dy, fill, stroke,
+                    repeat, repeatGap, repeatStart, rotate, way.getCoordinatesAbsolute(), renderContext.labels);
         }
     }
 

@@ -65,7 +65,8 @@ class DummyRenderCallback implements RenderCallback {
     }
 
     @Override
-    public void renderWayText(final RenderContext renderContext, Display display, int priority, String text, float dy, Paint fill, Paint stroke, PolylineContainer way) {
+    public void renderWayText(final RenderContext renderContext, Display display, int priority, String text, float dy, Paint fill, Paint stroke,
+                              boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
         // do nothing
     }
 }

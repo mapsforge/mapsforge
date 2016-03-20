@@ -159,6 +159,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="RenderTheme V4" />
         <activity
+            android:name=".RenderTheme5"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="RenderTheme V5" />
+        <activity
             android:name=".RenderThemeChanger"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Automatically changes between renderthemes on SDCard" />

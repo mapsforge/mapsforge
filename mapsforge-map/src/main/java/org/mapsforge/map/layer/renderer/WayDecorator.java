@@ -32,7 +32,6 @@ final class WayDecorator {
     /**
      * A safety margin that keeps way names out of intersections.
      */
-    private static final int WAYNAME_SAFETY_MARGIN = 5;
 
     static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, boolean alignCenter,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
@@ -126,11 +125,12 @@ final class WayDecorator {
      * @param currentLabels the list of labels to which a new WayTextContainer will be added
      */
     static void renderText(Tile upperLeft, Tile lowerRight, String text, Display display, int priority, float dy,
-                           Paint fill, Paint stroke, Point[][] coordinates,
+                           Paint fill, Paint stroke,
+                           boolean repeat, float repeatGap, float repeatStart, boolean rotate, Point[][] coordinates,
                            List<MapElementContainer> currentLabels) {
 
         // Calculate the way name length plus some margin of safety
-        int wayNameWidth = (stroke == null) ? fill.getTextWidth(text) + WAYNAME_SAFETY_MARGIN * 2 : stroke.getTextWidth(text) + WAYNAME_SAFETY_MARGIN * 2;
+        int wayNameWidth = (stroke == null) ? fill.getTextWidth(text) + (int) repeatStart : stroke.getTextWidth(text) + (int) repeatStart;
 
         // Compute the tile boundary on which we render the name.
         double textHeight = (stroke == null) ? fill.getTextHeight(text) : stroke.getTextHeight(text);
@@ -184,16 +184,18 @@ final class WayDecorator {
             double offset = (segmentLengthInPixel - wayNameWidth) / 2d;
             // now calculate the actually used part of the segment to ensure the bbox of the waytext container
             // is as small as possible.
-            LineSegment actuallyUsedSegment = drawableSegment.subSegment(offset, wayNameWidth - WAYNAME_SAFETY_MARGIN * 2);
+            LineSegment actuallyUsedSegment = drawableSegment.subSegment(offset, wayNameWidth - repeatStart);
             // check to prevent inverted way names
             if (actuallyUsedSegment.start.x <= actuallyUsedSegment.end.x) {
                 currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, display, priority, text, fill, stroke, textHeight));
             } else {
                 currentLabels.add(new WayTextContainer(actuallyUsedSegment.end, actuallyUsedSegment.start, display, priority, text, fill, stroke, textHeight));
             }
-
+            if (!repeat) {
+                break;
+            }
             // arbitrary distance, but should not depend on length of name
-            skipPixels = WAYNAME_SAFETY_MARGIN * 10;
+            skipPixels = (int) repeatGap;
         }
     }
 

@@ -79,6 +79,7 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(DiagnosticsMapViewer.class, "Diagnostics", null));
         linearLayout.addView(createButton(SimplestMapViewer.class, "Simplest Map Viewer", null));
         linearLayout.addView(createButton(MultiLingualMapViewer.class, "Multi-lingual maps", null));
+        linearLayout.addView(createButton(RenderTheme5.class, "Map Viewer Rendertheme V5", null));
 
         linearLayout.addView(createLabel("Raster Maps"));
         linearLayout.addView(createButton(DownloadLayerViewer.class, "Downloading Mapnik", null));
