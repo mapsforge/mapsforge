@@ -155,7 +155,7 @@ public class AndroidTileBitmap extends AndroidBitmap implements TileBitmap {
     public boolean isExpired() {
         if (expiration == 0)
             return false;
-        return (expiration >= System.currentTimeMillis());
+        return (expiration <= System.currentTimeMillis());
     }
 
     @Override
