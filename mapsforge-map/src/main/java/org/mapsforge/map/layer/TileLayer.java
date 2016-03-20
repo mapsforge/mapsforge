@@ -100,7 +100,9 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 }
                 drawParentTileBitmap(canvas, point, tile);
             } else {
-                if (isTileStale(tile, bitmap) && this.hasJobQueue && !this.tileCache.containsKey(job)) {
+                job.setForce(isTileStale(tile, bitmap));
+
+                if (this.hasJobQueue && (job.isForce() || !this.tileCache.containsKey(job))) {
                     this.jobQueue.add(job);
                 }
                 retrieveLabelsOnly(job);
