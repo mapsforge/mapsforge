@@ -21,15 +21,18 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MapWorkerPool implements Runnable {
-
+    private static String LOGTAG = "MapWorkerPool: ";
     // the default number of threads is one greater than the number of processors as one thread
     // is likely to be blocked on I/O reading map data. Technically this value can change, so a
     // better implementation, maybe one that also takes the available memory into account, would
@@ -52,6 +55,7 @@ public class MapWorkerPool implements Runnable {
     private final Layer layer;
     private final TileCache tileCache;
     private boolean inShutdown;
+    private boolean isRunning;
 
     public MapWorkerPool(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer, Layer layer) {
         super();
@@ -61,18 +65,52 @@ public class MapWorkerPool implements Runnable {
         this.databaseRenderer = databaseRenderer;
         this.layer = layer;
         this.inShutdown = false;
+        this.isRunning = false;
     }
 
-    public void start() {
+    public synchronized void start() {
+        if (this.isRunning == true)
+            return;
+        this.inShutdown = false;
         this.self = Executors.newSingleThreadExecutor();
         this.workers = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
         this.self.execute(this);
+        this.isRunning = true;
     }
 
-    public void stop() {
+    public synchronized void stop() {
+        if (this.isRunning == false)
+            return;
         this.inShutdown = true;
+        this.jobQueue.interrupt();
+
+        // shutdown executors
         this.self.shutdown();
         this.workers.shutdown();
+
+        try {
+            if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                this.self.shutdownNow();
+                if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                    LOGGER.info(this.LOGTAG + "shutdown self executor failed");
+                }
+            }
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.SEVERE, this.LOGTAG + "shutdown self executor interrupted", e);
+        }
+
+        try {
+            if (!this.workers.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                this.workers.shutdownNow();
+                if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                    LOGGER.info(this.LOGTAG + "shutdown workers executor failed");
+                }
+            }
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.SEVERE, this.LOGTAG + "shutdown workers executor interrupted", e);
+        }
+
+        this.isRunning = false;
     }
 
     @Override
@@ -80,17 +118,18 @@ public class MapWorkerPool implements Runnable {
         try {
             while (!inShutdown) {
                 RendererJob rendererJob = this.jobQueue.get(NUMBER_OF_THREADS);
+                if (rendererJob == null)
+                    continue;
                 if (!this.tileCache.containsKey(rendererJob) || rendererJob.labelsOnly) {
-                    if (!inShutdown) {
-                        workers.execute(new MapWorker(rendererJob));
-                    } else {
-                        jobQueue.remove(rendererJob);
-                    }
+                    workers.execute(new MapWorker(rendererJob));
+                } else {
+                    jobQueue.remove(rendererJob);
                 }
             }
         } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "MapWorkerPool interrupted", e);
-            // should get restarted by the ExecutorService
+            LOGGER.log(Level.SEVERE, this.LOGTAG + "interrupted", e);
+        } catch (RejectedExecutionException e) {
+            LOGGER.log(Level.SEVERE, this.LOGTAG + "rejected", e);
         }
     }
 
