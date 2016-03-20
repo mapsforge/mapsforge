@@ -63,8 +63,10 @@ public class LayerManager extends PausableThread implements Redrawer {
 
     @Override
     protected void afterRun() {
-        for (Layer layer : this.layers) {
-            layer.onDestroy();
+        synchronized (this.layers) {
+            for (Layer layer : this.layers) {
+                layer.onDestroy();
+            }
         }
         this.drawingCanvas.destroy();
     }
@@ -85,9 +87,11 @@ public class LayerManager extends PausableThread implements Redrawer {
             BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension, tileSize);
             Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension, tileSize);
 
-            for (Layer layer : this.layers) {
-                if (layer.isVisible()) {
-                    layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint);
+            synchronized (this.layers) {
+                for (Layer layer : this.layers) {
+                    if (layer.isVisible()) {
+                        layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint);
+                    }
                 }
             }
 
