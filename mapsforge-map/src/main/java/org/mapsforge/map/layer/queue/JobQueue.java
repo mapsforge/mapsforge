@@ -30,6 +30,7 @@ public class JobQueue<T extends Job> {
     private final MapViewPosition mapViewPosition;
     private final List<QueueItem<T>> queueItems = new LinkedList<QueueItem<T>>();
     private boolean scheduleNeeded;
+    private boolean isInterrupted = false;
 
     public JobQueue(MapViewPosition mapViewPosition, DisplayModel displayModel) {
         this.mapViewPosition = mapViewPosition;
@@ -45,6 +46,11 @@ public class JobQueue<T extends Job> {
                 this.notifyWorkers();
             }
         }
+    }
+
+    public synchronized void interrupt() {
+        this.isInterrupted = true;
+        notifyWorkers();
     }
 
     /**
@@ -65,6 +71,10 @@ public class JobQueue<T extends Job> {
     public synchronized T get(int maxAssigned) throws InterruptedException {
         while (this.queueItems.isEmpty() || this.assignedJobs.size() >= maxAssigned) {
             this.wait(200);
+            if (this.isInterrupted) {
+                this.isInterrupted = false;
+                return null;
+            }
         }
 
         if (this.scheduleNeeded) {
