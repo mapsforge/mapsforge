@@ -805,7 +805,7 @@
             v="cycleway|service|construction|road|pedestrian|unclassified|residential|living_street|tertiary|tertiary_link"
             zoom-min="16">
             <pathText k="name" display="always" priority="-7" font-style="bold" font-size="10"
-                fill="#000000" stroke="#FFFFFF" stroke-width="2.0" repeat-start="0" repeat-gap="0" repeat="false"/>
+                fill="#000000" stroke="#FFFFFF" stroke-width="2.0" repeat="false"/>
         </rule>
         <rule e="way" k="highway"
             v="secondary_link|primary_link|trunk_link|motorway_link|secondary|primary"

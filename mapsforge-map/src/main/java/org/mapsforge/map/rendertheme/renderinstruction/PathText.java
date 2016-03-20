@@ -70,6 +70,7 @@ public class PathText extends RenderInstruction {
         this.fill.setTextAlign(Align.CENTER);
         this.fills = new HashMap<>();
         this.rotate = true;
+        this.repeat = true;
 
         this.stroke = graphicFactory.createPaint();
         this.stroke.setColor(Color.BLACK);

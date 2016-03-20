@@ -229,7 +229,7 @@
         <xs:attribute name="priority" type="xs:integer" use="optional" default="0" />
         <xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
         <xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
-        <xs:attribute name="repeat" type="xs:boolean" use="optional" default="false" />
+        <xs:attribute name="repeat" type="xs:boolean" use="optional" default="true" />
         <xs:attribute name="repeat-gap" type="xs:float" use="optional" default="50" />
         <xs:attribute name="repeat-start" type="xs:float" use="optional" default="10" />
         <xs:attribute name="rotate" type="xs:boolean" use="optional" default="true" />
