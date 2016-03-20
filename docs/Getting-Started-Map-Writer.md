@@ -110,13 +110,17 @@ Please report any bugs and feature requests via [Github issue tracker](https://g
 
 ## Changelog
 
+### 0.6.1
+- Add all tags from OSM wiki to area heuristics
+- Minor changes to tag-mapping.xml (place=locality)
+
 ### 0.6.0
 - Multilingual maps
 - Language improved parsing
 - Fix invalid number of way nodes
 
 ### 0.5.2
- - Some minor changes to tag-mapping.xml (administrative boundaries, national parks).
+ - Minor changes to tag-mapping.xml (administrative boundaries, national parks)
 
 ### 0.5.1
 - No significant changes
