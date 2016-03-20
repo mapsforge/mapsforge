@@ -3,6 +3,7 @@
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
  * Copyright 2016 devemux86
+ * Copyright 2016 ksaihtam
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -99,7 +100,9 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
         super.setDisplayModel(displayModel);
         if (displayModel != null) {
             compileRenderTheme();
-            this.mapWorkerPool = new MapWorkerPool(this.tileCache, this.jobQueue, this.databaseRenderer, this);
+            if (this.mapWorkerPool == null) {
+                this.mapWorkerPool = new MapWorkerPool(this.tileCache, this.jobQueue, this.databaseRenderer, this);
+            }
             this.mapWorkerPool.start();
         } else {
             // if we do not have a displayModel any more we can stop rendering.
