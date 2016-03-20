@@ -35,7 +35,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
     private final DatabaseRenderer databaseRenderer;
     private final GraphicFactory graphicFactory;
     private final MapDataStore mapDataStore;
-    private MapWorkerPool mapWorkerPool;
+    private MapWorkerPool mapWorkerPool = null;
     private RenderThemeFuture renderThemeFuture;
     private float textScale;
     private final TileBasedLabelStore tileBasedLabelStore;
@@ -99,7 +99,8 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
         super.setDisplayModel(displayModel);
         if (displayModel != null) {
             compileRenderTheme();
-            this.mapWorkerPool = new MapWorkerPool(this.tileCache, this.jobQueue, this.databaseRenderer, this);
+            if (this.mapWorkerPool == null)
+                this.mapWorkerPool = new MapWorkerPool(this.tileCache, this.jobQueue, this.databaseRenderer, this);
             this.mapWorkerPool.start();
         } else {
             // if we do not have a displayModel any more we can stop rendering.
