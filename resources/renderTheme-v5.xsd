@@ -275,7 +275,7 @@
             <xs:element name="stylemenu" type="tns:stylemenu" minOccurs="0" maxOccurs="1" />
             <xs:element name="rule" type="tns:rule" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name="version" type="xs:positiveInteger" fixed="4" />
+        <xs:attribute name="version" type="xs:positiveInteger" fixed="5" />
         <xs:attribute name="map-background" type="tns:color" use="optional" default="#ffffff" />
         <xs:attribute name="map-background-outside" type="tns:color" use="optional"
             default="#ffffff" />

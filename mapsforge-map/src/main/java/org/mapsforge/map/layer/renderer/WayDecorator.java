@@ -29,10 +29,6 @@ import java.util.List;
 
 final class WayDecorator {
 
-    /**
-     * A safety margin that keeps way names out of intersections.
-     */
-
     static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, boolean alignCenter,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
                              boolean rotate, Point[][] coordinates,

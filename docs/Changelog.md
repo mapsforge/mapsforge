@@ -3,6 +3,7 @@
 ## New since 0.6.0
 
 - POI Search API [#728](https://github.com/mapsforge/mapsforge/issues/728)
+- Render Theme v5: pathText repeat options [#473](https://github.com/mapsforge/mapsforge/issues/473)
 - Reverse Geocoding example [#727](https://github.com/mapsforge/mapsforge/issues/727)
 - LabelLayer enhanced implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
 - Color filters in map rendering [#778](https://github.com/mapsforge/mapsforge/issues/778)

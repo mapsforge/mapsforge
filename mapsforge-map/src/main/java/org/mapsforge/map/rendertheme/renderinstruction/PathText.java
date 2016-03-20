@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2014-2016 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,6 +40,10 @@ import java.util.Map;
  * Represents a text along a polyline on the map.
  */
 public class PathText extends RenderInstruction {
+
+    private static final float REPEAT_GAP_DEFAULT = 50f;
+    private static final float REPEAT_START_DEFAULT = 10f;
+
     private Display display;
     private float dy;
     private final Map<Byte, Float> dyScaled;
@@ -65,8 +70,6 @@ public class PathText extends RenderInstruction {
         this.fill.setTextAlign(Align.CENTER);
         this.fills = new HashMap<>();
         this.rotate = true;
-        this.repeatGap = 50;
-        this.repeatStart = 10;
 
         this.stroke = graphicFactory.createPaint();
         this.stroke.setColor(Color.BLACK);
@@ -132,6 +135,10 @@ public class PathText extends RenderInstruction {
 
     private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                                XmlPullParser pullParser) throws XmlPullParserException {
+
+        this.repeatGap = REPEAT_GAP_DEFAULT * displayModel.getScaleFactor();
+        this.repeatStart = REPEAT_START_DEFAULT * displayModel.getScaleFactor();
+
         FontFamily fontFamily = FontFamily.DEFAULT;
         FontStyle fontStyle = FontStyle.NORMAL;
 
