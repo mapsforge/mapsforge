@@ -1,7 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
+ * Copyright 2016 ksaihtam
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,7 +22,6 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
@@ -32,12 +32,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MapWorkerPool implements Runnable {
-    private static String LOGTAG = "MapWorkerPool: ";
-    // the default number of threads is one greater than the number of processors as one thread
-    // is likely to be blocked on I/O reading map data. Technically this value can change, so a
-    // better implementation, maybe one that also takes the available memory into account, would
-    // be good.
-    // For stability reasons (see #591), we set default number of threads to 1
+    private static final Logger LOGGER = Logger.getLogger(MapWorkerPool.class.getName());
+
+    // The default number of threads is one greater than the number of processors as one thread is
+    // likely to be blocked on I/O reading map data. Technically this value can change, so a better
+    // implementation, maybe one that also takes the available memory into account, would be good.
+    // For stability reasons (see #591), we set default number of threads to 1.
     public static final int DEFAULT_NUMBER_OF_THREADS = 1;//Runtime.getRuntime().availableProcessors() + 1;
     public static int NUMBER_OF_THREADS = DEFAULT_NUMBER_OF_THREADS;
 
@@ -46,20 +46,16 @@ public class MapWorkerPool implements Runnable {
     private final AtomicInteger concurrentJobs = new AtomicInteger();
     private final AtomicLong totalExecutions = new AtomicLong();
     private final AtomicLong totalTime = new AtomicLong();
-    private static final Logger LOGGER = Logger.getLogger(MapWorkerPool.class.getName());
 
     private final DatabaseRenderer databaseRenderer;
-    private ExecutorService self;
-    private ExecutorService workers;
+    private boolean inShutdown, isRunning;
     private final JobQueue<RendererJob> jobQueue;
     private final Layer layer;
+    private ExecutorService self, workers;
     private final TileCache tileCache;
-    private boolean inShutdown;
-    private boolean isRunning;
 
     public MapWorkerPool(TileCache tileCache, JobQueue<RendererJob> jobQueue, DatabaseRenderer databaseRenderer, Layer layer) {
         super();
-
         this.tileCache = tileCache;
         this.jobQueue = jobQueue;
         this.databaseRenderer = databaseRenderer;
@@ -68,9 +64,31 @@ public class MapWorkerPool implements Runnable {
         this.isRunning = false;
     }
 
+    @Override
+    public void run() {
+        try {
+            while (!inShutdown) {
+                RendererJob rendererJob = this.jobQueue.get(NUMBER_OF_THREADS);
+                if (rendererJob == null) {
+                    continue;
+                }
+                if (!this.tileCache.containsKey(rendererJob) || rendererJob.labelsOnly) {
+                    workers.execute(new MapWorker(rendererJob));
+                } else {
+                    jobQueue.remove(rendererJob);
+                }
+            }
+        } catch (InterruptedException e) {
+            LOGGER.log(Level.SEVERE, "MapWorkerPool interrupted", e);
+        } catch (RejectedExecutionException e) {
+            LOGGER.log(Level.SEVERE, "MapWorkerPool rejected", e);
+        }
+    }
+
     public synchronized void start() {
-        if (this.isRunning == true)
+        if (this.isRunning) {
             return;
+        }
         this.inShutdown = false;
         this.self = Executors.newSingleThreadExecutor();
         this.workers = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
@@ -79,12 +97,13 @@ public class MapWorkerPool implements Runnable {
     }
 
     public synchronized void stop() {
-        if (this.isRunning == false)
+        if (!this.isRunning) {
             return;
+        }
         this.inShutdown = true;
         this.jobQueue.interrupt();
 
-        // shutdown executors
+        // Shutdown executors
         this.self.shutdown();
         this.workers.shutdown();
 
@@ -92,49 +111,28 @@ public class MapWorkerPool implements Runnable {
             if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {
                 this.self.shutdownNow();
                 if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {
-                    LOGGER.info(this.LOGTAG + "shutdown self executor failed");
+                    LOGGER.warning("Shutdown self executor failed");
                 }
             }
         } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, this.LOGTAG + "shutdown self executor interrupted", e);
+            LOGGER.log(Level.SEVERE, "Shutdown self executor interrupted", e);
         }
 
         try {
             if (!this.workers.awaitTermination(100, TimeUnit.MILLISECONDS)) {
                 this.workers.shutdownNow();
-                if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {
-                    LOGGER.info(this.LOGTAG + "shutdown workers executor failed");
+                if (!this.workers.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+                    LOGGER.warning("Shutdown workers executor failed");
                 }
             }
         } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, this.LOGTAG + "shutdown workers executor interrupted", e);
+            LOGGER.log(Level.SEVERE, "Shutdown workers executor interrupted", e);
         }
 
         this.isRunning = false;
     }
 
-    @Override
-    public void run() {
-        try {
-            while (!inShutdown) {
-                RendererJob rendererJob = this.jobQueue.get(NUMBER_OF_THREADS);
-                if (rendererJob == null)
-                    continue;
-                if (!this.tileCache.containsKey(rendererJob) || rendererJob.labelsOnly) {
-                    workers.execute(new MapWorker(rendererJob));
-                } else {
-                    jobQueue.remove(rendererJob);
-                }
-            }
-        } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, this.LOGTAG + "interrupted", e);
-        } catch (RejectedExecutionException e) {
-            LOGGER.log(Level.SEVERE, this.LOGTAG + "rejected", e);
-        }
-    }
-
     class MapWorker implements Runnable {
-
         private final RendererJob rendererJob;
 
         MapWorker(RendererJob rendererJob) {
@@ -147,18 +145,14 @@ public class MapWorkerPool implements Runnable {
             TileBitmap bitmap = null;
             try {
                 long start = 0;
-
                 if (inShutdown) {
                     return;
                 }
-
                 if (DEBUG_TIMING) {
                     start = System.currentTimeMillis();
                     LOGGER.info("ConcurrentJobs " + concurrentJobs.incrementAndGet());
                 }
-
                 bitmap = MapWorkerPool.this.databaseRenderer.executeJob(rendererJob);
-
                 if (inShutdown) {
                     return;
                 }

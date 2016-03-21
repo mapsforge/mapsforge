@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 ksaihtam
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,12 +26,12 @@ import java.util.List;
 public class JobQueue<T extends Job> {
     private static final int QUEUE_CAPACITY = 128;
 
-    private final List<T> assignedJobs = new LinkedList<T>();
+    private final List<T> assignedJobs = new LinkedList<>();
     private final DisplayModel displayModel;
+    private boolean isInterrupted;
     private final MapViewPosition mapViewPosition;
-    private final List<QueueItem<T>> queueItems = new LinkedList<QueueItem<T>>();
+    private final List<QueueItem<T>> queueItems = new LinkedList<>();
     private boolean scheduleNeeded;
-    private boolean isInterrupted = false;
 
     public JobQueue(MapViewPosition mapViewPosition, DisplayModel displayModel) {
         this.mapViewPosition = mapViewPosition;
@@ -39,18 +40,13 @@ public class JobQueue<T extends Job> {
 
     public synchronized void add(T job) {
         if (!this.assignedJobs.contains(job)) {
-            QueueItem<T> queueItem = new QueueItem<T>(job);
+            QueueItem<T> queueItem = new QueueItem<>(job);
             if (!this.queueItems.contains(queueItem)) {
                 this.queueItems.add(queueItem);
                 this.scheduleNeeded = true;
                 this.notifyWorkers();
             }
         }
-    }
-
-    public synchronized void interrupt() {
-        this.isInterrupted = true;
-        notifyWorkers();
     }
 
     /**
@@ -87,6 +83,11 @@ public class JobQueue<T extends Job> {
         return job;
     }
 
+    public synchronized void interrupt() {
+        this.isInterrupted = true;
+        notifyWorkers();
+    }
+
     public synchronized void notifyWorkers() {
         this.notifyAll();
     }
@@ -96,17 +97,17 @@ public class JobQueue<T extends Job> {
         this.notifyWorkers();
     }
 
+    private void schedule(int tileSize) {
+        QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition(), tileSize);
+        Collections.sort(this.queueItems, QueueItemComparator.INSTANCE);
+        trimToSize();
+    }
+
     /**
      * @return the current number of entries in this queue.
      */
     public synchronized int size() {
         return this.queueItems.size();
-    }
-
-    private void schedule(int tileSize) {
-        QueueItemScheduler.schedule(this.queueItems, this.mapViewPosition.getMapPosition(), tileSize);
-        Collections.sort(this.queueItems, QueueItemComparator.INSTANCE);
-        trimToSize();
     }
 
     private void trimToSize() {
