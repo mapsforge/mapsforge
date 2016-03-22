@@ -143,4 +143,4 @@ Without these steps, you may have issues with the app crashing with a `java.lang
 
 ## How to contribute
 
-[Guidelines](../CONTRIBUTING.md) for repository contributors.
+[Guidelines](../.github/CONTRIBUTING.md) for repository contributors.
