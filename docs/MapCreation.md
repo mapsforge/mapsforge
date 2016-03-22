@@ -23,6 +23,7 @@ Then we convert the resulting shapefile with [shp2osm.py](https://github.com/map
 ```python
 fixed_tags = {
   'natural': 'nosea',
+  'layer': '-5'
 }
 ```
 
