@@ -42,10 +42,10 @@ compile 'org.mapsforge:mapsforge-poi:0.6.0'
 #### 2.2 Android
 ```groovy
 compile 'org.mapsforge:mapsforge-poi-android:0.6.0'
-compile 'org.mapsforge:sqlite3-android:0.6.0'
+compile 'org.mapsforge:spatialite-android:0.6.0'
 ```
 
-You'll need also the SQLite wrapper native library [files](../sqlite3-android/libs).
+You'll need also the SpatiaLite native library [files](../spatialite-android/libs).
 
 #### 2.3 Java
 ```groovy

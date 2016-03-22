@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 dependencies {
     compile project(":mapsforge-map-android-extras")
@@ -13,6 +13,9 @@ android {
     }
 
     sourceSets {
+        main {
+            jniLibs.srcDirs = ['../spatialite-android/libs']
+        }
         androidTest {
             java.srcDirs = ['src/androidTest']
         }

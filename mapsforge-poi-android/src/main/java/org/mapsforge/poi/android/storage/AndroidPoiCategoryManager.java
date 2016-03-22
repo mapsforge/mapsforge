@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,15 +21,15 @@ import org.mapsforge.poi.storage.DoubleLinkedPoiCategory;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryManager;
 import org.mapsforge.poi.storage.UnknownPoiCategoryException;
-import org.sqlite.android.Database;
-import org.sqlite.android.Exception;
-import org.sqlite.android.Stmt;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jsqlite.Database;
+import jsqlite.Stmt;
 
 /**
  * A {@link PoiCategoryManager} implementation using a SQLite database via wrapper.

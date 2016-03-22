@@ -25,13 +25,14 @@ import org.mapsforge.poi.storage.PoiFileInfoBuilder;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
 import org.mapsforge.poi.storage.UnknownPoiCategoryException;
-import org.sqlite.android.Database;
-import org.sqlite.android.Exception;
-import org.sqlite.android.Stmt;
 
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import jsqlite.Constants;
+import jsqlite.Database;
+import jsqlite.Stmt;
 
 /**
  * A {@link PoiPersistenceManager} implementation using a SQLite database via wrapper.
@@ -162,13 +163,10 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * @param create     If the file does not exist it may be created and filled.
      */
     private void createOrOpenDBFile(String dbFilePath, boolean create) {
-        // FIXME This method causes a crash on native level if the file cannot be created.
-        // (Use Java methods to avoid this).
-
         // Open file
         this.db = new Database();
         try {
-            this.db.open(dbFilePath, 0666);
+            this.db.open(dbFilePath, Constants.SQLITE_OPEN_READWRITE | Constants.SQLITE_OPEN_CREATE);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }

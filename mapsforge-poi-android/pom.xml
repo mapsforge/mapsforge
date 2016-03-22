@@ -48,7 +48,7 @@
 
         <dependency>
             <groupId>org.mapsforge</groupId>
-            <artifactId>sqlite3-android</artifactId>
+            <artifactId>spatialite-android</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
