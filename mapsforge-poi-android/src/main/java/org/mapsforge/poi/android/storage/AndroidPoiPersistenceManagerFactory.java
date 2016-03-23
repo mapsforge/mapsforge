@@ -2,7 +2,7 @@
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
  * Copyright 2010, 2011 weise
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,7 +25,7 @@ import org.mapsforge.poi.storage.PoiPersistenceManager;
  */
 public class AndroidPoiPersistenceManagerFactory {
     /**
-     * @param poiFilePath Path to a .poi file. If the file does not exist it will be created and filled.
+     * @param poiFilePath Path to a .poi file.
      * @return {@link PoiPersistenceManager} using an underlying SQLite database.
      */
     public static PoiPersistenceManager getPoiPersistenceManager(String poiFilePath) {
@@ -34,11 +34,11 @@ public class AndroidPoiPersistenceManagerFactory {
 
     /**
      * @param poiFilePath Path to a .poi file.
-     * @param create      If the file does not exist it may be created and filled.
+     * @param readOnly    If the file does not exist it can be created and filled.
      * @return {@link PoiPersistenceManager} using an underlying SQLite database.
      */
     public static PoiPersistenceManager getPoiPersistenceManager(String poiFilePath,
-                                                                 boolean create) {
-        return new AndroidPoiPersistenceManager(poiFilePath, create);
+                                                                 boolean readOnly) {
+        return new AndroidPoiPersistenceManager(poiFilePath, readOnly);
     }
 }

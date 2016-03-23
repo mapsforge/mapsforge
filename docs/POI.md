@@ -57,7 +57,7 @@ The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin sh
 
 ### Example
 
-With the POI database created you can now use it with mapsforge. You will also need the SpatiaLite native library files in your project. You can use the Samples project as a boilerplate, as it already has all necessary files and dependencies. The library files are located each within a separate sub-folder for each target architecture (_armeabi_, _armeabi-v7_, _x86_). You can delete unneeded architectures to reduce file size.
+With the POI database created you can now use it with mapsforge. You will also need the SpatiaLite native library files in your project. You can use the Samples project as a boilerplate, as it already has all necessary files and dependencies. The library files are located each within a separate sub-folder for each target architecture (_armeabi_, _armeabi-v7a_, _x86_). You can delete unneeded architectures to reduce file size.
 
 The sources for those libraries can be found at [spatialite-android](https://www.gaia-gis.it/fossil/libspatialite/wiki?name=splite-android) site. To compile these manually you need the [Android NDK](http://developer.android.com/tools/sdk/ndk/index.html). The compilation process can be started with `ndk-build` from within the `jni` directory. The compiling process also moves the library files to their correct (sub)folders.
 

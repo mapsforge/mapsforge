@@ -23,6 +23,7 @@ import org.mapsforge.poi.storage.PoiFileInfoBuilder;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
 import org.mapsforge.poi.storage.UnknownPoiCategoryException;
+import org.sqlite.SQLiteConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -54,13 +55,13 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
     /**
      * @param dbFilePath Path to SQLite file containing POI data.
-     * @param create     If the file does not exist it may be created and filled.
+     * @param readOnly   If the file does not exist it can be created and filled.
      */
-    AwtPoiPersistenceManager(String dbFilePath, boolean create) {
+    AwtPoiPersistenceManager(String dbFilePath, boolean readOnly) {
         super();
 
         // Open / create POI database
-        createOrOpenDBFile(dbFilePath, create);
+        createOrOpenDBFile(dbFilePath, readOnly);
 
         // Load categories from database
         this.categoryManager = new AwtPoiCategoryManager(this.conn);
@@ -160,20 +161,22 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
     /**
      * @param dbFilePath Path to SQLite file containing POI data.
-     * @param create     If the file does not exist it may be created and filled.
+     * @param readOnly   If the file does not exist it can be created and filled.
      */
-    private void createOrOpenDBFile(String dbFilePath, boolean create) {
+    private void createOrOpenDBFile(String dbFilePath, boolean readOnly) {
         // Open file
         try {
             Class.forName("org.sqlite.JDBC");
-            this.conn = DriverManager.getConnection("jdbc:sqlite:" + dbFilePath);
+            SQLiteConfig config = new SQLiteConfig();
+            config.setReadOnly(readOnly);
+            this.conn = DriverManager.getConnection("jdbc:sqlite:" + dbFilePath, config.toProperties());
             this.conn.setAutoCommit(false);
         } catch (ClassNotFoundException | SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         // Create file
-        if (!isValidDataBase() && create) {
+        if (!isValidDataBase() && !readOnly) {
             try {
                 createTables();
             } catch (SQLException e) {
@@ -198,7 +201,6 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
         stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
 
-        stmt.execute("COMMIT;");
         stmt.close();
     }
 

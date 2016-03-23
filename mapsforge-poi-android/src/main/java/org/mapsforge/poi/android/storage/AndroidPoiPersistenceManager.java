@@ -54,13 +54,13 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
     /**
      * @param dbFilePath Path to SQLite file containing POI data.
-     * @param create     If the file does not exist it may be created and filled.
+     * @param readOnly   If the file does not exist it can be created and filled.
      */
-    AndroidPoiPersistenceManager(String dbFilePath, boolean create) {
+    AndroidPoiPersistenceManager(String dbFilePath, boolean readOnly) {
         super();
 
         // Open / create POI database
-        createOrOpenDBFile(dbFilePath, create);
+        createOrOpenDBFile(dbFilePath, readOnly);
 
         // Load categories from database
         this.categoryManager = new AndroidPoiCategoryManager(this.db);
@@ -160,19 +160,19 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
     /**
      * @param dbFilePath Path to SQLite file containing POI data.
-     * @param create     If the file does not exist it may be created and filled.
+     * @param readOnly   If the file does not exist it can be created and filled.
      */
-    private void createOrOpenDBFile(String dbFilePath, boolean create) {
+    private void createOrOpenDBFile(String dbFilePath, boolean readOnly) {
         // Open file
         this.db = new Database();
         try {
-            this.db.open(dbFilePath, Constants.SQLITE_OPEN_READWRITE | Constants.SQLITE_OPEN_CREATE);
+            this.db.open(dbFilePath, readOnly ? Constants.SQLITE_OPEN_READONLY : Constants.SQLITE_OPEN_READWRITE | Constants.SQLITE_OPEN_CREATE);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         // Create file
-        if (!isValidDataBase() && create) {
+        if (!isValidDataBase() && !readOnly) {
             try {
                 createTables();
             } catch (Exception e) {
@@ -194,8 +194,6 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         this.db.exec(DbConstants.CREATE_DATA_STATEMENT, null);
         this.db.exec(DbConstants.CREATE_INDEX_STATEMENT, null);
         this.db.exec(DbConstants.CREATE_METADATA_STATEMENT, null);
-
-        this.db.exec("COMMIT;", null);
     }
 
     /**
