@@ -246,15 +246,25 @@ public class MapFile extends MapDataStore {
     }
 
     /**
+     * Opens the given map file, reads its header data and validates them. Uses default language.
+     *
+     * @param mapPath the path of the map file.
+     * @throws MapFileException if the given map file is null or invalid.
+     */
+    public MapFile(String mapPath) {
+        this(mapPath, null);
+    }
+
+    /**
      * Opens the given map file, reads its header data and validates them.
      *
-     * @param mapFileName the path of the map file.
-     * @param language    the language to use (may be null).
+     * @param mapPath  the path of the map file.
+     * @param language the language to use (may be null).
      * @throws MapFileException if the given map file is null or invalid or IOException if the file
      *                          cannot be opened.
      */
-    public MapFile(String mapFileName, String language) {
-        this(new File(mapFileName), language);
+    public MapFile(String mapPath, String language) {
+        this(new File(mapPath), language);
     }
 
     @Override
