@@ -91,7 +91,7 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 
 |**bytes**|**optional**|**name**|**description**|
 |---------|------------|--------|---------------|
-|5||index entry|<ul><li>1. bit: flag to indicate whether the tile is completely covered by water (e.g. a tile amidst the ocean)</li><li>2.-40. bit: offset of the tile in the sub file as 5-byte *LONG* (optional debug information and index size is also counted)<br />If the tile is empty offset(tile,,i,,) = offset(tile,,i+1,,)</li></ul>|
+|5||index entry|<ul><li>1. bit (mask: 0x10 00 00 00 00): flag to indicate whether the tile is completely covered by water (e.g. a tile amidst the ocean)</li><li>2.-40. bit (mask: 0x7f ff ff ff ff): 39 bit offset of the tile in the sub file as 5-bytes *LONG* (optional debug information and index size is also counted; byte order is BigEndian i.e. most significant byte first)<br />If the tile is empty offset(tile,,i,,) = offset(tile,,i+1,,)</li></ul><br />Note: to calculate how many tile index entries there are in a subfile, use the formulae at [http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames] to get the range of tiles covered by the bounding box, at the base zoom level of the interval|
 
 
 ### Tile header
