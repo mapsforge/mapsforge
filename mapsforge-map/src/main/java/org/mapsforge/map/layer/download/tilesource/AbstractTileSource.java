@@ -16,6 +16,7 @@
  */
 package org.mapsforge.map.layer.download.tilesource;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -64,7 +65,7 @@ public abstract class AbstractTileSource implements TileSource {
             return false;
         }
         AbstractTileSource other = (AbstractTileSource) obj;
-        if (!java.util.Arrays.equals(this.hostNames, other.hostNames)) {
+        if (!Arrays.equals(this.hostNames, other.hostNames)) {
             return false;
         } else if (this.port != other.port) {
             return false;
@@ -77,7 +78,7 @@ public abstract class AbstractTileSource implements TileSource {
      */
     @Override
     public long getDefaultTimeToLive() {
-        return defaultTimeToLive;
+        return this.defaultTimeToLive;
     }
 
     protected String getHostName() {
@@ -88,7 +89,7 @@ public abstract class AbstractTileSource implements TileSource {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + java.util.Arrays.hashCode(this.hostNames);
+        result = prime * result + Arrays.hashCode(this.hostNames);
         result = prime * result + this.port;
         return result;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,6 +32,21 @@ public class OnlineTileSource extends AbstractTileSource {
 
     public OnlineTileSource(String[] hostNames, int port) {
         super(hostNames, port);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof OnlineTileSource)) {
+            return false;
+        }
+        OnlineTileSource other = (OnlineTileSource) obj;
+        if (!this.baseUrl.equals(other.baseUrl)) {
+            return false;
+        }
+        return true;
     }
 
     public String getBaseUrl() {
@@ -87,6 +102,14 @@ public class OnlineTileSource extends AbstractTileSource {
     @Override
     public boolean hasAlpha() {
         return alpha;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + this.baseUrl.hashCode();
+        return result;
     }
 
     public OnlineTileSource setAlpha(boolean alpha) {
