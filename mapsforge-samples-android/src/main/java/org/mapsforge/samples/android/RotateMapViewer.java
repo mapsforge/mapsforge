@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -35,7 +35,6 @@ import org.mapsforge.samples.android.scalebar.MapScaleBarView;
  * Demonstration of map rotation via a {@link RotateView}.
  */
 public class RotateMapViewer extends OverlayMapViewer {
-
     @Override
     protected void createControls() {
         Button rotateButton = (Button) findViewById(R.id.rotateButton);
@@ -69,6 +68,7 @@ public class RotateMapViewer extends OverlayMapViewer {
     @Override
     protected void createMapViews() {
         mapView = getMapView();
+        findViewById(R.id.rotateView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mapView.getModel().frameBufferModel.setOverdrawFactor(1.0d);
         mapView.getModel().init(this.preferencesFacade);
         mapView.setClickable(true);
