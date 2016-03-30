@@ -77,6 +77,7 @@ public final class FrameBufferController implements Observer {
     }
 
     public void destroy() {
+        this.model.displayModel.removeObserver(this);
         this.model.mapViewPosition.removeObserver(this);
         this.model.mapViewDimension.removeObserver(this);
         this.model.frameBufferModel.removeObserver(this);
