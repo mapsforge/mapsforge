@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -50,6 +51,7 @@ public abstract class RenderInstruction {
     static final String REPEAT_START = "repeat-start";
     static final String ROTATE = "rotate";
     static final String SCALE_RADIUS = "scale-radius";
+    static final String SCALE_STROKE_WIDTH = "scale-stroke-width";
     static final String SIZE = "symbol-size";
     static final String SRC = "src";
     static final String STROKE = "stroke";

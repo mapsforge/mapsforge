@@ -51,6 +51,7 @@ public class PathText extends RenderInstruction {
     private final Map<Byte, Paint> fills;
     private float fontSize;
     private int priority;
+    private boolean scaleStrokeWidth = true;
     private final Paint stroke;
     private final Map<Byte, Paint> strokes;
     private boolean repeat;
@@ -119,6 +120,9 @@ public class PathText extends RenderInstruction {
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        if (!scaleStrokeWidth) {
+            scaleFactor = 1;
+        }
         this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
     }
 
@@ -173,6 +177,8 @@ public class PathText extends RenderInstruction {
                 this.rotate = Boolean.parseBoolean(value);
             } else if (PRIORITY.equals(name)) {
                 this.priority = Integer.parseInt(value);
+            } else if (SCALE_STROKE_WIDTH.equals(name)) {
+                this.scaleStrokeWidth = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
             } else if (STROKE_WIDTH.equals(name)) {

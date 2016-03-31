@@ -127,6 +127,7 @@
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
+        <xs:attribute name="scale-stroke-width" type="xs:boolean" use="optional" default="true" />
         <xs:attribute name="stroke" type="tns:color" use="optional" default="#00000000" />
         <xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
     </xs:complexType>
@@ -157,6 +158,7 @@
         <xs:attribute name="radius" type="tns:nonNegativeFloat" use="required" />
         <xs:attribute name="scale-radius" type="xs:boolean" use="optional" default="false" />
         <xs:attribute name="fill" type="tns:color" use="optional" default="#00000000" />
+        <xs:attribute name="scale-stroke-width" type="xs:boolean" use="optional" default="true" />
         <xs:attribute name="stroke" type="tns:color" use="optional" default="#00000000" />
         <xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
     </xs:complexType>
@@ -182,6 +184,7 @@
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="dy" type="xs:float" use="optional" default="0" />
+        <xs:attribute name="scale-stroke-width" type="xs:boolean" use="optional" default="true" />
         <xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
         <xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
         <xs:attribute name="stroke-dasharray" type="tns:strokeDasharray" use="optional" />
@@ -193,6 +196,7 @@
         <xs:attribute name="cat" type="xs:string" use="optional" />
         <xs:attribute name="display" type="tns:display" use="optional" default="ifspace" />
         <xs:attribute name="dy" type="xs:float" use="optional" default="0" />
+        <xs:attribute name="scale-stroke-width" type="xs:boolean" use="optional" default="true" />
         <xs:attribute name="src" type="tns:src" use="required" />
         <xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default" />
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
@@ -227,6 +231,7 @@
         <xs:attribute name="font-size" type="tns:nonNegativeFloat" use="optional" default="0" />
         <xs:attribute name="fill" type="tns:color" use="optional" default="#000000" />
         <xs:attribute name="priority" type="xs:integer" use="optional" default="0" />
+        <xs:attribute name="scale-stroke-width" type="xs:boolean" use="optional" default="true" />
         <xs:attribute name="stroke" type="tns:color" use="optional" default="#000000" />
         <xs:attribute name="stroke-width" type="tns:nonNegativeFloat" use="optional" default="0" />
         <xs:attribute name="repeat" type="xs:boolean" use="optional" default="true" />

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -43,6 +43,7 @@ public class Area extends RenderInstruction {
     private final Paint fill;
     private final int level;
     private final String relativePathPrefix;
+    private boolean scaleStrokeWidth = true;
     private Bitmap shaderBitmap;
     private String src;
     private final Paint stroke;
@@ -88,6 +89,8 @@ public class Area extends RenderInstruction {
                 this.category = value;
             } else if (FILL.equals(name)) {
                 this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (SCALE_STROKE_WIDTH.equals(name)) {
+                this.scaleStrokeWidth = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
             } else if (SYMBOL_HEIGHT.equals(name)) {
@@ -139,6 +142,9 @@ public class Area extends RenderInstruction {
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
         if (this.stroke != null) {
+            if (!scaleStrokeWidth) {
+                scaleFactor = 1;
+            }
             Paint zlPaint = graphicFactory.createPaint(this.stroke);
             zlPaint.setStrokeWidth(this.strokeWidth * scaleFactor);
             this.strokes.put(zoomLevel, zlPaint);

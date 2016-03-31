@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -52,6 +52,7 @@ public class LineSymbol extends RenderInstruction {
     private float repeatGap;
     private float repeatStart;
     private boolean rotate;
+    private boolean scaleStrokeWidth = true;
     private String src;
 
     public LineSymbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -106,6 +107,9 @@ public class LineSymbol extends RenderInstruction {
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        if (!scaleStrokeWidth) {
+            scaleFactor = 1;
+        }
         this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
     }
 
@@ -143,6 +147,8 @@ public class LineSymbol extends RenderInstruction {
                 this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (ROTATE.equals(name)) {
                 this.rotate = Boolean.parseBoolean(value);
+            } else if (SCALE_STROKE_WIDTH.equals(name)) {
+                this.scaleStrokeWidth = Boolean.parseBoolean(value);
             } else if (SYMBOL_HEIGHT.equals(name)) {
                 this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else if (SYMBOL_PERCENT.equals(name)) {

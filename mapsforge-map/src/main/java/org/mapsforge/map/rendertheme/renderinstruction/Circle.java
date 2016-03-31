@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -42,6 +43,7 @@ public class Circle extends RenderInstruction {
     private float renderRadius;
     private final Map<Byte, Float> renderRadiusScaled;
     private boolean scaleRadius;
+    private boolean scaleStrokeWidth = true;
     private final Paint stroke;
     private final Map<Byte, Paint> strokes;
     private float strokeWidth;
@@ -89,6 +91,9 @@ public class Circle extends RenderInstruction {
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
         if (this.scaleRadius) {
+            if (!scaleStrokeWidth) {
+                scaleFactor = 1;
+            }
             this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
             if (this.stroke != null) {
                 Paint s = graphicFactory.createPaint(stroke);
@@ -117,6 +122,8 @@ public class Circle extends RenderInstruction {
                 this.category = value;
             } else if (FILL.equals(name)) {
                 this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (SCALE_STROKE_WIDTH.equals(name)) {
+                this.scaleStrokeWidth = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
             } else if (STROKE_WIDTH.equals(name)) {

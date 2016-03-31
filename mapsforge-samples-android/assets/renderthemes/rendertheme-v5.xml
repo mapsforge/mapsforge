@@ -710,7 +710,7 @@
             <!-- highway cores -->
             <rule e="way" k="highway" v="footway">
                 <line stroke="#888888" stroke-width="0.5" stroke-dasharray="12,1"
-                    stroke-linecap="butt" />
+                    stroke-linecap="butt" scale-stroke-width="false" />
             </rule>
             <rule e="way" k="highway" v="path">
                 <line stroke="#9C6800" stroke-width="0.5" stroke-dasharray="12,1"

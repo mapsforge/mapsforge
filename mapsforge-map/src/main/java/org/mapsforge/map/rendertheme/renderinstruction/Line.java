@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -49,6 +49,7 @@ public class Line extends RenderInstruction {
     private final Map<Byte, Float> dyScaled;
     private final int level;
     private final String relativePathPrefix;
+    private boolean scaleStrokeWidth = true;
     private Bitmap shaderBitmap;
     private String src;
     private final Paint stroke;
@@ -110,6 +111,9 @@ public class Line extends RenderInstruction {
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        if (!scaleStrokeWidth) {
+            scaleFactor = 1;
+        }
         if (this.stroke != null) {
             Paint s = graphicFactory.createPaint(stroke);
             s.setStrokeWidth(this.strokeWidth * scaleFactor);
@@ -136,6 +140,8 @@ public class Line extends RenderInstruction {
                 this.category = value;
             } else if (DY.equals(name)) {
                 this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+            } else if (SCALE_STROKE_WIDTH.equals(name)) {
+                this.scaleStrokeWidth = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
             } else if (STROKE_WIDTH.equals(name)) {
