@@ -78,36 +78,6 @@ public class Circle extends RenderInstruction {
         // no-op
     }
 
-    @Override
-    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
-        renderCallback.renderPointOfInterestCircle(renderContext, getRenderRadius(renderContext.rendererJob.tile.zoomLevel), getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, poi);
-    }
-
-    @Override
-    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-        // do nothing
-    }
-
-    @Override
-    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (this.scaleRadius) {
-            if (!scaleStrokeWidth) {
-                scaleFactor = 1;
-            }
-            this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
-            if (this.stroke != null) {
-                Paint s = graphicFactory.createPaint(stroke);
-                s.setStrokeWidth(this.strokeWidth * scaleFactor);
-                strokes.put(zoomLevel, s);
-            }
-        }
-    }
-
-    @Override
-    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-        // do nothing
-    }
-
     private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                                XmlPullParser pullParser) throws XmlPullParserException {
         for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
@@ -115,13 +85,13 @@ public class Circle extends RenderInstruction {
             String value = pullParser.getAttributeValue(i);
 
             if (RADIUS.equals(name) || (XmlUtils.supportOlderRenderThemes && R.equals(name))) {
-                this.radius = Float.valueOf(XmlUtils.parseNonNegativeFloat(name, value)) * displayModel.getScaleFactor();
-            } else if (SCALE_RADIUS.equals(name)) {
-                this.scaleRadius = Boolean.parseBoolean(value);
+                this.radius = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else if (CAT.equals(name)) {
                 this.category = value;
             } else if (FILL.equals(name)) {
                 this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (SCALE_RADIUS.equals(name)) {
+                this.scaleRadius = Boolean.parseBoolean(value);
             } else if (SCALE_STROKE_WIDTH.equals(name)) {
                 this.scaleStrokeWidth = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
@@ -144,14 +114,6 @@ public class Circle extends RenderInstruction {
         return paint;
     }
 
-    private Paint getStrokePaint(byte zoomLevel) {
-        Paint paint = strokes.get(zoomLevel);
-        if (paint == null) {
-            paint = this.stroke;
-        }
-        return paint;
-    }
-
     private float getRenderRadius(byte zoomLevel) {
         Float radius = renderRadiusScaled.get(zoomLevel);
         if (radius == null) {
@@ -160,4 +122,41 @@ public class Circle extends RenderInstruction {
         return radius;
     }
 
+    private Paint getStrokePaint(byte zoomLevel) {
+        Paint paint = strokes.get(zoomLevel);
+        if (paint == null) {
+            paint = this.stroke;
+        }
+        return paint;
+    }
+
+    @Override
+    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
+        renderCallback.renderPointOfInterestCircle(renderContext, getRenderRadius(renderContext.rendererJob.tile.zoomLevel), getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.level, poi);
+    }
+
+    @Override
+    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+        // do nothing
+    }
+
+    @Override
+    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        if (this.scaleRadius) {
+            if (!scaleStrokeWidth) {
+                scaleFactor = 1;
+            }
+            this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
+            if (this.stroke != null) {
+                Paint paint = graphicFactory.createPaint(stroke);
+                paint.setStrokeWidth(this.strokeWidth * scaleFactor);
+                strokes.put(zoomLevel, paint);
+            }
+        }
+    }
+
+    @Override
+    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+        // do nothing
+    }
 }

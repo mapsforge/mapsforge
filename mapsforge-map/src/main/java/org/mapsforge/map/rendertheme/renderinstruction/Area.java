@@ -93,22 +93,33 @@ public class Area extends RenderInstruction {
                 this.scaleStrokeWidth = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (STROKE_WIDTH.equals(name)) {
+                this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else if (SYMBOL_HEIGHT.equals(name)) {
                 this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else if (SYMBOL_PERCENT.equals(name)) {
                 this.percent = XmlUtils.parseNonNegativeInteger(name, value);
             } else if (SYMBOL_SCALING.equals(name)) {
-                this.scaling = fromValue(value);
+                // no-op
             } else if (SYMBOL_WIDTH.equals(name)) {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
-            } else if (STROKE_WIDTH.equals(name)) {
-                this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
         }
     }
 
+    private Paint getFillPaint() {
+        return this.fill;
+    }
+
+    private Paint getStrokePaint(byte zoomLevel) {
+        Paint paint = strokes.get(zoomLevel);
+        if (paint == null) {
+            paint = this.stroke;
+        }
+        return paint;
+    }
 
     @Override
     public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
@@ -120,7 +131,7 @@ public class Area extends RenderInstruction {
         synchronized (this) {
             // this needs to be synchronized as we potentially set a shift in the shader and
             // the shift is particular to the tile when rendered in multi-thread mode
-            Paint fillPaint = getFillPaint(renderContext.rendererJob.tile.zoomLevel);
+            Paint fillPaint = getFillPaint();
             if (shaderBitmap == null && !bitmapInvalid) {
                 try {
                     shaderBitmap = createBitmap(relativePathPrefix, src);
@@ -145,9 +156,9 @@ public class Area extends RenderInstruction {
             if (!scaleStrokeWidth) {
                 scaleFactor = 1;
             }
-            Paint zlPaint = graphicFactory.createPaint(this.stroke);
-            zlPaint.setStrokeWidth(this.strokeWidth * scaleFactor);
-            this.strokes.put(zoomLevel, zlPaint);
+            Paint paint = graphicFactory.createPaint(this.stroke);
+            paint.setStrokeWidth(this.strokeWidth * scaleFactor);
+            this.strokes.put(zoomLevel, paint);
         }
     }
 
@@ -155,17 +166,4 @@ public class Area extends RenderInstruction {
     public void scaleTextSize(float scaleFactor, byte zoomLevel) {
         // do nothing
     }
-
-    private Paint getFillPaint(byte zoomLevel) {
-        return this.fill;
-    }
-
-    private Paint getStrokePaint(byte zoomLevel) {
-        Paint paint = strokes.get(zoomLevel);
-        if (paint == null) {
-            paint = this.stroke;
-        }
-        return paint;
-    }
-
 }

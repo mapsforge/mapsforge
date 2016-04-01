@@ -36,7 +36,6 @@ import java.util.Map;
  * Represents an icon along a polyline on the map.
  */
 public class LineSymbol extends RenderInstruction {
-
     private static final float REPEAT_GAP_DEFAULT = 200f;
     private static final float REPEAT_START_DEFAULT = 30f;
 
@@ -74,6 +73,50 @@ public class LineSymbol extends RenderInstruction {
         }
     }
 
+    private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {
+        this.repeatGap = REPEAT_GAP_DEFAULT * displayModel.getScaleFactor();
+        this.repeatStart = REPEAT_START_DEFAULT * displayModel.getScaleFactor();
+
+        for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+            String name = pullParser.getAttributeName(i);
+            String value = pullParser.getAttributeValue(i);
+
+            if (SRC.equals(name)) {
+                this.src = value;
+            } else if (ALIGN_CENTER.equals(name)) {
+                this.alignCenter = Boolean.parseBoolean(value);
+            } else if (CAT.equals(name)) {
+                this.category = value;
+            } else if (DISPLAY.equals(name)) {
+                this.display = Display.fromString(value);
+            } else if (DY.equals(name)) {
+                this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+            } else if (PRIORITY.equals(name)) {
+                this.priority = Integer.parseInt(value);
+            } else if (REPEAT.equals(name)) {
+                this.repeat = Boolean.parseBoolean(value);
+            } else if (REPEAT_GAP.equals(name)) {
+                this.repeatGap = Float.parseFloat(value) * displayModel.getScaleFactor();
+            } else if (REPEAT_START.equals(name)) {
+                this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
+            } else if (ROTATE.equals(name)) {
+                this.rotate = Boolean.parseBoolean(value);
+            } else if (SCALE_STROKE_WIDTH.equals(name)) {
+                this.scaleStrokeWidth = Boolean.parseBoolean(value);
+            } else if (SYMBOL_HEIGHT.equals(name)) {
+                this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (SYMBOL_PERCENT.equals(name)) {
+                this.percent = XmlUtils.parseNonNegativeInteger(name, value);
+            } else if (SYMBOL_SCALING.equals(name)) {
+                // no-op
+            } else if (SYMBOL_WIDTH.equals(name)) {
+                this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else {
+                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+            }
+        }
+    }
+
     @Override
     public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
         // do nothing
@@ -81,7 +124,6 @@ public class LineSymbol extends RenderInstruction {
 
     @Override
     public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-
         if (Display.NEVER == this.display) {
             return;
         }
@@ -117,51 +159,4 @@ public class LineSymbol extends RenderInstruction {
     public void scaleTextSize(float scaleFactor, byte zoomLevel) {
         // do nothing
     }
-
-    private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {
-
-        this.repeatGap = REPEAT_GAP_DEFAULT * displayModel.getScaleFactor();
-        this.repeatStart = REPEAT_START_DEFAULT * displayModel.getScaleFactor();
-
-        for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
-            String name = pullParser.getAttributeName(i);
-            String value = pullParser.getAttributeValue(i);
-
-            if (SRC.equals(name)) {
-                this.src = value;
-            } else if (DISPLAY.equals(name)) {
-                this.display = Display.fromString(value);
-            } else if (DY.equals(name)) {
-                this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
-            } else if (ALIGN_CENTER.equals(name)) {
-                this.alignCenter = Boolean.parseBoolean(value);
-            } else if (CAT.equals(name)) {
-                this.category = value;
-            } else if (PRIORITY.equals(name)) {
-                this.priority = Integer.parseInt(value);
-            } else if (REPEAT.equals(name)) {
-                this.repeat = Boolean.parseBoolean(value);
-            } else if (REPEAT_GAP.equals(name)) {
-                this.repeatGap = Float.parseFloat(value) * displayModel.getScaleFactor();
-            } else if (REPEAT_START.equals(name)) {
-                this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
-            } else if (ROTATE.equals(name)) {
-                this.rotate = Boolean.parseBoolean(value);
-            } else if (SCALE_STROKE_WIDTH.equals(name)) {
-                this.scaleStrokeWidth = Boolean.parseBoolean(value);
-            } else if (SYMBOL_HEIGHT.equals(name)) {
-                this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
-            } else if (SYMBOL_PERCENT.equals(name)) {
-                this.percent = XmlUtils.parseNonNegativeInteger(name, value);
-            } else if (SYMBOL_SCALING.equals(name)) {
-                this.scaling = fromValue(value);
-            } else if (SYMBOL_WIDTH.equals(name)) {
-                this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
-            } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
-            }
-        }
-
-    }
-
 }

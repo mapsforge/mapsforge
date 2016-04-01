@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -56,57 +57,7 @@ public class Symbol extends RenderInstruction {
         }
     }
 
-    public Bitmap getBitmap() {
-        if (this.bitmap == null && !bitmapInvalid) {
-            try {
-                this.bitmap = createBitmap(relativePathPrefix, src);
-            } catch (IOException ioException) {
-                this.bitmapInvalid = true;
-            }
-        }
-        return this.bitmap;
-    }
-
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
-
-        if (Display.NEVER == this.display) {
-            return;
-        }
-
-        if (getBitmap() != null) {
-            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, poi);
-        }
-    }
-
-    @Override
-    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-
-        if (Display.NEVER == this.display) {
-            return;
-        }
-
-        if (this.getBitmap() != null) {
-            renderCallback.renderAreaSymbol(renderContext, this.display, this.priority, this.bitmap, way);
-        }
-    }
-
-    @Override
-    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        // do nothing
-    }
-
-    @Override
-    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-        // do nothing
-    }
-
     private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {
-
         for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
             String name = pullParser.getAttributeName(i);
             String value = pullParser.getAttributeValue(i);
@@ -126,14 +77,59 @@ public class Symbol extends RenderInstruction {
             } else if (SYMBOL_PERCENT.equals(name)) {
                 this.percent = XmlUtils.parseNonNegativeInteger(name, value);
             } else if (SYMBOL_SCALING.equals(name)) {
-                this.scaling = fromValue(value);
+                // no-op
             } else if (SYMBOL_WIDTH.equals(name)) {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
         }
-
     }
 
+    public Bitmap getBitmap() {
+        if (this.bitmap == null && !bitmapInvalid) {
+            try {
+                this.bitmap = createBitmap(relativePathPrefix, src);
+            } catch (IOException ioException) {
+                this.bitmapInvalid = true;
+            }
+        }
+        return this.bitmap;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
+        if (Display.NEVER == this.display) {
+            return;
+        }
+
+        if (getBitmap() != null) {
+            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, poi);
+        }
+    }
+
+    @Override
+    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+        if (Display.NEVER == this.display) {
+            return;
+        }
+
+        if (this.getBitmap() != null) {
+            renderCallback.renderAreaSymbol(renderContext, this.display, this.priority, this.bitmap, way);
+        }
+    }
+
+    @Override
+    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        // do nothing
+    }
+
+    @Override
+    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+        // do nothing
+    }
 }

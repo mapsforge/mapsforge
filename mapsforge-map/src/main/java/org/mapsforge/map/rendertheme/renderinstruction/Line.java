@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
  * Represents a polyline on the map.
  */
 public class Line extends RenderInstruction {
-
     private static final Pattern SPLIT_PATTERN = Pattern.compile(",");
 
     private boolean bitmapCreated;
@@ -70,12 +69,71 @@ public class Line extends RenderInstruction {
         this.strokes = new HashMap<>();
         this.dyScaled = new HashMap<>();
 
-        extractValues(graphicFactory, displayModel, elementName, pullParser, relativePathPrefix);
+        extractValues(graphicFactory, displayModel, elementName, pullParser);
     }
 
     @Override
     public void destroy() {
         // no.op
+    }
+
+    private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
+                               XmlPullParser pullParser) throws IOException, XmlPullParserException {
+        for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+            String name = pullParser.getAttributeName(i);
+            String value = pullParser.getAttributeValue(i);
+
+            if (SRC.equals(name)) {
+                this.src = value;
+            } else if (CAT.equals(name)) {
+                this.category = value;
+            } else if (DY.equals(name)) {
+                this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
+            } else if (SCALE_STROKE_WIDTH.equals(name)) {
+                this.scaleStrokeWidth = Boolean.parseBoolean(value);
+            } else if (STROKE.equals(name)) {
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (STROKE_DASHARRAY.equals(name)) {
+                float[] floatArray = parseFloatArray(name, value);
+                for (int f = 0; f < floatArray.length; ++f) {
+                    floatArray[f] = floatArray[f] * displayModel.getScaleFactor();
+                }
+                this.stroke.setDashPathEffect(floatArray);
+            } else if (STROKE_LINECAP.equals(name)) {
+                this.stroke.setStrokeCap(Cap.fromString(value));
+            } else if (STROKE_LINEJOIN.equals(name)) {
+                this.stroke.setStrokeJoin(Join.fromString(value));
+            } else if (STROKE_WIDTH.equals(name)) {
+                this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+            } else if (SYMBOL_HEIGHT.equals(name)) {
+                this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (SYMBOL_PERCENT.equals(name)) {
+                this.percent = XmlUtils.parseNonNegativeInteger(name, value);
+            } else if (SYMBOL_SCALING.equals(name)) {
+                // no-op
+            } else if (SYMBOL_WIDTH.equals(name)) {
+                this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else {
+                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+            }
+        }
+    }
+
+    private Paint getStrokePaint(byte zoomLevel) {
+        Paint paint = strokes.get(zoomLevel);
+        if (paint == null) {
+            paint = this.stroke;
+        }
+        return paint;
+    }
+
+    private static float[] parseFloatArray(String name, String dashString) throws XmlPullParserException {
+        String[] dashEntries = SPLIT_PATTERN.split(dashString);
+        float[] dashIntervals = new float[dashEntries.length];
+        for (int i = 0; i < dashEntries.length; ++i) {
+            dashIntervals[i] = XmlUtils.parseNonNegativeFloat(name, dashEntries[i]);
+        }
+        return dashIntervals;
     }
 
     @Override
@@ -85,7 +143,6 @@ public class Line extends RenderInstruction {
 
     @Override
     public synchronized void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-
         if (!bitmapCreated) {
             try {
                 shaderBitmap = createBitmap(relativePathPrefix, src);
@@ -115,9 +172,9 @@ public class Line extends RenderInstruction {
             scaleFactor = 1;
         }
         if (this.stroke != null) {
-            Paint s = graphicFactory.createPaint(stroke);
-            s.setStrokeWidth(this.strokeWidth * scaleFactor);
-            strokes.put(zoomLevel, s);
+            Paint paint = graphicFactory.createPaint(stroke);
+            paint.setStrokeWidth(this.strokeWidth * scaleFactor);
+            strokes.put(zoomLevel, paint);
         }
 
         this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
@@ -126,64 +183,5 @@ public class Line extends RenderInstruction {
     @Override
     public void scaleTextSize(float scaleFactor, byte zoomLevel) {
         // do nothing
-    }
-
-    private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-                               XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
-        for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
-            String name = pullParser.getAttributeName(i);
-            String value = pullParser.getAttributeValue(i);
-
-            if (SRC.equals(name)) {
-                this.src = value;
-            } else if (CAT.equals(name)) {
-                this.category = value;
-            } else if (DY.equals(name)) {
-                this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
-            } else if (SCALE_STROKE_WIDTH.equals(name)) {
-                this.scaleStrokeWidth = Boolean.parseBoolean(value);
-            } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
-            } else if (STROKE_WIDTH.equals(name)) {
-                this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
-            } else if (STROKE_DASHARRAY.equals(name)) {
-                float[] floatArray = parseFloatArray(name, value);
-                for (int f = 0; f < floatArray.length; ++f) {
-                    floatArray[f] = floatArray[f] * displayModel.getScaleFactor();
-                }
-                this.stroke.setDashPathEffect(floatArray);
-            } else if (STROKE_LINECAP.equals(name)) {
-                this.stroke.setStrokeCap(Cap.fromString(value));
-            } else if (STROKE_LINEJOIN.equals(name)) {
-                this.stroke.setStrokeJoin(Join.fromString(value));
-            } else if (SYMBOL_HEIGHT.equals(name)) {
-                this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
-            } else if (SYMBOL_PERCENT.equals(name)) {
-                this.percent = XmlUtils.parseNonNegativeInteger(name, value);
-            } else if (SYMBOL_SCALING.equals(name)) {
-                this.scaling = fromValue(value);
-            } else if (SYMBOL_WIDTH.equals(name)) {
-                this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
-            } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
-            }
-        }
-    }
-
-    private static float[] parseFloatArray(String name, String dashString) throws XmlPullParserException {
-        String[] dashEntries = SPLIT_PATTERN.split(dashString);
-        float[] dashIntervals = new float[dashEntries.length];
-        for (int i = 0; i < dashEntries.length; ++i) {
-            dashIntervals[i] = XmlUtils.parseNonNegativeFloat(name, dashEntries[i]);
-        }
-        return dashIntervals;
-    }
-
-    private Paint getStrokePaint(byte zoomLevel) {
-        Paint paint = strokes.get(zoomLevel);
-        if (paint == null) {
-            paint = this.stroke;
-        }
-        return paint;
     }
 }

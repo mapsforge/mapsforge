@@ -31,7 +31,6 @@ import java.io.IOException;
  * A RenderInstruction is a basic graphical primitive to draw a map.
  */
 public abstract class RenderInstruction {
-
     static final String ALIGN_CENTER = "align-center";
     static final String CAT = "cat";
     static final String DISPLAY = "display";
@@ -52,7 +51,6 @@ public abstract class RenderInstruction {
     static final String ROTATE = "rotate";
     static final String SCALE_RADIUS = "scale-radius";
     static final String SCALE_STROKE_WIDTH = "scale-stroke-width";
-    static final String SIZE = "symbol-size";
     static final String SRC = "src";
     static final String STROKE = "stroke";
     static final String STROKE_DASHARRAY = "stroke-dasharray";
@@ -65,11 +63,6 @@ public abstract class RenderInstruction {
     static final String SYMBOL_SCALING = "symbol-scaling";
     static final String SYMBOL_WIDTH = "symbol-width";
 
-    enum ResourceScaling {
-        DEFAULT,
-        SIZE
-    }
-
     protected String category;
     public final DisplayModel displayModel;
     public final GraphicFactory graphicFactory;
@@ -77,12 +70,19 @@ public abstract class RenderInstruction {
     protected float height;
     protected int percent = 100;
     protected float width;
-    ResourceScaling scaling;
-
 
     protected RenderInstruction(GraphicFactory graphicFactory, DisplayModel displayModel) {
         this.displayModel = displayModel;
         this.graphicFactory = graphicFactory;
+    }
+
+    protected Bitmap createBitmap(String relativePathPrefix, String src)
+            throws IOException {
+        if (null == src || src.isEmpty()) {
+            return null;
+        }
+
+        return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height, percent);
     }
 
     public abstract void destroy();
@@ -118,23 +118,4 @@ public abstract class RenderInstruction {
      * @param scaleFactor the factor by which the text size should be scaled.
      */
     public abstract void scaleTextSize(float scaleFactor, byte zoomLevel);
-
-
-    protected Bitmap createBitmap(String relativePathPrefix, String src)
-            throws IOException {
-        if (null == src || src.isEmpty()) {
-            return null;
-        }
-
-        return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height, percent);
-    }
-
-    protected ResourceScaling fromValue(String value) {
-        if (value.equals(SIZE)) {
-            return ResourceScaling.SIZE;
-        }
-        return ResourceScaling.DEFAULT;
-    }
-
-
 }

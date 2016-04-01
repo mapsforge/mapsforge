@@ -91,12 +91,6 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="scaling">
-        <xs:restriction base="xs:string">
-            <xs:pattern value="(default|size|percent)" />
-        </xs:restriction>
-    </xs:simpleType>
-
     <xs:simpleType name="src">
         <xs:restriction base="xs:string">
             <xs:pattern value="(jar|file|assets):.+" />
@@ -122,7 +116,6 @@
     <xs:complexType name="area">
         <xs:attribute name="cat" type="xs:string" use="optional" />
         <xs:attribute name="src" type="tns:src" use="optional" />
-        <xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default" />
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
@@ -177,7 +170,6 @@
     <xs:complexType name="line">
         <xs:attribute name="cat" type="xs:string" use="optional" />
         <xs:attribute name="src" type="tns:src" use="optional" />
-        <xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default" />
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
@@ -194,7 +186,6 @@
         <xs:attribute name="display" type="tns:display" use="optional" default="ifspace" />
         <xs:attribute name="dy" type="xs:float" use="optional" default="0" />
         <xs:attribute name="src" type="tns:src" use="required" />
-        <xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default" />
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
@@ -237,7 +228,6 @@
         <xs:attribute name="display" type="tns:display" use="optional" default="ifspace" />
         <xs:attribute name="priority" type="xs:integer" use="optional" default="0" />
         <xs:attribute name="src" type="tns:src" use="required" />
-        <xs:attribute name="symbol-scaling" type="tns:scaling" use="optional" default="default" />
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />

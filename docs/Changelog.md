@@ -5,6 +5,7 @@
 - POI Search API [#728](https://github.com/mapsforge/mapsforge/issues/728)
 - Render Theme v5: pathText repeat options [#473](https://github.com/mapsforge/mapsforge/issues/473)
 - Render Theme v5: scale stroke width option [#772](https://github.com/mapsforge/mapsforge/issues/772)
+- Render Theme v5: deprecate 'symbol-scaling' option [#815](https://github.com/mapsforge/mapsforge/issues/815)
 - Reverse Geocoding example [#727](https://github.com/mapsforge/mapsforge/issues/727)
 - LabelLayer enhanced implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
 - Color filters in map rendering [#778](https://github.com/mapsforge/mapsforge/issues/778)

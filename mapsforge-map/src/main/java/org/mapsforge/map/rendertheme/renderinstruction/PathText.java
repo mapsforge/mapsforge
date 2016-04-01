@@ -40,7 +40,6 @@ import java.util.Map;
  * Represents a text along a polyline on the map.
  */
 public class PathText extends RenderInstruction {
-
     private static final float REPEAT_GAP_DEFAULT = 50f;
     private static final float REPEAT_START_DEFAULT = 10f;
 
@@ -58,8 +57,6 @@ public class PathText extends RenderInstruction {
     private float repeatGap;
     private float repeatStart;
     private boolean rotate;
-
-
     private TextKey textKey;
 
     public PathText(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -89,58 +86,8 @@ public class PathText extends RenderInstruction {
         // no-op
     }
 
-    @Override
-    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
-        // do nothing
-    }
-
-    @Override
-    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-
-        if (Display.NEVER == this.display) {
-            return;
-        }
-
-        String caption = this.textKey.getValue(way.getTags());
-        if (caption == null) {
-            return;
-        }
-
-        Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
-        if (dyScale == null) {
-            dyScale = this.dy;
-        }
-
-        renderCallback.renderWayText(renderContext, this.display, this.priority, caption, dyScale,
-                getFillPaint(renderContext.rendererJob.tile.zoomLevel),
-                getStrokePaint(renderContext.rendererJob.tile.zoomLevel),
-                this.repeat, this.repeatGap, this.repeatStart, this.rotate,
-                way);
-    }
-
-    @Override
-    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (!scaleStrokeWidth) {
-            scaleFactor = 1;
-        }
-        this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
-    }
-
-    @Override
-    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-        Paint zlPaint = graphicFactory.createPaint(this.fill);
-        zlPaint.setTextSize(this.fontSize * scaleFactor);
-        this.fills.put(zoomLevel, zlPaint);
-
-        Paint zlStroke = graphicFactory.createPaint(this.stroke);
-        zlStroke.setTextSize(this.fontSize * scaleFactor);
-        this.strokes.put(zoomLevel, zlStroke);
-
-    }
-
     private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                                XmlPullParser pullParser) throws XmlPullParserException {
-
         this.repeatGap = REPEAT_GAP_DEFAULT * displayModel.getScaleFactor();
         this.repeatStart = REPEAT_START_DEFAULT * displayModel.getScaleFactor();
 
@@ -159,14 +106,14 @@ public class PathText extends RenderInstruction {
                 this.display = Display.fromString(value);
             } else if (DY.equals(name)) {
                 this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
-            } else if (FONT_FAMILY.equals(name)) {
-                fontFamily = FontFamily.fromString(value);
-            } else if (FONT_STYLE.equals(name)) {
-                fontStyle = FontStyle.fromString(value);
-            } else if (FONT_SIZE.equals(name)) {
-                this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else if (FILL.equals(name)) {
                 this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+            } else if (FONT_FAMILY.equals(name)) {
+                fontFamily = FontFamily.fromString(value);
+            } else if (FONT_SIZE.equals(name)) {
+                this.fontSize = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
+            } else if (FONT_STYLE.equals(name)) {
+                fontStyle = FontStyle.fromString(value);
             } else if (REPEAT.equals(name)) {
                 this.repeat = Boolean.parseBoolean(value);
             } else if (REPEAT_GAP.equals(name)) {
@@ -208,5 +155,52 @@ public class PathText extends RenderInstruction {
             paint = this.stroke;
         }
         return paint;
+    }
+
+    @Override
+    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
+        // do nothing
+    }
+
+    @Override
+    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
+        if (Display.NEVER == this.display) {
+            return;
+        }
+
+        String caption = this.textKey.getValue(way.getTags());
+        if (caption == null) {
+            return;
+        }
+
+        Float dyScale = this.dyScaled.get(renderContext.rendererJob.tile.zoomLevel);
+        if (dyScale == null) {
+            dyScale = this.dy;
+        }
+
+        renderCallback.renderWayText(renderContext, this.display, this.priority, caption, dyScale,
+                getFillPaint(renderContext.rendererJob.tile.zoomLevel),
+                getStrokePaint(renderContext.rendererJob.tile.zoomLevel),
+                this.repeat, this.repeatGap, this.repeatStart, this.rotate,
+                way);
+    }
+
+    @Override
+    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
+        if (!scaleStrokeWidth) {
+            scaleFactor = 1;
+        }
+        this.dyScaled.put(zoomLevel, this.dy * scaleFactor);
+    }
+
+    @Override
+    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
+        Paint zlPaint = graphicFactory.createPaint(this.fill);
+        zlPaint.setTextSize(this.fontSize * scaleFactor);
+        this.fills.put(zoomLevel, zlPaint);
+
+        Paint zlStroke = graphicFactory.createPaint(this.stroke);
+        zlStroke.setTextSize(this.fontSize * scaleFactor);
+        this.strokes.put(zoomLevel, zlStroke);
     }
 }
