@@ -93,7 +93,9 @@
 
     <xs:simpleType name="scaling">
         <xs:restriction base="xs:string">
-            <xs:pattern value="(default|size|percent)" />
+            <xs:enumeration value="default" />
+            <xs:enumeration value="size" />
+            <xs:enumeration value="percent" />
         </xs:restriction>
     </xs:simpleType>
 

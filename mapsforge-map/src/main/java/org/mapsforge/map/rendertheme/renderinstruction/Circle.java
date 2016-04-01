@@ -43,7 +43,6 @@ public class Circle extends RenderInstruction {
     private float renderRadius;
     private final Map<Byte, Float> renderRadiusScaled;
     private boolean scaleRadius;
-    private boolean scaleStrokeWidth = true;
     private final Paint stroke;
     private final Map<Byte, Paint> strokes;
     private float strokeWidth;
@@ -65,7 +64,6 @@ public class Circle extends RenderInstruction {
         this.renderRadiusScaled = new HashMap<>();
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
-
 
         if (!this.scaleRadius) {
             this.renderRadius = this.radius;
@@ -92,8 +90,6 @@ public class Circle extends RenderInstruction {
                 this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
             } else if (SCALE_RADIUS.equals(name)) {
                 this.scaleRadius = Boolean.parseBoolean(value);
-            } else if (SCALE_STROKE_WIDTH.equals(name)) {
-                this.scaleStrokeWidth = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
             } else if (STROKE_WIDTH.equals(name)) {
@@ -143,9 +139,6 @@ public class Circle extends RenderInstruction {
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
         if (this.scaleRadius) {
-            if (!scaleStrokeWidth) {
-                scaleFactor = 1;
-            }
             this.renderRadiusScaled.put(zoomLevel, this.radius * scaleFactor);
             if (this.stroke != null) {
                 Paint paint = graphicFactory.createPaint(stroke);

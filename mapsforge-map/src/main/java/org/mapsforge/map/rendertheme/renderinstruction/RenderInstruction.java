@@ -32,6 +32,7 @@ import java.io.IOException;
  */
 public abstract class RenderInstruction {
     static final String ALIGN_CENTER = "align-center";
+    static final String ALL = "all";
     static final String CAT = "cat";
     static final String DISPLAY = "display";
     static final String DY = "dy";
@@ -41,6 +42,7 @@ public abstract class RenderInstruction {
     static final String FONT_STYLE = "font-style";
     static final String ID = "id";
     static final String K = "k";
+    static final String NONE = "none";
     static final String POSITION = "position";
     static final String PRIORITY = "priority";
     static final String R = "r";
@@ -49,8 +51,8 @@ public abstract class RenderInstruction {
     static final String REPEAT_GAP = "repeat-gap";
     static final String REPEAT_START = "repeat-start";
     static final String ROTATE = "rotate";
+    static final String SCALE = "scale";
     static final String SCALE_RADIUS = "scale-radius";
-    static final String SCALE_STROKE_WIDTH = "scale-stroke-width";
     static final String SRC = "src";
     static final String STROKE = "stroke";
     static final String STROKE_DASHARRAY = "stroke-dasharray";
@@ -62,6 +64,12 @@ public abstract class RenderInstruction {
     static final String SYMBOL_PERCENT = "symbol-percent";
     static final String SYMBOL_SCALING = "symbol-scaling";
     static final String SYMBOL_WIDTH = "symbol-width";
+
+    enum Scale {
+        ALL,
+        NONE,
+        STROKE
+    }
 
     protected String category;
     public final DisplayModel displayModel;
@@ -104,6 +112,15 @@ public abstract class RenderInstruction {
      * @param way
      */
     public abstract void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way);
+
+    protected Scale scaleFromValue(String value) {
+        if (value.equals(ALL)) {
+            return Scale.ALL;
+        } else if (value.equals(NONE)) {
+            return Scale.NONE;
+        }
+        return Scale.STROKE;
+    }
 
     /**
      * Scales the stroke width of this RenderInstruction by the given factor.

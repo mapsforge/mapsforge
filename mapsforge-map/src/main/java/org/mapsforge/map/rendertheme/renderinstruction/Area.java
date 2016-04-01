@@ -43,7 +43,7 @@ public class Area extends RenderInstruction {
     private final Paint fill;
     private final int level;
     private final String relativePathPrefix;
-    private boolean scaleStrokeWidth = true;
+    private Scale scale = Scale.STROKE;
     private Bitmap shaderBitmap;
     private String src;
     private final Paint stroke;
@@ -89,8 +89,8 @@ public class Area extends RenderInstruction {
                 this.category = value;
             } else if (FILL.equals(name)) {
                 this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
-            } else if (SCALE_STROKE_WIDTH.equals(name)) {
-                this.scaleStrokeWidth = Boolean.parseBoolean(value);
+            } else if (SCALE.equals(name)) {
+                this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
             } else if (STROKE_WIDTH.equals(name)) {
@@ -153,7 +153,7 @@ public class Area extends RenderInstruction {
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
         if (this.stroke != null) {
-            if (!scaleStrokeWidth) {
+            if (this.scale == Scale.NONE) {
                 scaleFactor = 1;
             }
             Paint paint = graphicFactory.createPaint(this.stroke);

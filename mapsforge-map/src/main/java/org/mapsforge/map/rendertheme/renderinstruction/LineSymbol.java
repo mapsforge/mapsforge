@@ -51,7 +51,7 @@ public class LineSymbol extends RenderInstruction {
     private float repeatGap;
     private float repeatStart;
     private boolean rotate;
-    private boolean scaleStrokeWidth = true;
+    private Scale scale = Scale.STROKE;
     private String src;
 
     public LineSymbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
@@ -101,8 +101,8 @@ public class LineSymbol extends RenderInstruction {
                 this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (ROTATE.equals(name)) {
                 this.rotate = Boolean.parseBoolean(value);
-            } else if (SCALE_STROKE_WIDTH.equals(name)) {
-                this.scaleStrokeWidth = Boolean.parseBoolean(value);
+            } else if (SCALE.equals(name)) {
+                this.scale = scaleFromValue(value);
             } else if (SYMBOL_HEIGHT.equals(name)) {
                 this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else if (SYMBOL_PERCENT.equals(name)) {
@@ -149,7 +149,7 @@ public class LineSymbol extends RenderInstruction {
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (!scaleStrokeWidth) {
+        if (this.scale == Scale.NONE) {
             scaleFactor = 1;
         }
         this.dyScaled.put(zoomLevel, this.dy * scaleFactor);

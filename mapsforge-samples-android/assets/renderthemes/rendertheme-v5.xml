@@ -701,12 +701,12 @@
         <rule e="way" k="area" v="~|no|false">
             <!-- highway cores -->
             <rule e="way" k="highway" v="footway">
-                <line stroke="#888888" stroke-width="0.5" stroke-dasharray="12,1"
-                    stroke-linecap="butt" scale-stroke-width="false" />
+                <line stroke="#888888" stroke-width="0.5" stroke-dasharray="12,5"
+                    stroke-linecap="butt" scale="none" />
             </rule>
             <rule e="way" k="highway" v="path">
-                <line stroke="#9C6800" stroke-width="0.5" stroke-dasharray="12,1"
-                    stroke-linecap="butt" />
+                <line stroke="#9C6800" stroke-width="0.5" stroke-dasharray="1,0.5"
+                    stroke-linecap="butt" scale="all" />
             </rule>
             <rule e="way" k="highway" v="steps">
                 <line stroke="#888888" stroke-width="0.5" stroke-linecap="butt" />

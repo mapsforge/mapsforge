@@ -48,10 +48,11 @@ public class Line extends RenderInstruction {
     private final Map<Byte, Float> dyScaled;
     private final int level;
     private final String relativePathPrefix;
-    private boolean scaleStrokeWidth = true;
+    private Scale scale = Scale.STROKE;
     private Bitmap shaderBitmap;
     private String src;
     private final Paint stroke;
+    private float[] strokeDasharray;
     private final Map<Byte, Paint> strokes;
     private float strokeWidth;
 
@@ -89,16 +90,16 @@ public class Line extends RenderInstruction {
                 this.category = value;
             } else if (DY.equals(name)) {
                 this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
-            } else if (SCALE_STROKE_WIDTH.equals(name)) {
-                this.scaleStrokeWidth = Boolean.parseBoolean(value);
+            } else if (SCALE.equals(name)) {
+                this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
             } else if (STROKE_DASHARRAY.equals(name)) {
-                float[] floatArray = parseFloatArray(name, value);
-                for (int f = 0; f < floatArray.length; ++f) {
-                    floatArray[f] = floatArray[f] * displayModel.getScaleFactor();
+                this.strokeDasharray = parseFloatArray(name, value);
+                for (int f = 0; f < this.strokeDasharray.length; ++f) {
+                    this.strokeDasharray[f] = this.strokeDasharray[f] * displayModel.getScaleFactor();
                 }
-                this.stroke.setDashPathEffect(floatArray);
+                this.stroke.setDashPathEffect(this.strokeDasharray);
             } else if (STROKE_LINECAP.equals(name)) {
                 this.stroke.setStrokeCap(Cap.fromString(value));
             } else if (STROKE_LINEJOIN.equals(name)) {
@@ -168,12 +169,19 @@ public class Line extends RenderInstruction {
 
     @Override
     public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-        if (!scaleStrokeWidth) {
+        if (this.scale == Scale.NONE) {
             scaleFactor = 1;
         }
         if (this.stroke != null) {
             Paint paint = graphicFactory.createPaint(stroke);
             paint.setStrokeWidth(this.strokeWidth * scaleFactor);
+            if (this.scale == Scale.ALL) {
+                float[] strokeDasharrayScaled = new float[this.strokeDasharray.length];
+                for (int i = 0; i < strokeDasharray.length; i++) {
+                    strokeDasharrayScaled[i] = this.strokeDasharray[i] * scaleFactor;
+                }
+                paint.setDashPathEffect(strokeDasharrayScaled);
+            }
             strokes.put(zoomLevel, paint);
         }
 
