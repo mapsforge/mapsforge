@@ -14,11 +14,11 @@ The map file consists of several sub-files, each storing the map objects for a d
 
 - All latitude and longitude coordinates are stored in microdegrees (degrees × 10<sup>6</sup>).
 - Numeric fields with a fixed byte size are stored with *Big Endian* byte order.
-- Unsigned numeric fields with a variable byte encoding are marked with *`VBE-U` INT* and stored as follows:
+- Unsigned numeric fields with a variable byte encoding are marked with *`VBE-U` INT* and stored using [unsigned LEB128](https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128) format as follows:
   - the first bit of each byte is used for continuation info, the other seven bits for data.
   - the value of the first bit is 1 if the following byte belongs to the field, 0 otherwise.
   - each byte holds seven bits of the numeric value, starting with the least significant ones.
-- Signed numeric fields with a variable byte encoding are marked with *`VBE-S` INT* and stored as follows:
+- Signed numeric fields with a variable byte encoding are marked with *`VBE-S` INT* and stored using [signed LEB128](https://en.wikipedia.org/wiki/LEB128#Signed_LEB128) format as follows:
   - the first bit of each byte is used for continuation info, the other six (last byte) or seven (all other bytes) bits for data.
   - the value of the first bit is 1 if the following byte belongs to the field, 0 otherwise.
   - each byte holds six (last byte) or seven (all other bytes) bits of the numeric value, starting with the least significant ones.
