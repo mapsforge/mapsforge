@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -52,36 +53,67 @@ public class Layers implements Iterable<Layer>, RandomAccess {
         this.redrawer = redrawer;
         this.displayModel = displayModel;
 
-        this.layersList = new CopyOnWriteArrayList<Layer>();
+        this.layersList = new CopyOnWriteArrayList<>();
+    }
+
+    /**
+     * Note: By default a redraw will take place afterwards.
+     *
+     * @see List#add(int, Object)
+     */
+    public synchronized void add(int index, Layer layer) {
+        add(index, layer, true);
     }
 
     /**
      * @see List#add(int, Object)
      */
-    public synchronized void add(int index, Layer layer) {
+    public synchronized void add(int index, Layer layer, boolean redraw) {
         checkIsNull(layer);
         layer.setDisplayModel(this.displayModel);
         this.layersList.add(index, layer);
         layer.assign(this.redrawer);
-        this.redrawer.redrawLayers();
+        if (redraw) {
+            this.redrawer.redrawLayers();
+        }
+    }
+
+    /**
+     * Note: By default a redraw will take place afterwards.
+     *
+     * @see List#add(Object)
+     */
+    public synchronized void add(Layer layer) {
+        add(layer, true);
     }
 
     /**
      * @see List#add(Object)
      */
-    public synchronized void add(Layer layer) {
+    public synchronized void add(Layer layer, boolean redraw) {
         checkIsNull(layer);
         layer.setDisplayModel(this.displayModel);
 
         this.layersList.add(layer);
         layer.assign(this.redrawer);
-        this.redrawer.redrawLayers();
+        if (redraw) {
+            this.redrawer.redrawLayers();
+        }
+    }
+
+    /**
+     * Note: By default a redraw will take place afterwards.
+     *
+     * @see List#addAll(Collection)
+     */
+    public synchronized void addAll(Collection<Layer> layers) {
+        addAll(layers, true);
     }
 
     /**
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers) {
+    public synchronized void addAll(Collection<Layer> layers, boolean redraw) {
         checkIsNull(layers);
         for (Layer layer : layers) {
             layer.setDisplayModel(this.displayModel);
@@ -90,31 +122,55 @@ public class Layers implements Iterable<Layer>, RandomAccess {
         for (Layer layer : layers) {
             layer.assign(this.redrawer);
         }
-        this.redrawer.redrawLayers();
+        if (redraw) {
+            this.redrawer.redrawLayers();
+        }
+    }
+
+    /**
+     * Note: By default a redraw will take place afterwards.
+     *
+     * @see List#addAll(int, Collection)
+     */
+    public synchronized void addAll(int index, Collection<Layer> layers) {
+        addAll(index, layers, true);
     }
 
     /**
      * @see List#addAll(int, Collection)
      */
-    public synchronized void addAll(int index, Collection<Layer> layers) {
+    public synchronized void addAll(int index, Collection<Layer> layers, boolean redraw) {
         checkIsNull(layers);
         this.layersList.addAll(index, layers);
         for (Layer layer : layers) {
             layer.setDisplayModel(this.displayModel);
             layer.assign(this.redrawer);
         }
-        this.redrawer.redrawLayers();
+        if (redraw) {
+            this.redrawer.redrawLayers();
+        }
+    }
+
+    /**
+     * Note: By default a redraw will take place afterwards.
+     *
+     * @see List#clear()
+     */
+    public synchronized void clear() {
+        clear(true);
     }
 
     /**
      * @see List#clear()
      */
-    public synchronized void clear() {
+    public synchronized void clear(boolean redraw) {
         for (Layer layer : this.layersList) {
             layer.unassign();
         }
         this.layersList.clear();
-        this.redrawer.redrawLayers();
+        if (redraw) {
+            this.redrawer.redrawLayers();
+        }
     }
 
     /**
@@ -156,23 +212,45 @@ public class Layers implements Iterable<Layer>, RandomAccess {
     }
 
     /**
+     * Note: By default a redraw will take place afterwards.
+     *
      * @see List#remove(int)
      */
     public synchronized Layer remove(int index) {
+        return remove(index, true);
+    }
+
+    /**
+     * @see List#remove(int)
+     */
+    public synchronized Layer remove(int index, boolean redraw) {
         Layer layer = this.layersList.remove(index);
         layer.unassign();
-        this.redrawer.redrawLayers();
+        if (redraw) {
+            this.redrawer.redrawLayers();
+        }
         return layer;
+    }
+
+    /**
+     * Note: By default a redraw will take place afterwards.
+     *
+     * @see List#remove(Object)
+     */
+    public synchronized boolean remove(Layer layer) {
+        return remove(layer, true);
     }
 
     /**
      * @see List#remove(Object)
      */
-    public synchronized boolean remove(Layer layer) {
+    public synchronized boolean remove(Layer layer, boolean redraw) {
         checkIsNull(layer);
         if (this.layersList.remove(layer)) {
             layer.unassign();
-            this.redrawer.redrawLayers();
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
             return true;
         }
         return false;
