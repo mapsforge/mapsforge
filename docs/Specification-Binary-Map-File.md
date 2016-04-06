@@ -144,7 +144,41 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 |**bytes**|**optional**|**name**|**description**|
 |---------|------------|--------|---------------|
 |variable||number of way coordinate blocks|The amount of following way coordinate blocks as *`VBE-U` INT*. An amount larger than 1 indicates a multipolygon with the first block representing the outer way coordinates and the following blocks the inner way coordinates.|
-|variable||way coordinate block|for each way coordinate block:<ul><li>amount of way nodes of this way as *`VBE-U` INT*</li><li>geo coordinate difference to the top-left corner of the current tile as *`VBE-S` INT*, in the order lat-diff, lon-diff</li><li>geo coordinates of the remaining way nodes stored as differences to the previous way node in microdegrees as 2 × *`VBE-S` INT* in the order lat-diff, lon-diff. Let x1 be the lat of the previous way node and x2 be the lat of the current way node. Then the difference is defined as x2 - x1.</li></ul>|
+|variable||way coordinate block|for each way coordinate block:<ul><li>amount of way nodes of this way as *`VBE-U` INT*</li><li>geo coordinate difference to the top-left corner of the current tile as *`VBE-S` INT*, in the order lat-diff, lon-diff</li><li>geo coordinates of the remaining way nodes stored as differences to the previous way node in microdegrees as 2 × *`VBE-S` INT* in the order lat-diff, lon-diff using either single or double delta encoding (see below).</li></ul>|
+
+Coordinates in a way data block are encoded in either 'single-delta' or 'double-delta' format according to the flag in the way properties. The encoder chooses the most efficient format on a way-by-way basis so most maps will contain examples of both types.
+
+For single-delta encoding the lat-diff and lon-diff values describe the offset of the node compared to its predecessor.
+
+    let x1 be the lat of the previous way node and x2 be the lat of the current way node.
+    Then the difference is defined as x2 - x1.
+
+For double-delta encoding the lat-diff and lon-diff values describe the *change* of the offset compared to the offset of the previous node, after the first node. The following sample code (in Swift) demonstates how to decode this format.
+
+    // *** MAPSFORGE 'DOUBLE DELTA' ENCODED WAY DATA ***
+
+    // set up example data
+    let tileOrigin = 52.123456
+    let encodedValues = [-8286, -57, 129, -15, -129]
+
+    // decode values
+    var previousLat = tileOrigin
+    var previousOffset = 0.0
+    for (count, encodedValue) in encodedValues.enumerate() {
+        let lat = previousLat + previousOffset + Double(encodedValue) / 1e6
+        previousOffset = count > 0 ? (lat - previousLat) : 0
+        previousLat = lat
+        print(lat)
+    }
+
+    // output:
+    //
+    //    52.11517
+    //    52.115113
+    //    52.115185
+    //    52.115242
+    //    52.11517
+
 
 
 ## Version history
