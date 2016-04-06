@@ -153,32 +153,26 @@ For single-delta encoding the lat-diff and lon-diff values describe the offset o
     let x1 be the lat of the previous way node and x2 be the lat of the current way node.
     Then the difference is defined as x2 - x1.
 
-For double-delta encoding the lat-diff and lon-diff values describe the *change* of the offset compared to the offset of the previous node, after the first node. The following sample code (in Swift) demonstates how to decode this format.
+For double-delta encoding the lat-diff and lon-diff values describe the *change* of the offset compared to the offset of the previous node, after the first node. The following pseudocode shows how to decode coordinates encoded in this format.
 
-    // *** MAPSFORGE 'DOUBLE DELTA' ENCODED WAY DATA ***
+    set 'previousLat' to the latitude (in degrees) of the top-left corner of the current tile
+    set 'previousOffset' to zero
+    set 'count' to zero
+    
+    while there is data to be read:
+        set 'encodedValue' to the next item of data (VBE-S, in microdegrees) 
+        set 'lat' to 'previousLat' + 'previousOffset' + 'encodedValue' / 1,000,000
+        if 'count' is greater than zero, then
+            set 'previousOffset' to 'lat' - 'previousLat'
+        set 'previousLat' to 'lat'
+        
+        'lat' contains the decoded data
+        add one to 'count'
 
-    // set up example data
-    let tileOrigin = 52.123456
-    let encodedValues = [-8286, -57, 129, -15, -129]
 
-    // decode values
-    var previousLat = tileOrigin
-    var previousOffset = 0.0
-    for (count, encodedValue) in encodedValues.enumerate() {
-        let lat = previousLat + previousOffset + Double(encodedValue) / 1e6
-        previousOffset = count > 0 ? (lat - previousLat) : 0
-        previousLat = lat
-        print(lat)
-    }
-
-    // output:
-    //
-    //    52.11517
-    //    52.115113
-    //    52.115185
-    //    52.115242
-    //    52.11517
-
+    Example:
+        tile origin: 52.123456, double-delta encoded values: -8286, -57, 129, -15, -129
+        decoded values: 52.11517, 52.115113, 52.115185, 52.115242, 52.11517
 
 
 ## Version history
