@@ -44,6 +44,11 @@ public class InMemoryTileCache implements TileCache {
     }
 
     @Override
+    public Boolean initializationDone() {
+        return true;
+    }
+
+    @Override
     public synchronized boolean containsKey(Job key) {
         return this.lruCache.containsKey(key);
     }

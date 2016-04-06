@@ -27,6 +27,11 @@ import java.util.Set;
 public interface TileCache extends ObservableInterface {
 
     /**
+     * @return true if the cache initialization is done, false otherwise.
+     */
+    Boolean initializationDone();
+
+    /**
      * @return true if this cache contains an image for the given key, false otherwise.
      * @see Map#containsKey
      */

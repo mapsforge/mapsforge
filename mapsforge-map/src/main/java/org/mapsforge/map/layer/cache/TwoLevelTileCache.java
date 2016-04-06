@@ -36,6 +36,11 @@ public class TwoLevelTileCache implements TileCache {
     }
 
     @Override
+    public Boolean initializationDone() {
+        return this.firstLevelTileCache.initializationDone() && this.secondLevelTileCache.initializationDone();
+    }
+
+    @Override
     public boolean containsKey(Job key) {
         return this.firstLevelTileCache.containsKey(key) || this.secondLevelTileCache.containsKey(key);
     }
