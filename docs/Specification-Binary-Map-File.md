@@ -170,8 +170,8 @@ For double-delta encoding the lat-diff and lon-diff values describe the *change*
         add one to 'count'
 
 
-    Example:
-        tile origin: 52.123456, double-delta encoded values: -8286, -57, 129, -15, -129
+    Example of decoding double-delta encoded data:
+        tile origin: 52.123456, encoded values: -8286, -57, 129, -15, -129
         decoded values: 52.11517, 52.115113, 52.115185, 52.115242, 52.11517
 
 
