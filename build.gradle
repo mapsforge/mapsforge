@@ -133,5 +133,9 @@ configure(filterProjects(project.androidprojects)) {
                 assets.srcDirs = ['assets']
             }
         }
+
+        lintOptions {
+            abortOnError false
+        }
     }
-} 
+}
