@@ -15,6 +15,7 @@
 - Zoom level limits central handling [#646](https://github.com/mapsforge/mapsforge/issues/646)
 - Android gestures options [#705](https://github.com/mapsforge/mapsforge/issues/705)
 - Java onTap layer listener [#774](https://github.com/mapsforge/mapsforge/issues/774)
+- Diagnostic layers improvements [#821](https://github.com/mapsforge/mapsforge/issues/821)
 - Library integration [documentation](Integration.md) [#781](https://github.com/mapsforge/mapsforge/issues/781)
 - Jar with dependencies building [#767](https://github.com/mapsforge/mapsforge/issues/767)
 - Sample applications reorganization [#724](https://github.com/mapsforge/mapsforge/issues/724)

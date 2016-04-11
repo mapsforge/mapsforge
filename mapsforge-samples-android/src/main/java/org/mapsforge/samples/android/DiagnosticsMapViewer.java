@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,16 +23,17 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
  * Viewer with tile grid and coordinates visible and frame counter displayed.
  */
 public class DiagnosticsMapViewer extends RenderTheme4 {
-
     @Override
     protected void createLayers() {
         super.createLayers();
 
-        // add a grid layer and a layer showing tile coordinates
-        mapView.getLayerManager().getLayers()
-                .add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
-        mapView.getLayerManager().getLayers()
-                .add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+        // Add a grid layer and a layer showing tile coordinates
+        mapView.getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+        TileCoordinatesLayer tileCoordinatesLayer = new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel);
+        tileCoordinatesLayer.setDrawSimple(true);
+        mapView.getLayerManager().getLayers().add(tileCoordinatesLayer);
+
+        // Enable frame counter
         mapView.getFpsCounter().setVisible(true);
     }
 

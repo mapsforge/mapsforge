@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -38,7 +38,7 @@ public class TileCoordinatesLayer extends Layer {
         Paint paint = graphicFactory.createPaint();
         paint.setColor(Color.RED);
         paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-        paint.setTextSize(16 * displayModel.getScaleFactor());
+        paint.setTextSize(14 * displayModel.getScaleFactor());
         return paint;
     }
 
@@ -46,7 +46,7 @@ public class TileCoordinatesLayer extends Layer {
         Paint paint = graphicFactory.createPaint();
         paint.setColor(Color.WHITE);
         paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-        paint.setTextSize(16 * displayModel.getScaleFactor());
+        paint.setTextSize(14 * displayModel.getScaleFactor());
         paint.setStrokeWidth(2 * displayModel.getScaleFactor());
         paint.setStyle(Style.STROKE);
         return paint;
@@ -54,6 +54,8 @@ public class TileCoordinatesLayer extends Layer {
 
     private final DisplayModel displayModel;
     private final Paint paintBack, paintFront;
+    private boolean drawSimple;
+    private final StringBuilder stringBuilder = new StringBuilder();
 
     public TileCoordinatesLayer(GraphicFactory graphicFactory, DisplayModel displayModel) {
         super();
@@ -82,29 +84,48 @@ public class TileCoordinatesLayer extends Layer {
     }
 
     private void drawTileCoordinates(TilePosition tilePosition, Canvas canvas) {
-        int x = (int) (tilePosition.point.x + 8 * displayModel.getScaleFactor());
-        int y = (int) (tilePosition.point.y + 24 * displayModel.getScaleFactor());
         Tile tile = tilePosition.tile;
+        if (drawSimple) {
+            stringBuilder.setLength(0);
+            stringBuilder.append(tile.tileX).append(" / ").append(tile.tileY).append(" / ").append(tile.zoomLevel);
+            String text = stringBuilder.toString();
+            int x = (int) (tilePosition.point.x + (tile.tileSize - this.paintBack.getTextWidth(text)) / 2);
+            int textHeight = this.paintBack.getTextHeight(text);
+            int y = (int) (tilePosition.point.y + (tile.tileSize - textHeight) / 2 + textHeight);
+            canvas.drawText(text, x, y, this.paintBack);
+            canvas.drawText(text, x, y, this.paintFront);
+        } else {
+            int x = (int) (tilePosition.point.x + 8 * displayModel.getScaleFactor());
+            int y = (int) (tilePosition.point.y + 24 * displayModel.getScaleFactor());
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("X: ");
-        stringBuilder.append(tile.tileX);
-        String text = stringBuilder.toString();
-        canvas.drawText(text, x, y, this.paintBack);
-        canvas.drawText(text, x, y, this.paintFront);
+            stringBuilder.setLength(0);
+            stringBuilder.append("X: ");
+            stringBuilder.append(tile.tileX);
+            String text = stringBuilder.toString();
+            canvas.drawText(text, x, y, this.paintBack);
+            canvas.drawText(text, x, y, this.paintFront);
 
-        stringBuilder.setLength(0);
-        stringBuilder.append("Y: ");
-        stringBuilder.append(tile.tileY);
-        text = stringBuilder.toString();
-        canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paintBack);
-        canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paintFront);
+            stringBuilder.setLength(0);
+            stringBuilder.append("Y: ");
+            stringBuilder.append(tile.tileY);
+            text = stringBuilder.toString();
+            canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paintBack);
+            canvas.drawText(text, x, (int) (y + 24 * displayModel.getScaleFactor()), this.paintFront);
 
-        stringBuilder.setLength(0);
-        stringBuilder.append("Z: ");
-        stringBuilder.append(tile.zoomLevel);
-        text = stringBuilder.toString();
-        canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintBack);
-        canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintFront);
+            stringBuilder.setLength(0);
+            stringBuilder.append("Z: ");
+            stringBuilder.append(tile.zoomLevel);
+            text = stringBuilder.toString();
+            canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintBack);
+            canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintFront);
+        }
+    }
+
+    public boolean isDrawSimple() {
+        return drawSimple;
+    }
+
+    public void setDrawSimple(boolean drawSimple) {
+        this.drawSimple = drawSimple;
     }
 }
