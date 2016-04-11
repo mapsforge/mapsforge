@@ -87,11 +87,10 @@ public class TileCoordinatesLayer extends Layer {
         Tile tile = tilePosition.tile;
         if (drawSimple) {
             stringBuilder.setLength(0);
-            stringBuilder.append(tile.tileX).append(" / ").append(tile.tileY).append(" / ").append(tile.zoomLevel);
+            stringBuilder.append(tile.zoomLevel).append("/").append(tile.tileX).append("/").append(tile.tileY);
             String text = stringBuilder.toString();
             int x = (int) (tilePosition.point.x + (tile.tileSize - this.paintBack.getTextWidth(text)) / 2);
-            int textHeight = this.paintBack.getTextHeight(text);
-            int y = (int) (tilePosition.point.y + (tile.tileSize - textHeight) / 2 + textHeight);
+            int y = (int) (tilePosition.point.y + (tile.tileSize + this.paintBack.getTextHeight(text)) / 2);
             canvas.drawText(text, x, y, this.paintBack);
             canvas.drawText(text, x, y, this.paintFront);
         } else {
