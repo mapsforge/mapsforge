@@ -31,6 +31,7 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
                 .setBaseUrl("/tiles/1.0.0/map/").setExtension("jpg")
                 .setParallelRequestsLimit(8).setProtocol("http").setTileSize(256)
                 .setZoomLevelMax((byte) 18).setZoomLevelMin((byte) 0);
+        onlineTileSource.setUserAgent("Mapsforge Samples");
         this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
                 this.mapView.getModel().mapViewPosition, onlineTileSource,
                 AndroidGraphicFactory.INSTANCE);

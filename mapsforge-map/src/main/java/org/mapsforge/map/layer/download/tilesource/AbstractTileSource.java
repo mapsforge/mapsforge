@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,6 +39,7 @@ public abstract class AbstractTileSource implements TileSource {
     protected final String[] hostNames;
     protected final int port;
     protected final Random random = new Random();
+    protected String userAgent;
 
     protected AbstractTileSource(String[] hostNames, int port) {
         if (hostNames == null || hostNames.length == 0) {
@@ -86,11 +87,20 @@ public abstract class AbstractTileSource implements TileSource {
     }
 
     @Override
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + Arrays.hashCode(this.hostNames);
         result = prime * result + this.port;
         return result;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 }
