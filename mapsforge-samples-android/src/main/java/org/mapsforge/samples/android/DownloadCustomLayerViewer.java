@@ -28,7 +28,7 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
                 "otile1.mqcdn.com", "otile2.mqcdn.com", "otile3.mqcdn.com", "otile4.mqcdn.com"},
                 80);
         onlineTileSource.setName("MapQuest").setAlpha(false)
-                .setBaseUrl("/tiles/1.0.0/map/").setExtension("png")
+                .setBaseUrl("/tiles/1.0.0/map/").setExtension("jpg")
                 .setParallelRequestsLimit(8).setProtocol("http").setTileSize(256)
                 .setZoomLevelMax((byte) 18).setZoomLevelMin((byte) 0);
         this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
