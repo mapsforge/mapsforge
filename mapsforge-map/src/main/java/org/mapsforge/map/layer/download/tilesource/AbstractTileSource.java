@@ -30,15 +30,21 @@ import java.util.Random;
  * appropriate for their tile source.
  */
 public abstract class AbstractTileSource implements TileSource {
+    private static final int TIMEOUT_CONNECT = 5000;
+    private static final int TIMEOUT_READ = 10000;
 
     /**
      * The default time-to-live (TTL) for cached tiles (one day, or 86,400,000 milliseconds).
      */
     protected long defaultTimeToLive = 86400000;
 
+    protected boolean followRedirects = true;
     protected final String[] hostNames;
     protected final int port;
     protected final Random random = new Random();
+    protected String referer;
+    protected int timeoutConnect = TIMEOUT_CONNECT;
+    protected int timeoutRead = TIMEOUT_READ;
     protected String userAgent;
 
     protected AbstractTileSource(String[] hostNames, int port) {
@@ -87,6 +93,21 @@ public abstract class AbstractTileSource implements TileSource {
     }
 
     @Override
+    public String getReferer() {
+        return referer;
+    }
+
+    @Override
+    public int getTimeoutConnect() {
+        return timeoutConnect;
+    }
+
+    @Override
+    public int getTimeoutRead() {
+        return timeoutRead;
+    }
+
+    @Override
     public String getUserAgent() {
         return userAgent;
     }
@@ -98,6 +119,27 @@ public abstract class AbstractTileSource implements TileSource {
         result = prime * result + Arrays.hashCode(this.hostNames);
         result = prime * result + this.port;
         return result;
+    }
+
+    @Override
+    public boolean isFollowRedirects() {
+        return followRedirects;
+    }
+
+    public void setFollowRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
+    }
+
+    public void setReferer(String referer) {
+        this.referer = referer;
+    }
+
+    public void setTimeoutConnect(int timeoutConnect) {
+        this.timeoutConnect = timeoutConnect;
+    }
+
+    public void setTimeoutRead(int timeoutRead) {
+        this.timeoutRead = timeoutRead;
     }
 
     public void setUserAgent(String userAgent) {

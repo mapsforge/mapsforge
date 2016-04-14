@@ -33,12 +33,27 @@ public interface TileSource {
     int getParallelRequestsLimit();
 
     /**
+     * @return the HTTP referer (may be null).
+     */
+    String getReferer();
+
+    /**
      * @return the download URL for the given {@code Tile}.
      */
     URL getTileUrl(Tile tile) throws MalformedURLException;
 
     /**
-     * @return the user agent (may be null).
+     * @return the connect timeout value in milliseconds.
+     */
+    int getTimeoutConnect();
+
+    /**
+     * @return the read timeout value in milliseconds.
+     */
+    int getTimeoutRead();
+
+    /**
+     * @return the HTTP user agent (may be null).
      */
     String getUserAgent();
 
@@ -56,4 +71,9 @@ public interface TileSource {
      * @return the if the {@code TileSource} supports transparent images.
      */
     boolean hasAlpha();
+
+    /**
+     * @return whether or not to follow HTTP redirects.
+     */
+    boolean isFollowRedirects();
 }

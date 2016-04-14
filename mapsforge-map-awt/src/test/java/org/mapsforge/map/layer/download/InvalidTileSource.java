@@ -33,7 +33,22 @@ class InvalidTileSource implements TileSource {
     }
 
     @Override
+    public String getReferer() {
+        throw new AssertionError();
+    }
+
+    @Override
     public URL getTileUrl(Tile tile) {
+        throw new AssertionError();
+    }
+
+    @Override
+    public int getTimeoutConnect() {
+        throw new AssertionError();
+    }
+
+    @Override
+    public int getTimeoutRead() {
         throw new AssertionError();
     }
 
@@ -54,6 +69,11 @@ class InvalidTileSource implements TileSource {
 
     @Override
     public boolean hasAlpha() {
+        throw new AssertionError();
+    }
+
+    @Override
+    public boolean isFollowRedirects() {
         throw new AssertionError();
     }
 }
