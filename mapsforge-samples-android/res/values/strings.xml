@@ -18,6 +18,9 @@
     <string name="longitude">Longitude</string>
     <string name="zoomlevel">Zoom Level</string>
 
+    <string name="preferences_hardware_acceleration">Hardware acceleration</string>
+    <string name="preferences_hardware_acceleration_desc">Control hardware acceleration on view level</string>
+
     <string name="preferences_scale">Display Scale</string>
     <string name="preferences_scale_desc">Adjust scale of the map display</string>
 
@@ -27,7 +30,6 @@
     <string name="preferences_language_showlocal">Language Display Style</string>
     <string name="preferences_language_showlocal_desc">Show both local and preferred language</string>
 
-
     <string name="preferences_scalebar">Scale bar</string>
     <string name="preferences_scalebar_desc">Set units system on the scale bar</string>
 
@@ -36,17 +38,13 @@
 
     <string name="preferences_category_wayfiltering">Way filtering</string>
     <string name="preferences_wayfiltering">Way filtering</string>
-    <string name="preferences_wayfiltering_desc">Way filtering reduces the number of ways returned at the risk of clipping artifacts.</string>
+    <string name="preferences_wayfiltering_desc">Way filtering reduces the number of ways returned at the risk of clipping artifacts</string>
     <string name="preferences_wayfiltering_distance">Way filter size</string>
-    <string name="preferences_wayfiltering_distance_desc">The higher the number the less artifacts, but slower.</string>
+    <string name="preferences_wayfiltering_distance_desc">The higher the number the less artifacts, but slower</string>
 
     <string name="preferences_category_tilecache">Tilecache</string>
     <string name="preferences_tilecache_persistence">Persistence</string>
-    <string name="preferences_tilecache_persistence_desc">Keep tiles over activity restart.</string>
-    <string name="preferences_tilecache_threading">Threading</string>
-    <string name="preferences_tilecache_threading_desc">Threading makes the app more responsive, with some risk.</string>
-    <string name="preferences_tilecache_queuelimit">Queue limit</string>
-    <string name="preferences_tilecache_queuelimit_desc">The higher the limit, the more memory is needed. Risk of OOM.</string>
+    <string name="preferences_tilecache_persistence_desc">Keep tiles over activity restart</string>
 
     <string name="preferences_debug_timing">Debug timing</string>
     <string name="preferences_debug_timing_desc">Measure rendering time</string>

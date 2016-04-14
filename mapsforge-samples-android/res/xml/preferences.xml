@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/menu_preferences">
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="hardware_acceleration"
+        android:summary="@string/preferences_hardware_acceleration_desc"
+        android:title="@string/preferences_hardware_acceleration" />
     <ListPreference
         android:defaultValue="1.0"
         android:entries="@array/pref_scale_entries"
