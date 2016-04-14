@@ -2,7 +2,7 @@
 
 ## New since 0.6.0
 
-- POI Search API [#728](https://github.com/mapsforge/mapsforge/issues/728)
+- [POI Search API](POI.md) [#728](https://github.com/mapsforge/mapsforge/issues/728)
 - Render Theme v5: pathText repeat options [#473](https://github.com/mapsforge/mapsforge/issues/473)
 - Render Theme v5: scale options [#814](https://github.com/mapsforge/mapsforge/issues/814)
 - Render Theme v5: deprecate 'symbol-scaling' option [#815](https://github.com/mapsforge/mapsforge/issues/815)
