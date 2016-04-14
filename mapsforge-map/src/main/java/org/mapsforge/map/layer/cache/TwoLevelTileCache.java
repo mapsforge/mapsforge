@@ -95,11 +95,13 @@ public class TwoLevelTileCache implements TileCache {
         this.workingSet.addAll(newWorkingSet);
         this.firstLevelTileCache.setWorkingSet(this.workingSet);
         this.secondLevelTileCache.setWorkingSet(this.workingSet);
-        for (Job job : workingSet) {
-            if (!firstLevelTileCache.containsKey(job) && secondLevelTileCache.containsKey(job)) {
-                TileBitmap tileBitmap = secondLevelTileCache.get(job);
-                if (tileBitmap != null) {
-                    firstLevelTileCache.put(job, tileBitmap);
+        synchronized(this.workingSet) {
+            for (Job job : workingSet) {
+                if (!firstLevelTileCache.containsKey(job) && secondLevelTileCache.containsKey(job)) {
+                    TileBitmap tileBitmap = secondLevelTileCache.get(job);
+                    if (tileBitmap != null) {
+                        firstLevelTileCache.put(job, tileBitmap);
+                    }
                 }
             }
         }
