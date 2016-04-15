@@ -50,19 +50,19 @@ project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-map-re
 
 configure(filterProjects(project.javaprojects)) {
     apply plugin: 'java'
-    apply plugin: 'checkstyle'
+    //apply plugin: 'checkstyle'
     apply plugin: 'maven'
 
     dependencies {
         testCompile group: 'junit', name: 'junit', version: "$jUnitVersion"
     }
 
-    checkstyle {
+    /*checkstyle {
         showViolations = false  // turn on for reporting
         // as of Gradle 2.2.1 every sub project seems to require a checkstyle file, this
         // directive forces all projects to use the shared file in the root project
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    }
+    }*/
 
     // set java source encoding, otherwise some tests fail
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
