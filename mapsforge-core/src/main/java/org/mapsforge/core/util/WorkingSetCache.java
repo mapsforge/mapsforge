@@ -38,8 +38,10 @@ public class WorkingSetCache<K, V> extends LRUCache<K, V> {
      * @param workingSet set of K that makes up the current working set.
      */
     public void setWorkingSet(Set<K> workingSet) {
-        for (K key : workingSet) {
-            this.get(key);
+        synchronized(workingSet) {
+            for (K key : workingSet) {
+                this.get(key);
+            }
         }
     }
 }

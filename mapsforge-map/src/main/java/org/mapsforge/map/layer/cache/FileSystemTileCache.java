@@ -340,8 +340,10 @@ public class FileSystemTileCache implements TileCache {
     @Override
     public void setWorkingSet(Set<Job> workingSet) {
         Set<String> workingSetInteger = new HashSet<String>();
-        for (Job job : workingSet) {
-            workingSetInteger.add(job.getKey());
+        synchronized(workingSet) {
+            for (Job job : workingSet) {
+                workingSetInteger.add(job.getKey());
+            }
         }
         this.lruCache.setWorkingSet(workingSetInteger);
     }
