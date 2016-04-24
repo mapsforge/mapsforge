@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -278,7 +278,6 @@ public class MapZoomControls extends LinearLayout implements Observer {
      */
     public void setShowMapZoomControls(boolean showMapZoomControls) {
         this.showMapZoomControls = showMapZoomControls;
-        setVisibility(showMapZoomControls ? View.VISIBLE : View.GONE);
     }
 
     /**
