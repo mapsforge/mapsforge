@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +14,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.mapsforge.samples.android;
+
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.view.View;
 
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
@@ -39,8 +44,6 @@ public class SimplestMapViewer extends MapViewerTemplate {
 
     /**
      * This MapViewer uses the standard xml layout in the Samples app.
-     *
-     * @return
      */
     @Override
     protected int getLayoutId() {
@@ -75,6 +78,19 @@ public class SimplestMapViewer extends MapViewerTemplate {
         TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
                 this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
         this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
+    }
+
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            boolean hardwareAcceleration = sharedPreferences.getBoolean(SamplesApplication.SETTING_HARDWARE_ACCELERATION, true);
+            if (!hardwareAcceleration) {
+                mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            }
+        }
     }
 
     /**
