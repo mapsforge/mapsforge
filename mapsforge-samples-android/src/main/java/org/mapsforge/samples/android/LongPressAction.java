@@ -1,5 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -62,12 +63,11 @@ public class LongPressAction extends RenderTheme4 {
         };
         tileRendererLayer.setXmlRenderTheme(this.getRenderTheme());
         mapView.getLayerManager().getLayers().add(tileRendererLayer);
-        BLACK.setTextSize(22);
+        BLACK.setTextSize(22 * this.mapView.getModel().displayModel.getScaleFactor());
     }
 
     protected void onLongPress(final LatLong position) {
-        float circleSize = 20 * this.mapView.getModel().displayModel
-                .getScaleFactor();
+        float circleSize = 20 * this.mapView.getModel().displayModel.getScaleFactor();
 
         i += 1;
 
