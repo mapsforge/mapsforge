@@ -180,7 +180,7 @@ final class WayDecorator {
             double offset = (segmentLengthInPixel - wayNameWidth) / 2d;
             // now calculate the actually used part of the segment to ensure the bbox of the waytext container
             // is as small as possible.
-            LineSegment actuallyUsedSegment = drawableSegment.subSegment(offset, wayNameWidth - repeatStart);
+            LineSegment actuallyUsedSegment = drawableSegment.subSegment(offset+repeatStart/2, wayNameWidth - repeatStart);
             // check to prevent inverted way names
             if (actuallyUsedSegment.start.x <= actuallyUsedSegment.end.x) {
                 currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, display, priority, text, fill, stroke, textHeight));
