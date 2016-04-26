@@ -9,6 +9,7 @@
 - Map writer improved area heuristics [#788](https://github.com/mapsforge/mapsforge/issues/788) [#795](https://github.com/mapsforge/mapsforge/issues/795)
 - Reverse Geocoding example [#727](https://github.com/mapsforge/mapsforge/issues/727)
 - LabelLayer enhanced implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
+- Street name rendering improvements [#644](https://github.com/mapsforge/mapsforge/issues/644)
 - Color filters in map rendering [#778](https://github.com/mapsforge/mapsforge/issues/778)
 - Night mode example [#777](https://github.com/mapsforge/mapsforge/issues/777)
 - Layers redraw option [#817](https://github.com/mapsforge/mapsforge/issues/817)
