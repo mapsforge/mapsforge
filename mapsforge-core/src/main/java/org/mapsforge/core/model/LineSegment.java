@@ -177,7 +177,11 @@ public final class LineSegment {
     public Point pointAlongLineSegment(double distance) {
         if (start.x == end.x) {
             // we have a vertical line
-            return new Point(start.x, start.y + distance);
+            if (start.y > end.y) {
+                return new Point(end.x, end.y + distance);
+            } else {
+                return new Point(start.x, start.y + distance);
+            }
         } else {
             double slope = (end.y - start.y) / (end.x - start.x);
             double dx = Math.sqrt((distance * distance) / (1 + (slope * slope)));
