@@ -61,7 +61,7 @@ Now we need to set up the process of displaying a map. A map can have several la
 ```java
     MapDataStore mapDataStore = new MapFile(getMapFile());
     this.tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
-    				this.mapView.getModel().mapViewPosition, false, true, AndroidGraphicFactory.INSTANCE);
+    				this.mapView.getModel().mapViewPosition, false, true, false, AndroidGraphicFactory.INSTANCE);
     tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
 ```
 
@@ -158,7 +158,7 @@ Here comes the whole as a single file:
     		// tile renderer layer using internal render theme
     		MapDataStore mapDataStore = new MapFile(getMapFile());
     		this.tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
-    				this.mapView.getModel().mapViewPosition, false, true, AndroidGraphicFactory.INSTANCE);
+    				this.mapView.getModel().mapViewPosition, false, true, false, AndroidGraphicFactory.INSTANCE);
     		tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
     		
     		// only once a layer is associated with a mapView the rendering starts
