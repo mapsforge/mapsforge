@@ -166,6 +166,10 @@ public class MapZoomControls extends LinearLayout implements Observer {
         this.buttonZoomOut.setEnabled(newZoomLevel > this.zoomLevelMin);
     }
 
+    public void destroy() {
+        this.mapView.getModel().mapViewPosition.removeObserver(this);
+    }
+
     private void fade(int visibility, float startAlpha, float endAlpha) {
         AlphaAnimation anim = new AlphaAnimation(startAlpha, endAlpha);
         anim.setDuration(500);

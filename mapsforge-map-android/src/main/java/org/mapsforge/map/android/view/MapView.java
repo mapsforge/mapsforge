@@ -176,6 +176,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         if (this.mapScaleBar != null) {
             this.mapScaleBar.destroy();
         }
+        this.mapZoomControls.destroy();
         this.getModel().mapViewPosition.destroy();
     }
 
