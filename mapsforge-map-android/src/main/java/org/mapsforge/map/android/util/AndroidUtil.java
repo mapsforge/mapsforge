@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -169,6 +169,24 @@ public final class AndroidUtil {
      */
     public static TileCache createTileCache(Context c, String id, int tileSize, int width, int height, double overdraw) {
         return createTileCache(c, id, tileSize, width, height, overdraw, false);
+    }
+
+    /**
+     * Utility method to create a standard tile renderer layer.
+     *
+     * @param tileCache       the cache
+     * @param mapViewPosition the position
+     * @param mapFile         the map file
+     * @param renderTheme     the render theme to use
+     * @return the layer
+     */
+    public static TileRendererLayer createTileRendererLayer(
+            TileCache tileCache, MapViewPosition mapViewPosition,
+            MapDataStore mapFile, XmlRenderTheme renderTheme) {
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
+                mapViewPosition, AndroidGraphicFactory.INSTANCE);
+        tileRendererLayer.setXmlRenderTheme(renderTheme);
+        return tileRendererLayer;
     }
 
     /**

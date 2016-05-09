@@ -14,6 +14,7 @@
 - Night mode example [#777](https://github.com/mapsforge/mapsforge/issues/777)
 - Layers redraw option [#817](https://github.com/mapsforge/mapsforge/issues/817)
 - Zoom level limits central handling [#646](https://github.com/mapsforge/mapsforge/issues/646)
+- Simplified tile layer creation [#833](https://github.com/mapsforge/mapsforge/issues/833)
 - Android gestures options [#705](https://github.com/mapsforge/mapsforge/issues/705)
 - Java onTap layer listener [#774](https://github.com/mapsforge/mapsforge/issues/774)
 - Online tile source enhancements [#823](https://github.com/mapsforge/mapsforge/issues/823)
