@@ -91,6 +91,9 @@ public class FileSystemTileCache implements TileCache {
                     }
                 }
             }
+            synchronized (initDone) {
+                initDone = true;
+            }
         }
     }
 
@@ -154,6 +157,7 @@ public class FileSystemTileCache implements TileCache {
     private final ReentrantReadWriteLock lock;
     private final Observable observable;
     private final boolean persistent;
+    private Boolean initDone;
 
     /**
      * Compatibility constructor that creates a non-threaded, non-persistent FSTC.
@@ -194,15 +198,25 @@ public class FileSystemTileCache implements TileCache {
                 // this will start a new thread to read in the cache directory.
                 // there is the potential that files will be recreated because they
                 // are not yet in the cache, but this will not cause any corruption.
+                this.initDone = false;
                 new Thread(new CacheDirectoryReader()).start();
+            } else {
+                this.initDone = true;
             }
 
         } else {
             this.cacheDirectory = null;
+            this.initDone = true;
         }
         this.graphicFactory = graphicFactory;
     }
 
+    @Override
+    public Boolean initializationDone() {
+        synchronized (initDone) {
+            return initDone;
+        }
+    }
     @Override
     public boolean containsKey(Job key) {
         try {
