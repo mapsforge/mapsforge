@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -82,6 +82,8 @@ public class MapViewPosition extends Observable implements Persistable {
         }
     }
 
+    private static final int ANIMATION_STEPS = 25;
+
     private static final String LATITUDE = "latitude";
     private static final String LATITUDE_MAX = "latitudeMax";
     private static final String LATITUDE_MIN = "latitudeMin";
@@ -122,37 +124,24 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Start animating the map towards the given point.
+     * Animate the map towards the given position.
      */
-    public void animateTo(final LatLong pos) {
+    public void animateTo(final LatLong latLong) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int totalSteps = 25; // Define the Step Number
-                int signX = 1; // Define the Sign for Horizontal Movement
-                int signY = 1; // Define the Sign for Vertical Movement
-                long mapSize = MercatorProjection.getMapSize(getZoomLevel(), displayModel.getTileSize());
+                long mapSize = MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize());
+                double targetPixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
+                double targetPixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
 
-                double targetPixelX = MercatorProjection.longitudeToPixelX(pos.longitude, mapSize);
-                double targetPixelY = MercatorProjection.latitudeToPixelY(pos.latitude, mapSize);
+                for (int i = ANIMATION_STEPS; i > 0; i--) {
+                    double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, mapSize);
+                    double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, mapSize);
+                    double stepSizeX = Math.abs(targetPixelX - currentPixelX) / i;
+                    double stepSizeY = Math.abs(targetPixelY - currentPixelY) / i;
+                    double signX = Math.signum(currentPixelX - targetPixelX);
+                    double signY = Math.signum(currentPixelY - targetPixelY);
 
-                double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, mapSize);
-                double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, mapSize);
-
-                double stepSizeX = Math.abs(targetPixelX - currentPixelX) / totalSteps;
-                double stepSizeY = Math.abs(targetPixelY - currentPixelY) / totalSteps;
-
-				/* Check the Signs */
-                if (currentPixelX < targetPixelX) {
-                    signX = -1;
-                }
-
-                if (currentPixelY < targetPixelY) {
-                    signY = -1;
-                }
-
-				/* Compute Scroll */
-                for (int i = 0; i < totalSteps; i++) {
                     moveCenter(stepSizeX * signX, stepSizeY * signY);
                     try {
                         Thread.sleep(10);
