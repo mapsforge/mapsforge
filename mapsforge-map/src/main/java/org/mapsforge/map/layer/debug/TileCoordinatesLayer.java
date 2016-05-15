@@ -38,7 +38,7 @@ public class TileCoordinatesLayer extends Layer {
         Paint paint = graphicFactory.createPaint();
         paint.setColor(Color.RED);
         paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-        paint.setTextSize(14 * displayModel.getScaleFactor());
+        paint.setTextSize(12 * displayModel.getScaleFactor());
         return paint;
     }
 
@@ -46,7 +46,7 @@ public class TileCoordinatesLayer extends Layer {
         Paint paint = graphicFactory.createPaint();
         paint.setColor(Color.WHITE);
         paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-        paint.setTextSize(14 * displayModel.getScaleFactor());
+        paint.setTextSize(12 * displayModel.getScaleFactor());
         paint.setStrokeWidth(2 * displayModel.getScaleFactor());
         paint.setStyle(Style.STROKE);
         return paint;
@@ -87,7 +87,7 @@ public class TileCoordinatesLayer extends Layer {
         Tile tile = tilePosition.tile;
         if (drawSimple) {
             stringBuilder.setLength(0);
-            stringBuilder.append(tile.zoomLevel).append("/").append(tile.tileX).append("/").append(tile.tileY);
+            stringBuilder.append(tile.zoomLevel).append(" / ").append(tile.tileX).append(" / ").append(tile.tileY);
             String text = stringBuilder.toString();
             int x = (int) (tilePosition.point.x + (tile.tileSize - this.paintBack.getTextWidth(text)) / 2);
             int y = (int) (tilePosition.point.y + (tile.tileSize + this.paintBack.getTextHeight(text)) / 2);
