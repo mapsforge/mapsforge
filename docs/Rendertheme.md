@@ -1,6 +1,6 @@
 # RenderTheme
 
-**This article describes how to use XML-based renderthemes to style maps, including the extensions of Rendertheme V4 (new with release 0.5).**
+**This article describes how to use XML-based renderthemes to style maps, including the extensions of Rendertheme V4 or newer (new with release 0.5).**
 
 If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
@@ -89,25 +89,25 @@ The `rendertheme` root element has an optional `map-background` attribute which 
 </rendertheme>
 ```
 
-## Rendertheme Version 4
+## Rendertheme Version 4 or newer
 
 With mapsforge release 0.5, we introduce the enhanced **Rendertheme V4 XML** with many new features to style a map.
 
-Rendertheme V4 remains **fully backward compatible** with version 3, meaning that any previously developed rendertheme definition will still render with V4 without any changes required (you do not even need to change the version number in the header).
+Rendertheme V4 or newer remains **fully backward compatible** with version 3, meaning that any previously developed rendertheme definition will still render with V4 without any changes required (you do not even need to change the version number in the header).
 
-You can find the full xsd in the mapsforge repository at https://github.com/mapsforge/mapsforge/blob/dev/resources/renderTheme-v4.xsd.
+You can find the full xsd in the mapsforge repository at https://github.com/mapsforge/mapsforge/blob/dev/resources/renderTheme-v5.xsd.
 
-But if you want to develop your renderthemes further, Rendertheme V4 offers a number of enhancements. If you want to make use of the new features, you will first need to set your rendertheme version in the header to 4:
+But if you want to develop your renderthemes further, Rendertheme V4 offers a number of enhancements. If you want to make use of the new features, you will first need to set your rendertheme version in the header to 4 or newer:
 
 ```xml
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme-v4.xsd" version="4" map-background="#f8f8f8" map-background-outside="#dddddd">
+	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme-v5.xsd" version="5" map-background="#f8f8f8" map-background-outside="#dddddd">
 ```
 
 ###Header Elements
  
 The following header elements can be used:
- - version: should be "4" now.
+ - version: should be "4" or newer now.
  - map-background: a color value to set the color of a blank tile. This should not be used to set the color of the sea or land. 
  - map-background-outside: a color value to set the color of the background of a map outside the map area. Effectively everything outside the map area will be overwritten by this color. For transparent layers, the color value will be ignored, but the outside area will be erased to transparent.  
 
