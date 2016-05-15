@@ -17,36 +17,36 @@ package org.mapsforge.map.android.graphics;
 import org.mapsforge.core.graphics.Matrix;
 
 class AndroidMatrix implements Matrix {
-	final android.graphics.Matrix matrix = new android.graphics.Matrix();
+    final android.graphics.Matrix matrix = new android.graphics.Matrix();
 
-	@Override
-	public void reset() {
-		this.matrix.reset();
-	}
+    @Override
+    public void reset() {
+        this.matrix.reset();
+    }
 
-	@Override
-	public void rotate(float theta) {
-		this.matrix.preRotate((float) Math.toDegrees(theta));
-	}
+    @Override
+    public void rotate(float theta) {
+        this.matrix.preRotate((float) Math.toDegrees(theta));
+    }
 
-	@Override
-	public void rotate(float theta, float pivotX, float pivotY) {
-		this.matrix.preRotate((float) Math.toDegrees(theta), pivotX, pivotY);
-	}
+    @Override
+    public void rotate(float theta, float pivotX, float pivotY) {
+        this.matrix.preRotate((float) Math.toDegrees(theta), pivotX, pivotY);
+    }
 
-	@Override
-	public void scale(float scaleX, float scaleY) {
-		this.matrix.preScale(scaleX, scaleY);
-	}
+    @Override
+    public void scale(float scaleX, float scaleY) {
+        this.matrix.preScale(scaleX, scaleY);
+    }
 
-	@Override
-	public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
-		this.matrix.preScale(scaleX, scaleY, pivotX, pivotY);
-	}
+    @Override
+    public void scale(float scaleX, float scaleY, float pivotX, float pivotY) {
+        this.matrix.preScale(scaleX, scaleY, pivotX, pivotY);
+    }
 
-	@Override
-	public void translate(float translateX, float translateY) {
-		this.matrix.preTranslate(translateX, translateY);
-	}
+    @Override
+    public void translate(float translateX, float translateY) {
+        this.matrix.preTranslate(translateX, translateY);
+    }
 
 }

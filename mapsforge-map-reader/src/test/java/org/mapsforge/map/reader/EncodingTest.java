@@ -22,31 +22,44 @@ import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.Way;
 
 final class EncodingTest {
-	private static final byte ZOOM_LEVEL = 8;
+    private static final byte ZOOM_LEVEL = 8;
 
-	static void runTest(MapFile mapFile) {
+    static void runTest(MapFile mapFile) {
 
-		int tileX = MercatorProjection.longitudeToTileX(0, ZOOM_LEVEL);
-		int tileY = MercatorProjection.latitudeToTileY(0, ZOOM_LEVEL);
-		Tile tile = new Tile(tileX, tileY, ZOOM_LEVEL, 256);
+        int tileX = MercatorProjection.longitudeToTileX(0, ZOOM_LEVEL);
+        int tileY = MercatorProjection.latitudeToTileY(0, ZOOM_LEVEL);
+        Tile tile = new Tile(tileX, tileY, ZOOM_LEVEL, 256);
 
-		MapReadResult mapReadResult = mapFile.readMapData(tile);
-		mapFile.close();
+        // read all labels data, ways should be empty as in the example the way does not carry a name tag
+        MapReadResult mapReadResult = mapFile.readLabels(tile);
+        Assert.assertFalse(mapReadResult == null);
+        Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+        Assert.assertTrue(mapReadResult.ways.isEmpty());
 
-		Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
-		Assert.assertEquals(1, mapReadResult.ways.size());
+        // read only poi data, ways should be empty
+        mapReadResult = mapFile.readPoiData(tile);
+        Assert.assertFalse(mapReadResult == null);
+        Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+        Assert.assertTrue(mapReadResult.ways.isEmpty());
 
-		LatLong latLong1 = new LatLong(0.0, 0.0, true);
-		LatLong latLong2 = new LatLong(0.0, 0.1, true);
-		LatLong latLong3 = new LatLong(-0.1, 0.1, true);
-		LatLong latLong4 = new LatLong(-0.1, 0.0, true);
-		LatLong[][] latLongsExpected = new LatLong[][] { { latLong1, latLong2, latLong3, latLong4, latLong1 } };
+        mapReadResult = mapFile.readMapData(tile);
 
-		Way way = mapReadResult.ways.get(0);
-		Assert.assertArrayEquals(latLongsExpected, way.latLongs);
-	}
+        Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+        Assert.assertEquals(1, mapReadResult.ways.size());
 
-	private EncodingTest() {
-		throw new IllegalStateException();
-	}
+        LatLong latLong1 = new LatLong(0.0, 0.0);
+        LatLong latLong2 = new LatLong(0.0, 0.1);
+        LatLong latLong3 = new LatLong(-0.1, 0.1);
+        LatLong latLong4 = new LatLong(-0.1, 0.0);
+        LatLong[][] latLongsExpected = new LatLong[][]{{latLong1, latLong2, latLong3, latLong4, latLong1}};
+
+        Way way = mapReadResult.ways.get(0);
+        Assert.assertArrayEquals(latLongsExpected, way.latLongs);
+
+        mapFile.close();
+    }
+
+    private EncodingTest() {
+        throw new IllegalStateException();
+    }
 }

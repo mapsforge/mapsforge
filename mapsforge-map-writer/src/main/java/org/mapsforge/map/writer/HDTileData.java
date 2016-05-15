@@ -14,50 +14,50 @@
  */
 package org.mapsforge.map.writer;
 
-import gnu.trove.list.array.TLongArrayList;
-
-import java.util.List;
-import java.util.Map;
-
 import org.mapsforge.map.writer.model.TDNode;
 import org.mapsforge.map.writer.model.TDWay;
 import org.mapsforge.map.writer.model.TileData;
 
+import java.util.List;
+import java.util.Map;
+
+import gnu.trove.list.array.TLongArrayList;
+
 public class HDTileData extends TileData {
-	private final TLongArrayList pois;
-	private final TLongArrayList ways;
+    private final TLongArrayList pois;
+    private final TLongArrayList ways;
 
-	HDTileData() {
-		super();
-		this.pois = new TLongArrayList();
-		this.ways = new TLongArrayList();
-	}
+    HDTileData() {
+        super();
+        this.pois = new TLongArrayList();
+        this.ways = new TLongArrayList();
+    }
 
-	@Override
-	public final void addPOI(TDNode poi) {
-		this.pois.add(poi.getId());
-	}
+    @Override
+    public final void addPOI(TDNode poi) {
+        this.pois.add(poi.getId());
+    }
 
-	@Override
-	public final void addWay(TDWay way) {
-		this.ways.add(way.getId());
-	}
+    @Override
+    public final void addWay(TDWay way) {
+        this.ways.add(way.getId());
+    }
 
-	@Override
-	public Map<Byte, List<TDNode>> poisByZoomlevel(byte minValidZoomlevel, byte maxValidZoomlevel) {
-		throw new UnsupportedOperationException(HDTileData.class.getName() + "does not support this operation");
-	}
+    @Override
+    public Map<Byte, List<TDNode>> poisByZoomlevel(byte minValidZoomlevel, byte maxValidZoomlevel) {
+        throw new UnsupportedOperationException(HDTileData.class.getName() + "does not support this operation");
+    }
 
-	@Override
-	public Map<Byte, List<TDWay>> waysByZoomlevel(byte minValidZoomlevel, byte maxValidZoomlevel) {
-		throw new UnsupportedOperationException(HDTileData.class.getName() + "does not support this operation");
-	}
+    @Override
+    public Map<Byte, List<TDWay>> waysByZoomlevel(byte minValidZoomlevel, byte maxValidZoomlevel) {
+        throw new UnsupportedOperationException(HDTileData.class.getName() + "does not support this operation");
+    }
 
-	final TLongArrayList getPois() {
-		return this.pois;
-	}
+    final TLongArrayList getPois() {
+        return this.pois;
+    }
 
-	final TLongArrayList getWays() {
-		return this.ways;
-	}
+    final TLongArrayList getWays() {
+        return this.ways;
+    }
 }

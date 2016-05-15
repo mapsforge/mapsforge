@@ -15,9 +15,6 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -27,51 +24,54 @@ import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
+import java.io.IOException;
+
 public class RenderThemeTest {
-	private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
-	private static final String RESOURCE_FOLDER = "src/test/resources/rendertheme/";
+    private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+    private static final String RESOURCE_FOLDER = "src/test/resources/rendertheme/";
 
-	private static void verifyInvalid(String pathname) throws XmlPullParserException, IOException {
-		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(pathname));
+    private static void verifyInvalid(String pathname) throws XmlPullParserException, IOException {
+        XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(pathname));
 
-		try {
-			RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
-			Assert.fail();
-		} catch (XmlPullParserException e) {
-			Assert.assertTrue(true);
-		}
-	}
+        try {
+            RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
+            Assert.fail();
+        } catch (XmlPullParserException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void invalidRenderThemeTest() throws XmlPullParserException, IOException {
-		verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme1.xml");
-		verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme2.xml");
-		verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme3.xml");
-	}
+    @Test
+    public void invalidRenderThemeTest() throws XmlPullParserException, IOException {
+        verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme1.xml");
+        verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme2.xml");
+        verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme3.xml");
+    }
 
-	@Test
-	public void validRenderThemeTest() throws XmlPullParserException, IOException {
-		XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(RESOURCE_FOLDER, "test-render-theme.xml"));
-		RenderTheme renderTheme = RenderThemeHandler
-				.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
+    @Test
+    public void validRenderThemeTest() throws XmlPullParserException, IOException {
+        XmlRenderTheme xmlRenderTheme = new ExternalRenderTheme(new File(RESOURCE_FOLDER, "test-render-theme.xml"));
+        RenderTheme renderTheme = RenderThemeHandler
+                .getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme);
 
-		Assert.assertEquals(3, renderTheme.getLevels());
+        Assert.assertEquals(3, renderTheme.getLevels());
 
-		renderTheme.scaleStrokeWidth(12.34f, (byte) 12);
-		renderTheme.scaleTextSize(56.78f, (byte) 12);
+        renderTheme.scaleStrokeWidth(12.34f, (byte) 12);
+        renderTheme.scaleTextSize(56.78f, (byte) 12);
 
-		// RenderCallback renderCallback = new DummyRenderCallback();
+        // RenderCallback renderCallback = new DummyRenderCallback();
 
-		// List<Tag> closedWayTags = Arrays.asList(new Tag("amenity", "parking"));
-		// List<Tag> linearWayTags = Arrays.asList(new Tag("highway", "primary"), new Tag("oneway", "yes"));
-		// List<Tag> nodeTags = Arrays.asList(new Tag("place", "city"), new Tag("highway", "turning_circle"));
+        // List<Tag> closedWayTags = Arrays.asList(new Tag("amenity", "parking"));
+        // List<Tag> linearWayTags = Arrays.asList(new Tag("highway", "primary"), new Tag("oneway", "yes"));
+        // List<Tag> nodeTags = Arrays.asList(new Tag("place", "city"), new Tag("highway", "turning_circle"));
 
-		for (byte zoomLevel = 0; zoomLevel < 25; ++zoomLevel) {
-			// renderTheme.matchClosedWay(renderCallback, closedWayTags, zoomLevel, 256);
-			// renderTheme.matchLinearWay(renderCallback, linearWayTags, zoomLevel);
-			// renderTheme.matchNode(renderCallback, nodeTags, zoomLevel);
-		}
+        for (byte zoomLevel = 0; zoomLevel < 25; ++zoomLevel) {
+            // renderTheme.matchClosedWay(renderCallback, closedWayTags, zoomLevel, 256);
+            // renderTheme.matchLinearWay(renderCallback, linearWayTags, zoomLevel);
+            // renderTheme.matchNode(renderCallback, nodeTags, zoomLevel);
+        }
 
-		renderTheme.destroy();
-	}
+        renderTheme.destroy();
+    }
 }

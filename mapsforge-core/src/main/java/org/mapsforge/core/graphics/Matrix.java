@@ -15,23 +15,21 @@
 package org.mapsforge.core.graphics;
 
 public interface Matrix {
-	void reset();
+    void reset();
 
-	/**
-	 * @param theta
-	 *            an angle measured in radians.
-	 */
-	void rotate(float theta);
+    /**
+     * @param theta an angle measured in radians.
+     */
+    void rotate(float theta);
 
-	/**
-	 * @param theta
-	 *            an angle measured in radians.
-	 */
-	void rotate(float theta, float pivotX, float pivotY);
+    /**
+     * @param theta an angle measured in radians.
+     */
+    void rotate(float theta, float pivotX, float pivotY);
 
-	void scale(float scaleX, float scaleY);
+    void scale(float scaleX, float scaleY);
 
-	void scale(float scaleX, float scaleY, float pivotX, float pivotY);
+    void scale(float scaleX, float scaleY, float pivotX, float pivotY);
 
-	void translate(float translateX, float translateY);
+    void translate(float translateX, float translateY);
 }

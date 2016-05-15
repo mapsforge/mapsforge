@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -16,10 +16,6 @@
  */
 package org.mapsforge.map.android.input;
 
-import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.view.MapView;
-import org.mapsforge.map.model.common.Observer;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -32,366 +28,371 @@ import android.widget.LinearLayout;
 import android.widget.ZoomButton;
 import android.widget.ZoomControls;
 
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.model.common.Observer;
+
 /**
  * A MapZoomControls instance displays buttons for zooming in and out in a map.
  */
 public class MapZoomControls extends LinearLayout implements Observer {
 
-	public static enum Orientation {
-		/** Horizontal arrangement, 'zoom in' left of 'zoom out'. */
-		HORIZONTAL_IN_OUT(LinearLayout.HORIZONTAL, true),
+    public static enum Orientation {
+        /**
+         * Horizontal arrangement, 'zoom in' left of 'zoom out'.
+         */
+        HORIZONTAL_IN_OUT(LinearLayout.HORIZONTAL, true),
 
-		/** Horizontal arrangement, 'zoom in' right of 'zoom out'. */
-		HORIZONTAL_OUT_IN(LinearLayout.HORIZONTAL, false),
+        /**
+         * Horizontal arrangement, 'zoom in' right of 'zoom out'.
+         */
+        HORIZONTAL_OUT_IN(LinearLayout.HORIZONTAL, false),
 
-		/** Vertical arrangement, 'zoom in' above 'zoom out'. */
-		VERTICAL_IN_OUT(LinearLayout.VERTICAL, true),
+        /**
+         * Vertical arrangement, 'zoom in' above 'zoom out'.
+         */
+        VERTICAL_IN_OUT(LinearLayout.VERTICAL, true),
 
-		/** Vertical arrangement, 'zoom in' below 'zoom out'. */
-		VERTICAL_OUT_IN(LinearLayout.VERTICAL, false);
+        /**
+         * Vertical arrangement, 'zoom in' below 'zoom out'.
+         */
+        VERTICAL_OUT_IN(LinearLayout.VERTICAL, false);
 
-		public final int layoutOrientation;
-		public final boolean zoomInFirst;
+        public final int layoutOrientation;
+        public final boolean zoomInFirst;
 
-		private Orientation(int layoutOrientation, boolean zoomInFirst) {
-			this.layoutOrientation = layoutOrientation;
-			this.zoomInFirst = zoomInFirst;
-		}
-	};
+        private Orientation(int layoutOrientation, boolean zoomInFirst) {
+            this.layoutOrientation = layoutOrientation;
+            this.zoomInFirst = zoomInFirst;
+        }
+    }
 
-	/**
-	 * Default {@link Gravity} of the zoom controls.
-	 */
-	private static final int DEFAULT_ZOOM_CONTROLS_GRAVITY = Gravity.BOTTOM | Gravity.RIGHT;
+    ;
 
-	/**
-	 * Default maximum zoom level.
-	 */
-	private static final byte DEFAULT_ZOOM_LEVEL_MAX = 22;
+    /**
+     * Default {@link Gravity} of the zoom controls.
+     */
+    private static final int DEFAULT_ZOOM_CONTROLS_GRAVITY = Gravity.BOTTOM | Gravity.RIGHT;
 
-	/**
-	 * Default minimum zoom level.
-	 */
-	private static final byte DEFAULT_ZOOM_LEVEL_MIN = 0;
+    /**
+     * Default maximum zoom level.
+     */
+    private static final byte DEFAULT_ZOOM_LEVEL_MAX = 22;
 
-	/**
-	 * Auto-repeat delay of the zoom buttons in ms.
-	 */
-	private static final long DEFAULT_ZOOM_SPEED = 500;
+    /**
+     * Default minimum zoom level.
+     */
+    private static final byte DEFAULT_ZOOM_LEVEL_MIN = 0;
 
-	/**
-	 * Message code for the handler to hide the zoom controls.
-	 */
-	private static final int MSG_ZOOM_CONTROLS_HIDE = 0;
+    /**
+     * Auto-repeat delay of the zoom buttons in ms.
+     */
+    private static final long DEFAULT_ZOOM_SPEED = 500;
 
-	/**
-	 * Horizontal margin for the zoom controls.
-	 */
-	private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+    /**
+     * Message code for the handler to hide the zoom controls.
+     */
+    private static final int MSG_ZOOM_CONTROLS_HIDE = 0;
 
-	/**
-	 * Vertical margin for the zoom controls.
-	 */
-	private static final int DEFAULT_VERTICAL_MARGIN = 0;
+    /**
+     * Horizontal margin for the zoom controls.
+     */
+    private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
 
-	/**
-	 * Delay in milliseconds after which the zoom controls disappear.
-	 */
-	private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
+    /**
+     * Vertical margin for the zoom controls.
+     */
+    private static final int DEFAULT_VERTICAL_MARGIN = 0;
 
-	private boolean autoHide;
-	private final ZoomButton buttonZoomIn, buttonZoomOut;
-	private final MapView mapView;
-	private boolean showMapZoomControls;
-	private int zoomControlsGravity;
-	private final Handler zoomControlsHideHandler;
-	private byte zoomLevelMax, zoomLevelMin;
+    /**
+     * Delay in milliseconds after which the zoom controls disappear.
+     */
+    private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
 
-	public MapZoomControls(Context context, MapView mapView) {
-		super(context);
-		this.mapView = mapView;
-		this.autoHide = true;
-		setMarginHorizontal(DEFAULT_HORIZONTAL_MARGIN);
-		setMarginVertical(DEFAULT_VERTICAL_MARGIN);
-		this.showMapZoomControls = true;
-		this.zoomLevelMax = DEFAULT_ZOOM_LEVEL_MAX;
-		this.zoomLevelMin = DEFAULT_ZOOM_LEVEL_MIN;
-		setVisibility(View.GONE);
-		this.zoomControlsGravity = DEFAULT_ZOOM_CONTROLS_GRAVITY;
+    private boolean autoHide;
+    private final ZoomButton buttonZoomIn, buttonZoomOut;
+    private final MapView mapView;
+    private boolean showMapZoomControls;
+    private int zoomControlsGravity;
+    private final Handler zoomControlsHideHandler;
+    private byte zoomLevelMax, zoomLevelMin;
 
-		this.zoomControlsHideHandler = new Handler() {
-			@Override
-			public void handleMessage(Message message) {
-				MapZoomControls.this.hide();
-			}
-		};
+    public MapZoomControls(Context context, MapView mapView) {
+        super(context);
+        this.mapView = mapView;
+        this.autoHide = true;
+        setMarginHorizontal(DEFAULT_HORIZONTAL_MARGIN);
+        setMarginVertical(DEFAULT_VERTICAL_MARGIN);
+        this.showMapZoomControls = true;
+        this.zoomLevelMax = DEFAULT_ZOOM_LEVEL_MAX;
+        this.zoomLevelMin = DEFAULT_ZOOM_LEVEL_MIN;
+        setVisibility(View.GONE);
+        this.zoomControlsGravity = DEFAULT_ZOOM_CONTROLS_GRAVITY;
 
-		// Hack to get default zoom buttons
-		ZoomControls defaultZoomControls = new ZoomControls(context);
-		buttonZoomIn = (ZoomButton) defaultZoomControls.getChildAt(1);
-		buttonZoomOut = (ZoomButton) defaultZoomControls.getChildAt(0);
-		defaultZoomControls.removeAllViews();
-		setOrientation(defaultZoomControls.getOrientation());
-		setZoomInFirst(false);
+        this.zoomControlsHideHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                MapZoomControls.this.hide();
+            }
+        };
 
-		setZoomSpeed(DEFAULT_ZOOM_SPEED);
-		buttonZoomIn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				MapZoomControls.this.mapView.getModel().mapViewPosition.zoomIn();
-			}
-		});
-		buttonZoomOut.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				MapZoomControls.this.mapView.getModel().mapViewPosition.zoomOut();
-			}
-		});
+        // Hack to get default zoom buttons
+        ZoomControls defaultZoomControls = new ZoomControls(context);
+        buttonZoomIn = (ZoomButton) defaultZoomControls.getChildAt(1);
+        buttonZoomOut = (ZoomButton) defaultZoomControls.getChildAt(0);
+        defaultZoomControls.removeAllViews();
+        setOrientation(defaultZoomControls.getOrientation());
+        setZoomInFirst(false);
 
-		this.mapView.getModel().mapViewPosition.addObserver(this);
-	}
+        setZoomSpeed(DEFAULT_ZOOM_SPEED);
+        buttonZoomIn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapZoomControls.this.mapView.getModel().mapViewPosition.zoomIn();
+            }
+        });
+        buttonZoomOut.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapZoomControls.this.mapView.getModel().mapViewPosition.zoomOut();
+            }
+        });
 
-	private void changeZoomControls(int newZoomLevel) {
-		this.buttonZoomIn.setEnabled(newZoomLevel < this.zoomLevelMax);
-		this.buttonZoomOut.setEnabled(newZoomLevel > this.zoomLevelMin);
-	}
+        this.mapView.getModel().mapViewPosition.addObserver(this);
+    }
 
-	private void fade(int visibility, float startAlpha, float endAlpha) {
-		AlphaAnimation anim = new AlphaAnimation(startAlpha, endAlpha);
-		anim.setDuration(500);
-		startAnimation(anim);
-		setVisibility(visibility);
-	}
+    private void changeZoomControls(int newZoomLevel) {
+        this.buttonZoomIn.setEnabled(newZoomLevel < this.zoomLevelMax);
+        this.buttonZoomOut.setEnabled(newZoomLevel > this.zoomLevelMin);
+    }
 
-	/**
-	 * @return the current gravity for the placing of the zoom controls.
-	 * @see Gravity
-	 */
-	public int getZoomControlsGravity() {
-		return this.zoomControlsGravity;
-	}
+    public void destroy() {
+        this.mapView.getModel().mapViewPosition.removeObserver(this);
+    }
 
-	/**
-	 * @return the maximum zoom level of the map.
-	 */
-	public byte getZoomLevelMax() {
-		return this.zoomLevelMax;
-	}
+    private void fade(int visibility, float startAlpha, float endAlpha) {
+        AlphaAnimation anim = new AlphaAnimation(startAlpha, endAlpha);
+        anim.setDuration(500);
+        startAnimation(anim);
+        setVisibility(visibility);
+    }
 
-	/**
-	 * @return the minimum zoom level of the map.
-	 */
-	public byte getZoomLevelMin() {
-		return this.zoomLevelMin;
-	}
+    /**
+     * @return the current gravity for the placing of the zoom controls.
+     * @see Gravity
+     */
+    public int getZoomControlsGravity() {
+        return this.zoomControlsGravity;
+    }
 
-	public void hide() {
-		fade(View.GONE, 1.0f, 0.0f);
-	}
+    /**
+     * @return the maximum zoom level of the map.
+     */
+    public byte getZoomLevelMax() {
+        return this.zoomLevelMax;
+    }
 
-	/**
-	 * @return true if the zoom controls hide automatically, false otherwise.
-	 */
-	public boolean isAutoHide() {
-		return this.autoHide;
-	}
+    /**
+     * @return the minimum zoom level of the map.
+     */
+    public byte getZoomLevelMin() {
+        return this.zoomLevelMin;
+    }
 
-	/**
-	 * @return true if the zoom controls are visible, false otherwise.
-	 */
-	public boolean isShowMapZoomControls() {
-		return this.showMapZoomControls;
-	}
+    public void hide() {
+        fade(View.GONE, 1.0f, 0.0f);
+    }
 
-	@Override
-	public void onChange() {
-		this.onZoomLevelChange(this.mapView.getModel().mapViewPosition.getZoomLevel());
-	}
+    /**
+     * @return true if the zoom controls hide automatically, false otherwise.
+     */
+    public boolean isAutoHide() {
+        return this.autoHide;
+    }
 
-	public void onMapViewTouchEvent(MotionEvent event) {
-		if (event.getPointerCount() > 1) {
-			// no multitouch
-			return;
-		}
-		if (this.showMapZoomControls && this.autoHide) {
-			switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					showZoomControls();
-					break;
-				case MotionEvent.ACTION_CANCEL:
-					showZoomControlsWithTimeout();
-					break;
-				case MotionEvent.ACTION_UP:
-					showZoomControlsWithTimeout();
-					break;
-			}
-		}
-	}
+    /**
+     * @return true if the zoom controls are visible, false otherwise.
+     */
+    public boolean isShowMapZoomControls() {
+        return this.showMapZoomControls;
+    }
 
-	public void onZoomLevelChange(final int newZoomLevel) {
-		// to allow changing zoom level programmatically, i.e. not just
-		// by user interaction
-		if (AndroidUtil.currentThreadIsUiThread()) {
-			changeZoomControls(newZoomLevel);
-		} else {
-			this.mapView.post(new Runnable() {
-				@Override
-				public void run() {
-					changeZoomControls(newZoomLevel);
-				}
-			});
-		}
-	}
+    @Override
+    public void onChange() {
+        this.onZoomLevelChange(this.mapView.getModel().mapViewPosition.getZoomLevel());
+    }
 
-	/**
-	 * @param autoHide
-	 *            true if the zoom controls hide automatically, false otherwise.
-	 */
-	public void setAutoHide(boolean autoHide) {
-		this.autoHide = autoHide;
-		if (!this.autoHide) {
-			showZoomControls();
-		}
-	}
+    public void onMapViewTouchEvent(MotionEvent event) {
+        if (event.getPointerCount() > 1) {
+            // no multitouch
+            return;
+        }
+        if (this.showMapZoomControls && this.autoHide) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    showZoomControls();
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                    showZoomControlsWithTimeout();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    showZoomControlsWithTimeout();
+                    break;
+            }
+        }
+    }
 
-	public void setMarginHorizontal(int marginHorizontal) {
-		setPadding(marginHorizontal, getPaddingTop(), marginHorizontal, getPaddingBottom());
-		mapView.requestLayout();
-	}
+    public void onZoomLevelChange(final int newZoomLevel) {
+        // to allow changing zoom level programmatically, i.e. not just
+        // by user interaction
+        if (AndroidUtil.currentThreadIsUiThread()) {
+            changeZoomControls(newZoomLevel);
+        } else {
+            this.mapView.post(new Runnable() {
+                @Override
+                public void run() {
+                    changeZoomControls(newZoomLevel);
+                }
+            });
+        }
+    }
 
-	public void setMarginVertical(int marginVertical) {
-		setPadding(getPaddingLeft(), marginVertical, getPaddingRight(), marginVertical);
-		mapView.requestLayout();
-	}
+    /**
+     * @param autoHide true if the zoom controls hide automatically, false otherwise.
+     */
+    public void setAutoHide(boolean autoHide) {
+        this.autoHide = autoHide;
+        if (!this.autoHide) {
+            showZoomControls();
+        }
+    }
 
-	/**
-	 * @param showMapZoomControls
-	 *            true if the zoom controls should be visible, false otherwise.
-	 */
-	public void setShowMapZoomControls(boolean showMapZoomControls) {
-		this.showMapZoomControls = showMapZoomControls;
-		setVisibility(showMapZoomControls ? View.VISIBLE : View.GONE);
-	}
+    public void setMarginHorizontal(int marginHorizontal) {
+        setPadding(marginHorizontal, getPaddingTop(), marginHorizontal, getPaddingBottom());
+        mapView.requestLayout();
+    }
 
-	/**
-	 * Sets the gravity for the placing of the zoom controls.
-	 * 
-	 * @param zoomControlsGravity
-	 *            a combination of {@link Gravity} constants describing the desired placement.
-	 */
-	public void setZoomControlsGravity(int zoomControlsGravity) {
-		this.zoomControlsGravity = zoomControlsGravity;
-		mapView.requestLayout();
-	}
+    public void setMarginVertical(int marginVertical) {
+        setPadding(getPaddingLeft(), marginVertical, getPaddingRight(), marginVertical);
+        mapView.requestLayout();
+    }
 
-	/**
-	 * Set orientation of zoom controls.
-	 * 
-	 * @param orientation
-	 *            one of the four orientations.
-	 */
-	public void setZoomControlsOrientation(Orientation orientation) {
-		setOrientation(orientation.layoutOrientation);
-		setZoomInFirst(orientation.zoomInFirst);
-	}
+    /**
+     * @param showMapZoomControls true if the zoom controls should be visible, false otherwise.
+     */
+    public void setShowMapZoomControls(boolean showMapZoomControls) {
+        this.showMapZoomControls = showMapZoomControls;
+    }
 
-	/**
-	 * For horizontal orientation, "zoom in first" means the zoom in button will appear on top of the zoom out button.<br/>
-	 * For vertical orientation, "zoom in first" means the zoom in button will appear to the left of the zoom out
-	 * button.
-	 * 
-	 * @param zoomInFirst
-	 *            zoom in button will be first in layout.
-	 */
-	public void setZoomInFirst(boolean zoomInFirst) {
-		this.removeAllViews();
-		LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		if (zoomInFirst) {
-			this.addView(buttonZoomIn, layoutParams);
-			this.addView(buttonZoomOut, layoutParams);
-		} else {
-			this.addView(buttonZoomOut, layoutParams);
-			this.addView(buttonZoomIn, layoutParams);
-		}
-	}
+    /**
+     * Sets the gravity for the placing of the zoom controls.
+     *
+     * @param zoomControlsGravity a combination of {@link Gravity} constants describing the desired placement.
+     */
+    public void setZoomControlsGravity(int zoomControlsGravity) {
+        this.zoomControlsGravity = zoomControlsGravity;
+        mapView.requestLayout();
+    }
 
-	/**
-	 * Set background drawable of the zoom in button.
-	 * 
-	 * @param resId
-	 *            resource id of drawable.
-	 */
-	public void setZoomInResource(int resId) {
-		buttonZoomIn.setBackgroundResource(resId);
-	}
+    /**
+     * Set orientation of zoom controls.
+     *
+     * @param orientation one of the four orientations.
+     */
+    public void setZoomControlsOrientation(Orientation orientation) {
+        setOrientation(orientation.layoutOrientation);
+        setZoomInFirst(orientation.zoomInFirst);
+    }
 
-	/**
-	 * Sets the maximum zoom level of the map.
-	 * <p>
-	 * The maximum possible zoom level of the MapView depends also on other elements. For example, downloading map tiles
-	 * may only be possible up to a certain zoom level. Setting a higher maximum zoom level has no effect in this case.
-	 * 
-	 * @param zoomLevelMax
-	 *            the maximum zoom level.
-	 * @throws IllegalArgumentException
-	 *             if the maximum zoom level is smaller than the current minimum zoom level.
-	 */
-	public void setZoomLevelMax(byte zoomLevelMax) {
-		if (zoomLevelMax < this.zoomLevelMin) {
-			throw new IllegalArgumentException();
-		}
-		this.zoomLevelMax = zoomLevelMax;
-	}
+    /**
+     * For horizontal orientation, "zoom in first" means the zoom in button will appear on top of the zoom out button.<br/>
+     * For vertical orientation, "zoom in first" means the zoom in button will appear to the left of the zoom out
+     * button.
+     *
+     * @param zoomInFirst zoom in button will be first in layout.
+     */
+    public void setZoomInFirst(boolean zoomInFirst) {
+        this.removeAllViews();
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        if (zoomInFirst) {
+            this.addView(buttonZoomIn, layoutParams);
+            this.addView(buttonZoomOut, layoutParams);
+        } else {
+            this.addView(buttonZoomOut, layoutParams);
+            this.addView(buttonZoomIn, layoutParams);
+        }
+    }
 
-	/**
-	 * Sets the minimum zoom level of the map.
-	 * 
-	 * @param zoomLevelMin
-	 *            the minimum zoom level.
-	 * @throws IllegalArgumentException
-	 *             if the minimum zoom level is larger than the current maximum zoom level.
-	 */
-	public void setZoomLevelMin(byte zoomLevelMin) {
-		if (zoomLevelMin > this.zoomLevelMax) {
-			throw new IllegalArgumentException();
-		}
-		this.zoomLevelMin = zoomLevelMin;
-	}
+    /**
+     * Set background drawable of the zoom in button.
+     *
+     * @param resId resource id of drawable.
+     */
+    public void setZoomInResource(int resId) {
+        buttonZoomIn.setBackgroundResource(resId);
+    }
 
-	/**
-	 * Set background drawable of the zoom out button.
-	 * 
-	 * @param resId
-	 *            resource id of drawable.
-	 */
-	public void setZoomOutResource(int resId) {
-		buttonZoomOut.setBackgroundResource(resId);
-	}
+    /**
+     * Sets the maximum zoom level of the map.
+     * <p/>
+     * The maximum possible zoom level of the MapView depends also on other elements. For example, downloading map tiles
+     * may only be possible up to a certain zoom level. Setting a higher maximum zoom level has no effect in this case.
+     *
+     * @param zoomLevelMax the maximum zoom level.
+     * @throws IllegalArgumentException if the maximum zoom level is smaller than the current minimum zoom level.
+     */
+    public void setZoomLevelMax(byte zoomLevelMax) {
+        if (zoomLevelMax < this.zoomLevelMin) {
+            throw new IllegalArgumentException();
+        }
+        this.zoomLevelMax = zoomLevelMax;
+    }
 
-	/**
-	 * Set auto-repeat delay of the zoom buttons.
-	 * 
-	 * @param ms
-	 *            delay in ms.
-	 */
-	public void setZoomSpeed(long ms) {
-		buttonZoomIn.setZoomSpeed(ms);
-		buttonZoomOut.setZoomSpeed(ms);
-	}
+    /**
+     * Sets the minimum zoom level of the map.
+     *
+     * @param zoomLevelMin the minimum zoom level.
+     * @throws IllegalArgumentException if the minimum zoom level is larger than the current maximum zoom level.
+     */
+    public void setZoomLevelMin(byte zoomLevelMin) {
+        if (zoomLevelMin > this.zoomLevelMax) {
+            throw new IllegalArgumentException();
+        }
+        this.zoomLevelMin = zoomLevelMin;
+    }
 
-	public void show() {
-		fade(View.VISIBLE, 0.0f, 1.0f);
-	}
+    /**
+     * Set background drawable of the zoom out button.
+     *
+     * @param resId resource id of drawable.
+     */
+    public void setZoomOutResource(int resId) {
+        buttonZoomOut.setBackgroundResource(resId);
+    }
 
-	private void showZoomControls() {
-		this.zoomControlsHideHandler.removeMessages(MSG_ZOOM_CONTROLS_HIDE);
-		if (getVisibility() != View.VISIBLE) {
-			this.show();
-		}
-	}
+    /**
+     * Set auto-repeat delay of the zoom buttons.
+     *
+     * @param ms delay in ms.
+     */
+    public void setZoomSpeed(long ms) {
+        buttonZoomIn.setZoomSpeed(ms);
+        buttonZoomOut.setZoomSpeed(ms);
+    }
 
-	private void showZoomControlsWithTimeout() {
-		showZoomControls();
-		this.zoomControlsHideHandler.sendEmptyMessageDelayed(MSG_ZOOM_CONTROLS_HIDE, ZOOM_CONTROLS_TIMEOUT);
-	}
+    public void show() {
+        fade(View.VISIBLE, 0.0f, 1.0f);
+    }
+
+    private void showZoomControls() {
+        this.zoomControlsHideHandler.removeMessages(MSG_ZOOM_CONTROLS_HIDE);
+        if (getVisibility() != View.VISIBLE) {
+            this.show();
+        }
+    }
+
+    private void showZoomControlsWithTimeout() {
+        showZoomControls();
+        this.zoomControlsHideHandler.sendEmptyMessageDelayed(MSG_ZOOM_CONTROLS_HIDE, ZOOM_CONTROLS_TIMEOUT);
+    }
 }

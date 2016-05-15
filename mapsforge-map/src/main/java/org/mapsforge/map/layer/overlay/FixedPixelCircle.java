@@ -25,49 +25,39 @@ import org.mapsforge.core.model.Point;
  */
 public class FixedPixelCircle extends Circle {
 
-	/**
-	 * @param latLong
-	 *            the initial center point of this circle (may be null).
-	 * @param radius
-	 *            the initial non-negative radius of this circle in pixels.
-	 * @param paintFill
-	 *            the initial {@code Paint} used to fill this circle (may be null).
-	 * @param paintStroke
-	 *            the initial {@code Paint} used to stroke this circle (may be null).
-	 * @throws IllegalArgumentException
-	 *             if the given {@code radius} is negative or {@link Float#NaN}.
-	 */
-	public FixedPixelCircle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
-		this(latLong, radius, paintFill, paintStroke, false);
-	}
+    /**
+     * @param latLong     the initial center point of this circle (may be null).
+     * @param radius      the initial non-negative radius of this circle in pixels.
+     * @param paintFill   the initial {@code Paint} used to fill this circle (may be null).
+     * @param paintStroke the initial {@code Paint} used to stroke this circle (may be null).
+     * @throws IllegalArgumentException if the given {@code radius} is negative or {@link Float#NaN}.
+     */
+    public FixedPixelCircle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke) {
+        this(latLong, radius, paintFill, paintStroke, false);
+    }
 
-	/**
-	 * @param latLong
-	 *            the initial center point of this circle (may be null).
-	 * @param radius
-	 *            the initial non-negative radius of this circle in pixels.
-	 * @param paintFill
-	 *            the initial {@code Paint} used to fill this circle (may be null).
-	 * @param paintStroke
-	 *            the initial {@code Paint} used to stroke this circle (may be null).
-	 * @param keepAligned if set to true it will keep the bitmap aligned with the map, to avoid
-	 *                    a moving effect of a bitmap shader.
-	 * @throws IllegalArgumentException
-	 *             if the given {@code radius} is negative or {@link Float#NaN}.
-	 */
-	public FixedPixelCircle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke, boolean keepAligned) {
-		super(latLong, radius, paintFill, paintStroke, keepAligned);
-	}
+    /**
+     * @param latLong     the initial center point of this circle (may be null).
+     * @param radius      the initial non-negative radius of this circle in pixels.
+     * @param paintFill   the initial {@code Paint} used to fill this circle (may be null).
+     * @param paintStroke the initial {@code Paint} used to stroke this circle (may be null).
+     * @param keepAligned if set to true it will keep the bitmap aligned with the map, to avoid
+     *                    a moving effect of a bitmap shader.
+     * @throws IllegalArgumentException if the given {@code radius} is negative or {@link Float#NaN}.
+     */
+    public FixedPixelCircle(LatLong latLong, float radius, Paint paintFill, Paint paintStroke, boolean keepAligned) {
+        super(latLong, radius, paintFill, paintStroke, keepAligned);
+    }
 
-	public boolean contains(Point center, Point point) {
-		return center.distance(point) < this.getRadius();
-	}
+    public boolean contains(Point center, Point point) {
+        return center.distance(point) < this.getRadius();
+    }
 
-	/**
-	 * @return the non-negative radius of this circle in pixels.
-	 */
-	@Override
-	protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-		return (int) (this.getRadius() * this.displayModel.getScaleFactor());
-	}
+    /**
+     * @return the non-negative radius of this circle in pixels.
+     */
+    @Override
+    protected int getRadiusInPixels(double latitude, byte zoomLevel) {
+        return (int) (this.getRadius() * this.displayModel.getScaleFactor());
+    }
 }

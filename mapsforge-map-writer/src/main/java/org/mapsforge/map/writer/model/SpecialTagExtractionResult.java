@@ -15,77 +15,71 @@
 package org.mapsforge.map.writer.model;
 
 public class SpecialTagExtractionResult {
-	private final short elevation;
-	private final String housenumber;
-	private final byte layer;
-	private final String name;
-	private final String ref;
-	private final String type;
+    private final short elevation;
+    private final String housenumber;
+    private final byte layer;
+    private final String name;
+    private final String ref;
+    private final String type;
 
-	/**
-	 * @param name
-	 *            the name
-	 * @param ref
-	 *            the ref
-	 * @param housenumber
-	 *            the housenumber
-	 * @param layer
-	 *            the layer
-	 * @param elevation
-	 *            the elevation
-	 * @param type
-	 *            the type
-	 */
-	public SpecialTagExtractionResult(String name, String ref, String housenumber, byte layer, short elevation,
-			String type) {
-		super();
-		this.name = name;
-		this.ref = ref;
-		this.housenumber = housenumber;
-		this.layer = layer;
-		this.elevation = elevation;
-		this.type = type;
-	}
+    /**
+     * @param name        the name
+     * @param ref         the ref
+     * @param housenumber the housenumber
+     * @param layer       the layer
+     * @param elevation   the elevation
+     * @param type        the type
+     */
+    public SpecialTagExtractionResult(String name, String ref, String housenumber, byte layer, short elevation,
+                                      String type) {
+        super();
+        this.name = name;
+        this.ref = ref;
+        this.housenumber = housenumber;
+        this.layer = layer;
+        this.elevation = elevation;
+        this.type = type;
+    }
 
-	/**
-	 * @return the elevation
-	 */
-	public final short getElevation() {
-		return this.elevation;
-	}
+    /**
+     * @return the elevation
+     */
+    public final short getElevation() {
+        return this.elevation;
+    }
 
-	/**
-	 * @return the housenumber
-	 */
-	public final String getHousenumber() {
-		return this.housenumber;
-	}
+    /**
+     * @return the housenumber
+     */
+    public final String getHousenumber() {
+        return this.housenumber;
+    }
 
-	/**
-	 * @return the layer
-	 */
-	public final byte getLayer() {
-		return this.layer;
-	}
+    /**
+     * @return the layer
+     */
+    public final byte getLayer() {
+        return this.layer;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public final String getName() {
-		return this.name;
-	}
+    /**
+     * @return the name
+     */
+    public final String getName() {
+        return this.name;
+    }
 
-	/**
-	 * @return the ref
-	 */
-	public final String getRef() {
-		return this.ref;
-	}
+    /**
+     * @return the ref
+     */
+    public final String getRef() {
+        return this.ref;
+    }
 
-	/**
-	 * @return the type
-	 */
-	public final String getType() {
-		return this.type;
-	}
+    /**
+     * @return the type
+     */
+    public final String getType() {
+        return this.type;
+    }
 }

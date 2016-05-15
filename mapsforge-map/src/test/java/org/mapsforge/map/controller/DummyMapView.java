@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,90 +22,106 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
 public class DummyMapView implements MapView {
-	public int repaintCounter;
+    public int repaintCounter;
 
-	@Override
-	public void addLayer(Layer layer) {
-		// no-op
-	}
+    @Override
+    public void addLayer(Layer layer) {
+        // no-op
+    }
 
-	@Override
-	public void destroy() {
-		// do nothing
-	}
+    @Override
+    public void destroy() {
+        // do nothing
+    }
 
-	@Override
-	public void destroyAll() {
-		// do nothing
-	}
+    @Override
+    public void destroyAll() {
+        // do nothing
+    }
 
-	@Override
-	public BoundingBox getBoundingBox() {
-		return null;
-	}
+    @Override
+    public BoundingBox getBoundingBox() {
+        return null;
+    }
 
-	@Override
-	public Dimension getDimension() {
-		return null;
-	}
+    @Override
+    public Dimension getDimension() {
+        return null;
+    }
 
-	@Override
-	public FpsCounter getFpsCounter() {
-		return null;
-	}
+    @Override
+    public FpsCounter getFpsCounter() {
+        return null;
+    }
 
-	@Override
-	public FrameBuffer getFrameBuffer() {
-		return null;
-	}
+    @Override
+    public FrameBuffer getFrameBuffer() {
+        return null;
+    }
 
-	@Override
-	public int getHeight() {
-		return 0;
-	}
+    @Override
+    public int getHeight() {
+        return 0;
+    }
 
-	@Override
-	public LayerManager getLayerManager() {
-		return null;
-	}
+    @Override
+    public LayerManager getLayerManager() {
+        return null;
+    }
 
-	@Override
-	public MapScaleBar getMapScaleBar() {
-		return null;
-	}
+    @Override
+    public MapScaleBar getMapScaleBar() {
+        return null;
+    }
 
-	@Override
-	public Model getModel() {
-		return null;
-	}
+    @Override
+    public MapViewProjection getMapViewProjection() {
+        return null;
+    }
 
-	@Override
-	public int getWidth() {
-		return 0;
-	}
+    @Override
+    public Model getModel() {
+        return null;
+    }
 
-	@Override
-	public void repaint() {
-		++this.repaintCounter;
-	}
+    @Override
+    public int getWidth() {
+        return 0;
+    }
 
-	@Override
-	public void setCenter(LatLong center) {
-		// no-op
-	}
+    @Override
+    public void repaint() {
+        ++this.repaintCounter;
+    }
 
-	@Override
-	public void setMapScaleBar(MapScaleBar mapScaleBar) {
-		// no-op
-	}
+    @Override
+    public void setCenter(LatLong center) {
+        // no-op
+    }
 
-	@Override
-	public void setZoomLevel(byte zoomLevel) {
-		// no-op
-	}
+    @Override
+    public void setMapScaleBar(MapScaleBar mapScaleBar) {
+        // no-op
+    }
+
+    @Override
+    public void setZoomLevel(byte zoomLevel) {
+        // no-op
+    }
+
+    @Override
+    public void setZoomLevelMax(byte zoomLevelMax) {
+        // no-op
+    }
+
+    @Override
+    public void setZoomLevelMin(byte zoomLevelMin) {
+        // no-op
+    }
 }

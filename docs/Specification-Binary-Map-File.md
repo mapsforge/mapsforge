@@ -14,11 +14,11 @@ The map file consists of several sub-files, each storing the map objects for a d
 
 - All latitude and longitude coordinates are stored in microdegrees (degrees × 10<sup>6</sup>).
 - Numeric fields with a fixed byte size are stored with *Big Endian* byte order.
-- Unsigned numeric fields with a variable byte encoding are marked with *`VBE-U` INT* and stored as follows:
+- Unsigned numeric fields with a variable byte encoding are marked with *`VBE-U` INT* and stored using [unsigned LEB128](https://en.wikipedia.org/wiki/LEB128#Unsigned_LEB128) format as follows:
   - the first bit of each byte is used for continuation info, the other seven bits for data.
   - the value of the first bit is 1 if the following byte belongs to the field, 0 otherwise.
   - each byte holds seven bits of the numeric value, starting with the least significant ones.
-- Signed numeric fields with a variable byte encoding are marked with *`VBE-S` INT* and stored as follows:
+- Signed numeric fields with a variable byte encoding are marked with *`VBE-S` INT* and stored using [signed LEB128](https://en.wikipedia.org/wiki/LEB128#Signed_LEB128) format as follows:
   - the first bit of each byte is used for continuation info, the other six (last byte) or seven (all other bytes) bits for data.
   - the value of the first bit is 1 if the following byte belongs to the field, 0 otherwise.
   - each byte holds six (last byte) or seven (all other bytes) bits of the numeric value, starting with the least significant ones.
@@ -66,7 +66,7 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 |16||bounding box|geo coordinates of the bounding box in microdegrees as 4\*4-byte *INT*, in the order minLat, minLon, maxLat, maxLon|
 |2||tile size|the tile size in pixels (e.g. 256)|
 |variable||projection|defines the projection used to create this file as a string|
-|1||flags|<ul><li>1. bit: flag for existence of debug information</li><li>2. bit: flag for existence of the *map start position* field</li><li>3. bit: flag for existence of the *start zoom level* field</li><li>4. bit: flag for existence of the *language(s) preference* field</li><li>5. bit: flag for existence of the *comment* field</li><li>6. bit: flag for existence of the *created by* field</li><li>7.-8. bit: reserved for future use</li></ul>|
+|1||flags|<ul><li>1. bit (mask 0x80): flag for existence of debug information</li><li>2. bit (mask 0x40): flag for existence of the *map start position* field</li><li>3. bit (mask 0x20): flag for existence of the *start zoom level* field</li><li>4. bit (mask 0x10): flag for existence of the *language(s) preference* field</li><li>5. bit (mask 0x08): flag for existence of the *comment* field</li><li>6. bit (mask 0x04): flag for existence of the *created by* field</li><li>7.-8. bit (mask 0x02, 0x01): reserved for future use</li></ul>|
 |8|yes|map start position|geo coordinate in microdegrees as 2\*4-byte *INT*, in the order lat, lon|
 |1|yes|start zoom level|zoom level of the map at first load|
 |variable|yes|language(s) preference|The preferred language(s) for names as defined in ISO 639-1 or ISO 639-2. This field is copied from the preferred-languages option of the map writer.|](|variable||zoom interval configuration|<ul><li>for each zoom interval:<ul><li>base zoom level as *BYTE*</li><li>minimal zoom level as *BYTE*</li><li>maximal zoom level as *BYTE*</li><li>absolute start position of the sub file as 8-byte *LONG*</li><li>size of the sub-file as 8-byte *LONG*</li></ul></li></ul>|) as string|
@@ -91,7 +91,7 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 
 |**bytes**|**optional**|**name**|**description**|
 |---------|------------|--------|---------------|
-|5||index entry|<ul><li>1. bit: flag to indicate whether the tile is completely covered by water (e.g. a tile amidst the ocean)</li><li>2.-40. bit: offset of the tile in the sub file as 5-byte *LONG* (optional debug information and index size is also counted)<br />If the tile is empty offset(tile,,i,,) = offset(tile,,i+1,,)</li></ul>|
+|5||index entry|<ul><li>1. bit (mask: 0x80 00 00 00 00): flag to indicate whether the tile is completely covered by water (e.g. a tile amidst the ocean)</li><li>2.-40. bit (mask: 0x7f ff ff ff ff): 39 bit offset of the tile in the sub file as 5-bytes *LONG* (optional debug information and index size is also counted; byte order is BigEndian i.e. most significant byte first)<br />If the tile is empty offset(tile,,i,,) = offset(tile,,i+1,,)</li></ul><br />Note: to calculate how many tile index entries there will be, use the formulae at [http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames] to find out how many tiles will be covered by the bounding box at the base zoom level of the sub file|
 
 
 ### Tile header
@@ -144,7 +144,35 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 |**bytes**|**optional**|**name**|**description**|
 |---------|------------|--------|---------------|
 |variable||number of way coordinate blocks|The amount of following way coordinate blocks as *`VBE-U` INT*. An amount larger than 1 indicates a multipolygon with the first block representing the outer way coordinates and the following blocks the inner way coordinates.|
-|variable||way coordinate block|for each way coordinate block:<ul><li>amount of way nodes of this way as *`VBE-U` INT*</li><li>geo coordinate difference to the top-left corner of the current tile as *`VBE-S` INT*, in the order lat-diff, lon-diff</li><li>geo coordinates of the remaining way nodes stored as differences to the previous way node in microdegrees as 2 × *`VBE-S` INT* in the order lat-diff, lon-diff. Let x1 be the lat of the previous way node and x2 be the lat of the current way node. Then the difference is defined as x2 - x1.</li></ul>|
+|variable||way coordinate block|for each way coordinate block:<ul><li>amount of way nodes of this way as *`VBE-U` INT*</li><li>geo coordinate difference to the top-left corner of the current tile as *`VBE-S` INT*, in the order lat-diff, lon-diff</li><li>geo coordinates of the remaining way nodes stored as differences to the previous way node in microdegrees as 2 × *`VBE-S` INT* in the order lat-diff, lon-diff using either single or double delta encoding (see below).</li></ul>|
+
+Coordinates in a way data block are encoded in either 'single-delta' or 'double-delta' format according to the flag in the way properties. The encoder chooses the most efficient format on a way-by-way basis so most maps will contain examples of both types.
+
+For single-delta encoding the lat-diff and lon-diff values describe the offset of the node compared to its predecessor.
+
+    let x1 be the lat of the previous way node and x2 be the lat of the current way node.
+    Then the difference is defined as x2 - x1.
+
+For double-delta encoding the lat-diff and lon-diff values describe the *change* of the offset compared to the offset of the previous node, after the first node. The following pseudocode shows how to decode coordinates encoded in this format.
+
+    set 'previousLat' to the latitude (in degrees) of the top-left corner of the current tile
+    set 'previousOffset' to zero
+    set 'count' to zero
+    
+    while there is data to be read:
+        set 'encodedValue' to the next item of data (VBE-S, in microdegrees) 
+        set 'lat' to 'previousLat' + 'previousOffset' + 'encodedValue' / 1,000,000
+        if 'count' is greater than zero, then
+            set 'previousOffset' to 'lat' - 'previousLat'
+        set 'previousLat' to 'lat'
+        
+        'lat' contains the decoded data
+        add one to 'count'
+
+
+    Example of decoding double-delta encoded data:
+        tile origin: 52.123456, encoded values: -8286, -57, 129, -15, -129
+        decoded values: 52.11517, 52.115113, 52.115185, 52.115242, 52.11517
 
 
 ## Version history

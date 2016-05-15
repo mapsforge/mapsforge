@@ -18,12 +18,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class SerializerTest {
-	@Test
-	public void getFiveBytesTest() {
-		byte[] fiveBytes = Serializer.getFiveBytes(0);
-		Assert.assertArrayEquals(new byte[] { 0, 0, 0, 0, 0 }, fiveBytes);
+    @Test
+    public void getFiveBytesTest() {
+        byte[] fiveBytes = Serializer.getFiveBytes(0);
+        Assert.assertArrayEquals(new byte[]{0, 0, 0, 0, 0}, fiveBytes);
 
-		fiveBytes = Serializer.getFiveBytes(5);
-		Assert.assertArrayEquals(new byte[] { 0, 0, 0, 0, 5 }, fiveBytes);
-	}
+        fiveBytes = Serializer.getFiveBytes(5);
+        Assert.assertArrayEquals(new byte[]{0, 0, 0, 0, 5}, fiveBytes);
+    }
 }

@@ -42,15 +42,15 @@ TileRendererLayer:
 ------------------
 
 The TileRendererLayer now takes an additional argument of the TileBasedLabelStore, which receives the labels that the DatabaseRenderer produces. Alongside the TileRendererLayer we need the LabelLayer.
-
-	protected void createLayers() {
-		TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-				this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false);
-		mapView.getLayerManager().getLayers().add(tileRendererLayer);
-		LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
-		mapView.getLayerManager().getLayers().add(labelLayer);
-	}
-
+```java
+    protected void createLayers() {
+        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
+                this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, true);
+        mapView.getLayerManager().getLayers().add(tileRendererLayer);
+        LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
+        mapView.getLayerManager().getLayers().add(labelLayer);
+    }
+```
 If you do not want any labels, pass null for the TileBasedLabelStore to the TileRendererLayer.
 
 Rendertheme Change:

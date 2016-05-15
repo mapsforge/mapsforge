@@ -14,12 +14,12 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-import java.util.List;
-
 import org.mapsforge.core.model.Tag;
 
-interface AttributeMatcher {
-	boolean isCoveredBy(AttributeMatcher attributeMatcher);
+import java.util.List;
 
-	boolean matches(List<Tag> tags);
+interface AttributeMatcher {
+    boolean isCoveredBy(AttributeMatcher attributeMatcher);
+
+    boolean matches(List<Tag> tags);
 }

@@ -23,26 +23,25 @@ import java.util.logging.Logger;
  * A utility class with IO-specific helper methods.
  */
 public final class IOUtils {
-	private static final Logger LOGGER = Logger.getLogger(IOUtils.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(IOUtils.class.getName());
 
-	/**
-	 * Invokes the {@link Closeable#close()} method on the given object. If an {@link IOException} occurs during the
-	 * method call, it will be caught and logged on level {@link Level#WARNING}.
-	 * 
-	 * @param closeable
-	 *            the data source which should be closed (may be null).
-	 */
-	public static void closeQuietly(Closeable closeable) {
-		try {
-			if (closeable != null) {
-				closeable.close();
-			}
-		} catch (IOException e) {
-			LOGGER.log(Level.FINE, e.getMessage(), e);
-		}
-	}
+    /**
+     * Invokes the {@link Closeable#close()} method on the given object. If an {@link IOException} occurs during the
+     * method call, it will be caught and logged on level {@link Level#WARNING}.
+     *
+     * @param closeable the data source which should be closed (may be null).
+     */
+    public static void closeQuietly(Closeable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.FINE, e.getMessage(), e);
+        }
+    }
 
-	private IOUtils() {
-		throw new IllegalStateException();
-	}
+    private IOUtils() {
+        throw new IllegalStateException();
+    }
 }

@@ -7,7 +7,7 @@ These are the downloads for version 0.6.0 (2015-11-25)
 - [Samples 0.6.0 application (old permissions)](http://ci.mapsforge.org/job/0.6.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-oldpermissions-debug.apk)
 - [Samples 0.6.0 application (runtime permissions)](http://ci.mapsforge.org/job/0.6.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-runtimepermissions-debug.apk)
 - [Release 0.6.0 jars](http://ci.mapsforge.org/job/0.6.0/)
-- [Writer plugin](http://ci.mapsforge.org/job/0.6.0/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.6.0.jar)
+- [Map writer plugin](http://ci.mapsforge.org/job/0.6.0/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.6.0.jar)
 
 # Release 0.5.2 Downloads
 
@@ -15,7 +15,7 @@ These are the downloads for version 0.5.2 (2015-08-23)
 
 - [Samples 0.5.2 application](http://ci.mapsforge.org/job/0.5.2/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Release 0.5.2 jars](http://ci.mapsforge.org/job/0.5.2/)
-- [Writer plugin](http://ci.mapsforge.org/job/0.5.2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-release-0.5.2.jar) 
+- [Map writer plugin](http://ci.mapsforge.org/job/0.5.2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-release-0.5.2.jar)
 
 # Release 0.5.1 Downloads
 
@@ -23,7 +23,7 @@ These are the downloads for version 0.5.1 (2015-03-18)
 
 - [Samples 0.5.1 application](http://ci.mapsforge.org/job/0.5.1/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Release 0.5.1 jars](http://ci.mapsforge.org/job/0.5.1/)
-- [Writer plugin](http://ci.mapsforge.org/job/0.5.1/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.1.jar) 
+- [Map writer plugin](http://ci.mapsforge.org/job/0.5.1/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.1.jar)
 
 # Release 0.5.0 Downloads
 
@@ -31,7 +31,7 @@ These are the downloads for version 0.5.0 (2014-12-08)
 
 - [Samples 0.5.0 application](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-debug.apk)
 - [Release 0.5.0 jars](http://ci.mapsforge.org/job/release-0.5.0/)
-- [Writer plugin](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0.jar) 
+- [Map writer plugin](http://ci.mapsforge.org/job/release-0.5.0/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.5.0.jar)
 
 # Old releases
 
@@ -46,8 +46,9 @@ The master branch contains the latest mapsforge version considered stable, but n
 - [Latest Samples application (master - old permissions)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-oldpermissions-debug.apk)
 - [Latest Samples application (master - runtime permissions)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/Applications/Android/Samples/build/outputs/apk/Samples-runtimepermissions-debug.apk)
 - [Latest Jars (master)](http://ci.mapsforge.org/job/master/)
-- [Writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-master-SNAPSHOT-jar-with-dependencies.jar)
-  
+- [Map writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-master-SNAPSHOT-jar-with-dependencies.jar)
+- [POI writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-master-SNAPSHOT-jar-with-dependencies.jar)
+
 # Latest Development Build Downloads
 
 These are the latest development builds from the dev branch. Use this branch if you want the latest mapsforge features and are prepared for some instability.
@@ -55,4 +56,5 @@ These are the latest development builds from the dev branch. Use this branch if 
 - [Latest Samples application (dev - old permissions)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-oldpermissions-debug.apk)
 - [Latest Samples application (dev - runtime permissions)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-runtimepermissions-debug.apk)
 - [Latest Jars (dev)](http://ci.mapsforge.org/job/dev/)
-- [Writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT-jar-with-dependencies.jar)
+- [Map writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT-jar-with-dependencies.jar)
+- [POI writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-dev-SNAPSHOT-jar-with-dependencies.jar)

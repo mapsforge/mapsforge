@@ -14,118 +14,118 @@
  */
 package org.mapsforge.map.writer.util;
 
-import java.util.List;
-
-import org.junit.Test;
-import org.mapsforge.map.writer.model.TDWay;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.util.Assert;
 
+import org.junit.Test;
+import org.mapsforge.map.writer.model.TDWay;
+
+import java.util.List;
+
 public class JTSUtilsTest {
-	@Test
-	public void testBuildGeometryFromInValidPolygon() {
-		// Some of these tests do not really make sense, as not everything that is a closed line
-		// should be a polygon in OSM.
-		String testfile = "invalid-polygon.wkt";
-		// String expectedfile = "invalid-polygon-repaired.wkt";
+    @Test
+    public void testBuildGeometryFromInValidPolygon() {
+        // Some of these tests do not really make sense, as not everything that is a closed line
+        // should be a polygon in OSM.
+        String testfile = "invalid-polygon.wkt";
+        // String expectedfile = "invalid-polygon-repaired.wkt";
 
-		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
-		Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));
-		Assert.isTrue(geometry instanceof LineString);
-		Assert.isTrue(geometry.isValid());
-	}
+        List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
+        Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));
+        Assert.isTrue(geometry instanceof LineString);
+        Assert.isTrue(geometry.isValid());
+    }
 
-	@Test
-	public void testBuildGeometryFromInValidPolygonWithHoles() {
-		String testfile = "invalid-polygon-2-inner-rings.wkt";
-		String expectedfile = "invalid-polygon-2-inner-rings-repaired.wkt";
+    @Test
+    public void testBuildGeometryFromInValidPolygonWithHoles() {
+        String testfile = "invalid-polygon-2-inner-rings.wkt";
+        String expectedfile = "invalid-polygon-2-inner-rings-repaired.wkt";
 
-		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
-		Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));
-		Assert.isTrue(geometry instanceof Polygon);
-		Assert.isTrue(geometry.isValid());
+        List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
+        Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));
+        Assert.isTrue(geometry instanceof Polygon);
+        Assert.isTrue(geometry.isValid());
 
-		Geometry expected = MockingUtils.readWKTFile(expectedfile);
-		Assert.equals(expected, geometry);
-	}
+        Geometry expected = MockingUtils.readWKTFile(expectedfile);
+        Assert.equals(expected, geometry);
+    }
 
-	@Test
-	public void testBuildGeometryFromValidPolygon() {
-		String testfile = "valid-polygon.wkt";
+    @Test
+    public void testBuildGeometryFromValidPolygon() {
+        String testfile = "valid-polygon.wkt";
 
-		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
-		Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));
-		Assert.isTrue(geometry instanceof LineString);
-		Assert.isTrue(geometry.isValid());
-	}
+        List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
+        Geometry geometry = JTSUtils.toJtsGeometry(ways.get(0), ways.subList(1, ways.size()));
+        Assert.isTrue(geometry instanceof LineString);
+        Assert.isTrue(geometry.isValid());
+    }
 
-	@Test
-	public void testBuildInvalidPolygon() {
-		String testfile = "invalid-polygon.wkt";
+    @Test
+    public void testBuildInvalidPolygon() {
+        String testfile = "invalid-polygon.wkt";
 
-		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
-		Polygon polygon = JTSUtils.buildPolygon(ways.get(0));
-		Geometry expected = MockingUtils.readWKTFile(testfile);
-		Assert.isTrue(!polygon.isValid());
-		Assert.equals(expected, polygon);
-	}
+        List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
+        Polygon polygon = JTSUtils.buildPolygon(ways.get(0));
+        Geometry expected = MockingUtils.readWKTFile(testfile);
+        Assert.isTrue(!polygon.isValid());
+        Assert.equals(expected, polygon);
+    }
 
-	@Test
-	public void testBuildInValidPolygonWith2InnerRings() {
-		String testfile = "invalid-polygon-2-inner-rings.wkt";
+    @Test
+    public void testBuildInValidPolygonWith2InnerRings() {
+        String testfile = "invalid-polygon-2-inner-rings.wkt";
 
-		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
-		Polygon polygon = JTSUtils.buildPolygon(ways.get(0), ways.subList(1, ways.size()));
-		Geometry expected = MockingUtils.readWKTFile(testfile);
-		Assert.isTrue(!polygon.isValid());
-		Assert.equals(expected, polygon);
-	}
+        List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
+        Polygon polygon = JTSUtils.buildPolygon(ways.get(0), ways.subList(1, ways.size()));
+        Geometry expected = MockingUtils.readWKTFile(testfile);
+        Assert.isTrue(!polygon.isValid());
+        Assert.equals(expected, polygon);
+    }
 
-	@Test
-	public void testBuildNonSimpleMultiLineString() {
-		String testfile = "non-simple-multilinestring.wkt";
+    @Test
+    public void testBuildNonSimpleMultiLineString() {
+        String testfile = "non-simple-multilinestring.wkt";
 
-		List<TDWay> ways = MockingUtils.wktMultiLineStringToWays(testfile);
-		MultiLineString mls = JTSUtils.buildMultiLineString(ways.get(0), ways.subList(1, ways.size()));
-		Geometry expected = MockingUtils.readWKTFile(testfile);
-		Assert.isTrue(!mls.isSimple());
-		Assert.equals(expected, mls);
-	}
+        List<TDWay> ways = MockingUtils.wktMultiLineStringToWays(testfile);
+        MultiLineString mls = JTSUtils.buildMultiLineString(ways.get(0), ways.subList(1, ways.size()));
+        Geometry expected = MockingUtils.readWKTFile(testfile);
+        Assert.isTrue(!mls.isSimple());
+        Assert.equals(expected, mls);
+    }
 
-	@Test
-	public void testBuildValidMultiLineString() {
-		String testfile = "valid-multilinestring.wkt";
+    @Test
+    public void testBuildValidMultiLineString() {
+        String testfile = "valid-multilinestring.wkt";
 
-		List<TDWay> ways = MockingUtils.wktMultiLineStringToWays(testfile);
-		MultiLineString mls = JTSUtils.buildMultiLineString(ways.get(0), ways.subList(1, ways.size()));
-		Geometry expected = MockingUtils.readWKTFile(testfile);
-		Assert.isTrue(mls.isValid());
-		Assert.equals(expected, mls);
-	}
+        List<TDWay> ways = MockingUtils.wktMultiLineStringToWays(testfile);
+        MultiLineString mls = JTSUtils.buildMultiLineString(ways.get(0), ways.subList(1, ways.size()));
+        Geometry expected = MockingUtils.readWKTFile(testfile);
+        Assert.isTrue(mls.isValid());
+        Assert.equals(expected, mls);
+    }
 
-	@Test
-	public void testBuildValidPolygon() {
-		String testfile = "valid-polygon.wkt";
+    @Test
+    public void testBuildValidPolygon() {
+        String testfile = "valid-polygon.wkt";
 
-		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
-		Polygon polygon = JTSUtils.buildPolygon(ways.get(0));
-		Geometry expected = MockingUtils.readWKTFile(testfile);
-		Assert.isTrue(polygon.isValid());
-		Assert.equals(expected, polygon);
-	}
+        List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
+        Polygon polygon = JTSUtils.buildPolygon(ways.get(0));
+        Geometry expected = MockingUtils.readWKTFile(testfile);
+        Assert.isTrue(polygon.isValid());
+        Assert.equals(expected, polygon);
+    }
 
-	@Test
-	public void testBuildValidPolygonWith2InnerRings() {
-		String testfile = "valid-polygon-2-inner-rings.wkt";
+    @Test
+    public void testBuildValidPolygonWith2InnerRings() {
+        String testfile = "valid-polygon-2-inner-rings.wkt";
 
-		List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
-		Polygon polygon = JTSUtils.buildPolygon(ways.get(0), ways.subList(1, ways.size()));
-		Geometry expected = MockingUtils.readWKTFile(testfile);
-		Assert.isTrue(polygon.isValid());
-		Assert.equals(expected, polygon);
-	}
+        List<TDWay> ways = MockingUtils.wktPolygonToWays(testfile);
+        Polygon polygon = JTSUtils.buildPolygon(ways.get(0), ways.subList(1, ways.size()));
+        Geometry expected = MockingUtils.readWKTFile(testfile);
+        Assert.isTrue(polygon.isValid());
+        Assert.equals(expected, polygon);
+    }
 }

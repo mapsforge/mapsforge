@@ -32,273 +32,268 @@ import org.mapsforge.map.view.MapView;
  * A MapScaleBar displays the ratio of a distance on the map to the corresponding distance on the ground.
  */
 public abstract class MapScaleBar {
-	public static enum ScaleBarPosition { BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT }
+    public static enum ScaleBarPosition {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT}
 
-	/**
-	 * Default position of the scale bar.
-	 */
-	private static final ScaleBarPosition DEFAULT_SCALE_BAR_POSITION = ScaleBarPosition.BOTTOM_LEFT;
+    /**
+     * Default position of the scale bar.
+     */
+    private static final ScaleBarPosition DEFAULT_SCALE_BAR_POSITION = ScaleBarPosition.BOTTOM_LEFT;
 
-	private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
-	private static final int DEFAULT_VERTICAL_MARGIN = 0;
-	private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
+    private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+    private static final int DEFAULT_VERTICAL_MARGIN = 0;
+    private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
 
-	protected final DisplayModel displayModel;
-	protected DistanceUnitAdapter distanceUnitAdapter;
-	protected final GraphicFactory graphicFactory;
-	protected final Bitmap mapScaleBitmap;
-	protected final Canvas mapScaleCanvas;
-	private final MapViewDimension mapViewDimension;
-	private final MapViewPosition mapViewPosition;
-	private int marginHorizontal;
-	private int marginVertical;
-	private MapPosition prevMapPosition;
-	protected boolean redrawNeeded;
-	protected ScaleBarPosition scaleBarPosition;
-	private boolean visible;
+    protected final DisplayModel displayModel;
+    protected DistanceUnitAdapter distanceUnitAdapter;
+    protected final GraphicFactory graphicFactory;
+    protected final Bitmap mapScaleBitmap;
+    protected final Canvas mapScaleCanvas;
+    private final MapViewDimension mapViewDimension;
+    private final MapViewPosition mapViewPosition;
+    private int marginHorizontal;
+    private int marginVertical;
+    private MapPosition prevMapPosition;
+    protected boolean redrawNeeded;
+    protected ScaleBarPosition scaleBarPosition;
+    private boolean visible;
 
-	/**
-	 * Internal class used by calculateScaleBarLengthAndValue
-	 */
-	protected static class ScaleBarLengthAndValue {
-		public int scaleBarLength;
-		public int scaleBarValue;
+    /**
+     * Internal class used by calculateScaleBarLengthAndValue
+     */
+    protected static class ScaleBarLengthAndValue {
+        public int scaleBarLength;
+        public int scaleBarValue;
 
-		public ScaleBarLengthAndValue(int scaleBarLength, int scaleBarValue) {
-			this.scaleBarLength = scaleBarLength;
-			this.scaleBarValue = scaleBarValue;
-		}
-	}
+        public ScaleBarLengthAndValue(int scaleBarLength, int scaleBarValue) {
+            this.scaleBarLength = scaleBarLength;
+            this.scaleBarValue = scaleBarValue;
+        }
+    }
 
-	public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, DisplayModel displayModel,
-			GraphicFactory graphicFactory, int width, int height) {
-		this.mapViewPosition = mapViewPosition;
-		this.mapViewDimension = mapViewDimension;
-		this.displayModel = displayModel;
-		this.graphicFactory = graphicFactory;
-		this.mapScaleBitmap = graphicFactory.createBitmap((int) (width * this.displayModel.getScaleFactor()),
-				(int) (height * this.displayModel.getScaleFactor()));
+    public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, DisplayModel displayModel,
+                       GraphicFactory graphicFactory, int width, int height) {
+        this.mapViewPosition = mapViewPosition;
+        this.mapViewDimension = mapViewDimension;
+        this.displayModel = displayModel;
+        this.graphicFactory = graphicFactory;
+        this.mapScaleBitmap = graphicFactory.createBitmap((int) (width * this.displayModel.getScaleFactor()),
+                (int) (height * this.displayModel.getScaleFactor()));
 
-		this.marginHorizontal = DEFAULT_HORIZONTAL_MARGIN;
-		this.marginVertical = DEFAULT_VERTICAL_MARGIN;
-		this.scaleBarPosition = DEFAULT_SCALE_BAR_POSITION;
+        this.marginHorizontal = DEFAULT_HORIZONTAL_MARGIN;
+        this.marginVertical = DEFAULT_VERTICAL_MARGIN;
+        this.scaleBarPosition = DEFAULT_SCALE_BAR_POSITION;
 
-		this.mapScaleCanvas = graphicFactory.createCanvas();
-		this.mapScaleCanvas.setBitmap(this.mapScaleBitmap);
-		this.distanceUnitAdapter = MetricUnitAdapter.INSTANCE;
-		this.visible = true;
-		this.redrawNeeded = true;
-	}
+        this.mapScaleCanvas = graphicFactory.createCanvas();
+        this.mapScaleCanvas.setBitmap(this.mapScaleBitmap);
+        this.distanceUnitAdapter = MetricUnitAdapter.INSTANCE;
+        this.visible = true;
+        this.redrawNeeded = true;
+    }
 
-	/**
-	 * Free all resources
-	 */
-	public void destroy() {
-		this.mapScaleBitmap.decrementRefCount();
-		this.mapScaleCanvas.destroy();
-	}
+    /**
+     * Free all resources
+     */
+    public void destroy() {
+        this.mapScaleBitmap.decrementRefCount();
+        this.mapScaleCanvas.destroy();
+    }
 
-	/**
-	 * @return true if this {@link MapScaleBar} is visible
-	 */
-	public boolean isVisible() {
-		return this.visible;
-	}
+    /**
+     * @return true if this {@link MapScaleBar} is visible
+     */
+    public boolean isVisible() {
+        return this.visible;
+    }
 
-	/**
-	 * Set the visibility of this {@link MapScaleBar}
-	 * 
-	 * @param visible
-	 *            true if the MapScaleBar should be visible, false otherwise
-	 */
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
+    /**
+     * Set the visibility of this {@link MapScaleBar}
+     *
+     * @param visible true if the MapScaleBar should be visible, false otherwise
+     */
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 
-	/**
-	 * @return the {@link DistanceUnitAdapter} in use by this MapScaleBar
-	 */
-	public DistanceUnitAdapter getDistanceUnitAdapter() {
-		return this.distanceUnitAdapter;
-	}
+    /**
+     * @return the {@link DistanceUnitAdapter} in use by this MapScaleBar
+     */
+    public DistanceUnitAdapter getDistanceUnitAdapter() {
+        return this.distanceUnitAdapter;
+    }
 
-	/**
-	 * Set the {@link DistanceUnitAdapter} for the MapScaleBar
-	 * 
-	 * @param distanceUnitAdapter
-	 *            The {@link DistanceUnitAdapter} to be used by this {@link MapScaleBar}
-	 */
-	public void setDistanceUnitAdapter(DistanceUnitAdapter distanceUnitAdapter) {
-		if (distanceUnitAdapter == null) {
-			throw new IllegalArgumentException("adapter must not be null");
-		}
-		this.distanceUnitAdapter = distanceUnitAdapter;
-		this.redrawNeeded = true;
-	}
+    /**
+     * Set the {@link DistanceUnitAdapter} for the MapScaleBar
+     *
+     * @param distanceUnitAdapter The {@link DistanceUnitAdapter} to be used by this {@link MapScaleBar}
+     */
+    public void setDistanceUnitAdapter(DistanceUnitAdapter distanceUnitAdapter) {
+        if (distanceUnitAdapter == null) {
+            throw new IllegalArgumentException("adapter must not be null");
+        }
+        this.distanceUnitAdapter = distanceUnitAdapter;
+        this.redrawNeeded = true;
+    }
 
-	public int getMarginHorizontal() {
-		return marginHorizontal;
-	}
+    public int getMarginHorizontal() {
+        return marginHorizontal;
+    }
 
-	public void setMarginHorizontal(int marginHorizontal) {
-		if (this.marginHorizontal != marginHorizontal) {
-			this.marginHorizontal = marginHorizontal;
-			this.redrawNeeded = true;
-		}
-	}
+    public void setMarginHorizontal(int marginHorizontal) {
+        if (this.marginHorizontal != marginHorizontal) {
+            this.marginHorizontal = marginHorizontal;
+            this.redrawNeeded = true;
+        }
+    }
 
-	public int getMarginVertical() {
-		return marginVertical;
-	}
+    public int getMarginVertical() {
+        return marginVertical;
+    }
 
-	public void setMarginVertical(int marginVertical) {
-		if (this.marginVertical != marginVertical) {
-			this.marginVertical = marginVertical;
-			this.redrawNeeded = true;
-		}
-	}
+    public void setMarginVertical(int marginVertical) {
+        if (this.marginVertical != marginVertical) {
+            this.marginVertical = marginVertical;
+            this.redrawNeeded = true;
+        }
+    }
 
-	public ScaleBarPosition getScaleBarPosition() {
-		return scaleBarPosition;
-	}
+    public ScaleBarPosition getScaleBarPosition() {
+        return scaleBarPosition;
+    }
 
-	public void setScaleBarPosition(ScaleBarPosition scaleBarPosition) {
-		if (this.scaleBarPosition != scaleBarPosition) {
-			this.scaleBarPosition = scaleBarPosition;
-			this.redrawNeeded = true;
-		}
-	}
+    public void setScaleBarPosition(ScaleBarPosition scaleBarPosition) {
+        if (this.scaleBarPosition != scaleBarPosition) {
+            this.scaleBarPosition = scaleBarPosition;
+            this.redrawNeeded = true;
+        }
+    }
 
-	private int calculatePositionLeft(int left, int right, int width) {
-		switch (scaleBarPosition) {
-		case BOTTOM_LEFT:
-		case TOP_LEFT:
-			return marginHorizontal;
+    private int calculatePositionLeft(int left, int right, int width) {
+        switch (scaleBarPosition) {
+            case BOTTOM_LEFT:
+            case TOP_LEFT:
+                return marginHorizontal;
 
-		case BOTTOM_CENTER:
-		case TOP_CENTER:
-			return (right - left - width) / 2;
+            case BOTTOM_CENTER:
+            case TOP_CENTER:
+                return (right - left - width) / 2;
 
-		case BOTTOM_RIGHT:
-		case TOP_RIGHT:
-			return right - left - width - marginHorizontal;
-		}
+            case BOTTOM_RIGHT:
+            case TOP_RIGHT:
+                return right - left - width - marginHorizontal;
+        }
 
-		throw new IllegalArgumentException("unknown horizontal position: " + scaleBarPosition);
-	}
+        throw new IllegalArgumentException("unknown horizontal position: " + scaleBarPosition);
+    }
 
-	private int calculatePositionTop(int top, int bottom, int height) {
-		switch (scaleBarPosition) {
-		case TOP_CENTER:
-		case TOP_LEFT:
-		case TOP_RIGHT:
-			return marginVertical;
+    private int calculatePositionTop(int top, int bottom, int height) {
+        switch (scaleBarPosition) {
+            case TOP_CENTER:
+            case TOP_LEFT:
+            case TOP_RIGHT:
+                return marginVertical;
 
-		case BOTTOM_CENTER:
-		case BOTTOM_LEFT:
-		case BOTTOM_RIGHT:
-			return bottom - top - height - marginVertical;
-		}
+            case BOTTOM_CENTER:
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                return bottom - top - height - marginVertical;
+        }
 
-		throw new IllegalArgumentException("unknown vertical position: " + scaleBarPosition);
-	}
+        throw new IllegalArgumentException("unknown vertical position: " + scaleBarPosition);
+    }
 
-	/**
-	 * Calculates the required length and value of the scalebar
-	 * 
-	 * @param unitAdapter
-	 *            the DistanceUnitAdapter to calculate for
-	 * @return a {@link ScaleBarLengthAndValue} object containing the required scaleBarLength and scaleBarValue
-	 */
-	protected ScaleBarLengthAndValue calculateScaleBarLengthAndValue(DistanceUnitAdapter unitAdapter) {
-		this.prevMapPosition = this.mapViewPosition.getMapPosition();
-		double groundResolution = MercatorProjection.calculateGroundResolution(this.prevMapPosition.latLong.latitude,
-				MercatorProjection.getMapSize(this.prevMapPosition.zoomLevel, this.displayModel.getTileSize()));
+    /**
+     * Calculates the required length and value of the scalebar
+     *
+     * @param unitAdapter the DistanceUnitAdapter to calculate for
+     * @return a {@link ScaleBarLengthAndValue} object containing the required scaleBarLength and scaleBarValue
+     */
+    protected ScaleBarLengthAndValue calculateScaleBarLengthAndValue(DistanceUnitAdapter unitAdapter) {
+        this.prevMapPosition = this.mapViewPosition.getMapPosition();
+        double groundResolution = MercatorProjection.calculateGroundResolution(this.prevMapPosition.latLong.latitude,
+                MercatorProjection.getMapSize(this.prevMapPosition.zoomLevel, this.displayModel.getTileSize()));
 
-		groundResolution = groundResolution / unitAdapter.getMeterRatio();
-		int[] scaleBarValues = unitAdapter.getScaleBarValues();
+        groundResolution = groundResolution / unitAdapter.getMeterRatio();
+        int[] scaleBarValues = unitAdapter.getScaleBarValues();
 
-		int scaleBarLength = 0;
-		int mapScaleValue = 0;
+        int scaleBarLength = 0;
+        int mapScaleValue = 0;
 
-		for (int i = 0; i < scaleBarValues.length; ++i) {
-			mapScaleValue = scaleBarValues[i];
-			scaleBarLength = (int) (mapScaleValue / groundResolution);
-			if (scaleBarLength < (this.mapScaleBitmap.getWidth() - 10)) {
-				break;
-			}
-		}
+        for (int i = 0; i < scaleBarValues.length; ++i) {
+            mapScaleValue = scaleBarValues[i];
+            scaleBarLength = (int) (mapScaleValue / groundResolution);
+            if (scaleBarLength < (this.mapScaleBitmap.getWidth() - 10)) {
+                break;
+            }
+        }
 
-		return new ScaleBarLengthAndValue(scaleBarLength, mapScaleValue);
-	}
+        return new ScaleBarLengthAndValue(scaleBarLength, mapScaleValue);
+    }
 
-	/**
-	 * Calculates the required length and value of the scalebar using the current {@link DistanceUnitAdapter}
-	 * 
-	 * @return a {@link ScaleBarLengthAndValue} object containing the required scaleBarLength and scaleBarValue
-	 */
-	protected ScaleBarLengthAndValue calculateScaleBarLengthAndValue() {
-		return calculateScaleBarLengthAndValue(this.distanceUnitAdapter);
-	}
+    /**
+     * Calculates the required length and value of the scalebar using the current {@link DistanceUnitAdapter}
+     *
+     * @return a {@link ScaleBarLengthAndValue} object containing the required scaleBarLength and scaleBarValue
+     */
+    protected ScaleBarLengthAndValue calculateScaleBarLengthAndValue() {
+        return calculateScaleBarLengthAndValue(this.distanceUnitAdapter);
+    }
 
-	/**
-	 * Called from {@link MapView}
-	 * 
-	 * @param graphicContext
-	 *            The graphicContext to use to draw the MapScaleBar
-	 */
-	public void draw(GraphicContext graphicContext) {
-		if (!this.visible) {
-			return;
-		}
+    /**
+     * Called from {@link MapView}
+     *
+     * @param graphicContext The graphicContext to use to draw the MapScaleBar
+     */
+    public void draw(GraphicContext graphicContext) {
+        if (!this.visible) {
+            return;
+        }
 
-		if (this.mapViewDimension.getDimension() == null) {
-			return;
-		}
+        if (this.mapViewDimension.getDimension() == null) {
+            return;
+        }
 
-		if (this.isRedrawNecessary()) {
-			redraw(this.mapScaleCanvas);
-			this.redrawNeeded = false;
-		}
+        if (this.isRedrawNecessary()) {
+            redraw(this.mapScaleCanvas);
+            this.redrawNeeded = false;
+        }
 
-		int positionLeft = calculatePositionLeft(0, this.mapViewDimension.getDimension().width, this.mapScaleBitmap.getWidth());
-		int positionTop = calculatePositionTop(0, this.mapViewDimension.getDimension().height, this.mapScaleBitmap.getHeight());
+        int positionLeft = calculatePositionLeft(0, this.mapViewDimension.getDimension().width, this.mapScaleBitmap.getWidth());
+        int positionTop = calculatePositionTop(0, this.mapViewDimension.getDimension().height, this.mapScaleBitmap.getHeight());
 
-		graphicContext.drawBitmap(this.mapScaleBitmap, positionLeft, positionTop);
-	}
+        graphicContext.drawBitmap(this.mapScaleBitmap, positionLeft, positionTop);
+    }
 
-	/**
-	 * The scalebar will be redrawn on the next draw()
-	 */
-	public void redrawScaleBar() {
-		this.redrawNeeded = true;
-	}
+    /**
+     * The scalebar will be redrawn on the next draw()
+     */
+    public void redrawScaleBar() {
+        this.redrawNeeded = true;
+    }
 
-	/**
-	 * Determines if a redraw is necessary or not
-	 * 
-	 * @return true if redraw is necessary, false otherwise
-	 */
-	protected boolean isRedrawNecessary() {
-		if (this.redrawNeeded || this.prevMapPosition == null) {
-			return true;
-		}
+    /**
+     * Determines if a redraw is necessary or not
+     *
+     * @return true if redraw is necessary, false otherwise
+     */
+    protected boolean isRedrawNecessary() {
+        if (this.redrawNeeded || this.prevMapPosition == null) {
+            return true;
+        }
 
-		MapPosition currentMapPosition = this.mapViewPosition.getMapPosition();
-		if (currentMapPosition.zoomLevel != this.prevMapPosition.zoomLevel) {
-			return true;
-		}
+        MapPosition currentMapPosition = this.mapViewPosition.getMapPosition();
+        if (currentMapPosition.zoomLevel != this.prevMapPosition.zoomLevel) {
+            return true;
+        }
 
-		double latitudeDiff = Math.abs(currentMapPosition.latLong.latitude - this.prevMapPosition.latLong.latitude);
-		return latitudeDiff > LATITUDE_REDRAW_THRESHOLD;
-	}
+        double latitudeDiff = Math.abs(currentMapPosition.latLong.latitude - this.prevMapPosition.latLong.latitude);
+        return latitudeDiff > LATITUDE_REDRAW_THRESHOLD;
+    }
 
-	/**
-	 * Redraw the mapScaleBar. Make sure you always apply this.displayModel.getScaleFactor() to all coordinates and
-	 * dimensions.
-	 * 
-	 * @param canvas
-	 *            The canvas to draw on
-	 */
-	protected abstract void redraw(Canvas canvas);
+    /**
+     * Redraw the mapScaleBar. Make sure you always apply this.displayModel.getScaleFactor() to all coordinates and
+     * dimensions.
+     *
+     * @param canvas The canvas to draw on
+     */
+    protected abstract void redraw(Canvas canvas);
 }

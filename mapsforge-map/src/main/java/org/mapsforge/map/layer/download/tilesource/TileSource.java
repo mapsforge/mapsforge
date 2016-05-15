@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,40 +16,64 @@
  */
 package org.mapsforge.map.layer.download.tilesource;
 
+import org.mapsforge.core.model.Tile;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.mapsforge.core.model.Tile;
-
 public interface TileSource {
-	/**
-	 * Returns the default time-to-live (TTL) for cached tiles.
-	 */
-	long getDefaultTimeToLive();
+    /**
+     * Returns the default time-to-live (TTL) for cached tiles.
+     */
+    long getDefaultTimeToLive();
 
-	/**
-	 * @return the maximum number of parallel requests which this {@code TileSource} supports.
-	 */
-	int getParallelRequestsLimit();
+    /**
+     * @return the maximum number of parallel requests which this {@code TileSource} supports.
+     */
+    int getParallelRequestsLimit();
 
-	/**
-	 * @return the download URL for the given {@code Tile}.
-	 */
-	URL getTileUrl(Tile tile) throws MalformedURLException;
+    /**
+     * @return the HTTP referer (may be null).
+     */
+    String getReferer();
 
-	/**
-	 * @return the maximum zoom level which this {@code TileSource} supports.
-	 */
-	byte getZoomLevelMax();
+    /**
+     * @return the download URL for the given {@code Tile}.
+     */
+    URL getTileUrl(Tile tile) throws MalformedURLException;
 
-	/**
-	 * @return the minimum zoom level which this {@code TileSource} supports.
-	 */
-	byte getZoomLevelMin();
+    /**
+     * @return the connect timeout value in milliseconds.
+     */
+    int getTimeoutConnect();
 
-	/**
-	 * @return the if the {@code TileSource} supports transparent images.
-	 */
-	boolean hasAlpha();
+    /**
+     * @return the read timeout value in milliseconds.
+     */
+    int getTimeoutRead();
 
+    /**
+     * @return the HTTP user agent (may be null).
+     */
+    String getUserAgent();
+
+    /**
+     * @return the maximum zoom level which this {@code TileSource} supports.
+     */
+    byte getZoomLevelMax();
+
+    /**
+     * @return the minimum zoom level which this {@code TileSource} supports.
+     */
+    byte getZoomLevelMin();
+
+    /**
+     * @return the if the {@code TileSource} supports transparent images.
+     */
+    boolean hasAlpha();
+
+    /**
+     * @return whether or not to follow HTTP redirects.
+     */
+    boolean isFollowRedirects();
 }

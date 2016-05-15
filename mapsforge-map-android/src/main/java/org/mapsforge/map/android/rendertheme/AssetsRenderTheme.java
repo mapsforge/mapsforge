@@ -14,78 +14,78 @@
  */
 package org.mapsforge.map.android.rendertheme;
 
-import java.io.IOException;
-import java.io.InputStream;
+import android.content.Context;
+import android.text.TextUtils;
 
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
-import android.content.Context;
-import android.text.TextUtils;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder.
  */
 public class AssetsRenderTheme implements XmlRenderTheme {
 
-	private final String assetName;
-	private final InputStream inputStream;
-	private final XmlRenderThemeMenuCallback menuCallback;
-	private final String relativePathPrefix;
+    private final String assetName;
+    private final InputStream inputStream;
+    private final XmlRenderThemeMenuCallback menuCallback;
+    private final String relativePathPrefix;
 
-	/*
-	 * Creates AssetsRenderTheme without menuCallback for compatibility with version 0.4.x
-	 */
-	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException {
-		this(context, relativePathPrefix, fileName, null);
-	}
+    /*
+     * Creates AssetsRenderTheme without menuCallback for compatibility with version 0.4.x
+     */
+    public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException {
+        this(context, relativePathPrefix, fileName, null);
+    }
 
-	public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) throws IOException {
-		this.assetName = fileName;
-		this.relativePathPrefix = relativePathPrefix;
-		this.inputStream = context.getAssets().open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.assetName);
-		this.menuCallback = menuCallback;
-	}
+    public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) throws IOException {
+        this.assetName = fileName;
+        this.relativePathPrefix = relativePathPrefix;
+        this.inputStream = context.getAssets().open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.assetName);
+        this.menuCallback = menuCallback;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!(obj instanceof AssetsRenderTheme)) {
-			return false;
-		}
-		AssetsRenderTheme other = (AssetsRenderTheme) obj;
-		if (this.assetName != other.assetName) {
-			return false;
-		}
-		if (this.relativePathPrefix != other.relativePathPrefix) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof AssetsRenderTheme)) {
+            return false;
+        }
+        AssetsRenderTheme other = (AssetsRenderTheme) obj;
+        if (this.assetName != other.assetName) {
+            return false;
+        }
+        if (this.relativePathPrefix != other.relativePathPrefix) {
+            return false;
+        }
+        return true;
+    }
 
 
-	@Override
-	public XmlRenderThemeMenuCallback getMenuCallback() {
-		return this.menuCallback;
-	}
+    @Override
+    public XmlRenderThemeMenuCallback getMenuCallback() {
+        return this.menuCallback;
+    }
 
-	@Override
-	public String getRelativePathPrefix() {
-		return this.relativePathPrefix;
-	}
+    @Override
+    public String getRelativePathPrefix() {
+        return this.relativePathPrefix;
+    }
 
-	@Override
-	public InputStream getRenderThemeAsStream() {
-		return this.inputStream;
-	}
+    @Override
+    public InputStream getRenderThemeAsStream() {
+        return this.inputStream;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
-		result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
+        result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
+        return result;
+    }
 }

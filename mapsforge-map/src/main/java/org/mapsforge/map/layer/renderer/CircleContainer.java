@@ -17,16 +17,16 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.model.Point;
 
 class CircleContainer implements ShapeContainer {
-	final Point point;
-	final float radius;
+    final Point point;
+    final float radius;
 
-	CircleContainer(Point point, float radius) {
-		this.point = point;
-		this.radius = radius;
-	}
+    CircleContainer(Point point, float radius) {
+        this.point = point;
+        this.radius = radius;
+    }
 
-	@Override
-	public ShapeType getShapeType() {
-		return ShapeType.CIRCLE;
-	}
+    @Override
+    public ShapeType getShapeType() {
+        return ShapeType.CIRCLE;
+    }
 }

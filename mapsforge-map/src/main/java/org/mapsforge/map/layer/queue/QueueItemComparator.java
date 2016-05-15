@@ -18,20 +18,20 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 final class QueueItemComparator implements Comparator<QueueItem<?>>, Serializable {
-	static final QueueItemComparator INSTANCE = new QueueItemComparator();
-	private static final long serialVersionUID = 1L;
+    static final QueueItemComparator INSTANCE = new QueueItemComparator();
+    private static final long serialVersionUID = 1L;
 
-	private QueueItemComparator() {
-		// do nothing
-	}
+    private QueueItemComparator() {
+        // do nothing
+    }
 
-	@Override
-	public int compare(QueueItem<?> queueItem1, QueueItem<?> queueItem2) {
-		if (queueItem1.getPriority() < queueItem2.getPriority()) {
-			return -1;
-		} else if (queueItem1.getPriority() > queueItem2.getPriority()) {
-			return 1;
-		}
-		return 0;
-	}
+    @Override
+    public int compare(QueueItem<?> queueItem1, QueueItem<?> queueItem2) {
+        if (queueItem1.getPriority() < queueItem2.getPriority()) {
+            return -1;
+        } else if (queueItem1.getPriority() > queueItem2.getPriority()) {
+            return 1;
+        }
+        return 0;
+    }
 }

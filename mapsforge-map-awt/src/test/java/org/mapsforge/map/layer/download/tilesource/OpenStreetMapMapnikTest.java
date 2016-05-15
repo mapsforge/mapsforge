@@ -15,31 +15,31 @@
  */
 package org.mapsforge.map.layer.download.tilesource;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class OpenStreetMapMapnikTest {
-	@Test
-	public void getParallelRequestsLimitTest() {
-		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		Assert.assertTrue(tileSource.getParallelRequestsLimit() > 0);
-	}
+    @Test
+    public void getParallelRequestsLimitTest() {
+        TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+        Assert.assertTrue(tileSource.getParallelRequestsLimit() > 0);
+    }
 
-	@Test
-	public void getTileUrlTest() throws MalformedURLException {
-		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+    @Test
+    public void getTileUrlTest() throws MalformedURLException {
+        TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 
-		URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2, 256));
-		Assert.assertTrue(tileUrl.toExternalForm().endsWith(".tile.openstreetmap.org:80/2/0/1.png"));
-	}
+        URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2, 256));
+        Assert.assertTrue(tileUrl.toExternalForm().endsWith(".tile.openstreetmap.org:80/2/0/1.png"));
+    }
 
-	@Test
-	public void getZoomLevelTest() {
-		TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-		Assert.assertTrue(tileSource.getZoomLevelMin() < tileSource.getZoomLevelMax());
-	}
+    @Test
+    public void getZoomLevelTest() {
+        TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+        Assert.assertTrue(tileSource.getZoomLevelMin() < tileSource.getZoomLevelMax());
+    }
 }

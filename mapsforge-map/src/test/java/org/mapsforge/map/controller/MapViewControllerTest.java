@@ -19,15 +19,15 @@ import org.junit.Test;
 import org.mapsforge.map.model.Model;
 
 public class MapViewControllerTest {
-	@Test
-	public void repaintTest() {
-		DummyMapView dummyMapView = new DummyMapView();
-		Model model = new Model();
-		MapViewController.create(dummyMapView, model);
-		Assert.assertEquals(0, dummyMapView.repaintCounter);
+    @Test
+    public void repaintTest() {
+        DummyMapView dummyMapView = new DummyMapView();
+        Model model = new Model();
+        MapViewController.create(dummyMapView, model);
+        Assert.assertEquals(0, dummyMapView.repaintCounter);
 
-		model.mapViewPosition.setZoomLevel((byte) 1);
-		// this does not hold with zoom animation
-		// Assert.assertEquals(1, dummyMapView.repaintCounter);
-	}
+        model.mapViewPosition.setZoomLevel((byte) 1);
+        // this does not hold with zoom animation
+        // Assert.assertEquals(1, dummyMapView.repaintCounter);
+    }
 }

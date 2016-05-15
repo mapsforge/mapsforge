@@ -18,12 +18,11 @@ package org.mapsforge.map.writer.model;
  * Resolves node entities.
  */
 public interface NodeResolver {
-	/**
-	 * Resolves the node entity with the given id.
-	 * 
-	 * @param id
-	 *            the id of the node entity
-	 * @return a node entity if existent, null otherwise
-	 */
-	TDNode getNode(long id);
+    /**
+     * Resolves the node entity with the given id.
+     *
+     * @param id the id of the node entity
+     * @return a node entity if existent, null otherwise
+     */
+    TDNode getNode(long id);
 }

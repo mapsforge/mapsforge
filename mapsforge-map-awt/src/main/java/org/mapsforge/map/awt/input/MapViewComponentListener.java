@@ -22,15 +22,15 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class MapViewComponentListener extends ComponentAdapter {
-	private final MapView mapView;
+    private final MapView mapView;
 
-	public MapViewComponentListener(MapView mapView) {
-		this.mapView = mapView;
-	}
+    public MapViewComponentListener(MapView mapView) {
+        this.mapView = mapView;
+    }
 
-	@Override
-	public void componentResized(ComponentEvent componentEvent) {
-		Dimension size = this.mapView.getSize();
-		this.mapView.getModel().mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
-	}
+    @Override
+    public void componentResized(ComponentEvent componentEvent) {
+        Dimension size = this.mapView.getSize();
+        this.mapView.getModel().mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
+    }
 }

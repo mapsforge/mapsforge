@@ -22,85 +22,84 @@ import org.mapsforge.core.model.Point;
 
 public abstract class PointTextContainer extends MapElementContainer {
 
-	public final boolean isVisible;
-	public final int maxTextWidth;
-	public final Paint paintBack;
-	public final Paint paintFront;
-	public final Position position;
-	public final SymbolContainer symbolContainer;
-	public final String text;
-	public final int textHeight;
-	public final int textWidth;
+    public final boolean isVisible;
+    public final int maxTextWidth;
+    public final Paint paintBack;
+    public final Paint paintFront;
+    public final Position position;
+    public final SymbolContainer symbolContainer;
+    public final String text;
+    public final int textHeight;
+    public final int textWidth;
 
-	/**
-	 * Create a new point container, that holds the x-y coordinates of a point, a text variable, two paint objects, and
-	 * a reference on a symbolContainer, if the text is connected with a POI.
-	 */
-	protected PointTextContainer(Point point, Display display, int priority, String text, Paint paintFront, Paint paintBack,
-	                             SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		super(point, display, priority);
+    /**
+     * Create a new point container, that holds the x-y coordinates of a point, a text variable, two paint objects, and
+     * a reference on a symbolContainer, if the text is connected with a POI.
+     */
+    protected PointTextContainer(Point point, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+                                 SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+        super(point, display, priority);
 
-		this.maxTextWidth = maxTextWidth;
-		this.text = text;
-		this.symbolContainer = symbolContainer;
-		this.paintFront = paintFront;
-		this.paintBack = paintBack;
-		this.position = position;
-		if (paintBack != null) {
-			this.textWidth = paintBack.getTextWidth(text);
-			this.textHeight = paintBack.getTextHeight(text);
-		} else {
-			this.textWidth = paintFront.getTextWidth(text);
-			this.textHeight = paintFront.getTextHeight(text);
-		}
-		this.isVisible = !this.paintFront.isTransparent() || (this.paintBack != null && !this.paintBack.isTransparent());
-	}
+        this.maxTextWidth = maxTextWidth;
+        this.text = text;
+        this.symbolContainer = symbolContainer;
+        this.paintFront = paintFront;
+        this.paintBack = paintBack;
+        this.position = position;
+        if (paintBack != null) {
+            this.textWidth = paintBack.getTextWidth(text);
+            this.textHeight = paintBack.getTextHeight(text);
+        } else {
+            this.textWidth = paintFront.getTextWidth(text);
+            this.textHeight = paintFront.getTextHeight(text);
+        }
+        this.isVisible = !this.paintFront.isTransparent() || (this.paintBack != null && !this.paintBack.isTransparent());
+    }
 
-	@Override
-	public boolean clashesWith(MapElementContainer other) {
-		if (super.clashesWith(other)) {
-			return true;
-		}
-		if (!(other instanceof PointTextContainer)) {
-			return false;
-		}
-		PointTextContainer ptc = (PointTextContainer) other;
-		if (this.text.equals(ptc.text) && this.xy.distance(ptc.xy) < 200) {
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean clashesWith(MapElementContainer other) {
+        if (super.clashesWith(other)) {
+            return true;
+        }
+        if (!(other instanceof PointTextContainer)) {
+            return false;
+        }
+        PointTextContainer ptc = (PointTextContainer) other;
+        if (this.text.equals(ptc.text) && this.xy.distance(ptc.xy) < 200) {
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof PointTextContainer)) {
-			return false;
-		}
-		PointTextContainer other = (PointTextContainer) obj;
-		if (!this.text.equals(other.text)) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (!(obj instanceof PointTextContainer)) {
+            return false;
+        }
+        PointTextContainer other = (PointTextContainer) obj;
+        if (!this.text.equals(other.text)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		int result = super.hashCode();
-		result = 31 * result + text.hashCode();
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + text.hashCode();
+        return result;
+    }
 
 
-
-	@Override
-	public String toString() {
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(super.toString());
-		stringBuilder.append(", text=");
-		stringBuilder.append(this.text);
-		return stringBuilder.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(super.toString());
+        stringBuilder.append(", text=");
+        stringBuilder.append(this.text);
+        return stringBuilder.toString();
+    }
 }

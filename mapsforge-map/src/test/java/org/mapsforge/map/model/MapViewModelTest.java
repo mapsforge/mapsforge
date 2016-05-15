@@ -20,23 +20,23 @@ import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.model.common.DummyObserver;
 
 public class MapViewModelTest {
-	@Test
-	public void dimensionTest() {
-		MapViewDimension mapViewDimension = new MapViewDimension();
-		Assert.assertNull(mapViewDimension.getDimension());
+    @Test
+    public void dimensionTest() {
+        MapViewDimension mapViewDimension = new MapViewDimension();
+        Assert.assertNull(mapViewDimension.getDimension());
 
-		mapViewDimension.setDimension(new Dimension(0, 0));
-		Assert.assertEquals(new Dimension(0, 0), mapViewDimension.getDimension());
-	}
+        mapViewDimension.setDimension(new Dimension(0, 0));
+        Assert.assertEquals(new Dimension(0, 0), mapViewDimension.getDimension());
+    }
 
-	@Test
-	public void observerTest() {
-		DummyObserver dummyObserver = new DummyObserver();
-		MapViewDimension mapViewDimension = new MapViewDimension();
-		mapViewDimension.addObserver(dummyObserver);
-		Assert.assertEquals(0, dummyObserver.getCallbacks());
+    @Test
+    public void observerTest() {
+        DummyObserver dummyObserver = new DummyObserver();
+        MapViewDimension mapViewDimension = new MapViewDimension();
+        mapViewDimension.addObserver(dummyObserver);
+        Assert.assertEquals(0, dummyObserver.getCallbacks());
 
-		mapViewDimension.setDimension(new Dimension(0, 0));
-		Assert.assertEquals(1, dummyObserver.getCallbacks());
-	}
+        mapViewDimension.setDimension(new Dimension(0, 0));
+        Assert.assertEquals(1, dummyObserver.getCallbacks());
+    }
 }

@@ -18,157 +18,156 @@ package org.mapsforge.map.util;
  * An abstract base class for threads which support pausing and resuming.
  */
 public abstract class PausableThread extends Thread {
-	/**
-	 * Specifies the scheduling priority of a {@link Thread}.
-	 */
-	protected enum ThreadPriority {
-		/**
-		 * The priority between {@link #NORMAL} and {@link #HIGHEST}.
-		 */
-		ABOVE_NORMAL((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2),
+    /**
+     * Specifies the scheduling priority of a {@link Thread}.
+     */
+    protected enum ThreadPriority {
+        /**
+         * The priority between {@link #NORMAL} and {@link #HIGHEST}.
+         */
+        ABOVE_NORMAL((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2),
 
-		/**
-		 * The priority between {@link #LOWEST} and {@link #NORMAL}.
-		 */
-		BELOW_NORMAL((Thread.NORM_PRIORITY + Thread.MIN_PRIORITY) / 2),
+        /**
+         * The priority between {@link #LOWEST} and {@link #NORMAL}.
+         */
+        BELOW_NORMAL((Thread.NORM_PRIORITY + Thread.MIN_PRIORITY) / 2),
 
-		/**
-		 * The maximum priority a thread can have.
-		 */
-		HIGHEST(MAX_PRIORITY),
+        /**
+         * The maximum priority a thread can have.
+         */
+        HIGHEST(MAX_PRIORITY),
 
-		/**
-		 * The minimum priority a thread can have.
-		 */
-		LOWEST(MIN_PRIORITY),
+        /**
+         * The minimum priority a thread can have.
+         */
+        LOWEST(MIN_PRIORITY),
 
-		/**
-		 * The default priority of a thread.
-		 */
-		NORMAL(NORM_PRIORITY);
+        /**
+         * The default priority of a thread.
+         */
+        NORMAL(NORM_PRIORITY);
 
-		final int priority;
+        final int priority;
 
-		private ThreadPriority(int priority) {
-			if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
-				throw new IllegalArgumentException("invalid priority: " + priority);
-			}
-			this.priority = priority;
-		}
-	}
+        private ThreadPriority(int priority) {
+            if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
+                throw new IllegalArgumentException("invalid priority: " + priority);
+            }
+            this.priority = priority;
+        }
+    }
 
-	private boolean pausing;
-	private boolean shouldPause;
+    private boolean pausing;
+    private boolean shouldPause;
 
-	/**
-	 * Causes the current thread to wait until this thread is pausing.
-	 */
-	public final void awaitPausing() {
-		synchronized (this) {
-			while (!isInterrupted() && !isPausing()) {
-				try {
-					wait(100);
-				} catch (InterruptedException e) {
-					// restore the interrupted status
-					Thread.currentThread().interrupt();
-				}
-			}
-		}
-	}
+    /**
+     * Causes the current thread to wait until this thread is pausing.
+     */
+    public final void awaitPausing() {
+        synchronized (this) {
+            while (!isInterrupted() && !isPausing()) {
+                try {
+                    wait(100);
+                } catch (InterruptedException e) {
+                    // restore the interrupted status
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
 
-	@Override
-	public void interrupt() {
-		// first acquire the monitor which is used to call wait()
-		synchronized (this) {
-			super.interrupt();
-		}
-	}
+    @Override
+    public void interrupt() {
+        // first acquire the monitor which is used to call wait()
+        synchronized (this) {
+            super.interrupt();
+        }
+    }
 
-	/**
-	 * @return true if this thread is currently pausing, false otherwise.
-	 */
-	public final synchronized boolean isPausing() {
-		return this.pausing;
-	}
+    /**
+     * @return true if this thread is currently pausing, false otherwise.
+     */
+    public final synchronized boolean isPausing() {
+        return this.pausing;
+    }
 
-	/**
-	 * The thread should stop its work temporarily.
-	 */
-	public final synchronized void pause() {
-		if (!this.shouldPause) {
-			this.shouldPause = true;
-			notify();
-		}
-	}
+    /**
+     * The thread should stop its work temporarily.
+     */
+    public final synchronized void pause() {
+        if (!this.shouldPause) {
+            this.shouldPause = true;
+            notify();
+        }
+    }
 
-	/**
-	 * The paused thread should continue with its work.
-	 */
-	public final synchronized void proceed() {
-		if (this.shouldPause) {
-			this.shouldPause = false;
-			this.pausing = false;
-			notify();
-		}
-	}
+    /**
+     * The paused thread should continue with its work.
+     */
+    public final synchronized void proceed() {
+        if (this.shouldPause) {
+            this.shouldPause = false;
+            this.pausing = false;
+            notify();
+        }
+    }
 
-	@Override
-	public final void run() {
-		setName(getClass().getSimpleName());
-		setPriority(getThreadPriority().priority);
+    @Override
+    public final void run() {
+        setName(getClass().getSimpleName());
+        setPriority(getThreadPriority().priority);
 
-		while (!isInterrupted()) {
-			synchronized (this) {
-				while (!isInterrupted() && (this.shouldPause || !hasWork())) {
-					try {
-						if (this.shouldPause) {
-							this.pausing = true;
-						}
-						wait();
-					} catch (InterruptedException e) {
-						// restore the interrupted status
-						interrupt();
-					}
-				}
-			}
+        while (!isInterrupted()) {
+            synchronized (this) {
+                while (!isInterrupted() && (this.shouldPause || !hasWork())) {
+                    try {
+                        if (this.shouldPause) {
+                            this.pausing = true;
+                        }
+                        wait();
+                    } catch (InterruptedException e) {
+                        // restore the interrupted status
+                        interrupt();
+                    }
+                }
+            }
 
-			if (isInterrupted()) {
-				break;
-			}
+            if (isInterrupted()) {
+                break;
+            }
 
-			try {
-				doWork();
-			} catch (InterruptedException e) {
-				// restore the interrupted status
-				interrupt();
-			}
-		}
+            try {
+                doWork();
+            } catch (InterruptedException e) {
+                // restore the interrupted status
+                interrupt();
+            }
+        }
 
-		afterRun();
-	}
+        afterRun();
+    }
 
-	/**
-	 * Called once at the end of the {@link #run()} method. The default implementation is empty.
-	 */
-	protected void afterRun() {
-		// do nothing
-	}
+    /**
+     * Called once at the end of the {@link #run()} method. The default implementation is empty.
+     */
+    protected void afterRun() {
+        // do nothing
+    }
 
-	/**
-	 * Called when this thread is not paused and should do its work.
-	 * 
-	 * @throws InterruptedException
-	 *             if the thread has been interrupted.
-	 */
-	protected abstract void doWork() throws InterruptedException;
+    /**
+     * Called when this thread is not paused and should do its work.
+     *
+     * @throws InterruptedException if the thread has been interrupted.
+     */
+    protected abstract void doWork() throws InterruptedException;
 
-	/**
-	 * @return the priority which will be set for this thread.
-	 */
-	protected abstract ThreadPriority getThreadPriority();
+    /**
+     * @return the priority which will be set for this thread.
+     */
+    protected abstract ThreadPriority getThreadPriority();
 
-	/**
-	 * @return true if this thread has some work to do, false otherwise.
-	 */
-	protected abstract boolean hasWork();
+    /**
+     * @return true if this thread has some work to do, false otherwise.
+     */
+    protected abstract boolean hasWork();
 }

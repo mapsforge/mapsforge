@@ -15,44 +15,43 @@
 package org.mapsforge.map.layer.queue;
 
 class QueueItem<T extends Job> {
-	final T object;
-	private double priority;
+    final T object;
+    private double priority;
 
-	QueueItem(T object) {
-		this.object = object;
-	}
+    QueueItem(T object) {
+        this.object = object;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!(obj instanceof QueueItem)) {
-			return false;
-		}
-		QueueItem<?> other = (QueueItem<?>) obj;
-		return this.object.equals(other.object);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof QueueItem)) {
+            return false;
+        }
+        QueueItem<?> other = (QueueItem<?>) obj;
+        return this.object.equals(other.object);
+    }
 
-	@Override
-	public int hashCode() {
-		return this.object.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.object.hashCode();
+    }
 
-	/**
-	 * @return the current priority of this job, will always be a positive number including zero.
-	 */
-	double getPriority() {
-		return this.priority;
-	}
+    /**
+     * @return the current priority of this job, will always be a positive number including zero.
+     */
+    double getPriority() {
+        return this.priority;
+    }
 
-	/**
-	 * @throws IllegalArgumentException
-	 *             if the given priority is negative or {@link Double#NaN}.
-	 */
-	void setPriority(double priority) {
-		if (priority < 0 || Double.isNaN(priority)) {
-			throw new IllegalArgumentException("invalid priority: " + priority);
-		}
-		this.priority = priority;
-	}
+    /**
+     * @throws IllegalArgumentException if the given priority is negative or {@link Double#NaN}.
+     */
+    void setPriority(double priority) {
+        if (priority < 0 || Double.isNaN(priority)) {
+            throw new IllegalArgumentException("invalid priority: " + priority);
+        }
+        this.priority = priority;
+    }
 }

@@ -18,80 +18,80 @@ import java.util.Stack;
 import java.util.logging.Logger;
 
 final class RuleOptimizer {
-	private static final Logger LOGGER = Logger.getLogger(RuleOptimizer.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RuleOptimizer.class.getName());
 
-	static AttributeMatcher optimize(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
-		if (attributeMatcher instanceof AnyMatcher || attributeMatcher instanceof NegativeMatcher) {
-			return attributeMatcher;
-		} else if (attributeMatcher instanceof KeyMatcher) {
-			return optimizeKeyMatcher(attributeMatcher, ruleStack);
-		} else if (attributeMatcher instanceof ValueMatcher) {
-			return optimizeValueMatcher(attributeMatcher, ruleStack);
-		}
+    static AttributeMatcher optimize(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
+        if (attributeMatcher instanceof AnyMatcher || attributeMatcher instanceof NegativeMatcher) {
+            return attributeMatcher;
+        } else if (attributeMatcher instanceof KeyMatcher) {
+            return optimizeKeyMatcher(attributeMatcher, ruleStack);
+        } else if (attributeMatcher instanceof ValueMatcher) {
+            return optimizeValueMatcher(attributeMatcher, ruleStack);
+        }
 
-		throw new IllegalArgumentException("unknown AttributeMatcher: " + attributeMatcher);
-	}
+        throw new IllegalArgumentException("unknown AttributeMatcher: " + attributeMatcher);
+    }
 
-	static ClosedMatcher optimize(ClosedMatcher closedMatcher, Stack<Rule> ruleStack) {
-		if (closedMatcher instanceof AnyMatcher) {
-			return closedMatcher;
-		}
+    static ClosedMatcher optimize(ClosedMatcher closedMatcher, Stack<Rule> ruleStack) {
+        if (closedMatcher instanceof AnyMatcher) {
+            return closedMatcher;
+        }
 
-		for (int i = 0, n = ruleStack.size(); i < n; ++i) {
-			if (ruleStack.get(i).closedMatcher.isCoveredBy(closedMatcher)) {
-				return AnyMatcher.INSTANCE;
-			} else if (!closedMatcher.isCoveredBy(ruleStack.get(i).closedMatcher)) {
-				LOGGER.warning("unreachable rule (closed)");
-			}
-		}
+        for (int i = 0, n = ruleStack.size(); i < n; ++i) {
+            if (ruleStack.get(i).closedMatcher.isCoveredBy(closedMatcher)) {
+                return AnyMatcher.INSTANCE;
+            } else if (!closedMatcher.isCoveredBy(ruleStack.get(i).closedMatcher)) {
+                LOGGER.warning("unreachable rule (closed)");
+            }
+        }
 
-		return closedMatcher;
-	}
+        return closedMatcher;
+    }
 
-	static ElementMatcher optimize(ElementMatcher elementMatcher, Stack<Rule> ruleStack) {
-		if (elementMatcher instanceof AnyMatcher) {
-			return elementMatcher;
-		}
+    static ElementMatcher optimize(ElementMatcher elementMatcher, Stack<Rule> ruleStack) {
+        if (elementMatcher instanceof AnyMatcher) {
+            return elementMatcher;
+        }
 
-		for (int i = 0, n = ruleStack.size(); i < n; ++i) {
-			Rule rule = ruleStack.get(i);
-			if (rule.elementMatcher.isCoveredBy(elementMatcher)) {
-				return AnyMatcher.INSTANCE;
-			} else if (!elementMatcher.isCoveredBy(rule.elementMatcher)) {
-				LOGGER.warning("unreachable rule (e)");
-			}
-		}
+        for (int i = 0, n = ruleStack.size(); i < n; ++i) {
+            Rule rule = ruleStack.get(i);
+            if (rule.elementMatcher.isCoveredBy(elementMatcher)) {
+                return AnyMatcher.INSTANCE;
+            } else if (!elementMatcher.isCoveredBy(rule.elementMatcher)) {
+                LOGGER.warning("unreachable rule (e)");
+            }
+        }
 
-		return elementMatcher;
-	}
+        return elementMatcher;
+    }
 
-	private static AttributeMatcher optimizeKeyMatcher(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
-		for (int i = 0, n = ruleStack.size(); i < n; ++i) {
-			if (ruleStack.get(i) instanceof PositiveRule) {
-				PositiveRule positiveRule = (PositiveRule) ruleStack.get(i);
-				if (positiveRule.keyMatcher.isCoveredBy(attributeMatcher)) {
-					return AnyMatcher.INSTANCE;
-				}
-			}
-		}
+    private static AttributeMatcher optimizeKeyMatcher(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
+        for (int i = 0, n = ruleStack.size(); i < n; ++i) {
+            if (ruleStack.get(i) instanceof PositiveRule) {
+                PositiveRule positiveRule = (PositiveRule) ruleStack.get(i);
+                if (positiveRule.keyMatcher.isCoveredBy(attributeMatcher)) {
+                    return AnyMatcher.INSTANCE;
+                }
+            }
+        }
 
-		return attributeMatcher;
-	}
+        return attributeMatcher;
+    }
 
-	private static AttributeMatcher optimizeValueMatcher(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
-		for (int i = 0, n = ruleStack.size(); i < n; ++i) {
-			if (ruleStack.get(i) instanceof PositiveRule) {
-				PositiveRule positiveRule = (PositiveRule) ruleStack.get(i);
-				if (positiveRule.valueMatcher.isCoveredBy(attributeMatcher)) {
-					return AnyMatcher.INSTANCE;
-				}
-			}
-		}
+    private static AttributeMatcher optimizeValueMatcher(AttributeMatcher attributeMatcher, Stack<Rule> ruleStack) {
+        for (int i = 0, n = ruleStack.size(); i < n; ++i) {
+            if (ruleStack.get(i) instanceof PositiveRule) {
+                PositiveRule positiveRule = (PositiveRule) ruleStack.get(i);
+                if (positiveRule.valueMatcher.isCoveredBy(attributeMatcher)) {
+                    return AnyMatcher.INSTANCE;
+                }
+            }
+        }
 
-		return attributeMatcher;
-	}
+        return attributeMatcher;
+    }
 
-	private RuleOptimizer() {
-		throw new IllegalStateException();
-	}
+    private RuleOptimizer() {
+        throw new IllegalStateException();
+    }
 }

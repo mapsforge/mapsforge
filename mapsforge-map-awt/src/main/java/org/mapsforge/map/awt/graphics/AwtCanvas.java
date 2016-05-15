@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,242 +15,308 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.font.TextLayout;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Dimension;
 
+import java.awt.AlphaComposite;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.color.ColorSpace;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.LookupOp;
+import java.awt.image.ShortLookupTable;
+
 class AwtCanvas implements Canvas {
-	private static final String UNKNOWN_STYLE = "unknown style: ";
+    private static final String UNKNOWN_STYLE = "unknown style: ";
 
-	private BufferedImage bufferedImage;
-	private Graphics2D graphics2D;
+    private BufferedImage bufferedImage;
+    private Graphics2D graphics2D;
+    private BufferedImageOp grayscaleOp, invertOp, invertOp4;
 
-	AwtCanvas() {
-		// do nothing
-	}
+    AwtCanvas() {
+        createFilters();
+    }
 
-	AwtCanvas(Graphics2D graphics2D) {
-		this.graphics2D = graphics2D;
-		enableAntiAliasing();
-	}
+    AwtCanvas(Graphics2D graphics2D) {
+        this.graphics2D = graphics2D;
+        enableAntiAliasing();
 
-	@Override
-	public void destroy() {
-		// do nothing
-	}
+        createFilters();
+    }
 
-	@Override
-	public void drawBitmap(Bitmap bitmap, int left, int top) {
-		this.graphics2D.drawImage(AwtGraphicFactory.getBufferedImage(bitmap), left, top, null);
-	}
+    private BufferedImage applyFilter(BufferedImage src, Filter filter) {
+        if (filter == Filter.NONE) {
+            return src;
+        }
+        BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+        switch (filter) {
+            case GRAYSCALE:
+                this.grayscaleOp.filter(src, dest);
+                break;
+            case GRAYSCALE_INVERT:
+                this.grayscaleOp.filter(src, dest);
+                switch (dest.getColorModel().getNumComponents()) {
+                    case 3:
+                        this.invertOp.filter(dest, dest);
+                        break;
+                    case 4:
+                        this.invertOp4.filter(dest, dest);
+                        break;
+                }
+                break;
+            case INVERT:
+                switch (src.getColorModel().getNumComponents()) {
+                    case 3:
+                        this.invertOp.filter(src, dest);
+                        break;
+                    case 4:
+                        this.invertOp4.filter(src, dest);
+                        break;
+                }
+                break;
+        }
+        return dest;
+    }
 
-	@Override
-	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-		this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
-				AwtGraphicFactory.getAffineTransform(matrix));
-	}
+    private void createFilters() {
+        this.grayscaleOp = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
 
-	@Override
-	public void drawCircle(int x, int y, int radius, Paint paint) {
-		if (paint.isTransparent()) {
-			return;
-		}
+        short[] invert = new short[256];
+        short[] straight = new short[256];
+        for (int i = 0; i < 256; i++) {
+            invert[i] = (short) (255 - i);
+            straight[i] = (short) i;
+        }
+        this.invertOp = new LookupOp(new ShortLookupTable(0, invert), null);
+        this.invertOp4 = new LookupOp(new ShortLookupTable(0, new short[][]{invert, invert, invert, straight}), null);
+    }
 
-		AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
-		setColorAndStroke(awtPaint);
-		int doubleRadius = radius * 2;
+    @Override
+    public void destroy() {
+        // do nothing
+    }
 
-		Style style = awtPaint.style;
-		switch (style) {
-			case FILL:
-				this.graphics2D.fillOval(x - radius, y - radius, doubleRadius, doubleRadius);
-				return;
+    @Override
+    public void drawBitmap(Bitmap bitmap, int left, int top) {
+        this.graphics2D.drawImage(AwtGraphicFactory.getBufferedImage(bitmap), left, top, null);
+    }
 
-			case STROKE:
-				this.graphics2D.drawOval(x - radius, y - radius, doubleRadius, doubleRadius);
-				return;
-		}
+    @Override
+    public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
+        this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBufferedImage(bitmap), filter), left, top, null);
+    }
 
-		throw new IllegalArgumentException(UNKNOWN_STYLE + style);
-	}
+    @Override
+    public void drawBitmap(Bitmap bitmap, Matrix matrix) {
+        this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
+                AwtGraphicFactory.getAffineTransform(matrix));
+    }
 
-	@Override
-	public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
-		if (paint.isTransparent()) {
-			return;
-		}
+    @Override
+    public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+        this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBufferedImage(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+    }
 
-		setColorAndStroke(AwtGraphicFactory.getPaint(paint));
-		this.graphics2D.drawLine(x1, y1, x2, y2);
-	}
+    @Override
+    public void drawCircle(int x, int y, int radius, Paint paint) {
+        if (paint.isTransparent()) {
+            return;
+        }
 
-	@Override
-	public void drawPath(Path path, Paint paint) {
-		if (paint.isTransparent()) {
-			return;
-		}
+        AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
+        setColorAndStroke(awtPaint);
+        int doubleRadius = radius * 2;
 
-		AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
-		AwtPath awtPath = AwtGraphicFactory.getPath(path);
+        Style style = awtPaint.style;
+        switch (style) {
+            case FILL:
+                this.graphics2D.fillOval(x - radius, y - radius, doubleRadius, doubleRadius);
+                return;
 
-		setColorAndStroke(awtPaint);
-		this.graphics2D.setPaint(awtPaint.texturePaint);
+            case STROKE:
+                this.graphics2D.drawOval(x - radius, y - radius, doubleRadius, doubleRadius);
+                return;
+        }
 
-		Style style = awtPaint.style;
-		switch (style) {
-			case FILL:
-				this.graphics2D.fill(awtPath.path2D);
-				return;
+        throw new IllegalArgumentException(UNKNOWN_STYLE + style);
+    }
 
-			case STROKE:
-				this.graphics2D.draw(awtPath.path2D);
-				return;
-		}
+    @Override
+    public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
+        if (paint.isTransparent()) {
+            return;
+        }
 
-		throw new IllegalArgumentException(UNKNOWN_STYLE + style);
-	}
+        setColorAndStroke(AwtGraphicFactory.getPaint(paint));
+        this.graphics2D.drawLine(x1, y1, x2, y2);
+    }
 
-	@Override
-	public void drawText(String text, int x, int y, Paint paint) {
-		if (text == null || text.trim().isEmpty()) {
-			return;
-		}
-		if (paint.isTransparent()) {
-			return;
-		}
+    @Override
+    public void drawPath(Path path, Paint paint) {
+        if (paint.isTransparent()) {
+            return;
+        }
 
-		AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
+        AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
+        AwtPath awtPath = AwtGraphicFactory.getPath(path);
 
-		if (awtPaint.stroke == null) {
-			this.graphics2D.setColor(awtPaint.color);
-			this.graphics2D.setFont(awtPaint.font);
-			this.graphics2D.drawString(text, x, y);
-		} else {
-			setColorAndStroke(awtPaint);
-			TextLayout textLayout = new TextLayout(text, awtPaint.font, this.graphics2D.getFontRenderContext());
-			AffineTransform affineTransform = new AffineTransform();
-			affineTransform.translate(x, y);
-			this.graphics2D.draw(textLayout.getOutline(affineTransform));
-		}
-	}
+        setColorAndStroke(awtPaint);
+        this.graphics2D.setPaint(awtPaint.texturePaint);
 
-	@Override
-	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
-		if (text == null || text.trim().isEmpty()) {
-			return;
-		}
-		if (paint.isTransparent()) {
-			return;
-		}
+        Style style = awtPaint.style;
+        switch (style) {
+            case FILL:
+                this.graphics2D.fill(awtPath.path2D);
+                return;
 
-		AffineTransform affineTransform = this.graphics2D.getTransform();
+            case STROKE:
+                this.graphics2D.draw(awtPath.path2D);
+                return;
+        }
 
-		double theta = Math.atan2(y2 - y1, x2 - x1);
-		this.graphics2D.rotate(theta, x1, y1);
+        throw new IllegalArgumentException(UNKNOWN_STYLE + style);
+    }
 
-		double lineLength = Math.hypot(x2 - x1, y2 - y1);
-		int textWidth = paint.getTextWidth(text);
-		int dx = (int) (lineLength - textWidth) / 2;
-		int xy = paint.getTextHeight(text) / 3;
-		drawText(text, x1 + dx, y1 + xy, paint);
+    @Override
+    public void drawText(String text, int x, int y, Paint paint) {
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+        if (paint.isTransparent()) {
+            return;
+        }
 
-		this.graphics2D.setTransform(affineTransform);
-	}
+        AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
 
-	@Override
-	public void fillColor(Color color) {
-		fillColor(AwtGraphicFactory.getColor(color));
-	}
+        if (awtPaint.stroke == null) {
+            this.graphics2D.setColor(awtPaint.color);
+            this.graphics2D.setFont(awtPaint.font);
+            this.graphics2D.drawString(text, x, y);
+        } else {
+            setColorAndStroke(awtPaint);
+            TextLayout textLayout = new TextLayout(text, awtPaint.font, this.graphics2D.getFontRenderContext());
+            AffineTransform affineTransform = new AffineTransform();
+            affineTransform.translate(x, y);
+            this.graphics2D.draw(textLayout.getOutline(affineTransform));
+        }
+    }
 
-	@Override
-	public void fillColor(int color) {
-		fillColor(new java.awt.Color(color));
-	}
+    @Override
+    public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+        if (paint.isTransparent()) {
+            return;
+        }
 
-	@Override
-	public Dimension getDimension() {
-		return new Dimension(getWidth(), getHeight());
-	}
+        AffineTransform affineTransform = this.graphics2D.getTransform();
 
-	Graphics2D getGraphicObject() {
-		return graphics2D;
-	}
+        double theta = Math.atan2(y2 - y1, x2 - x1);
+        this.graphics2D.rotate(theta, x1, y1);
 
-	@Override
-	public int getHeight() {
-		return this.bufferedImage != null ? this.bufferedImage.getHeight() : 0;
-	}
+        double lineLength = Math.hypot(x2 - x1, y2 - y1);
+        int textWidth = paint.getTextWidth(text);
+        int dx = (int) (lineLength - textWidth) / 2;
+        int xy = paint.getTextHeight(text) / 3;
+        drawText(text, x1 + dx, y1 + xy, paint);
 
-	@Override
-	public int getWidth() {
-		return this.bufferedImage != null ? this.bufferedImage.getWidth() : 0;
-	}
+        this.graphics2D.setTransform(affineTransform);
+    }
 
-	@Override
-	public void resetClip() {
-		this.graphics2D.setClip(null);
-	}
+    @Override
+    public void fillColor(Color color) {
+        fillColor(AwtGraphicFactory.getColor(color));
+    }
 
-	@Override
-	public void setBitmap(Bitmap bitmap) {
-		if (bitmap == null) {
-			this.bufferedImage = null;
-			this.graphics2D = null;
-		} else {
-			this.bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
-			this.graphics2D = this.bufferedImage.createGraphics();
-			enableAntiAliasing();
-			this.graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-			this.graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-		}
-	}
+    @Override
+    public void fillColor(int color) {
+        fillColor(new java.awt.Color(color));
+    }
 
-	@Override
-	public void setClip(int left, int top, int width, int height) {
-		this.graphics2D.setClip(left, top, width, height);
-	}
+    @Override
+    public Dimension getDimension() {
+        return new Dimension(getWidth(), getHeight());
+    }
 
-	@Override
-	public void setClipDifference(int left, int top, int width, int height) {
-		Area clip = new Area(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
-		clip.subtract(new Area(new Rectangle2D.Double(left, top, width, height)));
-		this.graphics2D.setClip(clip);
-	}
+    Graphics2D getGraphicObject() {
+        return graphics2D;
+    }
 
-	private void enableAntiAliasing() {
-		this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		this.graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		this.graphics2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-	}
+    @Override
+    public int getHeight() {
+        return this.bufferedImage != null ? this.bufferedImage.getHeight() : 0;
+    }
 
-	private void fillColor(java.awt.Color color) {
-		final Composite originalComposite = this.graphics2D.getComposite();
-		this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-		this.graphics2D.setColor(color);
-		this.graphics2D.fillRect(0, 0, getWidth(), getHeight());
-		this.graphics2D.setComposite(originalComposite);
-	}
+    @Override
+    public int getWidth() {
+        return this.bufferedImage != null ? this.bufferedImage.getWidth() : 0;
+    }
 
-	public void setColorAndStroke(AwtPaint awtPaint) {
-		this.graphics2D.setColor(awtPaint.color);
-		if (awtPaint.stroke != null) {
-			this.graphics2D.setStroke(awtPaint.stroke);
-		}
-	}
+    @Override
+    public void resetClip() {
+        this.graphics2D.setClip(null);
+    }
+
+    @Override
+    public void setBitmap(Bitmap bitmap) {
+        if (bitmap == null) {
+            this.bufferedImage = null;
+            this.graphics2D = null;
+        } else {
+            this.bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
+            this.graphics2D = this.bufferedImage.createGraphics();
+            enableAntiAliasing();
+            this.graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            this.graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+        }
+    }
+
+    @Override
+    public void setClip(int left, int top, int width, int height) {
+        this.graphics2D.setClip(left, top, width, height);
+    }
+
+    @Override
+    public void setClipDifference(int left, int top, int width, int height) {
+        Area clip = new Area(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
+        clip.subtract(new Area(new Rectangle2D.Double(left, top, width, height)));
+        this.graphics2D.setClip(clip);
+    }
+
+    private void enableAntiAliasing() {
+        this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        this.graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        this.graphics2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    }
+
+    private void fillColor(java.awt.Color color) {
+        final Composite originalComposite = this.graphics2D.getComposite();
+        this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+        this.graphics2D.setColor(color);
+        this.graphics2D.fillRect(0, 0, getWidth(), getHeight());
+        this.graphics2D.setComposite(originalComposite);
+    }
+
+    public void setColorAndStroke(AwtPaint awtPaint) {
+        this.graphics2D.setColor(awtPaint.color);
+        if (awtPaint.stroke != null) {
+            this.graphics2D.setStroke(awtPaint.stroke);
+        }
+    }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.mapsforge</groupId>
+        <artifactId>mapsforge</artifactId>
+        <version>master-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spatialite-android</artifactId>
+
+    <properties>
+        <rootDirectory>../</rootDirectory>
+        <targetJdk>1.7</targetJdk>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.simpligility.maven.plugins</groupId>
+                <artifactId>android-maven-plugin</artifactId>
+                <configuration>
+                    <dex>
+                        <jvmArguments>
+                            <jvmArgument>-Xmx512M</jvmArgument>
+                        </jvmArguments>
+                    </dex>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>android</groupId>
+            <artifactId>android</artifactId>
+            <version>6.0_r3</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

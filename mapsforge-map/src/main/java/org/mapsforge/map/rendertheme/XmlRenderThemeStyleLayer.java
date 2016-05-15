@@ -28,67 +28,67 @@ import java.util.Set;
  * when the layer is selected as well as optional overlays.
  */
 public class XmlRenderThemeStyleLayer implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final Set<String> categories;
-	private final String defaultLanguage;
-	private final String id;
-	private final List<XmlRenderThemeStyleLayer> overlays;
-	private final Map<String, String> titles;
-	private final boolean visible;
-	private final boolean enabled;
+    private final Set<String> categories;
+    private final String defaultLanguage;
+    private final String id;
+    private final List<XmlRenderThemeStyleLayer> overlays;
+    private final Map<String, String> titles;
+    private final boolean visible;
+    private final boolean enabled;
 
-	XmlRenderThemeStyleLayer(String id, boolean visible, boolean enabled, String defaultLanguage) {
-		this.id = id;
-		this.titles = new HashMap<String, String>();
-		this.categories = new LinkedHashSet<>();
-		this.visible = visible;
-		this.defaultLanguage = defaultLanguage;
-		this.enabled = enabled;
-		this.overlays = new ArrayList<XmlRenderThemeStyleLayer>();
-	}
+    XmlRenderThemeStyleLayer(String id, boolean visible, boolean enabled, String defaultLanguage) {
+        this.id = id;
+        this.titles = new HashMap<String, String>();
+        this.categories = new LinkedHashSet<>();
+        this.visible = visible;
+        this.defaultLanguage = defaultLanguage;
+        this.enabled = enabled;
+        this.overlays = new ArrayList<XmlRenderThemeStyleLayer>();
+    }
 
-	public void addCategory(String category) {
-		this.categories.add(category);
-	}
+    public void addCategory(String category) {
+        this.categories.add(category);
+    }
 
-	public void addOverlay(XmlRenderThemeStyleLayer overlay) {
-		this.overlays.add(overlay);
-	}
+    public void addOverlay(XmlRenderThemeStyleLayer overlay) {
+        this.overlays.add(overlay);
+    }
 
-	public void addTranslation(String language, String name) {
-		this.titles.put(language, name);
-	}
+    public void addTranslation(String language, String name) {
+        this.titles.put(language, name);
+    }
 
-	public Set<String> getCategories() {
-		return this.categories;
-	}
+    public Set<String> getCategories() {
+        return this.categories;
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+        return this.id;
+    }
 
-	public List<XmlRenderThemeStyleLayer> getOverlays() {
-		return this.overlays;
-	}
+    public List<XmlRenderThemeStyleLayer> getOverlays() {
+        return this.overlays;
+    }
 
-	public String getTitle(String language) {
-		String result = this.titles.get(language);
-		if (result == null) {
-			return this.titles.get(this.defaultLanguage);
-		}
-		return result;
-	}
+    public String getTitle(String language) {
+        String result = this.titles.get(language);
+        if (result == null) {
+            return this.titles.get(this.defaultLanguage);
+        }
+        return result;
+    }
 
-	public Map<String, String> getTitles() {
-		return this.titles;
-	}
+    public Map<String, String> getTitles() {
+        return this.titles;
+    }
 
-	public boolean isEnabled() {
-		return this.enabled;
-	}
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 
-	public boolean isVisible() {
-		return this.visible;
-	}
+    public boolean isVisible() {
+        return this.visible;
+    }
 }

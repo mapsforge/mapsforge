@@ -22,17 +22,16 @@ import java.io.InputStream;
  */
 public interface XmlRenderTheme {
 
-	XmlRenderThemeMenuCallback getMenuCallback();
+    XmlRenderThemeMenuCallback getMenuCallback();
 
-	/**
-	 * @return the prefix for all relative resource paths.
-	 */
-	String getRelativePathPrefix();
+    /**
+     * @return the prefix for all relative resource paths.
+     */
+    String getRelativePathPrefix();
 
-	/**
-	 * @return an InputStream to read the render theme data from.
-	 * @throws FileNotFoundException
-	 *             if the render theme file cannot be found.
-	 */
-	InputStream getRenderThemeAsStream() throws FileNotFoundException;
+    /**
+     * @return an InputStream to read the render theme data from.
+     * @throws FileNotFoundException if the render theme file cannot be found.
+     */
+    InputStream getRenderThemeAsStream() throws FileNotFoundException;
 }

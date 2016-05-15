@@ -18,39 +18,38 @@ package org.mapsforge.map.writer.model;
  * Represents preferred encoding.
  */
 public enum EncodingChoice {
-	/**
-	 * AUTO.
-	 */
-	AUTO,
-	/**
-	 * DOUBLE.
-	 */
-	DOUBLE,
-	/**
-	 * SINGLE.
-	 */
-	SINGLE;
+    /**
+     * AUTO.
+     */
+    AUTO,
+    /**
+     * DOUBLE.
+     */
+    DOUBLE,
+    /**
+     * SINGLE.
+     */
+    SINGLE;
 
-	/**
-	 * Reads preferred encoding from a String.
-	 * 
-	 * @param encoding
-	 *            the encoding
-	 * @return the preferred encoding, AUTO if preferred encoding unknown
-	 */
-	public static EncodingChoice fromString(String encoding) {
-		if ("auto".equalsIgnoreCase(encoding)) {
-			return AUTO;
-		}
+    /**
+     * Reads preferred encoding from a String.
+     *
+     * @param encoding the encoding
+     * @return the preferred encoding, AUTO if preferred encoding unknown
+     */
+    public static EncodingChoice fromString(String encoding) {
+        if ("auto".equalsIgnoreCase(encoding)) {
+            return AUTO;
+        }
 
-		if ("single".equalsIgnoreCase(encoding)) {
-			return SINGLE;
-		}
+        if ("single".equalsIgnoreCase(encoding)) {
+            return SINGLE;
+        }
 
-		if ("double".equalsIgnoreCase(encoding)) {
-			return DOUBLE;
-		}
+        if ("double".equalsIgnoreCase(encoding)) {
+            return DOUBLE;
+        }
 
-		return AUTO;
-	}
+        return AUTO;
+    }
 }

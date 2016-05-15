@@ -1,9 +1,8 @@
 # RenderTheme
 
-**This article describes how to use XML-based renderthemes to style maps, including the extensions of Rendertheme V4 (new with release 0.5).**
+**This article describes how to use XML-based renderthemes to style maps, including the extensions of Rendertheme V4 or newer (new with release 0.5).**
 
 If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
-
 
 ## Introduction
 
@@ -11,34 +10,34 @@ A render-theme is an XML file which contains rules and rendering instructions. S
 
 Here is an example of a simple render-theme with a few different rules and rendering instructions:
 
-    <?xml version="1.0" encoding="UTF-8"?>
-    <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="1">
-    
-        <!-- matches all ways with a "highway=trunk" or a "highway=motorway" tag -->
-        <rule e="way" k="highway" v="trunk|motorway">
-            <line stroke="#FF9900" stroke-width="2.5" />
-        </rule>
-    
-        <!-- matches all closed ways (first node equals last node) with an "amenity=…" tag -->
-        <rule e="way" k="amenity" v="*" closed="yes">
-            <area fill="#DDEECC" stroke="#006699" stroke-width="0.3" />
-        </rule>
-    
-        <!-- matches all nodes with a "tourism=hotel" tag on zoom level 16 and above -->
-        <rule e="node" k="tourism" v="hotel" zoom-min="16">
-            <symbol src="file:/path/to/symbol/icon/hotel.png" />
-            <caption k="name" font-style="bold" font-size="10" fill="#4040ff" />
-        </rule>
-    </rendertheme>
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="1">
+
+	<!-- matches all ways with a "highway=trunk" or a "highway=motorway" tag -->
+	<rule e="way" k="highway" v="trunk|motorway">
+		<line stroke="#FF9900" stroke-width="2.5" />
+	</rule>
+
+	<!-- matches all closed ways (first node equals last node) with an "amenity=…" tag -->
+	<rule e="way" k="amenity" v="*" closed="yes">
+		<area fill="#DDEECC" stroke="#006699" stroke-width="0.3" />
+	</rule>
+
+	<!-- matches all nodes with a "tourism=hotel" tag on zoom level 16 and above -->
+	<rule e="node" k="tourism" v="hotel" zoom-min="16">
+		<symbol src="file:/path/to/symbol/icon/hotel.png" />
+		<caption k="name" font-style="bold" font-size="10" fill="#4040ff" />
+	</rule>
+</rendertheme>
+```
 
 Syntax and semantics of render-theme files are similar but not identical to [Osmarender rule files](http://wiki.openstreetmap.org/wiki/Osmarender/Rules). A formal render-theme description exists as an *XML schema document*, it can be found in the [repository](https://github.com/mapsforge/mapsforge/blob/dev/resources/renderTheme.xsd). If an invalid render-theme is submitted to the map library, an `org.xml.sax.SAXException` will be thrown during XML parsing.
-
 
 ## Rules
 
 A rule element has several attributes to specify which map elements the rule matches.
-
 
 |**Attribute**|**Valid values**|**Description**|**Required**|
 |-------------|----------------|---------------|------------|
@@ -51,17 +50,18 @@ A rule element has several attributes to specify which map elements the rule mat
 
 Rules can be nested to any level of depth. This can be used to define rendering instructions which depend on multiple rules. It may also be used to structure complex declarations and to avoid redundancy:
 
-    <rule e="way" k="*" v="*" closed="no">
-        <rule e="way" k="highway" v="motorway">
-            <rule e="way" k="tunnel" v="true|yes">
-                …
-            </rule>
-            <rule e="way" k="tunnel" v="~|no|false">
-                …
-            </rule>
-        </rule>
-    </rule>
-
+```xml
+<rule e="way" k="*" v="*" closed="no">
+	<rule e="way" k="highway" v="motorway">
+		<rule e="way" k="tunnel" v="true|yes">
+			…
+		</rule>
+		<rule e="way" k="tunnel" v="~|no|false">
+			…
+		</rule>
+	</rule>
+</rule>
+```
 
 ## Rendering Instructions
 
@@ -77,36 +77,37 @@ At the moment, the following rendering instructions are available:
 - pathText
 - symbol
 
-
 ## Map background
 
 The `rendertheme` root element has an optional `map-background` attribute which can be used to define the background color of the map. The default value is "#FFFFFF" (white).
 
-    <?xml version="1.0" encoding="UTF-8"?>
-    <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="1" map-background="#FFEE99">
-        …
-    </rendertheme>
-    
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="1" map-background="#FFEE99">
+	…
+</rendertheme>
+```
 
-## Rendertheme Version 4
+## Rendertheme Version 4 or newer
 
 With mapsforge release 0.5, we introduce the enhanced **Rendertheme V4 XML** with many new features to style a map.
 
-Rendertheme V4 remains **fully backward compatible** with version 3, meaning that any previously developed rendertheme definition will still render with V4 without any changes required (you do not even need to change the version number in the header).
+Rendertheme V4 or newer remains **fully backward compatible** with version 3, meaning that any previously developed rendertheme definition will still render with V4 without any changes required (you do not even need to change the version number in the header).
 
-You can find the full xsd in the mapsforge repository at https://github.com/mapsforge/mapsforge/blob/dev/resources/renderTheme-v4.xsd.
+You can find the full xsd in the mapsforge repository at https://github.com/mapsforge/mapsforge/blob/dev/resources/renderTheme-v5.xsd.
 
-But if you want to develop your renderthemes further, Rendertheme V4 offers a number of enhancements. If you want to make use of the new features, you will first need to set your rendertheme version in the header to 4:
+But if you want to develop your renderthemes further, Rendertheme V4 offers a number of enhancements. If you want to make use of the new features, you will first need to set your rendertheme version in the header to 4 or newer:
 
-    <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme-v4.xsd" version="4" map-background="#f8f8f8" map-background-outside="#dddddd">
-
+```xml
+<rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme-v5.xsd" version="5" map-background="#f8f8f8" map-background-outside="#dddddd">
+```
 
 ###Header Elements
  
 The following header elements can be used:
- - version: should be "4" now.
+ - version: should be "4" or newer now.
  - map-background: a color value to set the color of a blank tile. This should not be used to set the color of the sea or land. 
  - map-background-outside: a color value to set the color of the background of a map outside the map area. Effectively everything outside the map area will be overwritten by this color. For transparent layers, the color value will be ignored, but the outside area will be erased to transparent.  
 
@@ -116,7 +117,9 @@ One of the limitations of V3 was that even minor changes to a style required an 
 
 To make use of style menus, you will first need to group the elements of your map into **categories** by attaching a **cat** element to them. 
 
-    <rule cat="areas" e="way" k="landuse" v="landfill|quarry" zoom-min="14">
+```xml
+<rule cat="areas" e="way" k="landuse" v="landfill|quarry" zoom-min="14">
+```
 
 The same cat tag can be given to as many elements as you like, but each element can only have one cat tag.
 However, this does not limit your ability to group elements, as in the style definitions, multiple categories can be combined into one layer. 
@@ -125,91 +128,98 @@ You can think about the cat tag as a switch that switches all elements in the re
 
 Layers are combinations of categories that can together be toggled on and off. In general, categories are not visible to a map user, but layers are. To make layers more user friendly, they can be named with the name tag in various languages. 
 
-    <layer id="public_transport" visible="true">
-      <name lang="de" value="Öffentlicher Verkehr"/>
-      <name lang="en" value="Public Transport"/>
-      <name lang="es" value="Transporte público"/>
-      <name lang="fr" value="Transport public"/>
-      <cat id="public_transport"/>
-      <cat id="rail"></cat>
-    </layer>
+```xml
+<layer id="public_transport" visible="true">
+	<name lang="de" value="Öffentlicher Verkehr"/>
+	<name lang="en" value="Public Transport"/>
+	<name lang="es" value="Transporte público"/>
+	<name lang="fr" value="Transport public"/>
+	<cat id="public_transport"/>
+	<cat id="rail"></cat>
+</layer>
+```
 
 A set of layer definitions makes up a style:
 
-      <stylemenu id="r4menu" defaultvalue="terrain" defaultlang="en">
-    
-        <layer id="shopping" visible="true">
-          <name lang="de" value="Shopping"/>
-          <name lang="en" value="Shopping"/>
-          <name lang="es" value="Tiendas"/>
-          <name lang="fr" value="Shopping"/>
-          <cat id="shopping"/>
-        </layer>
-    
-        <layer id="terrain" visible="true">
-          <name lang="de" value="Topographischer Hintergrund"/>
-          <name lang="en" value="Topographic Colours"/>
-          <name lang="es" value="Colores topográficos"/>
-          <name lang="fr" value="Couleurs topographiques"/>
-          <cat id="topo"/>
-        </layer>
-    </stylemenu>
+```xml
+<stylemenu id="r4menu" defaultvalue="terrain" defaultlang="en">
+	<layer id="shopping" visible="true">
+		<name lang="de" value="Shopping"/>
+		<name lang="en" value="Shopping"/>
+		<name lang="es" value="Tiendas"/>
+		<name lang="fr" value="Shopping"/>
+		<cat id="shopping"/>
+	</layer>
+
+	<layer id="terrain" visible="true">
+		<name lang="de" value="Topographischer Hintergrund"/>
+		<name lang="en" value="Topographic Colours"/>
+		<name lang="es" value="Colores topográficos"/>
+		<name lang="fr" value="Couleurs topographiques"/>
+		<cat id="topo"/>
+	</layer>
+</stylemenu>
+```
 
 The **visible** attribute is meant to indicate which of the layers are visible in the user interface. Layers where visible is set to false should not be seen by a user, and are thus useful to build base-layers of common categories from which then user-visible layers can be inherited, like this:
 
-		<layer id="base">
-			<cat id="roads"/>
-			<cat id="waterbodies"/>
-			<cat id="landuse"/>
-			<cat id="places"/>
-			<overlay id="emergency"/>
-			<overlay id="food"/>
-		</layer>
+```xml
+<layer id="base">
+	<cat id="roads"/>
+	<cat id="waterbodies"/>
+	<cat id="landuse"/>
+	<cat id="places"/>
+	<overlay id="emergency"/>
+	<overlay id="food"/>
+</layer>
 
-		<layer id="simple" parent="base" visible="true">
-			<name lang="de" value="Auto"/>
-			<name lang="en" value="Driving"/>
-			<name lang="es" value="Conducción"/>
-			<name lang="fr" value="Conduite"/>
-			<cat id="transport"/>
-			<cat id="barrier"/>
-			<cat id="driving"/>
-			<overlay id="parking"/>
-			<overlay id="shopping"/>
-		</layer>
+<layer id="simple" parent="base" visible="true">
+	<name lang="de" value="Auto"/>
+	<name lang="en" value="Driving"/>
+	<name lang="es" value="Conducción"/>
+	<name lang="fr" value="Conduite"/>
+	<cat id="transport"/>
+	<cat id="barrier"/>
+	<cat id="driving"/>
+	<overlay id="parking"/>
+	<overlay id="shopping"/>
+</layer>
 
-		<layer id="standard" parent="base" visible="true">
-			<name lang="de" value="Stadt"/>
-			<name lang="en" value="City"/>
-			<name lang="es" value="City"/>
-			<name lang="fr" value="Ville"/>
-			<cat id="areas"/>
-			<overlay id="tourism"/>
-			<overlay id="sports"/>
-			<overlay id="amenities"/>
-			<overlay id="buildings"/>
-			<overlay id="public_transport"/>
-			<overlay id="accommodation"/>
-			<overlay id="shopping"/>
-		</layer>
+<layer id="standard" parent="base" visible="true">
+	<name lang="de" value="Stadt"/>
+	<name lang="en" value="City"/>
+	<name lang="es" value="City"/>
+	<name lang="fr" value="Ville"/>
+	<cat id="areas"/>
+	<overlay id="tourism"/>
+	<overlay id="sports"/>
+	<overlay id="amenities"/>
+	<overlay id="buildings"/>
+	<overlay id="public_transport"/>
+	<overlay id="accommodation"/>
+	<overlay id="shopping"/>
+</layer>
+```
 
 To turn layers on by default, add the **enabled=true** attribute. In this case, buildings should be by default visible, while parking related elements not:
 
-		<layer id="parking">
-			<name lang="de" value="Parkplätze"/>
-			<name lang="en" value="Parking"/>
-			<name lang="es" value="Aparcamiento"/>
-			<name lang="fr" value="Parking"/>
-			<cat id="parking"/>
-		</layer>
+```xml
+<layer id="parking">
+	<name lang="de" value="Parkplätze"/>
+	<name lang="en" value="Parking"/>
+	<name lang="es" value="Aparcamiento"/>
+	<name lang="fr" value="Parking"/>
+	<cat id="parking"/>
+</layer>
 
-		<layer enabled="true" id="buildings">
-			<name lang="de" value="Gebäude"/>
-			<name lang="en" value="Buildings"/>
-			<name lang="es" value="Edificios"/>
-			<name lang="fr" value="Bâtiments"/>
-			<cat id="buildings"/>
-		</layer>
+<layer enabled="true" id="buildings">
+	<name lang="de" value="Gebäude"/>
+	<name lang="en" value="Buildings"/>
+	<name lang="es" value="Edificios"/>
+	<name lang="fr" value="Bâtiments"/>
+	<cat id="buildings"/>
+</layer>
+```
 
 The Samples app has a completely worked style menu.
 
@@ -225,12 +235,14 @@ In previous versions it was difficult to position captions relative to map icons
 
 To associate a caption with a symbol, the symbol needs an id and the caption needs to refer to this symbol:
 
-    	<rule cat="public_transport" e="node" k="aeroway" v="helipad" zoom-min="14">
-    		<symbol id="helipad" src="assets:symbols/transport/helicopter_pad.svg"/>
-    		<rule e="any" k="*" v="*" zoom-min="17">
-    			<caption priority="-20" symbol-id="helipad" k="name" position="above" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
-    		</rule>
-    	</rule>
+```xml
+<rule cat="public_transport" e="node" k="aeroway" v="helipad" zoom-min="14">
+	<symbol id="helipad" src="assets:symbols/transport/helicopter_pad.svg"/>
+	<rule e="any" k="*" v="*" zoom-min="17">
+		<caption priority="-20" symbol-id="helipad" k="name" position="above" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+	</rule>
+</rule>
+```
 
 The options for positioning are
 
@@ -252,12 +264,15 @@ The **auto** (or nothing) setting is recommended. In version 0.5 of mapsforge th
 In previous versions, labels were drawn in the order they were encountered often meaning that less important icons/captions were drawn first and did not leave any space for more important labels (e.g. town names drawn in favour of more important city names). This issue has been addressed by introducing priority levels for labels and icons.
 
 Labels and icons are now drawn in order of priority, higher priorities first. The default priority is 0, so anything with a priority less than 0 will only be drawn if the space is not yet taken up, priorities higher than 0 will be drawn before default priority labels.
-    		<rule e="node" k="place" v="town" zoom-min="8">
-    			<caption priority="30" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
-    		</rule>
-    		<rule e="node" k="place" v="city" zoom-min="6" zoom-max="6">
-    			<caption priority="40" k="name" font-style="bold" font-size="11" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
-    		</rule>
+
+```xml
+<rule e="node" k="place" v="town" zoom-min="8">
+	<caption priority="30" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+</rule>
+<rule e="node" k="place" v="city" zoom-min="6" zoom-max="6">
+	<caption priority="40" k="name" font-style="bold" font-size="11" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+</rule>
+```
 
 ## Display
 The display directive has been added whereever priorities can be used. The following values can be used:
@@ -267,12 +282,13 @@ The display directive has been added whereever priorities can be used. The follo
 
 ## SVG Symbols
 
-Symbols can be either defined in the raster PNG format or as vector graphics in SVG format. Mapsforge uses libraries (https://code.google.com/p/androidsvg on Android) and (https://svgsalamander.java.net on Java) that support a large subset of the Tiny SVG specification (see http://www.w3.org/TR/SVGTiny12/index.html). 
+Symbols can be either defined in the raster PNG format or as vector graphics in SVG format. Mapsforge uses libraries (https://github.com/BigBadaboom/androidsvg on Android) and (https://svgsalamander.java.net on Java) that support a large subset of the Tiny SVG specification (see http://www.w3.org/TR/SVGTiny12/index.html).
 
 To speed up map rendering, SVG symbols are now only rendered at the point where they are needed and on Android are then written to disk in the PNG format. Subsequent uses will retrieve the file just like another raster image source. The file cache where these files are stored can be cleared through a static call.  
 
-    AndroidGraphicFactory.clearResourceFileCache();
-
+```java
+AndroidGraphicFactory.clearResourceFileCache();
+```
 ### Symbol Scaling
 
 Symbols (SVG) can now be automatically scaled to accommodate different device resolutions. 
@@ -291,17 +307,19 @@ For area symbols it is best to design a symbol to fit a tile unless you know par
 
 A simple SVG symbol for a cemetery can look like this:
 
-  	 <?xml version='1.0' encoding='UTF-8' standalone='no'?> 
-    	 <!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'> 
-    	 <svg width='256' height='256' viewport-fill="#33D40B" viewport-fill-opacity="0.3" xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'> 
-      	 <defs>
+```xml
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width='256' height='256' viewport-fill="#33D40B" viewport-fill-opacity="0.3" xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
+	<defs>
 		<g id="cross">
-          	<rect width="24" height="96" x="20" y="2" id="rect3092" style="fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-          	<rect width="60" height="24" x="2" y="26" id="rect3094" style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-        	</g>
-      		</defs>
-    
+			<rect width="24" height="96" x="20" y="2" id="rect3092" style="fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+			<rect width="60" height="24" x="2" y="26" id="rect3094" style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+		</g>
+	</defs>
+
 	<g transform="translate(0,0)"><use xlink:href="#cross"/></g>
-      	<g transform="translate(140,70)"><use xlink:href="#cross"/></g>
-      	<g transform="translate(30,140)"><use xlink:href="#cross"/></g>
-    	</svg>`
+	<g transform="translate(140,70)"><use xlink:href="#cross"/></g>
+	<g transform="translate(30,140)"><use xlink:href="#cross"/></g>
+</svg>
+```

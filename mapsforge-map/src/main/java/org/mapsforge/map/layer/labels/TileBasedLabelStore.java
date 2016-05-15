@@ -30,65 +30,70 @@ import java.util.Set;
  */
 
 public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementContainer>> implements LabelStore {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Set<Tile> lastVisibleTileSet;
-	private int version;
+    private Set<Tile> lastVisibleTileSet;
+    private int version;
 
-	public TileBasedLabelStore(int capacity) {
-		super(capacity);
-		lastVisibleTileSet = new HashSet<Tile>();
-	}
+    public TileBasedLabelStore(int capacity) {
+        super(capacity);
+        lastVisibleTileSet = new HashSet<Tile>();
+    }
 
-	public void destroy() {
-		this.clear();
-	}
+    public void destroy() {
+        this.clear();
+    }
 
-	/**
-	 * Stores a list of MapElements against a tile.
-	 *
-	 * @param tile tile on which the mapItems reside.
-	 * @param mapItems the map elements.
-	 */
-	public synchronized void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
-		this.put(tile, LayerUtil.collisionFreeOrdered(mapItems));
-		this.version += 1;
-	}
+    /**
+     * Stores a list of MapElements against a tile.
+     *
+     * @param tile     tile on which the mapItems reside.
+     * @param mapItems the map elements.
+     */
+    public synchronized void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
+        this.put(tile, LayerUtil.collisionFreeOrdered(mapItems));
+        this.version += 1;
+    }
 
-	@Override
-	public int getVersion() {
-		return this.version;
-	}
+    @Override
+    public int getVersion() {
+        return this.version;
+    }
 
-	@Override
-	public synchronized List<MapElementContainer> getVisibleItems(Set<Tile> tiles) {
+    @Override
+    public synchronized List<MapElementContainer> getVisibleItems(Tile upperLeft, Tile lowerRight) {
+        return getVisibleItems(LayerUtil.getTiles(upperLeft, lowerRight));
+    }
 
-		lastVisibleTileSet = tiles;
+    private synchronized List<MapElementContainer> getVisibleItems(Set<Tile> tiles) {
 
-		List<MapElementContainer> visibleItems = new ArrayList<MapElementContainer>();
-		for (Tile tile : lastVisibleTileSet) {
-			if (containsKey(tile)) {
-				visibleItems.addAll(get(tile));
-			}
-		}
-		return visibleItems;
-	}
+        lastVisibleTileSet = tiles;
 
-	/**
-	 * Returns if a tile is in the current tile set and no data is stored for this tile.
-	 * @param tile the tile
-	 * @return true if the tile is in the current tile set, but no data is stored for it.
-	 */
-	public synchronized boolean requiresTile(Tile tile) {
-		return this.lastVisibleTileSet.contains(tile) && !this.containsKey(tile);
-	}
+        List<MapElementContainer> visibleItems = new ArrayList<MapElementContainer>();
+        for (Tile tile : lastVisibleTileSet) {
+            if (containsKey(tile)) {
+                visibleItems.addAll(get(tile));
+            }
+        }
+        return visibleItems;
+    }
 
-	@Override
-	protected boolean removeEldestEntry(Map.Entry<Tile, List<MapElementContainer>> eldest) {
-		if (size() > this.capacity) {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Returns if a tile is in the current tile set and no data is stored for this tile.
+     *
+     * @param tile the tile
+     * @return true if the tile is in the current tile set, but no data is stored for it.
+     */
+    public synchronized boolean requiresTile(Tile tile) {
+        return this.lastVisibleTileSet.contains(tile) && !this.containsKey(tile);
+    }
+
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<Tile, List<MapElementContainer>> eldest) {
+        if (size() > this.capacity) {
+            return true;
+        }
+        return false;
+    }
 
 }

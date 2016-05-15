@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 devemux86
+ * Copyright 2016 ksaihtam
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,93 +31,97 @@ import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.MapView;
 
 public class LayerManager extends PausableThread implements Redrawer {
-	private static final int MILLISECONDS_PER_FRAME = 30;
+    private static final int MILLISECONDS_PER_FRAME = 30;
 
-	private final Canvas drawingCanvas;
-	private final Layers layers;
-	private final MapView mapView;
-	private final MapViewPosition mapViewPosition;
-	private boolean redrawNeeded;
+    private final Canvas drawingCanvas;
+    private final Layers layers;
+    private final MapView mapView;
+    private final MapViewPosition mapViewPosition;
+    private boolean redrawNeeded;
 
 
-	public LayerManager(MapView mapView, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
-		super();
+    public LayerManager(MapView mapView, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
+        super();
 
-		this.mapView = mapView;
-		this.mapViewPosition = mapViewPosition;
+        this.mapView = mapView;
+        this.mapViewPosition = mapViewPosition;
 
-		this.drawingCanvas = graphicFactory.createCanvas();
-		this.layers = new Layers(this, mapView.getModel().displayModel);
-	}
+        this.drawingCanvas = graphicFactory.createCanvas();
+        this.layers = new Layers(this, mapView.getModel().displayModel);
+    }
 
-	public Layers getLayers() {
-		return this.layers;
-	}
+    public Layers getLayers() {
+        return this.layers;
+    }
 
-	@Override
-	public void redrawLayers() {
-		this.redrawNeeded = true;
-		synchronized (this) {
-			notify();
-		}
-	}
+    @Override
+    public void redrawLayers() {
+        this.redrawNeeded = true;
+        synchronized (this) {
+            notify();
+        }
+    }
 
-	@Override
-	protected void afterRun() {
-		for (Layer layer : this.layers) {
-			layer.onDestroy();
-		}
-		this.drawingCanvas.destroy();
-	}
+    @Override
+    protected void afterRun() {
+        synchronized (this.layers) {
+            for (Layer layer : this.layers) {
+                layer.onDestroy();
+            }
+        }
+        this.drawingCanvas.destroy();
+    }
 
-	@Override
-	protected void doWork() throws InterruptedException {
-		long startTime = System.nanoTime();
-		this.redrawNeeded = false;
+    @Override
+    protected void doWork() throws InterruptedException {
+        long startTime = System.nanoTime();
+        this.redrawNeeded = false;
 
-		FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
-		Bitmap bitmap = frameBuffer.getDrawingBitmap();
-		if (bitmap != null) {
-			this.drawingCanvas.setBitmap(bitmap);
+        FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
+        Bitmap bitmap = frameBuffer.getDrawingBitmap();
+        if (bitmap != null) {
+            this.drawingCanvas.setBitmap(bitmap);
 
-			MapPosition mapPosition = this.mapViewPosition.getMapPosition();
-			Dimension canvasDimension = this.drawingCanvas.getDimension();
-			int tileSize = this.mapView.getModel().displayModel.getTileSize();
-			BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension, tileSize);
-			Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension, tileSize);
+            MapPosition mapPosition = this.mapViewPosition.getMapPosition();
+            Dimension canvasDimension = this.drawingCanvas.getDimension();
+            int tileSize = this.mapView.getModel().displayModel.getTileSize();
+            BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension, tileSize);
+            Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension, tileSize);
 
-			for (Layer layer : this.layers) {
-				if (layer.isVisible()) {
-					layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint);
-				}
-			}
+            synchronized (this.layers) {
+                for (Layer layer : this.layers) {
+                    if (layer.isVisible()) {
+                        layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint);
+                    }
+                }
+            }
 
-			if (!mapViewPosition.animationInProgress()) {
-				// this causes a lot of flickering when an animation
-				// is in progress
-				frameBuffer.frameFinished(mapPosition);
-				this.mapView.repaint();
-			} else {
-				// make sure that we redraw at the end
-				this.redrawNeeded = true;
-			}
-		}
+            if (!mapViewPosition.animationInProgress()) {
+                // this causes a lot of flickering when an animation
+                // is in progress
+                frameBuffer.frameFinished(mapPosition);
+                this.mapView.repaint();
+            } else {
+                // make sure that we redraw at the end
+                this.redrawNeeded = true;
+            }
+        }
 
-		long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;
-		long timeSleep = MILLISECONDS_PER_FRAME - elapsedMilliseconds;
+        long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;
+        long timeSleep = MILLISECONDS_PER_FRAME - elapsedMilliseconds;
 
-		if (timeSleep > 1 && !isInterrupted()) {
-			sleep(timeSleep);
-		}
-	}
+        if (timeSleep > 1 && !isInterrupted()) {
+            sleep(timeSleep);
+        }
+    }
 
-	@Override
-	protected ThreadPriority getThreadPriority() {
-		return ThreadPriority.NORMAL;
-	}
+    @Override
+    protected ThreadPriority getThreadPriority() {
+        return ThreadPriority.NORMAL;
+    }
 
-	@Override
-	protected boolean hasWork() {
-		return this.redrawNeeded;
-	}
+    @Override
+    protected boolean hasWork() {
+        return this.redrawNeeded;
+    }
 }

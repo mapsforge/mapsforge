@@ -18,63 +18,63 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class LRUCacheTest {
-	private static final String KEY1 = "foo1";
-	private static final String KEY2 = "foo2";
-	private static final String KEY3 = "foo3";
-	private static final String VALUE1 = "bar1";
-	private static final String VALUE2 = "bar2";
-	private static final String VALUE3 = "bar3";
+    private static final String KEY1 = "foo1";
+    private static final String KEY2 = "foo2";
+    private static final String KEY3 = "foo3";
+    private static final String VALUE1 = "bar1";
+    private static final String VALUE2 = "bar2";
+    private static final String VALUE3 = "bar3";
 
-	private static LRUCache<String, String> createLRUCache(int capacity) {
-		LRUCache<String, String> lruCache = new LRUCache<>(capacity);
-		Assert.assertEquals(capacity, lruCache.capacity);
+    private static LRUCache<String, String> createLRUCache(int capacity) {
+        LRUCache<String, String> lruCache = new LRUCache<>(capacity);
+        Assert.assertEquals(capacity, lruCache.capacity);
 
-		return lruCache;
-	}
+        return lruCache;
+    }
 
-	private static void verifyInvalidCapacity(int capacity) {
-		try {
-			createLRUCache(capacity);
-			Assert.fail("capacity: " + capacity);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyInvalidCapacity(int capacity) {
+        try {
+            createLRUCache(capacity);
+            Assert.fail("capacity: " + capacity);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void lruCacheTest() {
-		LRUCache<String, String> lruCache = createLRUCache(2);
+    @Test
+    public void lruCacheTest() {
+        LRUCache<String, String> lruCache = createLRUCache(2);
 
-		lruCache.put(KEY1, VALUE1);
-		Assert.assertEquals(VALUE1, lruCache.get(KEY1));
-		Assert.assertFalse(lruCache.containsKey(KEY2));
-		Assert.assertFalse(lruCache.containsKey(KEY3));
+        lruCache.put(KEY1, VALUE1);
+        Assert.assertEquals(VALUE1, lruCache.get(KEY1));
+        Assert.assertFalse(lruCache.containsKey(KEY2));
+        Assert.assertFalse(lruCache.containsKey(KEY3));
 
-		lruCache.put(KEY2, VALUE2);
-		Assert.assertEquals(VALUE1, lruCache.get(KEY1));
-		Assert.assertEquals(VALUE2, lruCache.get(KEY2));
-		Assert.assertFalse(lruCache.containsKey(KEY3));
+        lruCache.put(KEY2, VALUE2);
+        Assert.assertEquals(VALUE1, lruCache.get(KEY1));
+        Assert.assertEquals(VALUE2, lruCache.get(KEY2));
+        Assert.assertFalse(lruCache.containsKey(KEY3));
 
-		lruCache.put(KEY3, VALUE3);
-		Assert.assertFalse(lruCache.containsKey(KEY1));
-		Assert.assertEquals(VALUE2, lruCache.get(KEY2));
-		Assert.assertEquals(VALUE3, lruCache.get(KEY3));
+        lruCache.put(KEY3, VALUE3);
+        Assert.assertFalse(lruCache.containsKey(KEY1));
+        Assert.assertEquals(VALUE2, lruCache.get(KEY2));
+        Assert.assertEquals(VALUE3, lruCache.get(KEY3));
 
-		lruCache.put(KEY1, VALUE1);
-		Assert.assertEquals(VALUE1, lruCache.get(KEY1));
-		Assert.assertFalse(lruCache.containsKey(KEY2));
-		Assert.assertEquals(VALUE3, lruCache.get(KEY3));
-	}
+        lruCache.put(KEY1, VALUE1);
+        Assert.assertEquals(VALUE1, lruCache.get(KEY1));
+        Assert.assertFalse(lruCache.containsKey(KEY2));
+        Assert.assertEquals(VALUE3, lruCache.get(KEY3));
+    }
 
-	@Test
-	public void lruCacheWithCapacityZeroTest() {
-		LRUCache<String, String> lruCache = createLRUCache(0);
-		lruCache.put(KEY1, VALUE1);
-		Assert.assertFalse(lruCache.containsKey(KEY1));
-	}
+    @Test
+    public void lruCacheWithCapacityZeroTest() {
+        LRUCache<String, String> lruCache = createLRUCache(0);
+        lruCache.put(KEY1, VALUE1);
+        Assert.assertFalse(lruCache.containsKey(KEY1));
+    }
 
-	@Test
-	public void lruCacheWithNegativeCapacityTest() {
-		verifyInvalidCapacity(-1);
-	}
+    @Test
+    public void lruCacheWithNegativeCapacityTest() {
+        verifyInvalidCapacity(-1);
+    }
 }

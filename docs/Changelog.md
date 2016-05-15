@@ -1,5 +1,32 @@
 # Changelog
 
+## New since 0.6.0
+
+- [POI Search API](POI.md) [#728](https://github.com/mapsforge/mapsforge/issues/728)
+- Render Theme v5: pathText repeat options [#473](https://github.com/mapsforge/mapsforge/issues/473)
+- Render Theme v5: scale options [#814](https://github.com/mapsforge/mapsforge/issues/814)
+- Render Theme v5: deprecate 'symbol-scaling' option [#815](https://github.com/mapsforge/mapsforge/issues/815)
+- Map writer improved area heuristics [#788](https://github.com/mapsforge/mapsforge/issues/788) [#795](https://github.com/mapsforge/mapsforge/issues/795)
+- Reverse Geocoding example [#727](https://github.com/mapsforge/mapsforge/issues/727)
+- LabelLayer enhanced implementation [#763](https://github.com/mapsforge/mapsforge/issues/763)
+- Street name rendering improvements [#644](https://github.com/mapsforge/mapsforge/issues/644)
+- Color filters in map rendering [#778](https://github.com/mapsforge/mapsforge/issues/778)
+- Night mode example [#777](https://github.com/mapsforge/mapsforge/issues/777)
+- Layers redraw option [#817](https://github.com/mapsforge/mapsforge/issues/817)
+- Zoom level limits central handling [#646](https://github.com/mapsforge/mapsforge/issues/646)
+- Simplified tile layer creation [#833](https://github.com/mapsforge/mapsforge/issues/833)
+- Android gestures options [#705](https://github.com/mapsforge/mapsforge/issues/705)
+- Java onTap layer listener [#774](https://github.com/mapsforge/mapsforge/issues/774)
+- Online tile source enhancements [#823](https://github.com/mapsforge/mapsforge/issues/823)
+- Diagnostic layers improvements [#821](https://github.com/mapsforge/mapsforge/issues/821)
+- Android samples hardware acceleration preference [#825](https://github.com/mapsforge/mapsforge/issues/825)
+- Library integration [documentation](Integration.md) [#781](https://github.com/mapsforge/mapsforge/issues/781)
+- Jar with dependencies building [#767](https://github.com/mapsforge/mapsforge/issues/767)
+- Sample applications reorganization [#724](https://github.com/mapsforge/mapsforge/issues/724)
+- Code formatting improvements [#782](https://github.com/mapsforge/mapsforge/issues/782)
+- Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.1)
+
 ## Version 0.6.X
 
 #### Version 0.6.0 (2015-11-25)

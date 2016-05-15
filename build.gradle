@@ -46,31 +46,31 @@ subprojects {
 
 // Configuration for all plain Java projects
 
-project.ext.javaprojects = ["mapsforge-core", "mapsforge-map-reader", "mapsforge-map", "mapsforge-map-awt", "mapsforge-map-writer", "SwingMapViewer"]
+project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "mapsforge-samples-awt"]
 
 configure(filterProjects(project.javaprojects)) {
     apply plugin: 'java'
-    apply plugin: 'checkstyle'
+    //apply plugin: 'checkstyle'
     apply plugin: 'maven'
 
     dependencies {
         testCompile group: 'junit', name: 'junit', version: "$jUnitVersion"
     }
 
-    checkstyle {
+    /*checkstyle {
         showViolations = false  // turn on for reporting
         // as of Gradle 2.2.1 every sub project seems to require a checkstyle file, this
         // directive forces all projects to use the shared file in the root project
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    }
+    }*/
 
     // set java source encoding, otherwise some tests fail
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 }
 
 // Configuration for Android projects
-project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras"]
-project.ext.androidapkprojects = ["Samples"]
+project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras", "spatialite-android", "mapsforge-poi-android"]
+project.ext.androidapkprojects = ["mapsforge-samples-android"]
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 
 // TODO get checkstyle and pmd working for android (right now it does not work out of the box, so better wait for official fix)
@@ -138,4 +138,4 @@ configure(filterProjects(project.androidprojects)) {
             abortOnError false
         }
     }
-} 
+}

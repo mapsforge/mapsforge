@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,146 +16,208 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.Region;
+
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Dimension;
 
-import android.graphics.PorterDuff;
-import android.graphics.Region;
-
-
 class AndroidCanvas implements Canvas {
+    private static final float[] INVERT_MATRIX = {
+            -1, 0, 0, 0, 255,
+            0, -1, 0, 0, 255,
+            0, 0, -1, 0, 255,
+            0, 0, 0, 1, 0
+    };
 
-	android.graphics.Canvas canvas;
-	private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
+    android.graphics.Canvas canvas;
+    private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
+    private ColorFilter grayscaleFilter, grayscaleInvertFilter, invertFilter;
 
-	AndroidCanvas() {
-		this.canvas = new android.graphics.Canvas();
+    AndroidCanvas() {
+        this.canvas = new android.graphics.Canvas();
 
-		this.bitmapPaint.setAntiAlias(true);
-		this.bitmapPaint.setFilterBitmap(true);
-	}
+        this.bitmapPaint.setAntiAlias(true);
+        this.bitmapPaint.setFilterBitmap(true);
 
-	AndroidCanvas(android.graphics.Canvas canvas) {
-		this.canvas = canvas;
-	}
+        createFilters();
+    }
 
-	@Override
-	public void destroy() {
-		this.canvas = null;
-	}
+    AndroidCanvas(android.graphics.Canvas canvas) {
+        this.canvas = canvas;
 
-	@Override
-	public void drawBitmap(Bitmap bitmap, int left, int top) {
-		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
-	}
+        createFilters();
+    }
 
-	@Override
-	public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-		this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
-	}
+    private void applyFilter(Filter filter) {
+        if (filter == Filter.NONE) {
+            return;
+        }
+        switch (filter) {
+            case GRAYSCALE:
+                bitmapPaint.setColorFilter(grayscaleFilter);
+                break;
+            case GRAYSCALE_INVERT:
+                bitmapPaint.setColorFilter(grayscaleInvertFilter);
+                break;
+            case INVERT:
+                bitmapPaint.setColorFilter(invertFilter);
+                break;
+        }
+    }
 
-	@Override
-	public void drawCircle(int x, int y, int radius, Paint paint) {
-		if (paint.isTransparent()) {
-			return;
-		}
-		this.canvas.drawCircle(x, y, radius, AndroidGraphicFactory.getPaint(paint));
-	}
+    private void createFilters() {
+        ColorMatrix grayscaleMatrix = new ColorMatrix();
+        grayscaleMatrix.setSaturation(0);
+        grayscaleFilter = new ColorMatrixColorFilter(grayscaleMatrix);
 
-	@Override
-	public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
-		if (paint.isTransparent()) {
-			return;
-		}
+        ColorMatrix grayscaleInvertMatrix = new ColorMatrix();
+        grayscaleInvertMatrix.setSaturation(0);
+        grayscaleInvertMatrix.postConcat(new ColorMatrix(INVERT_MATRIX));
+        grayscaleInvertFilter = new ColorMatrixColorFilter(grayscaleInvertMatrix);
 
-		this.canvas.drawLine(x1, y1, x2, y2, AndroidGraphicFactory.getPaint(paint));
-	}
+        invertFilter = new ColorMatrixColorFilter(INVERT_MATRIX);
+    }
 
-	@Override
-	public void drawPath(Path path, Paint paint) {
-		if (paint.isTransparent()) {
-			return;
-		}
-		this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
-	}
+    @Override
+    public void destroy() {
+        this.canvas = null;
+    }
 
-	@Override
-	public void drawText(String text, int x, int y, Paint paint) {
-		if (text == null || text.trim().isEmpty()) {
-			return;
-		}
-		if (paint.isTransparent()) {
-			return;
-		}
-		this.canvas.drawText(text, x, y, AndroidGraphicFactory.getPaint(paint));
-	}
+    @Override
+    public void drawBitmap(Bitmap bitmap, int left, int top) {
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
+    }
 
-	@Override
-	public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
-		if (text == null || text.trim().isEmpty()) {
-			return;
-		}
-		if (paint.isTransparent()) {
-			return;
-		}
+    @Override
+    public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
+        applyFilter(filter);
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
+        if (filter != Filter.NONE) {
+            bitmapPaint.setColorFilter(null);
+        }
+    }
 
-		android.graphics.Path path = new android.graphics.Path();
-		path.moveTo(x1, y1);
-		path.lineTo(x2, y2);
-		this.canvas.drawTextOnPath(text, path, 0, 3, AndroidGraphicFactory.getPaint(paint));
-	}
+    @Override
+    public void drawBitmap(Bitmap bitmap, Matrix matrix) {
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+    }
 
-	@Override
-	public void fillColor(Color color) {
-		this.canvas.drawColor(AndroidGraphicFactory.getColor(color), PorterDuff.Mode.CLEAR);
-	}
+    @Override
+    public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+        applyFilter(filter);
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+        if (filter != Filter.NONE) {
+            bitmapPaint.setColorFilter(null);
+        }
+    }
 
-	@Override
-	public void fillColor(int color) {
-		this.canvas.drawColor(color);
-	}
+    @Override
+    public void drawCircle(int x, int y, int radius, Paint paint) {
+        if (paint.isTransparent()) {
+            return;
+        }
+        this.canvas.drawCircle(x, y, radius, AndroidGraphicFactory.getPaint(paint));
+    }
 
-	@Override
-	public Dimension getDimension() {
-		return new Dimension(getWidth(), getHeight());
-	}
+    @Override
+    public void drawLine(int x1, int y1, int x2, int y2, Paint paint) {
+        if (paint.isTransparent()) {
+            return;
+        }
 
-	@Override
-	public int getHeight() {
-		return this.canvas.getHeight();
-	}
+        this.canvas.drawLine(x1, y1, x2, y2, AndroidGraphicFactory.getPaint(paint));
+    }
 
-	@Override
-	public int getWidth() {
-		return this.canvas.getWidth();
-	}
+    @Override
+    public void drawPath(Path path, Paint paint) {
+        if (paint.isTransparent()) {
+            return;
+        }
+        this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
+    }
 
-	@Override
-	public void resetClip() {
-		this.canvas.clipRect(0, 0, getWidth(), getHeight(), Region.Op.REPLACE);
-	}
+    @Override
+    public void drawText(String text, int x, int y, Paint paint) {
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+        if (paint.isTransparent()) {
+            return;
+        }
+        this.canvas.drawText(text, x, y, AndroidGraphicFactory.getPaint(paint));
+    }
 
-	@Override
-	public void setBitmap(Bitmap bitmap) {
-		this.canvas.setBitmap(AndroidGraphicFactory.getBitmap(bitmap));
-	}
+    @Override
+    public void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint) {
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+        if (paint.isTransparent()) {
+            return;
+        }
 
-	@Override
-	public void setClip(int left, int top, int width, int height) {
-		this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
-	}
+        android.graphics.Path path = new android.graphics.Path();
+        path.moveTo(x1, y1);
+        path.lineTo(x2, y2);
+        this.canvas.drawTextOnPath(text, path, 0, 3, AndroidGraphicFactory.getPaint(paint));
+    }
 
-	@Override
-	public void setClipDifference(int left, int top, int width, int height) {
-		this.setClipInternal(left, top, width, height, Region.Op.DIFFERENCE);
-	}
+    @Override
+    public void fillColor(Color color) {
+        this.canvas.drawColor(AndroidGraphicFactory.getColor(color), PorterDuff.Mode.CLEAR);
+    }
 
-	public void setClipInternal(int left, int top, int width, int height, Region.Op op) {
-		this.canvas.clipRect(left, top, left + width, top + height, op);
-	}
+    @Override
+    public void fillColor(int color) {
+        this.canvas.drawColor(color);
+    }
+
+    @Override
+    public Dimension getDimension() {
+        return new Dimension(getWidth(), getHeight());
+    }
+
+    @Override
+    public int getHeight() {
+        return this.canvas.getHeight();
+    }
+
+    @Override
+    public int getWidth() {
+        return this.canvas.getWidth();
+    }
+
+    @Override
+    public void resetClip() {
+        this.canvas.clipRect(0, 0, getWidth(), getHeight(), Region.Op.REPLACE);
+    }
+
+    @Override
+    public void setBitmap(Bitmap bitmap) {
+        this.canvas.setBitmap(AndroidGraphicFactory.getBitmap(bitmap));
+    }
+
+    @Override
+    public void setClip(int left, int top, int width, int height) {
+        this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
+    }
+
+    @Override
+    public void setClipDifference(int left, int top, int width, int height) {
+        this.setClipInternal(left, top, width, height, Region.Op.DIFFERENCE);
+    }
+
+    public void setClipInternal(int left, int top, int width, int height, Region.Op op) {
+        this.canvas.clipRect(left, top, left + width, top + height, op);
+    }
 }

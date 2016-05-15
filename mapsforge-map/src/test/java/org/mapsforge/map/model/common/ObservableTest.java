@@ -18,35 +18,35 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class ObservableTest {
-	private static void verifyAddObserverInvalid(Observable observable, Observer observer) {
-		try {
-			observable.addObserver(observer);
-			Assert.fail("observer: " + observer);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyAddObserverInvalid(Observable observable, Observer observer) {
+        try {
+            observable.addObserver(observer);
+            Assert.fail("observer: " + observer);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	private static void verifyRemoveObserverInvalid(Observable observable, Observer observer) {
-		try {
-			observable.removeObserver(observer);
-			Assert.fail("observer: " + observer);
-		} catch (IllegalArgumentException e) {
-			Assert.assertTrue(true);
-		}
-	}
+    private static void verifyRemoveObserverInvalid(Observable observable, Observer observer) {
+        try {
+            observable.removeObserver(observer);
+            Assert.fail("observer: " + observer);
+        } catch (IllegalArgumentException e) {
+            Assert.assertTrue(true);
+        }
+    }
 
-	@Test
-	public void addRemoveObserverTest() {
-		DummyObserver dummyObserver = new DummyObserver();
-		Observable observable = new Observable();
+    @Test
+    public void addRemoveObserverTest() {
+        DummyObserver dummyObserver = new DummyObserver();
+        Observable observable = new Observable();
 
-		observable.addObserver(dummyObserver);
-		verifyAddObserverInvalid(observable, null);
-		verifyAddObserverInvalid(observable, dummyObserver);
+        observable.addObserver(dummyObserver);
+        verifyAddObserverInvalid(observable, null);
+        verifyAddObserverInvalid(observable, dummyObserver);
 
-		observable.removeObserver(dummyObserver);
-		verifyRemoveObserverInvalid(observable, null);
-		verifyRemoveObserverInvalid(observable, dummyObserver);
-	}
+        observable.removeObserver(dummyObserver);
+        verifyRemoveObserverInvalid(observable, null);
+        verifyRemoveObserverInvalid(observable, dummyObserver);
+    }
 }

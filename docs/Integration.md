@@ -33,6 +33,28 @@ compile 'org.mapsforge:mapsforge-map-awt:0.6.0'
 compile 'com.kitfox.svg:svg-salamander:1.0'
 ```
 
+### 2. POI
+
+#### 2.1 Core
+```groovy
+compile 'org.mapsforge:mapsforge-core:0.6.0'
+compile 'org.mapsforge:mapsforge-poi:0.6.0'
+```
+
+#### 2.2 Android
+```groovy
+compile 'org.mapsforge:mapsforge-poi-android:0.6.0'
+compile 'org.mapsforge:spatialite-android:0.6.0'
+```
+
+You'll need also the SpatiaLite native library [files](../spatialite-android/libs).
+
+#### 2.3 Java
+```groovy
+compile 'org.mapsforge:mapsforge-poi-awt:0.6.0'
+compile 'org.xerial:sqlite-jdbc:3.8.11.2'
+```
+
 ## Maven
 
 The dependencies for Maven are declared in a similar way. For example:

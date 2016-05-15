@@ -17,13 +17,13 @@ package org.mapsforge.core.graphics;
 import org.mapsforge.core.model.Dimension;
 
 public interface Canvas extends GraphicContext {
-	void destroy();
+    void destroy();
 
-	Dimension getDimension();
+    Dimension getDimension();
 
-	int getHeight();
+    int getHeight();
 
-	int getWidth();
+    int getWidth();
 
-	void setBitmap(Bitmap bitmap);
+    void setBitmap(Bitmap bitmap);
 }

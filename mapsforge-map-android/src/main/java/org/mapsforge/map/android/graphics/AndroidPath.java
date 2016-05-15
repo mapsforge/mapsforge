@@ -15,52 +15,52 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import android.graphics.Path.FillType;
+
 import org.mapsforge.core.graphics.FillRule;
 import org.mapsforge.core.graphics.Path;
 
-import android.graphics.Path.FillType;
-
 class AndroidPath implements Path {
-	private static FillType getWindingRule(FillRule fillRule) {
-		switch (fillRule) {
-			case EVEN_ODD:
-				return FillType.EVEN_ODD;
-			case NON_ZERO:
-				return FillType.WINDING;
-		}
+    private static FillType getWindingRule(FillRule fillRule) {
+        switch (fillRule) {
+            case EVEN_ODD:
+                return FillType.EVEN_ODD;
+            case NON_ZERO:
+                return FillType.WINDING;
+        }
 
-		throw new IllegalArgumentException("unknown fill rule:" + fillRule);
-	}
+        throw new IllegalArgumentException("unknown fill rule:" + fillRule);
+    }
 
-	final android.graphics.Path path = new android.graphics.Path();
+    final android.graphics.Path path = new android.graphics.Path();
 
-	@Override
-	public void clear() {
-		this.path.rewind();
-	}
+    @Override
+    public void clear() {
+        this.path.rewind();
+    }
 
-	@Override
-	public void close() {
-		this.path.close();
-	}
+    @Override
+    public void close() {
+        this.path.close();
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return this.path.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return this.path.isEmpty();
+    }
 
-	@Override
-	public void lineTo(float x, float y) {
-		this.path.lineTo(x, y);
-	}
+    @Override
+    public void lineTo(float x, float y) {
+        this.path.lineTo(x, y);
+    }
 
-	@Override
-	public void moveTo(float x, float y) {
-		this.path.moveTo(x, y);
-	}
+    @Override
+    public void moveTo(float x, float y) {
+        this.path.moveTo(x, y);
+    }
 
-	@Override
-	public void setFillRule(FillRule fillRule) {
-		this.path.setFillType(getWindingRule(fillRule));
-	}
+    @Override
+    public void setFillRule(FillRule fillRule) {
+        this.path.setFillType(getWindingRule(fillRule));
+    }
 }

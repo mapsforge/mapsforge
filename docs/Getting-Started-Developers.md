@@ -25,19 +25,24 @@ Mapsforge consists of the following core components:
 - mapsforge-core: platform unspecific general components and interfaces.
 - mapsforge-map: platform unspecific elements used for map display.
 - mapsforge-map-reader: platform unspecific code to read mapsforge map files.
+- mapsforge-poi: platform unspecific poi elements.
 - [kXML2](http://www.kxml.org/): lightweight XML parser for render themes.
 
 Extra Android components:
 
-- mapsforge-map-android: android specific elements.
-- mapsforge-map-android-extras: android extra elements.
+- mapsforge-map-android: android specific map elements.
+- mapsforge-map-android-extras: android extra map elements.
+- mapsforge-poi-android: android specific poi elements.
 - [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
+- [spatialite-android](https://www.gaia-gis.it/fossil/libspatialite/wiki?name=splite-android): SQLite spatial library.
 
 Extra Java components:
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
+- mapsforge-poi-awt: java specific poi elements.
 - [svg-salamander](https://svgsalamander.java.net/): SVG library for displaying SVG files as icons. Improved jar can be found at the site.
- 
+- [xerial/sqlite-jdbc](https://github.com/xerial/sqlite-jdbc): SQLite JDBC library.
+
 The jars build from the above components are required elements for a mapsforge application on Android or Java.
 
 External dependencies jars can be found at their respective sites or in Maven central repository.
@@ -138,4 +143,4 @@ Without these steps, you may have issues with the app crashing with a `java.lang
 
 ## How to contribute
 
-[Guidelines](../CONTRIBUTING.md) for repository contributors.
+[Guidelines](../.github/CONTRIBUTING.md) for repository contributors.

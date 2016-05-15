@@ -19,147 +19,137 @@ package org.mapsforge.map.writer.model;
  * which it should appear first.
  */
 public class OSMTag {
-	private static final String KEY_VALUE_SEPARATOR = "=";
+    private static final String KEY_VALUE_SEPARATOR = "=";
 
-	/**
-	 * Convenience method that constructs a new OSMTag with a new id from another OSMTag.
-	 * 
-	 * @param otherTag
-	 *            the OSMTag to copy
-	 * @param newID
-	 *            the new id
-	 * @return a newly constructed OSMTag with the attributes of otherTag
-	 */
-	public static OSMTag fromOSMTag(OSMTag otherTag, short newID) {
-		return new OSMTag(newID, otherTag.getKey(), otherTag.getValue(), otherTag.getZoomAppear(),
-				otherTag.isRenderable(), otherTag.isForcePolygonLine());
-	}
+    /**
+     * Convenience method that constructs a new OSMTag with a new id from another OSMTag.
+     *
+     * @param otherTag the OSMTag to copy
+     * @param newID    the new id
+     * @return a newly constructed OSMTag with the attributes of otherTag
+     */
+    public static OSMTag fromOSMTag(OSMTag otherTag, short newID) {
+        return new OSMTag(newID, otherTag.getKey(), otherTag.getValue(), otherTag.getZoomAppear(),
+                otherTag.isRenderable(), otherTag.isForcePolygonLine());
+    }
 
-	/**
-	 * Convenience method for generating a string representation of a key/value pair.
-	 * 
-	 * @param key
-	 *            the key of the tag
-	 * @param value
-	 *            the value of the tag
-	 * @return a string representation of the key/Value pair
-	 */
-	public static String tagKey(String key, String value) {
-		return key + KEY_VALUE_SEPARATOR + value;
-	}
+    /**
+     * Convenience method for generating a string representation of a key/value pair.
+     *
+     * @param key   the key of the tag
+     * @param value the value of the tag
+     * @return a string representation of the key/Value pair
+     */
+    public static String tagKey(String key, String value) {
+        return key + KEY_VALUE_SEPARATOR + value;
+    }
 
-	private final boolean forcePolygonLine;
-	private final short id;
-	private final String key;
-	// TODO is the renderable attribute still needed?
-	private final boolean renderable;
+    private final boolean forcePolygonLine;
+    private final short id;
+    private final String key;
+    // TODO is the renderable attribute still needed?
+    private final boolean renderable;
 
-	private final String value;
+    private final String value;
 
-	private final byte zoomAppear;
+    private final byte zoomAppear;
 
-	/**
-	 * @param id
-	 *            the internal id of the tag
-	 * @param key
-	 *            the key of the tag
-	 * @param value
-	 *            the value of the tag
-	 * @param zoomAppear
-	 *            the minimum zoom level the tag appears first
-	 * @param renderable
-	 *            flag if the tag represents a renderable entity
-	 * @param forcePolygonLine
-	 *            flag if polygon line instead of area is forced with closed polygons
-	 */
-	public OSMTag(short id, String key, String value, byte zoomAppear, boolean renderable, boolean forcePolygonLine) {
-		super();
-		this.id = id;
-		this.key = key;
-		this.value = value;
-		this.zoomAppear = zoomAppear;
-		this.renderable = renderable;
-		this.forcePolygonLine = forcePolygonLine;
-	}
+    /**
+     * @param id               the internal id of the tag
+     * @param key              the key of the tag
+     * @param value            the value of the tag
+     * @param zoomAppear       the minimum zoom level the tag appears first
+     * @param renderable       flag if the tag represents a renderable entity
+     * @param forcePolygonLine flag if polygon line instead of area is forced with closed polygons
+     */
+    public OSMTag(short id, String key, String value, byte zoomAppear, boolean renderable, boolean forcePolygonLine) {
+        super();
+        this.id = id;
+        this.key = key;
+        this.value = value;
+        this.zoomAppear = zoomAppear;
+        this.renderable = renderable;
+        this.forcePolygonLine = forcePolygonLine;
+    }
 
-	@Override
-	public final boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!(obj instanceof OSMTag)) {
-			return false;
-		}
-		OSMTag other = (OSMTag) obj;
-		return this.id == other.id;
-	}
+    @Override
+    public final boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof OSMTag)) {
+            return false;
+        }
+        OSMTag other = (OSMTag) obj;
+        return this.id == other.id;
+    }
 
-	/**
-	 * @return the id
-	 */
-	public final short getId() {
-		return this.id;
-	}
+    /**
+     * @return the id
+     */
+    public final short getId() {
+        return this.id;
+    }
 
-	/**
-	 * @return the key
-	 */
-	public final String getKey() {
-		return this.key;
-	}
+    /**
+     * @return the key
+     */
+    public final String getKey() {
+        return this.key;
+    }
 
-	/**
-	 * @return the value
-	 */
-	public final String getValue() {
-		return this.value;
-	}
+    /**
+     * @return the value
+     */
+    public final String getValue() {
+        return this.value;
+    }
 
-	/**
-	 * @return the zoomAppear
-	 */
-	public final byte getZoomAppear() {
-		return this.zoomAppear;
-	}
+    /**
+     * @return the zoomAppear
+     */
+    public final byte getZoomAppear() {
+        return this.zoomAppear;
+    }
 
-	@Override
-	public final int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + this.id;
-		return result;
-	}
+    @Override
+    public final int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + this.id;
+        return result;
+    }
 
-	/**
-	 * @return whether the tag represents a coastline
-	 */
-	public final boolean isCoastline() {
-		return this.key.equals("natural") && this.value.equals("coastline");
-	}
+    /**
+     * @return whether the tag represents a coastline
+     */
+    public final boolean isCoastline() {
+        return this.key.equals("natural") && this.value.equals("coastline");
+    }
 
-	/**
-	 * @return the forcePolygonLine
-	 */
-	public final boolean isForcePolygonLine() {
-		return this.forcePolygonLine;
-	}
+    /**
+     * @return the forcePolygonLine
+     */
+    public final boolean isForcePolygonLine() {
+        return this.forcePolygonLine;
+    }
 
-	/**
-	 * @return the renderable
-	 */
-	public final boolean isRenderable() {
-		return this.renderable;
-	}
+    /**
+     * @return the renderable
+     */
+    public final boolean isRenderable() {
+        return this.renderable;
+    }
 
-	/**
-	 * @return the string representation of the OSMTag
-	 */
-	public final String tagKey() {
-		return this.key + KEY_VALUE_SEPARATOR + this.value;
-	}
+    /**
+     * @return the string representation of the OSMTag
+     */
+    public final String tagKey() {
+        return this.key + KEY_VALUE_SEPARATOR + this.value;
+    }
 
-	@Override
-	public final String toString() {
-		return "OSMTag [id=" + this.id + ", key=" + this.key + ", value=" + this.value + ", zoomAppear="
-				+ this.zoomAppear + ", renderable=" + this.renderable + "]";
-	}
+    @Override
+    public final String toString() {
+        return "OSMTag [id=" + this.id + ", key=" + this.key + ", value=" + this.value + ", zoomAppear="
+                + this.zoomAppear + ", renderable=" + this.renderable + "]";
+    }
 }

@@ -14,10 +14,10 @@
  */
 package org.mapsforge.map.android.util;
 
+import org.mapsforge.map.rendertheme.ExternalRenderTheme;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 
 /**
  * Combining an external render theme file with the jar-embedded resources of
@@ -26,14 +26,14 @@ import org.mapsforge.map.rendertheme.ExternalRenderTheme;
 
 public class ExternalRenderThemeUsingJarResources extends ExternalRenderTheme {
 
-	public ExternalRenderThemeUsingJarResources(File renderThemeFile)
-			throws FileNotFoundException {
-		super(renderThemeFile);
-	}
+    public ExternalRenderThemeUsingJarResources(File renderThemeFile)
+            throws FileNotFoundException {
+        super(renderThemeFile);
+    }
 
-	@Override
-	public String getRelativePathPrefix() {
-		return "/osmarender/";
-	}
+    @Override
+    public String getRelativePathPrefix() {
+        return "/osmarender/";
+    }
 
 }

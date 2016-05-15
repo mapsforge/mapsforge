@@ -14,44 +14,44 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-import java.util.List;
-
 import org.mapsforge.core.model.Tag;
 
+import java.util.List;
+
 class NegativeMatcher implements AttributeMatcher {
-	private final List<String> keyList;
-	private final List<String> valueList;
+    private final List<String> keyList;
+    private final List<String> valueList;
 
-	NegativeMatcher(List<String> keyList, List<String> valueList) {
-		this.keyList = keyList;
-		this.valueList = valueList;
-	}
+    NegativeMatcher(List<String> keyList, List<String> valueList) {
+        this.keyList = keyList;
+        this.valueList = valueList;
+    }
 
-	@Override
-	public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
-		return false;
-	}
+    @Override
+    public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
+        return false;
+    }
 
-	@Override
-	public boolean matches(List<Tag> tags) {
-		if (keyListDoesNotContainKeys(tags)) {
-			return true;
-		}
+    @Override
+    public boolean matches(List<Tag> tags) {
+        if (keyListDoesNotContainKeys(tags)) {
+            return true;
+        }
 
-		for (int i = 0, n = tags.size(); i < n; ++i) {
-			if (this.valueList.contains(tags.get(i).value)) {
-				return true;
-			}
-		}
-		return false;
-	}
+        for (int i = 0, n = tags.size(); i < n; ++i) {
+            if (this.valueList.contains(tags.get(i).value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	private boolean keyListDoesNotContainKeys(List<Tag> tags) {
-		for (int i = 0, n = tags.size(); i < n; ++i) {
-			if (this.keyList.contains(tags.get(i).key)) {
-				return false;
-			}
-		}
-		return true;
-	}
+    private boolean keyListDoesNotContainKeys(List<Tag> tags) {
+        for (int i = 0, n = tags.size(); i < n; ++i) {
+            if (this.keyList.contains(tags.get(i).key)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

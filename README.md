@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/mapsforge/mapsforge.svg?branch=master)](https://travis-ci.org/mapsforge/mapsforge)
+[![Build Status](https://travis-ci.org/mapsforge/mapsforge.svg?branch=dev)](https://travis-ci.org/mapsforge/mapsforge)
 
 The mapsforge project provides free and open software for the rendering of maps based on OpenStreetMap data. Currently, we offer a library for ad-hoc map rendering on Android devices and in Java stand-alone applications.
 
@@ -9,13 +9,14 @@ The mapsforge project provides free and open software for the rendering of maps 
 - It provides [simple boilerplate code](docs/Getting-Started-Android-App.md) to build applications for Android that display OpenStreetMap-based maps.
 - It provides a library to build standalone applications in Java.
 - Mapsforge maps can be flexibly styled with XML style files ([render themes](docs/Rendertheme.md)).
+- We provide [tools / library](docs/POI.md) for POI search (beta) and also [precompiled POI](http://download.mapsforge.org).
 - Mapsforge supports Android 2.3.3 (API level 10) and above. It has been tested on Android 6 Marshmallow.
 - Mapsforge is used by many [applications](docs/Mapsforge-Applications.md).
 - Mapsforge is in active development: [changelog](docs/Changelog.md), [contributors](docs/Contributors.md). 
 - [API documentation](http://mapsforge.org/docs).
 - [Official binary releases](docs/Downloads.md). 
 - [Latest builds from CI server](http://ci.mapsforge.org/) and [Sonar server](http://sonar.mapsforge.org/).
-- Mapsforge is free and open source, licensed under the [LGPL3 license](https://www.gnu.org/copyleft/lesser.html).
+- Mapsforge is free and open source, licensed under the [LGPL3 license](COPYING.LESSER).
 - [Mapsforge Talks](docs/Mapsforge-Talks.md).
 - [Mailing List](https://groups.google.com/forum/#!forum/mapsforge-dev).
 

@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,23 +19,25 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public interface Bitmap {
-	void compress(OutputStream outputStream) throws IOException;
+    void compress(OutputStream outputStream) throws IOException;
 
-	void decrementRefCount();
+    void decrementRefCount();
 
-	/**
-	 * @return the height of this bitmap in pixels.
-	 */
-	int getHeight();
+    /**
+     * @return the height of this bitmap in pixels.
+     */
+    int getHeight();
 
-	/**
-	 * @return the width of this bitmap in pixels.
-	 */
-	int getWidth();
+    /**
+     * @return the width of this bitmap in pixels.
+     */
+    int getWidth();
 
-	void incrementRefCount();
+    void incrementRefCount();
 
-	void scaleTo(int width, int height);
+    boolean isDestroyed();
 
-	void setBackgroundColor(int color);
+    void scaleTo(int width, int height);
+
+    void setBackgroundColor(int color);
 }

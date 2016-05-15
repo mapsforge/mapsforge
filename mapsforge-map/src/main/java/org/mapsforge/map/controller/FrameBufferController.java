@@ -27,132 +27,133 @@ import org.mapsforge.map.view.FrameBuffer;
 
 public final class FrameBufferController implements Observer {
 
-	private static float maxAspectRatio = 2;
-	// if useSquareFrameBuffer is enabled, the framebuffer allocated for drawing will be
-	// large enough for drawing in either orientation, so no change is needed when the device
-	// orientation changes. To avoid overly large framebuffers, the aspect ratio for this policy
-	// determines when this will be used.
-	private static boolean useSquareFrameBuffer = true;
+    private static float maxAspectRatio = 2;
+    // if useSquareFrameBuffer is enabled, the framebuffer allocated for drawing will be
+    // large enough for drawing in either orientation, so no change is needed when the device
+    // orientation changes. To avoid overly large framebuffers, the aspect ratio for this policy
+    // determines when this will be used.
+    private static boolean useSquareFrameBuffer = true;
 
-	public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
-		FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
+    public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
+        FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
 
-		model.frameBufferModel.addObserver(frameBufferController);
-		model.mapViewDimension.addObserver(frameBufferController);
-		model.mapViewPosition.addObserver(frameBufferController);
-		model.displayModel.addObserver(frameBufferController);
+        model.frameBufferModel.addObserver(frameBufferController);
+        model.mapViewDimension.addObserver(frameBufferController);
+        model.mapViewPosition.addObserver(frameBufferController);
+        model.displayModel.addObserver(frameBufferController);
 
-		return frameBufferController;
-	}
+        return frameBufferController;
+    }
 
-	public static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
-		int width = (int) (mapViewDimension.width * overdrawFactor);
-		int height = (int) (mapViewDimension.height * overdrawFactor);
-		if (useSquareFrameBuffer) {
-			float aspectRatio = ((float) mapViewDimension.width) / mapViewDimension.height;
-			if (aspectRatio < maxAspectRatio && aspectRatio > 1 / maxAspectRatio) {
-				width = Math.max(width, height);
-				height = width;
-			}
-		}
-		return new Dimension(width, height);
-	}
+    public static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
+        int width = (int) (mapViewDimension.width * overdrawFactor);
+        int height = (int) (mapViewDimension.height * overdrawFactor);
+        if (useSquareFrameBuffer) {
+            float aspectRatio = ((float) mapViewDimension.width) / mapViewDimension.height;
+            if (aspectRatio < maxAspectRatio && aspectRatio > 1 / maxAspectRatio) {
+                width = Math.max(width, height);
+                height = width;
+            }
+        }
+        return new Dimension(width, height);
+    }
 
-	public static boolean isUseSquareFrameBuffer() {
-		return useSquareFrameBuffer;
-	}
+    public static boolean isUseSquareFrameBuffer() {
+        return useSquareFrameBuffer;
+    }
 
-	public static void setUseSquareFrameBuffer(boolean useSquareFrameBuffer) {
-		FrameBufferController.useSquareFrameBuffer = useSquareFrameBuffer;
-	}
+    public static void setUseSquareFrameBuffer(boolean useSquareFrameBuffer) {
+        FrameBufferController.useSquareFrameBuffer = useSquareFrameBuffer;
+    }
 
-	private final FrameBuffer frameBuffer;
-	private Dimension lastMapViewDimension;
-	private double lastOverdrawFactor;
-	private final Model model;
+    private final FrameBuffer frameBuffer;
+    private Dimension lastMapViewDimension;
+    private double lastOverdrawFactor;
+    private final Model model;
 
-	private FrameBufferController(FrameBuffer frameBuffer, Model model) {
-		this.frameBuffer = frameBuffer;
-		this.model = model;
-	}
+    private FrameBufferController(FrameBuffer frameBuffer, Model model) {
+        this.frameBuffer = frameBuffer;
+        this.model = model;
+    }
 
-	public void destroy() {
-		this.model.mapViewPosition.removeObserver(this);
-		this.model.mapViewDimension.removeObserver(this);
-		this.model.frameBufferModel.removeObserver(this);
-	}
+    public void destroy() {
+        this.model.displayModel.removeObserver(this);
+        this.model.mapViewPosition.removeObserver(this);
+        this.model.mapViewDimension.removeObserver(this);
+        this.model.frameBufferModel.removeObserver(this);
+    }
 
-	@Override
-	public void onChange() {
-		Dimension mapViewDimension = this.model.mapViewDimension.getDimension();
-		if (mapViewDimension == null) {
-			// at this point map view not visible
-			return;
-		}
+    @Override
+    public void onChange() {
+        Dimension mapViewDimension = this.model.mapViewDimension.getDimension();
+        if (mapViewDimension == null) {
+            // at this point map view not visible
+            return;
+        }
 
-		double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
-		if (dimensionChangeNeeded(mapViewDimension, overdrawFactor)) {
-			Dimension newDimension = calculateFrameBufferDimension(mapViewDimension, overdrawFactor);
-			if (!useSquareFrameBuffer || frameBuffer.getDimension() == null
-					|| newDimension.width > frameBuffer.getDimension().width
-					|| newDimension.height > frameBuffer.getDimension().height) {
-				// new dimensions if we either always reallocate on config change or if new dimension
-				// is larger than the old
-				this.frameBuffer.setDimension(newDimension);
-			}
-			this.lastMapViewDimension = mapViewDimension;
-			this.lastOverdrawFactor = overdrawFactor;
-		}
+        double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
+        if (dimensionChangeNeeded(mapViewDimension, overdrawFactor)) {
+            Dimension newDimension = calculateFrameBufferDimension(mapViewDimension, overdrawFactor);
+            if (!useSquareFrameBuffer || frameBuffer.getDimension() == null
+                    || newDimension.width > frameBuffer.getDimension().width
+                    || newDimension.height > frameBuffer.getDimension().height) {
+                // new dimensions if we either always reallocate on config change or if new dimension
+                // is larger than the old
+                this.frameBuffer.setDimension(newDimension);
+            }
+            this.lastMapViewDimension = mapViewDimension;
+            this.lastOverdrawFactor = overdrawFactor;
+        }
 
-		synchronized (this.model.mapViewPosition) {
-			synchronized (this.frameBuffer) {
-				// we need resource ordering here to avoid deadlock
-				MapPosition mapPositionFrameBuffer = this.model.frameBufferModel.getMapPosition();
-				if (mapPositionFrameBuffer != null) {
-					double scaleFactor = this.model.mapViewPosition.getScaleFactor();
-					LatLong pivot = this.model.mapViewPosition.getPivot();
-					adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor, pivot);
-				}
-			}
-		}
-	}
+        synchronized (this.model.mapViewPosition) {
+            synchronized (this.frameBuffer) {
+                // we need resource ordering here to avoid deadlock
+                MapPosition mapPositionFrameBuffer = this.model.frameBufferModel.getMapPosition();
+                if (mapPositionFrameBuffer != null) {
+                    double scaleFactor = this.model.mapViewPosition.getScaleFactor();
+                    LatLong pivot = this.model.mapViewPosition.getPivot();
+                    adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor, pivot);
+                }
+            }
+        }
+    }
 
-	private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension,
-			double scaleFactor, LatLong pivot) {
+    private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension,
+                                         double scaleFactor, LatLong pivot) {
 
-		MapPosition mapViewPosition = this.model.mapViewPosition.getMapPosition();
+        MapPosition mapViewPosition = this.model.mapViewPosition.getMapPosition();
 
-		long mapSize = MercatorProjection.getMapSize(mapPositionFrameBuffer.zoomLevel, model.displayModel.getTileSize());
+        long mapSize = MercatorProjection.getMapSize(mapPositionFrameBuffer.zoomLevel, model.displayModel.getTileSize());
 
-		Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapSize);
-		Point pointMapPosition = MercatorProjection.getPixel(mapViewPosition.latLong, mapSize);
+        Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapSize);
+        Point pointMapPosition = MercatorProjection.getPixel(mapViewPosition.latLong, mapSize);
 
-		double diffX = pointFrameBuffer.x - pointMapPosition.x;
-		double diffY = pointFrameBuffer.y - pointMapPosition.y;
-		// we need to compute the pivot distance from the map center
-		// as we will need to find the pivot point for the
-		// frame buffer (which generally has not the same size as the
-		// map view).
-		double pivotDistanceX = 0d;
-		double pivotDistanceY = 0d;
-		if (pivot != null) {
-			Point pivotXY = MercatorProjection.getPixel(pivot, mapSize);
-			pivotDistanceX = pivotXY.x - pointFrameBuffer.x;
-			pivotDistanceY = pivotXY.y - pointFrameBuffer.y;
-		}
+        double diffX = pointFrameBuffer.x - pointMapPosition.x;
+        double diffY = pointFrameBuffer.y - pointMapPosition.y;
+        // we need to compute the pivot distance from the map center
+        // as we will need to find the pivot point for the
+        // frame buffer (which generally has not the same size as the
+        // map view).
+        double pivotDistanceX = 0d;
+        double pivotDistanceY = 0d;
+        if (pivot != null) {
+            Point pivotXY = MercatorProjection.getPixel(pivot, mapSize);
+            pivotDistanceX = pivotXY.x - pointFrameBuffer.x;
+            pivotDistanceY = pivotXY.y - pointFrameBuffer.y;
+        }
 
-		float currentScaleFactor = (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
+        float currentScaleFactor = (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
 
-		this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension, (float) pivotDistanceX,
-				(float) pivotDistanceY);
-	}
+        this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension, (float) pivotDistanceX,
+                (float) pivotDistanceY);
+    }
 
-	private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {
-		if (Double.compare(overdrawFactor, this.lastOverdrawFactor) != 0) {
-			return true;
-		} else if (!mapViewDimension.equals(this.lastMapViewDimension)) {
-			return true;
-		}
-		return false;
-	}
+    private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {
+        if (Double.compare(overdrawFactor, this.lastOverdrawFactor) != 0) {
+            return true;
+        } else if (!mapViewDimension.equals(this.lastMapViewDimension)) {
+            return true;
+        }
+        return false;
+    }
 }
