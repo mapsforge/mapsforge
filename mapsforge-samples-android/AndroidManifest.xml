@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.mapsforge.samples.android"
     android:installLocation="auto"
-    android:versionCode="60"
+    android:versionCode="61"
     android:versionName="master-SNAPSHOT">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
