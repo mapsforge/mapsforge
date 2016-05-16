@@ -1,6 +1,10 @@
 # Changelog
 
-## New since 0.6.0
+## New since 0.6.1-rc1
+
+## Version 0.6.X
+
+**Version 0.6.1-rc1 (2016-05-16)**
 
 - [POI Search API](POI.md) [#728](https://github.com/mapsforge/mapsforge/issues/728)
 - Render Theme v5: pathText repeat options [#473](https://github.com/mapsforge/mapsforge/issues/473)
@@ -26,8 +30,6 @@
 - Code formatting improvements [#782](https://github.com/mapsforge/mapsforge/issues/782)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.1)
-
-## Version 0.6.X
 
 #### Version 0.6.0 (2015-11-25)
 

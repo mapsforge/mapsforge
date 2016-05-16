@@ -1,5 +1,15 @@
 # Downloads for Developers
 
+# Release 0.6.1-rc1 Downloads
+
+These are the downloads for version 0.6.1-rc1 (2016-05-16)
+
+- [Samples 0.6.1-rc1 application (old permissions)](http://ci.mapsforge.org/job/0.6.1-rc1/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-oldpermissions-debug.apk)
+- [Samples 0.6.1-rc1 application (runtime permissions)](http://ci.mapsforge.org/job/0.6.1-rc1/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-runtimepermissions-debug.apk)
+- [Release 0.6.1-rc1 jars](http://ci.mapsforge.org/job/0.6.1-rc1/)
+- [Writer plugin](http://ci.mapsforge.org/job/0.6.1-rc1/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.6.1-rc1-jar-with-dependencies.jar)
+- [POI writer plugin](http://ci.mapsforge.org/job/0.6.1-rc1/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-0.6.1-rc1-jar-with-dependencies.jar)
+
 # Release 0.6.0 Downloads
 
 These are the downloads for version 0.6.0 (2015-11-25)
