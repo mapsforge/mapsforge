@@ -62,29 +62,45 @@ class AwtCanvas implements Canvas {
         if (filter == Filter.NONE) {
             return src;
         }
-        BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+        BufferedImage dest = null;
         switch (filter) {
             case GRAYSCALE:
+                dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
                 this.grayscaleOp.filter(src, dest);
                 break;
             case GRAYSCALE_INVERT:
-                this.grayscaleOp.filter(src, dest);
-                switch (dest.getColorModel().getNumComponents()) {
-                    case 3:
-                        this.invertOp.filter(dest, dest);
-                        break;
-                    case 4:
-                        this.invertOp4.filter(dest, dest);
-                        break;
-                }
-                break;
             case INVERT:
-                switch (src.getColorModel().getNumComponents()) {
-                    case 3:
-                        this.invertOp.filter(src, dest);
+                final BufferedImage newSrc;
+                if (src.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
+                    newSrc = new BufferedImage(src.getWidth(), src.getHeight(), src.getColorModel().getNumComponents() == 3 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D g2 = newSrc.createGraphics();
+                    g2.drawImage(src, 0, 0, null);
+                    g2.dispose();
+                } else {
+                    newSrc = src;
+                }
+                dest = new BufferedImage(newSrc.getWidth(), newSrc.getHeight(), newSrc.getType());
+                switch (filter) {
+                    case GRAYSCALE_INVERT:
+                        this.grayscaleOp.filter(newSrc, dest);
+                        switch (dest.getColorModel().getNumComponents()) {
+                            case 3:
+                                this.invertOp.filter(dest, dest);
+                                break;
+                            case 4:
+                                this.invertOp4.filter(dest, dest);
+                                break;
+                        }
                         break;
-                    case 4:
-                        this.invertOp4.filter(src, dest);
+                    case INVERT:
+                        switch (newSrc.getColorModel().getNumComponents()) {
+                            case 3:
+                                this.invertOp.filter(newSrc, dest);
+                                break;
+                            case 4:
+                                this.invertOp4.filter(newSrc, dest);
+                                break;
+                        }
                         break;
                 }
                 break;
