@@ -28,6 +28,7 @@ import java.util.List;
  */
 public abstract class AbstractPoiPersistenceManager implements PoiPersistenceManager {
     protected PoiCategoryManager categoryManager = null;
+    protected String poiFile;
 
     // Containers for return values
     protected final List<PointOfInterest> ret;
@@ -58,6 +59,14 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
     @Override
     public PoiCategoryManager getCategoryManager() {
         return this.categoryManager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getPoiFile() {
+        return poiFile;
     }
 
     /**

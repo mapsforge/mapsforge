@@ -156,6 +156,8 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
+
+        this.poiFile = null;
     }
 
     /**
@@ -167,6 +169,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         this.db = new Database();
         try {
             this.db.open(dbFilePath, readOnly ? Constants.SQLITE_OPEN_READONLY : Constants.SQLITE_OPEN_READWRITE | Constants.SQLITE_OPEN_CREATE);
+            this.poiFile = dbFilePath;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
