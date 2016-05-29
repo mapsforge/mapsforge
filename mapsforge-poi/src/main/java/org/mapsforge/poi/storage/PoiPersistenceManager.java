@@ -2,7 +2,7 @@
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 weise
  * Copyright 2010, 2011 Karsten Groll
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -81,6 +81,11 @@ public interface PoiPersistenceManager {
      * @return The persistence manager's category manager for retrieving and editing POI categories.
      */
     PoiCategoryManager getCategoryManager();
+
+    /**
+     * @return the current POI file.
+     */
+    String getPoiFile();
 
     /**
      * @return the metadata for the current POI file.

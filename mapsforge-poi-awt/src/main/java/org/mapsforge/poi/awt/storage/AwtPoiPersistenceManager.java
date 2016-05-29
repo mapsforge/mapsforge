@@ -157,6 +157,8 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
+
+        this.poiFile = null;
     }
 
     /**
@@ -171,6 +173,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             config.setReadOnly(readOnly);
             this.conn = DriverManager.getConnection("jdbc:sqlite:" + dbFilePath, config.toProperties());
             this.conn.setAutoCommit(false);
+            this.poiFile = dbFilePath;
         } catch (ClassNotFoundException | SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }

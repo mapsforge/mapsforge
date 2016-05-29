@@ -37,6 +37,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ColorConvertOp;
+import java.awt.image.IndexColorModel;
 import java.awt.image.LookupOp;
 import java.awt.image.ShortLookupTable;
 
@@ -62,31 +63,41 @@ class AwtCanvas implements Canvas {
         if (filter == Filter.NONE) {
             return src;
         }
-        BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+        BufferedImage dest = null;
         switch (filter) {
             case GRAYSCALE:
+                dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
                 this.grayscaleOp.filter(src, dest);
                 break;
             case GRAYSCALE_INVERT:
+                dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
                 this.grayscaleOp.filter(src, dest);
-                switch (dest.getColorModel().getNumComponents()) {
-                    case 3:
-                        this.invertOp.filter(dest, dest);
-                        break;
-                    case 4:
-                        this.invertOp4.filter(dest, dest);
-                        break;
-                }
+                dest = applyInvertFilter(dest);
                 break;
             case INVERT:
-                switch (src.getColorModel().getNumComponents()) {
-                    case 3:
-                        this.invertOp.filter(src, dest);
-                        break;
-                    case 4:
-                        this.invertOp4.filter(src, dest);
-                        break;
-                }
+                dest = applyInvertFilter(src);
+                break;
+        }
+        return dest;
+    }
+
+    private BufferedImage applyInvertFilter(BufferedImage src) {
+        final BufferedImage newSrc;
+        if (src.getColorModel() instanceof IndexColorModel) {
+            newSrc = new BufferedImage(src.getWidth(), src.getHeight(), src.getColorModel().getNumComponents() == 3 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = newSrc.createGraphics();
+            g2.drawImage(src, 0, 0, null);
+            g2.dispose();
+        } else {
+            newSrc = src;
+        }
+        BufferedImage dest = new BufferedImage(newSrc.getWidth(), newSrc.getHeight(), newSrc.getType());
+        switch (newSrc.getColorModel().getNumComponents()) {
+            case 3:
+                this.invertOp.filter(newSrc, dest);
+                break;
+            case 4:
+                this.invertOp4.filter(newSrc, dest);
                 break;
         }
         return dest;

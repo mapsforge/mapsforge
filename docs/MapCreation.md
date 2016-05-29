@@ -119,3 +119,22 @@ The 2nd rule, makes sure all the nosea areas get painted immediately after the s
 Note: Our provided render themes have already these rules.
 
 With the above procedure complicated coastline areas are all now rendered correctly.
+
+# World map
+
+We use land polygons from [OpenStreetMap Data](http://openstreetmapdata.com/), specifically the http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip variant.
+
+The process is completed successfully in some minutes giving the map in our [server](http://download.mapsforge.org/maps/world/).
+Alternatively the http://data.openstreetmapdata.com/land-polygons-split-4326.zip variant can be used too.
+
+To convert shp files in osm / pbf format there are many [tools](http://wiki.openstreetmap.org/wiki/Software_comparison/Import_a_shapefile) available.
+
+Then run Osmosis with map-writer:
+
+```
+$OSMOSIS_HOME/bin/osmosis --rb file=world.pbf --mapfile-writer file=world.map map-start-position=0,0 map-start-zoom=5 zoom-interval-conf=5,0,7
+```
+
+We can also add a [TagTransform](http://wiki.openstreetmap.org/wiki/Osmosis/TagTransform) step in the process, if we want to transform the initial land tags to Mapsforge recognizable ones, like `natural=nosea`.
+
+And we can put at the bottom a rectangle with world bounds and `natural=sea`, painting it blue (like described above).

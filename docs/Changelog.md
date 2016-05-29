@@ -2,6 +2,9 @@
 
 ## New since 0.6.1-rc1
 
+- World map creation [documentation](MapCreation.md)
+- Minor improvements and bug fixes
+
 ## Version 0.6.X
 
 **Version 0.6.1-rc1 (2016-05-16)**
