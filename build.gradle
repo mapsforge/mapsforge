@@ -31,7 +31,7 @@ def androidTargetSdkOldPermissions() { return 22 }
 // moving forward we will target the latest SDK (that will all have the new permissions system)
 def androidTargetSdkRuntimePermissions() { return androidCompileSdk() }
 
-def versionCode() { return 60 }
+def versionCode() { return 61 }
 
 def versionName() { return version }
 
