@@ -17,7 +17,7 @@ The mapsforge project provides free and open software for the rendering of maps 
 - Mapsforge is in active development: [changelog](docs/Changelog.md), [contributors](docs/Contributors.md). 
 - [API documentation](http://mapsforge.org/docs).
 - [Official binary releases](docs/Downloads.md). 
-- [Latest builds from CI server](http://ci.mapsforge.org/) and [Sonar server](http://sonar.mapsforge.org/).
+- [Latest builds from CI server](http://ci.mapsforge.org/).
 - Mapsforge is free and open source, licensed under the [LGPL3 license](COPYING.LESSER).
 - [Mapsforge Talks](docs/Mapsforge-Talks.md).
 - [Mailing List](https://groups.google.com/forum/#!forum/mapsforge-dev).

@@ -11,7 +11,7 @@
 
     <groupId>org.mapsforge</groupId>
     <artifactId>mapsforge</artifactId>
-    <version>0.6.1-rc2</version>
+    <version>master-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>http://mapsforge.org</url>
     <name>mapsforge</name>
