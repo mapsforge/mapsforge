@@ -8,28 +8,28 @@ This article describes how to integrate mapsforge library in your project (use t
 
 #### 1.1 Core
 ```groovy
-compile 'org.mapsforge:mapsforge-core:0.6.0'
-compile 'org.mapsforge:mapsforge-map:0.6.0'
-compile 'org.mapsforge:mapsforge-map-reader:0.6.0'
+compile 'org.mapsforge:mapsforge-core:0.6.1'
+compile 'org.mapsforge:mapsforge-map:0.6.1'
+compile 'org.mapsforge:mapsforge-map-reader:0.6.1'
 compile 'net.sf.kxml:kxml2:2.3.0'
 ```
 
 #### 1.2 Android
 ```groovy
-compile 'org.mapsforge:mapsforge-map-android:0.6.0'
+compile 'org.mapsforge:mapsforge-map-android:0.6.1'
 compile 'com.caverock:androidsvg:1.2.2-beta-1'
 ```
 
 Optionally:
 ```groovy
-compile('org.mapsforge:mapsforge-map-android-extras:0.6.0') {
+compile('org.mapsforge:mapsforge-map-android-extras:0.6.1') {
     transitive = false
 }
 ```
 
 #### 1.3 Java
 ```groovy
-compile 'org.mapsforge:mapsforge-map-awt:0.6.0'
+compile 'org.mapsforge:mapsforge-map-awt:0.6.1'
 compile 'com.kitfox.svg:svg-salamander:1.0'
 ```
 
@@ -37,21 +37,21 @@ compile 'com.kitfox.svg:svg-salamander:1.0'
 
 #### 2.1 Core
 ```groovy
-compile 'org.mapsforge:mapsforge-core:0.6.0'
-compile 'org.mapsforge:mapsforge-poi:0.6.0'
+compile 'org.mapsforge:mapsforge-core:0.6.1'
+compile 'org.mapsforge:mapsforge-poi:0.6.1'
 ```
 
 #### 2.2 Android
 ```groovy
-compile 'org.mapsforge:mapsforge-poi-android:0.6.0'
-compile 'org.mapsforge:spatialite-android:0.6.0'
+compile 'org.mapsforge:mapsforge-poi-android:0.6.1'
+compile 'org.mapsforge:spatialite-android:0.6.1'
 ```
 
 You'll need also the SpatiaLite native library [files](../spatialite-android/libs).
 
 #### 2.3 Java
 ```groovy
-compile 'org.mapsforge:mapsforge-poi-awt:0.6.0'
+compile 'org.mapsforge:mapsforge-poi-awt:0.6.1'
 compile 'org.xerial:sqlite-jdbc:3.8.11.2'
 ```
 
@@ -63,7 +63,7 @@ The dependencies for Maven are declared in a similar way. For example:
 <dependency>
     <groupId>org.mapsforge</groupId>
     <artifactId>mapsforge-core</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
 </dependency>
 ```
 
