@@ -1,6 +1,6 @@
 # Integration guide
 
-This article describes how to integrate mapsforge library in your project (use the proper versions).
+This article describes how to integrate mapsforge library in your project. Check for latest version at Maven badge on main page.
 
 ## Gradle
 
