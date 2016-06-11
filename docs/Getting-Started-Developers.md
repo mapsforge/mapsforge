@@ -49,10 +49,9 @@ External dependencies jars can be found at their respective sites or in Maven ce
 
 ### Branches
 
-The mapsforge code has now been consolidated into two main branches as well as releases
-- **master**: the latest stable development branch. Use this if you want to use newer mapsforge functionality that has not yet been released, but you still want a certain stability.
-- **dev**: unstable development, features in progress. Use this if you want the latest development features and you can live with some instability.
-- **release**: use this if you want to build applications built on top of well-tested and stable code.
+The mapsforge code has now been consolidated into a main branch as well as releases:
+- **master**: use this if you want the latest development features and can live with some instability.
+- **release**: use this if you want to build applications on top of well-tested and stable code.
 
 Code before latest release is not supported anymore (we do not have the resources to do this) and if you are starting development with mapsforge, its use is strongly discouraged.
 

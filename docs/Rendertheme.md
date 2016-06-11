@@ -33,7 +33,7 @@ Here is an example of a simple render-theme with a few different rules and rende
 </rendertheme>
 ```
 
-Syntax and semantics of render-theme files are similar but not identical to [Osmarender rule files](http://wiki.openstreetmap.org/wiki/Osmarender/Rules). A formal render-theme description exists as an *XML schema document*, it can be found in the [repository](https://github.com/mapsforge/mapsforge/blob/dev/resources/renderTheme.xsd). If an invalid render-theme is submitted to the map library, an `org.xml.sax.SAXException` will be thrown during XML parsing.
+Syntax and semantics of render-theme files are similar but not identical to [Osmarender rule files](http://wiki.openstreetmap.org/wiki/Osmarender/Rules). A formal render-theme description exists as an *XML schema document*, it can be found in the [repository](https://github.com/mapsforge/mapsforge/blob/master/resources/renderTheme.xsd). If an invalid render-theme is submitted to the map library, an `org.xml.sax.SAXException` will be thrown during XML parsing.
 
 ## Rules
 
@@ -95,7 +95,7 @@ With mapsforge release 0.5, we introduce the enhanced **Rendertheme V4 XML** wit
 
 Rendertheme V4 or newer remains **fully backward compatible** with version 3, meaning that any previously developed rendertheme definition will still render with V4 without any changes required (you do not even need to change the version number in the header).
 
-You can find the full xsd in the mapsforge repository at https://github.com/mapsforge/mapsforge/blob/dev/resources/renderTheme-v5.xsd.
+You can find the full xsd in the mapsforge repository at https://github.com/mapsforge/mapsforge/blob/master/resources/renderTheme-v5.xsd.
 
 But if you want to develop your renderthemes further, Rendertheme V4 offers a number of enhancements. If you want to make use of the new features, you will first need to set your rendertheme version in the header to 4 or newer:
 

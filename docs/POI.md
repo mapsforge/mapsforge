@@ -73,9 +73,9 @@ With everything set up you can check the 'POI search' example in Samples for:
 
 If the provided category configuration does not fulfill your needs, you can easily create your own.
 
-The default internal poi mapping is defined in https://github.com/mapsforge/mapsforge/blob/dev/mapsforge-poi-writer/src/main/config/poi-mapping.xml. So if you want to define your own custom mapping, use the internal mapping as a reference.
+The default internal poi mapping is defined in https://github.com/mapsforge/mapsforge/blob/master/mapsforge-poi-writer/src/main/config/poi-mapping.xml. So if you want to define your own custom mapping, use the internal mapping as a reference.
 
-Please consult the XML-Schema documentation of https://github.com/mapsforge/mapsforge/blob/dev/resources/poi-mapping.xsd to learn about how to implement your custom mapping. The XML-Schema is very easy to understand. We recommend to use a proper editor for XML to allow auto-completion and validation if you provide an XML-Schema.
+Please consult the XML-Schema documentation of https://github.com/mapsforge/mapsforge/blob/master/resources/poi-mapping.xsd to learn about how to implement your custom mapping. The XML-Schema is very easy to understand. We recommend to use a proper editor for XML to allow auto-completion and validation if you provide an XML-Schema.
 
 ### Filtered Search
 

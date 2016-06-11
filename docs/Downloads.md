@@ -41,20 +41,10 @@ These are the downloads for old versions. If possible use the newer release, we 
 
 ## Latest Master Build Downloads
 
-The master branch contains the latest mapsforge version considered stable, but not yet released. Use this branch if you want to stay up-to-date with mapsforge stable versions.
+These are the latest development builds from the master branch. Use this if you want the latest mapsforge features and can live with some instability.
 
 - [Samples application (old permissions)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-oldpermissions-debug.apk)
 - [Samples application (runtime permissions)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-runtimepermissions-debug.apk)
 - [Latest jars](http://ci.mapsforge.org/job/master/)
 - [Map writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-master-SNAPSHOT-jar-with-dependencies.jar)
 - [POI writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-master-SNAPSHOT-jar-with-dependencies.jar)
-
-## Latest Development Build Downloads
-
-These are the latest development builds from the dev branch. Use this branch if you want the latest mapsforge features and are prepared for some instability.
-
-- [Samples application (old permissions)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-oldpermissions-debug.apk)
-- [Samples application (runtime permissions)](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-runtimepermissions-debug.apk)
-- [Latest jars](http://ci.mapsforge.org/job/dev/)
-- [Map writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-dev-SNAPSHOT-jar-with-dependencies.jar)
-- [POI writer plugin](http://ci.mapsforge.org/job/dev/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-dev-SNAPSHOT-jar-with-dependencies.jar)
