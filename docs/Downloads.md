@@ -1,12 +1,12 @@
 # Downloads for developers
 
-## Release 0.6.1-rc2 (2016-05-31)
+## Release 0.6.1 (2016-06-11)
 
-- [Samples application (old permissions)](http://ci.mapsforge.org/job/0.6.1-rc2/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-oldpermissions-debug.apk)
-- [Samples application (runtime permissions)](http://ci.mapsforge.org/job/0.6.1-rc2/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-runtimepermissions-debug.apk)
-- [Release jars](http://ci.mapsforge.org/job/0.6.1-rc2/)
-- [Map writer plugin](http://ci.mapsforge.org/job/0.6.1-rc2/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.6.1-rc2-jar-with-dependencies.jar)
-- [POI writer plugin](http://ci.mapsforge.org/job/0.6.1-rc2/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-0.6.1-rc2-jar-with-dependencies.jar)
+- [Samples application (old permissions)](http://ci.mapsforge.org/job/0.6.1/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-oldpermissions-debug.apk)
+- [Samples application (runtime permissions)](http://ci.mapsforge.org/job/0.6.1/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-runtimepermissions-debug.apk)
+- [Release jars](http://ci.mapsforge.org/job/0.6.1/)
+- [Map writer plugin](http://ci.mapsforge.org/job/0.6.1/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-0.6.1-jar-with-dependencies.jar)
+- [POI writer plugin](http://ci.mapsforge.org/job/0.6.1/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-0.6.1-jar-with-dependencies.jar)
 
 ## Release 0.6.0 (2015-11-25)
 

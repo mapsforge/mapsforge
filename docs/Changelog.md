@@ -1,6 +1,15 @@
 # Changelog
 
+## New since 0.6.1
+
+- Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.2)
+
 ## Version 0.6.X
+
+#### Version 0.6.1 (2015-06-11)
+
+- Same as 0.6.1-rc2
 
 **Version 0.6.1-rc2 (2016-05-31)**
 
