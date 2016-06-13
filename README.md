@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/mapsforge/mapsforge.svg?branch=master)](https://travis-ci.org/mapsforge/mapsforge)
-[![License](https://img.shields.io/github/license/mapsforge/mapsforge.svg)](COPYING.LESSER)
+[![GitHub license](https://img.shields.io/badge/license-LGPL3-blue.svg)](COPYING.LESSER)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.mapsforge/mapsforge/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mapsforge/mapsforge)
 
 The mapsforge project provides free and open software for the rendering of maps based on OpenStreetMap data. Currently, we offer a library for ad-hoc map rendering on Android devices and in Java stand-alone applications.
