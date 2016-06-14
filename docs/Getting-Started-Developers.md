@@ -57,18 +57,18 @@ Code before latest release is not supported anymore (we do not have the resource
 
 ## Development Applications
 
-### Samples Android App
+### mapsforge-samples-android
 
- The Samples app, in Applications/Android/Samples, is a sample app for Android demonstrating mapsforge capabilities and a good starting point if you want to develop your own mapsforge-based app.
-- The Samples app in Applications/Android/Samples is meant as a template and test case for building apps based on this version.
-- There is now a MapViewerTemplate class for building Android apps, that gives simple hooks to implement an Android based applicaiton. For its use refer to the Samples app. 
-- After a successful build, you will find the Samples apk in Applications/Android/Samples/build/apk
-- To run the Samples app, you will need to install a map called 'germany.map' onto the sdcard of a device or emulator.
+ The Samples app, in mapsforge-samples-android, is a sample app for Android demonstrating mapsforge capabilities and a good starting point if you want to develop your own mapsforge-based app.
+- The Samples app in mapsforge-samples-android is meant as a template and test case for building apps based on this version.
+- There is now a MapViewerTemplate class for building Android apps, that gives simple hooks to implement an Android based application. For its use refer to the Samples app.
+- After a successful build, you will find the Samples apk in mapsforge-samples-android/build/outputs/apk
+- To run the Samples app, you will need to install any map called 'germany.map' onto the sdcard of a device or emulator.
 - It is probably best if the map contains the area of central Berlin.
 
-### Swing Map Viewer
+### mapsforge-samples-awt
 
-The SwingMapViewer is a simple Java only app useful for testing maps.
+The mapsforge-samples-awt is a simple Java only app useful for testing maps.
 
 ## Building Mapforge
 

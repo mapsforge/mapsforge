@@ -8,9 +8,9 @@ Here, however, we go through a very basic example of an app that simply displays
 
 # Map file
 
-To run this samples app, you need a map with filename `germany.map` installed on storage.
+To run this samples app, you need a map with filename [germany.map](http://download.mapsforge.org/maps/europe/germany.map) installed on storage.
 
-Preferably the `berlin.map` renamed as `germany.map` will suffice because of smaller size.
+Preferably the [berlin.map](http://download.mapsforge.org/maps/europe/germany/berlin.map) renamed as `germany.map` will suffice because of smaller size.
 
 # Hardware acceleration
 
