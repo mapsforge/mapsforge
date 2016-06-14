@@ -6,6 +6,12 @@ The best way to get started building an Android app with mapsforge is by studyin
 
 Here, however, we go through a very basic example of an app that simply displays a map rendered from a map file in the built-in render style.
 
+# Map file
+
+To run this samples app, you need a map with filename `germany.map` installed on storage.
+
+Preferably the `berlin.map` renamed as `germany.map` will suffice because of smaller size.
+
 # Hardware acceleration
 
 Mapsforge currently requires disabling hardware acceleration for the map view. This can be controlled in various levels, better described in Android [documentation](http://developer.android.com/guide/topics/graphics/hardware-accel.html#controlling).
