@@ -25,10 +25,10 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
     @Override
     protected void createLayers() {
         OnlineTileSource onlineTileSource = new OnlineTileSource(new String[]{
-                "otile1.mqcdn.com", "otile2.mqcdn.com", "otile3.mqcdn.com", "otile4.mqcdn.com"},
+                "a.tile.openstreetmap.fr", "b.tile.openstreetmap.fr", "c.tile.openstreetmap.fr"},
                 80);
-        onlineTileSource.setName("MapQuest").setAlpha(false)
-                .setBaseUrl("/tiles/1.0.0/map/").setExtension("jpg")
+        onlineTileSource.setName("Humanitarian").setAlpha(false)
+                .setBaseUrl("/hot/")
                 .setParallelRequestsLimit(8).setProtocol("http").setTileSize(256)
                 .setZoomLevelMax((byte) 18).setZoomLevelMin((byte) 0);
         onlineTileSource.setUserAgent("Mapsforge Samples");
