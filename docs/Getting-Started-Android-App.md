@@ -85,6 +85,8 @@ this.mapView.setCenter(new LatLong(52.517037, 13.38886));
 this.mapView.setZoomLevel((byte) 12);
 ```
 
+Note: Above map position is specific to Berlin region.
+
 Refer to the Samples app on how to read the initial position out of a map file or how to store the current position when a user leaves your app.
 
 ## Cleanup
