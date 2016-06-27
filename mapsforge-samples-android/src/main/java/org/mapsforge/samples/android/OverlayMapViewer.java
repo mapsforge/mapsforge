@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -83,7 +83,7 @@ public class OverlayMapViewer extends RenderTheme4 {
 
         Paint paintFill = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 2,
-                Style.STROKE);
+                Style.FILL);
         Paint paintStroke = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,
                 Style.STROKE);
