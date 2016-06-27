@@ -2,6 +2,7 @@
 
 ## New since 0.6.1
 
+- Deprecate water tiles rendering [#640](https://github.com/mapsforge/mapsforge/issues/640)
 - Drop of `dev` branch
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.2)

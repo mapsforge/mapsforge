@@ -569,7 +569,8 @@ public class MapFile extends MapDataStore {
 
         // the query is finished, was the water flag set for all blocks?
         if (queryIsWater && queryReadWaterInfo) {
-            mapFileReadResult.isWater = true;
+            // Deprecate water tiles rendering
+            //mapFileReadResult.isWater = true;
         }
 
         return mapFileReadResult;
