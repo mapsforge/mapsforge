@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -169,6 +169,10 @@ public class StandardRenderer implements RenderCallback {
     protected void renderWaterBackground(final RenderContext renderContext) {
         renderContext.setDrawingLayers((byte) 0);
         Point[] coordinates = getTilePixelCoordinates(renderContext.rendererJob.tile.tileSize);
+        Point tileOrigin = renderContext.rendererJob.tile.getOrigin();
+        for (int i = 0; i < coordinates.length; i++) {
+            coordinates[i] = coordinates[i].offset(tileOrigin.x, tileOrigin.y);
+        }
         PolylineContainer way = new PolylineContainer(coordinates, renderContext.rendererJob.tile, renderContext.rendererJob.tile, Collections.singletonList(TAG_NATURAL_WATER));
         renderContext.renderTheme.matchClosedWay(this, renderContext, way);
     }
