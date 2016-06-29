@@ -16,12 +16,7 @@ Applications/Android/Samples/AndroidManifest.xml
 Release to Maven Central:
 -------------------------
 
-mvn -DperformRelease=true -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dhttps.protocols=SSLv3 -Dforce.http.jre.executor=true -DskipTests=true  -s settings.xml deploy
-
-or (if there is no ssl bug)
-
 mvn -DperformRelease=true -Dforce.http.jre.executor=true -DskipTests=true  -s settings.xml deploy
-
 
 The settings.xml file needs to look like this:
 
@@ -38,8 +33,6 @@ The settings.xml file needs to look like this:
 
 (Ludwig has the secretusername and secretpassword for this).
 
-This step seems to have the habit of losing certain elements (like jars that do not get uploaded). The publishing step performed by sonatype should find those and complain.)
-
 Publish Release
 ---------------
 
@@ -48,14 +41,13 @@ https://oss.sonatype.org/index.html
 
 The user is Jürgen, Ludwig has id and password for it.
 
-and navigate to Staging Repositories, there should be then a mapsforge one somewhere in the list (not sure if there is an easier way to find things).
+and navigate to Staging Repositories, there should be then a mapsforge one somewhere in the list (not sure if there is an easier way to find things, the mapsforge one is usually at the bottom).
 
-Check the released artifacts and click on Close. Sonatype will then perform its own validation. After that click Release, at that point it will be staged
-to maven central, but might take some time. 
+Check the released artifacts and click on Close. Sonatype will then perform its own validation. After that click Release, at that point it will be staged to maven central, but might take some time. 
 
 
-This is where the sona type user was created for mapsforge
-https://issues.sonatype.org/browse/OSSRH-4231
+(This is where the sona type user was created for mapsforge
+https://issues.sonatype.org/browse/OSSRH-4231)
 
 Git tags
 --------
