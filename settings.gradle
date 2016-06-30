@@ -1,5 +1,6 @@
 include ':mapsforge-core'
 include ':mapsforge-map'
+include ':mapsforge-themes'
 include ':mapsforge-map-reader'
 include ':mapsforge-map-android'
 include ':mapsforge-map-android-extras'

@@ -124,6 +124,12 @@
 
         <dependency>
             <groupId>org.mapsforge</groupId>
+            <artifactId>mapsforge-themes</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapsforge</groupId>
             <artifactId>mapsforge-poi-android</artifactId>
             <version>${project.version}</version>
         </dependency>

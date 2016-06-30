@@ -48,6 +48,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mapsforge</groupId>
+            <artifactId>mapsforge-themes</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.kitfox.svg</groupId>
             <artifactId>svg-salamander</artifactId>
             <version>1.0</version>

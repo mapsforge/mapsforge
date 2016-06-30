@@ -24,6 +24,7 @@ Mapsforge consists of the following core components:
 
 - mapsforge-core: platform unspecific general components and interfaces.
 - mapsforge-map: platform unspecific elements used for map display.
+- mapsforge-themes: internal render themes collection.
 - mapsforge-map-reader: platform unspecific code to read mapsforge map files.
 - mapsforge-poi: platform unspecific poi elements.
 - [kXML2](http://www.kxml.org/): lightweight XML parser for render themes.

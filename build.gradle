@@ -46,7 +46,7 @@ subprojects {
 
 // Configuration for all plain Java projects
 
-project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "mapsforge-samples-awt"]
+project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-themes", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "mapsforge-samples-awt"]
 
 configure(filterProjects(project.javaprojects)) {
     apply plugin: 'java'

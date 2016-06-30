@@ -30,6 +30,7 @@
     <modules>
         <module>mapsforge-core</module>
         <module>mapsforge-map</module>
+        <module>mapsforge-themes</module>
         <module>mapsforge-map-reader</module>
         <module>mapsforge-map-android</module>
         <module>mapsforge-map-android-extras</module>
