@@ -238,7 +238,6 @@ public class MapFile extends MapDataStore {
 
             this.timestamp = mapFile.lastModified();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             // make sure that the file is closed
             closeFile();
             throw new MapFileException(e.getMessage());
@@ -285,7 +284,9 @@ public class MapFile extends MapDataStore {
             if (this.databaseIndexCache != null) {
                 this.databaseIndexCache.destroy();
             }
-            this.inputFile.close();
+            if (this.inputFile != null) {
+                this.inputFile.close();
+            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
