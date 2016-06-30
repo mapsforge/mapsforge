@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public final class XmlUtils {
-    public static boolean supportOlderRenderThemes = true;
+    private static final String PREFIX_ASSETS = "assets:";
     private static final String PREFIX_FILE = "file:";
     private static final String PREFIX_JAR = "jar:";
 
@@ -50,10 +50,7 @@ public final class XmlUtils {
             return null;
         }
 
-        InputStream inputStream = graphicFactory.platformSpecificSources(relativePathPrefix, src);
-        if (inputStream == null) {
-            inputStream = createInputStream(relativePathPrefix, src);
-        }
+        InputStream inputStream = createInputStream(graphicFactory, relativePathPrefix, src);
         try {
             String absoluteName = getAbsoluteName(relativePathPrefix, src);
             // we need to hash with the width/height included as the same symbol could be required
@@ -129,44 +126,90 @@ public final class XmlUtils {
         }
     }
 
-    private static InputStream createInputStream(String relativePathPrefix, String src) throws FileNotFoundException {
-
-        if (src.startsWith(PREFIX_JAR)) {
-            final String prefixJar;
-            if (!supportOlderRenderThemes) {
-                prefixJar = PREFIX_JAR;
-            } else {
-                prefixJar = src.startsWith(PREFIX_JAR_V1) ? PREFIX_JAR_V1 : PREFIX_JAR;
-            }
-            String absoluteName = getAbsoluteName(relativePathPrefix, src.substring(prefixJar.length()));
-            InputStream inputStream = XmlUtils.class.getResourceAsStream(absoluteName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("resource not found: " + absoluteName);
-            }
-            return inputStream;
+    /**
+     * Create InputStream from assets, file or jar resource.
+     * <p/>
+     * If the resource has not a location prefix, then the search order is (file, assets, jar).
+     */
+    private static InputStream createInputStream(GraphicFactory graphicFactory, String relativePathPrefix, String src) throws IOException {
+        InputStream inputStream;
+        if (src.startsWith(PREFIX_ASSETS)) {
+            src = src.substring(PREFIX_ASSETS.length());
+            inputStream = inputStreamFromAssets(graphicFactory, relativePathPrefix, src);
         } else if (src.startsWith(PREFIX_FILE)) {
-            File file = getFile(relativePathPrefix, src.substring(PREFIX_FILE.length()));
-            if (!file.exists()) {
-                final String pathName = src.substring(PREFIX_FILE.length());
-                if (pathName.length() > 0 && pathName.charAt(0) == File.separatorChar) {
-                    file = getFile(relativePathPrefix, pathName.substring(1));
-                }
-                if (!file.exists()) {
-                    throw new FileNotFoundException("file does not exist: " + file.getAbsolutePath());
-                }
-            } else if (!file.isFile()) {
-                throw new FileNotFoundException("not a file: " + file.getAbsolutePath());
-            } else if (!file.canRead()) {
-                throw new FileNotFoundException("cannot read file: " + file.getAbsolutePath());
+            src = src.substring(PREFIX_FILE.length());
+            inputStream = inputStreamFromFile(relativePathPrefix, src);
+        } else if (src.startsWith(PREFIX_JAR) || src.startsWith(PREFIX_JAR_V1)) {
+            if (src.startsWith(PREFIX_JAR)) {
+                src = src.substring(PREFIX_JAR.length());
+            } else if (src.startsWith(PREFIX_JAR_V1)) {
+                src = src.substring(PREFIX_JAR_V1.length());
             }
-            return new FileInputStream(file);
+            inputStream = inputStreamFromJar(relativePathPrefix, src);
+        } else {
+            inputStream = inputStreamFromFile(relativePathPrefix, src);
+
+            if (inputStream == null) {
+                inputStream = inputStreamFromAssets(graphicFactory, relativePathPrefix, src);
+            }
+
+            if (inputStream == null) {
+                inputStream = inputStreamFromJar(relativePathPrefix, src);
+            }
         }
 
-        throw new FileNotFoundException("invalid bitmap source: " + src);
+        if (inputStream != null) {
+            return inputStream;
+        }
+        throw new FileNotFoundException("invalid resource: " + src);
+    }
+
+    /**
+     * Create InputStream from (platform specific) assets resource.
+     */
+    private static InputStream inputStreamFromAssets(GraphicFactory graphicFactory, String relativePathPrefix, String src) throws IOException {
+        InputStream inputStream = null;
+        try {
+            inputStream = graphicFactory.platformSpecificSources(relativePathPrefix, src);
+        } catch (IOException e) {
+        }
+        if (inputStream != null) {
+            return inputStream;
+        }
+        return null;
+    }
+
+    /**
+     * Create InputStream from file resource.
+     */
+    private static InputStream inputStreamFromFile(String relativePathPrefix, String src) throws IOException {
+        File file = getFile(relativePathPrefix, src);
+        if (!file.exists()) {
+            if (src.length() > 0 && src.charAt(0) == File.separatorChar) {
+                file = getFile(relativePathPrefix, src.substring(1));
+            }
+            if (!file.exists()) {
+                file = null;
+            }
+        } else if (!file.isFile() || !file.canRead()) {
+            file = null;
+        }
+        if (file != null) {
+            return new FileInputStream(file);
+        }
+        return null;
+    }
+
+    /**
+     * Create InputStream from jar resource.
+     */
+    private static InputStream inputStreamFromJar(String relativePathPrefix, String src) throws IOException {
+        String absoluteName = getAbsoluteName(relativePathPrefix, src);
+        return XmlUtils.class.getResourceAsStream(absoluteName);
     }
 
     private static String getAbsoluteName(String relativePathPrefix, String name) {
-        if (name.charAt(0) == '/') {
+        if (name.charAt(0) == File.separatorChar) {
             return name;
         }
         return relativePathPrefix + name;

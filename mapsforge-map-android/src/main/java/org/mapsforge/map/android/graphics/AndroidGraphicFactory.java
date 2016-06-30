@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -67,8 +67,6 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     // and is much slower despite smaller size that ARGB_8888 as it
     // passes through unoptimized path in the skia library.
     public static final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
-
-    private static final String PREFIX_ASSETS = "assets:";
 
     public static android.graphics.Bitmap convertToAndroidBitmap(Drawable drawable) {
         android.graphics.Bitmap bitmap;
@@ -285,16 +283,13 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
     @Override
     public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
-        // this allows loading of resource bitmaps from the Andorid assets folder
-        if (src.startsWith(PREFIX_ASSETS)) {
-            String pathName = (TextUtils.isEmpty(relativePathPrefix) ? "" : relativePathPrefix) + src.substring(PREFIX_ASSETS.length());
-            InputStream inputStream = this.application.getAssets().open(pathName);
-            if (inputStream == null) {
-                throw new FileNotFoundException("resource not found: " + pathName);
-            }
-            return inputStream;
+        // this allows loading of resource bitmaps from the Android assets folder
+        String pathName = (TextUtils.isEmpty(relativePathPrefix) ? "" : relativePathPrefix) + src;
+        try {
+            return this.application.getAssets().open(pathName);
+        } catch (IOException e) {
+            throw new FileNotFoundException("invalid resource: " + pathName);
         }
-        return null;
     }
 
     @Override

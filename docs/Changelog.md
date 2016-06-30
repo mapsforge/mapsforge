@@ -3,6 +3,7 @@
 ## New since 0.6.1
 
 - Internal render themes own module [#848](https://github.com/mapsforge/mapsforge/issues/848)
+- Allow resources without location prefixes in render themes [#847](https://github.com/mapsforge/mapsforge/issues/847)
 - Deprecate water tiles rendering [#640](https://github.com/mapsforge/mapsforge/issues/640)
 - Drop of `dev` branch
 - Many other minor improvements and bug fixes

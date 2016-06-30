@@ -82,7 +82,7 @@ public class Circle extends RenderInstruction {
             String name = pullParser.getAttributeName(i);
             String value = pullParser.getAttributeValue(i);
 
-            if (RADIUS.equals(name) || (XmlUtils.supportOlderRenderThemes && R.equals(name))) {
+            if (RADIUS.equals(name) || R.equals(name)) {
                 this.radius = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else if (CAT.equals(name)) {
                 this.category = value;

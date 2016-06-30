@@ -3,7 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Develar
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,7 +40,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -177,7 +176,7 @@ public class AwtGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public InputStream platformSpecificSources(String relativePathPrefix, String src) throws FileNotFoundException {
+    public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
         return null;
     }
 

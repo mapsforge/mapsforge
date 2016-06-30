@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -93,10 +94,8 @@ public class RenderThemeBuilder {
     private void validate(String elementName) throws XmlPullParserException {
         XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
 
-        if (!XmlUtils.supportOlderRenderThemes && this.version != RENDER_THEME_VERSION) {
+        if (this.version > RENDER_THEME_VERSION) {
             throw new XmlPullParserException("unsupported render theme version: " + this.version);
-        } else if (this.version > RENDER_THEME_VERSION) {
-            throw new XmlPullParserException("unsupported newer render theme version: " + this.version);
         }
     }
 }
