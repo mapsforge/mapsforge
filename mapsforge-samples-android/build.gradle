@@ -15,7 +15,7 @@ android {
 
     sourceSets {
         main {
-            jniLibs.srcDirs = ['../spatialite-android/libs']
+            jniLibs.srcDirs = ["${rootDir}/spatialite-android/natives/lib"]
         }
         androidTest {
             java.srcDirs = ['src/androidTest']

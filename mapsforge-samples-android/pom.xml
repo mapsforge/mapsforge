@@ -32,7 +32,7 @@
                     <resourceDirectory>${basedir}/res</resourceDirectory>
                     <assetsDirectory>${basedir}/assets</assetsDirectory>
                     <androidManifestFile>${basedir}/AndroidManifest.xml</androidManifestFile>
-                    <nativeLibrariesDirectory>../spatialite-android/libs</nativeLibrariesDirectory>
+                    <nativeLibrariesDirectory>${rootDirectory}/spatialite-android/natives/lib</nativeLibrariesDirectory>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>
