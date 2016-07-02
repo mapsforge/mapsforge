@@ -15,6 +15,7 @@ def filterProjects(filter) {
 allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
+    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
     ext.androidBuildVersionTools = "23.0.3"
     ext.jUnitVersion = "4.11"
     description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
@@ -66,6 +67,13 @@ configure(filterProjects(project.javaprojects)) {
 
     // set java source encoding, otherwise some tests fail
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    // Automated Gradle project deployment to Sonatype OSSRH
+    if (isReleaseVersion && project.hasProperty("SONATYPE_USERNAME")) {
+        afterEvaluate {
+            project.apply from: "${rootProject.projectDir}/deploy.gradle"
+        }
+    }
 }
 
 // Configuration for Android projects
@@ -104,6 +112,13 @@ configure(filterProjects(project.androidlibraryprojects)) {
         task.dependsOn variant.javaCompile
         task.from variant.javaCompile.destinationDir
         artifacts.add('archives', task);
+    }
+
+    // Automated Gradle project deployment to Sonatype OSSRH
+    if (isReleaseVersion && project.hasProperty("SONATYPE_USERNAME")) {
+        afterEvaluate {
+            project.apply from: "${rootProject.projectDir}/deploy.gradle"
+        }
     }
 }
 
