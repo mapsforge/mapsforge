@@ -50,7 +50,6 @@ subprojects {
     repositories {
         jcenter()
     }
-    apply plugin: 'eclipse'
 }
 
 // Configuration for all plain Java projects
