@@ -19,6 +19,14 @@ allprojects {
     ext.androidBuildVersionTools = "23.0.3"
     ext.jUnitVersion = "4.11"
     description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
+
+    // Disable Java 8 doclint
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+            logging.captureStandardError LogLevel.INFO
+        }
+    }
 }
 
 // no injection of functions, so via inheritance
