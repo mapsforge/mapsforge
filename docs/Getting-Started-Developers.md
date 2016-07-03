@@ -85,7 +85,7 @@ If you want to skip the tests, run
 
     ./gradlew clean assemble
 
-After the build completes successfully you will find the Samples app in the directory Applications/Android/Samples/build/apk. Currently the build results in unsigned apks.  
+After the build completes successfully you will find the Samples app in the directory mapsforge-samples-android/build/outputs/apk. Currently the build results in unsigned apks.
 
 ### Start developing with Android Studio
 
