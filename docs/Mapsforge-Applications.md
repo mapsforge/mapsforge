@@ -14,6 +14,7 @@
 | [Calimoto](https://play.google.com/store/apps/details?id=com.calimoto.calimoto) | Motorrad navigation | Proprietary/Free (in-app purchases) | Closed |
 | [Cruiser](http://wiki.openstreetmap.org/wiki/Cruiser) | Android / Desktop map and navigation application | Proprietary/Free | Closed |
 | [c:geo](https://github.com/cgeo/) | Geocaching | Apache 2.0/Free | Open |
+| [DogSheep](https://play.google.com/store/apps/details?id=com.dogsheep) | Customized maps and tours | Proprietary/Free | Closed |
 | [ELEMNT](http://eu.wahoofitness.com/devices/gps-bike-computer-elemnt.html) | GPS bike computer | Proprietary/Commercial | Closed |
 | [Forest(M)ap(p)](https://play.google.com/store/apps/details?id=de.inforst.waldkarte) | Tool for forestry | Proprietary/Commercial | Closed |
 | [Geopaparazzi](http://www.geopaparazzi.eu) | Digital Field Mapping for geology and engineering with GIS data import | GPL3/Free | Open |
