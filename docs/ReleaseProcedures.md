@@ -13,7 +13,7 @@ and edit `build.gradle` and `mapsforge-samples-android\AndroidManifest.xml`
 Deployment to Sonatype OSSRH (Gradle)
 -------------------------------------
 ```
-gradlew uploadArchives
+gradlew -Dorg.gradle.parallel=false uploadArchives
 ```
 
 Your `gradle.properties` needs to contain:
