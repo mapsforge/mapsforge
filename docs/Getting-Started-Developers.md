@@ -8,11 +8,10 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 
 ## Requirements
 |Tool|Version|
-|----|---|
-|Android Build Version Tools|23.0.3|
-|Gradle|2.10 if building with gradle|
-|Maven|1.3.1 if building with maven|
-|Java|1.7 (1.8 is supported in maven builds)|
+|----|-------|
+|Android Build Tools|23.0.3|
+|Gradle|2.10|
+|Java|1.7|
 
 ## Checkout the code
 
@@ -90,56 +89,6 @@ After the build completes successfully you will find the Samples app in the dire
 ### Start developing with Android Studio
 
 Android Studio integrates tightly with gradle. The easiest way to create a new application is to follow the example of the Samples app. 
-
-### Building mapsforge with Maven
-
-A second way to build mapsforge is using maven. This was the original way of building mapsforge. We still maintain this, but as Google does not actively support it, we discourage its use. New developments, certainly for Android, should use Gradle.
-
-The mapsforge project uses the free [Apache maven](http://maven.apache.org/) tool to automatize the build process. Only version 3.1.1 and up can be used. If you want to learn more about maven, please refer to the [official documentation](http://maven.apache.org/guides/index.html).
-
-To start a complete build of all modules, open a command prompt, change to the directory which contains the copy of the mapsforge repository and execute the following command:
-    
-    mvn clean install
-
-This will tell maven to delete any pre-existing generated files and directories during the build. Although the cleanup step is not always needed, we recommend to do so every time in order to avoid problems and have repeatable results.
-
-In the beginning, maven automatically downloads all missing plug-ins and files. Depending on the speed of your Internet connection, this may take some time. All downloaded files are stored locally in a special maven directory to avoid downloading them again at each build.
-
-During the build process, maven compiles, tests and packages all modules in the correct order. A new directory `target` is created for each module which contains – among test reports and other generated files – the new artifacts. Eventually these artifacts are installed in your local repository so that you can use them in other maven projects.
-
-### Start developing with Eclipse
-
-Note that Google has announced that it will not support Eclipse any more in the near future. Google has published a guide to [migrate a project from Eclipse to Android Studio](https://developer.android.com/sdk/installing/migrate.html). 
-
-If you want to contribute to the mapsforge project, we recommend to use the latest stable version of the [Eclipse IDE](http://eclipse.org/).
-
-As Eclipse needs to know the path to your local maven repository, you have to add a new classpath variable named `M2_REPO`. This can either be done manually via `Window > Preferences > Java > Build Path > Classpath Variables > New` or automatically via the [Maven Eclipse Plugin](http://maven.apache.org/plugins/maven-eclipse-plugin/configure-workspace-mojo.html). Depending on the currently running operating system, execute one of the following commands:
-
-**Linux**
-    mvn eclipse:configure-workspace "-Declipse.workspace=path/to/your/eclipse/workspace/"
-
-**Windows**
-    mvn eclipse:configure-workspace "-Declipse.workspace=x:\path\to\your\eclipse\workspace\"
-
-After you have configured your Eclipse workspace, checked out the code and built the complete project (see the instructions above), execute the following command:
-    mvn eclipse:eclipse
-
-Alternatively, you can use Gradle:
-    gradle eclipse
-
-This will tell maven to generate all missing Eclipse project files which are not checked in into our repository. It also ensures that all mapsforge projects use the same code formatter profile, compiler settings, file encoding, new line delimiters and so on.
-
-You should install the [Checkstyle](http://eclipse-cs.sourceforge.net/), [FindBugs](http://findbugs.sourceforge.net/downloads.html) and [PMD](http://pmd.sourceforge.net/integrations.html#eclipse) Eclipse plug-ins to regularly analyze the quality of the source code. The same set of rules is shared across all mapsforge modules. Running the above maven command will also copy the necessary configuration files into each project directory.
-
-Each of the mapsforge modules is now configured as an Eclipse project and can be added to your current workspace via `File > Import > General > Existing Projects into Workspace`.
-
-To build the Android sample application, you need to make a few adjustments:
-* Select `Project > Properties` from the menu.
-* In the dialog that opens, go to `Java Build Path Order and Export`. Make sure the entry for `M2_REPO/android/android/6.0_r2/android-6.0_r2.jar` is unchecked and all others are checked.
-* Go to `Java Compiler` and set the compiler compliance level to 1.7.
-* Then clean the project (`Project > Clean`).
-
-Without these steps, you may have issues with the app crashing with a `java.lang.NoClassDefFoundError` exception. If that happens, carry out the above steps and build again.
 
 ## How to contribute
 

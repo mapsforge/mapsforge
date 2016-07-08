@@ -6,6 +6,7 @@
 - Deprecate water tiles rendering [#640](https://github.com/mapsforge/mapsforge/issues/640)
 - Internal render themes own module [#848](https://github.com/mapsforge/mapsforge/issues/848)
 - SpatiaLite natives publishing artifacts [#849](https://github.com/mapsforge/mapsforge/issues/849)
+- Deprecate Maven build [#852](https://github.com/mapsforge/mapsforge/issues/852)
 - Drop of `dev` branch
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.2)
