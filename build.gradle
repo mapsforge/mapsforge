@@ -50,6 +50,11 @@ subprojects {
     repositories {
         jcenter()
     }
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_1_7
+        targetCompatibility = JavaVersion.VERSION_1_7
+    }
 }
 
 // Configuration for all plain Java projects
