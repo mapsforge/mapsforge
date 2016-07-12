@@ -38,20 +38,20 @@ For the sea we create an osm file with a rectangle having the bounds of the map:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6">
-	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459320" version="1" lon="$LEFT" lat="$BOTTOM" />
-	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459321" version="1" lon="$LEFT" lat="$TOP" />
-	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459322" version="1" lon="$RIGHT" lat="$TOP" />
-	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459323" version="1" lon="$RIGHT" lat="$BOTTOM" />
-	<way timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951623372" version="1">
-		<nd ref="32951459320" />
-		<nd ref="32951459321" />
-		<nd ref="32951459322" />
-		<nd ref="32951459323" />
-		<nd ref="32951459320" />
-		<tag k="area" v="yes" />
-		<tag k="layer" v="-5" />
-		<tag k="natural" v="sea" />
-	</way>
+    <node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459320" version="1" lon="$LEFT" lat="$BOTTOM" />
+    <node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459321" version="1" lon="$LEFT" lat="$TOP" />
+    <node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459322" version="1" lon="$RIGHT" lat="$TOP" />
+    <node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459323" version="1" lon="$RIGHT" lat="$BOTTOM" />
+    <way timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951623372" version="1">
+        <nd ref="32951459320" />
+        <nd ref="32951459321" />
+        <nd ref="32951459322" />
+        <nd ref="32951459323" />
+        <nd ref="32951459320" />
+        <tag k="area" v="yes" />
+        <tag k="layer" v="-5" />
+        <tag k="natural" v="sea" />
+    </way>
 </osm>
 
 ```
@@ -98,16 +98,16 @@ On the reader side, the only change required is to display the land areas correc
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://mapsforge.org/renderTheme .../renderTheme-v5.xsd"
-	version="4" map-background="#F8F8F8" map-background-outside="#DDDDDD">
+    xsi:schemaLocation="http://mapsforge.org/renderTheme .../renderTheme-v5.xsd"
+    version="4" map-background="#F8F8F8" map-background-outside="#DDDDDD">
 
-	<rule e="way" k="natural" v="issea|sea">
-		<area fill="#B3DDFF"/>
-	</rule>
+    <rule e="way" k="natural" v="issea|sea">
+        <area fill="#B3DDFF"/>
+    </rule>
 
-	<rule e="way" k="natural" v="nosea">
-		<area fill="#F8F8F8" stroke="#F8F8F8" stroke-width="1.0"/>
-	</rule>
+    <rule e="way" k="natural" v="nosea">
+        <area fill="#F8F8F8" stroke="#F8F8F8" stroke-width="1.0"/>
+    </rule>
 ```
 
 The first change is to paint the map on a sub white background. Additionally the outside area can be painted on a light grey background.

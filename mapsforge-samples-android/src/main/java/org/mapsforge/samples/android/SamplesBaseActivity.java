@@ -138,9 +138,9 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
         super.onDestroy();
     }
 
-	/*
+    /*
      * Settings related methods.
-	 */
+     */
 
     @Override
     protected void createSharedPreferences() {

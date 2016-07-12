@@ -58,16 +58,16 @@ public class PoiWriterFactory extends TaskManagerFactory {
         // Use graphical progress manager if plugin is called from map maker GUI
         /*if (guiMode) {
             try {
-				Class<?> clazz = Class.forName(GUI_PROGRESS_MANAGER_CLASS_NAME);
-				Method method = clazz.getMethod("getInstance");
-				Object o = method.invoke(clazz);
+                Class<?> clazz = Class.forName(GUI_PROGRESS_MANAGER_CLASS_NAME);
+                Method method = clazz.getMethod("getInstance");
+                Object o = method.invoke(clazz);
 
-				System.out.println("Progress manager (plugin): " + o);
-				progressManager = (ProgressManager) o;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}*/
+                System.out.println("Progress manager (plugin): " + o);
+                progressManager = (ProgressManager) o;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }*/
 
         // Tell the logger which progress manager to use
         LoggerWrapper.setDefaultProgressManager(progressManager);

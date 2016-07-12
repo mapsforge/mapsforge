@@ -91,7 +91,7 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
         double pixelX = MercatorProjection.longitudeToPixelX(this.getLatLong().longitude, mapSize);
         double pixelY = MercatorProjection.latitudeToPixelY(this.getLatLong().latitude, mapSize);
 //        if (cluster.getClusterManager().markerIconBmps.get(markerType).getBitmap(isSelected) == null) {
-//        	return;
+//            return;
 //        }
         double halfBitmapWidth;
         double halfBitmapHeight;

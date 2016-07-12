@@ -21,22 +21,22 @@ public class Vm {
     /**
      * Perform one step on compiled SQLite VM.
      * The result row is passed to the given callback interface.<BR><BR>
-     *
+     * <p/>
      * Example:<BR>
      * <PRE>
-     *   ...
-     *   try {
-     *     Vm vm = db.compile("select * from x; select * from y;");
-     *     while (vm.step(cb)) {
-     *       ...
-     *     }
-     *     while (vm.compile()) {
-     *       while (vm.step(cb)) {
-     *         ...
-     *       }
-     *     }
-     *   } catch (SQLite.Exception e) {
-     *   }
+     * ...
+     * try {
+     * Vm vm = db.compile("select * from x; select * from y;");
+     * while (vm.step(cb)) {
+     * ...
+     * }
+     * while (vm.compile()) {
+     * while (vm.step(cb)) {
+     * ...
+     * }
+     * }
+     * } catch (SQLite.Exception e) {
+     * }
      * </PRE>
      *
      * @param cb the object implementing the callback methods.
@@ -48,6 +48,7 @@ public class Vm {
 
     /**
      * Compile the next SQL statement for the SQLite VM instance.
+     *
      * @return true when SQL statement has been compiled, false
      * on end of statement sequence.
      */
@@ -73,6 +74,6 @@ public class Vm {
     private static native void internal_init();
 
     static {
-	internal_init();
+        internal_init();
     }
 }

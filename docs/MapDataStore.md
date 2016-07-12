@@ -10,43 +10,43 @@ Mapsforge can use different sources to render map data. The most common is a Map
 ###MapDataStore Interface
     public interface MapDataStore {
 
-	/**
-	 * Returns the area for which data is supplied.
-	 * @return bounding box of area.
-	 */
-	BoundingBox boundingBox();
+    /**
+     * Returns the area for which data is supplied.
+     * @return bounding box of area.
+     */
+    BoundingBox boundingBox();
 
-	/*
-	 * Closes the map database.
-	 */
-	void close();
+    /*
+     * Closes the map database.
+     */
+    void close();
 
-	/**
-	 * Gets the initial map position.
-	 * @return the start position, if available.
-	 */
-	LatLong startPosition();
-	
-	/**
-	 * Gets the initial zoom level.
-	 * @return the start zoom level.
-	 */
-	Byte startZoomLevel();
+    /**
+     * Gets the initial map position.
+     * @return the start position, if available.
+     */
+    LatLong startPosition();
+    
+    /**
+     * Gets the initial zoom level.
+     * @return the start zoom level.
+     */
+    Byte startZoomLevel();
 
-	/**
-	 * Reads data for tile.
-	 * @param tile tile for which data is requested.
-	 * @return map data for the tile.
-	 */
-	MapReadResult readMapData(Tile tile);
+    /**
+     * Reads data for tile.
+     * @param tile tile for which data is requested.
+     * @return map data for the tile.
+     */
+    MapReadResult readMapData(Tile tile);
 
-	/**
-	 * Returns true if MapDatabase contains tile.
-	 * @param tile tile to be rendered.
-	 * @return true if tile is part of database.
-	 */
-	boolean supportsTile(Tile tile);
-	}
+    /**
+     * Returns true if MapDatabase contains tile.
+     * @param tile tile to be rendered.
+     * @return true if tile is part of database.
+     */
+    boolean supportsTile(Tile tile);
+    }
 
 ###MapFile
 
@@ -60,12 +60,12 @@ When a tile is rendered with from a MultiMapDataStore, the data from the include
 
 To combine the data from the different stores, several policies are supported:
 
- 	public enum DataPolicy {
-		RETURN_FIRST, 
-		RETURN_ALL, 
-		DEDUPLICATE 
-	}
-	
+     public enum DataPolicy {
+        RETURN_FIRST, 
+        RETURN_ALL, 
+        DEDUPLICATE 
+    }
+    
  - RETURN_FIRST will only render data from the first source that has data for a tile. This is useful if the stores are known not to overlap in their coverage or where it is enough to render data from the first store if they overlap.
  - RETURN_ALL will combine the data from all stores. This is the most useful policy if the MultiDataStore is used to combine multiple maps into one.
  - DEDUPLICATE will use data from all stores, but eliminate duplicates. Testing has shown that it is very costly to eliminate duplicates and generally cheaper to render overlapping data twice, so the use of this policy is discouraged.
@@ -74,10 +74,10 @@ To combine the data from the different stores, several policies are supported:
 
 In the Samples app, the MultiMapLowResWorld class shows an example for the use of the MultiMapDataStore to combine a low-res world file that contains only land/sea areas with a more detailed map view for a specific area. 
 
-	multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
-	multiMapDataStore.addMapDataStore(getMapFile1(), true, true);
-	multiMapDataStore.addMapDataStore(getMapFile2(), false, false);
-	
+    multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+    multiMapDataStore.addMapDataStore(getMapFile1(), true, true);
+    multiMapDataStore.addMapDataStore(getMapFile2(), false, false);
+    
 The parameters for the addMapDataStore call specify which initial start position and start zoom level should be used for the combined area.
 ![Screenshot MultiMap1](images/multimap2.png)
 

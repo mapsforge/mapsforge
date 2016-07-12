@@ -117,17 +117,17 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
         // set to impossible values to trigger clustering at first onChange
         oldZoolLevel = -1;
         oldCenterLatLong = new LatLong(-90.0, -180.0);
-//		// Check correct order of the makerbitmaps within the list
-//		for (int i = 1; i < markerBitmaps.size(); i++) {
-//			if (markerBitmaps.get(i - 1).getItemMax() > markerBitmaps.get(i)
-//					.getItemMax()) {
-//				throw new IllegalArgumentException(
-//						"markerBitmaps must be in "
-//								+ "order from smallest to largest 'maxSize' values, but "
-//								+ (i - 1)
-//								+ ".element's maxSize is larger than the following value!");
-//			}
-//		}
+//        // Check correct order of the makerbitmaps within the list
+//        for (int i = 1; i < markerBitmaps.size(); i++) {
+//            if (markerBitmaps.get(i - 1).getItemMax() > markerBitmaps.get(i)
+//                    .getItemMax()) {
+//                throw new IllegalArgumentException(
+//                        "markerBitmaps must be in "
+//                                + "order from smallest to largest 'maxSize' values, but "
+//                                + (i - 1)
+//                                + ".element's maxSize is larger than the following value!");
+//            }
+//        }
         synchronized (this.markerIconBmps) {
             this.markerIconBmps = markerBitmaps;
         }
@@ -171,7 +171,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
     // public static float gap;
 
     public void setSelectedItem(SelectionHandler<T> sender, T selectedItem) {
-//		Log.d(TAG,"setSelectedItem(Selecting... (super) is called" );
+//        Log.d(TAG,"setSelectedItem(Selecting... (super) is called" );
         this.selectedItem = selectedItem;
     }
 
@@ -185,7 +185,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
         // Log.w(TAG,"public synchronized void addItem(T item) {... (START)");
         // if mapView is not inflated or if not in viewport, add to leftItems
         if (mapView.getWidth() == 0 || !isItemInViewport(item)) {
-//			Log.i(TAG,"public synchronized void addItem(T item) {... (1)");
+//            Log.i(TAG,"public synchronized void addItem(T item) {... (1)");
             synchronized (leftItems) {
                 // Log.w(TAG,"public synchronized void addItem(T item) {... (2)");
                 if (clusterTask != null && clusterTask.isCancelled()) return;
@@ -196,11 +196,11 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
             // else add to a cluster;
             Point pos = mapView.getMapViewProjection().toPixels(item.getLatLong());
             // check existing cluster
-//			Log.i(TAG,"spublic synchronized void addItem(T item) {...... (3)");
+//            Log.i(TAG,"spublic synchronized void addItem(T item) {...... (3)");
             synchronized (clusters) {
                 // Log.w(TAG,"spublic synchronized void addItem(T item) {...... (4)");
                 for (Cluster<T> mCluster : clusters) {
-//					Log.i(TAG,"public synchronized void addItem(T item) {... (5)");
+//                    Log.i(TAG,"public synchronized void addItem(T item) {... (5)");
                     if (clusterTask != null && clusterTask.isCancelled()) return;
                     if (mCluster.getItems().size() == 0)
                         throw new IllegalArgumentException("cluster.getItems().size() == 0");
@@ -216,9 +216,9 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
                     if (pos.distance(ptCenter) <= GRIDSIZE
                     /*
                      * pos.x >= ptCenter.x - GRIDSIZE && pos.x <= ptCenter.x +
-					 * GRIDSIZE && pos.y >= ptCenter.y - GRIDSIZE && pos.y <=
-					 * ptCenter.y + GRIDSIZE
-					 */) {
+                     * GRIDSIZE && pos.y >= ptCenter.y - GRIDSIZE && pos.y <=
+                     * ptCenter.y + GRIDSIZE
+                     */) {
                         mCluster.addItem(item);
                         return;
                     }
@@ -229,11 +229,11 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
         } else {
             // No clustering allowed, create a new cluster with single item.
             synchronized (clusters) {
-//				Log.i(TAG,"public synchronized void addItem(T item) {... (6)");
+//                Log.i(TAG,"public synchronized void addItem(T item) {... (6)");
                 clusters.add(createCluster(item));
             }
         }
-//		Log.i(TAG,"public synchronized void addItem(T item) {... (END)");
+//        Log.i(TAG,"public synchronized void addItem(T item) {... (END)");
     }
 
     /**
@@ -284,11 +284,11 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
             }
             /** North-West geo point of the bound */
             LatLong nw_ = mapView.getMapViewProjection().fromPixels(0, 0);
-//			Log.e(TAG, " nw_.latitude => " + nw_.latitude + " nw_.longitude => " + nw_.longitude );
+//            Log.e(TAG, " nw_.latitude => " + nw_.latitude + " nw_.longitude => " + nw_.longitude );
             /** South-East geo point of the bound */
             LatLong se_ = mapView.getMapViewProjection().fromPixels(mapView.getWidth(),
                     mapView.getHeight());
-//			Log.e(TAG, " se_.latitude => " + se_.latitude + " se_.longitude => " + se_.longitude );
+//            Log.e(TAG, " se_.latitude => " + se_.latitude + " se_.longitude => " + se_.longitude );
             if (se_.latitude > nw_.latitude) {
                 currBoundingBox = new BoundingBox(nw_.latitude, se_.longitude, se_.latitude,
                         nw_.longitude);

@@ -13,23 +13,23 @@ Here is an example of a simple render-theme with a few different rules and rende
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="1">
+    xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="1">
 
-	<!-- matches all ways with a "highway=trunk" or a "highway=motorway" tag -->
-	<rule e="way" k="highway" v="trunk|motorway">
-		<line stroke="#FF9900" stroke-width="2.5" />
-	</rule>
+    <!-- matches all ways with a "highway=trunk" or a "highway=motorway" tag -->
+    <rule e="way" k="highway" v="trunk|motorway">
+        <line stroke="#FF9900" stroke-width="2.5" />
+    </rule>
 
-	<!-- matches all closed ways (first node equals last node) with an "amenity=…" tag -->
-	<rule e="way" k="amenity" v="*" closed="yes">
-		<area fill="#DDEECC" stroke="#006699" stroke-width="0.3" />
-	</rule>
+    <!-- matches all closed ways (first node equals last node) with an "amenity=…" tag -->
+    <rule e="way" k="amenity" v="*" closed="yes">
+        <area fill="#DDEECC" stroke="#006699" stroke-width="0.3" />
+    </rule>
 
-	<!-- matches all nodes with a "tourism=hotel" tag on zoom level 16 and above -->
-	<rule e="node" k="tourism" v="hotel" zoom-min="16">
-		<symbol src="file:/path/to/symbol/icon/hotel.png" />
-		<caption k="name" font-style="bold" font-size="10" fill="#4040ff" />
-	</rule>
+    <!-- matches all nodes with a "tourism=hotel" tag on zoom level 16 and above -->
+    <rule e="node" k="tourism" v="hotel" zoom-min="16">
+        <symbol src="file:/path/to/symbol/icon/hotel.png" />
+        <caption k="name" font-style="bold" font-size="10" fill="#4040ff" />
+    </rule>
 </rendertheme>
 ```
 
@@ -52,14 +52,14 @@ Rules can be nested to any level of depth. This can be used to define rendering 
 
 ```xml
 <rule e="way" k="*" v="*" closed="no">
-	<rule e="way" k="highway" v="motorway">
-		<rule e="way" k="tunnel" v="true|yes">
-			…
-		</rule>
-		<rule e="way" k="tunnel" v="~|no|false">
-			…
-		</rule>
-	</rule>
+    <rule e="way" k="highway" v="motorway">
+        <rule e="way" k="tunnel" v="true|yes">
+            …
+        </rule>
+        <rule e="way" k="tunnel" v="~|no|false">
+            …
+        </rule>
+    </rule>
 </rule>
 ```
 
@@ -84,8 +84,8 @@ The `rendertheme` root element has an optional `map-background` attribute which 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="1" map-background="#FFEE99">
-	…
+    xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="1" map-background="#FFEE99">
+    …
 </rendertheme>
 ```
 
@@ -101,7 +101,7 @@ But if you want to develop your renderthemes further, Rendertheme V4 offers a nu
 
 ```xml
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme-v5.xsd" version="5" map-background="#f8f8f8" map-background-outside="#dddddd">
+    xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme-v5.xsd" version="5" map-background="#f8f8f8" map-background-outside="#dddddd">
 ```
 
 ###Header Elements
@@ -130,12 +130,12 @@ Layers are combinations of categories that can together be toggled on and off. I
 
 ```xml
 <layer id="public_transport" visible="true">
-	<name lang="de" value="Öffentlicher Verkehr"/>
-	<name lang="en" value="Public Transport"/>
-	<name lang="es" value="Transporte público"/>
-	<name lang="fr" value="Transport public"/>
-	<cat id="public_transport"/>
-	<cat id="rail"></cat>
+    <name lang="de" value="Öffentlicher Verkehr"/>
+    <name lang="en" value="Public Transport"/>
+    <name lang="es" value="Transporte público"/>
+    <name lang="fr" value="Transport public"/>
+    <cat id="public_transport"/>
+    <cat id="rail"></cat>
 </layer>
 ```
 
@@ -143,21 +143,21 @@ A set of layer definitions makes up a style:
 
 ```xml
 <stylemenu id="r4menu" defaultvalue="terrain" defaultlang="en">
-	<layer id="shopping" visible="true">
-		<name lang="de" value="Shopping"/>
-		<name lang="en" value="Shopping"/>
-		<name lang="es" value="Tiendas"/>
-		<name lang="fr" value="Shopping"/>
-		<cat id="shopping"/>
-	</layer>
+    <layer id="shopping" visible="true">
+        <name lang="de" value="Shopping"/>
+        <name lang="en" value="Shopping"/>
+        <name lang="es" value="Tiendas"/>
+        <name lang="fr" value="Shopping"/>
+        <cat id="shopping"/>
+    </layer>
 
-	<layer id="terrain" visible="true">
-		<name lang="de" value="Topographischer Hintergrund"/>
-		<name lang="en" value="Topographic Colours"/>
-		<name lang="es" value="Colores topográficos"/>
-		<name lang="fr" value="Couleurs topographiques"/>
-		<cat id="topo"/>
-	</layer>
+    <layer id="terrain" visible="true">
+        <name lang="de" value="Topographischer Hintergrund"/>
+        <name lang="en" value="Topographic Colours"/>
+        <name lang="es" value="Colores topográficos"/>
+        <name lang="fr" value="Couleurs topographiques"/>
+        <cat id="topo"/>
+    </layer>
 </stylemenu>
 ```
 
@@ -165,39 +165,39 @@ The **visible** attribute is meant to indicate which of the layers are visible i
 
 ```xml
 <layer id="base">
-	<cat id="roads"/>
-	<cat id="waterbodies"/>
-	<cat id="landuse"/>
-	<cat id="places"/>
-	<overlay id="emergency"/>
-	<overlay id="food"/>
+    <cat id="roads"/>
+    <cat id="waterbodies"/>
+    <cat id="landuse"/>
+    <cat id="places"/>
+    <overlay id="emergency"/>
+    <overlay id="food"/>
 </layer>
 
 <layer id="simple" parent="base" visible="true">
-	<name lang="de" value="Auto"/>
-	<name lang="en" value="Driving"/>
-	<name lang="es" value="Conducción"/>
-	<name lang="fr" value="Conduite"/>
-	<cat id="transport"/>
-	<cat id="barrier"/>
-	<cat id="driving"/>
-	<overlay id="parking"/>
-	<overlay id="shopping"/>
+    <name lang="de" value="Auto"/>
+    <name lang="en" value="Driving"/>
+    <name lang="es" value="Conducción"/>
+    <name lang="fr" value="Conduite"/>
+    <cat id="transport"/>
+    <cat id="barrier"/>
+    <cat id="driving"/>
+    <overlay id="parking"/>
+    <overlay id="shopping"/>
 </layer>
 
 <layer id="standard" parent="base" visible="true">
-	<name lang="de" value="Stadt"/>
-	<name lang="en" value="City"/>
-	<name lang="es" value="City"/>
-	<name lang="fr" value="Ville"/>
-	<cat id="areas"/>
-	<overlay id="tourism"/>
-	<overlay id="sports"/>
-	<overlay id="amenities"/>
-	<overlay id="buildings"/>
-	<overlay id="public_transport"/>
-	<overlay id="accommodation"/>
-	<overlay id="shopping"/>
+    <name lang="de" value="Stadt"/>
+    <name lang="en" value="City"/>
+    <name lang="es" value="City"/>
+    <name lang="fr" value="Ville"/>
+    <cat id="areas"/>
+    <overlay id="tourism"/>
+    <overlay id="sports"/>
+    <overlay id="amenities"/>
+    <overlay id="buildings"/>
+    <overlay id="public_transport"/>
+    <overlay id="accommodation"/>
+    <overlay id="shopping"/>
 </layer>
 ```
 
@@ -205,19 +205,19 @@ To turn layers on by default, add the **enabled=true** attribute. In this case, 
 
 ```xml
 <layer id="parking">
-	<name lang="de" value="Parkplätze"/>
-	<name lang="en" value="Parking"/>
-	<name lang="es" value="Aparcamiento"/>
-	<name lang="fr" value="Parking"/>
-	<cat id="parking"/>
+    <name lang="de" value="Parkplätze"/>
+    <name lang="en" value="Parking"/>
+    <name lang="es" value="Aparcamiento"/>
+    <name lang="fr" value="Parking"/>
+    <cat id="parking"/>
 </layer>
 
 <layer enabled="true" id="buildings">
-	<name lang="de" value="Gebäude"/>
-	<name lang="en" value="Buildings"/>
-	<name lang="es" value="Edificios"/>
-	<name lang="fr" value="Bâtiments"/>
-	<cat id="buildings"/>
+    <name lang="de" value="Gebäude"/>
+    <name lang="en" value="Buildings"/>
+    <name lang="es" value="Edificios"/>
+    <name lang="fr" value="Bâtiments"/>
+    <cat id="buildings"/>
 </layer>
 ```
 
@@ -237,10 +237,10 @@ To associate a caption with a symbol, the symbol needs an id and the caption nee
 
 ```xml
 <rule cat="public_transport" e="node" k="aeroway" v="helipad" zoom-min="14">
-	<symbol id="helipad" src="assets:symbols/transport/helicopter_pad.svg"/>
-	<rule e="any" k="*" v="*" zoom-min="17">
-		<caption priority="-20" symbol-id="helipad" k="name" position="above" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
-	</rule>
+    <symbol id="helipad" src="assets:symbols/transport/helicopter_pad.svg"/>
+    <rule e="any" k="*" v="*" zoom-min="17">
+        <caption priority="-20" symbol-id="helipad" k="name" position="above" font-style="bold" font-size="12" fill="#0092DA" stroke="#FFFFFF" stroke-width="2.0"/>
+    </rule>
 </rule>
 ```
 
@@ -267,10 +267,10 @@ Labels and icons are now drawn in order of priority, higher priorities first. Th
 
 ```xml
 <rule e="node" k="place" v="town" zoom-min="8">
-	<caption priority="30" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+    <caption priority="30" k="name" font-style="bold" font-size="14" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 </rule>
 <rule e="node" k="place" v="city" zoom-min="6" zoom-max="6">
-	<caption priority="40" k="name" font-style="bold" font-size="11" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
+    <caption priority="40" k="name" font-style="bold" font-size="11" fill="#333380" stroke="#FFFFFF" stroke-width="2.0"/>
 </rule>
 ```
 
@@ -311,15 +311,15 @@ A simple SVG symbol for a cemetery can look like this:
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.0//EN' 'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
 <svg width='256' height='256' viewport-fill="#33D40B" viewport-fill-opacity="0.3" xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>
-	<defs>
-		<g id="cross">
-			<rect width="24" height="96" x="20" y="2" id="rect3092" style="fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-			<rect width="60" height="24" x="2" y="26" id="rect3094" style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-		</g>
-	</defs>
+    <defs>
+        <g id="cross">
+            <rect width="24" height="96" x="20" y="2" id="rect3092" style="fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+            <rect width="60" height="24" x="2" y="26" id="rect3094" style="fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+        </g>
+    </defs>
 
-	<g transform="translate(0,0)"><use xlink:href="#cross"/></g>
-	<g transform="translate(140,70)"><use xlink:href="#cross"/></g>
-	<g transform="translate(30,140)"><use xlink:href="#cross"/></g>
+    <g transform="translate(0,0)"><use xlink:href="#cross"/></g>
+    <g transform="translate(140,70)"><use xlink:href="#cross"/></g>
+    <g transform="translate(30,140)"><use xlink:href="#cross"/></g>
 </svg>
 ```

@@ -47,9 +47,9 @@ public abstract class MapViewerTemplate extends Activity {
     protected XmlRenderThemeStyleMenu renderThemeStyleMenu;
     protected List<TileCache> tileCaches = new ArrayList<TileCache>();
 
-	/*
+    /*
      * Abstract methods that must be implemented.
-	 */
+     */
 
     /**
      * @return the layout to be used,

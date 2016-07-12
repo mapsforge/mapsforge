@@ -4,32 +4,32 @@ package jsqlite;
  * Callback interface for SQLite's query results.
  * <BR><BR>
  * Example:<BR>
- *
+ * <p/>
  * <PRE>
- *   class TableFmt implements SQLite.Callback {
- *     public void columns(String cols[]) {
- *       System.out.println("&lt;TH&gt;&lt;TR&gt;");
- *       for (int i = 0; i &lt; cols.length; i++) {
- *         System.out.println("&lt;TD&gt;" + cols[i] + "&lt;/TD&gt;");
- *       }
- *       System.out.println("&lt;/TR&gt;&lt;/TH&gt;");
- *     }
- *     public boolean newrow(String cols[]) {
- *       System.out.println("&lt;TR&gt;");
- *       for (int i = 0; i &lt; cols.length; i++) {
- *         System.out.println("&lt;TD&gt;" + cols[i] + "&lt;/TD&gt;");
- *       }
- *       System.out.println("&lt;/TR&gt;");
- *       return false;
- *     }
- *   }
- *   ...
- *   SQLite.Database db = new SQLite.Database();
- *   db.open("db", 0);
- *   System.out.println("&lt;TABLE&gt;");
- *   db.exec("select * from TEST", new TableFmt());
- *   System.out.println("&lt;/TABLE&gt;");
- *   ...
+ * class TableFmt implements SQLite.Callback {
+ * public void columns(String cols[]) {
+ * System.out.println("&lt;TH&gt;&lt;TR&gt;");
+ * for (int i = 0; i &lt; cols.length; i++) {
+ * System.out.println("&lt;TD&gt;" + cols[i] + "&lt;/TD&gt;");
+ * }
+ * System.out.println("&lt;/TR&gt;&lt;/TH&gt;");
+ * }
+ * public boolean newrow(String cols[]) {
+ * System.out.println("&lt;TR&gt;");
+ * for (int i = 0; i &lt; cols.length; i++) {
+ * System.out.println("&lt;TD&gt;" + cols[i] + "&lt;/TD&gt;");
+ * }
+ * System.out.println("&lt;/TR&gt;");
+ * return false;
+ * }
+ * }
+ * ...
+ * SQLite.Database db = new SQLite.Database();
+ * db.open("db", 0);
+ * System.out.println("&lt;TABLE&gt;");
+ * db.exec("select * from TEST", new TableFmt());
+ * System.out.println("&lt;/TABLE&gt;");
+ * ...
  * </PRE>
  */
 
