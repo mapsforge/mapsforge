@@ -82,8 +82,9 @@ public class MapFileHeader {
      * @param readBuffer the ReadBuffer for the file data.
      * @param fileSize   the size of the map file in bytes.
      * @throws IOException if an error occurs while reading the file.
+     * @throws MapFileException if a file is opened as a MapFile that is somehow invalid.
      */
-    public void readHeader(ReadBuffer readBuffer, long fileSize) throws IOException {
+    public void readHeader(ReadBuffer readBuffer, long fileSize) throws IOException, MapFileException {
         RequiredFields.readMagicByte(readBuffer);
         RequiredFields.readRemainingHeader(readBuffer);
 
