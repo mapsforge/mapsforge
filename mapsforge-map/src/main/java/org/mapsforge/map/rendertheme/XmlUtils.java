@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 public final class XmlUtils {
     private static final String PREFIX_ASSETS = "assets:";
@@ -56,7 +57,7 @@ public final class XmlUtils {
             // we need to hash with the width/height included as the same symbol could be required
             // in a different size and must be cached with a size-specific hash
             int hash = new StringBuilder().append(absoluteName).append(width).append(height).append(percent).toString().hashCode();
-            if (src.endsWith(".svg")) {
+            if (src.toLowerCase(Locale.ENGLISH).endsWith(".svg")) {
                 try {
                     return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
                 } catch (IOException e) {

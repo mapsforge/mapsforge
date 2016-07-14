@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,6 +27,7 @@ import org.mapsforge.map.util.PausableThread;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.util.Locale;
 
 /**
  * Demonstration of changing render themes. This activity checks for .xml files
@@ -60,7 +61,7 @@ public class RenderThemeChanger extends RenderTheme4 {
     private FilenameFilter renderThemesFilter = new FilenameFilter() {
         @Override
         public boolean accept(File file, String s) {
-            if (s.endsWith(".xml")) {
+            if (s.toLowerCase(Locale.ENGLISH).endsWith(".xml")) {
                 return true;
             }
             return false;
