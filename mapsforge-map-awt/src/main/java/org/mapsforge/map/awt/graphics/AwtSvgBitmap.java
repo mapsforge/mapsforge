@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,8 +24,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-class AwtSvgBitmap extends AwtResourceBitmap {
-    static final float DEFAULT_SIZE = 400f;
+public class AwtSvgBitmap extends AwtResourceBitmap {
+    /**
+     * Default size is 20x20px.
+     */
+    public static float DEFAULT_SIZE = 400f;
 
     private static BufferedImage getResourceBitmap(InputStream inputStream, int hash, float scaleFactor, int width, int height, int percent)
             throws IOException {
