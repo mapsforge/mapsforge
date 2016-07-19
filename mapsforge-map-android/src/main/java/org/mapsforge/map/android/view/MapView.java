@@ -109,7 +109,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     private final FrameBufferController frameBufferController;
     private final GestureDetector gestureDetector;
     private GestureDetector gestureDetectorExternal;
-    private final LayerManager layerManager;
+    private LayerManager layerManager;
     private final Handler layoutHandler = new Handler();
     private MapScaleBar mapScaleBar;
     private final MapViewProjection mapViewProjection;
@@ -171,6 +171,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.touchGestureHandler.destroy();
         this.layoutHandler.removeCallbacksAndMessages(null);
         this.layerManager.interrupt();
+        this.layerManager = null;
         this.frameBufferController.destroy();
         this.frameBuffer.destroy();
         if (this.mapScaleBar != null) {

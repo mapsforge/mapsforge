@@ -51,7 +51,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     private final FpsCounter fpsCounter;
     private final FrameBuffer frameBuffer;
     private final FrameBufferController frameBufferController;
-    private final LayerManager layerManager;
+    private LayerManager layerManager;
     private MapScaleBar mapScaleBar;
     private final MapViewProjection mapViewProjection;
     private final Model model;
@@ -95,6 +95,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     @Override
     public void destroy() {
         this.layerManager.interrupt();
+        this.layerManager = null;
         this.frameBufferController.destroy();
         this.frameBuffer.destroy();
         if (this.mapScaleBar != null) {
