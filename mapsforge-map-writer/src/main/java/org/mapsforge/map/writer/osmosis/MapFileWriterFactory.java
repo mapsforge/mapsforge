@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -60,7 +60,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
         configuration.setDebugStrings(getBooleanArgument(taskConfig, PARAM_DEBUG_INFO, false));
         configuration.setPolygonClipping(getBooleanArgument(taskConfig, PARAM_POLYGON_CLIPPING, true));
         configuration.setWayClipping(getBooleanArgument(taskConfig, PARAM_WAY_CLIPPING, true));
-        configuration.setLabelPosition(getBooleanArgument(taskConfig, PARAM_LABEL_POSITION, false));
+        configuration.setLabelPosition(getBooleanArgument(taskConfig, PARAM_LABEL_POSITION, true));
         // boolean waynodeCompression = getBooleanArgument(taskConfig, PARAM_WAYNODE_COMPRESSION,
         // true);
         configuration.setSimplification(getDoubleArgument(taskConfig, PARAM_SIMPLIFICATION_FACTOR,
