@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,6 +25,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.GroupLayer;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.overlay.Circle;
@@ -47,7 +48,7 @@ import java.util.Collection;
  */
 public class PoiSearchViewer extends RenderTheme4 {
     private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/germany.poi";
-    private static final String POI_CATEGORY = "Embassies";
+    private static final String POI_CATEGORY = "Restaurants";
 
     private static final Paint CIRCLE = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(128, 255, 0, 0), 0, Style.FILL);
 
@@ -71,7 +72,7 @@ public class PoiSearchViewer extends RenderTheme4 {
         // Clear overlays
         Layers layers = this.mapView.getLayerManager().getLayers();
         for (Layer layer : layers) {
-            if (layer instanceof Circle) {
+            if (layer instanceof GroupLayer) {
                 layers.remove(layer);
             }
         }
@@ -120,19 +121,23 @@ public class PoiSearchViewer extends RenderTheme4 {
                 return;
             }
 
+            GroupLayer groupLayer = new GroupLayer();
             for (final PointOfInterest pointOfInterest : pointOfInterests) {
-                Circle circle = new FixedPixelCircle(pointOfInterest.getLatLong(), 16, CIRCLE, null) {
+                final Circle circle = new FixedPixelCircle(pointOfInterest.getLatLong(), 16, CIRCLE, null) {
                     @Override
                     public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                        if (this.contains(layerXY, tapXY)) {
+                        // GroupLayer does not have a position!
+                        Point circleXY = activity.mapView.getMapViewProjection().toPixels(getPosition());
+                        if (this.contains(circleXY, tapXY)) {
                             Toast.makeText(activity, pointOfInterest.getName(), Toast.LENGTH_SHORT).show();
                             return true;
                         }
                         return false;
                     }
                 };
-                activity.mapView.getLayerManager().getLayers().add(circle);
+                groupLayer.layers.add(circle);
             }
+            activity.mapView.getLayerManager().getLayers().add(groupLayer);
             activity.redrawLayers();
         }
     }

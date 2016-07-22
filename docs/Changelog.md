@@ -2,6 +2,7 @@
 
 ## New since 0.6.1
 
+- Group layer implementation [#860](https://github.com/mapsforge/mapsforge/issues/860)
 - Allow resources without location prefixes in render themes [#847](https://github.com/mapsforge/mapsforge/issues/847)
 - SVG symbols customization [#858](https://github.com/mapsforge/mapsforge/issues/858)
 - Deprecate water tiles rendering [#640](https://github.com/mapsforge/mapsforge/issues/640)
