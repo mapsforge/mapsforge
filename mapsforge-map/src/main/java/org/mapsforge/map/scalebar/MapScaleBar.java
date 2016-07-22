@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2014 Erik Duisters
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -76,8 +76,7 @@ public abstract class MapScaleBar {
         this.mapViewDimension = mapViewDimension;
         this.displayModel = displayModel;
         this.graphicFactory = graphicFactory;
-        this.mapScaleBitmap = graphicFactory.createBitmap((int) (width * this.displayModel.getScaleFactor()),
-                (int) (height * this.displayModel.getScaleFactor()));
+        this.mapScaleBitmap = graphicFactory.createBitmap(width, height);
 
         this.marginHorizontal = DEFAULT_HORIZONTAL_MARGIN;
         this.marginVertical = DEFAULT_VERTICAL_MARGIN;
@@ -290,8 +289,8 @@ public abstract class MapScaleBar {
     }
 
     /**
-     * Redraw the mapScaleBar. Make sure you always apply this.displayModel.getScaleFactor() to all coordinates and
-     * dimensions.
+     * Redraw the map scale bar.
+     * Make sure you always apply scale factor to all coordinates and dimensions.
      *
      * @param canvas The canvas to draw on
      */
