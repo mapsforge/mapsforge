@@ -37,7 +37,7 @@ The user is Jürgen, Ludwig and Emux have id and password for it.
 
 And navigate to Staging Repositories, there should be then a mapsforge one somewhere in the list (not sure if there is an easier way to find things, the mapsforge one is usually at the bottom).
 
-Check the released artifacts and click on Close. Sonatype will then perform its own validation. After that click Release, at that point it will be staged to maven central, but might take some time.
+Check the released artifacts and click on Close. Sonatype will then perform its own validation. After that click Release, at that point it will be staged to Maven Central, but might take some time.
 
 (This is where the sona type user was created for mapsforge https://issues.sonatype.org/browse/OSSRH-4231)
 

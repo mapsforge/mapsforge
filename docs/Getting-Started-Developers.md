@@ -43,10 +43,6 @@ Extra Java components:
 - [svg-salamander](https://svgsalamander.java.net/): SVG library for displaying SVG files as icons. Improved jar can be found at the site.
 - [xerial/sqlite-jdbc](https://github.com/xerial/sqlite-jdbc): SQLite JDBC library.
 
-The jars build from the above components are required elements for a mapsforge application on Android or Java.
-
-External dependencies jars can be found at their respective sites or in Maven central repository.
-
 ### Branches
 
 The mapsforge code has now been consolidated into a main branch as well as releases:
