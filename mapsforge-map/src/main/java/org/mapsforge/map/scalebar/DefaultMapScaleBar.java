@@ -31,17 +31,19 @@ import org.mapsforge.map.model.MapViewDimension;
 import org.mapsforge.map.model.MapViewPosition;
 
 /**
- * Displays the default mapsforge MapScaleBar
+ * Displays the default MapScaleBar.
  */
 public class DefaultMapScaleBar extends MapScaleBar {
     private static final int BITMAP_HEIGHT = 40;
     private static final int BITMAP_WIDTH = 120;
+    private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+    private static final int DEFAULT_VERTICAL_MARGIN = 0;
     private static final int SCALE_BAR_MARGIN = 10;
     private static final float STROKE_EXTERNAL = 4;
     private static final float STROKE_INTERNAL = 2;
     private static final int TEXT_MARGIN = 1;
 
-    public static enum ScaleBarMode {BOTH, SINGLE}
+    public enum ScaleBarMode {BOTH, SINGLE}
 
     private final float scale;
     private ScaleBarMode scaleBarMode;
@@ -60,6 +62,9 @@ public class DefaultMapScaleBar extends MapScaleBar {
     public DefaultMapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension,
                               GraphicFactory graphicFactory, DisplayModel displayModel, float scale) {
         super(mapViewPosition, mapViewDimension, displayModel, graphicFactory, (int) (BITMAP_WIDTH * scale), (int) (BITMAP_HEIGHT * scale));
+
+        setMarginHorizontal((int) (DEFAULT_HORIZONTAL_MARGIN * scale));
+        setMarginVertical((int) (DEFAULT_VERTICAL_MARGIN * scale));
 
         this.scale = scale;
         this.scaleBarMode = ScaleBarMode.BOTH;
@@ -116,7 +121,6 @@ public class DefaultMapScaleBar extends MapScaleBar {
         paint.setStyle(style);
         paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
         paint.setTextSize(12 * this.scale);
-
         return paint;
     }
 

@@ -32,15 +32,13 @@ import org.mapsforge.map.view.MapView;
  * A MapScaleBar displays the ratio of a distance on the map to the corresponding distance on the ground.
  */
 public abstract class MapScaleBar {
-    public static enum ScaleBarPosition {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT}
+    public enum ScaleBarPosition {BOTTOM_CENTER, BOTTOM_LEFT, BOTTOM_RIGHT, TOP_CENTER, TOP_LEFT, TOP_RIGHT}
 
     /**
      * Default position of the scale bar.
      */
     private static final ScaleBarPosition DEFAULT_SCALE_BAR_POSITION = ScaleBarPosition.BOTTOM_LEFT;
 
-    private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
-    private static final int DEFAULT_VERTICAL_MARGIN = 0;
     private static final double LATITUDE_REDRAW_THRESHOLD = 0.2;
 
     protected final DisplayModel displayModel;
@@ -78,8 +76,6 @@ public abstract class MapScaleBar {
         this.graphicFactory = graphicFactory;
         this.mapScaleBitmap = graphicFactory.createBitmap(width, height);
 
-        this.marginHorizontal = DEFAULT_HORIZONTAL_MARGIN;
-        this.marginVertical = DEFAULT_VERTICAL_MARGIN;
         this.scaleBarPosition = DEFAULT_SCALE_BAR_POSITION;
 
         this.mapScaleCanvas = graphicFactory.createCanvas();
@@ -217,8 +213,8 @@ public abstract class MapScaleBar {
         int scaleBarLength = 0;
         int mapScaleValue = 0;
 
-        for (int i = 0; i < scaleBarValues.length; ++i) {
-            mapScaleValue = scaleBarValues[i];
+        for (int scaleBarValue : scaleBarValues) {
+            mapScaleValue = scaleBarValue;
             scaleBarLength = (int) (mapScaleValue / groundResolution);
             if (scaleBarLength < (this.mapScaleBitmap.getWidth() - 10)) {
                 break;
