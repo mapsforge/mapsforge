@@ -126,7 +126,7 @@ public class PoiSearchViewer extends RenderTheme4 {
                 final Circle circle = new FixedPixelCircle(pointOfInterest.getLatLong(), 16, CIRCLE, null) {
                     @Override
                     public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                        // GroupLayer does not have a position!
+                        // GroupLayer does not have a position, layerXY is null
                         Point circleXY = activity.mapView.getMapViewProjection().toPixels(getPosition());
                         if (this.contains(circleXY, tapXY)) {
                             Toast.makeText(activity, pointOfInterest.getName(), Toast.LENGTH_SHORT).show();

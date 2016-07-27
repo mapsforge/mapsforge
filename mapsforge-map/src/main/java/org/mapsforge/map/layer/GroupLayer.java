@@ -51,6 +51,9 @@ public class GroupLayer extends Layer {
         }
     }
 
+    /**
+     * GroupLayer does not have a position, layerXY is null.
+     */
     @Override
     public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
         for (int i = layers.size() - 1; i >= 0; i--) {
@@ -62,6 +65,9 @@ public class GroupLayer extends Layer {
         return false;
     }
 
+    /**
+     * GroupLayer does not have a position, layerXY is null.
+     */
     @Override
     public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
         for (int i = layers.size() - 1; i >= 0; i--) {
