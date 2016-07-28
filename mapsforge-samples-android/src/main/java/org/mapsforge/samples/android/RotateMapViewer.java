@@ -68,7 +68,9 @@ public class RotateMapViewer extends OverlayMapViewer {
     @Override
     protected void createMapViews() {
         mapView = getMapView();
-        findViewById(R.id.rotateView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            findViewById(R.id.rotateView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
         mapView.getModel().frameBufferModel.setOverdrawFactor(1.0d);
         mapView.getModel().init(this.preferencesFacade);
         mapView.setClickable(true);
@@ -85,11 +87,7 @@ public class RotateMapViewer extends OverlayMapViewer {
         mapScaleBar.setSecondaryDistanceUnitAdapter(ImperialUnitAdapter.INSTANCE);
         MapScaleBarView mapScaleBarView = (MapScaleBarView) findViewById(R.id.mapScaleBarView);
         mapScaleBarView.setMapScaleBar(mapScaleBar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            if (mapView.isHardwareAccelerated()) {
-                mapView.getModel().mapViewPosition.addObserver(mapScaleBarView);
-            }
-        }
+        mapView.getModel().mapViewPosition.addObserver(mapScaleBarView);
 
         mapView.setBuiltInZoomControls(hasZoomControls());
         mapView.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
