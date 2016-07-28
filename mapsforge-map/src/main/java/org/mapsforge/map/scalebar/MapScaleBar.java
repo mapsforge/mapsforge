@@ -259,6 +259,13 @@ public abstract class MapScaleBar {
     }
 
     /**
+     * The scalebar is redrawn now.
+     */
+    public void drawScaleBar() {
+        draw(mapScaleCanvas);
+    }
+
+    /**
      * The scalebar will be redrawn on the next draw()
      */
     public void redrawScaleBar() {
