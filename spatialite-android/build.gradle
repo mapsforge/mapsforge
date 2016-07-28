@@ -4,8 +4,10 @@ android.libraryVariants.all { variant ->
         print "Skipping debug jar"
         return; // Skip debug builds.
     }
-    def task = project.tasks.create "nativesJar${name.capitalize()}", Jar
-    task.classifier = 'natives'
-    task.from('natives')
-    artifacts.add('archives', task);
+    file('natives').eachDir() { dir ->
+        def task = project.tasks.create "nativesJar${name.capitalize()}-${dir.name}", Jar
+        task.classifier = "natives-${dir.name}"
+        task.from(dir.path)
+        artifacts.add('archives', task);
+    }
 }
