@@ -149,7 +149,7 @@ public final class Samples {
     }
 
     private static TileCache createTileCache(int index) {
-        TileCache firstLevelTileCache = new InMemoryTileCache(128);
+        TileCache firstLevelTileCache = new InMemoryTileCache(256);
         File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge" + index);
         TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
         return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
