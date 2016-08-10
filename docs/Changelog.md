@@ -12,7 +12,7 @@
 - Deprecate Maven build [#852](https://github.com/mapsforge/mapsforge/issues/852)
 - Drop of `dev` branch
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.2)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.7.0)
 
 ## Version 0.6.X
 
