@@ -45,6 +45,7 @@ public class PolylineContainer implements ShapeContainer {
     private final Tile lowerRight;
     private final boolean isClosedWay;
     private Way way;
+    public Object cacheKey;
 
     public PolylineContainer(Way way, Tile upperLeft, Tile lowerRight) {
         this.coordinatesAbsolute = null;
