@@ -52,6 +52,8 @@ public abstract class MapDataStore {
     }
 
     private static boolean isSpace(String s) {
+        if (s == null)
+            return true;
         for (int i = s.length(); i-- > 0; )
             if (s.charAt(i) != ' ')
                 return false;
@@ -63,20 +65,17 @@ public abstract class MapDataStore {
      * <p/>
      * Use '\r' delimiter among names and '\b' delimiter between each language and name.
      */
-    public static String extract(String s, String language) {
-        if (s == null || isSpace(s)) {
+    public static String extract(String s, String language, String languageLowerCase) {
+        if (s == null) // || isSpace(s))
             return null;
-        }
 
         String[] langNames = split(s, '\r');
         if (langNames == null)
             return s;
 
-        if (language == null || isSpace(language)) {
+        if (language == null) {
             return langNames[0];
         }
-
-        String languageLowerCase = language.toLowerCase(Locale.ENGLISH);
 
         String fallback = null;
         for (int i = 1; i < langNames.length; i++) {
@@ -105,6 +104,7 @@ public abstract class MapDataStore {
      * this setting.
      */
     protected String preferredLanguage;
+    protected String preferredLanguageLowerCase;
 
     /**
      * Ctor for MapDataStore that will use default language.
@@ -119,7 +119,9 @@ public abstract class MapDataStore {
      * @param language the preferred language or null if default language is used.
      */
     public MapDataStore(String language) {
-        this.preferredLanguage = language;
+        this.preferredLanguage = isSpace(language) ? null : language;
+        if (this.preferredLanguage != null)
+            this.preferredLanguageLowerCase = this.preferredLanguage.toLowerCase(Locale.ENGLISH);
     }
 
     /**
@@ -139,7 +141,7 @@ public abstract class MapDataStore {
      * the preferredLanguage setting.
      */
     protected String extractLocalized(String s) {
-        return MapDataStore.extract(s, preferredLanguage);
+        return MapDataStore.extract(s, preferredLanguage, preferredLanguageLowerCase);
     }
 
     /**

@@ -20,6 +20,7 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.reader.MapFile;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Demonstration of multilingual maps. Multilingual map must be loaded, the language options do
@@ -38,6 +39,7 @@ public class MultiLingualMapViewer extends RenderTheme4 {
             language = null;
         }
         final String userLanguage = language;
+        final String userLanguageLowerCase = language == null ? null : language.toLowerCase(Locale.ENGLISH);
         if (userLanguage == null || !sharedPreferences.getBoolean(SamplesApplication.SETTING_LANGUAGE_SHOWLOCAL, false)) {
             Log.i(SamplesApplication.TAG, "Preferred language " + userLanguage);
             return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), language);
@@ -46,8 +48,8 @@ public class MultiLingualMapViewer extends RenderTheme4 {
             return new MapFile(new File(getMapFileDirectory(), this.getMapFileName()), userLanguage) {
                 @Override
                 protected String extractLocalized(String s) {
-                    String local = MapDataStore.extract(s, null);
-                    String user = MapDataStore.extract(s, userLanguage);
+                    String local = MapDataStore.extract(s, null, null);
+                    String user = MapDataStore.extract(s, userLanguage, userLanguageLowerCase);
                     if (local.equals(user)) {
                         return local;
                     }
