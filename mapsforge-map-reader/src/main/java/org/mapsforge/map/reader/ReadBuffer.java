@@ -18,6 +18,7 @@ package org.mapsforge.map.reader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
 /**
@@ -26,6 +27,7 @@ import java.util.logging.Logger;
 public class ReadBuffer {
 
     private static final String CHARSET_UTF8 = "UTF-8";
+    private static final Charset charset = Charset.forName(CHARSET_UTF8);
     /**
      * Default maximum buffer size which is supported by this implementation.
      */
@@ -90,7 +92,27 @@ public class ReadBuffer {
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
+
         return this.inputFile.read(this.bufferData, 0, length) == length;
+    }
+    public boolean readFromFile(long offset, int length) throws IOException {
+        // ensure that the read buffer is large enough
+        if (this.bufferData == null || this.bufferData.length < length) {
+            // ensure that the read buffer is not too large
+            if (length > maximumBufferSize) {
+                LOGGER.warning("invalid read length: " + length);
+                return false;
+            }
+            this.bufferData = new byte[length];
+        }
+
+        // reset the buffer position and read the data into the buffer
+        this.bufferPosition = 0;
+
+        synchronized (this.inputFile) {
+            this.inputFile.seek(offset);
+            return this.inputFile.read(this.bufferData, 0, length) == length;
+        }
     }
 
     /**
@@ -195,11 +217,7 @@ public class ReadBuffer {
     public String readUTF8EncodedString(int stringLength) {
         if (stringLength > 0 && this.bufferPosition + stringLength <= this.bufferData.length) {
             this.bufferPosition += stringLength;
-            try {
-                return new String(this.bufferData, this.bufferPosition - stringLength, stringLength, CHARSET_UTF8);
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException(e);
-            }
+            return new String(this.bufferData, this.bufferPosition - stringLength, stringLength, charset);
         }
         LOGGER.warning("invalid string length: " + stringLength);
         return null;

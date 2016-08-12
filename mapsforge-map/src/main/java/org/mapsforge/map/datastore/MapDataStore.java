@@ -28,27 +28,59 @@ import java.util.Locale;
  * Base class for map data retrieval.
  */
 public abstract class MapDataStore {
+    private static int count(String s, char c) {
+        int size = 0;
+        int pos = -1;
+        while ((pos = s.indexOf(c, pos+1)) >= 0)
+            ++size;
+        return size;
+    }
+    private static String[] split(String s, char c) {
+        int size = count(s, c) + 1;
+        if (size == 1)
+            //return new String[]{s};
+            return null;
+        String[] retval = new String[size];
+        int current = 0;
+        int index = 0;
+        while (size-- > 0) {
+            int pos = s.indexOf(c, current);
+            retval[index++] = s.substring(current, pos == -1 ? s.length() : pos);
+            current = pos+1;
+        }
+        return retval;
+    }
 
+    private static boolean isSpace(String s) {
+        if (s == null)
+            return true;
+        for (int i = s.length(); i-- > 0; )
+            if (s.charAt(i) != ' ')
+                return false;
+        return true;
+    }
     /**
      * Extracts substring of preferred language from multilingual string.<br/>
      * Example multilingual string: "Base\ren\bEnglish\rjp\bJapan\rzh_py\bPin-yin".
      * <p/>
      * Use '\r' delimiter among names and '\b' delimiter between each language and name.
      */
-    public static String extract(String s, String language) {
-        if (s == null || s.trim().isEmpty()) {
+    public static String extract(String s, String language, String languageLowerCase) {
+        if (s == null) // || isSpace(s))
             return null;
-        }
 
-        String[] langNames = s.split("\r");
-        if (language == null || language.trim().isEmpty()) {
+        String[] langNames = split(s, '\r');
+        if (langNames == null)
+            return s;
+
+        if (language == null) {
             return langNames[0];
         }
 
         String fallback = null;
         for (int i = 1; i < langNames.length; i++) {
-            String[] langName = langNames[i].split("\b");
-            if (langName.length != 2) {
+            String[] langName = split(langNames[i], '\b');
+            if (langName == null || langName.length != 2) {
                 continue;
             }
 
@@ -59,7 +91,7 @@ public abstract class MapDataStore {
 
             // Fall back to base, e.g. zh-min-lan -> zh
             if (fallback == null && !langName[0].contains("-") && (language.contains("-") || language.contains("_"))
-                    && language.toLowerCase(Locale.ENGLISH).startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
+                    && languageLowerCase.startsWith(langName[0].toLowerCase(Locale.ENGLISH))) {
                 fallback = langName[1];
             }
         }
@@ -72,6 +104,7 @@ public abstract class MapDataStore {
      * this setting.
      */
     protected String preferredLanguage;
+    protected String preferredLanguageLowerCase;
 
     /**
      * Ctor for MapDataStore that will use default language.
@@ -86,7 +119,9 @@ public abstract class MapDataStore {
      * @param language the preferred language or null if default language is used.
      */
     public MapDataStore(String language) {
-        this.preferredLanguage = language;
+        this.preferredLanguage = isSpace(language) ? null : language;
+        if (this.preferredLanguage != null)
+            this.preferredLanguageLowerCase = this.preferredLanguage.toLowerCase(Locale.ENGLISH);
     }
 
     /**
@@ -106,7 +141,7 @@ public abstract class MapDataStore {
      * the preferredLanguage setting.
      */
     protected String extractLocalized(String s) {
-        return MapDataStore.extract(s, preferredLanguage);
+        return MapDataStore.extract(s, preferredLanguage, preferredLanguageLowerCase);
     }
 
     /**

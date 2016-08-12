@@ -45,7 +45,7 @@ public class RenderContext {
     // Data generated for the rendering process
     private List<List<ShapePaintContainer>> drawingLayers;
     public final List<MapElementContainer> labels;
-    public final List<List<List<ShapePaintContainer>>> ways;
+    private final List<List<ShapePaintContainer>> ways[];
 
 
     public RenderContext(RendererJob rendererJob, CanvasRasterer canvasRasterer) throws InterruptedException, ExecutionException {
@@ -68,11 +68,16 @@ public class RenderContext {
         } else if (layer >= RenderContext.LAYERS) {
             layer = RenderContext.LAYERS - 1;
         }
-        this.drawingLayers = ways.get(layer);
+        this.drawingLayers = getWayList(layer);
     }
 
     public void addToCurrentDrawingLayer(int level, ShapePaintContainer element) {
-        this.drawingLayers.get(level).add(element);
+        List<ShapePaintContainer> lst = this.drawingLayers.get(level);
+        if (lst == null) {
+            lst = new ArrayList<>(1);
+            this.drawingLayers.set(level, lst);
+        }
+        lst.add(element);
     }
 
     /**
@@ -86,18 +91,26 @@ public class RenderContext {
                 this.rendererJob.textScale, this.rendererJob.hasAlpha, this.rendererJob.labelsOnly);
     }
 
-    private List<List<List<ShapePaintContainer>>> createWayLists() {
-        List<List<List<ShapePaintContainer>>> result = new ArrayList<>(LAYERS);
-        int levels = this.renderTheme.getLevels();
-
-        for (byte i = LAYERS - 1; i >= 0; --i) {
-            List<List<ShapePaintContainer>> innerWayList = new ArrayList<>(levels);
-            for (int j = levels - 1; j >= 0; --j) {
-                innerWayList.add(new ArrayList<ShapePaintContainer>(0));
-            }
-            result.add(innerWayList);
-        }
+    private List<List<ShapePaintContainer>>[] createWayLists() {
+        List<List<ShapePaintContainer>>[] result = new List[LAYERS];
         return result;
+    }
+
+    public List<List<ShapePaintContainer>> getWayList(int index) {
+        List<List<ShapePaintContainer>> w = ways[index];
+        if (w == null) {
+            int levels = this.renderTheme.getLevels();
+            w = new ArrayList<>(levels);
+            for (int j = levels - 1; j >= 0; --j) {
+                w.add(null);
+            }
+            ways[index] = w;
+        }
+        return w;
+    }
+
+    public int countWayLists() {
+        return ways.length;
     }
 
     /**
@@ -109,5 +122,4 @@ public class RenderContext {
         int zoomLevelDiff = Math.max(zoomLevel - STROKE_MIN_ZOOM_LEVEL, 0);
         this.renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff), this.rendererJob.tile.zoomLevel);
     }
-
 }

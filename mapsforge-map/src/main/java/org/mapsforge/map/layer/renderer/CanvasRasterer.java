@@ -51,14 +51,16 @@ public class CanvasRasterer {
     }
 
     void drawWays(RenderContext renderContext) {
-        int levelsPerLayer = renderContext.ways.get(0).size();
+        List<List<ShapePaintContainer>> w = renderContext.getWayList(0);
+        int levelsPerLayer = w.size();
 
-        for (int layer = 0, layers = renderContext.ways.size(); layer < layers; ++layer) {
-            List<List<ShapePaintContainer>> shapePaintContainers = renderContext.ways.get(layer);
+        for (int layer = 0, layers = renderContext.countWayLists(); layer < layers; ++layer) {
+            List<List<ShapePaintContainer>> shapePaintContainers = renderContext.getWayList(layer);
 
             for (int level = 0; level < levelsPerLayer; ++level) {
                 List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
+                if (wayList != null)
                 for (int index = wayList.size() - 1; index >= 0; --index) {
                     drawShapePaintContainer(wayList.get(index));
                 }
