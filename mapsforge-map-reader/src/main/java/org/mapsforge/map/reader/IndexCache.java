@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2016 bvgastel
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -86,9 +87,11 @@ class IndexCache {
             int indexBlockSize = Math.min(SIZE_OF_INDEX_BLOCK, remainingIndexSize);
             indexBlock = new byte[indexBlockSize];
 
-            this.randomAccessFile.seek(indexBlockPosition);
-            if (this.randomAccessFile.read(indexBlock, 0, indexBlockSize) != indexBlockSize) {
-                throw new IOException("could not read index block with size: " + indexBlockSize);
+            synchronized (this.randomAccessFile) {
+                this.randomAccessFile.seek(indexBlockPosition);
+                if (this.randomAccessFile.read(indexBlock, 0, indexBlockSize) != indexBlockSize) {
+                    throw new IOException("could not read index block with size: " + indexBlockSize);
+                }
             }
 
             // put the index block in the map

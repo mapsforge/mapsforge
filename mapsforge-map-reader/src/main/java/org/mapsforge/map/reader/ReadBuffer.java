@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 devemux86
+ * Copyright 2016 bvgastel
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -90,7 +91,37 @@ public class ReadBuffer {
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
+
         return this.inputFile.read(this.bufferData, 0, length) == length;
+    }
+
+    /**
+     * Reads the given amount of bytes from the file into the read buffer and resets the internal buffer position. If
+     * the capacity of the read buffer is too small, a larger one is created automatically.
+     *
+     * @param offset the offset position, measured in bytes from the beginning of the file, at which to set the file pointer.
+     * @param length the amount of bytes to read from the file.
+     * @return true if the whole data was read successfully, false otherwise.
+     * @throws IOException if an error occurs while reading the file.
+     */
+    public boolean readFromFile(long offset, int length) throws IOException {
+        // ensure that the read buffer is large enough
+        if (this.bufferData == null || this.bufferData.length < length) {
+            // ensure that the read buffer is not too large
+            if (length > maximumBufferSize) {
+                LOGGER.warning("invalid read length: " + length);
+                return false;
+            }
+            this.bufferData = new byte[length];
+        }
+
+        // reset the buffer position and read the data into the buffer
+        this.bufferPosition = 0;
+
+        synchronized (this.inputFile) {
+            this.inputFile.seek(offset);
+            return this.inputFile.read(this.bufferData, 0, length) == length;
+        }
     }
 
     /**
