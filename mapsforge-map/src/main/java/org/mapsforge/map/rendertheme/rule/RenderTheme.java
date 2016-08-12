@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A RenderTheme defines how ways and nodes are drawn.
@@ -197,24 +199,33 @@ public class RenderTheme {
         this.levels = levels;
     }
 
-    private synchronized void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
-        MatchingCacheKey matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getUpperLeft().zoomLevel, closed);
+    Lock lock = new ReentrantLock();
 
-        List<RenderInstruction> matchingList = this.wayMatchingCache.get(matchingCacheKey);
-        if (matchingList != null) {
+    private void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
+        MatchingCacheKey matchingCacheKey = (MatchingCacheKey) way.cacheKey;
+        if (matchingCacheKey == null)
+            way.cacheKey = matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getUpperLeft().zoomLevel, closed);
+        List<RenderInstruction> matchingList = null;
+        lock.lock();
+        matchingList = this.wayMatchingCache.get(matchingCacheKey);
+        if (matchingList == null) {
+            matchingList = new ArrayList<RenderInstruction>();
+            this.wayMatchingCache.put(matchingCacheKey, matchingList);
+            synchronized (matchingList) {
+                lock.unlock();
+                // cache miss
+                for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
+                    this.rulesList.get(i).matchWay(renderCallback, way, way.getUpperLeft(), closed, matchingList, renderContext);
+                }
+            }
+        } else {
+            lock.unlock();
+        }
+        synchronized (matchingList) {
             // cache hit
             for (int i = 0, n = matchingList.size(); i < n; ++i) {
                 matchingList.get(i).renderWay(renderCallback, renderContext, way);
             }
-            return;
         }
-
-        // cache miss
-        matchingList = new ArrayList<RenderInstruction>();
-        for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-            this.rulesList.get(i).matchWay(renderCallback, way, way.getUpperLeft(), closed, matchingList, renderContext);
-        }
-
-        this.wayMatchingCache.put(matchingCacheKey, matchingList);
     }
 }
