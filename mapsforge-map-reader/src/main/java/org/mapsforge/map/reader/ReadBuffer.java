@@ -90,7 +90,27 @@ public class ReadBuffer {
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
+
         return this.inputFile.read(this.bufferData, 0, length) == length;
+    }
+    public boolean readFromFile(long offset, int length) throws IOException {
+        // ensure that the read buffer is large enough
+        if (this.bufferData == null || this.bufferData.length < length) {
+            // ensure that the read buffer is not too large
+            if (length > maximumBufferSize) {
+                LOGGER.warning("invalid read length: " + length);
+                return false;
+            }
+            this.bufferData = new byte[length];
+        }
+
+        // reset the buffer position and read the data into the buffer
+        this.bufferPosition = 0;
+
+        synchronized (this.inputFile) {
+            this.inputFile.seek(offset);
+            return this.inputFile.read(this.bufferData, 0, length) == length;
+        }
     }
 
     /**
