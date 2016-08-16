@@ -10,7 +10,7 @@ If you have any questions or problems, don't hesitate to ask our public [mapsfor
 |Tool|Version|
 |----|-------|
 |Android Build Tools|23.0.3|
-|Gradle|2.10|
+|Gradle|2.14.1|
 |Java|1.7|
 
 ## Checkout the code
