@@ -1,17 +1,15 @@
-# configuration for https://travis-ci.org/mapsforge/mapsforge
 sudo: false
 language: android
 jdk:
-  - openjdk7
-  - oraclejdk7
+  - oraclejdk8
 android:
   components:
     - platform-tools
     - tools
-    - build-tools-23.0.3
-    - android-23
+    - build-tools-24.0.2
+    - android-24
     - extra-android-m2repository
 env:
   global:
-    - GRADLE_OPTS="-Xmx2048m -XX:MaxPermSize=512m -Dorg.gradle.parallel=true"
+    - GRADLE_OPTS="-Xmx2048m"
 script: ./gradlew clean build

@@ -6,13 +6,6 @@ This article describes how to build the mapsforge project and libraries from scr
 
 If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
-## Requirements
-|Tool|Version|
-|----|-------|
-|Android Build Tools|23.0.3|
-|Gradle|2.14.1|
-|Java|1.7|
-
 ## Checkout the code
 
 The mapsforge code is now **only** at https://github.com/mapsforge/mapsforge. The old repositories are not maintained anymore.

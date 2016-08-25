@@ -12,7 +12,7 @@ The mapsforge project provides free and open software for the rendering of maps 
 - It provides a library to build standalone applications in Java.
 - Mapsforge maps can be flexibly styled with XML style files ([render themes](docs/Rendertheme.md)).
 - We provide [tools / library](docs/POI.md) for POI search (beta) and also [precompiled POI](http://download.mapsforge.org).
-- Mapsforge supports Android 2.3.3 (API level 10) and above. It has been tested on Android 6 Marshmallow.
+- Mapsforge supports Android 2.3.3 (API level 10) and above.
 - Mapsforge is used by many [applications](docs/Mapsforge-Applications.md).
 - Mapsforge is in active development: [changelog](docs/Changelog.md), [contributors](docs/Contributors.md). 
 - [API documentation](http://mapsforge.org/docs).
