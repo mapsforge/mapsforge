@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/menu_preferences">
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="hardware_acceleration"
         android:summary="@string/preferences_hardware_acceleration_desc"
         android:title="@string/preferences_hardware_acceleration" />
@@ -70,7 +70,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_category_tilecache">
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="tilecache_persistence"
             android:summary="@string/preferences_tilecache_persistence_desc"
             android:title="@string/preferences_tilecache_persistence" />

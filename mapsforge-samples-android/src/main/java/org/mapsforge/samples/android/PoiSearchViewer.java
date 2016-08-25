@@ -50,7 +50,7 @@ public class PoiSearchViewer extends RenderTheme4 {
     private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/germany.poi";
     private static final String POI_CATEGORY = "Restaurants";
 
-    private static final Paint CIRCLE = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(128, 255, 0, 0), 0, Style.FILL);
+    private static final Paint CIRCLE = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(128, 0, 0, 255), 0, Style.FILL);
 
     @Override
     protected void createLayers() {
