@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,77 +27,75 @@ import org.xmlpull.v1.XmlPullParserException;
  */
 public class RenderThemeBuilder {
 
-	private static final String BASE_STROKE_WIDTH = "base-stroke-width";
-	private static final String BASE_TEXT_SIZE = "base-text-size";
-	private static final String MAP_BACKGROUND = "map-background";
-	private static final String MAP_BACKGROUND_OUTSIDE = "map-background-outside";
-	private static final int RENDER_THEME_VERSION = 4;
-	private static final String VERSION = "version";
-	private static final String XMLNS = "xmlns";
-	private static final String XMLNS_XSI = "xmlns:xsi";
-	private static final String XSI_SCHEMALOCATION = "xsi:schemaLocation";
+    private static final String BASE_STROKE_WIDTH = "base-stroke-width";
+    private static final String BASE_TEXT_SIZE = "base-text-size";
+    private static final String MAP_BACKGROUND = "map-background";
+    private static final String MAP_BACKGROUND_OUTSIDE = "map-background-outside";
+    private static final int RENDER_THEME_VERSION = 5;
+    private static final String VERSION = "version";
+    private static final String XMLNS = "xmlns";
+    private static final String XMLNS_XSI = "xmlns:xsi";
+    private static final String XSI_SCHEMALOCATION = "xsi:schemaLocation";
 
-	float baseStrokeWidth;
-	float baseTextSize;
-	boolean hasBackgroundOutside;
-	int mapBackground;
-	int mapBackgroundOutside;
-	private Integer version;
+    float baseStrokeWidth;
+    float baseTextSize;
+    boolean hasBackgroundOutside;
+    int mapBackground;
+    int mapBackgroundOutside;
+    private Integer version;
 
-	public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, XmlPullParser pullParser)
-			throws XmlPullParserException {
-		this.baseStrokeWidth = 1f;
-		this.baseTextSize = 1f;
-		this.mapBackground = graphicFactory.createColor(Color.WHITE);
+    public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, XmlPullParser pullParser)
+            throws XmlPullParserException {
+        this.baseStrokeWidth = 1f;
+        this.baseTextSize = 1f;
+        this.mapBackground = graphicFactory.createColor(Color.WHITE);
 
-		extractValues(graphicFactory, elementName, pullParser);
-	}
+        extractValues(graphicFactory, elementName, pullParser);
+    }
 
-	/**
-	 * @return a new {@code RenderTheme} instance.
-	 */
-	public RenderTheme build() {
-		return new RenderTheme(this);
-	}
+    /**
+     * @return a new {@code RenderTheme} instance.
+     */
+    public RenderTheme build() {
+        return new RenderTheme(this);
+    }
 
-	private void extractValues(GraphicFactory graphicFactory, String elementName, XmlPullParser pullParser)
-			throws XmlPullParserException {
-		for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
-			String name = pullParser.getAttributeName(i);
-			String value = pullParser.getAttributeValue(i);
+    private void extractValues(GraphicFactory graphicFactory, String elementName, XmlPullParser pullParser)
+            throws XmlPullParserException {
+        for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+            String name = pullParser.getAttributeName(i);
+            String value = pullParser.getAttributeValue(i);
 
-			if (XMLNS.equals(name)) {
-				continue;
-			} else if (XMLNS_XSI.equals(name)) {
-				continue;
-			} else if (XSI_SCHEMALOCATION.equals(name)) {
-				continue;
-			} else if (VERSION.equals(name)) {
-				this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
-			} else if (MAP_BACKGROUND.equals(name)) {
-				this.mapBackground = XmlUtils.getColor(graphicFactory, value);
-			} else if (MAP_BACKGROUND_OUTSIDE.equals(name)) {
-				this.mapBackgroundOutside = XmlUtils.getColor(graphicFactory, value);
-				this.hasBackgroundOutside = true;
-			} else if (BASE_STROKE_WIDTH.equals(name)) {
-				this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
-			} else if (BASE_TEXT_SIZE.equals(name)) {
-				this.baseTextSize = XmlUtils.parseNonNegativeFloat(name, value);
-			} else {
-				throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
-			}
-		}
+            if (XMLNS.equals(name)) {
+                continue;
+            } else if (XMLNS_XSI.equals(name)) {
+                continue;
+            } else if (XSI_SCHEMALOCATION.equals(name)) {
+                continue;
+            } else if (VERSION.equals(name)) {
+                this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
+            } else if (MAP_BACKGROUND.equals(name)) {
+                this.mapBackground = XmlUtils.getColor(graphicFactory, value);
+            } else if (MAP_BACKGROUND_OUTSIDE.equals(name)) {
+                this.mapBackgroundOutside = XmlUtils.getColor(graphicFactory, value);
+                this.hasBackgroundOutside = true;
+            } else if (BASE_STROKE_WIDTH.equals(name)) {
+                this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);
+            } else if (BASE_TEXT_SIZE.equals(name)) {
+                this.baseTextSize = XmlUtils.parseNonNegativeFloat(name, value);
+            } else {
+                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+            }
+        }
 
-		validate(elementName);
-	}
+        validate(elementName);
+    }
 
-	private void validate(String elementName) throws XmlPullParserException {
-		XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
+    private void validate(String elementName) throws XmlPullParserException {
+        XmlUtils.checkMandatoryAttribute(elementName, VERSION, this.version);
 
-		if (!XmlUtils.supportOlderRenderThemes && this.version != RENDER_THEME_VERSION) {
-			throw new XmlPullParserException("unsupported render theme version: " + this.version);
-		} else if (this.version > RENDER_THEME_VERSION) {
-			throw new XmlPullParserException("unsupported newer render theme version: " + this.version);
-		}
-	}
+        if (this.version > RENDER_THEME_VERSION) {
+            throw new XmlPullParserException("unsupported render theme version: " + this.version);
+        }
+    }
 }

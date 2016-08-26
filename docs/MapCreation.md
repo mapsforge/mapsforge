@@ -23,6 +23,7 @@ Then we convert the resulting shapefile with [shp2osm.py](https://github.com/map
 ```python
 fixed_tags = {
   'natural': 'nosea',
+  'layer': '-5'
 }
 ```
 
@@ -37,20 +38,20 @@ For the sea we create an osm file with a rectangle having the bounds of the map:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6">
-	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459320" version="1" lon="$LEFT" lat="$BOTTOM" />
-	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459321" version="1" lon="$LEFT" lat="$TOP" />
-	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459322" version="1" lon="$RIGHT" lat="$TOP" />
-	<node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459323" version="1" lon="$RIGHT" lat="$BOTTOM" />
-	<way timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951623372" version="1">
-		<nd ref="32951459320" />
-		<nd ref="32951459321" />
-		<nd ref="32951459322" />
-		<nd ref="32951459323" />
-		<nd ref="32951459320" />
-		<tag k="area" v="yes" />
-		<tag k="layer" v="-5" />
-		<tag k="natural" v="sea" />
-	</way>
+    <node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459320" version="1" lon="$LEFT" lat="$BOTTOM" />
+    <node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459321" version="1" lon="$LEFT" lat="$TOP" />
+    <node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459322" version="1" lon="$RIGHT" lat="$TOP" />
+    <node timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951459323" version="1" lon="$RIGHT" lat="$BOTTOM" />
+    <way timestamp="1969-12-31T23:59:59Z" changeset="-1" id="32951623372" version="1">
+        <nd ref="32951459320" />
+        <nd ref="32951459321" />
+        <nd ref="32951459322" />
+        <nd ref="32951459323" />
+        <nd ref="32951459320" />
+        <tag k="area" v="yes" />
+        <tag k="layer" v="-5" />
+        <tag k="natural" v="sea" />
+    </way>
 </osm>
 
 ```
@@ -97,16 +98,16 @@ On the reader side, the only change required is to display the land areas correc
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://mapsforge.org/renderTheme .../renderTheme-v4.xsd"
-	version="4" map-background="#F8F8F8" map-background-outside="#DDDDDD">
+    xsi:schemaLocation="http://mapsforge.org/renderTheme .../renderTheme-v5.xsd"
+    version="4" map-background="#F8F8F8" map-background-outside="#DDDDDD">
 
-	<rule e="way" k="natural" v="issea|sea">
-		<area fill="#B3DDFF"/>
-	</rule>
+    <rule e="way" k="natural" v="issea|sea">
+        <area fill="#B3DDFF"/>
+    </rule>
 
-	<rule e="way" k="natural" v="nosea">
-		<area fill="#F8F8F8" stroke="#F8F8F8" stroke-width="1.0"/>
-	</rule>
+    <rule e="way" k="natural" v="nosea">
+        <area fill="#F8F8F8" stroke="#F8F8F8" stroke-width="1.0"/>
+    </rule>
 ```
 
 The first change is to paint the map on a sub white background. Additionally the outside area can be painted on a light grey background.
@@ -118,3 +119,22 @@ The 2nd rule, makes sure all the nosea areas get painted immediately after the s
 Note: Our provided render themes have already these rules.
 
 With the above procedure complicated coastline areas are all now rendered correctly.
+
+# World map
+
+We use land polygons from [OpenStreetMap Data](http://openstreetmapdata.com/), specifically the http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip variant.
+
+The process is completed successfully in some minutes giving the map in our [server](http://download.mapsforge.org/maps/world/).
+Alternatively the http://data.openstreetmapdata.com/land-polygons-split-4326.zip variant can be used too.
+
+To convert shp files in osm / pbf format there are many [tools](http://wiki.openstreetmap.org/wiki/Software_comparison/Import_a_shapefile) available.
+
+Then run Osmosis with map-writer:
+
+```
+$OSMOSIS_HOME/bin/osmosis --rb file=world.pbf --mapfile-writer file=world.map map-start-position=0,0 map-start-zoom=5 zoom-interval-conf=5,0,7
+```
+
+We can also add a [TagTransform](http://wiki.openstreetmap.org/wiki/Osmosis/TagTransform) step in the process, if we want to transform the initial land tags to Mapsforge recognizable ones, like `natural=nosea`.
+
+And we can put at the bottom a rectangle with world bounds and `natural=sea`, painting it blue (like described above).

@@ -17,17 +17,17 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.graphics.Paint;
 
 public class ShapePaintContainer {
-	final float dy;
-	final Paint paint;
-	final ShapeContainer shapeContainer;
+    final float dy;
+    final Paint paint;
+    final ShapeContainer shapeContainer;
 
-	public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint) {
-		this(shapeContainer, paint, 0f);
-	}
+    public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint) {
+        this(shapeContainer, paint, 0f);
+    }
 
-	public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint, float dy) {
-		this.shapeContainer = shapeContainer;
-		this.paint = paint;
-		this.dy = dy;
-	}
+    public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint, float dy) {
+        this.shapeContainer = shapeContainer;
+        this.paint = paint;
+        this.dy = dy;
+    }
 }

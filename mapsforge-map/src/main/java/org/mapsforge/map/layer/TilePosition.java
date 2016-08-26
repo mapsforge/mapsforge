@@ -18,11 +18,11 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tile;
 
 public class TilePosition {
-	public final Point point;
-	public final Tile tile;
+    public final Point point;
+    public final Tile tile;
 
-	public TilePosition(Tile tile, Point point) {
-		this.tile = tile;
-		this.point = point;
-	}
+    public TilePosition(Tile tile, Point point) {
+        this.tile = tile;
+        this.point = point;
+    }
 }

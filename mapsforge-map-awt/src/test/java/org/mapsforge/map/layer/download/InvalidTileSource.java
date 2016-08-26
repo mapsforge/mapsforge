@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,39 +16,64 @@
  */
 package org.mapsforge.map.layer.download;
 
-import java.net.URL;
-
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 
+import java.net.URL;
+
 class InvalidTileSource implements TileSource {
-	@Override
-	public long getDefaultTimeToLive() {
-		throw new AssertionError();
-	}
+    @Override
+    public long getDefaultTimeToLive() {
+        throw new AssertionError();
+    }
 
-	@Override
-	public int getParallelRequestsLimit() {
-		throw new AssertionError();
-	}
+    @Override
+    public int getParallelRequestsLimit() {
+        throw new AssertionError();
+    }
 
-	@Override
-	public URL getTileUrl(Tile tile) {
-		throw new AssertionError();
-	}
+    @Override
+    public String getReferer() {
+        throw new AssertionError();
+    }
 
-	@Override
-	public byte getZoomLevelMax() {
-		throw new AssertionError();
-	}
+    @Override
+    public URL getTileUrl(Tile tile) {
+        throw new AssertionError();
+    }
 
-	@Override
-	public byte getZoomLevelMin() {
-		throw new AssertionError();
-	}
+    @Override
+    public int getTimeoutConnect() {
+        throw new AssertionError();
+    }
 
-	@Override
-	public boolean hasAlpha() {
-		return false;
-	}
+    @Override
+    public int getTimeoutRead() {
+        throw new AssertionError();
+    }
+
+    @Override
+    public String getUserAgent() {
+        throw new AssertionError();
+    }
+
+    @Override
+    public byte getZoomLevelMax() {
+        throw new AssertionError();
+    }
+
+    @Override
+    public byte getZoomLevelMin() {
+        throw new AssertionError();
+    }
+
+    @Override
+    public boolean hasAlpha() {
+        throw new AssertionError();
+    }
+
+    @Override
+    public boolean isFollowRedirects() {
+        throw new AssertionError();
+    }
 }

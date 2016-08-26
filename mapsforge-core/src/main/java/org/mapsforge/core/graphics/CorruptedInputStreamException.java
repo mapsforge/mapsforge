@@ -21,9 +21,9 @@ package org.mapsforge.core.graphics;
  * transformed into this CorruptedInputStream exception.
  */
 public class CorruptedInputStreamException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public CorruptedInputStreamException(String detailMessage, Throwable throwable) {
-		super(detailMessage, throwable);
-	}
+    public CorruptedInputStreamException(String detailMessage, Throwable throwable) {
+        super(detailMessage, throwable);
+    }
 }

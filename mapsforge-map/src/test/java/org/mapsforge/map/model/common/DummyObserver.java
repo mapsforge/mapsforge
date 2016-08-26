@@ -15,14 +15,14 @@
 package org.mapsforge.map.model.common;
 
 public class DummyObserver implements Observer {
-	private int callbacks;
+    private int callbacks;
 
-	public int getCallbacks() {
-		return this.callbacks;
-	}
+    public int getCallbacks() {
+        return this.callbacks;
+    }
 
-	@Override
-	public void onChange() {
-		++this.callbacks;
-	}
+    @Override
+    public void onChange() {
+        ++this.callbacks;
+    }
 }

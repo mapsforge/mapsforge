@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,41 +19,44 @@ package org.mapsforge.core.graphics;
 import org.mapsforge.core.model.Point;
 
 public interface Paint {
-	int getTextHeight(String text);
+    int getColor();
 
-	int getTextWidth(String text);
+    int getTextHeight(String text);
 
-	boolean isTransparent();
+    int getTextWidth(String text);
 
-	void setBitmapShader(Bitmap bitmap);
-	void setBitmapShaderShift(Point origin);
+    boolean isTransparent();
 
-	void setColor(Color color);
+    void setBitmapShader(Bitmap bitmap);
 
-	/**
-	 * The default value is {@link Color#BLACK}.
-	 */
-	void setColor(int color);
+    void setBitmapShaderShift(Point origin);
 
-	void setDashPathEffect(float[] strokeDasharray);
+    void setColor(Color color);
 
-	/**
-	 * The default value is {@link Cap#ROUND}.
-	 */
-	void setStrokeCap(Cap cap);
+    /**
+     * The default value is {@link Color#BLACK}.
+     */
+    void setColor(int color);
 
-	void setStrokeJoin(Join join);
+    void setDashPathEffect(float[] strokeDasharray);
 
-	void setStrokeWidth(float strokeWidth);
+    /**
+     * The default value is {@link Cap#ROUND}.
+     */
+    void setStrokeCap(Cap cap);
 
-	/**
-	 * The default value is {@link Style#FILL}.
-	 */
-	void setStyle(Style style);
+    void setStrokeJoin(Join join);
 
-	void setTextAlign(Align align);
+    void setStrokeWidth(float strokeWidth);
 
-	void setTextSize(float textSize);
+    /**
+     * The default value is {@link Style#FILL}.
+     */
+    void setStyle(Style style);
 
-	void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
+    void setTextAlign(Align align);
+
+    void setTextSize(float textSize);
+
+    void setTypeface(FontFamily fontFamily, FontStyle fontStyle);
 }

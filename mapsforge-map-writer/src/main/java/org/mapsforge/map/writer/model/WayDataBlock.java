@@ -21,57 +21,52 @@ import java.util.List;
  * ways and simple polygons have zero inner ways while multi polygons have one or more inner ways.
  */
 public class WayDataBlock {
-	private final Encoding encoding;
-	private final List<List<Integer>> innerWays;
-	private final List<Integer> outerWay;
+    private final Encoding encoding;
+    private final List<List<Integer>> innerWays;
+    private final List<Integer> outerWay;
 
-	/**
-	 * Creates a WayDataBlock in which way coordinates are not encoded.
-	 * 
-	 * @param outerWay
-	 *            the outer way of the way data block
-	 * @param innerWays
-	 *            the inner ways of the way data block, or null if not existent
-	 */
-	public WayDataBlock(List<Integer> outerWay, List<List<Integer>> innerWays) {
-		this.outerWay = outerWay;
-		this.innerWays = innerWays;
-		this.encoding = Encoding.NONE;
-	}
+    /**
+     * Creates a WayDataBlock in which way coordinates are not encoded.
+     *
+     * @param outerWay  the outer way of the way data block
+     * @param innerWays the inner ways of the way data block, or null if not existent
+     */
+    public WayDataBlock(List<Integer> outerWay, List<List<Integer>> innerWays) {
+        this.outerWay = outerWay;
+        this.innerWays = innerWays;
+        this.encoding = Encoding.NONE;
+    }
 
-	/**
-	 * @param outerWay
-	 *            the outer way of the way data block
-	 * @param innerWays
-	 *            the inner ways of the way data block, or null if not existent
-	 * @param encoding
-	 *            the encoding used to represent the coordinates
-	 */
-	public WayDataBlock(List<Integer> outerWay, List<List<Integer>> innerWays, Encoding encoding) {
-		super();
-		this.outerWay = outerWay;
-		this.innerWays = innerWays;
-		this.encoding = encoding;
-	}
+    /**
+     * @param outerWay  the outer way of the way data block
+     * @param innerWays the inner ways of the way data block, or null if not existent
+     * @param encoding  the encoding used to represent the coordinates
+     */
+    public WayDataBlock(List<Integer> outerWay, List<List<Integer>> innerWays, Encoding encoding) {
+        super();
+        this.outerWay = outerWay;
+        this.innerWays = innerWays;
+        this.encoding = encoding;
+    }
 
-	/**
-	 * @return the encoding
-	 */
-	public Encoding getEncoding() {
-		return this.encoding;
-	}
+    /**
+     * @return the encoding
+     */
+    public Encoding getEncoding() {
+        return this.encoding;
+    }
 
-	/**
-	 * @return the innerWays
-	 */
-	public List<List<Integer>> getInnerWays() {
-		return this.innerWays;
-	}
+    /**
+     * @return the innerWays
+     */
+    public List<List<Integer>> getInnerWays() {
+        return this.innerWays;
+    }
 
-	/**
-	 * @return the outerWay
-	 */
-	public List<Integer> getOuterWay() {
-		return this.outerWay;
-	}
+    /**
+     * @return the outerWay
+     */
+    public List<Integer> getOuterWay() {
+        return this.outerWay;
+    }
 }

@@ -20,59 +20,59 @@ import org.junit.Test;
 import org.mapsforge.map.model.DisplayModel;
 
 public class LayersTest {
-	static class DummyRedrawer implements Redrawer {
-		@Override
-		public void redrawLayers() {
-			// do nothing
-		}
-	}
+    static class DummyRedrawer implements Redrawer {
+        @Override
+        public void redrawLayers() {
+            // do nothing
+        }
+    }
 
-	private static void checkCallbacks(DummyLayer dummyLayer, int expectedAddCalls, int expectedRemoveCalls) {
-		Assert.assertEquals(expectedAddCalls, dummyLayer.onAddCalls);
-		Assert.assertEquals(expectedRemoveCalls, dummyLayer.onRemoveCalls);
-	}
+    private static void checkCallbacks(DummyLayer dummyLayer, int expectedAddCalls, int expectedRemoveCalls) {
+        Assert.assertEquals(expectedAddCalls, dummyLayer.onAddCalls);
+        Assert.assertEquals(expectedRemoveCalls, dummyLayer.onRemoveCalls);
+    }
 
-	@Test
-	public void callbackTest() {
-		Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
+    @Test
+    public void callbackTest() {
+        Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
 
-		DummyLayer dummyLayer = new DummyLayer();
-		checkCallbacks(dummyLayer, 0, 0);
+        DummyLayer dummyLayer = new DummyLayer();
+        checkCallbacks(dummyLayer, 0, 0);
 
-		layers.add(dummyLayer);
-		checkCallbacks(dummyLayer, 1, 0);
+        layers.add(dummyLayer);
+        checkCallbacks(dummyLayer, 1, 0);
 
-		layers.remove(dummyLayer);
-		checkCallbacks(dummyLayer, 1, 1);
+        layers.remove(dummyLayer);
+        checkCallbacks(dummyLayer, 1, 1);
 
-		layers.add(0, dummyLayer);
-		checkCallbacks(dummyLayer, 2, 1);
+        layers.add(0, dummyLayer);
+        checkCallbacks(dummyLayer, 2, 1);
 
-		layers.clear();
-		checkCallbacks(dummyLayer, 2, 2);
-	}
+        layers.clear();
+        checkCallbacks(dummyLayer, 2, 2);
+    }
 
-	@Test
-	public void isEmptyTest() {
-		Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
-		Assert.assertTrue(layers.isEmpty());
+    @Test
+    public void isEmptyTest() {
+        Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
+        Assert.assertTrue(layers.isEmpty());
 
-		layers.add(new DummyLayer());
-		Assert.assertFalse(layers.isEmpty());
+        layers.add(new DummyLayer());
+        Assert.assertFalse(layers.isEmpty());
 
-		layers.clear();
-		Assert.assertTrue(layers.isEmpty());
-	}
+        layers.clear();
+        Assert.assertTrue(layers.isEmpty());
+    }
 
-	@Test
-	public void sizeTest() {
-		Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
-		Assert.assertEquals(0, layers.size());
+    @Test
+    public void sizeTest() {
+        Layers layers = new Layers(new DummyRedrawer(), new DisplayModel());
+        Assert.assertEquals(0, layers.size());
 
-		layers.add(new DummyLayer());
-		Assert.assertEquals(1, layers.size());
+        layers.add(new DummyLayer());
+        Assert.assertEquals(1, layers.size());
 
-		layers.clear();
-		Assert.assertEquals(0, layers.size());
-	}
+        layers.clear();
+        Assert.assertEquals(0, layers.size());
+    }
 }

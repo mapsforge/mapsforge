@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/menu_preferences">
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="hardware_acceleration"
+        android:summary="@string/preferences_hardware_acceleration_desc"
+        android:title="@string/preferences_hardware_acceleration" />
+    <ListPreference
+        android:defaultValue="1.0"
+        android:entries="@array/pref_scale_entries"
+        android:entryValues="@array/pref_scale_values"
+        android:key="scale"
+        android:negativeButtonText="@string/cancelbutton"
+        android:summary="@string/preferences_scale_desc"
+        android:title="@string/preferences_scale" />
+    <ListPreference
+        android:defaultValue="0.7"
+        android:entries="@array/pref_textwidth_entries"
+        android:entryValues="@array/pref_textwidth_values"
+        android:key="textwidth"
+        android:negativeButtonText="@string/cancelbutton"
+        android:summary="@string/preferences_textwidth_desc"
+        android:title="@string/preferences_textwidth" />
+    <ListPreference
+        android:defaultValue="both"
+        android:entries="@array/pref_scalebar_entries"
+        android:entryValues="@array/pref_scalebar_values"
+        android:key="scalebar"
+        android:negativeButtonText="@string/cancelbutton"
+        android:summary="@string/preferences_scalebar_desc"
+        android:title="@string/preferences_scalebar" />
+    <ListPreference
+        android:defaultValue=""
+        android:entries="@array/pref_language_selection_entries"
+        android:entryValues="@array/pref_language_selection_values"
+        android:key="language_selection"
+        android:negativeButtonText="@string/cancelbutton"
+        android:summary="@string/preferences_language_desc"
+        android:title="@string/preferences_language" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="language_showlocal"
+        android:summary="@string/preferences_language_showlocal_desc"
+        android:title="@string/preferences_language_showlocal" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="debug_timing"
+        android:summary="@string/preferences_debug_timing_desc"
+        android:title="@string/preferences_debug_timing" />
+    <EditTextPreference
+        android:defaultValue="1"
+        android:inputType="number"
+        android:key="rendering_threads"
+        android:summary="@string/preferences_rendering_threads_desc"
+        android:title="@string/preferences_rendering_threads" />
+    <PreferenceCategory android:title="@string/preferences_category_wayfiltering">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="wayfiltering"
+            android:summary="@string/preferences_wayfiltering_desc"
+            android:title="@string/preferences_wayfiltering" />
+        <EditTextPreference
+            android:defaultValue="20"
+            android:dependency="wayfiltering"
+            android:inputType="number"
+            android:key="wayfiltering_distance"
+            android:summary="@string/preferences_wayfiltering_distance_desc"
+            android:title="@string/preferences_wayfiltering_distance" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_category_tilecache">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="tilecache_persistence"
+            android:summary="@string/preferences_tilecache_persistence_desc"
+            android:title="@string/preferences_tilecache_persistence" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="renderthememenu"
+        android:title="Map Style for Rendertheme V4" />
+</PreferenceScreen>

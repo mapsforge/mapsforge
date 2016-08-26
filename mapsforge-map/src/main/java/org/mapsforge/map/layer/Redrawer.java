@@ -15,8 +15,8 @@
 package org.mapsforge.map.layer;
 
 public interface Redrawer {
-	/**
-	 * Requests an asynchronous redrawing of all layers.
-	 */
-	void redrawLayers();
+    /**
+     * Requests an asynchronous redrawing of all layers.
+     */
+    void redrawLayers();
 }

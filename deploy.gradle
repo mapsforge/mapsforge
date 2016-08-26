@@ -1,0 +1,90 @@
+apply plugin: 'signing'
+
+if (project.hasProperty("android")) { // Android libraries
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    }
+} else { // Java libraries
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: SONATYPE_USERNAME, password: SONATYPE_PASSWORD)
+            }
+
+            pom.project {
+                packaging 'jar'
+
+                name 'mapsforge'
+                description 'The mapsforge project provides free and open software for OpenStreetMap-based applications.'
+                url 'https://github.com/mapsforge/mapsforge'
+
+                licenses {
+                    license {
+                        name 'GNU Lesser GPL'
+                        url 'http://www.gnu.org/licenses/lgpl.html'
+                        distribution 'repo'
+                    }
+                }
+
+                scm {
+                    connection 'scm:git:https://github.com/mapsforge/mapsforge'
+                    developerConnection 'scm:git:https://github.com/mapsforge/mapsforge'
+                    url 'https://github.com/mapsforge/mapsforge'
+                }
+
+                developers {
+                    developer {
+                        id 'thilo.muehlberg'
+                        name 'Thilo Mühlberg'
+                        email 'thilo.muehlberg@gmail.com'
+                    }
+                    developer {
+                        id 'jjbross'
+                        name 'Jürgen Broß'
+                        email 'jjbross@gmail.com'
+                    }
+                    developer {
+                        id 'ludwigbrinckmann'
+                        name 'Ludwig M Brinckmann'
+                        email 'ludwigbrinckmann@gmail.com'
+                    }
+                    developer {
+                        id 'devemux86'
+                        name 'Emux'
+                        email 'devemux86@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}

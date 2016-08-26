@@ -18,32 +18,32 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Observable implements ObservableInterface {
-	private static final String OBSERVER_MUST_NOT_BE_NULL = "observer must not be null";
-	private final List<Observer> observers = new CopyOnWriteArrayList<Observer>();
+    private static final String OBSERVER_MUST_NOT_BE_NULL = "observer must not be null";
+    private final List<Observer> observers = new CopyOnWriteArrayList<Observer>();
 
-	@Override
-	public final void addObserver(Observer observer) {
-		if (observer == null) {
-			throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
-		} else if (this.observers.contains(observer)) {
-			throw new IllegalArgumentException("observer is already registered: " + observer);
-		}
-		this.observers.add(observer);
-	}
+    @Override
+    public final void addObserver(Observer observer) {
+        if (observer == null) {
+            throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
+        } else if (this.observers.contains(observer)) {
+            throw new IllegalArgumentException("observer is already registered: " + observer);
+        }
+        this.observers.add(observer);
+    }
 
-	@Override
-	public final void removeObserver(Observer observer) {
-		if (observer == null) {
-			throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
-		} else if (!this.observers.contains(observer)) {
-			throw new IllegalArgumentException("observer is not registered: " + observer);
-		}
-		this.observers.remove(observer);
-	}
+    @Override
+    public final void removeObserver(Observer observer) {
+        if (observer == null) {
+            throw new IllegalArgumentException(OBSERVER_MUST_NOT_BE_NULL);
+        } else if (!this.observers.contains(observer)) {
+            throw new IllegalArgumentException("observer is not registered: " + observer);
+        }
+        this.observers.remove(observer);
+    }
 
-	public final void notifyObservers() {
-		for (Observer observer : this.observers) {
-			observer.onChange();
-		}
-	}
+    public final void notifyObservers() {
+        for (Observer observer : this.observers) {
+            observer.onChange();
+        }
+    }
 }

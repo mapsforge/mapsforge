@@ -18,16 +18,16 @@ package org.mapsforge.map.writer.model;
  * Represents the encoding which is used to store lat/lon coordinates.
  */
 public enum Encoding {
-	/**
-	 * Single delta encoding.
-	 */
-	DELTA,
-	/**
-	 * Double delta encoding.
-	 */
-	DOUBLE_DELTA,
-	/**
-	 * No encoding.
-	 */
-	NONE
+    /**
+     * Single delta encoding.
+     */
+    DELTA,
+    /**
+     * Double delta encoding.
+     */
+    DOUBLE_DELTA,
+    /**
+     * No encoding.
+     */
+    NONE
 }

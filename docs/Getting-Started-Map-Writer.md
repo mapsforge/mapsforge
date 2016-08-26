@@ -24,10 +24,10 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |----------|---------------|----------------|-----------------|
 |`file`|path to the output file, the file will be overwritten if existent||mapsforge.map|
 |`type`|switch for main memory or hd mode|ram, hd|ram|
-|`bbox`|bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters)|minLat, minLon, maxLat, maxLon in exactly this order as degrees or microdegrees|(blank)|
-|`map-start-position`|write a start position to the file which is used, when the file is first opened in the MapViewer|latitude, longitude in degrees or microdegrees|(blank)|
+|`bbox`|bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters)|minLat, minLon, maxLat, maxLon in exactly this order as degrees|(blank)|
+|`map-start-position`|write a start position to the file which is used, when the file is first opened in the MapViewer|latitude, longitude in degrees|(blank)|
 |`map-start-zoom`|write a start zoom level to the file which is used, when the file is first opened in the MapViewer|zoom level as integer in [0, 21]|(blank)|
-|`preferred-languages`|If not specified, only the default language with no tag will be written to the file. If only one language is specified, it will be written if its tag is found, otherwise the default language will be written. If multiple comma separated languages are specified, the default language will be written, followed by the specified languages (if present and if different than the default).|language code as as defined in ISO 639-1 or ISO 639-2|(blank)|
+|`preferred-languages`|If not specified, only the default language with no tag will be written to the file. If only one language is specified, it will be written if its tag is found, otherwise the default language will be written. If multiple comma separated languages are specified, the default language will be written, followed by the specified languages (if present and if different than the default).|language code as defined in ISO 639-1 or ISO 639-2 if an ISO 639-1 code doesn't exist|(blank)|
 |`comment`|writes a comment to the file||(blank)|
 
 ### Advanced Options (only use when you know what you are doing)
@@ -42,7 +42,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`simplification-factor`|simplifies ways and polygons with a topology preserving algorithm similar to the Douglas Peucker algorithm, using as the maximum distance difference value the given simplification factor (evaluated in pixels on max zoom level of a base zoom level); on base zoom levels higher than 12, no simplification is computed|positive real number|2.5|
 |`bbox-enlargement`|amount of meters used for enlarging bounding boxes in computations|positive integer|20|
 |`zoom-interval-conf`|configure the zoom intervals used in this file, configuration is given in the form: baseZoomA, minZoomA, maxZoomA, baseZoomB, minZoomB, maxZoomB,..., baseZoomN, minZoomN, maxZoomN, in most cases you do **not** need to alter the standard configuration|intervals must not overlap and must not contain gaps|5,0,7,10,8,11,14,12,21|
-|`debug-file`|switch for writing debug information to the file, *do **not activate** this option unless you know what you are doing*|true/false|false|
+|`debug-file`|switch for writing debug information to the file, _do **not activate** this option unless you know what you are doing_|true/false|false|
 
 ### Examples
 
@@ -100,7 +100,7 @@ The old practice of implicitly assuming that the background is land-coloured and
 This section describes how to configure the ***known tag set*** via an XML file. The *known tag set* comprises all OSM tags (for ways and POIs) that are known to the renderer. You can use the XML configuration to define which subset of the known tag set should be included in the map file and to configure the zoom levels on which map objects first appear.
 
 The default internal tag mapping defined in https://github.com/mapsforge/mapsforge/blob/master/mapsforge-map-writer/src/main/config/tag-mapping.xml is kept in sync with the known tag set of the renderer. So, if you want to define your own custom mapping use the internal mapping as a reference.
-Please consult the XML-Schema documentation of https://github.com/mapsforge/mapsforge/blob/dev/resources/tag-mapping.xsd to learn about how to implement your custom mapping. The XML-Schema is very easy to understand. We recommend to use Eclipse as an editor for XML as it allows for auto-completion if you provide an XML-Schema.
+Please consult the XML-Schema documentation of https://github.com/mapsforge/mapsforge/blob/master/resources/tag-mapping.xsd to learn about how to implement your custom mapping. The XML-Schema is very easy to understand. We recommend to use Eclipse as an editor for XML as it allows for auto-completion if you provide an XML-Schema.
 
 You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article.
 
@@ -110,13 +110,17 @@ Please report any bugs and feature requests via [Github issue tracker](https://g
 
 ## Changelog
 
+### 0.6.1
+- Add all tags from OSM wiki to area heuristics
+- Minor changes to tag-mapping.xml (place=locality)
+
 ### 0.6.0
 - Multilingual maps
 - Language improved parsing
 - Fix invalid number of way nodes
 
 ### 0.5.2
- - Some minor changes to tag-mapping.xml (administrative boundaries, national parks).
+ - Minor changes to tag-mapping.xml (administrative boundaries, national parks)
 
 ### 0.5.1
 - No significant changes

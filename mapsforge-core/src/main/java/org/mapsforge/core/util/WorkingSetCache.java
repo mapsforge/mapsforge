@@ -21,26 +21,27 @@ import java.util.Set;
  * setWorkingSet(Set<K>) in addition to other elements which are kept on a LRU
  * basis.
  *
- * @param <K>
- *            the type of the map key, see {@link java.util.Map}.
- * @param <V>
- *            the type of the map value, see {@link java.util.Map}.
+ * @param <K> the type of the map key, see {@link java.util.Map}.
+ * @param <V> the type of the map value, see {@link java.util.Map}.
  */
 public class WorkingSetCache<K, V> extends LRUCache<K, V> {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public WorkingSetCache(int capacity) {
-		super(capacity);
-	}
+    public WorkingSetCache(int capacity) {
+        super(capacity);
+    }
 
-	/**
-	 * Sets the current working set, ensuring that elements in this working set
-	 * will not be ejected in the near future.
-	 * @param workingSet set of K that makes up the current working set.
-	 */
-	public void setWorkingSet(Set<K> workingSet) {
-		for (K key : workingSet) {
-			this.get(key);
-		}
-	}
+    /**
+     * Sets the current working set, ensuring that elements in this working set
+     * will not be ejected in the near future.
+     *
+     * @param workingSet set of K that makes up the current working set.
+     */
+    public void setWorkingSet(Set<K> workingSet) {
+        synchronized(workingSet) {
+            for (K key : workingSet) {
+                this.get(key);
+            }
+        }
+    }
 }

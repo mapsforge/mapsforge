@@ -17,37 +17,36 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.model.Point;
 
 final class GeometryUtils {
-	/**
-	 * Calculates the center of the minimum bounding rectangle for the given coordinates.
-	 * 
-	 * @param coordinates
-	 *            the coordinates for which calculation should be done.
-	 * @return the center coordinates of the minimum bounding rectangle.
-	 */
-	static Point calculateCenterOfBoundingBox(Point[] coordinates) {
-		double pointXMin = coordinates[0].x;
-		double pointXMax = coordinates[0].x;
-		double pointYMin = coordinates[0].y;
-		double pointYMax = coordinates[0].y;
+    /**
+     * Calculates the center of the minimum bounding rectangle for the given coordinates.
+     *
+     * @param coordinates the coordinates for which calculation should be done.
+     * @return the center coordinates of the minimum bounding rectangle.
+     */
+    static Point calculateCenterOfBoundingBox(Point[] coordinates) {
+        double pointXMin = coordinates[0].x;
+        double pointXMax = coordinates[0].x;
+        double pointYMin = coordinates[0].y;
+        double pointYMax = coordinates[0].y;
 
-		for (Point immutablePoint : coordinates) {
-			if (immutablePoint.x < pointXMin) {
-				pointXMin = immutablePoint.x;
-			} else if (immutablePoint.x > pointXMax) {
-				pointXMax = immutablePoint.x;
-			}
+        for (Point immutablePoint : coordinates) {
+            if (immutablePoint.x < pointXMin) {
+                pointXMin = immutablePoint.x;
+            } else if (immutablePoint.x > pointXMax) {
+                pointXMax = immutablePoint.x;
+            }
 
-			if (immutablePoint.y < pointYMin) {
-				pointYMin = immutablePoint.y;
-			} else if (immutablePoint.y > pointYMax) {
-				pointYMax = immutablePoint.y;
-			}
-		}
+            if (immutablePoint.y < pointYMin) {
+                pointYMin = immutablePoint.y;
+            } else if (immutablePoint.y > pointYMax) {
+                pointYMax = immutablePoint.y;
+            }
+        }
 
-		return new Point((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2);
-	}
+        return new Point((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2);
+    }
 
-	private GeometryUtils() {
-		throw new IllegalStateException();
-	}
+    private GeometryUtils() {
+        throw new IllegalStateException();
+    }
 }

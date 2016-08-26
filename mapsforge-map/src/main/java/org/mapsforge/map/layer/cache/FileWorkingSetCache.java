@@ -15,29 +15,29 @@
  */
 package org.mapsforge.map.layer.cache;
 
+import org.mapsforge.core.util.WorkingSetCache;
+
 import java.io.File;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.mapsforge.core.util.WorkingSetCache;
-
 class FileWorkingSetCache<T> extends WorkingSetCache<T, File> {
-	private static final Logger LOGGER = Logger.getLogger(FileWorkingSetCache.class.getName());
-	private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(FileWorkingSetCache.class.getName());
+    private static final long serialVersionUID = 1L;
 
-	FileWorkingSetCache(int capacity) {
-		super(capacity);
-	}
+    FileWorkingSetCache(int capacity) {
+        super(capacity);
+    }
 
-	@Override
-	protected boolean removeEldestEntry(Map.Entry<T, File> eldest) {
-		if (size() > this.capacity) {
-			File file = eldest.getValue();
-			if (file != null && file.exists() && !file.delete()) {
-				LOGGER.severe("could not delete file: " + file);
-			}
-			return true;
-		}
-		return false;
-	}
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<T, File> eldest) {
+        if (size() > this.capacity) {
+            File file = eldest.getValue();
+            if (file != null && file.exists() && !file.delete()) {
+                LOGGER.severe("could not delete file: " + file);
+            }
+            return true;
+        }
+        return false;
+    }
 }

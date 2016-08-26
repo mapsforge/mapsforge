@@ -15,61 +15,61 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
+import org.mapsforge.core.model.Tag;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.mapsforge.core.model.Tag;
-
 class MatchingCacheKey {
-	private final Closed closed;
-	private final List<Tag> tags;
-	private final Set<Tag> tagsWithoutName;
-	private final byte zoomLevel;
+    private final Closed closed;
+    private final List<Tag> tags;
+    private final Set<Tag> tagsWithoutName;
+    private final byte zoomLevel;
 
-	MatchingCacheKey(List<Tag> tags, byte zoomLevel, Closed closed) {
-		this.tags = tags;
-		this.zoomLevel = zoomLevel;
-		this.closed = closed;
-		this.tagsWithoutName = new HashSet<Tag>();
-		if (this.tags != null) {
-			for (Tag tag : tags) {
-				if (!"name".equals(tag.key)) {
-					this.tagsWithoutName.add(tag);
-				}
-			}
-		}
-	}
+    MatchingCacheKey(List<Tag> tags, byte zoomLevel, Closed closed) {
+        this.tags = tags;
+        this.zoomLevel = zoomLevel;
+        this.closed = closed;
+        this.tagsWithoutName = new HashSet<Tag>();
+        if (this.tags != null) {
+            for (Tag tag : tags) {
+                if (!"name".equals(tag.key)) {
+                    this.tagsWithoutName.add(tag);
+                }
+            }
+        }
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (!(obj instanceof MatchingCacheKey)) {
-			return false;
-		}
-		MatchingCacheKey other = (MatchingCacheKey) obj;
-		if (this.closed != other.closed) {
-			return false;
-		}
-		if (this.tagsWithoutName == null && other.tagsWithoutName != null) {
-			return false;
-		} else if (!this.tagsWithoutName.equals(other.tagsWithoutName)) {
-			return false;
-		}
-		if (this.zoomLevel != other.zoomLevel) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (!(obj instanceof MatchingCacheKey)) {
+            return false;
+        }
+        MatchingCacheKey other = (MatchingCacheKey) obj;
+        if (this.closed != other.closed) {
+            return false;
+        }
+        if (this.tagsWithoutName == null && other.tagsWithoutName != null) {
+            return false;
+        } else if (!this.tagsWithoutName.equals(other.tagsWithoutName)) {
+            return false;
+        }
+        if (this.zoomLevel != other.zoomLevel) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.closed == null) ? 0 : this.closed.hashCode());
-		result = prime * result + this.tagsWithoutName.hashCode();
-		result = prime * result + this.zoomLevel;
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.closed == null) ? 0 : this.closed.hashCode());
+        result = prime * result + this.tagsWithoutName.hashCode();
+        result = prime * result + this.zoomLevel;
+        return result;
+    }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:tns="http://mapsforge.org/poi-mapping" elementFormDefault="qualified"
+    targetNamespace="http://mapsforge.org/poi-mapping" xmlns="http://www.w3.org/2001/XMLSchema">
+
+    <element name="category" type="tns:category" />
+
+    <complexType name="category">
+        <sequence>
+            <element maxOccurs="unbounded" minOccurs="0" ref="tns:category" />
+            <element name="mapping" maxOccurs="unbounded" minOccurs="0" type="tns:mapping" />
+        </sequence>
+        <attribute name="title" use="required" />
+    </complexType>
+
+    <complexType name="mapping">
+        <attribute name="tag" use="required" />
+    </complexType>
+
+</schema>

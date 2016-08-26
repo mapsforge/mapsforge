@@ -3,7 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Develar
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,13 +18,7 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import com.kitfox.svg.SVGCache;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
@@ -42,147 +36,153 @@ import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 
-import com.kitfox.svg.SVGCache;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AwtGraphicFactory implements GraphicFactory {
-	public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
-	private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
+    public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
+    private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
-	public static GraphicContext createGraphicContext(Graphics graphics) {
-		return new org.mapsforge.map.awt.graphics.AwtCanvas((Graphics2D) graphics);
-	}
+    public static GraphicContext createGraphicContext(Graphics graphics) {
+        return new org.mapsforge.map.awt.graphics.AwtCanvas((Graphics2D) graphics);
+    }
 
-	static AffineTransform getAffineTransform(Matrix matrix) {
-		return ((AwtMatrix) matrix).affineTransform;
-	}
+    static AffineTransform getAffineTransform(Matrix matrix) {
+        return ((AwtMatrix) matrix).affineTransform;
+    }
 
-	public static AwtPaint getPaint(Paint paint) {
-		return (AwtPaint) paint;
-	}
+    public static AwtPaint getPaint(Paint paint) {
+        return (AwtPaint) paint;
+    }
 
-	static AwtPath getPath(Path path) {
-		return (AwtPath) path;
-	}
+    static AwtPath getPath(Path path) {
+        return (AwtPath) path;
+    }
 
-	static BufferedImage getBufferedImage(Bitmap bitmap) {
-		return ((AwtBitmap) bitmap).bufferedImage;
-	}
+    static BufferedImage getBufferedImage(Bitmap bitmap) {
+        return ((AwtBitmap) bitmap).bufferedImage;
+    }
 
-	static java.awt.Color getColor(Color color) {
-		switch (color) {
-			case BLACK:
-				return java.awt.Color.BLACK;
-			case BLUE:
-				return java.awt.Color.BLUE;
-			case GREEN:
-				return java.awt.Color.GREEN;
-			case RED:
-				return java.awt.Color.RED;
-			case TRANSPARENT:
-				return TRANSPARENT;
-			case WHITE:
-				return java.awt.Color.WHITE;
-		}
+    static java.awt.Color getColor(Color color) {
+        switch (color) {
+            case BLACK:
+                return java.awt.Color.BLACK;
+            case BLUE:
+                return java.awt.Color.BLUE;
+            case GREEN:
+                return java.awt.Color.GREEN;
+            case RED:
+                return java.awt.Color.RED;
+            case TRANSPARENT:
+                return TRANSPARENT;
+            case WHITE:
+                return java.awt.Color.WHITE;
+        }
 
-		throw new IllegalArgumentException("unknown color: " + color);
-	}
+        throw new IllegalArgumentException("unknown color: " + color);
+    }
 
-	public static void clearResourceFileCache() {
-		// We don't use a resource file cache
-	}
+    public static void clearResourceFileCache() {
+        // We don't use a resource file cache
+    }
 
-	public static void clearResourceMemoryCache() {
-		SVGCache.getSVGUniverse().clear();
-	}
+    public static void clearResourceMemoryCache() {
+        SVGCache.getSVGUniverse().clear();
+    }
 
-	@Override
-	public Bitmap createBitmap(int width, int height) {
-		return new AwtBitmap(width, height);
-	}
+    @Override
+    public Bitmap createBitmap(int width, int height) {
+        return new AwtBitmap(width, height);
+    }
 
-	@Override
-	public Bitmap createBitmap(int width, int height, boolean isTransparent) {
-		if (isTransparent) {
-			throw new UnsupportedOperationException("No transparencies in AWT implementation");
-		}
-		return new AwtBitmap(width, height);
-	}
+    @Override
+    public Bitmap createBitmap(int width, int height, boolean isTransparent) {
+        if (isTransparent) {
+            throw new UnsupportedOperationException("No transparencies in AWT implementation");
+        }
+        return new AwtBitmap(width, height);
+    }
 
-	/**
-	 * Returns the internal image representation.
-	 * @param bitmap Mapsforge Bitmap
-	 * @return platform specific image.
-	 */
+    /**
+     * Returns the internal image representation.
+     *
+     * @param bitmap Mapsforge Bitmap
+     * @return platform specific image.
+     */
 
-	public static BufferedImage getBitmap(Bitmap bitmap) {
-		return ((AwtBitmap) bitmap).bufferedImage;
-	}
+    public static BufferedImage getBitmap(Bitmap bitmap) {
+        return ((AwtBitmap) bitmap).bufferedImage;
+    }
 
-	@Override
-	public Canvas createCanvas() {
-		return new org.mapsforge.map.awt.graphics.AwtCanvas();
-	}
+    @Override
+    public Canvas createCanvas() {
+        return new org.mapsforge.map.awt.graphics.AwtCanvas();
+    }
 
-	@Override
-	public int createColor(Color color) {
-		return getColor(color).getRGB();
-	}
+    @Override
+    public int createColor(Color color) {
+        return getColor(color).getRGB();
+    }
 
-	@Override
-	public int createColor(int alpha, int red, int green, int blue) {
-		return new java.awt.Color(red, green, blue, alpha).getRGB();
-	}
+    @Override
+    public int createColor(int alpha, int red, int green, int blue) {
+        return new java.awt.Color(red, green, blue, alpha).getRGB();
+    }
 
-	@Override
-	public Matrix createMatrix() {
-		return new AwtMatrix();
-	}
+    @Override
+    public Matrix createMatrix() {
+        return new AwtMatrix();
+    }
 
-	@Override
-	public Paint createPaint() {
-		return new AwtPaint();
-	}
+    @Override
+    public Paint createPaint() {
+        return new AwtPaint();
+    }
 
-	@Override
-	public Paint createPaint(Paint paint) {
-		return new AwtPaint(paint);
-	}
+    @Override
+    public Paint createPaint(Paint paint) {
+        return new AwtPaint(paint);
+    }
 
 
-	@Override
-	public Path createPath() {
-		return new AwtPath();
-	}
+    @Override
+    public Path createPath() {
+        return new AwtPath();
+    }
 
-	@Override
-	public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
-	                                                   SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-		return new AwtPointTextContainer(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
-	}
+    @Override
+    public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+                                                       SymbolContainer symbolContainer, Position position, int maxTextWidth) {
+        return new AwtPointTextContainer(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+    }
 
-	@Override
-	public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-		return new AwtResourceBitmap(inputStream);
-	}
+    @Override
+    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
+        return new AwtResourceBitmap(inputStream);
+    }
 
-	@Override
-	public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean hasAlpha) throws IOException {
-		return new AwtTileBitmap(inputStream);
-	}
+    @Override
+    public TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean hasAlpha) throws IOException {
+        return new AwtTileBitmap(inputStream);
+    }
 
-	@Override
-	public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
-		return new AwtTileBitmap(tileSize, hasAlpha);
-	}
+    @Override
+    public TileBitmap createTileBitmap(int tileSize, boolean hasAlpha) {
+        return new AwtTileBitmap(tileSize, hasAlpha);
+    }
 
-	@Override
-	public InputStream platformSpecificSources(String relativePathPrefix, String src) throws FileNotFoundException {
-		return null;
-	}
+    @Override
+    public InputStream platformSpecificSources(String relativePathPrefix, String src) throws IOException {
+        return null;
+    }
 
-	@Override
-	public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
-		return new AwtSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
-	}
+    @Override
+    public ResourceBitmap renderSvg(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+        return new AwtSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
+    }
 
 }

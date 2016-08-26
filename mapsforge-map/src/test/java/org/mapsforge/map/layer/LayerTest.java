@@ -18,12 +18,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class LayerTest {
-	@Test
-	public void visibleTest() {
-		Layer layer = new DummyLayer();
-		Assert.assertTrue(layer.isVisible());
+    @Test
+    public void visibleTest() {
+        Layer layer = new DummyLayer();
+        Assert.assertTrue(layer.isVisible());
 
-		layer.setVisible(false);
-		Assert.assertFalse(layer.isVisible());
-	}
+        layer.setVisible(false);
+        Assert.assertFalse(layer.isVisible());
+    }
 }

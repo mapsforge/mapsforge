@@ -21,30 +21,30 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class ModelTest {
-	@Test
-	public void constructorTest() {
-		Model model = new Model();
-		Assert.assertNotNull(model.frameBufferModel);
-		Assert.assertNotNull(model.mapViewDimension);
-		Assert.assertNotNull(model.mapViewPosition);
-	}
+    @Test
+    public void constructorTest() {
+        Model model = new Model();
+        Assert.assertNotNull(model.frameBufferModel);
+        Assert.assertNotNull(model.mapViewDimension);
+        Assert.assertNotNull(model.mapViewPosition);
+    }
 
-	@Test
-	public void saveAndInitTest() {
-		MapPosition mapPosition1 = new MapPosition(new LatLong(1, 1, true), (byte) 1);
-		MapPosition mapPosition2 = new MapPosition(new LatLong(2, 2, true), (byte) 2);
+    @Test
+    public void saveAndInitTest() {
+        MapPosition mapPosition1 = new MapPosition(new LatLong(1, 1), (byte) 1);
+        MapPosition mapPosition2 = new MapPosition(new LatLong(2, 2), (byte) 2);
 
-		Model model = new Model();
-		model.mapViewPosition.setMapPosition(mapPosition1);
-		Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
+        Model model = new Model();
+        model.mapViewPosition.setMapPosition(mapPosition1);
+        Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
 
-		PreferencesFacade preferencesFacade = new DummyPreferences();
-		model.save(preferencesFacade);
+        PreferencesFacade preferencesFacade = new DummyPreferences();
+        model.save(preferencesFacade);
 
-		model.mapViewPosition.setMapPosition(mapPosition2);
-		Assert.assertEquals(mapPosition2, model.mapViewPosition.getMapPosition());
+        model.mapViewPosition.setMapPosition(mapPosition2);
+        Assert.assertEquals(mapPosition2, model.mapViewPosition.getMapPosition());
 
-		model.init(preferencesFacade);
-		Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
-	}
+        model.init(preferencesFacade);
+        Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
+    }
 }

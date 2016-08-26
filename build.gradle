@@ -3,8 +3,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
+        classpath 'com.android.tools.build:gradle:2.1.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
     }
 }
 
@@ -15,9 +15,18 @@ def filterProjects(filter) {
 allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
-    ext.androidBuildVersionTools = "23.0.2"
+    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+    ext.androidBuildVersionTools = "23.0.3"
     ext.jUnitVersion = "4.11"
     description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
+
+    // Disable Java 8 doclint
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+            logging.captureStandardError LogLevel.INFO
+        }
+    }
 }
 
 // no injection of functions, so via inheritance
@@ -31,7 +40,7 @@ def androidTargetSdkOldPermissions() { return 22 }
 // moving forward we will target the latest SDK (that will all have the new permissions system)
 def androidTargetSdkRuntimePermissions() { return androidCompileSdk() }
 
-def versionCode() { return 60 }
+def versionCode() { return 61 }
 
 def versionName() { return version }
 
@@ -41,36 +50,47 @@ subprojects {
     repositories {
         jcenter()
     }
-    apply plugin: 'eclipse'
+
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_1_7
+        targetCompatibility = JavaVersion.VERSION_1_7
+    }
 }
 
 // Configuration for all plain Java projects
 
-project.ext.javaprojects = ["mapsforge-core", "mapsforge-map-reader", "mapsforge-map", "mapsforge-map-awt", "mapsforge-map-writer", "SwingMapViewer"]
+project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-themes", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "mapsforge-samples-awt"]
 
 configure(filterProjects(project.javaprojects)) {
     apply plugin: 'java'
-    apply plugin: 'checkstyle'
+    //apply plugin: 'checkstyle'
     apply plugin: 'maven'
 
     dependencies {
         testCompile group: 'junit', name: 'junit', version: "$jUnitVersion"
     }
 
-    checkstyle {
+    /*checkstyle {
         showViolations = false  // turn on for reporting
         // as of Gradle 2.2.1 every sub project seems to require a checkstyle file, this
         // directive forces all projects to use the shared file in the root project
         configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    }
+    }*/
 
     // set java source encoding, otherwise some tests fail
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    // Automated Gradle project deployment to Sonatype OSSRH
+    if (isReleaseVersion && project.hasProperty("SONATYPE_USERNAME")) {
+        afterEvaluate {
+            project.apply from: "${rootProject.projectDir}/deploy.gradle"
+        }
+    }
 }
 
 // Configuration for Android projects
-project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras"]
-project.ext.androidapkprojects = ["Samples"]
+project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras", "spatialite-android", "mapsforge-poi-android"]
+project.ext.androidapkprojects = ["mapsforge-samples-android"]
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 
 // TODO get checkstyle and pmd working for android (right now it does not work out of the box, so better wait for official fix)
@@ -105,6 +125,13 @@ configure(filterProjects(project.androidlibraryprojects)) {
         task.from variant.javaCompile.destinationDir
         artifacts.add('archives', task);
     }
+
+    // Automated Gradle project deployment to Sonatype OSSRH
+    if (isReleaseVersion && project.hasProperty("SONATYPE_USERNAME")) {
+        afterEvaluate {
+            project.apply from: "${rootProject.projectDir}/deploy.gradle"
+        }
+    }
 }
 
 configure(filterProjects(project.androidprojects)) {
@@ -133,5 +160,9 @@ configure(filterProjects(project.androidprojects)) {
                 assets.srcDirs = ['assets']
             }
         }
+
+        lintOptions {
+            abortOnError false
+        }
     }
-} 
+}

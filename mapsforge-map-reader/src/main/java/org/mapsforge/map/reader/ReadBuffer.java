@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 devemux86
+ * Copyright 2016 bvgastel
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,221 +26,245 @@ import java.util.logging.Logger;
  */
 public class ReadBuffer {
 
-	private static final String CHARSET_UTF8 = "UTF-8";
-	/**
-	 * Default maximum buffer size which is supported by this implementation.
-	 */
-	private static final int DEFAULT_MAXIMUM_BUFFER_SIZE = 2500000;
-	private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
+    private static final String CHARSET_UTF8 = "UTF-8";
+    /**
+     * Default maximum buffer size which is supported by this implementation.
+     */
+    private static final int DEFAULT_MAXIMUM_BUFFER_SIZE = 2500000;
+    private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
 
-	private static int maximumBufferSize = DEFAULT_MAXIMUM_BUFFER_SIZE;
+    private static int maximumBufferSize = DEFAULT_MAXIMUM_BUFFER_SIZE;
 
-	/**
-	 * Returns the maximum buffer size.
-	 * 
-	 * @return the maximum buffer size.
-	 */
-	public static synchronized int getMaximumBufferSize() {
-		return maximumBufferSize;
-	}
+    /**
+     * Returns the maximum buffer size.
+     *
+     * @return the maximum buffer size.
+     */
+    public static synchronized int getMaximumBufferSize() {
+        return maximumBufferSize;
+    }
 
-	/**
-	 * Set the maximum buffer size.
-	 * 
-	 * @param maximumBufferSize
-	 *            the maximum buffer size to use.
-	 */
-	public static synchronized void setMaximumBufferSize(int maximumBufferSize) {
-		ReadBuffer.maximumBufferSize = maximumBufferSize;
-	}
+    /**
+     * Set the maximum buffer size.
+     *
+     * @param maximumBufferSize the maximum buffer size to use.
+     */
+    public static synchronized void setMaximumBufferSize(int maximumBufferSize) {
+        ReadBuffer.maximumBufferSize = maximumBufferSize;
+    }
 
-	private byte[] bufferData;
-	private int bufferPosition;
-	private final RandomAccessFile inputFile;
+    private byte[] bufferData;
+    private int bufferPosition;
+    private final RandomAccessFile inputFile;
 
-	ReadBuffer(RandomAccessFile inputFile) {
-		this.inputFile = inputFile;
-	}
+    ReadBuffer(RandomAccessFile inputFile) {
+        this.inputFile = inputFile;
+    }
 
-	/**
-	 * Returns one signed byte from the read buffer.
-	 * 
-	 * @return the byte value.
-	 */
-	public byte readByte() {
-		return this.bufferData[this.bufferPosition++];
-	}
+    /**
+     * Returns one signed byte from the read buffer.
+     *
+     * @return the byte value.
+     */
+    public byte readByte() {
+        return this.bufferData[this.bufferPosition++];
+    }
 
-	/**
-	 * Reads the given amount of bytes from the file into the read buffer and resets the internal buffer position. If
-	 * the capacity of the read buffer is too small, a larger one is created automatically.
-	 * 
-	 * @param length
-	 *            the amount of bytes to read from the file.
-	 * @return true if the whole data was read successfully, false otherwise.
-	 * @throws IOException
-	 *             if an error occurs while reading the file.
-	 */
-	public boolean readFromFile(int length) throws IOException {
-		// ensure that the read buffer is large enough
-		if (this.bufferData == null || this.bufferData.length < length) {
-			// ensure that the read buffer is not too large
-			if (length > maximumBufferSize) {
-				LOGGER.warning("invalid read length: " + length);
-				return false;
-			}
-			this.bufferData = new byte[length];
-		}
+    /**
+     * Reads the given amount of bytes from the file into the read buffer and resets the internal buffer position. If
+     * the capacity of the read buffer is too small, a larger one is created automatically.
+     *
+     * @param length the amount of bytes to read from the file.
+     * @return true if the whole data was read successfully, false otherwise.
+     * @throws IOException if an error occurs while reading the file.
+     */
+    public boolean readFromFile(int length) throws IOException {
+        // ensure that the read buffer is large enough
+        if (this.bufferData == null || this.bufferData.length < length) {
+            // ensure that the read buffer is not too large
+            if (length > maximumBufferSize) {
+                LOGGER.warning("invalid read length: " + length);
+                return false;
+            }
+            this.bufferData = new byte[length];
+        }
 
-		// reset the buffer position and read the data into the buffer
-		this.bufferPosition = 0;
-		return this.inputFile.read(this.bufferData, 0, length) == length;
-	}
+        // reset the buffer position and read the data into the buffer
+        this.bufferPosition = 0;
 
-	/**
-	 * Converts four bytes from the read buffer to a signed int.
-	 * <p>
-	 * The byte order is big-endian.
-	 * 
-	 * @return the int value.
-	 */
-	public int readInt() {
-		this.bufferPosition += 4;
-		return Deserializer.getInt(this.bufferData, this.bufferPosition - 4);
-	}
+        return this.inputFile.read(this.bufferData, 0, length) == length;
+    }
 
-	/**
-	 * Converts eight bytes from the read buffer to a signed long.
-	 * <p>
-	 * The byte order is big-endian.
-	 * 
-	 * @return the long value.
-	 */
-	public long readLong() {
-		this.bufferPosition += 8;
-		return Deserializer.getLong(this.bufferData, this.bufferPosition - 8);
-	}
+    /**
+     * Reads the given amount of bytes from the file into the read buffer and resets the internal buffer position. If
+     * the capacity of the read buffer is too small, a larger one is created automatically.
+     *
+     * @param offset the offset position, measured in bytes from the beginning of the file, at which to set the file pointer.
+     * @param length the amount of bytes to read from the file.
+     * @return true if the whole data was read successfully, false otherwise.
+     * @throws IOException if an error occurs while reading the file.
+     */
+    public boolean readFromFile(long offset, int length) throws IOException {
+        // ensure that the read buffer is large enough
+        if (this.bufferData == null || this.bufferData.length < length) {
+            // ensure that the read buffer is not too large
+            if (length > maximumBufferSize) {
+                LOGGER.warning("invalid read length: " + length);
+                return false;
+            }
+            this.bufferData = new byte[length];
+        }
 
-	/**
-	 * Converts two bytes from the read buffer to a signed int.
-	 * <p>
-	 * The byte order is big-endian.
-	 * 
-	 * @return the int value.
-	 */
-	public int readShort() {
-		this.bufferPosition += 2;
-		return Deserializer.getShort(this.bufferData, this.bufferPosition - 2);
-	}
+        // reset the buffer position and read the data into the buffer
+        this.bufferPosition = 0;
 
-	/**
-	 * Converts a variable amount of bytes from the read buffer to a signed int.
-	 * <p>
-	 * The first bit is for continuation info, the other six (last byte) or seven (all other bytes) bits are for data.
-	 * The second bit in the last byte indicates the sign of the number.
-	 * 
-	 * @return the int value.
-	 */
-	public int readSignedInt() {
-		int variableByteDecode = 0;
-		byte variableByteShift = 0;
+        synchronized (this.inputFile) {
+            this.inputFile.seek(offset);
+            return this.inputFile.read(this.bufferData, 0, length) == length;
+        }
+    }
 
-		// check if the continuation bit is set
-		while ((this.bufferData[this.bufferPosition] & 0x80) != 0) {
-			variableByteDecode |= (this.bufferData[this.bufferPosition++] & 0x7f) << variableByteShift;
-			variableByteShift += 7;
-		}
+    /**
+     * Converts four bytes from the read buffer to a signed int.
+     * <p/>
+     * The byte order is big-endian.
+     *
+     * @return the int value.
+     */
+    public int readInt() {
+        this.bufferPosition += 4;
+        return Deserializer.getInt(this.bufferData, this.bufferPosition - 4);
+    }
 
-		// read the six data bits from the last byte
-		if ((this.bufferData[this.bufferPosition] & 0x40) != 0) {
-			// negative
-			return -(variableByteDecode | ((this.bufferData[this.bufferPosition++] & 0x3f) << variableByteShift));
-		}
-		// positive
-		return variableByteDecode | ((this.bufferData[this.bufferPosition++] & 0x3f) << variableByteShift);
-	}
+    /**
+     * Converts eight bytes from the read buffer to a signed long.
+     * <p/>
+     * The byte order is big-endian.
+     *
+     * @return the long value.
+     */
+    public long readLong() {
+        this.bufferPosition += 8;
+        return Deserializer.getLong(this.bufferData, this.bufferPosition - 8);
+    }
 
-	/**
-	 * Converts a variable amount of bytes from the read buffer to an unsigned int.
-	 * <p>
-	 * The first bit is for continuation info, the other seven bits are for data.
-	 * 
-	 * @return the int value.
-	 */
-	public int readUnsignedInt() {
-		int variableByteDecode = 0;
-		byte variableByteShift = 0;
+    /**
+     * Converts two bytes from the read buffer to a signed int.
+     * <p/>
+     * The byte order is big-endian.
+     *
+     * @return the int value.
+     */
+    public int readShort() {
+        this.bufferPosition += 2;
+        return Deserializer.getShort(this.bufferData, this.bufferPosition - 2);
+    }
 
-		// check if the continuation bit is set
-		while ((this.bufferData[this.bufferPosition] & 0x80) != 0) {
-			variableByteDecode |= (this.bufferData[this.bufferPosition++] & 0x7f) << variableByteShift;
-			variableByteShift += 7;
-		}
+    /**
+     * Converts a variable amount of bytes from the read buffer to a signed int.
+     * <p/>
+     * The first bit is for continuation info, the other six (last byte) or seven (all other bytes) bits are for data.
+     * The second bit in the last byte indicates the sign of the number.
+     *
+     * @return the int value.
+     */
+    public int readSignedInt() {
+        int variableByteDecode = 0;
+        byte variableByteShift = 0;
 
-		// read the seven data bits from the last byte
-		return variableByteDecode | (this.bufferData[this.bufferPosition++] << variableByteShift);
-	}
+        // check if the continuation bit is set
+        while ((this.bufferData[this.bufferPosition] & 0x80) != 0) {
+            variableByteDecode |= (this.bufferData[this.bufferPosition++] & 0x7f) << variableByteShift;
+            variableByteShift += 7;
+        }
 
-	/**
-	 * Decodes a variable amount of bytes from the read buffer to a string.
-	 * 
-	 * @return the UTF-8 decoded string (may be null).
-	 */
-	public String readUTF8EncodedString() {
-		return readUTF8EncodedString(readUnsignedInt());
-	}
+        // read the six data bits from the last byte
+        if ((this.bufferData[this.bufferPosition] & 0x40) != 0) {
+            // negative
+            return -(variableByteDecode | ((this.bufferData[this.bufferPosition++] & 0x3f) << variableByteShift));
+        }
+        // positive
+        return variableByteDecode | ((this.bufferData[this.bufferPosition++] & 0x3f) << variableByteShift);
+    }
 
-	/**
-	 * Decodes the given amount of bytes from the read buffer to a string.
-	 * 
-	 * @param stringLength
-	 *            the length of the string in bytes.
-	 * @return the UTF-8 decoded string (may be null).
-	 */
-	public String readUTF8EncodedString(int stringLength) {
-		if (stringLength > 0 && this.bufferPosition + stringLength <= this.bufferData.length) {
-			this.bufferPosition += stringLength;
-			try {
-				return new String(this.bufferData, this.bufferPosition - stringLength, stringLength, CHARSET_UTF8);
-			} catch (UnsupportedEncodingException e) {
-				throw new IllegalStateException(e);
-			}
-		}
-		LOGGER.warning("invalid string length: " + stringLength);
-		return null;
-	}
+    /**
+     * Converts a variable amount of bytes from the read buffer to an unsigned int.
+     * <p/>
+     * The first bit is for continuation info, the other seven bits are for data.
+     *
+     * @return the int value.
+     */
+    public int readUnsignedInt() {
+        int variableByteDecode = 0;
+        byte variableByteShift = 0;
 
-	/**
-	 * @return the current buffer position.
-	 */
-	int getBufferPosition() {
-		return this.bufferPosition;
-	}
+        // check if the continuation bit is set
+        while ((this.bufferData[this.bufferPosition] & 0x80) != 0) {
+            variableByteDecode |= (this.bufferData[this.bufferPosition++] & 0x7f) << variableByteShift;
+            variableByteShift += 7;
+        }
 
-	/**
-	 * @return the current size of the read buffer.
-	 */
-	int getBufferSize() {
-		return this.bufferData.length;
-	}
+        // read the seven data bits from the last byte
+        return variableByteDecode | (this.bufferData[this.bufferPosition++] << variableByteShift);
+    }
 
-	/**
-	 * Sets the buffer position to the given offset.
-	 * 
-	 * @param bufferPosition
-	 *            the buffer position.
-	 */
-	void setBufferPosition(int bufferPosition) {
-		this.bufferPosition = bufferPosition;
-	}
+    /**
+     * Decodes a variable amount of bytes from the read buffer to a string.
+     *
+     * @return the UTF-8 decoded string (may be null).
+     */
+    public String readUTF8EncodedString() {
+        return readUTF8EncodedString(readUnsignedInt());
+    }
 
-	/**
-	 * Skips the given number of bytes in the read buffer.
-	 * 
-	 * @param bytes
-	 *            the number of bytes to skip.
-	 */
-	void skipBytes(int bytes) {
-		this.bufferPosition += bytes;
-	}
+    /**
+     * Decodes the given amount of bytes from the read buffer to a string.
+     *
+     * @param stringLength the length of the string in bytes.
+     * @return the UTF-8 decoded string (may be null).
+     */
+    public String readUTF8EncodedString(int stringLength) {
+        if (stringLength > 0 && this.bufferPosition + stringLength <= this.bufferData.length) {
+            this.bufferPosition += stringLength;
+            try {
+                return new String(this.bufferData, this.bufferPosition - stringLength, stringLength, CHARSET_UTF8);
+            } catch (UnsupportedEncodingException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+        LOGGER.warning("invalid string length: " + stringLength);
+        return null;
+    }
+
+    /**
+     * @return the current buffer position.
+     */
+    int getBufferPosition() {
+        return this.bufferPosition;
+    }
+
+    /**
+     * @return the current size of the read buffer.
+     */
+    int getBufferSize() {
+        return this.bufferData.length;
+    }
+
+    /**
+     * Sets the buffer position to the given offset.
+     *
+     * @param bufferPosition the buffer position.
+     */
+    void setBufferPosition(int bufferPosition) {
+        this.bufferPosition = bufferPosition;
+    }
+
+    /**
+     * Skips the given number of bytes in the read buffer.
+     *
+     * @param bytes the number of bytes to skip.
+     */
+    void skipBytes(int bytes) {
+        this.bufferPosition += bytes;
+    }
 }

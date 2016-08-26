@@ -15,10 +15,6 @@
  */
 package org.mapsforge.map.layer.download;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.map.layer.Layer;
@@ -27,63 +23,67 @@ import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.util.PausableThread;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 class TileDownloadThread extends PausableThread {
-	private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TileDownloadThread.class.getName());
 
-	private final DisplayModel displayModel;
-	private final GraphicFactory graphicFactory;
-	private JobQueue<DownloadJob> jobQueue;
-	private final Layer layer;
-	private final TileCache tileCache;
+    private final DisplayModel displayModel;
+    private final GraphicFactory graphicFactory;
+    private JobQueue<DownloadJob> jobQueue;
+    private final Layer layer;
+    private final TileCache tileCache;
 
-	TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory,
-			DisplayModel displayModel) {
-		super();
+    TileDownloadThread(TileCache tileCache, JobQueue<DownloadJob> jobQueue, Layer layer, GraphicFactory graphicFactory,
+                       DisplayModel displayModel) {
+        super();
 
-		this.tileCache = tileCache;
-		this.jobQueue = jobQueue;
-		this.layer = layer;
-		this.graphicFactory = graphicFactory;
-		this.displayModel = displayModel;
-	}
+        this.tileCache = tileCache;
+        this.jobQueue = jobQueue;
+        this.layer = layer;
+        this.graphicFactory = graphicFactory;
+        this.displayModel = displayModel;
+    }
 
-	public void setJobQueue(JobQueue<DownloadJob> jobQueue) {
-		this.jobQueue = jobQueue;
-	}
+    public void setJobQueue(JobQueue<DownloadJob> jobQueue) {
+        this.jobQueue = jobQueue;
+    }
 
-	@Override
-	protected void doWork() throws InterruptedException {
-		DownloadJob downloadJob = this.jobQueue.get();
+    @Override
+    protected void doWork() throws InterruptedException {
+        DownloadJob downloadJob = this.jobQueue.get();
 
-		try {
-			if (!this.tileCache.containsKey(downloadJob)) {
-				downloadTile(downloadJob);
-			}
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage(), e);
-		} finally {
-			this.jobQueue.remove(downloadJob);
-		}
-	}
+        try {
+            if (!this.tileCache.containsKey(downloadJob)) {
+                downloadTile(downloadJob);
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            this.jobQueue.remove(downloadJob);
+        }
+    }
 
-	@Override
-	protected ThreadPriority getThreadPriority() {
-		return ThreadPriority.BELOW_NORMAL;
-	}
+    @Override
+    protected ThreadPriority getThreadPriority() {
+        return ThreadPriority.BELOW_NORMAL;
+    }
 
-	@Override
-	protected boolean hasWork() {
-		return true;
-	}
+    @Override
+    protected boolean hasWork() {
+        return true;
+    }
 
-	private void downloadTile(DownloadJob downloadJob) throws IOException {
-		TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicFactory);
-		TileBitmap bitmap = tileDownloader.downloadImage();
+    private void downloadTile(DownloadJob downloadJob) throws IOException {
+        TileDownloader tileDownloader = new TileDownloader(downloadJob, this.graphicFactory);
+        TileBitmap bitmap = tileDownloader.downloadImage();
 
-		if (!isInterrupted() && bitmap != null) {
-			bitmap.scaleTo(this.displayModel.getTileSize(), this.displayModel.getTileSize());
-			this.tileCache.put(downloadJob, bitmap);
-			this.layer.requestRedraw();
-		}
-	}
+        if (!isInterrupted() && bitmap != null) {
+            bitmap.scaleTo(this.displayModel.getTileSize(), this.displayModel.getTileSize());
+            this.tileCache.put(downloadJob, bitmap);
+            this.layer.requestRedraw();
+        }
+    }
 }

@@ -36,121 +36,117 @@ import java.util.logging.Logger;
  */
 public class TileStore implements TileCache {
 
-	private final File rootDirectory;
-	private final GraphicFactory graphicFactory;
-	private final String suffix;
+    private final File rootDirectory;
+    private final GraphicFactory graphicFactory;
+    private final String suffix;
 
-	private static final Logger LOGGER = Logger.getLogger(TileStore.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TileStore.class.getName());
 
-	/**
-	 * @param rootDirectory
-	 *            the directory where cached tiles will be stored.
-	 * @param suffix
-	 *            the suffix for stored tiles.
-	 * @param graphicFactory
-	 *            the mapsforge graphic factory to create tile data instances.
-	 * @throws IllegalArgumentException
-	 *             if the root directory cannot be a tile store
-	 */
-	public TileStore(File rootDirectory, String suffix, GraphicFactory graphicFactory) {
-		this.rootDirectory = rootDirectory;
-		this.graphicFactory = graphicFactory;
-		this.suffix = suffix;
-		if (this.rootDirectory == null || !this.rootDirectory.isDirectory() || !this.rootDirectory.canRead()) {
-			throw new IllegalArgumentException("Root directory must be readable");
-		}
-	}
+    /**
+     * @param rootDirectory  the directory where cached tiles will be stored.
+     * @param suffix         the suffix for stored tiles.
+     * @param graphicFactory the mapsforge graphic factory to create tile data instances.
+     * @throws IllegalArgumentException if the root directory cannot be a tile store
+     */
+    public TileStore(File rootDirectory, String suffix, GraphicFactory graphicFactory) {
+        this.rootDirectory = rootDirectory;
+        this.graphicFactory = graphicFactory;
+        this.suffix = suffix;
+        if (this.rootDirectory == null || !this.rootDirectory.isDirectory() || !this.rootDirectory.canRead()) {
+            throw new IllegalArgumentException("Root directory must be readable");
+        }
+    }
 
-	@Override
-	public synchronized boolean containsKey(Job key) {
-		return this.findFile(key) != null;
-	}
+    @Override
+    public synchronized boolean containsKey(Job key) {
+        return this.findFile(key) != null;
+    }
 
-	@Override
-	public synchronized void destroy() {
-		// no-op
-	}
+    @Override
+    public synchronized void destroy() {
+        // no-op
+    }
 
-	@Override
-	public synchronized TileBitmap get(Job key) {
-		File file = this.findFile(key);
+    @Override
+    public synchronized TileBitmap get(Job key) {
+        File file = this.findFile(key);
 
-		if (file == null) {
-			return null;
-		}
+        if (file == null) {
+            return null;
+        }
 
-		InputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(file);
-			return this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
-		} catch (CorruptedInputStreamException e) {
-			// this can happen, at least on Android, when the input stream
-			// is somehow corrupted, returning null ensures it will be loaded
-			// from another source
-			return null;
-		} catch (IOException e) {
-			return null;
-		} finally {
-			IOUtils.closeQuietly(inputStream);
-		}
-	}
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
+            return this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+        } catch (CorruptedInputStreamException e) {
+            // this can happen, at least on Android, when the input stream
+            // is somehow corrupted, returning null ensures it will be loaded
+            // from another source
+            return null;
+        } catch (IOException e) {
+            return null;
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+    }
 
-	@Override
-	public synchronized int getCapacity() {
-		return Integer.MAX_VALUE;
-	}
+    @Override
+    public synchronized int getCapacity() {
+        return Integer.MAX_VALUE;
+    }
 
-	@Override
-	public synchronized int getCapacityFirstLevel() {
-		return getCapacity();
-	}
+    @Override
+    public synchronized int getCapacityFirstLevel() {
+        return getCapacity();
+    }
 
-	@Override
-	public TileBitmap getImmediately(Job key) {
-		return get(key);
-	}
+    @Override
+    public TileBitmap getImmediately(Job key) {
+        return get(key);
+    }
 
-	@Override
-	public synchronized void purge() {
-		// no-op
-	}
+    @Override
+    public synchronized void purge() {
+        // no-op
+    }
 
-	@Override
-	public synchronized void put(Job key, TileBitmap bitmap) {
-		// no-op
-	}
+    @Override
+    public synchronized void put(Job key, TileBitmap bitmap) {
+        // no-op
+    }
 
-	protected File findFile(Job key) {
-		// slow descent at the moment, better for debugging.
-		File l1 = new File(this.rootDirectory, Byte.toString(key.tile.zoomLevel));
-		if (!l1.isDirectory() || !l1.canRead()) {
-			LOGGER.info("Failed to find directory " + l1.getAbsolutePath());
-			return null;
-		}
-		File l2 = new File(l1, Long.toString(key.tile.tileX));
-		if (!l2.isDirectory() || !l2.canRead()) {
-			LOGGER.info("Failed to find directory " + l2.getAbsolutePath());
-			return null;
-		}
-		File l3 = new File(l2, Long.toString(key.tile.tileY) + this.suffix);
-		if (!l3.isFile() || !l3.canRead()) {
-			LOGGER.info("Failed to find file " + l3.getAbsolutePath());
-			return null;
-		}
-		LOGGER.info("Found file " + l3.getAbsolutePath());
-		return l3;
-	}
+    protected File findFile(Job key) {
+        // slow descent at the moment, better for debugging.
+        File l1 = new File(this.rootDirectory, Byte.toString(key.tile.zoomLevel));
+        if (!l1.isDirectory() || !l1.canRead()) {
+            LOGGER.info("Failed to find directory " + l1.getAbsolutePath());
+            return null;
+        }
+        File l2 = new File(l1, Long.toString(key.tile.tileX));
+        if (!l2.isDirectory() || !l2.canRead()) {
+            LOGGER.info("Failed to find directory " + l2.getAbsolutePath());
+            return null;
+        }
+        File l3 = new File(l2, Long.toString(key.tile.tileY) + this.suffix);
+        if (!l3.isFile() || !l3.canRead()) {
+            LOGGER.info("Failed to find file " + l3.getAbsolutePath());
+            return null;
+        }
+        LOGGER.info("Found file " + l3.getAbsolutePath());
+        return l3;
+    }
 
-	@Override
-	public void setWorkingSet(Set<Job> key) {
-		// all tiles are always in the cache
-	}
+    @Override
+    public void setWorkingSet(Set<Job> key) {
+        // all tiles are always in the cache
+    }
 
-	@Override
-	public void addObserver(final Observer observer) {
-	}
+    @Override
+    public void addObserver(final Observer observer) {
+    }
 
-	@Override
-	public void removeObserver(final Observer observer) {
-	}
+    @Override
+    public void removeObserver(final Observer observer) {
+    }
 }

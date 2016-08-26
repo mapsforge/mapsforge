@@ -15,8 +15,6 @@
  */
 package org.mapsforge.map.view;
 
-import java.util.concurrent.TimeUnit;
-
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.FontFamily;
 import org.mapsforge.core.graphics.FontStyle;
@@ -26,75 +24,77 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.map.model.DisplayModel;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * An FPS counter measures the drawing frame rate.
  */
 public class FpsCounter {
-	private static final long ONE_SECOND = TimeUnit.SECONDS.toNanos(1);
+    private static final long ONE_SECOND = TimeUnit.SECONDS.toNanos(1);
 
-	private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
-		Paint paint = graphicFactory.createPaint();
-		paint.setColor(Color.RED);
-		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-		paint.setTextSize(25 * displayModel.getScaleFactor());
-		return paint;
-	}
+    private static Paint createPaintFront(GraphicFactory graphicFactory, DisplayModel displayModel) {
+        Paint paint = graphicFactory.createPaint();
+        paint.setColor(Color.RED);
+        paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
+        paint.setTextSize(25 * displayModel.getScaleFactor());
+        return paint;
+    }
 
-	private static Paint createPaintBack(GraphicFactory graphicFactory, DisplayModel displayModel) {
-		Paint paint = graphicFactory.createPaint();
-		paint.setColor(Color.WHITE);
-		paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
-		paint.setTextSize(25 * displayModel.getScaleFactor());
-		paint.setStrokeWidth(2 * displayModel.getScaleFactor());
-		paint.setStyle(Style.STROKE);
-		return paint;
-	}
+    private static Paint createPaintBack(GraphicFactory graphicFactory, DisplayModel displayModel) {
+        Paint paint = graphicFactory.createPaint();
+        paint.setColor(Color.WHITE);
+        paint.setTypeface(FontFamily.DEFAULT, FontStyle.BOLD);
+        paint.setTextSize(25 * displayModel.getScaleFactor());
+        paint.setStrokeWidth(2 * displayModel.getScaleFactor());
+        paint.setStyle(Style.STROKE);
+        return paint;
+    }
 
-	private final DisplayModel displayModel;
-	private String fps;
-	private int frameCounter;
-	private long lastTime;
-	private final Paint paintBack, paintFront;
-	private boolean visible;
+    private final DisplayModel displayModel;
+    private String fps;
+    private int frameCounter;
+    private long lastTime;
+    private final Paint paintBack, paintFront;
+    private boolean visible;
 
-	public FpsCounter(GraphicFactory graphicFactory, DisplayModel displayModel) {
-		this.displayModel = displayModel;
+    public FpsCounter(GraphicFactory graphicFactory, DisplayModel displayModel) {
+        this.displayModel = displayModel;
 
-		this.paintBack = createPaintBack(graphicFactory, displayModel);
-		this.paintFront = createPaintFront(graphicFactory, displayModel);
-	}
+        this.paintBack = createPaintBack(graphicFactory, displayModel);
+        this.paintFront = createPaintFront(graphicFactory, displayModel);
+    }
 
-	public FpsCounter(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
-		this.displayModel = displayModel;
-		this.paintBack = paintBack;
-		this.paintFront = paintFront;
-	}
+    public FpsCounter(DisplayModel displayModel, Paint paintBack, Paint paintFront) {
+        this.displayModel = displayModel;
+        this.paintBack = paintBack;
+        this.paintFront = paintFront;
+    }
 
-	public void draw(GraphicContext graphicContext) {
-		if (!this.visible) {
-			return;
-		}
+    public void draw(GraphicContext graphicContext) {
+        if (!this.visible) {
+            return;
+        }
 
-		long currentTime = System.nanoTime();
-		long elapsedTime = currentTime - this.lastTime;
-		if (elapsedTime > ONE_SECOND) {
-			this.fps = String.valueOf(Math.round((float) (this.frameCounter * ONE_SECOND) / elapsedTime));
-			this.lastTime = currentTime;
-			this.frameCounter = 0;
-		}
+        long currentTime = System.nanoTime();
+        long elapsedTime = currentTime - this.lastTime;
+        if (elapsedTime > ONE_SECOND) {
+            this.fps = String.valueOf(Math.round((float) (this.frameCounter * ONE_SECOND) / elapsedTime));
+            this.lastTime = currentTime;
+            this.frameCounter = 0;
+        }
 
-		int x = (int) (20 * displayModel.getScaleFactor());
-		int y = (int) (40 * displayModel.getScaleFactor());
-		graphicContext.drawText(this.fps, x, y, this.paintBack);
-		graphicContext.drawText(this.fps, x, y, this.paintFront);
-		++this.frameCounter;
-	}
+        int x = (int) (20 * displayModel.getScaleFactor());
+        int y = (int) (40 * displayModel.getScaleFactor());
+        graphicContext.drawText(this.fps, x, y, this.paintBack);
+        graphicContext.drawText(this.fps, x, y, this.paintFront);
+        ++this.frameCounter;
+    }
 
-	public boolean isVisible() {
-		return this.visible;
-	}
+    public boolean isVisible() {
+        return this.visible;
+    }
 
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 }

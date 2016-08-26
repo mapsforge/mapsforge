@@ -14,33 +14,33 @@
  */
 package org.mapsforge.map.reader;
 
-import java.io.File;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.MapReadResult;
 
+import java.io.File;
+
 public class MapFileEmptyTest {
-	private static final File MAP_FILE = new File("src/test/resources/empty/output.map");
-	private static final byte ZOOM_LEVEL_MAX = 25;
+    private static final File MAP_FILE = new File("src/test/resources/empty/output.map");
+    private static final byte ZOOM_LEVEL_MAX = 25;
 
-	@Test
-	public void executeQueryTest() {
-		MapFile mapFile = new MapFile(MAP_FILE);
+    @Test
+    public void executeQueryTest() {
+        MapFile mapFile = new MapFile(MAP_FILE);
 
-		for (byte zoomLevel = 0; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
-			int tileX = MercatorProjection.longitudeToTileX(1, zoomLevel);
-			int tileY = MercatorProjection.latitudeToTileY(1, zoomLevel);
-			Tile tile = new Tile(tileX, tileY, zoomLevel, 256);
+        for (byte zoomLevel = 0; zoomLevel <= ZOOM_LEVEL_MAX; ++zoomLevel) {
+            int tileX = MercatorProjection.longitudeToTileX(1, zoomLevel);
+            int tileY = MercatorProjection.latitudeToTileY(1, zoomLevel);
+            Tile tile = new Tile(tileX, tileY, zoomLevel, 256);
 
-			MapReadResult mapReadResult = mapFile.readMapData(tile);
+            MapReadResult mapReadResult = mapFile.readMapData(tile);
 
-			Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
-			Assert.assertTrue(mapReadResult.ways.isEmpty());
-		}
+            Assert.assertTrue(mapReadResult.pointOfInterests.isEmpty());
+            Assert.assertTrue(mapReadResult.ways.isEmpty());
+        }
 
-		mapFile.close();
-	}
+        mapFile.close();
+    }
 }

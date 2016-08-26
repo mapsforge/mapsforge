@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,51 +22,58 @@ import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.util.MapViewProjection;
 
 public interface MapView {
 
-	void addLayer(Layer layer);
+    void addLayer(Layer layer);
 
-	/**
-	 * Clear map view.
-	 */
-	void destroy();
+    /**
+     * Clear map view.
+     */
+    void destroy();
 
-	/**
-	 * Clear all map view elements.<br/>
-	 * i.e. layers, tile cache, label store, map view, resources, etc.
-	 */
-	void destroyAll();
+    /**
+     * Clear all map view elements.<br/>
+     * i.e. layers, tile cache, label store, map view, resources, etc.
+     */
+    void destroyAll();
 
-	BoundingBox getBoundingBox();
+    BoundingBox getBoundingBox();
 
-	Dimension getDimension();
+    Dimension getDimension();
 
-	FpsCounter getFpsCounter();
+    FpsCounter getFpsCounter();
 
-	/**
-	 * @return the FrameBuffer used in this MapView.
-	 */
-	FrameBuffer getFrameBuffer();
+    /**
+     * @return the FrameBuffer used in this MapView.
+     */
+    FrameBuffer getFrameBuffer();
 
-	int getHeight();
+    int getHeight();
 
-	LayerManager getLayerManager();
+    LayerManager getLayerManager();
 
-	MapScaleBar getMapScaleBar();
+    MapScaleBar getMapScaleBar();
 
-	Model getModel();
+    MapViewProjection getMapViewProjection();
 
-	int getWidth();
+    Model getModel();
 
-	/**
-	 * Requests a redrawing as soon as possible.
-	 */
-	void repaint();
+    int getWidth();
 
-	void setCenter(LatLong center);
+    /**
+     * Requests a redrawing as soon as possible.
+     */
+    void repaint();
 
-	void setMapScaleBar(MapScaleBar mapScaleBar);
+    void setCenter(LatLong center);
 
-	void setZoomLevel(byte zoomLevel);
+    void setMapScaleBar(MapScaleBar mapScaleBar);
+
+    void setZoomLevel(byte zoomLevel);
+
+    void setZoomLevelMax(byte zoomLevelMax);
+
+    void setZoomLevelMin(byte zoomLevelMin);
 }

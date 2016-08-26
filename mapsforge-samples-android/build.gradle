@@ -1,0 +1,27 @@
+apply plugin: 'com.android.application'
+
+dependencies {
+    compile project(":mapsforge-map-android-extras")
+    compile project(":mapsforge-themes")
+    compile project(":mapsforge-poi-android")
+    compile 'com.android.support:support-v4:24.1.1'
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.5.2'
+}
+
+android {
+    defaultConfig {
+        testApplicationId "org.mapsforge.samples.android.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
+
+    sourceSets {
+        main {
+            file("${rootDir}/spatialite-android/natives").eachDir() { dir ->
+                jniLibs.srcDirs += "${dir.path}/lib"
+            }
+        }
+        androidTest {
+            java.srcDirs = ['src/androidTest']
+        }
+    }
+}

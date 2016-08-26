@@ -19,57 +19,57 @@ package org.mapsforge.map.writer.util;
  * Defines some constants.
  */
 public final class Constants {
-	/**
-	 * The name of the map file writer.
-	 */
-	public static final String CREATOR_NAME = "mapsforge-map-writer";
+    /**
+     * The name of the map file writer.
+     */
+    public static final String CREATOR_NAME = "mapsforge-map-writer";
 
-	/**
-	 * Default bbox enlargement.
-	 */
-	public static final int DEFAULT_PARAM_BBOX_ENLARGEMENT = 20;
-	/**
-	 * Default coordinate encoding.
-	 */
-	public static final String DEFAULT_PARAM_ENCODING = "auto";
+    /**
+     * Default bbox enlargement.
+     */
+    public static final int DEFAULT_PARAM_BBOX_ENLARGEMENT = 20;
+    /**
+     * Default coordinate encoding.
+     */
+    public static final String DEFAULT_PARAM_ENCODING = "auto";
 
-	/**
-	 * Default name for out file.
-	 */
-	public static final String DEFAULT_PARAM_OUTFILE = "mapsforge.map";
+    /**
+     * Default name for out file.
+     */
+    public static final String DEFAULT_PARAM_OUTFILE = "mapsforge.map";
 
-	/**
-	 * Default data processor type.
-	 */
-	public static final String DEFAULT_PARAM_TYPE = "ram";
+    /**
+     * Default data processor type.
+     */
+    public static final String DEFAULT_PARAM_TYPE = "ram";
 
-	/**
-	 * Default simplification factor.
-	 */
-	public static final double DEFAULT_SIMPLIFICATION_FACTOR = 2.5;
+    /**
+     * Default simplification factor.
+     */
+    public static final double DEFAULT_SIMPLIFICATION_FACTOR = 2.5;
 
-	/**
-	 * The default size of a tile in pixel.
-	 */
-	public static final int DEFAULT_TILE_SIZE = 256;
-	/**
-	 * The maximum base zoom level for which we apply a simplification algorithm to filter way points.
-	 */
-	public static final int MAX_SIMPLIFICATION_BASE_ZOOM = 12;
-	/**
-	 * The name of the property that refers to the lowest version of the map file specification supported by this implementation.
-	 */
-	public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN = "mapfile.specification.version.min";
-	/**
-	 * The name of the property that refers to the highest version of the map file specification supported by this implementation.
-	 */
-	public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX = "mapfile.specification.version.max";
-	/**
-	 * The name of the property that refers to the version of the map file writer.
-	 */
-	public static final String PROPERTY_NAME_WRITER_VERSION = "mapfile.writer.version";
+    /**
+     * The default size of a tile in pixel.
+     */
+    public static final int DEFAULT_TILE_SIZE = 256;
+    /**
+     * The maximum base zoom level for which we apply a simplification algorithm to filter way points.
+     */
+    public static final int MAX_SIMPLIFICATION_BASE_ZOOM = 12;
+    /**
+     * The name of the property that refers to the lowest version of the map file specification supported by this implementation.
+     */
+    public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN = "mapfile.specification.version.min";
+    /**
+     * The name of the property that refers to the highest version of the map file specification supported by this implementation.
+     */
+    public static final String PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX = "mapfile.specification.version.max";
+    /**
+     * The name of the property that refers to the version of the map file writer.
+     */
+    public static final String PROPERTY_NAME_WRITER_VERSION = "mapfile.writer.version";
 
-	private Constants() {
-		throw new IllegalStateException();
-	}
+    private Constants() {
+        throw new IllegalStateException();
+    }
 }

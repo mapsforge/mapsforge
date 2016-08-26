@@ -1,3 +1,15 @@
-include "mapsforge-core", "mapsforge-map-reader", "mapsforge-map", "mapsforge-map-writer", "mapsforge-map-awt","mapsforge-map-android", "mapsforge-map-android-extras", "Applications:Android:Samples", "SwingMapViewer"
-
-
+include ':mapsforge-core'
+include ':mapsforge-map'
+include ':mapsforge-themes'
+include ':mapsforge-map-reader'
+include ':mapsforge-map-android'
+include ':mapsforge-map-android-extras'
+include ':mapsforge-map-awt'
+include ':mapsforge-map-writer'
+include ':mapsforge-poi'
+include ':spatialite-android'
+include ':mapsforge-poi-android'
+include ':mapsforge-poi-awt'
+include ':mapsforge-poi-writer'
+include ':mapsforge-samples-android'
+include ':mapsforge-samples-awt'

@@ -21,109 +21,109 @@ import org.mapsforge.core.model.Tag;
 
 /**
  * Contains the immutable metadata of a map file.
- * 
+ *
  * @see org.mapsforge.map.reader.MapFile#getMapFileInfo()
  */
 public class MapFileInfo {
-	/**
-	 * The bounding box of the map file.
-	 */
-	public final BoundingBox boundingBox;
+    /**
+     * The bounding box of the map file.
+     */
+    public final BoundingBox boundingBox;
 
-	/**
-	 * The comment field of the map file (may be null).
-	 */
-	public final String comment;
+    /**
+     * The comment field of the map file (may be null).
+     */
+    public final String comment;
 
-	/**
-	 * The created by field of the map file (may be null).
-	 */
-	public final String createdBy;
+    /**
+     * The created by field of the map file (may be null).
+     */
+    public final String createdBy;
 
-	/**
-	 * True if the map file includes debug information, false otherwise.
-	 */
-	public final boolean debugFile;
+    /**
+     * True if the map file includes debug information, false otherwise.
+     */
+    public final boolean debugFile;
 
-	/**
-	 * The size of the map file, measured in bytes.
-	 */
-	public final long fileSize;
+    /**
+     * The size of the map file, measured in bytes.
+     */
+    public final long fileSize;
 
-	/**
-	 * The file version number of the map file.
-	 */
-	public final int fileVersion;
+    /**
+     * The file version number of the map file.
+     */
+    public final int fileVersion;
 
-	/**
-	 * The preferred language(s) separated with ',' for names as defined in ISO 639-1 or ISO 639-2 (may be null).
-	 */
-	public final String languagesPreference;
+    /**
+     * The preferred language(s) separated with ',' for names as defined in ISO 639-1 or ISO 639-2 (may be null).
+     */
+    public final String languagesPreference;
 
-	/**
-	 * The date of the map data in milliseconds since January 1, 1970.
-	 */
-	public final long mapDate;
+    /**
+     * The date of the map data in milliseconds since January 1, 1970.
+     */
+    public final long mapDate;
 
-	/**
-	 * The number of sub-files in the map file.
-	 */
-	public final byte numberOfSubFiles;
+    /**
+     * The number of sub-files in the map file.
+     */
+    public final byte numberOfSubFiles;
 
-	/**
-	 * The POI tags.
-	 */
-	public final Tag[] poiTags;
+    /**
+     * The POI tags.
+     */
+    public final Tag[] poiTags;
 
-	/**
-	 * The name of the projection used in the map file.
-	 */
-	public final String projectionName;
+    /**
+     * The name of the projection used in the map file.
+     */
+    public final String projectionName;
 
-	/**
-	 * The map start position from the file header (may be null).
-	 */
-	public final LatLong startPosition;
+    /**
+     * The map start position from the file header (may be null).
+     */
+    public final LatLong startPosition;
 
-	/**
-	 * The map start zoom level from the file header (may be null).
-	 */
-	public final Byte startZoomLevel;
+    /**
+     * The map start zoom level from the file header (may be null).
+     */
+    public final Byte startZoomLevel;
 
-	/**
-	 * The size of the tiles in pixels.
-	 */
-	public final int tilePixelSize;
+    /**
+     * The size of the tiles in pixels.
+     */
+    public final int tilePixelSize;
 
-	/**
-	 * The way tags.
-	 */
-	public final Tag[] wayTags;
+    /**
+     * The way tags.
+     */
+    public final Tag[] wayTags;
 
-	public byte zoomLevelMin;
-	public byte zoomLevelMax;
+    public byte zoomLevelMin;
+    public byte zoomLevelMax;
 
-	MapFileInfo(MapFileInfoBuilder mapFileInfoBuilder) {
-		this.comment = mapFileInfoBuilder.optionalFields.comment;
-		this.createdBy = mapFileInfoBuilder.optionalFields.createdBy;
-		this.debugFile = mapFileInfoBuilder.optionalFields.isDebugFile;
-		this.fileSize = mapFileInfoBuilder.fileSize;
-		this.fileVersion = mapFileInfoBuilder.fileVersion;
-		this.languagesPreference = mapFileInfoBuilder.optionalFields.languagesPreference;
-		this.boundingBox = mapFileInfoBuilder.boundingBox;
-		this.mapDate = mapFileInfoBuilder.mapDate;
-		this.numberOfSubFiles = mapFileInfoBuilder.numberOfSubFiles;
-		this.poiTags = mapFileInfoBuilder.poiTags;
-		this.projectionName = mapFileInfoBuilder.projectionName;
-		this.startPosition = mapFileInfoBuilder.optionalFields.startPosition;
-		this.startZoomLevel = mapFileInfoBuilder.optionalFields.startZoomLevel;
-		this.tilePixelSize = mapFileInfoBuilder.tilePixelSize;
-		this.wayTags = mapFileInfoBuilder.wayTags;
-		this.zoomLevelMax = mapFileInfoBuilder.zoomLevelMax;
-		this.zoomLevelMin = mapFileInfoBuilder.zoomLevelMin;
-	}
+    MapFileInfo(MapFileInfoBuilder mapFileInfoBuilder) {
+        this.comment = mapFileInfoBuilder.optionalFields.comment;
+        this.createdBy = mapFileInfoBuilder.optionalFields.createdBy;
+        this.debugFile = mapFileInfoBuilder.optionalFields.isDebugFile;
+        this.fileSize = mapFileInfoBuilder.fileSize;
+        this.fileVersion = mapFileInfoBuilder.fileVersion;
+        this.languagesPreference = mapFileInfoBuilder.optionalFields.languagesPreference;
+        this.boundingBox = mapFileInfoBuilder.boundingBox;
+        this.mapDate = mapFileInfoBuilder.mapDate;
+        this.numberOfSubFiles = mapFileInfoBuilder.numberOfSubFiles;
+        this.poiTags = mapFileInfoBuilder.poiTags;
+        this.projectionName = mapFileInfoBuilder.projectionName;
+        this.startPosition = mapFileInfoBuilder.optionalFields.startPosition;
+        this.startZoomLevel = mapFileInfoBuilder.optionalFields.startZoomLevel;
+        this.tilePixelSize = mapFileInfoBuilder.tilePixelSize;
+        this.wayTags = mapFileInfoBuilder.wayTags;
+        this.zoomLevelMax = mapFileInfoBuilder.zoomLevelMax;
+        this.zoomLevelMin = mapFileInfoBuilder.zoomLevelMin;
+    }
 
-	public boolean supportsZoomLevel(byte zoomLevel) {
-		return zoomLevel >= this.zoomLevelMin && zoomLevel <= this.zoomLevelMax;
-	}
+    public boolean supportsZoomLevel(byte zoomLevel) {
+        return zoomLevel >= this.zoomLevelMin && zoomLevel <= this.zoomLevelMax;
+    }
 }

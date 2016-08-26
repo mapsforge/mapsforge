@@ -18,10 +18,9 @@ package org.mapsforge.map.writer.model;
  * A type that is capable of resolving way entities from a given id.
  */
 public interface WayResolver {
-	/**
-	 * @param id
-	 *            the id of the way
-	 * @return a resolved way
-	 */
-	TDWay getWay(long id);
+    /**
+     * @param id the id of the way
+     * @return a resolved way
+     */
+    TDWay getWay(long id);
 }

@@ -1,0 +1,18 @@
+dependencies {
+    compile project(":mapsforge-map-awt")
+    compile project(":mapsforge-themes")
+}
+
+task fatJar(type: Jar, dependsOn: classes) {
+    classifier = 'jar-with-dependencies'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+    manifest {
+        attributes 'Main-Class': 'org.mapsforge.samples.awt.Samples'
+    }
+    with jar
+}
+
+artifacts {
+    archives fatJar
+}

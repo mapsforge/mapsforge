@@ -15,100 +15,105 @@
  */
 package org.mapsforge.map.writer;
 
-import java.nio.ByteBuffer;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mapsforge.map.writer.model.MapWriterConfiguration;
 import org.mapsforge.map.writer.model.TileBasedDataProcessor;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapFileWriterTest {
-	private MapWriterConfiguration configuration;
-	private TileBasedDataProcessor dataProcessor;
+    private MapWriterConfiguration configuration;
+    private TileBasedDataProcessor dataProcessor;
 
-	@Before
-	public void setUp() {
-		this.configuration = new MapWriterConfiguration();
-		// this.configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE,
-		// Constants.DEFAULT_PARAM_OUTFILE));
-		this.configuration.setWriterVersion("test");
-		this.configuration.loadTagMappingFile("src/test/resources/tag-mapping.xml");
-		this.configuration.addMapStartPosition("52.455882,13.297244");
-		this.configuration.addMapStartZoom("14");
-		this.configuration.addBboxConfiguration("52,13,53,14");
-		this.configuration.addZoomIntervalConfiguration("5,0,7,10,8,11,14,12,18");
-		this.configuration.setComment("i love mapsforge");
-		this.configuration.setDebugStrings(false);
-		this.configuration.setPolygonClipping(true);
-		this.configuration.setWayClipping(true);
-		this.configuration.setSimplification(0.00001);
-		this.configuration.setDataProcessorType("ram");
-		this.configuration.setBboxEnlargement(10);
-		this.configuration.setPreferredLanguages("en,de");
-		this.configuration.addEncodingChoice("auto");
-		this.configuration.validate();
+    @Before
+    public void setUp() {
+        this.configuration = new MapWriterConfiguration();
+        // this.configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE,
+        // Constants.DEFAULT_PARAM_OUTFILE));
+        this.configuration.setWriterVersion("test");
+        this.configuration.loadTagMappingFile("src/test/resources/tag-mapping.xml");
+        this.configuration.addMapStartPosition("52.455882,13.297244");
+        this.configuration.addMapStartZoom("14");
+        this.configuration.addBboxConfiguration("52,13,53,14");
+        this.configuration.addZoomIntervalConfiguration("5,0,7,10,8,11,14,12,18");
+        this.configuration.setComment("i love mapsforge");
+        this.configuration.setDebugStrings(false);
+        this.configuration.setPolygonClipping(true);
+        this.configuration.setWayClipping(true);
+        this.configuration.setSimplification(0.00001);
+        this.configuration.setDataProcessorType("ram");
+        this.configuration.setBboxEnlargement(10);
+        List<String> preferredLanguages = new ArrayList<>(2);
+        preferredLanguages.add("en");
+        preferredLanguages.add("de");
+        this.configuration.setPreferredLanguages(preferredLanguages);
+        this.configuration.addEncodingChoice("auto");
+        this.configuration.validate();
 
-		this.dataProcessor = RAMTileBasedDataProcessor.newInstance(this.configuration);
-	}
+        this.dataProcessor = RAMTileBasedDataProcessor.newInstance(this.configuration);
+    }
 
-	@Test
-	public void testWriteHeaderBuffer() {
-		ByteBuffer headerBuffer = ByteBuffer.allocate(MapFileWriter.HEADER_BUFFER_SIZE);
-		int headerLength = MapFileWriter.writeHeaderBuffer(this.configuration, this.dataProcessor, headerBuffer);
+    @Test
+    public void testWriteHeaderBuffer() {
+        ByteBuffer headerBuffer = ByteBuffer.allocate(MapFileWriter.HEADER_BUFFER_SIZE);
+        int headerLength = MapFileWriter.writeHeaderBuffer(this.configuration, this.dataProcessor, headerBuffer);
 
-		// expected header length
-		// 20 + 4 + 4 + 8 + 8 + 16 + 2
-		// + 9 ("Mercator")
-		// + 1 + 8 + 1
-		// + 6 ("en,de")
-		// + 17 ("i love mapsforge")
-		// + 5("test")
-		// + 2 + 19 ("amenity=university")
-		// + 2 + 14 + 18 ("natural=beach", natural=coastline")
-		// + 1
-		// + 3 * (3 + 8 + 8)
-		// == 222
-		Assert.assertEquals(222, headerLength);
-	}
+        // expected header length
+        // 20 + 4 + 4 + 8 + 8 + 16 + 2
+        // + 9 ("Mercator")
+        // + 1 + 8 + 1
+        // + 6 ("en,de")
+        // + 17 ("i love mapsforge")
+        // + 5("test")
+        // + 2 + 19 ("amenity=university")
+        // + 2 + 14 + 18 ("natural=beach", natural=coastline")
+        // + 1
+        // + 3 * (3 + 8 + 8)
+        // == 222
+        Assert.assertEquals(222, headerLength);
+    }
 
-	// @Test
-	// public void testProcessPOI() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// @Test
-	// public void testProcessWay() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// @Test
-	// public void testWriteWayNodes() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// @Test
-	// public void testInfoBytePoiLayerAndTagAmount() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// @Test
-	// public void testInfoByteWayLayerAndTagAmount() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// @Test
-	// public void testInfoByteOptmizationParams() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// @Test
-	// public void testInfoBytePOIFeatures() {
-	// fail("Not yet implemented");
-	// }
-	//
-	// @Test
-	// public void testInfoByteWayFeatures() {
-	// fail("Not yet implemented");
-	// }
+    // @Test
+    // public void testProcessPOI() {
+    // fail("Not yet implemented");
+    // }
+    //
+    // @Test
+    // public void testProcessWay() {
+    // fail("Not yet implemented");
+    // }
+    //
+    // @Test
+    // public void testWriteWayNodes() {
+    // fail("Not yet implemented");
+    // }
+    //
+    // @Test
+    // public void testInfoBytePoiLayerAndTagAmount() {
+    // fail("Not yet implemented");
+    // }
+    //
+    // @Test
+    // public void testInfoByteWayLayerAndTagAmount() {
+    // fail("Not yet implemented");
+    // }
+    //
+    // @Test
+    // public void testInfoByteOptmizationParams() {
+    // fail("Not yet implemented");
+    // }
+    //
+    // @Test
+    // public void testInfoBytePOIFeatures() {
+    // fail("Not yet implemented");
+    // }
+    //
+    // @Test
+    // public void testInfoByteWayFeatures() {
+    // fail("Not yet implemented");
+    // }
 }

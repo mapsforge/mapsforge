@@ -25,27 +25,25 @@ import org.mapsforge.map.model.MapViewPosition;
 
 public class TileStoreLayer extends TileLayer<Job> {
 
-	public TileStoreLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory, boolean isTransparent) {
-		super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent, false);
-	}
+    public TileStoreLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory, boolean isTransparent) {
+        super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent, false);
+    }
 
-	@Override
-	protected Job createJob(Tile tile) {
-		return new Job(tile, isTransparent);
-	}
+    @Override
+    protected Job createJob(Tile tile) {
+        return new Job(tile, isTransparent);
+    }
 
-	/**
-	 * Whether the tile is stale and should be refreshed.
-	 * <p>
-	 * This method is not needed for a TileStoreLayer and will always return {@code false}. Both arguments can be null.
-	 *
-	 * @param tile
-	 *            A tile.
-	 * @param bitmap
-	 *            The bitmap for {@code tile} currently held in the layer's cache.
-	 */
-	@Override
-	protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
-		return false;
-	}
+    /**
+     * Whether the tile is stale and should be refreshed.
+     * <p/>
+     * This method is not needed for a TileStoreLayer and will always return {@code false}. Both arguments can be null.
+     *
+     * @param tile   A tile.
+     * @param bitmap The bitmap for {@code tile} currently held in the layer's cache.
+     */
+    @Override
+    protected boolean isTileStale(Tile tile, TileBitmap bitmap) {
+        return false;
+    }
 }
