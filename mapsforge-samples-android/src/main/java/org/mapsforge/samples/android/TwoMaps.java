@@ -58,7 +58,7 @@ public class TwoMaps extends RenderTheme4 {
      * @return the map file for the second view
      */
     protected MapFile getMapFile2() {
-        return new MapFile(new File(Environment.getExternalStorageDirectory(), this.getMapFileName2()));
+        return new MapFile(new File(Global.getMapFileDirectory(), this.getMapFileName2()));
     }
 
     /**

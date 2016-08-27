@@ -156,10 +156,10 @@ public class ItemDetailFragment extends Fragment {
     }
 
     protected File getMapFileDirectory() {
-        return Environment.getExternalStorageDirectory();
+        return Global.getMapFileDirectory();
     }
 
     protected String getMapFileName() {
-        return "germany.map";
+        return Global.getMapFileName();
     }
 }

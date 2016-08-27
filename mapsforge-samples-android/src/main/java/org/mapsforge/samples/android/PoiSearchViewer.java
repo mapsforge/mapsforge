@@ -47,7 +47,7 @@ import java.util.Collection;
  * Tap on POIs to show their name (in device's locale).
  */
 public class PoiSearchViewer extends RenderTheme4 {
-    private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/germany.poi";
+    private static final String POI_FILE = Global.getMapFileDirectory() + "/germany.poi";
     private static final String POI_CATEGORY = "Restaurants";
 
     private static final Paint CIRCLE = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(128, 0, 0, 255), 0, Style.FILL);
