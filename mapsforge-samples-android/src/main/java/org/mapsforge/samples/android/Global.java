@@ -15,8 +15,10 @@ public class Global {
      * @return
      */
     public static File getMapFileDirectory() {
-        // return new File("/mnt/extsd/osmdroid/"); 
-		return Environment.getExternalStorageDirectory();
+        // return new File("/mnt/extsd/osmdroid/");
+        // return new File("/mnt/sdcard/osmdroid/");
+
+        return Environment.getExternalStorageDirectory();
     }
 
     public static String getMapFileName() {
