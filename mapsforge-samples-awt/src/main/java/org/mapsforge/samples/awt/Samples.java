@@ -36,6 +36,7 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
@@ -71,6 +72,9 @@ public final class Samples {
     public static void main(String[] args) {
         // Increase read buffer limit
         ReadBuffer.setMaximumBufferSize(6500000);
+
+        // Multithreading rendering
+        MapWorkerPool.NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors() + 1;
 
         List<File> mapFiles = getMapFiles(args);
         final MapView mapView = createMapView();

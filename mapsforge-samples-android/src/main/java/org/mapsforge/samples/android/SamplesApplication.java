@@ -66,7 +66,16 @@ public class SamplesApplication extends Application {
             MapFile.wayFilterDistance = Integer.parseInt(preferences.getString(SETTING_WAYFILTERING_DISTANCE, "20"));
         }
         MapWorkerPool.DEBUG_TIMING = preferences.getBoolean(SETTING_DEBUG_TIMING, false);
-        MapWorkerPool.NUMBER_OF_THREADS = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(MapWorkerPool.DEFAULT_NUMBER_OF_THREADS)));
 
+        // Multithreading rendering
+        int defaultNumberOfThreads = Runtime.getRuntime().availableProcessors() + 1;
+        if (preferences.contains(SamplesApplication.SETTING_RENDERING_THREADS))
+            MapWorkerPool.NUMBER_OF_THREADS = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(defaultNumberOfThreads)));
+        else {
+            MapWorkerPool.NUMBER_OF_THREADS = defaultNumberOfThreads;
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(defaultNumberOfThreads));
+            editor.apply();
+        }
     }
 }
