@@ -47,7 +47,7 @@ compile 'org.mapsforge:mapsforge-poi-android:[CURRENT-VERSION]'
 compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]'
 ```
 
-You'll need also the SpatiaLite native library [files](../spatialite-android/natives/lib).
+You'll need also the SpatiaLite native library [files](../spatialite-android/natives).
 
 #### Java
 ```groovy
