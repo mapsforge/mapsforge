@@ -11,6 +11,7 @@
 - Deprecate water tiles rendering [#640](https://github.com/mapsforge/mapsforge/issues/640)
 - mapsforge-themes module [#848](https://github.com/mapsforge/mapsforge/issues/848)
 - SpatiaLite natives publishing artifacts [#849](https://github.com/mapsforge/mapsforge/issues/849)
+- SNAPSHOT builds publish to Sonatype OSSRH [#873](https://github.com/mapsforge/mapsforge/issues/873)
 - Deprecate Maven build [#852](https://github.com/mapsforge/mapsforge/issues/852)
 - Drop of `dev` branch
 - Many other minor improvements and bug fixes

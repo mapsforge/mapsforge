@@ -67,9 +67,16 @@ The dependencies for Maven are declared in a similar way. For example:
 </dependency>
 ```
 
+## Snapshots
+
+We publish regularly SNAPSHOT builds to Sonatype OSS Repository Hosting. To use `master-SNAPSHOT` version add as repository, e.g. in Gradle:
+```groovy
+maven { url "https://oss.sonatype.org/content/groups/public/" }
+```
+
 ## JitPack
 
-We support also [JitPack](https://jitpack.io/#mapsforge/mapsforge) for publishing. This can be used for the releases, but it's also useful for integrating SNAPSHOT builds in your application (not available in Maven Central).
+We support also [JitPack](https://jitpack.io/#mapsforge/mapsforge) for releases or SNAPSHOT builds.
 
 For example in order to include the `mapsforge-core` module `master-SNAPSHOT` with Gradle.
 

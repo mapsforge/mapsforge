@@ -1,6 +1,6 @@
 apply plugin: 'signing'
 
-if (project.hasProperty("android")) { // Android libraries
+if (project.hasProperty("android")) {
     task sourcesJar(type: Jar) {
         classifier = 'sources'
         from android.sourceSets.main.java.srcDirs
@@ -10,7 +10,7 @@ if (project.hasProperty("android")) { // Android libraries
         source = android.sourceSets.main.java.srcDirs
         classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     }
-} else { // Java libraries
+} else {
     task sourcesJar(type: Jar) {
         classifier = 'sources'
         from sourceSets.main.allSource
@@ -38,6 +38,9 @@ uploadArchives {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: SONATYPE_USERNAME, password: SONATYPE_PASSWORD)
+            }
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
                 authentication(userName: SONATYPE_USERNAME, password: SONATYPE_PASSWORD)
             }
 
