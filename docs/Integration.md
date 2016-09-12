@@ -71,7 +71,7 @@ The dependencies for Maven are declared in a similar way. For example:
 
 We publish regularly SNAPSHOT builds to Sonatype OSS Repository Hosting. To use `master-SNAPSHOT` version add as repository, e.g. in Gradle:
 ```groovy
-maven { url "https://oss.sonatype.org/content/groups/public/" }
+maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 ```
 
 ## JitPack
