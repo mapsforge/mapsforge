@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -82,6 +82,19 @@ public class LatLong implements Comparable<LatLong> {
             return -1;
         }
         return 0;
+    }
+
+    /**
+     * Returns the destination point from this point having travelled the given distance on the
+     * given initial bearing (bearing normally varies around path followed).
+     *
+     * @param distance the distance travelled, in same units as earth radius (default: meters)
+     * @param bearing  the initial bearing in degrees from north
+     * @return the destination point
+     * @see <a href="http://www.movable-type.co.uk/scripts/latlon.js">latlon.js</a>
+     */
+    public LatLong destinationPoint(double distance, float bearing) {
+        return LatLongUtils.destinationPoint(this, distance, bearing);
     }
 
     /**

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 devemux86
+ * Copyright 2014-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -53,6 +53,15 @@ public class LatLongUtilsTest {
         } catch (IllegalArgumentException e) {
             Assert.assertTrue(true);
         }
+    }
+
+    @Test
+    public void destinationPointTest() {
+        LatLong start = new LatLong(45, 45);
+        LatLong expected = new LatLong(45.006352, 45.008984);
+        LatLong actual = start.destinationPoint(1000, 45);
+        Assert.assertEquals(LatLongUtils.degreesToMicrodegrees(expected.latitude), LatLongUtils.degreesToMicrodegrees(actual.latitude), 0);
+        Assert.assertEquals(LatLongUtils.degreesToMicrodegrees(expected.longitude), LatLongUtils.degreesToMicrodegrees(actual.longitude), 0);
     }
 
     @Test

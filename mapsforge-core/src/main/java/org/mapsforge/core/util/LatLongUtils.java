@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2016 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -99,6 +99,31 @@ public final class LatLongUtils {
      */
     public static int degreesToMicrodegrees(double coordinate) {
         return (int) (coordinate * CONVERSION_FACTOR);
+    }
+
+    /**
+     * Returns the destination point from this point having travelled the given distance on the
+     * given initial bearing (bearing normally varies around path followed).
+     *
+     * @param start    the start point
+     * @param distance the distance travelled, in same units as earth radius (default: meters)
+     * @param bearing  the initial bearing in degrees from north
+     * @return the destination point
+     * @see <a href="http://www.movable-type.co.uk/scripts/latlon.js">latlon.js</a>
+     */
+    public static LatLong destinationPoint(LatLong start, double distance, float bearing) {
+        double theta = Math.toRadians(bearing);
+        double delta = distance / EQUATORIAL_RADIUS; // angular distance in radians
+
+        double phi1 = Math.toRadians(start.latitude);
+        double lambda1 = Math.toRadians(start.longitude);
+
+        double phi2 = Math.asin(Math.sin(phi1) * Math.cos(delta)
+                + Math.cos(phi1) * Math.sin(delta) * Math.cos(theta));
+        double lambda2 = lambda1 + Math.atan2(Math.sin(theta) * Math.sin(delta) * Math.cos(phi1),
+                Math.cos(delta) - Math.sin(phi1) * Math.sin(phi2));
+
+        return new LatLong(Math.toDegrees(phi2), Math.toDegrees(lambda2));
     }
 
     /**
