@@ -58,13 +58,22 @@ subprojects {
 }
 
 // Configuration for all plain Java projects
+project.ext.javalibraryprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-themes", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer"]
+project.ext.javaprojects = project.javalibraryprojects + ["mapsforge-samples-awt"]
 
-project.ext.javaprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-themes", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "mapsforge-samples-awt"]
+configure(filterProjects(project.javalibraryprojects)) {
+    apply plugin: 'maven'
+
+    if (project.hasProperty("SONATYPE_USERNAME")) {
+        afterEvaluate {
+            project.apply from: "${rootProject.projectDir}/deploy.gradle"
+        }
+    }
+}
 
 configure(filterProjects(project.javaprojects)) {
     apply plugin: 'java'
     //apply plugin: 'checkstyle'
-    apply plugin: 'maven'
 
     dependencies {
         testCompile group: 'junit', name: 'junit', version: "$jUnitVersion"
@@ -79,12 +88,6 @@ configure(filterProjects(project.javaprojects)) {
 
     // set java source encoding, otherwise some tests fail
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-    if (project.hasProperty("SONATYPE_USERNAME")) {
-        afterEvaluate {
-            project.apply from: "${rootProject.projectDir}/deploy.gradle"
-        }
-    }
 }
 
 // Configuration for Android projects
