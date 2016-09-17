@@ -19,7 +19,6 @@ See the [integration guide](docs/Integration.md) and [changelog](docs/Changelog.
 - Mapsforge is in active [development](docs/Contributors.md). 
 - [API documentation](http://mapsforge.org/docs).
 - [Official binary releases](docs/Downloads.md). 
-- [Latest builds from CI server](http://ci.mapsforge.org/).
 - [Mapsforge Talks](docs/Mapsforge-Talks.md).
 
 ### Screenshots:

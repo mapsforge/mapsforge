@@ -1,5 +1,7 @@
 # Downloads for developers
 
+**CI server was deprecated. See [integration guide](Integration.md) for using latest `master-SNAPSHOT` version.**
+
 ## Release 0.6.1 (2016-06-11)
 
 - [Samples application (old permissions)](http://ci.mapsforge.org/job/0.6.1/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-oldpermissions-debug.apk)
@@ -38,13 +40,3 @@
 These are the downloads for old versions. If possible use the newer release, we cannot offer support for old versions and all changes will be made on top of the newer release.
 
 - Old releases for mapsforge are available [here](http://download.mapsforge.org/releases/).
-
-## Latest Master Build Downloads
-
-These are the latest development builds from the master branch. Use this if you want the latest mapsforge features and can live with some instability.
-
-- [Samples application (old permissions)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-oldpermissions-debug.apk)
-- [Samples application (runtime permissions)](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-samples-android/build/outputs/apk/mapsforge-samples-android-runtimepermissions-debug.apk)
-- [Latest jars](http://ci.mapsforge.org/job/master/)
-- [Map writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-map-writer/build/libs/mapsforge-map-writer-master-SNAPSHOT-jar-with-dependencies.jar)
-- [POI writer plugin](http://ci.mapsforge.org/job/master/lastSuccessfulBuild/artifact/mapsforge-poi-writer/build/libs/mapsforge-poi-writer-master-SNAPSHOT-jar-with-dependencies.jar)

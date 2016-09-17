@@ -13,6 +13,7 @@
 - SpatiaLite natives publishing artifacts [#849](https://github.com/mapsforge/mapsforge/issues/849)
 - SNAPSHOT builds publish to Sonatype OSSRH [#873](https://github.com/mapsforge/mapsforge/issues/873)
 - Deprecate Maven build [#852](https://github.com/mapsforge/mapsforge/issues/852)
+- Deprecate CI server [#877](https://github.com/mapsforge/mapsforge/issues/877)
 - Drop of `dev` branch
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.7.0)
