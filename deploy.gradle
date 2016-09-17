@@ -48,7 +48,7 @@ uploadArchives {
                 packaging 'jar'
 
                 name 'mapsforge'
-                description 'The mapsforge project provides free and open software for OpenStreetMap-based applications.'
+                description 'Vector map library written in Java - running on Android and Desktop.'
                 url 'https://github.com/mapsforge/mapsforge'
 
                 licenses {
