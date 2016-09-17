@@ -18,7 +18,6 @@ See the [integration guide](docs/Integration.md) and [changelog](docs/Changelog.
 - Mapsforge is used by many [applications](docs/Mapsforge-Applications.md).
 - Mapsforge is in active [development](docs/Contributors.md). 
 - [API documentation](http://mapsforge.org/docs).
-- [Official binary releases](docs/Downloads.md). 
 - [Mapsforge Talks](docs/Mapsforge-Talks.md).
 
 ### Screenshots:
