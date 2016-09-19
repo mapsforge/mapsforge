@@ -19,6 +19,7 @@
 | [Forest(M)ap(p)](https://play.google.com/store/apps/details?id=de.inforst.waldkarte) | Tool for forestry | Proprietary/Commercial | Closed |
 | [Geopaparazzi](http://www.geopaparazzi.eu) | Digital Field Mapping for geology and engineering with GIS data import | GPL3/Free | Open |
 | [GPSSend](https://play.google.com/store/apps/details?id=com.tinkerpete.gps) | Live Tracking + Emergency Notification | Proprietary/Free | Closed |
+| [Green Tracks](https://play.google.com/store/apps/details?id=com.mountain.tracks) | Climbing and hiking | Proprietary/Free | Closed |
 | [Hunt Cyprus](https://play.google.com/store/apps/details?id=gr.talent.cyprusHunt) | Map and navigation application for hunters | Proprietary/Free | Closed |
 | [Locus](http://www.locusmap.eu/) | Multi-Function Map | Proprietary/Free and Premium | Closed |
 | [Map GB](https://play.google.com/store/apps/details?id=com.mapgb) | Offline map of Britain with postcode search | Proprietary/Free (in-app purchases) | Closed |
