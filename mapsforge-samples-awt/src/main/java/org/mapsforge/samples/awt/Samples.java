@@ -115,7 +115,8 @@ public final class Samples {
         Layers layers = mapView.getLayerManager().getLayers();
 
         // Raster
-        /*TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(0), mapView.getModel().mapViewPosition);
+        /*mapView.getModel().displayModel.setFixedTileSize(256);
+        TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(0, 256), mapView.getModel().mapViewPosition);
         layers.add(tileDownloadLayer);
         tileDownloadLayer.start();
         BoundingBox result = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
@@ -123,10 +124,11 @@ public final class Samples {
         mapView.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());*/
 
         // Vector
+        mapView.getModel().displayModel.setFixedTileSize(512);
         BoundingBox result = null;
         for (int i = 0; i < mapFiles.size(); i++) {
             File mapFile = mapFiles.get(i);
-            TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(i),
+            TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(i, 64),
                     mapView.getModel().mapViewPosition, true, true, false, mapFile);
             BoundingBox boundingBox = tileRendererLayer.getMapDataStore().boundingBox();
             result = result == null ? boundingBox : result.extendBoundingBox(boundingBox);
@@ -144,7 +146,6 @@ public final class Samples {
 
     private static MapView createMapView() {
         MapView mapView = new MapView();
-        mapView.getModel().displayModel.setFixedTileSize(512);
         mapView.getMapScaleBar().setVisible(true);
         if (SHOW_DEBUG_LAYERS) {
             mapView.getFpsCounter().setVisible(true);
@@ -153,8 +154,8 @@ public final class Samples {
         return mapView;
     }
 
-    private static TileCache createTileCache(int index) {
-        TileCache firstLevelTileCache = new InMemoryTileCache(64);
+    private static TileCache createTileCache(int index, int capacity) {
+        TileCache firstLevelTileCache = new InMemoryTileCache(capacity);
         File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge" + index);
         TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
         return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
