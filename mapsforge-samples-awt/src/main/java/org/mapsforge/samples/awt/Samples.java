@@ -74,7 +74,7 @@ public final class Samples {
         ReadBuffer.setMaximumBufferSize(6500000);
 
         // Multithreading rendering
-        MapWorkerPool.NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors() + 1;
+        MapWorkerPool.NUMBER_OF_THREADS = 2;
 
         List<File> mapFiles = getMapFiles(args);
         final MapView mapView = createMapView();
@@ -144,6 +144,7 @@ public final class Samples {
 
     private static MapView createMapView() {
         MapView mapView = new MapView();
+        mapView.getModel().displayModel.setFixedTileSize(512);
         mapView.getMapScaleBar().setVisible(true);
         if (SHOW_DEBUG_LAYERS) {
             mapView.getFpsCounter().setVisible(true);
@@ -153,7 +154,7 @@ public final class Samples {
     }
 
     private static TileCache createTileCache(int index) {
-        TileCache firstLevelTileCache = new InMemoryTileCache(256);
+        TileCache firstLevelTileCache = new InMemoryTileCache(64);
         File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge" + index);
         TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
         return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
