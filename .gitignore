@@ -12,6 +12,7 @@ bin
 gen
 .classpath
 .project
+project.properties
 
 # IntelliJ
 .idea
