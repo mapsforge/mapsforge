@@ -1,6 +1,8 @@
 # Integration guide
 
-This article describes how to integrate the library in your project. Check for current version at Maven badge on main page.
+This article describes how to integrate the library in your project.
+
+Current version is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.mapsforge/mapsforge/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mapsforge/mapsforge)
 
 ## Gradle
 
@@ -27,7 +29,7 @@ compile('org.mapsforge:mapsforge-map-android-extras:[CURRENT-VERSION]') {
 }
 ```
 
-#### Java
+#### Desktop
 ```groovy
 compile 'org.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]'
 compile 'com.kitfox.svg:svg-salamander:1.0'
@@ -49,10 +51,27 @@ compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]'
 
 You'll need also the SpatiaLite native library [files](../spatialite-android/natives).
 
-#### Java
+#### Desktop
 ```groovy
 compile 'org.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]'
 compile 'org.xerial:sqlite-jdbc:3.8.11.2'
+```
+
+## Snapshots
+
+We publish regularly SNAPSHOT builds to Sonatype OSS Repository Hosting.
+
+You need to add the repository:
+```groovy
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+```
+
+And declare the dependencies like:
+```groovy
+compile 'org.mapsforge:mapsforge-core:master-SNAPSHOT'
+...
 ```
 
 ## Maven
@@ -66,31 +85,6 @@ The dependencies for Maven are declared in a similar way. For example:
     <version>[CURRENT-VERSION]</version>
 </dependency>
 ```
-
-## Snapshots
-
-We publish regularly SNAPSHOT builds to Sonatype OSS Repository Hosting. To use `master-SNAPSHOT` version add as repository, e.g. in Gradle:
-```groovy
-maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-```
-
-## JitPack
-
-We support also [JitPack](https://jitpack.io/#mapsforge/mapsforge) for releases or SNAPSHOT builds.
-
-For example in order to include the `mapsforge-core` module `master-SNAPSHOT` with Gradle.
-
-Add as repository:
-```groovy
-maven { url "https://jitpack.io" }
-```
-
-And declare as dependency:
-```groovy
-compile 'com.github.mapsforge.mapsforge:mapsforge-core:master-SNAPSHOT'
-```
-
-The same syntax applies for all modules. And with similar way you can declare the dependencies in Maven too.
 
 ## Jars
 
