@@ -5,6 +5,7 @@
 | [AlaMesa](http://www.alamesacuba.com/en/products/apps/) | Bars & Restaurant directory | Propietary/Free | Closed |
 | [Alminav](http://wiki.openstreetmap.org/wiki/Alminav) | Route planning and offline navigation for cyclists and hikers | Proprietary/Free (in-app purchases) | Closed |
 | [Android-Speedometer](https://play.google.com/store/apps/details?id=de.meditgbr.android.tacho) | GPS based speedometer | Proprietary/Free and Premium | Closed |
+| ["A Photo Manager" with "A Photo Map"](https://github.com/k3b/APhotoManager/)| Show/edit exif-geo info of photos on a map | GPL3+/Free | Open |
 | [APRSdroid](http://aprsdroid.org/) | Amateur Radio | GPL2/Free | Open |
 | [Archies Camping Guide](https://play.google.com/store/apps/details?id=jahdroid.archies) | European campsites | Proprietary/Commercial | Closed |
 | [ARDrone Flight](https://play.google.com/store/apps/details?id=meavydev.ARDrone) | ARDrone Control | Proprietary/Free | Closed |
