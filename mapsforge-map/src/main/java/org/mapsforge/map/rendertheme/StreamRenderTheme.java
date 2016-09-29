@@ -14,6 +14,8 @@
  */
 package org.mapsforge.map.rendertheme;
 
+import org.mapsforge.core.util.Utils;
+
 import java.io.InputStream;
 
 /**
@@ -56,7 +58,7 @@ public class StreamRenderTheme implements XmlRenderTheme {
         if (this.inputStream != other.inputStream) {
             return false;
         }
-        if (this.relativePathPrefix != other.relativePathPrefix) {
+        if (!Utils.equals(this.relativePathPrefix, other.relativePathPrefix)) {
             return false;
         }
         return true;

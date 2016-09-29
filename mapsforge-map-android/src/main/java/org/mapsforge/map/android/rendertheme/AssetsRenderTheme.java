@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +18,7 @@ package org.mapsforge.map.android.rendertheme;
 import android.content.Context;
 import android.text.TextUtils;
 
+import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
@@ -55,10 +57,10 @@ public class AssetsRenderTheme implements XmlRenderTheme {
             return false;
         }
         AssetsRenderTheme other = (AssetsRenderTheme) obj;
-        if (this.assetName != other.assetName) {
+        if (!Utils.equals(this.assetName, other.assetName)) {
             return false;
         }
-        if (this.relativePathPrefix != other.relativePathPrefix) {
+        if (!Utils.equals(this.relativePathPrefix, other.relativePathPrefix)) {
             return false;
         }
         return true;
