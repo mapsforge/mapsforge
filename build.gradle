@@ -16,7 +16,7 @@ allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-    ext.androidBuildVersionTools = "24.0.2"
+    ext.androidBuildVersionTools = "24.0.3"
     ext.jUnitVersion = "4.11"
     description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 
