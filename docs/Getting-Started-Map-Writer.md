@@ -1,13 +1,14 @@
-
 # Mapsforge Map-Writer
 
 The Mapsforge Map-Writer is a plug-in for the OpenStreetMap Osmosis Tool to convert OSM data files into maps that can be displayed with mapsforge.
 
 This documentation is intended for those who want to create map files for use with mapsforge.
 
+If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
+
 ## Introduction
 
-This document describes the mapsforge map-writer plugin. It allows to convert OpenStreetMap data into the .map format which is needed to display maps with mapsforge-based applications. The tool is implemented as a plugin to the [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) software. To use the tool, you are required to have a working installation of Osmosis and the map-writer plugin copied to the plugins directory of Osmosis. You should also be familiar with the Osmosis tool.
+This document describes the mapsforge map-writer plugin. It allows to convert OpenStreetMap data into the .map format which is needed to display maps with mapsforge-based applications. The tool is implemented as a plugin to the [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) software. To use the tool, you are required to have a working installation of Osmosis and the writer plugin copied to the plugins directory of Osmosis. You should also be familiar with the Osmosis tool.
 
 The mapsforge writer has not changed significantly from version 0.3 and files generated with either version can be loaded into mapsforge applications 0.4.+
 
@@ -18,7 +19,6 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 - Use the following optional parameters to configure the process of map creation:
 
 ### Basic Options
-
 
 |**Option**|**Description**|**Valid Values**|**Default Value**|
 |----------|---------------|----------------|-----------------|
@@ -31,7 +31,6 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`comment`|writes a comment to the file||(blank)|
 
 ### Advanced Options (only use when you know what you are doing)
-
 
 |**Option**|**Description**|**Valid Values**|**Default Value**|
 |----------|---------------|----------------|-----------------|
@@ -56,14 +55,9 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 - The plugin requires a bounding box definition, which is either included in the data or is given via the command line parameter `bbox`. Take note that the XML export functionality of the OSM website currently produces invalid bounding box definitions, so that the `bbox` parameter must be used in this case.
 - If you installed the plugin into the user home, please make sure that you run osmosis with exactly this user and not with another user (e.g. the root user).
 
-
 ## Plugin Installation
 
-- Download the [map-writer plugin](Downloads.md) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin. There are several alternatives:
-1. Copy the downloaded plugin to $USER_HOME/.openstreetmap/osmosis/plugins (Linux) or Application Data\Openstreetmap\Osmosis\Plugins (Windows).
-1. Copy the downloaded plugin to subdirectory plugins in the current directory.
-1. Use the Osmosis parameter ‘-plugin <plugin_qualified_classname>’ to load the plugin. The qualified classname of the map-writer is ‘org.mapsforge.map.writer.osmosis.MapFileWriterPluginLoader’.
-- If you want to use a SNAPSHOT version of the plugin, you can build it yourself by following the instructions given in the article GettingStartedDevelopers. The produced plugin will be automatically copied to the Osmosis plugin directory in your home directory.
+- Download the writer plugin from Maven Central or Snapshots repositories and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin.
 - You may want to increase the Java heap space that may be allocated for osmosis. You can do so by editing the script $OSMOSIS_HOME/bin/osmosis(.bat). Insert a line with 'JAVACMD_OPTIONS=-Xmx800m'. This sets the maximum available Java heap space to 800M. Of course you can set this parameter to a value which ever fits best for your purpose.
 - See http://wiki.openstreetmap.org/wiki/Osmosis/Installation for further information about Osmosis usage.
 
@@ -73,11 +67,6 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 - Let the directory where osmosis has been extracted to ($OSMOSIS_HOME) be "/home/prometheus/development/osm/osmosis/osmosis-0.40.1/".
 - Create the directory "/home/prometheus/.openstreetmap/osmosis/plugins/" and copy the mapsforge-map-writer-x.x.x.jar to this directory.
 
-### Software Requirements
-
-- Osmosis 0.4.3.1
-- Java 6 Runtime (tested with Sun JDK and OpenJDK)
- 
 ### Hardware Requirements
 
 The currently realeased version of the map-writer gives you the choice of either processing the input data completely in main memory or using the hard disk for storing temporary data structures. You can switch between these processing modes by using the 'type' parameter, see Plugin Usage below.
@@ -85,6 +74,7 @@ The currently realeased version of the map-writer gives you the choice of either
 We recommend using the main memory mode only for small input files (< 200 MB in PBF format) as it requires quite a huge amount of memory (about ten times the size of the input file).
 
 ## Land/Sea Feature Encoding
+
 For a minimum compatibility of maps generated, the following standard for encoding land and sea areas is suggested:
  - either have a single sea polygon at the bottom or more complex sea polygons (this is really up to map makers to decide, the single sea polygon is smaller in the map file but has the effect of some double drawing), tag natural=sea
  - define land areas with tag natural=nosea
@@ -93,7 +83,6 @@ For a minimum compatibility of maps generated, the following standard for encodi
 It is encouraged to include land/sea areas for the entire bbox of the map (so even if the real map data covers just one irregularly shaped polygon, the land/sea should be for the whole bbox), the overhead is often not great and the result looks much better on maps.
 
 The old practice of implicitly assuming that the background is land-coloured and not defining land areas is deprecated. 
-
 
 ## Defining a Custom Tag Mapping via XML
 
@@ -104,28 +93,29 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 
 You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article.
 
-## Feedback
-
-Please report any bugs and feature requests via [Github issue tracker](https://github.com/mapsforge/mapsforge/issues).
-
 ## Changelog
 
 ### 0.6.1
+
 - Add all tags from OSM wiki to area heuristics
 - Minor changes to tag-mapping.xml (place=locality)
 
 ### 0.6.0
+
 - Multilingual maps
 - Language improved parsing
 - Fix invalid number of way nodes
 
 ### 0.5.2
+
  - Minor changes to tag-mapping.xml (administrative boundaries, national parks)
 
 ### 0.5.1
+
 - No significant changes
 
 ### 0.5.0
+
 The mapfile format has not changed in 0.5.0, but the creation process has changed somewhat and it is recommended to use the latest version of the map file writer.
  - The encoding of multi-polygons is now much more efficient as multi-polygons are clipped to tile boundaries. Previous versions resulted in very large files that then triggered OOM situations in the map file reader.
  - Some smaller changes to the tag-mapping.xml (remove trees, duplicates).

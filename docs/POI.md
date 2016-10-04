@@ -18,17 +18,13 @@ Externally you can use your favorite SQLite manager for browsing the database, e
 
 ## Quick Start
 
-This section provides you with information how to create a POI database, how to use it for POI search and how to visualize the results. It is recommended that you first get familiar with:
-- [Getting-Started-Developers](Getting-Started-Developers.md)
-- [Getting-Started-Map-Writer](Getting-Started-Map-Writer.md)
-- [Getting-Started-Android-App](Getting-Started-Android-App.md)
-- Overlay API
+This section provides you with information how to create a POI database, how to use it for POI search and how to visualize the results.
 
 ### Creating a POI Database
 
-The POI writer is implemented as an Osmosis plugin. For this tutorial it is necessary to checkout and install the latest libraries.
+The tool is implemented as a plugin to the [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) software. To use the tool, you are required to have a working installation of Osmosis and the writer plugin copied to the plugins directory of Osmosis. You should also be familiar with the Osmosis tool.
 
-It is also necessary to install Osmosis. [poi-writer plugin](Downloads.md) installation is similar to map-writer plugin, you can see its [guide](Getting-Started-Map-Writer.md#plugin-installation) for detailed instructions. You should now have a fully working environment for developing apps using the POI API.
+Download the writer plugin from Maven Central or Snapshots repositories and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin.
 
 To convert OSM data to a POI database execute the following command:
 
