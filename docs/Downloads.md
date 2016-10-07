@@ -1,6 +1,6 @@
 # Downloads for developers
 
-**CI server was deprecated. See [integration guide](Integration.md) for using latest `master-SNAPSHOT` version.**
+**SNAPSHOT downloads can be found in [Sonatype OSS Repository Hosting](https://oss.sonatype.org/content/repositories/snapshots/org/mapsforge/).**
 
 ## Release 0.6.1 (2016-06-11)
 
