@@ -4,7 +4,7 @@ This documents the steps for an official mapsforge release.
 
 Set Version Numbers
 -------------------
-Set the new version number in `build.gradle` and `mapsforge-samples-android\AndroidManifest.xml`.
+Set the new version number in `build.gradle`.
 
 Deployment to Sonatype OSSRH
 ----------------------------
@@ -44,10 +44,6 @@ Check the released artifacts and click on Close. Sonatype will then perform its 
 Git tags
 --------
 Add tags to Git commit in form 0.5.0
-
-Jenkins
--------
-Add a jenkins build based on the Git tag (copy previous release and just change tag to check out)
 
 Javadoc
 -------
