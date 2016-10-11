@@ -81,7 +81,7 @@ public class RenderThemeChanger extends RenderTheme4 {
     }
 
     void changeRenderTheme() {
-        File[] renderThemes = Environment.getExternalStorageDirectory().listFiles(renderThemesFilter);
+        File[] renderThemes = Global.getMapFileDirectory().listFiles(renderThemesFilter);
         if (renderThemes.length > 0) {
             File nextTheme = renderThemes[iteration % renderThemes.length];
             iteration += 1;

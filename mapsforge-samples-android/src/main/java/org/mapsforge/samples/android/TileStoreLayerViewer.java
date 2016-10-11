@@ -51,7 +51,7 @@ public class TileStoreLayerViewer extends RenderTheme4 {
     protected void createTileCaches() {
         // to use a tile store you provide it as a cache (which is pre-filled and never purges any files.
         // additionally you should use a memory tile store for faster refresh.
-        TileStore tileStore = new TileStore(new File(Environment.getExternalStorageDirectory(), "tilestore"), ".png", AndroidGraphicFactory.INSTANCE);
+        TileStore tileStore = new TileStore(new File(Global.getMapFileDirectory(), "tilestore"), ".png", AndroidGraphicFactory.INSTANCE);
         InMemoryTileCache memoryTileCache = new InMemoryTileCache(AndroidUtil.getMinimumCacheSize(this,
                 this.mapView.getModel().displayModel.getTileSize(),
                 this.mapView.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio()));

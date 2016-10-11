@@ -49,6 +49,8 @@ import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
 import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
+import java.io.File;
+
 /**
  * Code common to most activities in the Samples app.
  */
@@ -129,7 +131,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
      */
     @Override
     protected String getMapFileName() {
-        return "germany.map";
+        return Global.getMapFileName();
     }
 
     @Override
@@ -326,4 +328,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
         mapView.getModel().displayModel.setMaxTextWidthFactor(Float.valueOf(sharedPreferences.getString(SamplesApplication.SETTING_TEXTWIDTH, "0.7")));
     }
 
+    protected File getMapFileDirectory() {
+        return Global.getMapFileDirectory();
+    }
 }

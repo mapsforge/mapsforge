@@ -26,6 +26,8 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
+import java.io.File;
+
 /**
  * The simplest form of creating a map viewer based on the MapViewerTemplate.
  * It also demonstrates the use simplified cleanup operation at activity exit.
@@ -67,7 +69,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
      */
     @Override
     protected String getMapFileName() {
-        return "germany.map";
+        return Global.getMapFileName();
     }
 
     /**
@@ -101,5 +103,9 @@ public class SimplestMapViewer extends MapViewerTemplate {
         this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
                 this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
                 this.mapView.getModel().frameBufferModel.getOverdrawFactor()));
+    }
+
+    protected File getMapFileDirectory() {
+        return Global.getMapFileDirectory();
     }
 }
