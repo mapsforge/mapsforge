@@ -218,7 +218,7 @@ public final class OSMTagMapping {
                 boolean forcePolygonLine = attributes.getNamedItem("force-polygon-line") == null ? false : Boolean
                         .parseBoolean(attributes.getNamedItem("force-polygon-line").getTextContent());
 
-                OSMTag osmTag = new OSMTag(this.poiID, key, value, zoom, renderable, forcePolygonLine);
+                OSMTag osmTag = new OSMTag(this.poiID, key, value, zoom, renderable, forcePolygonLine, false);
                 if (this.stringToPoiTag.containsKey(osmTag.tagKey())) {
                     LOGGER.warning("duplicate osm-tag found in tag-mapping configuration (ignoring): " + osmTag);
                     continue;
@@ -277,7 +277,10 @@ public final class OSMTagMapping {
                 boolean forcePolygonLine = attributes.getNamedItem("force-polygon-line") == null ? false : Boolean
                         .parseBoolean(attributes.getNamedItem("force-polygon-line").getTextContent());
 
-                OSMTag osmTag = new OSMTag(this.wayID, key, value, zoom, renderable, forcePolygonLine);
+                boolean labelPosition = attributes.getNamedItem("label-position") == null ? false : Boolean
+                        .parseBoolean(attributes.getNamedItem("label-position").getTextContent());
+
+                OSMTag osmTag = new OSMTag(this.wayID, key, value, zoom, renderable, forcePolygonLine, labelPosition);
                 if (this.stringToWayTag.containsKey(osmTag.tagKey())) {
                     LOGGER.warning("duplicate osm-tag found in tag-mapping configuration (ignoring): " + osmTag);
                     continue;
