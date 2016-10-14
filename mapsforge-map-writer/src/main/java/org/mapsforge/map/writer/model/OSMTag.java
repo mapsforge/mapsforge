@@ -30,7 +30,7 @@ public class OSMTag {
      */
     public static OSMTag fromOSMTag(OSMTag otherTag, short newID) {
         return new OSMTag(newID, otherTag.getKey(), otherTag.getValue(), otherTag.getZoomAppear(),
-                otherTag.isRenderable(), otherTag.isForcePolygonLine());
+                otherTag.isRenderable(), otherTag.isForcePolygonLine(), otherTag.isLabelPosition());
     }
 
     /**
@@ -44,6 +44,7 @@ public class OSMTag {
         return key + KEY_VALUE_SEPARATOR + value;
     }
 
+    private final boolean labelPosition;
     private final boolean forcePolygonLine;
     private final short id;
     private final String key;
@@ -61,8 +62,9 @@ public class OSMTag {
      * @param zoomAppear       the minimum zoom level the tag appears first
      * @param renderable       flag if the tag represents a renderable entity
      * @param forcePolygonLine flag if polygon line instead of area is forced with closed polygons
+     * @param labelPosition    flag if label position should be computed for polygons with such tag
      */
-    public OSMTag(short id, String key, String value, byte zoomAppear, boolean renderable, boolean forcePolygonLine) {
+    public OSMTag(short id, String key, String value, byte zoomAppear, boolean renderable, boolean forcePolygonLine, boolean labelPosition) {
         super();
         this.id = id;
         this.key = key;
@@ -70,6 +72,7 @@ public class OSMTag {
         this.zoomAppear = zoomAppear;
         this.renderable = renderable;
         this.forcePolygonLine = forcePolygonLine;
+        this.labelPosition = labelPosition;
     }
 
     @Override
@@ -140,6 +143,13 @@ public class OSMTag {
         return this.renderable;
     }
 
+	/**
+	 * @return the labelPosition
+	 */
+    public boolean isLabelPosition() {
+        return labelPosition;
+    }
+
     /**
      * @return the string representation of the OSMTag
      */
@@ -150,6 +160,6 @@ public class OSMTag {
     @Override
     public final String toString() {
         return "OSMTag [id=" + this.id + ", key=" + this.key + ", value=" + this.value + ", zoomAppear="
-                + this.zoomAppear + ", renderable=" + this.renderable + "]";
+                + this.zoomAppear + ", renderable=" + this.renderable + ", labelPosition=" + this.labelPosition + "]";
     }
 }
