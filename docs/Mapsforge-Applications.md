@@ -24,6 +24,7 @@
 | [Hunt Cyprus](https://play.google.com/store/apps/details?id=gr.talent.cyprusHunt) | Map and navigation application for hunters | Proprietary/Free | Closed |
 | [Locus](http://www.locusmap.eu/) | Multi-Function Map | Proprietary/Free and Premium | Closed |
 | [Map GB](https://play.google.com/store/apps/details?id=com.mapgb) | Offline map of Britain with postcode search | Proprietary/Free (in-app purchases) | Closed |
+| [Map Marker](https://play.google.com/store/apps/details?id=com.exlyo.mapmarker) | Map application to place markers | Proprietary/Free (in-app purchases) | Closed |
 | [Mapet](http://nspace.hu/mapet/) | Hiking navigation | Proprietary/Free | Closed |
 | [mappa](http://mynativeguide.com/) | Tourist Map | Proprietary/Commercial | Closed |
 | [Mapsforge Tile Server](https://github.com/develar/mapsforge-tile-server) | Tile Server | MIT/Free | Open |
