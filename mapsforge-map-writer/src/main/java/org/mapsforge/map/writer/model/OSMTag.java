@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2016 Andrey Novikov
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -44,15 +45,13 @@ public class OSMTag {
         return key + KEY_VALUE_SEPARATOR + value;
     }
 
-    private final boolean labelPosition;
     private final boolean forcePolygonLine;
     private final short id;
     private final String key;
+    private final boolean labelPosition;
     // TODO is the renderable attribute still needed?
     private final boolean renderable;
-
     private final String value;
-
     private final byte zoomAppear;
 
     /**
@@ -137,17 +136,17 @@ public class OSMTag {
     }
 
     /**
+     * @return the labelPosition
+     */
+    public boolean isLabelPosition() {
+        return labelPosition;
+    }
+
+    /**
      * @return the renderable
      */
     public final boolean isRenderable() {
         return this.renderable;
-    }
-
-	/**
-	 * @return the labelPosition
-	 */
-    public boolean isLabelPosition() {
-        return labelPosition;
     }
 
     /**

@@ -1,7 +1,6 @@
 /**
  * Copyright 2016 Andrey Novikov
- * Java implementation and adoption for JTS and MapsForge of
- * https://github.com/mapbox/polylabel
+ * Java implementation and adaptation for JTS / MapsForge of https://github.com/mapbox/polylabel
  * <p>
  * ISC License
  * Copyright (c) 2016 Mapbox
@@ -35,11 +34,13 @@ import java.util.logging.Logger;
 
 public class PolyLabel {
     private static final Logger LOGGER = Logger.getLogger(PolyLabel.class.getName());
-    private static final float SQRT2 = (float) Math.sqrt(2);
-    private static final double precision = 0.00000011920928955078125; // one logical pixel for zoom 14
+
+    private static final double PRECISION = 1.0 / (512 << 14); // a logical pixel for zoom 14
+    private static final double SQRT2 = Math.sqrt(2);
 
     /**
      * Returns pole of inaccessibility, the most distant internal point from the polygon outline.
+     *
      * @param geometry geometry that can be correctly interpreted as a polygon
      * @return optimal label placement point
      */
@@ -113,7 +114,7 @@ public class PolyLabel {
                 bestCell = cell;
 
             // Do not drill down further if there's no chance of a better solution
-            if (cell.max - bestCell.d <= precision) continue;
+            if (cell.max - bestCell.d <= PRECISION) continue;
 
             // Split the cell into four cells
             h = cell.h / 2;

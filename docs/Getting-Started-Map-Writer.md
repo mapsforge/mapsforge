@@ -37,7 +37,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`tag-conf-file`|path to an XML file that customizes the definition which OSM-tags are recognized|path to an XML file, please read section 'Defining a Custom Tag Mapping via XML' carefully before using thsi parameter|(blank) internal default tag mapping is used|
 |`polygon-clipping`|use polygon clipping to reduce map file size (minimal performance overhead)|true/false|true|
 |`way-clipping`|use way clipping to reduce map file size (minimal performance overhead)|true/false|true|
-|`label-position`|compute label position for polygons that cover multiple tiles (minimal performance overhead)|true/false|true|
+|`label-position`|compute label position for polygons that cover multiple tiles (minimal performance overhead)|true/false|false|
 |`simplification-factor`|simplifies ways and polygons with a topology preserving algorithm similar to the Douglas Peucker algorithm, using as the maximum distance difference value the given simplification factor (evaluated in pixels on max zoom level of a base zoom level); on base zoom levels higher than 12, no simplification is computed|positive real number|2.5|
 |`bbox-enlargement`|amount of meters used for enlarging bounding boxes in computations|positive integer|20|
 |`zoom-interval-conf`|configure the zoom intervals used in this file, configuration is given in the form: baseZoomA, minZoomA, maxZoomA, baseZoomB, minZoomB, maxZoomB,..., baseZoomN, minZoomN, maxZoomN, in most cases you do **not** need to alter the standard configuration|intervals must not overlap and must not contain gaps|5,0,7,10,8,11,14,12,21|
@@ -94,6 +94,10 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article.
 
 ## Changelog
+
+### 0.7.0
+
+- Polygon label position enhancements
 
 ### 0.6.1
 

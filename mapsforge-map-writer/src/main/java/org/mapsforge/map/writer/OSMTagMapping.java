@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2016 Andrey Novikov
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -218,7 +219,10 @@ public final class OSMTagMapping {
                 boolean forcePolygonLine = attributes.getNamedItem("force-polygon-line") == null ? false : Boolean
                         .parseBoolean(attributes.getNamedItem("force-polygon-line").getTextContent());
 
-                OSMTag osmTag = new OSMTag(this.poiID, key, value, zoom, renderable, forcePolygonLine, false);
+                boolean labelPosition = attributes.getNamedItem("label-position") == null ? false : Boolean
+                        .parseBoolean(attributes.getNamedItem("label-position").getTextContent());
+
+                OSMTag osmTag = new OSMTag(this.poiID, key, value, zoom, renderable, forcePolygonLine, labelPosition);
                 if (this.stringToPoiTag.containsKey(osmTag.tagKey())) {
                     LOGGER.warning("duplicate osm-tag found in tag-mapping configuration (ignoring): " + osmTag);
                     continue;

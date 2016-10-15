@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://mapsforge.org/tag-mapping"
-    xmlns:tns="http://mapsforge.org/tag-mapping" elementFormDefault="qualified">
+<schema xmlns:tns="http://mapsforge.org/tag-mapping" elementFormDefault="qualified"
+    targetNamespace="http://mapsforge.org/tag-mapping" xmlns="http://www.w3.org/2001/XMLSchema">
 
     <complexType name="osm-tag">
         <annotation>
@@ -20,8 +20,8 @@
             </documentation>
         </annotation>
         <sequence>
-            <element name="zoom-override" type="tns:simple-tag" maxOccurs="unbounded"
-                minOccurs="0"></element>
+            <element name="zoom-override" maxOccurs="unbounded" minOccurs="0"
+                type="tns:simple-tag"></element>
         </sequence>
         <attribute name="key" use="required">
             <annotation>
@@ -52,7 +52,7 @@
                 </restriction>
             </simpleType>
         </attribute>
-        <attribute name="zoom-appear" use="optional" default="17">
+        <attribute name="zoom-appear" default="17" use="optional">
             <annotation>
                 <documentation>
                     The zoom level on which the tag should first appear
@@ -66,7 +66,7 @@
                 </restriction>
             </simpleType>
         </attribute>
-        <attribute name="enabled" type="boolean" use="optional" default="true">
+        <attribute name="enabled" default="true" type="boolean" use="optional">
             <annotation>
                 <documentation>
                     Enables or Disables the tag in the map generation
@@ -87,7 +87,7 @@
                 </documentation>
             </annotation>
         </attribute>
-        <attribute name="renderable" type="boolean" use="optional" default="true">
+        <attribute name="renderable" default="true" type="boolean" use="optional">
             <annotation>
                 <documentation>
                     Indicates whether the tag is renderable. Omitting
@@ -111,7 +111,7 @@
                 </documentation>
             </annotation>
         </attribute>
-        <attribute name="force-polygon-line" type="boolean" default="false">
+        <attribute name="force-polygon-line" default="false" type="boolean">
             <annotation>
                 <documentation>
                     Indicates whether a closed polygon should be interpreted
@@ -120,7 +120,7 @@
                 </documentation>
             </annotation>
         </attribute>
-        <attribute name="label-position" type="boolean" default="false">
+        <attribute name="label-position" default="false" type="boolean">
             <annotation>
                 <documentation>
                     Indicates whether a label position should be calculated
@@ -152,7 +152,7 @@
             </documentation>
         </annotation>
         <sequence>
-            <element name="osm-tag" type="tns:osm-tag" maxOccurs="unbounded" minOccurs="1">
+            <element name="osm-tag" maxOccurs="unbounded" minOccurs="1" type="tns:osm-tag">
                 <annotation>
                     <documentation>
                         The osm-tag represents an OpenStreetMap tag and
@@ -161,7 +161,7 @@
                 </annotation>
             </element>
         </sequence>
-        <attribute name="enabled" type="boolean" use="optional" default="true">
+        <attribute name="enabled" default="true" type="boolean" use="optional">
             <annotation>
                 <documentation>
                     Sets the default value of the 'enabled' attribute for
@@ -185,14 +185,14 @@
 
     <complexType name="tag-mapping">
         <sequence>
-            <element name="pois" type="tns:tag-group" maxOccurs="unbounded" minOccurs="0">
+            <element name="pois" maxOccurs="unbounded" minOccurs="0" type="tns:tag-group">
                 <annotation>
                     <documentation>
                         A group of osm-tags referring to POIs.
                     </documentation>
                 </annotation>
             </element>
-            <element name="ways" type="tns:tag-group" maxOccurs="unbounded" minOccurs="0">
+            <element name="ways" maxOccurs="unbounded" minOccurs="0" type="tns:tag-group">
                 <annotation>
                     <documentation>
                         A group of osm-tags referring to ways.

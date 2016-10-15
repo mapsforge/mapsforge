@@ -176,14 +176,13 @@ public final class MapFileWriter {
             short subtileMask = GeoUtils.computeBitmask(processedGeometry, this.tile,
                     this.configuration.getBboxEnlargement());
 
-            // compute the centroid of the unclipped polygon
+            // Compute the label coordinates of the unclipped polygon
             LatLong labelCoordinate = null;
             if (this.way.isValidClosedLine()) {
                 boolean labelPosition = this.configuration.isLabelPosition();
                 if (!labelPosition) {
-                    short[] tags = this.way.getTags();
-                    for (int i = 0; i < tags.length; i++) {
-                        labelPosition = configuration.getTagMapping().getWayTag(tags[i]).isLabelPosition();
+                    for (short tag : this.way.getTags()) {
+                        labelPosition = this.configuration.getTagMapping().getWayTag(tag).isLabelPosition();
                         if (labelPosition)
                             break;
                     }
