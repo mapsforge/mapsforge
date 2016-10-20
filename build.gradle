@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.1'
+        classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
     }
 }
@@ -16,7 +16,7 @@ allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-    ext.androidBuildVersionTools = "24.0.3"
+    ext.androidBuildVersionTools = "25.0.0"
     ext.jUnitVersion = "4.11"
     description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 
@@ -30,7 +30,7 @@ allprojects {
 }
 
 // no injection of functions, so via inheritance
-def androidCompileSdk() { return 24 }
+def androidCompileSdk() { return 25 }
 
 def androidMinSdk() { return 10 }
 
