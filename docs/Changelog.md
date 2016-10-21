@@ -6,6 +6,7 @@
 - Render theme resources without location prefixes [#847](https://github.com/mapsforge/mapsforge/issues/847)
 - Multithreaded rendering improvements [#591](https://github.com/mapsforge/mapsforge/issues/591) [#806](https://github.com/mapsforge/mapsforge/issues/806)
 - Fix map disappearance at large zoom levels [#572](https://github.com/mapsforge/mapsforge/issues/572)
+- POI writer: allow empty categories [#883](https://github.com/mapsforge/mapsforge/issues/883)
 - SVG symbols customization [#858](https://github.com/mapsforge/mapsforge/issues/858)
 - Map scale bar size scaling [#861](https://github.com/mapsforge/mapsforge/issues/861)
 - Deprecate water tiles rendering [#640](https://github.com/mapsforge/mapsforge/issues/640)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -29,6 +29,7 @@ public class PoiWriterConfiguration {
     private BoundingBox bboxConfiguration;
     private String comment;
     private int fileSpecificationVersion;
+    private boolean filterCategories;
     private File outputFile;
     private String preferredLanguage;
     private URL tagMapping;
@@ -85,6 +86,13 @@ public class PoiWriterConfiguration {
      */
     public int getFileSpecificationVersion() {
         return this.fileSpecificationVersion;
+    }
+
+    /**
+     * @return the filter categories
+     */
+    public boolean isFilterCategories() {
+        return filterCategories;
     }
 
     /**
@@ -185,6 +193,13 @@ public class PoiWriterConfiguration {
      */
     public void setFileSpecificationVersion(int fileSpecificationVersion) {
         this.fileSpecificationVersion = fileSpecificationVersion;
+    }
+
+    /**
+     * @param filterCategories the filter categories to set
+     */
+    public void setFilterCategories(boolean filterCategories) {
+        this.filterCategories = filterCategories;
     }
 
     /**

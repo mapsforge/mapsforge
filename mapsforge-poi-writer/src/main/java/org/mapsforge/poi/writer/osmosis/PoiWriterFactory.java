@@ -34,6 +34,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
     private static final String PARAM_ALL_TAGS = "all-tags";
     private static final String PARAM_BBOX = "bbox";
     private static final String PARAM_COMMENT = "comment";
+    private static final String PARAM_FILTER_CATEGORIES = "filter-categories";
     private static final String PARAM_OUTFILE = "file";
     private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
     private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
@@ -45,6 +46,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
         configuration.setAllTags(getBooleanArgument(taskConfig, PARAM_ALL_TAGS, true));
         configuration.addBboxConfiguration(getStringArgument(taskConfig, PARAM_BBOX, null));
         configuration.setComment(getStringArgument(taskConfig, PARAM_COMMENT, null));
+        configuration.setFilterCategories(getBooleanArgument(taskConfig, PARAM_FILTER_CATEGORIES, true));
         configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
         configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
         configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));

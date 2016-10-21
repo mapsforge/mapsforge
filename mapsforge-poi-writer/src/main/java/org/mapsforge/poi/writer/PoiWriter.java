@@ -162,7 +162,9 @@ public final class PoiWriter {
 
         try {
             commit();
-            filterCategories();
+            if (configuration.isFilterCategories()) {
+                filterCategories();
+            }
             writeMetadata();
             this.conn.close();
 
