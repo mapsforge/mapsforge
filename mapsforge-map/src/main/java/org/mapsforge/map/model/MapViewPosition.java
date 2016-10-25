@@ -35,15 +35,24 @@ public class MapViewPosition extends Observable implements Persistable {
         // just make the times longer for duration and frame length
         private static final int DEFAULT_DURATION = 250;
         private static final int FRAME_LENGTH_IN_MS = 15;
+        private static final int ANIMATION_STEPS = 25;
 
+        // zoom parameters
         double scaleDifference;
         double startScaleFactor;
         private boolean executeAnimation;
         private long timeEnd;
         private long timeStart;
 
-        @Override
-        protected void doWork() throws InterruptedException {
+        // move parameters
+        long mapSize;
+        double targetPixelX;
+        double targetPixelY;
+        int step;
+
+        private void doZoomWork() throws InterruptedException {
+            if (!executeAnimation)
+                return;
             if (System.currentTimeMillis() >= this.timeEnd) {
                 this.executeAnimation = false;
                 MapViewPosition.this.setScaleFactor(calculateScaleFactor(1));
@@ -52,6 +61,26 @@ public class MapViewPosition extends Observable implements Persistable {
                 float timeElapsedRatio = (System.currentTimeMillis() - this.timeStart) / (1f * DEFAULT_DURATION);
                 MapViewPosition.this.setScaleFactor(calculateScaleFactor(timeElapsedRatio));
             }
+        }
+
+        private void doMoveWork() {
+            if (step == 0)
+                return;
+            double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, mapSize);
+            double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, mapSize);
+            double stepSizeX = Math.abs(targetPixelX - currentPixelX) / step;
+            double stepSizeY = Math.abs(targetPixelY - currentPixelY) / step;
+            double signX = Math.signum(currentPixelX - targetPixelX);
+            double signY = Math.signum(currentPixelY - targetPixelY);
+            --step;
+
+            moveCenter(stepSizeX * signX, stepSizeY * signY);
+        }
+
+        @Override
+        protected void doWork() throws InterruptedException {
+            doZoomWork();
+            doMoveWork();
             sleep(FRAME_LENGTH_IN_MS);
         }
 
@@ -62,10 +91,10 @@ public class MapViewPosition extends Observable implements Persistable {
 
         @Override
         protected boolean hasWork() {
-            return this.executeAnimation;
+            return this.executeAnimation || step > 0;
         }
 
-        void startAnimation(double startScaleFactor, double targetScaleFactor) {
+        void startZoomAnimation(double startScaleFactor, double targetScaleFactor) {
             // TODO this is not properly synchronized
             this.startScaleFactor = startScaleFactor;
             this.scaleDifference = targetScaleFactor - this.startScaleFactor;
@@ -77,12 +106,20 @@ public class MapViewPosition extends Observable implements Persistable {
             }
         }
 
+        void startMoveAnimation(LatLong latLong) {
+            mapSize = MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize());
+            targetPixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
+            targetPixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
+            step = ANIMATION_STEPS;
+            synchronized (this) {
+                notify();
+            }
+        }
+
         private double calculateScaleFactor(float percent) {
             return this.startScaleFactor + this.scaleDifference * percent;
         }
     }
-
-    private static final int ANIMATION_STEPS = 25;
 
     private static final String LATITUDE = "latitude";
     private static final String LATITUDE_MAX = "latitudeMax";
@@ -127,30 +164,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * Animate the map towards the given position.
      */
     public void animateTo(final LatLong latLong) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                long mapSize = MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize());
-                double targetPixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
-                double targetPixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
-
-                for (int i = ANIMATION_STEPS; i > 0; i--) {
-                    double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, mapSize);
-                    double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, mapSize);
-                    double stepSizeX = Math.abs(targetPixelX - currentPixelX) / i;
-                    double stepSizeY = Math.abs(targetPixelY - currentPixelY) / i;
-                    double signX = Math.signum(currentPixelX - targetPixelX);
-                    double signY = Math.signum(currentPixelY - targetPixelY);
-
-                    moveCenter(stepSizeX * signX, stepSizeY * signY);
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        // Nothing to do...
-                    }
-                }
-            }
-        }).start();
+        zoomAnimator.startMoveAnimation(latLong);
     }
 
     public boolean animationInProgress() {
@@ -250,16 +264,6 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Animates the center position of the map by the given amount of pixels.
-     *
-     * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
-     * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
-     */
-    public void moveCenter(double moveHorizontal, double moveVertical) {
-        this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0, true);
-    }
-
-    /**
      * Moves the center position of the map by the given amount of pixels.
      *
      * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
@@ -303,6 +307,29 @@ public class MapViewPosition extends Observable implements Persistable {
             double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
             setCenterInternal(newLatitude, newLongitude);
             setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
+        }
+        notifyObservers();
+    }
+
+    /**
+     * Moves the center position of the map by the given amount of pixels.
+     *
+     * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
+     * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
+     */
+    public void moveCenter(double moveHorizontal, double moveVertical) {
+        synchronized (this) {
+            long mapSize = MercatorProjection.getMapSize(this.zoomLevel, this.displayModel.getTileSize());
+            double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, mapSize)
+                    - moveHorizontal;
+            double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, mapSize) - moveVertical;
+
+            pixelX = Math.min(Math.max(0, pixelX), mapSize);
+            pixelY = Math.min(Math.max(0, pixelY), mapSize);
+
+            double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, mapSize);
+            double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
+            setCenterInternal(newLatitude, newLongitude);
         }
         notifyObservers();
     }
@@ -518,7 +545,7 @@ public class MapViewPosition extends Observable implements Persistable {
     private void setZoomLevelInternal(int zoomLevel, boolean animated) {
         this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
         if (animated) {
-            this.zoomAnimator.startAnimation(getScaleFactor(), Math.pow(2, this.zoomLevel));
+            this.zoomAnimator.startZoomAnimation(getScaleFactor(), Math.pow(2, this.zoomLevel));
         } else {
             this.setScaleFactor(Math.pow(2, this.zoomLevel));
             this.setPivot(null);
