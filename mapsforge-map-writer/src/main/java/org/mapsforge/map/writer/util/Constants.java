@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 devemux86
+ * Copyright 2016 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -53,9 +54,9 @@ public final class Constants {
      */
     public static final int DEFAULT_TILE_SIZE = 256;
     /**
-     * The maximum base zoom level for which we apply a simplification algorithm to filter way points.
+     * The default maximum base zoom level for which we apply a simplification algorithm to filter way points.
      */
-    public static final int MAX_SIMPLIFICATION_BASE_ZOOM = 12;
+    public static final int DEFAULT_SIMPLIFICATION_MAX_ZOOM = 12;
     /**
      * The name of the property that refers to the lowest version of the map file specification supported by this implementation.
      */

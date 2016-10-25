@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
  * Copyright 2015 devemux86
+ * Copyright 2016 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -48,6 +49,7 @@ public class MapWriterConfiguration {
     private List<String> preferredLanguages;
 
     private double simplification;
+    private byte simplificationMaxZoom;
 
     private boolean skipInvalidRelations;
 
@@ -230,6 +232,13 @@ public class MapWriterConfiguration {
      */
     public double getSimplification() {
         return this.simplification;
+    }
+
+    /**
+     * @return the simplification map zoom
+     */
+    public byte getSimplificationMaxZoom() {
+        return this.simplificationMaxZoom;
     }
 
     /**
@@ -427,6 +436,17 @@ public class MapWriterConfiguration {
         }
 
         this.simplification = simplification;
+    }
+
+    /**
+     * @param simplificationMaxZoom the simplification max zoom to set
+     */
+    public void setSimplificationMaxZoom(byte simplificationMaxZoom) {
+        if (simplificationMaxZoom < 0) {
+            throw new RuntimeException("simplificationMaxZoom must be >= 0");
+        }
+
+        this.simplificationMaxZoom = simplificationMaxZoom;
     }
 
     /**

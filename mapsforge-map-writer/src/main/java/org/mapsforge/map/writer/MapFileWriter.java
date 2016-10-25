@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
  * Copyright 2016 Andrey Novikov
+ * Copyright 2016 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -152,7 +153,7 @@ public final class MapFileWriter {
 
             // TODO is this the right place to simplify, or is it better before clipping?
             if (this.configuration.getSimplification() > 0
-                    && this.tile.getZoomlevel() <= Constants.MAX_SIMPLIFICATION_BASE_ZOOM) {
+                    && this.tile.getZoomlevel() <= this.configuration.getSimplificationMaxZoom()) {
                 processedGeometry = GeoUtils.simplifyGeometry(this.way, processedGeometry, this.maxZoomInterval,
                         tileSize, this.configuration.getSimplification());
                 if (processedGeometry == null) {
@@ -911,7 +912,7 @@ public final class MapFileWriter {
                     if (processedTiles == amountTiles) {
                         LOGGER.info("written 100% of sub file for zoom interval index " + zoomIntervalIndex);
                     } else {
-                        LOGGER.info("written " + (processedTiles / amountOfTilesInPercentStep) * PROGRESS_PERCENT_STEP
+                        LOGGER.info("written " + Math.round(processedTiles / amountOfTilesInPercentStep / PROGRESS_PERCENT_STEP * 100)
                                 + "% of sub file for zoom interval index " + zoomIntervalIndex);
                     }
                 }
