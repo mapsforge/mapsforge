@@ -120,6 +120,14 @@
                 </documentation>
             </annotation>
         </attribute>
+        <attribute name="label-position" type="boolean" default="false">
+            <annotation>
+                <documentation>
+                    Indicates whether a label position should be calculated
+                    for a closed polygon containing specified tag.
+                </documentation>
+            </annotation>
+        </attribute>
         <attribute name="equivalent-values" type="string" use="optional">
             <annotation>
                 <documentation>

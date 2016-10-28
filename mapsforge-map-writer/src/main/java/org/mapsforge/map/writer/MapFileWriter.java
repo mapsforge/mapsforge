@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
+ * Copyright 2016 Andrey Novikov
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -43,6 +44,7 @@ import org.mapsforge.map.writer.model.ZoomIntervalConfiguration;
 import org.mapsforge.map.writer.util.Constants;
 import org.mapsforge.map.writer.util.GeoUtils;
 import org.mapsforge.map.writer.util.JTSUtils;
+import org.mapsforge.map.writer.util.PolyLabel;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -174,19 +176,21 @@ public final class MapFileWriter {
             short subtileMask = GeoUtils.computeBitmask(processedGeometry, this.tile,
                     this.configuration.getBboxEnlargement());
 
-            // check if the original polygon is completely contained in the current tile
-            // in that case we do not try to compute a label position
-            // this is left to the renderer for more flexibility
-
-            // in case the polygon covers multiple tiles, we compute the centroid of the unclipped polygon
-            // if the computed centroid is within the current tile, we add it as label position
-            // this way, we can make sure that a label position is attached only once to a clipped polygon
-            LatLong centroidCoordinate = null;
-            if (this.configuration.isLabelPosition() && this.way.isValidClosedLine()
-                    && !GeoUtils.coveredByTile(originalGeometry, this.tile, this.configuration.getBboxEnlargement())) {
-                Point centroidPoint = originalGeometry.getCentroid();
-                if (GeoUtils.coveredByTile(centroidPoint, this.tile, this.configuration.getBboxEnlargement())) {
-                    centroidCoordinate = new LatLong(centroidPoint.getY(), centroidPoint.getX());
+            // compute the centroid of the unclipped polygon
+            LatLong labelCoordinate = null;
+            if (this.way.isValidClosedLine()) {
+                boolean labelPosition = this.configuration.isLabelPosition();
+                if (!labelPosition) {
+                    short[] tags = this.way.getTags();
+                    for (int i = 0; i < tags.length; i++) {
+                        labelPosition = configuration.getTagMapping().getWayTag(tags[i]).isLabelPosition();
+                        if (labelPosition)
+                            break;
+                    }
+                }
+                if (labelPosition) {
+                    Point labelPoint = PolyLabel.get(originalGeometry);
+                    labelCoordinate = new LatLong(labelPoint.getY(), labelPoint.getX());
                 }
             }
 
@@ -210,7 +214,7 @@ public final class MapFileWriter {
                     break;
             }
 
-            return new WayPreprocessingResult(this.way, blocks, centroidCoordinate, subtileMask);
+            return new WayPreprocessingResult(this.way, blocks, labelCoordinate, subtileMask);
         }
     }
 

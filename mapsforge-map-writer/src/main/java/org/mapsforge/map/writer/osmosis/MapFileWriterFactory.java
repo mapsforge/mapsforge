@@ -60,7 +60,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
         configuration.setDebugStrings(getBooleanArgument(taskConfig, PARAM_DEBUG_INFO, false));
         configuration.setPolygonClipping(getBooleanArgument(taskConfig, PARAM_POLYGON_CLIPPING, true));
         configuration.setWayClipping(getBooleanArgument(taskConfig, PARAM_WAY_CLIPPING, true));
-        configuration.setLabelPosition(getBooleanArgument(taskConfig, PARAM_LABEL_POSITION, true));
+        configuration.setLabelPosition(getBooleanArgument(taskConfig, PARAM_LABEL_POSITION, false));
         // boolean waynodeCompression = getBooleanArgument(taskConfig, PARAM_WAYNODE_COMPRESSION,
         // true);
         configuration.setSimplification(getDoubleArgument(taskConfig, PARAM_SIMPLIFICATION_FACTOR,
