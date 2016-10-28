@@ -49,6 +49,11 @@ public class MapWriterConfiguration {
 
     private double simplification;
 
+    /**
+     * The maximum zoom level for which we apply a simplification algorithm to filter way points
+     */
+    private byte simplificationMaxZoom;
+
     private boolean skipInvalidRelations;
 
     private OSMTagMapping tagMapping;
@@ -230,6 +235,10 @@ public class MapWriterConfiguration {
      */
     public double getSimplification() {
         return this.simplification;
+    }
+
+    public byte getSimplificationMaxZoom() {
+        return simplificationMaxZoom;
     }
 
     /**
@@ -427,6 +436,13 @@ public class MapWriterConfiguration {
         }
 
         this.simplification = simplification;
+    }
+
+    public void setSimplificationMaxZoom(byte simplificationMaxZoom) {
+        if (simplificationMaxZoom < 0) {
+            throw new RuntimeException("simplificationMaxZoom must be >= 0");
+        }
+        this.simplificationMaxZoom = simplificationMaxZoom;
     }
 
     /**

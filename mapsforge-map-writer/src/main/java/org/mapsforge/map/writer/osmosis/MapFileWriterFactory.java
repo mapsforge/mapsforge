@@ -39,6 +39,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
     private static final String PARAM_PREFERRED_LANGUAGES = "preferred-languages";
     // private static final String PARAM_WAYNODE_COMPRESSION = "waynode-compression";
     private static final String PARAM_SIMPLIFICATION_FACTOR = "simplification-factor";
+    private static final String PARAM_SIMPLIFICATION_MAX_ZOOM = "simplification-max-zoom";
     private static final String PARAM_SKIP_INVALID_RELATIONS = "skip-invalid-relations";
     private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
     private static final String PARAM_TYPE = "type";
@@ -65,6 +66,8 @@ class MapFileWriterFactory extends TaskManagerFactory {
         // true);
         configuration.setSimplification(getDoubleArgument(taskConfig, PARAM_SIMPLIFICATION_FACTOR,
                 Constants.DEFAULT_SIMPLIFICATION_FACTOR));
+        configuration.setSimplificationMaxZoom((byte) getIntegerArgument(taskConfig, PARAM_SIMPLIFICATION_MAX_ZOOM,
+                Constants.DEFAULT_SIMPLIFICATION_MAX_ZOOM));
         configuration.setSkipInvalidRelations(getBooleanArgument(taskConfig, PARAM_SKIP_INVALID_RELATIONS, false));
 
         configuration.setDataProcessorType(getStringArgument(taskConfig, PARAM_TYPE, Constants.DEFAULT_PARAM_TYPE));

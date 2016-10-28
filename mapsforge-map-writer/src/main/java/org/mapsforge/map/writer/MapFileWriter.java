@@ -152,7 +152,7 @@ public final class MapFileWriter {
 
             // TODO is this the right place to simplify, or is it better before clipping?
             if (this.configuration.getSimplification() > 0
-                    && this.tile.getZoomlevel() <= Constants.MAX_SIMPLIFICATION_BASE_ZOOM) {
+                    && this.tile.getZoomlevel() <= this.configuration.getSimplificationMaxZoom()) {
                 processedGeometry = GeoUtils.simplifyGeometry(this.way, processedGeometry, this.maxZoomInterval,
                         tileSize, this.configuration.getSimplification());
                 if (processedGeometry == null) {
@@ -911,7 +911,7 @@ public final class MapFileWriter {
                     if (processedTiles == amountTiles) {
                         LOGGER.info("written 100% of sub file for zoom interval index " + zoomIntervalIndex);
                     } else {
-                        LOGGER.info("written " + (processedTiles / amountOfTilesInPercentStep) * PROGRESS_PERCENT_STEP
+                        LOGGER.info("written " + Math.round(processedTiles / amountOfTilesInPercentStep / PROGRESS_PERCENT_STEP * 100)
                                 + "% of sub file for zoom interval index " + zoomIntervalIndex);
                     }
                 }
@@ -919,6 +919,7 @@ public final class MapFileWriter {
                 // TODO accounting for progress information
             } // end for loop over tile columns
         } // /end for loop over tile rows
+        LOGGER.info("written 100% of sub file for zoom interval index " + zoomIntervalIndex);
 
         // write remaining tiles
         if (multipleTilesBuffer.position() > 0) {
