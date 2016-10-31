@@ -26,6 +26,8 @@ import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.util.JavaPreferences;
 import org.mapsforge.map.awt.view.MapView;
+import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.datastore.MultiMapDataStore;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
@@ -116,24 +118,27 @@ public final class Samples {
 
         // Raster
         /*mapView.getModel().displayModel.setFixedTileSize(256);
-        TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(0, 256), mapView.getModel().mapViewPosition);
+        TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(256), mapView.getModel().mapViewPosition);
         layers.add(tileDownloadLayer);
         tileDownloadLayer.start();
-        BoundingBox result = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
+        BoundingBox boundingBox = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
         mapView.setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
         mapView.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());*/
 
         // Vector
         mapView.getModel().displayModel.setFixedTileSize(512);
-        BoundingBox result = null;
-        for (int i = 0; i < mapFiles.size(); i++) {
-            File mapFile = mapFiles.get(i);
-            TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(i, 64),
-                    mapView.getModel().mapViewPosition, true, true, false, mapFile);
-            BoundingBox boundingBox = tileRendererLayer.getMapDataStore().boundingBox();
-            result = result == null ? boundingBox : result.extendBoundingBox(boundingBox);
-            layers.add(tileRendererLayer);
+        MapDataStore mapDataStore;
+        if (mapFiles.size() == 1) {
+            mapDataStore = new MapFile(mapFiles.get(0));
+        } else {
+            mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+            for (File file : mapFiles) {
+                ((MultiMapDataStore) mapDataStore).addMapDataStore(new MapFile(file), false, false);
+            }
         }
+        TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(64), mapDataStore, mapView.getModel().mapViewPosition);
+        layers.add(tileRendererLayer);
+        BoundingBox boundingBox = mapDataStore.boundingBox();
 
         // Debug
         if (SHOW_DEBUG_LAYERS) {
@@ -141,7 +146,7 @@ public final class Samples {
             layers.add(new TileCoordinatesLayer(GRAPHIC_FACTORY, mapView.getModel().displayModel));
         }
 
-        return result;
+        return boundingBox;
     }
 
     private static MapView createMapView() {
@@ -154,9 +159,9 @@ public final class Samples {
         return mapView;
     }
 
-    private static TileCache createTileCache(int index, int capacity) {
+    private static TileCache createTileCache(int capacity) {
         TileCache firstLevelTileCache = new InMemoryTileCache(capacity);
-        File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge" + index);
+        File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge");
         TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
         return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
     }
@@ -173,10 +178,8 @@ public final class Samples {
         };
     }
 
-    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapViewPosition mapViewPosition,
-                                                             boolean isTransparent, boolean renderLabels, boolean cacheLabels, File mapFile) {
-        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, new MapFile(mapFile),
-                mapViewPosition, isTransparent, renderLabels, cacheLabels, GRAPHIC_FACTORY) {
+    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition) {
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, GRAPHIC_FACTORY) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
                 System.out.println("Tap on: " + tapLatLong);
