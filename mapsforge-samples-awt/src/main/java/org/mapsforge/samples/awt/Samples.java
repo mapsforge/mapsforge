@@ -36,7 +36,6 @@ import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
-import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
@@ -89,6 +88,7 @@ public final class Samples {
         frame.add(mapView);
         frame.pack();
         frame.setSize(new Dimension(800, 600));
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -118,23 +118,19 @@ public final class Samples {
 
         // Raster
         /*mapView.getModel().displayModel.setFixedTileSize(256);
-        TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(256), mapView.getModel().mapViewPosition);
+        TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+        TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(256), mapView.getModel().mapViewPosition, tileSource);
         layers.add(tileDownloadLayer);
         tileDownloadLayer.start();
         BoundingBox boundingBox = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
-        mapView.setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
-        mapView.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());*/
+        mapView.setZoomLevelMin(tileSource.getZoomLevelMin());
+        mapView.setZoomLevelMax(tileSource.getZoomLevelMax());*/
 
         // Vector
         mapView.getModel().displayModel.setFixedTileSize(512);
-        MapDataStore mapDataStore;
-        if (mapFiles.size() == 1) {
-            mapDataStore = new MapFile(mapFiles.get(0));
-        } else {
-            mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
-            for (File file : mapFiles) {
-                ((MultiMapDataStore) mapDataStore).addMapDataStore(new MapFile(file), false, false);
-            }
+        MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+        for (File file : mapFiles) {
+            mapDataStore.addMapDataStore(new MapFile(file), false, false);
         }
         TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(64), mapDataStore, mapView.getModel().mapViewPosition);
         layers.add(tileRendererLayer);
@@ -167,8 +163,7 @@ public final class Samples {
     }
 
     @SuppressWarnings("unused")
-    private static TileDownloadLayer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition) {
-        TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+    private static TileDownloadLayer createTileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource) {
         return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
