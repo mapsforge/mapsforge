@@ -1,6 +1,6 @@
 # Integration guide
 
-This article describes how to integrate the library in your project.
+This article describes how to integrate the library in your project, with Gradle / Maven / Jars or use SNAPSHOT builds.
 
 Current version is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.mapsforge/mapsforge/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mapsforge/mapsforge)
 
@@ -88,6 +88,6 @@ The dependencies for Maven are declared in a similar way. For example:
 
 ## Jars
 
-You can find jars (regular and with dependencies) in Maven Central or Snapshots repositories.
+You can find release and snapshot jars (regular and with dependencies) in [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.mapsforge%22) and [Sonatype OSS Repository Hosting](https://oss.sonatype.org/content/repositories/snapshots/org/mapsforge/).
 
 Third party jars can be found at their respective sites or in Maven Central repository.

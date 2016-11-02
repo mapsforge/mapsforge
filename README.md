@@ -4,16 +4,16 @@
 
 # Mapsforge
 
-If you have any questions or problems, don't hesitate to ask our public [mailing list](https://groups.google.com/group/mapsforge-dev) for help.
+See the **[integration guide](docs/Integration.md)** and [changelog](docs/Changelog.md). And read through [how to contribute](.github/CONTRIBUTING.md) guidelines.
 
-See the [integration guide](docs/Integration.md) and [changelog](docs/Changelog.md). And read through [how to contribute](.github/CONTRIBUTING.md) guidelines.
+If you have any questions or problems, don't hesitate to ask our public [mailing list](https://groups.google.com/group/mapsforge-dev) for help.
 
 - Mapsforge project uses a [compact file format](docs/Specification-Binary-Map-File.md) for fast ad-hoc rendering of OpenStreetMap data.
 - We provide tools to [compile your own maps](docs/Getting-Started-Map-Writer.md) with detailed [instructions](docs/MapCreation.md) and also [precompiled maps](http://download.mapsforge.org).
 - It provides [simple boilerplate code](docs/Getting-Started-Android-App.md) to build applications for Android that display OpenStreetMap-based maps.
 - It provides a library to build standalone applications in Java.
 - Mapsforge maps can be flexibly styled with XML style files ([render themes](docs/Rendertheme.md)).
-- We provide [tools / library](docs/POI.md) for POI search (beta) and also [precompiled POI](http://download.mapsforge.org).
+- We provide [tools & library](docs/POI.md) for POI search (beta) and also [precompiled POI](http://download.mapsforge.org).
 - Mapsforge supports Android 2.3.3 (API level 10) and above.
 - Mapsforge is used by many [applications](docs/Mapsforge-Applications.md).
 - Mapsforge is in active [development](docs/Contributors.md). 
