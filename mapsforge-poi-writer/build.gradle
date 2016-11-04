@@ -1,15 +1,11 @@
-configurations { providedCompile }
-
 dependencies {
     compile project(":mapsforge-poi")
     compile(group: 'com.vividsolutions', name: 'jts', version: '1.13') {
         exclude(module: 'xercesImpl')
     }
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
-    providedCompile group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.44.1'
+    compileOnly group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.44.1'
 }
-
-sourceSets.main.compileClasspath += configurations.providedCompile
 
 jar {
     from('src/main/config/') {

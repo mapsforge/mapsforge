@@ -1,5 +1,3 @@
-configurations { providedCompile }
-
 dependencies {
     compile project(":mapsforge-core")
     compile group: 'net.sf.trove4j', name: 'trove4j', version: '3.0.3'
@@ -7,12 +5,11 @@ dependencies {
         exclude(module: 'xercesImpl')
     }
     compile group: 'com.google.guava', name: 'guava', version: '18.0'
-    providedCompile group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.44.1'
+    compileOnly group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.44.1'
 }
 
-sourceSets.main.compileClasspath += configurations.providedCompile
-sourceSets.test.compileClasspath += configurations.providedCompile
-sourceSets.test.runtimeClasspath += configurations.providedCompile
+sourceSets.test.compileClasspath += configurations.compileOnly
+sourceSets.test.runtimeClasspath += configurations.compileOnly
 
 jar {
     from('src/main/config/') {
