@@ -32,7 +32,7 @@ compile('org.mapsforge:mapsforge-map-android-extras:[CURRENT-VERSION]') {
 #### Desktop
 ```groovy
 compile 'org.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]'
-compile 'com.kitfox.svg:svg-salamander:1.0'
+compile 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
 ```
 
 ### POI
@@ -54,7 +54,7 @@ You'll need also the SpatiaLite native library [files](../spatialite-android/nat
 #### Desktop
 ```groovy
 compile 'org.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]'
-compile 'org.xerial:sqlite-jdbc:3.8.11.2'
+compile 'org.xerial:sqlite-jdbc:3.15.1'
 ```
 
 ## Snapshots

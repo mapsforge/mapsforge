@@ -17,7 +17,7 @@ allprojects {
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
     ext.androidBuildVersionTools = "25.0.0"
-    ext.jUnitVersion = "4.11"
+    ext.jUnitVersion = "4.12"
     description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -76,7 +76,7 @@ configure(filterProjects(project.javaprojects)) {
     //apply plugin: 'checkstyle'
 
     dependencies {
-        testCompile group: 'junit', name: 'junit', version: "$jUnitVersion"
+        testCompile "junit:junit:$jUnitVersion"
     }
 
     /*checkstyle {

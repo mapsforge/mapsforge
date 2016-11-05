@@ -1,6 +1,6 @@
 dependencies {
     compile project(":mapsforge-map-reader")
-    compile group: 'com.kitfox.svg', name: 'svg-salamander', version: '1.0'
+    compile 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
     testCompile project(":mapsforge-themes")
 }
 

@@ -1,10 +1,8 @@
 dependencies {
     compile project(":mapsforge-poi")
-    compile(group: 'com.vividsolutions', name: 'jts', version: '1.13') {
-        exclude(module: 'xercesImpl')
-    }
-    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
-    compileOnly group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.44.1'
+    compile 'com.vividsolutions:jts:1.13'
+    compile 'org.xerial:sqlite-jdbc:3.15.1'
+    compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.45'
 }
 
 jar {
