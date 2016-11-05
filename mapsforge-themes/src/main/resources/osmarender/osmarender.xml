@@ -1176,7 +1176,7 @@
 
 
         <!-- house numbers -->
-        <rule e="node" k="addr:housenumber" v="*" zoom-min="18">
+        <rule e="node" k="addr:housenumber" v="*" zoom-min="17">
             <caption k="addr:housenumber" font-style="bold" font-size="10" fill="#606060"
                 stroke="#ffffff" stroke-width="2.0" />
         </rule>

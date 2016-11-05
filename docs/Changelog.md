@@ -7,6 +7,7 @@
 - Multithreaded rendering improvements [#591](https://github.com/mapsforge/mapsforge/issues/591) [#806](https://github.com/mapsforge/mapsforge/issues/806)
 - Fix map disappearance at large zoom levels [#572](https://github.com/mapsforge/mapsforge/issues/572)
 - Map writer: polygon label position enhancements [#886](https://github.com/mapsforge/mapsforge/issues/886)
+- Map writer: house numbers (nodes) include at zoom 17 [#895](https://github.com/mapsforge/mapsforge/issues/895)
 - Map writer: simplification max zoom option [#892](https://github.com/mapsforge/mapsforge/issues/892)
 - POI writer: allow empty categories option [#883](https://github.com/mapsforge/mapsforge/issues/883)
 - SVG symbols customization [#858](https://github.com/mapsforge/mapsforge/issues/858)

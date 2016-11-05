@@ -99,6 +99,7 @@ You need to be aware that this configuration only defines what data is to be inc
 ### 0.7.0
 
 - Polygon label position enhancements
+- House numbers (nodes) include at zoom 17
 - Simplification max zoom option
 
 ### 0.6.1
