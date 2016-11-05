@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -156,5 +157,9 @@ public final class ZoomIntervalConfiguration {
         if (index < 0 || index >= this.baseZoom.length) {
             throw new IllegalArgumentException("illegal zoom interval index: " + index);
         }
+    }
+
+    public String toString(int index) {
+        return getBaseZoom(index) + "," + getMinZoom(index) + "," + getMaxZoom(index);
     }
 }

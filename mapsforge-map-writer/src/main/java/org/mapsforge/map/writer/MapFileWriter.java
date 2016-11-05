@@ -3,6 +3,7 @@
  * Copyright 2015 lincomatic
  * Copyright 2016 Andrey Novikov
  * Copyright 2016 mikes222
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -910,10 +911,10 @@ public final class MapFileWriter {
 
                 if (++processedTiles % amountOfTilesInPercentStep == 0) {
                     if (processedTiles == amountTiles) {
-                        LOGGER.info("written 100% of sub file for zoom interval index " + zoomIntervalIndex);
+                        LOGGER.info("written 100% of sub file for zoom interval " + (zoomIntervalIndex + 1) + " (" + dataStore.getZoomIntervalConfiguration().toString(zoomIntervalIndex) + ")");
                     } else {
                         LOGGER.info("written " + Math.round(processedTiles / amountOfTilesInPercentStep / PROGRESS_PERCENT_STEP * 100)
-                                + "% of sub file for zoom interval index " + zoomIntervalIndex);
+                                + "% of sub file for zoom interval " + (zoomIntervalIndex + 1) + " (" + dataStore.getZoomIntervalConfiguration().toString(zoomIntervalIndex) + ")");
                     }
                 }
 
