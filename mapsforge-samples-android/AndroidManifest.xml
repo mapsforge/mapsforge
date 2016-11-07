@@ -85,6 +85,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Geographical Grid" />
         <activity
+            android:name=".GroupMarkerExample"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Group Marker" />
+        <activity
             android:name=".ItemDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Fragments Item Details"
