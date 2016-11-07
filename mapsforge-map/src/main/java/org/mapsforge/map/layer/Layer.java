@@ -30,14 +30,10 @@ public abstract class Layer {
     /**
      * Draws this {@code Layer} on the given canvas.
      *
-     * @param boundingBox
-     *            the geographical area which should be drawn.
-     * @param zoomLevel
-     *            the zoom level at which this {@code Layer} should draw itself.
-     * @param canvas
-     *            the canvas on which this {@code Layer} should draw itself.
-     * @param topLeftPoint
-     *            the top-left pixel position of the canvas relative to the top-left map position.
+     * @param boundingBox  the geographical area which should be drawn.
+     * @param zoomLevel    the zoom level at which this {@code Layer} should draw itself.
+     * @param canvas       the canvas on which this {@code Layer} should draw itself.
+     * @param topLeftPoint the top-left pixel position of the canvas relative to the top-left map position.
      */
     public abstract void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint);
 
@@ -64,38 +60,33 @@ public abstract class Layer {
     }
 
     /**
-     * Handles a long press event. A long press event is only triggered if the map was not moved. A return value of true indicates that the long press event has
-     * been handled by this overlay and stops its propagation to other overlays.
+     * Handles a long press event. A long press event is only triggered if the map was not moved. A return value of true
+     * indicates that the long press event has been handled by this overlay and stops its propagation to other overlays.
      * <p/>
      * The default implementation of this method does nothing and returns false.
      *
-     * @param tapLatLong
-     *            the geographic position of the long press.
-     * @param layerXY
-     *            the xy position of the layer element (if available)
-     * @param tapXY
-     *            the xy position of the tap
+     * @param tapLatLong the geographic position of the long press.
+     * @param layerXY    the xy position of the layer element (if available)
+     * @param tapXY      the xy position of the tap
      * @return true if the long press event was handled, false otherwise.
      */
-    public boolean onLongPress(final LatLong tapLatLong, final Point layerXY, final Point tapXY) {
+    public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
         return false;
     }
 
     /**
-     * Handles a tap event. A return value of true indicates that the tap event has been handled by this overlay and stops its propagation to other overlays.
+     * Handles a tap event. A return value of true indicates that the tap event has been handled by this overlay and
+     * stops its propagation to other overlays.
      * <p/>
      * The default implementation of this method does nothing and returns false.
      *
-     * @param tapLatLong
-     *            the the geographic position of the tap.
-     * @param layerXY
-     *            the xy position of the layer element (if available)
-     * @param tapXY
-     *            the xy position of the tap
+     * @param tapLatLong the the geographic position of the tap.
+     * @param layerXY    the xy position of the layer element (if available)
+     * @param tapXY      the xy position of the tap
      * @return true if the tap event was handled, false otherwise.
      */
 
-    public boolean onTap(final LatLong tapLatLong, final Point layerXY, final Point tapXY) {
+    public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
         return false;
     }
 
@@ -118,13 +109,12 @@ public abstract class Layer {
     }
 
     /**
-     * The DisplayModel comes from a MapView, so is generally not known when the layer itself is created. Maybe a better way would be to have a MapView as a
-     * parameter when creating a layer.
+     * The DisplayModel comes from a MapView, so is generally not known when the layer itself is created. Maybe a better
+     * way would be to have a MapView as a parameter when creating a layer.
      *
-     * @param displayModel
-     *            the displayModel to use.
+     * @param displayModel the displayModel to use.
      */
-    public synchronized void setDisplayModel(final DisplayModel displayModel) {
+    public synchronized void setDisplayModel(DisplayModel displayModel) {
         this.displayModel = displayModel;
     }
 
@@ -133,18 +123,18 @@ public abstract class Layer {
      * <p/>
      * Note: By default a redraw will take place afterwards.
      */
-    public final void setVisible(final boolean visible) {
-        this.setVisible(visible, true);
+    public final void setVisible(boolean visible) {
+        setVisible(visible, true);
     }
 
     /**
      * Sets the visibility flag of this {@code Layer} to the given value.
      */
-    public void setVisible(final boolean visible, final boolean redraw) {
+    public void setVisible(boolean visible, boolean redraw) {
         this.visible = visible;
 
         if (redraw) {
-            this.requestRedraw();
+            requestRedraw();
         }
     }
 
@@ -162,13 +152,13 @@ public abstract class Layer {
         // do nothing
     }
 
-    final synchronized void assign(final Redrawer redrawer) {
+    final synchronized void assign(Redrawer redrawer) {
         if (this.assignedRedrawer != null) {
             throw new IllegalStateException("layer already assigned");
         }
 
         this.assignedRedrawer = redrawer;
-        this.onAdd();
+        onAdd();
     }
 
     final synchronized void unassign() {
@@ -177,7 +167,7 @@ public abstract class Layer {
         }
 
         this.assignedRedrawer = null;
-        this.onRemove();
+        onRemove();
     }
 
 }

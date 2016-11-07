@@ -28,16 +28,11 @@ public class ChildMarker extends Marker {
     /**
      * The Constructor.
      * 
-     * @param latLong
-     *            the gps position.
-     * @param bitmap
-     *            the bitmap for the group marker.
-     * @param horizontalOffset
-     *            the horizontal offset for the group marker.
-     * @param verticalOffset
-     *            the vertical offset for the group marker.
-     * @param polyPaintStroke
-     *            the polyPaintStroke to set. If NULL, no polyline will be drawn.
+     * @param latLong the gps position.
+     * @param bitmap the bitmap for the group marker.
+     * @param horizontalOffset the horizontal offset for the group marker.
+     * @param verticalOffset the vertical offset for the group marker.
+     * @param polyPaintStroke the polyPaintStroke to set. If NULL, no polyline will be drawn.
      */
     public ChildMarker(final LatLong latLong, final Bitmap bitmap, final int horizontalOffset, final int verticalOffset,
             final GroupMarker parentMarker, final Paint polyPaintStroke) {
@@ -50,8 +45,7 @@ public class ChildMarker extends Marker {
     /**
      * Setter.
      * 
-     * @param index
-     *            the index of this child marker for the parent.
+     * @param index the index of this child marker for the parent.
      */
     public void setPosition(final int index) {
         this.id = index;

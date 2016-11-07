@@ -42,18 +42,12 @@ public class GroupMarker extends Marker {
     /**
      * The Constructor.
      * 
-     * @param latLong
-     *            the gps position of the marker.
-     * @param bitmap
-     *            the bitmap for the group marker.
-     * @param horizontalOffset
-     *            the horizontal offset for the group marker.
-     * @param verticalOffset
-     *            the vertical offset for the group marker.
-     * @param layers
-     *            the layers object with all layers.
-     * @param paintText
-     *            the paint object for the text. If NULL no text inside bitmap will shown.
+     * @param latLong the gps position of the marker.
+     * @param bitmap the bitmap for the group marker.
+     * @param horizontalOffset the horizontal offset for the group marker.
+     * @param verticalOffset the vertical offset for the group marker.
+     * @param layers the layers object with all layers.
+     * @param paintText the paint object for the text. If NULL no text inside bitmap will shown.
      */
     public GroupMarker(final LatLong latLong, final Bitmap bitmap, final int horizontalOffset, final int verticalOffset,
             final Layers layers, final Paint paintText) {

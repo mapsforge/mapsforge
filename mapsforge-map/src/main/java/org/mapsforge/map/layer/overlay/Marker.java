@@ -35,14 +35,10 @@ public class Marker extends Layer {
     protected int verticalOffset;
 
     /**
-     * @param latLong
-     *            the initial geographical coordinates of this marker (may be null).
-     * @param bitmap
-     *            the initial {@code Bitmap} of this marker (may be null).
-     * @param horizontalOffset
-     *            the horizontal marker offset.
-     * @param verticalOffset
-     *            the vertical marker offset.
+     * @param latLong  the initial geographical coordinates of this marker (may be null).
+     * @param bitmap the initial {@code Bitmap} of this marker (may be null).
+     * @param horizontalOffset the horizontal marker offset.
+     * @param verticalOffset the vertical marker offset.
      */
     public Marker(final LatLong latLong, final Bitmap bitmap, final int horizontalOffset, final int verticalOffset) {
         super();
