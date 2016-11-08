@@ -115,7 +115,7 @@ The following header elements can be used:
 
 One of the limitations of V3 was that even minor changes to a style required an entirely new rendertheme definition. Rendertheme V4 introduces the **stylemenu** that allows you to selectively turn rules on and off, in effect defining multiple layers in a map that can be controlled individually. 
 
-To make use of style menus, you will first need to group the elements of your map into **categories** by attaching a **cat** element to them. 
+To make use of style menus, you will first need to group the elements of your map into categories by attaching a **cat** element to them.
 
 ```xml
 <rule cat="areas" e="way" k="landuse" v="landfill|quarry" zoom-min="14">
@@ -126,7 +126,7 @@ However, this does not limit your ability to group elements, as in the style def
 
 You can think about the cat tag as a switch that switches all elements in the rendertheme below it either on or off. If a category is turned off, all elements below it become invisible. If a category is turned on, all elements below become visible (unless they are themselves controlled via a category which is turned off).
 
-Layers are combinations of categories that can together be toggled on and off. In general, categories are not visible to a map user, but layers are. To make layers more user friendly, they can be named with the name tag in various languages. 
+Layers are combinations of categories that can be toggled on and off together and other layers (via **overlay**) that can be toggled on and off individually. In general, categories are not visible to a map user, but layers are. To make layers more user friendly, they can be named with the name tag in various languages.
 
 ```xml
 <layer id="public_transport" visible="true">
