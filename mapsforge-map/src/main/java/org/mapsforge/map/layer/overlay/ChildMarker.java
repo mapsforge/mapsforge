@@ -7,6 +7,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 
 /**
@@ -28,15 +29,14 @@ public class ChildMarker extends Marker {
     /**
      * The Constructor.
      * 
-     * @param latLong the gps position.
      * @param bitmap the bitmap for the group marker.
      * @param horizontalOffset the horizontal offset for the group marker.
      * @param verticalOffset the vertical offset for the group marker.
      * @param polyPaintStroke the polyPaintStroke to set. If NULL, no polyline will be drawn.
      */
-    public ChildMarker(final LatLong latLong, final Bitmap bitmap, final int horizontalOffset, final int verticalOffset,
+    public ChildMarker(final Bitmap bitmap, final int horizontalOffset, final int verticalOffset,
             final GroupMarker parentMarker, final Paint polyPaintStroke) {
-        super(latLong, bitmap, horizontalOffset, verticalOffset);
+        super(new LatLong(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN), bitmap, horizontalOffset, verticalOffset);
 
         this.groupMarker = parentMarker;
         this.polyPaintStroke = polyPaintStroke;
