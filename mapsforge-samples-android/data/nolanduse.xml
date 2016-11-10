@@ -1117,7 +1117,7 @@
                 <symbol src="jar:symbols/tree.png" />
             </rule>
             <rule e="node" k="natural" v="volcano" zoom-min="12">
-                <symbol src="jar:symbols/vulcan.png" />
+                <symbol src="jar:symbols/volcano.png" />
             </rule>
 
             <rule e="node" k="*" v="*" zoom-min="17">

@@ -1074,7 +1074,7 @@
             </rule>
         </rule>
         <rule e="node" k="natural" v="peak" zoom-min="11">
-            <symbol id="peak" src="assets:symbols/peak1.svg" />
+            <symbol id="peak" src="assets:symbols/peak.svg" />
             <caption priority="10" symbol-id="peak" position="below" k="name" font-style="bold"
                 font-size="14" fill="#000000" stroke="#FFFFFF" stroke-width="2.0" />
             <rule e="any" k="*" v="*" zoom-min="14">
