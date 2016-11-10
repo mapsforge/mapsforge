@@ -813,8 +813,8 @@
         <category title="Peak">
             <mapping tag="natural=peak" />
         </category>
-        <category title="Vulcano">
-            <mapping tag="natural=vulcano" />
+        <category title="Volcano">
+            <mapping tag="natural=volcano" />
         </category>
         <category title="Geyser">
             <mapping tag="natural=geyser" />
