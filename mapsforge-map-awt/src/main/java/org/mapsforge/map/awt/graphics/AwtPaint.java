@@ -34,7 +34,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.TexturePaint;
+import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
+import java.text.AttributedCharacterIterator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AwtPaint implements Paint {
     private static int getCap(Cap cap) {
@@ -91,6 +95,12 @@ public class AwtPaint implements Paint {
         }
 
         throw new IllegalArgumentException("unknown cap: " + join);
+    }
+
+    private static final Map<AttributedCharacterIterator.Attribute, Object> TEXT_ATTRIBUTES = new HashMap<>();
+
+    static {
+        TEXT_ATTRIBUTES.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
     }
 
     java.awt.Color color;
@@ -249,7 +259,7 @@ public class AwtPaint implements Paint {
 
     private void createFont() {
         if (this.textSize > 0) {
-            this.font = new Font(this.fontName, this.fontStyle, (int) this.textSize);
+            this.font = new Font(this.fontName, this.fontStyle, (int) this.textSize).deriveFont(TEXT_ATTRIBUTES);
         } else {
             this.font = null;
         }
