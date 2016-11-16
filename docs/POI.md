@@ -54,11 +54,11 @@ The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin sh
 
 ### Example
 
-With the POI database created you can now use it with mapsforge. You will also need the SpatiaLite native library files in your project. You can use the Samples project as a boilerplate, as it already has all necessary files and dependencies. The library files are located each within a separate sub-folder for each target architecture (_armeabi_, _armeabi-v7a_, _x86_). You can delete unneeded architectures to reduce file size.
+With the POI database created you can now use it with mapsforge. For testing purposes, you may also use one of our ready-to-use POI databases from http://download.mapsforge.org/pois/ (not suitable for mass downloads). You will also need the SpatiaLite native library files in your project. You can use the Samples project as a boilerplate, as it already has all necessary files and dependencies. The library files are located each within a separate sub-folder for each target architecture (_armeabi_, _armeabi-v7a_, _x86_). You can delete unneeded architectures to reduce file size.
 
 The sources for those libraries can be found at [spatialite-android](https://www.gaia-gis.it/fossil/libspatialite/wiki?name=splite-android) site. To compile these manually you need the [Android NDK](http://developer.android.com/tools/sdk/ndk/index.html). The compilation process can be started with `ndk-build` from within the `jni` directory. The compiling process also moves the library files to their correct (sub)folders.
 
-With everything set up you can check the 'POI search' example in Samples for:
+With everything set up you can check the ['POI search' example](https://github.com/mapsforge/mapsforge/blob/master/mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/PoiSearchViewer.java) for:
 - How a database is opened for read access. Any access to the database is encapsulated via classes implementing `PoiPersistenceManager`. The instantiation of these classes is done via a factory class. The categories and their hierarchy are maintained via classes implementing `PoiCategoryManager`. The category configuration is read-only.
 - The `PoiPersistenceManager` object is used for querying the POIs in various ways. The query returns a collection of `PointOfInterest` objects. These are containers that contain a POI's position, ID, category and additional data. Additional data are stored as a string and can be arbitrary. There is no specification for the encoding of those data. The current implementation stores the POI's tags as an UTF-8 encoded string in the data field.
 - It is always a good idea to close an open database when there will be no more operations on it. This can simply be done by the `close()` method.
@@ -78,8 +78,8 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 ### Filtered Search
 
 The API supports POI search inside a specified rectangle, near a given position or by a data pattern.
-
 You can also use category filters for filtering the results based on the categories added to them.
+And lastly you can search by OSM tags, e.g. persistenceManager.findInRect(bbox, categoryFilter, "%name=Pergamonmuseum%", 1)
 
 ### POI DB Schema
 
