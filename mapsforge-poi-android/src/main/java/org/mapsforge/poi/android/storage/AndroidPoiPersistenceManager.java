@@ -364,14 +364,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
     @Override
     public void insertPointsOfInterest(Collection<PointOfInterest> pois) {
         try {
-            this.insertPoiStatement1.reset();
-            this.insertPoiStatement1.clear_bindings();
-            this.insertPoiStatement2.reset();
-            this.insertPoiStatement2.clear_bindings();
-
             this.db.exec("BEGIN;", null);
 
             for (PointOfInterest poi : pois) {
+                this.insertPoiStatement1.reset();
+                this.insertPoiStatement1.clear_bindings();
+                this.insertPoiStatement2.reset();
+                this.insertPoiStatement2.clear_bindings();
+
                 this.insertPoiStatement1.bind(1, poi.getId());
                 this.insertPoiStatement1.bind(2, poi.getLatitude());
                 this.insertPoiStatement1.bind(3, poi.getLatitude());
