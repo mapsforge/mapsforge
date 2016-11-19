@@ -1,8 +1,8 @@
 # Integration guide
 
-This article describes how to integrate the library in your project, with Gradle / Maven / Jars or use SNAPSHOT builds.
+This article describes how to integrate the library in your project, with Gradle / Maven / Jars or SNAPSHOT builds.
 
-Current version is [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.mapsforge/mapsforge/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.mapsforge/mapsforge)
+Current version is [![Maven Central](https://img.shields.io/maven-central/v/org.mapsforge/mapsforge.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.mapsforge%22)
 
 ## Gradle
 
