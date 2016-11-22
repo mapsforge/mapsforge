@@ -24,7 +24,7 @@ This section provides you with information how to create a POI database, how to 
 
 The tool is implemented as a plugin to the [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) software. To use the tool, you are required to have a working installation of Osmosis and the writer plugin copied to the plugins directory of Osmosis. You should also be familiar with the Osmosis tool.
 
-Download the writer plugin from Maven Central or Snapshots repositories and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) of how to install a plugin.
+Download the release or snapshot writer plugin (with dependencies) from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.mapsforge%22) or [Sonatype OSS Repository Hosting](https://oss.sonatype.org/content/repositories/snapshots/org/mapsforge/) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) for how to install a plugin.
 
 To convert OSM data to a POI database execute the following command:
 
