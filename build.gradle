@@ -16,9 +16,8 @@ allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-    ext.androidBuildVersionTools = "25.0.0"
+    ext.androidBuildVersionTools = "25.0.1"
     ext.jUnitVersion = "4.12"
-    description = """The mapsforge project provides free and open software for OpenStreetMap-based applications."""
 
     if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
