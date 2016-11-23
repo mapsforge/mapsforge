@@ -70,11 +70,6 @@ public class MapViewPosition extends Observable implements Persistable {
             }
         }
 
-        /**
-         * This method is not totally correct since we also should check if a job is currently being processed.
-         *
-         * @return
-         */
         public boolean hasWork() {
             return working.get() || jobs.size() > 0;
         }
@@ -553,9 +548,9 @@ public class MapViewPosition extends Observable implements Persistable {
             } else {
                 setCenterInternal(newLatitude, newLongitude);
                 setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
+                notifyObservers();
             }
         }
-        notifyObservers();
     }
 
     /**
