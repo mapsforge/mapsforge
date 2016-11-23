@@ -29,11 +29,6 @@ public class GroupMarker extends Marker {
     /** The list with all child marker of this location. */
     private final List<ChildMarker> childs = new ArrayList<>();
 
-    /** X coordinates. */
-    private int left;
-    /** Y coordinates. */
-    private int top;
-
     /** A list with all layers. */
     private final Layers layers;
     /** The paint object for the text. */
@@ -76,22 +71,22 @@ public class GroupMarker extends Marker {
         final int halfBitmapWidth = this.bitmap.getWidth() / 2;
         final int halfBitmapHeight = this.bitmap.getHeight() / 2;
 
-        this.left = (int) (pixelX - topLeftPoint.x - halfBitmapWidth + this.horizontalOffset);
-        this.top = (int) (pixelY - topLeftPoint.y - halfBitmapHeight + this.verticalOffset);
-        final int right = this.left + this.bitmap.getWidth();
-        final int bottom = this.top + this.bitmap.getHeight();
+        int left = (int) (pixelX - topLeftPoint.x - halfBitmapWidth + this.horizontalOffset);
+        int top = (int) (pixelY - topLeftPoint.y - halfBitmapHeight + this.verticalOffset);
+        final int right = left + this.bitmap.getWidth();
+        final int bottom = top + this.bitmap.getHeight();
 
-        final Rectangle bitmapRectangle = new Rectangle(this.left, this.top, right, bottom);
+        final Rectangle bitmapRectangle = new Rectangle(left, top, right, bottom);
         final Rectangle canvasRectangle = new Rectangle(0, 0, canvas.getWidth(), canvas.getHeight());
         if (!canvasRectangle.intersects(bitmapRectangle)) {
             return;
         }
 
-        canvas.drawBitmap(this.bitmap, this.left, this.top);
+        canvas.drawBitmap(this.bitmap, left, top);
 
         if (this.paintText != null) {
             final String text = String.valueOf(this.childs.size());
-            canvas.drawText(text, this.left + halfBitmapWidth - 5, this.top + halfBitmapHeight + 5, this.paintText);
+            canvas.drawText(text, left + halfBitmapWidth - 5, top + halfBitmapHeight + 5, this.paintText);
         }
 
     }
@@ -127,7 +122,7 @@ public class GroupMarker extends Marker {
                 // begin with (n). than the child marker will be over the line.
                 int i = this.childs.size();
                 for (final ChildMarker marker : this.childs) {
-                    marker.setPosition(i);
+                    marker.init(i, bitmap, verticalOffset, horizontalOffset);
                     // add child to layer
                     this.layers.add(marker);
                     i--;
@@ -154,26 +149,8 @@ public class GroupMarker extends Marker {
             childMarker.setVisible(visible, false);
         }
         super.setVisible(visible, redraw);
-
     }
 
-    /**
-     * Getter.
-     * 
-     * @return the left
-     */
-    public int getLeft() {
-        return this.left;
-    }
-
-    /**
-     * Getter.
-     * 
-     * @return the top
-     */
-    public int getTop() {
-        return this.top;
-    }
 
     /**
      * Getter.

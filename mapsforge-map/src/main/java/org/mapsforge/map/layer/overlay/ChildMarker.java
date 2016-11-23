@@ -7,7 +7,6 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
-import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 
 /**
@@ -19,26 +18,32 @@ import org.mapsforge.core.util.MercatorProjection;
  */
 public class ChildMarker extends Marker {
 
-    /** The parent group marker. */
-    private final GroupMarker groupMarker;
     /** The polyline paint stroke. To draw the line. If not, no line will be drawn. */
     private final Paint polyPaintStroke;
     /** The Id of the point in the group. */
     private int id;
+    /** The horizontal offset of the group marker. */
+    private int groupHOffset;
+    /** The vertical offset of the group marker. */
+    private int groupVOffset;
+    /** The half group marker bitmap width. */
+    private int groupBitmapHalfWidth;
+    /** The half group marker bitmap height. */
+    private int groupBitmapHalfHeight;
 
     /**
      * The Constructor.
      * 
+     * @param latLong the gps position of the marker.
      * @param bitmap the bitmap for the group marker.
      * @param horizontalOffset the horizontal offset for the group marker.
      * @param verticalOffset the vertical offset for the group marker.
      * @param polyPaintStroke the polyPaintStroke to set. If NULL, no polyline will be drawn.
      */
-    public ChildMarker(final Bitmap bitmap, final int horizontalOffset, final int verticalOffset,
-            final GroupMarker parentMarker, final Paint polyPaintStroke) {
-        super(new LatLong(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN), bitmap, horizontalOffset, verticalOffset);
+    public ChildMarker(final LatLong latLong, final Bitmap bitmap, final int horizontalOffset, final int verticalOffset,
+            final Paint polyPaintStroke) {
+        super(latLong, bitmap, horizontalOffset, verticalOffset);
 
-        this.groupMarker = parentMarker;
         this.polyPaintStroke = polyPaintStroke;
     }
 
@@ -64,8 +69,14 @@ public class ChildMarker extends Marker {
         }
 
         final long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
-        MercatorProjection.longitudeToPixelX(this.latLong.longitude, mapSize);
-        MercatorProjection.latitudeToPixelY(this.latLong.latitude, mapSize);
+        final double pixelX = MercatorProjection.longitudeToPixelX(this.latLong.longitude, mapSize);
+        final double pixelY = MercatorProjection.latitudeToPixelY(this.latLong.latitude, mapSize);
+
+        final int halfBitmapWidth = this.bitmap.getWidth() / 2;
+        final int halfBitmapHeight = this.bitmap.getHeight() / 2;
+
+        int leftGroup = (int) (pixelX - topLeftPoint.x - groupBitmapHalfWidth + groupHOffset);
+        int topGroup = (int) (pixelY - topLeftPoint.y - groupBitmapHalfHeight + groupVOffset);
 
         // code for circle
         // final int left = (int) (this.radius * Math.cos(Math.toRadians(this.radians * this.id))
@@ -76,9 +87,9 @@ public class ChildMarker extends Marker {
         // calculate position on the spiral
         final double radius = 20d * Math.pow(this.id, 0.6d);
         final double theta = 1.5d * (Math.pow(this.id, 0.7d) - 1);
-        final int left = (int) Math.round(radius * Math.cos(theta)) + this.groupMarker.getLeft()
+        final int left = (int) Math.round(radius * Math.cos(theta)) + leftGroup
                 + this.horizontalOffset;
-        final int top = (int) Math.round(radius * Math.sin(theta)) + this.groupMarker.getTop() + this.verticalOffset;
+        final int top = (int) Math.round(radius * Math.sin(theta)) + topGroup + this.verticalOffset;
 
         final int right = left + this.bitmap.getWidth();
         final int bottom = top + this.bitmap.getHeight();
@@ -91,13 +102,29 @@ public class ChildMarker extends Marker {
 
         // draw line between group center and this child marker before the bitmap
         if (this.polyPaintStroke != null) {
-            canvas.drawLine(left + this.bitmap.getWidth() / 2, top + this.verticalOffset + this.bitmap.getHeight() / 2,
-                    this.groupMarker.getLeft() + this.groupMarker.getBitmap().getWidth() / 2, this.groupMarker.getTop()
-                            + this.groupMarker.getVerticalOffset() + this.groupMarker.getBitmap().getHeight() / 2,
+            canvas.drawLine(left + halfBitmapWidth, top + this.verticalOffset + halfBitmapHeight,
+                    leftGroup + groupBitmapHalfWidth, topGroup
+                            + groupVOffset + groupBitmapHalfHeight,
                     this.polyPaintStroke);
         }
 
         canvas.drawBitmap(this.bitmap, left, top);
+    }
+
+    /**
+     * Initialise. Set group marker parameter. To know index and calculate position on spiral.
+     * @param index the index of this child marker.
+     * @param bitmap the bitmap of the group marker
+     * @param verticalOffset the vertical offset of the group marker
+     * @param horizontalOffset the horizontal offset of the group marker
+     */
+    public void init(int index, Bitmap bitmap, int verticalOffset, int horizontalOffset) {
+        id = index;
+        
+        groupBitmapHalfHeight = bitmap.getHeight() /2;
+        groupBitmapHalfWidth = bitmap.getWidth() /2;
+        groupVOffset = verticalOffset;
+        groupHOffset = horizontalOffset;
     }
 
 }
