@@ -27,8 +27,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 public final class XmlUtils {
+    private static final Logger LOGGER = Logger.getLogger(XmlUtils.class.getName());
+
     private static final String PREFIX_ASSETS = "assets:";
     private static final String PREFIX_FILE = "file:";
     private static final String PREFIX_JAR = "jar:";
@@ -162,6 +165,8 @@ public final class XmlUtils {
         if (inputStream != null) {
             return inputStream;
         }
+
+        LOGGER.severe("invalid resource: " + src);
         throw new FileNotFoundException("invalid resource: " + src);
     }
 
