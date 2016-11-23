@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <path id="path4152" d="m 219.6,162.8 c -1.1,18 0.1,36 -0.3,54 0.2,67 -0.4,135 0.3,202 2.9,32 30.5,60 62.7,62.9 30.5,3.4 62,-14.9 72.9,-43.7 5.8,-14 5.7,-29.4 5.2,-44 C 360.2,317 360.8,239 360,162 357.1,130.1 330.27019,99.778256 292.16522,98.118631 254.06025,96.459006 221.7,127.8 219.6,162.8 Z" mix-blend-mode="normal" solid-color="#000000" opacity="0.8" color-interpolation-filters="linearRGB" filter-gaussianBlur-deviation="0" color="#000000" image-rendering="auto" color-rendering="auto" fill-rule="evenodd" stroke-width="64" isolation="auto" color-interpolation="sRGB" solid-opacity="1" fill="none" stroke-linejoin="round" filter-blend-mode="normal" stroke="#ffffff" shape-rendering="auto"/>
+ <path d="m 219.6,162.8 c -1.1,18 0.1,36 -0.3,54 0.2,67 -0.4,135 0.3,202 2.9,32 30.5,60 62.7,62.9 30.5,3.4 62,-14.9 72.9,-43.7 5.8,-14 5.7,-29.4 5.2,-44 C 360.2,317 360.8,239 360,162 357.1,130.1 330.27019,99.778256 292.16522,98.118631 254.06025,96.459006 221.7,127.8 219.6,162.8 Z" id="path4150" fill="#0092da"/>
+ <path d="m 344.7,170.2 c 0,29.9 -24.3,54 -54,54 -29.9,0 -54,-24 -54,-54 0,-29.9 24,-54 54,-54 29.9,0 54,24.3 54,54 z" id="path4148" opacity="0.4" fill="#ffffff"/>
+ <path d="m 344.7,290.2 c 0,29.9 -24.3,54 -54,54 -29.9,0 -54,-24 -54,-54 0,-29.9 24,-54 54,-54 29.9,0 54,24.3 54,54 z" id="path4146" opacity="0.8" fill="#ffffff"/>
+ <path d="m 344.7,410.2 c 0,29.9 -24.3,54 -54,54 -29.9,0 -54,-24 -54,-54 0,-29.9 24,-54 54,-54 29.9,0 54,24.3 54,54 z" id="path4782" opacity="0.7" fill="#ffffff"/>
+</svg>

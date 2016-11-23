@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata3108"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z " id="path1329" fill="#39AC39" stroke="#eee" stroke-width="3.408"/>
+ </g>
+ <g id="g1971" transform="translate(0,14)">
+  <g id="g1954">
+   <circle transform="matrix(0.709267,0,0,0.709267,-66.3743,249.1383)" id="circle3152" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,6.004647,249.1383)" id="circle3156" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,78.38359,249.1383)" id="circle3158" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,150.7625,249.1383)" id="circle3160" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,223.1415,249.1383)" id="circle3162" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,-31.24863,185.2971)" id="circle3164" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,41.13032,185.2971)" id="circle3166" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,113.5093,185.2971)" id="circle3168" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,185.8882,185.2971)" id="circle3170" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,5.37371,122.387)" id="circle3174" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,77.75266,122.387)" id="circle3176" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,150.1316,122.387)" id="circle3178" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,41.09758,60.08006)" id="circle3180" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,113.4765,60.08006)" id="circle3182" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+   <circle transform="matrix(0.709267,0,0,0.709267,77.75269,-1.15799)" id="circle3184" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+  </g>
+  <path sodipodi:nodetypes="ccsscccsscccsscc" d="M 405.36925,294.43336 L 460.45817,390.3283 C 466.77033,400.7993 471.95273,409.46319 478.54425,420.88003 C 491.72727,443.7137 483.89488,472.94464 461.0612,486.12767 C 449.64436,492.71918 437.04475,493.03432 424.81839,492.99373 L 318.84922,491.5975 L 174.87668,491.84735 C 162.65183,492.04371 154.29015,491.13319 141.10711,491.13319 C 114.74107,491.13319 91.241211,467.63334 91.241211,441.26728 C 91.241211,428.08426 98.93564,417.9757 105.23623,407.49771 L 174.05475,296.09057 L 230.96328,191.40829 C 237.03855,180.79807 240.05525,172.88625 246.64676,161.46942 C 259.8298,138.63574 289.06073,130.80334 311.89441,143.98636 C 323.31123,150.57788 330.07833,162.37445 336.14219,172.99118 L 405.36925,294.43336 z " id="path3205" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-width="15.76"/>
+ </g>
+ <circle transform="matrix(0.709267,0,0,0.709267,75.7527,-101.534)" id="circle3238" r="47.5" cy="270.42" cx="296.43" fill="#ffffff"/>
+</svg>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <defs id="defs22">
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="ArrowStart">
+   <path id="path3568" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="ArrowEnd">
+   <path id="path3565" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker2959">
+   <path id="path2626" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker2956">
+   <path id="path2623" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker3077">
+   <path id="path3298" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker3074">
+   <path id="path3295" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+ </defs>
+ <metadata id="metadata10"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z" id="path1329" fill="#666666" stroke="#eeeeee" stroke-width="3.408"/>
+ </g>
+ <path d="M 290,109.625 C 267.00676,109.97494 244.29858,119.7799 228.27689,136.27588 C 212.2552,152.77185 203.11669,175.75633 203.4375,198.75 L 203.4375,433.53125 C 222.81381,454.75952 359.10328,456.65758 379.21875,433.53125 L 379.21875,198.75 C 379.54566,175.3137 370.02902,151.8952 353.44673,135.33033 C 336.86444,118.76547 313.43595,109.27345 290,109.625 z" id="path4689" sodipodi:nodetypes="csccccsc" color="#000000" stroke-width="175.8" fill="#ffffff"/>
+ <path d="M 293.09375,407.82285 C 259.66039,408.11377 223.34681,407.4427 194.125,415.46045 C 184.39475,418.23702 180.32117,422.97243 180.15538,427.85232 C 179.97524,433.15469 180.68429,448.12305 180.38851,460.9171 C 181.15967,469.35513 250.85878,446.48184 277.561,447.51498 C 313.91784,447.97152 403.73843,469.07255 403.32856,461.81048 C 403.31787,450.18896 403.4126,439.16108 403.26436,427.95697 C 403.22474,424.96229 401.82055,422.00164 397.40625,419.47885 C 384.65837,411.42986 359.97963,409.82547 338.91317,408.70425 C 323.7189,407.92177 308.38624,407.7491 293.09375,407.82285 z" id="path4725" sodipodi:nodetypes="ccscccsccc" color="#000000" stroke-width="35" fill="#ffffff"/>
+ <path id="path4739" d="M 293.09375,441.82285 C 259.66039,442.11377 223.34681,441.4427 194.125,449.46045 C 173.80517,455.25881 176.02811,470.40474 198.1875,474.94133 C 221.58608,481.25804 250.85878,480.48184 277.561,481.51498 C 313.91784,481.97152 352.03125,481.68257 385.5625,475.12761 C 401.67721,470.7495 409.51982,460.40181 397.40625,453.47885 C 384.65837,445.42986 359.97963,443.82547 338.91317,442.70425 C 323.7189,441.92177 308.38624,441.7491 293.09375,441.82285 z" color="#000000" stroke-width="35" fill="#ffffff"/>
+</svg>

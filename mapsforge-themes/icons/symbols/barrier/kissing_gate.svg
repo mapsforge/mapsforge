@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <defs id="defs4">
+  <symbol viewBox="244.5 110 489 219.9" id="symbol-university">
+   <path id="path4460" d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z"/>
+   <path id="path4462" d="M94,176l-21,39" stroke-width="20" stroke="#000000" fill="none"/>
+   <path id="path4464" d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z"/>
+   <path id="path4466" d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24" stroke-width="20" stroke="#000000" ill="none"/>
+  </symbol>
+ </defs>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z" id="path1329" fill="#666666" stroke="#eeeeee" stroke-width="3.408"/>
+ </g>
+ <g transform="translate(-6.5446793,11.806088)" id="g2325">
+  <path d="m 71.146,445.933 c 0,-35.346 88.647,-64 198,-64" id="path5473" fill="none" stroke="#7f7f7f" stroke-width="20"/>
+  <polygon points="519.152,442.928 328.149,507.928 328.149,185.931 519.152,120.931 " id="polygon5475" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="30"/>
+  <path d="m 71.146,348.933 c 0,-35.346 88.647,-64.001 198,-64.001" id="path5477" fill="none" stroke="#7f7f7f" stroke-width="20"/>
+  <path d="m 71.146,252.931 c 0,-35.346 88.647,-64 198,-64" id="path5479" fill="none" stroke="#7f7f7f" stroke-width="20"/>
+  <path d="m 269.146,509.928 c -109.353,0 -198,-28.654 -198,-64" id="path5481" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="30"/>
+  <line x1="71.15" y1="121.93" x2="71.15" y2="446.93" id="line5483" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="30"/>
+  <line x1="268.15" y1="188.93" x2="268.15" y2="509.93" id="line5485" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="30"/>
+  <line x1="268.15" y1="58.931" x2="268.15" y2="188.93" id="line5487" fill="none" stroke="#7f7f7f" stroke-width="30"/>
+  <path d="m 268.146,395.933 c -109.353,0 -198,-28.654 -198,-64" id="path5489" fill="none" stroke="#ffffff" stroke-width="20"/>
+  <path d="m 270.146,292.932 c -109.353,0 -198,-28.655 -198,-64" id="path5491" fill="none" stroke="#ffffff" stroke-width="20"/>
+  <path d="m 269.146,185.931 c -109.353,0 -198,-28.654 -198,-64 0,-35.346 88.647,-64 198,-64" id="path5493" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="30"/>
+  <line x1="328.15" y1="292.94" x2="519.15" y2="227.93" id="line5495" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="30"/>
+  <line x1="328.15" y1="396.94" x2="519.15" y2="331.94" id="line5497" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="30"/>
+  <line x1="329.15" y1="503.93" x2="515.15" y2="122.93" id="line5499" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+ </g>
+</svg>

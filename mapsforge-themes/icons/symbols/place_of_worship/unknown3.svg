@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z " id="path1329" fill="#111" stroke="#eee" stroke-width="3.408"/>
+ </g>
+ <g id="g3655" transform="translate(10,10)" opacity=".25">
+  <rect y="145.94" x="143.99" height="295.05" width="295.05" id="rect3585" opacity=".25" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="35.17" rx="0"/>
+  <rect id="rect3587" width="295.05" height="295.05" x="143.99" y="145.94" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="35.17" rx="0"/>
+ </g>
+ <g id="g4174" transform="translate(-10,-10)" opacity="1">
+  <rect id="rect4176" width="295.05" height="295.05" x="143.99" y="145.94" opacity=".25" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="35.17" rx="0"/>
+  <rect y="145.94" x="143.99" height="295.05" width="295.05" id="rect4178" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="35.17" rx="0"/>
+ </g>
+</svg>

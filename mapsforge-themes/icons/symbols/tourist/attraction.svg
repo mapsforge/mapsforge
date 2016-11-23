@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <defs id="defs4">
+  <symbol viewBox="244.5 110 489 219.9" id="symbol-university">
+   <path id="path4460" d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z"/>
+   <path id="path4462" d="M94,176l-21,39" stroke-width="20" stroke="#000000" fill="none"/>
+   <path id="path4464" d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z"/>
+   <path id="path4466" d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24" stroke-width="20" stroke="#000000" ill="none"/>
+  </symbol>
+ </defs>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z " id="path1329" fill="#734A08" stroke="#eee" stroke-width="3.408"/>
+ </g>
+ <g id="g4670" transform="translate(-4,0)">
+  <path transform="translate(30.687831,46.031746)" d="M 411.21693,457.24867 267.60639,382.68184 124.76501,458.71169 151.30418,299.08753 34.85508,186.73183 194.86773,162.6455 265.73961,17.175999 338.09369,161.91399 498.34402,184.3646 383.04866,297.90393 411.21693,457.24867 z" inkscape:randomized="0" inkscape:rounded="0" inkscape:flatsided="false" sodipodi:arg2="1.565689" sodipodi:arg1="0.93737044" sodipodi:r2="121.83687" sodipodi:r1="243.67374" sodipodi:cy="260.84656" sodipodi:cx="266.98413" sodipodi:sides="5" id="path4629" sodipodi:type="star" opacity=".75" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="16"/>
+  <path sodipodi:type="star" id="path4631" sodipodi:sides="5" sodipodi:cx="266.98413" sodipodi:cy="260.84656" sodipodi:r1="243.67374" sodipodi:r2="121.83687" sodipodi:arg1="0.93737044" sodipodi:arg2="1.565689" inkscape:flatsided="false" inkscape:rounded="0" inkscape:randomized="0" d="M 411.21693,457.24867 267.60639,382.68184 124.76501,458.71169 151.30418,299.08753 34.85508,186.73183 194.86773,162.6455 265.73961,17.175999 338.09369,161.91399 498.34402,184.3646 383.04866,297.90393 411.21693,457.24867 z" transform="translate(30.687831,46.031746)" fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="20"/>
+ </g>
+</svg>

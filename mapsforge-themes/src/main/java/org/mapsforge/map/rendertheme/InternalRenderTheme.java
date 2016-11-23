@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,19 +21,14 @@ import java.io.InputStream;
  * Enumeration of all internal rendering themes.
  */
 public enum InternalRenderTheme implements XmlRenderTheme {
-    /**
-     * A render-theme similar to the OpenStreetMap Osmarender style.
-     *
-     * @see <a href="http://wiki.openstreetmap.org/wiki/Osmarender">Osmarender</a>
-     */
-    OSMARENDER("/osmarender/", "osmarender.xml");
 
-    private final String absolutePath;
-    private final String file;
+    DEFAULT("/assets/mapsforge/default.xml"),
+    OSMARENDER("/assets/mapsforge/osmarender.xml");
 
-    private InternalRenderTheme(String absolutePath, String file) {
-        this.absolutePath = absolutePath;
-        this.file = file;
+    private final String path;
+
+    InternalRenderTheme(String path) {
+        this.path = path;
     }
 
     @Override
@@ -45,11 +41,11 @@ public enum InternalRenderTheme implements XmlRenderTheme {
      */
     @Override
     public String getRelativePathPrefix() {
-        return this.absolutePath;
+        return "/assets/";
     }
 
     @Override
     public InputStream getRenderThemeAsStream() {
-        return getClass().getResourceAsStream(this.absolutePath + this.file);
+        return getClass().getResourceAsStream(this.path);
     }
 }

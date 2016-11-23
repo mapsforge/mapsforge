@@ -1,5 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,20 +21,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 /**
- * Combining an external render theme file with the jar-embedded resources of
- * the internal osmarender style.
+ * Combining an external render theme file with the jar-embedded resources of the internal styles.
  */
-
 public class ExternalRenderThemeUsingJarResources extends ExternalRenderTheme {
 
-    public ExternalRenderThemeUsingJarResources(File renderThemeFile)
-            throws FileNotFoundException {
+    public ExternalRenderThemeUsingJarResources(File renderThemeFile) throws FileNotFoundException {
         super(renderThemeFile);
     }
 
     @Override
     public String getRelativePathPrefix() {
-        return "/osmarender/";
+        return "/assets/";
     }
-
 }

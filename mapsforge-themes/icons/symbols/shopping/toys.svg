@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <defs id="defs4">
+  <symbol viewBox="244.5 110 489 219.9" id="symbol-university">
+   <path id="path4460" d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z"/>
+   <path id="path4462" d="M94,176l-21,39" stroke-width="20" stroke="#000000" fill="none"/>
+   <path id="path4464" d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z"/>
+   <path id="path4466" d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24" stroke-width="20" stroke="#000000" ill="none"/>
+  </symbol>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="ArrowStart">
+   <path id="path3634" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="ArrowEnd">
+   <path id="path3631" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker2611">
+   <path id="path1325" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker2608">
+   <path id="path1322" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" refX="10" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker4460">
+   <path id="path2826" d="M 10 0 L 0 5 L 10 10 z"/>
+  </marker>
+  <marker viewBox="0 0 10 10" refY="5" orient="auto" markerWidth="4" markerUnits="strokeWidth" markerHeight="3" id="marker4457">
+   <path id="path2823" d="M 0 0 L 10 5 L 0 10 z"/>
+  </marker>
+ </defs>
+ <g id="g1327">
+  <path d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z " id="path1329" fill="#AC39AC" stroke="#eee" stroke-width="3.408"/>
+ </g>
+ <path inkscape:connector-curvature="0" d="m 215.07797,206.70435 94.26296,-21.09793 c 43.12908,-6.61406 65.35241,2.36896 79.89908,17.07927 56.76374,-13.63905 79.71596,5.83052 98.75166,29.13523 l -12.35376,16.47875 c -15.24757,-21.18221 -40.58898,-41.15378 -79.58676,-33.09924 4.96868,25.65181 20.84697,46.36283 42.56469,63.98162 13.77488,33.31599 28.0074,82.30861 51.17131,110.37097 l -14.36387,22.10259 c -15.6473,-36.94613 -38.33643,-90.77666 -70.70701,-111.68132 -24.92712,-7.08883 -47.94182,-13.48574 -65.74985,-33.85287 l -11.87562,-3.84391 c -29.18729,26.95421 -73.86137,36.35473 -114.70607,36.99781 -27.68555,29.21716 -50.995,70.23383 -89.77424,119.41293 L 95.67822,406.63229 c 32.21042,-25.02405 56.82425,-79.96951 84.38779,-115.39428 -1.18745,-44.08362 -26.68553,-82.6131 -44.07114,-94.64151 -17.3856,-12.02844 -38.26075,13.05606 -58.271501,16.13583 C 66.244508,214.53417 57.60469,197.92318 64.257233,189.62508 71.199796,180.96522 97.60416,150.62425 120.815,138.38726 l 8.97743,-23.10725 5.38645,22.10259 c 27.75365,18.09096 56.67747,30.9437 79.89909,69.32175 z" id="path2529" sodipodi:nodetypes="cccccccccccccccczczcccc" fill="#ffffff" fill-rule="evenodd" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round" stroke-width="9.139"/>
+ <path d="m 535.68075,383.70171 c -68.48452,43.55677 -149.76583,68.78712 -236.94001,68.78712 -90.59194,0 -174.81988,-27.2475 -244.935616,-73.99428" id="path11229" inkscape:connector-curvature="0" fill="none" stroke="#ffffff" stroke-linecap="round" stroke-width="30"/>
+</svg>

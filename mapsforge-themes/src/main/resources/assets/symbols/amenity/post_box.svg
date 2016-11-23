@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="580" height="580">
+ <metadata id="metadata2975"/>
+ <path id="path4141" d="m 484,435 0,-292 -385,0 0,292 z" mix-blend-mode="normal" solid-color="#000000" opacity="0.8" color-interpolation-filters="linearRGB" filter-gaussianBlur-deviation="0" color="#000000" image-rendering="auto" color-rendering="auto" stroke-width="64" isolation="auto" color-interpolation="sRGB" solid-opacity="1" fill="none" stroke-linejoin="round" filter-blend-mode="normal" stroke="#ffffff" shape-rendering="auto"/>
+ <path d="m 484,435 0,-292 -385,0 0,292 z" id="flowRoot3192" fill="#734a08"/>
+ <path d="M 226,289 126,389 126,189 Z" id="path4156" opacity="0.9" fill="#ffffff"/>
+ <path d="m 314,292 c -6.1,6.1 -13.8,9.2 -23,9.2 -9.6,0 -17.7,-3.2 -24,-9.6 l -122,-122 292,0.2 z" id="path4154" opacity="0.9" fill="#ffffff"/>
+ <path d="m 356,289 100,-100 0,200 z" id="path4152" opacity="0.9" fill="#ffffff"/>
+ <path d="m 244,308 4.3,4.3 c 11.6,11.3 25.6,16.9 42,16.9 16.4,0 30,-5.6 41.5,-16.9 l 4.3,-4.3 100,100 -292.55,0 z" id="path4150" opacity="0.9" fill="#ffffff"/>
+</svg>
