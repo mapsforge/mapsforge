@@ -141,26 +141,27 @@ public class GroupMarkerExample extends MapViewerTemplate {
 
             Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable, paint);
 
-            final GroupMarker groupMarker = new GroupMarker(new LatLong(56.072035, 39.433590), bitmap, 0, 0,
+            LatLong latLong = new LatLong(56.072035, 39.433590);
+            final GroupMarker groupMarker = new GroupMarker(latLong, bitmap, 0, 0,
                     mapView.getLayerManager().getLayers(), GRAPHIC_FACTORY.createPaint());
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong,bitmap, 15, 0,  GRAPHIC_FACTORY.createPaint()));
 
             mapView.addLayer(groupMarker);
 

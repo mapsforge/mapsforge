@@ -163,26 +163,27 @@ public final class GroupSamples {
         try {
             final InputStream is = GroupSamples.class.getResourceAsStream("groupmarker.png");
             final AwtBitmap bitmap = new AwtBitmap(is);
-            final GroupMarker groupMarker = new GroupMarker(new LatLong(56.072035, 39.433590), bitmap, 0, 0,
+            final LatLong latLong = new LatLong(56.072035, 39.433590);
+            final GroupMarker groupMarker = new GroupMarker(latLong, bitmap, 0, 0,
                     mapView.getLayerManager().getLayers(), GroupSamples.GRAPHIC_FACTORY.createPaint());
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
             groupMarker.getChildren()
-                    .add(new ChildMarker(bitmap, 15, 0, groupMarker, GroupSamples.GRAPHIC_FACTORY.createPaint()));
+                    .add(new ChildMarker(latLong, bitmap, 15, 0, GroupSamples.GRAPHIC_FACTORY.createPaint()));
 
             mapView.addLayer(groupMarker);
         } catch (final IOException e) {
