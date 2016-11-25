@@ -33,10 +33,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BasicMapViewerV3"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Map Viewer with built-in V3 Rendertheme (osmarender)" />
-        <activity
             android:name=".BubbleOverlay"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Information bubbles" />
