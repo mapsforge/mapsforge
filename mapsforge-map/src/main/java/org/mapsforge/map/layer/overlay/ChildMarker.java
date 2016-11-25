@@ -30,6 +30,10 @@ public class ChildMarker extends Marker {
     private int groupBitmapHalfWidth;
     /** The half group marker bitmap height. */
     private int groupBitmapHalfHeight;
+    /** The left (x) pixel delta between child and group. */
+    protected int deltaLeft;
+    /** The top (y) pixel delta between child and group. */
+    protected int deltaTop;
 
     /**
      * The Constructor.
@@ -49,7 +53,6 @@ public class ChildMarker extends Marker {
 
     /**
      * Setter.
-     * 
      * @param index the index of this child marker for the parent.
      */
     public void setPosition(final int index) {
@@ -109,7 +112,12 @@ public class ChildMarker extends Marker {
         }
 
         canvas.drawBitmap(this.bitmap, left, top);
+        
+        this.deltaLeft = left - leftGroup;
+        this.deltaTop = top - topGroup;
     }
+    
+    
 
     /**
      * Initialise. Set group marker parameter. To know index and calculate position on spiral.
@@ -125,6 +133,22 @@ public class ChildMarker extends Marker {
         groupBitmapHalfWidth = bitmap.getWidth() /2;
         groupVOffset = verticalOffset;
         groupHOffset = horizontalOffset;
+    }
+    
+    /**
+     * Getter.
+     * @return the (x) delta to parent group marker.
+     */
+    public int getDeltaLeftToGroup(){
+        return deltaLeft;
+    }
+    
+    /**
+     * Getter.
+     * @return the (y) delta to parent group marker. 
+     */
+    public int getDeltaTopToGroup(){
+        return deltaTop;
     }
 
 }
