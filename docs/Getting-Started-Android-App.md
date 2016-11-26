@@ -67,7 +67,7 @@ Now we need to set up the process of displaying a map. A map can have several la
 ```java
 MapDataStore mapDataStore = new MapFile(new File(Environment.getExternalStorageDirectory(), MAP_FILE));
 this.tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, this.mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
+tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
 ```
 
 On its own a tileRendererLayer does not know where to display the map, so we need to associate it with our mapView:
@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
         MapDataStore mapDataStore = new MapFile(new File(Environment.getExternalStorageDirectory(), MAP_FILE));
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
                 this.mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
+        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
 
         // only once a layer is associated with a mapView the rendering starts
         this.mapView.getLayerManager().getLayers().add(tileRendererLayer);

@@ -181,7 +181,7 @@ public final class Samples {
                 return true;
             }
         };
-        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
+        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
         return tileRendererLayer;
     }
 

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2015 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,10 +28,7 @@ import android.view.ViewGroup;
 import org.mapsforge.map.android.util.AndroidSupportUtil;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
-import org.mapsforge.map.layer.LayerManager;
-import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.samples.android.dummy.DummyContent;
@@ -54,7 +52,6 @@ public class ItemDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem dummyItem;
     private MapView mapView;
-    private TileCache tileCache;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -109,10 +106,6 @@ public class ItemDetailFragment extends Fragment {
 
     /**
      * Note that this is the Fragment method, not one from the compatibility lib
-     *
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -132,20 +125,14 @@ public class ItemDetailFragment extends Fragment {
             // note that this the Fragment method, not compat lib
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_STORAGE);
         } else {
-            LayerManager layerManager = this.mapView.getLayerManager();
-            Layers layers = layerManager.getLayers();
+            TileCache tileCache = AndroidUtil.createTileCache(this.getActivity(), "fragments",
+                    this.mapView.getModel().displayModel.getTileSize(), 1.0f, 1.5);
+            this.mapView.getLayerManager().getLayers().add(AndroidUtil.createTileRendererLayer(
+                    tileCache, this.mapView.getModel().mapViewPosition, getMapFile(),
+                    InternalRenderTheme.DEFAULT));
 
-            MapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
-            mapViewPosition.setZoomLevel((byte) 16);
-            this.tileCache = AndroidUtil.createTileCache(this.getActivity(),
-                    "fragments",
-                    this.mapView.getModel().displayModel.getTileSize(), 1.0f,
-                    1.5);
-
-            mapViewPosition.setCenter(this.dummyItem.location);
-            layers.add(AndroidUtil.createTileRendererLayer(this.tileCache,
-                    mapViewPosition, getMapFile(),
-                    InternalRenderTheme.OSMARENDER, false, true, false));
+            this.mapView.setCenter(this.dummyItem.location);
+            this.mapView.setZoomLevel((byte) 16);
         }
 
     }

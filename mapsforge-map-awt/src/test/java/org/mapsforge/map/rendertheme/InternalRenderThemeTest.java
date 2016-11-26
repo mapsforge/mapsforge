@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,6 +28,12 @@ import java.io.IOException;
 
 public class InternalRenderThemeTest {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
+
+    @Test
+    public void defaultTest() throws XmlPullParserException, IOException {
+        XmlRenderTheme xmlRenderTheme = InternalRenderTheme.DEFAULT;
+        Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
+    }
 
     @Test
     public void osmarenderTest() throws XmlPullParserException, IOException {

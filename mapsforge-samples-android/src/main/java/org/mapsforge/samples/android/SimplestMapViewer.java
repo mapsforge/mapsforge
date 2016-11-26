@@ -33,13 +33,13 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 public class SimplestMapViewer extends MapViewerTemplate {
 
     /**
-     * This MapViewer uses the deprecated built-in osmarender theme.
+     * This MapViewer uses the built-in default theme.
      *
      * @return the render theme to use
      */
     @Override
     protected XmlRenderTheme getRenderTheme() {
-        return InternalRenderTheme.OSMARENDER;
+        return InternalRenderTheme.DEFAULT;
     }
 
     /**

@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
-"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg height="60" version="1.0" width="60" xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:xlink="http://www.w3.org/1999/xlink">
- <metadata/>
- <defs id="defs3">
-  <linearGradient id="linearGradient575">
-   <stop id="stop576"/>
-   <stop id="stop577" offset="1" stop-color="#fff"/>
-  </linearGradient>
-  <linearGradient id="linearGradient578" xlink:href="#linearGradient575"/>
- </defs>
- <path id="path4174" d="M 55.186040,31.208662 L 4.0814158,31.208662" mix-blend-mode="normal" solid-color="#000000" opacity="0.8" color-interpolation-filters="linearRGB" filter-gaussianBlur-deviation="0" color="#000000" image-rendering="auto" color-rendering="auto" fill-rule="evenodd" stroke-width="8" isolation="auto" color-interpolation="sRGB" solid-opacity="1" fill="none" stroke-linejoin="round" filter-blend-mode="normal" stroke="#ffffff" shape-rendering="auto" stroke-linecap="round"/>
- <path id="path4175" d="M 43.687955,21.951630 L 56.607159,31.232880 L 43.996605,41.545380 L 43.687955,21.951630 z " mix-blend-mode="normal" solid-color="#000000" opacity="0.8" color-interpolation-filters="linearRGB" filter-gaussianBlur-deviation="0" color="#000000" image-rendering="auto" color-rendering="auto" fill-rule="evenodd" stroke-width="8" isolation="auto" color-interpolation="sRGB" solid-opacity="1" fill="none" stroke-linejoin="round" filter-blend-mode="normal" stroke="#ffffff" shape-rendering="auto" stroke-linecap="round"/>
- <path d="M 55.186040,31.208662 L 4.0814158,31.208662" id="path831" sodipodi:stroke-cmyk="(0.0000000 0.0000000 0.0000000 0.80000001)" fill="none" fill-rule="evenodd" stroke="#666666" stroke-linejoin="round" fill-opacity=".75" stroke-linecap="round" stroke-width="5"/>
- <path d="M 43.687955,21.951630 L 56.607159,31.232880 L 43.996605,41.545380 L 43.687955,21.951630 z " id="path869" sodipodi:nodetypes="cccc" sodipodi:stroke-cmyk="(0.0000000 0.0000000 0.0000000 0.80000001)" fill="#666666" fill-rule="evenodd" stroke="#666666" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.712"/>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" height="22" width="22">
+ <metadata id="metadata3025"/>
+ <path stroke-miterlimit="10" inkscape:connector-curvature="0" d="m 4.8081,9.8895 7.3149,0.066 C 11.202,9.1774 10.289,8.3996 9.3792,7.6219 l 3.3408,0 c 1.415,1.1264 2.832,2.2522 4.248,3.3781 -1.416,1.125 -2.833,2.251 -4.25,3.377 l -3.3406,0 C 10.287,13.599 11.2,12.822 12.11,12.044 l -7.292,0 z" id="path8070" sodipodi:nodetypes="cccccccccc" opacity="0.809" fill="#ffffff" stroke="#ffffff" stroke-linecap="square" stroke-width="1.75"/>
+ <path id="path8097" d="M 4.7991,9.8793 C 3.9666,9.854 12.087,9.9512 12.087,9.9512 11.177,9.1731 10.266,8.3951 9.3549,7.6172 l 3.3411,0 4.249,3.3778 c -1.416,1.125 -2.833,2.25 -4.249,3.375 l -3.3411,0 c 0.9111,-0.776 1.8221,-1.554 2.7321,-2.331 l -7.2879,0.02 0,-2.1828 z" stroke-miterlimit="10" inkscape:connector-curvature="0" sodipodi:nodetypes="ccccccccccc" opacity="0.749" stroke-opacity="0.914" fill="#2c2c2c" stroke-linecap="square" stroke-width="0.714"/>
 </svg>

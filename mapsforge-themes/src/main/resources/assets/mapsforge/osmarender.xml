@@ -1093,14 +1093,26 @@
                 <symbol src="jar:symbols/health/pharmacy.svg" />
             </rule>
             <rule e="node" k="amenity" v="place_of_worship" zoom-min="17">
+                <rule e="node" k="denomination|religion" v="buddhist">
+                    <symbol src="jar:symbols/place_of_worship/buddhist.svg" />
+                </rule>
+                <rule e="node" k="denomination|religion" v="christian">
+                    <symbol src="jar:symbols/place_of_worship/christian.svg" />
+                </rule>
+                <rule e="node" k="denomination|religion" v="hindu">
+                    <symbol src="jar:symbols/place_of_worship/hindu.svg" />
+                </rule>
                 <rule e="node" k="denomination|religion" v="jewish">
                     <symbol src="jar:symbols/place_of_worship/jewish.svg" />
                 </rule>
                 <rule e="node" k="denomination|religion" v="muslim|moslem">
                     <symbol src="jar:symbols/place_of_worship/islamic.svg" />
                 </rule>
-                <rule e="node" k="denomination|religion" v="christian">
-                    <symbol src="jar:symbols/place_of_worship/christian.svg" />
+                <rule e="node" k="denomination|religion" v="shinto">
+                    <symbol src="jar:symbols/place_of_worship/shinto.svg" />
+                </rule>
+                <rule e="node" k="denomination|religion" v="~|*">
+                    <symbol src="jar:symbols/place_of_worship/unknown.svg" />
                 </rule>
             </rule>
             <rule e="node" k="amenity" v="post_box" zoom-min="17">
@@ -1251,13 +1263,13 @@
                 <symbol src="jar:symbols/railway-crossing.svg" />
             </rule>
             <rule e="node" k="railway" v="station" zoom-min="14">
-                <symbol id="train_station" src="jar:symbols/transport/train_station.svg" />
+                <symbol id="train_station" src="jar:symbols/transport/train_station2.svg" />
                 <caption symbol-id="train_station" k="name" position="below" font-style="bold"
                     font-size="12" fill="#ec2d2d" stroke="#ffffff" stroke-width="2.0" />
             </rule>
             <rule e="node" k="railway" v="halt|tram_stop" zoom-min="17">
-                <symbol id="train_station2" src="jar:symbols/transport/train_station2.svg" />
-                <caption symbol-id="train_station2" k="name" position="below" font-style="bold"
+                <symbol id="tram_stop" src="jar:symbols/transport/tram_stop.svg" />
+                <caption symbol-id="tram_stop" k="name" position="below" font-style="bold"
                     font-size="12" fill="#ec2d2d" stroke="#ffffff" stroke-width="2.0" />
             </rule>
         </rule>
