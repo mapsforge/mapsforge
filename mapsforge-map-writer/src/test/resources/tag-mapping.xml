@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tag-mapping xmlns="http://mapsforge.org/tag-mapping"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://mapsforge.org/tag-mapping https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/tag-mapping.xsd"
-    default-zoom-appear="16" profile-name="default-profile">
+<tag-mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-zoom-appear="16"
+    profile-name="default-profile" xmlns="http://mapsforge.org/tag-mapping"
+    xsi:schemaLocation="http://mapsforge.org/tag-mapping https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/tag-mapping.xsd">
 
     <!-- ************* POIS *************** -->
     <!-- PUBLIC AMENITIES -->
