@@ -163,6 +163,7 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewerThreaded.class, "Threaded LabelLayer using MapDataStore", null));
         linearLayout.addView(createButton(LabelLayerUsingLabelCacheMapViewer.class, "Separate LabelLayer using LabelStore", null));
         linearLayout.addView(createButton(ClusterMapActivity.class, "Marker clustering (alpha)", null));
+        linearLayout.addView(createButton(GroupMarkerExample.class, "Group marker(alpha)", null));
     }
 
     @Override

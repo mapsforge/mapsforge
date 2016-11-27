@@ -203,6 +203,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Zooms to map bounds of overlay" />
         <activity
+            android:name=".GroupMarkerExample"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Show Groupmarker" />
+        <activity
             android:name=".Settings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Settings"

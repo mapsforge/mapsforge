@@ -130,7 +130,7 @@ public abstract class Layer {
     /**
      * Sets the visibility flag of this {@code Layer} to the given value.
      */
-    public final void setVisible(boolean visible, boolean redraw) {
+    public void setVisible(boolean visible, boolean redraw) {
         this.visible = visible;
 
         if (redraw) {
