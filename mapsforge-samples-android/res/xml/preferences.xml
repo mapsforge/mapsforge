@@ -77,5 +77,5 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:key="renderthememenu"
-        android:title="Map Style for Rendertheme V4" />
+        android:title="Map Style" />
 </PreferenceScreen>

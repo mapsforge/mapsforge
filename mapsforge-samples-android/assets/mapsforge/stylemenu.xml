@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rendertheme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" map-background="#fffcfa"
+    map-background-outside="#dddddd" version="5" xmlns="http://mapsforge.org/renderTheme"
+    xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme-v5.xsd">
+
+    <stylemenu defaultlang="en" defaultvalue="1" id="menu">
+        <layer enabled="true" id="nature">
+            <name lang="de" value="Natur" />
+            <name lang="en" value="Nature" />
+            <name lang="es" value="Naturaleza" />
+            <name lang="fr" value="Nature" />
+            <cat id="nature" />
+        </layer>
+
+        <layer id="base">
+            <cat id="sea" />
+            <cat id="land" />
+        </layer>
+
+        <!-- Show nature layers (enabled by default) -->
+        <layer id="1" parent="base" visible="true">
+            <name lang="de" value="1" />
+            <name lang="en" value="1" />
+            <name lang="es" value="1" />
+            <name lang="fr" value="1" />
+            <overlay id="nature" />
+        </layer>
+
+        <!-- Don't show nature layers -->
+        <layer id="2" parent="base" visible="true">
+            <name lang="de" value="2" />
+            <name lang="en" value="2" />
+            <name lang="es" value="2" />
+            <name lang="fr" value="2" />
+        </layer>
+    </stylemenu>
+
+    <rule cat="sea" e="way" k="natural" v="issea|sea">
+        <area fill="#b5d6f1" />
+    </rule>
+
+    <rule cat="land" e="way" k="natural" v="nosea">
+        <area fill="#f8f8f8" stroke="#f8f8f8" stroke-width="1.0" />
+    </rule>
+
+    <rule cat="nature" e="way" k="natural|landuse" v="forest|wood">
+        <area fill="#83aa5b" />
+    </rule>
+
+</rendertheme>

@@ -96,7 +96,7 @@ class PointDataStore extends MapDataStore {
     }
 }
 
-public class SimpleDataStoreMapViewer extends RenderTheme4 {
+public class SimpleDataStoreMapViewer extends DefaultTheme {
 
     private MultiMapDataStore multiMapDataStore;
     private PointDataStore pointDataStore;

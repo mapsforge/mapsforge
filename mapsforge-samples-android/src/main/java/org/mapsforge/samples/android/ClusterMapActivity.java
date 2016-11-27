@@ -42,7 +42,7 @@ import org.mapsforge.samples.android.dummy.ManyDummyContent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClusterMapActivity extends RenderTheme4 {
+public class ClusterMapActivity extends DefaultTheme {
     protected ClusterManager clusterer = null;
     private MenuItem displayItems;
     private MenuItem displayMoreItems;

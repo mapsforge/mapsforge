@@ -34,7 +34,7 @@ import org.mapsforge.map.layer.overlay.Marker;
  * A map viewer demonstrating changing bitmap drawables: every two seconds the
  * view changes the bitmap.
  */
-public class ChangingBitmaps extends RenderTheme4 {
+public class ChangingBitmaps extends DefaultTheme {
 
     final class BitmapChanger implements Runnable {
         @Override

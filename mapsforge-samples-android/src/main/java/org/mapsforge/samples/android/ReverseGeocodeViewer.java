@@ -39,7 +39,7 @@ import java.util.Set;
  * - POIs in specified radius.<br/>
  * - Ways containing touch point.
  */
-public class ReverseGeocodeViewer extends RenderTheme4 {
+public class ReverseGeocodeViewer extends DefaultTheme {
     private static final int TOUCH_RADIUS = 32 / 2;
 
     @Override

@@ -28,7 +28,7 @@ import java.io.File;
  * The lower map is rendered as non-transparent, the higher transparent. There is now a better way of doing
  * this, with the new MultiMapDataStore class.
  */
-public class TwoMaps extends RenderTheme4 {
+public class TwoMaps extends DefaultTheme {
     @Override
     protected void createLayers() {
         TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),

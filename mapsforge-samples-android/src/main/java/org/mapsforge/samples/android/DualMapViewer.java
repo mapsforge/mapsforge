@@ -35,7 +35,7 @@ import java.io.File;
 /**
  * An activity with two independent MapViews.
  */
-public class DualMapViewer extends RenderTheme4 {
+public class DualMapViewer extends DefaultTheme {
 
     protected MapView mapView2;
     protected PreferencesFacade preferencesFacade2;

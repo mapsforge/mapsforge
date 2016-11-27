@@ -42,7 +42,7 @@
     <string name="preferences_wayfiltering_distance">Way filter size</string>
     <string name="preferences_wayfiltering_distance_desc">The higher the number the less artifacts, but slower</string>
 
-    <string name="preferences_category_tilecache">Tilecache</string>
+    <string name="preferences_category_tilecache">Tile cache</string>
     <string name="preferences_tilecache_persistence">Persistence</string>
     <string name="preferences_tilecache_persistence_desc">Keep tiles over activity restart</string>
 

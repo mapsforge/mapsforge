@@ -31,7 +31,7 @@ import java.io.File;
 /**
  * Shows how to use a tile store layer.
  */
-public class TileStoreLayerViewer extends RenderTheme4 {
+public class TileStoreLayerViewer extends DefaultTheme {
     @Override
     protected void createLayers() {
         TileStoreLayer tileStoreLayer = new TileStoreLayer(this.tileCaches.get(0),

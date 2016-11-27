@@ -22,7 +22,7 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 /**
  * Viewer with tile grid and coordinates visible and frame counter displayed.
  */
-public class DiagnosticsMapViewer extends RenderTheme4 {
+public class DiagnosticsMapViewer extends DefaultTheme {
     @Override
     protected void createLayers() {
         super.createLayers();

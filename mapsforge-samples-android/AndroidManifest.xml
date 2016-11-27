@@ -45,6 +45,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Marker Clustering" />
         <activity
+            android:name=".DefaultTheme"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Default Theme" />
+        <activity
             android:name=".DiagnosticsMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="DiagnosticsMapViewer" />
@@ -151,14 +155,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="POI search with long press" />
         <activity
-            android:name=".RenderTheme4"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="RenderTheme V4" />
-        <activity
-            android:name=".RenderTheme5"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="RenderTheme V5" />
-        <activity
             android:name=".RenderThemeChanger"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Automatically changes between renderthemes on SDCard" />
@@ -182,6 +178,10 @@
             android:name=".StackedLayersMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Multiple layers generated from same map" />
+        <activity
+            android:name=".StyleMenuMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Style Menu" />
         <activity
             android:name=".TileSizeChanger"
             android:configChanges="keyboardHidden|orientation|screenSize"

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,29 +14,21 @@
  */
 package org.mapsforge.samples.android;
 
-import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 /**
- * A simple activity that illustrates that an XML layout file is not really needed
- * for the most simple map activities.
+ * Standard map view with use of default theme.
  */
-public class NoXMLLayout extends DefaultTheme {
+public class DefaultTheme extends SamplesBaseActivity {
 
     /**
-     * In this class we instantiate the MapView directly using this class,
-     * without using an XML layout file.
+     * This MapViewer uses the built-in default theme.
      *
-     * @return
+     * @return the render theme to use
      */
     @Override
-    protected MapView getMapView() {
-        MapView mv = new MapView(this);
-        setContentView(mv);
-        return mv;
-    }
-
-    @Override
-    public void setContentView() {
-        // no-op, we have already set the map view in getMapView()
+    protected XmlRenderTheme getRenderTheme() {
+        return InternalRenderTheme.DEFAULT;
     }
 }

@@ -25,7 +25,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  * A map viewer that draws the labels onto a single separate layer. The LabelLayer used in this example
  * retrieves the data from the MapDataStore for the visible tile area, no caching involved.
  */
-public class LabelLayerUsingMapDataStoreMapViewer extends RenderTheme4 {
+public class LabelLayerUsingMapDataStoreMapViewer extends DefaultTheme {
     @Override
     protected void createLayers() {
         TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),

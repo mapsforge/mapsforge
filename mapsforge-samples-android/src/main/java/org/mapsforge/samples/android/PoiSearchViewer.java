@@ -46,7 +46,7 @@ import java.util.Collection;
  * Long press on map to search inside visible bounding box.<br/>
  * Tap on POIs to show their name (in device's locale).
  */
-public class PoiSearchViewer extends RenderTheme4 {
+public class PoiSearchViewer extends DefaultTheme {
     private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/germany.poi";
     private static final String POI_CATEGORY = "Restaurants";
 

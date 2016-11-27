@@ -33,7 +33,7 @@ import java.util.Locale;
  * Demonstration of changing render themes. This activity checks for .xml files
  * on the sdcard and loads them as render themes.
  */
-public class RenderThemeChanger extends RenderTheme4 {
+public class RenderThemeChanger extends DefaultTheme {
 
     private class ChangerThread extends PausableThread {
         private static final int ROTATION_TIME = 10000; // milli secs to display a theme

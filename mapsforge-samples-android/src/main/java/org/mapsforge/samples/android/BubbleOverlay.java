@@ -28,7 +28,7 @@ import org.mapsforge.samples.android.dummy.DummyContent;
 /**
  * Basic map viewer that shows bubbles with content at a few locations.
  */
-public class BubbleOverlay extends RenderTheme4 {
+public class BubbleOverlay extends DefaultTheme {
 
     private Bitmap bubble;
 

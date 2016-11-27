@@ -32,7 +32,7 @@ import java.io.File;
  * This example requires a world.map file in the external files dir, the start of the Samples application
  * should download this automatically.
  */
-public class MultiMapLowResWorld extends RenderTheme4 {
+public class MultiMapLowResWorld extends DefaultTheme {
     private MultiMapDataStore multiMapDataStore;
     private MapFile worldMapFile;
 

@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Map viewer with a Grid layer added.
  */
-public class GridMapViewer extends RenderTheme4 {
+public class GridMapViewer extends DefaultTheme {
 
     @Override
     protected void createLayers() {

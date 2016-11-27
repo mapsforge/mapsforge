@@ -17,9 +17,12 @@
 package org.mapsforge.samples.android;
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,11 +86,17 @@ public class ItemDetailFragment extends Fragment {
         if (this.dummyItem != null) {
             this.mapView = (MapView) rootView.findViewById(R.id.mapView);
             this.mapView.setClickable(true);
-            this.mapView.getFpsCounter().setVisible(true);
             this.mapView.getMapScaleBar().setVisible(true);
 
-            createLayers();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                boolean hardwareAcceleration = sharedPreferences.getBoolean(SamplesApplication.SETTING_HARDWARE_ACCELERATION, true);
+                if (!hardwareAcceleration) {
+                    mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                }
+            }
 
+            createLayers();
         }
 
         return rootView;

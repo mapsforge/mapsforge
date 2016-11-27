@@ -22,7 +22,7 @@ import org.mapsforge.map.util.PausableThread;
 /**
  * Demonstration of changing between fixed and computed tile sizes.
  */
-public class TileSizeChanger extends RenderTheme4 {
+public class TileSizeChanger extends DefaultTheme {
 
     private class ChangerThread extends PausableThread {
         private static final int ROTATION_TIME = 10000;

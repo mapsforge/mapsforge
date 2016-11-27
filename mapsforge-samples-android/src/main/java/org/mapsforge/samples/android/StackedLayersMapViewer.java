@@ -30,7 +30,7 @@ import java.io.IOException;
  * that is intentional.
  */
 
-public class StackedLayersMapViewer extends RenderTheme4 {
+public class StackedLayersMapViewer extends DefaultTheme {
 
     @Override
     protected void createLayers() {
@@ -38,7 +38,7 @@ public class StackedLayersMapViewer extends RenderTheme4 {
         try {
 
             XmlRenderTheme secondRenderTheme = new AssetsRenderTheme(this, "",
-                    "renderthemes/onlybuildings.xml", null);
+                    "mapsforge/onlybuildings.xml", null);
 
             this.mapView.getLayerManager()
                     .getLayers()

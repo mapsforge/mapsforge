@@ -33,7 +33,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  * In this example a long press creates/removes
  * circles, a tap on a circle toggles the colour between red and green.
  */
-public class LongPressAction extends RenderTheme4 {
+public class LongPressAction extends DefaultTheme {
 
     private static final Paint GREEN = Utils.createPaint(
             AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0,

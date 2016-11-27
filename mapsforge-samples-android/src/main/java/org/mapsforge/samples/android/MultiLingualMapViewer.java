@@ -29,7 +29,7 @@ import java.io.File;
  * default and the user selected language. This is also an example how names can be styled prior to
  * rendering.
  */
-public class MultiLingualMapViewer extends RenderTheme4 {
+public class MultiLingualMapViewer extends DefaultTheme {
 
     @Override
     protected MapDataStore getMapFile() {

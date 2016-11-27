@@ -25,7 +25,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
  * A map viewer that draws the labels onto a single separate layer. The LabelLayer used in this example
  * caches the read results per tile to combine the results for the whole screen.
  */
-public class LabelLayerUsingLabelCacheMapViewer extends RenderTheme4 {
+public class LabelLayerUsingLabelCacheMapViewer extends DefaultTheme {
     @Override
     protected void createLayers() {
         TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
