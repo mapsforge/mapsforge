@@ -14,14 +14,14 @@
 - Map scale bar size scaling [#861](https://github.com/mapsforge/mapsforge/issues/861)
 - Deprecate water tiles rendering [#640](https://github.com/mapsforge/mapsforge/issues/640)
 - mapsforge-themes module [#848](https://github.com/mapsforge/mapsforge/issues/848)
-- New default internal render theme [#903](https://github.com/mapsforge/vtm/issues/903)
-- Internal render themes new SVG resources [#904](https://github.com/mapsforge/vtm/issues/904)
+- New default internal render theme [#903](https://github.com/mapsforge/mapsforge/issues/903)
+- Internal render themes new SVG resources [#904](https://github.com/mapsforge/mapsforge/issues/904)
 - SpatiaLite natives published artifacts [#849](https://github.com/mapsforge/mapsforge/issues/849)
 - SNAPSHOT builds publish to Sonatype OSSRH [#873](https://github.com/mapsforge/mapsforge/issues/873)
 - Deprecate Maven build [#852](https://github.com/mapsforge/mapsforge/issues/852)
 - Deprecate CI server [#877](https://github.com/mapsforge/mapsforge/issues/877)
 - Drop of `dev` branch
-- Internal render themes various improvements [#857](https://github.com/mapsforge/vtm/issues/857)
+- Internal render themes various improvements [#857](https://github.com/mapsforge/mapsforge/issues/857)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.7.0)
 
