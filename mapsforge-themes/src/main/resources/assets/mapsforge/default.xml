@@ -961,10 +961,12 @@
 
     <!-- emergency -->
     <rule e="any" k="*" v="*">
-        <rule e="any" k="amenity|building" v="hospital|clinic" zoom-min="13">
+        <rule e="any" k="amenity|building" v="hospital|clinic" zoom-min="15">
             <symbol id="hospital" src="jar:symbols/health/hospital.svg" />
-            <caption fill="#DA0092" font-size="12" font-style="bold" k="name" position="above"
-                priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="hospital" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#DA0092" font-size="12" font-style="bold" k="name" position="above"
+                    priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="hospital" />
+            </rule>
         </rule>
         <rule e="any" k="amenity" v="pharmacy" zoom-min="13">
             <symbol id="pharmacy" src="jar:symbols/health/pharmacy.svg" />
@@ -1267,7 +1269,7 @@
 
     <!-- highway -->
     <rule e="any" k="*" v="*">
-        <rule e="any" k="amenity" v="parking" zoom-min="14">
+        <rule e="any" k="amenity" v="parking" zoom-min="17">
             <rule e="any" k="access" v="private">
                 <symbol src="jar:symbols/transport/parking_private.svg" />
             </rule>
