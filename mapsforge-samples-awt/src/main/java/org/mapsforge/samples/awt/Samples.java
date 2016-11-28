@@ -52,6 +52,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFrame;
@@ -157,7 +158,7 @@ public final class Samples {
 
     private static TileCache createTileCache(int capacity) {
         TileCache firstLevelTileCache = new InMemoryTileCache(capacity);
-        File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), "mapsforge");
+        File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
         TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
         return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
     }
