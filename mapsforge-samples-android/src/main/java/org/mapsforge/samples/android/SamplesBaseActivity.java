@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -130,6 +131,12 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
     @Override
     protected String getMapFileName() {
         return "germany.map";
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setTitle(getClass().getSimpleName());
     }
 
     @Override

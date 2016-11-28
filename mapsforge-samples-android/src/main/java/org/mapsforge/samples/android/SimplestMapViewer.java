@@ -17,6 +17,7 @@ package org.mapsforge.samples.android;
 
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 
@@ -101,5 +102,11 @@ public class SimplestMapViewer extends MapViewerTemplate {
         this.tileCaches.add(AndroidUtil.createTileCache(this, getPersistableId(),
                 this.mapView.getModel().displayModel.getTileSize(), this.getScreenRatio(),
                 this.mapView.getModel().frameBufferModel.getOverdrawFactor()));
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setTitle(getClass().getSimpleName());
     }
 }
