@@ -249,7 +249,7 @@ public final class OSMUtils {
                     }
                 }
                 // as specified by http://wiki.openstreetmap.org/wiki/Key:area
-                if ("aeroway".equals(key) || "building".equals(key) || "landuse".equals(key) || "leisure".equals(key) || "natural".equals(key)) {
+                if ("aeroway".equals(key) || "building".equals(key) || "landuse".equals(key) || "leisure".equals(key) || "natural".equals(key) || "amenity".equals(key)) {
                     return true;
                 }
                 if ("highway".equals(key) || "barrier".equals(key)) {
