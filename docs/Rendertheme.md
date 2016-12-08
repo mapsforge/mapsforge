@@ -289,15 +289,15 @@ To speed up map rendering, SVG symbols are now only rendered at the point where 
 ```java
 AndroidGraphicFactory.clearResourceFileCache();
 ```
-### Symbol Scaling
+### SVG Scaling
 
-Symbols (SVG) can now be automatically scaled to accommodate different device resolutions. 
+SVG resources can now be automatically scaled to accommodate different device resolutions.
 
-The options available are 
+The options available are:
 
-- default: if no size is given, a symbol is rendered to a 20x20px multiplied by the device scale factor and any user adjustments.
-- percent: the symbol is rendered as a percentage size of its default size. This is the best way to make certain symbols smaller or bigger than others.
-- size: additional parameters give the absolute pixel size for the symbol, again adjusted by the scale factors.
+- If no size is given, a svg is rendered to a 20x20px multiplied by the device scale factor and any user adjustments.
+- symbol-percent: the svg is rendered as a percentage size of its default size. This is the best way to make certain svg smaller or bigger than others.
+- symbol-width and/or symbol-height: additional parameters give the absolute pixel size for the symbol, again adjusted by the scale factors. If only one dimension is set, the other is calculated from aspect ratio.
 
 The tiling directive has now been removed as we have introduced code that tiles area shaders in a continuous pattern regardless of shader bitmap size. 
 
