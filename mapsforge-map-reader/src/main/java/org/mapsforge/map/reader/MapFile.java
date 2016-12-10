@@ -185,7 +185,7 @@ public class MapFile extends MapDataStore {
     private final MapFileHeader mapFileHeader;
     private final long timestamp;
 
-    private MapFile() {
+    private MapFile() throws MapFileException {
         // only to create a dummy empty file.
         databaseIndexCache = null;
         fileSize = 0;
@@ -200,7 +200,7 @@ public class MapFile extends MapDataStore {
      * @param mapFile the map file.
      * @throws MapFileException if the given map file is null or invalid.
      */
-    public MapFile(File mapFile) {
+    public MapFile(File mapFile) throws MapFileException {
         this(mapFile, null);
     }
 
@@ -211,7 +211,7 @@ public class MapFile extends MapDataStore {
      * @param language the language to use (may be null).
      * @throws MapFileException if the given map file is null or invalid.
      */
-    public MapFile(File mapFile, String language) {
+    public MapFile(File mapFile, String language) throws MapFileException {
         super(language);
         if (mapFile == null) {
             throw new MapFileException("mapFile must not be null");
@@ -236,6 +236,9 @@ public class MapFile extends MapDataStore {
             this.databaseIndexCache = new IndexCache(this.inputFile, INDEX_CACHE_SIZE);
 
             this.timestamp = mapFile.lastModified();
+        } catch (MapFileException e) {
+            closeFile();
+            throw e;
         } catch (Exception e) {
             // make sure that the file is closed
             closeFile();
@@ -249,7 +252,7 @@ public class MapFile extends MapDataStore {
      * @param mapPath the path of the map file.
      * @throws MapFileException if the given map file is null or invalid.
      */
-    public MapFile(String mapPath) {
+    public MapFile(String mapPath) throws MapFileException {
         this(mapPath, null);
     }
 
@@ -261,7 +264,7 @@ public class MapFile extends MapDataStore {
      * @throws MapFileException if the given map file is null or invalid or IOException if the file
      *                          cannot be opened.
      */
-    public MapFile(String mapPath, String language) {
+    public MapFile(String mapPath, String language) throws MapFileException {
         this(new File(mapPath), language);
     }
 

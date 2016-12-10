@@ -66,7 +66,7 @@ final class RequiredFields {
         }
     }
 
-    static void readFileSize(ReadBuffer readBuffer, long fileSize, MapFileInfoBuilder mapFileInfoBuilder) {
+    static void readFileSize(ReadBuffer readBuffer, long fileSize, MapFileInfoBuilder mapFileInfoBuilder) throws MapFileException {
         // get and check the file size (8 bytes)
         long headerFileSize = readBuffer.readLong();
         if (headerFileSize != fileSize) {
