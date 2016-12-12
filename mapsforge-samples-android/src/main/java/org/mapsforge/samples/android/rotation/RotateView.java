@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +17,7 @@ package org.mapsforge.samples.android.rotation;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -95,11 +96,17 @@ public class RotateView extends ViewGroup {
                                          int width, int height) {
         matrix.setRotate(-mapOrientation, width / 2, height / 2);
 
-        MotionEvent rotatedEvent = MotionEvent.obtain(ev);
-        points[0] = ev.getX();
-        points[1] = ev.getY();
-        matrix.mapPoints(points);
-        rotatedEvent.setLocation(points[0], points[1]);
+        final MotionEvent rotatedEvent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            rotatedEvent = MotionEvent.obtain(ev);
+            rotatedEvent.transform(matrix);
+        } else {
+            rotatedEvent = MotionEvent.obtainNoHistory(ev);
+            points[0] = ev.getX();
+            points[1] = ev.getY();
+            matrix.mapPoints(points);
+            rotatedEvent.setLocation(points[0], points[1]);
+        }
         return rotatedEvent;
     }
 
