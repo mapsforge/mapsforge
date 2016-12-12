@@ -10,6 +10,7 @@
 - Map writer: house numbers (nodes) include at zoom 17 [#895](https://github.com/mapsforge/mapsforge/issues/895)
 - Map writer: simplification max zoom option [#892](https://github.com/mapsforge/mapsforge/issues/892)
 - POI writer: allow empty categories option [#883](https://github.com/mapsforge/mapsforge/issues/883)
+- Map rotation (external) in library [#637](https://github.com/mapsforge/mapsforge/issues/637)
 - Group marker example [#905](https://github.com/mapsforge/mapsforge/issues/905)
 - SVG symbols customization [#858](https://github.com/mapsforge/mapsforge/issues/858)
 - Map scale bar size scaling [#861](https://github.com/mapsforge/mapsforge/issues/861)

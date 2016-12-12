@@ -12,7 +12,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.samples.android.rotation;
+package org.mapsforge.map.android.rotation;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -40,6 +40,11 @@ public class RotateView extends ViewGroup {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        if (heading == 0) {
+            super.dispatchDraw(canvas);
+            return;
+        }
+
         canvas.save(Canvas.MATRIX_SAVE_FLAG);
         canvas.rotate(-heading, getWidth() * 0.5f, getHeight() * 0.5f);
         smoothCanvas.delegate = canvas;
@@ -49,8 +54,11 @@ public class RotateView extends ViewGroup {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        MotionEvent rotatedEvent = rotateTouchEvent(event, -heading,
-                getWidth(), getHeight());
+        if (heading == 0) {
+            return super.dispatchTouchEvent(event);
+        }
+
+        MotionEvent rotatedEvent = rotateEvent(event, heading, getWidth() * 0.5f, getHeight() * 0.5f);
         try {
             return super.dispatchTouchEvent(rotatedEvent);
         } finally {
@@ -74,8 +82,7 @@ public class RotateView extends ViewGroup {
             int childHeight = view.getMeasuredHeight();
             int childLeft = (width - childWidth) / 2;
             int childTop = (height - childHeight) / 2;
-            view.layout(childLeft, childTop, childLeft + childWidth, childTop
-                    + childHeight);
+            view.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
         }
     }
 
@@ -83,8 +90,7 @@ public class RotateView extends ViewGroup {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int w = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
         int h = getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
-        int sizeSpec = MeasureSpec.makeMeasureSpec((int) Math.hypot(w, h),
-                MeasureSpec.EXACTLY);
+        int sizeSpec = MeasureSpec.makeMeasureSpec((int) Math.hypot(w, h), MeasureSpec.EXACTLY);
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             getChildAt(i).measure(sizeSpec, sizeSpec);
@@ -92,18 +98,20 @@ public class RotateView extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    private MotionEvent rotateTouchEvent(MotionEvent ev, float mapOrientation,
-                                         int width, int height) {
-        matrix.setRotate(-mapOrientation, width / 2, height / 2);
+    private MotionEvent rotateEvent(final MotionEvent event, float degrees, float px, float py) {
+        if (degrees == 0)
+            return event;
+
+        matrix.setRotate(degrees, px, py);
 
         final MotionEvent rotatedEvent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            rotatedEvent = MotionEvent.obtain(ev);
+            rotatedEvent = MotionEvent.obtain(event);
             rotatedEvent.transform(matrix);
         } else {
-            rotatedEvent = MotionEvent.obtainNoHistory(ev);
-            points[0] = ev.getX();
-            points[1] = ev.getY();
+            rotatedEvent = MotionEvent.obtainNoHistory(event);
+            points[0] = event.getX();
+            points[1] = event.getY();
             matrix.mapPoints(points);
             rotatedEvent.setLocation(points[0], points[1]);
         }

@@ -23,11 +23,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.android.rotation.RotateView;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
-import org.mapsforge.samples.android.rotation.RotateView;
 import org.mapsforge.samples.android.scalebar.MapScaleBarImpl;
 import org.mapsforge.samples.android.scalebar.MapScaleBarView;
 

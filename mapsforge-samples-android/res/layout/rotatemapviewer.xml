@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <org.mapsforge.samples.android.rotation.RotateView
+    <org.mapsforge.map.android.rotation.RotateView
         android:id="@+id/rotateView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -13,7 +13,7 @@
             android:id="@+id/mapView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
-    </org.mapsforge.samples.android.rotation.RotateView>
+    </org.mapsforge.map.android.rotation.RotateView>
 
     <org.mapsforge.samples.android.scalebar.MapScaleBarView
         android:id="@+id/mapScaleBarView"
