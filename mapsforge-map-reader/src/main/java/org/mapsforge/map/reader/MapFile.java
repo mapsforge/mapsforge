@@ -185,6 +185,9 @@ public class MapFile extends MapDataStore {
     private final MapFileHeader mapFileHeader;
     private final long timestamp;
 
+    private byte zoomLevelMin = 0;
+    private byte zoomLevelMax = Byte.MAX_VALUE;
+
     private MapFile() {
         // only to create a dummy empty file.
         databaseIndexCache = null;
@@ -928,8 +931,8 @@ public class MapFile extends MapDataStore {
      * @param maxZoom maximum zoom level supported
      */
     public void restrictToZoomRange(byte minZoom, byte maxZoom) {
-        this.getMapFileInfo().zoomLevelMax = maxZoom;
-        this.getMapFileInfo().zoomLevelMin = minZoom;
+        this.zoomLevelMax = maxZoom;
+        this.zoomLevelMin = minZoom;
     }
 
     @Override
@@ -950,7 +953,8 @@ public class MapFile extends MapDataStore {
 
     @Override
     public boolean supportsTile(Tile tile) {
-        return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox);
+        return tile.getBoundingBox().intersects(getMapFileInfo().boundingBox)
+                && (tile.zoomLevel >= this.zoomLevelMin && tile.zoomLevel <= this.zoomLevelMax);
     }
 
     /**

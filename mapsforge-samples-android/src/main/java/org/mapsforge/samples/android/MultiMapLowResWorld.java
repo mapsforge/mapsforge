@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -75,11 +75,13 @@ public class MultiMapLowResWorld extends DefaultTheme {
             @Override
             public boolean supportsTile(Tile tile) {
                 // Example low res world map has sufficient detail up to zoom level 7
-                return tile.zoomLevel <= 7 && super.supportsTile(tile);
+                return tile.zoomLevel <= 10 && super.supportsTile(tile);
             }
         };
         multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
-        multiMapDataStore.addMapDataStore(getMapFile1(), true, true);
+        MapFile mapFile1 = (MapFile) getMapFile1();
+        mapFile1.restrictToZoomRange((byte) 8, Byte.MAX_VALUE);
+        multiMapDataStore.addMapDataStore(mapFile1, true, true);
         multiMapDataStore.addMapDataStore(getMapFile2(), false, false);
 
         super.onCreate(savedInstanceState);
