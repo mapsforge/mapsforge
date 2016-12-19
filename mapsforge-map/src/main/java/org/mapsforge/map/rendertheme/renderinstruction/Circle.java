@@ -87,11 +87,11 @@ public class Circle extends RenderInstruction {
             } else if (CAT.equals(name)) {
                 this.category = value;
             } else if (FILL.equals(name)) {
-                this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.fill.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback()));
             } else if (SCALE_RADIUS.equals(name)) {
                 this.scaleRadius = Boolean.parseBoolean(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback()));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else {

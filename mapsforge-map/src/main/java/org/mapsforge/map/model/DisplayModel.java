@@ -17,6 +17,7 @@ package org.mapsforge.map.model;
 
 import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.map.model.common.Observable;
+import org.mapsforge.map.rendertheme.ThemeCallback;
 
 /**
  * Encapsulates the display characteristics for a MapView, such as tile size and background color. The size of map tiles
@@ -77,6 +78,7 @@ public class DisplayModel extends Observable {
     private int fixedTileSize;
     private int maxTextWidth = DEFAULT_MAX_TEXT_WIDTH;
     private float maxTextWidthFactor = DEFAULT_MAX_TEXT_WIDTH_FACTOR;
+    private ThemeCallback themeCallback;
     private int tileSize = DEFAULT_TILE_SIZE;
     private int tileSizeMultiple = 64;
     private float userScaleFactor = defaultUserScaleFactor;
@@ -144,6 +146,13 @@ public class DisplayModel extends Observable {
      */
     public synchronized float getScaleFactor() {
         return deviceScaleFactor * this.userScaleFactor;
+    }
+
+    /**
+     * Theme callback.
+     */
+    public synchronized ThemeCallback getThemeCallback() {
+        return this.themeCallback;
     }
 
     /**
@@ -218,6 +227,13 @@ public class DisplayModel extends Observable {
     public void setMaxTextWidthFactor(float maxTextWidthFactor) {
         this.maxTextWidthFactor = maxTextWidthFactor;
         this.setMaxTextWidth();
+    }
+
+    /**
+     * Theme callback.
+     */
+    public synchronized void setThemeCallback(ThemeCallback themeCallback) {
+        this.themeCallback = themeCallback;
     }
 
     /**

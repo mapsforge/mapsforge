@@ -95,12 +95,19 @@ public final class XmlUtils {
      * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
      */
     public static int getColor(GraphicFactory graphicFactory, String colorString) {
+        return getColor(graphicFactory, colorString, null);
+    }
+
+    /**
+     * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
+     */
+    public static int getColor(GraphicFactory graphicFactory, String colorString, ThemeCallback themeCallback) {
         if (colorString.isEmpty() || colorString.charAt(0) != '#') {
             throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
         } else if (colorString.length() == 7) {
-            return getColor(graphicFactory, colorString, 255, 1);
+            return getColor(graphicFactory, colorString, 255, 1, themeCallback);
         } else if (colorString.length() == 9) {
-            return getColor(graphicFactory, colorString, Integer.parseInt(colorString.substring(1, 3), 16), 3);
+            return getColor(graphicFactory, colorString, Integer.parseInt(colorString.substring(1, 3), 16), 3, themeCallback);
         } else {
             throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
         }
@@ -221,12 +228,16 @@ public final class XmlUtils {
         return relativePathPrefix + name;
     }
 
-    private static int getColor(GraphicFactory graphicFactory, String colorString, int alpha, int rgbStartIndex) {
+    private static int getColor(GraphicFactory graphicFactory, String colorString, int alpha, int rgbStartIndex, ThemeCallback themeCallback) {
         int red = Integer.parseInt(colorString.substring(rgbStartIndex, rgbStartIndex + 2), 16);
         int green = Integer.parseInt(colorString.substring(rgbStartIndex + 2, rgbStartIndex + 4), 16);
         int blue = Integer.parseInt(colorString.substring(rgbStartIndex + 4, rgbStartIndex + 6), 16);
 
-        return graphicFactory.createColor(alpha, red, green, blue);
+        int color = graphicFactory.createColor(alpha, red, green, blue);
+        if (themeCallback != null) {
+            color = themeCallback.getColor(color);
+        }
+        return color;
     }
 
     private static File getFile(String parentPath, String pathName) {

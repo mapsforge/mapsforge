@@ -18,6 +18,7 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -39,13 +40,15 @@ public class RenderThemeBuilder {
 
     float baseStrokeWidth;
     float baseTextSize;
+    private final DisplayModel displayModel;
     boolean hasBackgroundOutside;
     int mapBackground;
     int mapBackgroundOutside;
     private Integer version;
 
-    public RenderThemeBuilder(GraphicFactory graphicFactory, String elementName, XmlPullParser pullParser)
+    public RenderThemeBuilder(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName, XmlPullParser pullParser)
             throws XmlPullParserException {
+        this.displayModel = displayModel;
         this.baseStrokeWidth = 1f;
         this.baseTextSize = 1f;
         this.mapBackground = graphicFactory.createColor(Color.WHITE);
@@ -75,9 +78,9 @@ public class RenderThemeBuilder {
             } else if (VERSION.equals(name)) {
                 this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
             } else if (MAP_BACKGROUND.equals(name)) {
-                this.mapBackground = XmlUtils.getColor(graphicFactory, value);
+                this.mapBackground = XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback());
             } else if (MAP_BACKGROUND_OUTSIDE.equals(name)) {
-                this.mapBackgroundOutside = XmlUtils.getColor(graphicFactory, value);
+                this.mapBackgroundOutside = XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback());
                 this.hasBackgroundOutside = true;
             } else if (BASE_STROKE_WIDTH.equals(name)) {
                 this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);

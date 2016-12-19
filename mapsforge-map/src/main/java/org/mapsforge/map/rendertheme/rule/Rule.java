@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,18 +29,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-abstract class Rule {
+public abstract class Rule {
 
     static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<List<String>, AttributeMatcher>();
     static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<List<String>, AttributeMatcher>();
+
+    public static class RuleVisitor {
+        public void apply(Rule r) {
+            for (Rule subRule : r.subRules) {
+                this.apply(subRule);
+            }
+        }
+    }
 
     String cat;
     final ClosedMatcher closedMatcher;
     final ElementMatcher elementMatcher;
     final byte zoomMax;
     final byte zoomMin;
-    private final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
-    private final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
+    public final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
+    public final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
 
     Rule(RuleBuilder ruleBuilder) {
         this.cat = ruleBuilder.cat;
@@ -58,6 +67,10 @@ abstract class Rule {
 
     void addSubRule(Rule rule) {
         this.subRules.add(rule);
+    }
+
+    void apply(RuleVisitor v) {
+        v.apply(this);
     }
 
     void destroy() {

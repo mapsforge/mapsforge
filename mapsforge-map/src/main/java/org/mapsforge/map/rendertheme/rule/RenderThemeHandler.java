@@ -159,7 +159,7 @@ public final class RenderThemeHandler {
         try {
             if ("rendertheme".equals(qName)) {
                 checkState(qName, Element.RENDER_THEME);
-                this.renderTheme = new RenderThemeBuilder(this.graphicFactory, qName, pullParser).build();
+                this.renderTheme = new RenderThemeBuilder(this.graphicFactory, this.displayModel, qName, pullParser).build();
             } else if (ELEMENT_NAME_RULE.equals(qName)) {
                 checkState(qName, Element.RULE);
                 Rule rule = new RuleBuilder(qName, pullParser, this.ruleStack).build();

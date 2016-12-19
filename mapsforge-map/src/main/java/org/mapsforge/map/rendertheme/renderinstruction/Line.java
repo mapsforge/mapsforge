@@ -93,7 +93,7 @@ public class Line extends RenderInstruction {
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback()));
             } else if (STROKE_DASHARRAY.equals(name)) {
                 this.strokeDasharray = parseFloatArray(name, value);
                 for (int f = 0; f < this.strokeDasharray.length; ++f) {

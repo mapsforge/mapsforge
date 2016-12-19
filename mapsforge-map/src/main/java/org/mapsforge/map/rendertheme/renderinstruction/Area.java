@@ -88,11 +88,11 @@ public class Area extends RenderInstruction {
             } else if (CAT.equals(name)) {
                 this.category = value;
             } else if (FILL.equals(name)) {
-                this.fill.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.fill.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback()));
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback()));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else if (SYMBOL_HEIGHT.equals(name)) {
