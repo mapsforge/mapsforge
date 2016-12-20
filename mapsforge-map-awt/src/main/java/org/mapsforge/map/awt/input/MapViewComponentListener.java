@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2016 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +17,6 @@ package org.mapsforge.map.awt.input;
 
 import org.mapsforge.map.awt.view.MapView;
 
-import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
@@ -30,7 +29,9 @@ public class MapViewComponentListener extends ComponentAdapter {
 
     @Override
     public void componentResized(ComponentEvent componentEvent) {
-        Dimension size = this.mapView.getSize();
-        this.mapView.getModel().mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(size.width, size.height));
+        if (this.mapView.getWidth() < 0 || this.mapView.getHeight() < 0) {
+            return;
+        }
+        this.mapView.getModel().mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(this.mapView.getWidth(), this.mapView.getHeight()));
     }
 }
