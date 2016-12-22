@@ -13,6 +13,7 @@ Current version is [![Maven Central](https://img.shields.io/maven-central/v/org.
 compile 'org.mapsforge:mapsforge-core:[CURRENT-VERSION]'
 compile 'org.mapsforge:mapsforge-map:[CURRENT-VERSION]'
 compile 'org.mapsforge:mapsforge-map-reader:[CURRENT-VERSION]'
+compile 'org.mapsforge:mapsforge-themes:[CURRENT-VERSION]'
 compile 'net.sf.kxml:kxml2:2.3.0'
 ```
 
@@ -47,9 +48,10 @@ compile 'org.mapsforge:mapsforge-poi:[CURRENT-VERSION]'
 ```groovy
 compile 'org.mapsforge:mapsforge-poi-android:[CURRENT-VERSION]'
 compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]'
+compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-armeabi'
+compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-armeabi-v7a'
+compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-x86'
 ```
-
-You'll need also the SpatiaLite native library [files](../spatialite-android/natives).
 
 #### Desktop
 ```groovy
