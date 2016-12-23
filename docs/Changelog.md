@@ -1,5 +1,9 @@
 # Changelog
 
+### Version 0.7.0-rc2 (2016-12-23)
+
+- Same as 0.7.0-rc1
+
 ### Version 0.7.0-rc1 (2016-12-22)
 
 - Multithreaded rendering improvements [#591](https://github.com/mapsforge/mapsforge/issues/591) [#806](https://github.com/mapsforge/mapsforge/issues/806)
