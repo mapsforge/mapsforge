@@ -24,15 +24,14 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
+import org.mapsforge.map.awt.util.AwtUtil;
 import org.mapsforge.map.awt.util.JavaPreferences;
 import org.mapsforge.map.awt.view.MapView;
+import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MultiMapDataStore;
 import org.mapsforge.map.layer.Layers;
-import org.mapsforge.map.layer.cache.FileSystemTileCache;
-import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
@@ -72,11 +71,14 @@ public final class Samples {
      * @param args command line args: expects the map files as multiple parameters.
      */
     public static void main(String[] args) {
-        // Increase read buffer limit
+        // Multithreading map rendering
+        MapWorkerPool.NUMBER_OF_THREADS = 2;
+
+        // Map buffer size
         ReadBuffer.setMaximumBufferSize(6500000);
 
-        // Multithreading rendering
-        MapWorkerPool.NUMBER_OF_THREADS = 2;
+        // Square frame buffer
+        FrameBufferController.setUseSquareFrameBuffer(false);
 
         List<File> mapFiles = getMapFiles(args);
         final MapView mapView = createMapView();
@@ -117,10 +119,17 @@ public final class Samples {
     private static BoundingBox addLayers(MapView mapView, List<File> mapFiles) {
         Layers layers = mapView.getLayerManager().getLayers();
 
+        // Tile cache
+        TileCache tileCache = AwtUtil.createTileCache(
+                mapView.getModel().displayModel.getTileSize(),
+                mapView.getModel().frameBufferModel.getOverdrawFactor(),
+                1024,
+                new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString()));
+
         // Raster
         /*mapView.getModel().displayModel.setFixedTileSize(256);
         TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-        TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(createTileCache(256), mapView.getModel().mapViewPosition, tileSource);
+        TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition, tileSource);
         layers.add(tileDownloadLayer);
         tileDownloadLayer.start();
         BoundingBox boundingBox = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
@@ -133,7 +142,7 @@ public final class Samples {
         for (File file : mapFiles) {
             mapDataStore.addMapDataStore(new MapFile(file), false, false);
         }
-        TileRendererLayer tileRendererLayer = createTileRendererLayer(createTileCache(64), mapDataStore, mapView.getModel().mapViewPosition);
+        TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition);
         layers.add(tileRendererLayer);
         BoundingBox boundingBox = mapDataStore.boundingBox();
 
@@ -154,13 +163,6 @@ public final class Samples {
         }
 
         return mapView;
-    }
-
-    private static TileCache createTileCache(int capacity) {
-        TileCache firstLevelTileCache = new InMemoryTileCache(capacity);
-        File cacheDirectory = new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString());
-        TileCache secondLevelTileCache = new FileSystemTileCache(1024, cacheDirectory, GRAPHIC_FACTORY);
-        return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
     }
 
     @SuppressWarnings("unused")

@@ -117,7 +117,7 @@ public final class AndroidUtil {
      */
     public static TileCache createTileCache(Context c, String id, int tileSize,
                                             float screenRatio, double overdraw, boolean persistent) {
-        int cacheSize = Math.round(getMinimumCacheSize(c, tileSize, overdraw, screenRatio));
+        int cacheSize = getMinimumCacheSize(c, tileSize, overdraw, screenRatio);
         return createExternalStorageTileCache(c, id, cacheSize, tileSize, persistent);
     }
 
@@ -151,13 +151,13 @@ public final class AndroidUtil {
      */
     public static TileCache createTileCache(Context c, String id, int tileSize,
                                             int width, int height, double overdraw, boolean persistent) {
-        int cacheSize = Math.round(getMinimumCacheSize(tileSize, overdraw, width, height));
+        int cacheSize = getMinimumCacheSize(tileSize, overdraw, width, height);
         return createExternalStorageTileCache(c, id, cacheSize, tileSize, persistent);
     }
 
     /**
      * Utility function to create a two-level tile cache with the right size, using the size of the map view. This is
-     * the compatibility version that by default creates a non-threaded and non-persistent cache.
+     * the compatibility version that by default creates a non-persistent cache.
      *
      * @param c        the Android context
      * @param id       name for the storage directory
@@ -320,7 +320,7 @@ public final class AndroidUtil {
         // For any size we need a minimum of 4 (as the intersection of 4 tiles can always be in the
         // middle of a view.
         Dimension dimension = FrameBufferController.calculateFrameBufferDimension(new Dimension(width, height), overdrawFactor);
-        return (int) Math.max(4, (2 + (dimension.height / tileSize))
+        return Math.max(4, (2 + (dimension.height / tileSize))
                 * (2 + (dimension.width / tileSize)));
     }
 
