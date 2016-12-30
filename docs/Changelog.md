@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.7.0 (2016-12-30)
+
+- Same as 0.7.0-rc2
+
 ### Version 0.7.0-rc2 (2016-12-23)
 
 - Same as 0.7.0-rc1

@@ -39,15 +39,11 @@ And navigate to Staging Repositories, there should be then a mapsforge one somew
 
 Check the released artifacts and click on Close. Sonatype will then perform its own validation. After that click Release, at that point it will be staged to Maven Central, but might take some time.
 
-(This is where the sona type user was created for mapsforge https://issues.sonatype.org/browse/OSSRH-4231)
+(This is where the Sonatype user was created for mapsforge https://issues.sonatype.org/browse/OSSRH-4231)
 
 Git tags
 --------
-Add tags to Git commit in form 0.5.0
-
-Javadoc
--------
-On server add new directory for new release and update the main listing file.
+Add tags to Git commit in form X.Y.Z
 
 Developer Links
 ---------------
