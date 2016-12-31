@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -35,6 +35,7 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
+import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
@@ -61,6 +62,7 @@ import javax.swing.WindowConstants;
 public final class Samples {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
     private static final boolean SHOW_DEBUG_LAYERS = false;
+    private static final boolean SHOW_RASTER_MAP = false;
 
     private static final String MESSAGE = "Are you sure you want to exit the application?";
     private static final String TITLE = "Confirm close";
@@ -126,25 +128,28 @@ public final class Samples {
                 1024,
                 new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString()));
 
-        // Raster
-        /*mapView.getModel().displayModel.setFixedTileSize(256);
-        TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
-        TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition, tileSource);
-        layers.add(tileDownloadLayer);
-        tileDownloadLayer.start();
-        BoundingBox boundingBox = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
-        mapView.setZoomLevelMin(tileSource.getZoomLevelMin());
-        mapView.setZoomLevelMax(tileSource.getZoomLevelMax());*/
-
-        // Vector
-        mapView.getModel().displayModel.setFixedTileSize(512);
-        MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
-        for (File file : mapFiles) {
-            mapDataStore.addMapDataStore(new MapFile(file), false, false);
+        final BoundingBox boundingBox;
+        if (SHOW_RASTER_MAP) {
+            // Raster
+            mapView.getModel().displayModel.setFixedTileSize(256);
+            TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
+            TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition, tileSource);
+            layers.add(tileDownloadLayer);
+            tileDownloadLayer.start();
+            mapView.setZoomLevelMin(tileSource.getZoomLevelMin());
+            mapView.setZoomLevelMax(tileSource.getZoomLevelMax());
+            boundingBox = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
+        } else {
+            // Vector
+            mapView.getModel().displayModel.setFixedTileSize(512);
+            MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+            for (File file : mapFiles) {
+                mapDataStore.addMapDataStore(new MapFile(file), false, false);
+            }
+            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition);
+            layers.add(tileRendererLayer);
+            boundingBox = mapDataStore.boundingBox();
         }
-        TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition);
-        layers.add(tileRendererLayer);
-        BoundingBox boundingBox = mapDataStore.boundingBox();
 
         // Debug
         if (SHOW_DEBUG_LAYERS) {
