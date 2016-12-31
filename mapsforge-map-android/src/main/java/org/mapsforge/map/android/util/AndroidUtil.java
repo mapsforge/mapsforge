@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -78,14 +78,27 @@ public final class AndroidUtil {
      */
     public static TileCache createExternalStorageTileCache(Context c,
                                                            String id, int firstLevelSize, int tileSize, boolean persistent) {
+        return createExternalStorageTileCache(c.getExternalCacheDir(), id, firstLevelSize, tileSize, persistent);
+    }
+
+    /**
+     * Utility function to create a two-level tile cache along with its backends.
+     *
+     * @param cacheDir       the cache directory
+     * @param id             name for the directory, which will be created as a subdirectory of the cache directory
+     * @param firstLevelSize size of the first level cache (tiles number)
+     * @param tileSize       tile size
+     * @param persistent     whether the second level tile cache should be persistent
+     * @return a new cache created on the external storage
+     */
+    public static TileCache createExternalStorageTileCache(File cacheDir,
+                                                           String id, int firstLevelSize, int tileSize, boolean persistent) {
         LOGGER.info("TILECACHE INMEMORY SIZE: " + Integer.toString(firstLevelSize));
         TileCache firstLevelTileCache = new InMemoryTileCache(firstLevelSize);
-        File cacheDir = c.getExternalCacheDir();
         if (cacheDir != null) {
-            // cacheDir will be null if full
             String cacheDirectoryName = cacheDir.getAbsolutePath() + File.separator + id;
             File cacheDirectory = new File(cacheDirectoryName);
-            if (cacheDirectory.exists() || cacheDirectory.mkdir()) {
+            if (cacheDirectory.exists() || cacheDirectory.mkdirs()) {
                 int tileCacheFiles = estimateSizeOfFileSystemCache(cacheDirectoryName, firstLevelSize, tileSize);
                 if (cacheDirectory.canWrite() && tileCacheFiles > 0) {
                     try {
@@ -101,6 +114,25 @@ public final class AndroidUtil {
             }
         }
         return firstLevelTileCache;
+    }
+
+    /**
+     * Utility function to create a two-level tile cache with the right size. When the cache is created we do not
+     * actually know the size of the mapview, so the screenRatio is an approximation of the required size.
+     *
+     * @param c           the Android context
+     * @param cacheDir    the cache directory
+     * @param id          name for the storage directory
+     * @param tileSize    tile size
+     * @param screenRatio part of the screen the view takes up
+     * @param overdraw    overdraw allowance
+     * @param persistent  whether the second level tile cache should be persistent
+     * @return a new cache created on the external storage
+     */
+    public static TileCache createTileCache(Context c, File cacheDir, String id, int tileSize,
+                                            float screenRatio, double overdraw, boolean persistent) {
+        int cacheSize = getMinimumCacheSize(c, tileSize, overdraw, screenRatio);
+        return createExternalStorageTileCache(cacheDir, id, cacheSize, tileSize, persistent);
     }
 
     /**
@@ -135,6 +167,24 @@ public final class AndroidUtil {
      */
     public static TileCache createTileCache(Context c, String id, int tileSize, float screenRatio, double overdraw) {
         return createTileCache(c, id, tileSize, screenRatio, overdraw, false);
+    }
+
+    /**
+     * Utility function to create a two-level tile cache with the right size, using the size of the map view.
+     *
+     * @param cacheDir   the cache directory
+     * @param id         name for the storage directory
+     * @param tileSize   tile size
+     * @param width      the width of the map view
+     * @param height     the height of the map view
+     * @param overdraw   overdraw allowance
+     * @param persistent whether the cache should be persistent
+     * @return a new cache created on the external storage
+     */
+    public static TileCache createTileCache(File cacheDir, String id, int tileSize,
+                                            int width, int height, double overdraw, boolean persistent) {
+        int cacheSize = getMinimumCacheSize(tileSize, overdraw, width, height);
+        return createExternalStorageTileCache(cacheDir, id, cacheSize, tileSize, persistent);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 ## New since 0.7.0
 
+- Android tile cache folder option [#913](https://github.com/mapsforge/mapsforge/issues/913)
 - Desktop tile cache creation utility [#915](https://github.com/mapsforge/mapsforge/issues/915)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.8.0)

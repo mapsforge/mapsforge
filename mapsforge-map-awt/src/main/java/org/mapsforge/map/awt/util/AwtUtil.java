@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,6 +30,12 @@ public final class AwtUtil {
      * Utility function to create a two-level tile cache with the right size, using the size of the screen.
      * <p>
      * Combine with <code>FrameBufferController.setUseSquareFrameBuffer(false);</code>
+     *
+     * @param tileSize       the tile size
+     * @param overdrawFactor the overdraw factor applied to the map view
+     * @param capacity       the maximum number of entries in file cache
+     * @param cacheDirectory the directory where cached tiles will be stored
+     * @return a new cache created on the file system
      */
     public static TileCache createTileCache(int tileSize, double overdrawFactor, int capacity, File cacheDirectory) {
         int cacheSize = getMinimumCacheSize(tileSize, overdrawFactor);
@@ -42,6 +48,10 @@ public final class AwtUtil {
      * Compute the minimum cache size for a view, using the size of the screen.
      * <p>
      * Combine with <code>FrameBufferController.setUseSquareFrameBuffer(false);</code>
+     *
+     * @param tileSize       the tile size
+     * @param overdrawFactor the overdraw factor applied to the map view
+     * @return the minimum cache size for the view
      */
     public static int getMinimumCacheSize(int tileSize, double overdrawFactor) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
