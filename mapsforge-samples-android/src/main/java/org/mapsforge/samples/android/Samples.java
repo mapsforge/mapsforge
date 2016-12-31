@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,6 +33,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 
 /**
  * Start screen for the sample activities.
@@ -187,6 +189,9 @@ public class Samples extends Activity {
                 }
                 startActivity(intent);
                 return true;
+            case R.id.menu_svgclear:
+                AndroidGraphicFactory.clearResourceFileCache();
+                break;
         }
         return false;
     }
@@ -204,7 +209,7 @@ public class Samples extends Activity {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            preferences.edit().putBoolean(accepted, true).commit();
+                            preferences.edit().putBoolean(accepted, true).apply();
                         }
                     });
             builder.setMessage(R.string.startup_message);
@@ -225,7 +230,7 @@ public class Samples extends Activity {
             builder.setPositiveButton(R.string.startup_dontshowagain, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    preferences.edit().putBoolean(accepted, true).commit();
+                    preferences.edit().putBoolean(accepted, true).apply();
                     startActivity(new Intent(Samples.this, clazz));
                 }
             });

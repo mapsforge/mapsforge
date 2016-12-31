@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -42,6 +42,7 @@ import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -165,6 +166,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     }
 
     private final Application application;
+    private File svgCacheDir;
 
     private AndroidGraphicFactory(Application app) {
         this.application = app;
@@ -257,6 +259,9 @@ public final class AndroidGraphicFactory implements GraphicFactory {
      * Android method accessible only via Context.
      */
     public boolean deleteFile(String name) {
+        if (this.svgCacheDir != null) {
+            return new File(this.svgCacheDir, name).delete();
+        }
         return this.application.deleteFile(name);
     }
 
@@ -264,6 +269,9 @@ public final class AndroidGraphicFactory implements GraphicFactory {
      * Android method accessible only via Context.
      */
     public String[] fileList() {
+        if (this.svgCacheDir != null) {
+            return this.svgCacheDir.list();
+        }
         return this.application.fileList();
     }
 
@@ -271,6 +279,9 @@ public final class AndroidGraphicFactory implements GraphicFactory {
      * Android method accessible only via Context.
      */
     public FileInputStream openFileInput(String name) throws FileNotFoundException {
+        if (this.svgCacheDir != null) {
+            return new FileInputStream(new File(this.svgCacheDir, name));
+        }
         return this.application.openFileInput(name);
     }
 
@@ -278,6 +289,9 @@ public final class AndroidGraphicFactory implements GraphicFactory {
      * Android method accessible only via Context.
      */
     public FileOutputStream openFileOutput(String name, int mode) throws FileNotFoundException {
+        if (this.svgCacheDir != null) {
+            return new FileOutputStream(new File(this.svgCacheDir, name), mode == Context.MODE_APPEND);
+        }
         return this.application.openFileOutput(name, mode);
     }
 
@@ -297,4 +311,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         return new AndroidSvgBitmap(inputStream, hash, scaleFactor, width, height, percent);
     }
 
+    public void setSvgCacheDir(File svgCacheDir) {
+        this.svgCacheDir = svgCacheDir;
+    }
 }
