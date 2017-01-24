@@ -8,16 +8,16 @@ import java.io.InputStream;
 /**
  * Created by usrusr on 22.01.2017.
  */
-public class HgtReader {
+public class ShadingTile {
 
-    public final byte[] readVals;
-    public final int length;
+    public final byte[] bytes;
+    public final int axisLength;
 
-    public HgtReader(InputStream in, int size) throws IOException {
+    public ShadingTile(InputStream in, int size) throws IOException {
         int rowLen = (int) Math.ceil(Math.sqrt(size/2));
-        length = rowLen-1;
+        axisLength = rowLen-1;
         short[] ringbuffer = new short[rowLen];
-        readVals = new byte[length*length];
+        bytes = new byte[axisLength * axisLength];
 
         DataInputStream din = new DataInputStream(in);
 
@@ -29,7 +29,7 @@ public class HgtReader {
             ringbuffer[rbcur++]= last;
 
         }}
-        for(int line = 1;line<=length;line++){
+        for(int line = 1; line<= axisLength; line++){
             if(rbcur>=rowLen) {
                 rbcur=0;
             }
@@ -41,7 +41,7 @@ public class HgtReader {
 
 
 
-            for(int col = 1;col<=length;col++){
+            for(int col = 1; col<= axisLength; col++){
 
                 short ne = ringbuffer[rbcur];
                 short se = readNext(din, ne);
@@ -62,7 +62,7 @@ public class HgtReader {
                     System.out.println("extreme shade: "+shade);
                 }
 
-                readVals[outidx++]=(byte)shade;
+                bytes[outidx++]=(byte)shade;
 
                 nw=ne;
                 sw=se;
@@ -79,7 +79,7 @@ public class HgtReader {
         return read;
     }
 
-    public static HgtReader create(HillsRenderConfig cfg, float x, float y){
+    public static ShadingTile create(HillsRenderConfig cfg, float x, float y){
         File demFolder = cfg.getDemFolder();
         return null;
     }
