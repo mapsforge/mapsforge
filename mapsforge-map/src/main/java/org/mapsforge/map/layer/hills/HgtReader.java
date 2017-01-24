@@ -16,7 +16,7 @@ public class HgtReader {
     public HgtReader(InputStream in, int size) throws IOException {
         int rowLen = (int) Math.ceil(Math.sqrt(size/2));
         length = rowLen-1;
-        short[] ringbuffer = new short[rowLen*2];
+        short[] ringbuffer = new short[rowLen];
         readVals = new byte[length*length];
 
         DataInputStream din = new DataInputStream(in);
@@ -24,30 +24,21 @@ public class HgtReader {
         int outidx = 0;
         int rbcur = 0;
         {short last = 0;
-        for(int col = 0;col<rowLen*2;col++){
+        for(int col = 0;col<rowLen*1;col++){
             last = readNext(din, last);
             ringbuffer[rbcur++]= last;
 
         }}
-        int rblast = rowLen;
-        for(int line = 2;line<length;line++){
-            if(rbcur>=2*rowLen) {
+        for(int line = 1;line<=length;line++){
+            if(rbcur>=rowLen) {
                 rbcur=0;
-            }else{
-                rblast = rbcur-rowLen;
             }
 
             short nw = ringbuffer[rbcur];
             short sw = readNext(din, nw);
             ringbuffer[rbcur++]= sw;
-            short cw=ringbuffer[rblast++];
 
-            short nc = ringbuffer[rbcur];
-            short sc = readNext(din, nc);
-            ringbuffer[rbcur++]= sc;
-            short cc=ringbuffer[rblast++];
 
-            int noso = (sw-nw) + 2*(sc-nc);
 
 
             for(int col = 1;col<=length;col++){
@@ -55,12 +46,10 @@ public class HgtReader {
                 short ne = ringbuffer[rbcur];
                 short se = readNext(din, ne);
                 ringbuffer[rbcur++]= se;
-                short ce=ringbuffer[rblast++];
 
-                int nosoEast = se - ne;
-                noso += nosoEast;
+                int noso = (se - ne) + (sw - nw);
 
-                int eawe = (ne-nw) + 2*(ce-cw) + (se-sw);
+                int eawe = (ne-nw) + (se-sw);
 
                 int nosoClamped = Math.min(256, Math.max(0, noso+128));
                 int eaweClamped = Math.min(256, Math.max(0, eawe+128));
@@ -75,17 +64,9 @@ public class HgtReader {
 
                 readVals[outidx++]=(byte)shade;
 
-                noso -= ((sw-nw) + (sc-nc));
-                noso += nosoEast;
-                nw=nc;
-                cw=cc;
-                sw=sc;
-                nc=ne;
-                cc=ce;
-                sc=se;
+                nw=ne;
+                sw=se;
             }
-            rbcur--;
-            rblast--;
         }
 
 
