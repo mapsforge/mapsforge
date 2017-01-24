@@ -48,6 +48,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 
 public final class AndroidGraphicFactory implements GraphicFactory {
 
@@ -68,6 +70,9 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     // and is much slower despite smaller size that ARGB_8888 as it
     // passes through unoptimized path in the skia library.
     public static final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
+
+
+    public static final Config MONO_ALPHA_BITMAP = Config.ALPHA_8;
 
     public static android.graphics.Bitmap convertToAndroidBitmap(Drawable drawable) {
         android.graphics.Bitmap bitmap;
@@ -188,6 +193,16 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     public Bitmap createBitmap(int width, int height) {
         return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
     }
+    @Override
+    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
+        AndroidBitmap androidBitmap = new AndroidBitmap(width, height, MONO_ALPHA_BITMAP);
+        if(buffer!=null) {
+            Buffer b = ByteBuffer.wrap(buffer);
+            androidBitmap.bitmap.copyPixelsFromBuffer(b);
+        }
+        return androidBitmap;
+    }
+
 
     @Override
     public Bitmap createBitmap(int width, int height, boolean isTransparent) {

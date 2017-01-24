@@ -20,6 +20,7 @@ import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.Region;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -30,6 +31,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.Rectangle;
 
 class AndroidCanvas implements Canvas {
     private static final float[] INVERT_MATRIX = {
@@ -41,6 +43,7 @@ class AndroidCanvas implements Canvas {
 
     android.graphics.Canvas canvas;
     private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
+    private final android.graphics.Paint shadePaint = new android.graphics.Paint();
     private ColorFilter grayscaleFilter, grayscaleInvertFilter, invertFilter;
 
     AndroidCanvas() {
@@ -48,6 +51,9 @@ class AndroidCanvas implements Canvas {
 
         this.bitmapPaint.setAntiAlias(true);
         this.bitmapPaint.setFilterBitmap(true);
+
+        this.shadePaint.setAntiAlias(true);
+        this.shadePaint.setFilterBitmap(true);
 
         createFilters();
     }
@@ -110,6 +116,14 @@ class AndroidCanvas implements Canvas {
     @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix) {
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+    }
+
+    @Override
+    public void shadeBitmap(Bitmap bitmap, Rectangle hillRect, Rectangle tileRect, float magnitude) {
+        shadePaint.setAlpha((int) (255 * magnitude));
+        Rect atr = new Rect((int)hillRect.left, (int)hillRect.top, (int)hillRect.right, (int)hillRect.bottom);
+        Rect asr = new Rect((int)tileRect.left, (int)tileRect.top, (int)tileRect.right, (int)tileRect.bottom);
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), atr, asr, shadePaint);
     }
 
     @Override

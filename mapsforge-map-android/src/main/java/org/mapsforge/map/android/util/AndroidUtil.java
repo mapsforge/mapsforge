@@ -36,6 +36,7 @@ import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
@@ -234,7 +235,7 @@ public final class AndroidUtil {
             TileCache tileCache, MapViewPosition mapViewPosition,
             MapDataStore mapFile, XmlRenderTheme renderTheme) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
-                mapViewPosition, AndroidGraphicFactory.INSTANCE);
+                mapViewPosition, AndroidGraphicFactory.INSTANCE, null);
         tileRendererLayer.setXmlRenderTheme(renderTheme);
         return tileRendererLayer;
     }
@@ -261,6 +262,28 @@ public final class AndroidUtil {
         return tileRendererLayer;
     }
 
+    /**
+     * Utility method to create a tile renderer layer with hillshading.
+     *
+     * @param tileCache       the cache
+     * @param mapViewPosition the position
+     * @param mapFile         the map file
+     * @param renderTheme     the render theme to use
+     * @param hasAlpha        if the layer is transparent (more memory)
+     * @param renderLabels    should usually be true
+     * @param cacheLabels     should usually be false
+     * @param hillsRenderConfig may be null to omit hillshading
+     * @return the layer
+     */
+    public static TileRendererLayer createTileRendererLayerWithHillshading(
+            TileCache tileCache, MapViewPosition mapViewPosition,
+            MapDataStore mapFile, XmlRenderTheme renderTheme, boolean hasAlpha,
+            boolean renderLabels, boolean cacheLabels, HillsRenderConfig hillsRenderConfig) {
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
+                mapViewPosition, hasAlpha, renderLabels, cacheLabels, AndroidGraphicFactory.INSTANCE, hillsRenderConfig);
+        tileRendererLayer.setXmlRenderTheme(renderTheme);
+        return tileRendererLayer;
+    }
     /**
      * @return true if the current thread is the UI thread, false otherwise.
      */
@@ -431,5 +454,6 @@ public final class AndroidUtil {
     private AndroidUtil() {
         // no-op, for privacy
     }
+
 
 }

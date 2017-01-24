@@ -26,6 +26,7 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
@@ -154,7 +155,7 @@ public abstract class MapViewerTemplate extends Activity {
      *
      * @return the fallback initial position of the mapview.
      */
-    protected MapPosition getDefaultInitialPosition() {
+    protected org.mapsforge.core.model.MapPosition getDefaultInitialPosition() {
         return new MapPosition(new LatLong(0, 0), getZoomLevelDefault());
     }
 
@@ -335,5 +336,13 @@ public abstract class MapViewerTemplate extends Activity {
     protected MapView getMapView() {
         setContentView(getLayoutId());
         return (MapView) findViewById(getMapViewId());
+    }
+
+    /**
+     * override to enable hill shading
+     * @return null or the HillsRenderConfig to use (defining height model path and algorithm)
+     */
+    protected HillsRenderConfig getHillsRenderConfig() {
+        return null;
     }
 }
