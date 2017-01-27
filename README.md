@@ -23,5 +23,3 @@ If you have any questions or problems, don't hesitate to ask our public [mailing
 ### Screenshots:
 
 ![Screenshot Samples App Berlin 1](docs/images/screenshot-berlin-1.png)
-![Screenthot Samples App Berlin 2](docs/images/screenshot-berlin-2.png)
-![Screenshot Samples App Berlin 3](docs/images/screenshot-berlin-3.png)
