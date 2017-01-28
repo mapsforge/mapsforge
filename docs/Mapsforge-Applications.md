@@ -19,6 +19,7 @@
 | [ELEMNT](http://eu.wahoofitness.com/devices/gps-bike-computer-elemnt.html) | GPS bike computer | Proprietary/Commercial | Closed |
 | [Forest(M)ap(p)](https://play.google.com/store/apps/details?id=de.inforst.waldkarte) | Tool for forestry | Proprietary/Commercial | Closed |
 | [Geopaparazzi](http://www.geopaparazzi.eu) | Digital Field Mapping for geology and engineering with GIS data import | GPL3/Free | Open |
+| [GPSLogger II](https://play.google.com/store/apps/details?id=com.emacberry.gpslogger) | AllInOne Logging & Tracking Solution | Proprietary/Free | Closed |
 | [GPSSend](https://play.google.com/store/apps/details?id=com.tinkerpete.gps) | Live Tracking + Emergency Notification | Proprietary/Free | Closed |
 | [Green Tracks](https://play.google.com/store/apps/details?id=com.mountain.tracks) | Climbing and hiking | Proprietary/Free | Closed |
 | [Hunt Cyprus](https://play.google.com/store/apps/details?id=gr.talent.cyprusHunt) | Map and navigation application for hunters | Proprietary/Free | Closed |
