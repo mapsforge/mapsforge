@@ -25,6 +25,8 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
  * Callback methods for rendering areas, ways and points of interest (POIs).
  */
 public interface RenderCallback {
+    void renderHillshading(RenderContext renderContext, Paint fill, int level, PolylineContainer way);
+
     /**
      * Renders an area with the given parameters.
      *

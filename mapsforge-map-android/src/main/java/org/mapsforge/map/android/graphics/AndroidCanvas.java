@@ -16,16 +16,11 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.Region;
-
+import android.graphics.*;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -109,6 +104,15 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix) {
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+    }
+    @Override
+    public void shadeBitmap(Bitmap bitmap, Matrix matrix) {
+        android.graphics.Paint shadePaint = new android.graphics.Paint();
+        shadePaint.setAntiAlias(true);
+        shadePaint.setFilterBitmap(true);
+        shadePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
+        shadePaint.setColorFilter(null);
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
     }
 

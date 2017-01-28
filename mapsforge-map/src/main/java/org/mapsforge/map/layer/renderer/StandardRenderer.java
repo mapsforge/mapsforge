@@ -16,11 +16,7 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
@@ -87,6 +83,12 @@ public class StandardRenderer implements RenderCallback {
     public byte getZoomLevelMax() {
         return ZOOM_MAX;
     }
+
+    @Override
+    public void renderHillshading(final RenderContext renderContext, Paint fill, int level, PolylineContainer way) {
+        renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(new HillshadingContainer(way), fill));
+    }
+
 
     @Override
     public void renderArea(final RenderContext renderContext, Paint fill, Paint stroke, int level, PolylineContainer way) {
@@ -196,14 +198,28 @@ public class StandardRenderer implements RenderCallback {
             renderPointOfInterest(renderContext, pointOfInterest);
         }
 
+
         for (Way way : mapReadResult.ways) {
             renderWay(renderContext, new PolylineContainer(way, renderContext.rendererJob.tile, renderContext.rendererJob.tile));
         }
 
         if (mapReadResult.isWater) {
             renderWaterBackground(renderContext);
+//        }else{
+//            renderInlandHills(renderContext);
         }
     }
+
+//    protected void renderInlandHills(final RenderContext renderContext) {
+//        renderContext.setDrawingLayers((byte) 0);
+//        Point[] coordinates = getTilePixelCoordinates(renderContext.rendererJob.tile.tileSize);
+//        Point tileOrigin = renderContext.rendererJob.tile.getOrigin();
+//        for (int i = 0; i < coordinates.axisLength; i++) {
+//            coordinates[i] = coordinates[i].offset(tileOrigin.x, tileOrigin.y);
+//        }
+//        PolylineContainer way = new PolylineContainer(coordinates, renderContext.rendererJob.tile, renderContext.rendererJob.tile, Collections.singletonList(TAG_NATURAL_WATER));
+//        renderContext.renderTheme.matchClosedWay(this, renderContext, way);
+//    }
 
     private static Point[] getTilePixelCoordinates(int tileSize) {
         Point[] result = new Point[5];

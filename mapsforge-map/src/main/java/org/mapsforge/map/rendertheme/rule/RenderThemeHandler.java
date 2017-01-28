@@ -23,14 +23,7 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
-import org.mapsforge.map.rendertheme.renderinstruction.Area;
-import org.mapsforge.map.rendertheme.renderinstruction.Caption;
-import org.mapsforge.map.rendertheme.renderinstruction.Circle;
-import org.mapsforge.map.rendertheme.renderinstruction.Line;
-import org.mapsforge.map.rendertheme.renderinstruction.LineSymbol;
-import org.mapsforge.map.rendertheme.renderinstruction.PathText;
-import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
-import org.mapsforge.map.rendertheme.renderinstruction.Symbol;
+import org.mapsforge.map.rendertheme.renderinstruction.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -265,6 +258,13 @@ public final class RenderThemeHandler {
                 String symbolId = symbol.getId();
                 if (symbolId != null) {
                     this.symbols.put(symbolId, symbol);
+                }
+            } else if ("hillshading".equals(qName)){
+                checkState(qName, Element.RULE);
+                Hillshading hillshading = new Hillshading(this.graphicFactory, this.displayModel, this.level++, this.relativePathPrefix);
+                if (isVisible(hillshading)) {
+                    Rule hillShadingRule = new HillShadingRule("hillshading", Byte.MAX_VALUE, Byte.MIN_VALUE, hillshading);
+                    renderTheme.addRule(hillShadingRule);
                 }
             } else {
                 throw new XmlPullParserException("unknown element: " + qName);

@@ -46,7 +46,8 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.ReadBuffer;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -54,10 +55,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.prefs.Preferences;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 
 public final class Samples {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -74,7 +71,7 @@ public final class Samples {
      */
     public static void main(String[] args) {
         // Multithreading map rendering
-        MapWorkerPool.NUMBER_OF_THREADS = 2;
+        MapWorkerPool.NUMBER_OF_THREADS = 1;
 
         // Map buffer size
         ReadBuffer.setMaximumBufferSize(6500000);

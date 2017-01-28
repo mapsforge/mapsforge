@@ -14,7 +14,21 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-enum ShapeType {
-    CIRCLE, POLYLINE,
-    HILLSHADING;
+class HillshadingContainer implements ShapeContainer {
+
+    private PolylineContainer way;
+
+    HillshadingContainer(PolylineContainer way) {
+        this.way = way;
+    }
+
+
+    @Override
+    public ShapeType getShapeType() {
+        return ShapeType.HILLSHADING;
+    }
+
+    public PolylineContainer getWay() {
+        return way;
+    }
 }

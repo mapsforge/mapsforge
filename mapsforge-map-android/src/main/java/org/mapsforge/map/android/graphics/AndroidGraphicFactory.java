@@ -25,29 +25,15 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
-
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.Position;
-import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 
 public final class AndroidGraphicFactory implements GraphicFactory {
 
@@ -68,6 +54,9 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     // and is much slower despite smaller size that ARGB_8888 as it
     // passes through unoptimized path in the skia library.
     public static final Config TRANSPARENT_BITMAP = Config.ARGB_8888;
+
+
+    public static final Config MONO_ALPHA_BITMAP = Config.ALPHA_8;
 
     public static android.graphics.Bitmap convertToAndroidBitmap(Drawable drawable) {
         android.graphics.Bitmap bitmap;
@@ -188,6 +177,16 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     public Bitmap createBitmap(int width, int height) {
         return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
     }
+    @Override
+    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
+        AndroidBitmap androidBitmap = new AndroidBitmap(width, height, MONO_ALPHA_BITMAP);
+        if(buffer!=null) {
+            Buffer b = ByteBuffer.wrap(buffer);
+            androidBitmap.bitmap.copyPixelsFromBuffer(b);
+        }
+        return androidBitmap;
+    }
+
 
     @Override
     public Bitmap createBitmap(int width, int height, boolean isTransparent) {

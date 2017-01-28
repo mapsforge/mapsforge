@@ -34,6 +34,18 @@ public abstract class Rule {
     static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<List<String>, AttributeMatcher>();
     static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<List<String>, AttributeMatcher>();
 
+    protected Rule(String cat, byte _zoomMax, byte _zoomMin, RenderInstruction hillShadingRule) {
+        this.cat = cat;
+        closedMatcher = AnyMatcher.INSTANCE;
+        elementMatcher= AnyMatcher.INSTANCE;
+        this.zoomMax=_zoomMax;
+        this.zoomMin=_zoomMin;
+        renderInstructions=new ArrayList<RenderInstruction>(); // NOSONAR NOPMD we need specific interface
+        renderInstructions.add(hillShadingRule);
+        subRules=new ArrayList<>(); // NOSONAR NOPMD we need specific interface
+
+    }
+
     public static class RuleVisitor {
         public void apply(Rule r) {
             for (Rule subRule : r.subRules) {
@@ -42,7 +54,7 @@ public abstract class Rule {
         }
     }
 
-    String cat;
+    final String cat;
     final ClosedMatcher closedMatcher;
     final ElementMatcher elementMatcher;
     final byte zoomMax;

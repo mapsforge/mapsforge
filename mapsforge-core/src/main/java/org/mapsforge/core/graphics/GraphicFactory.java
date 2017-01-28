@@ -25,6 +25,11 @@ import java.io.InputStream;
 public interface GraphicFactory {
     Bitmap createBitmap(int width, int height);
 
+    /** create a single channel bitmap for
+     * @param buffer
+     */
+    Bitmap createMonoBitmap(int width, int height, byte[] buffer);
+
     Bitmap createBitmap(int width, int height, boolean isTransparent);
 
     Canvas createCanvas();

@@ -19,27 +19,20 @@
 package org.mapsforge.map.awt.graphics;
 
 import com.kitfox.svg.SVGCache;
-
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.GraphicContext;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.Position;
-import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -97,6 +90,15 @@ public class AwtGraphicFactory implements GraphicFactory {
     @Override
     public Bitmap createBitmap(int width, int height) {
         return new AwtBitmap(width, height);
+    }
+
+    @Override
+    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+        DataBuffer dataBuffer = new DataBufferByte(buffer, buffer.length);
+        Raster raster = Raster.createRaster(bufferedImage.getSampleModel(), dataBuffer, null);
+        bufferedImage.setData(raster);
+        return new AwtBitmap(bufferedImage);
     }
 
     @Override

@@ -1,5 +1,5 @@
 dependencies {
-    compile project(":mapsforge-core")
+    compile project(':mapsforge-core')
     compile 'com.google.guava:guava:20.0'
     compile 'com.vividsolutions:jts:1.13'
     compile 'net.sf.trove4j:trove4j:3.0.3'

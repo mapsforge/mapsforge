@@ -15,31 +15,19 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Filter;
-import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Dimension;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorConvertOp;
-import java.awt.image.IndexColorModel;
-import java.awt.image.LookupOp;
-import java.awt.image.ShortLookupTable;
+import java.awt.image.*;
 
 class AwtCanvas implements Canvas {
     private static final String UNKNOWN_STYLE = "unknown style: ";
@@ -136,6 +124,21 @@ class AwtCanvas implements Canvas {
         this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
                 AwtGraphicFactory.getAffineTransform(matrix));
     }
+
+    @Override
+    public void shadeBitmap(Bitmap bitmap, Matrix matrix) {
+        Composite oldcomposite = this.graphics2D.getComposite();
+
+        Composite temp = AlphaComposite.SrcAtop;
+        temp = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+        this.graphics2D.setComposite(temp);
+
+//        this.graphics2D.setPaint(p);
+        this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
+                AwtGraphicFactory.getAffineTransform(matrix));
+        this.graphics2D.setComposite(oldcomposite);
+    }
+
 
     @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {

@@ -17,6 +17,8 @@
 package org.mapsforge.core.graphics;
 
 public interface GraphicContext {
+    void shadeBitmap(Bitmap bitmap, Matrix matrix);
+
     void drawBitmap(Bitmap bitmap, int left, int top);
 
     void drawBitmap(Bitmap bitmap, int left, int top, Filter filter);

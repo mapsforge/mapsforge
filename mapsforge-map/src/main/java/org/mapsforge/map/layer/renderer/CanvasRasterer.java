@@ -16,24 +16,14 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Filter;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicUtils;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.rendertheme.RenderContext;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CanvasRasterer {
     private final Canvas canvas;
@@ -148,15 +138,47 @@ public class CanvasRasterer {
     }
 
     private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
-        ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
+        final ShapeContainer shapeContainer = shapePaintContainer.shapeContainer;
+        ShapeType shapeType = shapeContainer.getShapeType();
         switch (shapeType) {
             case CIRCLE:
                 drawCircleContainer(shapePaintContainer);
                 break;
             case POLYLINE:
-                PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
+                PolylineContainer polylineContainer = (PolylineContainer) shapeContainer;
                 drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
                 break;
+            case HILLSHADING:
+                HillshadingContainer hillshadingContainer = (HillshadingContainer) shapeContainer;
+                drawHillshading(shapePaintContainer, hillshadingContainer.getWay(), shapePaintContainer.dy);
+                break;
         }
+    }
+
+    private void drawHillshading(ShapePaintContainer shapePaintContainer, PolylineContainer way, float dy) {
+        this.path.clear();
+
+        Point[][] coordinates = way.getCoordinatesRelativeToOrigin();
+StringBuilder sb = new StringBuilder();
+sb.append(System.currentTimeMillis()).append("hills:").append(way.getTags()).append(" lr:").append(way.getLowerRight()).append(" ul:").append(way.getLowerRight());
+        for (Point[] innerList : coordinates) {
+sb.append("###").append(Arrays.toString(innerList));
+            Point[] points;
+            if (dy != 0f) {
+                points = RendererUtils.parallelPath(innerList, dy);
+            } else {
+                points = innerList;
+            }
+            if (points.length >= 2) {
+                Point point = points[0];
+                this.path.moveTo((float) point.x, (float) point.y);
+                for (int i = 1; i < points.length; ++i) {
+                    point = points[i];
+                    this.path.lineTo((int) point.x, (int) point.y);
+                }
+            }
+        }
+System.out.println("hills:"+sb);
+
     }
 }

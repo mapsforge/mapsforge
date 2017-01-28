@@ -16,6 +16,7 @@ package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.map.layer.hills.HillsContext;
 import org.mapsforge.map.layer.renderer.CanvasRasterer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.layer.renderer.ShapePaintContainer;
@@ -46,6 +47,8 @@ public class RenderContext {
     private List<List<ShapePaintContainer>> drawingLayers;
     public final List<MapElementContainer> labels;
     public final List<List<List<ShapePaintContainer>>> ways;
+
+    public final HillsContext hillsContext = new HillsContext();
 
 
     public RenderContext(RendererJob rendererJob, CanvasRasterer canvasRasterer) throws InterruptedException, ExecutionException {

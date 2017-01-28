@@ -1,6 +1,8 @@
 dependencies {
-    compile project(":mapsforge-map-reader")
+    compile project(':mapsforge-map-reader')
     compile 'com.caverock:androidsvg:1.2.2-beta-1'
+    compile project(path: ':mapsforge-core')
+    compile project(path: ':mapsforge-map')
 }
 
 android.libraryVariants.all { variant ->
