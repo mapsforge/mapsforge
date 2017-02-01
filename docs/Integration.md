@@ -65,6 +65,11 @@ We publish regularly SNAPSHOT builds to Sonatype OSS Repository Hosting.
 
 You need to add the repository:
 ```groovy
+configurations.all {
+    // check for latest snapshot on every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
