@@ -16,6 +16,12 @@ Preferably the [berlin.map](http://download.mapsforge.org/maps/europe/germany/be
 
 Mapsforge currently requires disabling hardware acceleration for the map view. This can be controlled in various levels, better described in Android [documentation](http://developer.android.com/guide/topics/graphics/hardware-accel.html#controlling).
 
+```java
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+    this.mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+}
+```
+
 # Android manifest
 You'll need to have the appropriate permissions in manifest for tile cache to work properly:
 
@@ -107,21 +113,23 @@ protected void onDestroy() {
 Here comes the whole as a single file:
 
 ```java
-import java.io.File;
+import android.app.Activity;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.os.Environment;
+import java.io.File;
 
 public class MainActivity extends Activity {
     // name of the map file in the external storage
@@ -136,6 +144,9 @@ public class MainActivity extends Activity {
         AndroidGraphicFactory.createInstance(this.getApplication());
 
         this.mapView = new MapView(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            this.mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
         setContentView(this.mapView);
 
         this.mapView.setClickable(true);
