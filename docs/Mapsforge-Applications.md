@@ -34,6 +34,7 @@
 | [Mobile Atlas Creator](http://mobac.sourceforge.net/) | Creation of offline atlases | GPL/Free | Open |
 | [Momentum Tracker](https://play.google.com/store/apps/details?id=com.momentum_tracker.android) | Fitness Application | Proprietary/Free and Premium | Closed |
 | [My Map](http://www.mymap.com.np/) | Offline map of Nepal | Proprietary/Free | Closed |
+| [myWorkouts](http://www.myworkouts.org/) | Sports and GPS Tracker | Proprietary/Free | Closed |
 | [Nautilus Charts](https://play.google.com/store/apps/details?id=gr.talent.nautiluscharts) | Offline Nautical Charts plotting and positioning system | Proprietary/Commercial | Closed |
 | [Navi Cyprus](https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi) | Map and navigation application | Proprietary/Free | Closed |
 | [Nutiteq](https://github.com/nutiteq/hellomap3d) | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open |
