@@ -21,6 +21,6 @@ public class HillShadingRule extends Rule {
 
     @Override
     public boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed) {
-        return true;
+        return zoomLevel<=zoomMax && zoomLevel >= zoomMin;
     }
 }

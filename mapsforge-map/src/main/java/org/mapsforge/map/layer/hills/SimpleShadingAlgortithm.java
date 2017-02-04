@@ -81,13 +81,16 @@ public class SimpleShadingAlgortithm implements ShadingAlgorithm {
                 int nosoClamped = Math.min(256, Math.max(0, noso + 128));
                 int eaweClamped = Math.min(256, Math.max(0, eawe + 128));
 
-                int shade = Math.min(Byte.MAX_VALUE, Math.max(Byte.MIN_VALUE, ((nosoClamped + eaweClamped) / 2) - 127));
+                int inVal = ((nosoClamped + eaweClamped) / 2);
+                int shade = Math.min(Byte.MAX_VALUE, Math.max(Byte.MIN_VALUE, inVal));
+
+                shade = inVal & 0xFF;
 
 //                shade = (byte) ((((int)cc))/50);
 
-                if (shade != (byte) shade) {
-                    System.out.println("extreme shade: " + shade);
-                }
+//                if (shade != (byte) shade) {
+//                    System.out.println("extreme shade: " + shade);
+//                }
 
                 bytes[outidx++] = (byte) shade;
 

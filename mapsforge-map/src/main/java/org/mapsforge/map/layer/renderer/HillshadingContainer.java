@@ -14,12 +14,24 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-class HillshadingContainer implements ShapeContainer {
+import org.mapsforge.core.graphics.Bitmap;
 
-    private PolylineContainer way;
+public class HillshadingContainer implements ShapeContainer {
 
-    HillshadingContainer(PolylineContainer way) {
-        this.way = way;
+    public final float magnitude;
+    public final Bitmap bitmap;
+    public final double topLeftX;
+    public final double topLeftY;
+    public final double botRightX;
+    public final double botRightY;
+
+    public HillshadingContainer(Bitmap bitmap, float magnitude, double topLeftX, double topLeftY, double botRightX, double botRightY) {
+        this.magnitude = magnitude;
+        this.bitmap = bitmap;
+        this.topLeftX = topLeftX;
+        this.topLeftY = topLeftY;
+        this.botRightX = botRightX;
+        this.botRightY = botRightY;
     }
 
 
@@ -28,7 +40,13 @@ class HillshadingContainer implements ShapeContainer {
         return ShapeType.HILLSHADING;
     }
 
-    public PolylineContainer getWay() {
-        return way;
+    @Override
+    public String toString() {
+        return "HillshadingContainer{" +
+                ", topLeftX=" + topLeftX +
+                ", topLeftY=" + topLeftY +
+                ", botRightX=" + botRightX +
+                ", botRightY=" + botRightY +
+                '}';
     }
 }

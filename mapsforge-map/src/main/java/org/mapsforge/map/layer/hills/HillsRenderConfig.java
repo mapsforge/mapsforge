@@ -1,7 +1,7 @@
 package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.graphics.GraphicFactory;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -25,48 +25,40 @@ public class HillsRenderConfig {
 
     private ShadingAlgorithm algorithm;
 
-    private FutureTask<HgtCache> hgtCache;
 
-    public HillsRenderConfig(File demFolder) {
-        this.demFolder = demFolder;
+
+    private FutureTask<HgtCache> hgtCacheFuture;
+    private final GraphicFactory graphicsFactory;
+
+    public HillsRenderConfig(File demFolder, GraphicFactory graphicsFactory, ShadingAlgorithm algorithm) {
+        this.graphicsFactory = graphicsFactory;
+        this.algorithm = algorithm;
+        setDemFolder(demFolder);
 
 
     }
 
-//    public Future<Bitmap> getShadingTileFuture(float east, float north) {
-//        final int eastInt = (int) Math.floor(east);
-//        final int northInt = (int) Math.floor(north);
-//
-//        if (hgtCache == null) return new FailedFuture<>(new RuntimeException("DEM folder not set"));
-//        if (hgtCache.isDone()) {
-//            try {
-//                HgtCache hgtCache = this.hgtCache.get();
-//                HgtCache.HgtFileInfo hgtFileInfo = hgtCache.hgtFiles.get(new Dimension(eastInt, northInt));
-//                return hgtFileInfo.getParsed();
-//            } catch (InterruptedException | ExecutionException e) {
-//                return new FailedFuture(e);
-//            }
-//        } else {
-//            return new FlatMappedFuture<HgtCache, T>(hgtCache) {
-//                @Override
-//                protected Future<Bitmap> mapToFuture(HgtCache hgtCache) throws ExecutionException, InterruptedException {
-//                    HgtCache.HgtFileInfo hgtFileInfo = hgtCache.hgtFiles.get(new Dimension(eastInt, northInt));
-//                    return hgtFileInfo.getParsed();
-//                }
-//            };
-//        }
-//    }
+    public Bitmap getShadingTile(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner) throws ExecutionException, InterruptedException {
+        if (hgtCacheFuture == null) return null;
 
-    public Bitmap getShadingTile(float east, float north) throws ExecutionException, InterruptedException {
-        final int eastInt = (int) Math.floor(east);
-        final int northInt = (int) Math.floor(north);
+        Bitmap ret = getShadingTileInternal(latitudeOfSouthWestCorner, longituedOfSouthWestCorner);
+        if(ret==null) { // don't think too hard about where exactly the border is (not much height data there anyway)
+            ret = getShadingTileInternal(latitudeOfSouthWestCorner, longituedOfSouthWestCorner>0?longituedOfSouthWestCorner-180:longituedOfSouthWestCorner+180);
+        }
 
-        if (hgtCache == null) return null;
+        return ret;
+    }
+    public Bitmap getShadingTileInternal(int northInt, int eastInt) throws ExecutionException, InterruptedException {
+        HgtCache hgtCache = this.hgtCacheFuture.get();
+        HgtCache.HgtFileInfo hgtFileInfo = hgtCache.hgtFiles.get(new TileKey(northInt, eastInt));
+        if(hgtFileInfo==null) return null;
+        long now = System.currentTimeMillis();
+//        System.out.println("starting parse on "+Thread.currentThread().getName());
 
-        HgtCache hgtCache = this.hgtCache.get();
-        HgtCache.HgtFileInfo hgtFileInfo = hgtCache.hgtFiles.get(new Dimension(eastInt, northInt));
         Future<Bitmap> future = hgtFileInfo.getParsed();
-        return future.get();
+        Bitmap bitmap = future.get();
+        System.out.println("done parse after " + (System.currentTimeMillis()-now) + "ms on "+Thread.currentThread().getName()+ " -> "+bitmap);
+        return bitmap;
     }
 
 
@@ -76,18 +68,18 @@ public class HillsRenderConfig {
 
     public void setDemFolder(final File demFolder) {
         if (demFolder == null) {
-            hgtCache = null;
+            hgtCacheFuture = null;
         } else if (demFolder.equals(this.demFolder)) {
             return;
         }
         this.demFolder = demFolder;
-        hgtCache = new FutureTask<HgtCache>(new Callable<HgtCache>() {
+        hgtCacheFuture = new FutureTask<HgtCache>(new Callable<HgtCache>() {
             @Override
             public HgtCache call() throws Exception {
                 return new HgtCache(demFolder);
             }
         });
-        new Thread(hgtCache, "DEM HGT index").start();
+        new Thread(hgtCacheFuture, "DEM HGT index").start();
     }
 
     class HgtCache{
@@ -97,16 +89,24 @@ public class HillsRenderConfig {
 
         public HgtCache(File demFolder) {
 
-            crawl(demFolder, Pattern.compile("n(\\d{1,2})e(\\d{1,3})\\.\\hgt", Pattern.CASE_INSENSITIVE).matcher(""), problems);
+            crawl(demFolder, Pattern.compile("(n|s)(\\d{1,2})(e|w)(\\d{1,3})\\.hgt", Pattern.CASE_INSENSITIVE).matcher(""), problems);
 
         }
-
+/*
+N46E006.hgt
+ */
         private void crawl(File file, Matcher matcher, List<String> problems) {
             if (file.exists()) {
                 if (file.isFile()) {
-                    if (matcher.reset(file.getName()).matches()) {
-                        int north = Integer.parseInt(matcher.group(1));
-                        int east = Integer.parseInt(matcher.group(2));
+                    String name = file.getName();
+                    if (matcher.reset(name).matches()) {
+
+                        int northsouth = Integer.parseInt(matcher.group(2));
+                        int eastwest = Integer.parseInt(matcher.group(4));
+
+
+                        int north = "n".equals(matcher.group(1).toLowerCase()) ? northsouth : -northsouth;
+                        int east = "e".equals(matcher.group(3).toLowerCase()) ? eastwest : - eastwest;
 
                         long length = file.length();
                         long heights = length / 2;
@@ -115,10 +115,10 @@ public class HillsRenderConfig {
                             if (problems != null)
                                 problems.add(file + " length in shorts (" + heights + ") is not a square number");
                         } else {
-                            Dimension dimension = new Dimension(east, north);
-                            HgtFileInfo existing = hgtFiles.get(dimension);
+                            TileKey tileKey = new TileKey(north, east);
+                            HgtFileInfo existing = hgtFiles.get(tileKey);
                             if (existing == null || existing.size < length) {
-                                hgtFiles.put(dimension, new HgtFileInfo(file, length, east, north));
+                                hgtFiles.put(tileKey, new HgtFileInfo(file, length, east, north));
                             }
                         }
                     }
@@ -164,18 +164,22 @@ public class HillsRenderConfig {
             }
 
             private Future<Bitmap> getBeforeLru() {
-                Future<Bitmap> fut = weakRef.get();
-                if (fut != null) return fut;
-                fut = new FutureTask<>(this);
+                Future<Bitmap> existing = weakRef==null?null:weakRef.get();
+                if (existing != null) return existing;
 
-                weakRef = new WeakReference<Future<Bitmap>>(fut);
+                FutureTask<Bitmap> created = new FutureTask<>(this);
 
-                return fut;
+
+                weakRef = new WeakReference<Future<Bitmap>>(created);
+
+                created.run();
+
+                return created;
             }
 
             @Override
             public Bitmap call() throws Exception {
-                return null;
+                return algorithm.convertTile(this, graphicsFactory);
             }
 
             @Override
@@ -190,204 +194,54 @@ public class HillsRenderConfig {
 
             @Override
             public ShadingAlgorithm.RawHillTileSource getNeighborNorth() {
-                return hgtFiles.get(new Dimension(east, north+1));
+                return hgtFiles.get(new TileKey(north+1, east));
             }
 
             @Override
             public ShadingAlgorithm.RawHillTileSource getNeighborSouth() {
-                return hgtFiles.get(new Dimension(east, north+1));
+                return hgtFiles.get(new TileKey(north+1, east));
             }
 
             @Override
             public ShadingAlgorithm.RawHillTileSource getNeighborEast() {
-                return hgtFiles.get(new Dimension(east+1, north));
+                return hgtFiles.get(new TileKey(north, east+1));
             }
 
             @Override
             public ShadingAlgorithm.RawHillTileSource getNeighborWest() {
-                return hgtFiles.get(new Dimension(east-1, north));
+                return hgtFiles.get(new TileKey(north, east-1));
             }
         }
 
-        Map<Dimension, HgtFileInfo> hgtFiles = new HashMap<>();
+        Map<TileKey, HgtFileInfo> hgtFiles = new HashMap<>();
 
     }
-//
-//    private class ResultFuture<X> implements Future<X> {
-//        private X result;
-//
-//        public ResultFuture(X result) {
-//            this.result = result;
-//        }
-//
-//        @Override
-//        public boolean cancel(boolean mayInterruptIfRunning) {
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean isCancelled() {
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean isDone() {
-//            return true;
-//        }
-//
-//        @Override
-//        public X get() throws InterruptedException, ExecutionException {
-//            return result;
-//        }
-//
-//        @Override
-//        public X get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-//            return result;
-//        }
-//    }
-//
-//    private static class FailedFuture<X> implements Future<X> {
-//        private ExecutionException result;
-//
-//        public FailedFuture(Throwable t) {
-//            if (t instanceof ExecutionException) result = (ExecutionException) t;
-//            this.result = new ExecutionException(t);
-//        }
-//
-//        @Override
-//        public boolean cancel(boolean mayInterruptIfRunning) {
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean isCancelled() {
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean isDone() {
-//            return true;
-//        }
-//
-//        @Override
-//        public X get() throws InterruptedException, ExecutionException {
-//            throw result;
-//        }
-//
-//        @Override
-//        public X get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-//            throw result;
-//        }
-//    }
-//
-//    /**
-//     * @param <F>
-//     * @param <T>
-//     */
-//    abstract static class MappedFuture<F, T> implements Future<Bitmap> {
-//        private Future<F> wrapped;
-//        private T result;
-//        ExecutionException exception;
-//        public boolean cancelled;
-//        private boolean done;
-//
-//        MappedFuture(Future<F> wrapped) {
-//            this.wrapped = wrapped;
-//            if (wrapped == null) exception = new ExecutionException(new NullPointerException("missing future"));
-//        }
-//
-//        @Override
-//        public boolean cancel(boolean mayInterruptIfRunning) {
-//            this.cancelled = true;
-//            wrapped = null;
-//            return true;
-//        }
-//
-//        @Override
-//        public boolean isCancelled() {
-//            return cancelled;
-//        }
-//
-//        @Override
-//        public boolean isDone() {
-//            return cancelled || done || exception != null;
-//        }
-//
-//        @Override
-//        public T get() throws InterruptedException, ExecutionException {
-//            synchronized (this) {
-//                if (exception != null) throw exception;
-//                if (done) {
-//                    return result;
-//                }
-//            }
-//
-//            F f = wrapped.get();
-//            synchronized (this) {
-//                if (exception != null) throw exception;
-//                if (!done) try {
-//                    result = map(f);
-//                    done = true;
-//                } catch (RuntimeException e) {
-//                    exception = new ExecutionException(e);
-//                    throw exception;
-//                }
-//                return result;
-//            }
-//        }
-//
-//        @Override
-//        public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-//            synchronized (this) {
-//                if (exception != null) throw exception;
-//                if (done) {
-//                    return result;
-//                }
-//            }
-//
-//            F f = wrapped.get(timeout, unit);
-//            synchronized (this) {
-//                if (exception != null) throw exception;
-//                if (!done) try {
-//                    result = map(f);
-//                    done = true;
-//                } catch (RuntimeException e) {
-//                    exception = new ExecutionException(e);
-//                    throw exception;
-//                }
-//                return result;
-//            }
-//        }
-//
-//        protected abstract T map(F f) throws ExecutionException, InterruptedException;
-//    }
-//
-//    abstract static class FlatMappedFuture<F, T> extends MappedFuture<F, T> {
-//        private Future<Bitmap> mappedFuture;
-//
-//        FlatMappedFuture(Future<F> wrapped) {
-//            super(wrapped);
-//        }
-//
-//        @Override
-//        public boolean cancel(boolean mayInterruptIfRunning) {
-//            if(mappedFuture!=null){
-//                if(mappedFuture.cancel(mayInterruptIfRunning)){
-//                    super.cancel(mayInterruptIfRunning);
-//                    return true;
-//                }
-//            }
-//            return super.cancel(mayInterruptIfRunning);
-//        }
-//
-//
-//        @Override
-//        protected T map(F f) throws ExecutionException, InterruptedException {
-//            mappedFuture = mapToFuture(f);
-//            return mappedFuture.get();
-//        }
-//
-//        protected abstract Future<Bitmap> mapToFuture(F f) throws ExecutionException, InterruptedException;
-//    }
 
+    private final static class TileKey {
+        final int north;
+        final int east;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            TileKey tileKey = (TileKey) o;
+
+            if (north != tileKey.north) return false;
+            return east == tileKey.east;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = north;
+            result = 31 * result + east;
+            return result;
+        }
+
+        private TileKey(int north, int east) {
+            this.east = east;
+            this.north = north;
+        }
+    }
 }

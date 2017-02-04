@@ -2,6 +2,7 @@ package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 
 import java.awt.Canvas;
@@ -136,22 +137,34 @@ public class HgtReaderTest {
 //                this.add(comp);
 
                 final BufferedImage bitmap = AwtGraphicFactory.getBitmap(reader);
+
+                final BufferedImage buf = new BufferedImage(1220, 1220, BufferedImage.TYPE_4BYTE_ABGR);
+
+                Graphics g = buf.getGraphics();
+                GraphicContext gc = AwtGraphicFactory.createGraphicContext(g);
+                Paint paint = graphicsFactory.createPaint();
+
+                paint.setColor(Color.WHITE);
+
+                gc.drawCircle(600,600, 4000, paint);
+
+                paint.setTextSize(50);
+                paint.setColor(Color.GREEN);
+                gc.drawCircle(600,600, 400, paint);
+                paint.setColor(Color.RED);
+                gc.drawText("lorem\nipsum ", 300,300, paint);
+
+                Matrix matrix = graphicsFactory.createMatrix();
+                matrix.scale(1, 1);
+                matrix.translate(0,0);
+
+                gc.shadeBitmap(reader, matrix, 0.25f);
+
+                g.dispose();
+
                 Canvas comp = new Canvas(){
                     public void paint(Graphics g) {
-                        GraphicContext gc = AwtGraphicFactory.createGraphicContext(g);
-                        org.mapsforge.core.graphics.Paint paint = graphicsFactory.createPaint();
-                        paint.setTextSize(50);
-                        paint.setColor(Color.GREEN);
-                        gc.drawCircle(600,600, 400, paint);
-                        paint.setColor(Color.RED);
-                        gc.drawText("lorem\nipsum ", 300,300, paint);
-
-                        Matrix matrix = graphicsFactory.createMatrix();
-                        matrix.scale(1, 1);
-                        matrix.translate(0,0);
-
-                        gc.shadeBitmap(reader, matrix);
-//                        gc.drawBitmap(reader, matrix);
+                        ((Graphics2D)g).drawImage(buf, 0,0,null);
 
                     }
                 };

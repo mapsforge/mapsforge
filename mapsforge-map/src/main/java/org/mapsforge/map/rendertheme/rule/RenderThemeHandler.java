@@ -261,11 +261,13 @@ public final class RenderThemeHandler {
                 }
             } else if ("hillshading".equals(qName)){
                 checkState(qName, Element.RULE);
-                Hillshading hillshading = new Hillshading(this.graphicFactory, this.displayModel, this.level++, this.relativePathPrefix);
-                if (isVisible(hillshading)) {
-                    Rule hillShadingRule = new HillShadingRule("hillshading", Byte.MAX_VALUE, Byte.MIN_VALUE, hillshading);
-                    renderTheme.addRule(hillShadingRule);
-                }
+                byte minZoom = 1;
+                byte maxZoom = Byte.MAX_VALUE;
+                Hillshading hillshading = new Hillshading(this.graphicFactory, this.level++,minZoom, maxZoom, 64);
+//                Rule hillShadingRule = new HillShadingRule("hillshading", maxZoom, minZoom, hillshading);
+//                renderTheme.addRule(hillShadingRule);
+
+                renderTheme.addHillShadings(hillshading);
             } else {
                 throw new XmlPullParserException("unknown element: " + qName);
             }

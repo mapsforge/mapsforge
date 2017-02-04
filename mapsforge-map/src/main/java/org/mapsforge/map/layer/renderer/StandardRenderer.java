@@ -26,6 +26,7 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 
@@ -42,19 +43,23 @@ public class StandardRenderer implements RenderCallback {
 
     public final GraphicFactory graphicFactory;
     public final MapDataStore mapDataStore;
+
     private final boolean renderLabels;
+    public final HillsRenderConfig hillsRenderConfig;
 
     /**
      * Constructs a new StandardRenderer.
      *
      * @param mapDataStore the MapDataStore from which the map data will be read.
+     * @param hillsRenderConfig
      */
     public StandardRenderer(MapDataStore mapDataStore,
                             GraphicFactory graphicFactory,
-                            boolean renderLabels) {
+                            boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
         this.mapDataStore = mapDataStore;
         this.graphicFactory = graphicFactory;
         this.renderLabels = renderLabels;
+        this.hillsRenderConfig = hillsRenderConfig;
     }
 
     /**
@@ -82,11 +87,6 @@ public class StandardRenderer implements RenderCallback {
      */
     public byte getZoomLevelMax() {
         return ZOOM_MAX;
-    }
-
-    @Override
-    public void renderHillshading(final RenderContext renderContext, Paint fill, int level, PolylineContainer way) {
-        renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(new HillshadingContainer(way), fill));
     }
 
 

@@ -107,7 +107,7 @@ class AndroidCanvas implements Canvas {
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
     }
     @Override
-    public void shadeBitmap(Bitmap bitmap, Matrix matrix) {
+    public void shadeBitmap(Bitmap bitmap, Matrix matrix, Composite composite) {
         android.graphics.Paint shadePaint = new android.graphics.Paint();
         shadePaint.setAntiAlias(true);
         shadePaint.setFilterBitmap(true);

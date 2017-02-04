@@ -23,7 +23,10 @@ import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.rendertheme.RenderContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class CanvasRasterer {
     private final Canvas canvas;
@@ -150,34 +153,57 @@ public class CanvasRasterer {
                 break;
             case HILLSHADING:
                 HillshadingContainer hillshadingContainer = (HillshadingContainer) shapeContainer;
-                drawHillshading(shapePaintContainer, hillshadingContainer.getWay(), shapePaintContainer.dy);
+                drawHillshading(hillshadingContainer);
                 break;
         }
     }
 
-    private void drawHillshading(ShapePaintContainer shapePaintContainer, PolylineContainer way, float dy) {
-        this.path.clear();
+    private void drawHillshading(HillshadingContainer container) {
 
-        Point[][] coordinates = way.getCoordinatesRelativeToOrigin();
-StringBuilder sb = new StringBuilder();
-sb.append(System.currentTimeMillis()).append("hills:").append(way.getTags()).append(" lr:").append(way.getLowerRight()).append(" ul:").append(way.getLowerRight());
-        for (Point[] innerList : coordinates) {
-sb.append("###").append(Arrays.toString(innerList));
-            Point[] points;
-            if (dy != 0f) {
-                points = RendererUtils.parallelPath(innerList, dy);
-            } else {
-                points = innerList;
-            }
-            if (points.length >= 2) {
-                Point point = points[0];
-                this.path.moveTo((float) point.x, (float) point.y);
-                for (int i = 1; i < points.length; ++i) {
-                    point = points[i];
-                    this.path.lineTo((int) point.x, (int) point.y);
-                }
-            }
-        }
+    StringBuilder sb = new StringBuilder();
+    sb.append(container);
+
+        symbolMatrix.reset();
+
+        float scaleX = (float) (container.botRightX - container.topLeftX) / container.bitmap.getWidth();
+        float scaleY = (float) (container.botRightY - container.topLeftY) / container.bitmap.getHeight();
+
+
+        float translateX = (float) container.topLeftX;
+        float translateY = (float) container.topLeftY;
+
+
+        symbolMatrix.translate(translateX, translateY);
+        symbolMatrix.scale(
+                scaleX,
+                scaleY
+        );
+
+        sb.append(" -> scale " + scaleX + "," + scaleY + "");
+
+//        Point[][] coordinates = way.getCoordinatesRelativeToOrigin();
+//sb.append(System.currentTimeMillis()).append("hills:").append(way.getTags()).append(" lr:").append(way.getLowerRight()).append(" ul:").append(way.getLowerRight());
+//        for (Point[] innerList : coordinates) {
+//sb.append("###").append(Arrays.toString(innerList));
+//            Point[] points;
+//            if (dy != 0f) {
+//                points = RendererUtils.parallelPath(innerList, dy);
+//            } else {
+//                points = innerList;
+//            }
+//            if (points.length >= 2) {
+//                Point point = points[0];
+//                this.path.moveTo((float) point.x, (float) point.y);
+//                for (int i = 1; i < points.length; ++i) {
+//                    point = points[i];
+//                    this.path.lineTo((int) point.x, (int) point.y);
+//                }
+//            }
+//        }
+
+
+
+        canvas.shadeBitmap(container.bitmap, symbolMatrix,container.magnitude);
 System.out.println("hills:"+sb);
 
     }
