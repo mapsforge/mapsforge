@@ -30,20 +30,20 @@ import org.mapsforge.map.rendertheme.RenderContext;
 import java.util.concurrent.ExecutionException;
 
 /**
- * represents hillshading on a painter algorithm level in the parsed rendertheme (but without a rule)
+ * represents hillshading on a painter algorithm layer/level in the parsed rendertheme (but without a rule, we don't need to increase waymatching complexity here)
  */
-public class Hillshading
-//        extends RenderInstruction
-{
+public class Hillshading {
     private final GraphicFactory graphicFactory;
     private final int level;
+    private final byte layer;
     private final byte minZoom;
     private final byte maxZoom;
     private final float magnitude;
-    public Hillshading(GraphicFactory graphicFactory, int level, byte minZoom, byte maxZoom, int magnitude) {
+
+    public Hillshading(byte minZoom, byte maxZoom, short magnitude, byte layer, int level, GraphicFactory graphicFactory) {
         this.graphicFactory = graphicFactory;
-        //       super(graphicFactory, displayModel);
         this.level = level;
+        this.layer = layer;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
         this.magnitude = Math.min(Math.max(0,magnitude), 255)/255f;
@@ -71,15 +71,19 @@ public class Hillshading
                     Bitmap shadingTile = hillsRenderConfig.getShadingTile(lat, lng);
                     if(shadingTile==null) continue;
 
+                    // scaling the full shading bitmap linearly between its corners causes quite a bit of shifting,
+                    // it would be better to project the corners of the clipping region and then extrapolate the virtual corners from there
 
-                    double shadeTopLeftX = MercatorProjection.longitudeToPixelX(lng - 0.5d / shadingTile.getWidth(), tile.mapSize) - origin.x;
-                    double shadeTopLeftY = MercatorProjection.latitudeToPixelY(lat + 1 - 0.5d / shadingTile.getHeight(), tile.mapSize) - origin.y;
+                    double shadingPixelOffset = 0.5d; // the slope information actually represents the southeast corner of the pixel
 
-                    double shadeBotRightX = MercatorProjection.longitudeToPixelX(lng + 1 - 0.5d / shadingTile.getWidth(), tile.mapSize) - origin.x;
-                    double shadeBotRightY = MercatorProjection.latitudeToPixelY(lat - 0.5d / shadingTile.getHeight(), tile.mapSize) - origin.y;
+                    double shadeTopLeftX = MercatorProjection.longitudeToPixelX(lng + shadingPixelOffset / shadingTile.getWidth(), tile.mapSize) - origin.x;
+                    double shadeTopLeftY = MercatorProjection.latitudeToPixelY(lat + 1 + shadingPixelOffset / shadingTile.getHeight(), tile.mapSize) - origin.y;
 
+                    double shadeBotRightX = MercatorProjection.longitudeToPixelX(lng + 1 + shadingPixelOffset / shadingTile.getWidth(), tile.mapSize) - origin.x;
+                    double shadeBotRightY = MercatorProjection.latitudeToPixelY(lat + shadingPixelOffset / shadingTile.getHeight(), tile.mapSize) - origin.y;
+
+                    renderContext.setDrawingLayers(layer);
                     ShapeContainer hillShape = new HillshadingContainer(shadingTile, magnitude, shadeTopLeftX, shadeTopLeftY, shadeBotRightX, shadeBotRightY);
-                    renderContext.setDrawingLayers((byte)5);
                     renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
                 } catch (ExecutionException e) {
                     e.printStackTrace();

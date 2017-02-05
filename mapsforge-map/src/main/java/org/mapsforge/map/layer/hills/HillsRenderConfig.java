@@ -42,7 +42,7 @@ public class HillsRenderConfig {
         if (hgtCacheFuture == null) return null;
 
         Bitmap ret = getShadingTileInternal(latitudeOfSouthWestCorner, longituedOfSouthWestCorner);
-        if(ret==null) { // don't think too hard about where exactly the border is (not much height data there anyway)
+        if(ret==null && Math.abs(longituedOfSouthWestCorner)>178) { // don't think too hard about where exactly the border is (not much height data there anyway)
             ret = getShadingTileInternal(latitudeOfSouthWestCorner, longituedOfSouthWestCorner>0?longituedOfSouthWestCorner-180:longituedOfSouthWestCorner+180);
         }
 
@@ -52,12 +52,9 @@ public class HillsRenderConfig {
         HgtCache hgtCache = this.hgtCacheFuture.get();
         HgtCache.HgtFileInfo hgtFileInfo = hgtCache.hgtFiles.get(new TileKey(northInt, eastInt));
         if(hgtFileInfo==null) return null;
-        long now = System.currentTimeMillis();
-//        System.out.println("starting parse on "+Thread.currentThread().getName());
 
         Future<Bitmap> future = hgtFileInfo.getParsed();
         Bitmap bitmap = future.get();
-        System.out.println("done parse after " + (System.currentTimeMillis()-now) + "ms on "+Thread.currentThread().getName()+ " -> "+bitmap);
         return bitmap;
     }
 
@@ -92,9 +89,6 @@ public class HillsRenderConfig {
             crawl(demFolder, Pattern.compile("(n|s)(\\d{1,2})(e|w)(\\d{1,3})\\.hgt", Pattern.CASE_INSENSITIVE).matcher(""), problems);
 
         }
-/*
-N46E006.hgt
- */
         private void crawl(File file, Matcher matcher, List<String> problems) {
             if (file.exists()) {
                 if (file.isFile()) {

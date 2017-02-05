@@ -12,6 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * currently just a really stupid slope-to-lightness
+ *
  * Created by usrusr on 22.01.2017.
  */
 public class SimpleShadingAlgortithm implements ShadingAlgorithm {
@@ -78,19 +80,14 @@ public class SimpleShadingAlgortithm implements ShadingAlgorithm {
 
                 int eawe = (ne - nw) + (se - sw);
 
-                int nosoClamped = Math.min(256, Math.max(0, noso + 128));
-                int eaweClamped = Math.min(256, Math.max(0, eawe + 128));
+                int nosoClamped = Math.min(255, Math.max(0, noso + 128));
+                int eaweClamped = Math.min(255, Math.max(0, eawe + 128));
 
-                int inVal = ((nosoClamped + eaweClamped) / 2);
-                int shade = Math.min(Byte.MAX_VALUE, Math.max(Byte.MIN_VALUE, inVal));
+                int intVal = ((nosoClamped + eaweClamped) / 2);
 
-                shade = inVal & 0xFF;
+                intVal = Math.min(255, Math.max(0, noso+eawe+128));
 
-//                shade = (byte) ((((int)cc))/50);
-
-//                if (shade != (byte) shade) {
-//                    System.out.println("extreme shade: " + shade);
-//                }
+                int shade = intVal & 0xFF;
 
                 bytes[outidx++] = (byte) shade;
 
@@ -98,15 +95,6 @@ public class SimpleShadingAlgortithm implements ShadingAlgorithm {
                 sw = se;
             }
         }
-
-//            ComponentColorModel componentColorModel = new ComponentColorModel(
-//                    ColorSpace.getInstance(ColorSpace.CS_GRAY),
-//                    false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE
-//            );
-//            SampleModel sampleModel = componentColorModel.createCompatibleSampleModel(axisLength, axisLength);
-//
-//            new BufferedImage(componentColorModel,new WritableRaster(sampleModel, new Point(0,0))
-//            )
         return graphicFactory.createMonoBitmap(axisLength, axisLength, bytes);
     }
 

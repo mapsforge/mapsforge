@@ -23,6 +23,7 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.XmlUtils;
 import org.mapsforge.map.rendertheme.renderinstruction.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -261,11 +262,33 @@ public final class RenderThemeHandler {
                 }
             } else if ("hillshading".equals(qName)){
                 checkState(qName, Element.RULE);
-                byte minZoom = 1;
-                byte maxZoom = Byte.MAX_VALUE;
-                Hillshading hillshading = new Hillshading(this.graphicFactory, this.level++,minZoom, maxZoom, 64);
-//                Rule hillShadingRule = new HillShadingRule("hillshading", maxZoom, minZoom, hillshading);
-//                renderTheme.addRule(hillShadingRule);
+                byte minZoom = 5;
+                byte maxZoom = 17;
+                byte layer = 5;
+                short magnitude = 64;
+
+                for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+                    String name = pullParser.getAttributeName(i);
+                    String value = pullParser.getAttributeValue(i);
+
+                    if("zoom-min".equals(name)){
+                        minZoom = XmlUtils.parseNonNegativeByte("zoom-min", value);
+                    }else if("zoom-max".equals(name)){
+                        maxZoom = XmlUtils.parseNonNegativeByte("zoom-max", value);
+                    }else if("magnitude".equals(name)){
+                        magnitude = (short) XmlUtils.parseNonNegativeInteger("magnitude", value);
+                        if(magnitude>255) throw new XmlPullParserException("Attribute 'magnitude' must not be > 255");
+                    }else if("layer".equals(name)){
+                        layer = XmlUtils.parseNonNegativeByte("layer", value);
+                    }
+
+                }
+
+
+
+
+                int hillShadingLevel = this.level++;
+                Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, hillShadingLevel, this.graphicFactory);
 
                 renderTheme.addHillShadings(hillshading);
             } else {
