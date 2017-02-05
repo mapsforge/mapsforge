@@ -58,20 +58,11 @@ public class Hillshading
         if(zoomLevel >maxZoom || zoomLevel <minZoom) return;
 
         Point origin = tile.getOrigin();
-
-//        double topLeftLat = MercatorProjection.tileYToLatitude((long) origin.y, zoomLevel);
-//        double topLeftLng = MercatorProjection.tileXToLongitude((long) origin.x, zoomLevel);
-//
-//        double botRightLat = MercatorProjection.tileYToLatitude((long) origin.y+tile.tileSize, zoomLevel);
-//        double botRightLng = MercatorProjection.tileXToLongitude((long) origin.x+tile.tileSize, zoomLevel);
-
         double topLeftLat = MercatorProjection.pixelYToLatitude((long) origin.y, tile.mapSize);
         double topLeftLng = MercatorProjection.pixelXToLongitude((long) origin.x, tile.mapSize);
 
         double botRightLat = MercatorProjection.pixelYToLatitude((long) origin.y+tile.tileSize, tile.mapSize);
         double botRightLng = MercatorProjection.pixelXToLongitude((long) origin.x+tile.tileSize, tile.mapSize);
-
-        System.out.println("renderHillshading: [[" + zoomLevel + "]] " + tile.tileSize + "  "+origin+ " " + topLeftLat + " " + topLeftLng + " to " + botRightLat + " " + botRightLng + "");
 
         for(int lng = (int)topLeftLng ; lng <= botRightLng; lng++){
             for(int lat = (int)botRightLat ; lat <= topLeftLat; lat++){
@@ -87,18 +78,8 @@ public class Hillshading
                     double shadeBotRightX = MercatorProjection.longitudeToPixelX(lng + 1 - 0.5d / shadingTile.getWidth(), tile.mapSize) - origin.x;
                     double shadeBotRightY = MercatorProjection.latitudeToPixelY(lat - 0.5d / shadingTile.getHeight(), tile.mapSize) - origin.y;
 
-//                    Matrix matrix = graphicFactory.createMatrix();
-//                    float scaleX = (float) (shadeBotRightX - shadeTopLeftX) / shadingTile.getWidth();
-//                    float scaleY = (float) (shadeBotRightY - shadeTopLeftY) / shadingTile.getHeight();
-//                    matrix.scale(
-//                            scaleX,
-//                            scaleY
-//                    );
-//                    matrix.translate(shadeTopLeftX, shadeTopLeftY);
-//
-//                    System.out.println("renderHillshading: "+lat+"/"+lng+" : "+matrix);
-
                     ShapeContainer hillShape = new HillshadingContainer(shadingTile, magnitude, shadeTopLeftX, shadeTopLeftY, shadeBotRightX, shadeBotRightY);
+                    renderContext.setDrawingLayers((byte)5);
                     renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -111,40 +92,4 @@ public class Hillshading
 
 
     }
-
-//    @Override
-//    public void destroy() {
-//        // no-op
-//    }
-//
-//
-//    @Override
-//    public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
-//        // do nothing
-//    }
-//
-//    @Override
-//    public void renderWay(RenderCallback renderCallback, final RenderContext renderContext, PolylineContainer way) {
-//        HillsContext hillsContext = renderContext.hillsContext;
-//        if( ! hillsContext.hillsActive(renderContext)) {
-//            return;
-//        }
-////        if(hillsContext.level <= level) {
-////            return;
-////        }
-//        Tile tile = renderContext.rendererJob.tile;
-//
-//
-//        renderCallback.renderHillshading(renderContext, , magnitude);
-//    }
-//
-//    @Override
-//    public void scaleStrokeWidth(float scaleFactor, byte zoomLevel) {
-//
-//    }
-//
-//    @Override
-//    public void scaleTextSize(float scaleFactor, byte zoomLevel) {
-//        // do nothing
-//    }
 }

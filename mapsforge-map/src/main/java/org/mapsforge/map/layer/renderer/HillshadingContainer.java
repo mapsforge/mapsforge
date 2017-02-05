@@ -43,7 +43,7 @@ public class HillshadingContainer implements ShapeContainer {
     @Override
     public String toString() {
         return "HillshadingContainer{" +
-                ", topLeftX=" + topLeftX +
+                  "topLeftX=" + topLeftX +
                 ", topLeftY=" + topLeftY +
                 ", botRightX=" + botRightX +
                 ", botRightY=" + botRightY +
