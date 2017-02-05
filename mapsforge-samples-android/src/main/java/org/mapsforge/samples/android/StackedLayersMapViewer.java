@@ -15,7 +15,6 @@
 package org.mapsforge.samples.android;
 
 import android.util.Log;
-
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;

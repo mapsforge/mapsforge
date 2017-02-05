@@ -76,16 +76,11 @@ public class SimpleShadingAlgortithm implements ShadingAlgorithm {
                 short se = readNext(din, ne);
                 ringbuffer[rbcur++] = se;
 
-                int noso = (se - ne) + (sw - nw);
+                int noso = -((se - ne) + (sw - nw));
 
-                int eawe = (ne - nw) + (se - sw);
+                int eawe = -((ne - nw) + (se - sw));
 
-                int nosoClamped = Math.min(255, Math.max(0, noso + 128));
-                int eaweClamped = Math.min(255, Math.max(0, eawe + 128));
-
-                int intVal = ((nosoClamped + eaweClamped) / 2);
-
-                intVal = Math.min(255, Math.max(0, noso+eawe+128));
+                int intVal = Math.min(255, Math.max(0, noso+eawe+128));
 
                 int shade = intVal & 0xFF;
 

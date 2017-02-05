@@ -56,7 +56,7 @@ public class AwtHillShadingComposite implements Composite {
                 for (int x = 0; x < width; ++x) {
                     for (int y = 0; y < height; ++y) {
                         src.getPixel(x, y, srcBytes);
-                        int shadeVal = srcBytes[0];
+                        int shadeVal = 255-srcBytes[0];
 
                         float add = shadeVal*magnitude;
 

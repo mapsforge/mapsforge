@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
-
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;

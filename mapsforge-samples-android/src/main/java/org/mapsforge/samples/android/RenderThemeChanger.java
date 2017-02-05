@@ -17,7 +17,6 @@ package org.mapsforge.samples.android;
 
 import android.os.Environment;
 import android.util.Log;
-
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.ExternalRenderThemeUsingJarResources;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;

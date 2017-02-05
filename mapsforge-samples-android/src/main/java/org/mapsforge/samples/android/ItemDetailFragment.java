@@ -27,7 +27,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import org.mapsforge.map.android.util.AndroidSupportUtil;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;

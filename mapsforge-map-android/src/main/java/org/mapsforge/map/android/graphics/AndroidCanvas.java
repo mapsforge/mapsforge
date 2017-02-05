@@ -36,6 +36,7 @@ class AndroidCanvas implements Canvas {
 
     android.graphics.Canvas canvas;
     private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
+    private final android.graphics.Paint shadePaint = new android.graphics.Paint();
     private ColorFilter grayscaleFilter, grayscaleInvertFilter, invertFilter;
 
     AndroidCanvas() {
@@ -43,6 +44,9 @@ class AndroidCanvas implements Canvas {
 
         this.bitmapPaint.setAntiAlias(true);
         this.bitmapPaint.setFilterBitmap(true);
+
+        this.shadePaint.setAntiAlias(true);
+        this.shadePaint.setFilterBitmap(true);
 
         createFilters();
     }
@@ -107,13 +111,11 @@ class AndroidCanvas implements Canvas {
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
     }
     @Override
-    public void shadeBitmap(Bitmap bitmap, Matrix matrix, Composite composite) {
-        android.graphics.Paint shadePaint = new android.graphics.Paint();
-        shadePaint.setAntiAlias(true);
-        shadePaint.setFilterBitmap(true);
-        shadePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DARKEN));
-        shadePaint.setColorFilter(null);
-        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+    public void shadeBitmap(Bitmap bitmap, Matrix matrix, float magnitude) {
+
+        shadePaint.setAlpha((int) (255*magnitude));
+
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), shadePaint);
     }
 
     @Override

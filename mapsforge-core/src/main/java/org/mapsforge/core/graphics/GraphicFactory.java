@@ -25,7 +25,7 @@ import java.io.InputStream;
 public interface GraphicFactory {
     Bitmap createBitmap(int width, int height);
 
-    /** create a single channel bitmap for
+    /** create a single channel bitmap for hillshading
      * @param buffer
      */
     Bitmap createMonoBitmap(int width, int height, byte[] buffer);

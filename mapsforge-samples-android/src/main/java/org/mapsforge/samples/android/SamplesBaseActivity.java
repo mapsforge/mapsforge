@@ -33,7 +33,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -49,6 +48,8 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
 import org.mapsforge.map.scalebar.NauticalUnitAdapter;
+
+import java.io.File;
 
 /**
  * Code common to most activities in the Samples app.
@@ -67,6 +68,16 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
     protected static final int DIALOG_ENTER_COORDINATES = 2923878;
     protected SharedPreferences sharedPreferences;
 
+
+//    @Override
+//    protected MapDataStore getMapFile() {
+//        return new MapFile(new File("/storage/sdcard1/germany.map"));
+//    }
+
+
+
+
+
     @Override
     protected int getLayoutId() {
         return R.layout.mapviewer;
@@ -84,13 +95,17 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
 
     @Override
     protected void createLayers() {
-        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-                mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
+        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayerWithHillshading(this.tileCaches.get(0),
+                mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false
+                , getHillsRenderConfig()
+        );
         this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 
         // needed only for samples to hook into Settings.
         setMaxTextWidthFactor();
     }
+
+
 
     @Override
     protected void createControls() {
@@ -128,10 +143,20 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
     /**
      * @return the map file name to be used
      */
+//    @Override
+//    protected String getMapFileName() {
+//        return "germany.map";
+//    }
     @Override
     protected String getMapFileName() {
-        return "germany.map";
+        return "Germany.2015.map";
     }
+    @Override
+    protected File getMapFileDirectory() {
+        return new File("/storage/sdcard1/Android/data/com.orux.oruxmapsDonate/files");
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

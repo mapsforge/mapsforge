@@ -21,7 +21,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.view.View;
-
 import org.mapsforge.map.android.util.AndroidPreferences;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
