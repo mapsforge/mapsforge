@@ -17,10 +17,9 @@ If you have any questions or problems, don't hesitate to ask our public [mailing
 - Mapsforge supports Android 2.3.3 (API level 10) and above.
 - Mapsforge is used by many [applications](docs/Mapsforge-Applications.md).
 - Mapsforge is in active [development](docs/Contributors.md). 
-- [Mapsforge Talks](docs/Mapsforge-Talks.md).
+- Mapsforge [map providers](docs/Mapsforge-Maps.md).
+- Mapsforge [talks](docs/Mapsforge-Talks.md).
 
 ### Screenshots:
 
 ![Screenshot Samples App Berlin 1](docs/images/screenshot-berlin-1.png)
-![Screenthot Samples App Berlin 2](docs/images/screenshot-berlin-2.png)
-![Screenshot Samples App Berlin 3](docs/images/screenshot-berlin-3.png)

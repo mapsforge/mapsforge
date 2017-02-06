@@ -6,7 +6,7 @@
 - Android SVG cache folder option [#914](https://github.com/mapsforge/mapsforge/issues/914)
 - Desktop tile cache creation utility [#915](https://github.com/mapsforge/mapsforge/issues/915)
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.8.0)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.8.0)
 
 ## Version 0.7.0 (2016-12-30)
 
@@ -42,7 +42,7 @@
 - Drop of `dev` branch
 - Internal render themes various improvements [#857](https://github.com/mapsforge/mapsforge/issues/857)
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.7.0)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.7.0)
 
 ## Version 0.6.1 (2016-06-11)
 
@@ -78,7 +78,7 @@
 - Sample applications reorganization [#724](https://github.com/mapsforge/mapsforge/issues/724)
 - Code formatting improvements [#782](https://github.com/mapsforge/mapsforge/issues/782)
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.1)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.6.1)
 
 ## Version 0.6.0 (2015-11-25)
 
@@ -114,7 +114,7 @@
 - XSD repositioning for online validation [#672](https://github.com/mapsforge/mapsforge/issues/672)
 - Android 6 / SDK 23 / Runtime permission support [#704](https://github.com/mapsforge/mapsforge/issues/704)
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.6.0)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.6.0)
 
 ## Version 0.5.2 (2015-08-23)
 
@@ -145,7 +145,7 @@
 - LabelLayer improvements [#595](https://github.com/mapsforge/mapsforge/issues/595) [#639](https://github.com/mapsforge/mapsforge/issues/639) [#642](https://github.com/mapsforge/mapsforge/issues/642)
 - Simplified cleanup operation [#620](https://github.com/mapsforge/mapsforge/issues/620)
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aissue+is%3Aclosed+milestone%3A0.5.2)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.5.2)
 
 ## Version 0.5.1 (2015-03-18)
 

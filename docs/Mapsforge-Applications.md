@@ -9,6 +9,7 @@
 | [APRSdroid](http://aprsdroid.org/) | Amateur Radio | GPL2/Free | Open |
 | [Archies Camping Guide](https://play.google.com/store/apps/details?id=jahdroid.archies) | European campsites | Proprietary/Commercial | Closed |
 | [ARDrone Flight](https://play.google.com/store/apps/details?id=meavydev.ARDrone) | ARDrone Control | Proprietary/Free | Closed |
+| [BackCountry Navigator](http://www.crittermap.com/app/backcountry-navigator-pro-gps/) | Outdoor navigation | Proprietary/Commercial | Closed |
 | [Bariloche Guide](https://play.google.com/store/apps/details?id=com.animus.guideapp) | City Guide | Proprietary/Free | Closed |
 | [Bike Computer](https://play.google.com/store/apps/details?id=de.rooehler.bikecomputer) | Routes and Tracks for Cycling | Proprietary/Free and Premium | Closed |
 | [Bladenight App](https://play.google.com/store/apps/details?id=fr.ocroquette.bladenight) | Tracking for inline skating events | Proprietary/Free | Closed |
@@ -19,6 +20,7 @@
 | [ELEMNT](http://eu.wahoofitness.com/devices/gps-bike-computer-elemnt.html) | GPS bike computer | Proprietary/Commercial | Closed |
 | [Forest(M)ap(p)](https://play.google.com/store/apps/details?id=de.inforst.waldkarte) | Tool for forestry | Proprietary/Commercial | Closed |
 | [Geopaparazzi](http://www.geopaparazzi.eu) | Digital Field Mapping for geology and engineering with GIS data import | GPL3/Free | Open |
+| [GPSLogger II](https://play.google.com/store/apps/details?id=com.emacberry.gpslogger) | AllInOne Logging & Tracking Solution | Proprietary/Free | Closed |
 | [GPSSend](https://play.google.com/store/apps/details?id=com.tinkerpete.gps) | Live Tracking + Emergency Notification | Proprietary/Free | Closed |
 | [Green Tracks](https://play.google.com/store/apps/details?id=com.mountain.tracks) | Climbing and hiking | Proprietary/Free | Closed |
 | [Hunt Cyprus](https://play.google.com/store/apps/details?id=gr.talent.cyprusHunt) | Map and navigation application for hunters | Proprietary/Free | Closed |
@@ -32,6 +34,7 @@
 | [Mobile Atlas Creator](http://mobac.sourceforge.net/) | Creation of offline atlases | GPL/Free | Open |
 | [Momentum Tracker](https://play.google.com/store/apps/details?id=com.momentum_tracker.android) | Fitness Application | Proprietary/Free and Premium | Closed |
 | [My Map](http://www.mymap.com.np/) | Offline map of Nepal | Proprietary/Free | Closed |
+| [myWorkouts](http://www.myworkouts.org/) | Sports and GPS Tracker | Proprietary/Free | Closed |
 | [Nautilus Charts](https://play.google.com/store/apps/details?id=gr.talent.nautiluscharts) | Offline Nautical Charts plotting and positioning system | Proprietary/Commercial | Closed |
 | [Navi Cyprus](https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi) | Map and navigation application | Proprietary/Free | Closed |
 | [Nutiteq](https://github.com/nutiteq/hellomap3d) | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open |
@@ -46,6 +49,7 @@
 | [Serval Maps](http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page) | Collaborative Mapping using a Mesh Network | GPL3/Free | Open |
 | [TingBY](http://ting.by/) | City guide | Proprietary/Free | Closed |
 | [UtalTransitMap](https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap) | Transport Guide | Proprietary/Free | Closed |
+| [Vectorial Map](http://www.vectorialmap.com/) | Map viewer and tracking | Proprietary/Commercial | Closed |
 | [Villagers feng shui](https://play.google.com/store/apps/details?id=tacoball.com.geomancer) | Local service for Taiwan | LGPL3/Free | Open |
 | [Watertrack ECO](http://watertrack.de/) | GPS Tracking on Germany Waterways | Proprietary/Free | Closed |
 | [Wikiloc](http://www.wikiloc.com/outdoor-navigation-app) | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed |
