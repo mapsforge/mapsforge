@@ -20,6 +20,10 @@ If you have any questions or problems, don't hesitate to ask our public [mailing
 - Mapsforge [map providers](docs/Mapsforge-Maps.md).
 - Mapsforge [talks](docs/Mapsforge-Talks.md).
 
-### Screenshots:
+## Screenshots
 
-![Screenshot Samples App Berlin 1](docs/images/screenshot-berlin-1.png)
+### Android
+![Android](docs/images/android.png)
+
+### Desktop
+![Desktop](docs/images/desktop.png)
