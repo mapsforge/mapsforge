@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -29,13 +29,23 @@ import org.mapsforge.map.model.FrameBufferModel;
 public class FrameBuffer {
 
     private static final boolean IS_TRANSPARENT = false;
-    private Bitmap bitmap1;
-    private Bitmap bitmap2;
+
+    /**
+     * odBitmap: onDraw bitmap - the bitmap that gets displayed by the MapView.onDraw() function
+     * from the UI thread
+     */
+    Bitmap odBitmap;
+    /**
+     * lmBitmap: layerManager bitmap - the bitmap that gets drawn by the LayerManager.doWork()
+     * thread
+     */
+    Bitmap lmBitmap;
+
     private Dimension dimension;
-    private final DisplayModel displayModel;
-    private final FrameBufferModel frameBufferModel;
+    final DisplayModel displayModel;
+    final FrameBufferModel frameBufferModel;
     private final GraphicFactory graphicFactory;
-    private final Matrix matrix;
+    final Matrix matrix;
 
     public FrameBuffer(FrameBufferModel frameBufferModel, DisplayModel displayModel, GraphicFactory graphicFactory) {
         this.frameBufferModel = frameBufferModel;
@@ -66,17 +76,17 @@ public class FrameBuffer {
 
     public synchronized void draw(GraphicContext graphicContext) {
         graphicContext.fillColor(this.displayModel.getBackgroundColor());
-        if (this.bitmap1 != null) {
-            graphicContext.drawBitmap(this.bitmap1, this.matrix);
+        if (this.odBitmap != null) {
+            graphicContext.drawBitmap(this.odBitmap, this.matrix);
         }
     }
 
     public void frameFinished(MapPosition frameMapPosition) {
         synchronized (this) {
             // swap both bitmap references
-            Bitmap bitmapTemp = this.bitmap1;
-            this.bitmap1 = this.bitmap2;
-            this.bitmap2 = bitmapTemp;
+            Bitmap bitmapTemp = this.odBitmap;
+            this.odBitmap = this.lmBitmap;
+            this.lmBitmap = bitmapTemp;
         }
         // taking this out of the synchronized region removes a deadlock potential
         // at the small risk of an inconsistent zoom
@@ -91,10 +101,10 @@ public class FrameBuffer {
      * @return the bitmap of the second frame to draw on (may be null).
      */
     public synchronized Bitmap getDrawingBitmap() {
-        if (this.bitmap2 != null) {
-            this.bitmap2.setBackgroundColor(this.displayModel.getBackgroundColor());
+        if (this.lmBitmap != null) {
+            this.lmBitmap.setBackgroundColor(this.displayModel.getBackgroundColor());
         }
-        return this.bitmap2;
+        return this.lmBitmap;
     }
 
     public synchronized void setDimension(Dimension dimension) {
@@ -106,8 +116,8 @@ public class FrameBuffer {
         destroyBitmaps();
 
         if (dimension.width > 0 && dimension.height > 0) {
-            this.bitmap1 = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
-            this.bitmap2 = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
+            this.odBitmap = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
+            this.lmBitmap = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
         }
     }
 
@@ -118,13 +128,13 @@ public class FrameBuffer {
     }
 
     private void destroyBitmaps() {
-        if (this.bitmap1 != null) {
-            this.bitmap1.decrementRefCount();
-            this.bitmap1 = null;
+        if (this.odBitmap != null) {
+            this.odBitmap.decrementRefCount();
+            this.odBitmap = null;
         }
-        if (this.bitmap2 != null) {
-            this.bitmap2.decrementRefCount();
-            this.bitmap2 = null;
+        if (this.lmBitmap != null) {
+            this.lmBitmap.decrementRefCount();
+            this.lmBitmap = null;
         }
     }
 
@@ -136,5 +146,4 @@ public class FrameBuffer {
             this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
         }
     }
-
 }

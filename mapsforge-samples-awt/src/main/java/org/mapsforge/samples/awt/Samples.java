@@ -73,14 +73,17 @@ public final class Samples {
      * @param args command line args: expects the map files as multiple parameters.
      */
     public static void main(String[] args) {
-        // Multithreading map rendering
+        // HA frame buffer
+        FrameBufferController.HA_FRAME_BUFFER = true;
+
+        // Multithreaded map rendering
         MapWorkerPool.NUMBER_OF_THREADS = 2;
 
         // Map buffer size
-        ReadBuffer.setMaximumBufferSize(6500000);
+        ReadBuffer.MAXIMUM_BUFFER_SIZE = 6500000;
 
         // Square frame buffer
-        FrameBufferController.setUseSquareFrameBuffer(false);
+        FrameBufferController.SQUARE_FRAME_BUFFER = false;
 
         List<File> mapFiles = getMapFiles(args);
         final MapView mapView = createMapView();

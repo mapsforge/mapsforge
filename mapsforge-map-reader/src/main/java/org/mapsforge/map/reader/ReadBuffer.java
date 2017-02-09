@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2016 bvgastel
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -33,7 +33,7 @@ public class ReadBuffer {
     private static final int DEFAULT_MAXIMUM_BUFFER_SIZE = 2500000;
     private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
 
-    private static int maximumBufferSize = DEFAULT_MAXIMUM_BUFFER_SIZE;
+    public static int MAXIMUM_BUFFER_SIZE = DEFAULT_MAXIMUM_BUFFER_SIZE;
 
     /**
      * Returns the maximum buffer size.
@@ -41,7 +41,7 @@ public class ReadBuffer {
      * @return the maximum buffer size.
      */
     public static synchronized int getMaximumBufferSize() {
-        return maximumBufferSize;
+        return MAXIMUM_BUFFER_SIZE;
     }
 
     /**
@@ -50,7 +50,7 @@ public class ReadBuffer {
      * @param maximumBufferSize the maximum buffer size to use.
      */
     public static synchronized void setMaximumBufferSize(int maximumBufferSize) {
-        ReadBuffer.maximumBufferSize = maximumBufferSize;
+        ReadBuffer.MAXIMUM_BUFFER_SIZE = maximumBufferSize;
     }
 
     private byte[] bufferData;
@@ -82,7 +82,7 @@ public class ReadBuffer {
         // ensure that the read buffer is large enough
         if (this.bufferData == null || this.bufferData.length < length) {
             // ensure that the read buffer is not too large
-            if (length > maximumBufferSize) {
+            if (length > MAXIMUM_BUFFER_SIZE) {
                 LOGGER.warning("invalid read length: " + length);
                 return false;
             }
@@ -108,7 +108,7 @@ public class ReadBuffer {
         // ensure that the read buffer is large enough
         if (this.bufferData == null || this.bufferData.length < length) {
             // ensure that the read buffer is not too large
-            if (length > maximumBufferSize) {
+            if (length > MAXIMUM_BUFFER_SIZE) {
                 LOGGER.warning("invalid read length: " + length);
                 return false;
             }

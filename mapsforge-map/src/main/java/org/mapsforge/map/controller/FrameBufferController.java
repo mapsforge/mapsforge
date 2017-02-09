@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,15 +24,22 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.FrameBufferHA;
 
 public final class FrameBufferController implements Observer {
 
+    /**
+     * If true the {@link FrameBufferHA} will be used instead of default {@link FrameBuffer}.
+     */
+    public static boolean HA_FRAME_BUFFER = false;
+
     private static float maxAspectRatio = 2;
+
     // if useSquareFrameBuffer is enabled, the framebuffer allocated for drawing will be
     // large enough for drawing in either orientation, so no change is needed when the device
     // orientation changes. To avoid overly large framebuffers, the aspect ratio for this policy
     // determines when this will be used.
-    private static boolean useSquareFrameBuffer = true;
+    public static boolean SQUARE_FRAME_BUFFER = true;
 
     public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
         FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
@@ -48,7 +55,7 @@ public final class FrameBufferController implements Observer {
     public static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
         int width = (int) (mapViewDimension.width * overdrawFactor);
         int height = (int) (mapViewDimension.height * overdrawFactor);
-        if (useSquareFrameBuffer) {
+        if (SQUARE_FRAME_BUFFER) {
             float aspectRatio = ((float) mapViewDimension.width) / mapViewDimension.height;
             if (aspectRatio < maxAspectRatio && aspectRatio > 1 / maxAspectRatio) {
                 width = Math.max(width, height);
@@ -59,11 +66,11 @@ public final class FrameBufferController implements Observer {
     }
 
     public static boolean isUseSquareFrameBuffer() {
-        return useSquareFrameBuffer;
+        return SQUARE_FRAME_BUFFER;
     }
 
     public static void setUseSquareFrameBuffer(boolean useSquareFrameBuffer) {
-        FrameBufferController.useSquareFrameBuffer = useSquareFrameBuffer;
+        FrameBufferController.SQUARE_FRAME_BUFFER = useSquareFrameBuffer;
     }
 
     private final FrameBuffer frameBuffer;
@@ -94,7 +101,7 @@ public final class FrameBufferController implements Observer {
         double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
         if (dimensionChangeNeeded(mapViewDimension, overdrawFactor)) {
             Dimension newDimension = calculateFrameBufferDimension(mapViewDimension, overdrawFactor);
-            if (!useSquareFrameBuffer || frameBuffer.getDimension() == null
+            if (!SQUARE_FRAME_BUFFER || frameBuffer.getDimension() == null
                     || newDimension.width > frameBuffer.getDimension().width
                     || newDimension.height > frameBuffer.getDimension().height) {
                 // new dimensions if we either always reallocate on config change or if new dimension
