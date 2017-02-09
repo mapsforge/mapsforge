@@ -4,6 +4,7 @@
  * Copyright 2016 Andrey Novikov
  * Copyright 2016 mikes222
  * Copyright 2016-2017 devemux86
+ * Copyright 2017 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -835,6 +836,7 @@ public final class MapFileWriter {
                         }
                     } catch (InterruptedException e) {
                         LOGGER.log(Level.WARNING, "error in parallel preprocessing of ways", e);
+                        throw new RuntimeException(e);
                     }
                 }
             }
