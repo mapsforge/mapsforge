@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -66,16 +66,5 @@ public class SamplesApplication extends Application {
             MapFile.wayFilterDistance = Integer.parseInt(preferences.getString(SETTING_WAYFILTERING_DISTANCE, "20"));
         }
         MapWorkerPool.DEBUG_TIMING = preferences.getBoolean(SETTING_DEBUG_TIMING, false);
-
-        // Multithreading rendering
-        int defaultNumberOfThreads = Runtime.getRuntime().availableProcessors() + 1;
-        if (preferences.contains(SamplesApplication.SETTING_RENDERING_THREADS))
-            MapWorkerPool.NUMBER_OF_THREADS = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(defaultNumberOfThreads)));
-        else {
-            MapWorkerPool.NUMBER_OF_THREADS = defaultNumberOfThreads;
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(defaultNumberOfThreads));
-            editor.apply();
-        }
     }
 }
