@@ -42,6 +42,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`simplification-max-zoom`|The maximum base zoom level for which we apply a simplification algorithm to filter way points|positive integer|12|
 |`bbox-enlargement`|amount of meters used for enlarging bounding boxes in computations|positive integer|20|
 |`zoom-interval-conf`|configure the zoom intervals used in this file, configuration is given in the form: baseZoomA, minZoomA, maxZoomA, baseZoomB, minZoomB, maxZoomB,..., baseZoomN, minZoomN, maxZoomN, in most cases you do **not** need to alter the standard configuration|intervals must not overlap and must not contain gaps|5,0,7,10,8,11,14,12,21|
+|`threads`|use multiple threads to increase performance (possible OOM)|positive integer|1|
 |`debug-file`|switch for writing debug information to the file, _do **not activate** this option unless you know what you are doing_|true/false|false|
 
 ### Examples
@@ -99,6 +100,10 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article.
 
 ## Changelog
+
+### 0.8.0
+
+- Multiple threads option (default 1)
 
 ### 0.7.0
 

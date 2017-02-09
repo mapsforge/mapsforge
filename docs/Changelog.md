@@ -5,6 +5,7 @@
 - Android tile cache folder option [#913](https://github.com/mapsforge/mapsforge/issues/913)
 - Android SVG cache folder option [#914](https://github.com/mapsforge/mapsforge/issues/914)
 - Desktop tile cache creation utility [#915](https://github.com/mapsforge/mapsforge/issues/915)
+- Map writer: multiple threads option (default 1) [#920](https://github.com/mapsforge/mapsforge/issues/920)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.8.0)
 

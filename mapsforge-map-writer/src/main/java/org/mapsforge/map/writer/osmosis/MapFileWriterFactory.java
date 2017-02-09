@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2016 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -43,6 +43,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
     private static final String PARAM_SIMPLIFICATION_MAX_ZOOM = "simplification-max-zoom";
     private static final String PARAM_SKIP_INVALID_RELATIONS = "skip-invalid-relations";
     private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
+    private static final String PARAM_THREADS = "threads";
     private static final String PARAM_TYPE = "type";
     private static final String PARAM_WAY_CLIPPING = "way-clipping";
     private static final String PARAM_ZOOMINTERVAL_CONFIG = "zoom-interval-conf";
@@ -78,6 +79,9 @@ class MapFileWriterFactory extends TaskManagerFactory {
         configuration.addPreferredLanguages(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGES, null));
         configuration
                 .addEncodingChoice(getStringArgument(taskConfig, PARAM_ENCODING, Constants.DEFAULT_PARAM_ENCODING));
+
+        // Use 1 thread to avoid OOM when processing ways, see #920
+        configuration.setThreads(getIntegerArgument(taskConfig, PARAM_THREADS, 1));
 
         configuration.validate();
 

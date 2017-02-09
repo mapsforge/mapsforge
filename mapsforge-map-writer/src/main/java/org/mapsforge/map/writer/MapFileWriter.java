@@ -3,7 +3,7 @@
  * Copyright 2015 lincomatic
  * Copyright 2016 Andrey Novikov
  * Copyright 2016 mikes222
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -315,8 +315,8 @@ public final class MapFileWriter {
 
     private static final long DUMMY_LONG = 0xf0f0f0f0f0f0f0f0L;
 
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(Runtime.getRuntime()
-            .availableProcessors());
+    private static ExecutorService EXECUTOR_SERVICE;
+
     private static final int JTS_GEOMETRY_CACHE_SIZE = 50000;
     private static final String MAGIC_BYTE = "mapsforge binary OSM";
     private static final int OFFSET_FILE_SIZE = 28;
@@ -339,6 +339,7 @@ public final class MapFileWriter {
      */
     public static void writeFile(MapWriterConfiguration configuration, TileBasedDataProcessor dataProcessor)
             throws IOException {
+        EXECUTOR_SERVICE = Executors.newFixedThreadPool(configuration.getThreads());
         RandomAccessFile randomAccessFile = new RandomAccessFile(configuration.getOutputFile(), "rw");
 
         int amountOfZoomIntervals = dataProcessor.getZoomIntervalConfiguration().getNumberOfZoomIntervals();
