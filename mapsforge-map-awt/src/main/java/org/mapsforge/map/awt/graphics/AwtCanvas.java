@@ -15,19 +15,33 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Dimension;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Composite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.color.ColorSpace;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.IndexColorModel;
+import java.awt.image.LookupOp;
+import java.awt.image.ShortLookupTable;
+import java.util.AbstractMap;
+import java.util.Map;
 
 class AwtCanvas implements Canvas {
     private static final String UNKNOWN_STYLE = "unknown style: ";
@@ -35,6 +49,35 @@ class AwtCanvas implements Canvas {
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;
     private BufferedImageOp grayscaleOp, invertOp, invertOp4;
+
+    private static Map.Entry<Float, Composite> sizeOneShadingCompositeCache = null;
+    private static Composite getHillshadingComposite(float magnitude){
+        Map.Entry<Float, Composite> existing = sizeOneShadingCompositeCache;
+        if(existing!=null && existing.getKey()==magnitude){
+            // JMM says: "A thread-safe immutable object is seen as immutable by all threads, even if a data race is used to pass references to the immutable object between threads"
+            // worst case we construct more than strictly needed
+            return existing.getValue();
+        }
+
+        Composite selected = selectHillShadingComposite(magnitude);
+
+        if(sizeOneShadingCompositeCache==null) {
+            // only cache the first magnitude value, in the rare instance that more than one magnitude value would be used
+            // in a process lifecycle it would be better to create new Composite instances than create new instances _and_ new cache entries
+            sizeOneShadingCompositeCache = new AbstractMap.SimpleImmutableEntry(magnitude, selected);
+        }
+
+        return selected;
+    }
+    /** composite selection,
+     * select between {@link AlphaComposite} (fast, squashes saturation at high magnitude)
+     * and {@link AwtLuminanceShadingComposite} (per-pixel rgb->hsv->rgb conversion to keep saturation at high magnitude, might be a bit slow and/or inconsistent with the android implementation) */
+    private static Composite selectHillShadingComposite(float magnitude) {
+        return new AwtLuminanceShadingComposite(magnitude);
+        // return AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, magnitude);
+    }
+
+
 
     AwtCanvas() {
         createFilters();
@@ -128,9 +171,10 @@ class AwtCanvas implements Canvas {
     @Override
     public void shadeBitmap(Bitmap bitmap, Matrix matrix, float magnitude) {
         Composite oldComposite = this.graphics2D.getComposite();
-        Composite composite = AwtHillShadingComposite.ofMagnitude(magnitude);
+        Composite composite = getHillshadingComposite(magnitude);
 
         this.graphics2D.setComposite(composite);
+
 
         this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
                 AwtGraphicFactory.getAffineTransform(matrix));

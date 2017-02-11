@@ -24,7 +24,15 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 import org.mapsforge.map.rendertheme.XmlUtils;
-import org.mapsforge.map.rendertheme.renderinstruction.*;
+import org.mapsforge.map.rendertheme.renderinstruction.Area;
+import org.mapsforge.map.rendertheme.renderinstruction.Caption;
+import org.mapsforge.map.rendertheme.renderinstruction.Circle;
+import org.mapsforge.map.rendertheme.renderinstruction.Hillshading;
+import org.mapsforge.map.rendertheme.renderinstruction.Line;
+import org.mapsforge.map.rendertheme.renderinstruction.LineSymbol;
+import org.mapsforge.map.rendertheme.renderinstruction.PathText;
+import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
+import org.mapsforge.map.rendertheme.renderinstruction.Symbol;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -265,7 +273,7 @@ public final class RenderThemeHandler {
                 byte minZoom = 5;
                 byte maxZoom = 17;
                 byte layer = 5;
-                short magnitude = 64;
+                short magnitude = 164;
 
                 for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
                     String name = pullParser.getAttributeName(i);

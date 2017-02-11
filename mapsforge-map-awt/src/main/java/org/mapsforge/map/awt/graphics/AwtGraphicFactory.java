@@ -19,26 +19,52 @@
 package org.mapsforge.map.awt.graphics;
 
 import com.kitfox.svg.SVGCache;
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.GraphicContext;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.ResourceBitmap;
+import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
+import java.awt.image.IndexColorModel;
 import java.awt.image.Raster;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class AwtGraphicFactory implements GraphicFactory {
     public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
     private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
+
+    private static final ColorModel monoColorModel;
+    static {
+        /** use an inversing lookup color model on the AWT side so that the android implementation can take the bytes without any twiddling
+         * (the only 8 bit bitmaps android knows are alpha masks, so we have to define our mono bitmap bytes in a way that are easy for android to understand
+         **/
+        byte[] linear = new byte[256];
+        for(int i=0;i<256;i++){
+            linear[i]= (byte) (i+Byte.MIN_VALUE);
+            linear[i]= (byte) (255-i);
+        }
+        monoColorModel = new IndexColorModel(8, 256, linear, linear, linear);
+    }
 
     public static GraphicContext createGraphicContext(Graphics graphics) {
         return new org.mapsforge.map.awt.graphics.AwtCanvas((Graphics2D) graphics);
@@ -92,12 +118,16 @@ public class AwtGraphicFactory implements GraphicFactory {
         return new AwtBitmap(width, height);
     }
 
+
     @Override
     public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
-        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage bufferedImage;
         DataBuffer dataBuffer = new DataBufferByte(buffer, buffer.length);
-        Raster raster = Raster.createRaster(bufferedImage.getSampleModel(), dataBuffer, null);
-        bufferedImage.setData(raster);
+
+        SampleModel singleByteSampleModel = monoColorModel.createCompatibleSampleModel(width, height);
+        WritableRaster writableRaster = Raster.createWritableRaster(singleByteSampleModel, dataBuffer, null);
+        bufferedImage = new BufferedImage(monoColorModel, writableRaster, false, null);
+
         return new AwtBitmap(bufferedImage);
     }
 

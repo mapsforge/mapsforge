@@ -1,42 +1,28 @@
 package org.mapsforge.map.awt.graphics;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Composite;
+import java.awt.CompositeContext;
+import java.awt.RenderingHints;
 import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.Arrays;
 
 /**
+ * An alternative to {@link AlphaComposite} that blends in HSV so that it does not flatten saturation like AlphaComposite would
+ *
  * Created by usrusr on 31.01.2017.
  */
-public class AwtHillShadingComposite implements Composite {
+public class AwtLuminanceShadingComposite implements Composite {
     private final float magnitude;
 
-    static AwtHillShadingComposite sizeOneCache = null;
 
-    public static AwtHillShadingComposite ofMagnitude(float magnitude){
-        AwtHillShadingComposite existing = sizeOneCache;
-        if(existing!=null && existing.magnitude==magnitude){
-            // JMM says: "A thread-safe immutable object is seen as immutable by all threads, even if a data race is used to pass references to the immutable object between threads"
-            // worst case we construct more than strictly needed
-            return existing;
-        }
-        AwtHillShadingComposite ret = new AwtHillShadingComposite(magnitude);
-
-        sizeOneCache = ret;
-
-        return ret;
-    }
-
-    public AwtHillShadingComposite(float magnitude){
+    public AwtLuminanceShadingComposite(float magnitude){
         this.magnitude = Math.max(0f, Math.min(magnitude, 1f));
     }
     @Override
     public CompositeContext createContext(final ColorModel srcColorModel, final ColorModel dstColorModel, final RenderingHints hints) {
-//        int srcNumComponents = srcColorModel.getNumComponents();
-//        if (srcNumComponents != 1)
-//            throw new IllegalArgumentException(this.getClass() + " only supports single-component input");
-
         return new CompositeContext() {
             @Override
             public void dispose() {
@@ -56,7 +42,7 @@ public class AwtHillShadingComposite implements Composite {
                 for (int x = 0; x < width; ++x) {
                     for (int y = 0; y < height; ++y) {
                         src.getPixel(x, y, srcBytes);
-                        int shadeVal = 255-srcBytes[0];
+                        int shadeVal = srcBytes[0];
 
                         float add = shadeVal*magnitude;
 
