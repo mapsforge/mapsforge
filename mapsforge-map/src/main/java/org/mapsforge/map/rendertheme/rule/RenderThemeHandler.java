@@ -17,6 +17,9 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.kxml2.io.KXmlParser;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.model.DisplayModel;
@@ -33,8 +36,6 @@ import org.mapsforge.map.rendertheme.renderinstruction.LineSymbol;
 import org.mapsforge.map.rendertheme.renderinstruction.PathText;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.mapsforge.map.rendertheme.renderinstruction.Symbol;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -273,7 +274,7 @@ public final class RenderThemeHandler {
                 byte minZoom = 5;
                 byte maxZoom = 17;
                 byte layer = 5;
-                short magnitude = 164;
+                short magnitude = 64;
 
                 for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
                     String name = pullParser.getAttributeName(i);
