@@ -1,5 +1,5 @@
 dependencies {
-    compile project(':mapsforge-poi')
+    compile project(":mapsforge-poi")
     compile 'com.vividsolutions:jts:1.13'
     compile 'org.xerial:sqlite-jdbc:3.15.1'
     compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.45'
