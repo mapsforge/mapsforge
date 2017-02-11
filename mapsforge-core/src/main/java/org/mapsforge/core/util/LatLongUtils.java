@@ -153,7 +153,7 @@ public final class LatLongUtils {
 
     /**
      * Find if this way is closed.
-     * <p>prefer Way.isClosed() that closes via identity on load</p>
+     *
      * @return true if this way is closed, false otherwise.
      */
     public static boolean isClosedWay(LatLong[] latLongs) {

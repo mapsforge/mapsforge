@@ -50,19 +50,6 @@ public class Way {
         this.tags = tags;
         this.latLongs = latLongs;
         this.labelPosition = labelPosition;
-
-        if(latLongs.length > 0) {
-            LatLong[] firstArray = latLongs[0];
-            if( // implicitly store the closedness by referencing the first LatLong in the last if closed criteria apply
-                    firstArray.length > 1
-                    && firstArray[0].distance(firstArray[firstArray.length - 1]) < 0.000000001
-            ) {
-                firstArray[firstArray.length-1]=firstArray[0];
-            }
-        }
-    }
-    public boolean isClosed(){
-        return latLongs.length>0 && latLongs[0].length>0 && latLongs[0][latLongs[0].length-1]==latLongs[0][0];
     }
 
     @Override

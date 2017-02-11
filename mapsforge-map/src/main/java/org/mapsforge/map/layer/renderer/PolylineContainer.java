@@ -19,6 +19,7 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.Way;
 
@@ -53,7 +54,7 @@ public class PolylineContainer implements ShapeContainer {
         this.lowerRight = lowerRight;
         layer = way.layer;
         this.way = way;
-        this.isClosedWay = way.isClosed();
+        this.isClosedWay = LatLongUtils.isClosedWay(way.latLongs[0]);
     }
 
     public PolylineContainer(Point[] coordinates, final Tile upperLeft, final Tile lowerRight, List<Tag> tags) {
