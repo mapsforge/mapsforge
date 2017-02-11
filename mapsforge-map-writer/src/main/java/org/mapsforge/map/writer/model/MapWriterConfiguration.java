@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2016 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -58,6 +58,8 @@ public class MapWriterConfiguration {
 
     private String writerVersion;
     private ZoomIntervalConfiguration zoomIntervalConfiguration;
+
+    private int threads;
 
     /**
      * Convenience method.
@@ -246,6 +248,13 @@ public class MapWriterConfiguration {
      */
     public OSMTagMapping getTagMapping() {
         return this.tagMapping;
+    }
+
+    /**
+     * @return the threads
+     */
+    public int getThreads() {
+        return this.threads;
     }
 
     /**
@@ -454,6 +463,13 @@ public class MapWriterConfiguration {
      */
     public void setSkipInvalidRelations(boolean skipInvalidRelations) {
         this.skipInvalidRelations = skipInvalidRelations;
+    }
+
+    /**
+     * @param threads the threads to set
+     */
+    public void setThreads(int threads) {
+        this.threads = threads;
     }
 
     /**

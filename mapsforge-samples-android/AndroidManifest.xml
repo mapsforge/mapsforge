@@ -78,6 +78,9 @@
             android:name=".GroupMarkerExample"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
+            android:name=".HAMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
             android:name=".ItemDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".ItemListActivity">

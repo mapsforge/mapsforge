@@ -48,14 +48,17 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.reader.ReadBuffer;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 public final class Samples {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -71,14 +74,17 @@ public final class Samples {
      * @param args command line args: expects the map files as multiple parameters.
      */
     public static void main(String[] args) {
-        // Multithreading map rendering
-        MapWorkerPool.NUMBER_OF_THREADS = 1;
+        // HA frame buffer
+        FrameBufferController.HA_FRAME_BUFFER = true;
+
+        // Multithreaded map rendering
+        MapWorkerPool.NUMBER_OF_THREADS = 2;
 
         // Map buffer size
-        ReadBuffer.setMaximumBufferSize(6500000);
+        ReadBuffer.MAXIMUM_BUFFER_SIZE = 6500000;
 
         // Square frame buffer
-        FrameBufferController.setUseSquareFrameBuffer(false);
+        FrameBufferController.SQUARE_FRAME_BUFFER = false;
 
         Map.Entry<File, String[]> demReturn = getDemPath(args);
         HillsRenderConfig hillsCfg = null;

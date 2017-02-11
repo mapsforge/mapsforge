@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -53,6 +53,7 @@ import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.FrameBufferHA;
 
 public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView, Observer {
 
@@ -131,7 +132,10 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.model = new Model();
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
-        this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        if (FrameBufferController.HA_FRAME_BUFFER)
+            this.frameBuffer = new FrameBufferHA(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        else
+            this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
         this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);

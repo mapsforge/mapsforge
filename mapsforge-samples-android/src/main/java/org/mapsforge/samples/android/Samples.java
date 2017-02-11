@@ -149,6 +149,7 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(SimpleDataStoreMapViewer.class, "Simple User DataStore", null));
 
         linearLayout.addView(createLabel("Experiments"));
+        linearLayout.addView(createButton(HAMapViewer.class, "Hardware acceleration (beta)", null));
         linearLayout.addView(createButton(PoiSearchViewer.class, "POI search (beta)", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
