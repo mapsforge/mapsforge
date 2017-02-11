@@ -19,8 +19,6 @@ import org.mapsforge.core.model.Dimension;
 public interface Canvas extends GraphicContext {
     void destroy();
 
-
-
     Dimension getDimension();
 
     int getHeight();

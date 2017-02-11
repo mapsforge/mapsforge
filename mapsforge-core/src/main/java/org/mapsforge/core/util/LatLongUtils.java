@@ -160,7 +160,6 @@ public final class LatLongUtils {
         return latLongs[0].distance(latLongs[latLongs.length - 1]) < 0.000000001;
     }
 
-
     /**
      * Calculates the amount of degrees of latitude for a given distance in meters.
      *

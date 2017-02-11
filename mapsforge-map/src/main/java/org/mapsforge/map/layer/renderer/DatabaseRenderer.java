@@ -94,8 +94,6 @@ public class DatabaseRenderer extends StandardRenderer {
 
                 if (!rendererJob.labelsOnly) {
                     renderContext.renderTheme.matchHillShadings(this, renderContext);
-
-
                     bitmap = this.graphicFactory.createTileBitmap(rendererJob.tile.tileSize, rendererJob.hasAlpha);
                     bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(rendererJob.tile));
                     renderContext.canvasRasterer.setCanvasBitmap(bitmap);
@@ -129,7 +127,6 @@ public class DatabaseRenderer extends StandardRenderer {
             // outside of map area with background defined:
             return createBackgroundBitmap(renderContext);
         } catch (Exception e) {
-e.printStackTrace();
             LOGGER.warning(e.getMessage());
             return null;
         } finally {

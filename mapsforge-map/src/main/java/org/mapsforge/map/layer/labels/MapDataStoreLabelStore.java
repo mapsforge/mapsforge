@@ -48,7 +48,7 @@ public class MapDataStoreLabelStore implements LabelStore {
         this.textScale = textScale;
         this.renderThemeFuture = renderThemeFuture;
         // TODO what about way symbols, we have the problem that ways without names but symbols will not be included.
-        this.standardRenderer = new StandardRenderer(mapDataStore, graphicFactory, true, null);
+        this.standardRenderer = new StandardRenderer(mapDataStore, graphicFactory, true);
         this.displayModel = displayModel;
     }
 
