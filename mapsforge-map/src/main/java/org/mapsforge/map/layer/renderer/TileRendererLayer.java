@@ -85,6 +85,21 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
         this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileCache, tileBasedLabelStore, renderLabels, cacheLabels, hillsRenderConfig);
         this.textScale = 1;
     }
+    /**
+     * Creates a TileRendererLayer.
+     *  @param tileCache       cache where tiles are stored
+     * @param mapDataStore    the mapsforge map file
+     * @param mapViewPosition the mapViewPosition to know which tiles to render
+     * @param isTransparent   true if the tile should have an alpha/transparency
+     * @param renderLabels    true if labels should be rendered onto tiles
+     * @param cacheLabels     true if labels should be cached in a LabelStore
+     * @param graphicFactory  the graphicFactory to carry out platform specific operations
+     */
+    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition,
+                             boolean isTransparent, boolean renderLabels, boolean cacheLabels,
+                             GraphicFactory graphicFactory){
+        this(tileCache, mapDataStore, mapViewPosition, isTransparent, renderLabels, cacheLabels,graphicFactory, null);
+    }
 
     /**
      * Labels can be stored in a LabelStore for rendering on a separate Layer.

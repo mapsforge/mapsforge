@@ -19,6 +19,7 @@ package org.mapsforge.map.android.util;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
+
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;

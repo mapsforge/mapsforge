@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
+
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
@@ -31,7 +32,11 @@ import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.poi.android.storage.AndroidPoiPersistenceManagerFactory;
-import org.mapsforge.poi.storage.*;
+import org.mapsforge.poi.storage.ExactMatchPoiCategoryFilter;
+import org.mapsforge.poi.storage.PoiCategoryFilter;
+import org.mapsforge.poi.storage.PoiCategoryManager;
+import org.mapsforge.poi.storage.PoiPersistenceManager;
+import org.mapsforge.poi.storage.PointOfInterest;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
@@ -52,7 +57,7 @@ public class PoiSearchViewer extends DefaultTheme {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(
                 this.tileCaches.get(0), getMapFile(),
                 this.mapView.getModel().mapViewPosition,
-                false, true, false, AndroidGraphicFactory.INSTANCE, null) {
+                false, true, false, AndroidGraphicFactory.INSTANCE) {
             @Override
             public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
                 PoiSearchViewer.this.onLongPress();

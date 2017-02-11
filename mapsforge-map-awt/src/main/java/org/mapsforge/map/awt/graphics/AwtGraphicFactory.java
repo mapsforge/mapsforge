@@ -19,6 +19,7 @@
 package org.mapsforge.map.awt.graphics;
 
 import com.kitfox.svg.SVGCache;
+
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;

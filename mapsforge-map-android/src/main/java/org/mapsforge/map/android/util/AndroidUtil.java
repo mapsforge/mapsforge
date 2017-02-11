@@ -26,6 +26,7 @@ import android.os.Looper;
 import android.os.StatFs;
 import android.view.Display;
 import android.view.WindowManager;
+
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
@@ -256,7 +257,7 @@ public final class AndroidUtil {
             MapDataStore mapFile, XmlRenderTheme renderTheme, boolean hasAlpha,
             boolean renderLabels, boolean cacheLabels) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
-                mapViewPosition, hasAlpha, renderLabels, cacheLabels, AndroidGraphicFactory.INSTANCE, null);
+                mapViewPosition, hasAlpha, renderLabels, cacheLabels, AndroidGraphicFactory.INSTANCE);
         tileRendererLayer.setXmlRenderTheme(renderTheme);
         return tileRendererLayer;
     }

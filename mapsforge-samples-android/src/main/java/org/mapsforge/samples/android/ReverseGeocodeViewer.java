@@ -15,6 +15,7 @@
 package org.mapsforge.samples.android;
 
 import android.app.AlertDialog;
+
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Tag;
@@ -46,7 +47,7 @@ public class ReverseGeocodeViewer extends DefaultTheme {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(
                 this.tileCaches.get(0), getMapFile(),
                 this.mapView.getModel().mapViewPosition,
-                false, true, false, AndroidGraphicFactory.INSTANCE, null) {
+                false, true, false, AndroidGraphicFactory.INSTANCE) {
             @Override
             public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
                 ReverseGeocodeViewer.this.onLongPress(tapLatLong, tapXY);
