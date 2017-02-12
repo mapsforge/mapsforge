@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -52,33 +53,37 @@ class AwtCanvas implements Canvas {
     private BufferedImageOp grayscaleOp, invertOp, invertOp4;
 
     private static Map.Entry<Float, Composite> sizeOneShadingCompositeCache = null;
-    private static Composite getHillshadingComposite(float magnitude){
+
+    private static Composite getHillshadingComposite(float magnitude) {
         Map.Entry<Float, Composite> existing = sizeOneShadingCompositeCache;
-        if(existing!=null && existing.getKey()==magnitude){
-            // JMM says: "A thread-safe immutable object is seen as immutable by all threads, even if a data race is used to pass references to the immutable object between threads"
+        if (existing != null && existing.getKey() == magnitude) {
+            // JMM says: "A thread-safe immutable object is seen as immutable by all threads, even
+            // if a data race is used to pass references to the immutable object between threads"
             // worst case we construct more than strictly needed
             return existing.getValue();
         }
 
         Composite selected = selectHillShadingComposite(magnitude);
 
-        if(sizeOneShadingCompositeCache==null) {
-            // only cache the first magnitude value, in the rare instance that more than one magnitude value would be used
-            // in a process lifecycle it would be better to create new Composite instances than create new instances _and_ new cache entries
+        if (sizeOneShadingCompositeCache == null) {
+            // only cache the first magnitude value, in the rare instance that more than one
+            // magnitude value would be used in a process lifecycle it would be better to create
+            // new Composite instances than create new instances _and_ new cache entries
             sizeOneShadingCompositeCache = new AbstractMap.SimpleImmutableEntry(magnitude, selected);
         }
 
         return selected;
     }
-    /** composite selection,
-     * select between {@link AlphaComposite} (fast, squashes saturation at high magnitude)
-     * and {@link AwtLuminanceShadingComposite} (per-pixel rgb->hsv->rgb conversion to keep saturation at high magnitude, might be a bit slow and/or inconsistent with the android implementation) */
+
+    /**
+     * Composite selection, select between {@link AlphaComposite} (fast, squashes saturation at high magnitude)
+     * and {@link AwtLuminanceShadingComposite} (per-pixel rgb->hsv->rgb conversion to keep saturation at high magnitude,
+     * might be a bit slow and/or inconsistent with the android implementation)
+     */
     private static Composite selectHillShadingComposite(float magnitude) {
         return new AwtLuminanceShadingComposite(magnitude);
         // return AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, magnitude);
     }
-
-
 
     AwtCanvas() {
         createFilters();
@@ -168,24 +173,6 @@ class AwtCanvas implements Canvas {
         this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
                 AwtGraphicFactory.getAffineTransform(matrix));
     }
-
-    @Override
-    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
-        Composite oldComposite = this.graphics2D.getComposite();
-        Composite composite = getHillshadingComposite(magnitude);
-
-        this.graphics2D.setComposite(composite);
-        BufferedImage bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
-
-        this.graphics2D.drawImage(bufferedImage
-                , (int)tileRect.left, (int)tileRect.top, (int)tileRect.right, (int)tileRect.bottom
-                , (int)shadeRect.left, (int)shadeRect.top, (int)shadeRect.right, (int)shadeRect.bottom
-                , null);
-
-
-        this.graphics2D.setComposite(oldComposite); 
-    }
-
 
     @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
@@ -355,6 +342,22 @@ class AwtCanvas implements Canvas {
         Area clip = new Area(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
         clip.subtract(new Area(new Rectangle2D.Double(left, top, width, height)));
         this.graphics2D.setClip(clip);
+    }
+
+    @Override
+    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
+        Composite oldComposite = this.graphics2D.getComposite();
+        Composite composite = getHillshadingComposite(magnitude);
+
+        this.graphics2D.setComposite(composite);
+        BufferedImage bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
+
+        this.graphics2D.drawImage(bufferedImage,
+                (int) tileRect.left, (int) tileRect.top, (int) tileRect.right, (int) tileRect.bottom,
+                (int) shadeRect.left, (int) shadeRect.top, (int) shadeRect.right, (int) shadeRect.bottom,
+                null);
+
+        this.graphics2D.setComposite(oldComposite);
     }
 
     private void enableAntiAliasing() {

@@ -1,5 +1,6 @@
 /*
- * Copyright 2016 devemux86
+ * Copyright 2017 usrusr
+ * Copyright 2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,7 +15,6 @@
  */
 package org.mapsforge.samples.android;
 
-import android.app.AlertDialog;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.hills.SimpleShadingAlgortithm;
@@ -24,22 +24,16 @@ import java.io.File;
 /**
  * Standard map view with hill shading.
  */
-public class Hillshading extends DefaultTheme {
+public class HillshadingMapViewer extends DefaultTheme {
 
     @Override
     protected HillsRenderConfig getHillsRenderConfig() {
-        File dem = new File(getMapFileDirectory(), "dem");
+        File demFolder = new File(getMapFileDirectory(), "dem");
 
-        if( ! (dem.exists() && dem.isDirectory() && dem.canRead() && dem.listFiles().length>0)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Hillshading demo needs SRTM hgt files");
-            builder.setMessage("Currently looking in "+dem+"\noverride in "+this.getClass().getCanonicalName());
-            builder.create().show();
+        if (!(demFolder.exists() && demFolder.isDirectory() && demFolder.canRead())) {
+            return null;
         }
-        return new HillsRenderConfig(
-                dem,
-                AndroidGraphicFactory.INSTANCE,
-                new SimpleShadingAlgortithm()
-        );
+
+        return new HillsRenderConfig(demFolder, AndroidGraphicFactory.INSTANCE, new SimpleShadingAlgortithm());
     }
 }

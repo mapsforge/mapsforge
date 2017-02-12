@@ -3,6 +3,7 @@
 ## New since 0.7.0
 
 - Android fix hardware acceleration [#919](https://github.com/mapsforge/mapsforge/issues/919) [#613](https://github.com/mapsforge/mapsforge/issues/613)
+- Hillshading from HGT digital elevation model data [#923](https://github.com/mapsforge/mapsforge/issues/923)
 - Android tile cache folder option [#913](https://github.com/mapsforge/mapsforge/issues/913)
 - Android SVG cache folder option [#914](https://github.com/mapsforge/mapsforge/issues/914)
 - Desktop tile cache creation utility [#915](https://github.com/mapsforge/mapsforge/issues/915)

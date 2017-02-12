@@ -4,6 +4,7 @@
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Develar
  * Copyright 2015-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -55,14 +56,16 @@ public class AwtGraphicFactory implements GraphicFactory {
     private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
 
     private static final ColorModel monoColorModel;
+
     static {
-        /** use an inversing lookup color model on the AWT side so that the android implementation can take the bytes without any twiddling
-         * (the only 8 bit bitmaps android knows are alpha masks, so we have to define our mono bitmap bytes in a way that are easy for android to understand
+        /**
+         * use an inverse lookup color model on the AWT side so that the android implementation can take the bytes without any twiddling
+         * (the only 8 bit bitmaps android knows are alpha masks, so we have to define our mono bitmap bytes in a way that are easy for android to understand)
          **/
         byte[] linear = new byte[256];
-        for(int i=0;i<256;i++){
-            linear[i]= (byte) (i+Byte.MIN_VALUE);
-            linear[i]= (byte) (255-i);
+        for (int i = 0; i < 256; i++) {
+            linear[i] = (byte) (i + Byte.MIN_VALUE);
+            linear[i] = (byte) (255 - i);
         }
         monoColorModel = new IndexColorModel(8, 256, linear, linear, linear);
     }
@@ -119,19 +122,6 @@ public class AwtGraphicFactory implements GraphicFactory {
         return new AwtBitmap(width, height);
     }
 
-
-    @Override
-    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
-        BufferedImage bufferedImage;
-        DataBuffer dataBuffer = new DataBufferByte(buffer, buffer.length);
-
-        SampleModel singleByteSampleModel = monoColorModel.createCompatibleSampleModel(width, height);
-        WritableRaster writableRaster = Raster.createWritableRaster(singleByteSampleModel, dataBuffer, null);
-        bufferedImage = new BufferedImage(monoColorModel, writableRaster, false, null);
-
-        return new AwtBitmap(bufferedImage);
-    }
-
     @Override
     public Bitmap createBitmap(int width, int height, boolean isTransparent) {
         if (isTransparent) {
@@ -169,6 +159,17 @@ public class AwtGraphicFactory implements GraphicFactory {
     @Override
     public Matrix createMatrix() {
         return new AwtMatrix();
+    }
+
+    @Override
+    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
+        DataBuffer dataBuffer = new DataBufferByte(buffer, buffer.length);
+
+        SampleModel singleByteSampleModel = monoColorModel.createCompatibleSampleModel(width, height);
+        WritableRaster writableRaster = Raster.createWritableRaster(singleByteSampleModel, dataBuffer, null);
+        BufferedImage bufferedImage = new BufferedImage(monoColorModel, writableRaster, false, null);
+
+        return new AwtBitmap(bufferedImage);
     }
 
     @Override

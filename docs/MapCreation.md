@@ -98,7 +98,7 @@ On the reader side, the only change required is to display the land areas correc
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://mapsforge.org/renderTheme .../renderTheme-v5.xsd"
+    xsi:schemaLocation="http://mapsforge.org/renderTheme .../renderTheme-v6.xsd"
     version="4" map-background="#F8F8F8" map-background-outside="#DDDDDD">
 
     <rule e="way" k="natural" v="issea|sea">

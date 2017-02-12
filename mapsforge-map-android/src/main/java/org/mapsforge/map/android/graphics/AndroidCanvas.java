@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -119,14 +120,6 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
-    public void shadeBitmap(Bitmap bitmap, Rectangle hillRect, Rectangle tileRect, float magnitude) {
-        shadePaint.setAlpha((int) (255 * magnitude));
-        Rect atr = new Rect((int)hillRect.left, (int)hillRect.top, (int)hillRect.right, (int)hillRect.bottom);
-        Rect asr = new Rect((int)tileRect.left, (int)tileRect.top, (int)tileRect.right, (int)tileRect.bottom);
-        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), atr, asr, shadePaint);
-    }
-
-    @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
         applyFilter(filter);
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
@@ -233,5 +226,13 @@ class AndroidCanvas implements Canvas {
 
     public void setClipInternal(int left, int top, int width, int height, Region.Op op) {
         this.canvas.clipRect(left, top, left + width, top + height, op);
+    }
+
+    @Override
+    public void shadeBitmap(Bitmap bitmap, Rectangle hillRect, Rectangle tileRect, float magnitude) {
+        shadePaint.setAlpha((int) (255 * magnitude));
+        Rect atr = new Rect((int) hillRect.left, (int) hillRect.top, (int) hillRect.right, (int) hillRect.bottom);
+        Rect asr = new Rect((int) tileRect.left, (int) tileRect.top, (int) tileRect.right, (int) tileRect.bottom);
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), atr, asr, shadePaint);
     }
 }

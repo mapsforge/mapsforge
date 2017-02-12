@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014-2017 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -223,7 +224,7 @@ public final class AndroidUtil {
     }
 
     /**
-     * Utility method to create a standard tile renderer layer.
+     * Utility method to create a standard tile renderer layer (without hillshading).
      *
      * @param tileCache       the cache
      * @param mapViewPosition the position
@@ -235,13 +236,13 @@ public final class AndroidUtil {
             TileCache tileCache, MapViewPosition mapViewPosition,
             MapDataStore mapFile, XmlRenderTheme renderTheme) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
-                mapViewPosition, AndroidGraphicFactory.INSTANCE, null);
+                mapViewPosition, AndroidGraphicFactory.INSTANCE);
         tileRendererLayer.setXmlRenderTheme(renderTheme);
         return tileRendererLayer;
     }
 
     /**
-     * Utility method to create a standard tile renderer layer.
+     * Utility method to create a standard tile renderer layer (without hillshading).
      *
      * @param tileCache       the cache
      * @param mapViewPosition the position
@@ -263,27 +264,29 @@ public final class AndroidUtil {
     }
 
     /**
-     * Utility method to create a tile renderer layer with hillshading.
+     * Utility method to create a tile renderer layer.
      *
-     * @param tileCache       the cache
-     * @param mapViewPosition the position
-     * @param mapFile         the map file
-     * @param renderTheme     the render theme to use
-     * @param hasAlpha        if the layer is transparent (more memory)
-     * @param renderLabels    should usually be true
-     * @param cacheLabels     should usually be false
+     * @param tileCache         the cache
+     * @param mapViewPosition   the position
+     * @param mapFile           the map file
+     * @param renderTheme       the render theme to use
+     * @param hasAlpha          if the layer is transparent (more memory)
+     * @param renderLabels      should usually be true
+     * @param cacheLabels       should usually be false
      * @param hillsRenderConfig may be null to omit hillshading
      * @return the layer
      */
-    public static TileRendererLayer createTileRendererLayerWithHillshading(
+    public static TileRendererLayer createTileRendererLayer(
             TileCache tileCache, MapViewPosition mapViewPosition,
             MapDataStore mapFile, XmlRenderTheme renderTheme, boolean hasAlpha,
             boolean renderLabels, boolean cacheLabels, HillsRenderConfig hillsRenderConfig) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
-                mapViewPosition, hasAlpha, renderLabels, cacheLabels, AndroidGraphicFactory.INSTANCE, hillsRenderConfig);
+                mapViewPosition, hasAlpha, renderLabels, cacheLabels, AndroidGraphicFactory.INSTANCE,
+                hillsRenderConfig);
         tileRendererLayer.setXmlRenderTheme(renderTheme);
         return tileRendererLayer;
     }
+
     /**
      * @return true if the current thread is the UI thread, false otherwise.
      */

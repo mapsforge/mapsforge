@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,15 +24,12 @@ public class HillshadingContainer implements ShapeContainer {
     public final Rectangle hillsRect;
     public final Rectangle tileRect;
 
-    public HillshadingContainer(Bitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect
-    ) {
+    public HillshadingContainer(Bitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect) {
         this.magnitude = magnitude;
         this.bitmap = bitmap;
         this.hillsRect = hillsRect;
         this.tileRect = tileRect;
     }
-
-
 
     @Override
     public ShapeType getShapeType() {
@@ -41,6 +38,6 @@ public class HillshadingContainer implements ShapeContainer {
 
     @Override
     public String toString() {
-        return "[Hillshading:" + magnitude +" @ "+hillsRect+" -> "+tileRect+"]";
+        return "[Hillshading:" + magnitude + " @ " + hillsRect + " -> " + tileRect + "]";
     }
 }

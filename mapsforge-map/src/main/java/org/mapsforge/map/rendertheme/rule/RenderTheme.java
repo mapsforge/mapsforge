@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -189,8 +190,8 @@ public class RenderTheme {
     void addRule(Rule rule) {
         this.rulesList.add(rule);
     }
-    void addHillShadings(Hillshading hillshading) {
 
+    void addHillShadings(Hillshading hillshading) {
         this.hillShadings.add(hillshading);
     }
 
@@ -232,7 +233,9 @@ public class RenderTheme {
             rule.apply(visitor);
         }
     }
+
     public void matchHillShadings(StandardRenderer renderer, RenderContext renderContext) {
-        for(Hillshading hillShading : hillShadings) hillShading.render(renderContext, renderer.hillsRenderConfig);
+        for (Hillshading hillShading : hillShadings)
+            hillShading.render(renderContext, renderer.hillsRenderConfig);
     }
 }

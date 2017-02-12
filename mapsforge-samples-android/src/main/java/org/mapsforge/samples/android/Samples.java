@@ -82,7 +82,6 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(SimplestMapViewer.class, "Simplest Map Viewer", null));
         linearLayout.addView(createButton(MultiLingualMapViewer.class, "Multi-lingual maps", null));
         linearLayout.addView(createButton(StyleMenuMapViewer.class, "Style Menu", null));
-        linearLayout.addView(createButton(Hillshading.class, "Hillshading", null));
 
         linearLayout.addView(createLabel("Raster Maps"));
         linearLayout.addView(createButton(DownloadLayerViewer.class, "Downloading Mapnik", null));
@@ -151,6 +150,12 @@ public class Samples extends Activity {
 
         linearLayout.addView(createLabel("Experiments"));
         linearLayout.addView(createButton(HAMapViewer.class, "Hardware acceleration (beta)", null));
+        linearLayout.addView(createButton(HillshadingMapViewer.class, "Hillshading (beta)", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startupDialog("hillshading", R.string.startup_message_hillshading, HillshadingMapViewer.class);
+            }
+        }));
         linearLayout.addView(createButton(PoiSearchViewer.class, "POI search (beta)", new View.OnClickListener() {
             @Override
             public void onClick(View v) {

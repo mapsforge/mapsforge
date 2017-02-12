@@ -45,9 +45,6 @@
             android:name=".DefaultTheme"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name=".Hillshading"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity
             android:name=".DiagnosticsMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
@@ -79,6 +76,9 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".HAMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".HillshadingMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".ItemDetailActivity"

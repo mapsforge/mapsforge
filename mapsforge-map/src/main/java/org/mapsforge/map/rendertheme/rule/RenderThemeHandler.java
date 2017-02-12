@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,9 +18,6 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.kxml2.io.KXmlParser;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.model.DisplayModel;
@@ -36,6 +34,8 @@ import org.mapsforge.map.rendertheme.renderinstruction.LineSymbol;
 import org.mapsforge.map.rendertheme.renderinstruction.PathText;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.mapsforge.map.rendertheme.renderinstruction.Symbol;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -269,7 +269,7 @@ public final class RenderThemeHandler {
                 if (symbolId != null) {
                     this.symbols.put(symbolId, symbol);
                 }
-            } else if ("hillshading".equals(qName)){
+            } else if ("hillshading".equals(qName)) {
                 checkState(qName, Element.RULE);
                 byte minZoom = 5;
                 byte maxZoom = 17;
@@ -280,21 +280,18 @@ public final class RenderThemeHandler {
                     String name = pullParser.getAttributeName(i);
                     String value = pullParser.getAttributeValue(i);
 
-                    if("zoom-min".equals(name)){
+                    if ("zoom-min".equals(name)) {
                         minZoom = XmlUtils.parseNonNegativeByte("zoom-min", value);
-                    }else if("zoom-max".equals(name)){
+                    } else if ("zoom-max".equals(name)) {
                         maxZoom = XmlUtils.parseNonNegativeByte("zoom-max", value);
-                    }else if("magnitude".equals(name)){
+                    } else if ("magnitude".equals(name)) {
                         magnitude = (short) XmlUtils.parseNonNegativeInteger("magnitude", value);
-                        if(magnitude>255) throw new XmlPullParserException("Attribute 'magnitude' must not be > 255");
-                    }else if("layer".equals(name)){
+                        if (magnitude > 255)
+                            throw new XmlPullParserException("Attribute 'magnitude' must not be > 255");
+                    } else if ("layer".equals(name)) {
                         layer = XmlUtils.parseNonNegativeByte("layer", value);
                     }
-
                 }
-
-
-
 
                 int hillShadingLevel = this.level++;
                 Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, hillShadingLevel, this.graphicFactory);

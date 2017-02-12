@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,8 +20,6 @@ package org.mapsforge.core.graphics;
 import org.mapsforge.core.model.Rectangle;
 
 public interface GraphicContext {
-    void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude);
-    
     void drawBitmap(Bitmap bitmap, int left, int top);
 
     void drawBitmap(Bitmap bitmap, int left, int top, Filter filter);
@@ -48,4 +47,6 @@ public interface GraphicContext {
     void setClip(int left, int top, int width, int height);
 
     void setClipDifference(int left, int top, int width, int height);
+
+    void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude);
 }

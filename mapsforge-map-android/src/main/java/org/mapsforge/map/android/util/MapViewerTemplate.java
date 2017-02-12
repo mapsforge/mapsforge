@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -155,7 +156,7 @@ public abstract class MapViewerTemplate extends Activity {
      *
      * @return the fallback initial position of the mapview.
      */
-    protected org.mapsforge.core.model.MapPosition getDefaultInitialPosition() {
+    protected MapPosition getDefaultInitialPosition() {
         return new MapPosition(new LatLong(0, 0), getZoomLevelDefault());
     }
 
@@ -339,7 +340,8 @@ public abstract class MapViewerTemplate extends Activity {
     }
 
     /**
-     * override to enable hill shading
+     * Override to enable hill shading.
+     *
      * @return null or the HillsRenderConfig to use (defining height model path and algorithm)
      */
     protected HillsRenderConfig getHillsRenderConfig() {

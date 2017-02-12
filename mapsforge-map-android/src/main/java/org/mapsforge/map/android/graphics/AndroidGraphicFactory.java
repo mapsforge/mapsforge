@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2017 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -193,16 +194,6 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     public Bitmap createBitmap(int width, int height) {
         return new AndroidBitmap(width, height, TRANSPARENT_BITMAP);
     }
-    @Override
-    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
-        AndroidBitmap androidBitmap = new AndroidBitmap(width, height, MONO_ALPHA_BITMAP);
-        if(buffer!=null) {
-            Buffer b = ByteBuffer.wrap(buffer);
-            androidBitmap.bitmap.copyPixelsFromBuffer(b);
-        }
-        return androidBitmap;
-    }
-
 
     @Override
     public Bitmap createBitmap(int width, int height, boolean isTransparent) {
@@ -230,6 +221,16 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     @Override
     public Matrix createMatrix() {
         return new AndroidMatrix();
+    }
+
+    @Override
+    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
+        AndroidBitmap androidBitmap = new AndroidBitmap(width, height, MONO_ALPHA_BITMAP);
+        if (buffer != null) {
+            Buffer b = ByteBuffer.wrap(buffer);
+            androidBitmap.bitmap.copyPixelsFromBuffer(b);
+        }
+        return androidBitmap;
     }
 
     @Override

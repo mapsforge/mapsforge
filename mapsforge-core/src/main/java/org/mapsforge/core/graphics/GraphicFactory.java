@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,11 +26,6 @@ import java.io.InputStream;
 public interface GraphicFactory {
     Bitmap createBitmap(int width, int height);
 
-    /** create a single channel bitmap for hillshading
-     * @param buffer
-     */
-    Bitmap createMonoBitmap(int width, int height, byte[] buffer);
-
     Bitmap createBitmap(int width, int height, boolean isTransparent);
 
     Canvas createCanvas();
@@ -39,6 +35,11 @@ public interface GraphicFactory {
     int createColor(int alpha, int red, int green, int blue);
 
     Matrix createMatrix();
+
+    /**
+     * Create a single channel bitmap, e.g. for hillshading.
+     */
+    Bitmap createMonoBitmap(int width, int height, byte[] buffer);
 
     Paint createPaint();
 

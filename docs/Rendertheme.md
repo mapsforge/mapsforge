@@ -95,13 +95,13 @@ With mapsforge release 0.5, we introduce the enhanced **Rendertheme V4 XML** wit
 
 Rendertheme V4 or newer remains **fully backward compatible** with version 3, meaning that any previously developed rendertheme definition will still render with V4 without any changes required (you do not even need to change the version number in the header).
 
-You can find the full xsd in the mapsforge repository at https://github.com/mapsforge/mapsforge/blob/master/resources/renderTheme-v5.xsd.
+You can find the full xsd in the mapsforge repository at https://github.com/mapsforge/mapsforge/blob/master/resources/renderTheme-v6.xsd.
 
 But if you want to develop your renderthemes further, Rendertheme V4 offers a number of enhancements. If you want to make use of the new features, you will first need to set your rendertheme version in the header to 4 or newer:
 
 ```xml
 <rendertheme xmlns="http://mapsforge.org/renderTheme" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme-v5.xsd" version="5" map-background="#f8f8f8" map-background-outside="#dddddd">
+    xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme-v6.xsd" version="5" map-background="#f8f8f8" map-background-outside="#dddddd">
 ```
 
 ###Header Elements
