@@ -214,7 +214,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
     @Override
     public Canvas createCanvas() {
-        return new AndroidCanvas(application);
+        return new AndroidCanvas();
     }
 
     @Override

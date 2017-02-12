@@ -3,9 +3,6 @@ dependencies {
     compile 'com.caverock:androidsvg:1.2.2-beta-1'
 }
 
-android.defaultConfig.renderscriptTargetApi 17
-
-
 android.libraryVariants.all { variant ->
     def name = variant.buildType.name
     if (name.equals("debug")) {

@@ -170,20 +170,6 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void shadeBitmap(Bitmap bitmap, Matrix matrix, float magnitude) {
-        Composite oldComposite = this.graphics2D.getComposite();
-        Composite composite = getHillshadingComposite(magnitude);
-
-        this.graphics2D.setComposite(composite);
-
-
-        this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
-                AwtGraphicFactory.getAffineTransform(matrix));
-
-        this.graphics2D.setComposite(oldComposite);
-    }
-
-    @Override
     public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
         Composite oldComposite = this.graphics2D.getComposite();
         Composite composite = getHillshadingComposite(magnitude);

@@ -19,7 +19,6 @@ package org.mapsforge.core.graphics;
 import org.mapsforge.core.model.Rectangle;
 
 public interface GraphicContext {
-    void shadeBitmap(Bitmap bitmap, Matrix matrix, float magnitude);
     void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude);
     
     void drawBitmap(Bitmap bitmap, int left, int top);
