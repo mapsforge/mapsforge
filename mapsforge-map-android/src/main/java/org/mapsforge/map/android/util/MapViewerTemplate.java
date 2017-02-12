@@ -155,7 +155,7 @@ public abstract class MapViewerTemplate extends Activity {
      *
      * @return the fallback initial position of the mapview.
      */
-    protected MapPosition getDefaultInitialPosition() {
+    protected org.mapsforge.core.model.MapPosition getDefaultInitialPosition() {
         return new MapPosition(new LatLong(0, 0), getZoomLevelDefault());
     }
 

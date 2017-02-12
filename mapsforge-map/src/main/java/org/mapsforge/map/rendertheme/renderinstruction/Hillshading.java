@@ -19,6 +19,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
@@ -58,42 +59,74 @@ public class Hillshading {
         if(zoomLevel >maxZoom || zoomLevel <minZoom) return;
 
         Point origin = tile.getOrigin();
-        double topLeftLat = MercatorProjection.pixelYToLatitude((long) origin.y, tile.mapSize);
-        double topLeftLng = MercatorProjection.pixelXToLongitude((long) origin.x, tile.mapSize);
+        double maptileTopLat = MercatorProjection.pixelYToLatitude((long) origin.y, tile.mapSize);
+        double maptileLeftLng = MercatorProjection.pixelXToLongitude((long) origin.x, tile.mapSize);
 
-        double botRightLat = MercatorProjection.pixelYToLatitude((long) origin.y+tile.tileSize, tile.mapSize);
-        double botRightLng = MercatorProjection.pixelXToLongitude((long) origin.x+tile.tileSize, tile.mapSize);
+        double maptileBottomLat = MercatorProjection.pixelYToLatitude((long) origin.y+tile.tileSize, tile.mapSize);
+        double maptileRightLng = MercatorProjection.pixelXToLongitude((long) origin.x+tile.tileSize, tile.mapSize);
+        if(maptileRightLng<maptileLeftLng) maptileRightLng+=tile.mapSize;
 
-        for(int lng = (int)topLeftLng ; lng <= botRightLng; lng++){
-            for(int lat = (int)botRightLat ; lat <= topLeftLat; lat++){
+        int shadingLngStep = 1;
+        int shadingLatStep = 1;
+        for(int shadingLeftLng = (int)maptileLeftLng; shadingLeftLng <= maptileRightLng; shadingLeftLng+=shadingLngStep){
+            for(int shadingBottomLat = (int)maptileBottomLat; shadingBottomLat <= maptileTopLat; shadingBottomLat+= shadingLatStep){
+                int shadingRightLng = shadingLeftLng + 1;
+                int shadingTopLat = shadingBottomLat + 1;
 
+                Bitmap shadingTile = null;
                 try {
-                    Bitmap shadingTile = hillsRenderConfig.getShadingTile(lat, lng);
-                    if(shadingTile==null) continue;
-
-                    // scaling the full shading bitmap linearly between its corners causes quite a bit of shifting,
-                    // it would be better to project the corners of the clipping region and then extrapolate the virtual corners from there
-
-                    double shadingPixelOffset = 0.5d; // the slope information actually represents the southeast corner of the pixel
-
-                    double shadeTopLeftX = MercatorProjection.longitudeToPixelX(lng + shadingPixelOffset / shadingTile.getWidth(), tile.mapSize) - origin.x;
-                    double shadeTopLeftY = MercatorProjection.latitudeToPixelY(lat + 1 + shadingPixelOffset / shadingTile.getHeight(), tile.mapSize) - origin.y;
-
-                    double shadeBotRightX = MercatorProjection.longitudeToPixelX(lng + 1 + shadingPixelOffset / shadingTile.getWidth(), tile.mapSize) - origin.x;
-                    double shadeBotRightY = MercatorProjection.latitudeToPixelY(lat + shadingPixelOffset / shadingTile.getHeight(), tile.mapSize) - origin.y;
-
-                    renderContext.setDrawingLayers(layer);
-                    ShapeContainer hillShape = new HillshadingContainer(shadingTile, magnitude, shadeTopLeftX, shadeTopLeftY, shadeBotRightX, shadeBotRightY);
-                    renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
+                    shadingTile = hillsRenderConfig.getShadingTile(shadingBottomLat, shadingLeftLng);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                if(shadingTile==null) continue;
 
+                double shadingPixelOffset = 0d;
+
+                // shading tile subset if it fully fits inside map tile
+                double shadingSubrectTop = 0;
+                double shadingSubrectLeft = 0;
+                double shadingSubrectRight = shadingTile.getWidth();
+                double shadingSubrectBottom = shadingTile.getHeight();
+
+                // map tile subset if it fully fits inside shading tile
+                double maptileSubrectLeft = 0;
+                double maptileSubrectTop = 0;
+                double maptileSubrectRight = tile.tileSize;
+                double maptileSubrectBottom = tile.tileSize;
+
+                // find the intersection between map tile and shading tile in earth coordinates and determine the pixel 
+                if(shadingTopLat > maptileTopLat){ // map tile ends in shading tile
+                    shadingSubrectTop = shadingTile.getHeight() * ((shadingTopLat - maptileTopLat)/shadingLatStep);
+                }else if(maptileTopLat > shadingTopLat) {
+                    maptileSubrectTop = MercatorProjection.latitudeToPixelY(shadingTopLat + (shadingPixelOffset / shadingTile.getHeight()), tile.mapSize) - origin.y;
+                }
+                if(shadingBottomLat < maptileBottomLat){ // map tile ends in shading tile
+                    shadingSubrectBottom = shadingTile.getHeight() - shadingTile.getHeight() * ((maptileBottomLat - shadingBottomLat)/shadingLatStep);
+                }else if(maptileBottomLat < shadingBottomLat) {
+                    maptileSubrectBottom = MercatorProjection.latitudeToPixelY(shadingBottomLat + (shadingPixelOffset / shadingTile.getHeight()), tile.mapSize) - origin.y;
+                }
+                if(shadingLeftLng < maptileLeftLng){ // map tile ends in shading tile
+                    shadingSubrectLeft = shadingTile.getWidth() * ((maptileLeftLng - shadingLeftLng) /shadingLngStep);
+                }else if(maptileLeftLng < shadingLeftLng) {
+                    maptileSubrectLeft = MercatorProjection.longitudeToPixelX(shadingLeftLng + (shadingPixelOffset / shadingTile.getWidth()), tile.mapSize) - origin.x;
+                }
+                if(shadingRightLng > maptileRightLng){ // map tile ends in shading tile
+                    shadingSubrectRight = shadingTile.getWidth() - shadingTile.getWidth() * ((shadingRightLng - maptileRightLng)/shadingLngStep);
+                }else if(maptileRightLng > shadingRightLng) {
+                    maptileSubrectRight = MercatorProjection.longitudeToPixelX(shadingRightLng + (shadingPixelOffset / shadingTile.getHeight()), tile.mapSize) - origin.x;
+                }
+
+
+                Rectangle hillsRect = new Rectangle(shadingSubrectLeft,shadingSubrectTop,shadingSubrectRight, shadingSubrectBottom);
+                Rectangle maptileRect = new Rectangle(maptileSubrectLeft, maptileSubrectTop, maptileSubrectRight, maptileSubrectBottom);
+                ShapeContainer hillShape = new HillshadingContainer(shadingTile, magnitude, hillsRect, maptileRect);
+
+                renderContext.setDrawingLayers(layer);
+                renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
             }
         }
-
-
     }
 }

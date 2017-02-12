@@ -24,6 +24,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.Rectangle;
 
 import java.awt.AlphaComposite;
 import java.awt.Composite;
@@ -180,6 +181,23 @@ class AwtCanvas implements Canvas {
                 AwtGraphicFactory.getAffineTransform(matrix));
 
         this.graphics2D.setComposite(oldComposite);
+    }
+
+    @Override
+    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
+        Composite oldComposite = this.graphics2D.getComposite();
+        Composite composite = getHillshadingComposite(magnitude);
+
+        this.graphics2D.setComposite(composite);
+        BufferedImage bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
+
+        this.graphics2D.drawImage(bufferedImage
+                , (int)tileRect.left, (int)tileRect.top, (int)tileRect.right, (int)tileRect.bottom
+                , (int)shadeRect.left, (int)shadeRect.top, (int)shadeRect.right, (int)shadeRect.bottom
+                , null);
+
+
+        this.graphics2D.setComposite(oldComposite); 
     }
 
 

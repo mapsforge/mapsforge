@@ -166,20 +166,24 @@ public class CanvasRasterer {
     }
 
     private void drawHillshading(HillshadingContainer container) {
-        symbolMatrix.reset();
-
-        float scaleX = (float) (container.botRightX - container.topLeftX) / container.bitmap.getWidth();
-        float scaleY = (float) (container.botRightY - container.topLeftY) / container.bitmap.getHeight();
-
-        float translateX = (float) container.topLeftX;
-        float translateY = (float) container.topLeftY;
-
-
-        symbolMatrix.translate(translateX, translateY);
-        symbolMatrix.scale(
-                scaleX,
-                scaleY
-        );
-        canvas.shadeBitmap(container.bitmap, symbolMatrix,container.magnitude);
+        canvas.shadeBitmap(container.bitmap, container.hillsRect, container.tileRect,container.magnitude);
     }
+
+//    private void drawHillshadingMatrix(HillshadingContainer container) {
+//        symbolMatrix.reset();
+//
+//        float scaleX = (float) (container.botRightX - container.topLeftX) / container.bitmap.getWidth();
+//        float scaleY = (float) (container.botRightY - container.topLeftY) / container.bitmap.getHeight();
+//
+//        float translateX = (float) container.topLeftX;
+//        float translateY = (float) container.topLeftY;
+//
+//
+//        symbolMatrix.translate(translateX, translateY);
+//        symbolMatrix.scale(
+//                scaleX,
+//                scaleY
+//        );
+//        canvas.shadeBitmap(container.bitmap, symbolMatrix,container.magnitude);
+//    }
 }
