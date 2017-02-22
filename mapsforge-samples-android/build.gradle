@@ -4,7 +4,7 @@ dependencies {
     compile project(":mapsforge-map-android-extras")
     compile project(":mapsforge-themes")
     compile project(":mapsforge-poi-android")
-    compile 'com.android.support:support-v4:25.1.1'
+    compile 'com.android.support:support-v4:25.2.0'
     androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.6.3'
 }
 
