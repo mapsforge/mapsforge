@@ -148,15 +148,24 @@ public class CanvasRasterer {
     }
 
     private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
-        ShapeType shapeType = shapePaintContainer.shapeContainer.getShapeType();
+        final ShapeContainer shapeContainer = shapePaintContainer.shapeContainer;
+        ShapeType shapeType = shapeContainer.getShapeType();
         switch (shapeType) {
             case CIRCLE:
                 drawCircleContainer(shapePaintContainer);
                 break;
             case POLYLINE:
-                PolylineContainer polylineContainer = (PolylineContainer) shapePaintContainer.shapeContainer;
+                PolylineContainer polylineContainer = (PolylineContainer) shapeContainer;
                 drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
                 break;
+            case HILLSHADING:
+                HillshadingContainer hillshadingContainer = (HillshadingContainer) shapeContainer;
+                drawHillshading(hillshadingContainer);
+                break;
         }
+    }
+
+    private void drawHillshading(HillshadingContainer container) {
+        canvas.shadeBitmap(container.bitmap, container.hillsRect, container.tileRect,container.magnitude);
     }
 }

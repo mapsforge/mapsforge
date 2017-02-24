@@ -270,11 +270,24 @@
         <xs:attribute name="zoom-max" default="127" type="xs:unsignedByte" use="optional" />
     </xs:complexType>
 
+    <xs:complexType name="hillShading">
+        <xs:attribute name="zoom-min" type="xs:unsignedByte" use="optional" default="5" />
+        <xs:attribute name="zoom-max" type="xs:unsignedByte" use="optional" default="17" />
+        <xs:attribute name="magnitude" type="xs:unsignedByte" use="optional" default="64"/>
+        <!-- customization unlikely to make any sense -->
+        <xs:attribute name="layer" type="xs:unsignedByte" use="optional" default="5"/>
+    </xs:complexType>
+
+
     <!-- rendertheme element -->
     <xs:complexType name="rendertheme">
         <xs:sequence maxOccurs="1" minOccurs="0">
             <xs:element name="stylemenu" maxOccurs="1" minOccurs="0" type="tns:stylemenu" />
             <xs:element name="rule" maxOccurs="unbounded" minOccurs="0" type="tns:rule" />
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element name="hillshading" type="tns:hillShading"/>
+                <xs:element name="rule" type="tns:rule" />
+            </xs:choice>
         </xs:sequence>
         <xs:attribute name="version" fixed="5" type="xs:positiveInteger" />
         <xs:attribute name="map-background" default="#ffffff" type="tns:color" use="optional" />

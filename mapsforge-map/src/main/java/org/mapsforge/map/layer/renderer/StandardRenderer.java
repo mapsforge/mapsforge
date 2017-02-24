@@ -30,6 +30,7 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 
@@ -46,19 +47,33 @@ public class StandardRenderer implements RenderCallback {
 
     public final GraphicFactory graphicFactory;
     public final MapDataStore mapDataStore;
+
     private final boolean renderLabels;
+    public final HillsRenderConfig hillsRenderConfig;
 
     /**
-     * Constructs a new StandardRenderer.
+     * Constructs a new StandardRenderer (without hillshading).
      *
      * @param mapDataStore the MapDataStore from which the map data will be read.
      */
     public StandardRenderer(MapDataStore mapDataStore,
                             GraphicFactory graphicFactory,
                             boolean renderLabels) {
+        this(mapDataStore, graphicFactory, renderLabels, null);
+    }
+    /**
+     * Constructs a new StandardRenderer.
+     *
+     * @param mapDataStore the MapDataStore from which the map data will be read.
+     * @param hillsRenderConfig optional relief shading support
+     */
+    public StandardRenderer(MapDataStore mapDataStore,
+                            GraphicFactory graphicFactory,
+                            boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
         this.mapDataStore = mapDataStore;
         this.graphicFactory = graphicFactory;
         this.renderLabels = renderLabels;
+        this.hillsRenderConfig = hillsRenderConfig;
     }
 
     /**

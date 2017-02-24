@@ -40,12 +40,32 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class AwtGraphicFactory implements GraphicFactory {
     public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
     private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
+
+    private static final ColorModel monoColorModel;
+    static {
+        /** use an inversing lookup color model on the AWT side so that the android implementation can take the bytes without any twiddling
+         * (the only 8 bit bitmaps android knows are alpha masks, so we have to define our mono bitmap bytes in a way that are easy for android to understand
+         **/
+        byte[] linear = new byte[256];
+        for(int i=0;i<256;i++){
+            linear[i]= (byte) (i+Byte.MIN_VALUE);
+            linear[i]= (byte) (255-i);
+        }
+        monoColorModel = new IndexColorModel(8, 256, linear, linear, linear);
+    }
 
     public static GraphicContext createGraphicContext(Graphics graphics) {
         return new org.mapsforge.map.awt.graphics.AwtCanvas((Graphics2D) graphics);
@@ -97,6 +117,19 @@ public class AwtGraphicFactory implements GraphicFactory {
     @Override
     public Bitmap createBitmap(int width, int height) {
         return new AwtBitmap(width, height);
+    }
+
+
+    @Override
+    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
+        BufferedImage bufferedImage;
+        DataBuffer dataBuffer = new DataBufferByte(buffer, buffer.length);
+
+        SampleModel singleByteSampleModel = monoColorModel.createCompatibleSampleModel(width, height);
+        WritableRaster writableRaster = Raster.createWritableRaster(singleByteSampleModel, dataBuffer, null);
+        bufferedImage = new BufferedImage(monoColorModel, writableRaster, false, null);
+
+        return new AwtBitmap(bufferedImage);
     }
 
     @Override

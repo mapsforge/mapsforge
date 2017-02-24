@@ -37,6 +37,8 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
+import org.mapsforge.map.layer.hills.SimpleShadingAlgortithm;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
@@ -50,8 +52,11 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.prefs.Preferences;
 
@@ -85,9 +90,16 @@ public final class Samples {
         // Square frame buffer
         FrameBufferController.SQUARE_FRAME_BUFFER = false;
 
+        Map.Entry<File, String[]> demReturn = getDemPath(args);
+        HillsRenderConfig hillsCfg = null;
+        if(demReturn!=null){
+            hillsCfg = new HillsRenderConfig(demReturn.getKey(), AwtGraphicFactory.INSTANCE, new SimpleShadingAlgortithm());
+            args = demReturn.getValue();
+        }
+
         List<File> mapFiles = getMapFiles(args);
         final MapView mapView = createMapView();
-        final BoundingBox boundingBox = addLayers(mapView, mapFiles);
+        final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsCfg);
 
         final PreferencesFacade preferencesFacade = new JavaPreferences(Preferences.userNodeForPackage(Samples.class));
 
@@ -121,7 +133,21 @@ public final class Samples {
         frame.setVisible(true);
     }
 
-    private static BoundingBox addLayers(MapView mapView, List<File> mapFiles) {
+    private static Map.Entry<File, String[]> getDemPath(String[] args) {
+
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            File file = new File(arg);
+            if (file.isDirectory()) {
+                List<String> rest = new ArrayList<>(Arrays.asList(args));
+                rest.remove(i);
+                return new AbstractMap.SimpleEntry(file, rest.toArray(new String[args.length-1]));
+            }
+        }
+        return null;
+    }
+
+    private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, HillsRenderConfig hillsRenderConfig) {
         Layers layers = mapView.getLayerManager().getLayers();
 
         // Tile cache
@@ -149,7 +175,7 @@ public final class Samples {
             for (File file : mapFiles) {
                 mapDataStore.addMapDataStore(new MapFile(file), false, false);
             }
-            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition);
+            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition, hillsRenderConfig);
             layers.add(tileRendererLayer);
             boundingBox = mapDataStore.boundingBox();
         }
@@ -184,8 +210,8 @@ public final class Samples {
         };
     }
 
-    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition) {
-        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, GRAPHIC_FACTORY) {
+    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition, HillsRenderConfig hillsRenderConfig) {
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, GRAPHIC_FACTORY, hillsRenderConfig) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
                 System.out.println("Tap on: " + tapLatLong);
