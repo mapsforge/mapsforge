@@ -56,7 +56,7 @@ compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-x86'
 #### Desktop
 ```groovy
 compile 'org.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]'
-compile 'org.xerial:sqlite-jdbc:3.15.1'
+compile 'org.xerial:sqlite-jdbc:3.16.1'
 ```
 
 ## Snapshots
