@@ -24,14 +24,8 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.FrameBuffer;
-import org.mapsforge.map.view.FrameBufferHA;
 
 public final class FrameBufferController implements Observer {
-
-    /**
-     * If true the {@link FrameBufferHA} will be used instead of default {@link FrameBuffer}.
-     */
-    public static boolean HA_FRAME_BUFFER = false;
 
     private static float maxAspectRatio = 2;
 

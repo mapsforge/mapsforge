@@ -18,9 +18,6 @@
     <string name="longitude">Longitude</string>
     <string name="zoomlevel">Zoom Level</string>
 
-    <string name="preferences_hardware_acceleration">Hardware acceleration</string>
-    <string name="preferences_hardware_acceleration_desc">Control hardware acceleration on view level</string>
-
     <string name="preferences_scale">Display Scale</string>
     <string name="preferences_scale_desc">Adjust scale of the map display</string>
 
