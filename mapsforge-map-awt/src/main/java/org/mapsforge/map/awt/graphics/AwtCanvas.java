@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -370,7 +370,7 @@ class AwtCanvas implements Canvas {
 
     private void fillColor(java.awt.Color color) {
         final Composite originalComposite = this.graphics2D.getComposite();
-        this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+        this.graphics2D.setComposite(AlphaComposite.getInstance(color.getAlpha() == 0 ? AlphaComposite.CLEAR : AlphaComposite.SRC_OVER));
         this.graphics2D.setColor(color);
         this.graphics2D.fillRect(0, 0, getWidth(), getHeight());
         this.graphics2D.setComposite(originalComposite);

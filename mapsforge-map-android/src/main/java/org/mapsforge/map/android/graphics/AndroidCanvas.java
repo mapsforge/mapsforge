@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -181,12 +181,16 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void fillColor(Color color) {
-        this.canvas.drawColor(AndroidGraphicFactory.getColor(color), PorterDuff.Mode.CLEAR);
+        fillColor(AndroidGraphicFactory.getColor(color));
     }
 
     @Override
     public void fillColor(int color) {
-        this.canvas.drawColor(color);
+        int alpha = (color >> 24) & 0xff;
+        if (alpha == 0)
+            this.canvas.drawColor(color, PorterDuff.Mode.CLEAR);
+        else
+            this.canvas.drawColor(color);
     }
 
     @Override
