@@ -187,10 +187,7 @@ class AndroidCanvas implements Canvas {
     @Override
     public void fillColor(int color) {
         int alpha = (color >> 24) & 0xff;
-        if (alpha == 0)
-            this.canvas.drawColor(color, PorterDuff.Mode.CLEAR);
-        else
-            this.canvas.drawColor(color);
+        this.canvas.drawColor(color, alpha == 0 ? PorterDuff.Mode.CLEAR : PorterDuff.Mode.SRC_OVER);
     }
 
     @Override
