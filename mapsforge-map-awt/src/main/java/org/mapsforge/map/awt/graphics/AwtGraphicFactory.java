@@ -3,7 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Develar
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -78,16 +78,16 @@ public class AwtGraphicFactory implements GraphicFactory {
         return ((AwtMatrix) matrix).affineTransform;
     }
 
+    public static Graphics2D getGraphics(Canvas canvas) {
+        return ((AwtCanvas) canvas).getGraphicObject();
+    }
+
     public static AwtPaint getPaint(Paint paint) {
         return (AwtPaint) paint;
     }
 
     static AwtPath getPath(Path path) {
         return (AwtPath) path;
-    }
-
-    static BufferedImage getBufferedImage(Bitmap bitmap) {
-        return ((AwtBitmap) bitmap).bufferedImage;
     }
 
     static java.awt.Color getColor(Color color) {
@@ -136,7 +136,6 @@ public class AwtGraphicFactory implements GraphicFactory {
      * @param bitmap Mapsforge Bitmap
      * @return platform specific image.
      */
-
     public static BufferedImage getBitmap(Bitmap bitmap) {
         return ((AwtBitmap) bitmap).bufferedImage;
     }

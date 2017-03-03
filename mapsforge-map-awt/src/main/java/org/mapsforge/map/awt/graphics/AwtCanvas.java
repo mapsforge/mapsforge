@@ -160,23 +160,23 @@ class AwtCanvas implements Canvas {
 
     @Override
     public void drawBitmap(Bitmap bitmap, int left, int top) {
-        this.graphics2D.drawImage(AwtGraphicFactory.getBufferedImage(bitmap), left, top, null);
+        this.graphics2D.drawImage(AwtGraphicFactory.getBitmap(bitmap), left, top, null);
     }
 
     @Override
     public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
-        this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBufferedImage(bitmap), filter), left, top, null);
+        this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), left, top, null);
     }
 
     @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix) {
-        this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBufferedImage(bitmap),
+        this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBitmap(bitmap),
                 AwtGraphicFactory.getAffineTransform(matrix));
     }
 
     @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
-        this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBufferedImage(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+        this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
     }
 
     @Override
@@ -326,7 +326,7 @@ class AwtCanvas implements Canvas {
             this.bufferedImage = null;
             this.graphics2D = null;
         } else {
-            this.bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
+            this.bufferedImage = AwtGraphicFactory.getBitmap(bitmap);
             this.graphics2D = this.bufferedImage.createGraphics();
             enableAntiAliasing();
         }
@@ -350,7 +350,7 @@ class AwtCanvas implements Canvas {
         Composite composite = getHillshadingComposite(magnitude);
 
         this.graphics2D.setComposite(composite);
-        BufferedImage bufferedImage = AwtGraphicFactory.getBufferedImage(bitmap);
+        BufferedImage bufferedImage = AwtGraphicFactory.getBitmap(bitmap);
 
         this.graphics2D.drawImage(bufferedImage,
                 (int) tileRect.left, (int) tileRect.top, (int) tileRect.right, (int) tileRect.bottom,
