@@ -29,7 +29,7 @@ Download the release or snapshot writer plugin (with dependencies) from [Maven C
 To convert OSM data to a POI database execute the following command:
 
 ```bash
-$OSMOSIS_HOME/bin/osmosis --rb file=your_map_file.osm.pbf --poi-writer file=your_database.poi preferred-language=en tag-conf-file=poi-mapping.xml
+$OSMOSIS_HOME/bin/osmosis --rb file=your_map_file.osm.pbf --poi-writer file=your_database.poi
 ```
 
 The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin should handle the data that was read from the given OSM stream.
