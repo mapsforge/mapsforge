@@ -63,7 +63,7 @@ zoom-interval-conf=5,0,7,10,8,11,12,12,13,14,14,21
 
 ## Plugin Installation
 
-- Download the release or snapshot writer plugin (with dependencies) from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.mapsforge%22) or [Sonatype OSS Repository Hosting](https://oss.sonatype.org/content/repositories/snapshots/org/mapsforge/) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) for how to install a plugin.
+- Download the release or snapshot writer plugin (**jar-with-dependencies**) from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.mapsforge%22) or [Sonatype OSS Repository Hosting](https://oss.sonatype.org/content/repositories/snapshots/org/mapsforge/) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) for how to install a plugin.
 - You may want to increase the Java heap space that may be allocated for osmosis. You can do so by editing the script $OSMOSIS_HOME/bin/osmosis(.bat). Insert a line with 'JAVACMD_OPTIONS=-Xmx800m'. This sets the maximum available Java heap space to 800M. Of course you can set this parameter to a value which ever fits best for your purpose.
 - See http://wiki.openstreetmap.org/wiki/Osmosis/Installation for further information about Osmosis usage.
 
