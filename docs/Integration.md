@@ -63,13 +63,6 @@ compile 'org.xerial:sqlite-jdbc:3.16.1'
 
 We publish SNAPSHOT builds to Sonatype OSS Repository Hosting.
 
-For checking latest snapshot on every build:
-```groovy
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-```
-
 You need to add the repository:
 ```groovy
 repositories {
@@ -81,6 +74,13 @@ And declare the dependencies like:
 ```groovy
 compile 'org.mapsforge:mapsforge-core:master-SNAPSHOT'
 ...
+```
+
+For checking latest snapshot on every build:
+```groovy
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 ```
 
 ## Maven
