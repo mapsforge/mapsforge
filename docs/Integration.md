@@ -61,15 +61,17 @@ compile 'org.xerial:sqlite-jdbc:3.16.1'
 
 ## Snapshots
 
-We publish regularly SNAPSHOT builds to Sonatype OSS Repository Hosting.
+We publish SNAPSHOT builds to Sonatype OSS Repository Hosting.
+
+For checking latest snapshot on every build:
+```groovy
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+```
 
 You need to add the repository:
 ```groovy
-configurations.all {
-    // check for latest snapshot on every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
