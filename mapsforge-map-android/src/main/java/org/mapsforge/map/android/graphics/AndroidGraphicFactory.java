@@ -24,8 +24,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
@@ -57,7 +55,10 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     // turn on for bitmap accounting
     public static final boolean DEBUG_BITMAPS = false;
 
-    public static AndroidGraphicFactory INSTANCE;
+    /**
+     * Constructor simply for IDE layout designers!
+     */
+    public static AndroidGraphicFactory INSTANCE = new AndroidGraphicFactory(null);
 
     // if true RESOURCE_BITMAPS will be kept in the cache to avoid
     // multiple loading
@@ -176,10 +177,10 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
     private AndroidGraphicFactory(Application app) {
         this.application = app;
-        DisplayMetrics metrics = new DisplayMetrics();
-        ((WindowManager) app.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-        // the scaledDensity is an approximate scale factor for the device
-        DisplayModel.setDeviceScaleFactor(metrics.scaledDensity);
+        if (app != null) {
+            // the scaledDensity is an approximate scale factor for the device
+            DisplayModel.setDeviceScaleFactor(app.getResources().getDisplayMetrics().scaledDensity);
+        }
     }
 
     public static void clearResourceFileCache() {
