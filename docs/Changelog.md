@@ -1,6 +1,6 @@
 # Changelog
 
-## New since 0.7.0
+### Version 0.8.0-rc1 (2017-03-11)
 
 - Android fix hardware acceleration [#919](https://github.com/mapsforge/mapsforge/issues/919) [#613](https://github.com/mapsforge/mapsforge/issues/613)
 - Hillshading from HGT digital elevation model data [#923](https://github.com/mapsforge/mapsforge/issues/923)
