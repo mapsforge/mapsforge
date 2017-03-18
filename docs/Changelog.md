@@ -1,6 +1,6 @@
 # Changelog
 
-### Version 0.8.0-rc1 (2017-03-11)
+## Version 0.8.0 (2017-03-18)
 
 - Android fix hardware acceleration [#919](https://github.com/mapsforge/mapsforge/issues/919) [#613](https://github.com/mapsforge/mapsforge/issues/613)
 - Hillshading from HGT digital elevation model data [#923](https://github.com/mapsforge/mapsforge/issues/923)
@@ -13,14 +13,6 @@
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.8.0)
 
 ## Version 0.7.0 (2016-12-30)
-
-- Same as 0.7.0-rc2
-
-### Version 0.7.0-rc2 (2016-12-23)
-
-- Same as 0.7.0-rc1
-
-### Version 0.7.0-rc1 (2016-12-22)
 
 - Multithreaded rendering improvements [#591](https://github.com/mapsforge/mapsforge/issues/591) [#806](https://github.com/mapsforge/mapsforge/issues/806)
 - Fix map disappearance at large zoom levels [#572](https://github.com/mapsforge/mapsforge/issues/572)
@@ -50,16 +42,7 @@
 
 ## Version 0.6.1 (2016-06-11)
 
-- Same as 0.6.1-rc2
-
-### Version 0.6.1-rc2 (2016-05-31)
-
-- World map creation [documentation](MapCreation.md)
-- Minor improvements and bug fixes
-
-### Version 0.6.1-rc1 (2016-05-16)
-
-- [POI Search API](POI.md) [#728](https://github.com/mapsforge/mapsforge/issues/728)
+- [POI Search](POI.md) API [#728](https://github.com/mapsforge/mapsforge/issues/728)
 - Render Theme v5: pathText repeat options [#473](https://github.com/mapsforge/mapsforge/issues/473)
 - Render Theme v5: scale options [#814](https://github.com/mapsforge/mapsforge/issues/814)
 - Render Theme v5: deprecate 'symbol-scaling' option [#815](https://github.com/mapsforge/mapsforge/issues/815)
@@ -86,22 +69,6 @@
 
 ## Version 0.6.0 (2015-11-25)
 
-- Upgrade of Android version for maven to 6.0_r2
-- Upgrade of build tools to Gradle 2.8, Android Gradle Plugin 1.5
-- Otherwise identical to 0.6.0-rc3
-
-### Version 0.6.0-rc3 (2015-11-19)
-
-- Fix invalid number of way nodes [#645](https://github.com/mapsforge/mapsforge/issues/645)
-- Minor improvements and bug fixes
-
-### Version 0.6.0-rc2 (2015-11-13)
-
-- Map creation with coastlines [documentation](MapCreation.md)
-- Minor improvements and bug fixes
-
-### Version 0.6.0-rc1 (2015-11-01)
-
 - Multilingual maps [#624](https://github.com/mapsforge/mapsforge/issues/624)
 - Writer language improved parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
 - MapDataStore extensibility [#668](https://github.com/mapsforge/mapsforge/issues/668)
@@ -117,22 +84,12 @@
 - AWT library reorganization [#714](https://github.com/mapsforge/mapsforge/issues/714)
 - XSD repositioning for online validation [#672](https://github.com/mapsforge/mapsforge/issues/672)
 - Android 6 / SDK 23 / Runtime permission support [#704](https://github.com/mapsforge/mapsforge/issues/704)
+- Map creation with coastlines [documentation](MapCreation.md)
+- Fix invalid number of way nodes [#645](https://github.com/mapsforge/mapsforge/issues/645)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.6.0)
 
 ## Version 0.5.2 (2015-08-23)
-
-- Same as 0.5.2-rc3
-
-### Version 0.5.2-rc3 (2015-08-19)
-
-- Minor improvements and bug fixes
-
-### Version 0.5.2-rc2 (2015-08-08)
-
-- Same as 0.5.2-rc1
-
-### Version 0.5.2-rc1 (2015-08-07)
 
 - Multi-threaded map rendering [#73](https://github.com/mapsforge/mapsforge/issues/73)
 - Hardware acceleration improvements [#613](https://github.com/mapsforge/mapsforge/issues/613)
@@ -153,61 +110,17 @@
 
 ## Version 0.5.1 (2015-03-18)
 
-- Same as 0.5.1-rc4
-
-### Version 0.5.1-rc4 (2015-03-04)
-
-- Fix for build of SwingMapViewer with new SVG libraries
-
-### Version 0.5.1-rc3 (2015-03-03)
-
+- Support for more general map data sources through [MapDataStore interface](MapDataStore.md)
+- Persistent Caching.
 - SVG rendering for Java with SVG Salamander
 - Internal rendertheme (osmarender) using SVG symbols by default
 - Resource memory/file cache: common clear methods
-
-### Version 0.5.1-rc2 (2015-03-03)
-
-- Fix for NPE when using persistent tile cache.
-- Doc updates
-
-### Version 0.5.1-rc1 (2015-02-25)
-
-- Support for more general map data sources through [MapDataStore interface and MultiMapDataStore class](MapDataStore.md)
-- Persistent Caching.
 - Documentation updates.
 - Various bug fixes.
 - Geographic grid layer.
 - External Map Rotation example in Samples.
 
 ## Version 0.5.0 (2014-12-08)
-
-- Release 0.5.0 is, apart from minor documentation changes, identical to 0.5.0-rc4.
-
-### Version 0.5.0-rc4 (2014-12-05)
-
-- Changes to support the new standard for encoding land/sea area. 
-- Fix for #332 (invalid geometries in map writer).
-- Fix for #549 (ordering of label drawing).
-- Documentation updates. 
-
-### Version 0.5.0-rc3 (2014-11-27)
-
-- Rendertheme V4: added display directive to force symbols to appear.
-- Rendertheme V4: added optional map-background-outside to blank out non-map areas.
-- Introduced MapViewerTemplate for easier development of Android apps and simplified the Android Samples app.
-- Android Lollipop support, various upgrades to latest software, Java 8 (for maven only so far).
-- Map Reader fix for long ways.
-- Map Writer fix to clip multi-polygons and area detection.
-- Cache calculation improvements.
-- Improved documentation integrated into git.
-- Move to github.
-
-### Version 0.5.0-rc2 (2014-10-16)
-
-- Fixes to Rendertheme V4 with most notably improved tiling of area shaders.
-- Smaller internal bug fixes and software updates.
-
-### Version 0.5.0-rc1 (2014-10-04)
 
 - Rendertheme V4.
 - Scalebar now with the option of using two units at the same time. New unit: nautical.
@@ -218,22 +131,23 @@
 - New render theme xml parser for better performance.
 - Caching of rendered SVG symbols & delayed rendering.
 - Simplify map writer plugin installation in Osmosis.
+- Fixes to Rendertheme V4 with most notably improved tiling of area shaders.
+- Rendertheme V4: added display directive to force symbols to appear.
+- Rendertheme V4: added optional map-background-outside to blank out non-map areas.
+- Introduced MapViewerTemplate for easier development of Android apps and simplified the Android Samples app.
+- Android Lollipop support, various upgrades to latest software, Java 8 (for maven only so far).
+- Map Reader fix for long ways.
+- Map Writer fix to clip multi-polygons and area detection.
+- Cache calculation improvements.
+- Changes to support the new standard for encoding land/sea area.
+- Fix for #332 (invalid geometries in map writer).
+- Fix for #549 (ordering of label drawing).
+- Improved documentation integrated into git.
+- Move to github.
 
 ## Version 0.4.3 (2014-05-10)
 
-- No functionality change, but mapsforge-map-android now build as a jar (not apklib) for Maven Central downloads.
-
-## Version 0.4.2 (2014-05-10)
-
-- No functionality change, but mapsforge build against mapsforge svg-android.
-
-## Version 0.4.1 (2014-05-10)
-
-- No functionality change, but version 0.4.1 is now available from Maven Central.
-
-## Version 0.4.0 (2014-05-05)
-
-Version 0.4.0 is what during a period was known as the 'rescue' branch. It is based on an extensive rewrite of the mapsforge library that is incompatible with the previous releases. The mapfile format however has not changed and map files from 0.3 can still be used. 
+Version 0.4.X is what during a period was known as the 'rescue' branch. It is based on an extensive rewrite of the mapsforge library that is incompatible with the previous releases. The mapfile format however has not changed and map files from 0.3 can still be used.
 
 - Better modular design of the entire project.
 - Support for Java-only applications, see the SwingMapViewer subproject.
@@ -244,6 +158,8 @@ Version 0.4.0 is what during a period was known as the 'rescue' branch. It is ba
 - Support for SVG files as map icons.
 - Gradle as build system in addition to Maven.
 - Updated icons of default render theme.
+- Available from Maven Central.
+- Use mapsforge svg-android.
 
 For a demonstration of the capabilities refer to the Samples app.
 
