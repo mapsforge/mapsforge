@@ -69,7 +69,7 @@ class AwtCanvas implements Canvas {
             // only cache the first magnitude value, in the rare instance that more than one
             // magnitude value would be used in a process lifecycle it would be better to create
             // new Composite instances than create new instances _and_ new cache entries
-            sizeOneShadingCompositeCache = new AbstractMap.SimpleImmutableEntry(magnitude, selected);
+            sizeOneShadingCompositeCache = new AbstractMap.SimpleImmutableEntry<>(magnitude, selected);
         }
 
         return selected;
