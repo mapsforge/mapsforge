@@ -1,3 +1,17 @@
+/*
+ * Copyright 2017 Gustl22
+ *
+ * This program is free software: you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.mapsforge.poi.writer;
 
 import com.google.common.collect.Lists;
@@ -9,6 +23,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.poi.storage.DbConstants;
+import org.mapsforge.poi.writer.logging.LoggerWrapper;
 import org.openstreetmap.osmosis.core.domain.v0_6.EntityType;
 import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.RelationMember;
@@ -16,7 +31,6 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,18 +40,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static org.mapsforge.poi.writer.PoiWriter.LOGGER;
+import java.util.logging.Logger;
 
 /**
- * GeoTagger provides location Tags from OSM-Data in Poi-Tags (especially is_in and address tags)
- * Created by gustl on 03.04.17.
+ * GeoTagger provides location Tags from OSM-Data in Poi-Tags (especially is_in and address tags).
  */
-
 class GeoTagger {
+
+    private static final Logger LOGGER = LoggerWrapper.getLogger(GeoTagger.class.getName());
+
     private PoiWriter writer;
-    private Connection conn = null;
-    private final int BATCH_LIMIT;
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
     private PreparedStatement pStmtInsertWayNodes = null;
     private PreparedStatement pStmtDeletePoiData = null;
@@ -51,14 +63,12 @@ class GeoTagger {
 
     GeoTagger(PoiWriter writer) {
         this.writer = writer;
-        conn = writer.getConnection();
-        BATCH_LIMIT = PoiWriter.BATCH_LIMIT;
         try {
-            this.pStmtInsertWayNodes = conn.prepareStatement(DbConstants.INSERT_WAYNODES_STATEMENT);
-            this.pStmtDeletePoiData = this.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
-            this.pStmtDeletePoiIndex = this.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
-            this.pStmtUpdateData = this.conn.prepareStatement(DbConstants.UPDATE_DATA_STATEMENT);
-            this.pStmtNodesInBox = this.conn.prepareStatement(DbConstants.FIND_IN_BOX_STATEMENT);
+            this.pStmtInsertWayNodes = writer.conn.prepareStatement(DbConstants.INSERT_WAYNODES_STATEMENT);
+            this.pStmtDeletePoiData = writer.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
+            this.pStmtDeletePoiIndex = writer.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
+            this.pStmtUpdateData = writer.conn.prepareStatement(DbConstants.UPDATE_DATA_STATEMENT);
+            this.pStmtNodesInBox = writer.conn.prepareStatement(DbConstants.FIND_IN_BOX_STATEMENT);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -116,7 +126,7 @@ class GeoTagger {
                 i++;
             }
             batchCountWays++;
-            if (batchCountWays % BATCH_LIMIT == 0) {
+            if (batchCountWays % PoiWriter.BATCH_LIMIT == 0) {
                 pStmtInsertWayNodes.executeBatch();
                 pStmtInsertWayNodes.clearBatch();
             }
@@ -127,10 +137,10 @@ class GeoTagger {
 
 
     void filterBoundaries(Relation relation) {
-        if ("boundary".equalsIgnoreCase(writer.getValueOfTag("type", relation.getTags()))) {
-            String boundaryCategory = writer.getValueOfTag("boundary", relation.getTags());
+        if ("boundary".equalsIgnoreCase(writer.getTagValue(relation.getTags(), "type"))) {
+            String boundaryCategory = writer.getTagValue(relation.getTags(), "boundary");
             if ("administrative".equalsIgnoreCase(boundaryCategory)) {
-                String adminLevelValue = writer.getValueOfTag("admin_level", relation.getTags());
+                String adminLevelValue = writer.getTagValue(relation.getTags(), "admin_level");
                 if (adminLevelValue == null) return;
                 switch (adminLevelValue.trim()) {
                     //TODO Specify cultural/regional diffs for admin_levels,
@@ -172,7 +182,7 @@ class GeoTagger {
 
     private void processBoundary(Relation relation, boolean isPostCode) {
         Coordinate[] coordinates = mergeBoundary(relation);
-        if(coordinates == null) return;
+        if (coordinates == null) return;
 
         LOGGER.finer("Polygon created; ");
         Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
@@ -180,22 +190,22 @@ class GeoTagger {
         //Get pois in bounds
         Map<Poi, Map<String, String>> pois = getPoisInsidePolygon(polygon);
 
-        if(isPostCode){
+        if (isPostCode) {
             //Remove doubles dependent on postcode
             pois = removeDoublePois(pois);
 
             //Tag entries
-            String postcode = writer.getValueOfTag("postal_code", relation.getTags());
-            if(postcode != null && !postcode.isEmpty()){
-                updateTagData(pois,"addr:postcode", postcode);
+            String postcode = writer.getTagValue(relation.getTags(), "postal_code");
+            if (postcode != null && !postcode.isEmpty()) {
+                updateTagData(pois, "addr:postcode", postcode);
 
                 //Add addr:city tag, if its available from note tag
-                String city = writer.getValueOfTag("note", relation.getTags());
-                if(city != null && !city.isEmpty()){
+                String city = writer.getTagValue(relation.getTags(), "note");
+                if (city != null && !city.isEmpty()) {
                     int i = city.indexOf(postcode);
-                    if(i>=0){
-                        city = city.substring(0,i) + city.substring(postcode.length(), city.length()).trim();
-                        updateTagData(pois,"addr:city", city);
+                    if (i >= 0) {
+                        city = city.substring(0, i) + city.substring(postcode.length(), city.length()).trim();
+                        updateTagData(pois, "addr:city", city);
                     }
                 }
             }
@@ -238,28 +248,27 @@ class GeoTagger {
             if (adminArea != null) {
                 isInTagName = adminArea.getValue().get("is_in");
             }
-            String relationName = writer.getValueOfTag("name", relation.getTags());
+            String relationName = writer.getTagValue(relation.getTags(), "name");
 
             String value = relationName + (isInTagName != null ? "," + isInTagName : "");
-            updateTagData(pois,"is_in", value);
+            updateTagData(pois, "is_in", value);
 
-            LOGGER.fine(relationName + ": #Pois found: " + pois.size()+"; Is_in tags set");
+            LOGGER.fine(relationName + ": #Pois found: " + pois.size() + "; Is_in tags set");
         }
     }
 
-    private Map<Poi,Map<String,String>> removeDoublePois(Map<Poi, Map<String, String>> pois) {
+    private Map<Poi, Map<String, String>> removeDoublePois(Map<Poi, Map<String, String>> pois) {
         Map<String, Poi> uniqueHighways = new HashMap<>();
 
         Iterator it = pois.entrySet().iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             Map.Entry<Poi, Map<String, String>> entry = (Map.Entry<Poi, Map<String, String>>) it.next();
 
             Map<String, String> tags = entry.getValue();
             //Only double highways are removed, you can remove second part if you want.
-            if(tags.containsKey("name") && tags.containsKey("highway")){
+            if (tags.containsKey("name") && tags.containsKey("highway")) {
                 String name = tags.get("name");
-                if(uniqueHighways.containsKey(name)){
+                if (uniqueHighways.containsKey(name)) {
                     //Write surrounding area as parent in "is_in" tag.
                     try {
                         long id = entry.getKey().id;
@@ -282,7 +291,7 @@ class GeoTagger {
             pStmtDeletePoiData.clearBatch();
             pStmtDeletePoiIndex.executeBatch();
             pStmtDeletePoiIndex.clearBatch();
-            conn.commit();
+            writer.conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -290,13 +299,15 @@ class GeoTagger {
     }
 
     private int batchCountRelation = 0;
+
     /**
      * Updates the tags of a POI-List with key and value.
-     * @param pois Pois, which should be tagged
-     * @param key The tag key
+     *
+     * @param pois  Pois, which should be tagged
+     * @param key   The tag key
      * @param value The tag value
      */
-    private void updateTagData(Map<Poi, Map<String, String>> pois, String key, String value){
+    private void updateTagData(Map<Poi, Map<String, String>> pois, String key, String value) {
         for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
             Poi poi = entry.getKey();
             String tmpValue = value;
@@ -307,14 +318,14 @@ class GeoTagger {
             }
 
             if (tagmap.keySet().contains(key)) {
-                if(!key.equals("is_in")){
+                if (!key.equals("is_in")) {
                     continue;
                 }
                 String prev = tagmap.get(key);
-                if(prev.contains(",") || prev.contains(";")){
+                if (prev.contains(",") || prev.contains(";")) {
                     continue;
                 }
-                if(tmpValue.contains(",") || tmpValue.contains(";")){
+                if (tmpValue.contains(",") || tmpValue.contains(";")) {
                     tmpValue = (prev + "," + tmpValue);
                 }
             }
@@ -328,10 +339,10 @@ class GeoTagger {
 
                 this.pStmtUpdateData.addBatch();
 
-                if (batchCountRelation % BATCH_LIMIT == 0) {
+                if (batchCountRelation % PoiWriter.BATCH_LIMIT == 0) {
                     pStmtUpdateData.executeBatch();
                     pStmtUpdateData.clearBatch();
-                    conn.commit();
+                    writer.conn.commit();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -341,10 +352,11 @@ class GeoTagger {
 
     /**
      * Merges Boundaries of a relation
+     *
      * @param relation The relation of boundary
      * @return A List of Coordinates for the Boundary, first and last element are the same.
      */
-    private Coordinate[] mergeBoundary(Relation relation){
+    private Coordinate[] mergeBoundary(Relation relation) {
         List<List<Long>> bounds = new ArrayList<>();
         for (RelationMember relationMember : relation.getMembers()) {
             if (relationMember.getMemberType().equals(EntityType.Way)
@@ -365,7 +377,7 @@ class GeoTagger {
         if (bounds.isEmpty()) {
             return null;
         }
-        LOGGER.fine("Administrative: " + writer.getValueOfTag("name", relation.getTags())
+        LOGGER.fine("Administrative: " + writer.getTagValue(relation.getTags(), "name")
                 + " #Members: " + relation.getMembers().size()
                 + " #Segments: " + bounds.size());
 
@@ -543,7 +555,7 @@ class GeoTagger {
             pStmtUpdateData.executeBatch();
             pStmtInsertWayNodes.clearBatch();
             pStmtUpdateData.clearBatch();
-            conn.commit();
+            writer.conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
         }
