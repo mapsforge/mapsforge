@@ -490,6 +490,11 @@ public final class PoiWriter {
             return;
         }
 
+        // The first and the last way node are the same
+        if (!way.isClosed()) {
+            return;
+        }
+
         // Retrieve way nodes
         boolean validWay = true;
         LatLong[] wayNodes = new LatLong[way.getWayNodes().size()];
@@ -520,11 +525,6 @@ public final class PoiWriter {
         // Compute the centroid of the polygon
         Point centroid = polygon.getCentroid();
         if (centroid == null) {
-            return;
-        }
-
-        // The first and the last way node are the same
-        if (!way.isClosed()) {
             return;
         }
 
