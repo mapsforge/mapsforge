@@ -607,6 +607,89 @@
         <!--<category title="Turning cycles">
             <mapping tag="highway=turning_cycle" />
         </category>-->
+
+        <!--Streets added-->
+        <!--<category title="Bridleway">-->
+            <!--<mapping tag="highway=bridleway" />-->
+        <!--</category>-->
+        <!--<category title="Bus guideway">-->
+            <!--<mapping tag="highway=bus_guideway" />-->
+        <!--</category>-->
+        <!--<category title="Byway">-->
+            <!--<mapping tag="highway=byway" />-->
+        <!--</category>-->
+        <!--<category title="Construction way">-->
+            <!--<mapping tag="highway=construction" />-->
+        <!--</category>-->
+        <!--<category title="Cycleway">-->
+            <!--<mapping tag="highway=cycleway" />-->
+        <!--</category>-->
+        <!--<category title="Footway">-->
+            <!--<mapping tag="highway=footway" />-->
+        <!--</category>-->
+        <category title="Living street">
+            <mapping tag="highway=living_street" />
+        </category>
+        <!--<category title="Motorway">-->
+            <!--<mapping tag="highway=motorway" />-->
+        <!--</category>-->
+        <!--<category title="Motorway link">-->
+            <!--<mapping tag="highway=motorway_link" />-->
+        <!--</category>-->
+        <!--<category title="Path">-->
+            <!--<mapping tag="highway=path" />-->
+        <!--</category>-->
+        <!--<category title="Pedestrian way">-->
+            <!--<mapping tag="highway=pedestrian" />-->
+        <!--</category>-->
+        <!--<category title="Primary way">-->
+            <!--<mapping tag="highway=primary" />-->
+        <!--</category>-->
+        <!--<category title="Primary way link">-->
+            <!--<mapping tag="highway=primary_link" />-->
+        <!--</category>-->
+        <!--<category title="Raceway">-->
+            <!--<mapping tag="highway=raceway" />-->
+        <!--</category>-->
+        <category title="Residential way">
+            <mapping tag="highway=residential" />
+        </category>
+        <category title="Road">
+            <mapping tag="highway=road" />
+        </category>
+        <!--<category title="Secondary way">-->
+            <!--<mapping tag="highway=secondary" />-->
+        <!--</category>-->
+        <!--<category title="Secondary way link">-->
+            <!--<mapping tag="highway=secondary_link" />-->
+        <!--</category>-->
+        <!--<category title="Service way">-->
+            <!--<mapping tag="highway=service" />-->
+        <!--</category>-->
+        <!--<category title="Services way">-->
+            <!--<mapping tag="highway=services" />-->
+        <!--</category>-->
+        <!--<category title="Steps way">-->
+            <!--<mapping tag="highway=steps" />-->
+        <!--</category>-->
+        <!--<category title="Tertiary way">-->
+            <!--<mapping tag="highway=tertiary" />-->
+        <!--</category>-->
+        <!--<category title="Tertiary way link">-->
+            <!--<mapping tag="highway=tertiary_link" />-->
+        <!--</category>-->
+        <!--<category title="Track way">-->
+            <!--<mapping tag="highway=track" />-->
+        <!--</category>-->
+        <category title="Trunk way">
+            <mapping tag="highway=trunk" />
+        </category>
+        <!--<category title="Trunk way link">-->
+            <!--<mapping tag="highway=trunk_link" />-->
+        <!--</category>-->
+        <!--<category title="Unclassified way">-->
+            <!--<mapping tag="highway=unclassified" />-->
+        <!--</category>-->
     </category>
 
     <!-- Historic -->
