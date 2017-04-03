@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013 - 2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,11 +16,7 @@
  */
 package org.mapsforge.samples.android;
 
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Environment;
-import android.preference.PreferenceManager;
-import android.view.View;
 
 import org.mapsforge.map.android.util.AndroidPreferences;
 import org.mapsforge.map.android.util.AndroidUtil;
@@ -68,13 +64,6 @@ public class DualMapViewer extends DefaultTheme {
         this.mapView2.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());
         this.mapView2.getMapZoomControls().setZoomLevelMax(getZoomLevelMax());
         initializePosition(this.mapView2.getModel().mapViewPosition);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            boolean hardwareAcceleration = sharedPreferences.getBoolean(SamplesApplication.SETTING_HARDWARE_ACCELERATION, true);
-            if (!hardwareAcceleration) {
-                this.mapView2.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            }
-        }
     }
 
     protected TileCache createTileCache2() {

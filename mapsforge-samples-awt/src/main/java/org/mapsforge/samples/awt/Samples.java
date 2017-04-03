@@ -3,6 +3,7 @@
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2017 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -37,6 +38,8 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
+import org.mapsforge.map.layer.hills.SimpleShadingAlgortithm;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
@@ -51,6 +54,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.prefs.Preferences;
@@ -70,12 +74,10 @@ public final class Samples {
     /**
      * Starts the {@code Samples}.
      *
-     * @param args command line args: expects the map files as multiple parameters.
+     * @param args command line args: expects the map files as multiple parameters
+     *             with possible SRTM hgt folder as 1st argument.
      */
     public static void main(String[] args) {
-        // HA frame buffer
-        FrameBufferController.HA_FRAME_BUFFER = true;
-
         // Multithreaded map rendering
         MapWorkerPool.NUMBER_OF_THREADS = 2;
 
@@ -85,9 +87,16 @@ public final class Samples {
         // Square frame buffer
         FrameBufferController.SQUARE_FRAME_BUFFER = false;
 
+        HillsRenderConfig hillsCfg = null;
+        File demFolder = getDemFolder(args);
+        if (demFolder != null) {
+            hillsCfg = new HillsRenderConfig(demFolder, AwtGraphicFactory.INSTANCE, new SimpleShadingAlgortithm());
+            args = Arrays.copyOfRange(args, 1, args.length);
+        }
+
         List<File> mapFiles = getMapFiles(args);
         final MapView mapView = createMapView();
-        final BoundingBox boundingBox = addLayers(mapView, mapFiles);
+        final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsCfg);
 
         final PreferencesFacade preferencesFacade = new JavaPreferences(Preferences.userNodeForPackage(Samples.class));
 
@@ -121,7 +130,7 @@ public final class Samples {
         frame.setVisible(true);
     }
 
-    private static BoundingBox addLayers(MapView mapView, List<File> mapFiles) {
+    private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, HillsRenderConfig hillsRenderConfig) {
         Layers layers = mapView.getLayerManager().getLayers();
 
         // Tile cache
@@ -149,7 +158,7 @@ public final class Samples {
             for (File file : mapFiles) {
                 mapDataStore.addMapDataStore(new MapFile(file), false, false);
             }
-            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition);
+            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition, hillsRenderConfig);
             layers.add(tileRendererLayer);
             boundingBox = mapDataStore.boundingBox();
         }
@@ -184,8 +193,8 @@ public final class Samples {
         };
     }
 
-    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition) {
-        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, GRAPHIC_FACTORY) {
+    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition, HillsRenderConfig hillsRenderConfig) {
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, false, true, false, GRAPHIC_FACTORY, hillsRenderConfig) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
                 System.out.println("Tap on: " + tapLatLong);
@@ -194,6 +203,18 @@ public final class Samples {
         };
         tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
         return tileRendererLayer;
+    }
+
+    private static File getDemFolder(String[] args) {
+        if (args.length == 0) {
+            throw new IllegalArgumentException("missing argument: <mapFile>");
+        }
+
+        File demFolder = new File(args[0]);
+        if (demFolder.exists() && demFolder.isDirectory() && demFolder.canRead()) {
+            return demFolder;
+        }
+        return null;
     }
 
     private static List<File> getMapFiles(String[] args) {

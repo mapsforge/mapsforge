@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,12 +17,9 @@
 package org.mapsforge.samples.android;
 
 import android.Manifest;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,14 +86,6 @@ public class ItemDetailFragment extends Fragment {
             this.mapView = (MapView) rootView.findViewById(R.id.mapView);
             this.mapView.setClickable(true);
             this.mapView.getMapScaleBar().setVisible(true);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                boolean hardwareAcceleration = sharedPreferences.getBoolean(SamplesApplication.SETTING_HARDWARE_ACCELERATION, true);
-                if (!hardwareAcceleration) {
-                    mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                }
-            }
 
             createLayers();
         }

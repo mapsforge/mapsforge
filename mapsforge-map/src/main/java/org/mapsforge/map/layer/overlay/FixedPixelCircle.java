@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +24,8 @@ import org.mapsforge.core.model.Point;
  * A Circle class that is always drawn with the same size in pixels.
  */
 public class FixedPixelCircle extends Circle {
+
+    private boolean scaleRadius = true;
 
     /**
      * @param latLong     the initial center point of this circle (may be null).
@@ -50,7 +52,7 @@ public class FixedPixelCircle extends Circle {
     }
 
     public boolean contains(Point center, Point point) {
-        return center.distance(point) < this.getRadius();
+        return center.distance(point) < this.getRadius() * (this.scaleRadius ? this.displayModel.getScaleFactor() : 1);
     }
 
     /**
@@ -58,6 +60,22 @@ public class FixedPixelCircle extends Circle {
      */
     @Override
     protected int getRadiusInPixels(double latitude, byte zoomLevel) {
-        return (int) (this.getRadius() * this.displayModel.getScaleFactor());
+        return (int) (this.getRadius() * (this.scaleRadius ? this.displayModel.getScaleFactor() : 1));
+    }
+
+    /**
+     * @return true if it scales the radius with the combined device/user scale factor, false
+     * otherwise.
+     */
+    public boolean isScaleRadius() {
+        return scaleRadius;
+    }
+
+    /**
+     * @param scaleRadius if set to true it will scale the radius with the combined device/user
+     *                    scale factor.
+     */
+    public void setScaleRadius(boolean scaleRadius) {
+        this.scaleRadius = scaleRadius;
     }
 }

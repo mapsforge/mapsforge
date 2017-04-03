@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2014 Ludwig M Brinckmann
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -179,7 +179,7 @@ public class AwtPaint implements Paint {
         this.shaderWidth = bitmap.getWidth();
         this.shaderHeight = bitmap.getHeight();
         Rectangle rectangle = new Rectangle(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        this.texturePaint = new TexturePaint(AwtGraphicFactory.getBufferedImage(bitmap), rectangle);
+        this.texturePaint = new TexturePaint(AwtGraphicFactory.getBitmap(bitmap), rectangle);
     }
 
     /**

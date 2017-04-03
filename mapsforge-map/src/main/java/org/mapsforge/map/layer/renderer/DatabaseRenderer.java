@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,6 +26,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.util.LayerUtil;
@@ -53,16 +55,18 @@ public class DatabaseRenderer extends StandardRenderer {
      * 2) do not render labels but cache them: renderLabels == false && labelStore != null
      * 3) do not render or cache labels: renderLabels == false && labelStore == null
      *
-     * @param mapDataStore   the data source.
-     * @param graphicFactory the graphic factory.
-     * @param tileCache      where tiles are cached (needed if labels are drawn directly onto tiles, otherwise null)
-     * @param labelStore     where labels are cached.
-     * @param renderLabels   if labels should be rendered.
-     * @param cacheLabels    if labels should be cached.
+     * @param mapDataStore      the data source.
+     * @param graphicFactory    the graphic factory.
+     * @param tileCache         where tiles are cached (needed if labels are drawn directly onto tiles, otherwise null)
+     * @param labelStore        where labels are cached.
+     * @param renderLabels      if labels should be rendered.
+     * @param cacheLabels       if labels should be cached.
+     * @param hillsRenderConfig the hillshading setup to be used (can be null).
      */
     public DatabaseRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, TileCache tileCache,
-                            TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels) {
-        super(mapDataStore, graphicFactory, renderLabels || cacheLabels);
+                            TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels,
+                            HillsRenderConfig hillsRenderConfig) {
+        super(mapDataStore, graphicFactory, renderLabels || cacheLabels, hillsRenderConfig);
         this.tileCache = tileCache;
         this.labelStore = labelStore;
         this.renderLabels = renderLabels;
@@ -92,6 +96,7 @@ public class DatabaseRenderer extends StandardRenderer {
                 }
 
                 if (!rendererJob.labelsOnly) {
+                    renderContext.renderTheme.matchHillShadings(this, renderContext);
                     bitmap = this.graphicFactory.createTileBitmap(rendererJob.tile.tileSize, rendererJob.hasAlpha);
                     bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(rendererJob.tile));
                     renderContext.canvasRasterer.setCanvasBitmap(bitmap);

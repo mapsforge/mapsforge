@@ -12,16 +12,6 @@ To run this samples app, you need a map with filename [germany.map](http://downl
 
 Preferably the [berlin.map](http://download.mapsforge.org/maps/europe/germany/berlin.map) renamed as `germany.map` will suffice because of smaller size.
 
-# Hardware acceleration
-
-Mapsforge currently requires disabling hardware acceleration for the map view. This can be controlled in various levels, better described in Android [documentation](http://developer.android.com/guide/topics/graphics/hardware-accel.html#controlling).
-
-```java
-if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-    this.mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-}
-```
-
 # Android manifest
 You'll need to have the appropriate permissions in manifest for tile cache to work properly:
 
@@ -114,10 +104,8 @@ Here comes the whole as a single file:
 
 ```java
 import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.View;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -144,9 +132,6 @@ public class MainActivity extends Activity {
         AndroidGraphicFactory.createInstance(this.getApplication());
 
         this.mapView = new MapView(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            this.mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
         setContentView(this.mapView);
 
         this.mapView.setClickable(true);

@@ -48,6 +48,7 @@
 | [RouteConverter](http://www.routeconverter.com/) | GPS conversion and editing tool | GPL2/Free | Open |
 | [Serval Maps](http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page) | Collaborative Mapping using a Mesh Network | GPL3/Free | Open |
 | [TingBY](http://ting.by/) | City guide | Proprietary/Free | Closed |
+| [Ultra GPS Logger](https://play.google.com/store/apps/details?id=com.flashlight.ultra.gps.logger) | GPS tracker | Proprietary/Commercial | Closed |
 | [UtalTransitMap](https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap) | Transport Guide | Proprietary/Free | Closed |
 | [Vectorial Map](http://www.vectorialmap.com/) | Map viewer and tracking | Proprietary/Commercial | Closed |
 | [Villagers feng shui](https://play.google.com/store/apps/details?id=tacoball.com.geomancer) | Local service for Taiwan | LGPL3/Free | Open |

@@ -75,7 +75,7 @@
             android:name=".GroupMarkerExample"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name=".HAMapViewer"
+            android:name=".HillshadingMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".ItemDetailActivity"

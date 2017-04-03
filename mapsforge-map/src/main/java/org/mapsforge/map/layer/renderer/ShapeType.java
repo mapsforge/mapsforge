@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,5 +16,5 @@
 package org.mapsforge.map.layer.renderer;
 
 enum ShapeType {
-    CIRCLE, POLYLINE;
+    CIRCLE, HILLSHADING, POLYLINE
 }

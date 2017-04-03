@@ -35,7 +35,6 @@ public class SamplesApplication extends Application {
     public static final String MAPS = "maps";
 
     public static final String SETTING_DEBUG_TIMING = "debug_timing";
-    public static final String SETTING_HARDWARE_ACCELERATION = "hardware_acceleration";
     public static final String SETTING_LANGUAGE_SHOWLOCAL = "language_showlocal";
     public static final String SETTING_PREFERRED_LANGUAGE = "language_selection";
     public static final String SETTING_RENDERING_THREADS = "rendering_threads";

@@ -24,7 +24,6 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FrameBufferHA extends FrameBuffer {
@@ -87,7 +86,7 @@ public class FrameBufferHA extends FrameBuffer {
                     try {
                         this.lmBitmapLock.wait(); // wait until swapped
                     } catch (InterruptedException e) {
-                        LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                        LOGGER.warning("FrameBufferHA interrupted");
                     }
                 }
             }

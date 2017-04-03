@@ -1,7 +1,8 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,6 +21,7 @@ import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.graphics.Region;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -30,6 +32,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.Rectangle;
 
 class AndroidCanvas implements Canvas {
     private static final float[] INVERT_MATRIX = {
@@ -41,6 +44,7 @@ class AndroidCanvas implements Canvas {
 
     android.graphics.Canvas canvas;
     private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
+    private final android.graphics.Paint shadePaint = new android.graphics.Paint();
     private ColorFilter grayscaleFilter, grayscaleInvertFilter, invertFilter;
 
     AndroidCanvas() {
@@ -48,6 +52,9 @@ class AndroidCanvas implements Canvas {
 
         this.bitmapPaint.setAntiAlias(true);
         this.bitmapPaint.setFilterBitmap(true);
+
+        this.shadePaint.setAntiAlias(true);
+        this.shadePaint.setFilterBitmap(true);
 
         createFilters();
     }
@@ -174,12 +181,13 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void fillColor(Color color) {
-        this.canvas.drawColor(AndroidGraphicFactory.getColor(color), PorterDuff.Mode.CLEAR);
+        fillColor(AndroidGraphicFactory.getColor(color));
     }
 
     @Override
     public void fillColor(int color) {
-        this.canvas.drawColor(color);
+        int alpha = (color >> 24) & 0xff;
+        this.canvas.drawColor(color, alpha == 0 ? PorterDuff.Mode.CLEAR : PorterDuff.Mode.SRC_OVER);
     }
 
     @Override
@@ -219,5 +227,13 @@ class AndroidCanvas implements Canvas {
 
     public void setClipInternal(int left, int top, int width, int height, Region.Op op) {
         this.canvas.clipRect(left, top, left + width, top + height, op);
+    }
+
+    @Override
+    public void shadeBitmap(Bitmap bitmap, Rectangle hillRect, Rectangle tileRect, float magnitude) {
+        shadePaint.setAlpha((int) (255 * magnitude));
+        Rect atr = new Rect((int) hillRect.left, (int) hillRect.top, (int) hillRect.right, (int) hillRect.bottom);
+        Rect asr = new Rect((int) tileRect.left, (int) tileRect.top, (int) tileRect.right, (int) tileRect.bottom);
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), atr, asr, shadePaint);
     }
 }

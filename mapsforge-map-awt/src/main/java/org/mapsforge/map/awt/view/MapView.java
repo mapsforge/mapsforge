@@ -63,10 +63,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
         this.model = new Model();
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
-        if (FrameBufferController.HA_FRAME_BUFFER)
-            this.frameBuffer = new FrameBufferHA(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        else
-            this.frameBuffer = new FrameBuffer(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        this.frameBuffer = new FrameBufferHA(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
         this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
@@ -80,17 +77,21 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
         this.mapViewProjection = new MapViewProjection(this);
 
+        addListeners();
+    }
+
+    @Override
+    public void addLayer(Layer layer) {
+        this.layerManager.getLayers().add(layer);
+    }
+
+    public void addListeners() {
         addComponentListener(new MapViewComponentListener(this));
 
         MouseEventListener mouseEventListener = new MouseEventListener(this);
         addMouseListener(mouseEventListener);
         addMouseMotionListener(mouseEventListener);
         addMouseWheelListener(mouseEventListener);
-    }
-
-    @Override
-    public void addLayer(Layer layer) {
-        this.layerManager.getLayers().add(layer);
     }
 
     /**

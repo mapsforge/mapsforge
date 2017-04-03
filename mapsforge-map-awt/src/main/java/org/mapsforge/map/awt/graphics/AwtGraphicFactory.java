@@ -3,7 +3,8 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Develar
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,12 +41,34 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.IndexColorModel;
+import java.awt.image.Raster;
+import java.awt.image.SampleModel;
+import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class AwtGraphicFactory implements GraphicFactory {
     public static final GraphicFactory INSTANCE = new AwtGraphicFactory();
     private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
+
+    private static final ColorModel monoColorModel;
+
+    static {
+        /**
+         * use an inverse lookup color model on the AWT side so that the android implementation can take the bytes without any twiddling
+         * (the only 8 bit bitmaps android knows are alpha masks, so we have to define our mono bitmap bytes in a way that are easy for android to understand)
+         **/
+        byte[] linear = new byte[256];
+        for (int i = 0; i < 256; i++) {
+            linear[i] = (byte) (i + Byte.MIN_VALUE);
+            linear[i] = (byte) (255 - i);
+        }
+        monoColorModel = new IndexColorModel(8, 256, linear, linear, linear);
+    }
 
     public static GraphicContext createGraphicContext(Graphics graphics) {
         return new org.mapsforge.map.awt.graphics.AwtCanvas((Graphics2D) graphics);
@@ -55,16 +78,16 @@ public class AwtGraphicFactory implements GraphicFactory {
         return ((AwtMatrix) matrix).affineTransform;
     }
 
+    public static Graphics2D getGraphics(Canvas canvas) {
+        return ((AwtCanvas) canvas).getGraphicObject();
+    }
+
     public static AwtPaint getPaint(Paint paint) {
         return (AwtPaint) paint;
     }
 
     static AwtPath getPath(Path path) {
         return (AwtPath) path;
-    }
-
-    static BufferedImage getBufferedImage(Bitmap bitmap) {
-        return ((AwtBitmap) bitmap).bufferedImage;
     }
 
     static java.awt.Color getColor(Color color) {
@@ -113,7 +136,6 @@ public class AwtGraphicFactory implements GraphicFactory {
      * @param bitmap Mapsforge Bitmap
      * @return platform specific image.
      */
-
     public static BufferedImage getBitmap(Bitmap bitmap) {
         return ((AwtBitmap) bitmap).bufferedImage;
     }
@@ -136,6 +158,17 @@ public class AwtGraphicFactory implements GraphicFactory {
     @Override
     public Matrix createMatrix() {
         return new AwtMatrix();
+    }
+
+    @Override
+    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
+        DataBuffer dataBuffer = new DataBufferByte(buffer, buffer.length);
+
+        SampleModel singleByteSampleModel = monoColorModel.createCompatibleSampleModel(width, height);
+        WritableRaster writableRaster = Raster.createWritableRaster(singleByteSampleModel, dataBuffer, null);
+        BufferedImage bufferedImage = new BufferedImage(monoColorModel, writableRaster, false, null);
+
+        return new AwtBitmap(bufferedImage);
     }
 
     @Override

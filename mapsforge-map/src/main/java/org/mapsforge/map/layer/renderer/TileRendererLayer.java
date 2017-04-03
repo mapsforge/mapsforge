@@ -4,6 +4,7 @@
  * Copyright 2014 Christian Pesch
  * Copyright 2016 devemux86
  * Copyright 2016 ksaihtam
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +25,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
@@ -43,7 +45,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
     private XmlRenderTheme xmlRenderTheme;
 
     /**
-     * Creates a TileRendererLayer.<br/>
+     * Creates a TileRendererLayer (without hillshading).<br/>
      * - Tiles will not have alpha/transparency<br/>
      * - Labels will be rendered onto tiles<br/>
      * - Labels will not be cached in a LabelStore
@@ -59,7 +61,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
     }
 
     /**
-     * Creates a TileRendererLayer.
+     * Creates a TileRendererLayer (without hillshading).
      *
      * @param tileCache       cache where tiles are stored
      * @param mapDataStore    the mapsforge map file
@@ -72,6 +74,24 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
     public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition,
                              boolean isTransparent, boolean renderLabels, boolean cacheLabels,
                              GraphicFactory graphicFactory) {
+        this(tileCache, mapDataStore, mapViewPosition, isTransparent, renderLabels, cacheLabels, graphicFactory, null);
+    }
+
+    /**
+     * Creates a TileRendererLayer.
+     *
+     * @param tileCache         cache where tiles are stored
+     * @param mapDataStore      the mapsforge map file
+     * @param mapViewPosition   the mapViewPosition to know which tiles to render
+     * @param isTransparent     true if the tile should have an alpha/transparency
+     * @param renderLabels      true if labels should be rendered onto tiles
+     * @param cacheLabels       true if labels should be cached in a LabelStore
+     * @param graphicFactory    the graphicFactory to carry out platform specific operations
+     * @param hillsRenderConfig the hillshading setup to be used (can be null)
+     */
+    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition,
+                             boolean isTransparent, boolean renderLabels, boolean cacheLabels,
+                             GraphicFactory graphicFactory, HillsRenderConfig hillsRenderConfig) {
         super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);
 
         this.graphicFactory = graphicFactory;
@@ -81,7 +101,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
         } else {
             this.tileBasedLabelStore = null;
         }
-        this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileCache, tileBasedLabelStore, renderLabels, cacheLabels);
+        this.databaseRenderer = new DatabaseRenderer(this.mapDataStore, graphicFactory, tileCache, tileBasedLabelStore, renderLabels, cacheLabels, hillsRenderConfig);
         this.textScale = 1;
     }
 

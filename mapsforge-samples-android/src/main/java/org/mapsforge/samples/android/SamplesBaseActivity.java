@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -22,7 +22,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -85,7 +84,8 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
     @Override
     protected void createLayers() {
         TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-                mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false);
+                mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, true, false,
+                getHillsRenderConfig());
         this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 
         // needed only for samples to hook into Settings.
@@ -101,13 +101,6 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
     @Override
     protected void createMapViews() {
         super.createMapViews();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            boolean hardwareAcceleration = sharedPreferences.getBoolean(SamplesApplication.SETTING_HARDWARE_ACCELERATION, true);
-            if (!hardwareAcceleration) {
-                mapView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            }
-        }
 
         mapView.getMapZoomControls().setZoomControlsOrientation(Orientation.VERTICAL_IN_OUT);
         mapView.getMapZoomControls().setZoomInResource(R.drawable.zoom_control_in);

@@ -24,12 +24,12 @@ This section provides you with information how to create a POI database, how to 
 
 The tool is implemented as a plugin to the [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) software. To use the tool, you are required to have a working installation of Osmosis and the writer plugin copied to the plugins directory of Osmosis. You should also be familiar with the Osmosis tool.
 
-Download the release or snapshot writer plugin (with dependencies) from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.mapsforge%22) or [Sonatype OSS Repository Hosting](https://oss.sonatype.org/content/repositories/snapshots/org/mapsforge/) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) for how to install a plugin.
+Download the release or snapshot writer plugin (**jar-with-dependencies**) from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.mapsforge%22) or [Sonatype OSS Repository Hosting](https://oss.sonatype.org/content/repositories/snapshots/org/mapsforge/) and read the Osmosis [documentation](http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage#Plugin_Tasks) for how to install a plugin.
 
 To convert OSM data to a POI database execute the following command:
 
 ```bash
-$OSMOSIS_HOME/bin/osmosis --rb file=your_map_file.osm.pbf --poi-writer file=your_database.poi preferred-language=en tag-conf-file=poi-mapping.xml
+$OSMOSIS_HOME/bin/osmosis --rb file=your_map_file.osm.pbf --poi-writer file=your_database.poi
 ```
 
 The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin should handle the data that was read from the given OSM stream.

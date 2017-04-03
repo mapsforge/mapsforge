@@ -1,4 +1,5 @@
 /*
+ * Copyright 2017 usrusr
  * Copyright 2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -14,19 +15,25 @@
  */
 package org.mapsforge.samples.android;
 
-import org.mapsforge.map.controller.FrameBufferController;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
+import org.mapsforge.map.layer.hills.SimpleShadingAlgortithm;
+
+import java.io.File;
 
 /**
- * Viewer using the hardware accelerated FrameBuffer.
- * <p>
- * Enable hardware acceleration in Settings!
+ * Standard map view with hill shading.
  */
-public class HAMapViewer extends DefaultTheme {
+public class HillshadingMapViewer extends DefaultTheme {
 
     @Override
-    protected void createMapViews() {
-        FrameBufferController.HA_FRAME_BUFFER = true;
+    protected HillsRenderConfig getHillsRenderConfig() {
+        File demFolder = new File(getMapFileDirectory(), "dem");
 
-        super.createMapViews();
+        if (!(demFolder.exists() && demFolder.isDirectory() && demFolder.canRead())) {
+            return null;
+        }
+
+        return new HillsRenderConfig(demFolder, AndroidGraphicFactory.INSTANCE, new SimpleShadingAlgortithm());
     }
 }

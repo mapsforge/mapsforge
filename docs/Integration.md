@@ -56,20 +56,15 @@ compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-x86'
 #### Desktop
 ```groovy
 compile 'org.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]'
-compile 'org.xerial:sqlite-jdbc:3.15.1'
+compile 'org.xerial:sqlite-jdbc:3.16.1'
 ```
 
 ## Snapshots
 
-We publish regularly SNAPSHOT builds to Sonatype OSS Repository Hosting.
+We publish SNAPSHOT builds to Sonatype OSS Repository Hosting.
 
 You need to add the repository:
 ```groovy
-configurations.all {
-    // check for latest snapshot on every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
@@ -79,6 +74,13 @@ And declare the dependencies like:
 ```groovy
 compile 'org.mapsforge:mapsforge-core:master-SNAPSHOT'
 ...
+```
+
+For checking latest snapshot on every build:
+```groovy
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 ```
 
 ## Maven

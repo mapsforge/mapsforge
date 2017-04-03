@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +27,7 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
@@ -335,5 +337,14 @@ public abstract class MapViewerTemplate extends Activity {
     protected MapView getMapView() {
         setContentView(getLayoutId());
         return (MapView) findViewById(getMapViewId());
+    }
+
+    /**
+     * Override to enable hill shading.
+     *
+     * @return null or the HillsRenderConfig to use (defining height model path and algorithm)
+     */
+    protected HillsRenderConfig getHillsRenderConfig() {
+        return null;
     }
 }

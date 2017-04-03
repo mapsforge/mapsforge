@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,6 +31,7 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 
@@ -45,20 +47,34 @@ public class StandardRenderer implements RenderCallback {
     private static final byte ZOOM_MAX = 22;
 
     public final GraphicFactory graphicFactory;
+    public final HillsRenderConfig hillsRenderConfig;
     public final MapDataStore mapDataStore;
     private final boolean renderLabels;
 
     /**
-     * Constructs a new StandardRenderer.
+     * Constructs a new StandardRenderer (without hillshading).
      *
      * @param mapDataStore the MapDataStore from which the map data will be read.
      */
     public StandardRenderer(MapDataStore mapDataStore,
                             GraphicFactory graphicFactory,
                             boolean renderLabels) {
+        this(mapDataStore, graphicFactory, renderLabels, null);
+    }
+
+    /**
+     * Constructs a new StandardRenderer.
+     *
+     * @param mapDataStore      the MapDataStore from which the map data will be read.
+     * @param hillsRenderConfig optional relief shading support.
+     */
+    public StandardRenderer(MapDataStore mapDataStore,
+                            GraphicFactory graphicFactory,
+                            boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
         this.mapDataStore = mapDataStore;
         this.graphicFactory = graphicFactory;
         this.renderLabels = renderLabels;
+        this.hillsRenderConfig = hillsRenderConfig;
     }
 
     /**

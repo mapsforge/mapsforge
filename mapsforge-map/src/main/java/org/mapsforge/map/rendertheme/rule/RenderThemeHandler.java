@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,9 +24,11 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.XmlUtils;
 import org.mapsforge.map.rendertheme.renderinstruction.Area;
 import org.mapsforge.map.rendertheme.renderinstruction.Caption;
 import org.mapsforge.map.rendertheme.renderinstruction.Circle;
+import org.mapsforge.map.rendertheme.renderinstruction.Hillshading;
 import org.mapsforge.map.rendertheme.renderinstruction.Line;
 import org.mapsforge.map.rendertheme.renderinstruction.LineSymbol;
 import org.mapsforge.map.rendertheme.renderinstruction.PathText;
@@ -266,6 +269,34 @@ public final class RenderThemeHandler {
                 if (symbolId != null) {
                     this.symbols.put(symbolId, symbol);
                 }
+            } else if ("hillshading".equals(qName)) {
+                checkState(qName, Element.RULE);
+                byte minZoom = 5;
+                byte maxZoom = 17;
+                byte layer = 5;
+                short magnitude = 64;
+
+                for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
+                    String name = pullParser.getAttributeName(i);
+                    String value = pullParser.getAttributeValue(i);
+
+                    if ("zoom-min".equals(name)) {
+                        minZoom = XmlUtils.parseNonNegativeByte("zoom-min", value);
+                    } else if ("zoom-max".equals(name)) {
+                        maxZoom = XmlUtils.parseNonNegativeByte("zoom-max", value);
+                    } else if ("magnitude".equals(name)) {
+                        magnitude = (short) XmlUtils.parseNonNegativeInteger("magnitude", value);
+                        if (magnitude > 255)
+                            throw new XmlPullParserException("Attribute 'magnitude' must not be > 255");
+                    } else if ("layer".equals(name)) {
+                        layer = XmlUtils.parseNonNegativeByte("layer", value);
+                    }
+                }
+
+                int hillShadingLevel = this.level++;
+                Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, hillShadingLevel, this.graphicFactory);
+
+                renderTheme.addHillShadings(hillshading);
             } else {
                 throw new XmlPullParserException("unknown element: " + qName);
             }

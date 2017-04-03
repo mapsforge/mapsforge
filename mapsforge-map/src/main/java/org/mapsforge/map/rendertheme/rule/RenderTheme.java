@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,8 +20,10 @@ package org.mapsforge.map.rendertheme.rule;
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
+import org.mapsforge.map.layer.renderer.StandardRenderer;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.renderinstruction.Hillshading;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ public class RenderTheme {
     private final LRUCache<MatchingCacheKey, List<RenderInstruction>> wayMatchingCache;
     private final LRUCache<MatchingCacheKey, List<RenderInstruction>> poiMatchingCache;
     private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
+    private ArrayList<Hillshading> hillShadings = new ArrayList<>(); // NOPMD specific interface for trimToSize
 
     private final Map<Byte, Float> strokeScales = new HashMap<>();
     private final Map<Byte, Float> textScales = new HashMap<>();
@@ -187,8 +191,13 @@ public class RenderTheme {
         this.rulesList.add(rule);
     }
 
+    void addHillShadings(Hillshading hillshading) {
+        this.hillShadings.add(hillshading);
+    }
+
     void complete() {
         this.rulesList.trimToSize();
+        this.hillShadings.trimToSize();
         for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
             this.rulesList.get(i).onComplete();
         }
@@ -223,5 +232,10 @@ public class RenderTheme {
         for (Rule rule : this.rulesList) {
             rule.apply(visitor);
         }
+    }
+
+    public void matchHillShadings(StandardRenderer renderer, RenderContext renderContext) {
+        for (Hillshading hillShading : hillShadings)
+            hillShading.render(renderContext, renderer.hillsRenderConfig);
     }
 }
