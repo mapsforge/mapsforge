@@ -172,6 +172,9 @@ public final class PoiWriter {
      * Complete task.
      */
     public void complete() {
+        if(geoTagger != null){
+            geoTagger.processBoundaries();
+        }
         NumberFormat nfMegabyte = NumberFormat.getInstance();
         NumberFormat nfCounts = NumberFormat.getInstance();
         nfCounts.setGroupingUsed(true);

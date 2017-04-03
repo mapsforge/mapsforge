@@ -44,13 +44,19 @@ public class GeoTagger {
     public GeoTagger(PoiWriter writer){
         this.writer = writer;
         conn = writer.getConnection();
-        BATCH_LIMIT = writer.BATCH_LIMIT;
+        BATCH_LIMIT = PoiWriter.BATCH_LIMIT;
         try {
             this.pStmtInsertWayNodes = conn.prepareStatement(DbConstants.INSERT_WAYNODES_STATEMENT);
             this.pStmtUpdateData = this.conn.prepareStatement(DbConstants.UPDATE_DATA_STATEMENT);
             this.pStmtNodesInBox = this.conn.prepareStatement(DbConstants.FIND_IN_BOX_STATEMENT);
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        //Init Relation list
+        administrativeBoundaries = new ArrayList<>();
+        for(int i=0; i<12; i++){
+            administrativeBoundaries.add(new ArrayList<Relation>());
         }
     }
 
@@ -61,14 +67,20 @@ public class GeoTagger {
         for (Tag tag : tags) {
             switch (tag.getKey()) {
                 //TOO laggy to get bounds like the follwing.
-//                case "highway":
-//                case "landuse":
-//                case "sport":
-//                case "building":
-//                case "waterway":
+                case "building":
+                case "highway":
+                case "landuse":
+                case "leisure":
+                case "amenity":
+                case "sport":
+                case "waterway":
+                case "barrier":
+                case "railway":
+                case "foot":
 //                    //"natural is no nonBound-case"
-//                    return;
+                    return;
                 //TODO Add more cases for other nonboundaries
+//                default:
                 case "boundary":
                     //This case is simpler than exclude all non valid cases.
                     //But it will not get all bound results, some have no tags set and exist only as
@@ -76,31 +88,38 @@ public class GeoTagger {
                     // then add possible boundaries to database
                     // It is possible too, to add all ways, but this is not that efficient
                     if (tag.getValue().equalsIgnoreCase("administrative")) {
-                        //No tags occured that speek against a boundary
-                        int i = 0;
-                        try {
-                            for (WayNode wayNode : way.getWayNodes()) {
-                                pStmtInsertWayNodes.setLong(1, way.getId());
-                                pStmtInsertWayNodes.setLong(2, wayNode.getNodeId());
-                                pStmtInsertWayNodes.setInt(3, i);
-                                pStmtInsertWayNodes.addBatch();
-
-                                i++;
-                            }
-                            batchCountWays++;
-                            if (batchCountWays % BATCH_LIMIT == 0) {
-                                pStmtInsertWayNodes.executeBatch();
-                                pStmtInsertWayNodes.clearBatch();
-                            }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+                        storeWay(way);
                     }
                     return;
             }
         }
+        storeWay(way);
     }
 
+    private void storeWay(Way way){
+        //No tags occured that speek against a boundary
+        int i = 0;
+        try {
+            for (WayNode wayNode : way.getWayNodes()) {
+                pStmtInsertWayNodes.setLong(1, way.getId());
+                pStmtInsertWayNodes.setLong(2, wayNode.getNodeId());
+                pStmtInsertWayNodes.setInt(3, i);
+                pStmtInsertWayNodes.addBatch();
+
+                i++;
+            }
+            batchCountWays++;
+            if (batchCountWays % BATCH_LIMIT == 0) {
+                pStmtInsertWayNodes.executeBatch();
+                pStmtInsertWayNodes.clearBatch();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //List of Administrative Boundaries Relations
+    private List<List<Relation>> administrativeBoundaries;
     private int batchCountRelation = 0;
 
     public void filterBoundaries(Relation relation) {
@@ -114,12 +133,35 @@ public class GeoTagger {
             //TODO Specify cultural/regional diffs for admin_levels,
             //TODO which should be the lowest level of administrative boundary, tagged with is_in
             //or simply loop all admin_levels descendent, and add the is_in tag if it doesn't exist
+            case "7":
+                administrativeBoundaries.get(6).add(relation);
+                return;
+            case "8":
+                administrativeBoundaries.get(7).add(relation);
+                return;
             case "9":
-                //German administrative level for city/village boundry
-                break;
+                administrativeBoundaries.get(8).add(relation);
+                return;
+            case "10":
+                administrativeBoundaries.get(9).add(relation);
+                return;
             default:
                 return;
         }
+    }
+    
+    public void processBoundaries(){
+        for (int i = administrativeBoundaries.size()-1; i>=0; i--) {
+            List<Relation> administrativeBoundary = administrativeBoundaries.get(i);
+            for (Relation relation : administrativeBoundary) {
+                processBoundary(relation);
+            }
+
+        }
+
+    }
+
+    private void processBoundary(Relation relation){
         List<List<Long>> bounds = new ArrayList<>();
         for (RelationMember relationMember : relation.getMembers()) {
             if (relationMember.getMemberType().equals(EntityType.Way)
@@ -361,7 +403,7 @@ public class GeoTagger {
             LOGGER.fine("Is_in Tags set for relation: " + relationName + "; ");
         }
     }
-
+    
     private class Poi {
         public long id;
         public double lat;
