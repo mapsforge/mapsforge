@@ -1,5 +1,6 @@
 /*
  * Copyright 2015-2016 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,6 +29,7 @@ public class PoiWriterConfiguration {
     private boolean allTags;
     private BoundingBox bboxConfiguration;
     private String comment;
+    private boolean geoTags;
     private int fileSpecificationVersion;
     private boolean filterCategories;
     private File outputFile;
@@ -93,6 +95,13 @@ public class PoiWriterConfiguration {
      */
     public boolean isFilterCategories() {
         return filterCategories;
+    }
+
+    /**
+     * @return if add additional tags to data, to resolve geolocation
+     */
+    public boolean isGeoTags() {
+        return this.geoTags;
     }
 
     /**
@@ -200,6 +209,13 @@ public class PoiWriterConfiguration {
      */
     public void setFilterCategories(boolean filterCategories) {
         this.filterCategories = filterCategories;
+    }
+
+    /**
+     * @param geoTags if add additional tags to data, to resolve geolocation
+     */
+    public void setGeoTags(boolean geoTags) {
+        this.geoTags = geoTags;
     }
 
     /**
