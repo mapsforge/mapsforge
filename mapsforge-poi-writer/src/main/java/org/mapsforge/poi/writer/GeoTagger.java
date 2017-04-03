@@ -66,7 +66,6 @@ public class GeoTagger {
         Collection<Tag> tags = way.getTags();
         for (Tag tag : tags) {
             switch (tag.getKey()) {
-                //TOO laggy to get bounds like the follwing.
                 case "building":
                 case "highway":
                 case "landuse":
@@ -80,24 +79,22 @@ public class GeoTagger {
 //                    //"natural is no nonBound-case"
                     return;
                 //TODO Add more cases for other nonboundaries
-//                default:
                 case "boundary":
-                    //This case is simpler than exclude all non valid cases.
-                    //But it will not get all bound results, some have no tags set and exist only as
+                    // This case is simpler than exclude all non valid cases.
+                    // But it will not get all bound results, some have no tags set and exist only as
                     // relation; it's better to exclude them and
                     // then add possible boundaries to database
-                    // It is possible too, to add all ways, but this is not that efficient
                     if (tag.getValue().equalsIgnoreCase("administrative")) {
                         storeWay(way);
                     }
                     return;
             }
         }
+        //No tags occured that speek against a boundary
         storeWay(way);
     }
 
     private void storeWay(Way way){
-        //No tags occured that speek against a boundary
         int i = 0;
         try {
             for (WayNode wayNode : way.getWayNodes()) {
@@ -131,8 +128,7 @@ public class GeoTagger {
         if(adminLevelValue == null) return;
         switch(adminLevelValue.trim()){
             //TODO Specify cultural/regional diffs for admin_levels,
-            //TODO which should be the lowest level of administrative boundary, tagged with is_in
-            //or simply loop all admin_levels descendent, and add the is_in tag if it doesn't exist
+            // which should be the lowest level of administrative boundary, tagged with is_in
             case "7":
                 administrativeBoundaries.get(6).add(relation);
                 return;
