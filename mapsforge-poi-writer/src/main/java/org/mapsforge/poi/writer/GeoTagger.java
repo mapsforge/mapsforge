@@ -154,12 +154,14 @@ class GeoTagger {
         for (Relation postalBoundary : postalBoundaries) {
             processBoundary(postalBoundary, true);
         }
+        commit();
 
         for (int i = administrativeBoundaries.size() - 1; i >= 0; i--) {
             List<Relation> administrativeBoundary = administrativeBoundaries.get(i);
             for (Relation relation : administrativeBoundary) {
                 processBoundary(relation, false);
             }
+            commit();
         }
     }
 
@@ -245,6 +247,7 @@ class GeoTagger {
     private void updateTagData(Map<Poi, Map<String, String>> pois,Polygon polygon, String key, String value){
         for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
             Poi poi = entry.getKey();
+            String tmpValue = value;
 
             Map<String, String> tagmap = entry.getValue();
             if (tagmap.keySet().contains(key)) {
@@ -255,8 +258,8 @@ class GeoTagger {
                 if(prev.contains(",") || prev.contains(";")){
                     continue;
                 }
-                if(value.contains(",") || value.contains(";")){
-                    value = prev+","+value;
+                if(tmpValue.contains(",") || tmpValue.contains(";")){
+                    tmpValue = (prev + "," + tmpValue);
                 }
             }
 
@@ -270,7 +273,7 @@ class GeoTagger {
             }
 
             //Write surrounding area as parent in "is_in" tag.
-            tagmap.put(key, value);
+            tagmap.put(key, tmpValue);
             batchCountRelation++;
             try {
                 this.pStmtUpdateData.setString(1, writer.tagsToString(tagmap));
