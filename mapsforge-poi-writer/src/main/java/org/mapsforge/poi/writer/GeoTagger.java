@@ -200,6 +200,7 @@ class GeoTagger {
                     case "hamlet":
                     case "isolated_dwelling":
                     case "allotments":
+                    case "suburb":
                         break;
                     default:
                         continue;
@@ -247,7 +248,16 @@ class GeoTagger {
 
             Map<String, String> tagmap = entry.getValue();
             if (tagmap.keySet().contains(key)) {
-                continue;
+                if(!key.equals("is_in")){
+                    continue;
+                }
+                String prev = tagmap.get(key);
+                if(prev.contains(",") || prev.contains(";")){
+                    continue;
+                }
+                if(value.contains(",") || value.contains(";")){
+                    value = prev+","+value;
+                }
             }
 
             if (!tagmap.keySet().contains("name")) {
