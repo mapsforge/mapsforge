@@ -182,9 +182,18 @@ class GeoTagger {
         Map<Poi, Map<String, String>> pois = getPoisInsideBounds(bbox);
 
         if(isPostCode){
-            String value = writer.getValueOfTag("postal_code", relation.getTags());
-            if(value != null || !value.isEmpty()){
-                updateTagData(pois, polygon,"addr:postcode", value);
+            String postcode = writer.getValueOfTag("postal_code", relation.getTags());
+            if(postcode != null && !postcode.isEmpty()){
+                updateTagData(pois, polygon,"addr:postcode", postcode);
+
+                String city = writer.getValueOfTag("note", relation.getTags());
+                if(city != null && !city.isEmpty()){
+                    int i = city.indexOf(postcode);
+                    if(i>=0){
+                        city = city.substring(0,i) + city.substring(postcode.length(), city.length()).trim();
+                        updateTagData(pois, polygon,"addr:city", city);
+                    }
+                }
             }
         } else {
             Map.Entry<Poi, Map<String, String>> adminArea = null;
