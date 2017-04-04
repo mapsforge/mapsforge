@@ -91,9 +91,7 @@ class GeoTagger {
                     // But it will not get all bound results, some have no tags set and exist only as
                     // relation; it's better to exclude them and
                     // then add possible boundaries to database
-                    if (tag.getValue().equalsIgnoreCase("administrative")) {
-                        storeWay(way);
-                    }
+                    storeWay(way);
                     return;
             }
         }
@@ -378,6 +376,7 @@ class GeoTagger {
             }
             //One path does'not match, so return
             if (bounds.contains(check) && bounds.size() > 1) {
+                LOGGER.finer("Merging failed");
                 return null; //continue if you want to add all calculatated boundary parts.
             }
         }
