@@ -42,7 +42,11 @@ class GeoTagger {
     private PreparedStatement pStmtUpdateData = null;
     private PreparedStatement pStmtNodesInBox = null;
 
-    GeoTagger(PoiWriter writer){
+    //List of Administrative Boundaries Relations
+    private List<List<Relation>> administrativeBoundaries;
+    private List<Relation> postalBoundaries;
+
+    GeoTagger(PoiWriter writer) {
         this.writer = writer;
         conn = writer.getConnection();
         BATCH_LIMIT = PoiWriter.BATCH_LIMIT;
@@ -55,13 +59,15 @@ class GeoTagger {
         }
 
         //Init Relation list
+        postalBoundaries = new ArrayList<>();
         administrativeBoundaries = new ArrayList<>();
-        for(int i=0; i<12; i++){
+        for (int i = 0; i < 12; i++) {
             administrativeBoundaries.add(new ArrayList<Relation>());
         }
     }
 
     private int batchCountWays = 0;
+
     void storeAdministrativeBoundaries(Way way) {
 
         Collection<Tag> tags = way.getTags();
@@ -95,7 +101,7 @@ class GeoTagger {
         storeWay(way);
     }
 
-    private void storeWay(Way way){
+    private void storeWay(Way way) {
         int i = 0;
         try {
             for (WayNode wayNode : way.getWayNodes()) {
@@ -116,48 +122,171 @@ class GeoTagger {
         }
     }
 
-    //List of Administrative Boundaries Relations
-    private List<List<Relation>> administrativeBoundaries;
-    private int batchCountRelation = 0;
 
     void filterBoundaries(Relation relation) {
-        if (!("boundary".equalsIgnoreCase(writer.getValueOfTag("type", relation.getTags()))
-                && "administrative".equalsIgnoreCase(writer.getValueOfTag("boundary", relation.getTags())))) {
-            return;
-        }
-        String adminLevelValue = writer.getValueOfTag("admin_level", relation.getTags());
-        if(adminLevelValue == null) return;
-        switch(adminLevelValue.trim()){
-            //TODO Specify cultural/regional diffs for admin_levels,
-            // which should be the lowest level of administrative boundary, tagged with is_in
-            case "7":
-                administrativeBoundaries.get(6).add(relation);
-                return;
-            case "8":
-                administrativeBoundaries.get(7).add(relation);
-                return;
-            case "9":
-                administrativeBoundaries.get(8).add(relation);
-                return;
-            case "10":
-                administrativeBoundaries.get(9).add(relation);
-                return;
-            default:
+        if ("boundary".equalsIgnoreCase(writer.getValueOfTag("type", relation.getTags()))) {
+            String boundaryCategory = writer.getValueOfTag("boundary", relation.getTags());
+            if ("administrative".equalsIgnoreCase(boundaryCategory)) {
+                String adminLevelValue = writer.getValueOfTag("admin_level", relation.getTags());
+                if (adminLevelValue == null) return;
+                switch (adminLevelValue.trim()) {
+                    //TODO Specify cultural/regional diffs for admin_levels,
+                    // which should be the lowest level of administrative boundary, tagged with is_in
+                    case "7":
+                        administrativeBoundaries.get(6).add(relation);
+                        return;
+                    case "8":
+                        administrativeBoundaries.get(7).add(relation);
+                        return;
+                    case "9":
+                        administrativeBoundaries.get(8).add(relation);
+                        return;
+                    case "10":
+                        administrativeBoundaries.get(9).add(relation);
+                        return;
+                    default:
+                }
+            } else if ("postal_code".equalsIgnoreCase(boundaryCategory)) {
+                postalBoundaries.add(relation);
+            }
         }
     }
-    
-    void processBoundaries(){
-        for (int i = administrativeBoundaries.size()-1; i>=0; i--) {
+
+    void processBoundaries() {
+        for (Relation postalBoundary : postalBoundaries) {
+            processBoundary(postalBoundary, true);
+        }
+
+        for (int i = administrativeBoundaries.size() - 1; i >= 0; i--) {
             List<Relation> administrativeBoundary = administrativeBoundaries.get(i);
             for (Relation relation : administrativeBoundary) {
-                processBoundary(relation);
+                processBoundary(relation, false);
             }
-
         }
-
     }
 
-    private void processBoundary(Relation relation){
+    private void processBoundary(Relation relation, boolean isPostCode) {
+        Coordinate[] coordinates = mergeBoundary(relation);
+        if(coordinates == null) return;
+
+        LOGGER.finer("Polygon created; ");
+        Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
+        double minLat = coordinates[0].y;
+        double minLon = coordinates[0].x;
+        BoundingBox bbox = new BoundingBox(minLat, minLon, minLat, minLon);
+        for (Coordinate coord : coordinates) {
+            bbox = bbox.extendCoordinates(coord.y, coord.x);
+        }
+
+        //Get pois in bounds
+        Map<Poi, Map<String, String>> pois = getPoisInsideBounds(bbox);
+
+        if(isPostCode){
+            String value = writer.getValueOfTag("postal_code", relation.getTags());
+            if(value != null || !value.isEmpty()){
+                updateTagData(pois, polygon,"addr:postcode", value);
+            }
+        } else {
+            Map.Entry<Poi, Map<String, String>> adminArea = null;
+            for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
+                Poi poi = entry.getKey();
+
+                Map<String, String> tagmap = entry.getValue();
+                if (!tagmap.keySet().contains("place") || !tagmap.keySet().contains("is_in")) {
+                    continue;
+                }
+
+                switch (tagmap.get("place")) {
+                    case "town":
+                    case "village":
+                    case "hamlet":
+                    case "isolated_dwelling":
+                    case "allotments":
+                        break;
+                    default:
+                        continue;
+                }
+                Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(poi.lon, poi.lat));
+                if (!point.within(polygon)) {
+                    continue;
+                }
+                if (adminArea == null) {
+                    adminArea = new HashMap.SimpleEntry<>(entry.getKey(), entry.getValue());
+                } else {
+                    Point center = polygon.getCentroid();
+                    LatLong centroid = new LatLong(center.getY(), center.getX());
+                    double disOld = centroid.sphericalDistance(new LatLong(adminArea.getKey().lat, adminArea.getKey().lon));
+                    double disNew = centroid.sphericalDistance(new LatLong(entry.getKey().lat, entry.getKey().lon));
+                    if (disNew < disOld) {
+                        adminArea = new HashMap.SimpleEntry<>(entry.getKey(), entry.getValue());
+                    }
+                }
+            }
+            String isInTagName = null;
+            if (adminArea != null) {
+                isInTagName = adminArea.getValue().get("is_in");
+            }
+            String relationName = writer.getValueOfTag("name", relation.getTags());
+
+            String value = relationName + (isInTagName != null ? "," + isInTagName : "");
+            updateTagData(pois, polygon,"is_in", value);
+
+            LOGGER.fine(relationName + ": #Pois found: " + pois.size()+"; Is_in tags set");
+        }
+    }
+
+    private int batchCountRelation = 0;
+    /**
+     * Updates the tags of a POI-List with key and value.
+     * @param pois Pois, which should be tagged
+     * @param polygon Boundary, where the Pois should inherited
+     * @param key The tag key
+     * @param value The tag value
+     */
+    private void updateTagData(Map<Poi, Map<String, String>> pois,Polygon polygon, String key, String value){
+        for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
+            Poi poi = entry.getKey();
+
+            Map<String, String> tagmap = entry.getValue();
+            if (tagmap.keySet().contains(key)) {
+                continue;
+            }
+
+            if (!tagmap.keySet().contains("name")) {
+                continue;
+            }
+
+            Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(poi.lon, poi.lat));
+            if (!point.within(polygon)) {
+                continue;
+            }
+
+            //Write surrounding area as parent in "is_in" tag.
+            tagmap.put(key, value);
+            batchCountRelation++;
+            try {
+                this.pStmtUpdateData.setString(1, writer.tagsToString(tagmap));
+                this.pStmtUpdateData.setLong(2, poi.id);
+
+                this.pStmtUpdateData.addBatch();
+
+                if (batchCountRelation % BATCH_LIMIT == 0) {
+                    pStmtUpdateData.executeBatch();
+                    pStmtUpdateData.clearBatch();
+                    conn.commit();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Merges Boundaries of a relation
+     * @param relation The relation of boundary
+     * @return A List of Coordinates for the Boundary, first and last element are the same.
+     */
+    private Coordinate[] mergeBoundary(Relation relation){
         List<List<Long>> bounds = new ArrayList<>();
         for (RelationMember relationMember : relation.getMembers()) {
             if (relationMember.getMemberType().equals(EntityType.Way)
@@ -175,232 +304,109 @@ class GeoTagger {
                     + ", Memberrole= " + relationMember.getMemberRole() + "\n");
         }
         //Merge bound nodes (There's may a simpler method)
-        if (!bounds.isEmpty()) {
-            LOGGER.fine("Administrative: " + writer.getValueOfTag("name", relation.getTags())
-                    + " #Members: " + relation.getMembers().size()
-                    + " #Segments: " + bounds.size());
-            //Iterate through given list
-
-            //Debug
-            int counter = bounds.size();
-            if (counter < 6) {
-                String builder2 = "Bound nodes: ";
-                for (int j = 0; j < bounds.size(); j++) {
-                    //LOGGER.info("j: "+ j+"; i: "+i);
-                    List<Long> J = bounds.get(j);
-                    LatLong Ja = writer.findNodeByID(J.get(0));
-                    LatLong Jb = writer.findNodeByID(J.get(J.size() - 1));
-                    builder2 += ("\nJa coord: " + Ja.latitude + ", " + Ja.longitude
-                            + "\nJb coord: " + Jb.latitude + ", " + Jb.longitude);
-                }
-                builder2 += "\n++++++++++++++++++++++++++++++";
-                LOGGER.finer(builder2);
-            }
-            //Debugend
-
-            final double threshold = 20; //In meters;
-            for (int i = 1; i < bounds.size(); i++) {
-                //Create second list, to compare values
-                List<Long> I = bounds.get(i);
-                List<Long> check = I;
-                long nIa = I.get(0);
-                long nIb = I.get(I.size() - 1);
-                LatLong Ia = writer.findNodeByID(I.get(0));
-                LatLong Ib = writer.findNodeByID(I.get(I.size() - 1));
-                boolean isMerged = false;
-                for (int j = 0; j < bounds.size(); j++) {
-                    if (i == j) continue;
-                    //LOGGER.info("j: "+ j+"; i: "+i);
-                    List<Long> J = bounds.get(j);
-                    long nJa = J.get(0);
-                    long nJb = J.get(J.size() - 1);
-                    LatLong Ja = writer.findNodeByID(J.get(0));
-                    LatLong Jb = writer.findNodeByID(J.get(J.size() - 1));
-                    if (Ia == null || Ib == null || Ja == null || Jb == null) return;
-                    //If first of I and last of J matches: merge
-                    if (Ia.sphericalDistance(Jb) < threshold) {
-                        I.remove(0);
-                        J.addAll(I);
-                        bounds.set(j, J);
-                        bounds.remove(i);
-                        i--;
-                        isMerged = true;
-                        LOGGER.finest("matches: " + Ia.latitude + ", " + Ia.longitude
-                                + "; Ids: " + nIa + ", " + nJb);
-                        break;
-                    } else if (Ib.sphericalDistance(Jb) < threshold) {
-                        //If list I is reversed
-                        I = Lists.reverse(I);
-                        I.remove(0);
-                        J.addAll(I);
-                        bounds.set(j, J);
-                        bounds.remove(i);
-                        i--;
-                        isMerged = true;
-                        LOGGER.finest("reverse I matches: " + Ib.latitude + ", " + Ib.longitude
-                                + "; Ids: " + nIb + ", " + nJb);
-                        break;
-                    } else if (Ia.sphericalDistance(Ja) < threshold) {
-                        //If list J is reversed
-                        J = Lists.reverse(J);
-                        I.remove(0);
-                        J.addAll(I);
-                        bounds.set(j, J);
-                        bounds.remove(i);
-                        i--;
-                        isMerged = true;
-                        LOGGER.finest("reverse J matches: " + Ia.latitude + ", " + Ia.longitude
-                                + "; Ids: " + nIa + ", " + nJb);
-                        break;
-                    } else if (Ib.sphericalDistance(Ja) < threshold) {
-                        //If both are reversed
-                        J = Lists.reverse(J);
-                        I = Lists.reverse(I);
-                        I.remove(0);
-                        J.addAll(I);
-                        bounds.set(j, J);
-                        bounds.remove(i);
-                        i--;
-                        isMerged = true;
-                        LOGGER.finest("reverse Both matches: " + Ib.latitude + ", " + Ib.longitude
-                                + "; Ids: " + nIb + ", " + nJa);
-                        break;
-                    }
-                }
-                //One path does'not match, so return
-                if (bounds.contains(check) && bounds.size() > 1) {
-                    if (counter > 6) continue;
-                    String builder = "Bound merging failed; Merged: " + isMerged
-                            + "\nIa coord: " + Ia.latitude + ", " + Ia.longitude
-                            + "\nIb coord: " + Ib.latitude + ", " + Ib.longitude + "\n";
-                    for (int j = 0; j < bounds.size(); j++) {
-                        if (i == j) continue;
-                        //LOGGER.info("j: "+ j+"; i: "+i);
-                        List<Long> J = bounds.get(j);
-                        LatLong Ja = writer.findNodeByID(J.get(0));
-                        LatLong Jb = writer.findNodeByID(J.get(J.size() - 1));
-                        builder += ("\nJa coord: " + Ja.latitude + ", " + Ja.longitude
-                                + "\nJb coord: " + Jb.latitude + ", " + Jb.longitude);
-                    }
-                    builder += "\n-------------------------------\n\n";
-                    LOGGER.fine(builder);
-                }
-            }
-            LOGGER.finer("Bound merging finished; Size= " + bounds.size());
-            //Check the result
-            //TODO Calculate areas which have more than 1 circle bound. (Simple cover func.)
-            if (bounds.size() != 1) {
-                return;
-            }
-            LOGGER.finer("Bound has right size; ");
-
-            Long[] area = bounds.get(0).toArray(new Long[bounds.get(0).size()]);
-            LatLong node = writer.findNodeByID(area[0]);
-            if (node == null || node.sphericalDistance(writer.findNodeByID(area[area.length - 1])) >= threshold) {
-                return;
-            }
-            area[0] = area[area.length - 1];
-            LOGGER.finer("Last node is first node; ");
-            // Convert the way to a JTS polygon
-            Coordinate[] coordinates = new Coordinate[area.length];
-            for (int j = 0; j < area.length; j++) {
-                LatLong wayNode = writer.findNodeByID(area[j]);
-                if (wayNode == null) return;
-                coordinates[j] = new Coordinate(wayNode.longitude, wayNode.latitude);
-            }
-
-            LOGGER.finer("Polygon created; ");
-            Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
-            double minLat = coordinates[0].y;
-            double minLon = coordinates[0].x;
-            BoundingBox bbox = new BoundingBox(minLat, minLon, minLat, minLon);
-            for (Coordinate coord : coordinates) {
-                bbox = bbox.extendCoordinates(coord.y, coord.x);
-            }
-
-            //Get pois in bounds
-            Map<Poi, Map<String, String>> pois = getPoisInsideBounds(bbox);
-
-            Map.Entry<Poi, Map<String, String>> adminArea = null;
-            for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
-                Poi poi = entry.getKey();
-
-                Map<String, String> tagmap = entry.getValue();
-                if (!tagmap.keySet().contains("place") || !tagmap.keySet().contains("is_in")) {
-                    continue;
-                }
-
-                switch(tagmap.get("place")){
-                    case "town":
-                    case "village":
-                    case "hamlet":
-                    case "isolated_dwelling":
-                    case "allotments":
-                        break;
-                    default:
-                        continue;
-                }
-                Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(poi.lon, poi.lat));
-                if (!point.within(polygon)) {
-                    continue;
-                }
-                if(adminArea == null){
-                    adminArea = new HashMap.SimpleEntry<>(entry.getKey(), entry.getValue());
-                } else {
-                    Point center = polygon.getCentroid();
-                    LatLong centroid = new LatLong(center.getY(), center.getX());
-                    double disOld = centroid.sphericalDistance(new LatLong(adminArea.getKey().lat, adminArea.getKey().lon));
-                    double disNew = centroid.sphericalDistance(new LatLong(entry.getKey().lat, entry.getKey().lon));
-                    if(disNew<disOld){
-                        adminArea = new HashMap.SimpleEntry<>(entry.getKey(), entry.getValue());
-                    }
-                }
-            }
-            String isInTagName = null;
-            if(adminArea != null){
-                isInTagName = adminArea.getValue().get("is_in");
-            }
-            String relationName = writer.getValueOfTag("name", relation.getTags());
-            LOGGER.fine(relationName + ": #Pois found: " + pois.size());
-            for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
-                Poi poi = entry.getKey();
-
-                Map<String, String> tagmap = entry.getValue();
-                if (tagmap.keySet().contains("is_in")) {
-                    continue;
-                }
-
-                if (!tagmap.keySet().contains("name")) {
-                    continue;
-                }
-
-                Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(poi.lon, poi.lat));
-                if (!point.within(polygon)) {
-                    continue;
-                }
-
-                //Write surrounding area as parent in "is_in" tag.
-                tagmap.put("is_in", relationName + (isInTagName != null ? ","+isInTagName:""));
-                batchCountRelation++;
-                try {
-                    this.pStmtUpdateData.setString(1, writer.tagsToString(tagmap));
-                    this.pStmtUpdateData.setLong(2, poi.id);
-
-                    this.pStmtUpdateData.addBatch();
-
-                    if (batchCountRelation % BATCH_LIMIT == 0) {
-                        pStmtUpdateData.executeBatch();
-                        pStmtUpdateData.clearBatch();
-                        conn.commit();
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            LOGGER.fine("Is_in Tags set for relation: " + relationName + "; ");
+        if (bounds.isEmpty()) {
+            return null;
         }
+        LOGGER.fine("Administrative: " + writer.getValueOfTag("name", relation.getTags())
+                + " #Members: " + relation.getMembers().size()
+                + " #Segments: " + bounds.size());
+
+        //Iterate through given list
+        final double threshold = 20; //In meters;
+        for (int i = 1; i < bounds.size(); i++) {
+            //Create second list, to compare values
+            List<Long> I = bounds.get(i);
+            List<Long> check = I;
+            long nIa = I.get(0);
+            long nIb = I.get(I.size() - 1);
+            LatLong Ia = writer.findNodeByID(I.get(0));
+            LatLong Ib = writer.findNodeByID(I.get(I.size() - 1));
+            for (int j = 0; j < bounds.size(); j++) {
+                if (i == j) continue;
+                //LOGGER.info("j: "+ j+"; i: "+i);
+                List<Long> J = bounds.get(j);
+                long nJa = J.get(0);
+                long nJb = J.get(J.size() - 1);
+                LatLong Ja = writer.findNodeByID(J.get(0));
+                LatLong Jb = writer.findNodeByID(J.get(J.size() - 1));
+                if (Ia == null || Ib == null || Ja == null || Jb == null) return null;
+                //If first of I and last of J matches: merge
+                if (Ia.sphericalDistance(Jb) < threshold) {
+                    I.remove(0);
+                    J.addAll(I);
+                    bounds.set(j, J);
+                    bounds.remove(i);
+                    i--;
+                    LOGGER.finest("matches: " + Ia.latitude + ", " + Ia.longitude
+                            + "; Ids: " + nIa + ", " + nJb);
+                    break;
+                } else if (Ib.sphericalDistance(Jb) < threshold) {
+                    //If list I is reversed
+                    I = Lists.reverse(I);
+                    I.remove(0);
+                    J.addAll(I);
+                    bounds.set(j, J);
+                    bounds.remove(i);
+                    i--;
+                    LOGGER.finest("reverse I matches: " + Ib.latitude + ", " + Ib.longitude
+                            + "; Ids: " + nIb + ", " + nJb);
+                    break;
+                } else if (Ia.sphericalDistance(Ja) < threshold) {
+                    //If list J is reversed
+                    J = Lists.reverse(J);
+                    I.remove(0);
+                    J.addAll(I);
+                    bounds.set(j, J);
+                    bounds.remove(i);
+                    i--;
+                    LOGGER.finest("reverse J matches: " + Ia.latitude + ", " + Ia.longitude
+                            + "; Ids: " + nIa + ", " + nJb);
+                    break;
+                } else if (Ib.sphericalDistance(Ja) < threshold) {
+                    //If both are reversed
+                    J = Lists.reverse(J);
+                    I = Lists.reverse(I);
+                    I.remove(0);
+                    J.addAll(I);
+                    bounds.set(j, J);
+                    bounds.remove(i);
+                    i--;
+                    LOGGER.finest("reverse Both matches: " + Ib.latitude + ", " + Ib.longitude
+                            + "; Ids: " + nIb + ", " + nJa);
+                    break;
+                }
+            }
+            //One path does'not match, so return
+            if (bounds.contains(check) && bounds.size() > 1) {
+                return null; //continue if you want to add all calculatated boundary parts.
+            }
+        }
+        LOGGER.finer("Bound merging finished; Size= " + bounds.size());
+        //Check the result
+        //TODO Calculate areas which have more than 1 circle bound. (Simple cover func.)
+        if (bounds.size() != 1) {
+            return null;
+        }
+        LOGGER.finer("Bound has right size; ");
+
+        Long[] area = bounds.get(0).toArray(new Long[bounds.get(0).size()]);
+        LatLong node = writer.findNodeByID(area[0]);
+        if (node == null || node.sphericalDistance(writer.findNodeByID(area[area.length - 1])) >= threshold) {
+            return null;
+        }
+        area[0] = area[area.length - 1];
+        LOGGER.finer("Last node is first node; ");
+        // Convert the way to a JTS polygon
+        Coordinate[] coordinates = new Coordinate[area.length];
+        for (int j = 0; j < area.length; j++) {
+            LatLong wayNode = writer.findNodeByID(area[j]);
+            if (wayNode == null) return null;
+            coordinates[j] = new Coordinate(wayNode.longitude, wayNode.latitude);
+        }
+
+        return coordinates;
     }
-    
+
     private class Poi {
         long id;
         double lat;
@@ -457,7 +463,7 @@ class GeoTagger {
         return pois;
     }
 
-    void commit(){
+    void commit() {
         try {
             pStmtInsertWayNodes.executeBatch();
             pStmtUpdateData.executeBatch();
