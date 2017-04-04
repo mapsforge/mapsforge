@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -248,7 +249,12 @@ class GeoTagger {
 
     private Map<Poi,Map<String,String>> removeDoublePois(Map<Poi, Map<String, String>> pois) {
         Map<String, Poi> uniqueHighways = new HashMap<>();
-        for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
+
+        Iterator it = pois.entrySet().iterator();
+        while (it.hasNext())
+        {
+            Map.Entry<Poi, Map<String, String>> entry = (Map.Entry<Poi, Map<String, String>>) it.next();
+
             Map<String, String> tags = entry.getValue();
             //Only double highways are removed, you can remove second part if you want.
             if(tags.containsKey("name") && tags.containsKey("highway")){
@@ -265,7 +271,7 @@ class GeoTagger {
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    pois.remove(entry.getKey());
+                    it.remove();
                 } else {
                     uniqueHighways.put(name, entry.getKey());
                 }
