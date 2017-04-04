@@ -39,6 +39,8 @@ class GeoTagger {
     private final int BATCH_LIMIT;
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
     private PreparedStatement pStmtInsertWayNodes = null;
+    private PreparedStatement pStmtDeletePoiData = null;
+    private PreparedStatement pStmtDeletePoiIndex = null;
     private PreparedStatement pStmtUpdateData = null;
     private PreparedStatement pStmtNodesInBox = null;
 
@@ -52,6 +54,8 @@ class GeoTagger {
         BATCH_LIMIT = PoiWriter.BATCH_LIMIT;
         try {
             this.pStmtInsertWayNodes = conn.prepareStatement(DbConstants.INSERT_WAYNODES_STATEMENT);
+            this.pStmtDeletePoiData = this.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
+            this.pStmtDeletePoiIndex = this.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
             this.pStmtUpdateData = this.conn.prepareStatement(DbConstants.UPDATE_DATA_STATEMENT);
             this.pStmtNodesInBox = this.conn.prepareStatement(DbConstants.FIND_IN_BOX_STATEMENT);
         } catch (SQLException e) {
@@ -171,34 +175,32 @@ class GeoTagger {
 
         LOGGER.finer("Polygon created; ");
         Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
-        double minLat = coordinates[0].y;
-        double minLon = coordinates[0].x;
-        BoundingBox bbox = new BoundingBox(minLat, minLon, minLat, minLon);
-        for (Coordinate coord : coordinates) {
-            bbox = bbox.extendCoordinates(coord.y, coord.x);
-        }
 
         //Get pois in bounds
-        Map<Poi, Map<String, String>> pois = getPoisInsideBounds(bbox);
+        Map<Poi, Map<String, String>> pois = getPoisInsidePolygon(polygon);
 
         if(isPostCode){
+            //Remove doubles dependent on postcode
+            pois = removeDoublePois(pois);
+
+            //Tag entries
             String postcode = writer.getValueOfTag("postal_code", relation.getTags());
             if(postcode != null && !postcode.isEmpty()){
-                updateTagData(pois, polygon,"addr:postcode", postcode);
+                updateTagData(pois,"addr:postcode", postcode);
 
+                //Add addr:city tag, if its available from note tag
                 String city = writer.getValueOfTag("note", relation.getTags());
                 if(city != null && !city.isEmpty()){
                     int i = city.indexOf(postcode);
                     if(i>=0){
                         city = city.substring(0,i) + city.substring(postcode.length(), city.length()).trim();
-                        updateTagData(pois, polygon,"addr:city", city);
+                        updateTagData(pois,"addr:city", city);
                     }
                 }
             }
         } else {
             Map.Entry<Poi, Map<String, String>> adminArea = null;
             for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
-                Poi poi = entry.getKey();
 
                 Map<String, String> tagmap = entry.getValue();
                 if (!tagmap.keySet().contains("place") || !tagmap.keySet().contains("is_in")) {
@@ -216,13 +218,12 @@ class GeoTagger {
                     default:
                         continue;
                 }
-                Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(poi.lon, poi.lat));
-                if (!point.within(polygon)) {
-                    continue;
-                }
+
                 if (adminArea == null) {
+                    //If adminArea not set
                     adminArea = new HashMap.SimpleEntry<>(entry.getKey(), entry.getValue());
                 } else {
+                    //If one area is closer to center than the set one (this case would occur rarely)
                     Point center = polygon.getCentroid();
                     LatLong centroid = new LatLong(center.getY(), center.getX());
                     double disOld = centroid.sphericalDistance(new LatLong(adminArea.getKey().lat, adminArea.getKey().lon));
@@ -239,26 +240,66 @@ class GeoTagger {
             String relationName = writer.getValueOfTag("name", relation.getTags());
 
             String value = relationName + (isInTagName != null ? "," + isInTagName : "");
-            updateTagData(pois, polygon,"is_in", value);
+            updateTagData(pois,"is_in", value);
 
             LOGGER.fine(relationName + ": #Pois found: " + pois.size()+"; Is_in tags set");
         }
+    }
+
+    private Map<Poi,Map<String,String>> removeDoublePois(Map<Poi, Map<String, String>> pois) {
+        Map<String, Poi> uniqueHighways = new HashMap<>();
+        for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
+            Map<String, String> tags = entry.getValue();
+            //Only double highways are removed, you can remove second part if you want.
+            if(tags.containsKey("name") && tags.containsKey("highway")){
+                String name = tags.get("name");
+                if(uniqueHighways.containsKey(name)){
+                    //Write surrounding area as parent in "is_in" tag.
+                    try {
+                        long id = entry.getKey().id;
+                        this.pStmtDeletePoiData.setLong(1, id);
+                        this.pStmtDeletePoiIndex.setLong(1, id);
+
+                        this.pStmtDeletePoiData.addBatch();
+                        this.pStmtDeletePoiIndex.addBatch();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    pois.remove(entry.getKey());
+                } else {
+                    uniqueHighways.put(name, entry.getKey());
+                }
+            }
+        }
+        try {
+            pStmtDeletePoiData.executeBatch();
+            pStmtDeletePoiData.clearBatch();
+            pStmtDeletePoiIndex.executeBatch();
+            pStmtDeletePoiIndex.clearBatch();
+            conn.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return pois;
     }
 
     private int batchCountRelation = 0;
     /**
      * Updates the tags of a POI-List with key and value.
      * @param pois Pois, which should be tagged
-     * @param polygon Boundary, where the Pois should inherited
      * @param key The tag key
      * @param value The tag value
      */
-    private void updateTagData(Map<Poi, Map<String, String>> pois,Polygon polygon, String key, String value){
+    private void updateTagData(Map<Poi, Map<String, String>> pois, String key, String value){
         for (Map.Entry<Poi, Map<String, String>> entry : pois.entrySet()) {
             Poi poi = entry.getKey();
             String tmpValue = value;
 
             Map<String, String> tagmap = entry.getValue();
+            if (!tagmap.keySet().contains("name")) {
+                continue;
+            }
+
             if (tagmap.keySet().contains(key)) {
                 if(!key.equals("is_in")){
                     continue;
@@ -270,15 +311,6 @@ class GeoTagger {
                 if(tmpValue.contains(",") || tmpValue.contains(";")){
                     tmpValue = (prev + "," + tmpValue);
                 }
-            }
-
-            if (!tagmap.keySet().contains("name")) {
-                continue;
-            }
-
-            Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(poi.lon, poi.lat));
-            if (!point.within(polygon)) {
-                continue;
             }
 
             //Write surrounding area as parent in "is_in" tag.
@@ -450,7 +482,15 @@ class GeoTagger {
         }
     }
 
-    private Map<Poi, Map<String, String>> getPoisInsideBounds(BoundingBox bbox) {
+    private Map<Poi, Map<String, String>> getPoisInsidePolygon(Polygon polygon) {
+        Coordinate[] coordinates = polygon.getBoundary().getCoordinates();
+        double minLat = coordinates[0].y;
+        double minLon = coordinates[0].x;
+        BoundingBox bbox = new BoundingBox(minLat, minLon, minLat, minLon);
+        for (Coordinate coord : coordinates) {
+            bbox = bbox.extendCoordinates(coord.y, coord.x);
+        }
+
         Map<Poi, Map<String, String>> pois = new HashMap<>();
         LOGGER.finer("Bbox: minLat: " + bbox.minLatitude + "; minLon: " + bbox.minLongitude
                 + "; maxLat: " + bbox.maxLatitude + "; maxLon: " + bbox.maxLongitude + ";");
@@ -467,8 +507,15 @@ class GeoTagger {
                 long id = rs.getLong(1);
                 double lat = rs.getDouble(2);
                 double lon = rs.getDouble(3);
+
+                Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(lon, lat));
+                if (!point.within(polygon)) {
+                    continue;
+                }
+
                 Map<String, String> tagmap = writer.stringToTags(rs.getString(4));
                 int categ = rs.getInt(5);
+
                 pois.put(new Poi(id, lat, lon), tagmap);
                 LOGGER.finest("Bbox: InnerNode-Id: " + id + "; Lat: " + lat + "; Lon: " + lon + ";");
 //                if (categname.equals("Cities") || categname.equals("Towns")
