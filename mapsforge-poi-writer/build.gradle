@@ -3,6 +3,7 @@ dependencies {
     compile 'com.vividsolutions:jts-core:1.14.0'
     compile 'org.xerial:sqlite-jdbc:3.16.1'
     compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.45'
+    compile 'com.google.guava:guava:20.0'
 }
 
 jar {

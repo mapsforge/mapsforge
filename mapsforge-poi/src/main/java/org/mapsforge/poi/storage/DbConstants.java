@@ -24,6 +24,9 @@ public final class DbConstants {
     public static final String CREATE_METADATA_STATEMENT = "CREATE TABLE metadata (name TEXT, value TEXT);";
     public static final String CREATE_NODES_STATEMENT = "CREATE TABLE nodes (id INTEGER, lat REAL, lon REAL, PRIMARY KEY (id));";
 
+    public static final String CREATE_WAYS_STATEMENT = "CREATE TABLE ways (id INTEGER, name String, PRIMARY KEY (id));";
+    public static final String CREATE_WAYNODES_STATEMENT = "CREATE TABLE waynodes (way INTEGER not null, node INTEGER not null, position INTEGER, PRIMARY KEY (way, node, position));";
+
     public static final String DELETE_DATA_STATEMENT = "DELETE FROM poi_data WHERE id = ?;";
     public static final String DELETE_INDEX_STATEMENT = "DELETE FROM poi_index WHERE id = ?;";
 
@@ -32,6 +35,8 @@ public final class DbConstants {
     public static final String DROP_INDEX_STATEMENT = "DROP TABLE IF EXISTS poi_index;";
     public static final String DROP_METADATA_STATEMENT = "DROP TABLE IF EXISTS metadata;";
     public static final String DROP_NODES_STATEMENT = "DROP TABLE IF EXISTS nodes;";
+    public static final String DROP_WAYS_STATEMENT = "DROP TABLE IF EXISTS ways;";
+    public static final String DROP_WAYNODES_STATEMENT = "DROP TABLE IF EXISTS waynodes;";
 
     public static final String FIND_BY_DATA_CLAUSE = " AND poi_data.data LIKE ?";
     public static final String FIND_BY_ID_STATEMENT =
@@ -48,15 +53,24 @@ public final class DbConstants {
                     + "minLat <= ? AND "
                     + "minLon <= ? AND "
                     + "minLat >= ? AND "
-                    + "minLon >= ?";
+                    + "minLon >= ?;";
     public static final String FIND_METADATA_STATEMENT = "SELECT name, value FROM metadata;";
     public static final String FIND_NODES_STATEMENT = "SELECT lat, lon FROM nodes WHERE id = ?;";
+    public static final String FIND_WAY_BY_ID_STATEMENT = "SELECT name FROM ways WHERE id = ?;";
+    public static final String FIND_WAY_NODES_BY_WAY_ID_STATEMENT =
+            "SELECT node, position FROM waynodes WHERE way = ?;";
 
     public static final String INSERT_CATEGORIES_STATEMENT = "INSERT INTO poi_categories VALUES (?, ?, ?);";
     public static final String INSERT_DATA_STATEMENT = "INSERT INTO poi_data VALUES (?, ?, ?);";
     public static final String INSERT_INDEX_STATEMENT = "INSERT INTO poi_index VALUES (?, ?, ?, ?, ?);";
     public static final String INSERT_METADATA_STATEMENT = "INSERT INTO metadata VALUES (?, ?);";
     public static final String INSERT_NODES_STATEMENT = "INSERT INTO nodes VALUES (?, ?, ?);";
+    public static final String INSERT_WAYS_STATEMENT = "INSERT INTO ways VALUES (?, ?);";
+    public static final String INSERT_WAYNODES_STATEMENT = "INSERT INTO waynodes VALUES (?, ?, ?);";
+
+    public static final String UPDATE_DATA_STATEMENT = "UPDATE poi_data "
+            + "SET data = ? "
+            + "WHERE id = ?;";
 
     public static final String METADATA_BOUNDS = "bounds";
     public static final String METADATA_COMMENT = "comment";

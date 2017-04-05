@@ -35,6 +35,7 @@ public class PoiWriterConfiguration {
     private URL tagMapping;
     private boolean ways;
     private String writerVersion;
+    private boolean autoGeoTags;
 
     /**
      * Convenience method.
@@ -138,6 +139,14 @@ public class PoiWriterConfiguration {
     }
 
     /**
+     * Add additional tags to data, to resolve geolocation
+     * @return boolean, if it's enabled
+     */
+    public boolean isAutoGeoTags() {
+        return autoGeoTags;
+    }
+
+    /**
      * Convenience method.
      *
      * @param file the path to the tag mapping
@@ -230,5 +239,13 @@ public class PoiWriterConfiguration {
      */
     public void setWriterVersion(String writerVersion) {
         this.writerVersion = writerVersion;
+    }
+
+    /**
+     * Sets configuration for autoGeoTags
+     * @param autoGeoTags true: enable geoTags, else false
+     */
+    public void setAutoGeoTags(boolean autoGeoTags) {
+        this.autoGeoTags = autoGeoTags;
     }
 }
