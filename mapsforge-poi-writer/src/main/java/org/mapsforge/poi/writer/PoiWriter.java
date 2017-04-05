@@ -45,6 +45,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.text.NumberFormat;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
@@ -343,6 +344,24 @@ public final class PoiWriter {
     }
 
     /**
+     * Returns value of given tag in a set of tags
+     *
+     * @param tagkey Tag key
+     * @param tags   Collection of tags
+     * @return Tag value or null if not exists
+     */
+    public String getValueOfTag(String tagkey, Collection<Tag> tags) {
+        String name = null;
+        for (Tag tag : tags) {
+            if (tag.getKey() != null && tag.getKey().equalsIgnoreCase(tagkey)) {
+                name = tag.getValue();
+                break;
+            }
+        }
+        return name;
+    }
+
+    /**
      * Process an <code>Entity</code> using the given coordinates.
      */
     private void processEntity(Entity entity, double latitude, double longitude) {
@@ -394,14 +413,12 @@ public final class PoiWriter {
      * Process a <code>Way</code> (only polygons).
      */
     private void processWay(Way way) {
-        // The first and the last way node are the same
-        if (!way.isClosed()) {
-            return;
-        }
+        //Delete way isClosed restriction, to laod all ways.
 
         // The way has at least 4 way nodes
-        if (way.getWayNodes().size() < MIN_NODES_POLYGON) {
-            LOGGER.finer("Found closed polygon with fewer than 4 way nodes. Way id: " + way.getId());
+        // MIN_NODES_POLYGON moved to polygon handling
+        if (way.getWayNodes().size() < 2) {
+            LOGGER.finer("Found closed polygon with fewer than 2 way nodes. Way id: " + way.getId());
             return;
         }
 
@@ -430,16 +447,29 @@ public final class PoiWriter {
             LatLong wayNode = wayNodes[j];
             coordinates[j] = new Coordinate(wayNode.longitude, wayNode.latitude);
         }
-        Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
 
-        // Compute the centroid of the polygon
-        Point centroid = polygon.getCentroid();
-        if (centroid == null) {
+        //Calculate center of polygon dependent on way form
+        LatLong centroid;
+        if (way.isClosed() && way.getWayNodes().size() >= MIN_NODES_POLYGON) {
+            Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
+
+            // Compute the centroid of the polygon
+            Point center = polygon.getCentroid();
+            centroid = new LatLong(center.getY(), center.getX());
+
+        } else {
+            //MultiPoint multi = GEOMETRY_FACTORY.createMultiPoint(coordinates);
+            centroid = wayNodes[(wayNodes.length - 1) / 2];
+        }
+
+        //Name not valid
+        String name = getValueOfTag("name", way.getTags());
+        if (name == null || name.isEmpty()) {
             return;
         }
 
         // Process the way
-        processEntity(way, centroid.getY(), centroid.getX());
+        processEntity(way, centroid.getLatitude(), centroid.getLongitude());
     }
 
     /**
