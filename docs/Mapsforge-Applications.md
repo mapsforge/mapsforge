@@ -23,7 +23,7 @@
 | [GPSLogger II](https://play.google.com/store/apps/details?id=com.emacberry.gpslogger) | AllInOne Logging & Tracking Solution | Proprietary/Free | Closed |
 | [GPSSend](https://play.google.com/store/apps/details?id=com.tinkerpete.gps) | Live Tracking + Emergency Notification | Proprietary/Free | Closed |
 | [Green Tracks](https://play.google.com/store/apps/details?id=com.mountain.tracks) | Climbing and hiking | Proprietary/Free | Closed |
-| [Hunt Cyprus](https://play.google.com/store/apps/details?id=gr.talent.cyprusHunt) | Map and navigation application for hunters | Proprietary/Free | Closed |
+| [Hunt Cyprus](https://play.google.com/store/apps/developer?id=Talent+S.A.) | Map and navigation application for hunters | Proprietary/Free and Commercial | Closed |
 | [Locus](http://www.locusmap.eu/) | Multi-Function Map | Proprietary/Free and Premium | Closed |
 | [Map GB](https://play.google.com/store/apps/details?id=com.mapgb) | Offline map of Britain with postcode search | Proprietary/Free (in-app purchases) | Closed |
 | [Map Marker](https://play.google.com/store/apps/details?id=com.exlyo.mapmarker) | Map application to place markers | Proprietary/Free (in-app purchases) | Closed |
@@ -36,7 +36,7 @@
 | [My Map](http://www.mymap.com.np/) | Offline map of Nepal | Proprietary/Free | Closed |
 | [myWorkouts](http://www.myworkouts.org/) | Sports and GPS Tracker | Proprietary/Free | Closed |
 | [Nautilus Charts](https://play.google.com/store/apps/details?id=gr.talent.nautiluscharts) | Offline Nautical Charts plotting and positioning system | Proprietary/Commercial | Closed |
-| [Navi Cyprus](https://play.google.com/store/apps/details?id=gr.talent.cyprus.navi) | Map and navigation application | Proprietary/Free | Closed |
+| [Navi Cyprus](https://play.google.com/store/apps/developer?id=Talent+S.A.) | Map and navigation application | Proprietary/Free and Commercial | Closed |
 | [Nutiteq](https://github.com/nutiteq/hellomap3d) | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open |
 | [Offline City Map](http://topobyte.de/) | Tourist Map | Proprietary/Commercial | Closed |
 | [Offline Maps](https://play.google.com/store/apps/developer?id=applantation.com) | Tourist Map | Proprietary/Commercial | Closed |
