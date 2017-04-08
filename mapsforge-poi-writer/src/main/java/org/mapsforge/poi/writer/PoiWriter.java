@@ -435,6 +435,14 @@ public final class PoiWriter {
             return;
         }
 
+        // Only add named entities
+        if (this.configuration.isNames()) {
+            String name = getTagValue(entity.getTags(), "name");
+            if (name == null || name.isEmpty()) {
+                return;
+            }
+        }
+
         // Collect the POI tags in a sorted manner
         Map<String, String> tagMap = new TreeMap<>();
         String tagStr = null;
@@ -523,12 +531,6 @@ public final class PoiWriter {
         } else {
             // Non-closed way
             centroid = wayNodes[(wayNodes.length - 1) / 2];
-
-            // TODO Filter unnamed non-closed ways?
-            String name = getTagValue(way.getTags(), "name");
-            if (name == null || name.isEmpty()) {
-                return;
-            }
         }
 
         // Process the way
