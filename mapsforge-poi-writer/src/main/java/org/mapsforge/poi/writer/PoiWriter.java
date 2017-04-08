@@ -443,36 +443,34 @@ public final class PoiWriter {
             }
         }
 
-        // Collect the POI tags in a sorted manner
-        Map<String, String> tagMap = new TreeMap<>();
-        String tagStr = null;
-
-        // Get entity's tag and data
+        // Process entity
+        Map<String, String> tagMap = null;
         for (Tag tag : entity.getTags()) {
             String key = tag.getKey().toLowerCase(Locale.ENGLISH);
             if (this.tagMappingResolver.getMappingTags().contains(key)) {
-                // Save this tag
-                tagStr = key + "=" + tag.getValue();
-            }
-            // Save the entity's data
-            tagMap.put(key, tag.getValue());
-        }
+                // Check if there is a POI category for this tag and add POI to DB
+                String tagStr = key + "=" + tag.getValue();
+                try {
+                    // Get category from tag
+                    PoiCategory pc = this.tagMappingResolver.getCategoryFromTag(tagStr);
 
-        // Check if there is a POI category for this tag and add POI to DB
-        try {
-            // Get category from tag
-            PoiCategory pc = null;
-            if (tagStr != null) {
-                pc = this.tagMappingResolver.getCategoryFromTag(tagStr);
+                    // Add entity if its category matches
+                    if (pc != null && this.categoryFilter.isAcceptedCategory(pc)) {
+                        // Collect the POI tags in a sorted manner
+                        if (tagMap == null) {
+                            tagMap = new TreeMap<>();
+                            for (Tag t : entity.getTags()) {
+                                tagMap.put(t.getKey().toLowerCase(Locale.ENGLISH), t.getValue());
+                            }
+                        }
+                        // Store POI
+                        ++this.poiAdded;
+                        writePOI(this.poiAdded, latitude, longitude, tagMap, pc);
+                    }
+                } catch (UnknownPoiCategoryException e) {
+                    LOGGER.warning("The '" + tagStr + "' tag refers to a POI that does not exist: " + e.getMessage());
+                }
             }
-
-            // Add entity if its category matches
-            if (pc != null && this.categoryFilter.isAcceptedCategory(pc)) {
-                ++this.poiAdded;
-                writePOI(this.poiAdded, latitude, longitude, tagMap, pc);
-            }
-        } catch (UnknownPoiCategoryException e) {
-            LOGGER.warning("The '" + tagStr + "' tag refers to a POI that does not exist: " + e.getMessage());
         }
     }
 
