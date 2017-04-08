@@ -34,7 +34,6 @@ import org.mapsforge.poi.writer.model.PoiWriterConfiguration;
 import org.openstreetmap.osmosis.core.container.v0_6.EntityContainer;
 import org.openstreetmap.osmosis.core.domain.v0_6.Entity;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
-import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
@@ -47,10 +46,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
@@ -77,7 +73,7 @@ public final class PoiWriter {
 
     private static final Logger LOGGER = LoggerWrapper.getLogger(PoiWriter.class.getName());
 
-    static final int BATCH_LIMIT = 1024;
+    private static final int BATCH_LIMIT = 1024;
 
     /**
      * The minimum amount of nodes required for a valid closed polygon.
@@ -100,22 +96,17 @@ public final class PoiWriter {
     // Accepted categories
     private final PoiCategoryFilter categoryFilter;
 
-    // Geo tagging
-    private GeoTagger geoTagger;
-
     // Statistics
     private int nNodes = 0;
     private int nWays = 0;
-    private int nRelations = 0;
     private int poiAdded = 0;
 
     // Database
-    Connection conn = null;
+    private Connection conn = null;
     private PreparedStatement pStmtData = null;
     private PreparedStatement pStmtIndex = null;
     private PreparedStatement pStmtNodesC = null;
     private PreparedStatement pStmtNodesR = null;
-    private PreparedStatement pStmtWayNodesR = null;
 
     private PoiWriter(PoiWriterConfiguration configuration, ProgressManager progressManager) {
         this.configuration = configuration;
@@ -149,11 +140,6 @@ public final class PoiWriter {
         LOGGER.info("Creating POI database...");
         this.progressManager.initProgressBar(0, 0);
         this.progressManager.setMessage("Creating POI database");
-
-        // Set GeoTagger (note that database has to be created before initializing GeoTagger)
-        if (this.configuration.isGeoTags()) {
-            this.geoTagger = new GeoTagger(this);
-        }
     }
 
     /**
@@ -164,9 +150,6 @@ public final class PoiWriter {
         this.progressManager.setMessage("Committing...");
         this.pStmtIndex.executeBatch();
         this.pStmtData.executeBatch();
-        if (this.configuration.isGeoTags()) {
-            this.geoTagger.commit();
-        }
         this.conn.commit();
     }
 
@@ -174,9 +157,6 @@ public final class PoiWriter {
      * Complete task.
      */
     public void complete() {
-        if (this.configuration.isGeoTags()) {
-            this.geoTagger.processBoundaries();
-        }
         NumberFormat nfMegabyte = NumberFormat.getInstance();
         NumberFormat nfCounts = NumberFormat.getInstance();
         nfCounts.setGroupingUsed(true);
@@ -184,7 +164,7 @@ public final class PoiWriter {
 
         try {
             commit();
-            if (this.configuration.isFilterCategories()) {
+            if (configuration.isFilterCategories()) {
                 filterCategories();
             }
             writeMetadata();
@@ -237,7 +217,7 @@ public final class PoiWriter {
     /**
      * Find a <code>Node</code> by its ID.
      */
-    LatLong findNodeByID(long id) {
+    private LatLong findNodeByID(long id) {
         try {
             this.pStmtNodesR.setLong(1, id);
 
@@ -257,36 +237,13 @@ public final class PoiWriter {
     }
 
     /**
-     * Find way nodes by its ID.
-     */
-    List<Long> findWayNodesByWayID(long id) {
-        try {
-            this.pStmtWayNodesR.setLong(1, id);
-
-            ResultSet rs = this.pStmtWayNodesR.executeQuery();
-            Map<Integer, Long> nodeList = new TreeMap<>();
-            while (rs.next()) {
-                // way, node, position
-                Long nodeID = rs.getLong(1);
-                Integer pos = rs.getInt(2);
-                nodeList.put(pos, nodeID);
-            }
-            rs.close();
-            return new ArrayList<>(nodeList.values());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * Returns value of given tag in a set of tags.
      *
      * @param tags collection of tags
      * @param key  tag key
      * @return Tag value or null if not exists
      */
-    String getTagValue(Collection<Tag> tags, String key) {
+    private String getTagValue(Collection<Tag> tags, String key) {
         for (Tag tag : tags) {
             if (tag.getKey().toLowerCase(Locale.ENGLISH).equals(key.toLowerCase(Locale.ENGLISH))) {
                 return tag.getValue();
@@ -303,7 +260,6 @@ public final class PoiWriter {
 
         this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
         this.conn.createStatement().execute(DbConstants.DROP_NODES_STATEMENT);
-        this.conn.createStatement().execute(DbConstants.DROP_WAYNODES_STATEMENT);
         this.conn.close();
 
         this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
@@ -322,7 +278,6 @@ public final class PoiWriter {
         Statement stmt = this.conn.createStatement();
 
         // Create tables
-        stmt.execute(DbConstants.DROP_WAYNODES_STATEMENT);
         stmt.execute(DbConstants.DROP_NODES_STATEMENT);
         stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
         stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
@@ -333,14 +288,12 @@ public final class PoiWriter {
         stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
         stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
         stmt.execute(DbConstants.CREATE_NODES_STATEMENT);
-        stmt.execute(DbConstants.CREATE_WAYNODES_STATEMENT);
 
         this.pStmtData = this.conn.prepareStatement(DbConstants.INSERT_DATA_STATEMENT);
         this.pStmtIndex = this.conn.prepareStatement(DbConstants.INSERT_INDEX_STATEMENT);
 
         this.pStmtNodesC = this.conn.prepareStatement(DbConstants.INSERT_NODES_STATEMENT);
         this.pStmtNodesR = this.conn.prepareStatement(DbConstants.FIND_NODES_STATEMENT);
-        this.pStmtWayNodesR = this.conn.prepareStatement(DbConstants.FIND_WAYNODES_BY_ID_STATEMENT);
 
         // Insert categories
         PreparedStatement pStmt = this.conn.prepareStatement(DbConstants.INSERT_CATEGORIES_STATEMENT);
@@ -401,19 +354,6 @@ public final class PoiWriter {
                     processWay(way);
                 }
                 break;
-            case Relation:
-                if (this.configuration.isGeoTags() && this.configuration.isWays()) {
-                    Relation relation = (Relation) entity;
-                    if (this.nRelations == 0) {
-                        LOGGER.info("Processing relations...");
-                        this.geoTagger.commit();
-                    }
-                    this.geoTagger.filterBoundaries(relation);
-                    ++this.nRelations;
-                }
-                break;
-            default:
-                break;
         }
 
         // Hint to GC
@@ -433,14 +373,6 @@ public final class PoiWriter {
         // Only add entities that have data
         if (entity.getTags().isEmpty()) {
             return;
-        }
-
-        // Only add named entities
-        if (this.configuration.isNames()) {
-            String name = getTagValue(entity.getTags(), "name");
-            if (name == null || name.isEmpty()) {
-                return;
-            }
         }
 
         // Collect the POI tags in a sorted manner
@@ -486,11 +418,6 @@ public final class PoiWriter {
             return;
         }
 
-        // Geo tagging
-        if (this.configuration.isGeoTags()) {
-            this.geoTagger.storeAdministrativeBoundaries(way);
-        }
-
         // Retrieve way nodes
         boolean validWay = true;
         LatLong[] wayNodes = new LatLong[way.getWayNodes().size()];
@@ -531,6 +458,12 @@ public final class PoiWriter {
         } else {
             // Non-closed way
             centroid = wayNodes[(wayNodes.length - 1) / 2];
+
+            // TODO Filter unnamed non-closed ways?
+            String name = getTagValue(way.getTags(), "name");
+            if (name == null || name.isEmpty()) {
+                return;
+            }
         }
 
         // Process the way
@@ -538,25 +471,9 @@ public final class PoiWriter {
     }
 
     /**
-     * Convert string representation back to tags map.
-     */
-    Map<String, String> stringToTags(String tagsmapstring) {
-        String[] sb = tagsmapstring.split("\\r");
-        Map<String, String> map = new HashMap<>();
-        for (String key : sb) {
-            if (key.contains("=")) {
-                String[] set = key.split("=");
-                if (set.length == 2)
-                    map.put(set[0], set[1]);
-            }
-        }
-        return map;
-    }
-
-    /**
      * Convert tags to a string representation using '\r' delimiter.
      */
-    String tagsToString(Map<String, String> tagMap) {
+    private String tagsToString(Map<String, String> tagMap) {
         StringBuilder sb = new StringBuilder();
         for (String key : tagMap.keySet()) {
             // Skip some tags
