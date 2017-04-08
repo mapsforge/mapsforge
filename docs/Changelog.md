@@ -2,6 +2,7 @@
 
 ## New since 0.8.0
 
+- POI: add non-closed ways [#947](https://github.com/mapsforge/mapsforge/issues/947)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.9.0)
 

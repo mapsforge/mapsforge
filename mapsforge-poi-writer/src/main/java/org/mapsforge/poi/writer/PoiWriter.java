@@ -1,5 +1,6 @@
 /*
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -216,7 +217,7 @@ public final class PoiWriter {
     /**
      * Find a <code>Node</code> by its ID.
      */
-    public LatLong findNodeByID(long id) {
+    private LatLong findNodeByID(long id) {
         try {
             this.pStmtNodesR.setLong(1, id);
 
@@ -232,6 +233,22 @@ public final class PoiWriter {
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    /**
+     * Returns value of given tag in a set of tags.
+     *
+     * @param tags collection of tags
+     * @param key  tag key
+     * @return Tag value or null if not exists
+     */
+    private String getTagValue(Collection<Tag> tags, String key) {
+        for (Tag tag : tags) {
+            if (tag.getKey().toLowerCase(Locale.ENGLISH).equals(key.toLowerCase(Locale.ENGLISH))) {
+                return tag.getValue();
+            }
+        }
         return null;
     }
 
@@ -344,24 +361,6 @@ public final class PoiWriter {
     }
 
     /**
-     * Returns value of given tag in a set of tags
-     *
-     * @param tagkey Tag key
-     * @param tags   Collection of tags
-     * @return Tag value or null if not exists
-     */
-    public String getValueOfTag(String tagkey, Collection<Tag> tags) {
-        String name = null;
-        for (Tag tag : tags) {
-            if (tag.getKey() != null && tag.getKey().equalsIgnoreCase(tagkey)) {
-                name = tag.getValue();
-                break;
-            }
-        }
-        return name;
-    }
-
-    /**
      * Process an <code>Entity</code> using the given coordinates.
      */
     private void processEntity(Entity entity, double latitude, double longitude) {
@@ -410,15 +409,12 @@ public final class PoiWriter {
     }
 
     /**
-     * Process a <code>Way</code> (only polygons).
+     * Process a <code>Way</code>.
      */
     private void processWay(Way way) {
-        //Delete way isClosed restriction, to laod all ways.
-
-        // The way has at least 4 way nodes
-        // MIN_NODES_POLYGON moved to polygon handling
+        // The way has at least 2 way nodes
         if (way.getWayNodes().size() < 2) {
-            LOGGER.finer("Found closed polygon with fewer than 2 way nodes. Way id: " + way.getId());
+            LOGGER.finer("Found way with fewer than 2 way nodes. Way id: " + way.getId());
             return;
         }
 
@@ -441,31 +437,33 @@ public final class PoiWriter {
             return;
         }
 
-        // Convert the way to a JTS polygon
-        Coordinate[] coordinates = new Coordinate[wayNodes.length];
-        for (int j = 0; j < wayNodes.length; j++) {
-            LatLong wayNode = wayNodes[j];
-            coordinates[j] = new Coordinate(wayNode.longitude, wayNode.latitude);
-        }
-
-        //Calculate center of polygon dependent on way form
+        //Calculate center of way dependent on its form
         LatLong centroid;
         if (way.isClosed() && way.getWayNodes().size() >= MIN_NODES_POLYGON) {
+            // Closed way
+            // Convert the way to a JTS polygon
+            Coordinate[] coordinates = new Coordinate[wayNodes.length];
+            for (int j = 0; j < wayNodes.length; j++) {
+                LatLong wayNode = wayNodes[j];
+                coordinates[j] = new Coordinate(wayNode.longitude, wayNode.latitude);
+            }
             Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
 
             // Compute the centroid of the polygon
             Point center = polygon.getCentroid();
+            if (center == null) {
+                return;
+            }
             centroid = new LatLong(center.getY(), center.getX());
-
         } else {
-            //MultiPoint multi = GEOMETRY_FACTORY.createMultiPoint(coordinates);
+            // Non-closed way
             centroid = wayNodes[(wayNodes.length - 1) / 2];
-        }
 
-        //Name not valid
-        String name = getValueOfTag("name", way.getTags());
-        if (name == null || name.isEmpty()) {
-            return;
+            // TODO Filter unnamed non-closed ways?
+            String name = getTagValue(way.getTags(), "name");
+            if (name == null || name.isEmpty()) {
+                return;
+            }
         }
 
         // Process the way
