@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -51,7 +51,7 @@ public final class DbConstants {
                     + "minLat <= ? AND "
                     + "minLon <= ? AND "
                     + "minLat >= ? AND "
-                    + "minLon >= ?;";
+                    + "minLon >= ?";
     public static final String FIND_METADATA_STATEMENT = "SELECT name, value FROM metadata;";
     public static final String FIND_NODES_STATEMENT = "SELECT lat, lon FROM nodes WHERE id = ?;";
     public static final String FIND_WAYNODES_BY_ID_STATEMENT = "SELECT node, position FROM waynodes WHERE way = ?;";
