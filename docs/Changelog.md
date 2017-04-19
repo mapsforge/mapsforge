@@ -5,6 +5,7 @@
 - POI: add non-closed ways [#947](https://github.com/mapsforge/mapsforge/issues/947)
 - POI: add geo tagging [#946](https://github.com/mapsforge/mapsforge/issues/946)
 - POI: add named entities option [#949](https://github.com/mapsforge/mapsforge/issues/949)
+- POI: fix multiple POI categories [#940](https://github.com/mapsforge/mapsforge/issues/940)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.9.0)
 
