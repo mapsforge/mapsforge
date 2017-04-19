@@ -32,13 +32,17 @@ public final class PoiCategoryRangeQueryGenerator {
      * Gets the SQL query that looks up POI entries.
      *
      * @param filter  The filter object for determining all wanted categories.
-     * @param pattern the pattern to search in points of interest names (may be null).
+     * @param patterns the patterns to search in points of interest names (may be null).
      * @return The SQL query.
      */
-    public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
-        return DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter)
-                + (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "")
-                + " LIMIT ?;";
+    public static String getSQLSelectString(PoiCategoryFilter filter, String[] patterns) {
+        String query = DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter);
+        if(patterns != null){
+            for(String ignored : patterns) {
+                query += DbConstants.FIND_BY_DATA_CLAUSE;
+            }
+        }
+        return (query + " LIMIT ?;");
     }
 
     /**

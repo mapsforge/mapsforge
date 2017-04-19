@@ -42,7 +42,6 @@ public class PoiWriterFactory extends TaskManagerFactory {
     private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
     private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
     private static final String PARAM_WAYS = "ways";
-    private static final String PARAM_GEO_TAGS = "geo-tags";
 
     @Override
     protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {

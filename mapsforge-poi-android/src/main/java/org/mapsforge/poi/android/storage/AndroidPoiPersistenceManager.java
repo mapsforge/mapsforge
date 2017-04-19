@@ -205,12 +205,21 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
     @Override
     public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
                                                   String pattern, int limit) {
+        return findInRect(bb, filter, new String[]{pattern}, limit);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
+                                                  String[] patterns, int limit) {
         // Clear previous results
         this.ret.clear();
 
         // Query
         try {
-            Stmt stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, pattern));
+            Stmt stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, patterns));
 
             stmt.reset();
             stmt.clear_bindings();
@@ -219,10 +228,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             stmt.bind(2, bb.maxLongitude);
             stmt.bind(3, bb.minLatitude);
             stmt.bind(4, bb.minLongitude);
-            if (pattern != null) {
-                stmt.bind(5, pattern);
+
+            int i = 0;
+            if (patterns != null) {
+                for(i=0; i<patterns.length; i++){
+                    stmt.bind(5+i, patterns[i]);
+                }
             }
-            stmt.bind(pattern != null ? 6 : 5, limit);
+            stmt.bind(5+i, limit);
 
             while (stmt.step()) {
                 long id = stmt.column_long(0);

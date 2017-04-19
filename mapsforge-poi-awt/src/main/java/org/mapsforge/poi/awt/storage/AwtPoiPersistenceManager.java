@@ -213,12 +213,21 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
     @Override
     public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
                                                   String pattern, int limit) {
+        return findInRect(bb, filter, new String[]{pattern}, limit);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
+                                                  String[] patterns, int limit) {
         // Clear previous results
         this.ret.clear();
 
         // Query
         try {
-            PreparedStatement stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pattern));
+            PreparedStatement stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, patterns));
 
             stmt.clearParameters();
 
@@ -226,10 +235,13 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             stmt.setDouble(2, bb.maxLongitude);
             stmt.setDouble(3, bb.minLatitude);
             stmt.setDouble(4, bb.minLongitude);
-            if (pattern != null) {
-                stmt.setString(5, pattern);
+            int i = 0;
+            if (patterns != null) {
+                for(i=0; i<patterns.length; i++){
+                    stmt.setString(5+i, patterns[i]);
+                }
             }
-            stmt.setInt(pattern != null ? 6 : 5, limit);
+            stmt.setInt(5+i, limit);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
