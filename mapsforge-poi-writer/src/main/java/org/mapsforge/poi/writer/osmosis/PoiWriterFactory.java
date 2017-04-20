@@ -56,7 +56,6 @@ public class PoiWriterFactory extends TaskManagerFactory {
         configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
         configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
         configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, true));
-        configuration.setAutoGeoTags(getBooleanArgument(taskConfig, PARAM_GEO_TAGS, false));
 
         // If set to true, progress messages will be forwarded to a GUI message handler
         // boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);
