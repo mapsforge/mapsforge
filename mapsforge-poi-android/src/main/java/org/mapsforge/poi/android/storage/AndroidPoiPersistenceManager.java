@@ -229,13 +229,15 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             stmt.bind(3, bb.minLatitude);
             stmt.bind(4, bb.minLongitude);
 
-            int i = 0;
+            int i = 0; //i is only counted if pattern is not null
             if (patterns != null) {
-                for(i=0; i<patterns.length; i++){
-                    stmt.bind(5+i, patterns[i]);
+                for (String pattern : patterns) {
+                    if (pattern == null) continue;
+                    stmt.bind(5 + i, pattern);
+                    i++;
                 }
             }
-            stmt.bind(5+i, limit);
+            stmt.bind(5 + i, limit);
 
             while (stmt.step()) {
                 long id = stmt.column_long(0);

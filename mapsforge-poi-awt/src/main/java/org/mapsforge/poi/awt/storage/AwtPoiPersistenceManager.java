@@ -235,13 +235,16 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             stmt.setDouble(2, bb.maxLongitude);
             stmt.setDouble(3, bb.minLatitude);
             stmt.setDouble(4, bb.minLongitude);
-            int i = 0;
+
+            int i = 0; //i is only counted if pattern is not null
             if (patterns != null) {
-                for(i=0; i<patterns.length; i++){
-                    stmt.setString(5+i, patterns[i]);
+                for (String pattern : patterns) {
+                    if (pattern == null) continue;
+                    stmt.setString(5 + i, pattern);
+                    i++;
                 }
             }
-            stmt.setInt(5+i, limit);
+            stmt.setInt(5 + i, limit);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
