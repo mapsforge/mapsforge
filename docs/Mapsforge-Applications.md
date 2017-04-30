@@ -2,6 +2,7 @@
 
 |**Name**|**Type**|**License/Cost**|**Sources**|
 |--------|--------|----------------|-----------|
+| [AAT](https://bailu.ch/aat) | GPS tracking for activities | GPL3/Free | Open |
 | [AlaMesa](http://www.alamesacuba.com/en/products/apps/) | Bars & Restaurant directory | Propietary/Free | Closed |
 | [Alminav](http://wiki.openstreetmap.org/wiki/Alminav) | Route planning and offline navigation for cyclists and hikers | Proprietary/Free (in-app purchases) | Closed |
 | [Android-Speedometer](https://play.google.com/store/apps/details?id=de.meditgbr.android.tacho) | GPS based speedometer | Proprietary/Free and Premium | Closed |
