@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,17 +31,17 @@ import java.util.Locale;
 
 /**
  * Demonstration of changing render themes. This activity checks for .xml files
- * on the sdcard and loads them as render themes.
+ * on device storage and loads them as render themes.
  */
 public class RenderThemeChanger extends DefaultTheme {
 
     private class ChangerThread extends PausableThread {
-        private static final int ROTATION_TIME = 10000; // milli secs to display a theme
+        private static final int ROTATION_TIME = 10000;
 
         @Override
         protected void doWork() throws InterruptedException {
-            RenderThemeChanger.this.changeRenderTheme();
             sleep(ROTATION_TIME);
+            RenderThemeChanger.this.changeRenderTheme();
         }
 
         @Override
@@ -71,13 +71,18 @@ public class RenderThemeChanger extends DefaultTheme {
     private TileRendererLayer tileRendererLayer;
 
     @Override
+    protected void createControls() {
+        super.createControls();
+        this.changerThread = new ChangerThread();
+        this.changerThread.start();
+    }
+
+    @Override
     protected void createLayers() {
         tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
                 this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(),
                 false, true, false);
-        mapView.getLayerManager().getLayers().add(tileRendererLayer);
-        this.changerThread = new ChangerThread();
-        this.changerThread.start();
+        this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
     }
 
     void changeRenderTheme() {
@@ -88,15 +93,17 @@ public class RenderThemeChanger extends DefaultTheme {
             try {
                 XmlRenderTheme nextRenderTheme = new ExternalRenderThemeUsingJarResources(nextTheme);
                 Log.i(SamplesApplication.TAG, "Loading new render theme " + nextTheme.getName());
-                // there should really be a simpler way to just change the
-                // render theme safely
+                // there should really be a simpler way to just change the render theme safely
                 mapView.getLayerManager().getLayers().remove(tileRendererLayer);
                 tileRendererLayer.onDestroy();
-                tileCaches.get(0).destroy();
+                purgeTileCaches();
+
+                createTileCaches();
                 tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
                         mapView.getModel().mapViewPosition, getMapFile(), nextRenderTheme,
                         false, true, false);
                 mapView.getLayerManager().getLayers().add(tileRendererLayer);
+
                 mapView.getLayerManager().redrawLayers();
             } catch (FileNotFoundException e) {
                 Log.i(SamplesApplication.TAG, "Could not open file " + nextTheme.getName());
