@@ -101,7 +101,8 @@ public class RenderThemeChanger extends DefaultTheme {
                 createTileCaches();
                 tileRendererLayer = AndroidUtil.createTileRendererLayer(tileCaches.get(0),
                         mapView.getModel().mapViewPosition, getMapFile(), nextRenderTheme,
-                        false, true, false);
+                        true, // generic use alpha, e.g. onlybuildings.xml map background
+                        true, false);
                 mapView.getLayerManager().getLayers().add(tileRendererLayer);
 
                 mapView.getLayerManager().redrawLayers();
