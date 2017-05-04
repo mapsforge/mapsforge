@@ -12,7 +12,7 @@ We're using the dataset that Jochen Topf has provided on his [OpenStreetMap Data
 
 We cut the data down a bit, using [ogr2ogr](http://www.gdal.org/ogr2ogr.html) with the bounds for the desired map:
 
-```
+```bash
 ogr2ogr -overwrite -progress -skipfailures -clipsrc $LEFT $BOTTOM $RIGHT $TOP output.shp land-polygons-split-4326/land_polygons.shp
 ```
 
@@ -28,6 +28,10 @@ fixed_tags = {
 ```
 
 which will attach this tag to all polygons. We also changed the starting id for the OSM ids, as otherwise there is chance of collision with real OSM ids, which will create strange artifacts, like lines running through the map. We also changed the setting for the maximum length of ways, which does not seem to cause a problem.
+
+```bash
+python shape2osm.py --output-location land output.shp
+```
 
 We now have an OSM XML file with land represented as polygons with the tag "natural" -> "nosea".
 
@@ -64,7 +68,7 @@ The following steps could be taken in one, but we separated them out (a testing 
 
 We merge the resulting osm files of the land polygons and sea rectangle with our real osm data file:
 
-```
+```bash
 $OSMOSIS_HOME/bin/osmosis --rb file=data.pbf --rx file=sea.osm --s --m --rx file=land.osm --s --m --wb file=out.pbf omitmetadata=true
 ```
 
@@ -72,7 +76,7 @@ $OSMOSIS_HOME/bin/osmosis --rb file=data.pbf --rx file=sea.osm --s --m --rx file
 
 out.pbf can now be fed into the map-writer:
 
-```
+```bash
 $OSMOSIS_HOME/bin/osmosis --rb file=out.pbf --mapfile-writer file=out.map  map-start-position=$LAT,$LON bbox=$BOTTOM,$LEFT,$TOP,$RIGHT
 ```
 
@@ -131,7 +135,7 @@ To convert shp files in osm / pbf format there are many [tools](http://wiki.open
 
 Then run Osmosis with map-writer:
 
-```
+```bash
 $OSMOSIS_HOME/bin/osmosis --rb file=world.pbf --mapfile-writer file=world.map map-start-position=0,0 map-start-zoom=5 zoom-interval-conf=5,0,7
 ```
 
