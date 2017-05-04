@@ -18,7 +18,7 @@ ogr2ogr -overwrite -progress -skipfailures -clipsrc $LEFT $BOTTOM $RIGHT $TOP ou
 
 This produces, depending on the bounds, a much smaller coastline shapefile. We usually extend the boundaries of this file a bit over the actual area for the map, to make sure we don't get any funny cut-offs.
 
-Then we convert the resulting shapefile with [shp2osm.py](https://github.com/mapsforge/mapsforge-mapcreator/blob/master/shape2osm.py) and slight modifications (as are always required with shp2osm). We set:
+Then we convert the resulting shapefile with [shp2osm.py](https://github.com/mapsforge/mapsforge-mapcreator/blob/master/shape2osm.py) (Python 2.x) and slight modifications (as are always required with shp2osm). We set:
 
 ```python
 fixed_tags = {
@@ -33,7 +33,7 @@ which will attach this tag to all polygons. We also changed the starting id for 
 python shape2osm.py --output-location land output.shp
 ```
 
-We now have an OSM XML file with land represented as polygons with the tag "natural" -> "nosea".
+We now have `land.osm`, an OSM XML file with land represented as polygons with the tag "natural" -> "nosea".
 
 ## Sea
 
@@ -60,7 +60,7 @@ For the sea we create an osm file with a rectangle having the bounds of the map:
 
 ```
 
-We now have an OSM XML file with sea represented as polygons with the tag "natural" -> "sea".
+We now have `sea.osm`, an OSM XML file with sea represented as polygons with the tag "natural" -> "sea".
 
 ## Merge
 
