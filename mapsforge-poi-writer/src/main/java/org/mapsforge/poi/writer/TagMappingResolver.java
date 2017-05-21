@@ -104,7 +104,7 @@ class TagMappingResolver {
         }
     }
 
-    List<PoiCategory> getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
+    List<PoiCategory> getCategoriesFromTag(String tag) throws UnknownPoiCategoryException {
         tag = tag.toLowerCase(Locale.ENGLISH);
         List<String> categoryTitles = this.tagMap.get(tag);
 

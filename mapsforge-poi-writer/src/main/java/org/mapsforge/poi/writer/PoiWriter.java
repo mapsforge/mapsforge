@@ -451,7 +451,7 @@ public final class PoiWriter {
                 String tagStr = key + "=" + tag.getValue();
                 try {
                     // Get categories from tag
-                    List<PoiCategory> pcs = this.tagMappingResolver.getCategoryFromTag(tagStr);
+                    List<PoiCategory> pcs = this.tagMappingResolver.getCategoriesFromTag(tagStr);
 
                     if (pcs != null) {
                         for (PoiCategory pc : pcs) {
