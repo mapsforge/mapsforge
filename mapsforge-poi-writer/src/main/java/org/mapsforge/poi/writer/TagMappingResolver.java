@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,7 +23,9 @@ import org.mapsforge.poi.writer.jaxb.Category;
 import org.mapsforge.poi.writer.jaxb.Mapping;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -46,9 +48,9 @@ class TagMappingResolver {
     private final PoiCategoryManager categoryManager;
 
     /**
-     * Maps a tag to a category's title
+     * Maps a tag to category titles
      */
-    private final Map<String, String> tagMap;
+    private final Map<String, List<String>> tagMap;
 
     /**
      * Unique mapping tags
@@ -86,7 +88,12 @@ class TagMappingResolver {
                 for (Mapping m : c.getMapping()) {
                     String tag = m.getTag().toLowerCase(Locale.ENGLISH);
                     LOGGER.finer("'" + tag + "' --> '" + c.getTitle() + "'");
-                    this.tagMap.put(tag, c.getTitle());
+                    List<String> categoryTitles = this.tagMap.get(tag);
+                    if (categoryTitles == null) {
+                        categoryTitles = new ArrayList<>();
+                    }
+                    categoryTitles.add(c.getTitle());
+                    this.tagMap.put(tag, categoryTitles);
                 }
             }
         }
@@ -97,16 +104,23 @@ class TagMappingResolver {
         }
     }
 
-    PoiCategory getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
+    List<PoiCategory> getCategoryFromTag(String tag) throws UnknownPoiCategoryException {
         tag = tag.toLowerCase(Locale.ENGLISH);
-        String categoryName = this.tagMap.get(tag);
+        List<String> categoryTitles = this.tagMap.get(tag);
 
         // Tag not found?
-        if (categoryName == null) {
+        if (categoryTitles == null) {
             return null;
         }
 
-        return this.categoryManager.getPoiCategoryByTitle(categoryName);
+        List<PoiCategory> poiCategories = new ArrayList<>();
+        for (String categoryTitle : categoryTitles) {
+            PoiCategory poiCategory = this.categoryManager.getPoiCategoryByTitle(categoryTitle);
+            if (poiCategory != null) {
+                poiCategories.add(poiCategory);
+            }
+        }
+        return poiCategories;
     }
 
     Set<String> getMappingTags() {
