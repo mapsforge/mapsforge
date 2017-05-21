@@ -519,6 +519,9 @@ public final class PoiWriter {
                 coordinates[j] = new Coordinate(wayNode.longitude, wayNode.latitude);
             }
             Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(coordinates), null);
+            if (!polygon.isValid()) {
+                return;
+            }
 
             // Compute the centroid of the polygon
             Point center = polygon.getCentroid();
