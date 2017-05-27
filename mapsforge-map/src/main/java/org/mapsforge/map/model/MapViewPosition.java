@@ -3,7 +3,6 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2016 devemux86
  * Copyright 2015 Andreas Schildbach
- * Copyright 2016 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,101 +25,243 @@ import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
-import org.mapsforge.map.util.PausableThread;
+
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MapViewPosition extends Observable implements Persistable {
 
-    private class Animator extends PausableThread {
+    /**
+     * This thread performs all user-driven animations for movement or zooming. Each animation request will be queued in a fifo queue and
+     * processed one after each other. If the system has high cpu load the jobs will not fully animate but instead just perform a few or
+     * even perform just the final step.
+     */
+    private class Animator extends Thread {
 
-        // debugging tip: for investigating what happens during the zoom animation
-        // just make the times longer for duration and frame length
-        private static final int DEFAULT_DURATION = 250;
-        private static final int FRAME_LENGTH_IN_MS = 15;
+        private LinkedBlockingQueue<AbstractAnimationJob> jobs = new LinkedBlockingQueue<>();
 
-        private static final int DEFAULT_MOVE_STEPS = 25;
+        private AtomicBoolean working = new AtomicBoolean(false);
 
-        // move parameters
-        private long mapSize;
-        private int moveSteps;
-        private double targetPixelX, targetPixelY;
-
-        // zoom parameters
-        private double scaleDifference;
-        private double startScaleFactor;
-        private long timeEnd, timeStart;
-        private boolean zoomAnimation;
-
-        private double calculateScaleFactor(float percent) {
-            return this.startScaleFactor + this.scaleDifference * percent;
+        public Animator() {
+            // set thread priority above normal
+            setPriority((Thread.NORM_PRIORITY + Thread.MAX_PRIORITY) / 2);
         }
 
         @Override
-        protected void doWork() throws InterruptedException {
-            doWorkMove();
-            doWorkZoom();
-            sleep(FRAME_LENGTH_IN_MS);
-        }
-
-        private void doWorkMove() {
-            if (moveSteps == 0)
-                return;
-            double currentPixelX = MercatorProjection.longitudeToPixelX(longitude, mapSize);
-            double currentPixelY = MercatorProjection.latitudeToPixelY(latitude, mapSize);
-            double stepSizeX = Math.abs(targetPixelX - currentPixelX) / moveSteps;
-            double stepSizeY = Math.abs(targetPixelY - currentPixelY) / moveSteps;
-            double signX = Math.signum(currentPixelX - targetPixelX);
-            double signY = Math.signum(currentPixelY - targetPixelY);
-            --moveSteps;
-
-            moveCenter(stepSizeX * signX, stepSizeY * signY);
-        }
-
-        private void doWorkZoom() throws InterruptedException {
-            if (!this.zoomAnimation)
-                return;
-            if (System.currentTimeMillis() >= this.timeEnd) {
-                this.zoomAnimation = false;
-                MapViewPosition.this.setScaleFactor(calculateScaleFactor(1));
-                MapViewPosition.this.setPivot(null);
-            } else {
-                float timeElapsedRatio = (System.currentTimeMillis() - this.timeStart) / (1f * DEFAULT_DURATION);
-                MapViewPosition.this.setScaleFactor(calculateScaleFactor(timeElapsedRatio));
+        public void run() {
+            super.run();
+            try {
+                while (true) {
+                    AbstractAnimationJob job = jobs.take();
+                    if (job == null)
+                        break;
+                    working.set(true);
+                    job.doWork();
+                    working.set(false);
+                }
+            } catch (InterruptedException e) {
+                working.set(false);
+                //e.printStackTrace();
+                // process is interrupted because it should end. Do nothing here
             }
         }
 
-        @Override
-        protected ThreadPriority getThreadPriority() {
-            return ThreadPriority.ABOVE_NORMAL;
-        }
-
-        @Override
-        protected boolean hasWork() {
-            return this.moveSteps > 0 || this.zoomAnimation;
-        }
-
-        void startAnimationMove(LatLong latLong) {
-            // TODO is this properly synchronized?
-            mapSize = MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize());
-            targetPixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
-            targetPixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
-            moveSteps = DEFAULT_MOVE_STEPS;
-            synchronized (this) {
-                notify();
+        public void put(AbstractAnimationJob job) {
+            try {
+                jobs.put(job);
+            } catch (InterruptedException e) {
+                // should not happen since we have no limitation on the size of the queue
+                e.printStackTrace();
             }
         }
 
-        void startAnimationZoom(double startScaleFactor, double targetScaleFactor) {
-            // TODO is this properly synchronized?
-            this.startScaleFactor = startScaleFactor;
-            this.scaleDifference = targetScaleFactor - this.startScaleFactor;
-            this.zoomAnimation = true;
-            this.timeStart = System.currentTimeMillis();
-            this.timeEnd = this.timeStart + DEFAULT_DURATION;
-            synchronized (this) {
-                notify();
-            }
+        public boolean hasWork() {
+            return working.get() || jobs.size() > 0;
         }
     }
+
+    /////////////////////////////////////////////////////////////////////////
+
+    private abstract class AbstractAnimationJob {
+
+        private long timeStart;
+        private long timeEnd;
+
+        AbstractAnimationJob() {
+            timeStart = System.currentTimeMillis();
+            timeEnd = timeStart + animationDuration;
+        }
+
+        private void doWork() {
+            boolean cont = preparation();
+            if (!cont)
+                return;
+            while (true) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime >= this.timeEnd) {
+                    doEndWork();
+                    return;
+                } else {
+                    float timeElapsedRatio = (currentTime - this.timeStart) / (1f * animationDuration);
+                    doIntermediateWork(timeElapsedRatio);
+                }
+                try {
+                    Thread.sleep(animationSleeptime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        /**
+         * Returns true if the job should continue, false if there is nothing to do
+         *
+         * @return
+         */
+        protected boolean preparation() {
+            return true;
+        }
+
+        protected abstract void doEndWork();
+
+        protected abstract void doIntermediateWork(float percent);
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+
+    private class MoveAnimationJob extends AbstractAnimationJob {
+
+        private double destLatitude;
+        private double destLongitude;
+
+        private double startLatitude;
+        private double startLongitude;
+        private double diffLatitude;
+        private double diffLongitude;
+
+        protected MoveAnimationJob(double destLatitude, double destLongitude) {
+            this.destLatitude = destLatitude;
+            this.destLongitude = destLongitude;
+        }
+
+        @Override
+        protected boolean preparation() {
+            super.preparation();
+            this.startLatitude = latitude;
+            this.startLongitude = longitude;
+            this.diffLatitude = destLatitude - startLatitude;
+            this.diffLongitude = destLongitude - startLongitude;
+
+            if (diffLongitude == 0 && diffLatitude == 0)
+                return false;
+            // TODO if it does not cost much cpu: check diff in pixels and if there is 0 or 1 pixels difference just perform doEndWork()
+            return true;
+        }
+
+        @Override
+        protected void doEndWork() {
+            setCenter(startLatitude + diffLatitude, startLongitude + diffLongitude);
+        }
+
+        @Override
+        protected void doIntermediateWork(float percent) {
+            setCenter(startLatitude + diffLatitude * percent, startLongitude + diffLongitude * percent);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+
+    private class ZoomAnimationJob extends AbstractAnimationJob {
+
+        private double destScaleFactor;
+
+        private double startScaleFactor;
+        private double diffScaleFactor;
+
+        protected ZoomAnimationJob(double destScaleFactor) {
+            this.destScaleFactor = destScaleFactor;
+        }
+
+        @Override
+        protected boolean preparation() {
+            super.preparation();
+            startScaleFactor = scaleFactor;
+            diffScaleFactor = destScaleFactor - startScaleFactor;
+            if (diffScaleFactor == 0)
+                return false;
+            return true;
+        }
+
+        private double calculateScaleFactor(float percent) {
+            return this.startScaleFactor + diffScaleFactor * percent;
+        }
+
+        @Override
+        protected void doEndWork() {
+            setScaleFactorPivot(startScaleFactor + diffScaleFactor, null);
+        }
+
+        @Override
+        protected void doIntermediateWork(float percent) {
+            setScaleFactor(calculateScaleFactor(percent));
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+
+    private class MoveAndZoomAnimationJob extends AbstractAnimationJob {
+
+        private double destLatitude;
+        private double destLongitude;
+
+        private double startLatitude;
+        private double startLongitude;
+        private double diffLatitude;
+        private double diffLongitude;
+
+        private double destScaleFactor;
+
+        private double startScaleFactor;
+        private double diffScaleFactor;
+
+        protected MoveAndZoomAnimationJob(double destLatitude, double destLongitude, double destScaleFactor) {
+            this.destLatitude = destLatitude;
+            this.destLongitude = destLongitude;
+
+            this.destScaleFactor = destScaleFactor;
+        }
+
+        @Override
+        protected boolean preparation() {
+            super.preparation();
+            this.startLatitude = latitude;
+            this.startLongitude = longitude;
+            this.diffLatitude = destLatitude - startLatitude;
+            this.diffLongitude = destLongitude - startLongitude;
+
+            startScaleFactor = scaleFactor;
+            diffScaleFactor = destScaleFactor - startScaleFactor;
+
+            // TODO if it does not cost much cpu: check diff in pixels and if there is 0 or 1 pixels difference and no zoom just perform doEndWork()
+            return true;
+        }
+
+        private double calculateScaleFactor(float percent) {
+            return this.startScaleFactor + diffScaleFactor * percent;
+        }
+
+        @Override
+        protected void doEndWork() {
+            setScaleFactorCenter(startScaleFactor + diffScaleFactor, null, startLatitude + diffLatitude, startLongitude + diffLongitude);
+        }
+
+        @Override
+        protected void doIntermediateWork(float percent) {
+            setScaleFactorCenter(calculateScaleFactor(percent), pivot, startLatitude + diffLatitude * percent, startLongitude + diffLongitude * percent);
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////
 
     private static final String LATITUDE = "latitude";
     private static final String LATITUDE_MAX = "latitudeMax";
@@ -142,13 +283,21 @@ public class MapViewPosition extends Observable implements Persistable {
         return false;
     }
 
-    private final Animator animator;
+    // debugging tip: for investigating what happens during the zoom animation
+    // just make the times longer for duration and frame length
+    private static int animationDuration = 250;
+    private static int animationSleeptime = 15;
+
     private final DisplayModel displayModel;
-    private double latitude, longitude;
+    private double latitude;
+    private double longitude;
     private BoundingBox mapLimit;
     private LatLong pivot;
     private double scaleFactor;
-    private byte zoomLevel, zoomLevelMax, zoomLevelMin;
+    private final Animator animator;
+    private byte zoomLevel;
+    private byte zoomLevelMax;
+    private byte zoomLevelMin;
 
     public MapViewPosition(DisplayModel displayModel) {
         super();
@@ -159,14 +308,117 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Animate the map towards the given position.
+     * Sets the duration for the animation in milliseconds
+     *
+     * @param animationDuration
      */
-    public void animateTo(final LatLong latLong) {
-        animator.startAnimationMove(latLong);
+    public static void setAnimationDuration(int animationDuration) {
+        MapViewPosition.animationDuration = animationDuration;
     }
 
+    /**
+     * Gets the duration for the animation in milliseconds
+     *
+     * @return
+     */
+    public static int getAnimationDuration() {
+        return animationDuration;
+    }
+
+    /**
+     * Sets the sleep time in milliseconds between the animation steps
+     *
+     * @param animationSleeptime
+     */
+    public static void setAnimationSleeptime(int animationSleeptime) {
+        MapViewPosition.animationSleeptime = animationSleeptime;
+    }
+
+    /**
+     * Gets the sleep time in milliseconds between the animation steps
+     *
+     * @return
+     */
+    public static int getAnimationSleeptime() {
+        return animationSleeptime;
+    }
+
+    /**
+     * Animate the map towards the given position. The position is assured to be within the maplimit if set.
+     */
+    public void animateTo(final LatLong latLong) {
+        synchronized (this) {
+            LatLong newPosition = latLong;
+            if (this.mapLimit != null) {
+                newPosition = new LatLong(Math.max(Math.min(latitude, this.mapLimit.maxLatitude), this.mapLimit.minLatitude),
+                        Math.max(Math.min(longitude, this.mapLimit.maxLongitude), this.mapLimit.minLongitude));
+            }
+            MoveAnimationJob job = new MoveAnimationJob(newPosition.latitude, newPosition.longitude);
+            animator.put(job);
+        }
+    }
+
+    /**
+     * Animate the map to the given zoomlevel. The zoomlevel is assured to be inbetween zoomLevelMin and zoomLevelMax.
+     *
+     * @param zoomLevel
+     */
+    private void animateToInternal(int zoomLevel) {
+        synchronized (this) {
+            byte newZoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+            ZoomAnimationJob job = new ZoomAnimationJob(Math.pow(2, newZoomLevel));
+            this.zoomLevel = newZoomLevel;
+            animator.put(job);
+        }
+    }
+
+    /**
+     * Animate the map to the given zoomlevel. The zoomlevel is assured to be inbetween zoomLevelMin and zoomLevelMax.
+     *
+     * @param zoomLevel
+     */
+    public void animateTo(byte zoomLevel) {
+        synchronized (this) {
+            byte newZoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+            ZoomAnimationJob job = new ZoomAnimationJob(Math.pow(2, newZoomLevel));
+            this.zoomLevel = newZoomLevel;
+            animator.put(job);
+        }
+    }
+
+    /**
+     * Animates the map to the given zoomlevel AND position.  The position is assured to be within the maplimit if set. The zoomlevel is assured to be inbetween zoomLevelMin and zoomLevelMax.
+     *
+     */
+    public void animateTo(LatLong latLong, byte zoomLevel) {
+        animateTo(latLong.latitude, latLong.longitude, zoomLevel);
+    }
+
+    public void animateTo(double latitude, double longitude, byte zoomLevel) {
+        synchronized (this) {
+            double newLatitude;
+            double newLongitude;
+            if (this.mapLimit != null) {
+                newLatitude = Math.max(Math.min(latitude, this.mapLimit.maxLatitude), this.mapLimit.minLatitude);
+                newLongitude = Math.max(Math.min(longitude, this.mapLimit.maxLongitude), this.mapLimit.minLongitude);
+            } else {
+                newLatitude = latitude;
+                newLongitude = longitude;
+            }
+            byte newZoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+            MoveAndZoomAnimationJob job = new MoveAndZoomAnimationJob(newLatitude, newLongitude, Math.pow(2, newZoomLevel));
+            this.zoomLevel = newZoomLevel;
+            animator.put(job);
+        }
+    }
+
+    /**
+     * Returns true if the animation is in progress or animation is in the queue for being processed.
+     *
+     * @return
+     */
     public boolean animationInProgress() {
-        return this.scaleFactor != MercatorProjection.zoomLevelToScaleFactor(this.zoomLevel);
+        return animator.hasWork(); //MercatorProjection.zoomLevelToScaleFactor(this.zoomLevel);
     }
 
     public void destroy() {
@@ -174,6 +426,9 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
+     * Returns the current center position of the map. The position may change rapidly if an animation is in progress. If you are
+     * using animation consider keeping the positions and zoomfactors in your code and not using this getters.
+     *
      * @return the current center position of the map.
      */
     public synchronized LatLong getCenter() {
@@ -188,6 +443,9 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
+     * Returns a newly instantiated object representing the current position and zoomlevel. Note that the postion or zoomlevel may
+     * change rapidly if an animation is in progress.
+     *
      * @return the current center position and zoom level of the map.
      */
     public synchronized MapPosition getMapPosition() {
@@ -262,16 +520,6 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Animates the center position of the map by the given amount of pixels.
-     *
-     * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
-     * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
-     */
-    public void moveCenter(double moveHorizontal, double moveVertical) {
-        this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0, true);
-    }
-
-    /**
      * Moves the center position of the map by the given amount of pixels.
      *
      * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
@@ -294,7 +542,7 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Moves the center position of the map by the given amount of pixels.
+     * Moves the center position of the map by the given amount of pixels and sets the zoomlevel. If animated is true the zoom will be animated (the movement won't)
      *
      * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
      * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
@@ -313,8 +561,35 @@ public class MapViewPosition extends Observable implements Persistable {
 
             double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, mapSize);
             double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
+            if (animated) {
+                animateTo(newLatitude, newLongitude, (byte) (zoomLevel + zoomLevelDiff));
+            } else {
+                setCenterInternal(newLatitude, newLongitude);
+                setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
+                notifyObservers();
+            }
+        }
+    }
+
+    /**
+     * Moves the center position of the map by the given amount of pixels.
+     *
+     * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
+     * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
+     */
+    public void moveCenter(double moveHorizontal, double moveVertical) {
+        synchronized (this) {
+            long mapSize = MercatorProjection.getMapSize(this.zoomLevel, this.displayModel.getTileSize());
+            double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, mapSize)
+                    - moveHorizontal;
+            double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, mapSize) - moveVertical;
+
+            pixelX = Math.min(Math.max(0, pixelX), mapSize);
+            pixelY = Math.min(Math.max(0, pixelY), mapSize);
+
+            double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, mapSize);
+            double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
             setCenterInternal(newLatitude, newLongitude);
-            setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
         }
         notifyObservers();
     }
@@ -345,8 +620,15 @@ public class MapViewPosition extends Observable implements Persistable {
      * Sets the new center position of the map.
      */
     public void setCenter(LatLong latLong) {
+        setCenter(latLong.latitude, latLong.longitude);
+    }
+
+    /**
+     * Sets the new center position of the map.
+     */
+    public void setCenter(double latitude, double longitude) {
         synchronized (this) {
-            setCenterInternal(latLong.latitude, latLong.longitude);
+            setCenterInternal(latitude, longitude);
         }
         notifyObservers();
     }
@@ -371,12 +653,12 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Sets the new center position and zoom level of the map.
+     * Sets the new center position of the map. Parameter animated is not used.
      */
     public void setMapPosition(MapPosition mapPosition, boolean animated) {
         synchronized (this) {
             setCenterInternal(mapPosition.latLong.latitude, mapPosition.latLong.longitude);
-            setZoomLevelInternal(mapPosition.zoomLevel, animated);
+            setZoomLevelInternal(mapPosition.zoomLevel);
         }
         notifyObservers();
     }
@@ -393,6 +675,24 @@ public class MapViewPosition extends Observable implements Persistable {
         synchronized (this) {
             this.pivot = pivot;
         }
+    }
+
+    private void setScaleFactorPivot(double scaleFactor, LatLong pivot) {
+        synchronized (this) {
+            this.scaleFactor = scaleFactor;
+            this.pivot = pivot;
+        }
+        notifyObservers();
+    }
+
+    private void setScaleFactorCenter(double scaleFactor, LatLong pivot, double latitude, double longitude) {
+        synchronized (this) {
+            this.scaleFactor = scaleFactor;
+            this.pivot = pivot;
+            setCenterInternal(latitude, longitude);
+        }
+        notifyObservers();
+
     }
 
     /**
@@ -424,7 +724,7 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Sets the new zoom level of the map
+     * Sets the new zoom level of the map. Animation is used if the corresponding parameter is set to true
      *
      * @param zoomLevel desired zoom level
      * @param animated  true if the transition should be animated, false otherwise
@@ -434,10 +734,16 @@ public class MapViewPosition extends Observable implements Persistable {
         if (zoomLevel < 0) {
             throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
         }
-        synchronized (this) {
-            setZoomLevelInternal(zoomLevel, animated);
+        if (animated && this.zoomLevel != zoomLevel) {
+            // perform animation only if there is something to do
+            animateToInternal(zoomLevel);
+        } else {
+
+            synchronized (this) {
+                setZoomLevelInternal(zoomLevel);
+            }
+            notifyObservers();
         }
-        notifyObservers();
     }
 
     public void setZoomLevelMax(byte zoomLevelMax) {
@@ -476,13 +782,21 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     /**
-     * Changes the current zoom level by the given value if possible.
+     * Changes the current zoom level by the given value if possible. Animation is used if the parameter animation is set to true, otherwise the zoomlevel is set directly
      */
     public void zoom(byte zoomLevelDiff, boolean animated) {
-        synchronized (this) {
-            setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
+        if (zoomLevelDiff == 0) {
+            return;
         }
-        notifyObservers();
+        if (animated) {
+            // perform animation only if there is something to do
+            animateToInternal(zoomLevel + zoomLevelDiff);
+        } else {
+            synchronized (this) {
+                setZoomLevelInternal(this.zoomLevel + zoomLevelDiff);
+            }
+            notifyObservers();
+        }
     }
 
     /**
@@ -527,13 +841,10 @@ public class MapViewPosition extends Observable implements Persistable {
         }
     }
 
-    private void setZoomLevelInternal(int zoomLevel, boolean animated) {
-        this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
-        if (animated) {
-            this.animator.startAnimationZoom(getScaleFactor(), Math.pow(2, this.zoomLevel));
-        } else {
-            this.setScaleFactor(Math.pow(2, this.zoomLevel));
-            this.setPivot(null);
-        }
+    private void setZoomLevelInternal(int zoomLevel) {
+        byte newZoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+        this.setScaleFactor(Math.pow(2, newZoomLevel));
+        this.setPivot(null);
+        this.zoomLevel = newZoomLevel;
     }
 }
