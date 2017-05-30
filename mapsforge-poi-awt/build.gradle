@@ -1,4 +1,4 @@
 dependencies {
     compile project(":mapsforge-poi")
-    compile 'org.xerial:sqlite-jdbc:3.16.1'
+    compile 'org.xerial:sqlite-jdbc:3.18.0'
 }

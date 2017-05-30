@@ -3,5 +3,5 @@ dependencies {
     compile 'net.sf.kxml:kxml2:2.3.0'
     testCompile 'commons-io:commons-io:2.5'
     testCompile 'org.mortbay.jetty:jetty:6.1.26'
-    testCompile 'org.slf4j:slf4j-log4j12:1.7.21'
+    testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
 }

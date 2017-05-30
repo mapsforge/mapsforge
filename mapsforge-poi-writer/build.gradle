@@ -1,8 +1,8 @@
 dependencies {
     compile project(":mapsforge-poi")
-    compile 'com.google.guava:guava:21.0'
+    compile 'com.google.guava:guava:22.0'
     compile 'com.vividsolutions:jts-core:1.14.0'
-    compile 'org.xerial:sqlite-jdbc:3.16.1'
+    compile 'org.xerial:sqlite-jdbc:3.18.0'
     compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.45'
 }
 
