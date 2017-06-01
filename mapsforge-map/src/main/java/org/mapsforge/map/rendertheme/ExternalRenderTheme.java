@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,7 +25,7 @@ import java.io.InputStream;
  */
 public class ExternalRenderTheme implements XmlRenderTheme {
     private final long lastModifiedTime;
-    private final XmlRenderThemeMenuCallback menuCallback;
+    private XmlRenderThemeMenuCallback menuCallback;
     private final File renderThemeFile;
 
     /**
@@ -117,5 +117,10 @@ public class ExternalRenderTheme implements XmlRenderTheme {
         result = prime * result + (int) (this.lastModifiedTime ^ (this.lastModifiedTime >>> 32));
         result = prime * result + ((this.renderThemeFile == null) ? 0 : this.renderThemeFile.hashCode());
         return result;
+    }
+
+    @Override
+    public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
+        this.menuCallback = menuCallback;
     }
 }

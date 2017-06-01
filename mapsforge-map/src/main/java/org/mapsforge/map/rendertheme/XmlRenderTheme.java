@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,7 +22,9 @@ import java.io.InputStream;
  * Interface for a render theme which is defined in XML.
  */
 public interface XmlRenderTheme {
-
+    /**
+     * @return the interface callback to create a settings menu on the fly.
+     */
     XmlRenderThemeMenuCallback getMenuCallback();
 
     /**
@@ -34,4 +37,9 @@ public interface XmlRenderTheme {
      * @throws FileNotFoundException if the render theme file cannot be found.
      */
     InputStream getRenderThemeAsStream() throws FileNotFoundException;
+
+    /**
+     * @param menuCallback the interface callback to create a settings menu on the fly.
+     */
+    void setMenuCallback(XmlRenderThemeMenuCallback menuCallback);
 }

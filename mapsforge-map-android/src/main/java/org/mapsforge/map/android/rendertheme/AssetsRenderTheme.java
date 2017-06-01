@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,7 +32,7 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 
     private final String assetName;
     private final InputStream inputStream;
-    private final XmlRenderThemeMenuCallback menuCallback;
+    private XmlRenderThemeMenuCallback menuCallback;
     private final String relativePathPrefix;
 
     /*
@@ -89,5 +89,10 @@ public class AssetsRenderTheme implements XmlRenderTheme {
         result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
         result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
         return result;
+    }
+
+    @Override
+    public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
+        this.menuCallback = menuCallback;
     }
 }

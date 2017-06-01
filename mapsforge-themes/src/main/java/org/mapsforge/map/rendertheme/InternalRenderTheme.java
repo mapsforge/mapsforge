@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -47,5 +47,9 @@ public enum InternalRenderTheme implements XmlRenderTheme {
     @Override
     public InputStream getRenderThemeAsStream() {
         return getClass().getResourceAsStream(this.path);
+    }
+
+    @Override
+    public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
     }
 }
