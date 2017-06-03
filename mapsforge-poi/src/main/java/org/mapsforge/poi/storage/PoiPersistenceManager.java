@@ -54,6 +54,23 @@ public interface PoiPersistenceManager {
                                            int limit);
 
     /**
+     * Find all {@link PointOfInterest} in a rectangle specified by the given {@link BoundingBox}.
+     * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the data
+     * pattern will be returned.
+     *
+     * @param bb      {@link BoundingBox} specifying the rectangle.
+     * @param filter  POI category filter object that helps determining whether a POI should be added to
+     *                the set or not (may be null).
+     * @param patterns multiple patterns to search in points of interest data (may be null).
+     * @param limit   max number of {@link PointOfInterest} to be returned.
+     * @return {@link Collection} of {@link PointOfInterest} matching a given
+     * {@link PoiCategoryFilter} and data pattern contained in the rectangle specified by
+     * the given {@link BoundingBox}.
+     */
+    Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, String[] patterns,
+                                           int limit);
+
+    /**
      * Fetch {@link PointOfInterest} from underlying storage near a given position.
      * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the data
      * pattern will be returned.
