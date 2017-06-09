@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -180,18 +180,6 @@ public class SmoothCanvas extends Canvas {
     @Override
     public boolean clipPath(Path path) {
         return this.delegate.clipPath(path);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean clipRegion(Region region, Region.Op op) {
-        return this.delegate.clipRegion(region, op);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Override
-    public boolean clipRegion(Region region) {
-        return this.delegate.clipRegion(region);
     }
 
     @Override

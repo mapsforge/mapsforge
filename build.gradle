@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
@@ -16,7 +16,7 @@ allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-    ext.androidBuildVersionTools = "25.0.3"
+    ext.androidBuildVersionTools = "26.0.0"
     ext.jUnitVersion = "4.12"
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -29,7 +29,7 @@ allprojects {
 }
 
 // no injection of functions, so via inheritance
-def androidCompileSdk() { return 25 }
+def androidCompileSdk() { return 26 }
 
 def androidMinSdk() { return 10 }
 
