@@ -100,11 +100,15 @@ configure(filterProjects(project.androidapkprojects)) {
     apply plugin: 'com.android.application'
 
     android {
+        flavorDimensions "permission"
+
         productFlavors {
             oldpermissions {
+                dimension "permission"
                 targetSdkVersion androidTargetSdkOldPermissions()
             }
             runtimepermissions {
+                dimension "permission"
                 targetSdkVersion androidTargetSdkRuntimePermissions()
             }
         }
