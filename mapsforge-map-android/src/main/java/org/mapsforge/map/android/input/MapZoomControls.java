@@ -24,9 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.AlphaAnimation;
-import android.widget.LinearLayout;
-import android.widget.ZoomButton;
-import android.widget.ZoomControls;
+import android.widget.*;
 
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
@@ -138,8 +136,9 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
         // Hack to get default zoom buttons
         ZoomControls defaultZoomControls = new ZoomControls(context);
-        buttonZoomIn = (ZoomButton) defaultZoomControls.getChildAt(1);
-        buttonZoomOut = (ZoomButton) defaultZoomControls.getChildAt(0);
+
+        buttonZoomIn = new ZoomButton(getContext());
+        buttonZoomOut = new ZoomButton(getContext());
         defaultZoomControls.removeAllViews();
         setOrientation(defaultZoomControls.getOrientation());
         setZoomInFirst(false);
