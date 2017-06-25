@@ -108,13 +108,12 @@ public class MapZoomControls extends LinearLayout implements Observer {
     private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
 
     private boolean autoHide;
-    private final ImageButton buttonZoomIn, buttonZoomOut;
+    private final ZoomButton buttonZoomIn, buttonZoomOut;
     private final MapView mapView;
     private boolean showMapZoomControls;
     private int zoomControlsGravity;
     private final Handler zoomControlsHideHandler;
     private byte zoomLevelMax, zoomLevelMin;
-    private long zoomSpeed;
 
     public MapZoomControls(Context context, MapView mapView) {
         super(context);
@@ -137,8 +136,9 @@ public class MapZoomControls extends LinearLayout implements Observer {
 
         // Hack to get default zoom buttons
         ZoomControls defaultZoomControls = new ZoomControls(context);
-        buttonZoomIn = (ImageButton) defaultZoomControls.getChildAt(1);
-        buttonZoomOut = (ImageButton) defaultZoomControls.getChildAt(0);
+
+        buttonZoomIn = new ZoomButton(getContext());
+        buttonZoomOut = new ZoomButton(getContext());
         defaultZoomControls.removeAllViews();
         setOrientation(defaultZoomControls.getOrientation());
         setZoomInFirst(false);
@@ -147,28 +147,13 @@ public class MapZoomControls extends LinearLayout implements Observer {
         buttonZoomIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Add delay on zoom clicks
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        MapZoomControls.this.mapView.getModel().mapViewPosition.zoomIn();
-                    }
-                }, zoomSpeed);
-
+                MapZoomControls.this.mapView.getModel().mapViewPosition.zoomIn();
             }
         });
         buttonZoomOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Add delay on zoom clicks
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        MapZoomControls.this.mapView.getModel().mapViewPosition.zoomOut();
-                    }
-                }, zoomSpeed);
+                MapZoomControls.this.mapView.getModel().mapViewPosition.zoomOut();
             }
         });
 
@@ -390,7 +375,8 @@ public class MapZoomControls extends LinearLayout implements Observer {
      * @param ms delay in ms.
      */
     public void setZoomSpeed(long ms) {
-        this.zoomSpeed = ms;
+        buttonZoomIn.setZoomSpeed(ms);
+        buttonZoomOut.setZoomSpeed(ms);
     }
 
     public void show() {
