@@ -2,6 +2,7 @@
 
 ## New since 0.8.0
 
+- Frame buffer improvements [#976](https://github.com/mapsforge/mapsforge/issues/976)
 - POI: add non-closed ways [#947](https://github.com/mapsforge/mapsforge/issues/947)
 - POI: add geo tagging [#946](https://github.com/mapsforge/mapsforge/issues/946)
 - POI: add named entities option [#949](https://github.com/mapsforge/mapsforge/issues/949)

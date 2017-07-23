@@ -78,6 +78,9 @@ public final class Samples {
      *             with possible SRTM hgt folder as 1st argument.
      */
     public static void main(String[] args) {
+        // Frame buffer HA2
+        FrameBufferController.FRAME_BUFFER_HA2 = true;
+
         // Multithreaded map rendering
         MapWorkerPool.NUMBER_OF_THREADS = 2;
 

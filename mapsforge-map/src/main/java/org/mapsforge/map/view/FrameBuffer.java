@@ -28,23 +28,23 @@ import org.mapsforge.map.model.FrameBufferModel;
 
 public class FrameBuffer {
 
-    private static final boolean IS_TRANSPARENT = false;
+    static final boolean IS_TRANSPARENT = false;
 
-    /**
-     * odBitmap: onDraw bitmap - the bitmap that gets displayed by the MapView.onDraw() function
-     * from the UI thread
-     */
-    Bitmap odBitmap;
     /**
      * lmBitmap: layerManager bitmap - the bitmap that gets drawn by the LayerManager.doWork()
      * thread
      */
     Bitmap lmBitmap;
+    /**
+     * odBitmap: onDraw bitmap - the bitmap that gets displayed by the MapView.onDraw() function
+     * from the UI thread
+     */
+    Bitmap odBitmap;
 
-    private Dimension dimension;
+    Dimension dimension;
     final DisplayModel displayModel;
     final FrameBufferModel frameBufferModel;
-    private final GraphicFactory graphicFactory;
+    final GraphicFactory graphicFactory;
     final Matrix matrix;
 
     public FrameBuffer(FrameBufferModel frameBufferModel, DisplayModel displayModel, GraphicFactory graphicFactory) {
@@ -70,8 +70,25 @@ public class FrameBuffer {
         scale(scaleFactor, pivotDistanceX, pivotDistanceY);
     }
 
+    void centerFrameBufferToMapView(Dimension mapViewDimension) {
+        float dx = (this.dimension.width - mapViewDimension.width) / -2f;
+        float dy = (this.dimension.height - mapViewDimension.height) / -2f;
+        this.matrix.translate(dx, dy);
+    }
+
     public synchronized void destroy() {
         destroyBitmaps();
+    }
+
+    private void destroyBitmaps() {
+        if (this.odBitmap != null) {
+            this.odBitmap.decrementRefCount();
+            this.odBitmap = null;
+        }
+        if (this.lmBitmap != null) {
+            this.lmBitmap.decrementRefCount();
+            this.lmBitmap = null;
+        }
     }
 
     public synchronized void draw(GraphicContext graphicContext) {
@@ -107,6 +124,15 @@ public class FrameBuffer {
         return this.lmBitmap;
     }
 
+    void scale(float scaleFactor, float pivotDistanceX, float pivotDistanceY) {
+        if (scaleFactor != 1) {
+            final Point center = this.dimension.getCenter();
+            float pivotX = (float) (pivotDistanceX + center.x);
+            float pivotY = (float) (pivotDistanceY + center.y);
+            this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
+        }
+    }
+
     public synchronized void setDimension(Dimension dimension) {
         if (this.dimension != null && this.dimension.equals(dimension)) {
             return;
@@ -118,32 +144,6 @@ public class FrameBuffer {
         if (dimension.width > 0 && dimension.height > 0) {
             this.odBitmap = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
             this.lmBitmap = this.graphicFactory.createBitmap(dimension.width, dimension.height, IS_TRANSPARENT);
-        }
-    }
-
-    private void centerFrameBufferToMapView(Dimension mapViewDimension) {
-        float dx = (this.dimension.width - mapViewDimension.width) / -2f;
-        float dy = (this.dimension.height - mapViewDimension.height) / -2f;
-        this.matrix.translate(dx, dy);
-    }
-
-    private void destroyBitmaps() {
-        if (this.odBitmap != null) {
-            this.odBitmap.decrementRefCount();
-            this.odBitmap = null;
-        }
-        if (this.lmBitmap != null) {
-            this.lmBitmap.decrementRefCount();
-            this.lmBitmap = null;
-        }
-    }
-
-    private void scale(float scaleFactor, float pivotDistanceX, float pivotDistanceY) {
-        if (scaleFactor != 1) {
-            final Point center = this.dimension.getCenter();
-            float pivotX = (float) (pivotDistanceX + center.x);
-            float pivotY = (float) (pivotDistanceY + center.y);
-            this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
         }
     }
 }

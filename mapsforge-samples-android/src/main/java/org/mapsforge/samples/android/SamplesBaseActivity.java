@@ -39,6 +39,7 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls.Orientation;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplateRuntimePermissions;
+import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
@@ -100,6 +101,9 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
 
     @Override
     protected void createMapViews() {
+        // Frame buffer HA2
+        FrameBufferController.FRAME_BUFFER_HA2 = true;
+
         super.createMapViews();
 
         mapView.getMapZoomControls().setZoomControlsOrientation(Orientation.VERTICAL_IN_OUT);
