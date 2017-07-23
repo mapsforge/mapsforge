@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 usrusr
+ * Copyright 2017 oruxman
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -73,8 +74,8 @@ public class Hillshading {
 
         int shadingLngStep = 1;
         int shadingLatStep = 1;
-        for (int shadingLeftLng = (int) maptileLeftLng; shadingLeftLng <= maptileRightLng; shadingLeftLng += shadingLngStep) {
-            for (int shadingBottomLat = (int) maptileBottomLat; shadingBottomLat <= maptileTopLat; shadingBottomLat += shadingLatStep) {
+        for (int shadingLeftLng = (int) Math.floor(maptileLeftLng); shadingLeftLng <= maptileRightLng; shadingLeftLng += shadingLngStep) {
+            for (int shadingBottomLat = (int) Math.floor(maptileBottomLat); shadingBottomLat <= maptileTopLat; shadingBottomLat += shadingLatStep) {
                 int shadingRightLng = shadingLeftLng + 1;
                 int shadingTopLat = shadingBottomLat + 1;
 
