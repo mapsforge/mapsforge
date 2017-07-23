@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lukas Bai <bailu@bailu.ch>
+ * Copyright 2017 bailuk
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
