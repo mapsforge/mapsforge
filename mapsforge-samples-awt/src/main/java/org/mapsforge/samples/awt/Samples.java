@@ -136,9 +136,11 @@ public final class Samples {
     private static BoundingBox addLayers(MapView mapView, List<File> mapFiles, HillsRenderConfig hillsRenderConfig) {
         Layers layers = mapView.getLayerManager().getLayers();
 
+        int tileSize = SHOW_RASTER_MAP ? 256 : 512;
+
         // Tile cache
         TileCache tileCache = AwtUtil.createTileCache(
-                mapView.getModel().displayModel.getTileSize(),
+                tileSize,
                 mapView.getModel().frameBufferModel.getOverdrawFactor(),
                 1024,
                 new File(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString()));
@@ -146,7 +148,7 @@ public final class Samples {
         final BoundingBox boundingBox;
         if (SHOW_RASTER_MAP) {
             // Raster
-            mapView.getModel().displayModel.setFixedTileSize(256);
+            mapView.getModel().displayModel.setFixedTileSize(tileSize);
             TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
             TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition, tileSource);
             layers.add(tileDownloadLayer);
@@ -156,7 +158,7 @@ public final class Samples {
             boundingBox = new BoundingBox(LatLongUtils.LATITUDE_MIN, LatLongUtils.LONGITUDE_MIN, LatLongUtils.LATITUDE_MAX, LatLongUtils.LONGITUDE_MAX);
         } else {
             // Vector
-            mapView.getModel().displayModel.setFixedTileSize(512);
+            mapView.getModel().displayModel.setFixedTileSize(tileSize);
             MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
             for (File file : mapFiles) {
                 mapDataStore.addMapDataStore(new MapFile(file), false, false);
