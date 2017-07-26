@@ -102,7 +102,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
     @Override
     protected void createMapViews() {
         // Frame buffer HA2
-        FrameBufferController.FRAME_BUFFER_HA2 = true;
+        //FrameBufferController.FRAME_BUFFER_HA2 = true;
 
         super.createMapViews();
 

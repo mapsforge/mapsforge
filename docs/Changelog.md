@@ -2,7 +2,6 @@
 
 ## New since 0.8.0
 
-- Frame buffer improvements [#976](https://github.com/mapsforge/mapsforge/issues/976)
 - Desktop: fix blurred map view [#978](https://github.com/mapsforge/mapsforge/issues/978)
 - POI: add non-closed ways [#947](https://github.com/mapsforge/mapsforge/issues/947)
 - POI: add geo tagging [#946](https://github.com/mapsforge/mapsforge/issues/946)
