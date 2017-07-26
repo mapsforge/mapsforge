@@ -32,7 +32,7 @@ public final class FrameBufferController implements Observer {
     /**
      * If true the {@link FrameBufferHA2} will be used instead of default {@link FrameBufferHA}.
      */
-    public static boolean FRAME_BUFFER_HA2 = false;
+    public static boolean FRAME_BUFFER_HA2 = true;
 
     private static float maxAspectRatio = 2;
 
