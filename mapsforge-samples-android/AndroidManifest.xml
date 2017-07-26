@@ -8,16 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <!--Explicit permission needed only for DownloadManager, see #723-->
-    <!--<uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />-->
-
-    <uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="22" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".SamplesApplication"
@@ -79,16 +71,14 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".ItemDetailActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".ItemListActivity">
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ItemListActivity" />
         </activity>
         <activity
             android:name=".ItemListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:parentActivityName=".Samples">
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Samples" />
@@ -171,8 +161,7 @@
         <activity
             android:name=".Settings"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="Settings"
-            android:parentActivityName=".Samples">
+            android:label="Settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Samples" />
