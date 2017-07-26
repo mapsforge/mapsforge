@@ -20,43 +20,48 @@ import org.mapsforge.core.model.Dimension;
 
 import java.util.logging.Logger;
 
-public class FrameBufferBitmap {
+class FrameBufferBitmap {
 
     private static class BitmapRequest {
         private final GraphicFactory factory;
         private final Dimension dimension;
-        private final boolean transparent;
+        private final int color;
+        private final boolean isTransparent;
 
-        public BitmapRequest(GraphicFactory factory, Dimension dimension, boolean transparent) {
+        BitmapRequest(GraphicFactory factory, Dimension dimension, int color, boolean isTransparent) {
             this.factory = factory;
             this.dimension = dimension;
-            this.transparent = transparent;
+            this.color = color;
+            this.isTransparent = isTransparent;
         }
 
-        public Bitmap create() {
-            if (dimension.width > 0 && dimension.height > 0)
-                return factory.createBitmap(dimension.width, dimension.height, transparent);
+        Bitmap create() {
+            if (dimension.width > 0 && dimension.height > 0) {
+                Bitmap bitmap = factory.createBitmap(dimension.width, dimension.height, isTransparent);
+                bitmap.setBackgroundColor(color);
+                return bitmap;
+            }
             return null;
         }
     }
 
-    private static class Lock {
+    static class Lock {
         private boolean enabled = false;
 
-        public synchronized void disable() {
+        synchronized void disable() {
             enabled = false;
             notifyAll();
         }
 
-        public synchronized void enable() {
+        synchronized void enable() {
             enabled = true;
         }
 
-        public boolean isEnabled() {
+        boolean isEnabled() {
             return enabled;
         }
 
-        public synchronized void waitDisabled() {
+        synchronized void waitDisabled() {
             try {
                 while (enabled) {
                     wait();
@@ -69,32 +74,34 @@ public class FrameBufferBitmap {
 
     private static final Logger LOGGER = Logger.getLogger(FrameBufferBitmap.class.getName());
 
-    private final Lock allowSwap = new Lock();
-    private final Lock frameLock = new Lock();
-
     private Bitmap bitmap = null;
     private BitmapRequest bitmapRequest = null;
+    private final Object bitmapRequestSync = new Object();
+    private final Lock frameLock = new Lock();
 
-    public void create(GraphicFactory factory, Dimension dimension, boolean transparent) {
-        bitmapRequest = new BitmapRequest(factory, dimension, transparent);
-    }
-
-    private void createBitmapIfRequested() {
-        if (bitmapRequest != null) {
-            destroyBitmap();
-            bitmap = bitmapRequest.create();
-            bitmapRequest = null;
+    void create(GraphicFactory factory, Dimension dimension, int color, boolean isTransparent) {
+        synchronized (bitmapRequestSync) {
+            bitmapRequest = new BitmapRequest(factory, dimension, color, isTransparent);
         }
     }
 
-    public void destroy() {
+    private void createBitmapIfRequested() {
+        synchronized (bitmapRequestSync) {
+            if (bitmapRequest != null) {
+                destroyBitmap();
+                bitmap = bitmapRequest.create();
+                bitmapRequest = null;
+            }
+        }
+    }
+
+    void destroy() {
         synchronized (frameLock) {
             if (bitmap != null) {
                 frameLock.waitDisabled();
                 destroyBitmap();
             }
         }
-        allowSwap.disable();
     }
 
     private void destroyBitmap() {
@@ -104,10 +111,9 @@ public class FrameBufferBitmap {
         }
     }
 
-    public Bitmap lock() {
+    Bitmap lock() {
         synchronized (frameLock) {
             createBitmapIfRequested();
-
             if (bitmap != null) {
                 frameLock.enable();
             }
@@ -115,30 +121,19 @@ public class FrameBufferBitmap {
         }
     }
 
-    public Bitmap lockWhenSwapped() {
-        allowSwap.waitDisabled();
-        return lock();
-    }
-
-    public void releaseAndAllowSwap() {
-        frameLock.disable();
+    void release() {
         synchronized (frameLock) {
-            if (bitmap != null)
-                allowSwap.enable();
+            frameLock.disable();
         }
     }
 
-    public static boolean swap(FrameBufferBitmap a, FrameBufferBitmap b) {
-        if (a.allowSwap.isEnabled() && b.allowSwap.isEnabled()) {
-            Bitmap t = a.bitmap;
-            a.bitmap = b.bitmap;
-            b.bitmap = t;
+    static void swap(FrameBufferBitmap a, FrameBufferBitmap b) {
+        Bitmap t = a.bitmap;
+        a.bitmap = b.bitmap;
+        b.bitmap = t;
 
-            a.allowSwap.disable();
-            b.allowSwap.disable();
-            return true;
-
-        }
-        return false;
+        BitmapRequest r = a.bitmapRequest;
+        a.bitmapRequest = b.bitmapRequest;
+        b.bitmapRequest = r;
     }
 }
