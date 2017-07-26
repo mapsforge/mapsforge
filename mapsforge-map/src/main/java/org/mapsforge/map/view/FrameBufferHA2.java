@@ -20,7 +20,6 @@ package org.mapsforge.map.view;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
@@ -44,23 +43,10 @@ public class FrameBufferHA2 extends FrameBuffer {
 
     private final FrameBufferBitmap.Lock allowSwap = new FrameBufferBitmap.Lock();
 
-    private Dimension dimension;
-    private final Matrix matrix;
-
-    private final DisplayModel displayModel;
-    private final FrameBufferModel frameBufferModel;
-    private final GraphicFactory graphicFactory;
-
 
     public FrameBufferHA2(FrameBufferModel frameBufferModel, DisplayModel displayModel,
                            GraphicFactory graphicFactory) {
         super(frameBufferModel, displayModel, graphicFactory);
-
-        this.frameBufferModel = frameBufferModel;
-        this.displayModel = displayModel;
-
-        this.graphicFactory = graphicFactory;
-        this.matrix = graphicFactory.createMatrix();
 
         this.allowSwap.disable();
     }
