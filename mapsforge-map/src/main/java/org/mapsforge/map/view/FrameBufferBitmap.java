@@ -31,17 +31,12 @@ public class FrameBufferBitmap {
     private final Object bitmapRequestSync = new Object();
 
 
-
-    public Bitmap lock() {
-        synchronized (frameLock) {
-            createBitmapIfRequested();
-
-            if (bitmap != null) {
-                frameLock.enable();
-            }
-            return bitmap;
+    public void create(GraphicFactory factory, Dimension dimension, int color, boolean isTransparent) {
+        synchronized(bitmapRequestSync) {
+            bitmapRequest = new BitmapRequest(factory, dimension, color, isTransparent);
         }
     }
+
 
     private void createBitmapIfRequested() {
         synchronized(bitmapRequestSync) {
@@ -56,20 +51,6 @@ public class FrameBufferBitmap {
     }
 
 
-    public void release() {
-        synchronized(frameLock) {
-            frameLock.disable();
-        }
-    }
-
-
-    public void create(GraphicFactory factory, Dimension dimension, int color, boolean isTransparent) {
-        synchronized(bitmapRequestSync) {
-            bitmapRequest = new BitmapRequest(factory, dimension, color, isTransparent);
-        }
-    }
-
-
     public void destroy()  {
         synchronized(frameLock) {
             if (bitmap != null) {
@@ -77,7 +58,6 @@ public class FrameBufferBitmap {
                 destroyBitmap();
             }
         }
-
     }
 
 
@@ -85,6 +65,25 @@ public class FrameBufferBitmap {
         if (bitmap != null) {
             bitmap.decrementRefCount();
             bitmap = null;
+        }
+    }
+
+
+    public Bitmap lock() {
+        synchronized (frameLock) {
+            createBitmapIfRequested();
+
+            if (bitmap != null) {
+                frameLock.enable();
+            }
+            return bitmap;
+        }
+    }
+
+
+    public void release() {
+        synchronized(frameLock) {
+            frameLock.disable();
         }
     }
 
@@ -109,10 +108,15 @@ public class FrameBufferBitmap {
             notifyAll();
         }
 
+
         public synchronized void enable() {
             enabled = true;
         }
 
+
+        public boolean isEnabled() {
+            return enabled;
+        }
 
 
         public synchronized void waitDisabled() {
@@ -123,10 +127,6 @@ public class FrameBufferBitmap {
             } catch (InterruptedException e) {
                 LOGGER.warning("FrameBufferHA interrupted");
             }
-        }
-
-        public boolean isEnabled() {
-            return enabled;
         }
     }
 
@@ -144,6 +144,7 @@ public class FrameBufferBitmap {
             transparent = t;
             color = c;
         }
+
 
         public Bitmap create() {
             if (dimension.width > 0 && dimension.height > 0) {

@@ -22,7 +22,6 @@ import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
@@ -49,6 +48,32 @@ public class FrameBufferHA2 extends FrameBuffer {
         super(frameBufferModel, displayModel, graphicFactory);
 
         this.allowSwap.disable();
+    }
+
+
+    public void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
+                             float pivotDistanceX, float pivotDistanceY) {
+
+        synchronized(matrix) {
+            if (this.dimension == null) {
+                return;
+            }
+            this.matrix.reset();
+            centerFrameBufferToMapView(mapViewDimension);
+            if (pivotDistanceX == 0 && pivotDistanceY == 0) {
+                // only translate the matrix if we are not zooming around a pivot,
+                // the translation happens only once the zoom is finished.
+                this.matrix.translate(diffX, diffY);
+            }
+            scale(scaleFactor, pivotDistanceX, pivotDistanceY);
+        }
+
+    }
+
+
+    public synchronized void destroy() {
+        odBitmap.destroy();
+        lmBitmap.destroy();
     }
 
 
@@ -85,17 +110,15 @@ public class FrameBufferHA2 extends FrameBuffer {
     }
 
 
-    private void swapBitmaps() {
-        /*
-         *  Swap bitmaps only if the layerManager is currently not working and
-         *  has drawn a new bitmap since the last swap
-         */
-        synchronized (allowSwap) {
-            if (allowSwap.isEnabled()) {
-                FrameBufferBitmap.swap(odBitmap, lmBitmap);
-                frameBufferModel.setMapPosition(lmMapPosition);
-                allowSwap.disable();
-            }
+    /**
+     * This is called from <code>LayerManager</code> when drawing is finished.
+     */
+    public void frameFinished(MapPosition framePosition) {
+        synchronized(allowSwap) {
+            lmMapPosition = framePosition;
+            lmBitmap.release();
+
+            allowSwap.enable();
         }
     }
 
@@ -126,69 +149,6 @@ public class FrameBufferHA2 extends FrameBuffer {
     }
 
 
-    /**
-     * This is called from <code>LayerManager</code> when drawing is finished.
-     */
-    public void frameFinished(MapPosition framePosition) {
-        synchronized(allowSwap) {
-            lmMapPosition = framePosition;
-            lmBitmap.release();
-
-            allowSwap.enable();
-        }
-    }
-
-
-
-    public void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
-                             float pivotDistanceX, float pivotDistanceY) {
-
-        synchronized(matrix) {
-            if (this.dimension == null) {
-                return;
-            }
-            this.matrix.reset();
-            centerFrameBufferToMapView(mapViewDimension);
-            if (pivotDistanceX == 0 && pivotDistanceY == 0) {
-                // only translate the matrix if we are not zooming around a pivot,
-                // the translation happens only once the zoom is finished.
-                this.matrix.translate(diffX, diffY);
-            }
-            scale(scaleFactor, pivotDistanceX, pivotDistanceY);
-        }
-
-    }
-
-
-    void centerFrameBufferToMapView(Dimension mapViewDimension) {
-        float dx = (this.dimension.width - mapViewDimension.width) / -2f;
-        float dy = (this.dimension.height - mapViewDimension.height) / -2f;
-        this.matrix.translate(dx, dy);
-    }
-
-
-    void scale(float scaleFactor, float pivotDistanceX, float pivotDistanceY) {
-        if (scaleFactor != 1) {
-            final Point center = this.dimension.getCenter();
-            float pivotX = (float) (pivotDistanceX + center.x);
-            float pivotY = (float) (pivotDistanceY + center.y);
-            this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
-        }
-    }
-
-
-    public synchronized void destroy() {
-        odBitmap.destroy();
-        lmBitmap.destroy();
-    }
-
-
-
-    public Dimension getDimension() {
-        return this.dimension;
-    }
-
-
     public void setDimension(Dimension dimension) {
         synchronized(matrix) {
             if (this.dimension != null && this.dimension.equals(dimension)) {
@@ -204,6 +164,21 @@ public class FrameBufferHA2 extends FrameBuffer {
             lmBitmap.create(graphicFactory, dimension,
                     this.displayModel.getBackgroundColor(),
                     IS_TRANSPARENT);
+        }
+    }
+
+
+    private void swapBitmaps() {
+        /*
+         *  Swap bitmaps only if the layerManager is currently not working and
+         *  has drawn a new bitmap since the last swap
+         */
+        synchronized (allowSwap) {
+            if (allowSwap.isEnabled()) {
+                FrameBufferBitmap.swap(odBitmap, lmBitmap);
+                frameBufferModel.setMapPosition(lmMapPosition);
+                allowSwap.disable();
+            }
         }
     }
 }
