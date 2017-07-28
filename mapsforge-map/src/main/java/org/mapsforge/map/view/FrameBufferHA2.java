@@ -29,25 +29,32 @@ public class FrameBufferHA2 extends FrameBuffer {
 
     /*
      *  lm: layer manager
-     *      Layer manager draws the bitmap off-screen
+            Layer manager draws the bitmap off-screen
      *  od: onDraw() -> draw()
      *      swaps the two bitmaps and puts one bitmap to the screen
      *      while the layer manager draws the next off-screen bitmap.
+     *
      */
-    private final FrameBufferBitmap lmBitmap = new FrameBufferBitmap();
-    private final FrameBufferBitmap odBitmap = new FrameBufferBitmap();
 
-    private final Object dimLock = new Object();
+    private final FrameBufferBitmap odBitmap = new FrameBufferBitmap();
+    private final FrameBufferBitmap lmBitmap = new FrameBufferBitmap();
     private MapPosition lmMapPosition;
 
+    private final FrameBufferBitmap.Lock allowSwap = new FrameBufferBitmap.Lock();
+
+
     public FrameBufferHA2(FrameBufferModel frameBufferModel, DisplayModel displayModel,
-                          GraphicFactory graphicFactory) {
+                           GraphicFactory graphicFactory) {
         super(frameBufferModel, displayModel, graphicFactory);
+
+        this.allowSwap.disable();
     }
+
 
     public void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
                              float pivotDistanceX, float pivotDistanceY) {
-        synchronized (dimLock) {
+
+        synchronized(matrix) {
             if (this.dimension == null) {
                 return;
             }
@@ -58,33 +65,40 @@ public class FrameBufferHA2 extends FrameBuffer {
                 // the translation happens only once the zoom is finished.
                 this.matrix.translate(diffX, diffY);
             }
-
             scale(scaleFactor, pivotDistanceX, pivotDistanceY);
         }
+
     }
+
 
     public synchronized void destroy() {
         odBitmap.destroy();
         lmBitmap.destroy();
     }
 
+
     /**
      * This is called from (Android) <code>MapView.onDraw()</code>.
      */
     public void draw(GraphicContext graphicContext) {
-        graphicContext.fillColor(this.displayModel.getBackgroundColor());
+
 
         /*
          * Swap bitmaps here (and only here).
          * Swapping is done when layer manager has finished. Else draw old bitmap again.
-         * This onDraw() is always called when layer manager has finished. This ensures that the
+         * This (onDraw()) is always called when layer manager has finished. This ensures that the
          * last generated frame is always put on screen.
          */
+
+        // FIXME: resetting the background color is redundant if the background color of the map view is already set
+        graphicContext.fillColor(this.displayModel.getBackgroundColor());
+
         swapBitmaps();
 
-        Bitmap b = odBitmap.lock();
-        if (b != null) {
-            synchronized (dimLock) {
+        synchronized(matrix) {
+
+            Bitmap b = odBitmap.lock();
+            if (b != null) {
                 graphicContext.drawBitmap(b, this.matrix);
             }
         }
@@ -92,20 +106,25 @@ public class FrameBufferHA2 extends FrameBuffer {
         /*
          * Release here so destroy() can free resources
          */
-        odBitmap.releaseAndAllowSwap();
+        this.odBitmap.release();
     }
+
 
     /**
      * This is called from <code>LayerManager</code> when drawing is finished.
      */
     public void frameFinished(MapPosition framePosition) {
-        lmBitmap.releaseAndAllowSwap();
-        lmMapPosition = framePosition;
+        synchronized(allowSwap) {
+            lmMapPosition = framePosition;
+            lmBitmap.release();
+
+            allowSwap.enable();
+        }
     }
+
 
     /**
      * This is called from <code>LayerManager</code> when drawing starts.
-     *
      * @return the bitmap of the second frame to draw on (may be null).
      */
     public Bitmap getDrawingBitmap() {
@@ -114,33 +133,52 @@ public class FrameBufferHA2 extends FrameBuffer {
          * the screen). This ensures that the layer manager draws not too many frames. (only as
          * much as can get displayed).
          */
-        Bitmap b = lmBitmap.lockWhenSwapped();
 
-        if (b != null) {
-            b.setBackgroundColor(this.displayModel.getBackgroundColor());
+        synchronized (allowSwap) {
+            allowSwap.waitDisabled();
+
+            Bitmap b = lmBitmap.lock();
+
+            if (b != null) {
+                b.setBackgroundColor(this.displayModel.getBackgroundColor());
+            }
+            return b;
         }
-        return b;
+
+
     }
 
+
     public void setDimension(Dimension dimension) {
-        synchronized (dimLock) {
+        synchronized(matrix) {
             if (this.dimension != null && this.dimension.equals(dimension)) {
                 return;
             }
             this.dimension = dimension;
+        }
 
-            odBitmap.create(graphicFactory, dimension, IS_TRANSPARENT);
-            lmBitmap.create(graphicFactory, dimension, IS_TRANSPARENT);
+        synchronized(allowSwap) {
+            odBitmap.create(graphicFactory, dimension,
+                    this.displayModel.getBackgroundColor(),
+                    IS_TRANSPARENT);
+            lmBitmap.create(graphicFactory, dimension,
+                    this.displayModel.getBackgroundColor(),
+                    IS_TRANSPARENT);
         }
     }
+
 
     private void swapBitmaps() {
         /*
          *  Swap bitmaps only if the layerManager is currently not working and
          *  has drawn a new bitmap since the last swap
          */
-        if (FrameBufferBitmap.swap(odBitmap, lmBitmap)) {
-            frameBufferModel.setMapPosition(lmMapPosition);
+        synchronized (allowSwap) {
+            if (allowSwap.isEnabled()) {
+                FrameBufferBitmap.swap(odBitmap, lmBitmap);
+                frameBufferModel.setMapPosition(lmMapPosition);
+                allowSwap.disable();
+            }
         }
     }
 }
