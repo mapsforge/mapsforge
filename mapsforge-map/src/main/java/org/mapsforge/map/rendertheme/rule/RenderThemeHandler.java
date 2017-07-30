@@ -1,8 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2017 MarcelHeckel
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +18,6 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
-import org.kxml2.io.KXmlParser;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.model.DisplayModel;
@@ -36,6 +36,7 @@ import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.mapsforge.map.rendertheme.renderinstruction.Symbol;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,10 +58,11 @@ public final class RenderThemeHandler {
     private static final Logger LOGGER = Logger.getLogger(RenderThemeHandler.class.getName());
     private static final String ELEMENT_NAME_RULE = "rule";
     private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
+    private static XmlPullParserFactory xmlPullParserFactory = null;
 
     public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
                                              XmlRenderTheme xmlRenderTheme) throws IOException, XmlPullParserException {
-        XmlPullParser pullParser = new KXmlParser();
+        XmlPullParser pullParser = getXmlPullParserFactory().newPullParser();
 
         RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
                 xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme, pullParser);
@@ -73,6 +75,17 @@ public final class RenderThemeHandler {
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
+    }
+
+    public static XmlPullParserFactory getXmlPullParserFactory() throws XmlPullParserException {
+        if (xmlPullParserFactory == null) {
+            xmlPullParserFactory = XmlPullParserFactory.newInstance();
+        }
+        return xmlPullParserFactory;
+    }
+
+    public static void setXmlPullParserFactory(XmlPullParserFactory xmlPullParserFactory) {
+        RenderThemeHandler.xmlPullParserFactory = xmlPullParserFactory;
     }
 
     private Set<String> categories;
