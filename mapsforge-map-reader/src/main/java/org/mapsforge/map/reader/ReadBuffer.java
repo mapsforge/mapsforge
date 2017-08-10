@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2017 devemux86
  * Copyright 2016 bvgastel
+ * Copyright 2017 linuskr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,8 @@ package org.mapsforge.map.reader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.logging.Logger;
 
 /**
@@ -55,10 +58,12 @@ public class ReadBuffer {
 
     private byte[] bufferData;
     private int bufferPosition;
-    private final RandomAccessFile inputFile;
+    private ByteBuffer[] bufferWrapper;
+    private final FileChannel inputChannel;
 
-    ReadBuffer(RandomAccessFile inputFile) {
-        this.inputFile = inputFile;
+    ReadBuffer(FileChannel inputChannel) {
+        this.inputChannel = inputChannel;
+        bufferWrapper = new ByteBuffer[1];
     }
 
     /**
@@ -87,12 +92,14 @@ public class ReadBuffer {
                 return false;
             }
             this.bufferData = new byte[length];
+            this.bufferWrapper[0] = ByteBuffer.wrap(this.bufferData, 0, length);
         }
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
+        this.bufferWrapper[0].clear();
 
-        return this.inputFile.read(this.bufferData, 0, length) == length;
+        return this.inputChannel.read(this.bufferWrapper, 0, 1) == length;
     }
 
     /**
@@ -113,14 +120,16 @@ public class ReadBuffer {
                 return false;
             }
             this.bufferData = new byte[length];
+            this.bufferWrapper[0] = ByteBuffer.wrap(this.bufferData, 0, length);
         }
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
+        this.bufferWrapper[0].clear();
 
-        synchronized (this.inputFile) {
-            this.inputFile.seek(offset);
-            return this.inputFile.read(this.bufferData, 0, length) == length;
+        synchronized (this.inputChannel) {
+            this.inputChannel.position(offset);
+            return this.inputChannel.read(this.bufferWrapper, 0, 1) == length;
         }
     }
 

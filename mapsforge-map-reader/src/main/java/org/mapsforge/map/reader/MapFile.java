@@ -4,6 +4,7 @@
  * Copyright 2014-2016 devemux86
  * Copyright 2015-2016 lincomatic
  * Copyright 2016 bvgastel
+ * Copyright 2017 linuskr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -35,8 +36,9 @@ import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.map.reader.header.SubFileParameter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -99,10 +101,6 @@ public class MapFile extends MapDataStore {
      * Bitmask for the number of POI tags.
      */
     private static final int POI_NUMBER_OF_TAGS_BITMASK = 0x0f;
-    /**
-     * Read only access mode.
-     */
-    private static final String READ_ONLY_MODE = "r";
     /**
      * Length of the debug signature at the beginning of each block.
      */
@@ -181,7 +179,7 @@ public class MapFile extends MapDataStore {
 
     private final IndexCache databaseIndexCache;
     private final long fileSize;
-    private final RandomAccessFile inputFile;
+    private final FileChannel inputChannel;
     private final MapFileHeader mapFileHeader;
     private final long timestamp;
 
@@ -192,7 +190,7 @@ public class MapFile extends MapDataStore {
         // only to create a dummy empty file.
         databaseIndexCache = null;
         fileSize = 0;
-        inputFile = null;
+        inputChannel = null;
         mapFileHeader = null;
         timestamp = System.currentTimeMillis();
     }
@@ -229,19 +227,51 @@ public class MapFile extends MapDataStore {
                 throw new MapFileException("cannot read file: " + mapFile);
             }
 
-            // open the file in read only mode
-            this.inputFile = new RandomAccessFile(mapFile, READ_ONLY_MODE);
-            this.fileSize = this.inputFile.length();
+            // false positive: fis gets closed when the channel is closed
+            // see e.g. http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4796385
+            FileInputStream fis = new FileInputStream(mapFile);
+            this.inputChannel = fis.getChannel();
+            this.fileSize = this.inputChannel.size();
 
-            ReadBuffer readBuffer = new ReadBuffer(this.inputFile);
+            ReadBuffer readBuffer = new ReadBuffer(this.inputChannel);
             this.mapFileHeader = new MapFileHeader();
             this.mapFileHeader.readHeader(readBuffer, this.fileSize);
-            this.databaseIndexCache = new IndexCache(this.inputFile, INDEX_CACHE_SIZE);
+            this.databaseIndexCache = new IndexCache(this.inputChannel, INDEX_CACHE_SIZE);
 
             this.timestamp = mapFile.lastModified();
         } catch (Exception e) {
-            // make sure that the file is closed
-            closeFile();
+            // make sure that the channel is closed
+            closeFileChannel();
+            throw new MapFileException(e.getMessage());
+        }
+    }
+
+    /**
+     * Opens the given map file channel, reads its header data and validates them.
+     *
+     * @param mapFileChannel  the map file channel.
+     * @param language the language to use (may be null).
+     * @throws MapFileException if the given map file channel is null or invalid.
+     */
+    public MapFile(FileChannel mapFileChannel, long lastModified, String language) {
+        super(language);
+        if (mapFileChannel == null) {
+            throw new MapFileException("mapFileChannel must not be null");
+        }
+        try {
+
+            this.inputChannel = mapFileChannel;
+            this.fileSize = this.inputChannel.size();
+
+            ReadBuffer readBuffer = new ReadBuffer(this.inputChannel);
+            this.mapFileHeader = new MapFileHeader();
+            this.mapFileHeader.readHeader(readBuffer, this.fileSize);
+            this.databaseIndexCache = new IndexCache(this.inputChannel, INDEX_CACHE_SIZE);
+
+            this.timestamp = lastModified;
+        } catch (Exception e) {
+            // make sure that the channel is closed
+            closeFileChannel();
             throw new MapFileException(e.getMessage());
         }
     }
@@ -275,19 +305,19 @@ public class MapFile extends MapDataStore {
 
     @Override
     public void close() {
-        closeFile();
+        closeFileChannel();
     }
 
     /**
-     * Closes the map file and destroys all internal caches. Has no effect if no map file is currently opened.
+     * Closes the map file channel and destroys all internal caches. Has no effect if no channel is currently opened.
      */
-    private void closeFile() {
+    private void closeFileChannel() {
         try {
             if (this.databaseIndexCache != null) {
                 this.databaseIndexCache.destroy();
             }
-            if (this.inputFile != null) {
-                this.inputFile.close();
+            if (this.inputChannel != null) {
+                this.inputChannel.close();
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -545,7 +575,7 @@ public class MapFile extends MapDataStore {
 
                 // seek to the current block in the map file
                 // read the current block into the buffer
-                ReadBuffer readBuffer = new ReadBuffer(inputFile);
+                ReadBuffer readBuffer = new ReadBuffer(inputChannel);
                 if (!readBuffer.readFromFile(subFileParameter.startAddress + currentBlockPointer, currentBlockSize)) {
                     // skip the current block
                     LOGGER.warning("reading current block has failed: " + currentBlockSize);
