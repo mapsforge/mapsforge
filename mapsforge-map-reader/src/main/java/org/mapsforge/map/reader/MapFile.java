@@ -227,7 +227,7 @@ public class MapFile extends MapDataStore {
                 throw new MapFileException("cannot read file: " + mapFile);
             }
 
-            // false positive: fis gets closed when the channel is closed
+            // false positive: stream gets closed when the channel is closed
             // see e.g. http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4796385
             FileInputStream fis = new FileInputStream(mapFile);
             this.inputChannel = fis.getChannel();
@@ -249,8 +249,8 @@ public class MapFile extends MapDataStore {
     /**
      * Opens the given map file channel, reads its header data and validates them.
      *
-     * @param mapFileChannel  the map file channel.
-     * @param language the language to use (may be null).
+     * @param mapFileChannel the map file channel.
+     * @param language       the language to use (may be null).
      * @throws MapFileException if the given map file channel is null or invalid.
      */
     public MapFile(FileChannel mapFileChannel, long lastModified, String language) {
@@ -259,7 +259,6 @@ public class MapFile extends MapDataStore {
             throw new MapFileException("mapFileChannel must not be null");
         }
         try {
-
             this.inputChannel = mapFileChannel;
             this.fileSize = this.inputChannel.size();
 
@@ -309,7 +308,8 @@ public class MapFile extends MapDataStore {
     }
 
     /**
-     * Closes the map file channel and destroys all internal caches. Has no effect if no channel is currently opened.
+     * Closes the map file channel and destroys all internal caches.
+     * Has no effect if no map file channel is currently opened.
      */
     private void closeFileChannel() {
         try {

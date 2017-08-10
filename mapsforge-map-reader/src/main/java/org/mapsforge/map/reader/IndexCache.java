@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
+ * Copyright 2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -43,7 +44,7 @@ class IndexCache {
 
     /**
      * @param inputChannel the map file from which the index should be read and cached.
-     * @param capacity         the maximum number of entries in the cache.
+     * @param capacity     the maximum number of entries in the cache.
      * @throws IllegalArgumentException if the capacity is negative.
      */
     IndexCache(FileChannel inputChannel, int capacity) {
@@ -88,11 +89,11 @@ class IndexCache {
             int remainingIndexSize = (int) (subFileParameter.indexEndAddress - indexBlockPosition);
             int indexBlockSize = Math.min(SIZE_OF_INDEX_BLOCK, remainingIndexSize);
             indexBlock = new byte[indexBlockSize];
-            ByteBuffer[] indexBlockWrapper = new ByteBuffer[] {ByteBuffer.wrap(indexBlock, 0, indexBlockSize)};
+            ByteBuffer indexBlockWrapper = ByteBuffer.wrap(indexBlock, 0, indexBlockSize);
 
             synchronized (this.fileChannel) {
                 this.fileChannel.position(indexBlockPosition);
-                if (this.fileChannel.read(indexBlockWrapper, 0, 1) != indexBlockSize) {
+                if (this.fileChannel.read(indexBlockWrapper) != indexBlockSize) {
                     throw new IOException("could not read index block with size: " + indexBlockSize);
                 }
             }

@@ -58,12 +58,11 @@ public class ReadBuffer {
 
     private byte[] bufferData;
     private int bufferPosition;
-    private ByteBuffer[] bufferWrapper;
+    private ByteBuffer bufferWrapper;
     private final FileChannel inputChannel;
 
     ReadBuffer(FileChannel inputChannel) {
         this.inputChannel = inputChannel;
-        bufferWrapper = new ByteBuffer[1];
     }
 
     /**
@@ -92,14 +91,14 @@ public class ReadBuffer {
                 return false;
             }
             this.bufferData = new byte[length];
-            this.bufferWrapper[0] = ByteBuffer.wrap(this.bufferData, 0, length);
+            this.bufferWrapper = ByteBuffer.wrap(this.bufferData, 0, length);
         }
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
-        this.bufferWrapper[0].clear();
+        this.bufferWrapper.clear();
 
-        return this.inputChannel.read(this.bufferWrapper, 0, 1) == length;
+        return this.inputChannel.read(this.bufferWrapper) == length;
     }
 
     /**
@@ -120,16 +119,16 @@ public class ReadBuffer {
                 return false;
             }
             this.bufferData = new byte[length];
-            this.bufferWrapper[0] = ByteBuffer.wrap(this.bufferData, 0, length);
+            this.bufferWrapper = ByteBuffer.wrap(this.bufferData, 0, length);
         }
 
         // reset the buffer position and read the data into the buffer
         this.bufferPosition = 0;
-        this.bufferWrapper[0].clear();
+        this.bufferWrapper.clear();
 
         synchronized (this.inputChannel) {
             this.inputChannel.position(offset);
-            return this.inputChannel.read(this.bufferWrapper, 0, 1) == length;
+            return this.inputChannel.read(this.bufferWrapper) == length;
         }
     }
 
