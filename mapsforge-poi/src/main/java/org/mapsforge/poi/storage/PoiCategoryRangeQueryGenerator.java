@@ -2,6 +2,7 @@
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
  * Copyright 2015 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,14 +32,16 @@ public final class PoiCategoryRangeQueryGenerator {
     /**
      * Gets the SQL query that looks up POI entries.
      *
-     * @param filter  The filter object for determining all wanted categories.
-     * @param pattern the pattern to search in points of interest names (may be null).
+     * @param filter The filter object for determining all wanted categories.
+     * @param count  Count of patterns to search in points of interest names (may be 0).
      * @return The SQL query.
      */
-    public static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
-        return DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter)
-                + (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "")
-                + " LIMIT ?;";
+    public static String getSQLSelectString(PoiCategoryFilter filter, int count) {
+        String query = DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter);
+        for (int i = 0; i < count; i++) {
+            query += DbConstants.FIND_BY_DATA_CLAUSE;
+        }
+        return query + " LIMIT ?;";
     }
 
     /**

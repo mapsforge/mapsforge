@@ -1,5 +1,6 @@
 /*
  * Copyright 2015-2016 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +17,7 @@ package org.mapsforge.poi.storage;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.LatLongUtils;
 
 import java.util.ArrayList;
@@ -43,14 +45,14 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
      */
     @Override
     public Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
-                                                        PoiCategoryFilter filter, String pattern,
+                                                        PoiCategoryFilter filter, List<Tag> patterns,
                                                         int limit) {
         double minLat = point.latitude - LatLongUtils.latitudeDistance(distance);
         double minLon = point.longitude - LatLongUtils.longitudeDistance(distance, point.latitude);
         double maxLat = point.latitude + LatLongUtils.latitudeDistance(distance);
         double maxLon = point.longitude + LatLongUtils.longitudeDistance(distance, point.latitude);
 
-        return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, pattern, limit);
+        return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, patterns, limit);
     }
 
     /**
@@ -72,15 +74,19 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
     /**
      * Gets the SQL query that looks up POI entries.
      *
-     * @param filter  The filter object for determining all wanted categories (may be null).
-     * @param pattern the pattern to search in points of interest data (may be null).
+     * @param filter The filter object for determining all wanted categories (may be null).
+     * @param count  Count of patterns to search in points of interest data (may be 0).
      * @return The SQL query.
      */
-    protected static String getSQLSelectString(PoiCategoryFilter filter, String pattern) {
+    protected static String getSQLSelectString(PoiCategoryFilter filter, int count) {
         if (filter != null) {
-            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, pattern);
+            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, count);
         }
-        return DbConstants.FIND_IN_BOX_STATEMENT + (pattern != null ? DbConstants.FIND_BY_DATA_CLAUSE : "") + " LIMIT ?;";
+        String query = DbConstants.FIND_IN_BOX_STATEMENT;
+        for (int i = 0; i < count; i++) {
+            query += DbConstants.FIND_BY_DATA_CLAUSE;
+        }
+        return query + " LIMIT ?;";
     }
 
     /**

@@ -1,5 +1,6 @@
 /*
  * Copyright 2015-2016 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
 package org.mapsforge.poi.awt.storage;
 
 import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.Tag;
 import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
@@ -32,6 +34,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -212,13 +215,14 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     @Override
     public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
-                                                  String pattern, int limit) {
+                                                  List<Tag> patterns, int limit) {
         // Clear previous results
         this.ret.clear();
 
         // Query
         try {
-            PreparedStatement stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pattern));
+            int pSize = patterns == null ? 0 : patterns.size();
+            PreparedStatement stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
 
             stmt.clearParameters();
 
@@ -226,10 +230,20 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             stmt.setDouble(2, bb.maxLongitude);
             stmt.setDouble(3, bb.minLatitude);
             stmt.setDouble(4, bb.minLongitude);
-            if (pattern != null) {
-                stmt.setString(5, pattern);
+
+            int i = 0; // i is only counted, if pattern is not null
+            if (pSize > 0) {
+                for (Tag tag : patterns) {
+                    if (tag == null) {
+                        continue;
+                    }
+                    stmt.setString(5 + i, "%"
+                            + (tag.key.equals("*") ? "" : (tag.key + "="))
+                            + tag.value + "%");
+                    i++;
+                }
             }
-            stmt.setInt(pattern != null ? 6 : 5, limit);
+            stmt.setInt(5 + i, limit);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {

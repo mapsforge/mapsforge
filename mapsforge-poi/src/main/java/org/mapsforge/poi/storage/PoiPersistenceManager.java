@@ -3,6 +3,7 @@
  * Copyright 2010, 2011 weise
  * Copyright 2010, 2011 Karsten Groll
  * Copyright 2015-2016 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,8 +20,10 @@ package org.mapsforge.poi.storage;
 
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Tag;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Abstracts from an underlying Storage/DB by providing methods for inserting / deleting / searching
@@ -41,16 +44,16 @@ public interface PoiPersistenceManager {
      * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the data
      * pattern will be returned.
      *
-     * @param bb      {@link BoundingBox} specifying the rectangle.
-     * @param filter  POI category filter object that helps determining whether a POI should be added to
-     *                the set or not (may be null).
-     * @param pattern the pattern to search in points of interest data (may be null).
-     * @param limit   max number of {@link PointOfInterest} to be returned.
+     * @param bb       {@link BoundingBox} specifying the rectangle.
+     * @param filter   POI category filter object that helps determining whether a POI should be added to
+     *                 the set or not (may be null).
+     * @param patterns the patterns to search in points of interest data (may be null).
+     * @param limit    max number of {@link PointOfInterest} to be returned.
      * @return {@link Collection} of {@link PointOfInterest} matching a given
      * {@link PoiCategoryFilter} and data pattern contained in the rectangle specified by
      * the given {@link BoundingBox}.
      */
-    Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, String pattern,
+    Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, List<Tag> patterns,
                                            int limit);
 
     /**
@@ -62,13 +65,13 @@ public interface PoiPersistenceManager {
      * @param distance in meters
      * @param filter   POI category filter object that helps determining whether a POI should be added to
      *                 the set or not (may be null).
-     * @param pattern  the pattern to search in points of interest data (may be null).
+     * @param patterns the patterns to search in points of interest data (may be null).
      * @param limit    max number of {@link PointOfInterest} to be returned.
      * @return {@link Collection} of {@link PointOfInterest} matching a given
      * {@link PoiCategoryFilter} and data pattern near the given position.
      */
     Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
-                                                 PoiCategoryFilter filter, String pattern,
+                                                 PoiCategoryFilter filter, List<Tag> patterns,
                                                  int limit);
 
     /**
