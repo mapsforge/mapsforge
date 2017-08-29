@@ -48,7 +48,7 @@ public class PoiCategoryRangeQueryGeneratorTest {
         PoiCategoryFilter filter = new WhitelistPoiCategoryFilter();
         filter.addCategory(this.flatRoot);
 
-        String query = PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, null);
+        String query = PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, 0);
 
         System.out.println("Query: " + query);
 
@@ -66,7 +66,7 @@ public class PoiCategoryRangeQueryGeneratorTest {
         filter.addCategory(this.balancedCm.getPoiCategoryByTitle("l1_1"));
         filter.addCategory(this.balancedCm.getPoiCategoryByTitle("l1_2"));
 
-        String query = PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, null);
+        String query = PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, 0);
         System.out.println("Query: " + query);
 
         // TODO add assertions

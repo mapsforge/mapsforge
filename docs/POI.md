@@ -79,9 +79,12 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 
 ### Filtered Search
 
-The API supports POI search inside a specified rectangle, near a given position or by a data pattern.
+The API supports POI search inside a specified rectangle, near a given position or by a tag-data pattern.
 You can also use category filters for filtering the results based on the categories added to them.
-And lastly you can search by OSM tags, e.g. persistenceManager.findInRect(bbox, categoryFilter, "%name=Pergamonmuseum%", 1)
+And lastly you can search by OSM tags. With '*' you can search through all tags, 
+e.g. `Tag tag1 = new Tag("*", Pergamonmuseum);` 
+Then you add them to a list `tagList.add(new Tag("addr:street", "Bodestraße"))` and call
+`persistenceManager.findInRect(bbox, categoryFilter, tagList, 1)`
 
 ### POI DB Schema
 
