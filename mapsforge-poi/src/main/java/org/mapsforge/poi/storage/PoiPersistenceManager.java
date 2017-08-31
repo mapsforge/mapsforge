@@ -40,6 +40,11 @@ public interface PoiPersistenceManager {
     void close();
 
     /**
+     * @return true if the manager is already closed.
+     */
+    boolean isClosed();
+
+    /**
      * Find all {@link PointOfInterest} in a rectangle specified by the given {@link BoundingBox}.
      * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the data
      * pattern will be returned.

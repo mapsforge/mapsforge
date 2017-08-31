@@ -92,7 +92,8 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * {@inheritDoc}
      */
     @Override
-    public void close() {
+    public synchronized void close() {
+        if (isClosed()) return;
         // Close statements
 
         if (this.findByIDStatement != null) {
@@ -164,6 +165,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isClosed() {
+        return (this.poiFile == null);
+    }
+
+    /**
      * @param dbFilePath Path to SQLite file containing POI data.
      * @param readOnly   If the file does not exist it can be created and filled.
      */
@@ -211,10 +220,12 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         // Clear previous results
         this.ret.clear();
 
+        Stmt stmt = null;
+
         // Query
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            Stmt stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
+            stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
 
             stmt.reset();
             stmt.clear_bindings();
@@ -254,6 +265,12 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         return this.ret;
