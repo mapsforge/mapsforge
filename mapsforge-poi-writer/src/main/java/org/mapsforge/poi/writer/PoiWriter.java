@@ -225,7 +225,7 @@ public final class PoiWriter {
                     if (rsPoi.next()) {
                         long nPoi = rsPoi.getLong(1);
                         if (nPoi == 0) {
-                            pStmtDel.setInt(1, id);
+                            pStmtDel.setInt(1, id); //If category not occurs delete it from poi_categories
                             pStmtDel.executeUpdate();
                         }
                     }
@@ -378,6 +378,8 @@ public final class PoiWriter {
                 if (this.nNodes == 0) {
                     LOGGER.info("Processing nodes...");
                 }
+                if (nNodes % 100000 == 0)
+                    System.out.printf("Progress: Node " + nNodes + " \r");
                 ++this.nNodes;
                 if (this.configuration.isWays()) {
                     writeNode(node);
@@ -397,6 +399,8 @@ public final class PoiWriter {
                             e.printStackTrace();
                         }
                     }
+                    if (nWays % 10000 == 0)
+                        System.out.printf("Progress: Way " + nWays + " \r");
                     ++this.nWays;
                     processWay(way);
                 }
@@ -409,6 +413,8 @@ public final class PoiWriter {
                         this.geoTagger.commit();
                     }
                     this.geoTagger.filterBoundaries(relation);
+                    if (nRelations % 10000 == 0)
+                        System.out.printf("Progress: Relation " + nRelations + " \r");
                     ++this.nRelations;
                 }
                 break;
@@ -657,6 +663,7 @@ public final class PoiWriter {
      * Write a POI to the database.
      */
     private void writePOI(long id, double latitude, double longitude, Map<String, String> poiData, PoiCategory category) {
+        if (poiData == null) return;
         try {
             // Index data
             this.pStmtIndex.setLong(1, id);
