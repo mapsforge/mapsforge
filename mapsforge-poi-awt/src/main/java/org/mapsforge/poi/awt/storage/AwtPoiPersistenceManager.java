@@ -93,7 +93,9 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * {@inheritDoc}
      */
     @Override
-    public void close() {
+    public synchronized void close() {
+        if (isClosed()) return;
+
         // Close statements
 
         if (this.findByIDStatement != null) {
@@ -165,6 +167,14 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isClosed() {
+        return (this.poiFile == null);
+    }
+
+    /**
      * @param dbFilePath Path to SQLite file containing POI data.
      * @param readOnly   If the file does not exist it can be created and filled.
      */
@@ -220,9 +230,11 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         this.ret.clear();
 
         // Query
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            PreparedStatement stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
+            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
 
             stmt.clearParameters();
 
@@ -245,7 +257,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             }
             stmt.setInt(5 + i, limit);
 
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 long id = rs.getLong(1);
                 double lat = rs.getDouble(2);
@@ -260,9 +272,15 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
-            rs.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         return this.ret;
