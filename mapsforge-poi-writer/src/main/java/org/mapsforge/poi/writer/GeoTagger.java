@@ -124,11 +124,12 @@ class GeoTagger {
                 pStmtInsertWayNodes.addBatch();
 
                 i++;
-            }
-            batchCountWays++;
-            if (batchCountWays % PoiWriter.BATCH_LIMIT == 0) {
-                pStmtInsertWayNodes.executeBatch();
-                pStmtInsertWayNodes.clearBatch();
+
+                batchCountWays++;
+                if (batchCountWays % PoiWriter.BATCH_LIMIT == 0) {
+                    pStmtInsertWayNodes.executeBatch();
+                    pStmtInsertWayNodes.clearBatch();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -166,15 +167,27 @@ class GeoTagger {
     }
 
     void processBoundaries() {
+        int nPostalBounds = 0;
         for (Relation postalBoundary : postalBoundaries) {
+            if (nPostalBounds % 10 == 0) {
+                System.out.printf("Progress: PostalBounds " + nPostalBounds + "/"
+                        + postalBoundaries.size() + " \r");
+            }
             processBoundary(postalBoundary, true);
+            nPostalBounds++;
         }
         commit();
 
         for (int i = administrativeBoundaries.size() - 1; i >= 0; i--) {
+            int nAdminBounds = 0;
             List<Relation> administrativeBoundary = administrativeBoundaries.get(i);
             for (Relation relation : administrativeBoundary) {
+                if (nAdminBounds % 10 == 0) {
+                    System.out.printf("Progress: AdminLevel " + i + ": " + nAdminBounds + "/"
+                            + administrativeBoundary.size() + " \r");
+                }
                 processBoundary(relation, false);
+                nAdminBounds++;
             }
             commit();
         }
@@ -262,6 +275,7 @@ class GeoTagger {
 
         Iterator it = pois.entrySet().iterator();
         while (it.hasNext()) {
+            @SuppressWarnings("unchecked")
             Map.Entry<Poi, Map<String, String>> entry = (Map.Entry<Poi, Map<String, String>>) it.next();
 
             Map<String, String> tags = entry.getValue();
@@ -318,13 +332,16 @@ class GeoTagger {
             }
 
             if (tagmap.keySet().contains(key)) {
+                // Process is_in tags
                 if (!key.equals("is_in")) {
                     continue;
                 }
                 String prev = tagmap.get(key);
+                // Continue if tag already set correctly
                 if (prev.contains(",") || prev.contains(";")) {
                     continue;
                 }
+                // If string is a correct value, append it to existent value;
                 if (tmpValue.contains(",") || tmpValue.contains(";")) {
                     tmpValue = (prev + "," + tmpValue);
                 }
@@ -332,13 +349,13 @@ class GeoTagger {
 
             //Write surrounding area as parent in "is_in" tag.
             tagmap.put(key, tmpValue);
-            batchCountRelation++;
             try {
-                this.pStmtUpdateData.setString(1, writer.tagsToString(tagmap));
                 this.pStmtUpdateData.setLong(2, poi.id);
+                this.pStmtUpdateData.setString(1, writer.tagsToString(tagmap));
 
                 this.pStmtUpdateData.addBatch();
 
+                batchCountRelation++;
                 if (batchCountRelation % PoiWriter.BATCH_LIMIT == 0) {
                     pStmtUpdateData.executeBatch();
                     pStmtUpdateData.clearBatch();
@@ -532,7 +549,6 @@ class GeoTagger {
                 }
 
                 Map<String, String> tagmap = writer.stringToTags(rs.getString(4));
-                int categ = rs.getInt(5);
 
                 pois.put(new Poi(id, lat, lon), tagmap);
                 LOGGER.finest("Bbox: InnerNode-Id: " + id + "; Lat: " + lat + "; Lon: " + lon + ";");
