@@ -92,7 +92,11 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * {@inheritDoc}
      */
     @Override
-    public void close() {
+    public synchronized void close() {
+        if (isClosed()) {
+            return;
+        }
+
         // Close statements
 
         if (this.findByIDStatement != null) {
@@ -212,9 +216,10 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         this.ret.clear();
 
         // Query
+        Stmt stmt = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            Stmt stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
+            stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
 
             stmt.reset();
             stmt.clear_bindings();
@@ -254,6 +259,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         return this.ret;
@@ -404,6 +417,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isClosed() {
+        return this.poiFile == null;
     }
 
     /**

@@ -110,6 +110,11 @@ public interface PoiPersistenceManager {
     void insertPointsOfInterest(Collection<PointOfInterest> pois);
 
     /**
+     * @return true if the manager is closed.
+     */
+    boolean isClosed();
+
+    /**
      * @return true if the database is a valid POI database.
      */
     boolean isValidDataBase();
