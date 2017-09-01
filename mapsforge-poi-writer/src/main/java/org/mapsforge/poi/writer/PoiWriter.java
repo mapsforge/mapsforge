@@ -91,6 +91,8 @@ public final class PoiWriter {
     private final PoiWriterConfiguration configuration;
     private final ProgressManager progressManager;
 
+    private final NumberFormat nfCounts = NumberFormat.getInstance();
+
     // Available categories
     private final PoiCategoryManager categoryManager;
 
@@ -120,6 +122,8 @@ public final class PoiWriter {
     private PoiWriter(PoiWriterConfiguration configuration, ProgressManager progressManager) {
         this.configuration = configuration;
         this.progressManager = progressManager;
+
+        nfCounts.setGroupingUsed(true);
 
         LOGGER.info("Loading categories...");
 
@@ -178,8 +182,6 @@ public final class PoiWriter {
             this.geoTagger.processBoundaries();
         }
         NumberFormat nfMegabyte = NumberFormat.getInstance();
-        NumberFormat nfCounts = NumberFormat.getInstance();
-        nfCounts.setGroupingUsed(true);
         nfMegabyte.setMaximumFractionDigits(2);
 
         try {
@@ -224,8 +226,9 @@ public final class PoiWriter {
                     ResultSet rsPoi = pStmtPoi.executeQuery();
                     if (rsPoi.next()) {
                         long nPoi = rsPoi.getLong(1);
+                        // If category not have POI, delete it from DB
                         if (nPoi == 0) {
-                            pStmtDel.setInt(1, id); //If category not occurs delete it from poi_categories
+                            pStmtDel.setInt(1, id);
                             pStmtDel.executeUpdate();
                         }
                     }
@@ -378,8 +381,9 @@ public final class PoiWriter {
                 if (this.nNodes == 0) {
                     LOGGER.info("Processing nodes...");
                 }
-                if (nNodes % 100000 == 0)
-                    System.out.printf("Progress: Node " + nNodes + " \r");
+                if (nNodes % 100000 == 0) {
+                    System.out.printf("Progress: Nodes " + nfCounts.format(nNodes) + " \r");
+                }
                 ++this.nNodes;
                 if (this.configuration.isWays()) {
                     writeNode(node);
@@ -399,8 +403,9 @@ public final class PoiWriter {
                             e.printStackTrace();
                         }
                     }
-                    if (nWays % 10000 == 0)
-                        System.out.printf("Progress: Way " + nWays + " \r");
+                    if (nWays % 10000 == 0) {
+                        System.out.printf("Progress: Ways " + nfCounts.format(nWays) + " \r");
+                    }
                     ++this.nWays;
                     processWay(way);
                 }
@@ -413,8 +418,9 @@ public final class PoiWriter {
                         this.geoTagger.commit();
                     }
                     this.geoTagger.filterBoundaries(relation);
-                    if (nRelations % 10000 == 0)
-                        System.out.printf("Progress: Relation " + nRelations + " \r");
+                    if (nRelations % 10000 == 0) {
+                        System.out.printf("Progress: Relations " + nfCounts.format(nRelations) + " \r");
+                    }
                     ++this.nRelations;
                 }
                 break;
@@ -468,9 +474,11 @@ public final class PoiWriter {
                                 for (Tag t : entity.getTags()) {
                                     tagMap.put(t.getKey().toLowerCase(Locale.ENGLISH), t.getValue());
                                 }
-                                // Store POI
-                                ++this.poiAdded;
-                                writePOI(this.poiAdded, latitude, longitude, tagMap, pc);
+                                if (!tagMap.isEmpty()) {
+                                    // Store POI
+                                    ++this.poiAdded;
+                                    writePOI(this.poiAdded, latitude, longitude, tagMap, pc);
+                                }
                             }
                         }
                     }
@@ -663,7 +671,6 @@ public final class PoiWriter {
      * Write a POI to the database.
      */
     private void writePOI(long id, double latitude, double longitude, Map<String, String> poiData, PoiCategory category) {
-        if (poiData == null) return;
         try {
             // Index data
             this.pStmtIndex.setLong(1, id);
