@@ -37,11 +37,17 @@ public final class PoiCategoryRangeQueryGenerator {
      * @return The SQL query.
      */
     public static String getSQLSelectString(PoiCategoryFilter filter, int count) {
-        String query = DbConstants.FIND_IN_BOX_STATEMENT + getSQLWhereClauseString(filter);
-        for (int i = 0; i < count; i++) {
-            query += DbConstants.FIND_BY_DATA_CLAUSE;
+        StringBuilder query = new StringBuilder();
+        query.append(DbConstants.FIND_IN_BOX_CLAUSE_SELECT
+                + DbConstants.JOIN_CATEGORY_CLAUSE);
+        if (count > 0) {
+            query.append(DbConstants.JOIN_DATA_CLAUSE);
         }
-        return query + " LIMIT ?;";
+        query.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE).append(getSQLWhereClauseString(filter));
+        for (int i = 0; i < count; i++) {
+            query.append(DbConstants.FIND_BY_DATA_CLAUSE);
+        }
+        return (query.append(" LIMIT ?;").toString());
     }
 
     /**
@@ -68,7 +74,7 @@ public final class PoiCategoryRangeQueryGenerator {
             // Don't forget the super category itself in the search!
             categories.add(superCat);
 
-            sb.append("poi_data.category IN (");
+            sb.append("poi_cmap.category IN (");
             // for each category
             for (Iterator<PoiCategory> catIter = categories.iterator(); catIter.hasNext(); ) {
                 PoiCategory cat = catIter.next();

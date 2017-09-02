@@ -18,9 +18,10 @@ package org.mapsforge.poi.storage;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * This class represents a point of interest. Every POI should be uniquely identifiable by its id,
@@ -30,15 +31,20 @@ public class PointOfInterest {
     private final long id;
     private final double latitude;
     private final double longitude;
-    private final String data;
-    private final PoiCategory category;
+    private final Set<Tag> tags;
+    private final Set<PoiCategory> categories;
 
-    public PointOfInterest(long id, double latitude, double longitude, String data, PoiCategory category) {
+    public PointOfInterest(long id, double latitude, double longitude, String name, PoiCategory categories) {
+        this(id, latitude, longitude, new HashSet<>(Collections.singletonList(new Tag("name", name))),
+                new HashSet<>(Collections.singletonList(categories)));
+    }
+
+    public PointOfInterest(long id, double latitude, double longitude, Set<Tag> tags, Set<PoiCategory> categories) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.data = data;
-        this.category = category;
+        this.tags = (tags == null) ? new HashSet<Tag>() : tags;
+        this.categories = (categories == null) ? new HashSet<PoiCategory>() : categories;
     }
 
     @Override
@@ -53,17 +59,25 @@ public class PointOfInterest {
     }
 
     /**
-     * @return category of this point of interest.
+     * @return all categories of this point of interest.
      */
-    public PoiCategory getCategory() {
-        return this.category;
+    public Set<PoiCategory> getCategories() {
+        return this.categories;
     }
 
     /**
-     * @return data of this point of interest.
+     * @return category of this point of interest.
      */
-    public String getData() {
-        return this.data;
+    public PoiCategory getCategory() {
+        if (!categories.isEmpty()) {
+            if (categories.size() == 1)
+                return categories.toArray(new PoiCategory[categories.size()])[0];
+            else {
+                //TODO return the highest cat.-level of all its categories together
+                return categories.toArray(new PoiCategory[categories.size()])[0];
+            }
+        }
+        return null;
     }
 
     /**
@@ -105,7 +119,6 @@ public class PointOfInterest {
      * @return name of this point of interest at preferred language
      */
     public String getName(String language) {
-        List<Tag> tags = getTags();
 
         if (language != null && language.trim().length() > 0) {
             // Exact match
@@ -133,32 +146,22 @@ public class PointOfInterest {
             }
         }
 
-        if (tags.isEmpty()) {
-            return data;
-        }
-
         return null;
     }
 
     /**
      * @return tags of this point of interest.
      */
-    public List<Tag> getTags() {
-        List<Tag> tags = new ArrayList<>();
-        if (this.data != null && this.data.trim().length() > 0) {
-            String[] split = this.data.split("\r");
-            for (String s : split) {
-                if (s.indexOf(Tag.KEY_VALUE_SEPARATOR) > -1) {
-                    tags.add(new Tag(s));
-                }
-            }
-        }
+    public Set<Tag> getTags() {
         return tags;
     }
 
     @Override
     public String toString() {
-        return "POI: (" + this.latitude + ',' + this.longitude + ") " + this.data + ' '
-                + this.category.getID();
+        String builder = "POI: (" + this.latitude + ',' + this.longitude + ") " + this.tags.toString() + ' ';
+        for (PoiCategory category : categories) {
+            builder += category.getID() + ' ';
+        }
+        return builder;
     }
 }

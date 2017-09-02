@@ -82,11 +82,16 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
         if (filter != null) {
             return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, count);
         }
-        String query = DbConstants.FIND_IN_BOX_STATEMENT;
-        for (int i = 0; i < count; i++) {
-            query += DbConstants.FIND_BY_DATA_CLAUSE;
+        StringBuilder query = new StringBuilder();
+        query.append(DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
+        if (count > 0) {
+            query.append(DbConstants.JOIN_DATA_CLAUSE);
         }
-        return query + " LIMIT ?;";
+        query.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
+        for (int i = 0; i < count; i++) {
+            query.append(DbConstants.FIND_BY_DATA_CLAUSE);
+        }
+        return query.append(" LIMIT ?;").toString();
     }
 
     /**

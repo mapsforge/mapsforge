@@ -53,9 +53,11 @@ class GeoTagger {
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
     private PreparedStatement pStmtInsertWayNodes = null;
     private PreparedStatement pStmtDeletePoiData = null;
+    private PreparedStatement pStmtDeletePoiCategory = null;
     private PreparedStatement pStmtDeletePoiIndex = null;
     private PreparedStatement pStmtUpdateData = null;
     private PreparedStatement pStmtNodesInBox = null;
+    private PreparedStatement pStmtTagsByID = null;
 
     //List of Administrative Boundaries Relations
     private List<List<Relation>> administrativeBoundaries;
@@ -67,8 +69,10 @@ class GeoTagger {
             this.pStmtInsertWayNodes = writer.conn.prepareStatement(DbConstants.INSERT_WAYNODES_STATEMENT);
             this.pStmtDeletePoiData = writer.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
             this.pStmtDeletePoiIndex = writer.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
+            this.pStmtDeletePoiCategory = writer.conn.prepareStatement(DbConstants.DELETE_CATEGORYMAP_STATEMENT);
             this.pStmtUpdateData = writer.conn.prepareStatement(DbConstants.UPDATE_DATA_STATEMENT);
             this.pStmtNodesInBox = writer.conn.prepareStatement(DbConstants.FIND_IN_BOX_STATEMENT);
+            this.pStmtTagsByID = writer.conn.prepareStatement(DbConstants.FIND_DATA_BY_ID_STATEMENT);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -288,9 +292,11 @@ class GeoTagger {
                         long id = entry.getKey().id;
                         this.pStmtDeletePoiData.setLong(1, id);
                         this.pStmtDeletePoiIndex.setLong(1, id);
+                        this.pStmtDeletePoiCategory.setLong(1, id);
 
                         this.pStmtDeletePoiData.addBatch();
                         this.pStmtDeletePoiIndex.addBatch();
+                        this.pStmtDeletePoiCategory.addBatch();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -301,6 +307,8 @@ class GeoTagger {
             }
         }
         try {
+            pStmtDeletePoiCategory.executeBatch();
+            pStmtDeletePoiCategory.clearBatch();
             pStmtDeletePoiData.executeBatch();
             pStmtDeletePoiData.clearBatch();
             pStmtDeletePoiIndex.executeBatch();
@@ -548,7 +556,14 @@ class GeoTagger {
                     continue;
                 }
 
-                Map<String, String> tagmap = writer.stringToTags(rs.getString(4));
+                //Handle Tags
+                this.pStmtTagsByID.setLong(1, id);
+                ResultSet rsTags = pStmtTagsByID.executeQuery();
+                Map<String, String> tagmap = new HashMap<>();
+                while (rsTags.next()) {
+                    tagmap.putAll(writer.stringToTags(rsTags.getString(2)));
+                }
+                rsTags.close();
 
                 pois.put(new Poi(id, lat, lon), tagmap);
                 LOGGER.finest("Bbox: InnerNode-Id: " + id + "; Lat: " + lat + "; Lon: " + lon + ";");
