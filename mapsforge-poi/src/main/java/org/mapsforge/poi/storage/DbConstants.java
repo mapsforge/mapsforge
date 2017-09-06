@@ -66,7 +66,7 @@ public final class DbConstants {
                     + "minLon <= ? AND "
                     + "minLat >= ? AND "
                     + "minLon >= ?";
-
+    public static final String FIND_IN_BOX_CLAUSE_WHERE_CATEGORY_IN = "poi_cmap.category IN (";
     public static final String FIND_IN_BOX_STATEMENT = FIND_IN_BOX_CLAUSE_SELECT + FIND_IN_BOX_CLAUSE_WHERE;
 
     public static final String FIND_METADATA_STATEMENT = "SELECT name, value FROM metadata;";
@@ -98,6 +98,23 @@ public final class DbConstants {
             + "FROM sqlite_master "
             + "WHERE name IN "
             + "('metadata', 'poi_categories', 'poi_data', 'poi_index', 'poi_cmap');";
+
+    // V1 Statements
+    public static final String FIND_CATEGORIES_BY_ID_STATEMENT_V1 =
+            "SELECT poi_data.id, poi_data.category "
+                    + "FROM poi_data "
+                    + "WHERE poi_data.id = ?;";
+
+    public static final int NUMBER_OF_TABLES_V1 = 4;
+
+    public static final String VALID_DB_STATEMENT_V1 = "SELECT count(name) "
+            + "FROM sqlite_master "
+            + "WHERE name IN "
+            + "('metadata', 'poi_categories', 'poi_data', 'poi_index', 'poi_cmap');";
+
+    public static final String FIND_IN_BOX_CLAUSE_WHERE_CATEGORY_IN_V1 = "poi_data.category IN (";
+    // V1 Statements end
+
 
     private DbConstants() {
         throw new IllegalStateException();

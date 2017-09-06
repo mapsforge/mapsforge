@@ -31,6 +31,7 @@ import java.util.List;
 public abstract class AbstractPoiPersistenceManager implements PoiPersistenceManager {
     protected PoiCategoryManager categoryManager = null;
     protected String poiFile;
+    protected PoiFileInfo poiFileInfo;
 
     // Containers for return values
     protected final List<PointOfInterest> ret;
@@ -72,15 +73,33 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PoiFileInfo getPoiFileInfo() {
+        // Update File info only if its null to avoid frequent requests.
+        if (poiFileInfo == null) {
+            updatePoiFileInfo();
+        }
+        return poiFileInfo;
+    }
+
+    /**
+     * Updates the metadata for the current POI file.
+     */
+    public abstract void updatePoiFileInfo();
+
+    /**
      * Gets the SQL query that looks up POI entries.
      *
      * @param filter The filter object for determining all wanted categories (may be null).
      * @param count  Count of patterns to search in points of interest data (may be 0).
+     * @param version The version of poi-specification.
      * @return The SQL query.
      */
-    protected static String getSQLSelectString(PoiCategoryFilter filter, int count) {
+    protected static String getSQLSelectString(PoiCategoryFilter filter, int count, int version) {
         if (filter != null) {
-            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, count);
+            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, count, version);
         }
         StringBuilder query = new StringBuilder();
         query.append(DbConstants.FIND_IN_BOX_CLAUSE_SELECT);

@@ -24,7 +24,6 @@ import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiFileInfo;
 import org.mapsforge.poi.storage.PoiFileInfoBuilder;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
@@ -80,7 +79,11 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             // Finds a POI-Location by its unique ID
             this.findLocByIDStatement = this.db.prepare(DbConstants.FIND_LOCATION_BY_ID_STATEMENT);
             // Finds a POI-Data by its unique ID
-            this.findCatByIDStatement = this.db.prepare(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT);
+            if (getPoiFileInfo().version <= 1) {
+                this.findCatByIDStatement = this.db.prepare(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT_V1);
+            } else {
+                this.findCatByIDStatement = this.db.prepare(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT);
+            }
             // Finds a POI-Categories by its unique ID
             this.findDataByIDStatement = this.db.prepare(DbConstants.FIND_DATA_BY_ID_STATEMENT);
 
@@ -93,9 +96,6 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             this.deletePoiStatementLoc = this.db.prepare(DbConstants.DELETE_INDEX_STATEMENT);
             this.deletePoiStatementData = this.db.prepare(DbConstants.DELETE_DATA_STATEMENT);
             this.deletePoiStatementCat = this.db.prepare(DbConstants.DELETE_CATEGORYMAP_STATEMENT);
-
-            // Metadata
-            this.metadataStatement = this.db.prepare(DbConstants.FIND_METADATA_STATEMENT);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -329,7 +329,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         Stmt stmt = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
+            stmt = this.db.prepare(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, getPoiFileInfo().version));
 
             stmt.reset();
             stmt.clear_bindings();
@@ -398,7 +398,16 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * {@inheritDoc}
      */
     @Override
-    public PoiFileInfo getPoiFileInfo() {
+    public void updatePoiFileInfo() {
+        //Prepare metadataStatement separately, because its decisive for the further poi specification handling
+        if (this.metadataStatement == null) {
+            try {
+                this.metadataStatement = this.db.prepare(DbConstants.FIND_METADATA_STATEMENT);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+
         PoiFileInfoBuilder poiFileInfoBuilder = new PoiFileInfoBuilder();
 
         // Query
@@ -437,7 +446,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return poiFileInfoBuilder.build();
+        poiFileInfo = poiFileInfoBuilder.build();
     }
 
     /**
@@ -509,8 +518,13 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     @Override
     public boolean isValidDataBase() {
+        int poiVersion = getPoiFileInfo().version;
         try {
-            this.isValidDBStatement = this.db.prepare(DbConstants.VALID_DB_STATEMENT);
+            if (poiVersion <= 1) {
+                this.isValidDBStatement = this.db.prepare(DbConstants.VALID_DB_STATEMENT_V1);
+            } else {
+                this.isValidDBStatement = this.db.prepare(DbConstants.VALID_DB_STATEMENT);
+            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -526,7 +540,11 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return numTables == DbConstants.NUMBER_OF_TABLES;
+        if (poiVersion <= 1) {
+            return numTables == DbConstants.NUMBER_OF_TABLES_V1;
+        } else {
+            return numTables == DbConstants.NUMBER_OF_TABLES;
+        }
     }
 
     /**

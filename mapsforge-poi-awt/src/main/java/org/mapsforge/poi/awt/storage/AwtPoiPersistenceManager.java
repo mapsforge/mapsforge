@@ -22,7 +22,6 @@ import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
 import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiFileInfo;
 import org.mapsforge.poi.storage.PoiFileInfoBuilder;
 import org.mapsforge.poi.storage.PoiPersistenceManager;
 import org.mapsforge.poi.storage.PointOfInterest;
@@ -82,7 +81,11 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             // Finds a POI-Location by its unique ID
             this.findLocByIDStatement = this.conn.prepareStatement(DbConstants.FIND_LOCATION_BY_ID_STATEMENT);
             // Finds a POI-Data by its unique ID
-            this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT);
+            if (getPoiFileInfo().version <= 1) {
+                this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT_V1);
+            } else {
+                this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT);
+            }
             // Finds a POI-Categories by its unique ID
             this.findDataByIDStatement = this.conn.prepareStatement(DbConstants.FIND_DATA_BY_ID_STATEMENT);
 
@@ -95,9 +98,6 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             this.deletePoiStatementLoc = this.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
             this.deletePoiStatementData = this.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
             this.deletePoiStatementCat = this.conn.prepareStatement(DbConstants.DELETE_CATEGORYMAP_STATEMENT);
-
-            // Metadata
-            this.metadataStatement = this.conn.prepareStatement(DbConstants.FIND_METADATA_STATEMENT);
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -365,7 +365,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         ResultSet rs = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize));
+            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, getPoiFileInfo().version));
 
             stmt.clearParameters();
 
@@ -437,7 +437,16 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * {@inheritDoc}
      */
     @Override
-    public PoiFileInfo getPoiFileInfo() {
+    public void updatePoiFileInfo() {
+        //Prepare metadataStatement separately, because its decisive for the further poi specification handling
+        if (this.metadataStatement == null) {
+            try {
+                this.metadataStatement = this.conn.prepareStatement(DbConstants.FIND_METADATA_STATEMENT);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+
         PoiFileInfoBuilder poiFileInfoBuilder = new PoiFileInfoBuilder();
 
         // Query
@@ -478,7 +487,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return poiFileInfoBuilder.build();
+        poiFileInfo = poiFileInfoBuilder.build();
     }
 
     /**
@@ -548,8 +557,13 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     @Override
     public boolean isValidDataBase() {
+        int poiVersion = getPoiFileInfo().version;
         try {
-            this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT);
+            if (poiVersion <= 1) {
+                this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT_V1);
+            } else {
+                this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT);
+            }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -567,7 +581,11 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return numTables == DbConstants.NUMBER_OF_TABLES;
+        if (poiVersion <= 1) {
+            return numTables == DbConstants.NUMBER_OF_TABLES_V1;
+        } else {
+            return numTables == DbConstants.NUMBER_OF_TABLES;
+        }
     }
 
     /**
