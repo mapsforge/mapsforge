@@ -44,7 +44,7 @@ import java.util.Collection;
 /**
  * POI search.<br/>
  * Long press on map to search inside visible bounding box.<br/>
- * Tap on POIs to show their name (in device's locale).
+ * Tap on POIs to show their name (in default locale).
  */
 public class PoiSearchViewer extends DefaultTheme {
     private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/germany.poi";
@@ -93,6 +93,7 @@ public class PoiSearchViewer extends DefaultTheme {
 
         @Override
         protected Collection<PointOfInterest> doInBackground(BoundingBox... params) {
+            // Search POI
             PoiPersistenceManager persistenceManager = null;
             try {
                 persistenceManager = AndroidPoiPersistenceManagerFactory.getPoiPersistenceManager(POI_FILE);
@@ -121,6 +122,7 @@ public class PoiSearchViewer extends DefaultTheme {
                 return;
             }
 
+            // Overlay POI
             GroupLayer groupLayer = new GroupLayer();
             for (final PointOfInterest pointOfInterest : pointOfInterests) {
                 final Circle circle = new FixedPixelCircle(pointOfInterest.getLatLong(), 16, CIRCLE, null) {
