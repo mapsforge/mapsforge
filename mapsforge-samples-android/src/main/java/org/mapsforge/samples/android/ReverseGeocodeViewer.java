@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,17 +26,16 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Reverse Geocoding with long press.
  * <p/>
- * - POIs in specified radius.<br/>
+ * - POI in specified radius.<br/>
  * - Ways containing touch point.
  */
 public class ReverseGeocodeViewer extends DefaultTheme {
@@ -57,13 +56,13 @@ public class ReverseGeocodeViewer extends DefaultTheme {
         tileRendererLayer.setXmlRenderTheme(getRenderTheme());
         this.mapView.getLayerManager().getLayers().add(tileRendererLayer);
 
-        // Add a grid layer for debug
-        this.mapView.getLayerManager().getLayers()
-                .add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+        // For debug
+        this.mapView.getLayerManager().getLayers().add(new TileGridLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
+        this.mapView.getLayerManager().getLayers().add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, this.mapView.getModel().displayModel));
     }
 
     private void onLongPress(LatLong tapLatLong, Point tapXY) {
-        // Reads all POIs for the area covered by the tiles under touch at the tiles zoom level
+        // Read all labeled POI and ways for the area covered by the tiles under touch
         float touchRadius = TOUCH_RADIUS * this.mapView.getModel().displayModel.getScaleFactor();
         long mapSize = MercatorProjection.getMapSize(this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
         double pixelX = MercatorProjection.longitudeToPixelX(tapLatLong.longitude, mapSize);
@@ -72,22 +71,15 @@ public class ReverseGeocodeViewer extends DefaultTheme {
         int tileXMax = MercatorProjection.pixelXToTileX(pixelX + touchRadius, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
         int tileYMin = MercatorProjection.pixelYToTileY(pixelY - touchRadius, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
         int tileYMax = MercatorProjection.pixelYToTileY(pixelY + touchRadius, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
-        Set<PointOfInterest> pointOfInterests = new HashSet<>();
-        for (int tileX = tileXMin; tileX <= tileXMax; tileX++) {
-            for (int tileY = tileYMin; tileY <= tileYMax; tileY++) {
-                Tile tile = new Tile(tileX, tileY, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
-                MapReadResult mapReadResult = getMapFile().readPoiData(tile);
-                for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-                    pointOfInterests.add(pointOfInterest);
-                }
-            }
-        }
+        Tile upperLeft = new Tile(tileXMin, tileYMin, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+        Tile lowerRight = new Tile(tileXMax, tileYMax, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
+        MapReadResult mapReadResult = getMapFile().readLabels(upperLeft, lowerRight);
 
         StringBuilder sb = new StringBuilder();
 
-        // Filter POIs
-        sb.append("*** POIS ***");
-        for (PointOfInterest pointOfInterest : pointOfInterests) {
+        // Filter POI
+        sb.append("*** POI ***");
+        for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
             Point layerXY = this.mapView.getMapViewProjection().toPixels(pointOfInterest.position);
             if (layerXY.distance(tapXY) > touchRadius) {
                 continue;
@@ -99,16 +91,9 @@ public class ReverseGeocodeViewer extends DefaultTheme {
             }
         }
 
-        // Reads all ways for the area covered by the touched tile at the tile zoom level
-        int tileX = MercatorProjection.longitudeToTileX(tapLatLong.longitude, this.mapView.getModel().mapViewPosition.getZoomLevel());
-        int tileY = MercatorProjection.latitudeToTileY(tapLatLong.latitude, this.mapView.getModel().mapViewPosition.getZoomLevel());
-        Tile tile = new Tile(tileX, tileY, this.mapView.getModel().mapViewPosition.getZoomLevel(), this.mapView.getModel().displayModel.getTileSize());
-        MapReadResult mapReadResult = getMapFile().readLabels(tile);
-        List<Way> ways = mapReadResult.ways;
-
         // Filter ways
         sb.append("\n\n").append("*** WAYS ***");
-        for (Way way : ways) {
+        for (Way way : mapReadResult.ways) {
             if (!LatLongUtils.isClosedWay(way.latLongs[0])
                     || !LatLongUtils.contains(way.latLongs[0], tapLatLong)) {
                 continue;
