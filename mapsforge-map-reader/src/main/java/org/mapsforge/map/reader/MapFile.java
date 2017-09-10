@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2015-2016 lincomatic
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
@@ -835,20 +835,21 @@ public class MapFile extends MapDataStore {
      * @param tile tile for which data is requested.
      * @return label data for the tile.
      */
+    @Override
     public MapReadResult readLabels(Tile tile) {
         return readMapData(tile, tile, Selector.LABELS);
     }
 
     /**
      * Reads data for an area defined by the tile in the upper left and the tile in
-     * the lower right corner. The default implementation combines the results from
-     * all tiles, a possibly inefficient solution.
+     * the lower right corner.
      * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
      *
      * @param upperLeft  tile that defines the upper left corner of the requested area.
      * @param lowerRight tile that defines the lower right corner of the requested area.
      * @return map data for the tile.
      */
+    @Override
     public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
         return readMapData(upperLeft, lowerRight, Selector.LABELS);
     }
@@ -862,6 +863,20 @@ public class MapFile extends MapDataStore {
     @Override
     public MapReadResult readMapData(Tile tile) {
         return readMapData(tile, tile, Selector.ALL);
+    }
+
+    /**
+     * Reads data for an area defined by the tile in the upper left and the tile in
+     * the lower right corner.
+     * Precondition: upperLeft.tileX <= lowerRight.tileX && upperLeft.tileY <= lowerRight.tileY
+     *
+     * @param upperLeft  tile that defines the upper left corner of the requested area.
+     * @param lowerRight tile that defines the lower right corner of the requested area.
+     * @return map data for the tile.
+     */
+    @Override
+    public MapReadResult readMapData(Tile upperLeft, Tile lowerRight) {
+        return readMapData(upperLeft, lowerRight, Selector.ALL);
     }
 
     private MapReadResult readMapData(Tile upperLeft, Tile lowerRight, Selector selector) {
@@ -916,6 +931,12 @@ public class MapFile extends MapDataStore {
         return 1;
     }
 
+    /**
+     * Reads only POI data for tile.
+     *
+     * @param tile tile for which data is requested.
+     * @return POI data for the tile.
+     */
     @Override
     public MapReadResult readPoiData(Tile tile) {
         return readMapData(tile, tile, Selector.POIS);

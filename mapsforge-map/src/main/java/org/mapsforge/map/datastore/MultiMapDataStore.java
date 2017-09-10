@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -124,6 +124,76 @@ public class MultiMapDataStore extends MapDataStore {
     }
 
     @Override
+    public MapReadResult readLabels(Tile tile) {
+        switch (this.dataPolicy) {
+            case RETURN_FIRST:
+                for (MapDataStore mdb : mapDatabases) {
+                    if (mdb.supportsTile(tile)) {
+                        return mdb.readLabels(tile);
+                    }
+                }
+                return null;
+            case RETURN_ALL:
+                return readLabels(tile, false);
+            case DEDUPLICATE:
+                return readLabels(tile, true);
+        }
+        throw new IllegalStateException("Invalid data policy for multi map database");
+
+    }
+
+    private MapReadResult readLabels(Tile tile, boolean deduplicate) {
+        MapReadResult mapReadResult = new MapReadResult();
+        for (MapDataStore mdb : mapDatabases) {
+            if (mdb.supportsTile(tile)) {
+                MapReadResult result = mdb.readLabels(tile);
+                if (result == null) {
+                    continue;
+                }
+                boolean isWater = mapReadResult.isWater & result.isWater;
+                mapReadResult.isWater = isWater;
+                mapReadResult.add(result, deduplicate);
+            }
+        }
+        return mapReadResult;
+    }
+
+    @Override
+    public MapReadResult readLabels(Tile upperLeft, Tile lowerRight) {
+        switch (this.dataPolicy) {
+            case RETURN_FIRST:
+                for (MapDataStore mdb : mapDatabases) {
+                    if (mdb.supportsTile(upperLeft)) {
+                        return mdb.readLabels(upperLeft, lowerRight);
+                    }
+                }
+                return null;
+            case RETURN_ALL:
+                return readLabels(upperLeft, lowerRight, false);
+            case DEDUPLICATE:
+                return readLabels(upperLeft, lowerRight, true);
+        }
+        throw new IllegalStateException("Invalid data policy for multi map database");
+
+    }
+
+    private MapReadResult readLabels(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
+        MapReadResult mapReadResult = new MapReadResult();
+        for (MapDataStore mdb : mapDatabases) {
+            if (mdb.supportsTile(upperLeft)) {
+                MapReadResult result = mdb.readLabels(upperLeft, lowerRight);
+                if (result == null) {
+                    continue;
+                }
+                boolean isWater = mapReadResult.isWater & result.isWater;
+                mapReadResult.isWater = isWater;
+                mapReadResult.add(result, deduplicate);
+            }
+        }
+        return mapReadResult;
+    }
+
+    @Override
     public MapReadResult readMapData(Tile tile) {
         switch (this.dataPolicy) {
             case RETURN_FIRST:
@@ -146,6 +216,40 @@ public class MultiMapDataStore extends MapDataStore {
         for (MapDataStore mdb : mapDatabases) {
             if (mdb.supportsTile(tile)) {
                 MapReadResult result = mdb.readMapData(tile);
+                if (result == null) {
+                    continue;
+                }
+                boolean isWater = mapReadResult.isWater & result.isWater;
+                mapReadResult.isWater = isWater;
+                mapReadResult.add(result, deduplicate);
+            }
+        }
+        return mapReadResult;
+    }
+
+    @Override
+    public MapReadResult readMapData(Tile upperLeft, Tile lowerRight) {
+        switch (this.dataPolicy) {
+            case RETURN_FIRST:
+                for (MapDataStore mdb : mapDatabases) {
+                    if (mdb.supportsTile(upperLeft)) {
+                        return mdb.readMapData(upperLeft, lowerRight);
+                    }
+                }
+                return null;
+            case RETURN_ALL:
+                return readMapData(upperLeft, lowerRight, false);
+            case DEDUPLICATE:
+                return readMapData(upperLeft, lowerRight, true);
+        }
+        throw new IllegalStateException("Invalid data policy for multi map database");
+    }
+
+    private MapReadResult readMapData(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
+        MapReadResult mapReadResult = new MapReadResult();
+        for (MapDataStore mdb : mapDatabases) {
+            if (mdb.supportsTile(upperLeft)) {
+                MapReadResult result = mdb.readMapData(upperLeft, lowerRight);
                 if (result == null) {
                     continue;
                 }
@@ -181,6 +285,41 @@ public class MultiMapDataStore extends MapDataStore {
         for (MapDataStore mdb : mapDatabases) {
             if (mdb.supportsTile(tile)) {
                 MapReadResult result = mdb.readPoiData(tile);
+                if (result == null) {
+                    continue;
+                }
+                boolean isWater = mapReadResult.isWater & result.isWater;
+                mapReadResult.isWater = isWater;
+                mapReadResult.add(result, deduplicate);
+            }
+        }
+        return mapReadResult;
+    }
+
+    @Override
+    public MapReadResult readPoiData(Tile upperLeft, Tile lowerRight) {
+        switch (this.dataPolicy) {
+            case RETURN_FIRST:
+                for (MapDataStore mdb : mapDatabases) {
+                    if (mdb.supportsTile(upperLeft)) {
+                        return mdb.readPoiData(upperLeft, lowerRight);
+                    }
+                }
+                return null;
+            case RETURN_ALL:
+                return readPoiData(upperLeft, lowerRight, false);
+            case DEDUPLICATE:
+                return readPoiData(upperLeft, lowerRight, true);
+        }
+        throw new IllegalStateException("Invalid data policy for multi map database");
+
+    }
+
+    private MapReadResult readPoiData(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
+        MapReadResult mapReadResult = new MapReadResult();
+        for (MapDataStore mdb : mapDatabases) {
+            if (mdb.supportsTile(upperLeft)) {
+                MapReadResult result = mdb.readPoiData(upperLeft, lowerRight);
                 if (result == null) {
                     continue;
                 }

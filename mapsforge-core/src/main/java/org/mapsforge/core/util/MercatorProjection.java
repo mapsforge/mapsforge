@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013 Stephan Brandt <stephan@contagt.com>
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -56,8 +56,8 @@ public final class MercatorProjection {
      * Calculates the distance on the ground that is represented by a single pixel on the map.
      *
      * @param latitude    the latitude coordinate at which the resolution should be calculated.
-     * @param scaleFactor the zoom level at which the resolution should be calculated.
-     * @return the ground resolution at the given latitude and zoom level.
+     * @param scaleFactor the scale at which the resolution should be calculated.
+     * @return the ground resolution at the given latitude and scale.
      */
     public static double calculateGroundResolutionWithScaleFactor(double latitude, double scaleFactor, int tileSize) {
         long mapSize = getMapSizeWithScaleFactor(scaleFactor, tileSize);
@@ -69,7 +69,7 @@ public final class MercatorProjection {
      *
      * @param latitude the latitude coordinate at which the resolution should be calculated.
      * @param mapSize  precomputed size of map.
-     * @return the ground resolution at the given latitude and zoom level.
+     * @return the ground resolution at the given latitude and map size.
      */
     public static double calculateGroundResolution(double latitude, long mapSize) {
         return Math.cos(latitude * (Math.PI / 180)) * EARTH_CIRCUMFERENCE / mapSize;
@@ -94,7 +94,7 @@ public final class MercatorProjection {
 
     /**
      * @param scaleFactor the scale factor for which the size of the world map should be returned.
-     * @return the horizontal and vertical size of the map in pixel at the given zoom level.
+     * @return the horizontal and vertical size of the map in pixel at the given scale.
      * @throws IllegalArgumentException if the given scale factor is < 1
      */
     public static long getMapSizeWithScaleFactor(double scaleFactor, int tileSize) {
@@ -129,7 +129,7 @@ public final class MercatorProjection {
     }
 
     /**
-     * Calculates the absolute pixel position for a zoom level and tile size
+     * Calculates the absolute pixel position for a map size and tile size
      *
      * @param latLong the geographic position.
      * @param mapSize precomputed size of map.
@@ -141,9 +141,9 @@ public final class MercatorProjection {
     }
 
     /**
-     * Calculates the absolute pixel position for a zoom level and tile size relative to origin
+     * Calculates the absolute pixel position for a map size and tile size relative to origin
      *
-     * @param latLong
+     * @param latLong the geographic position.
      * @param mapSize precomputed size of map.
      * @return the relative pixel position to the origin values (e.g. for a tile)
      */
@@ -155,9 +155,9 @@ public final class MercatorProjection {
 
 
     /**
-     * Calculates the absolute pixel position for a zoom level and tile size relative to origin
+     * Calculates the absolute pixel position for a map size and tile size relative to origin
      *
-     * @param latLong
+     * @param latLong the geographic position.
      * @param mapSize precomputed size of map.
      * @return the relative pixel position to the origin values (e.g. for a tile)
      */
@@ -166,9 +166,9 @@ public final class MercatorProjection {
     }
 
     /**
-     * Calculates the absolute pixel position for a zoom level and tile size relative to origin
+     * Calculates the absolute pixel position for a tile and tile size relative to origin
      *
-     * @param latLong
+     * @param latLong the geographic position.
      * @param tile    tile
      * @return the relative pixel position to the origin values (e.g. for a tile)
      */
@@ -177,7 +177,7 @@ public final class MercatorProjection {
     }
 
     /**
-     * Converts a latitude coordinate (in degrees) to a pixel Y coordinate at a certain zoom level.
+     * Converts a latitude coordinate (in degrees) to a pixel Y coordinate at a certain scale.
      *
      * @param latitude    the latitude coordinate that should be converted.
      * @param scaleFactor the scale factor at which the coordinate should be converted.
@@ -207,7 +207,7 @@ public final class MercatorProjection {
     }
 
     /**
-     * Converts a latitude coordinate (in degrees) to a pixel Y coordinate at a certain zoom level.
+     * Converts a latitude coordinate (in degrees) to a pixel Y coordinate at a certain map size.
      *
      * @param latitude the latitude coordinate that should be converted.
      * @param mapSize  precomputed size of map.
@@ -222,14 +222,14 @@ public final class MercatorProjection {
 
 
     /**
-     * Converts a latitude coordinate (in degrees) to a tile Y number at a certain zoom level.
+     * Converts a latitude coordinate (in degrees) to a tile Y number at a certain scale.
      *
      * @param latitude    the latitude coordinate that should be converted.
      * @param scaleFactor the scale factor at which the coordinate should be converted.
      * @return the tile Y number of the latitude value.
      */
-    public static int latitudeToTileY(double latitude, double scaleFactor) {
-        return pixelYToTileY(latitudeToPixelYWithScaleFactor(latitude, scaleFactor, DUMMY_TILE_SIZE), scaleFactor, DUMMY_TILE_SIZE);
+    public static int latitudeToTileYWithScaleFactor(double latitude, double scaleFactor) {
+        return pixelYToTileYWithScaleFactor(latitudeToPixelYWithScaleFactor(latitude, scaleFactor, DUMMY_TILE_SIZE), scaleFactor, DUMMY_TILE_SIZE);
     }
 
     /**
@@ -269,7 +269,7 @@ public final class MercatorProjection {
     }
 
     /**
-     * Converts a longitude coordinate (in degrees) to a pixel X coordinate at a certain zoom level.
+     * Converts a longitude coordinate (in degrees) to a pixel X coordinate at a certain map size.
      *
      * @param longitude the longitude coordinate that should be converted.
      * @param mapSize   precomputed size of map.
@@ -286,8 +286,8 @@ public final class MercatorProjection {
      * @param scaleFactor the scale factor at which the coordinate should be converted.
      * @return the tile X number of the longitude value.
      */
-    public static int longitudeToTileX(double longitude, double scaleFactor) {
-        return pixelXToTileX(longitudeToPixelXWithScaleFactor(longitude, scaleFactor, DUMMY_TILE_SIZE), scaleFactor, DUMMY_TILE_SIZE);
+    public static int longitudeToTileXWithScaleFactor(double longitude, double scaleFactor) {
+        return pixelXToTileXWithScaleFactor(longitudeToPixelXWithScaleFactor(longitude, scaleFactor, DUMMY_TILE_SIZE), scaleFactor, DUMMY_TILE_SIZE);
     }
 
     /**
@@ -326,7 +326,7 @@ public final class MercatorProjection {
     }
 
     /**
-     * Converts a pixel X coordinate at a certain zoom level to a longitude coordinate.
+     * Converts a pixel X coordinate at a certain scale to a longitude coordinate.
      *
      * @param pixelX      the pixel X coordinate that should be converted.
      * @param scaleFactor the scale factor at which the coordinate should be converted.
@@ -336,13 +336,13 @@ public final class MercatorProjection {
     public static double pixelXToLongitudeWithScaleFactor(double pixelX, double scaleFactor, int tileSize) {
         long mapSize = getMapSizeWithScaleFactor(scaleFactor, tileSize);
         if (pixelX < 0 || pixelX > mapSize) {
-            throw new IllegalArgumentException("invalid pixelX coordinate at zoom level " + scaleFactor + ": " + pixelX);
+            throw new IllegalArgumentException("invalid pixelX coordinate at scale " + scaleFactor + ": " + pixelX);
         }
         return 360 * ((pixelX / mapSize) - 0.5);
     }
 
     /**
-     * Converts a pixel X coordinate at a certain zoom level to a longitude coordinate.
+     * Converts a pixel X coordinate at a certain map size to a longitude coordinate.
      *
      * @param pixelX  the pixel X coordinate that should be converted.
      * @param mapSize precomputed size of map.
@@ -364,7 +364,7 @@ public final class MercatorProjection {
      * @param scaleFactor the scale factor at which the coordinate should be converted.
      * @return the tile X number.
      */
-    public static int pixelXToTileX(double pixelX, double scaleFactor, int tileSize) {
+    public static int pixelXToTileXWithScaleFactor(double pixelX, double scaleFactor, int tileSize) {
         return (int) Math.min(Math.max(pixelX / tileSize, 0), scaleFactor - 1);
     }
 
@@ -380,7 +380,7 @@ public final class MercatorProjection {
     }
 
     /**
-     * Converts a pixel Y coordinate at a certain zoom level to a latitude coordinate.
+     * Converts a pixel Y coordinate at a certain scale to a latitude coordinate.
      *
      * @param pixelY      the pixel Y coordinate that should be converted.
      * @param scaleFactor the scale factor at which the coordinate should be converted.
@@ -390,14 +390,14 @@ public final class MercatorProjection {
     public static double pixelYToLatitudeWithScaleFactor(double pixelY, double scaleFactor, int tileSize) {
         long mapSize = getMapSizeWithScaleFactor(scaleFactor, tileSize);
         if (pixelY < 0 || pixelY > mapSize) {
-            throw new IllegalArgumentException("invalid pixelY coordinate at zoom level " + scaleFactor + ": " + pixelY);
+            throw new IllegalArgumentException("invalid pixelY coordinate at scale " + scaleFactor + ": " + pixelY);
         }
         double y = 0.5 - (pixelY / mapSize);
         return 90 - 360 * Math.atan(Math.exp(-y * (2 * Math.PI))) / Math.PI;
     }
 
     /**
-     * Converts a pixel Y coordinate at a certain zoom level to a latitude coordinate.
+     * Converts a pixel Y coordinate at a certain map size to a latitude coordinate.
      *
      * @param pixelY  the pixel Y coordinate that should be converted.
      * @param mapSize precomputed size of map.
@@ -419,7 +419,7 @@ public final class MercatorProjection {
      * @param scaleFactor the scale factor at which the coordinate should be converted.
      * @return the tile Y number.
      */
-    public static int pixelYToTileY(double pixelY, double scaleFactor, int tileSize) {
+    public static int pixelYToTileYWithScaleFactor(double pixelY, double scaleFactor, int tileSize) {
         return (int) Math.min(Math.max(pixelY / tileSize, 0), scaleFactor - 1);
     }
 
@@ -455,13 +455,13 @@ public final class MercatorProjection {
     }
 
     /**
-     * Converts a tile X number at a certain zoom level to a longitude coordinate.
+     * Converts a tile X number at a certain scale to a longitude coordinate.
      *
      * @param tileX       the tile X number that should be converted.
      * @param scaleFactor the scale factor at which the number should be converted.
      * @return the longitude value of the tile X number.
      */
-    public static double tileXToLongitude(long tileX, double scaleFactor) {
+    public static double tileXToLongitudeWithScaleFactor(long tileX, double scaleFactor) {
         return pixelXToLongitudeWithScaleFactor(tileX * DUMMY_TILE_SIZE, scaleFactor, DUMMY_TILE_SIZE);
     }
 
@@ -477,13 +477,13 @@ public final class MercatorProjection {
     }
 
     /**
-     * Converts a tile Y number at a certain zoom level to a latitude coordinate.
+     * Converts a tile Y number at a certain scale to a latitude coordinate.
      *
      * @param tileY       the tile Y number that should be converted.
      * @param scaleFactor the scale factor at which the number should be converted.
      * @return the latitude value of the tile Y number.
      */
-    public static double tileYToLatitude(long tileY, double scaleFactor) {
+    public static double tileYToLatitudeWithScaleFactor(long tileY, double scaleFactor) {
         return pixelYToLatitudeWithScaleFactor(tileY * DUMMY_TILE_SIZE, scaleFactor, DUMMY_TILE_SIZE);
     }
 
