@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -35,6 +35,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -54,12 +55,12 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
     private PreparedStatement findCatByIDStatement = null;
     private PreparedStatement findDataByIDStatement = null;
     private PreparedStatement findLocByIDStatement = null;
-    private PreparedStatement insertPoiStatementLoc = null;
-    private PreparedStatement insertPoiStatementCat = null;
-    private PreparedStatement insertPoiStatementData = null;
-    private PreparedStatement deletePoiStatementLoc = null;
-    private PreparedStatement deletePoiStatementCat = null;
-    private PreparedStatement deletePoiStatementData = null;
+    private PreparedStatement insertPoiCatStatement = null;
+    private PreparedStatement insertPoiDataStatement = null;
+    private PreparedStatement insertPoiLocStatement = null;
+    private PreparedStatement deletePoiCatStatement = null;
+    private PreparedStatement deletePoiDataStatement = null;
+    private PreparedStatement deletePoiLocStatement = null;
     private PreparedStatement isValidDBStatement = null;
     private PreparedStatement metadataStatement = null;
 
@@ -75,32 +76,6 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
         // Load categories from database
         this.categoryManager = new AwtPoiCategoryManager(this.conn);
-
-        // Queries
-        try {
-            // Finds a POI-Location by its unique ID
-            this.findLocByIDStatement = this.conn.prepareStatement(DbConstants.FIND_LOCATION_BY_ID_STATEMENT);
-            // Finds a POI-Data by its unique ID
-            if (getPoiFileInfo().version <= 1) {
-                this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT_V1);
-            } else {
-                this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT);
-            }
-            // Finds a POI-Categories by its unique ID
-            this.findDataByIDStatement = this.conn.prepareStatement(DbConstants.FIND_DATA_BY_ID_STATEMENT);
-
-            // Inserts a POI into index and adds its data
-            this.insertPoiStatementLoc = this.conn.prepareStatement(DbConstants.INSERT_INDEX_STATEMENT);
-            this.insertPoiStatementData = this.conn.prepareStatement(DbConstants.INSERT_DATA_STATEMENT);
-            this.insertPoiStatementCat = this.conn.prepareStatement(DbConstants.INSERT_CATEGORYMAP_STATEMENT);
-
-            // Deletes a POI given by its ID
-            this.deletePoiStatementLoc = this.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
-            this.deletePoiStatementData = this.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
-            this.deletePoiStatementCat = this.conn.prepareStatement(DbConstants.DELETE_CATEGORYMAP_STATEMENT);
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        }
     }
 
     /**
@@ -113,14 +88,6 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         }
 
         // Close statements
-
-        if (this.findLocByIDStatement != null) {
-            try {
-                this.findLocByIDStatement.close();
-            } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
-        }
 
         if (this.findCatByIDStatement != null) {
             try {
@@ -138,49 +105,57 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             }
         }
 
-        if (this.insertPoiStatementLoc != null) {
+        if (this.findLocByIDStatement != null) {
             try {
-                this.insertPoiStatementLoc.close();
+                this.findLocByIDStatement.close();
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
-        if (this.insertPoiStatementData != null) {
+        if (this.insertPoiCatStatement != null) {
             try {
-                this.insertPoiStatementData.close();
+                this.insertPoiCatStatement.close();
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
-        if (this.insertPoiStatementCat != null) {
+        if (this.insertPoiDataStatement != null) {
             try {
-                this.insertPoiStatementCat.close();
+                this.insertPoiDataStatement.close();
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
-        if (this.deletePoiStatementLoc != null) {
+        if (this.insertPoiLocStatement != null) {
             try {
-                this.deletePoiStatementLoc.close();
+                this.insertPoiLocStatement.close();
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
-        if (this.deletePoiStatementCat != null) {
+        if (this.deletePoiCatStatement != null) {
             try {
-                this.deletePoiStatementCat.close();
+                this.deletePoiCatStatement.close();
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
-        if (this.deletePoiStatementData != null) {
+        if (this.deletePoiDataStatement != null) {
             try {
-                this.deletePoiStatementData.close();
+                this.deletePoiDataStatement.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+
+        if (this.deletePoiLocStatement != null) {
+            try {
+                this.deletePoiLocStatement.close();
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -249,13 +224,13 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
 
         stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
         stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
+        stmt.execute(DbConstants.DROP_CATEGORY_MAP_STATEMENT);
         stmt.execute(DbConstants.DROP_DATA_STATEMENT);
-        stmt.execute(DbConstants.DROP_CATEGORYMAP_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
 
         stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
-        stmt.execute(DbConstants.CREATE_CATEGORYMAP_STATEMENT);
         stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
+        stmt.execute(DbConstants.CREATE_CATEGORY_MAP_STATEMENT);
         stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
         stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
 
@@ -269,23 +244,33 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
     private Set<PoiCategory> findCategoriesByID(long poiID) {
         ResultSet rs = null;
         try {
+            if (this.findCatByIDStatement == null) {
+                if (getPoiFileInfo().version < 2) {
+                    this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT_V1);
+                } else {
+                    this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT);
+                }
+            }
+
             this.findCatByIDStatement.clearParameters();
+
             this.findCatByIDStatement.setLong(1, poiID);
 
-            Set<PoiCategory> cats = new HashSet<>();
+            Set<PoiCategory> categories = new HashSet<>();
             rs = this.findCatByIDStatement.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 long id = rs.getLong(2);
-                cats.add(this.categoryManager.getPoiCategoryByID(
-                        (int) id));
+                categories.add(this.categoryManager.getPoiCategoryByID((int) id));
             }
-            return cats;
+            return categories;
         } catch (SQLException | UnknownPoiCategoryException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
-                if (rs != null) rs.close();
-                // Statements are closed in close()-Method
+                if (rs != null) {
+                    rs.close();
+                }
+                // Statements are closed in close() method
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -297,10 +282,15 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * @param poiID Id of POI
      * @return Set of Tags
      */
-    private Set<Tag> findTagsByID(long poiID) {
+    private Set<Tag> findDataByID(long poiID) {
         ResultSet rs = null;
         try {
+            if (this.findDataByIDStatement == null) {
+                this.findDataByIDStatement = this.conn.prepareStatement(DbConstants.FIND_DATA_BY_ID_STATEMENT);
+            }
+
             this.findDataByIDStatement.clearParameters();
+
             this.findDataByIDStatement.setLong(1, poiID);
 
             Set<Tag> tags = new HashSet<>();
@@ -314,36 +304,10 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
-                if (rs != null) rs.close();
-                // Statements are closed in close()-Method
-            } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param poiID Id of POI
-     * @return Latitude and longitude values of POI
-     */
-    private LatLong findLocationByID(long poiID) {
-        ResultSet rs = null;
-        try {
-            this.findLocByIDStatement.clearParameters();
-
-            this.findLocByIDStatement.setLong(1, poiID);
-
-            rs = this.findLocByIDStatement.executeQuery();
-            if (rs.next()) {
-                return new LatLong(rs.getDouble(2), rs.getDouble(3));
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                // Statements are closed in close()-Method
+                if (rs != null) {
+                    rs.close();
+                }
+                // Statements are closed in close() method
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -394,7 +358,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 double lat = rs.getDouble(2);
                 double lon = rs.getDouble(3);
 
-                this.poi = new PointOfInterest(id, lat, lon, findTagsByID(id), findCategoriesByID(id));
+                this.poi = new PointOfInterest(id, lat, lon, findDataByID(id), findCategoriesByID(id));
                 this.ret.add(this.poi);
             }
         } catch (SQLException e) {
@@ -416,6 +380,42 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
     }
 
     /**
+     * @param poiID Id of POI
+     * @return Latitude and longitude values of POI
+     */
+    private LatLong findLocationByID(long poiID) {
+        ResultSet rs = null;
+        try {
+            if (this.findLocByIDStatement == null) {
+                this.findLocByIDStatement = this.conn.prepareStatement(DbConstants.FIND_LOCATION_BY_ID_STATEMENT);
+            }
+
+            this.findLocByIDStatement.clearParameters();
+
+            this.findLocByIDStatement.setLong(1, poiID);
+
+            rs = this.findLocByIDStatement.executeQuery();
+            if (rs.next()) {
+                double lat = rs.getDouble(2);
+                double lon = rs.getDouble(3);
+                return new LatLong(lat, lon);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                // Statements are closed in close() method
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+        return null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -426,8 +426,8 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         // Query
         LatLong latlong = findLocationByID(poiID);
         if (latlong != null) {
-            this.poi = new PointOfInterest(poiID, latlong.getLatitude(), latlong.getLongitude(),
-                    findTagsByID(poiID), findCategoriesByID(poiID));
+            this.poi = new PointOfInterest(poiID, latlong.latitude, latlong.longitude,
+                    findDataByID(poiID), findCategoriesByID(poiID));
         }
 
         return this.poi;
@@ -437,20 +437,118 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * {@inheritDoc}
      */
     @Override
-    public void updatePoiFileInfo() {
-        //Prepare metadataStatement separately, because its decisive for the further poi specification handling
-        if (this.metadataStatement == null) {
-            try {
-                this.metadataStatement = this.conn.prepareStatement(DbConstants.FIND_METADATA_STATEMENT);
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+    public void insertPointOfInterest(PointOfInterest poi) {
+        insertPointsOfInterest(Collections.singleton(poi));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void insertPointsOfInterest(Collection<PointOfInterest> pois) {
+        try {
+            if (this.insertPoiLocStatement == null) {
+                this.insertPoiLocStatement = this.conn.prepareStatement(DbConstants.INSERT_INDEX_STATEMENT);
             }
+            if (this.insertPoiDataStatement == null) {
+                this.insertPoiDataStatement = this.conn.prepareStatement(DbConstants.INSERT_DATA_STATEMENT);
+            }
+            if (this.insertPoiCatStatement == null) {
+                this.insertPoiCatStatement = this.conn.prepareStatement(DbConstants.INSERT_CATEGORY_MAP_STATEMENT);
+            }
+
+            this.insertPoiLocStatement.clearParameters();
+            this.insertPoiDataStatement.clearParameters();
+            this.insertPoiCatStatement.clearParameters();
+
+            Statement stmt = this.conn.createStatement();
+            stmt.execute("BEGIN;");
+
+            for (PointOfInterest poi : pois) {
+                // POI location
+                this.insertPoiLocStatement.setLong(1, poi.getId());
+                this.insertPoiLocStatement.setDouble(2, poi.getLatitude());
+                this.insertPoiLocStatement.setDouble(3, poi.getLatitude());
+                this.insertPoiLocStatement.setDouble(4, poi.getLongitude());
+                this.insertPoiLocStatement.setDouble(5, poi.getLongitude());
+                this.insertPoiLocStatement.executeUpdate();
+
+                // POI data
+                this.insertPoiDataStatement.setLong(1, poi.getId());
+                this.insertPoiDataStatement.setString(2, tagsToString(poi.getTags()));
+                this.insertPoiDataStatement.executeUpdate();
+
+                // POI categories
+                for (PoiCategory cat : poi.getCategories()) {
+                    this.insertPoiCatStatement.setLong(1, poi.getId());
+                    this.insertPoiCatStatement.setLong(2, cat.getID());
+                    this.insertPoiCatStatement.executeUpdate();
+                }
+            }
+
+            stmt.execute("COMMIT;");
+            stmt.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isClosed() {
+        return this.poiFile == null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isValidDataBase() {
+        int version = getPoiFileInfo().version;
+        try {
+            if (version < 2) {
+                this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT_V1);
+            } else {
+                this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
+        // Check for table names
+        // TODO Is it necessary to get the tables meta data as well?
+        int numTables = 0;
+        try {
+            ResultSet rs = this.isValidDBStatement.executeQuery();
+            if (rs.next()) {
+                numTables = rs.getInt(1);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+
+        if (version < 2) {
+            return numTables == DbConstants.NUMBER_OF_TABLES_V1;
+        } else {
+            return numTables == DbConstants.NUMBER_OF_TABLES;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void readPoiFileInfo() {
         PoiFileInfoBuilder poiFileInfoBuilder = new PoiFileInfoBuilder();
 
-        // Query
         try {
+            if (this.metadataStatement == null) {
+                this.metadataStatement = this.conn.prepareStatement(DbConstants.FIND_METADATA_STATEMENT);
+            }
+
             ResultSet rs = this.metadataStatement.executeQuery();
             while (rs.next()) {
                 String name = rs.getString(1);
@@ -494,155 +592,37 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * {@inheritDoc}
      */
     @Override
-    public void insertPointOfInterest(PointOfInterest poi) {
-        Collection<PointOfInterest> c = new HashSet<>();
-        c.add(poi);
-        insertPointsOfInterest(c);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void insertPointsOfInterest(Collection<PointOfInterest> pois) {
-        try {
-            this.insertPoiStatementLoc.clearParameters();
-            this.insertPoiStatementCat.clearParameters();
-            this.insertPoiStatementData.clearParameters();
-
-            Statement stmt = this.conn.createStatement();
-            stmt.execute("BEGIN;");
-
-            for (PointOfInterest poi : pois) {
-                this.insertPoiStatementLoc.setLong(1, poi.getId());
-                this.insertPoiStatementLoc.setDouble(2, poi.getLatitude());
-                this.insertPoiStatementLoc.setDouble(3, poi.getLatitude());
-                this.insertPoiStatementLoc.setDouble(4, poi.getLongitude());
-                this.insertPoiStatementLoc.setDouble(5, poi.getLongitude());
-
-                //Set poi tags
-                String data = tagsToString(poi.getTags());
-                this.insertPoiStatementData.setLong(1, poi.getId());
-                this.insertPoiStatementData.setString(2, data);
-
-                //Set multiple poi categories
-                for (PoiCategory cat : poi.getCategories()) {
-
-                    this.insertPoiStatementCat.setLong(1, poi.getId());
-                    this.insertPoiStatementCat.setLong(2, cat.getID());
-                    this.insertPoiStatementCat.executeUpdate();
-                }
-
-                this.insertPoiStatementData.executeUpdate();
-                this.insertPoiStatementLoc.executeUpdate();
-            }
-
-            stmt.execute("COMMIT;");
-            stmt.close();
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isClosed() {
-        return this.poiFile == null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isValidDataBase() {
-        int poiVersion = getPoiFileInfo().version;
-        try {
-            if (poiVersion <= 1) {
-                this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT_V1);
-            } else {
-                this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT);
-            }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        }
-
-        // Check for table names
-        // TODO Is it necessary to get the tables meta data as well?
-        int numTables = 0;
-        try {
-            ResultSet rs = this.isValidDBStatement.executeQuery();
-            if (rs.next()) {
-                numTables = rs.getInt(1);
-            }
-            rs.close();
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        }
-
-        if (poiVersion <= 1) {
-            return numTables == DbConstants.NUMBER_OF_TABLES_V1;
-        } else {
-            return numTables == DbConstants.NUMBER_OF_TABLES;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public void removePointOfInterest(PointOfInterest poi) {
         try {
-            this.deletePoiStatementLoc.clearParameters();
-            this.deletePoiStatementData.clearParameters();
-            this.deletePoiStatementCat.clearParameters();
+            if (this.deletePoiLocStatement == null) {
+                this.deletePoiLocStatement = this.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
+            }
+            if (this.deletePoiDataStatement == null) {
+                this.deletePoiDataStatement = this.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
+            }
+            if (this.deletePoiCatStatement == null) {
+                this.deletePoiCatStatement = this.conn.prepareStatement(DbConstants.DELETE_CATEGORY_MAP_STATEMENT);
+            }
+
+            this.deletePoiLocStatement.clearParameters();
+            this.deletePoiDataStatement.clearParameters();
+            this.deletePoiCatStatement.clearParameters();
 
             Statement stmt = this.conn.createStatement();
             stmt.execute("BEGIN;");
 
-            this.deletePoiStatementLoc.setLong(1, poi.getId());
-            this.deletePoiStatementData.setLong(1, poi.getId());
-            this.deletePoiStatementCat.setLong(1, poi.getId());
+            this.deletePoiLocStatement.setLong(1, poi.getId());
+            this.deletePoiDataStatement.setLong(1, poi.getId());
+            this.deletePoiCatStatement.setLong(1, poi.getId());
 
-            this.deletePoiStatementLoc.executeUpdate();
-            this.deletePoiStatementData.executeUpdate();
-            this.deletePoiStatementCat.executeUpdate();
+            this.deletePoiLocStatement.executeUpdate();
+            this.deletePoiDataStatement.executeUpdate();
+            this.deletePoiCatStatement.executeUpdate();
 
             stmt.execute("COMMIT;");
             stmt.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
-    }
-
-    /**
-     * Convert string representation back to tags list.
-     */
-    private Set<Tag> stringToTags(String tagsmapstring) {
-        String[] sb = tagsmapstring.split("\\r");
-        Set<Tag> map = new HashSet<>();
-        for (String key : sb) {
-            if (key.contains("=")) {
-                String[] set = key.split("=");
-                if (set.length == 2)
-                    map.add(new Tag(set[0], set[1]));
-            }
-        }
-        return map;
-    }
-
-    /**
-     * Convert tags to a string representation using '\r' delimiter.
-     */
-    private String tagsToString(Set<Tag> tagMap) {
-        StringBuilder sb = new StringBuilder();
-        for (Tag tag : tagMap) {
-            if (sb.length() > 0) {
-                sb.append('\r');
-            }
-            sb.append(tag.key).append('=').append(tag.value);
-        }
-        return sb.toString();
     }
 }

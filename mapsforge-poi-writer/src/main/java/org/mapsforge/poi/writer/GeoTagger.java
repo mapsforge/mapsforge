@@ -69,7 +69,7 @@ class GeoTagger {
             this.pStmtInsertWayNodes = writer.conn.prepareStatement(DbConstants.INSERT_WAYNODES_STATEMENT);
             this.pStmtDeletePoiData = writer.conn.prepareStatement(DbConstants.DELETE_DATA_STATEMENT);
             this.pStmtDeletePoiIndex = writer.conn.prepareStatement(DbConstants.DELETE_INDEX_STATEMENT);
-            this.pStmtDeletePoiCategory = writer.conn.prepareStatement(DbConstants.DELETE_CATEGORYMAP_STATEMENT);
+            this.pStmtDeletePoiCategory = writer.conn.prepareStatement(DbConstants.DELETE_CATEGORY_MAP_STATEMENT);
             this.pStmtUpdateData = writer.conn.prepareStatement(DbConstants.UPDATE_DATA_STATEMENT);
             this.pStmtNodesInBox = writer.conn.prepareStatement(DbConstants.FIND_IN_BOX_STATEMENT);
             this.pStmtTagsByID = writer.conn.prepareStatement(DbConstants.FIND_DATA_BY_ID_STATEMENT);

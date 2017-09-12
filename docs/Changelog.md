@@ -6,6 +6,7 @@
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
 - XmlPullParser different implementations [#974](https://github.com/mapsforge/mapsforge/issues/974)
 - Desktop: fix blurred map view [#978](https://github.com/mapsforge/mapsforge/issues/978)
+- POI: version 2 with multiple categories [#950](https://github.com/mapsforge/mapsforge/issues/950)
 - POI: multiple patterns in search [#988](https://github.com/mapsforge/mapsforge/issues/988)
 - POI: add non-closed ways [#947](https://github.com/mapsforge/mapsforge/issues/947)
 - POI: add geo tagging [#946](https://github.com/mapsforge/mapsforge/issues/946)

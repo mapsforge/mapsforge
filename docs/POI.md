@@ -1,8 +1,6 @@
 # POI API
 
-This article describes how to use the POI API from the mapsforge POI library.
-
-**The library is currently in beta state.** It came from the `prototypes` branch.
+This article describes how to use the POI API in mapsforge POI library (from `prototypes` branch).
 
 If you have any questions or problems, don't hesitate to ask our public [mapsforge-dev](https://groups.google.com/group/mapsforge-dev) mailing list for help. You can also report bugs and improvement requests via our [issue tracker](https://github.com/mapsforge/mapsforge/issues).
 
@@ -14,7 +12,7 @@ The mapsforge POI library uses SQLite for storing POIs. For efficiency reasons A
 
 All reading and writing operations are done via classes implementing the `PoiPersistenceManager` interface. This allows adding, removing and changing POIs at any time. POI categories can be defined on creation time only. Categories are implemented as trees and can be accessed via classes implementing the `PoiCategoryManager` interface.
 
-Externally you can use your favorite SQLite manager for browsing the database, e.g. spatialite-gui.
+Externally you can use your favorite SQLite manager for browsing the database, e.g. [spatialite-gui](https://www.gaia-gis.it/fossil/spatialite_gui/index).
 
 ## Quick Start
 
@@ -91,6 +89,7 @@ Then you add them to a list `tagList.add(new Tag("addr:street", "Bodestraße"))`
 The DB schema consists of:
 - `poi_categories` with the categories tree
 - `poi_data` with the POI information
+- `poi_category_map` with the POI categories mapping
 - Virtual & shadow correlated tables holding the R-tree index
 - `metadata` with the DB metadata
 
@@ -99,3 +98,4 @@ The DB schema consists of:
 |**Version**|**Date**|**Changes**|
 |-----------|--------|-----------|
 |1|2015-11-04|Initial release of the specification|
+|2|2017-09-12|<ul><li>POI multiple categories</li></ul>|

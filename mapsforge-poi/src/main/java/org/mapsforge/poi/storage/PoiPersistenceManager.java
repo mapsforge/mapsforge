@@ -2,7 +2,7 @@
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 weise
  * Copyright 2010, 2011 Karsten Groll
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -118,6 +118,11 @@ public interface PoiPersistenceManager {
      * @return true if the database is a valid POI database.
      */
     boolean isValidDataBase();
+
+    /**
+     * Reads the metadata for the current POI file.
+     */
+    void readPoiFileInfo();
 
     /**
      * Removes a point of interest from storage.

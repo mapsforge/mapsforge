@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,7 +20,6 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -34,17 +34,16 @@ public class PointOfInterest {
     private final Set<Tag> tags;
     private final Set<PoiCategory> categories;
 
-    public PointOfInterest(long id, double latitude, double longitude, String name, PoiCategory categories) {
-        this(id, latitude, longitude, new HashSet<>(Collections.singletonList(new Tag("name", name))),
-                new HashSet<>(Collections.singletonList(categories)));
+    public PointOfInterest(long id, double latitude, double longitude, String name, PoiCategory category) {
+        this(id, latitude, longitude, Collections.singleton(new Tag("name", name)), Collections.singleton(category));
     }
 
     public PointOfInterest(long id, double latitude, double longitude, Set<Tag> tags, Set<PoiCategory> categories) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.tags = (tags == null) ? new HashSet<Tag>() : tags;
-        this.categories = (categories == null) ? new HashSet<PoiCategory>() : categories;
+        this.tags = (tags == null) ? Collections.<Tag>emptySet() : tags;
+        this.categories = (categories == null) ? Collections.<PoiCategory>emptySet() : categories;
     }
 
     @Override
@@ -69,13 +68,12 @@ public class PointOfInterest {
      * @return category of this point of interest.
      */
     public PoiCategory getCategory() {
-        if (!categories.isEmpty()) {
-            if (categories.size() == 1)
-                return categories.toArray(new PoiCategory[categories.size()])[0];
-            else {
-                //TODO return the highest cat.-level of all its categories together
-                return categories.toArray(new PoiCategory[categories.size()])[0];
-            }
+        if (categories.size() > 1) {
+            //TODO return the highest level of its categories
+            return categories.toArray(new PoiCategory[categories.size()])[0];
+        }
+        if (categories.size() == 1) {
+            return categories.toArray(new PoiCategory[categories.size()])[0];
         }
         return null;
     }
@@ -119,11 +117,10 @@ public class PointOfInterest {
      * @return name of this point of interest at preferred language
      */
     public String getName(String language) {
-
         if (language != null && language.trim().length() > 0) {
             // Exact match
             String nameStr = "name:" + language.toLowerCase(Locale.ENGLISH);
-            for (Tag tag : tags) {
+            for (Tag tag : this.tags) {
                 if (nameStr.equalsIgnoreCase(tag.key)) {
                     return tag.value;
                 }
@@ -132,7 +129,7 @@ public class PointOfInterest {
             // Fall back to base
             String baseLanguage = language.split("[-_]")[0];
             nameStr = "name:" + baseLanguage.toLowerCase(Locale.ENGLISH);
-            for (Tag tag : tags) {
+            for (Tag tag : this.tags) {
                 if (nameStr.equalsIgnoreCase(tag.key)) {
                     return tag.value;
                 }
@@ -158,10 +155,11 @@ public class PointOfInterest {
 
     @Override
     public String toString() {
-        String builder = "POI: (" + this.latitude + ',' + this.longitude + ") " + this.tags.toString() + ' ';
+        StringBuilder sb = new StringBuilder();
+        sb.append("POI: (").append(this.latitude).append(',').append(this.longitude).append(") ").append(this.tags.toString());
         for (PoiCategory category : categories) {
-            builder += category.getID() + ' ';
+            sb.append(' ').append(category.getID());
         }
-        return builder;
+        return sb.toString();
     }
 }
