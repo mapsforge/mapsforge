@@ -17,6 +17,8 @@
  */
 package org.mapsforge.map.reader;
 
+import org.mapsforge.core.util.Parameters;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
@@ -30,31 +32,7 @@ import java.util.logging.Logger;
 public class ReadBuffer {
 
     private static final String CHARSET_UTF8 = "UTF-8";
-    /**
-     * Default maximum buffer size which is supported by this implementation.
-     */
-    private static final int DEFAULT_MAXIMUM_BUFFER_SIZE = 2500000;
     private static final Logger LOGGER = Logger.getLogger(ReadBuffer.class.getName());
-
-    public static int MAXIMUM_BUFFER_SIZE = DEFAULT_MAXIMUM_BUFFER_SIZE;
-
-    /**
-     * Returns the maximum buffer size.
-     *
-     * @return the maximum buffer size.
-     */
-    public static synchronized int getMaximumBufferSize() {
-        return MAXIMUM_BUFFER_SIZE;
-    }
-
-    /**
-     * Set the maximum buffer size.
-     *
-     * @param maximumBufferSize the maximum buffer size to use.
-     */
-    public static synchronized void setMaximumBufferSize(int maximumBufferSize) {
-        ReadBuffer.MAXIMUM_BUFFER_SIZE = maximumBufferSize;
-    }
 
     private byte[] bufferData;
     private int bufferPosition;
@@ -86,7 +64,7 @@ public class ReadBuffer {
         // ensure that the read buffer is large enough
         if (this.bufferData == null || this.bufferData.length < length) {
             // ensure that the read buffer is not too large
-            if (length > MAXIMUM_BUFFER_SIZE) {
+            if (length > Parameters.MAXIMUM_BUFFER_SIZE) {
                 LOGGER.warning("invalid read length: " + length);
                 return false;
             }
@@ -114,7 +92,7 @@ public class ReadBuffer {
         // ensure that the read buffer is large enough
         if (this.bufferData == null || this.bufferData.length < length) {
             // ensure that the read buffer is not too large
-            if (length > MAXIMUM_BUFFER_SIZE) {
+            if (length > Parameters.MAXIMUM_BUFFER_SIZE) {
                 LOGGER.warning("invalid read length: " + length);
                 return false;
             }

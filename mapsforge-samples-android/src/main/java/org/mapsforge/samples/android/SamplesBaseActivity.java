@@ -35,11 +35,11 @@ import android.widget.TextView;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls.Orientation;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplateRuntimePermissions;
-import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
@@ -102,7 +102,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
     @Override
     protected void createMapViews() {
         // Frame buffer HA2
-        FrameBufferController.FRAME_BUFFER_HA2 = true;
+        Parameters.FRAME_BUFFER_HA2 = true;
 
         super.createMapViews();
 
@@ -290,14 +290,14 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
             MapWorkerPool.DEBUG_TIMING = preferences.getBoolean(SamplesApplication.SETTING_DEBUG_TIMING, false);
         }
         if (SamplesApplication.SETTING_RENDERING_THREADS.equals(key)) {
-            MapWorkerPool.NUMBER_OF_THREADS = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_RENDERING_THREADS, Integer.toString(MapWorkerPool.DEFAULT_NUMBER_OF_THREADS)));
+            Parameters.NUMBER_OF_THREADS = preferences.getInt(SamplesApplication.SETTING_RENDERING_THREADS, 1);
             AndroidUtil.restartActivity(this);
         }
         if (SamplesApplication.SETTING_WAYFILTERING_DISTANCE.equals(key) ||
                 SamplesApplication.SETTING_WAYFILTERING.equals(key)) {
             MapFile.wayFilterEnabled = preferences.getBoolean(SamplesApplication.SETTING_WAYFILTERING, true);
             if (MapFile.wayFilterEnabled) {
-                MapFile.wayFilterDistance = Integer.parseInt(preferences.getString(SamplesApplication.SETTING_WAYFILTERING_DISTANCE, "20"));
+                MapFile.wayFilterDistance = preferences.getInt(SamplesApplication.SETTING_WAYFILTERING_DISTANCE, 20);
             }
         }
     }

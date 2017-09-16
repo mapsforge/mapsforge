@@ -25,6 +25,7 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PoiWayBundle;
@@ -564,7 +565,7 @@ public class MapFile extends MapDataStore {
                 } else if (currentBlockSize == 0) {
                     // the current block is empty, continue with the next block
                     continue;
-                } else if (currentBlockSize > ReadBuffer.getMaximumBufferSize()) {
+                } else if (currentBlockSize > Parameters.MAXIMUM_BUFFER_SIZE) {
                     // the current block is too large, continue with the next block
                     LOGGER.warning("current block size too large: " + currentBlockSize);
                     continue;

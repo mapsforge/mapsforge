@@ -21,26 +21,14 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.FrameBuffer;
-import org.mapsforge.map.view.FrameBufferHA;
-import org.mapsforge.map.view.FrameBufferHA2;
 
 public final class FrameBufferController implements Observer {
 
-    /**
-     * If true the {@link FrameBufferHA2} will be used instead of default {@link FrameBufferHA}.
-     */
-    public static boolean FRAME_BUFFER_HA2 = false;
-
     private static float maxAspectRatio = 2;
-
-    // if useSquareFrameBuffer is enabled, the framebuffer allocated for drawing will be
-    // large enough for drawing in either orientation, so no change is needed when the device
-    // orientation changes. To avoid overly large framebuffers, the aspect ratio for this policy
-    // determines when this will be used.
-    public static boolean SQUARE_FRAME_BUFFER = true;
 
     public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
         FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
@@ -56,7 +44,7 @@ public final class FrameBufferController implements Observer {
     public static Dimension calculateFrameBufferDimension(Dimension mapViewDimension, double overdrawFactor) {
         int width = (int) (mapViewDimension.width * overdrawFactor);
         int height = (int) (mapViewDimension.height * overdrawFactor);
-        if (SQUARE_FRAME_BUFFER) {
+        if (Parameters.SQUARE_FRAME_BUFFER) {
             float aspectRatio = ((float) mapViewDimension.width) / mapViewDimension.height;
             if (aspectRatio < maxAspectRatio && aspectRatio > 1 / maxAspectRatio) {
                 width = Math.max(width, height);
@@ -64,14 +52,6 @@ public final class FrameBufferController implements Observer {
             }
         }
         return new Dimension(width, height);
-    }
-
-    public static boolean isUseSquareFrameBuffer() {
-        return SQUARE_FRAME_BUFFER;
-    }
-
-    public static void setUseSquareFrameBuffer(boolean useSquareFrameBuffer) {
-        FrameBufferController.SQUARE_FRAME_BUFFER = useSquareFrameBuffer;
     }
 
     private final FrameBuffer frameBuffer;
@@ -102,7 +82,7 @@ public final class FrameBufferController implements Observer {
         double overdrawFactor = this.model.frameBufferModel.getOverdrawFactor();
         if (dimensionChangeNeeded(mapViewDimension, overdrawFactor)) {
             Dimension newDimension = calculateFrameBufferDimension(mapViewDimension, overdrawFactor);
-            if (!SQUARE_FRAME_BUFFER || frameBuffer.getDimension() == null
+            if (!Parameters.SQUARE_FRAME_BUFFER || frameBuffer.getDimension() == null
                     || newDimension.width > frameBuffer.getDimension().width
                     || newDimension.height > frameBuffer.getDimension().height) {
                 // new dimensions if we either always reallocate on config change or if new dimension

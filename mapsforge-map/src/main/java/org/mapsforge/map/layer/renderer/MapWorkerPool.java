@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  * Copyright 2016 ksaihtam
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -18,6 +18,7 @@
 package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.JobQueue;
@@ -33,13 +34,6 @@ import java.util.logging.Logger;
 
 public class MapWorkerPool implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(MapWorkerPool.class.getName());
-
-    // The default number of threads is one greater than the number of processors as one thread is
-    // likely to be blocked on I/O reading map data. Technically this value can change, so a better
-    // implementation, maybe one that also takes the available memory into account, would be good.
-    // For stability reasons (see #591), we set default number of threads to 1.
-    public static final int DEFAULT_NUMBER_OF_THREADS = 1;//Runtime.getRuntime().availableProcessors() + 1;
-    public static int NUMBER_OF_THREADS = DEFAULT_NUMBER_OF_THREADS;
 
     public static boolean DEBUG_TIMING = false;
 
@@ -68,7 +62,7 @@ public class MapWorkerPool implements Runnable {
     public void run() {
         try {
             while (!inShutdown) {
-                RendererJob rendererJob = this.jobQueue.get(NUMBER_OF_THREADS);
+                RendererJob rendererJob = this.jobQueue.get(Parameters.NUMBER_OF_THREADS);
                 if (rendererJob == null) {
                     continue;
                 }
@@ -91,7 +85,7 @@ public class MapWorkerPool implements Runnable {
         }
         this.inShutdown = false;
         this.self = Executors.newSingleThreadExecutor();
-        this.workers = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+        this.workers = Executors.newFixedThreadPool(Parameters.NUMBER_OF_THREADS);
         this.self.execute(this);
         this.isRunning = true;
     }

@@ -24,11 +24,11 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.LatLongUtils;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.util.AwtUtil;
 import org.mapsforge.map.awt.util.JavaPreferences;
 import org.mapsforge.map.awt.view.MapView;
-import org.mapsforge.map.controller.FrameBufferController;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MultiMapDataStore;
 import org.mapsforge.map.layer.Layers;
@@ -40,13 +40,11 @@ import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.hills.SimpleShadingAlgortithm;
-import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.reader.ReadBuffer;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
 import java.awt.Dimension;
@@ -79,16 +77,13 @@ public final class Samples {
      */
     public static void main(String[] args) {
         // Frame buffer HA2
-        FrameBufferController.FRAME_BUFFER_HA2 = true;
+        Parameters.FRAME_BUFFER_HA2 = true;
 
         // Multithreaded map rendering
-        MapWorkerPool.NUMBER_OF_THREADS = 2;
-
-        // Map buffer size
-        ReadBuffer.MAXIMUM_BUFFER_SIZE = 6500000;
+        Parameters.NUMBER_OF_THREADS = 2;
 
         // Square frame buffer
-        FrameBufferController.SQUARE_FRAME_BUFFER = false;
+        Parameters.SQUARE_FRAME_BUFFER = false;
 
         HillsRenderConfig hillsCfg = null;
         File demFolder = getDemFolder(args);
