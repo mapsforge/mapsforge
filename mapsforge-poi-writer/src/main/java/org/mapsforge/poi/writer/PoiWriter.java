@@ -609,22 +609,13 @@ public final class PoiWriter {
         pStmtMetadata.setString(1, DbConstants.METADATA_BOUNDS);
         BoundingBox bb = this.configuration.getBboxConfiguration();
         if (bb == null) {
-            // This may produce implausible bounds, but this depends on the source map.
-            String FIND_MAX_BOUND = "SELECT MIN(minLat), MIN(minLon), MAX(maxLat), MAX(maxLon) FROM poi_index";
-
-            Statement maxBoundStmt = this.conn.createStatement();
-            ResultSet rs = maxBoundStmt.executeQuery(FIND_MAX_BOUND);
-            if (rs.next()) {
-                bb = new BoundingBox(rs.getDouble(1), rs.getDouble(2), rs.getDouble(3), rs.getDouble(4));
-            }
-            rs.close();
-            maxBoundStmt.close();
+            // Calculate bounding box from poi coordinates
+            Statement stmt = this.conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT MIN(minLat), MIN(minLon), MAX(maxLat), MAX(maxLon) FROM poi_index;");
+            rs.next();
+            bb = new BoundingBox(rs.getDouble(1), rs.getDouble(2), rs.getDouble(3), rs.getDouble(4));
         }
-        if (bb != null) {
-            pStmtMetadata.setString(2, bb.minLatitude + "," + bb.minLongitude + "," + bb.maxLatitude + "," + bb.maxLongitude);
-        } else {
-            pStmtMetadata.setNull(2, Types.NULL);
-        }
+        pStmtMetadata.setString(2, bb.minLatitude + "," + bb.minLongitude + "," + bb.maxLatitude + "," + bb.maxLongitude);
         pStmtMetadata.addBatch();
 
         // Comment
