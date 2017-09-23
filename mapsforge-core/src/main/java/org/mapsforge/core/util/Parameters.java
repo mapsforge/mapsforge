@@ -19,7 +19,7 @@ public final class Parameters {
     /**
      * If true the <code>FrameBufferHA2</code> will be used instead of default <code>FrameBufferHA</code>.
      */
-    public static boolean FRAME_BUFFER_HA2 = false;
+    public static boolean FRAME_BUFFER_HA2 = true;
 
     /**
      * Maximum buffer size for map files.
