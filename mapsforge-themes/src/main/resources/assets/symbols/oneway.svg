@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" height="22" width="22">
- <metadata id="metadata3025"/>
- <path stroke-miterlimit="10" inkscape:connector-curvature="0" d="m 4.8081,9.8895 7.3149,0.066 C 11.202,9.1774 10.289,8.3996 9.3792,7.6219 l 3.3408,0 c 1.415,1.1264 2.832,2.2522 4.248,3.3781 -1.416,1.125 -2.833,2.251 -4.25,3.377 l -3.3406,0 C 10.287,13.599 11.2,12.822 12.11,12.044 l -7.292,0 z" id="path8070" sodipodi:nodetypes="cccccccccc" opacity="0.809" fill="#ffffff" stroke="#ffffff" stroke-linecap="square" stroke-width="1.75"/>
- <path id="path8097" d="M 4.7991,9.8793 C 3.9666,9.854 12.087,9.9512 12.087,9.9512 11.177,9.1731 10.266,8.3951 9.3549,7.6172 l 3.3411,0 4.249,3.3778 c -1.416,1.125 -2.833,2.25 -4.249,3.375 l -3.3411,0 c 0.9111,-0.776 1.8221,-1.554 2.7321,-2.331 l -7.2879,0.02 0,-2.1828 z" stroke-miterlimit="10" inkscape:connector-curvature="0" sodipodi:nodetypes="ccccccccccc" opacity="0.749" stroke-opacity="0.914" fill="#2c2c2c" stroke-linecap="square" stroke-width="0.714"/>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="580" height="580">
+ <metadata id="metadata10"/>
+ <path id="path4151" d="m 30,261 286,0 0,-72.5 234,101.85 -234,101.15 0,-72.5 -286,0 z" mix-blend-mode="normal" solid-color="#000000" opacity="0.8" color-interpolation-filters="linearRGB" filter-gaussianBlur-deviation="0" color="#000000" image-rendering="auto" color-rendering="auto" stroke-width="64" isolation="auto" color-interpolation="sRGB" solid-opacity="1" fill="none" stroke-linejoin="round" filter-blend-mode="normal" stroke="#ffffff" shape-rendering="auto"/>
+ <path d="m 30,261 286,0 0,-72.5 234,101.85 -234,101.15 0,-72.5 -286,0 z" id="path4136" fill="#6a6a6a"/>
 </svg>
