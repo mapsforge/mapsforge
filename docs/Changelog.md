@@ -4,6 +4,8 @@
 
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
 - Hillshading improvements [#997](https://github.com/mapsforge/mapsforge/issues/997)
+- Polyline overlay touch events [#998](https://github.com/mapsforge/mapsforge/issues/998)
+- Polygon overlay touch events [#999](https://github.com/mapsforge/mapsforge/issues/999)
 - Circle overlay touch events [#996](https://github.com/mapsforge/mapsforge/issues/996)
 - MapFile supports FileChannel as input [#982](https://github.com/mapsforge/mapsforge/issues/982)
 - XmlPullParser different implementations [#974](https://github.com/mapsforge/mapsforge/issues/974)

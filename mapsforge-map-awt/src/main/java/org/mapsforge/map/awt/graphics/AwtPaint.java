@@ -151,6 +151,11 @@ public class AwtPaint implements Paint {
     }
 
     @Override
+    public float getStrokeWidth() {
+        return this.strokeWidth;
+    }
+
+    @Override
     public int getTextHeight(String text) {
         Graphics2D graphics2d = bufferedImage.createGraphics();
         FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);

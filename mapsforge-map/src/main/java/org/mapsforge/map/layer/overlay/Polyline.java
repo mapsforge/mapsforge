@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,8 +23,10 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.util.MapViewProjection;
 
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +65,21 @@ public class Polyline extends Layer {
         this.keepAligned = keepAligned;
         this.paintStroke = paintStroke;
         this.graphicFactory = graphicFactory;
+    }
+
+    public synchronized boolean contains(Point tapXY, MapViewProjection mapViewProjection) {
+        // Touch min 20 px at baseline mdpi (160dpi)
+        double distance = Math.max(20 / 2 * this.displayModel.getScaleFactor(),
+                this.paintStroke.getStrokeWidth() / 2);
+        Point point2 = null;
+        for (int i = 0; i < this.latLongs.size() - 1; i++) {
+            Point point1 = i == 0 ? mapViewProjection.toPixels(this.latLongs.get(i)) : point2;
+            point2 = mapViewProjection.toPixels(this.latLongs.get(i + 1));
+            if (LatLongUtils.distanceSegmentPoint(point1.x, point1.y, point2.x, point2.y, tapXY.x, tapXY.y) <= distance) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
