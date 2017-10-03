@@ -51,7 +51,7 @@ public class FixedPixelCircle extends Circle {
         super(latLong, radius, paintFill, paintStroke, keepAligned);
     }
 
-    public boolean contains(Point center, Point point) {
+    public synchronized boolean contains(Point center, Point point) {
         return center.distance(point) < this.getRadius() * (this.scaleRadius ? this.displayModel.getScaleFactor() : 1);
     }
 

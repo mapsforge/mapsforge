@@ -2,8 +2,9 @@
 
 ## New since 0.8.0
 
-- MapFile supports FileChannel as input [#982](https://github.com/mapsforge/mapsforge/issues/982)
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
+- Circle overlay touch events [#996](https://github.com/mapsforge/mapsforge/issues/996)
+- MapFile supports FileChannel as input [#982](https://github.com/mapsforge/mapsforge/issues/982)
 - XmlPullParser different implementations [#974](https://github.com/mapsforge/mapsforge/issues/974)
 - Desktop: fix blurred map view [#978](https://github.com/mapsforge/mapsforge/issues/978)
 - POI: version 2 with multiple categories [#950](https://github.com/mapsforge/mapsforge/issues/950)

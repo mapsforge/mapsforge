@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -67,6 +67,10 @@ public class Circle extends Layer {
         setRadiusInternal(radius);
         this.paintFill = paintFill;
         this.paintStroke = paintStroke;
+    }
+
+    public synchronized boolean contains(Point center, Point point, double latitude, byte zoomLevel) {
+        return center.distance(point) < getRadiusInPixels(latitude, zoomLevel);
     }
 
     @Override

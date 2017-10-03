@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -133,7 +133,20 @@ public class OverlayMapViewer extends DefaultTheme {
 
         Circle circle = new Circle(latLong3, 100, Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0,
-                Style.FILL), null);
+                Style.FILL), null) {
+            @Override
+            public boolean onTap(LatLong geoPoint, Point viewPosition,
+                                 Point tapPoint) {
+                if (this.contains(viewPosition, tapPoint, geoPoint.latitude,
+                        mapView.getModel().mapViewPosition.getZoomLevel())) {
+                    Toast.makeText(OverlayMapViewer.this,
+                            "The Circle was tapped " + geoPoint.toString(),
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        };
 
         FixedPixelCircle tappableCircle = new FixedPixelCircle(
                 latLong6,
@@ -141,20 +154,6 @@ public class OverlayMapViewer extends DefaultTheme {
                 Utils.createPaint(
                         AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN),
                         0, Style.FILL), null) {
-            @Override
-            public boolean onLongPress(LatLong geoPoint, Point viewPosition,
-                                       Point tapPoint) {
-                if (this.contains(viewPosition, tapPoint)) {
-                    Toast.makeText(
-                            OverlayMapViewer.this,
-                            "The Circle was long pressed at "
-                                    + geoPoint.toString(), Toast.LENGTH_SHORT)
-                            .show();
-                    return true;
-                }
-                return false;
-            }
-
             @Override
             public boolean onTap(LatLong geoPoint, Point viewPosition,
                                  Point tapPoint) {
