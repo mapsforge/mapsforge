@@ -50,6 +50,8 @@ import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
 import org.mapsforge.map.scalebar.NauticalUnitAdapter;
 
+import java.io.File;
+
 /**
  * Code common to most activities in the Samples app.
  */
@@ -122,12 +124,26 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
                 this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent));
     }
 
-    /**
-     * @return the map file name to be used
-     */
     @Override
     protected String getMapFileName() {
+        String map =  (Samples.launchUrl==null) ? null : Samples.launchUrl.getQueryParameter("map");
+        if(map!=null) {
+            return map;
+        }
         return "germany.map";
+    }
+
+    @Override
+    protected File getMapFileDirectory() {
+        String mapdir = (Samples.launchUrl==null) ? null : Samples.launchUrl.getQueryParameter("mapdir");
+        if(mapdir!=null) {
+            File file = new File(mapdir);
+            if(file.exists() && file.isDirectory()) {
+                return file;
+            }
+            throw new RuntimeException(file+" does not exist or is not a directory (configured in launch URI "+Samples.launchUrl+" )");
+        }
+        return super.getMapFileDirectory();
     }
 
     @Override

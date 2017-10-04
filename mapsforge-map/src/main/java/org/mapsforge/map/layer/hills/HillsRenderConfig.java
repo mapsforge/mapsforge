@@ -14,61 +14,94 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.HillshadingBitmap;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+
+/**
+ * Mutable frontend for the hillshading cache/processing in {@link HgtCache}
+ * <p>All changes are lazily applied when a tile is requested with {@link #getShadingTile}, which includes a full reindex of the .hgt files.
+ * Eager indexing on a dedicated thread can be triggered with {@link #indexOnThread} (e.g. after a configuration change or during setup)</p>
+ */
 public class HillsRenderConfig {
     private File demFolder;
-    private int demCacheSize = 4;
-
     private ShadingAlgorithm algorithm;
 
-    private FutureTask<HgtCache> hgtCacheFuture;
-    private final GraphicFactory graphicsFactory;
+    private boolean enableInterpolationOverlap;
+    private int mainCacheSize = 4;
+    private int neighborCacheSize = 4;
 
+
+    private HgtCache hgtCache;
+    final GraphicFactory graphicsFactory;
+
+    public HillsRenderConfig(File demFolder, GraphicFactory graphicsFactory) {
+        this(demFolder, graphicsFactory, new SimpleShadingAlgortithm());
+    }
     public HillsRenderConfig(File demFolder, GraphicFactory graphicsFactory, ShadingAlgorithm algorithm) {
         this.graphicsFactory = graphicsFactory;
         this.algorithm = algorithm;
-        setDemFolder(demFolder);
+        this.demFolder = demFolder;
     }
 
-    public Bitmap getShadingTile(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner) throws ExecutionException, InterruptedException {
-        if (hgtCacheFuture == null)
-            return null;
 
-        Bitmap ret = getShadingTileInternal(latitudeOfSouthWestCorner, longituedOfSouthWestCorner);
+    /**
+     * force a reindex of .hgt files, even if none of the settings have changes
+     * <p>consider calling {@link #indexOnThread()} </p>
+     */
+    public HillsRenderConfig forceReindex(){
+        hgtCache=null;
+        return this;
+    }
+
+    /** call after initialization, after a set of changes to the settable properties or after forceReindex to initiate background indexing */
+    public HillsRenderConfig indexOnThread(){
+        HgtCache cache = currentCache();
+        if (cache != null) cache.indexOnThread();
+        return this;
+    }
+
+    /**
+     *
+     * @param latitudeOfSouthWestCorner tile ID latitude (southwest corner, as customary in .hgt)
+     * @param longituedOfSouthWestCorner tile ID longitude (southwest corner, as customary in .hgt)
+     * @param pxPerLat pixels per degree of latitude (to determine padding quality requirements)
+     * @param pxPerLng pixels per degree of longitude (to determine padding quality requirements)
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    public HillshadingBitmap getShadingTile(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException {
+        HgtCache cache = currentCache();
+        if (cache ==null) return null;
+
+        HillshadingBitmap ret = cache.getHillshadingBitmap(latitudeOfSouthWestCorner, longituedOfSouthWestCorner, pxPerLat, pxPerLng);
         if (ret == null && Math.abs(longituedOfSouthWestCorner) > 178) { // don't think too hard about where exactly the border is (not much height data there anyway)
-            ret = getShadingTileInternal(latitudeOfSouthWestCorner, longituedOfSouthWestCorner > 0 ? longituedOfSouthWestCorner - 180 : longituedOfSouthWestCorner + 180);
+            int eastInt = longituedOfSouthWestCorner > 0 ? longituedOfSouthWestCorner - 180 : longituedOfSouthWestCorner + 180;
+            ret = cache.getHillshadingBitmap(latitudeOfSouthWestCorner, eastInt, pxPerLat, pxPerLng);
         }
 
         return ret;
     }
 
-    public Bitmap getShadingTileInternal(int northInt, int eastInt) throws ExecutionException, InterruptedException {
-        HgtCache hgtCache = this.hgtCacheFuture.get();
-        HgtCache.HgtFileInfo hgtFileInfo = hgtCache.hgtFiles.get(new TileKey(northInt, eastInt));
-        if (hgtFileInfo == null)
-            return null;
+    private HgtCache currentCache() {
+        if (demFolder == null || algorithm==null) {
+            hgtCache = null;
+        }
 
-        Future<Bitmap> future = hgtFileInfo.getParsed();
-        return future.get();
+        if(hgtCache == null
+                || ! demFolder.equals(hgtCache.demFolder)
+                || ! algorithm.equals(hgtCache.algorithm)
+                || enableInterpolationOverlap != hgtCache.interpolatorOverlap
+                || mainCacheSize != hgtCache.mainCacheSize
+                || neighborCacheSize != hgtCache.neighborCacheSize
+                ) {
+            hgtCache = new HgtCache(demFolder, enableInterpolationOverlap, graphicsFactory, algorithm, mainCacheSize, neighborCacheSize);
+        }
+        return hgtCache;
     }
 
     public File getDemFolder() {
@@ -76,177 +109,52 @@ public class HillsRenderConfig {
     }
 
     public void setDemFolder(final File demFolder) {
-        if (demFolder == null) {
-            hgtCacheFuture = null;
-        } else if (demFolder.equals(this.demFolder)) {
-            return;
-        }
         this.demFolder = demFolder;
-        hgtCacheFuture = new FutureTask<>(new Callable<HgtCache>() {
-            @Override
-            public HgtCache call() throws Exception {
-                return new HgtCache(demFolder);
-            }
-        });
-        new Thread(hgtCacheFuture, "DEM HGT index").start();
     }
 
-    class HgtCache {
-        LinkedHashSet<Future<Bitmap>> lru = new LinkedHashSet<>();
 
-        List<String> problems = new ArrayList<>();
 
-        HgtCache(File demFolder) {
-            crawl(demFolder, Pattern.compile("(n|s)(\\d{1,2})(e|w)(\\d{1,3})\\.hgt", Pattern.CASE_INSENSITIVE).matcher(""), problems);
-        }
 
-        private void crawl(File file, Matcher matcher, List<String> problems) {
-            if (file.exists()) {
-                if (file.isFile()) {
-                    String name = file.getName();
-                    if (matcher.reset(name).matches()) {
-                        int northsouth = Integer.parseInt(matcher.group(2));
-                        int eastwest = Integer.parseInt(matcher.group(4));
-
-                        int north = "n".equals(matcher.group(1).toLowerCase()) ? northsouth : -northsouth;
-                        int east = "e".equals(matcher.group(3).toLowerCase()) ? eastwest : -eastwest;
-
-                        long length = file.length();
-                        long heights = length / 2;
-                        long sqrt = (long) Math.sqrt(heights);
-                        if (sqrt * sqrt != heights) {
-                            if (problems != null)
-                                problems.add(file + " length in shorts (" + heights + ") is not a square number");
-                        } else {
-                            TileKey tileKey = new TileKey(north, east);
-                            HgtFileInfo existing = hgtFiles.get(tileKey);
-                            if (existing == null || existing.size < length) {
-                                hgtFiles.put(tileKey, new HgtFileInfo(file, length, east, north));
-                            }
-                        }
-                    }
-                } else if (file.isDirectory()) {
-                    for (File sub : file.listFiles()) {
-                        crawl(sub, matcher, problems);
-                    }
-                }
-            }
-        }
-
-        class HgtFileInfo implements Callable<Bitmap>, ShadingAlgorithm.RawHillTileSource {
-            final File file;
-            WeakReference<Future<Bitmap>> weakRef = null;
-
-            final long size;
-            private final int east;
-            private final int north;
-
-            HgtFileInfo(File file, int east, int north) {
-                this(file, file.length(), east, north);
-            }
-
-            HgtFileInfo(File file, long length, int east, int north) {
-                this.file = file;
-                size = file.length();
-                this.east = east;
-                this.north = north;
-            }
-
-            Future<Bitmap> getParsed() {
-                Future<Bitmap> future = getBeforeLru();
-                if (demCacheSize > 0) {
-                    synchronized (lru) {
-                        if (!lru.remove(future) && lru.size() + 1 >= demCacheSize) {
-                            Future<Bitmap> oldest = lru.iterator().next();
-                            lru.remove(oldest);
-                        }
-                        lru.add(future);
-                    }
-                }
-                return future;
-            }
-
-            private Future<Bitmap> getBeforeLru() {
-                Future<Bitmap> existing = weakRef == null ? null : weakRef.get();
-                if (existing != null)
-                    return existing;
-
-                FutureTask<Bitmap> created = new FutureTask<>(this);
-
-                weakRef = new WeakReference<Future<Bitmap>>(created);
-
-                created.run();
-
-                return created;
-            }
-
-            @Override
-            public Bitmap call() throws Exception {
-                return algorithm.convertTile(this, graphicsFactory);
-            }
-
-            @Override
-            public long getSize() {
-                return size;
-            }
-
-            @Override
-            public BufferedInputStream openInputStream() throws IOException {
-                return new BufferedInputStream(new FileInputStream(file));
-            }
-
-            @Override
-            public ShadingAlgorithm.RawHillTileSource getNeighborNorth() {
-                return hgtFiles.get(new TileKey(north + 1, east));
-            }
-
-            @Override
-            public ShadingAlgorithm.RawHillTileSource getNeighborSouth() {
-                return hgtFiles.get(new TileKey(north + 1, east));
-            }
-
-            @Override
-            public ShadingAlgorithm.RawHillTileSource getNeighborEast() {
-                return hgtFiles.get(new TileKey(north, east + 1));
-            }
-
-            @Override
-            public ShadingAlgorithm.RawHillTileSource getNeighborWest() {
-                return hgtFiles.get(new TileKey(north, east - 1));
-            }
-        }
-
-        Map<TileKey, HgtFileInfo> hgtFiles = new HashMap<>();
+    public boolean getEnableInterpolationOverlap() {
+        return enableInterpolationOverlap;
     }
 
-    private final static class TileKey {
-        final int north;
-        final int east;
+    /** @param enableInterpolationOverlap false is faster, but shows minor artifacts along the latitude/longitude
+     * (if true, preparing a shading tile for high resolution use requires all 4 neighboring tiles to be loaded if they are not in memory)
+     */
+    public void setEnableInterpolationOverlap(boolean enableInterpolationOverlap) {
+        this.enableInterpolationOverlap = enableInterpolationOverlap;
+    }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
+    public int getMainCacheSize() {
+        return mainCacheSize;
+    }
 
-            TileKey tileKey = (TileKey) o;
 
-            if (north != tileKey.north)
-                return false;
-            return east == tileKey.east;
-        }
+    /**
+     * @param mainCacheSize number of recently used shading tiles (whole numer latitude/longitude grid) that are kept in memory (default: 4)
+     */
+    public void setMainCacheSize(int mainCacheSize) {
+        this.mainCacheSize = mainCacheSize;
+    }
 
-        @Override
-        public int hashCode() {
-            int result = north;
-            result = 31 * result + east;
-            return result;
-        }
+    public int getNeighborCacheSize() {
+        return neighborCacheSize;
+    }
 
-        private TileKey(int north, int east) {
-            this.east = east;
-            this.north = north;
-        }
+
+    /**
+     * @param neighborCacheSize number of additional shading tiles to keep in memory for interpolationOverlap (ignored if enableInterpolationOverlap is false)
+     */
+    public void setNeighborCacheSize(int neighborCacheSize) {
+        this.neighborCacheSize = neighborCacheSize;
+    }
+
+    public ShadingAlgorithm getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(ShadingAlgorithm algorithm) {
+        this.algorithm = algorithm;
     }
 }

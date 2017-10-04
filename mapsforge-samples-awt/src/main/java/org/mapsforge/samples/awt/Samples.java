@@ -66,14 +66,15 @@ public final class Samples {
     private static final boolean SHOW_DEBUG_LAYERS = false;
     private static final boolean SHOW_RASTER_MAP = false;
 
-    private static final String MESSAGE = "Are you sure you want to exit the application?";
-    private static final String TITLE = "Confirm close";
+    private static final String MESSAGE = "Do you want to save the current view? (for load with -restore)";
+    private static final String TITLE = "Closing";
 
     /**
      * Starts the {@code Samples}.
      *
      * @param args command line args: expects the map files as multiple parameters
-     *             with possible SRTM hgt folder as 1st argument.
+     *             with possible SRTM hgt folder as 1st argument
+     *             and optional -restore (any position) to jump to the saved view.
      */
     public static void main(String[] args) {
         // Frame buffer HA2
@@ -85,12 +86,26 @@ public final class Samples {
         // Square frame buffer
         Parameters.SQUARE_FRAME_BUFFER = false;
 
+
+        final boolean restore;
+        String[] argsWithoutRestoreFlag = removeRestoreFlag(args);
+        if(args!=null && argsWithoutRestoreFlag.length!=args.length){
+            args = argsWithoutRestoreFlag;
+            restore = true;
+        }else{
+            restore = false;
+        }
+
         HillsRenderConfig hillsCfg = null;
         File demFolder = getDemFolder(args);
         if (demFolder != null) {
             hillsCfg = new HillsRenderConfig(demFolder, AwtGraphicFactory.INSTANCE, new SimpleShadingAlgortithm());
+            hillsCfg.setEnableInterpolationOverlap(true);
+            hillsCfg.indexOnThread();
             args = Arrays.copyOfRange(args, 1, args.length);
         }
+
+
 
         List<File> mapFiles = getMapFiles(args);
         final MapView mapView = createMapView();
@@ -108,9 +123,11 @@ public final class Samples {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                int result = JOptionPane.showConfirmDialog(frame, MESSAGE, TITLE, JOptionPane.YES_NO_OPTION);
-                if (result == JOptionPane.YES_OPTION) {
-                    mapView.getModel().save(preferencesFacade);
+                int result = JOptionPane.showConfirmDialog(frame, MESSAGE, TITLE, JOptionPane.YES_NO_CANCEL_OPTION);
+                if (result == JOptionPane.YES_OPTION || result == JOptionPane.NO_OPTION) {
+                    if (result == JOptionPane.YES_OPTION) {
+                        mapView.getModel().save(preferencesFacade);
+                    }
                     mapView.destroyAll();
                     AwtGraphicFactory.clearResourceMemoryCache();
                     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -120,9 +137,14 @@ public final class Samples {
             @Override
             public void windowOpened(WindowEvent e) {
                 final Model model = mapView.getModel();
-                // model.init(preferencesFacade);
-                byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
-                model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
+                if(restore) {
+                    model.init(preferencesFacade);
+                }
+
+                if(model.mapViewPosition.getZoomLevel() == 0 || ! boundingBox.contains(model.mapViewPosition.getCenter())) {
+                    byte zoomLevel = LatLongUtils.zoomForBounds(model.mapViewDimension.getDimension(), boundingBox, model.displayModel.getTileSize());
+                    model.mapViewPosition.setMapPosition(new MapPosition(boundingBox.getCenterPoint(), zoomLevel));
+                }
             }
         });
         frame.setVisible(true);
@@ -216,7 +238,18 @@ public final class Samples {
         }
         return null;
     }
+    private static String[] removeRestoreFlag(String[] args) {
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
 
+            if ("-restore".equals(arg)) {
+                List<String> rest = new ArrayList<>(Arrays.asList(args));
+                rest.remove(i);
+                return rest.toArray(new String[args.length - 1]);
+            }
+        }
+        return args;
+    }
     private static List<File> getMapFiles(String[] args) {
         if (args.length == 0) {
             throw new IllegalArgumentException("missing argument: <mapFile>");
