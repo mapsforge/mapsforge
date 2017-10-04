@@ -14,8 +14,6 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.util.IOUtils;
 
 import java.io.BufferedInputStream;
@@ -33,17 +31,28 @@ public class SimpleShadingAlgortithm implements ShadingAlgorithm {
     private static final Logger LOGGER = Logger.getLogger(SimpleShadingAlgortithm.class.getName());
 
     @Override
-    public Bitmap convertTile(RawHillTileSource source, GraphicFactory graphicFactory) {
+    public int getAxisLenght(HgtCache.HgtFileInfo source){
         long size = source.getSize();
         long elements = size / 2;
         int rowLen = (int) Math.ceil(Math.sqrt(elements));
         if (rowLen * rowLen * 2 != size) {
-            return null;
+            return 0;
         }
+        int axisLength = rowLen - 1;
+        return axisLength;
+    }
+
+    @Override
+    public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
+        int axisLength = getAxisLenght(source);
+        int rowLen = axisLength+1;
         BufferedInputStream in = null;
         try {
             in = source.openInputStream();
-            return convert(in, size, graphicFactory);
+
+
+            byte[] bytes = convert(in, axisLength, rowLen, padding);
+            return new RawShadingResult(bytes, axisLength, axisLength, padding);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
@@ -52,18 +61,15 @@ public class SimpleShadingAlgortithm implements ShadingAlgorithm {
         }
     }
 
-    private static Bitmap convert(InputStream in, long streamLen, GraphicFactory graphicFactory) throws IOException {
+    private static byte[] convert(InputStream in, int axisLength, int rowLen, int padding) throws IOException {
         byte[] bytes;
-        int axisLength;
-        int rowLen = (int) Math.ceil(Math.sqrt(streamLen / 2));
 
-        axisLength = rowLen - 1;
         short[] ringbuffer = new short[rowLen];
-        bytes = new byte[axisLength * axisLength];
+        bytes = new byte[(axisLength +2*padding) * (axisLength+2*padding)];
 
         DataInputStream din = new DataInputStream(in);
 
-        int outidx = 0;
+        int outidx = (axisLength +2*padding)*padding+padding;
         int rbcur = 0;
         {
             short last = 0;
@@ -90,7 +96,7 @@ public class SimpleShadingAlgortithm implements ShadingAlgorithm {
 
                 int eawe = -((ne - nw) + (se - sw));
 
-                int intVal = Math.min(255, Math.max(0, noso + eawe + 128));
+                int intVal = Math.min(255, Math.max(0, noso + eawe + 127));
 
                 int shade = intVal & 0xFF;
 
@@ -99,8 +105,9 @@ public class SimpleShadingAlgortithm implements ShadingAlgorithm {
                 nw = ne;
                 sw = se;
             }
+            outidx+=2*padding;
         }
-        return graphicFactory.createMonoBitmap(axisLength, axisLength, bytes);
+        return bytes;
     }
 
     private static short readNext(DataInputStream din, short fallback) throws IOException {

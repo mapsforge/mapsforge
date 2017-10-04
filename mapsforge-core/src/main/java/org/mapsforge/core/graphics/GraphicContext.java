@@ -48,5 +48,6 @@ public interface GraphicContext {
 
     void setClipDifference(int left, int top, int width, int height);
 
+    /** shade whole map tile when tileRect is null (and bitmap, shadeRect are null), shade tileRect neutral if bitmap is null (and shadeRect), shade tileRect with bitmap otherwise */
     void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude);
 }

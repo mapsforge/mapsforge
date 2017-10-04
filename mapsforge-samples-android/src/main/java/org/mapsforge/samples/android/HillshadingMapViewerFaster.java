@@ -24,23 +24,23 @@ import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import java.io.File;
 
 /**
- * Standard map view with hill shading.
+ * Standard map view with hill shading, configured for speed over prettiness.
  */
-public class HillshadingMapViewer extends DefaultTheme {
+public class HillshadingMapViewerFaster extends DefaultTheme {
     final private HillsRenderConfig hillsConfig;
     private final File demFolder;
 
-    public HillshadingMapViewer() {
+    public HillshadingMapViewerFaster() {
         demFolder = new File(getMapFileDirectory(), "dem");
 
         if( ! (demFolder.exists() && demFolder.isDirectory() && demFolder.canRead() && demFolder.listFiles().length>0)) {
             hillsConfig=null;
         }else {
-            // minumum setup for hillshading
+            // minumum setup for hillshading:
             hillsConfig = new HillsRenderConfig(demFolder, AndroidGraphicFactory.INSTANCE);
 
-            // slower version smooth along the one degree latitude/longitude grid:
-            hillsConfig.setEnableInterpolationOverlap(true);
+            // faster configuration with visible seams along the one degree latitude/longitude grid where the terrain is rough
+            hillsConfig.setEnableInterpolationOverlap(false);
 
             // call after setting/changing parameters, walks filesystem for DEM metadata
             hillsConfig.indexOnThread();

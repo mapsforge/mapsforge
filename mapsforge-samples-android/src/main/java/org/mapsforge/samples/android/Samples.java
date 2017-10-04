@@ -40,7 +40,8 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
  * Start screen for the sample activities.
  */
 public class Samples extends Activity {
-
+    /** serves as a supbstitute for command line arguments for easy launches during development */
+    public static Uri launchUrl;
     private Button createButton(Class<?> clazz) {
         return this.createButton(clazz, null, null);
     }
@@ -83,7 +84,7 @@ public class Samples extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_samples);
-        LinearLayout linearLayout = findViewById(R.id.samples);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.samples);
         linearLayout.addView(createButton(DefaultTheme.class));
         linearLayout.addView(createButton(DiagnosticsMapViewer.class));
         linearLayout.addView(createButton(SimplestMapViewer.class));
@@ -172,12 +173,9 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(SimpleDataStoreMapViewer.class));
 
         linearLayout.addView(createLabel("Experiments"));
-        linearLayout.addView(createButton(HillshadingMapViewer.class, null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startupDialog("hillshading", R.string.startup_message_hillshading, HillshadingMapViewer.class);
-            }
-        }));
+        linearLayout.addView(createButton(HillshadingMapViewer.class));
+        linearLayout.addView(createButton(HillshadingMapViewerFaster.class));
+
         linearLayout.addView(createButton(ReverseGeocodeViewer.class));
         linearLayout.addView(createButton(NightModeViewer.class));
         linearLayout.addView(createButton(RenderThemeChanger.class));
@@ -237,6 +235,22 @@ public class Samples extends Activity {
                     });
             builder.setMessage(R.string.startup_message);
             builder.show();
+        }
+
+        launchUrl = getIntent().getData();
+
+
+        String activity =  (launchUrl==null) ? null : launchUrl.getQueryParameter("activity");
+        if(activity!=null){
+            String fqn = Samples.class.getPackage().getName() + "." + activity;
+            try {
+                Class<?> clazz = getClass().getClassLoader().loadClass(fqn);
+                if(Activity.class.isAssignableFrom(clazz)){
+                    startActivity(new Intent(Samples.this, clazz));
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 

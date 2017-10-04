@@ -18,6 +18,7 @@ package org.mapsforge.core.graphics;
 
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 
 import java.io.IOException;
@@ -37,9 +38,9 @@ public interface GraphicFactory {
     Matrix createMatrix();
 
     /**
-     * Create a single channel bitmap, e.g. for hillshading.
+     * Create a single channel bitmap for hillshading, may include a buffer.
      */
-    Bitmap createMonoBitmap(int width, int height, byte[] buffer);
+    HillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area);
 
     Paint createPaint();
 
