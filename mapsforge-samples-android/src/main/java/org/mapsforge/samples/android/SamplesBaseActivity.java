@@ -2,6 +2,7 @@
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015-2017 devemux86
  * Copyright 2015 Andreas Schildbach
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -49,6 +50,8 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
 import org.mapsforge.map.scalebar.NauticalUnitAdapter;
+
+import java.io.File;
 
 /**
  * Code common to most activities in the Samples app.
@@ -122,12 +125,26 @@ public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermis
                 this.mapView.getModel().frameBufferModel.getOverdrawFactor(), persistent));
     }
 
-    /**
-     * @return the map file name to be used
-     */
     @Override
     protected String getMapFileName() {
+        String mapfile = (Samples.launchUrl == null) ? null : Samples.launchUrl.getQueryParameter("mapfile");
+        if (mapfile != null) {
+            return mapfile;
+        }
         return "germany.map";
+    }
+
+    @Override
+    protected File getMapFileDirectory() {
+        String mapdir = (Samples.launchUrl == null) ? null : Samples.launchUrl.getQueryParameter("mapdir");
+        if (mapdir != null) {
+            File file = new File(mapdir);
+            if (file.exists() && file.isDirectory()) {
+                return file;
+            }
+            throw new RuntimeException(file + " does not exist or is not a directory (configured in launch URI " + Samples.launchUrl + " )");
+        }
+        return super.getMapFileDirectory();
     }
 
     @Override

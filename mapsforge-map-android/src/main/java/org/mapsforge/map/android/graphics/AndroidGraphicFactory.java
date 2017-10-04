@@ -38,6 +38,7 @@ import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
@@ -225,8 +226,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
-        AndroidBitmap androidBitmap = new AndroidBitmap(width, height, MONO_ALPHA_BITMAP);
+    public AndroidHillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area) {
+        AndroidHillshadingBitmap androidBitmap = new AndroidHillshadingBitmap(width + 2 * padding, height + 2 * padding, padding, area);
         if (buffer != null) {
             Buffer b = ByteBuffer.wrap(buffer);
             androidBitmap.bitmap.copyPixelsFromBuffer(b);

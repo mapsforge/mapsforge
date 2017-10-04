@@ -52,7 +52,9 @@ class AwtCanvas implements Canvas {
     private Graphics2D graphics2D;
     private BufferedImageOp grayscaleOp, invertOp, invertOp4;
 
+    private static final java.awt.Color NEUTRAL_HILLS = new java.awt.Color(127, 127, 127);
     private static Map.Entry<Float, Composite> sizeOneShadingCompositeCache = null;
+    private final AffineTransform transform = new AffineTransform();
 
     private static Composite getHillshadingComposite(float magnitude) {
         Map.Entry<Float, Composite> existing = sizeOneShadingCompositeCache;
@@ -81,8 +83,8 @@ class AwtCanvas implements Canvas {
      * might be a bit slow and/or inconsistent with the android implementation)
      */
     private static Composite selectHillShadingComposite(float magnitude) {
-        return new AwtLuminanceShadingComposite(magnitude);
-        // return AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, magnitude);
+        //return new AwtLuminanceShadingComposite(magnitude);
+        return AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, magnitude);
     }
 
     AwtCanvas() {
@@ -350,14 +352,40 @@ class AwtCanvas implements Canvas {
     public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
         Composite oldComposite = this.graphics2D.getComposite();
         Composite composite = getHillshadingComposite(magnitude);
-
         this.graphics2D.setComposite(composite);
-        BufferedImage bufferedImage = AwtGraphicFactory.getBitmap(bitmap);
 
-        this.graphics2D.drawImage(bufferedImage,
-                (int) tileRect.left, (int) tileRect.top, (int) tileRect.right, (int) tileRect.bottom,
-                (int) shadeRect.left, (int) shadeRect.top, (int) shadeRect.right, (int) shadeRect.bottom,
-                null);
+        if (bitmap == null) {
+            // apply flat shading
+            if (tileRect != null) {
+                this.graphics2D.setClip(
+                        (int) Math.round(tileRect.left), (int) Math.round(tileRect.top),
+                        (int) Math.round(tileRect.right - (int) tileRect.left), (int) Math.round(tileRect.bottom) - (int) Math.round(tileRect.top) // subtract in after rounding to get same error as on neighbor tile
+                );
+            }
+            this.graphics2D.setColor(NEUTRAL_HILLS);
+            this.graphics2D.fillRect(0, 0, getWidth(), getHeight());
+            this.graphics2D.setComposite(oldComposite);
+            this.graphics2D.setClip(null);
+            return;
+        }
+
+
+        BufferedImage bufferedImage = AwtGraphicFactory.getBitmap(bitmap);
+        transform.setToIdentity();
+
+        double horizontalScale = tileRect.getWidth() / shadeRect.getWidth();
+        double verticalScale = tileRect.getHeight() / shadeRect.getHeight();
+
+        transform.translate(tileRect.left, tileRect.top);
+        transform.scale(horizontalScale, verticalScale);
+        transform.translate(-shadeRect.left, -shadeRect.top);
+
+        this.graphics2D.setClip(
+                (int) Math.round(tileRect.left), (int) Math.round(tileRect.top),
+                (int) Math.round(tileRect.right - (int) tileRect.left), (int) Math.round(tileRect.bottom) - (int) Math.round(tileRect.top) // subtract in after rounding to get same error as on neighbor tile
+        );
+        this.graphics2D.drawRenderedImage(bufferedImage, transform);
+        this.graphics2D.setClip(null);
 
         this.graphics2D.setComposite(oldComposite);
     }

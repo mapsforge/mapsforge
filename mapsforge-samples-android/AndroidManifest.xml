@@ -22,6 +22,21 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+            <intent-filter>
+                <!--
+                Support URIs like "mapsforgesamples://?activity=DefaultTheme&mapdir=/path/to/my/maps&mapfile=my.map".
+                Provide custom defaults for SamplesBaseActivity and/or directly jump into an activity.
+                Serves as a substitute for command line arguments for easy launches during development.
+                If it does not work, check if your IDE (or other tooling) requires you escape the & characters as \&.
+                -->
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="mapsforgesamples" />
             </intent-filter>
         </activity>
         <activity
@@ -68,6 +83,9 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".HillshadingMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".HillshadingMapViewerFaster"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name=".ItemDetailActivity"

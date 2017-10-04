@@ -15,6 +15,7 @@
 package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.Rectangle;
 
 public class HillshadingContainer implements ShapeContainer {
@@ -24,7 +25,7 @@ public class HillshadingContainer implements ShapeContainer {
     public final Rectangle hillsRect;
     public final Rectangle tileRect;
 
-    public HillshadingContainer(Bitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect) {
+    public HillshadingContainer(HillshadingBitmap bitmap, float magnitude, Rectangle hillsRect, Rectangle tileRect) {
         this.magnitude = magnitude;
         this.bitmap = bitmap;
         this.hillsRect = hillsRect;
@@ -38,6 +39,6 @@ public class HillshadingContainer implements ShapeContainer {
 
     @Override
     public String toString() {
-        return "[Hillshading:" + magnitude + " @ " + hillsRect + " -> " + tileRect + "]";
+        return "[Hillshading:" + magnitude + "#" + System.identityHashCode(bitmap) + "\n @# " + hillsRect + "\n -> " + tileRect + "\n]";
     }
 }

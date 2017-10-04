@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
  * Copyright 2014-2017 devemux86
+ * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +27,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +42,10 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
  * Start screen for the sample activities.
  */
 public class Samples extends Activity {
+    /**
+     * Serves as a substitute for command line arguments for easy launches during development.
+     */
+    public static Uri launchUrl;
 
     private Button createButton(Class<?> clazz) {
         return this.createButton(clazz, null, null);
@@ -172,12 +178,8 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(SimpleDataStoreMapViewer.class));
 
         linearLayout.addView(createLabel("Experiments"));
-        linearLayout.addView(createButton(HillshadingMapViewer.class, null, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startupDialog("hillshading", R.string.startup_message_hillshading, HillshadingMapViewer.class);
-            }
-        }));
+        linearLayout.addView(createButton(HillshadingMapViewer.class));
+        linearLayout.addView(createButton(HillshadingMapViewerFaster.class));
         linearLayout.addView(createButton(ReverseGeocodeViewer.class));
         linearLayout.addView(createButton(NightModeViewer.class));
         linearLayout.addView(createButton(RenderThemeChanger.class));
@@ -237,6 +239,20 @@ public class Samples extends Activity {
                     });
             builder.setMessage(R.string.startup_message);
             builder.show();
+        }
+
+        launchUrl = getIntent().getData();
+        String activity = (launchUrl == null) ? null : launchUrl.getQueryParameter("activity");
+        if (activity != null) {
+            String fqn = Samples.class.getPackage().getName() + "." + activity;
+            try {
+                Class<?> clazz = getClass().getClassLoader().loadClass(fqn);
+                if (Activity.class.isAssignableFrom(clazz)) {
+                    startActivity(new Intent(Samples.this, clazz));
+                }
+            } catch (ClassNotFoundException e) {
+                Log.e(SamplesApplication.TAG, e.getMessage(), e);
+            }
         }
     }
 

@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  */
 public final class RenderThemeHandler {
 
-    private static enum Element {
+    private enum Element {
         RENDER_THEME, RENDERING_INSTRUCTION, RULE, RENDERING_STYLE;
     }
 
@@ -288,6 +288,7 @@ public final class RenderThemeHandler {
                 byte maxZoom = 17;
                 byte layer = 5;
                 short magnitude = 64;
+                boolean always = false;
 
                 for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
                     String name = pullParser.getAttributeName(i);
@@ -301,13 +302,15 @@ public final class RenderThemeHandler {
                         magnitude = (short) XmlUtils.parseNonNegativeInteger("magnitude", value);
                         if (magnitude > 255)
                             throw new XmlPullParserException("Attribute 'magnitude' must not be > 255");
+                    } else if ("always".equals(name)) {
+                        always = Boolean.valueOf(value);
                     } else if ("layer".equals(name)) {
                         layer = XmlUtils.parseNonNegativeByte("layer", value);
                     }
                 }
 
                 int hillShadingLevel = this.level++;
-                Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, hillShadingLevel, this.graphicFactory);
+                Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, always, hillShadingLevel, this.graphicFactory);
 
                 renderTheme.addHillShadings(hillshading);
             } else {

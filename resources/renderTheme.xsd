@@ -275,6 +275,14 @@
         <xs:attribute name="zoom-min" default="5" type="xs:unsignedByte" use="optional" />
         <xs:attribute name="zoom-max" default="17" type="xs:unsignedByte" use="optional" />
         <xs:attribute name="magnitude" default="64" type="xs:unsignedByte" use="optional" />
+        <xs:attribute name="always" default="false" type="xs:boolean" use="optional">
+            <xs:annotation>
+                <xs:documentation>Apply neutral shading when tiles are missing or shading is
+                    disabled to keep colors consistent (for themes that compensate color intensity
+                    for hillshading desaturation)
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <!-- customization unlikely to make any sense -->
         <xs:attribute name="layer" default="5" type="xs:unsignedByte" use="optional" />
     </xs:complexType>

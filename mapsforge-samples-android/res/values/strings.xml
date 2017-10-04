@@ -90,6 +90,5 @@
     <string name="startup_message_multimap">To run this sample activity, you need to download a low-resolution world map first.</string>
     <string name="startup_message_twomaps">To run this sample activity, you need also a map with filename second.map installed on storage.</string>
     <string name="startup_message_poi">To run this sample activity, you need any poi with filename germany.poi installed on storage.\n\nadb push file.poi /sdcard/germany.poi</string>
-    <string name="startup_message_hillshading">To run this sample activity, you need SRTM hgt files at /sdcard/dem.</string>
 
 </resources>

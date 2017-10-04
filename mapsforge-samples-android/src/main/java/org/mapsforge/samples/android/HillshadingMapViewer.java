@@ -15,9 +15,12 @@
  */
 package org.mapsforge.samples.android;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
-import org.mapsforge.map.layer.hills.SimpleShadingAlgortithm;
 
 import java.io.File;
 
@@ -25,15 +28,53 @@ import java.io.File;
  * Standard map view with hill shading.
  */
 public class HillshadingMapViewer extends DefaultTheme {
+    protected final File demFolder;
+    protected final HillsRenderConfig hillsConfig;
+
+    public HillshadingMapViewer() {
+        this(false);
+    }
+
+    public HillshadingMapViewer(boolean speed) {
+        demFolder = new File(getMapFileDirectory(), "dem");
+
+        if (!(demFolder.exists() && demFolder.isDirectory() && demFolder.canRead() && demFolder.listFiles().length > 0)) {
+            hillsConfig = null;
+        } else {
+            // minimum setup for hillshading
+            hillsConfig = new HillsRenderConfig(demFolder, AndroidGraphicFactory.INSTANCE);
+
+            if (speed) {
+                // faster configuration with visible seams along the one degree latitude/longitude grid where the terrain is rough
+                hillsConfig.setEnableInterpolationOverlap(false);
+            } else {
+                // slower version smooth along the one degree latitude/longitude grid
+                hillsConfig.setEnableInterpolationOverlap(true);
+            }
+
+            // call after setting/changing parameters, walks filesystem for DEM metadata
+            hillsConfig.indexOnThread();
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (hillsConfig == null) {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setTitle("Hillshading demo needs SRTM hgt files");
+            alert.setMessage("Currently looking in " + demFolder + "\noverride in " + this.getClass().getCanonicalName());
+            alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    finish();
+                }
+            });
+        }
+    }
 
     @Override
     protected HillsRenderConfig getHillsRenderConfig() {
-        File demFolder = new File(getMapFileDirectory(), "dem");
-
-        if (!(demFolder.exists() && demFolder.isDirectory() && demFolder.canRead())) {
-            return null;
-        }
-
-        return new HillsRenderConfig(demFolder, AndroidGraphicFactory.INSTANCE, new SimpleShadingAlgortithm());
+        return hillsConfig;
     }
 }

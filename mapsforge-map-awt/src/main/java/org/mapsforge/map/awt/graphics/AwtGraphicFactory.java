@@ -35,6 +35,7 @@ import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 
 import java.awt.Graphics;
@@ -64,7 +65,6 @@ public class AwtGraphicFactory implements GraphicFactory {
          **/
         byte[] linear = new byte[256];
         for (int i = 0; i < 256; i++) {
-            linear[i] = (byte) (i + Byte.MIN_VALUE);
             linear[i] = (byte) (255 - i);
         }
         monoColorModel = new IndexColorModel(8, 256, linear, linear, linear);
@@ -161,14 +161,14 @@ public class AwtGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public Bitmap createMonoBitmap(int width, int height, byte[] buffer) {
+    public AwtHillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area) {
         DataBuffer dataBuffer = new DataBufferByte(buffer, buffer.length);
 
-        SampleModel singleByteSampleModel = monoColorModel.createCompatibleSampleModel(width, height);
+        SampleModel singleByteSampleModel = monoColorModel.createCompatibleSampleModel(width + 2 * padding, height + 2 * padding);
         WritableRaster writableRaster = Raster.createWritableRaster(singleByteSampleModel, dataBuffer, null);
         BufferedImage bufferedImage = new BufferedImage(monoColorModel, writableRaster, false, null);
 
-        return new AwtBitmap(bufferedImage);
+        return new AwtHillshadingBitmap(bufferedImage, padding, area);
     }
 
     @Override

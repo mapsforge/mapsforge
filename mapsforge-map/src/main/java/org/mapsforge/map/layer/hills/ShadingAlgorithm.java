@@ -14,15 +14,125 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.HillshadingBitmap;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 
 public interface ShadingAlgorithm {
 
-    Bitmap convertTile(RawHillTileSource source, GraphicFactory graphicFactory);
+    //HillshadingBitmap convertTile(RawHillTileSource source, GraphicFactory graphicFactory);
+
+    int getAxisLenght(HgtCache.HgtFileInfo source);
+
+    RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo hgtFileInfo, int padding);
+
+    class RawShadingResult {
+        public final byte[] bytes;
+        public final int width;
+        public final int height;
+        public final int padding;
+
+        public RawShadingResult(byte[] bytes, int width, int height, int padding) {
+            this.bytes = bytes;
+            this.width = width;
+            this.height = height;
+            this.padding = padding;
+        }
+
+        /**
+         * two-way merge, if padding
+         */
+        public void mergePaddingWith(HillshadingBitmap hillshadingBitmap, HillshadingBitmap.Border side) {
+            if (padding == 0) return;
+
+
+        }
+
+        /**
+         * fill padding like clamp
+         */
+        void fillPadding(HillshadingBitmap.Border side) {
+            int innersteps;
+            int skip;
+            int outersteps;
+            int start;
+            int sourceOffset;
+            int sourceOuterStep;
+            int sourceInnerStep;
+            int lineLen = padding * 2 + width;
+            if (side.vertical) {
+                innersteps = padding;
+                skip = width + padding;
+                outersteps = height;
+                if (side == HillshadingBitmap.Border.WEST) {
+                    start = padding * lineLen; // first col, after padding ignored lines
+                    sourceOffset = start + padding;
+                } else {
+                    start = padding * lineLen + padding + width; // first padding col after padding ignored lines + nearly one line
+                    sourceOffset = start - 1;
+                }
+                sourceInnerStep = 0;
+                sourceOuterStep = lineLen;
+            } else { // horizontal
+                innersteps = width;
+                skip = 2 * padding;
+                outersteps = padding;
+                if (side == HillshadingBitmap.Border.NORTH) {
+                    start = padding;
+                    sourceOffset = start + padding * lineLen;
+                } else {
+                    start = (height + padding) * lineLen + padding;
+                    sourceOffset = start - lineLen;
+                }
+                sourceInnerStep = 1;
+                sourceOuterStep = -width; // "carriage return"
+            }
+
+            int dest = start;
+            int src = sourceOffset;
+            for (int o = 0; o < outersteps; o++) {
+
+                for (int i = 0; i < innersteps; i++) {
+                    bytes[dest] = bytes[src];
+                    dest++;
+                    src += sourceInnerStep;
+                }
+
+                dest += skip;
+                src += sourceOuterStep;
+            }
+        }
+
+        public void fillPadding() {
+            if (padding < 1) return;
+            fillPadding(HillshadingBitmap.Border.EAST);
+            fillPadding(HillshadingBitmap.Border.WEST);
+            fillPadding(HillshadingBitmap.Border.NORTH);
+            fillPadding(HillshadingBitmap.Border.SOUTH);
+
+            // fill diagonal padding (this won't be blended with neighbors but the artifacts of that are truely minimal)
+            int lineLen = padding * 2 + width;
+            int widthOncePadded = width + padding;
+            int heightOncePadded = height + padding;
+            byte nw = bytes[lineLen * padding + padding];
+            byte ne = bytes[lineLen * padding + widthOncePadded - 1];
+            byte se = bytes[lineLen * (heightOncePadded - 1) + padding];
+            byte sw = bytes[lineLen * (heightOncePadded - 1) + (widthOncePadded - 1)];
+
+            int seOffset = lineLen * heightOncePadded;
+            int swOffset = seOffset + widthOncePadded;
+            for (int y = 0; y < padding; y++) {
+                int yoff = lineLen * y;
+                for (int x = 0; x < padding; x++) {
+                    bytes[x + yoff] = nw;
+                    bytes[x + yoff + widthOncePadded] = ne;
+                    bytes[x + yoff + seOffset] = se;
+                    bytes[x + yoff + swOffset] = sw;
+                }
+            }
+        }
+    }
 
     /**
      * Abstracts the file handling and access so that ShadingAlgorithm implementations
@@ -34,15 +144,18 @@ public interface ShadingAlgorithm {
 
         BufferedInputStream openInputStream() throws IOException;
 
+        /* for overlap */
+        HillshadingBitmap getFinishedConverted();
+
         /**
-         * Just in case someone wants to sacrifice speed for fidelity
+         * A ShadingAlgorithm might want to determine the projected dimensions of the tile
          */
-        RawHillTileSource getNeighborNorth();
+        double northLat();
 
-        RawHillTileSource getNeighborSouth();
+        double southLat();
 
-        RawHillTileSource getNeighborEast();
+        double westLng();
 
-        RawHillTileSource getNeighborWest();
+        double eastLng();
     }
 }
