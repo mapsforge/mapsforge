@@ -3,6 +3,7 @@
 ## New since 0.8.0
 
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
+- Hillshading improvements [#997](https://github.com/mapsforge/mapsforge/issues/997)
 - Circle overlay touch events [#996](https://github.com/mapsforge/mapsforge/issues/996)
 - MapFile supports FileChannel as input [#982](https://github.com/mapsforge/mapsforge/issues/982)
 - XmlPullParser different implementations [#974](https://github.com/mapsforge/mapsforge/issues/974)
