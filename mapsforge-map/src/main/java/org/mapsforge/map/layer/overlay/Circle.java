@@ -70,7 +70,10 @@ public class Circle extends Layer {
     }
 
     public synchronized boolean contains(Point center, Point point, double latitude, byte zoomLevel) {
-        return center.distance(point) < getRadiusInPixels(latitude, zoomLevel);
+        // Touch min 20x20 px at baseline mdpi (160dpi)
+        double distance = Math.max(20 / 2 * this.displayModel.getScaleFactor(),
+                getRadiusInPixels(latitude, zoomLevel));
+        return center.distance(point) < distance;
     }
 
     @Override

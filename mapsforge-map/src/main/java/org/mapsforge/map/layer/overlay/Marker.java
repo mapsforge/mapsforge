@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -50,9 +50,14 @@ public class Marker extends Layer {
     }
 
     public synchronized boolean contains(Point center, Point point) {
-        Rectangle r = new Rectangle(center.x - (float) bitmap.getWidth() / 2 + this.horizontalOffset, center.y
-                - (float) bitmap.getHeight() / 2 + this.verticalOffset, center.x + (float) bitmap.getWidth() / 2
-                + this.horizontalOffset, center.y + (float) bitmap.getHeight() / 2 + this.verticalOffset);
+        // Touch min 20x20 px at baseline mdpi (160dpi)
+        double width = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getWidth());
+        double height = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getHeight());
+        Rectangle r = new Rectangle(
+                center.x - width / 2 + this.horizontalOffset,
+                center.y - height / 2 + this.verticalOffset,
+                center.x + width / 2 + this.horizontalOffset,
+                center.y + height / 2 + this.verticalOffset);
         return r.contains(point);
     }
 
