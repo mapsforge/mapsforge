@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
@@ -67,6 +68,10 @@ public class Polygon extends Layer {
         this.paintFill = paintFill;
         this.paintStroke = paintStroke;
         this.graphicFactory = graphicFactory;
+    }
+
+    public synchronized boolean contains(LatLong tapLatLong) {
+        return LatLongUtils.contains(latLongs, tapLatLong);
     }
 
     @Override

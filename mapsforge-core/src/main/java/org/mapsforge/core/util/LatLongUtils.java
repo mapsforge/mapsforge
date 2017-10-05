@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2017 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -21,6 +21,7 @@ package org.mapsforge.core.util;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +75,9 @@ public final class LatLongUtils {
     private static final String DELIMITER = ",";
 
     /**
-     * Find if the given point lies within this polygon.<br/>
-     * See http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+     * Find if the given point lies within this polygon.
+     * <p>
+     * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
      *
      * @return true if this polygon contains the given point, false otherwise.
      */
@@ -85,6 +87,25 @@ public final class LatLongUtils {
             if ((latLongs[i].latitude > latLong.latitude) != (latLongs[j].latitude > latLong.latitude)
                     && (latLong.longitude < (latLongs[j].longitude - latLongs[i].longitude) * (latLong.latitude - latLongs[i].latitude)
                     / (latLongs[j].latitude - latLongs[i].latitude) + latLongs[i].longitude)) {
+                result = !result;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Find if the given point lies within this polygon.
+     * <p>
+     * http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+     *
+     * @return true if this polygon contains the given point, false otherwise.
+     */
+    public static boolean contains(List<LatLong> latLongs, LatLong latLong) {
+        boolean result = false;
+        for (int i = 0, j = latLongs.size() - 1; i < latLongs.size(); j = i++) {
+            if ((latLongs.get(i).latitude > latLong.latitude) != (latLongs.get(j).latitude > latLong.latitude)
+                    && (latLong.longitude < (latLongs.get(j).longitude - latLongs.get(i).longitude) * (latLong.latitude - latLongs.get(i).latitude)
+                    / (latLongs.get(j).latitude - latLongs.get(i).latitude) + latLongs.get(i).longitude)) {
                 result = !result;
             }
         }
@@ -139,6 +160,16 @@ public final class LatLongUtils {
     }
 
     /**
+     * Returns the distance between the given segment and point.
+     * <p>
+     * libGDX (Apache 2.0)
+     */
+    public static double distanceSegmentPoint(double startX, double startY, double endX, double endY, double pointX, double pointY) {
+        Point nearest = nearestSegmentPoint(startX, startY, endX, endY, pointX, pointY);
+        return Math.hypot(nearest.x - pointX, nearest.y - pointY);
+    }
+
+    /**
      * Creates a new LatLong from a comma-separated string of coordinates in the order latitude, longitude. All
      * coordinate values must be in degrees.
      *
@@ -189,6 +220,22 @@ public final class LatLongUtils {
      */
     public static double microdegreesToDegrees(int coordinate) {
         return coordinate / CONVERSION_FACTOR;
+    }
+
+    /**
+     * Returns a point on the segment nearest to the specified point.
+     * <p>
+     * libGDX (Apache 2.0)
+     */
+    public static Point nearestSegmentPoint(double startX, double startY, double endX, double endY, double pointX, double pointY) {
+        double xDiff = endX - startX;
+        double yDiff = endY - startY;
+        double length2 = xDiff * xDiff + yDiff * yDiff;
+        if (length2 == 0) return new Point(startX, startY);
+        double t = ((pointX - startX) * (endX - startX) + (pointY - startY) * (endY - startY)) / length2;
+        if (t < 0) return new Point(startX, startY);
+        if (t > 1) return new Point(endX, endY);
+        return new Point(startX + t * (endX - startX), startY + t * (endY - startY));
     }
 
     /**

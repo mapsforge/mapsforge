@@ -62,7 +62,8 @@ public class OverlayMapViewer extends DefaultTheme {
     protected void addOverlayLayers(Layers layers) {
 
         Polyline polyline = new Polyline(Utils.createPaint(
-                AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE), 8,
+                AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE),
+                (int) (8 * mapView.getModel().displayModel.getScaleFactor()),
                 Style.STROKE), AndroidGraphicFactory.INSTANCE);
         List<LatLong> latLongs = polyline.getLatLongs();
         latLongs.add(latLong1);
@@ -75,7 +76,16 @@ public class OverlayMapViewer extends DefaultTheme {
         Paint shaderPaint = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 90, Style.STROKE);
         shaderPaint.setBitmapShader(AndroidGraphicFactory.convertToBitmap(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_green) : getResources().getDrawable(R.drawable.marker_green)));
 
-        Polyline polylineWithShader = new Polyline(shaderPaint, AndroidGraphicFactory.INSTANCE, true);
+        Polyline polylineWithShader = new Polyline(shaderPaint, AndroidGraphicFactory.INSTANCE, true) {
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(tapXY, mapView.getMapViewProjection())) {
+                    Toast.makeText(OverlayMapViewer.this, "Polyline tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        };
         List<LatLong> latLongs2 = polylineWithShader.getLatLongs();
         latLongs2.add(latLong7);
         latLongs2.add(latLong8);
@@ -87,8 +97,16 @@ public class OverlayMapViewer extends DefaultTheme {
         Paint paintStroke = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,
                 Style.STROKE);
-        Polygon polygon = new Polygon(paintFill, paintStroke,
-                AndroidGraphicFactory.INSTANCE);
+        Polygon polygon = new Polygon(paintFill, paintStroke, AndroidGraphicFactory.INSTANCE) {
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(tapLatLong)) {
+                    Toast.makeText(OverlayMapViewer.this, "Polygon tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        };
         List<LatLong> latLongs3 = polygon.getLatLongs();
         latLongs3.add(latLong2);
         latLongs3.add(latLong3);
