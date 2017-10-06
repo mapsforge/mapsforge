@@ -15,15 +15,17 @@
  */
 package org.mapsforge.samples.android;
 
+import org.mapsforge.map.layer.hills.DiffuseLightShadingAlgorithm;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 
 /**
- * Standard map view with hill shading, configured for speed over prettiness.
+ * Standard map view with hill shading, configured with diffuse lighting.
  */
-public class HillshadingMapViewerFaster extends HillshadingMapViewer {
+public class HillshadingMapViewerDiffuseShading extends HillshadingMapViewer {
 
     @Override
     protected void customizeConfig(HillsRenderConfig config) {
-        config.setEnableInterpolationOverlap(false);
+        config.setEnableInterpolationOverlap(true);
+        config.setAlgorithm(new DiffuseLightShadingAlgorithm());
     }
 }
