@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
+ * Copyright 2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -110,6 +111,14 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
         this.wayStore.add(way);
         this.indexedWayStore.add(way.getId(), way);
         this.maxWayID = Math.max(way.getId(), this.maxWayID);
+    }
+
+    @Override
+    public void close() {
+        this.indexedNodeStore.close();
+        this.indexedWayStore.close();
+        this.wayStore.close();
+        this.relationStore.close();
     }
 
     // TODO add accounting of average number of tiles per way
@@ -231,14 +240,6 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
             LOGGER.finer("way cannot be found in index: " + id);
             return null;
         }
-    }
-
-    @Override
-    public void release() {
-        this.indexedNodeStore.release();
-        this.indexedWayStore.release();
-        this.wayStore.release();
-        this.relationStore.release();
     }
 
     @Override

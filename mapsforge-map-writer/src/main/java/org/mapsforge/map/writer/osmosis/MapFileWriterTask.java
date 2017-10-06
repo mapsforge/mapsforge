@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -79,6 +79,13 @@ public class MapFileWriterTask implements Sink {
             } else {
                 this.tileBasedGeoObjectStore = HDTileBasedDataProcessor.newInstance(configuration);
             }
+        }
+    }
+
+    @Override
+    public final void close() {
+        if (this.tileBasedGeoObjectStore != null) {
+            this.tileBasedGeoObjectStore.close();
         }
     }
 
@@ -181,13 +188,6 @@ public class MapFileWriterTask implements Sink {
                 this.amountOfRelationsProcessed++;
                 entity = null;
                 break;
-        }
-    }
-
-    @Override
-    public final void release() {
-        if (this.tileBasedGeoObjectStore != null) {
-            this.tileBasedGeoObjectStore.release();
         }
     }
 }

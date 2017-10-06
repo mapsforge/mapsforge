@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
+ * Copyright 2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -114,6 +115,11 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
     }
 
     @Override
+    public void close() {
+        // nothing to do here
+    }
+
+    @Override
     public void complete() {
         // Polygonize multipolygon
         RelationHandler relationHandler = new RelationHandler();
@@ -184,11 +190,6 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
     @Override
     public ZoomIntervalConfiguration getZoomIntervalConfiguration() {
         return this.zoomIntervalConfiguration;
-    }
-
-    @Override
-    public void release() {
-        // nothing to do here
     }
 
     @Override

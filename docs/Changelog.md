@@ -17,6 +17,7 @@
 - POI: add named entities option [#949](https://github.com/mapsforge/mapsforge/issues/949)
 - POI: fix multiple POI categories [#940](https://github.com/mapsforge/mapsforge/issues/940)
 - Feature parameters [#994](https://github.com/mapsforge/mapsforge/issues/994)
+- Writers: Osmosis 0.46 with protobuf 3 [#1002](https://github.com/mapsforge/mapsforge/issues/1002)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.9.0)
 

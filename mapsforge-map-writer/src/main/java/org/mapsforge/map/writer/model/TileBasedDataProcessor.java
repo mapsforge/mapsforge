@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -47,6 +48,11 @@ public interface TileBasedDataProcessor {
      * @param way the way
      */
     void addWay(Way way);
+
+    /**
+     * Release all acquired resources, e.g. delete any temporary files.
+     */
+    void close();
 
     /**
      * Complete the data store, e.g. build indexes or similar.
@@ -108,9 +114,4 @@ public interface TileBasedDataProcessor {
      * @return the underlying zoom interval configuration
      */
     ZoomIntervalConfiguration getZoomIntervalConfiguration();
-
-    /**
-     * Release all acquired resources, e.g. delete any temporary files.
-     */
-    void release();
 }
