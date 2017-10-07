@@ -14,13 +14,15 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.core.util.MercatorProjection;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,18 +36,14 @@ import java.util.logging.Logger;
 public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
 
     private static final Logger LOGGER = Logger.getLogger(DiffuseLightShadingAlgorithm.class.getName());
-
+    private static final double halfPi = Math.PI / 2d;
+    private final float heightAngle;
+    private final double ast2;
+    private final double neutral;
     /**
      * light height (relative to 1:1:x)
      */
     private double a;
-
-    private final double ast2;
-    private final double neutral;
-
-    public double getLightHeight() {
-        return a;
-    }
 
     public DiffuseLightShadingAlgorithm() {
         this(50f);
@@ -55,7 +53,7 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
      * height angle of light source over ground (in degrees 0..90)
      */
     public DiffuseLightShadingAlgorithm(float heightAngle) {
-
+        this.heightAngle = heightAngle;
         this.a = heightAngleToRelativeHeight(heightAngle);
         ast2 = Math.sqrt(2 + this.a * this.a);
         neutral = calculateRaw(0, 0);
@@ -65,6 +63,17 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
         double radians = heightAngle / 180d * Math.PI;
 
         return Math.tan(radians) * Math.sqrt(2d);
+    }
+
+    private static short readNext(ByteBuffer din, short fallback) throws IOException {
+        short read = din.getShort();
+        if (read == Short.MIN_VALUE)
+            return fallback;
+        return read;
+    }
+
+    public double getLightHeight() {
+        return a;
     }
 
     @Override
@@ -82,28 +91,39 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
     public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
         int axisLength = getAxisLenght(source);
         int rowLen = axisLength + 1;
-        BufferedInputStream in = null;
+        FileInputStream stream = null;
+        FileChannel channel = null;
         try {
-            in = source.openInputStream();
+            File file = source.getFile();
+            stream = new FileInputStream(file);
+            channel = stream.getChannel();
+            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+            map.order(ByteOrder.BIG_ENDIAN);
+            byte[] bytes = convert(map, axisLength, rowLen, padding, source);
 
-
-            byte[] bytes = convert(in, axisLength, rowLen, padding, source);
             return new RawShadingResult(bytes, axisLength, axisLength, padding);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
         } finally {
-            IOUtils.closeQuietly(in);
+            if (channel != null) try {
+                channel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (stream != null) try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private byte[] convert(InputStream in, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
+    private byte[] convert(MappedByteBuffer din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
         byte[] bytes;
 
         short[] ringbuffer = new short[rowLen];
         bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
-
-        DataInputStream din = new DataInputStream(in);
 
         int outidx = (axisLength + 2 * padding) * padding + padding;
         int rbcur = 0;
@@ -154,10 +174,6 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
         return bytes;
     }
 
-
-    private static final double halfPi = Math.PI / 2d;
-
-
     int calculate(double n, double e) {
         double raw = calculateRaw(n, e);
 
@@ -185,13 +201,6 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
         return lightness;
     }
 
-    private static short readNext(DataInputStream din, short fallback) throws IOException {
-        short read = din.readShort();
-        if (read == Short.MIN_VALUE)
-            return fallback;
-        return read;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -206,5 +215,12 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
     public int hashCode() {
         long temp = Double.doubleToLongBits(a);
         return (int) (temp ^ (temp >>> 32));
+    }
+
+    @Override
+    public String toString() {
+        return "DiffuseLightShadingAlgorithm{" +
+                "heightAngle=" + heightAngle +
+                '}';
     }
 }

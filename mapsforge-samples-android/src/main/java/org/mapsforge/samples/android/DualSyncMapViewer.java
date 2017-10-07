@@ -1,6 +1,7 @@
 /*
- * Copyright 2017 usrusr
- * Copyright 2017 devemux86
+ * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,15 +16,15 @@
  */
 package org.mapsforge.samples.android;
 
-import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
+import org.mapsforge.map.android.util.MapViewPositionObserver;
 
 /**
- * Standard map view with hill shading, configured for speed over prettiness.
+ * An activity with two synchronized MapViews for comparison.
  */
-public class HillshadingMapViewerFaster extends HillshadingMapViewer {
-
+public class DualSyncMapViewer extends DualMapViewer {
     @Override
-    protected void customizeConfig(MemoryCachingHgtReaderTileSource config) {
-        config.setEnableInterpolationOverlap(false);
+    protected void createMapViews() {
+        super.createMapViews();
+        new MapViewPositionObserver(this.mapView.getModel().mapViewPosition, this.mapView2.getModel().mapViewPosition);
     }
 }

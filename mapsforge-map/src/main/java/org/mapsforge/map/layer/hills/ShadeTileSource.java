@@ -14,11 +14,29 @@
  */
 package org.mapsforge.map.layer.hills;
 
+import org.mapsforge.core.graphics.HillshadingBitmap;
+
+import java.io.File;
+import java.util.concurrent.ExecutionException;
+
 /**
- * A simple calculation future for cross-thread result sharing and optional eager parallelism via
- * {@link #withRunningThread()}.
- *
- * @param <X> result type
+ * {@link MemoryCachingHgtReaderTileSource} or a wrapper thereof
  */
-public abstract class LazyFuture<X> extends LatchedLazyFuture<X> {
+public interface ShadeTileSource {
+
+    /**
+     * prepare anything lazily derived from configuration off this thread
+     */
+    void prepareOnThread();
+
+    /**
+     * main work method
+     */
+    HillshadingBitmap getHillshadingBitmap(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException;
+
+    void applyConfiguration(boolean allowParallel);
+
+    void setShadingAlgorithm(ShadingAlgorithm algorithm);
+
+    void setDemFolder(File demFolder);
 }

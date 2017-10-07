@@ -265,7 +265,7 @@ class AndroidCanvas implements Canvas {
         if (horizontalScale < 1 && verticalScale < 1) {
             // fast path for wide zoom (downscaling)
             this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
-            android.graphics.Matrix transform = new android.graphics.Matrix();
+            android.graphics.Matrix transform = temps.useMatrix();
             transform.preTranslate((float) tileRect.left, (float) tileRect.top);
             transform.preScale((float) horizontalScale, (float) verticalScale);
             transform.preTranslate((float) -hillRect.left, (float) -hillRect.top);
@@ -357,13 +357,13 @@ class AndroidCanvas implements Canvas {
 
         private final android.graphics.Paint shadePaint;
         private android.graphics.Bitmap neutralShadingPixel = AndroidGraphicFactory.INSTANCE.createMonoBitmap(1, 1, new byte[]{(byte) (127 & 0xFF)}, 0, null).bitmap;
+        private android.graphics.Matrix tmpMatrix;
 
         private HilshadingTemps() {
             shadePaint = new android.graphics.Paint();
-            //shadePaint.setColor( android.graphics.Color.rgb(127,127,127));
-            //shadePaint.setColor( android.graphics.Color.WHITE);
-            this.shadePaint.setAntiAlias(true);
-            this.shadePaint.setFilterBitmap(true);
+
+            shadePaint.setAntiAlias(true);
+            shadePaint.setFilterBitmap(true);
         }
 
         Rect useAsr(int srcLeft, int srcTop, int srcRight, int srcBottom) {
@@ -431,6 +431,14 @@ class AndroidCanvas implements Canvas {
 
         public android.graphics.Bitmap useNeutralShadingPixel() {
             return neutralShadingPixel;
+        }
+
+        public android.graphics.Matrix useMatrix() {
+            if (tmpMatrix == null) {
+                tmpMatrix = new android.graphics.Matrix();
+            }
+            tmpMatrix.reset();
+            return tmpMatrix;
         }
     }
 }

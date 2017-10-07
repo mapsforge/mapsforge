@@ -51,18 +51,19 @@ public class Hillshading {
         this.layer = layer;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
-        this.magnitude = Math.min(Math.max(0, magnitude), 255) / 255f;
+        this.magnitude = magnitude;
     }
 
     public void render(final RenderContext renderContext, HillsRenderConfig hillsRenderConfig) {
         if (hillsRenderConfig == null) {
             if (always) {
                 renderContext.setDrawingLayers(layer);
-                ShapeContainer hillShape = new HillshadingContainer(null, magnitude, null, null);
+                ShapeContainer hillShape = new HillshadingContainer(null, this.magnitude, null, null);
                 renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
             }
             return;
         }
+        float effectiveMagnitude = Math.min(Math.max(0f, this.magnitude * hillsRenderConfig.getMaginuteScaleFactor()), 255f) / 255f;
         Tile tile = renderContext.rendererJob.tile;
         byte zoomLevel = tile.zoomLevel;
         if (zoomLevel > maxZoom || zoomLevel < minZoom)
@@ -156,7 +157,7 @@ public class Hillshading {
 
                 Rectangle hillsRect = (shadingTile == null) ? null : new Rectangle(shadingSubrectLeft, shadingSubrectTop, shadingSubrectRight, shadingSubrectBottom);
                 Rectangle maptileRect = new Rectangle(maptileSubrectLeft, maptileSubrectTop, maptileSubrectRight, maptileSubrectBottom);
-                ShapeContainer hillShape = new HillshadingContainer(shadingTile, magnitude, hillsRect, maptileRect);
+                ShapeContainer hillShape = new HillshadingContainer(shadingTile, effectiveMagnitude, hillsRect, maptileRect);
 
                 renderContext.setDrawingLayers(layer);
                 renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
