@@ -88,6 +88,9 @@
             android:name=".HillshadingMapViewerFaster"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
+                android:name=".HillshadingMapViewerDiffuseShading"
+                android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
             android:name=".ItemDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data

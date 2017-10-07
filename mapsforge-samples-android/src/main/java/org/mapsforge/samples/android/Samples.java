@@ -180,6 +180,7 @@ public class Samples extends Activity {
         linearLayout.addView(createLabel("Experiments"));
         linearLayout.addView(createButton(HillshadingMapViewer.class));
         linearLayout.addView(createButton(HillshadingMapViewerFaster.class));
+        linearLayout.addView(createButton(HillshadingMapViewerDiffuseShading.class));
         linearLayout.addView(createButton(ReverseGeocodeViewer.class));
         linearLayout.addView(createButton(NightModeViewer.class));
         linearLayout.addView(createButton(RenderThemeChanger.class));

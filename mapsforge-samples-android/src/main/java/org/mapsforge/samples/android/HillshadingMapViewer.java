@@ -28,14 +28,10 @@ import java.io.File;
  * Standard map view with hill shading.
  */
 public class HillshadingMapViewer extends DefaultTheme {
-    protected final File demFolder;
-    protected final HillsRenderConfig hillsConfig;
+    private final File demFolder;
+    private final HillsRenderConfig hillsConfig;
 
     public HillshadingMapViewer() {
-        this(false);
-    }
-
-    public HillshadingMapViewer(boolean speed) {
         demFolder = new File(getMapFileDirectory(), "dem");
 
         if (!(demFolder.exists() && demFolder.isDirectory() && demFolder.canRead() && demFolder.listFiles().length > 0)) {
@@ -44,17 +40,15 @@ public class HillshadingMapViewer extends DefaultTheme {
             // minimum setup for hillshading
             hillsConfig = new HillsRenderConfig(demFolder, AndroidGraphicFactory.INSTANCE);
 
-            if (speed) {
-                // faster configuration with visible seams along the one degree latitude/longitude grid where the terrain is rough
-                hillsConfig.setEnableInterpolationOverlap(false);
-            } else {
-                // slower version smooth along the one degree latitude/longitude grid
-                hillsConfig.setEnableInterpolationOverlap(true);
-            }
+            customizeConfig(hillsConfig);
 
             // call after setting/changing parameters, walks filesystem for DEM metadata
             hillsConfig.indexOnThread();
         }
+    }
+
+    protected void customizeConfig(HillsRenderConfig config) {
+        config.setEnableInterpolationOverlap(true);
     }
 
     @Override
