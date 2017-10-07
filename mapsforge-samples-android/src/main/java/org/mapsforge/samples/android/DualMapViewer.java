@@ -17,6 +17,9 @@
 package org.mapsforge.samples.android;
 
 import android.os.Environment;
+import android.support.annotation.IdRes;
+import android.view.View;
+import android.widget.TextView;
 
 import org.mapsforge.map.android.util.AndroidPreferences;
 import org.mapsforge.map.android.util.AndroidUtil;
@@ -144,5 +147,20 @@ public class DualMapViewer extends DefaultTheme {
         this.mapView2.getModel().save(this.preferencesFacade2);
         this.preferencesFacade2.save();
         super.onPause();
+    }
+    protected void setMapTitle(CharSequence title){
+        setText(title, R.id.description);
+    }
+    protected void setMapTitle2(CharSequence title){
+        setText(title, R.id.description2);
+    }
+    private void setText(CharSequence title, @IdRes int id) {
+        TextView textView = this.findViewById(id);
+        if(title==null){
+            textView.setVisibility(View.GONE);
+        }else {
+            textView.setText(title);
+            textView.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -35,6 +35,10 @@ import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * immutably configured, does the work for {@link MemoryCachingHgtReaderTileSource}
+ */
 class HgtCache {
     final File demFolder;
     final boolean interpolatorOverlap;
@@ -80,7 +84,24 @@ class HgtCache {
     }
 
     class Lru {
-        final int size;
+        public int getSize() {
+            return size;
+        }
+
+        public void setSize(int size) {
+
+            this.size = Math.max(0, size);
+
+            if(size<lru.size()) synchronized (lru){
+                Iterator<Future<HillshadingBitmap>> iterator = lru.iterator();
+                while (lru.size() > size) {
+                    Future<HillshadingBitmap> evicted = iterator.next();
+                    iterator.remove();
+                }
+            }
+        }
+
+        private int size;
         final private LinkedHashSet<Future<HillshadingBitmap>> lru;
 
         Lru(int size) {
@@ -420,7 +441,7 @@ class HgtCache {
     }
 
 
-    HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, double pxPerLat, double pxPerLng) throws InterruptedException, ExecutionException {
+    public HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, double pxPerLat, double pxPerLng) throws InterruptedException, ExecutionException {
         HgtFileInfo hgtFileInfo = hgtFiles.get().get(new TileKey(northInt, eastInt));
         if (hgtFileInfo == null)
             return null;

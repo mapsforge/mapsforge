@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
 
     private static final Logger LOGGER = Logger.getLogger(DiffuseLightShadingAlgorithm.class.getName());
+    private final float heightAngle;
 
     /**
      * light height (relative to 1:1:x)
@@ -47,6 +48,8 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
         return a;
     }
 
+
+
     public DiffuseLightShadingAlgorithm() {
         this(50f);
     }
@@ -55,7 +58,7 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
      * height angle of light source over ground (in degrees 0..90)
      */
     public DiffuseLightShadingAlgorithm(float heightAngle) {
-
+        this.heightAngle = heightAngle;
         this.a = heightAngleToRelativeHeight(heightAngle);
         ast2 = Math.sqrt(2 + this.a * this.a);
         neutral = calculateRaw(0, 0);
@@ -206,5 +209,12 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
     public int hashCode() {
         long temp = Double.doubleToLongBits(a);
         return (int) (temp ^ (temp >>> 32));
+    }
+
+    @Override
+    public String toString() {
+        return "DiffuseLightShadingAlgorithm{" +
+                "heightAngle=" + heightAngle +
+                '}';
     }
 }

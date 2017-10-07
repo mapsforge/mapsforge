@@ -29,7 +29,6 @@ import java.util.logging.Logger;
  * <p>variations can be created by overriding {@link #exaggerate(double)}</p>
  */
 public class SimpleShadingAlgorithm implements ShadingAlgorithm {
-
     private static final Logger LOGGER = Logger.getLogger(SimpleShadingAlgorithm.class.getName());
     public final double linearity;
     public final double scale;
@@ -218,5 +217,13 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
         temp = Double.doubleToLongBits(scale);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleShadingAlgorithm{" +
+                "linearity=" + linearity +
+                ", scale=" + scale +
+                '}';
     }
 }

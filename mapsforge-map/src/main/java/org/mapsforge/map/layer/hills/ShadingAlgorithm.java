@@ -41,15 +41,6 @@ public interface ShadingAlgorithm {
         }
 
         /**
-         * two-way merge, if padding
-         */
-        public void mergePaddingWith(HillshadingBitmap hillshadingBitmap, HillshadingBitmap.Border side) {
-            if (padding == 0) return;
-
-
-        }
-
-        /**
          * fill padding like clamp
          */
         void fillPadding(HillshadingBitmap.Border side) {

@@ -91,6 +91,9 @@
             android:name=".HillshadingMapViewerFaster"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
+            android:name=".HillshadingCompareMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
             android:name=".ItemDetailActivity"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
