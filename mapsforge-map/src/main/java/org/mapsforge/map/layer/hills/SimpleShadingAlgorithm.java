@@ -66,7 +66,7 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
     }
 
     @Override
-    public int getAxisLenght(HgtCache.HgtFileInfo source){
+    public int getAxisLenght(HgtCache.HgtFileInfo source) {
         long size = source.getSize();
         long elements = size / 2;
         int rowLen = (int) Math.ceil(Math.sqrt(elements));
@@ -79,7 +79,7 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
     @Override
     public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
         int axisLength = getAxisLenght(source);
-        int rowLen = axisLength+1;
+        int rowLen = axisLength + 1;
         BufferedInputStream in = null;
         try {
             in = source.openInputStream();
@@ -99,7 +99,7 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
         byte[] bytes;
 
         short[] ringbuffer = new short[rowLen];
-        bytes = new byte[(axisLength +2*padding) * (axisLength+2*padding)];
+        bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
 
         DataInputStream din = new DataInputStream(in);
 
@@ -109,7 +109,7 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
             lookup = this.lookup;
         }
 
-        int outidx = (axisLength +2*padding)*padding+padding;
+        int outidx = (axisLength + 2 * padding) * padding + padding;
         int rbcur = 0;
         {
             short last = 0;
@@ -150,7 +150,7 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
                 nw = ne;
                 sw = se;
             }
-            outidx+=2*padding;
+            outidx += 2 * padding;
         }
         return bytes;
     }
