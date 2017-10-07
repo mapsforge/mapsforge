@@ -38,8 +38,8 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.hills.DiffuseLightShadingAlgorithm;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
-import org.mapsforge.map.layer.hills.SimpleShadingAlgorithm;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.Model;
@@ -88,7 +88,7 @@ public final class Samples {
         HillsRenderConfig hillsCfg = null;
         File demFolder = getDemFolder(args);
         if (demFolder != null) {
-            hillsCfg = new HillsRenderConfig(demFolder, AwtGraphicFactory.INSTANCE, new SimpleShadingAlgorithm());
+            hillsCfg = new HillsRenderConfig(demFolder, AwtGraphicFactory.INSTANCE, new DiffuseLightShadingAlgorithm());
             hillsCfg.setEnableInterpolationOverlap(true);
             hillsCfg.indexOnThread();
             args = Arrays.copyOfRange(args, 1, args.length);
