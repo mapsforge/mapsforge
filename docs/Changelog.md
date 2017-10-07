@@ -3,7 +3,7 @@
 ## New since 0.8.0
 
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
-- Hillshading improvements [#997](https://github.com/mapsforge/mapsforge/issues/997)
+- Hillshading improvements [#923](https://github.com/mapsforge/mapsforge/issues/923)
 - Polyline overlay touch events [#998](https://github.com/mapsforge/mapsforge/issues/998)
 - Polygon overlay touch events [#999](https://github.com/mapsforge/mapsforge/issues/999)
 - Circle overlay touch events [#996](https://github.com/mapsforge/mapsforge/issues/996)
