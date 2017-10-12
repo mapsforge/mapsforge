@@ -939,10 +939,10 @@
         </rule>
         <rule e="node" k="natural" v="peak" zoom-min="11">
             <symbol id="peak" src="jar:symbols/peak.svg" />
-            <caption fill="#000000" font-size="14" font-style="bold" k="name" position="below"
+            <caption fill="#000000" font-size="14" font-style="bold" k="name" position="above"
                 priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="peak" />
             <rule e="any" k="*" v="*" zoom-min="14">
-                <caption fill="#000000" font-size="12" font-style="bold" k="ele" position="above"
+                <caption fill="#000000" font-size="12" font-style="bold" k="ele" position="below"
                     priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="peak" />
             </rule>
         </rule>
@@ -1060,43 +1060,43 @@
         <rule e="any" k="railway" v="station" zoom-min="13">
             <symbol id="train-station" src="jar:symbols/transport/train_station2.svg" />
             <rule e="any" k="*" v="*" zoom-min="15">
-                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" priority="20"
-                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="train-station" />
+                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" position="above"
+                    priority="20" stroke="#FFFFFF" stroke-width="2.0" symbol-id="train-station" />
             </rule>
         </rule>
         <rule e="any" k="building" v="train_station" zoom-min="13">
             <symbol id="train-station2" src="jar:symbols/transport/train_station2.svg" />
             <rule e="any" k="*" v="*" zoom-min="15">
-                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" priority="20"
-                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="train-station2" />
+                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" position="above"
+                    priority="20" stroke="#FFFFFF" stroke-width="2.0" symbol-id="train-station2" />
             </rule>
         </rule>
         <rule e="node" k="station" v="light_rail|subway" zoom-min="14">
             <symbol id="train-station3" src="jar:symbols/transport/train_station2.svg" />
             <rule e="any" k="*" v="*" zoom-min="16">
-                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" priority="20"
-                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="train-station3" />
+                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" position="above"
+                    priority="20" stroke="#FFFFFF" stroke-width="2.0" symbol-id="train-station3" />
             </rule>
         </rule>
         <rule e="node" k="railway" v="halt|tram_stop" zoom-min="14">
             <symbol id="tram-stop" src="jar:symbols/transport/tram_stop.svg" />
             <rule e="any" k="*" v="*" zoom-min="16">
-                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" priority="10"
-                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="tram-stop" />
+                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" position="above"
+                    priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="tram-stop" />
             </rule>
         </rule>
         <rule e="any" k="amenity" v="bus_station" zoom-min="13">
             <symbol id="bus-station" src="jar:symbols/transport/bus_station.svg" />
             <rule e="any" k="*" v="*" zoom-min="15">
-                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
-                    stroke-width="2.0" symbol-id="bus-station" />
+                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" position="above"
+                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="bus-station" />
             </rule>
         </rule>
         <rule e="node" k="highway" v="bus_stop" zoom-min="16">
             <symbol id="bus-stop" src="jar:symbols/transport/bus_stop.svg" />
             <rule e="any" k="*" v="*" zoom-min="16">
-                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
-                    stroke-width="2.0" symbol-id="bus-stop" />
+                <caption fill="#0092DA" font-size="12" font-style="bold" k="name" position="above"
+                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="bus-stop" />
             </rule>
         </rule>
     </rule>
@@ -1106,7 +1106,7 @@
         <rule e="any" k="amenity" v="restaurant" zoom-min="14">
             <symbol id="restaurant" src="jar:symbols/food/restaurant.svg" />
             <rule e="node" k="*" v="*" zoom-min="16">
-                <caption fill="#734A08" font-size="12" font-style="bold" k="name" position="auto"
+                <caption fill="#734A08" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#FFFFFF" stroke-width="2.0" symbol-id="restaurant" />
             </rule>
         </rule>
@@ -1192,14 +1192,14 @@
         <rule e="any" k="amenity" v="atm" zoom-min="15">
             <symbol id="atm" src="jar:symbols/money/atm2.svg" />
             <rule e="any" k="*" v="*" zoom-min="18">
-                <caption fill="#666666" font-size="12" font-style="bold" k="name" position="auto"
+                <caption fill="#666666" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#FFFFFF" stroke-width="2.0" symbol-id="atm" />
             </rule>
         </rule>
         <rule e="any" k="amenity" v="bank" zoom-min="15">
             <symbol id="bank" src="jar:symbols/money/bank2.svg" />
             <rule e="any" k="*" v="*" zoom-min="18">
-                <caption fill="#666666" font-size="12" font-style="bold" k="name" position="auto"
+                <caption fill="#666666" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#FFFFFF" stroke-width="2.0" symbol-id="bank" />
             </rule>
         </rule>
