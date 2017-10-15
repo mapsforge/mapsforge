@@ -16,7 +16,7 @@
 package org.mapsforge.samples.android;
 
 import org.mapsforge.map.layer.hills.DiffuseLightShadingAlgorithm;
-import org.mapsforge.map.layer.hills.HillsRenderConfig;
+import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
 
 /**
  * Standard map view with hill shading, configured with diffuse lighting.
@@ -24,8 +24,8 @@ import org.mapsforge.map.layer.hills.HillsRenderConfig;
 public class HillshadingMapViewerDiffuseShading extends HillshadingMapViewer {
 
     @Override
-    protected void customizeConfig(HillsRenderConfig config) {
+    protected void customizeConfig(MemoryCachingHgtReaderTileSource config) {
         config.setEnableInterpolationOverlap(true);
-        config.setAlgorithm(new DiffuseLightShadingAlgorithm());
+        config.setShadingAlgorithm(new DiffuseLightShadingAlgorithm());
     }
 }

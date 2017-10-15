@@ -21,6 +21,8 @@ import android.os.Bundle;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
+import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
+import org.mapsforge.map.layer.hills.SimpleShadingAlgorithm;
 
 import java.io.File;
 
@@ -38,22 +40,17 @@ public class HillshadingMapViewer extends DefaultTheme {
             hillsConfig = null;
         } else {
             // minimum setup for hillshading
-            hillsConfig = new HillsRenderConfig(demFolder, AndroidGraphicFactory.INSTANCE);
-
-            customizeConfig(hillsConfig);
+            MemoryCachingHgtReaderTileSource hillTileSource = new MemoryCachingHgtReaderTileSource(demFolder, new SimpleShadingAlgorithm(), AndroidGraphicFactory.INSTANCE);
+            customizeConfig(hillTileSource);
+            hillsConfig = new HillsRenderConfig(hillTileSource);
 
             // call after setting/changing parameters, walks filesystem for DEM metadata
             hillsConfig.indexOnThread();
         }
     }
 
-    protected void customizeConfig(HillsRenderConfig config) {
-        config.setEnableInterpolationOverlap(true);
-    }
-
-    @Override
-    protected HillsRenderConfig getHillsRenderConfig() {
-        return hillsConfig;
+    protected void customizeConfig(MemoryCachingHgtReaderTileSource hillTileSource) {
+        hillTileSource.setEnableInterpolationOverlap(true);
     }
 
     @Override
@@ -70,5 +67,10 @@ public class HillshadingMapViewer extends DefaultTheme {
                 }
             });
         }
+    }
+
+    @Override
+    protected HillsRenderConfig getHillsRenderConfig() {
+        return hillsConfig;
     }
 }
