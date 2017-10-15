@@ -22,9 +22,23 @@ import org.mapsforge.map.android.util.MapViewPositionObserver;
  * An activity with two synchronized MapViews for comparison.
  */
 public class DualSyncMapViewer extends DualMapViewer {
+    private MapViewPositionObserver observer1;
+    private MapViewPositionObserver observer2;
+
     @Override
     protected void createMapViews() {
         super.createMapViews();
-        new MapViewPositionObserver(this.mapView.getModel().mapViewPosition, this.mapView2.getModel().mapViewPosition);
+        // any position change in one view will be reflected in the other
+        this.observer1 = new MapViewPositionObserver(
+                this.mapView.getModel().mapViewPosition, this.mapView2.getModel().mapViewPosition);
+        this.observer2 = new MapViewPositionObserver(
+                this.mapView2.getModel().mapViewPosition, this.mapView.getModel().mapViewPosition);
+    }
+
+    @Override
+    protected void onDestroy() {
+        this.observer1.removeObserver();
+        this.observer2.removeObserver();
+        super.onDestroy();
     }
 }

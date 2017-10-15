@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,7 +18,6 @@ package org.mapsforge.samples.android;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.util.MapViewPositionObserver;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
@@ -27,10 +26,8 @@ import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 /**
  * An activity with two {@link MapView MapViews} tied to each other.
  */
-public class DualMapnikMapViewer extends DualMapViewer {
+public class DualMapnikMapViewer extends DualSyncMapViewer {
     private TileDownloadLayer downloadLayer;
-    private MapViewPositionObserver observer1;
-    private MapViewPositionObserver observer2;
 
     @Override
     protected void createLayers2() {
@@ -38,16 +35,6 @@ public class DualMapnikMapViewer extends DualMapViewer {
                 this.mapView2.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
                 AndroidGraphicFactory.INSTANCE);
         this.mapView2.getLayerManager().getLayers().add(this.downloadLayer);
-    }
-
-    @Override
-    protected void createMapViews() {
-        super.createMapViews();
-        // any position change in one view will be reflected in the other
-        this.observer1 = new MapViewPositionObserver(
-                this.mapView.getModel().mapViewPosition, this.mapView2.getModel().mapViewPosition);
-        this.observer2 = new MapViewPositionObserver(
-                this.mapView2.getModel().mapViewPosition, this.mapView.getModel().mapViewPosition);
     }
 
     @Override
@@ -64,13 +51,6 @@ public class DualMapnikMapViewer extends DualMapViewer {
     protected void createTileCaches() {
         super.createTileCaches();
         this.tileCaches.add(createTileCache2());
-    }
-
-    @Override
-    protected void onDestroy() {
-        this.observer1.removeObserver();
-        this.observer2.removeObserver();
-        super.onDestroy();
     }
 
     @Override

@@ -126,7 +126,7 @@ public class DualMapViewer extends DefaultTheme {
      */
     @Override
     protected float getScreenRatio() {
-        return 0.5f;
+        return 0.6f;
     }
 
     /**
@@ -134,7 +134,7 @@ public class DualMapViewer extends DefaultTheme {
      * calculation)
      */
     protected float getScreenRatio2() {
-        return 0.5f;
+        return 0.6f;
     }
 
     @Override
