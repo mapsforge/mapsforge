@@ -56,6 +56,13 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
         this.scale = Math.max(0d, scale);
     }
 
+    private static short readNext(ByteBuffer din, short fallback) throws IOException {
+        short read = din.getShort();
+        if (read == Short.MIN_VALUE)
+            return fallback;
+        return read;
+    }
+
     /**
      * should calculate values from -128 to +127 using whatever range required (within reason)
      *
@@ -98,12 +105,12 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
         } finally {
-            if(channel!=null) try {
+            if (channel != null) try {
                 channel.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(stream!=null) try {
+            if (stream != null) try {
                 stream.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -152,10 +159,11 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
 
                 int eawe = -((ne - nw) + (se - sw));
 
-                noso = (int)exaggerate(lookup, noso);
-                eawe = (int)exaggerate(lookup, eawe);
+                noso = (int) exaggerate(lookup, noso);
+                eawe = (int) exaggerate(lookup, eawe);
 
-                int zeroIsFlat = noso + eawe ;int intVal = Math.min(255, Math.max(0, zeroIsFlat + 127));
+                int zeroIsFlat = noso + eawe;
+                int intVal = Math.min(255, Math.max(0, zeroIsFlat + 127));
 
                 int shade = intVal & 0xFF;
 
@@ -169,41 +177,35 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
         return bytes;
     }
 
-private byte exaggerate(byte[] lookup, int x) {
+    private byte exaggerate(byte[] lookup, int x) {
 
-        return lookup[Math.max(0, Math.min(lookup.length-1, x+lookupOffset))];
+        return lookup[Math.max(0, Math.min(lookup.length - 1, x + lookupOffset))];
     }
 
-
-    private void fillLookup(){
+    private void fillLookup() {
         int lowest = 0;
-        while(lowest > -1024){
+        while (lowest > -1024) {
             double exaggerate = exaggerate(lowest);
             double exaggerated = Math.round(exaggerate);
-            if(exaggerated<=-128 ||exaggerated >= 127) break;
+            if (exaggerated <= -128 || exaggerated >= 127) break;
             lowest--;
         }
         int highest = 0;
-        while(highest < 1024){
+        while (highest < 1024) {
             double exaggerated = Math.round(exaggerate(highest));
-            if(exaggerated<=-128 ||exaggerated >= 127) break;
+            if (exaggerated <= -128 || exaggerated >= 127) break;
             highest++;
         }
         int size = 1 + highest - lowest;
         byte[] nextLookup = new byte[size];
         int in = lowest;
-        for(int i=0;i<size;i++){
+        for (int i = 0; i < size; i++) {
             byte exaggerated = (byte) Math.round(exaggerate(in));
-            nextLookup[i]=exaggerated;
+            nextLookup[i] = exaggerated;
             in++;
         }
-        lookup=nextLookup;
-        lookupOffset=-lowest;
-    }    private static short readNext(ByteBuffer din, short fallback) throws IOException {
-        short read = din.getShort();
-        if (read == Short.MIN_VALUE)
-            return fallback;
-        return read;
+        lookup = nextLookup;
+        lookupOffset = -lowest;
     }
 
     @Override

@@ -36,35 +36,44 @@ import java.util.logging.Logger;
 public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
 
     private static final Logger LOGGER = Logger.getLogger(DiffuseLightShadingAlgorithm.class.getName());
+    private static final double halfPi = Math.PI / 2d;
     private final float heightAngle;
-
+    private final double ast2;
+    private final double neutral;
     /**
      * light height (relative to 1:1:x)
      */
     private double a;
 
-    private final double ast2;
-    private final double neutral;
-
-    public double getLightHeight(){
-        return a;
-    }
-
-    public DiffuseLightShadingAlgorithm(){
+    public DiffuseLightShadingAlgorithm() {
         this(50f);
     }
-    /** height angle of light source over ground (in degrees 0..90) */
-    public DiffuseLightShadingAlgorithm(float heightAngle){
-        this.heightAngle=heightAngle;
+
+    /**
+     * height angle of light source over ground (in degrees 0..90)
+     */
+    public DiffuseLightShadingAlgorithm(float heightAngle) {
+        this.heightAngle = heightAngle;
         this.a = heightAngleToRelativeHeight(heightAngle);
-        ast2 = Math.sqrt(2+ this.a * this.a);
-        neutral = calculateRaw(0,0);
+        ast2 = Math.sqrt(2 + this.a * this.a);
+        neutral = calculateRaw(0, 0);
     }
 
     static double heightAngleToRelativeHeight(float heightAngle) {
         double radians = heightAngle / 180d * Math.PI;
 
         return Math.tan(radians) * Math.sqrt(2d);
+    }
+
+    private static short readNext(ByteBuffer din, short fallback) throws IOException {
+        short read = din.getShort();
+        if (read == Short.MIN_VALUE)
+            return fallback;
+        return read;
+    }
+
+    public double getLightHeight() {
+        return a;
     }
 
     @Override
@@ -97,12 +106,12 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
         } finally {
-            if(channel!=null) try {
+            if (channel != null) try {
                 channel.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(stream!=null) try {
+            if (stream != null) try {
                 stream.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -126,11 +135,11 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
             }
         }
 
-        double southPerPixel = MercatorProjection.calculateGroundResolution(fileInfo.southLat(), axisLength*170);
-        double northPerPixel = MercatorProjection.calculateGroundResolution(fileInfo.northLat(), axisLength*170);
+        double southPerPixel = MercatorProjection.calculateGroundResolution(fileInfo.southLat(), axisLength * 170);
+        double northPerPixel = MercatorProjection.calculateGroundResolution(fileInfo.northLat(), axisLength * 170);
 
-        double southPerPixelByLine = southPerPixel / (2*axisLength);
-        double northPerPixelByLine = northPerPixel / (2*axisLength);
+        double southPerPixelByLine = southPerPixel / (2 * axisLength);
+        double northPerPixelByLine = northPerPixel / (2 * axisLength);
 
         for (int line = 1; line <= axisLength; line++) {
             if (rbcur >= rowLen) {
@@ -139,7 +148,7 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
             short nw = ringbuffer[rbcur];
             short sw = readNext(din, nw);
             ringbuffer[rbcur++] = sw;
-            double halfmetersPerPixel = (southPerPixelByLine * line + northPerPixelByLine * (axisLength-line));
+            double halfmetersPerPixel = (southPerPixelByLine * line + northPerPixelByLine * (axisLength - line));
             for (int col = 1; col <= axisLength; col++) {
                 short ne = ringbuffer[rbcur];
                 short se = readNext(din, ne);
@@ -160,24 +169,20 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
                 nw = ne;
                 sw = se;
             }
-            outidx+=2*padding;
+            outidx += 2 * padding;
         }
         return bytes;
     }
-
-
-    private static final double halfPi = Math.PI / 2d;
-
 
     int calculate(double n, double e) {
         double raw = calculateRaw(n, e);
 
         double v = raw - neutral;
 
-        if(v<0){
-            return (int) Math.round((128*(v/neutral)));
-        }else if(v>0){
-            return (int) Math.round((127*(v/(1d-neutral))));
+        if (v < 0) {
+            return (int) Math.round((128 * (v / neutral)));
+        } else if (v > 0) {
+            return (int) Math.round((127 * (v / (1d - neutral))));
         } else {
             return 0;
         }
@@ -190,18 +195,12 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
         // calculate the distance of the normal vector to a plane orthogonal to the light source and passing through zero,
         // the fraction of distance to vector lenght is proportional to the amount of light that would be hitting a disc
         // orthogonal to the normal vector
-        double normPlaneDist = (e+n+a) / (ast2* Math.sqrt(n*n+e*e+1));
+        double normPlaneDist = (e + n + a) / (ast2 * Math.sqrt(n * n + e * e + 1));
 
         double lightness = Math.max(0, normPlaneDist);
         return lightness;
     }
 
-    private static short readNext(ByteBuffer din, short fallback) throws IOException {
-        short read = din.getShort();
-        if (read == Short.MIN_VALUE)
-            return fallback;
-        return read;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

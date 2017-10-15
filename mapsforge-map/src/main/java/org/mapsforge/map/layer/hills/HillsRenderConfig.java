@@ -38,7 +38,7 @@ public class HillsRenderConfig {
 
     public HillsRenderConfig(File demFolder, GraphicFactory graphicsFactory, ShadeTileSource tileSource, ShadingAlgorithm algorithm) {
 
-        this.tileSource= (tileSource==null) ? new MemoryCachingHgtReaderTileSource(demFolder, algorithm, graphicsFactory) : tileSource;
+        this.tileSource = (tileSource == null) ? new MemoryCachingHgtReaderTileSource(demFolder, algorithm, graphicsFactory) : tileSource;
         tileSource.setDemFolder(demFolder);
         tileSource.setShadingAlgorithm(algorithm);
 
@@ -64,7 +64,7 @@ public class HillsRenderConfig {
      */
     public HillshadingBitmap getShadingTile(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException {
         ShadeTileSource tileSource = this.tileSource;
-        if(tileSource==null) return null;
+        if (tileSource == null) return null;
 
         HillshadingBitmap ret = tileSource.getHillshadingBitmap(latitudeOfSouthWestCorner, longituedOfSouthWestCorner, pxPerLat, pxPerLng);
         if (ret == null && Math.abs(longituedOfSouthWestCorner) > 178) { // don't think too hard about where exactly the border is (not much height data there anyway)
@@ -74,9 +74,11 @@ public class HillsRenderConfig {
 
         return ret;
     }
+
     public float getMaginuteScaleFactor() {
         return maginuteScaleFactor;
     }
+
     /**
      * Increase (&gt;1) or decrease (&lt;1) the hillshading magnitude relative to the value set in themes
      * <p>When designing a theme, this should be one</p>
