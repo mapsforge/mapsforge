@@ -43,6 +43,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
     private static final String PARAM_SIMPLIFICATION_MAX_ZOOM = "simplification-max-zoom";
     private static final String PARAM_SKIP_INVALID_RELATIONS = "skip-invalid-relations";
     private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
+    private static final String PARAM_TAG_VALUES = "tag-values";
     private static final String PARAM_THREADS = "threads";
     private static final String PARAM_TYPE = "type";
     private static final String PARAM_WAY_CLIPPING = "way-clipping";
@@ -52,6 +53,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
     protected TaskManager createTaskManagerImpl(TaskConfiguration taskConfig) {
         MapWriterConfiguration configuration = new MapWriterConfiguration();
         configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
+        configuration.setStoreTagValues(getBooleanArgument(taskConfig, PARAM_TAG_VALUES, true)); // must be set before loading tag mapping file
         configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
 
         configuration.addMapStartPosition(getStringArgument(taskConfig, PARAM_MAP_START_POSITION, null));

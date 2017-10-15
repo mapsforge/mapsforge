@@ -638,17 +638,8 @@ public class MapFile extends MapDataStore {
             // bit 5-8 represent the number of tag IDs
             byte numberOfTags = (byte) (specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 
-            List<Tag> tags = new ArrayList<>();
-
-            // get the tag IDs (VBE-U)
-            for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
-                int tagId = readBuffer.readUnsignedInt();
-                if (tagId < 0 || tagId >= poiTags.length) {
-                    LOGGER.warning("invalid POI tag ID: " + tagId);
-                    return null;
-                }
-                tags.add(poiTags[tagId]);
-            }
+            // get the tags from IDs (VBE-U)
+            List<Tag> tags = decodeTags(poiTags, numberOfTags, readBuffer);
 
             // get the feature bitmask (1 byte)
             byte featureByte = readBuffer.readByte();
@@ -769,16 +760,7 @@ public class MapFile extends MapDataStore {
             // bit 5-8 represent the number of tag IDs
             byte numberOfTags = (byte) (specialByte & WAY_NUMBER_OF_TAGS_BITMASK);
 
-            List<Tag> tags = new ArrayList<>();
-
-            for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
-                int tagId = readBuffer.readUnsignedInt();
-                if (tagId < 0 || tagId >= wayTags.length) {
-                    LOGGER.warning("invalid way tag ID: " + tagId);
-                    return null;
-                }
-                tags.add(wayTags[tagId]);
-            }
+            List<Tag> tags = decodeTags(wayTags, numberOfTags, readBuffer);
 
             // get the feature bitmask (1 byte)
             byte featureByte = readBuffer.readByte();
@@ -828,6 +810,48 @@ public class MapFile extends MapDataStore {
         }
 
         return ways;
+    }
+
+    private List<Tag> decodeTags(Tag[] tagArray, byte numberOfTags, ReadBuffer readBuffer) {
+        List<Integer> ids = new ArrayList<>();
+        List<Tag> tags = new ArrayList<>();
+
+        for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
+            int id = readBuffer.readUnsignedInt();
+            if (id < 0 || id >= tagArray.length) {
+                LOGGER.warning("invalid tag ID: " + id);
+                return null;
+            }
+            ids.add(id);
+        }
+
+        for (Integer id : ids) {
+            Tag tag = tagArray[id];
+            // Decode variable values of Tags
+            if (tag.value.charAt(0) == '%' && tag.value.length() == 2) {
+                String value = tag.value;
+                // Sorted by most appearance
+                if (value.charAt(1) == 'b') {
+                    value = String.valueOf(readBuffer.readByte());
+                } else if (value.charAt(1) == 'i') {
+                    if (tag.key.contains(":colour")) {
+                        value = "#" + Integer.toHexString(readBuffer.readInt());
+                    } else {
+                        value = String.valueOf(readBuffer.readInt());
+                    }
+                } else if (value.charAt(1) == 'f') {
+                    value = String.valueOf(readBuffer.readFloat());
+                } else if (value.charAt(1) == 'h') {
+                    value = String.valueOf(readBuffer.readShort());
+                } else if (value.charAt(1) == 's') {
+                    value = readBuffer.readUTF8EncodedString();
+                }
+                tag = new Tag(tag.key, value);
+            }
+            tags.add(tag);
+        }
+
+        return tags;
     }
 
     /**

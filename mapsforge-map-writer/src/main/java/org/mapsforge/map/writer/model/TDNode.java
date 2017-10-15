@@ -23,6 +23,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class TDNode {
 
@@ -39,7 +40,7 @@ public class TDNode {
      */
     public static TDNode fromNode(Node node, List<String> preferredLanguages) {
         SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(node, preferredLanguages);
-        short[] knownWayTags = OSMUtils.extractKnownPOITags(node);
+        Map<Short, Object> knownWayTags = OSMUtils.extractKnownPOITags(node);
 
         return new TDNode(node.getId(), LatLongUtils.degreesToMicrodegrees(node.getLatitude()),
                 LatLongUtils.degreesToMicrodegrees(node.getLongitude()), ster.getElevation(), ster.getLayer(),
@@ -55,7 +56,7 @@ public class TDNode {
     private final int longitude;
     private final String name;
 
-    private short[] tags;
+    private Map<Short, Object> tags;
 
     /**
      * @param id          the OSM id
@@ -84,10 +85,10 @@ public class TDNode {
      * @param layer       the layer if existent
      * @param houseNumber the house number if existent
      * @param name        the name if existent
-     * @param tags        the
+     * @param tags        the tags (tag map contains optional values)
      */
     public TDNode(long id, int latitude, int longitude, short elevation, byte layer, String houseNumber, String name,
-                  short[] tags) {
+                  Map<Short, Object> tags) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -168,7 +169,7 @@ public class TDNode {
     /**
      * @return the tags
      */
-    public short[] getTags() {
+    public Map<Short, Object> getTags() {
         return this.tags;
     }
 
@@ -176,13 +177,13 @@ public class TDNode {
      * @return the zoom level on which the node appears first
      */
     public byte getZoomAppear() {
-        if (this.tags == null || this.tags.length == 0) {
+        if (this.tags == null || this.tags.size() == 0) {
             if (this.houseNumber != null) {
                 return ZOOM_HOUSENUMBER;
             }
             return Byte.MAX_VALUE;
         }
-        return OSMTagMapping.getInstance().getZoomAppearPOI(this.tags);
+        return OSMTagMapping.getInstance().getZoomAppearPOI(this.tags.keySet());
     }
 
     @Override
@@ -197,19 +198,19 @@ public class TDNode {
      * @return true if the node represents a POI
      */
     public boolean isPOI() {
-        return this.houseNumber != null || this.elevation != 0 || this.tags.length > 0;
+        return this.houseNumber != null || this.elevation != 0 || this.tags.size() > 0;
     }
 
     /**
      * @param tags the tags to set
      */
-    public void setTags(short[] tags) {
+    public void setTags(Map<Short, Object> tags) {
         this.tags = tags;
     }
 
     @Override
     public final String toString() {
         return "TDNode [id=" + this.id + ", latitude=" + this.latitude + ", longitude=" + this.longitude + ", name="
-                + this.name + ", tags=" + Arrays.toString(this.tags) + "]";
+                + this.name + ", tags=" + Arrays.toString(this.tags.keySet().toArray()) + "]";
     }
 }

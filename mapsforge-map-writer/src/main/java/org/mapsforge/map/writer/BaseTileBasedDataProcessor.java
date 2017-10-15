@@ -142,7 +142,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
                     addWayToTiles(outerWay, BaseTileBasedDataProcessor.this.bboxEnlargement);
                     handleVirtualOuterWay(outerWay);
                     // adjust tag statistics, cannot be omitted!!!
-                    countWayTags(relation.getTags());
+                    countWayTags(relation.getTags().keySet());
                 }
 
                 // the outer way consists of only one segment
@@ -167,7 +167,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
                         // handle relation tags
                         handleAdditionalRelationTags(outerWay, relation);
                         addWayToTiles(outerWay, BaseTileBasedDataProcessor.this.bboxEnlargement);
-                        countWayTags(outerWay.getTags());
+                        countWayTags(outerWay.getTags().keySet());
                     }
                 }
 
@@ -192,17 +192,30 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
                     if (innerSegments.size() == 1) {
                         innerWay = innerSegments.getFirst();
                         if (innerWay.hasTags() && outer.hasTags()) {
-                            short[] iTags = innerWay.getTags();
-                            short[] oTags = outer.getTags();
                             int contained = 0;
-                            for (short iTagID : iTags) {
-                                for (short oTagID : oTags) {
-                                    if (iTagID == oTagID) {
-                                        contained++;
+                            for (Entry<Short, Object> innerTag : innerWay.getTags().entrySet()) {
+                                for (Entry<Short, Object> outerTag : outer.getTags().entrySet()) {
+                                    if (innerTag.getKey().equals(outerTag.getKey())) {
+                                        Object innerValue = innerTag.getValue();
+                                        Object outerValue = outerTag.getValue();
+                                        if (innerValue != null) {
+                                            if (outerValue != null) {
+                                                if ((innerValue instanceof Byte && outerValue instanceof Byte && innerValue.equals(outerValue))
+                                                        || (innerValue instanceof Integer && outerValue instanceof Integer && innerValue.equals(outerValue))
+                                                        || (innerValue instanceof Float && outerValue instanceof Float && innerValue.equals(outerValue))
+                                                        || (innerValue instanceof Short && outerValue instanceof Short && innerValue.equals(outerValue))
+                                                        || (innerValue instanceof String && outerValue instanceof String && innerValue.equals(outerValue))) {
+                                                    contained++;
+                                                }
+                                            }
+                                        } else if (outerValue == null) {
+                                            contained++;
+                                        }
                                     }
                                 }
                             }
-                            if (contained == iTags.length) {
+
+                            if (contained == innerWay.getTags().size()) {
                                 BaseTileBasedDataProcessor.this.innerWaysWithoutAdditionalTags.add(innerWay.getId());
                             }
                         }
@@ -384,12 +397,12 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
         if (poi == null || poi.getTags() == null) {
             return;
         }
-        for (short tag : poi.getTags()) {
+        for (short tag : poi.getTags().keySet()) {
             this.histogramPoiTags.adjustOrPutValue(tag, 1, 1);
         }
     }
 
-    protected void countWayTags(short[] tags) {
+    protected void countWayTags(Set<Short> tags) {
         if (tags != null) {
             for (short tag : tags) {
                 this.histogramWayTags.adjustOrPutValue(tag, 1, 1);
@@ -399,7 +412,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 
     protected void countWayTags(TDWay way) {
         if (way != null) {
-            countWayTags(way.getTags());
+            countWayTags(way.getTags().keySet());
         }
     }
 

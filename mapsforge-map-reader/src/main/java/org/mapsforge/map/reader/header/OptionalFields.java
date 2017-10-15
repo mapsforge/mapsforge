@@ -52,6 +52,11 @@ final class OptionalFields {
     private static final int HEADER_BITMASK_START_ZOOM_LEVEL = 0x20;
 
     /**
+     * Bitmask for the variable tag value fields.
+     */
+    private static final int HEADER_BITMASK_TAG_VALUES = 0x02;
+
+    /**
      * Maximum valid start zoom level.
      */
     private static final int START_ZOOM_LEVEL_MAX = 22;
@@ -70,6 +75,7 @@ final class OptionalFields {
     final boolean hasLanguagesPreference;
     final boolean hasStartPosition;
     final boolean hasStartZoomLevel;
+    final boolean hasTagValues;
     final boolean isDebugFile;
     String languagesPreference;
     LatLong startPosition;
@@ -82,6 +88,7 @@ final class OptionalFields {
         this.hasLanguagesPreference = (flags & HEADER_BITMASK_LANGUAGES_PREFERENCE) != 0;
         this.hasComment = (flags & HEADER_BITMASK_COMMENT) != 0;
         this.hasCreatedBy = (flags & HEADER_BITMASK_CREATED_BY) != 0;
+        this.hasTagValues = (flags & HEADER_BITMASK_TAG_VALUES) != 0;
     }
 
     private void readLanguagesPreference(ReadBuffer readBuffer) {

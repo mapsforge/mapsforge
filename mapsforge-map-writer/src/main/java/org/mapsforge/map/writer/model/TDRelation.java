@@ -24,6 +24,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.RelationMember;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -50,7 +51,7 @@ public class TDRelation {
         }
 
         SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(relation, preferredLanguages);
-        short[] knownWayTags = OSMUtils.extractKnownWayTags(relation);
+        Map<Short, Object> knownWayTags = OSMUtils.extractKnownWayTags(relation);
 
         // special tags
         // TODO what about the layer of relations?
@@ -102,7 +103,7 @@ public class TDRelation {
 
     private final String ref;
 
-    private final short[] tags;
+    private final Map<Short, Object> tags;
 
     /**
      * Constructor.
@@ -112,10 +113,10 @@ public class TDRelation {
      * @param name        the name
      * @param houseNumber the house number if existent
      * @param ref         the ref attribute
-     * @param tags        the tags
+     * @param tags        the tags (tag map contains optional values)
      * @param memberWays  the member ways
      */
-    TDRelation(long id, byte layer, String name, String houseNumber, String ref, short[] tags, TDWay[] memberWays) {
+    TDRelation(long id, byte layer, String name, String houseNumber, String ref, Map<Short, Object> tags, TDWay[] memberWays) {
         this.id = id;
         this.layer = layer;
         this.name = name;
@@ -188,8 +189,8 @@ public class TDRelation {
     /**
      * @return the tags
      */
-    public short[] getTags() {
-        return this.tags;
+    public Map<Short, Object> getTags() {
+        return tags;
     }
 
     @Override
@@ -204,19 +205,15 @@ public class TDRelation {
      * @return true if the relation has associated tags
      */
     public boolean hasTags() {
-        return this.tags != null && this.tags.length > 0;
+        return this.tags != null && this.tags.size() > 0;
     }
 
     /**
      * @return true if the relation represents a coastline
      */
     public boolean isCoastline() {
-        if (this.tags == null) {
-            return false;
-        }
-        OSMTag tag;
-        for (short tagID : this.tags) {
-            tag = OSMTagMapping.getInstance().getWayTag(tagID);
+        List<OSMTag> osmTags = OSMTagMapping.getInstance().getWayTags(this.tags.keySet());
+        for (OSMTag tag : osmTags) {
             if (tag.isCoastline()) {
                 return true;
             }
@@ -235,6 +232,6 @@ public class TDRelation {
     @Override
     public String toString() {
         return "TDRelation [id=" + this.id + ", layer=" + this.layer + ", name=" + this.name + ", ref=" + this.ref
-                + ", tags=" + Arrays.toString(this.tags) + "]";
+                + ", tags=" + Arrays.toString(this.tags.keySet().toArray()) + "]";
     }
 }

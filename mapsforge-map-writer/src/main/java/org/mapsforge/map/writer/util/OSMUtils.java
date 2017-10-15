@@ -23,6 +23,7 @@ import org.openstreetmap.osmosis.core.domain.v0_6.Entity;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,8 +34,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import gnu.trove.list.array.TShortArrayList;
-
 /**
  * OpenStreetMap related utility methods.
  */
@@ -43,7 +42,11 @@ public final class OSMUtils {
 
     private static final int MAX_ELEVATION = 9000;
 
+    public static final Pattern DIGIT_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
+    // private static final String REGEX_COLOR_EXTENDED = "(#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8}|[A-Fa-f0-9]{3}))";
+    public static final Pattern COLOR_PATTERN = Pattern.compile("#([A-Fa-f0-9]{6})");
     private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,3}(?:[-_][a-zA-Z0-9]{1,8})*)");
+
 
     /**
      * Extracts known POI tags and returns their ids.
@@ -51,18 +54,34 @@ public final class OSMUtils {
      * @param entity the node
      * @return the ids of the identified tags
      */
-    public static short[] extractKnownPOITags(Entity entity) {
-        TShortArrayList currentTags = new TShortArrayList();
+    public static Map<Short, Object> extractKnownPOITags(Entity entity) {
+        Map<Short, Object> tagMap = new HashMap<>();
         OSMTagMapping mapping = OSMTagMapping.getInstance();
         if (entity.getTags() != null) {
             for (Tag tag : entity.getTags()) {
-                OSMTag wayTag = mapping.getPoiTag(tag.getKey(), tag.getValue());
-                if (wayTag != null) {
-                    currentTags.add(wayTag.getId());
+                OSMTag poiTag = mapping.getPoiTag(tag.getKey(), tag.getValue());
+                if (poiTag != null) {
+                    Object value = null;
+                    String wildcard = poiTag.getValue();
+                    if (wildcard.charAt(0) == '%' && wildcard.length() == 2) {
+                        Character format = wildcard.charAt(1);
+                        if (format == 'b')
+                            value = getByteValue(tag.getValue());
+                        else if (format == 'i')
+                            value = getIntegerValue(tag.getValue());
+                        else if (format == 'f')
+                            value = getFloatValue(tag.getValue());
+                        else if (format == 'h')
+                            value = getShortValue(tag.getValue());
+                        else if (format == 's')
+                            value = getStringValue(tag.getValue());
+                    }
+                    tagMap.put(poiTag.getId(), value);
                 }
             }
         }
-        return currentTags.toArray();
+
+        return tagMap;
     }
 
     /**
@@ -71,18 +90,34 @@ public final class OSMUtils {
      * @param entity the way
      * @return the ids of the identified tags
      */
-    public static short[] extractKnownWayTags(Entity entity) {
-        TShortArrayList currentTags = new TShortArrayList();
+    public static Map<Short, Object> extractKnownWayTags(Entity entity) {
+        Map<Short, Object> tagMap = new HashMap<>();
         OSMTagMapping mapping = OSMTagMapping.getInstance();
         if (entity.getTags() != null) {
             for (Tag tag : entity.getTags()) {
                 OSMTag wayTag = mapping.getWayTag(tag.getKey(), tag.getValue());
                 if (wayTag != null) {
-                    currentTags.add(wayTag.getId());
+                    Object value = null;
+                    String wildcard = wayTag.getValue();
+                    if (wildcard.charAt(0) == '%' && wildcard.length() == 2) {
+                        Character format = wildcard.charAt(1);
+                        if (format == 'b')
+                            value = getByteValue(tag.getValue());
+                        else if (format == 'i')
+                            value = getIntegerValue(tag.getValue());
+                        else if (format == 'f')
+                            value = getFloatValue(tag.getValue());
+                        else if (format == 'h')
+                            value = getShortValue(tag.getValue());
+                        else if (format == 's')
+                            value = getStringValue(tag.getValue());
+                    }
+                    tagMap.put(wayTag.getId(), value);
                 }
             }
         }
-        return currentTags.toArray();
+
+        return tagMap;
     }
 
     /**
@@ -198,15 +233,12 @@ public final class OSMUtils {
                                 + "\t entity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
                     }
                 } else if ("ele".equals(key)) {
-                    String strElevation = tag.getValue();
-                    strElevation = strElevation.replaceAll("m", "");
-                    strElevation = strElevation.replaceAll(",", ".");
-                    try {
-                        double testElevation = Double.parseDouble(strElevation);
-                        if (testElevation < MAX_ELEVATION) {
-                            elevation = (short) testElevation;
+                    Double floatElevation = parseDoubleUnit(tag.getValue());
+                    if (floatElevation != null) {
+                        if (floatElevation < MAX_ELEVATION) {
+                            elevation = floatElevation.shortValue();
                         }
-                    } catch (NumberFormatException e) {
+                    } else {
                         LOGGER.finest("could not parse elevation information to double type: " + tag.getValue()
                                 + "\t entity-id: " + entity.getId() + "\tentity-type: " + entity.getType().name());
                     }
@@ -270,6 +302,125 @@ public final class OSMUtils {
             }
         }
         return result;
+    }
+
+    private static int by, ho, it, fl, st = 0;
+
+    /**
+     * @param value string represented numerical value
+     * @return value as Byte
+     */
+    public static Byte getByteValue(String value) {
+        by++;
+        return parseDoubleUnit(value).byteValue();
+    }
+
+    /**
+     * @param value string represented numerical value
+     * @return value as Float
+     */
+    public static Float getFloatValue(String value) {
+        fl++;
+        return parseDoubleUnit(value).floatValue();
+    }
+
+    /**
+     * @param value numerical or color-representing value as string
+     * @return corresponding integer
+     */
+    public static Integer getIntegerValue(String value) {
+        it++;
+        Integer integer;
+        if (Character.isLetter(value.charAt(0))) {
+            integer = ColorsCSS.get(value);
+            if (integer != null) {
+                LOGGER.finest("ColorNam: #" + Integer.toHexString(integer));
+                return integer;
+            }
+        }
+        Matcher matcher = COLOR_PATTERN.matcher(value);
+        if (matcher.matches()) {
+            // TODO convert alpha colors too
+            try {
+                integer = Color.decode(value).getRGB();
+                LOGGER.finest("ColorHex: #" + Integer.toHexString(integer));
+            } catch (NumberFormatException ex) {
+                integer = 0;
+                LOGGER.warning("Color conversion failed: " + value + "\n" + ex.getMessage());
+            }
+        } else {
+            integer = OSMUtils.parseDoubleUnit(value).intValue();
+        }
+        return integer;
+    }
+
+    /**
+     * @param value string represented numerical value
+     * @return value as Short
+     */
+    public static Short getShortValue(String value) {
+        ho++;
+        return parseDoubleUnit(value).shortValue();
+    }
+
+    /**
+     * @param value string
+     * @return formatted value
+     */
+    public static String getStringValue(String value) {
+        // Do some string formation
+        st++;
+        return value;
+    }
+
+    /**
+     * @param value string represented value
+     * @return a string represented primitive type
+     */
+    public static String getValueType(String key, String value) {
+        Double f = OSMUtils.parseDoubleUnit(value);
+        if (f != null) {
+            if (Math.round(f) == f) {
+                if (f.byteValue() == f) {
+                    return "%b";
+                } else if (f.shortValue() == f) {
+                    return "%h";
+                } else {
+                    return "%i";
+                }
+            }
+            return "%f";
+        }
+
+        if (key.contains("colour")) {
+            Matcher matcher = COLOR_PATTERN.matcher(value); // Encode colors as integer
+            if (matcher.matches() || ColorsCSS.get(value) != null) {
+                return "%i";
+            }
+        }
+        return "%s";
+    }
+
+    public static String logValueTypeCount() {
+        return "Bytes:\t" + by + "\nShorts:\t" + ho + "\nInts:\t" + it
+                + "\nFloats:\t" + fl + "\nStrngs:\t" + st;
+    }
+
+    /**
+     * @param value value as string
+     * @return parsed number if numerical, else null
+     */
+    public static Double parseDoubleUnit(String value) {
+        value = value.replaceAll("m", "").replaceAll(",", ".");
+        Matcher matcher = DIGIT_PATTERN.matcher(value);
+        Double res = null;
+        if (matcher.matches()) {
+            try {
+                res = Double.parseDouble(value);
+            } catch (NumberFormatException ignore) {
+            }
+        }
+        return res;
     }
 
     private OSMUtils() {

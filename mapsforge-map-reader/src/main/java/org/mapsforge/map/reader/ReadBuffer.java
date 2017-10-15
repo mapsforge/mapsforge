@@ -111,6 +111,18 @@ public class ReadBuffer {
     }
 
     /**
+     * Converts four bytes from the read buffer to a float.
+     *
+     * @return the float value.
+     */
+    public float readFloat() {
+        byte[] bytes = new byte[4];
+        System.arraycopy(bufferData, bufferPosition, bytes, 0, 4);
+        this.bufferPosition += 4;
+        return ByteBuffer.wrap(bytes).getFloat();
+    }
+
+    /**
      * Converts four bytes from the read buffer to a signed int.
      * <p/>
      * The byte order is big-endian.
