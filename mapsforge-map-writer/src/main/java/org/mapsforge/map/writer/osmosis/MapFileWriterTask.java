@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2017 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -59,10 +60,18 @@ public class MapFileWriterTask implements Sink {
             properties.load(MapFileWriterTask.class.getClassLoader().getResourceAsStream("mapsforge-map.properties"));
             configuration.setWriterVersion(Constants.CREATOR_NAME + "-"
                     + properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
-            // If multilingual map then set newer map file version
-            boolean multilingual = configuration.getPreferredLanguages() != null && configuration.getPreferredLanguages().size() > 1;
-            configuration.setFileSpecificationVersion(Integer.parseInt(properties.getProperty(
-                    multilingual ? Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX : Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN)));
+            // If multilingual map or tag values then set newer map file versions
+            int version = Integer.parseInt(properties.getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN));
+            if (configuration.isTagValues()) {
+                version = (version > 5) ? version : 5;
+            }
+            if (configuration.getPreferredLanguages() != null && configuration.getPreferredLanguages().size() > 1) {
+                version = (version > 4) ? version : 4;
+            }
+            if (version > Integer.parseInt(properties.getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX))) {
+                throw new RuntimeException("unsupported map file specification version: " + version);
+            }
+            configuration.setFileSpecificationVersion(version);
 
             LOGGER.info("mapfile-writer version: " + configuration.getWriterVersion());
             LOGGER.info("mapfile format specification version: " + configuration.getFileSpecificationVersion());

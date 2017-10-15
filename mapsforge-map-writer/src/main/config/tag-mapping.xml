@@ -368,6 +368,105 @@
         <osm-tag key="building" value="yes" zoom-appear="15" />
     </ways>
 
+    <!-- Building extrusions -->
+    <ways>
+        <osm-tag key="building:part" value="arch" zoom-appear="17" />
+        <osm-tag key="building:part" value="balcony" zoom-appear="17" />
+        <osm-tag key="building:part" value="base" zoom-appear="17" />
+        <osm-tag key="building:part" value="column" zoom-appear="17" />
+        <osm-tag key="building:part" value="elevator" zoom-appear="17" />
+        <osm-tag key="building:part" value="entrance" zoom-appear="17" />
+        <osm-tag key="building:part" value="floor" zoom-appear="17" />
+        <osm-tag key="building:part" value="hall" zoom-appear="17" />
+        <osm-tag key="building:part" value="main" zoom-appear="17" />
+        <osm-tag key="building:part" value="passageway" zoom-appear="17" />
+        <osm-tag key="building:part" value="pillar" zoom-appear="17" />
+        <osm-tag key="building:part" value="porch" zoom-appear="17" />
+        <osm-tag key="building:part" value="ramp" zoom-appear="17" />
+        <osm-tag key="building:part" value="roof" zoom-appear="17" />
+        <osm-tag key="building:part" value="room" zoom-appear="17" />
+        <osm-tag key="building:part" value="steps" zoom-appear="17" />
+        <osm-tag key="building:part" value="stilobate" zoom-appear="17" />
+        <osm-tag key="building:part" value="tier" zoom-appear="17" />
+        <osm-tag key="building:part" value="tower" zoom-appear="17" />
+        <osm-tag key="building:part" value="verticalpassage" zoom-appear="17" />
+        <osm-tag key="building:part" value="wall" zoom-appear="17" />
+        <osm-tag key="building:part" value="window" zoom-appear="17" />
+        <osm-tag key="building:part" value="yes" zoom-appear="17" />
+
+        <osm-tag key="height" renderable="false" value="%f" />
+        <osm-tag key="min-height" renderable="false" value="%f" />
+        <osm-tag key="building:levels" renderable="false" value="%f" />
+        <osm-tag key="building:min-levels" renderable="false" value="%f" />
+    </ways>
+
+    <!-- S3DB tags -->
+    <ways>
+        <osm-tag key="roof:shape" renderable="false" value="flat" />
+        <osm-tag key="roof:shape" renderable="false" value="skillion" />
+        <osm-tag key="roof:shape" renderable="false" value="gabled" />
+        <osm-tag key="roof:shape" renderable="false" value="half-hipped" />
+        <osm-tag key="roof:shape" renderable="false" value="hipped" />
+        <osm-tag key="roof:shape" renderable="false" value="pyramidal" />
+        <osm-tag key="roof:shape" renderable="false" value="gambrel" />
+        <osm-tag key="roof:shape" renderable="false" value="mansard" />
+        <osm-tag key="roof:shape" renderable="false" value="dome" />
+        <osm-tag key="roof:shape" renderable="false" value="onion" />
+        <osm-tag key="roof:shape" renderable="false" value="round" />
+        <osm-tag key="roof:shape" renderable="false" value="saltbox" />
+
+        <osm-tag key="roof:orientation" renderable="false" value="along" />
+        <osm-tag key="roof:orientation" renderable="false" value="across" />
+        <osm-tag key="roof:height" renderable="false" value="%f" />
+        <osm-tag key="roof:angle" renderable="false" value="%f" />
+        <osm-tag key="roof:levels" renderable="false" value="%f" />
+        <osm-tag key="roof:direction" renderable="false" value="%f" />
+
+        <osm-tag key="building:colour" renderable="false" value="%f" />
+        <!-- Detect unmatched tags -->
+        <!--<osm-tag key="building:colour" renderable="false" value="%s" />-->
+        <osm-tag key="roof:colour" renderable="false" value="%f" />
+        <!-- Detect unmatched tags -->
+        <!--<osm-tag key="roof:colour" renderable="false" value="%s" />-->
+        <osm-tag key="building:material" renderable="false" value="plaster" />
+        <osm-tag key="building:material" renderable="false" value="brick" />
+        <osm-tag key="building:material" renderable="false" value="wood" />
+        <osm-tag key="building:material" renderable="false" value="concrete" />
+        <osm-tag key="building:material" renderable="false" value="glass" />
+        <osm-tag key="building:material" renderable="false" value="mirror" />
+        <osm-tag key="building:material" renderable="false" value="stone" />
+        <osm-tag key="building:material" renderable="false" value="sandstone" />
+        <osm-tag key="building:material" renderable="false" value="steel" />
+        <osm-tag key="building:material" renderable="false" value="metal" />
+        <!--<osm-tag key="building:material" renderable="false" value="limestone" />-->
+        <!--<osm-tag key="building:material" renderable="false" value="sand_cement_blocks" />-->
+        <!--<osm-tag key="building:material" renderable="false" value="metal_plates" />-->
+        <!--<osm-tag key="building:material" renderable="false" value="mdf" />-->
+        <!--<osm-tag key="building:material" renderable="false" value="timber_framing" />-->
+        <!--<osm-tag key="building:material" renderable="false" value="plastic" />-->
+        <!--<osm-tag key="building:material" renderable="false" value="vinyl" />-->
+        <!--<osm-tag key="building:material" renderable="false" value="tiles" />-->
+        <!-- Detect unmatched tags -->
+        <!--<osm-tag key="building:material" renderable="false" value="%s" />-->
+        <osm-tag key="roof:material" renderable="false" value="acrylic_glass" />
+        <osm-tag key="roof:material" renderable="false" value="concrete" />
+        <osm-tag key="roof:material" renderable="false" value="copper" />
+        <osm-tag key="roof:material" renderable="false" value="eternit" />
+        <osm-tag key="roof:material" renderable="false" value="plastic" />
+        <osm-tag key="roof:material" renderable="false" value="asphalt " />
+        <osm-tag key="roof:material" renderable="false" value="glass" />
+        <osm-tag key="roof:material" renderable="false" value="grass" />
+        <osm-tag key="roof:material" renderable="false" value="gravel" />
+        <osm-tag key="roof:material" renderable="false" value="metal" />
+        <osm-tag key="roof:material" renderable="false" value="plants" />
+        <osm-tag key="roof:material" renderable="false" value="roof_tiles" />
+        <osm-tag key="roof:material" renderable="false" value="slate" />
+        <osm-tag key="roof:material" renderable="false" value="stone" />
+        <osm-tag key="roof:material" renderable="false" value="tar_paper" />
+        <osm-tag key="roof:material" renderable="false" value="thatch" />
+        <osm-tag key="roof:material" renderable="false" value="wood" />
+    </ways>
+
     <!-- ADMINISTRATIVE BOUNDARIES -->
     <ways>
 

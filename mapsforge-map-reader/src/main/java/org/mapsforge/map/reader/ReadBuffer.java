@@ -3,6 +3,7 @@
  * Copyright 2015-2017 devemux86
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -50,6 +51,18 @@ public class ReadBuffer {
      */
     public byte readByte() {
         return this.bufferData[this.bufferPosition++];
+    }
+
+    /**
+     * Converts four bytes from the read buffer to a float.
+     *
+     * @return the float value.
+     */
+    public float readFloat() {
+        byte[] bytes = new byte[4];
+        System.arraycopy(bufferData, bufferPosition, bytes, 0, 4);
+        this.bufferPosition += 4;
+        return ByteBuffer.wrap(bytes).getFloat();
     }
 
     /**

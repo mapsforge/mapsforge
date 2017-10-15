@@ -112,7 +112,7 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 |32|yes|POI signature|If the debug bit in the file header is set:<br />`***POIStartX***` where X defines the OSM-ID of the POI; the text is always padded to 32 bytes by adding whitespaces|
 |variable||position|geo coordinate difference to the top-left corner of the current tile as *`VBE-S` INT*, in the order lat-diff, lon-diff|
 |1||special byte|<ul><li>1.-4. bit: layer (OSM-Tag: layer=...) + 5 (to avoid negative values)</li><li>5.-8. bit: amount of tags for the POI</li></ul>|
-|variable||tag id|for each tag of the POI:<ul><li>tag id as *`VBE-U` INT*</li></ul>|
+|variable||tag id|for each tag of the POI:<ul><li>tag id as *`VBE-U` INT*</li><li>variable values as different data types, whose content can be evaluated from tag's wildcard</li></ul>|
 |1||flags|<ul><li>1. bit: flag for existence of a POI name</li><li>2. bit: flag for existence of a house number</li><li>3. bit: flag for existence of an elevation</li><li>4.-8. bit: reserved for future use</li></ul>|
 |variable|yes|name|name of the POI as a string|
 |variable|yes|house number|house number of the POI as a string|
@@ -129,7 +129,7 @@ To read the data of a specific tile in the sub-file, the position of the fixed-s
 |variable||way data size|number of bytes that are needed to encode the current way as *`VBE-U` INT*, starting from the sub tile bitmap (i.e. way signature and way size are not counted)|
 |2||sub tile bitmap|A tile on zoom level z is made up of exactly 16 sub tiles on zoom level z+2<br />for each sub tile (row-wise, left to right):<ul><li>1 bit that represents a flag whether the way is relevant for the sub tile</li></ul>Special case: coastline ways must always have all 16 bits set.|
 |1||special byte|<ul><li>1.-4. bit: layer (OSM-Tag: layer=...) + 5 (to avoid negative values)</li><li>5.-8. bit: amount of tags for the way</li></ul>|
-|variable||tag id|for each tag of the way:<ul><li>tag id as *`VBE-U` INT*</li></ul>|
+|variable||tag id|for each tag of the way:<ul><li>tag id as *`VBE-U` INT*</li><li>variable values as different data types, whose content can be evaluated from tag's wildcard</li></ul>|
 |1||flags|<ul><li>1. bit: flag for existence of a way name</li><li>2. bit: flag for existence of a house number</li><li>3. bit: flag for existence of a reference</li><li>4. bit: flag for existence of a label position</li><li>5. bit: flag for existence of *number of way data blocks* field<ul><li>case 0: field does not exist, number of blocks is one</li><li>case 1: field exists, more than one block</li></ul></li><li>6. bit: flag indicating encoding of way coordinate blocks<ul><li>case 0: single delta encoding</li><li>case 1: double delta encoding</li></ul></li><li>7.-8. bit: reserved for future use</li></ul>|
 |variable|yes|name|name of the way as a string|
 |variable|yes|house number|house number of the way as a string|

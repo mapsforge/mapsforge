@@ -43,6 +43,10 @@
                 <documentation>
                     The value of the OpenStreetMap tag. E.g. 'primary'
                     in the tag 'highway=primary'.
+                    If tags have no fixed values, you can use "%f" for float and other
+                    numeric values and "%s" for string values. Avoid using the string
+                    wildcard, as it causes much overhead. Instead use OSM specific strings.
+                    Color strings and hex codes can be declared as numeric values too.
                 </documentation>
             </annotation>
             <simpleType>

@@ -3,6 +3,7 @@
  * Copyright 2015 lincomatic
  * Copyright 2015-2017 devemux86
  * Copyright 2016 mikes222
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -54,6 +55,7 @@ public class MapWriterConfiguration {
     private boolean skipInvalidRelations;
 
     private OSMTagMapping tagMapping;
+    private boolean tagValues;
     private boolean wayClipping;
 
     private String writerVersion;
@@ -309,6 +311,13 @@ public class MapWriterConfiguration {
     }
 
     /**
+     * @return the tagValues
+     */
+    public boolean isTagValues() {
+        return this.tagValues;
+    }
+
+    /**
      * @return the wayClipping
      */
     public boolean isWayClipping() {
@@ -341,6 +350,7 @@ public class MapWriterConfiguration {
         } else {
             this.tagMapping = OSMTagMapping.getInstance();
         }
+        this.tagMapping.setTagValues(this.tagValues);
     }
 
     /**
@@ -463,6 +473,13 @@ public class MapWriterConfiguration {
      */
     public void setSkipInvalidRelations(boolean skipInvalidRelations) {
         this.skipInvalidRelations = skipInvalidRelations;
+    }
+
+    /**
+     * @param tagValues the tagValues to set
+     */
+    public void setTagValues(boolean tagValues) {
+        this.tagValues = tagValues;
     }
 
     /**

@@ -5,6 +5,7 @@
  * Copyright 2016 mikes222
  * Copyright 2016-2017 devemux86
  * Copyright 2017 Ludwig M Brinckmann
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -47,6 +48,7 @@ import org.mapsforge.map.writer.model.ZoomIntervalConfiguration;
 import org.mapsforge.map.writer.util.Constants;
 import org.mapsforge.map.writer.util.GeoUtils;
 import org.mapsforge.map.writer.util.JTSUtils;
+import org.mapsforge.map.writer.util.OSMUtils;
 import org.mapsforge.map.writer.util.PolyLabel;
 
 import java.io.IOException;
@@ -54,6 +56,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -184,8 +187,9 @@ public final class MapFileWriter {
             if (this.way.isValidClosedLine()) {
                 boolean labelPosition = this.configuration.isLabelPosition();
                 if (!labelPosition) {
-                    for (short tag : this.way.getTags()) {
-                        labelPosition = this.configuration.getTagMapping().getWayTag(tag).isLabelPosition();
+                    List<OSMTag> tags = this.configuration.getTagMapping().getWayTags(this.way.getTags().keySet());
+                    for (OSMTag tag : tags) {
+                        labelPosition = tag.isLabelPosition();
                         if (labelPosition)
                             break;
                     }
@@ -273,33 +277,38 @@ public final class MapFileWriter {
     // private static final CoastlineHandler COASTLINE_HANDLER = new
     // CoastlineHandler();
 
+    // bitmap flags for file features
     private static final short BITMAP_COMMENT = 8;
     private static final short BITMAP_CREATED_WITH = 4;
-    // bitmap flags for file features
     private static final short BITMAP_DEBUG = 128;
-    // bitmap flags for pois
-    private static final short BITMAP_ELEVATION = 32;
-    private static final short BITMAP_ENCODING = 4;
-    private static final short BITMAP_HOUSENUMBER = 64;
-
-    private static final int BITMAP_INDEX_ENTRY_WATER = 0x80;
-    private static final short BITMAP_LABEL = 16;
-
     private static final short BITMAP_MAP_START_POSITION = 64;
-
     private static final short BITMAP_MAP_START_ZOOM = 32;
-    private static final short BITMAP_MULTIPLE_WAY_BLOCKS = 8;
-    // bitmap flags for pois and ways
-    private static final short BITMAP_NAME = 128;
     private static final short BITMAP_PREFERRED_LANGUAGES = 16;
 
-    // bitmap flags for ways
+    // bitmap flags for poi and way features
+    private static final short BITMAP_HOUSENUMBER = 64;
+    private static final short BITMAP_NAME = 128;
+
+    // bitmap flags for poi features
+    private static final short BITMAP_ELEVATION = 32;
+
+    // bitmap flags for way features
+    private static final short BITMAP_ENCODING = 4;
+    private static final short BITMAP_LABEL = 16;
+    private static final short BITMAP_MULTIPLE_WAY_BLOCKS = 8;
     private static final short BITMAP_REF = 32;
+
+    private static final int BITMAP_INDEX_ENTRY_WATER = 0x80;
+
+    // Constants
     private static final int BYTE_AMOUNT_SUBFILE_INDEX_PER_TILE = 5;
     private static final int BYTES_INT = 4;
     private static final int DEBUG_BLOCK_SIZE = 32;
-    private static final String DEBUG_INDEX_START_STRING = "+++IndexStart+++";
+    private static final int HALF_BYTE_SHIFT = 4;
+
     // DEBUG STRINGS
+    private static final String DEBUG_INDEX_START_STRING = "+++IndexStart+++";
+
     private static final String DEBUG_STRING_POI_HEAD = "***POIStart";
 
     private static final String DEBUG_STRING_POI_TAIL = "***";
@@ -379,6 +388,7 @@ public final class MapFileWriter {
         randomAccessFile.close();
 
         CacheStats stats = jtsGeometryCache.stats();
+        LOGGER.fine("Tag values stats:\n" + OSMUtils.logValueTypeCount());
         LOGGER.info("JTS Geometry cache hit rate: " + stats.hitRate());
         LOGGER.info("JTS Geometry total load time: " + stats.totalLoadTime() / 1000);
 
@@ -435,9 +445,13 @@ public final class MapFileWriter {
         byte layer = node.getLayer();
         // make sure layer is in [0,10]
         layer = layer < 0 ? 0 : layer > 10 ? 10 : layer;
-        short tagAmount = node.getTags() == null ? 0 : (short) node.getTags().length;
-
-        return (byte) (layer << BYTES_INT | tagAmount);
+        int tagAmount = node.getTags() == null ? 0 : node.getTags().size();
+        if (tagAmount > (1 << HALF_BYTE_SHIFT) - 1) {
+            // See #971
+            LOGGER.info(Arrays.toString(node.getTags().keySet().toArray()) + "\n" + Arrays.toString(node.getTags().values().toArray()));
+            throw new RuntimeException("more than 15 tags aren't supported");
+        }
+        return (byte) (layer << HALF_BYTE_SHIFT | (short) tagAmount);
     }
 
     static byte infoByteWayFeatures(TDWay way, WayPreprocessingResult wpr) {
@@ -473,9 +487,13 @@ public final class MapFileWriter {
         byte layer = way.getLayer();
         // make sure layer is in [0,10]
         layer = layer < 0 ? 0 : layer > 10 ? 10 : layer;
-        short tagAmount = way.getTags() == null ? 0 : (short) way.getTags().length;
-
-        return (byte) (layer << BYTES_INT | tagAmount);
+        int tagAmount = way.getTags() == null ? 0 : way.getTags().size();
+        if (tagAmount > (1 << HALF_BYTE_SHIFT) - 1) {
+            // See #971
+            LOGGER.info(Arrays.toString(way.getTags().keySet().toArray()) + "\n" + Arrays.toString(way.getTags().values().toArray()));
+            throw new RuntimeException("more than 15 tags aren't supported");
+        }
+        return (byte) (layer << HALF_BYTE_SHIFT | (short) tagAmount);
     }
 
     static void processPOI(TDNode poi, int currentTileLat, int currentTileLon, boolean debugStrings,
@@ -492,14 +510,34 @@ public final class MapFileWriter {
         poiBuffer.put(Serializer.getVariableByteSigned(poi.getLatitude() - currentTileLat));
         poiBuffer.put(Serializer.getVariableByteSigned(poi.getLongitude() - currentTileLon));
 
-        // write byte with layer and tag amount info
+        // write byte with layer and tag id amount (max 15 ids)
         poiBuffer.put(infoBytePoiLayerAndTagAmount(poi));
 
+        // tag values aren't amounted, (but can be calculated out of tag's wildcard) to not unnecessarily decrease amount space
+
         // write tag ids to the file
-        if (poi.getTags() != null) {
-            for (short tagID : poi.getTags()) {
-                poiBuffer.put(Serializer.getVariableByteUnsigned(OSMTagMapping.getInstance().getOptimizedPoiIds()
-                        .get(Short.valueOf(tagID)).intValue()));
+        Map<Short, Object> tags = poi.getTags();
+        if (tags != null) {
+            List<Object> values = new ArrayList<>();
+            for (Map.Entry<Short, Object> tag : tags.entrySet()) {
+                poiBuffer.put(Serializer.getVariableByteUnsigned(mappedPoiTagID(tag.getKey())));
+                if (tag.getValue() != null) {
+                    values.add(tag.getValue());
+                }
+            }
+            // write optional tag values (all values are null if tag values are disabled)
+            for (Object value : values) {
+                if (value instanceof Byte) {
+                    poiBuffer.putShort((Byte) value);
+                } else if (value instanceof Integer) {
+                    poiBuffer.putInt((Integer) value);
+                } else if (value instanceof Float) {
+                    poiBuffer.putFloat((Float) value);
+                } else if (value instanceof Short) {
+                    poiBuffer.putShort((Short) value);
+                } else if (value instanceof String) {
+                    writeUTF8((String) value, poiBuffer);
+                }
             }
         }
 
@@ -526,13 +564,34 @@ public final class MapFileWriter {
         // write subtile bitmask of way
         wayBuffer.putShort(wpr.getSubtileMask());
 
-        // write byte with layer and tag amount
+        // write byte with layer and tag id amount (max 15 ids)
         wayBuffer.put(infoByteWayLayerAndTagAmount(way));
 
+        // tag values aren't amounted, (but can be calculated out of tag's wildcard) to not unnecessarily decrease amount space
+
         // write tag ids
-        if (way.getTags() != null) {
-            for (short tagID : way.getTags()) {
-                wayBuffer.put(Serializer.getVariableByteUnsigned(mappedWayTagID(tagID)));
+        Map<Short, Object> tags = way.getTags();
+        if (tags != null) {
+            List<Object> values = new ArrayList<>();
+            for (Map.Entry<Short, Object> tag : tags.entrySet()) {
+                wayBuffer.put(Serializer.getVariableByteUnsigned(mappedWayTagID(tag.getKey())));
+                if (tag.getValue() != null) {
+                    values.add(tag.getValue());
+                }
+            }
+            // write optional tag values (all values are null if tag values are disabled)
+            for (Object value : values) {
+                if (value instanceof Byte) {
+                    wayBuffer.put((Byte) value);
+                } else if (value instanceof Integer) {
+                    wayBuffer.putInt((Integer) value);
+                } else if (value instanceof Float) {
+                    wayBuffer.putFloat((Float) value);
+                } else if (value instanceof Short) {
+                    wayBuffer.putShort((Short) value);
+                } else if (value instanceof String) {
+                    writeUTF8((String) value, wayBuffer);
+                }
             }
         }
 
@@ -674,21 +733,23 @@ public final class MapFileWriter {
         // CREATED WITH
         writeUTF8(configuration.getWriterVersion(), containerHeaderBuffer);
 
+        OSMTagMapping mapping = configuration.getTagMapping();
+
         // AMOUNT POI TAGS
-        containerHeaderBuffer.putShort((short) configuration.getTagMapping().getOptimizedPoiIds().size());
+        containerHeaderBuffer.putShort((short) mapping.getOptimizedPoiIds().size());
         // POI TAGS
         // retrieves tag ids in order of frequency, most frequent come first
-        for (short tagId : configuration.getTagMapping().getOptimizedPoiIds().keySet()) {
-            OSMTag tag = configuration.getTagMapping().getPoiTag(tagId);
+        for (short tagId : mapping.getOptimizedPoiIds().keySet()) {
+            OSMTag tag = mapping.getPoiTag(tagId);
             writeUTF8(tag.tagKey(), containerHeaderBuffer);
         }
 
         // AMOUNT OF WAY TAGS
-        containerHeaderBuffer.putShort((short) configuration.getTagMapping().getOptimizedWayIds().size());
+        containerHeaderBuffer.putShort((short) mapping.getOptimizedWayIds().size());
 
         // WAY TAGS
-        for (short tagId : configuration.getTagMapping().getOptimizedWayIds().keySet()) {
-            OSMTag tag = configuration.getTagMapping().getWayTag(tagId);
+        for (short tagId : mapping.getOptimizedWayIds().keySet()) {
+            OSMTag tag = mapping.getWayTag(tagId);
             writeUTF8(tag.tagKey(), containerHeaderBuffer);
         }
 
@@ -735,6 +796,10 @@ public final class MapFileWriter {
         for (int i = 0; i < amount; i++) {
             buffer.put((byte) ' ');
         }
+    }
+
+    private static int mappedPoiTagID(short original) {
+        return OSMTagMapping.getInstance().getOptimizedPoiIds().get(Short.valueOf(original)).intValue();
     }
 
     private static int mappedWayTagID(short original) {
