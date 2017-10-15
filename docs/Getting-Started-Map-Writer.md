@@ -101,6 +101,10 @@ You need to be aware that this configuration only defines what data is to be inc
 
 ## Changelog
 
+### New since 0.8.0
+
+- Osmosis 0.46 with protobuf 3
+
 ### 0.8.0
 
 - Multiple threads option (default 1)

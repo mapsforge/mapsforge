@@ -19,10 +19,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.BoundingBox;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -391,12 +388,9 @@ class HgtCache {
             return size;
         }
 
-        @Override
-        public BufferedInputStream openInputStream() throws IOException {
-            return new BufferedInputStream(new FileInputStream(file));
+        @Override public File getFile() {
+            return file;
         }
-
-
         @Override
         public double northLat() {
             return maxLatitude;

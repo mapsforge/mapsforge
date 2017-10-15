@@ -1212,9 +1212,9 @@
             </rule>
             <rule e="node" k="natural" v="peak" zoom-min="12">
                 <symbol id="peak" src="jar:symbols/peak.svg" />
-                <caption fill="#4D2F08" font-size="10" font-style="bold" k="ele" position="above"
+                <caption fill="#4D2F08" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#ffffff" stroke-width="2.0" symbol-id="peak" />
-                <caption fill="#4D2F08" font-size="12" font-style="bold" k="name" position="below"
+                <caption fill="#4D2F08" font-size="10" font-style="bold" k="ele" position="below"
                     stroke="#ffffff" stroke-width="2.0" symbol-id="peak" />
             </rule>
             <rule e="node" k="natural" v="volcano" zoom-min="12">
@@ -1267,12 +1267,12 @@
             </rule>
             <rule e="node" k="railway" v="station" zoom-min="14">
                 <symbol id="train_station" src="jar:symbols/transport/train_station2.svg" />
-                <caption fill="#ec2d2d" font-size="12" font-style="bold" k="name" position="below"
+                <caption fill="#ec2d2d" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#ffffff" stroke-width="2.0" symbol-id="train_station" />
             </rule>
             <rule e="node" k="railway" v="halt|tram_stop" zoom-min="17">
                 <symbol id="tram_stop" src="jar:symbols/transport/tram_stop.svg" />
-                <caption fill="#ec2d2d" font-size="12" font-style="bold" k="name" position="below"
+                <caption fill="#ec2d2d" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#ffffff" stroke-width="2.0" symbol-id="tram_stop" />
             </rule>
         </rule>

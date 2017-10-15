@@ -44,7 +44,6 @@ public class HillshadingMapViewer extends DefaultTheme {
             customizeConfig(hillTileSource);
             hillsConfig = new HillsRenderConfig(hillTileSource);
 
-
             // call after setting/changing parameters, walks filesystem for DEM metadata
             hillsConfig.indexOnThread();
         }
@@ -52,11 +51,6 @@ public class HillshadingMapViewer extends DefaultTheme {
 
     protected void customizeConfig(MemoryCachingHgtReaderTileSource hillTileSource) {
         hillTileSource.setEnableInterpolationOverlap(true);
-    }
-
-    @Override
-    protected HillsRenderConfig getHillsRenderConfig() {
-        return hillsConfig;
     }
 
     @Override
@@ -73,5 +67,10 @@ public class HillshadingMapViewer extends DefaultTheme {
                 }
             });
         }
+    }
+
+    @Override
+    protected HillsRenderConfig getHillsRenderConfig() {
+        return hillsConfig;
     }
 }

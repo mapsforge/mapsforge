@@ -16,8 +16,7 @@ package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.graphics.HillshadingBitmap;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
+import java.io.File;
 
 public interface ShadingAlgorithm {
 
@@ -133,7 +132,7 @@ public interface ShadingAlgorithm {
     interface RawHillTileSource {
         long getSize();
 
-        BufferedInputStream openInputStream() throws IOException;
+        File getFile();
 
         /* for overlap */
         HillshadingBitmap getFinishedConverted();

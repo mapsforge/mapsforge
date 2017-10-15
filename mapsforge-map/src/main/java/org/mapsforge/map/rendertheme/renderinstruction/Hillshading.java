@@ -55,15 +55,15 @@ public class Hillshading {
     }
 
     public void render(final RenderContext renderContext, HillsRenderConfig hillsRenderConfig) {
-        float effectiveMagnitude = Math.min(Math.max(0f, this.magnitude * hillsRenderConfig.getMaginuteScaleFactor()), 255f) / 255f;
         if (hillsRenderConfig == null) {
             if (always) {
                 renderContext.setDrawingLayers(layer);
-                ShapeContainer hillShape = new HillshadingContainer(null, effectiveMagnitude, null, null);
+                ShapeContainer hillShape = new HillshadingContainer(null, this.magnitude, null, null);
                 renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
             }
             return;
         }
+        float effectiveMagnitude = Math.min(Math.max(0f, this.magnitude * hillsRenderConfig.getMaginuteScaleFactor()), 255f) / 255f;
         Tile tile = renderContext.rendererJob.tile;
         byte zoomLevel = tile.zoomLevel;
         if (zoomLevel > maxZoom || zoomLevel < minZoom)

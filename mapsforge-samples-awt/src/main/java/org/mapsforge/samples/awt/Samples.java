@@ -98,8 +98,6 @@ public final class Samples {
             args = Arrays.copyOfRange(args, 1, args.length);
         }
 
-
-
         List<File> mapFiles = getMapFiles(args);
         final MapView mapView = createMapView();
         final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsCfg);

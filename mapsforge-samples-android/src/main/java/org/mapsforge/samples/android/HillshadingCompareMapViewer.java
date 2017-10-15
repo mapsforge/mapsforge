@@ -45,7 +45,9 @@ public class HillshadingCompareMapViewer extends DualSyncMapViewer {
     protected HillsRenderConfig getHillsRenderConfig2() {
         ShadingAlgorithm algorithm = new DiffuseLightShadingAlgorithm();
         setMapTitle2(algorithm.toString());
-        return commonHillshading(algorithm);
+        HillsRenderConfig hillsRenderConfig = commonHillshading(algorithm);
+        hillsRenderConfig.setMaginuteScaleFactor(1.5f);
+        return hillsRenderConfig;
     }
 
 

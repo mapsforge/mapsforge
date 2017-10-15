@@ -14,12 +14,13 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import org.mapsforge.core.util.IOUtils;
-
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,28 +83,41 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
     public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
         int axisLength = getAxisLenght(source);
         int rowLen = axisLength + 1;
-        BufferedInputStream in = null;
+        FileInputStream stream = null;
+        FileChannel channel = null;
         try {
-            in = source.openInputStream();
+            File file = source.getFile();
+            stream = new FileInputStream(file);
+            channel = stream.getChannel();
+            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+            map.order(ByteOrder.BIG_ENDIAN);
+            byte[] bytes = convert(map, axisLength, rowLen, padding);
 
-
-            byte[] bytes = convert(in, axisLength, rowLen, padding);
             return new RawShadingResult(bytes, axisLength, axisLength, padding);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             return null;
         } finally {
-            IOUtils.closeQuietly(in);
+            if(channel!=null) try {
+                channel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(stream!=null) try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private byte[] convert(InputStream in, int axisLength, int rowLen, int padding) throws IOException {
+    private byte[] convert(MappedByteBuffer din, int axisLength, int rowLen, int padding) throws IOException {
         byte[] bytes;
 
         short[] ringbuffer = new short[rowLen];
         bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
 
-        DataInputStream din = new DataInputStream(in);
+//        din.load();
 
         byte[] lookup = this.lookup;
         if (lookup == null) {
@@ -138,12 +152,10 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
 
                 int eawe = -((ne - nw) + (se - sw));
 
-                noso = (int) exaggerate(lookup, noso);
-                eawe = (int) exaggerate(lookup, eawe);
+                noso = (int)exaggerate(lookup, noso);
+                eawe = (int)exaggerate(lookup, eawe);
 
-                int zeroIsFlat = noso + eawe;
-
-                int intVal = Math.min(255, Math.max(0, zeroIsFlat + 127));
+                int zeroIsFlat = noso + eawe ;int intVal = Math.min(255, Math.max(0, zeroIsFlat + 127));
 
                 int shade = intVal & 0xFF;
 
@@ -157,41 +169,38 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
         return bytes;
     }
 
+private byte exaggerate(byte[] lookup, int x) {
 
-    private byte exaggerate(byte[] lookup, int x) {
-
-        return lookup[Math.max(0, Math.min(lookup.length - 1, x + lookupOffset))];
+        return lookup[Math.max(0, Math.min(lookup.length-1, x+lookupOffset))];
     }
 
 
-    private void fillLookup() {
+    private void fillLookup(){
         int lowest = 0;
-        while (lowest > -1024) {
+        while(lowest > -1024){
             double exaggerate = exaggerate(lowest);
             double exaggerated = Math.round(exaggerate);
-            if (exaggerated <= -128 || exaggerated >= 127) break;
+            if(exaggerated<=-128 ||exaggerated >= 127) break;
             lowest--;
         }
         int highest = 0;
-        while (highest < 1024) {
+        while(highest < 1024){
             double exaggerated = Math.round(exaggerate(highest));
-            if (exaggerated <= -128 || exaggerated >= 127) break;
+            if(exaggerated<=-128 ||exaggerated >= 127) break;
             highest++;
         }
         int size = 1 + highest - lowest;
         byte[] nextLookup = new byte[size];
         int in = lowest;
-        for (int i = 0; i < size; i++) {
+        for(int i=0;i<size;i++){
             byte exaggerated = (byte) Math.round(exaggerate(in));
-            nextLookup[i] = exaggerated;
+            nextLookup[i]=exaggerated;
             in++;
         }
-        lookup = nextLookup;
-        lookupOffset = -lowest;
-    }
-
-    private static short readNext(DataInputStream din, short fallback) throws IOException {
-        short read = din.readShort();
+        lookup=nextLookup;
+        lookupOffset=-lowest;
+    }    private static short readNext(ByteBuffer din, short fallback) throws IOException {
+        short read = din.getShort();
         if (read == Short.MIN_VALUE)
             return fallback;
         return read;
