@@ -23,10 +23,8 @@ import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
-
-import gnu.trove.set.TShortSet;
-import gnu.trove.set.hash.TShortHashSet;
 
 /**
  * Represents an OSM way.
@@ -61,7 +59,7 @@ public class TDWay {
             return null;
 
         SpecialTagExtractionResult ster = OSMUtils.extractSpecialFields(way, preferredLanguages);
-        short[] knownWayTags = OSMUtils.extractKnownWayTags(way);
+        Map<Short, Object> knownWayTags = OSMUtils.extractKnownWayTags(way);
 
         // only ways with at least 2 way nodes are valid ways
         if (way.getWayNodes().size() >= 2) {
@@ -111,7 +109,7 @@ public class TDWay {
     private String ref;
     private boolean reversedInRelation;
     private byte shape;
-    private short[] tags;
+    private Map<Short, Object> tags;
 
     private final TDNode[] wayNodes;
 
@@ -123,11 +121,11 @@ public class TDWay {
      * @param name        the name if existent
      * @param houseNumber the house number if existent
      * @param ref         the ref if existent
-     * @param tags        the tags
+     * @param tags        the tags (tag map contains optional values)
      * @param shape       the shape
      * @param wayNodes    the way nodes
      */
-    public TDWay(long id, byte layer, String name, String houseNumber, String ref, short[] tags, byte shape,
+    public TDWay(long id, byte layer, String name, String houseNumber, String ref, Map<Short, Object> tags, byte shape,
                  TDNode[] wayNodes) {
         this.id = id;
         this.layer = layer;
@@ -201,7 +199,7 @@ public class TDWay {
      * @return the zoom level this entity appears first
      */
     public byte getMinimumZoomLevel() {
-        return OSMTagMapping.getInstance().getZoomAppearWay(this.tags);
+        return OSMTagMapping.getInstance().getZoomAppearWay(this.tags.keySet());
     }
 
     /**
@@ -228,7 +226,7 @@ public class TDWay {
     /**
      * @return the tags
      */
-    public short[] getTags() {
+    public Map<Short, Object> getTags() {
         return this.tags;
     }
 
@@ -251,19 +249,15 @@ public class TDWay {
      * @return true, if the way has tags
      */
     public boolean hasTags() {
-        return this.tags != null && this.tags.length > 0;
+        return this.tags != null && this.tags.size() > 0;
     }
 
     /**
      * @return true, if the way represents a coastline
      */
     public boolean isCoastline() {
-        if (this.tags == null) {
-            return false;
-        }
-        OSMTag tag;
-        for (short tagID : this.tags) {
-            tag = OSMTagMapping.getInstance().getWayTag(tagID);
+        List<OSMTag> osmTags = OSMTagMapping.getInstance().getWayTags(this.tags.keySet());
+        for (OSMTag tag : osmTags) {
             if (tag.isCoastline()) {
                 return true;
             }
@@ -279,9 +273,9 @@ public class TDWay {
         if (!hasTags()) {
             return false;
         }
-        OSMTagMapping mapping = OSMTagMapping.getInstance();
-        for (short tag : this.tags) {
-            if (mapping.getWayTag(tag).isForcePolygonLine()) {
+        List<OSMTag> osmTags = OSMTagMapping.getInstance().getWayTags(this.tags.keySet());
+        for (OSMTag tag : osmTags) {
+            if (tag.isForcePolygonLine()) {
                 return true;
             }
         }
@@ -372,24 +366,21 @@ public class TDWay {
     /**
      * @param tags the tags to set
      */
-    public void setTags(short[] tags) {
+    public void setTags(Map<Short, Object> tags) {
         this.tags = tags;
     }
 
     @Override
     public String toString() {
-        return "TDWay [id=" + this.id + ", name=" + this.name + ", tags=" + Arrays.toString(this.tags) + ", polygon="
+        return "TDWay [id=" + this.id + ", name=" + this.name + ", tags=" + Arrays.toString(this.tags.keySet().toArray()) + ", polygon="
                 + this.shape + "]";
     }
 
-    private void addTags(short[] addendum) {
+    private void addTags(Map<Short, Object> addendum) {
         if (this.tags == null) {
             this.tags = addendum;
-        } else {
-            TShortSet tags2 = new TShortHashSet();
-            tags2.addAll(this.tags);
-            tags2.addAll(addendum);
-            this.tags = tags2.toArray();
+        } else if (addendum != null) {
+            tags.putAll(addendum);
         }
     }
 }

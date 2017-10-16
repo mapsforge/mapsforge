@@ -53,6 +53,8 @@ public class MapWriterConfiguration {
 
     private boolean skipInvalidRelations;
 
+    private boolean hasTagValues;
+
     private OSMTagMapping tagMapping;
     private boolean wayClipping;
 
@@ -272,6 +274,13 @@ public class MapWriterConfiguration {
     }
 
     /**
+     * @return true if tag values are stored
+     */
+    public boolean hasTagValues() {
+        return hasTagValues;
+    }
+
+    /**
      * Convenience method.
      *
      * @return true if map start zoom level is set
@@ -341,6 +350,7 @@ public class MapWriterConfiguration {
         } else {
             this.tagMapping = OSMTagMapping.getInstance();
         }
+        this.tagMapping.storeTagValues(this.hasTagValues);
     }
 
     /**
@@ -463,6 +473,13 @@ public class MapWriterConfiguration {
      */
     public void setSkipInvalidRelations(boolean skipInvalidRelations) {
         this.skipInvalidRelations = skipInvalidRelations;
+    }
+
+    /**
+     * @param hasTagValues the storeTagValues to set
+     */
+    public void setStoreTagValues(boolean hasTagValues) {
+        this.hasTagValues = hasTagValues;
     }
 
     /**

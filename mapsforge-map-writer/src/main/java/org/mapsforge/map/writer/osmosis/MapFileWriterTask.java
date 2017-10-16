@@ -61,11 +61,21 @@ public class MapFileWriterTask implements Sink {
                     + properties.getProperty(Constants.PROPERTY_NAME_WRITER_VERSION));
             // If multilingual map then set newer map file version
             boolean multilingual = configuration.getPreferredLanguages() != null && configuration.getPreferredLanguages().size() > 1;
-            configuration.setFileSpecificationVersion(Integer.parseInt(properties.getProperty(
-                    multilingual ? Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX : Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN)));
+            boolean hasTagValues = configuration.hasTagValues();
+            Integer specificationVersion = Integer.parseInt(
+                    properties.getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MIN));
+            if (hasTagValues)
+                specificationVersion = (specificationVersion > 5) ? specificationVersion : 5;
+            if (multilingual)
+                specificationVersion = (specificationVersion > 4) ? specificationVersion : 4;
+            if (specificationVersion > Integer.parseInt(
+                    properties.getProperty(Constants.PROPERTY_NAME_FILE_SPECIFICATION_VERSION_MAX))) {
+                throw new RuntimeException("map file specification version is not supported");
+            }
+            configuration.setFileSpecificationVersion(specificationVersion);
 
             LOGGER.info("mapfile-writer version: " + configuration.getWriterVersion());
-            LOGGER.info("mapfile format specification version: " + configuration.getFileSpecificationVersion());
+            LOGGER.info("mapfile format specification version: " + specificationVersion);
         } catch (IOException e) {
             throw new RuntimeException("could not find default properties", e);
         } catch (NumberFormatException e) {
