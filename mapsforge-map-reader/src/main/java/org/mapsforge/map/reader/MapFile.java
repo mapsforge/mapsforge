@@ -640,7 +640,10 @@ public class MapFile extends MapDataStore {
             byte numberOfTags = (byte) (specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 
             // get the tags from IDs (VBE-U)
-            List<Tag> tags = decodeTags(poiTags, numberOfTags, readBuffer);
+            List<Tag> tags = readBuffer.readTags(poiTags, numberOfTags);
+            if (tags == null) {
+                return null;
+            }
 
             // get the feature bitmask (1 byte)
             byte featureByte = readBuffer.readByte();
@@ -761,7 +764,11 @@ public class MapFile extends MapDataStore {
             // bit 5-8 represent the number of tag IDs
             byte numberOfTags = (byte) (specialByte & WAY_NUMBER_OF_TAGS_BITMASK);
 
-            List<Tag> tags = decodeTags(wayTags, numberOfTags, readBuffer);
+            // get the tags from IDs (VBE-U)
+            List<Tag> tags = readBuffer.readTags(wayTags, numberOfTags);
+            if (tags == null) {
+                return null;
+            }
 
             // get the feature bitmask (1 byte)
             byte featureByte = readBuffer.readByte();
@@ -811,47 +818,6 @@ public class MapFile extends MapDataStore {
         }
 
         return ways;
-    }
-
-    private List<Tag> decodeTags(Tag[] tagArray, byte numberOfTags, ReadBuffer readBuffer) {
-        List<Integer> ids = new ArrayList<>();
-        List<Tag> tags = new ArrayList<>();
-
-        for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
-            int id = readBuffer.readUnsignedInt();
-            if (id < 0 || id >= tagArray.length) {
-                LOGGER.warning("invalid tag ID: " + id);
-                return null;
-            }
-            ids.add(id);
-        }
-
-        for (Integer id : ids) {
-            Tag tag = tagArray[id];
-            // Decode variable values of tags
-            if (tag.value.charAt(0) == '%' && tag.value.length() == 2) {
-                String value = tag.value;
-                if (value.charAt(1) == 'b') {
-                    value = String.valueOf(readBuffer.readByte());
-                } else if (value.charAt(1) == 'i') {
-                    if (tag.key.contains(":colour")) {
-                        value = "#" + Integer.toHexString(readBuffer.readInt());
-                    } else {
-                        value = String.valueOf(readBuffer.readInt());
-                    }
-                } else if (value.charAt(1) == 'f') {
-                    value = String.valueOf(readBuffer.readFloat());
-                } else if (value.charAt(1) == 'h') {
-                    value = String.valueOf(readBuffer.readShort());
-                } else if (value.charAt(1) == 's') {
-                    value = readBuffer.readUTF8EncodedString();
-                }
-                tag = new Tag(tag.key, value);
-            }
-            tags.add(tag);
-        }
-
-        return tags;
     }
 
     /**

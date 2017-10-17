@@ -18,6 +18,7 @@
  */
 package org.mapsforge.map.reader;
 
+import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.Parameters;
 
 import java.io.IOException;
@@ -25,6 +26,8 @@ import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -39,6 +42,8 @@ public class ReadBuffer {
     private int bufferPosition;
     private ByteBuffer bufferWrapper;
     private final FileChannel inputChannel;
+
+    private final List<Integer> tagIds = new ArrayList<>();
 
     ReadBuffer(FileChannel inputChannel) {
         this.inputChannel = inputChannel;
@@ -55,14 +60,13 @@ public class ReadBuffer {
 
     /**
      * Converts four bytes from the read buffer to a float.
+     * <p/>
+     * The byte order is big-endian.
      *
      * @return the float value.
      */
     public float readFloat() {
-        byte[] bytes = new byte[4];
-        System.arraycopy(bufferData, bufferPosition, bytes, 0, 4);
-        this.bufferPosition += 4;
-        return ByteBuffer.wrap(bytes).getFloat();
+        return Float.intBitsToFloat(readInt());
     }
 
     /**
@@ -184,6 +188,49 @@ public class ReadBuffer {
         }
         // positive
         return variableByteDecode | ((this.bufferData[this.bufferPosition++] & 0x3f) << variableByteShift);
+    }
+
+    List<Tag> readTags(Tag[] tagsArray, byte numberOfTags) {
+        List<Tag> tags = new ArrayList<>();
+        tagIds.clear();
+
+        int maxTag = tagsArray.length;
+
+        for (byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
+            int tagId = readUnsignedInt();
+            if (tagId < 0 || tagId >= maxTag) {
+                LOGGER.warning("invalid tag ID: " + tagId);
+                return null;
+            }
+            tagIds.add(tagId);
+        }
+
+        for (int tagId : tagIds) {
+            Tag tag = tagsArray[tagId];
+            // Decode variable values of tags
+            if (tag.value.charAt(0) == '%' && tag.value.length() == 2) {
+                String value = tag.value;
+                if (value.charAt(1) == 'b') {
+                    value = String.valueOf(readByte());
+                } else if (value.charAt(1) == 'i') {
+                    if (tag.key.contains(":colour")) {
+                        value = "#" + Integer.toHexString(readInt());
+                    } else {
+                        value = String.valueOf(readInt());
+                    }
+                } else if (value.charAt(1) == 'f') {
+                    value = String.valueOf(readFloat());
+                } else if (value.charAt(1) == 'h') {
+                    value = String.valueOf(readShort());
+                } else if (value.charAt(1) == 's') {
+                    value = readUTF8EncodedString();
+                }
+                tag = new Tag(tag.key, value);
+            }
+            tags.add(tag);
+        }
+
+        return tags;
     }
 
     /**
