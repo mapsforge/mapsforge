@@ -97,5 +97,5 @@ The DB schema consists of:
 
 |**Version**|**Date**|**Changes**|
 |-----------|--------|-----------|
-|1|2015-11-04|Initial release of the specification|
-|2|2017-09-19|<ul><li>POI multiple categories</li></ul>|
+|1|2016-06-11|Initial release of the specification|
+|2|TBD|<ul><li>POI multiple categories</li></ul>|

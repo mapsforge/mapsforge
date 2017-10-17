@@ -183,4 +183,5 @@ For double-delta encoding the lat-diff and lon-diff values describe the *change*
 |1|2010-11-21|Initial release of the specification|
 |2|2011-01-26|<ul><li>Introduced variable byte encoding for some numeric fields to reduce the file size</li><li>Modified some field names and descriptions for clarification</li><li>Offset encoding is now used on all coordinates</li></ul>|
 |3|2012-03-18|<ul><li>Ways are stored as multiple segments</li><li>Ways can also have a house number</li><li>Removed obsolete data</li><li>Added *language preference* field to the header</li><li>Added *file size* field to the header</li><li>Added *start zoom level* field to the header</li><li>Added *created by* field to the header</li><li>Added a flag for single and double delta encoding</li><li>Reordered some fields</li><li>Removed some data type related limitations</li></ul>|
-|4|2015-11-25|<ul><li>Added multilingual names storage</li></ul>|
+|4|2015-11-25|<ul><li>Multilingual names storage</li></ul>|
+|5|TBD|<ul><li>Variable tag values storage</li></ul>|

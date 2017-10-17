@@ -2,6 +2,7 @@
 
 ## New since 0.8.0
 
+- Mapsforge maps **v5**: variable tag values [#1006](https://github.com/mapsforge/mapsforge/issues/1006)
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
 - Hillshading improvements [#923](https://github.com/mapsforge/mapsforge/issues/923)
 - Polyline overlay touch events [#998](https://github.com/mapsforge/mapsforge/issues/998)
@@ -10,7 +11,7 @@
 - MapFile supports FileChannel as input [#982](https://github.com/mapsforge/mapsforge/issues/982)
 - XmlPullParser different implementations [#974](https://github.com/mapsforge/mapsforge/issues/974)
 - Desktop: fix blurred map view [#978](https://github.com/mapsforge/mapsforge/issues/978)
-- POI: version 2 with multiple categories [#950](https://github.com/mapsforge/mapsforge/issues/950)
+- POI: **v2** with multiple categories [#950](https://github.com/mapsforge/mapsforge/issues/950)
 - POI: multiple patterns in search [#988](https://github.com/mapsforge/mapsforge/issues/988)
 - POI: add non-closed ways [#947](https://github.com/mapsforge/mapsforge/issues/947)
 - POI: add geo tagging [#946](https://github.com/mapsforge/mapsforge/issues/946)
@@ -64,7 +65,7 @@
 
 ## Version 0.6.1 (2016-06-11)
 
-- [POI Search](POI.md) API [#728](https://github.com/mapsforge/mapsforge/issues/728)
+- [POI Search](POI.md) **v1** [#728](https://github.com/mapsforge/mapsforge/issues/728)
 - Render Theme v5: pathText repeat options [#473](https://github.com/mapsforge/mapsforge/issues/473)
 - Render Theme v5: scale options [#814](https://github.com/mapsforge/mapsforge/issues/814)
 - Render Theme v5: deprecate 'symbol-scaling' option [#815](https://github.com/mapsforge/mapsforge/issues/815)
@@ -91,7 +92,7 @@
 
 ## Version 0.6.0 (2015-11-25)
 
-- Multilingual maps [#624](https://github.com/mapsforge/mapsforge/issues/624)
+- Mapsforge maps **v4**: multilingual names [#624](https://github.com/mapsforge/mapsforge/issues/624)
 - Writer language improved parsing [#663](https://github.com/mapsforge/mapsforge/issues/663)
 - MapDataStore extensibility [#668](https://github.com/mapsforge/mapsforge/issues/668)
 - Android gestures total overhaul [#688](https://github.com/mapsforge/mapsforge/issues/688)

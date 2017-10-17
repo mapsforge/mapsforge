@@ -27,7 +27,8 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`bbox`|bounding box definition as comma-separated list of coordinates in the form: minLat,minLon,maxLat,maxLon (be aware that osmosis does not allow **white space** in its command line parameters)|minLat, minLon, maxLat, maxLon in exactly this order as degrees|(blank)|
 |`map-start-position`|write a start position to the file which is used, when the file is first opened in the MapViewer|latitude, longitude in degrees|(blank)|
 |`map-start-zoom`|write a start zoom level to the file which is used, when the file is first opened in the MapViewer|zoom level as integer in [0, 21]|(blank)|
-|`preferred-languages`|If not specified, only the default language with no tag will be written to the file. If only one language is specified, it will be written if its tag is found, otherwise the default language will be written. If multiple comma separated languages are specified, the default language will be written, followed by the specified languages (if present and if different than the default).|language code as defined in ISO 639-1 or ISO 639-2 if an ISO 639-1 code doesn't exist|(blank)|
+|`preferred-languages`|<ul><li>If not specified, only the default language with no tag will be written to the file.</li><li>If only one language is specified, it will be written if its tag is found, otherwise the default language will be written.</li><li>If multiple comma separated languages are specified, the default language will be written, followed by the specified languages (if present and if different than the default). (**v4**)</li></ul>|language code as defined in ISO 639-1 or ISO 639-2 if an ISO 639-1 code doesn't exist|(blank)|
+|`tag-values`|Enable usage of variable tag values, color strings and hex codes. (**v5**)|true/false|false|
 |`comment`|writes a comment to the file||(blank)|
 
 ### Advanced Options (only use when you know what you are doing)
@@ -103,6 +104,7 @@ You need to be aware that this configuration only defines what data is to be inc
 
 ### New since 0.8.0
 
+- Variable tag values (**v5**)
 - Osmosis 0.46 with protobuf 3
 
 ### 0.8.0
@@ -122,7 +124,7 @@ You need to be aware that this configuration only defines what data is to be inc
 
 ### 0.6.0
 
-- Multilingual maps
+- Multilingual maps (**v4**)
 - Language improved parsing
 - Fix invalid number of way nodes
 
