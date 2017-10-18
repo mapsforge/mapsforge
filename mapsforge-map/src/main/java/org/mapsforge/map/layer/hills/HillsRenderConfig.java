@@ -38,8 +38,8 @@ public class HillsRenderConfig {
     public HillsRenderConfig(File demFolder, GraphicFactory graphicsFactory, ShadeTileSource tileSource, ShadingAlgorithm algorithm) {
 
         this.tileSource = (tileSource == null) ? new MemoryCachingHgtReaderTileSource(demFolder, algorithm, graphicsFactory) : tileSource;
-        tileSource.setDemFolder(demFolder);
-        tileSource.setShadingAlgorithm(algorithm);
+        this.tileSource.setDemFolder(demFolder);
+        this.tileSource.setShadingAlgorithm(algorithm);
 
     }
 
