@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile project(":mapsforge-map-android-extras")
-    compile project(":mapsforge-themes")
-    compile project(":mapsforge-poi-android")
-    compile 'com.android.support:support-v4:26.1.0'
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.6.3'
+    implementation project(":mapsforge-map-android-extras")
+    implementation project(":mapsforge-themes")
+    implementation project(":mapsforge-poi-android")
+    implementation 'com.android.support:support-v4:27.0.0'
+    androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.6.3'
 }
 
 android {

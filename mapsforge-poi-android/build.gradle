@@ -1,4 +1,4 @@
 dependencies {
-    compile project(":mapsforge-poi")
-    compile project(":spatialite-android")
+    api project(":mapsforge-poi")
+    api project(":spatialite-android")
 }

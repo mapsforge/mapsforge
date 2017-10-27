@@ -1,16 +1,6 @@
 dependencies {
-    compile project(":mapsforge-map-reader")
-    compile 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
-    testCompile project(":mapsforge-themes")
-}
-
-task fatJar(type: Jar, dependsOn: classes) {
-    classifier = 'jar-with-dependencies'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
-    with jar
-}
-
-artifacts {
-    archives fatJar
+    api project(":mapsforge-map-reader")
+    implementation 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
+    testImplementation project(":mapsforge-themes")
+    testImplementation 'net.sf.kxml:kxml2:2.3.0'
 }

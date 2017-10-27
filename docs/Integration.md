@@ -10,17 +10,17 @@ Current version is [![Maven Central](https://img.shields.io/maven-central/v/org.
 
 #### Core
 ```groovy
-compile 'org.mapsforge:mapsforge-core:[CURRENT-VERSION]'
-compile 'org.mapsforge:mapsforge-map:[CURRENT-VERSION]'
-compile 'org.mapsforge:mapsforge-map-reader:[CURRENT-VERSION]'
-compile 'org.mapsforge:mapsforge-themes:[CURRENT-VERSION]'
-compile 'net.sf.kxml:kxml2:2.3.0'
+implementation 'org.mapsforge:mapsforge-core:[CURRENT-VERSION]'
+implementation 'org.mapsforge:mapsforge-map:[CURRENT-VERSION]'
+implementation 'org.mapsforge:mapsforge-map-reader:[CURRENT-VERSION]'
+implementation 'org.mapsforge:mapsforge-themes:[CURRENT-VERSION]'
+implementation 'net.sf.kxml:kxml2:2.3.0'
 ```
 
 #### Android
 ```groovy
-compile 'org.mapsforge:mapsforge-map-android:[CURRENT-VERSION]'
-compile 'com.caverock:androidsvg:1.2.2-beta-1'
+implementation 'org.mapsforge:mapsforge-map-android:[CURRENT-VERSION]'
+implementation 'com.caverock:androidsvg:1.2.2-beta-1'
 ```
 
 Optionally:
@@ -32,31 +32,31 @@ compile('org.mapsforge:mapsforge-map-android-extras:[CURRENT-VERSION]') {
 
 #### Desktop
 ```groovy
-compile 'org.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]'
-compile 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
+implementation 'org.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]'
+implementation 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
 ```
 
 ### POI
 
 #### Core
 ```groovy
-compile 'org.mapsforge:mapsforge-core:[CURRENT-VERSION]'
-compile 'org.mapsforge:mapsforge-poi:[CURRENT-VERSION]'
+implementation 'org.mapsforge:mapsforge-core:[CURRENT-VERSION]'
+implementation 'org.mapsforge:mapsforge-poi:[CURRENT-VERSION]'
 ```
 
 #### Android
 ```groovy
-compile 'org.mapsforge:mapsforge-poi-android:[CURRENT-VERSION]'
-compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]'
-compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-armeabi'
-compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-armeabi-v7a'
-compile 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-x86'
+implementation 'org.mapsforge:mapsforge-poi-android:[CURRENT-VERSION]'
+implementation 'org.mapsforge:spatialite-android:[CURRENT-VERSION]'
+implementation 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-armeabi'
+implementation 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-armeabi-v7a'
+implementation 'org.mapsforge:spatialite-android:[CURRENT-VERSION]:natives-x86'
 ```
 
 #### Desktop
 ```groovy
-compile 'org.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]'
-compile 'org.xerial:sqlite-jdbc:3.20.0'
+implementation 'org.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]'
+implementation 'org.xerial:sqlite-jdbc:3.20.0'
 ```
 
 ## Snapshots
@@ -72,7 +72,7 @@ repositories {
 
 And declare the dependencies like:
 ```groovy
-compile 'org.mapsforge:mapsforge-core:master-SNAPSHOT'
+implementation 'org.mapsforge:mapsforge-core:master-SNAPSHOT'
 ...
 ```
 

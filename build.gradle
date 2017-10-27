@@ -1,10 +1,11 @@
 buildscript {
     repositories {
+        google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
     }
 }
 
@@ -16,7 +17,7 @@ allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-    ext.androidBuildVersionTools = "26.0.2"
+    ext.androidBuildVersionTools = "27.0.0"
     ext.jUnitVersion = "4.12"
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -29,18 +30,18 @@ allprojects {
 }
 
 // no injection of functions, so via inheritance
-def androidCompileSdk() { return 26 }
+static def androidCompileSdk() { return 27 }
 
 // Minimum API Level by Support Library
-def androidMinSdk() { return 14 }
+static def androidMinSdk() { return 14 }
 
 // this is the last SDK with the old permissions system, so this should not change in the future
-def androidTargetSdkOldPermissions() { return 22 }
+static def androidTargetSdkOldPermissions() { return 22 }
 
 // moving forward we will target the latest SDK (that will all have the new permissions system)
-def androidTargetSdkRuntimePermissions() { return androidCompileSdk() }
+static def androidTargetSdkRuntimePermissions() { return androidCompileSdk() }
 
-def versionCode() { return 61 }
+static def versionCode() { return 1 }
 
 def versionName() { return version }
 
@@ -48,8 +49,8 @@ def versionName() { return version }
 
 subprojects {
     repositories {
+        google()
         jcenter()
-        maven { url 'https://maven.google.com' }
     }
 
     tasks.withType(JavaCompile) {
@@ -73,11 +74,11 @@ configure(filterProjects(project.javalibraryprojects)) {
 }
 
 configure(filterProjects(project.javaprojects)) {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     //apply plugin: 'checkstyle'
 
     dependencies {
-        testCompile "junit:junit:$jUnitVersion"
+        testImplementation "junit:junit:$jUnitVersion"
     }
 
     /*checkstyle {
@@ -123,14 +124,12 @@ configure(filterProjects(project.androidlibraryprojects)) {
 
     android.libraryVariants.all { variant ->
         def name = variant.buildType.name
-        if (name.equals("debug")) {
-            print "Skipping debug jar"
-            return; // Skip debug builds.
-        }
+        if (name == "debug")
+            return
         def task = project.tasks.create "jar${name.capitalize()}", Jar
         task.dependsOn variant.javaCompile
         task.from variant.javaCompile.destinationDir
-        artifacts.add('archives', task);
+        artifacts.add('archives', task)
     }
 
     if (project.hasProperty("SONATYPE_USERNAME")) {

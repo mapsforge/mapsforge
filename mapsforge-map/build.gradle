@@ -1,7 +1,7 @@
 dependencies {
-    compile project(":mapsforge-core")
-    compile 'net.sf.kxml:kxml2:2.3.0'
-    testCompile 'commons-io:commons-io:2.5'
-    testCompile 'org.mortbay.jetty:jetty:6.1.26'
-    testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
+    api project(":mapsforge-core")
+    implementation 'net.sf.kxml:kxml2:2.3.0'
+    testImplementation 'commons-io:commons-io:2.5'
+    testImplementation 'org.mortbay.jetty:jetty:6.1.26'
+    testImplementation 'org.slf4j:slf4j-log4j12:1.7.25'
 }
