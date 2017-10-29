@@ -23,13 +23,6 @@ implementation 'org.mapsforge:mapsforge-map-android:[CURRENT-VERSION]'
 implementation 'com.caverock:androidsvg:1.2.2-beta-1'
 ```
 
-Optionally:
-```groovy
-compile('org.mapsforge:mapsforge-map-android-extras:[CURRENT-VERSION]') {
-    transitive = false
-}
-```
-
 #### Desktop
 ```groovy
 implementation 'org.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]'
