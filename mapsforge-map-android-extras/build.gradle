@@ -1,4 +1,4 @@
 dependencies {
     api project(":mapsforge-map-android")
-    compileOnly 'com.android.support:support-v4:27.0.0'
+    compileOnly "com.android.support:support-compat:$supportVersion"
 }

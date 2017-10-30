@@ -4,7 +4,8 @@ dependencies {
     implementation project(":mapsforge-map-android-extras")
     implementation project(":mapsforge-themes")
     implementation project(":mapsforge-poi-android")
-    implementation 'com.android.support:support-v4:27.0.0'
+    implementation "com.android.support:support-compat:$supportVersion"
+    implementation "com.android.support:support-fragment:$supportVersion"
     androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.6.3'
 }
 
