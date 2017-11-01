@@ -1,5 +1,7 @@
 # Map creation (with coastlines)
 
+**For an automated process using Geofabrik see new [mapsforge-creator](https://github.com/mapsforge/mapsforge-creator).**
+
 Processing of coastlines was part of Mapsforge rendering engine, running live on (mobile) devices. Since many versions ago it was removed, so that all coastline processing can take place in advance as part of map creation.
 
 The workaround requires no real changes to the map-writer nor the map-reader, as it just uses the render theme mechanism.
