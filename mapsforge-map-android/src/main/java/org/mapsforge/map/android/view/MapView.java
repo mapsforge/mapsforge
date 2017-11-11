@@ -56,6 +56,10 @@ import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.FrameBufferHA;
 import org.mapsforge.map.view.FrameBufferHA2;
+import org.mapsforge.map.view.IManualInputListener;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView, Observer {
 
@@ -108,8 +112,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
 
     private final FpsCounter fpsCounter;
-    private final FrameBuffer frameBuffer;
-    private final FrameBufferController frameBufferController;
+    protected FrameBuffer frameBuffer;
+    protected FrameBufferController frameBufferController;
     private final GestureDetector gestureDetector;
     private GestureDetector gestureDetectorExternal;
     private LayerManager layerManager;
@@ -117,9 +121,11 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     private MapScaleBar mapScaleBar;
     private final MapViewProjection mapViewProjection;
     private final MapZoomControls mapZoomControls;
-    private final Model model;
+    protected Model model;
     private final ScaleGestureDetector scaleGestureDetector;
     private final TouchGestureHandler touchGestureHandler;
+
+    private final List<IManualInputListener> manualInputListeners = new LinkedList<>();
 
     public MapView(Context context) {
         this(context, null);
@@ -131,19 +137,11 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         setWillNotDraw(false);
 
-        this.model = new Model();
-
+        this.model = createModel();
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
-        if (Parameters.FRAME_BUFFER_HA2)
-            this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        else
-            this.frameBuffer = new FrameBufferHA(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
+        createFrameBuffer();
 
-        this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
-        this.layerManager.start();
-        LayerManagerController.create(this.layerManager, this.model);
-
+        createLayerManager();
         MapViewController.create(this, this.model);
 
         this.touchGestureHandler = new TouchGestureHandler(this);
@@ -157,6 +155,27 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.mapViewProjection = new MapViewProjection(this);
 
         model.mapViewPosition.addObserver(this);
+    }
+
+    protected Model createModel() {
+        return new Model();
+    }
+
+    /**
+     * creates a new framebuffer. Allows overwriting. Note that {@link FrameBufferController } has some static methods which are called from AndroidUtil
+     */
+    protected void createFrameBuffer() {
+        if (Parameters.FRAME_BUFFER_HA2)
+            this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        else
+            this.frameBuffer = new FrameBufferHA(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
+    }
+
+    protected void createLayerManager() {
+        this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
+        this.layerManager.start();
+        LayerManagerController.create(this.layerManager, this.model);
     }
 
     @Override
@@ -464,7 +483,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     @Override
     public void setZoomLevel(byte zoomLevel) {
-        this.model.mapViewPosition.setZoomLevel(zoomLevel);
+        this.model.mapViewPosition.animateTo(zoomLevel);
     }
 
     @Override
@@ -478,4 +497,29 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.model.mapViewPosition.setZoomLevelMin(zoomLevelMin);
         this.mapZoomControls.setZoomLevelMin(zoomLevelMin);
     }
+
+    @Override
+    public void registerManualInputListener(IManualInputListener manualInputListener) {
+        manualInputListeners.add(manualInputListener);
+    }
+
+    @Override
+    public void unregisterManualInputListener(IManualInputListener manualInputListener) {
+        manualInputListeners.remove(manualInputListener);
+    }
+
+    @Override
+    public void manualMoveStarted() {
+        for (IManualInputListener manualInputListener : manualInputListeners) {
+            manualInputListener.manualMoveStarted();
+        }
+    }
+
+    @Override
+    public void manualZoomStarted() {
+        for (IManualInputListener manualInputListener : manualInputListeners) {
+            manualInputListener.manualZoomStarted();
+        }
+    }
+
 }

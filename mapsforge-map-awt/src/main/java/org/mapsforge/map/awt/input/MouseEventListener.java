@@ -17,12 +17,14 @@ package org.mapsforge.map.awt.input;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.view.MapView;
 
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ListIterator;
 
 import javax.swing.SwingUtilities;
 
@@ -41,8 +43,10 @@ public class MouseEventListener extends MouseAdapter {
             LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
             if (tapLatLong != null) {
                 org.mapsforge.core.model.Point tapXY = new org.mapsforge.core.model.Point(e.getX(), e.getY());
-                for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-                    Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                // need an iterator because the list content may change while in the loop
+                ListIterator<Layer> listIterator = mapView.getLayerManager().getLayers().reverseiterator();
+                while (listIterator.hasPrevious()) {
+                    Layer layer = listIterator.previous();
                     org.mapsforge.core.model.Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
                     if (layer.onTap(tapLatLong, layerXY, tapXY)) {
                         break;
@@ -57,6 +61,8 @@ public class MouseEventListener extends MouseAdapter {
         if (SwingUtilities.isLeftMouseButton(e)) {
             Point point = e.getPoint();
             if (this.lastDragPoint != null) {
+                mapView.manualMoveStarted();
+
                 int moveHorizontal = point.x - this.lastDragPoint.x;
                 int moveVertical = point.y - this.lastDragPoint.y;
                 this.mapView.getModel().mapViewPosition.moveCenter(moveHorizontal, moveVertical);
@@ -80,6 +86,29 @@ public class MouseEventListener extends MouseAdapter {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         byte zoomLevelDiff = (byte) -e.getWheelRotation();
-        this.mapView.getModel().mapViewPosition.zoom(zoomLevelDiff);
+        IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+        //System.out.println("zoomDiff: " + zoomLevelDiff + ", min/max: " + mapViewPosition.getZoomLevelMin() + "/" + mapViewPosition.getZoomLevelMax() + ", current: " + mapViewPosition.getZoomLevel());
+        if ((mapViewPosition.getZoomLevel() < 127 && zoomLevelDiff > 0 && mapViewPosition.getZoomLevel() + zoomLevelDiff <= mapViewPosition.getZoomLevelMax())
+                || (mapViewPosition.getZoomLevel() > 0 && zoomLevelDiff < 0 && mapViewPosition.getZoomLevel() - zoomLevelDiff >= mapViewPosition.getZoomLevelMin())) {
+
+            mapView.manualZoomStarted();
+
+            LatLong pivot = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
+
+            org.mapsforge.core.model.Point center = this.mapView.getModel().mapViewDimension.getDimension().getCenter();
+            double moveHorizontal = (center.x - e.getX()) / Math.pow(2, zoomLevelDiff);
+            double moveVertical = (center.y - e.getY()) / Math.pow(2, zoomLevelDiff);
+
+            if (zoomLevelDiff < 0) {
+                // there is a problem when zooming out using the pivot
+                mapViewPosition.setPivot(null);
+                mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
+                mapViewPosition.animateToPivot(null, zoomLevelDiff);
+            } else {
+                mapViewPosition.setPivot(pivot);
+                mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
+                mapViewPosition.animateToPivot(pivot, zoomLevelDiff);
+            }
+        }
     }
 }

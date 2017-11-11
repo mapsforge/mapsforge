@@ -1,19 +1,3 @@
-/*
- * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
- *
- * This program is free software: you can redistribute it and/or modify it under the
- * terms of the GNU Lesser General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- * PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with
- * this program. If not, see <http://www.gnu.org/licenses/>.
- */
 package org.mapsforge.map.layer.overlay;
 
 import org.mapsforge.core.graphics.Canvas;
@@ -23,36 +7,31 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
- * A {@code Polygon} draws a closed connected series of line segments specified by a list of {@link LatLong LatLongs}.
- * If the first and the last {@code LatLong} are not equal, the {@code Polygon} will be closed automatically.
- * <p/>
- * A {@code Polygon} holds two {@link Paint} objects to allow for different outline and filling. These paints define
- * drawing parameters such as color, stroke width, pattern and transparency.
+ * A special polygon with just 4 cornerrs. Always cloased.
+ * Created by Mike on 11/3/2017.
  */
-public class Polygon extends Layer {
 
-    //private final GraphicFactory graphicFactory;
+public class Rectangle extends Layer {
+
     private final boolean keepAligned;
-    private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
     private Paint paintFill;
     private Paint paintStroke;
     private Path path;
+    private double latitudeBottom;
+    private double latitudeTop;
+    private double longitudeLeft;
+    private double longitudeRight;
 
     /**
      * @param paintFill      the initial {@code Paint} used to fill this polygon (may be null).
      * @param paintStroke    the initial {@code Paint} used to stroke this polygon (may be null).
      * @param graphicFactory the GraphicFactory
      */
-    public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory) {
+    public Rectangle(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory) {
         this(paintFill, paintStroke, graphicFactory, false);
     }
 
@@ -63,7 +42,7 @@ public class Polygon extends Layer {
      * @param keepAligned    if set to true it will keep the bitmap aligned with the map,
      *                       to avoid a moving effect of a bitmap shader.
      */
-    public Polygon(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory, boolean keepAligned) {
+    public Rectangle(Paint paintFill, Paint paintStroke, GraphicFactory graphicFactory, boolean keepAligned) {
         super();
         this.keepAligned = keepAligned;
         this.paintFill = paintFill;
@@ -73,31 +52,51 @@ public class Polygon extends Layer {
     }
 
     public synchronized boolean contains(LatLong tapLatLong) {
-        return LatLongUtils.contains(latLongs, tapLatLong);
+        return tapLatLong.getLatitude() > latitudeBottom && tapLatLong.getLatitude() < latitudeTop
+                && tapLatLong.getLongitude() > longitudeLeft && tapLatLong.getLongitude() < longitudeRight;
+    }
+
+    public void setBoundary(double latitudeBottom, double longitudeLeft, double latitudeTop, double longitudeRight) {
+        this.latitudeBottom = latitudeBottom;
+        this.longitudeLeft = longitudeLeft;
+        this.latitudeTop = latitudeTop;
+        this.longitudeRight = longitudeRight;
+    }
+
+    public double getLatitudeBottom() {
+        return latitudeBottom;
+    }
+
+    public double getLatitudeTop() {
+        return latitudeTop;
+    }
+
+    public double getLongitudeLeft() {
+        return longitudeLeft;
+    }
+
+    public double getLongitudeRight() {
+        return longitudeRight;
     }
 
     @Override
     public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
-        if (this.latLongs.size() < 2 || (this.paintStroke == null && this.paintFill == null)) {
+        if (this.paintStroke == null && this.paintFill == null) {
             return;
         }
 
-        Iterator<LatLong> iterator = this.latLongs.iterator();
-
         path.clear();
-        LatLong latLong = iterator.next();
         long mapSize = MercatorProjection.getMapSize(zoomLevel, displayModel.getTileSize());
-        float x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize) - topLeftPoint.x);
-        float y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize) - topLeftPoint.y);
-        path.moveTo(x, y);
+        float xl = (float) (MercatorProjection.longitudeToPixelX(longitudeLeft, mapSize) - topLeftPoint.x);
+        float yb = (float) (MercatorProjection.latitudeToPixelY(latitudeBottom, mapSize) - topLeftPoint.y);
+        float xr = (float) (MercatorProjection.longitudeToPixelX(longitudeRight, mapSize) - topLeftPoint.x);
+        float yt = (float) (MercatorProjection.latitudeToPixelY(latitudeTop, mapSize) - topLeftPoint.y);
 
-        while (iterator.hasNext()) {
-            latLong = iterator.next();
-            x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize) - topLeftPoint.x);
-            y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize) - topLeftPoint.y);
-            path.lineTo(x, y);
-        }
-
+        path.moveTo(xl, yb);
+        path.lineTo(xr, yb);
+        path.lineTo(xr, yt);
+        path.lineTo(xl, yt);
+        path.lineTo(xl, yb);
 
         if (this.paintStroke != null) {
             if (this.keepAligned) {
@@ -112,13 +111,6 @@ public class Polygon extends Layer {
 
             canvas.drawPath(path, this.paintFill);
         }
-    }
-
-    /**
-     * @return a thread-safe list of LatLongs in this polygon.
-     */
-    public List<LatLong> getLatLongs() {
-        return this.latLongs;
     }
 
     /**

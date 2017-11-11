@@ -18,7 +18,7 @@ import org.mapsforge.core.model.LatLong;
 
 /**
  * Demonstrates the animateTo function in MapViewPosition: long press a point on
- * the map and it will move in steps to that position.
+ * the map and it will move in steps to that position so that the given position is the new center of the map.
  */
 
 public class MoveAnimation extends LongPressAction {

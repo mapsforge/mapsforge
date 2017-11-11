@@ -21,6 +21,7 @@ import org.mapsforge.map.model.DisplayModel;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.RandomAccess;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -251,6 +252,10 @@ public class Layers implements Iterable<Layer>, RandomAccess {
     @Override
     public synchronized Iterator<Layer> iterator() {
         return this.layersList.iterator();
+    }
+
+    public synchronized ListIterator<Layer> reverseiterator() {
+        return this.layersList.listIterator(layersList.size());
     }
 
     /**

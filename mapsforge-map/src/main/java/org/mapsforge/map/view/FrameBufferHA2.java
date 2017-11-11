@@ -54,11 +54,12 @@ public class FrameBufferHA2 extends FrameBuffer {
                 return;
             }
             this.matrix.reset();
+            //System.out.println("  translate by " + diffX + "/" + diffY + " for pivot " + pivotDistanceX + "/" + pivotDistanceY + " and scale " + scaleFactor);
             centerFrameBufferToMapView(mapViewDimension);
             if (pivotDistanceX == 0 && pivotDistanceY == 0) {
                 // only translate the matrix if we are not zooming around a pivot,
                 // the translation happens only once the zoom is finished.
-                this.matrix.translate(diffX, diffY);
+                this.matrix.translate(diffX * scaleFactor, diffY * scaleFactor);
             }
 
             scale(scaleFactor, pivotDistanceX, pivotDistanceY);

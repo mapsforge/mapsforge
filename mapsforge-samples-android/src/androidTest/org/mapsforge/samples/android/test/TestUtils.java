@@ -4,7 +4,7 @@ import com.robotium.solo.Solo;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.view.MapView;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.samples.android.R;
 
 public class TestUtils {
@@ -180,26 +180,26 @@ public class TestUtils {
 
     public static void testZoomChanges(Solo solo, int iterations) throws Exception {
         MapView mapView = (MapView) solo.getView(R.id.mapView);
-        MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+        IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
         for (int i = 0; i < iterations; i++) {
             byte startZoomLevel = mapViewPosition.getZoomLevel();
-            mapViewPosition.zoom((byte) -1);
+            mapViewPosition.zoom(null, (byte) -1);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) -6);
+            mapViewPosition.zoom(null, (byte) -6);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) 1);
+            mapViewPosition.zoom(null, (byte) 1);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) 1);
+            mapViewPosition.zoom(null, (byte) 1);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) -2);
+            mapViewPosition.zoom(null, (byte) -2);
             solo.sleep(delay);
             solo.setActivityOrientation(Solo.LANDSCAPE);
-            mapViewPosition.zoom((byte) 2);
+            mapViewPosition.zoom(null, (byte) 2);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) -3);
+            mapViewPosition.zoom(null, (byte) -3);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) 3);
+            mapViewPosition.zoom(null, (byte) 3);
             solo.drag(210, 430, 170, 220, 2);
             solo.sleep(delay);
             solo.drag(212, 44, 170, 220, 2);
@@ -214,14 +214,14 @@ public class TestUtils {
             solo.sleep(delay);
             solo.drag(20, 120, 170, 220, 2);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) -1);
+            mapViewPosition.zoom(null, (byte) -1);
             solo.setActivityOrientation(Solo.PORTRAIT);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) 6);
+            mapViewPosition.zoom(null, (byte) 6);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) 1);
+            mapViewPosition.zoom(null, (byte) 1);
             solo.sleep(delay);
-            mapViewPosition.zoom((byte) -1);
+            mapViewPosition.zoom(null, (byte) -1);
             solo.sleep(delay);
 
             assert mapViewPosition.getZoomLevel() == startZoomLevel;
@@ -231,16 +231,16 @@ public class TestUtils {
 
     public static void testZoom(Solo solo, int iterations) throws Exception {
         MapView mapView = (MapView) solo.getView(R.id.mapView);
-        MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+        IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
         for (int i = 0; i < iterations; i++) {
-            mapViewPosition.setZoomLevel((byte) 8);
+            mapViewPosition.animateTo((byte) 8);
             solo.sleep(200);
-            mapViewPosition.setZoomLevel((byte) 16);
+            mapViewPosition.animateTo((byte) 16);
             solo.sleep(200);
-            mapViewPosition.setZoomLevel((byte) 8);
+            mapViewPosition.animateTo((byte) 8);
             solo.sleep(200);
-            mapViewPosition.setZoomLevel((byte) 12);
+            mapViewPosition.animateTo((byte) 12);
             solo.sleep(200);
             solo.assertMemoryNotLow();
         }
@@ -248,18 +248,18 @@ public class TestUtils {
 
     public static void testPositionAndZoom(Solo solo, int iterations) throws Exception {
         MapView mapView = (MapView) solo.getView(R.id.mapView);
-        MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+        IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
         for (int i = 0; i < iterations; i++) {
-            mapViewPosition.setZoomLevel((byte) 8);
+            mapViewPosition.animateTo((byte) 8);
             mapViewPosition.setCenter(new LatLong(52.5, 13.3));
             solo.sleep(200);
-            mapViewPosition.setZoomLevel((byte) 16);
+            mapViewPosition.animateTo((byte) 16);
             solo.sleep(200);
             mapViewPosition.setCenter(new LatLong(52.6, 13.5));
-            mapViewPosition.setZoomLevel((byte) 8);
+            mapViewPosition.animateTo((byte) 8);
             solo.sleep(200);
-            mapViewPosition.setZoomLevel((byte) 12);
+            mapViewPosition.animateTo((byte) 12);
             mapViewPosition.setCenter(new LatLong(52.1, 13.3));
             solo.sleep(200);
             solo.assertMemoryNotLow();

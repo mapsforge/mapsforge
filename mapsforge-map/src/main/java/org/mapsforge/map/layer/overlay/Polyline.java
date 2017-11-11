@@ -40,10 +40,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Polyline extends Layer {
 
-    private final GraphicFactory graphicFactory;
+    //private final GraphicFactory graphicFactory;
     private final boolean keepAligned;
     private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
     private Paint paintStroke;
+    private Path path;
 
     /**
      * @param paintStroke    the initial {@code Paint} used to stroke this polyline (may be null).
@@ -64,7 +65,7 @@ public class Polyline extends Layer {
 
         this.keepAligned = keepAligned;
         this.paintStroke = paintStroke;
-        this.graphicFactory = graphicFactory;
+        this.path = graphicFactory.createPath();
     }
 
     public synchronized boolean contains(Point tapXY, MapViewProjection mapViewProjection) {
@@ -98,7 +99,7 @@ public class Polyline extends Layer {
         float x = (float) (MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize) - topLeftPoint.x);
         float y = (float) (MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize) - topLeftPoint.y);
 
-        Path path = this.graphicFactory.createPath();
+        path.clear();
         path.moveTo(x, y);
 
         while (iterator.hasNext()) {
