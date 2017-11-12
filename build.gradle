@@ -19,7 +19,7 @@ allprojects {
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
     ext.androidBuildVersionTools = "27.0.1"
     ext.jUnitVersion = "4.12"
-    ext.supportVersion = "27.0.0"
+    ext.supportVersion = "27.0.1"
 
     if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
