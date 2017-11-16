@@ -29,6 +29,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 
+import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
@@ -224,6 +225,46 @@ public final class GeoUtils {
         }
 
         return matchedTiles;
+    }
+
+    /**
+     * @param way the TDWay
+     * @return way as a polygon
+     */
+    public static Polygon mapWayToPolygon(TDWay way) {
+        TDNode[] wayNodes = way.getWayNodes();
+        if (wayNodes.length < 3) return null;
+        Coordinate[] wayCoords = new Coordinate[wayNodes.length + 1];
+        for (int i = 0; i < wayCoords.length - 1; i++) {
+            wayCoords[i] = new Coordinate(wayNodes[i].getLatitude(), wayNodes[i].getLongitude());
+        }
+        wayCoords[wayCoords.length - 1] = wayCoords[0];
+        Polygon polygon = GEOMETRY_FACTORY.createPolygon(GEOMETRY_FACTORY.createLinearRing(wayCoords), null);
+        if (!polygon.isValid()) return null;
+        return polygon;
+    }
+
+    /**
+     * @param way the TDWay
+     * @return the boundary of way
+     */
+    public static BoundingBox mapWayToBoundary(TDWay way) {
+        TDNode[] wayNodes = way.getWayNodes();
+        int size = wayNodes.length;
+        if (size < 3) return null;
+        try {
+            double lat = LatLongUtils.microdegreesToDegrees(wayNodes[0].getLatitude());
+            double lon = LatLongUtils.microdegreesToDegrees(wayNodes[0].getLongitude());
+            BoundingBox bb = new BoundingBox(lat, lon, lat, lon);
+            for (int i = 1; i < size; i++) {
+                bb = bb.extendCoordinates(LatLongUtils.microdegreesToDegrees(wayNodes[i].getLatitude()),
+                        LatLongUtils.microdegreesToDegrees(wayNodes[i].getLongitude()));
+            }
+            return bb;
+        } catch (IllegalArgumentException ex) {
+            LOGGER.warning("wrong coordinates on way: " + way.toString() + "\nLat: " + wayNodes[0].getLatitude() + " Lon: " + wayNodes[0].getLongitude());
+        }
+        return null;
     }
 
     /**

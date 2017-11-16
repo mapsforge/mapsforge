@@ -143,6 +143,9 @@
 
 
     <!-- ************* WAYS *************** -->
+    <ways>
+        <osm-tag key="id" renderable="false" value="%f" />
+    </ways>
 
     <!-- HIGHWAY TAGS -->
     <ways>

@@ -63,23 +63,8 @@ public final class OSMUtils {
             for (Tag tag : entity.getTags()) {
                 OSMTag poiTag = mapping.getPoiTag(tag.getKey(), tag.getValue());
                 if (poiTag != null) {
-                    Object value = null;
                     String wildcard = poiTag.getValue();
-                    if (wildcard.charAt(0) == '%' && wildcard.length() == 2) {
-                        Character format = wildcard.charAt(1);
-                        if (format == 'b') {
-                            value = getByteValue(tag.getValue());
-                        } else if (format == 'i') {
-                            value = getIntegerValue(tag.getValue());
-                        } else if (format == 'f') {
-                            value = getFloatValue(tag.getValue());
-                        } else if (format == 'h') {
-                            value = getShortValue(tag.getValue());
-                        } else if (format == 's') {
-                            value = getStringValue(tag.getValue());
-                        }
-                    }
-                    tagMap.put(poiTag.getId(), value);
+                    tagMap.put(poiTag.getId(), getObjectFromWildcardAndValue(wildcard, tag.getValue()));
                 }
             }
         }
@@ -99,23 +84,8 @@ public final class OSMUtils {
             for (Tag tag : entity.getTags()) {
                 OSMTag wayTag = mapping.getWayTag(tag.getKey(), tag.getValue());
                 if (wayTag != null) {
-                    Object value = null;
                     String wildcard = wayTag.getValue();
-                    if (wildcard.charAt(0) == '%' && wildcard.length() == 2) {
-                        Character format = wildcard.charAt(1);
-                        if (format == 'b') {
-                            value = getByteValue(tag.getValue());
-                        } else if (format == 'i') {
-                            value = getIntegerValue(tag.getValue());
-                        } else if (format == 'f') {
-                            value = getFloatValue(tag.getValue());
-                        } else if (format == 'h') {
-                            value = getShortValue(tag.getValue());
-                        } else if (format == 's') {
-                            value = getStringValue(tag.getValue());
-                        }
-                    }
-                    tagMap.put(wayTag.getId(), value);
+                    tagMap.put(wayTag.getId(), getObjectFromWildcardAndValue(wildcard, tag.getValue()));
                 }
             }
         }
@@ -300,6 +270,29 @@ public final class OSMUtils {
             integer = OSMUtils.parseDoubleUnit(value).intValue();
         }
         return integer;
+    }
+
+    /**
+     * @param wildcard the type of value as wildcard
+     * @param value    the value as string
+     * @return an object that represents value
+     */
+    public static Object getObjectFromWildcardAndValue(String wildcard, String value) {
+        if (wildcard.charAt(0) == '%' && wildcard.length() == 2) {
+            Character format = wildcard.charAt(1);
+            if (format == 'b') {
+                return getByteValue(value);
+            } else if (format == 'i') {
+                return getIntegerValue(value);
+            } else if (format == 'f') {
+                return getFloatValue(value);
+            } else if (format == 'h') {
+                return getShortValue(value);
+            } else if (format == 's') {
+                return getStringValue(value);
+            }
+        }
+        return null;
     }
 
     /**

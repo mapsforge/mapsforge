@@ -16,6 +16,7 @@
  */
 package org.mapsforge.map.writer;
 
+import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.TopologyException;
 
 import org.mapsforge.core.model.BoundingBox;
@@ -23,6 +24,7 @@ import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.writer.model.MapWriterConfiguration;
 import org.mapsforge.map.writer.model.NodeResolver;
+import org.mapsforge.map.writer.model.OSMTag;
 import org.mapsforge.map.writer.model.TDNode;
 import org.mapsforge.map.writer.model.TDRelation;
 import org.mapsforge.map.writer.model.TDWay;
@@ -30,9 +32,11 @@ import org.mapsforge.map.writer.model.TileBasedDataProcessor;
 import org.mapsforge.map.writer.model.TileCoordinate;
 import org.mapsforge.map.writer.model.TileData;
 import org.mapsforge.map.writer.model.TileGridLayout;
+import org.mapsforge.map.writer.model.TileInfo;
 import org.mapsforge.map.writer.model.WayResolver;
 import org.mapsforge.map.writer.model.ZoomIntervalConfiguration;
 import org.mapsforge.map.writer.util.GeoUtils;
+import org.mapsforge.map.writer.util.OSMUtils;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -44,6 +48,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import gnu.trove.iterator.TLongIterator;
 import gnu.trove.list.array.TLongArrayList;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import gnu.trove.map.hash.TShortIntHashMap;
@@ -60,11 +65,16 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
         private Map<Integer, List<Integer>> outerToInner;
         private final WayPolygonizer polygonizer = new WayPolygonizer();
 
+        private int nRelations = 0;
+
         @Override
         public boolean execute(TDRelation relation) {
             if (relation == null) {
                 return false;
             }
+
+            if (++nRelations % 100 == 0)
+                System.out.printf("handle relation: " + nRelations + "\r");
 
             this.extractedPolygons = null;
             this.outerToInner = null;
@@ -247,17 +257,26 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
     }
 
     protected class WayHandler implements TObjectProcedure<TDWay> {
+        private int nWays = 0;
+
         @Override
         public boolean execute(TDWay way) {
             if (way == null) {
                 return true;
             }
+
+            if (++nWays % 1000 == 0)
+                System.out.printf("handle way: " + nWays + "\r");
+
             // we only consider ways that have tags and which have not already
             // added as outer way of a relation
             // inner ways without additional tags are also not considered as they are processed as part of a
             // multi polygon
             if (way.isRenderRelevant() && !BaseTileBasedDataProcessor.this.outerToInnerMapping.contains(way.getId())
                     && !BaseTileBasedDataProcessor.this.innerWaysWithoutAdditionalTags.contains(way.getId())) {
+                // TODO #HDstoreData: integrate all way processes from HD- and RAM-'Processor HERE, e.g. outerToInnerMapping, virtualWays, associatedRelations, implicitRelations
+                // or declare better that HD'Processor does not store object data before writing to file
+                addImplicitRelationInformation(way);
                 addWayToTiles(way, BaseTileBasedDataProcessor.this.bboxEnlargement);
             }
 
@@ -281,9 +300,13 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
 
     protected final List<String> preferredLanguages;
     protected final boolean skipInvalidRelations;
+    protected final boolean isTagValues;
     protected TileGridLayout[] tileGridLayouts;
 
     protected final Map<TileCoordinate, TLongHashSet> tilesToCoastlines;
+    protected final Map<TileCoordinate, TLongHashSet> tilesToRootElements;
+    protected final Map<TileCoordinate, TLongHashSet> tilesToPartElements;
+    protected final Map<Long, Long> partRootRelations;
 
     protected final ZoomIntervalConfiguration zoomIntervalConfiguration;
 
@@ -295,10 +318,14 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
         this.bboxEnlargement = configuration.getBboxEnlargement();
         this.preferredLanguages = configuration.getPreferredLanguages();
         this.skipInvalidRelations = configuration.isSkipInvalidRelations();
+        this.isTagValues = configuration.isTagValues();
 
         this.outerToInnerMapping = new TLongObjectHashMap<>();
         this.innerWaysWithoutAdditionalTags = new TLongHashSet();
         this.tilesToCoastlines = new HashMap<>();
+        this.tilesToRootElements = new HashMap();
+        this.tilesToPartElements = new HashMap<>();
+        this.partRootRelations = new HashMap();
 
         this.countWays = new float[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()];
         this.countWayTileFactor = new float[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()];
@@ -393,6 +420,11 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
         }
     }
 
+    /**
+     * Count tags to optimize order of POI tag data
+     *
+     * @param poi the poi which contains tags
+     */
     protected void countPoiTags(TDNode poi) {
         if (poi == null || poi.getTags() == null) {
             return;
@@ -410,6 +442,11 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
         }
     }
 
+    /**
+     * Count tags to optimize order of Way tag data
+     *
+     * @param way the way which contains tags
+     */
     protected void countWayTags(TDWay way) {
         if (way != null) {
             countWayTags(way.getTags().keySet());
@@ -419,6 +456,166 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
     protected abstract TileData getTileImpl(int zoom, int tileX, int tileY);
 
     protected abstract void handleAdditionalRelationTags(TDWay virtualWay, TDRelation relation);
+
+    /**
+     * Calculate ids of ways whose polygon inherits part elements
+     */
+    protected void handleImplicitWayRelations() {
+        if (!this.isTagValues) return;
+        int progressImplicitRelations = 0;
+        float limitImplicitRelations = this.tilesToPartElements.entrySet().size();
+
+        // Iterate through tiles which contain parts
+        for (Map.Entry<TileCoordinate, TLongHashSet> tilePartElementEntry : this.tilesToPartElements.entrySet()) {
+            TLongHashSet tileRootElementSet = tilesToRootElements.get(tilePartElementEntry.getKey());
+
+            // Continue if no part or no roots are in List; maybe unnecessary
+            if (tileRootElementSet == null || tileRootElementSet.isEmpty()
+                    || tilePartElementEntry.getValue().isEmpty())
+                continue;
+
+            // Log
+            String wayRelLog = "Progress: Impl. rel. "
+                    + ((int) ((progressImplicitRelations / limitImplicitRelations) * 100))
+                    + "%% - Tile(x:" + tilePartElementEntry.getKey().getX()
+                    + ", y:" + tilePartElementEntry.getKey().getY() + ")";
+            progressImplicitRelations++;
+            int nRootElements = 0;
+
+            // Load parts only once in cache
+            TLongIterator tilePartElementIterator = tilePartElementEntry.getValue().iterator();
+            List<TDWay> pElems = new ArrayList<>();
+            while (tilePartElementIterator.hasNext()) {
+                TDWay pElem = getWay(tilePartElementIterator.next());
+                pElems.add(pElem);
+            }
+
+            // Iterate through potential roots
+            TLongIterator tileRootElementIterator = tileRootElementSet.iterator();
+            while (tileRootElementIterator.hasNext()) {
+                if (++nRootElements % 1000 == 0)
+                    System.out.printf((wayRelLog + " - Elem: " + (nRootElements) + "\r"));
+                // Init root element
+                TDWay rElem = getWay(tileRootElementIterator.next());
+                BoundingBox rBox = GeoUtils.mapWayToBoundary(rElem);
+                if (rBox == null) continue;
+                Polygon rPolygon = null; // Lazy initialisation, because root may not needed
+
+                // Iterate through parts
+                for (int i = pElems.size() - 1; i >= 0; i--) {
+                    TDWay pElem = pElems.get(i);
+                    // Exclude most elements with bounding box
+                    if (pElem.getWayNodes().length < 3) continue;
+                    if (!rBox.contains(LatLongUtils.microdegreesToDegrees(pElem.getWayNodes()[0].getLatitude()),
+                            LatLongUtils.microdegreesToDegrees(pElem.getWayNodes()[0].getLongitude())))
+                        continue;
+
+                    // Now calculate exact polygons
+                    Polygon pPolygon = GeoUtils.mapWayToPolygon(pElem);
+                    if (pPolygon == null) continue;
+
+                    if (rPolygon == null) {
+                        rPolygon = GeoUtils.mapWayToPolygon(rElem);
+                        if (rPolygon == null) continue;
+                    }
+
+                    // Memorize multi-polygons
+                    if (rPolygon.contains(pPolygon)) {
+                        if (!partRootRelations.containsKey(rElem.getId())) {
+                            partRootRelations.put(rElem.getId(), null); // Add root element
+                        }
+                        partRootRelations.put(pElem.getId(), rElem.getId()); // Add part element
+                        // Remove part which is already referenced
+                        pElems.remove(pElem);
+                        tilePartElementEntry.getValue().remove(pElem.getId());
+                        break;
+                    }
+                }
+            }
+        }
+        LOGGER.info("finished computing implicit relations - count " + partRootRelations.size());
+    }
+
+    /**
+     * Prepare relations, which aren't written as relation and only exist as geo-inheritance.
+     * Root and part elements will be assigned to a tile (not to be confused with later tile processing)
+     * This facilitates to find matching parts and accelerates the process.
+     * <p>
+     * Coastlines are handled too, for simplicity reasons.
+     *
+     * @param tdWay the way, which should be prepared
+     */
+    protected void prepareImplicitWayRelations(TDWay tdWay) {
+        if (tdWay.isCoastline()) {
+            // find matching tiles on zoom level 12
+            Set<TileCoordinate> coastLineTiles = GeoUtils.mapWayToTiles(tdWay, TileInfo.TILE_INFO_ZOOMLEVEL, 0);
+            for (TileCoordinate tileCoordinate : coastLineTiles) {
+                TLongHashSet coastlines = this.tilesToCoastlines.get(tileCoordinate);
+                if (coastlines == null) {
+                    coastlines = new TLongHashSet();
+                    this.tilesToCoastlines.put(tileCoordinate, coastlines);
+                }
+                coastlines.add(tdWay.getId());
+            }
+        } else if (isTagValues) {
+            if (tdWay.isRootElement()) {
+                Set<TileCoordinate> rootTiles = GeoUtils.mapWayToTiles(tdWay, TileInfo.TILE_INFO_ZOOMLEVEL, 0);
+                for (TileCoordinate tileCoordinate : rootTiles) {
+                    TLongHashSet ways = this.tilesToRootElements.get(tileCoordinate);
+                    if (ways == null) {
+                        ways = new TLongHashSet();
+                        this.tilesToRootElements.put(tileCoordinate, ways);
+                    }
+                    ways.add(tdWay.getId());
+                }
+            } else if (tdWay.isPartElement()) {
+                Set<TileCoordinate> partTiles = GeoUtils.mapWayToTiles(tdWay, TileInfo.TILE_INFO_ZOOMLEVEL, 0);
+                for (TileCoordinate tileCoordinate : partTiles) {
+                    TLongHashSet ways = this.tilesToPartElements.get(tileCoordinate);
+                    if (ways == null) {
+                        ways = new TLongHashSet();
+                        this.tilesToPartElements.put(tileCoordinate, ways);
+                    }
+                    ways.add(tdWay.getId());
+                }
+            }
+        }
+    }
+
+    /**
+     * Add tags to ways which describe the geo-inheritance
+     *
+     * @param tdWay the way which should get the tags
+     */
+    protected void addImplicitRelationInformation(TDWay tdWay) {
+        if (!this.isTagValues) return;
+
+        // FEATURE Remove this to add id to all elements (increase of space around 1/8)
+        if (!partRootRelations.containsKey(tdWay.getId())) return;
+
+        Long rootID = partRootRelations.get(tdWay.getId());
+        if (rootID == null) {
+            OSMTagMapping mapping = OSMTagMapping.getInstance();
+
+            // Remove accidentally written ids in OSM
+            for (Short aShort : tdWay.getTags().keySet()) {
+                if (mapping.getWayTag(aShort).getKey().equals("id")) {
+                    tdWay.getTags().remove(aShort);
+                    break;
+                }
+            }
+
+            // Add id to root element (respecting tag-mapping file)
+            OSMTag idTag = mapping.getWayTag("id", String.valueOf(tdWay.getId()));
+            assert idTag != null;
+            tdWay.getTags().put(idTag.getId(), OSMUtils.getObjectFromWildcardAndValue(idTag.getValue(), String.valueOf(tdWay.getId())));
+        } else {
+            // Add reference id to part element
+            tdWay.setRef(String.valueOf(rootID));
+        }
+        // #HDstoreData: Removing not possible, because HD' tiles need them multiple times (for count and processing)
+        // partRootRelations.remove(tdWay.getId());
+    }
 
     protected abstract void handleVirtualInnerWay(TDWay virtualWay);
 
