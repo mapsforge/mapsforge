@@ -40,6 +40,7 @@ public class HDTileData extends TileData {
 
     @Override
     public final void addWay(TDWay way) {
+        // TODO #HDstoreData: store whole object data, not only the id
         this.ways.add(way.getId());
     }
 

@@ -543,6 +543,8 @@
 
     <!-- NOT TO RENDER -->
     <ways>
+        <osm-tag key="id" renderable="false" value="%f" />
+
         <osm-tag key="access" renderable="false" value="destination" />
         <osm-tag key="access" renderable="false" value="private" />
 

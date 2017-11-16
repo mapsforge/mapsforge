@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
  * Copyright 2017 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -130,7 +131,23 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
         this.indexedWayStore.complete();
         this.wayIndexReader = this.indexedWayStore.createReader();
 
-        // handle relations
+        // Prepare implicit way relations
+        // (should be done here, before handling ways, although
+        // the WayHandler does only process ids in HD Processor)
+        ReleasableIterator<Way> wayReader = this.wayStore.iterate();
+        while (wayReader.hasNext()) {
+            Way way = wayReader.next();
+            TDWay tdWay = TDWay.fromWay(way, this, this.preferredLanguages);
+            if (tdWay == null) {
+                continue;
+            }
+            prepareImplicitWayRelations(tdWay);
+        }
+
+        // handle implicit relations
+        handleImplicitWayRelations();
+
+        LOGGER.info("handle relations...");
         ReleasableIterator<Relation> relationReader = this.relationStore.iterate();
         RelationHandler relationHandler = new RelationHandler();
         while (relationReader.hasNext()) {
@@ -139,8 +156,8 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
             relationHandler.execute(tdRelation);
         }
 
-        // handle ways
-        ReleasableIterator<Way> wayReader = this.wayStore.iterate();
+        LOGGER.info("handle ways...");
+        wayReader = this.wayStore.iterate();
         WayHandler wayHandler = new WayHandler();
         while (wayReader.hasNext()) {
             Way way = wayReader.next();
@@ -148,6 +165,8 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
             if (tdWay == null) {
                 continue;
             }
+
+            // #HDstoreData: handled here only for tag count - handled for writing in method: fromHDTileData()
             List<TDRelation> associatedRelations = this.additionalRelationTags.get(tdWay.getId());
             if (associatedRelations != null) {
                 for (TDRelation tileDataRelation : associatedRelations) {
@@ -306,6 +325,9 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
             }
 
             if (way != null) {
+                // #HDstoreData: additional processing of data only in HD processor
+                addImplicitRelationInformation(way);
+
                 if (this.outerToInnerMapping.contains(way.getId())) {
                     way.setShape(TDWay.MULTI_POLYGON);
                 }

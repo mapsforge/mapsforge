@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
  * Copyright 2017 devemux86
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,7 +26,6 @@ import org.mapsforge.map.writer.model.TileCoordinate;
 import org.mapsforge.map.writer.model.TileData;
 import org.mapsforge.map.writer.model.TileInfo;
 import org.mapsforge.map.writer.model.ZoomIntervalConfiguration;
-import org.mapsforge.map.writer.util.GeoUtils;
 import org.openstreetmap.osmosis.core.domain.v0_6.Node;
 import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
 import org.openstreetmap.osmosis.core.domain.v0_6.Way;
@@ -100,18 +100,7 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
         this.ways.put(tdWay.getId(), tdWay);
         this.maxWayID = Math.max(this.maxWayID, way.getId());
 
-        if (tdWay.isCoastline()) {
-            // find matching tiles on zoom level 12
-            Set<TileCoordinate> coastLineTiles = GeoUtils.mapWayToTiles(tdWay, TileInfo.TILE_INFO_ZOOMLEVEL, 0);
-            for (TileCoordinate tileCoordinate : coastLineTiles) {
-                TLongHashSet coastlines = this.tilesToCoastlines.get(tileCoordinate);
-                if (coastlines == null) {
-                    coastlines = new TLongHashSet();
-                    this.tilesToCoastlines.put(tileCoordinate, coastlines);
-                }
-                coastlines.add(tdWay.getId());
-            }
-        }
+        prepareImplicitWayRelations(tdWay);
     }
 
     @Override
@@ -121,10 +110,14 @@ public final class RAMTileBasedDataProcessor extends BaseTileBasedDataProcessor 
 
     @Override
     public void complete() {
+        handleImplicitWayRelations();
+
         // Polygonize multipolygon
+        LOGGER.info("handle relations...");
         RelationHandler relationHandler = new RelationHandler();
         this.multipolygons.forEachValue(relationHandler);
 
+        LOGGER.info("handle ways...");
         WayHandler wayHandler = new WayHandler();
         this.ways.forEachValue(wayHandler);
 

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2016 Andrey Novikov
+ * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -119,6 +120,20 @@ public class OSMTag {
         int result = 1;
         result = prime * result + this.id;
         return result;
+    }
+
+    /**
+     * @return whether the tag represents a building
+     */
+    public final boolean isBuilding() {
+        return this.key.equals("building");
+    }
+
+    /**
+     * @return whether the tag represents a building part
+     */
+    public final boolean isBuildingPart() {
+        return this.key.equals("building:part");
     }
 
     /**
