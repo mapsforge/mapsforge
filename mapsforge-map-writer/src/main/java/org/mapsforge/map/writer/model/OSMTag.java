@@ -122,6 +122,20 @@ public class OSMTag {
     }
 
     /**
+     * @return whether the tag represents a building
+     */
+    public final boolean isBuilding() {
+        return this.key.equals("building");
+    }
+
+    /**
+     * @return whether the tag represents a building
+     */
+    public final boolean isBuildingPart() {
+        return this.key.equals("building:part");
+    }
+
+    /**
      * @return whether the tag represents a coastline
      */
     public final boolean isCoastline() {

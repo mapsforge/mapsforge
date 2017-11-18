@@ -254,6 +254,36 @@ public class TDWay {
     }
 
     /**
+     * @return true, if the way represents a root element
+     */
+    public boolean isRootElement() {
+        List<OSMTag> osmTags = OSMTagMapping.getInstance().getWayTags(this.tags.keySet());
+        for (OSMTag tag : osmTags) {
+            // May add more tags
+            if (tag.isBuilding()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return true, if the way represents a part element
+     */
+    public boolean isPartElement() {
+        List<OSMTag> osmTags = OSMTagMapping.getInstance().getWayTags(this.tags.keySet());
+        for (OSMTag tag : osmTags) {
+            // May add more tags
+            if (tag.isBuildingPart()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return true, if the way represents a coastline
      */
     public boolean isCoastline() {
