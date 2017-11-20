@@ -17,12 +17,12 @@ We're using the dataset that Jochen Topf has provided on his [OpenStreetMap Data
 We cut the data down a bit, using [ogr2ogr](http://www.gdal.org/ogr2ogr.html) with the bounds for the desired map:
 
 ```bash
-ogr2ogr -overwrite -progress -skipfailures -clipsrc $LEFT $BOTTOM $RIGHT $TOP output.shp land-polygons-split-4326/land_polygons.shp
+ogr2ogr -overwrite -progress -skipfailures -clipsrc $LEFT $BOTTOM $RIGHT $TOP land.shp land-polygons-split-4326/land_polygons.shp
 ```
 
 This produces, depending on the bounds, a much smaller coastline shapefile. We usually extend the boundaries of this file a bit over the actual area for the map, to make sure we don't get any funny cut-offs.
 
-Then we convert the resulting shapefile with [shp2osm.py](https://github.com/mapsforge/mapsforge-mapcreator/blob/master/shape2osm.py) (Python 2.x) and slight modifications (as are always required with shp2osm). We set:
+Then we convert the resulting shapefile with [shape2osm.py](https://github.com/mapsforge/mapsforge-creator/blob/master/shape2osm.py) (Python 2.x) and slight modifications (as are always required with shape2osm). We have set:
 
 ```python
 fixed_tags = {
@@ -34,10 +34,10 @@ fixed_tags = {
 which will attach this tag to all polygons. We also changed the starting id for the OSM ids, as otherwise there is chance of collision with real OSM ids, which will create strange artifacts, like lines running through the map. We also changed the setting for the maximum length of ways, which does not seem to cause a problem.
 
 ```bash
-python shape2osm.py --output-location land output.shp
+python shape2osm.py -l land land.shp
 ```
 
-We now have `land.osm`, an OSM XML file with land represented as polygons with the tag "natural" -> "nosea".
+We now have `land1.osm`, an OSM XML file with land represented as polygons with the tag "natural" -> "nosea".
 
 ## Sea
 
@@ -73,7 +73,7 @@ The following steps could be taken in one, but we separated them out (a testing 
 We merge the resulting osm files of the land polygons and sea rectangle with our real osm data file:
 
 ```bash
-$OSMOSIS_HOME/bin/osmosis --rb file=data.pbf --rx file=sea.osm --s --m --rx file=land.osm --s --m --wb file=out.pbf omitmetadata=true
+$OSMOSIS_HOME/bin/osmosis --rb file=data.pbf --rx file=sea.osm --s --m --rx file=land1.osm --s --m --wb file=out.pbf omitmetadata=true
 ```
 
 ## Map writer
@@ -81,7 +81,7 @@ $OSMOSIS_HOME/bin/osmosis --rb file=data.pbf --rx file=sea.osm --s --m --rx file
 out.pbf can now be fed into the map-writer:
 
 ```bash
-$OSMOSIS_HOME/bin/osmosis --rb file=out.pbf --mapfile-writer file=out.map  map-start-position=$LAT,$LON bbox=$BOTTOM,$LEFT,$TOP,$RIGHT
+$OSMOSIS_HOME/bin/osmosis --rb file=out.pbf --mw file=out.map bbox=$BOTTOM,$LEFT,$TOP,$RIGHT map-start-position=$LAT,$LON map-start-zoom=$ZOOM
 ```
 
 The bounding box parameters are now those for the desired map, this will cut off any excess land polygons.
@@ -133,7 +133,7 @@ With the above procedure complicated coastline areas are all now rendered correc
 We use land polygons from [OpenStreetMap Data](http://openstreetmapdata.com/), specifically the http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip variant.
 
 The process is completed successfully in some minutes giving the map in our [server](http://download.mapsforge.org/maps/world/).
-Alternatively the http://data.openstreetmapdata.com/land-polygons-split-4326.zip variant can be used too.
+Alternatively the non simplified variants can be used too.
 
 To convert shp files in osm / pbf format there are many [tools](http://wiki.openstreetmap.org/wiki/Software_comparison/Import_a_shapefile) available.
 
