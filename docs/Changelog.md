@@ -2,8 +2,8 @@
 
 ## New since 0.8.0
 
-- Mapsforge maps **v5**: variable tag values [#1006](https://github.com/mapsforge/mapsforge/pull/1006)
-- Mapsforge maps v5: implicit relations of building parts [#1014](https://github.com/mapsforge/mapsforge/pull/1014)
+- Mapsforge maps **v5 beta**: variable tag values [#1006](https://github.com/mapsforge/mapsforge/pull/1006)
+- Mapsforge maps **v5 beta**: implicit relations of building parts [#1014](https://github.com/mapsforge/mapsforge/pull/1014)
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
 - Hillshading improvements [#923](https://github.com/mapsforge/mapsforge/issues/923)
 - Polyline overlay touch events [#998](https://github.com/mapsforge/mapsforge/issues/998)
