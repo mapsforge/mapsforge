@@ -102,7 +102,7 @@ You need to be aware that this configuration only defines what data is to be inc
 
 ## Changelog
 
-### New since 0.8.0
+### 0.9.0
 
 - Variable tag values (**v5 beta**)
 - Osmosis 0.46 with protobuf 3

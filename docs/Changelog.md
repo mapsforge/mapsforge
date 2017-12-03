@@ -1,6 +1,6 @@
 # Changelog
 
-## New since 0.8.0
+## Version 0.9.0 (2017-12-03)
 
 - Mapsforge maps **v5 beta**: variable tag values [#1006](https://github.com/mapsforge/mapsforge/pull/1006)
 - Mapsforge maps **v5 beta**: implicit relations of building parts [#1014](https://github.com/mapsforge/mapsforge/pull/1014)

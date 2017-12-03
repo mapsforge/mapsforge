@@ -98,4 +98,4 @@ The DB schema consists of:
 |**Version**|**Date**|**Changes**|
 |-----------|--------|-----------|
 |1|2016-06-11|Initial release of the specification|
-|2|TBD|<ul><li>POI multiple categories</li></ul>|
+|2|2017-12-03|<ul><li>POI multiple categories</li></ul>|
