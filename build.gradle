@@ -17,9 +17,9 @@ allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-    ext.androidBuildVersionTools = "27.0.1"
+    ext.androidBuildVersionTools = "27.0.2"
     ext.jUnitVersion = "4.12"
-    ext.supportVersion = "27.0.1"
+    ext.supportVersion = "27.0.2"
 
     if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
