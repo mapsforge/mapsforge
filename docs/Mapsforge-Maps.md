@@ -2,6 +2,7 @@
 
 - [AndroidMaps](http://www.androidmaps.co.uk/)
 - [Freizeitkarte](http://www.freizeitkarte-osm.de/android/en/index.html)
+- [Kurviger](https://offline-maps.kurviger.de/)
 - [Locusvectormaps](http://www.locusvectormaps.com)
 - [Mapsforge](http://download.mapsforge.org/)
 - [OpenAndroMaps](http://www.openandromaps.org/en/)
