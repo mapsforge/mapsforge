@@ -25,9 +25,11 @@ import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.IManualInputListener;
 import org.mapsforge.map.view.MapView;
 
 public class DummyMapView implements MapView {
+
     public int repaintCounter;
 
     @Override
@@ -123,5 +125,25 @@ public class DummyMapView implements MapView {
     @Override
     public void setZoomLevelMin(byte zoomLevelMin) {
         // no-op
+    }
+
+    @Override
+    public void manualZoomStarted() {
+
+    }
+
+    @Override
+    public void manualMoveStarted() {
+
+    }
+
+    @Override
+    public void registerManualInputListener(IManualInputListener manualInputListener) {
+
+    }
+
+    @Override
+    public void unregisterManualInputListener(IManualInputListener manualInputListener) {
+
     }
 }

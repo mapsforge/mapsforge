@@ -117,7 +117,7 @@ public class MapZoomControls extends LinearLayout implements Observer {
     private final Handler zoomControlsHideHandler;
     private byte zoomLevelMax, zoomLevelMin;
 
-    public MapZoomControls(Context context, MapView mapView) {
+    public MapZoomControls(Context context, final MapView mapView) {
         super(context);
         this.mapView = mapView;
         this.autoHide = true;
@@ -148,12 +148,14 @@ public class MapZoomControls extends LinearLayout implements Observer {
         buttonZoomIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mapView.manualZoomStarted();
                 MapZoomControls.this.mapView.getModel().mapViewPosition.zoomIn();
             }
         });
         buttonZoomOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mapView.manualZoomStarted();
                 MapZoomControls.this.mapView.getModel().mapViewPosition.zoomOut();
             }
         });

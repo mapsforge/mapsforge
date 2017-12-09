@@ -49,4 +49,10 @@ class AndroidMatrix implements Matrix {
         this.matrix.preTranslate(translateX, translateY);
     }
 
+    @Override
+    public String toString() {
+        return "AndroidMatrix{" +
+                "matrix=" + matrix +
+                '}';
+    }
 }

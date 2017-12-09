@@ -36,7 +36,7 @@ public class DualOverviewMapViewer extends DualMapViewer {
     protected void createMapViews() {
         super.createMapViews();
 
-        this.mapView2.getModel().mapViewPosition.setZoomLevel((byte) 12);
+        this.mapView2.getModel().mapViewPosition.animateTo((byte) 12);
         this.mapView2.getMapScaleBar().setVisible(false);
 
         this.observer = new MapViewPositionObserver(this.mapView.getModel().mapViewPosition,

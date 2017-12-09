@@ -53,4 +53,10 @@ class AwtMatrix implements Matrix {
         this.affineTransform.translate(translateX, translateY);
     }
 
+    @Override
+    public String toString() {
+        return "AwtMatrix{" +
+                "affineTransform=" + affineTransform +
+                '}';
+    }
 }

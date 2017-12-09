@@ -28,7 +28,9 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
+
+import java.util.ListIterator;
 
 /**
  * Central handling of touch gestures.
@@ -84,7 +86,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
             case MotionEvent.ACTION_UP:
                 // Quick scale in between (cancel double tap)
                 if (this.isInDoubleTap) {
-                    MapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
+                    IMapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
                     if (mapViewPosition.getZoomLevel() < mapViewPosition.getZoomLevelMax()) {
                         Point center = this.mapView.getModel().mapViewDimension.getDimension().getCenter();
                         byte zoomLevelDiff = 1;
@@ -92,8 +94,13 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                         double moveVertical = (center.y - e.getY()) / Math.pow(2, zoomLevelDiff);
                         LatLong pivot = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
                         if (pivot != null) {
+                            mapView.manualZoomStarted();
+
                             mapViewPosition.setPivot(pivot);
                             mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
+                            // new implementation does not use the pivot here since it is an animation with a well-defined end-state. The new
+                            // implementation moves the center while zooming.
+                            mapViewPosition.animateToPivot(pivot, zoomLevelDiff);
                         }
                     }
                     this.isInDoubleTap = false;
@@ -131,8 +138,10 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
             Point tapXY = new Point(e.getX(), e.getY());
             LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
             if (tapLatLong != null) {
-                for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-                    Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                // need an iterator because the list content may change while in the loop
+                ListIterator<Layer> listIterator = mapView.getLayerManager().getLayers().reverseiterator();
+                while (listIterator.hasPrevious()) {
+                    Layer layer = listIterator.previous();
                     Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
                     if (layer.onLongPress(tapLatLong, layerXY, tapXY)) {
                         break;
@@ -145,8 +154,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
         this.scaleFactorCumulative *= detector.getScaleFactor();
-        this.mapView.getModel().mapViewPosition.setPivot(pivot);
-        this.mapView.getModel().mapViewPosition.setScaleFactorAdjustment(scaleFactorCumulative);
+        this.mapView.getModel().mapViewPosition.setScaleFactorAdjustment(pivot, scaleFactorCumulative);
         return true;
     }
 
@@ -166,6 +174,8 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
             this.focusX = detector.getFocusX();
             this.focusY = detector.getFocusY();
             this.pivot = this.mapView.getMapViewProjection().fromPixels(focusX, focusY);
+            mapView.manualZoomStarted();
+            this.mapView.getModel().mapViewPosition.stopAnimation();
         }
         return true;
     }
@@ -181,7 +191,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
             zoomLevelDiff = (byte) Math.round(zoomLevelOffset);
         }
 
-        MapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
+        IMapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
         if (zoomLevelDiff != 0 && pivot != null) {
             // Zoom with focus
             double moveHorizontal = 0, moveVertical = 0;
@@ -207,9 +217,10 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
             }
             mapViewPosition.setPivot(pivot);
             mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
+            mapViewPosition.animateToPivot(pivot, zoomLevelDiff);
         } else {
             // Zoom without focus
-            mapViewPosition.zoom(zoomLevelDiff);
+            mapViewPosition.zoom(pivot, zoomLevelDiff);
         }
 
         this.isInDoubleTap = false;
@@ -218,6 +229,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
+            mapView.manualMoveStarted();
             this.mapView.getModel().mapViewPosition.moveCenter(-distanceX, -distanceY, false);
             return true;
         }
@@ -229,8 +241,9 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         Point tapXY = new Point(e.getX(), e.getY());
         LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
         if (tapLatLong != null) {
-            for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-                Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+            ListIterator<Layer> listIterator = mapView.getLayerManager().getLayers().reverseiterator();
+            while (listIterator.hasPrevious()) {
+                Layer layer = listIterator.previous();
                 Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
                 if (layer.onTap(tapLatLong, layerXY, tapXY)) {
                     return true;
@@ -243,6 +256,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public void run() {
         boolean flingerRunning = !this.flinger.isFinished() && this.flinger.computeScrollOffset();
+        mapView.getModel().mapViewPosition.stopAnimation();
         this.mapView.getModel().mapViewPosition.moveCenter(this.flingLastX - this.flinger.getCurrX(), this.flingLastY - this.flinger.getCurrY());
         this.flingLastX = this.flinger.getCurrX();
         this.flingLastY = this.flinger.getCurrY();

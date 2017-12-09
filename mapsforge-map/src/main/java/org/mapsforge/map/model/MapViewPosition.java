@@ -19,6 +19,7 @@
 package org.mapsforge.map.model;
 
 import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.core.model.ExtendedMapPosition;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
@@ -28,7 +29,7 @@ import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.util.PausableThread;
 
-public class MapViewPosition extends Observable implements Persistable {
+public class MapViewPosition extends Observable implements Persistable, IMapViewPosition {
 
     private class Animator extends PausableThread {
 
@@ -72,7 +73,7 @@ public class MapViewPosition extends Observable implements Persistable {
             double signY = Math.signum(currentPixelY - targetPixelY);
             --moveSteps;
 
-            moveCenter(stepSizeX * signX, stepSizeY * signY);
+            moveCenterInternal(stepSizeX * signX, stepSizeY * signY);
         }
 
         private void doWorkZoom() throws InterruptedException {
@@ -120,6 +121,11 @@ public class MapViewPosition extends Observable implements Persistable {
                 notify();
             }
         }
+
+        void stopAnimation() {
+            timeEnd = timeStart;
+            // movement cannot be stopped with the current implementation
+        }
     }
 
     private static final String LATITUDE = "latitude";
@@ -161,14 +167,36 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * Animate the map towards the given position.
      */
+    @Override
     public void animateTo(final LatLong latLong) {
         animator.startAnimationMove(latLong);
     }
 
+    @Override
+    public void animateTo(LatLong latLong, byte zoomLevel) {
+        if (latLong != null)
+            animator.startAnimationMove(latLong);
+
+        if (Math.pow(2, zoomLevel) != scaleFactor) {
+            this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+            animator.startAnimationZoom(getScaleFactor(), Math.pow(2, this.zoomLevel));
+        }
+    }
+
+    @Override
+    public void animateToPivot(LatLong pivot, byte zoomLevelDiff) {
+        // touchGestureHandler calls this method as an alternative to
+        // mapViewPosition.setPivot(pivot); and
+        // mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
+        // this implementation is not using this method
+    }
+
+    @Override
     public boolean animationInProgress() {
         return this.scaleFactor != MercatorProjection.zoomLevelToScaleFactor(this.zoomLevel);
     }
 
+    @Override
     public void destroy() {
         this.animator.interrupt();
     }
@@ -176,6 +204,7 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * @return the current center position of the map.
      */
+    @Override
     public synchronized LatLong getCenter() {
         return new LatLong(this.latitude, this.longitude);
     }
@@ -190,18 +219,9 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * @return the current center position and zoom level of the map.
      */
-    public synchronized MapPosition getMapPosition() {
-        return new MapPosition(getCenter(), this.zoomLevel);
-    }
-
-    /**
-     * The pivot point is the point the map zooms around.
-     *
-     * @return the lat/long coordinates of the map pivot point if set or null otherwise.
-     */
-
-    public synchronized LatLong getPivot() {
-        return this.pivot;
+    @Override
+    public synchronized ExtendedMapPosition getMapPosition() {
+        return new ExtendedMapPosition(getCenter(), this.zoomLevel, pivot, scaleFactor);
     }
 
     /**
@@ -220,6 +240,7 @@ public class MapViewPosition extends Observable implements Persistable {
         return null;
     }
 
+    @Override
     public synchronized double getScaleFactor() {
         return this.scaleFactor;
     }
@@ -227,14 +248,17 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * @return the current zoom level of the map.
      */
+    @Override
     public synchronized byte getZoomLevel() {
         return this.zoomLevel;
     }
 
+    @Override
     public synchronized byte getZoomLevelMax() {
         return this.zoomLevelMax;
     }
 
+    @Override
     public synchronized byte getZoomLevelMin() {
         return this.zoomLevelMin;
     }
@@ -267,8 +291,9 @@ public class MapViewPosition extends Observable implements Persistable {
      * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
      * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
      */
+    @Override
     public void moveCenter(double moveHorizontal, double moveVertical) {
-        this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0, true);
+        this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0, false);
     }
 
     /**
@@ -278,6 +303,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
      * @param animated       whether the move should be animated.
      */
+    @Override
     public void moveCenter(double moveHorizontal, double moveVertical, boolean animated) {
         this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0, animated);
     }
@@ -289,6 +315,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
      * @param zoomLevelDiff  the difference in desired zoom level.
      */
+    @Override
     public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff) {
         moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff, true);
     }
@@ -301,7 +328,26 @@ public class MapViewPosition extends Observable implements Persistable {
      * @param zoomLevelDiff  the difference in desired zoom level.
      * @param animated       whether the move should be animated.
      */
-    public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff, boolean animated) {
+    private void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff, boolean animated) {
+        synchronized (this) {
+            long mapSize = MercatorProjection.getMapSize(this.zoomLevel, this.displayModel.getTileSize());
+            double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, mapSize)
+                    - moveHorizontal;
+            double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, mapSize) - moveVertical;
+
+            // TODO problems when zooming out via mousewheel. pixelY is negative.
+            pixelX = Math.min(Math.max(0, pixelX), mapSize);
+            pixelY = Math.min(Math.max(0, pixelY), mapSize);
+
+            double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, mapSize);
+            double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
+            setCenterInternal(newLatitude, newLongitude);
+            setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
+        }
+        notifyObservers();
+    }
+
+    private void moveCenterInternal(double moveHorizontal, double moveVertical) {
         synchronized (this) {
             long mapSize = MercatorProjection.getMapSize(this.zoomLevel, this.displayModel.getTileSize());
             double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, mapSize)
@@ -314,7 +360,6 @@ public class MapViewPosition extends Observable implements Persistable {
             double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, mapSize);
             double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
             setCenterInternal(newLatitude, newLongitude);
-            setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
         }
         notifyObservers();
     }
@@ -344,6 +389,7 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * Sets the new center position of the map.
      */
+    @Override
     public void setCenter(LatLong latLong) {
         synchronized (this) {
             setCenterInternal(latLong.latitude, latLong.longitude);
@@ -366,6 +412,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * <p/>
      * Note: The default zoom level changes are animated.
      */
+    @Override
     public void setMapPosition(MapPosition mapPosition) {
         setMapPosition(mapPosition, true);
     }
@@ -389,6 +436,7 @@ public class MapViewPosition extends Observable implements Persistable {
      *
      * @param pivot lat/long of pivot point, null for map center
      */
+    @Override
     public void setPivot(LatLong pivot) {
         synchronized (this) {
             this.pivot = pivot;
@@ -398,28 +446,21 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * Sets the new scale factor to be applied.
      */
-    public void setScaleFactor(double scaleFactor) {
+    private void setScaleFactor(double scaleFactor) {
         synchronized (this) {
             this.scaleFactor = scaleFactor;
         }
         notifyObservers();
     }
 
-    public void setScaleFactorAdjustment(double adjustment) {
-        synchronized (this) {
-            this.setScaleFactor(Math.pow(2, zoomLevel) * adjustment);
-        }
-        notifyObservers();
+    @Override
+    public void setScaleFactorAdjustment(LatLong pivot, double adjustment) {
+        setPivot(pivot);
+        this.setScaleFactor(Math.pow(2, zoomLevel) * adjustment);
     }
 
-    /**
-     * Sets the new zoom level of the map.
-     * <p/>
-     * Note: The default zoom level changes are animated.
-     *
-     * @throws IllegalArgumentException if the zoom level is negative.
-     */
-    public void setZoomLevel(byte zoomLevel) {
+    @Override
+    public void animateTo(byte zoomLevel) {
         setZoomLevel(zoomLevel, true);
     }
 
@@ -440,6 +481,7 @@ public class MapViewPosition extends Observable implements Persistable {
         notifyObservers();
     }
 
+    @Override
     public void setZoomLevelMax(byte zoomLevelMax) {
         if (zoomLevelMax < 0) {
             throw new IllegalArgumentException("zoomLevelMax must not be negative: " + zoomLevelMax);
@@ -453,6 +495,7 @@ public class MapViewPosition extends Observable implements Persistable {
         notifyObservers();
     }
 
+    @Override
     public void setZoomLevelMin(byte zoomLevelMin) {
         if (zoomLevelMin < 0) {
             throw new IllegalArgumentException("zoomLevelMin must not be negative: " + zoomLevelMin);
@@ -466,19 +509,16 @@ public class MapViewPosition extends Observable implements Persistable {
         notifyObservers();
     }
 
-    /**
-     * Changes the current zoom level by the given value if possible.
-     * <p/>
-     * Note: The default zoom level changes are animated.
-     */
-    public void zoom(byte zoomLevelDiff) {
+    @Override
+    public void zoom(LatLong pivot, byte zoomLevelDiff) {
+        setPivot(pivot);
         zoom(zoomLevelDiff, true);
     }
 
     /**
      * Changes the current zoom level by the given value if possible.
      */
-    public void zoom(byte zoomLevelDiff, boolean animated) {
+    private void zoom(byte zoomLevelDiff, boolean animated) {
         synchronized (this) {
             setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
         }
@@ -490,6 +530,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * <p/>
      * Note: The default zoom level changes are animated.
      */
+    @Override
     public void zoomIn() {
         zoomIn(true);
     }
@@ -506,6 +547,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * <p/>
      * Note: The default zoom level changes are animated.
      */
+    @Override
     public void zoomOut() {
         zoomOut(true);
     }
@@ -528,7 +570,10 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     private void setZoomLevelInternal(int zoomLevel, boolean animated) {
-        this.zoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+        byte newZoomLevel = (byte) Math.max(Math.min(zoomLevel, this.zoomLevelMax), this.zoomLevelMin);
+        if (this.zoomLevel == newZoomLevel)
+            return;
+        this.zoomLevel = newZoomLevel;
         if (animated) {
             this.animator.startAnimationZoom(getScaleFactor(), Math.pow(2, this.zoomLevel));
         } else {
@@ -536,4 +581,15 @@ public class MapViewPosition extends Observable implements Persistable {
             this.setPivot(null);
         }
     }
+
+    @Override
+    public void stopAnimation() {
+        animator.stopAnimation();
+    }
+
+    @Override
+    public void setZoomLevel(byte zoomLevel) {
+        setZoomLevel(zoomLevel, false);
+    }
+
 }

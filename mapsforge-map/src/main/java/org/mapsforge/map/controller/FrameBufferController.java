@@ -17,7 +17,7 @@
 package org.mapsforge.map.controller;
 
 import org.mapsforge.core.model.Dimension;
-import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.ExtendedMapPosition;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
@@ -98,23 +98,19 @@ public final class FrameBufferController implements Observer {
                 // we need resource ordering here to avoid deadlock
                 MapPosition mapPositionFrameBuffer = this.model.frameBufferModel.getMapPosition();
                 if (mapPositionFrameBuffer != null) {
-                    double scaleFactor = this.model.mapViewPosition.getScaleFactor();
-                    LatLong pivot = this.model.mapViewPosition.getPivot();
-                    adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor, pivot);
+                    ExtendedMapPosition mapPositionMapViewPosition = model.mapViewPosition.getMapPosition();
+                    adjustFrameBufferMatrix(mapPositionFrameBuffer, mapPositionMapViewPosition, mapViewDimension);
                 }
             }
         }
     }
 
-    private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension,
-                                         double scaleFactor, LatLong pivot) {
-
-        MapPosition mapViewPosition = this.model.mapViewPosition.getMapPosition();
+    private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, ExtendedMapPosition mapPositionMapViewPosition, Dimension mapViewDimension) {
 
         long mapSize = MercatorProjection.getMapSize(mapPositionFrameBuffer.zoomLevel, model.displayModel.getTileSize());
 
         Point pointFrameBuffer = MercatorProjection.getPixel(mapPositionFrameBuffer.latLong, mapSize);
-        Point pointMapPosition = MercatorProjection.getPixel(mapViewPosition.latLong, mapSize);
+        Point pointMapPosition = MercatorProjection.getPixel(mapPositionMapViewPosition.latLong, mapSize);
 
         double diffX = pointFrameBuffer.x - pointMapPosition.x;
         double diffY = pointFrameBuffer.y - pointMapPosition.y;
@@ -124,13 +120,13 @@ public final class FrameBufferController implements Observer {
         // map view).
         double pivotDistanceX = 0d;
         double pivotDistanceY = 0d;
-        if (pivot != null) {
-            Point pivotXY = MercatorProjection.getPixel(pivot, mapSize);
+        if (mapPositionMapViewPosition.getPivot() != null) {
+            Point pivotXY = MercatorProjection.getPixel(mapPositionMapViewPosition.getPivot(), mapSize);
             pivotDistanceX = pivotXY.x - pointFrameBuffer.x;
             pivotDistanceY = pivotXY.y - pointFrameBuffer.y;
         }
 
-        float currentScaleFactor = (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
+        float currentScaleFactor = (float) (mapPositionMapViewPosition.getScaleFactor() / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
 
         this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension, (float) pivotDistanceX,
                 (float) pivotDistanceY);

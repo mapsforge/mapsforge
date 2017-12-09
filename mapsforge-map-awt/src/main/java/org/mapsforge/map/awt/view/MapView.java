@@ -42,9 +42,12 @@ import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.FrameBufferHA;
 import org.mapsforge.map.view.FrameBufferHA2;
+import org.mapsforge.map.view.IManualInputListener;
 
 import java.awt.Container;
 import java.awt.Graphics;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MapView extends Container implements org.mapsforge.map.view.MapView {
 
@@ -52,24 +55,22 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     private static final long serialVersionUID = 1L;
 
     private final FpsCounter fpsCounter;
-    private final FrameBuffer frameBuffer;
-    private final FrameBufferController frameBufferController;
+    private FrameBuffer frameBuffer;
+    private FrameBufferController frameBufferController;
     private LayerManager layerManager;
     private MapScaleBar mapScaleBar;
     private final MapViewProjection mapViewProjection;
     private final Model model;
 
+    private final List<IManualInputListener> manualInputListeners = new LinkedList<>();
+
     public MapView() {
         super();
 
-        this.model = new Model();
+        this.model = createModel();
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
-        if (Parameters.FRAME_BUFFER_HA2)
-            this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        else
-            this.frameBuffer = new FrameBufferHA(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
+        createFrameBuffer();
 
         this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
         this.layerManager.start();
@@ -83,6 +84,21 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
         this.mapViewProjection = new MapViewProjection(this);
 
         addListeners();
+    }
+
+    protected Model createModel() {
+        return new Model();
+    }
+
+    /**
+     * creates a new framebuffer. Allows overwriting. Note that {@link FrameBufferController } has some static methods which are called from AndroidUtil
+     */
+    protected void createFrameBuffer() {
+        if (Parameters.FRAME_BUFFER_HA2)
+            this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        else
+            this.frameBuffer = new FrameBufferHA(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
     }
 
     @Override
@@ -204,7 +220,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
     @Override
     public void setZoomLevel(byte zoomLevel) {
-        this.model.mapViewPosition.setZoomLevel(zoomLevel);
+        this.model.mapViewPosition.animateTo(zoomLevel);
     }
 
     @Override
@@ -215,5 +231,29 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     @Override
     public void setZoomLevelMin(byte zoomLevelMin) {
         this.model.mapViewPosition.setZoomLevelMin(zoomLevelMin);
+    }
+
+    @Override
+    public void registerManualInputListener(IManualInputListener manualInputListener) {
+        manualInputListeners.add(manualInputListener);
+    }
+
+    @Override
+    public void unregisterManualInputListener(IManualInputListener manualInputListener) {
+        manualInputListeners.remove(manualInputListener);
+    }
+
+    @Override
+    public void manualMoveStarted() {
+        for (IManualInputListener manualInputListener : manualInputListeners) {
+            manualInputListener.manualMoveStarted();
+        }
+    }
+
+    @Override
+    public void manualZoomStarted() {
+        for (IManualInputListener manualInputListener : manualInputListeners) {
+            manualInputListener.manualZoomStarted();
+        }
     }
 }

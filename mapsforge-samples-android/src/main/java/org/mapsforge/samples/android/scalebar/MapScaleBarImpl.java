@@ -18,15 +18,15 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.MapViewDimension;
-import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 
 public class MapScaleBarImpl extends DefaultMapScaleBar {
 
     private final MapViewDimension mapViewDimension;
 
-    public MapScaleBarImpl(MapViewPosition mapViewPosition,
+    public MapScaleBarImpl(IMapViewPosition mapViewPosition,
                            MapViewDimension mapViewDimension, GraphicFactory graphicFactory,
                            DisplayModel displayModel) {
         super(mapViewPosition, mapViewDimension, graphicFactory, displayModel);
