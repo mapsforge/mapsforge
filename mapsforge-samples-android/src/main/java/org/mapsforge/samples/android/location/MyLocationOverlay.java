@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014 devemux86
+ * Copyright 2014-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,7 +16,6 @@
  */
 package org.mapsforge.samples.android.location;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
@@ -24,7 +23,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
@@ -35,7 +33,6 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.android.util.AndroidSupportUtil;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.Marker;
@@ -48,18 +45,16 @@ import org.mapsforge.map.model.MapViewPosition;
  * Play Services. Also note that MyLocationOverlay needs to be added to a view before requesting location updates
  * (otherwise no DisplayModel is set).
  */
-public class MyLocationOverlay extends Layer implements LocationListener, ActivityCompat.OnRequestPermissionsResultCallback {
-    private final byte PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 10;
+public class MyLocationOverlay extends Layer implements LocationListener {
     private static final GraphicFactory GRAPHIC_FACTORY = AndroidGraphicFactory.INSTANCE;
     private float minDistance = 0.0f;
     private long minTime = 0;
-    private final Activity activity;
 
     /**
      * @param location the location whose geographical coordinates should be converted.
      * @return a new LatLong with the geographical coordinates taken from the given location.
      */
-    public static LatLong locationToLatLong(Location location) {
+    private static LatLong locationToLatLong(Location location) {
         return new LatLong(location.getLatitude(), location.getLongitude());
     }
 
@@ -111,7 +106,6 @@ public class MyLocationOverlay extends Layer implements LocationListener, Activi
     public MyLocationOverlay(Activity activity, MapViewPosition mapViewPosition, Bitmap bitmap, Paint circleFill,
                              Paint circleStroke) {
         super();
-        this.activity = activity;
         this.mapViewPosition = mapViewPosition;
         this.locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         this.marker = new Marker(null, bitmap, 0, 0);
@@ -124,12 +118,7 @@ public class MyLocationOverlay extends Layer implements LocationListener, Activi
     public synchronized void disableMyLocation() {
         if (this.myLocationEnabled) {
             this.myLocationEnabled = false;
-            try {
-                this.locationManager.removeUpdates(this);
-            } catch (RuntimeException runtimeException) {
-                // do we need to catch security exceptions for this call on Android 6?
-            }
-            // TODO trigger redraw?
+            this.locationManager.removeUpdates(this);
         }
     }
 
@@ -149,7 +138,7 @@ public class MyLocationOverlay extends Layer implements LocationListener, Activi
      * @param centerAtFirstFix whether the map should be centered to the first received location fix.
      */
     public synchronized void enableMyLocation(boolean centerAtFirstFix) {
-        enableBestAvailableProvider();
+        enableAvailableProviders();
         this.centerAtNextFix = centerAtFirstFix;
     }
 
@@ -213,17 +202,14 @@ public class MyLocationOverlay extends Layer implements LocationListener, Activi
 
     @Override
     public void onProviderDisabled(String provider) {
-        enableBestAvailableProvider();
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        enableBestAvailableProvider();
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        // do nothing
     }
 
     /**
@@ -249,15 +235,7 @@ public class MyLocationOverlay extends Layer implements LocationListener, Activi
         this.snapToLocationEnabled = snapToLocationEnabled;
     }
 
-    private synchronized void enableBestAvailableProvider() {
-        if (!AndroidSupportUtil.runtimePermissionRequiredForAccessFineLocation(this.activity)) {
-            enableBestAvailableProviderPermissionGranted();
-        } else {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    private void enableBestAvailableProviderPermissionGranted() {
+    private synchronized void enableAvailableProviders() {
         disableMyLocation();
 
         this.circle.setDisplayModel(this.displayModel);
@@ -273,11 +251,4 @@ public class MyLocationOverlay extends Layer implements LocationListener, Activi
         }
         this.myLocationEnabled = result;
     }
-
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION == requestCode && AndroidSupportUtil.verifyPermissions(grantResults)) {
-            enableBestAvailableProviderPermissionGranted();
-        }
-    }
-
 }

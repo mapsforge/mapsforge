@@ -24,7 +24,6 @@ Mapsforge consists of the following core components:
 Extra Android components:
 
 - mapsforge-map-android: android specific map elements.
-- mapsforge-map-android-extras: android extra map elements.
 - mapsforge-poi-android: android specific poi elements.
 - [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
 - [spatialite-android](https://www.gaia-gis.it/fossil/libspatialite/wiki?name=splite-android): SQLite spatial library.

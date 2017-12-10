@@ -261,9 +261,7 @@ public abstract class MapViewerTemplate extends Activity {
     }
 
     /**
-     * Hook to check for Android Runtime Permissions. There is no check here, as
-     * see the @MapViewerTemplateRuntimePermissions for an implementation that works with
-     * Runtime Permissions.
+     * Hook to check for Android Runtime Permissions.
      */
     protected void checkPermissionsAndCreateLayersAndControls() {
         createLayers();

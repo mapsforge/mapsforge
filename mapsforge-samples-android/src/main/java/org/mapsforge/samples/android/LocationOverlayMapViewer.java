@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -47,11 +47,6 @@ public class LocationOverlayMapViewer extends DownloadLayerViewer {
                 this.mapView.getModel().mapViewPosition, bitmap);
         this.myLocationOverlay.setSnapToLocationEnabled(true);
         mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        myLocationOverlay.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

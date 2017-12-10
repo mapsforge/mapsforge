@@ -40,7 +40,7 @@ import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls.Orientation;
 import org.mapsforge.map.android.util.AndroidUtil;
-import org.mapsforge.map.android.util.MapViewerTemplateRuntimePermissions;
+import org.mapsforge.map.android.util.MapViewerTemplate;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
@@ -56,7 +56,7 @@ import java.io.File;
 /**
  * Code common to most activities in the Samples app.
  */
-public abstract class SamplesBaseActivity extends MapViewerTemplateRuntimePermissions implements SharedPreferences.OnSharedPreferenceChangeListener {
+public abstract class SamplesBaseActivity extends MapViewerTemplate implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final String SETTING_SCALEBAR = "scalebar";
     public static final String SETTING_SCALEBAR_METRIC = "metric";

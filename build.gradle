@@ -19,7 +19,6 @@ allprojects {
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
     ext.androidBuildVersionTools = "27.0.2"
     ext.jUnitVersion = "4.12"
-    ext.supportVersion = "27.0.2"
 
     if (JavaVersion.current().isJava8Compatible()) {
         tasks.withType(Javadoc) {
@@ -30,17 +29,12 @@ allprojects {
     }
 }
 
-// no injection of functions, so via inheritance
 static def androidCompileSdk() { return 27 }
 
 // Minimum API Level by Support Library
 static def androidMinSdk() { return 14 }
 
-// this is the last SDK with the old permissions system, so this should not change in the future
-static def androidTargetSdkOldPermissions() { return 22 }
-
-// moving forward we will target the latest SDK (that will all have the new permissions system)
-static def androidTargetSdkRuntimePermissions() { return androidCompileSdk() }
+static def androidTargetSdk() { return 22 }
 
 static def versionCode() { return 1 }
 
@@ -94,7 +88,7 @@ configure(filterProjects(project.javaprojects)) {
 }
 
 // Configuration for Android projects
-project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-map-android-extras", "mapsforge-poi-android"]
+project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-poi-android"]
 project.ext.androidapkprojects = ["mapsforge-samples-android"]
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 
@@ -102,21 +96,6 @@ project.ext.androidprojects = project.androidlibraryprojects + project.androidap
 
 configure(filterProjects(project.androidapkprojects)) {
     apply plugin: 'com.android.application'
-
-    android {
-        flavorDimensions "permission"
-
-        productFlavors {
-            oldpermissions {
-                dimension "permission"
-                targetSdkVersion androidTargetSdkOldPermissions()
-            }
-            runtimepermissions {
-                dimension "permission"
-                targetSdkVersion androidTargetSdkRuntimePermissions()
-            }
-        }
-    }
 }
 
 configure(filterProjects(project.androidlibraryprojects)) {
@@ -155,6 +134,7 @@ configure(filterProjects(project.androidprojects)) {
             versionCode versionCode()
             versionName versionName()
             minSdkVersion androidMinSdk()
+            targetSdkVersion androidTargetSdk()
         }
 
         sourceSets {

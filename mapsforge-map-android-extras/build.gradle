@@ -1,4 +1,0 @@
-dependencies {
-    api project(":mapsforge-map-android")
-    compileOnly "com.android.support:support-compat:$supportVersion"
-}

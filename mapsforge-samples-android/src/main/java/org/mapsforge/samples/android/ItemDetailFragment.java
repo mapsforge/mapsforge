@@ -16,8 +16,6 @@
  */
 package org.mapsforge.samples.android;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -25,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.mapsforge.map.android.util.AndroidSupportUtil;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -104,37 +101,15 @@ public class ItemDetailFragment extends Fragment {
 
     private final byte PERMISSIONS_REQUEST_READ_STORAGE = 122;
 
-    /**
-     * Note that this is the Fragment method, not one from the compatibility lib
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_READ_STORAGE: {
-                if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    // permission is not granted, the app should do something meaningful here.
-                    return;
-                }
-                createLayers();
-            }
-        }
-    }
-
     protected void createLayers() {
-        if (AndroidSupportUtil.runtimePermissionRequiredForReadExternalStorage(this.getActivity(), getMapFileDirectory())) {
-            // note that this the Fragment method, not compat lib
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_READ_STORAGE);
-        } else {
-            TileCache tileCache = AndroidUtil.createTileCache(this.getActivity(), "fragments",
-                    this.mapView.getModel().displayModel.getTileSize(), 1.0f, 1.5);
-            this.mapView.getLayerManager().getLayers().add(AndroidUtil.createTileRendererLayer(
-                    tileCache, this.mapView.getModel().mapViewPosition, getMapFile(),
-                    InternalRenderTheme.DEFAULT));
+        TileCache tileCache = AndroidUtil.createTileCache(this.getActivity(), "fragments",
+                this.mapView.getModel().displayModel.getTileSize(), 1.0f, 1.5);
+        this.mapView.getLayerManager().getLayers().add(AndroidUtil.createTileRendererLayer(
+                tileCache, this.mapView.getModel().mapViewPosition, getMapFile(),
+                InternalRenderTheme.DEFAULT));
 
-            this.mapView.setCenter(this.dummyItem.location);
-            this.mapView.setZoomLevel((byte) 16);
-        }
-
+        this.mapView.setCenter(this.dummyItem.location);
+        this.mapView.setZoomLevel((byte) 16);
     }
 
     protected MapFile getMapFile() {

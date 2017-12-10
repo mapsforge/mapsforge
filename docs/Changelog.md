@@ -1,5 +1,11 @@
 # Changelog
 
+## New since 0.9.0
+
+- Deprecate mapsforge-map-android-extras [#1021](https://github.com/mapsforge/mapsforge/issues/1021)
+- Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.10.0)
+
 ## Version 0.9.0 (2017-12-03)
 
 - Mapsforge maps **v5 beta**: variable tag values [#1006](https://github.com/mapsforge/mapsforge/pull/1006)
