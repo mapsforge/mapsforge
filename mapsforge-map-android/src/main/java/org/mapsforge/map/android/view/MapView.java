@@ -176,7 +176,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     public void destroy() {
         this.touchGestureHandler.destroy();
         this.layoutHandler.removeCallbacksAndMessages(null);
-        this.layerManager.interrupt();
+        this.layerManager.finish();
         this.layerManager = null;
         this.frameBufferController.destroy();
         this.frameBuffer.destroy();

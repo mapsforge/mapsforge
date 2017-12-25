@@ -114,7 +114,7 @@ public class RenderThemeChanger extends DefaultTheme {
 
     @Override
     protected void onDestroy() {
-        this.changerThread.interrupt();
+        this.changerThread.finish();
         super.onDestroy();
     }
 }

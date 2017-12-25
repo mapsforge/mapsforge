@@ -89,7 +89,7 @@ public class TileSizeChanger extends DefaultTheme {
 
     @Override
     protected void onDestroy() {
-        this.changerThread.interrupt();
+        this.changerThread.finish();
         super.onDestroy();
     }
 }

@@ -170,7 +170,7 @@ public class MapViewPosition extends Observable implements Persistable {
     }
 
     public void destroy() {
-        this.animator.interrupt();
+        this.animator.finish();
     }
 
     /**

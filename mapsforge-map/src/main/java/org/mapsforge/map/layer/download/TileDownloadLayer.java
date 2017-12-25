@@ -69,7 +69,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
     @Override
     public void onDestroy() {
         for (TileDownloadThread tileDownloadThread : this.tileDownloadThreads) {
-            tileDownloadThread.interrupt();
+            tileDownloadThread.finish();
         }
 
         super.onDestroy();
@@ -116,7 +116,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
         } else {
             if (this.tileDownloadThreads != null) {
                 for (final TileDownloadThread tileDownloadThread : tileDownloadThreads) {
-                    tileDownloadThread.interrupt();
+                    tileDownloadThread.finish();
                 }
             }
         }

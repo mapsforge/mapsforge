@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2017 MarcelHeckel
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -59,6 +60,7 @@ public abstract class PausableThread extends Thread {
 
     private boolean pausing;
     private boolean shouldPause;
+    private boolean shouldStop;
 
     /**
      * Causes the current thread to wait until this thread is pausing.
@@ -74,6 +76,11 @@ public abstract class PausableThread extends Thread {
                 }
             }
         }
+    }
+
+    public final synchronized void finish() {
+        this.shouldStop = true;
+        interrupt();
     }
 
     @Override
@@ -117,9 +124,9 @@ public abstract class PausableThread extends Thread {
         setName(getClass().getSimpleName());
         setPriority(getThreadPriority().priority);
 
-        while (!isInterrupted()) {
+        while (!this.shouldStop && !isInterrupted()) {
             synchronized (this) {
-                while (!isInterrupted() && (this.shouldPause || !hasWork())) {
+                while (!this.shouldStop && !isInterrupted() && (this.shouldPause || !hasWork())) {
                     try {
                         if (this.shouldPause) {
                             this.pausing = true;
@@ -132,7 +139,7 @@ public abstract class PausableThread extends Thread {
                 }
             }
 
-            if (isInterrupted()) {
+            if (this.shouldStop || isInterrupted()) {
                 break;
             }
 
