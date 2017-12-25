@@ -67,7 +67,7 @@ class FrameBufferBitmap {
                     wait();
                 }
             } catch (InterruptedException e) {
-                LOGGER.warning("FrameBufferHA interrupted");
+                LOGGER.warning("Frame buffer interrupted");
             }
         }
     }
