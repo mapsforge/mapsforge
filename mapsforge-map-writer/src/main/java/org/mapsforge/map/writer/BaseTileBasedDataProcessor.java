@@ -513,8 +513,8 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
             return;
         }
 
-        int progressImplicitRelations = 0;
-        float limitImplicitRelations = this.tilesToPartElements.entrySet().size();
+        /*int progressImplicitRelations = 0;
+        float limitImplicitRelations = this.tilesToPartElements.entrySet().size();*/
 
         // Iterate through tiles which contain parts
         for (Map.Entry<TileCoordinate, TLongHashSet> tilePartElementEntry : this.tilesToPartElements.entrySet()) {
@@ -527,12 +527,12 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
             }
 
             // Log
-            String wayRelLog = "Progress: Implicit relations "
+            /*String wayRelLog = "Progress: Implicit relations "
                     + ((int) ((progressImplicitRelations / limitImplicitRelations) * 100))
                     + "%% - Tile (" + tilePartElementEntry.getKey().getX()
                     + ", " + tilePartElementEntry.getKey().getY() + ")";
             progressImplicitRelations++;
-            int nRootElements = 0;
+            int nRootElements = 0;*/
 
             // Load parts only once in cache
             List<TDWay> pElems = new ArrayList<>();
@@ -593,7 +593,6 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
                         // Remove part which is already referenced
                         pElems.remove(pElem);
                         tilePartElementEntry.getValue().remove(pElem.getId());
-                        break;
                     }
                 }
             }
