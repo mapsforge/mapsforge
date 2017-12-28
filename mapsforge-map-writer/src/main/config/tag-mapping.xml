@@ -421,14 +421,15 @@
         <osm-tag key="roof:angle" renderable="false" value="%f" />
         <osm-tag key="roof:levels" renderable="false" value="%f" />
         <osm-tag key="roof:direction" renderable="false" value="%f" />
-        <!--<osm-tag equivalent-values="N,n,north" key="roof:direction" renderable="false" value="0" />-->
-        <!--<osm-tag equivalent-values="NE,ne" key="roof:direction" renderable="false" value="45" />-->
-        <!--<osm-tag equivalent-values="NW,nw" key="roof:direction" renderable="false" value="315" />-->
-        <!--<osm-tag equivalent-values="S,s,south" key="roof:direction" renderable="false" value="180" />-->
-        <!--<osm-tag equivalent-values="SE,se" key="roof:direction" renderable="false" value="135" />-->
-        <!--<osm-tag equivalent-values="SW,sw" key="roof:direction" renderable="false" value="225" />-->
-        <!--<osm-tag equivalent-values="E,e,east" key="roof:direction" renderable="false" value="90" />-->
-        <!--<osm-tag equivalent-values="W,w,west" key="roof:direction" renderable="false" value="270" />-->
+        <osm-tag equivalent-values="N,n,north" key="roof:direction" renderable="false" value="0" />
+        <osm-tag equivalent-values="NE,ne" key="roof:direction" renderable="false" value="45" />
+        <osm-tag equivalent-values="NW,nw" key="roof:direction" renderable="false" value="315" />
+        <osm-tag equivalent-values="S,s,south" key="roof:direction" renderable="false"
+            value="180" />
+        <osm-tag equivalent-values="SE,se" key="roof:direction" renderable="false" value="135" />
+        <osm-tag equivalent-values="SW,sw" key="roof:direction" renderable="false" value="225" />
+        <osm-tag equivalent-values="E,e,east" key="roof:direction" renderable="false" value="90" />
+        <osm-tag equivalent-values="W,w,west" key="roof:direction" renderable="false" value="270" />
 
 
         <osm-tag key="building:colour" renderable="false" value="%f" />
