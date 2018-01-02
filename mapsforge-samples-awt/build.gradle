@@ -1,3 +1,5 @@
+apply plugin: 'application'
+
 dependencies {
     implementation project(":mapsforge-map-awt")
     implementation project(":mapsforge-themes")
@@ -11,4 +13,11 @@ task fatJar(type: Jar, dependsOn: classes) {
         attributes 'Main-Class': 'org.mapsforge.samples.awt.Samples'
     }
     with jar
+}
+
+mainClassName = "org.mapsforge.samples.awt.Samples"
+run {
+    if (project.hasProperty("args")) {
+        args project.getProperty("args").split(",")
+    }
 }

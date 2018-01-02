@@ -1,6 +1,5 @@
 dependencies {
     api project(":mapsforge-map-reader")
-    implementation 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
+    api 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
     testImplementation project(":mapsforge-themes")
-    testImplementation 'net.sf.kxml:kxml2:2.3.0'
 }
