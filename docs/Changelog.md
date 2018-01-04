@@ -1,11 +1,11 @@
 # Changelog
 
-## New since 0.9.0
+## Version 0.9.1 (2018-01-04)
 
 - Gradle fix transitive dependencies [#1009](https://github.com/mapsforge/mapsforge/issues/1009)
 - Deprecate mapsforge-map-android-extras [#1021](https://github.com/mapsforge/mapsforge/issues/1021)
 - Many other minor improvements and bug fixes
-- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.10.0)
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.9.1)
 
 ## Version 0.9.0 (2017-12-03)
 
