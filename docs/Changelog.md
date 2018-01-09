@@ -1,5 +1,11 @@
 # Changelog
 
+## New since 0.9.1
+
+- Render theme fallback internal resources [#1026](https://github.com/mapsforge/mapsforge/issues/1026)
+- Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.10.0)
+
 ## Version 0.9.1 (2018-01-04)
 
 - Gradle fix transitive dependencies [#1009](https://github.com/mapsforge/mapsforge/issues/1009)
@@ -62,7 +68,7 @@
 - mapsforge-themes module [#848](https://github.com/mapsforge/mapsforge/issues/848)
 - New default internal render theme [#903](https://github.com/mapsforge/mapsforge/issues/903)
 - Internal render themes new SVG resources [#904](https://github.com/mapsforge/mapsforge/issues/904)
-- Render theme resources without location prefixes [#847](https://github.com/mapsforge/mapsforge/issues/847)
+- Render theme resources optional location prefixes [#847](https://github.com/mapsforge/mapsforge/issues/847)
 - SpatiaLite natives published artifacts [#849](https://github.com/mapsforge/mapsforge/issues/849)
 - SNAPSHOT builds publish to Sonatype OSSRH [#873](https://github.com/mapsforge/mapsforge/issues/873)
 - Deprecate Maven build [#852](https://github.com/mapsforge/mapsforge/issues/852)
