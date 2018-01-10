@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  * Copyright 2015 Andreas Schildbach
  * Copyright 2017 usrusr
  *
@@ -104,9 +104,6 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 
     @Override
     protected void createMapViews() {
-        // Frame buffer HA2
-        Parameters.FRAME_BUFFER_HA2 = true;
-
         super.createMapViews();
 
         mapView.getMapZoomControls().setZoomControlsOrientation(Orientation.VERTICAL_IN_OUT);

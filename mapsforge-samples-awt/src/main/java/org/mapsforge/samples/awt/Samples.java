@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2017 devemux86
+ * Copyright 2014-2018 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -77,9 +77,6 @@ public final class Samples {
      *             with possible SRTM hgt folder as 1st argument.
      */
     public static void main(String[] args) {
-        // Frame buffer HA2
-        Parameters.FRAME_BUFFER_HA2 = true;
-
         // Multithreaded map rendering
         Parameters.NUMBER_OF_THREADS = 2;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 devemux86
+ * Copyright 2017-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,11 +15,6 @@
 package org.mapsforge.core.util;
 
 public final class Parameters {
-
-    /**
-     * If true the <code>FrameBufferHA2</code> will be used instead of default <code>FrameBufferHA</code>.
-     */
-    public static boolean FRAME_BUFFER_HA2 = true;
 
     /**
      * Maximum buffer size for map files.
