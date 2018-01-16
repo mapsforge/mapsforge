@@ -14,13 +14,12 @@
  */
 package org.mapsforge.map.writer.util;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.util.Assert;
-
 import org.junit.Test;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.util.Assert;
 import org.mapsforge.map.writer.model.TDWay;
 
 import java.util.List;
