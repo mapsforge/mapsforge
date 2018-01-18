@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,13 +33,14 @@ public abstract class AbstractTileSource implements TileSource {
     private static final int TIMEOUT_CONNECT = 5000;
     private static final int TIMEOUT_READ = 10000;
 
+    protected String apiKey;
     /**
      * The default time-to-live (TTL) for cached tiles (one day, or 86,400,000 milliseconds).
      */
     protected long defaultTimeToLive = 86400000;
-
     protected boolean followRedirects = true;
     protected final String[] hostNames;
+    protected String keyName = "key";
     protected final int port;
     protected final Random random = new Random();
     protected String referer;
@@ -80,6 +81,10 @@ public abstract class AbstractTileSource implements TileSource {
         return true;
     }
 
+    public String getApiKey() {
+        return apiKey;
+    }
+
     /**
      * Returns the default time-to-live (TTL) for cached tiles.
      */
@@ -90,6 +95,10 @@ public abstract class AbstractTileSource implements TileSource {
 
     protected String getHostName() {
         return this.hostNames[random.nextInt(this.hostNames.length)];
+    }
+
+    public String getKeyName() {
+        return keyName;
     }
 
     @Override
@@ -126,8 +135,16 @@ public abstract class AbstractTileSource implements TileSource {
         return followRedirects;
     }
 
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
     public void setFollowRedirects(boolean followRedirects) {
         this.followRedirects = followRedirects;
+    }
+
+    public void setKeyName(String keyName) {
+        this.keyName = keyName;
     }
 
     public void setReferer(String referer) {

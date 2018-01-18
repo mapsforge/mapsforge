@@ -2,6 +2,7 @@
 
 ## New since 0.9.1
 
+- Tile sources with api keys [#1028](https://github.com/mapsforge/mapsforge/issues/1028)
 - Render theme fallback internal resources [#1026](https://github.com/mapsforge/mapsforge/issues/1026)
 - JTS (LocationTech) [#1027](https://github.com/mapsforge/mapsforge/issues/1027)
 - Many other minor improvements and bug fixes
