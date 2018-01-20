@@ -54,9 +54,12 @@
         <osm-tag key="leisure" value="playground" zoom-appear="17" />
         <osm-tag key="leisure" value="slipway" zoom-appear="17" />
 
+        <osm-tag key="religion" renderable="false" value="buddhist" />
         <osm-tag key="religion" renderable="false" value="christian" />
+        <osm-tag key="religion" renderable="false" value="hindu" />
         <osm-tag key="religion" renderable="false" value="jewish" />
         <osm-tag key="religion" renderable="false" value="muslim" />
+        <osm-tag key="religion" renderable="false" value="shinto" />
 
         <osm-tag key="shop" value="bakery" zoom-appear="17" />
         <osm-tag key="shop" value="bicycle" zoom-appear="17" />
@@ -287,9 +290,12 @@
         <osm-tag key="amenity" value="toilets" zoom-appear="17" />
         <osm-tag key="amenity" value="university" zoom-appear="13" />
 
+        <osm-tag key="religion" renderable="false" value="buddhist" />
         <osm-tag key="religion" renderable="false" value="christian" />
+        <osm-tag key="religion" renderable="false" value="hindu" />
         <osm-tag key="religion" renderable="false" value="jewish" />
         <osm-tag key="religion" renderable="false" value="muslim" />
+        <osm-tag key="religion" renderable="false" value="shinto" />
 
         <osm-tag key="tourism" value="attraction" zoom-appear="14" />
         <osm-tag key="tourism" value="hostel" zoom-appear="15" />
