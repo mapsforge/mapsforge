@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +16,7 @@ package org.mapsforge.samples.android;
 
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ public class PoiSearchViewer extends DefaultTheme {
     private static final String POI_CATEGORY = "Restaurants";
 
     private GroupLayer groupLayer;
+    private PoiPersistenceManager persistenceManager;
 
     @Override
     protected void createLayers() {
@@ -70,6 +72,20 @@ public class PoiSearchViewer extends DefaultTheme {
         mapView.getLayerManager().getLayers().add(tileRendererLayer);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        persistenceManager = AndroidPoiPersistenceManagerFactory.getPoiPersistenceManager(POI_FILE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        persistenceManager.close();
+
+        super.onDestroy();
+    }
+
     private class PoiSearchTask extends AsyncTask<BoundingBox, Void, Collection<PointOfInterest>> {
         private final WeakReference<PoiSearchViewer> weakActivity;
         private final String category;
@@ -82,19 +98,13 @@ public class PoiSearchViewer extends DefaultTheme {
         @Override
         protected Collection<PointOfInterest> doInBackground(BoundingBox... params) {
             // Search POI
-            PoiPersistenceManager persistenceManager = null;
             try {
-                persistenceManager = AndroidPoiPersistenceManagerFactory.getPoiPersistenceManager(POI_FILE);
                 PoiCategoryManager categoryManager = persistenceManager.getCategoryManager();
                 PoiCategoryFilter categoryFilter = new ExactMatchPoiCategoryFilter();
                 categoryFilter.addCategory(categoryManager.getPoiCategoryByTitle(category));
                 return persistenceManager.findInRect(params[0], categoryFilter, null, Integer.MAX_VALUE);
             } catch (Throwable t) {
                 Log.e(SamplesApplication.TAG, t.getMessage(), t);
-            } finally {
-                if (persistenceManager != null) {
-                    persistenceManager.close();
-                }
             }
             return null;
         }
