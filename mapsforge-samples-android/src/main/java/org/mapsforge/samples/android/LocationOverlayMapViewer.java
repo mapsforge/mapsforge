@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,25 +39,27 @@ public class LocationOverlayMapViewer extends DownloadLayerViewer {
         super.createLayers();
 
         // a marker to show at the position
-        Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_red) : getResources().getDrawable(R.drawable.marker_red);
+        Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.ic_maps_indicator_current_position) : getResources().getDrawable(R.drawable.ic_maps_indicator_current_position);
         Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
 
         // create the overlay and tell it to follow the location
         this.myLocationOverlay = new MyLocationOverlay(this,
                 this.mapView.getModel().mapViewPosition, bitmap);
         this.myLocationOverlay.setSnapToLocationEnabled(true);
-        mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
+        this.mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
+
         this.myLocationOverlay.enableMyLocation(true);
     }
 
     @Override
-    protected void onStop() {
-        myLocationOverlay.disableMyLocation();
-        super.onStop();
+    public void onPause() {
+        this.myLocationOverlay.disableMyLocation();
+
+        super.onPause();
     }
 }

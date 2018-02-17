@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -51,12 +51,6 @@ public class BubbleOverlay extends DefaultTheme {
             bubble.incrementRefCount();
             this.mapView.getLayerManager().getLayers().add(new Marker(item.location, bubble, 0, -bubble.getHeight() / 2));
         }
-    }
-
-    @Override
-    protected void createMapViews() {
-        super.createMapViews();
-        this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
     }
 
     @Override

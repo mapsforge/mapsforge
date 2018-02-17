@@ -1,6 +1,6 @@
 /*
  * Copyright 2015 Andreas Schildbach
- * Copyright 2015 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -48,11 +48,5 @@ public class ViewOverlayViewer extends DefaultTheme {
             this.mapView.addView(button, new MapView.LayoutParams(MapView.LayoutParams.WRAP_CONTENT, MapView.LayoutParams.WRAP_CONTENT,
                     item.location, MapView.LayoutParams.Alignment.BOTTOM_CENTER));
         }
-    }
-
-    @Override
-    protected void createMapViews() {
-        super.createMapViews();
-        this.mapView.getModel().mapViewPosition.setCenter(DummyContent.ITEMS.get(1).location);
     }
 }
