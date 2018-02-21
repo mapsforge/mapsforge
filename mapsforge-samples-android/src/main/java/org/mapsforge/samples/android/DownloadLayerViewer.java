@@ -32,15 +32,6 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 public class DownloadLayerViewer extends SamplesBaseActivity {
     protected TileDownloadLayer downloadLayer;
 
-    /**
-     * We do not need storage permission as we do not have a map file here.
-     */
-    @Override
-    protected void checkPermissionsAndCreateLayersAndControls() {
-        createLayers();
-        createControls();
-    }
-
     @Override
     protected void createLayers() {
         this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),

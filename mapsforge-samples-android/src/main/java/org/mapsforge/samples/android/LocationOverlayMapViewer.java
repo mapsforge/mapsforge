@@ -17,19 +17,38 @@
 package org.mapsforge.samples.android;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 
-import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.samples.android.location.MyLocationOverlay;
+import org.mapsforge.map.android.layers.MyLocationOverlay;
+import org.mapsforge.map.layer.overlay.Circle;
+import org.mapsforge.map.layer.overlay.Marker;
 
 /**
  * MapViewer that shows current position. In the data directory of the Samples
  * project is the file berlin.gpx that can be loaded in the Android Monitor to
  * simulate location data in the center of Berlin.
  */
-public class LocationOverlayMapViewer extends DownloadLayerViewer {
+public class LocationOverlayMapViewer extends DownloadLayerViewer implements LocationListener {
+
+    private static Paint getPaint(int color, int strokeWidth, Style style) {
+        Paint paint = AndroidGraphicFactory.INSTANCE.createPaint();
+        paint.setColor(color);
+        paint.setStrokeWidth(strokeWidth);
+        paint.setStyle(style);
+        return paint;
+    }
+
+    private LocationManager locationManager;
     private MyLocationOverlay myLocationOverlay;
 
     @SuppressWarnings("deprecation")
@@ -38,28 +57,69 @@ public class LocationOverlayMapViewer extends DownloadLayerViewer {
     protected void createLayers() {
         super.createLayers();
 
-        // a marker to show at the position
+        // marker to show at the location
         Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.ic_maps_indicator_current_position) : getResources().getDrawable(R.drawable.ic_maps_indicator_current_position);
-        Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
+        Marker marker = new Marker(null, AndroidGraphicFactory.convertToBitmap(drawable), 0, 0);
 
-        // create the overlay and tell it to follow the location
-        this.myLocationOverlay = new MyLocationOverlay(this,
-                this.mapView.getModel().mapViewPosition, bitmap);
-        this.myLocationOverlay.setSnapToLocationEnabled(true);
+        // circle to show the location accuracy (optional)
+        Circle circle = new Circle(null, 0,
+                getPaint(AndroidGraphicFactory.INSTANCE.createColor(48, 0, 0, 255), 0, Style.FILL),
+                getPaint(AndroidGraphicFactory.INSTANCE.createColor(160, 0, 0, 255), 2, Style.STROKE));
+
+        // create the overlay
+        this.myLocationOverlay = new MyLocationOverlay(marker, circle);
         this.mapView.getLayerManager().getLayers().add(this.myLocationOverlay);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        this.myLocationOverlay.enableMyLocation(true);
+        enableAvailableProviders();
     }
 
     @Override
     public void onPause() {
-        this.myLocationOverlay.disableMyLocation();
+        this.locationManager.removeUpdates(this);
 
         super.onPause();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.myLocationOverlay.setPosition(location.getLatitude(), location.getLongitude(), location.getAccuracy());
+
+        // Follow location
+        this.mapView.setCenter(new LatLong(location.getLatitude(), location.getLongitude()));
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    private void enableAvailableProviders() {
+        this.locationManager.removeUpdates(this);
+
+        for (String provider : this.locationManager.getProviders(true)) {
+            if (LocationManager.GPS_PROVIDER.equals(provider)
+                    || LocationManager.NETWORK_PROVIDER.equals(provider)) {
+                this.locationManager.requestLocationUpdates(provider, 0, 0, this);
+            }
+        }
     }
 }

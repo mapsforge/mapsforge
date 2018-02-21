@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2014-2017 devemux86
+ * Copyright 2014-2018 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -101,6 +101,7 @@ public class Samples extends Activity {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/graphhopper/graphhopper/tree/0.8/android")));
             }
         }));
+        linearLayout.addView(createButton(LocationOverlayMapViewer.class));
         linearLayout.addView(createButton(PoiSearchViewer.class, null, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +128,6 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(GridMapViewer.class));
         linearLayout.addView(createButton(BubbleOverlay.class));
         linearLayout.addView(createButton(ViewOverlayViewer.class));
-        linearLayout.addView(createButton(LocationOverlayMapViewer.class));
         linearLayout.addView(createButton(ChangingBitmaps.class));
         linearLayout.addView(createButton(OverlayWithoutBaseMapViewer.class));
         linearLayout.addView(createButton(TwoMaps.class, null, new View.OnClickListener() {
