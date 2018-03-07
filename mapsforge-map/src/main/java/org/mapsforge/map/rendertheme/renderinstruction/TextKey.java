@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2018 b3nn0
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,30 +17,20 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.mapsforge.core.model.Tag;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 final class TextKey {
-    private static final String KEY_ELEVATION = "ele";
-    private static final String KEY_HOUSENUMBER = "addr:housenumber";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_REF = "ref";
-    private static final TextKey TEXT_KEY_ELEVATION = new TextKey(KEY_ELEVATION);
-    private static final TextKey TEXT_KEY_HOUSENUMBER = new TextKey(KEY_HOUSENUMBER);
-    private static final TextKey TEXT_KEY_NAME = new TextKey(KEY_NAME);
-    private static final TextKey TEXT_KEY_REF = new TextKey(KEY_REF);
+    private static final Map<String, TextKey> TEXT_KEYS = new HashMap<>();
 
     static TextKey getInstance(String key) {
-        if (KEY_ELEVATION.equals(key)) {
-            return TEXT_KEY_ELEVATION;
-        } else if (KEY_HOUSENUMBER.equals(key)) {
-            return TEXT_KEY_HOUSENUMBER;
-        } else if (KEY_NAME.equals(key)) {
-            return TEXT_KEY_NAME;
-        } else if (KEY_REF.equals(key)) {
-            return TEXT_KEY_REF;
-        } else {
-            throw new IllegalArgumentException("invalid key: " + key);
+        TextKey textKey = TEXT_KEYS.get(key);
+        if (textKey == null) {
+            textKey = new TextKey(key);
+            TEXT_KEYS.put(key, textKey);
         }
+        return textKey;
     }
 
     private final String key;
