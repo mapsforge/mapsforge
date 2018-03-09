@@ -2,6 +2,7 @@
 
 ## New since 0.9.1
 
+- Mapsforge maps **v5 beta**: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)
 - MyLocationOverlay implementation [#1035](https://github.com/mapsforge/mapsforge/issues/1035)
 - Tile sources with api keys [#1028](https://github.com/mapsforge/mapsforge/issues/1028)
 - Render theme fallback internal resources [#1026](https://github.com/mapsforge/mapsforge/issues/1026)
