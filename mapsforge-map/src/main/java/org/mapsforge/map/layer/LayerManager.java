@@ -24,7 +24,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.PausableThread;
 import org.mapsforge.map.view.FrameBuffer;
@@ -36,11 +36,11 @@ public class LayerManager extends PausableThread implements Redrawer {
     private final Canvas drawingCanvas;
     private final Layers layers;
     private final MapView mapView;
-    private final MapViewPosition mapViewPosition;
+    private final IMapViewPosition mapViewPosition;
     private boolean redrawNeeded;
 
 
-    public LayerManager(MapView mapView, MapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
+    public LayerManager(MapView mapView, IMapViewPosition mapViewPosition, GraphicFactory graphicFactory) {
         super();
 
         this.mapView = mapView;

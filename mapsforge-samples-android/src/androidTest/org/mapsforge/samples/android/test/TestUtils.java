@@ -4,6 +4,7 @@ import com.robotium.solo.Solo;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.samples.android.R;
 
@@ -180,7 +181,7 @@ public class TestUtils {
 
     public static void testZoomChanges(Solo solo, int iterations) throws Exception {
         MapView mapView = (MapView) solo.getView(R.id.mapView);
-        MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+        IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
         for (int i = 0; i < iterations; i++) {
             byte startZoomLevel = mapViewPosition.getZoomLevel();
@@ -231,7 +232,7 @@ public class TestUtils {
 
     public static void testZoom(Solo solo, int iterations) throws Exception {
         MapView mapView = (MapView) solo.getView(R.id.mapView);
-        MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+        IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
         for (int i = 0; i < iterations; i++) {
             mapViewPosition.setZoomLevel((byte) 8);
@@ -248,7 +249,7 @@ public class TestUtils {
 
     public static void testPositionAndZoom(Solo solo, int iterations) throws Exception {
         MapView mapView = (MapView) solo.getView(R.id.mapView);
-        MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+        IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
         for (int i = 0; i < iterations; i++) {
             mapViewPosition.setZoomLevel((byte) 8);

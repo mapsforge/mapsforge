@@ -27,6 +27,11 @@ public interface Matrix {
      */
     void rotate(float theta, float pivotX, float pivotY);
 
+    /**
+     * Scales around the 0/0 coordinate
+     * @param scaleX the scale factor in x-direction
+     * @param scaleY the scale factor in y-direction
+     */
     void scale(float scaleX, float scaleY);
 
     void scale(float scaleX, float scaleY, float pivotX, float pivotY);

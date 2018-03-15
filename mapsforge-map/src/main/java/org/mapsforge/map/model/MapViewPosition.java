@@ -28,7 +28,7 @@ import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.util.PausableThread;
 
-public class MapViewPosition extends Observable implements Persistable {
+public class MapViewPosition extends Observable implements Persistable, IMapViewPosition {
 
     private class Animator extends PausableThread {
 
@@ -165,10 +165,12 @@ public class MapViewPosition extends Observable implements Persistable {
         animator.startAnimationMove(latLong);
     }
 
+    @Override
     public boolean animationInProgress() {
         return this.scaleFactor != MercatorProjection.zoomLevelToScaleFactor(this.zoomLevel);
     }
 
+    @Override
     public void destroy() {
         this.animator.interrupt();
     }
@@ -176,6 +178,7 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * @return the current center position of the map.
      */
+    @Override
     public synchronized LatLong getCenter() {
         return new LatLong(this.latitude, this.longitude);
     }
@@ -220,6 +223,7 @@ public class MapViewPosition extends Observable implements Persistable {
         return null;
     }
 
+    @Override
     public synchronized double getScaleFactor() {
         return this.scaleFactor;
     }
@@ -227,14 +231,17 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * @return the current zoom level of the map.
      */
+    @Override
     public synchronized byte getZoomLevel() {
         return this.zoomLevel;
     }
 
+    @Override
     public synchronized byte getZoomLevelMax() {
         return this.zoomLevelMax;
     }
 
+    @Override
     public synchronized byte getZoomLevelMin() {
         return this.zoomLevelMin;
     }
@@ -278,6 +285,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
      * @param animated       whether the move should be animated.
      */
+    @Override
     public void moveCenter(double moveHorizontal, double moveVertical, boolean animated) {
         this.moveCenterAndZoom(moveHorizontal, moveVertical, (byte) 0, animated);
     }
@@ -289,6 +297,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
      * @param zoomLevelDiff  the difference in desired zoom level.
      */
+    @Override
     public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff) {
         moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff, true);
     }
@@ -344,6 +353,7 @@ public class MapViewPosition extends Observable implements Persistable {
     /**
      * Sets the new center position of the map.
      */
+    @Override
     public void setCenter(LatLong latLong) {
         synchronized (this) {
             setCenterInternal(latLong.latitude, latLong.longitude);
@@ -366,6 +376,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * <p/>
      * Note: The default zoom level changes are animated.
      */
+    @Override
     public void setMapPosition(MapPosition mapPosition) {
         setMapPosition(mapPosition, true);
     }
@@ -389,6 +400,7 @@ public class MapViewPosition extends Observable implements Persistable {
      *
      * @param pivot lat/long of pivot point, null for map center
      */
+    @Override
     public void setPivot(LatLong pivot) {
         synchronized (this) {
             this.pivot = pivot;
@@ -440,6 +452,7 @@ public class MapViewPosition extends Observable implements Persistable {
         notifyObservers();
     }
 
+    @Override
     public void setZoomLevelMax(byte zoomLevelMax) {
         if (zoomLevelMax < 0) {
             throw new IllegalArgumentException("zoomLevelMax must not be negative: " + zoomLevelMax);
@@ -453,6 +466,7 @@ public class MapViewPosition extends Observable implements Persistable {
         notifyObservers();
     }
 
+    @Override
     public void setZoomLevelMin(byte zoomLevelMin) {
         if (zoomLevelMin < 0) {
             throw new IllegalArgumentException("zoomLevelMin must not be negative: " + zoomLevelMin);
@@ -490,6 +504,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * <p/>
      * Note: The default zoom level changes are animated.
      */
+    @Override
     public void zoomIn() {
         zoomIn(true);
     }
@@ -506,6 +521,7 @@ public class MapViewPosition extends Observable implements Persistable {
      * <p/>
      * Note: The default zoom level changes are animated.
      */
+    @Override
     public void zoomOut() {
         zoomOut(true);
     }

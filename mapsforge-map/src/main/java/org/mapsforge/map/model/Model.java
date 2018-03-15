@@ -19,10 +19,24 @@ import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
 public class Model implements Persistable {
-    public final DisplayModel displayModel = new DisplayModel();
+
+    public final DisplayModel displayModel;
     public final FrameBufferModel frameBufferModel = new FrameBufferModel();
     public final MapViewDimension mapViewDimension = new MapViewDimension();
-    public final MapViewPosition mapViewPosition = new MapViewPosition(displayModel);
+    public final IMapViewPosition mapViewPosition;
+
+    public Model() {
+        displayModel = createDisplayModel();
+        mapViewPosition = createMapViewPosition(displayModel);
+    }
+
+    protected DisplayModel createDisplayModel() {
+        return new DisplayModel();
+    }
+
+    protected IMapViewPosition createMapViewPosition(DisplayModel displayModel) {
+        return new MapViewPosition(displayModel);
+    }
 
     @Override
     public void init(PreferencesFacade preferencesFacade) {
@@ -33,4 +47,5 @@ public class Model implements Persistable {
     public void save(PreferencesFacade preferencesFacade) {
         this.mapViewPosition.save(preferencesFacade);
     }
+
 }

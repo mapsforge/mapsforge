@@ -5,6 +5,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
 
 import org.mapsforge.map.android.view.MapView;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.samples.android.BubbleOverlay;
 import org.mapsforge.samples.android.R;
@@ -26,7 +27,7 @@ public class BubbleOverlayTest extends ActivityInstrumentationTestCase2<BubbleOv
 
     public void testBubbles() throws Exception {
         MapView mapView = (MapView) solo.getView(R.id.mapView);
-        MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+        IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
         for (int i = 0; i < iterations; i++) {
             for (DummyContent.DummyItem item : DummyContent.ITEMS) {
