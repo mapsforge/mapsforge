@@ -20,12 +20,12 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 
 
 public class TileStoreLayer extends TileLayer<Job> {
 
-    public TileStoreLayer(TileCache tileCache, MapViewPosition mapViewPosition, GraphicFactory graphicFactory, boolean isTransparent) {
+    public TileStoreLayer(TileCache tileCache, IMapViewPosition mapViewPosition, GraphicFactory graphicFactory, boolean isTransparent) {
         super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent, false);
     }
 

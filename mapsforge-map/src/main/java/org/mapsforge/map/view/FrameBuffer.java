@@ -45,6 +45,16 @@ public class FrameBuffer {
     final DisplayModel displayModel;
     final FrameBufferModel frameBufferModel;
     final GraphicFactory graphicFactory;
+
+    /**
+     * <pre>
+     * {Scale X, Skew X, Transform X
+     * Skew Y, Scale Y, Transform Y
+     * Perspective 0, Perspective 1, Perspective 2}
+     * </pre>
+     * <p>
+     * See https://stackoverflow.com/questions/13246415/clearly-understand-matrix-calculation/13246914
+     */
     final Matrix matrix;
 
     public FrameBuffer(FrameBufferModel frameBufferModel, DisplayModel displayModel, GraphicFactory graphicFactory) {

@@ -15,7 +15,7 @@
  */
 package org.mapsforge.map.android.util;
 
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.common.Observer;
 
 /**
@@ -24,10 +24,10 @@ import org.mapsforge.map.model.common.Observer;
  * map views where one is supposed to follow the other.
  */
 public class MapViewPositionObserver implements Observer {
-    private final MapViewPosition observable;
-    private final MapViewPosition observer;
+    private final IMapViewPosition observable;
+    private final IMapViewPosition observer;
 
-    public MapViewPositionObserver(MapViewPosition observable, MapViewPosition observer) {
+    public MapViewPositionObserver(IMapViewPosition observable, IMapViewPosition observer) {
         this.observable = observable;
         this.observer = observer;
         observable.addObserver(this);

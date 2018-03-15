@@ -27,7 +27,7 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.util.LayerUtil;
 
 import java.util.HashSet;
@@ -39,14 +39,14 @@ public abstract class TileLayer<T extends Job> extends Layer {
     protected final boolean isTransparent;
     protected JobQueue<T> jobQueue;
     protected final TileCache tileCache;
-    private final MapViewPosition mapViewPosition;
+    private final IMapViewPosition mapViewPosition;
     private final Matrix matrix;
 
-    public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent) {
+    public TileLayer(TileCache tileCache, IMapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent) {
         this(tileCache, mapViewPosition, matrix, isTransparent, true);
     }
 
-    public TileLayer(TileCache tileCache, MapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent, boolean hasJobQueue) {
+    public TileLayer(TileCache tileCache, IMapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent, boolean hasJobQueue) {
         super();
 
         if (tileCache == null) {

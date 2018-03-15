@@ -28,7 +28,7 @@ import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
@@ -249,7 +249,7 @@ public abstract class MapViewerTemplate extends Activity {
      * @param mvp the map view position to be set
      * @return the mapviewposition set
      */
-    protected MapViewPosition initializePosition(MapViewPosition mvp) {
+    protected IMapViewPosition initializePosition(IMapViewPosition mvp) {
         LatLong center = mvp.getCenter();
 
         if (center.equals(new LatLong(0, 0))) {

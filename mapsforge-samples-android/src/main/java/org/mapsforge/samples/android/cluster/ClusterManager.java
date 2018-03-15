@@ -23,7 +23,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.MapViewPosition;
+import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.MapView;
 
@@ -347,7 +347,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
             resetViewport(false);
         } else {
             // react on position changes
-            MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+            IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
             Point posOld = mapView.getMapViewProjection().toPixels(oldCenterLatLong);
             Point posNew = mapView.getMapViewProjection().toPixels(mapViewPosition.getCenter());
