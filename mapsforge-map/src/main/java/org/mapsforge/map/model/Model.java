@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
  */
 package org.mapsforge.map.model;
 
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.common.Persistable;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
@@ -22,7 +24,15 @@ public class Model implements Persistable {
     public final DisplayModel displayModel = new DisplayModel();
     public final FrameBufferModel frameBufferModel = new FrameBufferModel();
     public final MapViewDimension mapViewDimension = new MapViewDimension();
-    public final MapViewPosition mapViewPosition = new MapViewPosition(displayModel);
+    public final IMapViewPosition mapViewPosition;
+
+    public Model() {
+        if (Parameters.MAP_VIEW_POSITION2) {
+            mapViewPosition = new MapViewPosition2(displayModel);
+        } else {
+            mapViewPosition = new MapViewPosition(displayModel);
+        }
+    }
 
     @Override
     public void init(PreferencesFacade preferencesFacade) {

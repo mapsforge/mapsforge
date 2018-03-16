@@ -186,6 +186,7 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(HillshadingCompareMapViewer.class));
         linearLayout.addView(createButton(ReverseGeocodeViewer.class));
         linearLayout.addView(createButton(NightModeViewer.class));
+        linearLayout.addView(createButton(MapViewPosition2Viewer.class));
         linearLayout.addView(createButton(RenderThemeChanger.class));
         linearLayout.addView(createButton(TileSizeChanger.class));
         linearLayout.addView(createButton(StackedLayersMapViewer.class));
