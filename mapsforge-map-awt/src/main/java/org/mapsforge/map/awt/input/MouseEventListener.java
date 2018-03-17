@@ -57,6 +57,8 @@ public class MouseEventListener extends MouseAdapter {
         if (SwingUtilities.isLeftMouseButton(e)) {
             Point point = e.getPoint();
             if (this.lastDragPoint != null) {
+                mapView.manualMoveStarted();
+
                 int moveHorizontal = point.x - this.lastDragPoint.x;
                 int moveVertical = point.y - this.lastDragPoint.y;
                 this.mapView.getModel().mapViewPosition.moveCenter(moveHorizontal, moveVertical);
@@ -80,6 +82,7 @@ public class MouseEventListener extends MouseAdapter {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         byte zoomLevelDiff = (byte) -e.getWheelRotation();
+            mapView.manualZoomStarted();
         this.mapView.getModel().mapViewPosition.zoom(zoomLevelDiff);
     }
 }

@@ -92,6 +92,8 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                         double moveVertical = (center.y - e.getY()) / Math.pow(2, zoomLevelDiff);
                         LatLong pivot = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
                         if (pivot != null) {
+                            mapView.manualZoomStarted();
+
                             mapViewPosition.setPivot(pivot);
                             mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
                         }
@@ -166,6 +168,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
             this.focusX = detector.getFocusX();
             this.focusY = detector.getFocusY();
             this.pivot = this.mapView.getMapViewProjection().fromPixels(focusX, focusY);
+            mapView.manualZoomStarted();
         }
         return true;
     }
@@ -218,6 +221,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
+            mapView.manualMoveStarted();
             this.mapView.getModel().mapViewPosition.moveCenter(-distanceX, -distanceY, false);
             return true;
         }

@@ -76,4 +76,22 @@ public interface MapView {
     void setZoomLevelMax(byte zoomLevelMax);
 
     void setZoomLevelMin(byte zoomLevelMin);
+
+    void registerManualInputListener(IManualInputListener manualInputListener);
+
+    void unregisterManualInputListener(IManualInputListener manualInputListener);
+
+    /**
+     * This method is called by internal programs only. The underlying mapView implementation will notify registered
+     * {@link IManualInputListener} about the start of a manual zoom. Notify that this method may be called multiple
+     * times while the zoom has been started. Also note that only manual zooms gets notified.
+     */
+    void manualZoomStarted();
+
+    /**
+     * This method is called by internal programs only. The underlying mapView implementation will notify registered
+     * {@link IManualInputListener} about the start of a manual move. Notify that this method may be called multiple
+     * times while the move has been started. Also note that only manual moves gets notified.
+     */
+    void manualMoveStarted();
 }

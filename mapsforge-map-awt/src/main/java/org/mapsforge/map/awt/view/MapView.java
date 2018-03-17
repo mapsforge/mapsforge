@@ -40,9 +40,12 @@ import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.FrameBufferHA2;
+import org.mapsforge.map.view.IManualInputListener;
 
 import java.awt.Container;
 import java.awt.Graphics;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MapView extends Container implements org.mapsforge.map.view.MapView {
 
@@ -56,6 +59,8 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     private MapScaleBar mapScaleBar;
     private final MapViewProjection mapViewProjection;
     private final Model model;
+
+    private final List<IManualInputListener> manualInputListeners = new LinkedList<>();
 
     public MapView() {
         super();
@@ -210,5 +215,29 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     @Override
     public void setZoomLevelMin(byte zoomLevelMin) {
         this.model.mapViewPosition.setZoomLevelMin(zoomLevelMin);
+    }
+
+    @Override
+    public void registerManualInputListener(IManualInputListener manualInputListener) {
+        manualInputListeners.add(manualInputListener);
+    }
+
+    @Override
+    public void unregisterManualInputListener(IManualInputListener manualInputListener) {
+        manualInputListeners.remove(manualInputListener);
+    }
+
+    @Override
+    public void manualMoveStarted() {
+        for (IManualInputListener manualInputListener : manualInputListeners) {
+            manualInputListener.manualMoveStarted();
+        }
+    }
+
+    @Override
+    public void manualZoomStarted() {
+        for (IManualInputListener manualInputListener : manualInputListeners) {
+            manualInputListener.manualZoomStarted();
+        }
     }
 }
