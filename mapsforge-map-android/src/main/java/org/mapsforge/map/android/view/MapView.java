@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2018 devemux86
  * Copyright 2015 Andreas Schildbach
+ * Copyright 2018 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -54,6 +55,10 @@ import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
 import org.mapsforge.map.view.FrameBufferHA2;
+import org.mapsforge.map.view.InputListener;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView, Observer {
 
@@ -110,6 +115,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     private final FrameBufferController frameBufferController;
     private final GestureDetector gestureDetector;
     private GestureDetector gestureDetectorExternal;
+    private final List<InputListener> inputListeners = new CopyOnWriteArrayList<>();
     private LayerManager layerManager;
     private final Handler layoutHandler = new Handler();
     private MapScaleBar mapScaleBar;
@@ -152,6 +158,15 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.mapViewProjection = new MapViewProjection(this);
 
         model.mapViewPosition.addObserver(this);
+    }
+
+    public void addInputListener(InputListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("listener must not be null");
+        } else if (this.inputListeners.contains(listener)) {
+            throw new IllegalArgumentException("listener is already registered: " + listener);
+        }
+        this.inputListeners.add(listener);
     }
 
     @Override
@@ -399,6 +414,18 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    /**
+     * This method is called by internal programs only. The underlying mapView implementation will
+     * notify registered {@link InputListener} about the start of a manual move.
+     * Note that this method may be called multiple times while the move has been started.
+     * Also note that only manual moves get notified.
+     */
+    public void onMoveEvent() {
+        for (InputListener listener : inputListeners) {
+            listener.onMoveEvent();
+        }
+    }
+
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         this.model.mapViewDimension.setDimension(new Dimension(width, height));
@@ -420,6 +447,27 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
             retVal = this.gestureDetector.onTouchEvent(event);
         }
         return retVal;
+    }
+
+    /**
+     * This method is called by internal programs only. The underlying mapView implementation will
+     * notify registered {@link InputListener} about the start of a manual zoom.
+     * Note that this method may be called multiple times while the zoom has been started.
+     * Also note that only manual zooms get notified.
+     */
+    public void onZoomEvent() {
+        for (InputListener listener : inputListeners) {
+            listener.onZoomEvent();
+        }
+    }
+
+    public void removeInputListener(InputListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("listener must not be null");
+        } else if (!this.inputListeners.contains(listener)) {
+            throw new IllegalArgumentException("listener is not registered: " + listener);
+        }
+        this.inputListeners.remove(listener);
     }
 
     @Override

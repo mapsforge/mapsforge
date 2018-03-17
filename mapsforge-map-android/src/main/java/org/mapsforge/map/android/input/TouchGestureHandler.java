@@ -1,9 +1,10 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2018 devemux86
  * Copyright 2014 Jordan Black
  * Copyright 2015 Andreas Schildbach
+ * Copyright 2018 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -92,6 +93,8 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                         double moveVertical = (center.y - e.getY()) / Math.pow(2, zoomLevelDiff);
                         LatLong pivot = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
                         if (pivot != null) {
+                            this.mapView.onMoveEvent();
+                            this.mapView.onZoomEvent();
                             mapViewPosition.setPivot(pivot);
                             mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
                         }
@@ -161,8 +164,11 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
         // Quick scale (no pivot)
         if (this.isInDoubleTap) {
+            this.mapView.onZoomEvent();
             this.pivot = null;
         } else {
+            this.mapView.onMoveEvent();
+            this.mapView.onZoomEvent();
             this.focusX = detector.getFocusX();
             this.focusY = detector.getFocusY();
             this.pivot = this.mapView.getMapViewProjection().fromPixels(focusX, focusY);
@@ -218,6 +224,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
+            this.mapView.onMoveEvent();
             this.mapView.getModel().mapViewPosition.moveCenter(-distanceX, -distanceY, false);
             return true;
         }

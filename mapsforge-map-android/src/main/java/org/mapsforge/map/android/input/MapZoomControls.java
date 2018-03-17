@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2016 devemux86
  * Copyright 2015 Andreas Schildbach
+ * Copyright 2018 mikes222
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -117,7 +118,7 @@ public class MapZoomControls extends LinearLayout implements Observer {
     private final Handler zoomControlsHideHandler;
     private byte zoomLevelMax, zoomLevelMin;
 
-    public MapZoomControls(Context context, MapView mapView) {
+    public MapZoomControls(Context context, final MapView mapView) {
         super(context);
         this.mapView = mapView;
         this.autoHide = true;
@@ -148,12 +149,14 @@ public class MapZoomControls extends LinearLayout implements Observer {
         buttonZoomIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mapView.onZoomEvent();
                 MapZoomControls.this.mapView.getModel().mapViewPosition.zoomIn();
             }
         });
         buttonZoomOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                mapView.onZoomEvent();
                 MapZoomControls.this.mapView.getModel().mapViewPosition.zoomOut();
             }
         });
