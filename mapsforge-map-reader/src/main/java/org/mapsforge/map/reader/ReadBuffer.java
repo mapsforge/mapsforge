@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
  * Copyright 2017 Gustl22
@@ -208,7 +208,7 @@ public class ReadBuffer {
         for (int tagId : tagIds) {
             Tag tag = tagsArray[tagId];
             // Decode variable values of tags
-            if (tag.value.charAt(0) == '%' && tag.value.length() == 2) {
+            if (tag.value.length() == 2 && tag.value.charAt(0) == '%') {
                 String value = tag.value;
                 if (value.charAt(1) == 'b') {
                     value = String.valueOf(readByte());

@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015 devemux86
+ * Copyright 2015-2018 devemux86
  * Copyright 2015-2016 lincomatic
  * Copyright 2017 Gustl22
  *
@@ -278,7 +278,7 @@ public final class OSMUtils {
      * @return an object that represents value
      */
     public static Object getObjectFromWildcardAndValue(String wildcard, String value) {
-        if (wildcard.charAt(0) == '%' && wildcard.length() == 2) {
+        if (wildcard.length() == 2 && wildcard.charAt(0) == '%') {
             Character format = wildcard.charAt(1);
             if (format == 'b') {
                 return getByteValue(value);
