@@ -48,6 +48,7 @@
 | [Pocket Coruna](https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo) | Tourist guide | Proprietary/Free | Closed |
 | [Pocket Maps](http://junjunguo.com/PocketMaps/) | Offline maps, routing & tracking functions | MIT/Free | Open |
 | [RouteConverter](http://www.routeconverter.com/) | GPS conversion and editing tool | GPL2/Free | Open |
+| [SatStat](https://mvglasow.github.io/satstat) | Android location, sensor and radio network status | GPL3+/Free | Open |
 | [Serval Maps](http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page) | Collaborative Mapping using a Mesh Network | GPL3/Free | Open |
 | [TingBY](http://ting.by/) | City guide | Proprietary/Free | Closed |
 | [Ultra GPS Logger](https://play.google.com/store/apps/details?id=com.flashlight.ultra.gps.logger) | GPS tracker | Proprietary/Commercial | Closed |
