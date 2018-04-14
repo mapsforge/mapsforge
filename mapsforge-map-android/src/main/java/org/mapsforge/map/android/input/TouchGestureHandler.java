@@ -45,6 +45,7 @@ import org.mapsforge.map.model.IMapViewPosition;
  * </ul>
  */
 public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener, Runnable {
+    private boolean doubleTapEnabled = true;
     private final Scroller flinger;
     private int flingLastX, flingLastY;
     private float focusX, focusY;
@@ -65,10 +66,19 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     }
 
     /**
+     * Get state of double tap gestures:<br/>
+     * - Double tap (zoom with focus)
+     */
+    public boolean isDoubleTapEnabled() {
+        return doubleTapEnabled;
+    }
+
+    /**
      * Get state of scale gestures:<br/>
      * - Scale<br/>
      * - Scale with focus<br/>
-     * - Quick scale (double tap + swipe)
+     * - Quick scale (double tap + swipe)<br/>
+     * - Double tap (zoom with focus)
      */
     public boolean isScaleEnabled() {
         return scaleEnabled;
@@ -76,8 +86,11 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public boolean onDoubleTapEvent(MotionEvent e) {
-        int action = e.getActionMasked();
+        if (!this.scaleEnabled) {
+            return false;
+        }
 
+        int action = e.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 this.isInDoubleTap = true;
@@ -86,7 +99,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                 // Quick scale in between (cancel double tap)
                 if (this.isInDoubleTap) {
                     IMapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
-                    if (mapViewPosition.getZoomLevel() < mapViewPosition.getZoomLevelMax()) {
+                    if (this.doubleTapEnabled && mapViewPosition.getZoomLevel() < mapViewPosition.getZoomLevelMax()) {
                         Point center = this.mapView.getModel().mapViewDimension.getDimension().getCenter();
                         byte zoomLevelDiff = 1;
                         double moveHorizontal = (center.x - e.getX()) / Math.pow(2, zoomLevelDiff);
@@ -259,10 +272,19 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     }
 
     /**
+     * Set state of double tap gestures:<br/>
+     * - Double tap (zoom with focus)
+     */
+    public void setDoubleTapEnabled(boolean doubleTapEnabled) {
+        this.doubleTapEnabled = doubleTapEnabled;
+    }
+
+    /**
      * Set state of scale gestures:<br/>
      * - Scale<br/>
      * - Scale with focus<br/>
-     * - Quick scale (double tap + swipe)
+     * - Quick scale (double tap + swipe)<br/>
+     * - Double tap (zoom with focus)
      */
     public void setScaleEnabled(boolean scaleEnabled) {
         this.scaleEnabled = scaleEnabled;
