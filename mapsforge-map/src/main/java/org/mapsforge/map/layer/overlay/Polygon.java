@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,9 +40,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Polygon extends Layer {
 
+    private BoundingBox boundingBox;
     private final GraphicFactory graphicFactory;
     private final boolean keepAligned;
-    private final List<LatLong> latLongs = new CopyOnWriteArrayList<LatLong>();
+    private final List<LatLong> latLongs = new CopyOnWriteArrayList<>();
     private Paint paintFill;
     private Paint paintStroke;
 
@@ -70,6 +71,21 @@ public class Polygon extends Layer {
         this.graphicFactory = graphicFactory;
     }
 
+    public synchronized void addPoint(LatLong point) {
+        this.latLongs.add(point);
+        updatePoints();
+    }
+
+    public synchronized void addPoints(List<LatLong> points) {
+        this.latLongs.addAll(points);
+        updatePoints();
+    }
+
+    public synchronized void clear() {
+        this.latLongs.clear();
+        updatePoints();
+    }
+
     public synchronized boolean contains(LatLong tapLatLong) {
         return LatLongUtils.contains(latLongs, tapLatLong);
     }
@@ -77,6 +93,10 @@ public class Polygon extends Layer {
     @Override
     public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
         if (this.latLongs.size() < 2 || (this.paintStroke == null && this.paintFill == null)) {
+            return;
+        }
+
+        if (this.boundingBox != null && !this.boundingBox.intersects(boundingBox)) {
             return;
         }
 
@@ -155,4 +175,13 @@ public class Polygon extends Layer {
         this.paintStroke = paintStroke;
     }
 
+    public synchronized void setPoints(List<LatLong> points) {
+        this.latLongs.clear();
+        this.latLongs.addAll(points);
+        updatePoints();
+    }
+
+    private void updatePoints() {
+        this.boundingBox = this.latLongs.isEmpty() ? null : new BoundingBox(this.latLongs);
+    }
 }

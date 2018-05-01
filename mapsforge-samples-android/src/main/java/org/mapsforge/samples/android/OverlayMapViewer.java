@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,6 +32,7 @@ import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.overlay.Polygon;
 import org.mapsforge.map.layer.overlay.Polyline;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,11 +66,11 @@ public class OverlayMapViewer extends DefaultTheme {
                 AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE),
                 (int) (8 * mapView.getModel().displayModel.getScaleFactor()),
                 Style.STROKE), AndroidGraphicFactory.INSTANCE);
-        List<LatLong> latLongs = polyline.getLatLongs();
+        List<LatLong> latLongs = new ArrayList<>();
         latLongs.add(latLong1);
         latLongs.add(latLong2);
         latLongs.add(latLong3);
-
+        polyline.setPoints(latLongs);
 
         // this illustrates that bitmap shaders can be used on a path, but then any dash effect
         // will not be applied.
@@ -86,10 +87,11 @@ public class OverlayMapViewer extends DefaultTheme {
                 return false;
             }
         };
-        List<LatLong> latLongs2 = polylineWithShader.getLatLongs();
+        List<LatLong> latLongs2 = new ArrayList<>();
         latLongs2.add(latLong7);
         latLongs2.add(latLong8);
         latLongs2.add(latLong9);
+        polylineWithShader.setPoints(latLongs2);
 
         Paint paintFill = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 2,
@@ -107,11 +109,12 @@ public class OverlayMapViewer extends DefaultTheme {
                 return false;
             }
         };
-        List<LatLong> latLongs3 = polygon.getLatLongs();
+        List<LatLong> latLongs3 = new ArrayList<>();
         latLongs3.add(latLong2);
         latLongs3.add(latLong3);
         latLongs3.add(latLong4);
         latLongs3.add(latLong5);
+        polygon.setPoints(latLongs3);
 
         // A polygon filled with a shader, where the shader is not aligned
         Paint paintFill2 = Utils.createPaint(
@@ -124,11 +127,12 @@ public class OverlayMapViewer extends DefaultTheme {
                 Style.STROKE);
         Polygon polygonWithShaderNonAligned = new Polygon(paintFill2, paintStroke2,
                 AndroidGraphicFactory.INSTANCE);
-        List<LatLong> latLongs4 = polygonWithShaderNonAligned.getLatLongs();
+        List<LatLong> latLongs4 = new ArrayList<>();
         latLongs4.add(latLong10);
         latLongs4.add(latLong11);
         latLongs4.add(latLong12);
         latLongs4.add(latLong10);
+        polygonWithShaderNonAligned.setPoints(latLongs4);
 
         Paint paintFill3 = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 2,
@@ -140,11 +144,12 @@ public class OverlayMapViewer extends DefaultTheme {
                 Style.STROKE);
         Polygon polygonWithShaderAligned = new Polygon(paintFill3, paintStroke3,
                 AndroidGraphicFactory.INSTANCE, true);
-        List<LatLong> latLongs5 = polygonWithShaderAligned.getLatLongs();
+        List<LatLong> latLongs5 = new ArrayList<>();
         latLongs5.add(latLong13);
         latLongs5.add(latLong14);
         latLongs5.add(latLong15);
         latLongs5.add(latLong13);
+        polygonWithShaderAligned.setPoints(latLongs5);
 
         Marker marker1 = Utils.createTappableMarker(this,
                 R.drawable.marker_red, latLong1);

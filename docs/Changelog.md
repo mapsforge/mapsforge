@@ -4,6 +4,7 @@
 
 - Mapsforge maps **v5 beta**: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)
 - MyLocationOverlay implementation [#1035](https://github.com/mapsforge/mapsforge/issues/1035)
+- Polyline / Polygon rendering optimizations [#1057](https://github.com/mapsforge/mapsforge/issues/1057)
 - Tile sources with api keys [#1028](https://github.com/mapsforge/mapsforge/issues/1028)
 - Render theme fallback internal resources [#1026](https://github.com/mapsforge/mapsforge/issues/1026)
 - MapViewPosition interface [#1044](https://github.com/mapsforge/mapsforge/pull/1044)

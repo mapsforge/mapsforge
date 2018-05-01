@@ -1,6 +1,7 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
  * Copyright 2014 Christian Pesch
+ * Copyright 2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +27,7 @@ import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.overlay.Polyline;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,9 +56,10 @@ public class ZoomToBounds extends OverlayMapViewer {
         Polyline polyline = new Polyline(Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE), 8,
                 Style.STROKE), AndroidGraphicFactory.INSTANCE);
-        List<LatLong> latLongs = polyline.getLatLongs();
+        List<LatLong> latLongs = new ArrayList<>();
         latLongs.add(latLong2);
         latLongs.add(latLong3);
+        polyline.setPoints(latLongs);
         layers.add(polyline);
     }
 

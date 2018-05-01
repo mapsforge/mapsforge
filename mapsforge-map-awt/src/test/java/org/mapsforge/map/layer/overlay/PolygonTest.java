@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,7 +27,9 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class PolygonTest {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -55,8 +58,10 @@ public class PolygonTest {
             Point point = new Point(0, 0);
             polygon.draw(boundingBox, (byte) 0, canvas, point);
 
-            polygon.getLatLongs().add(new LatLong(0, 0));
-            polygon.getLatLongs().add(new LatLong(1, 1));
+            List<LatLong> latLongs = new ArrayList<>();
+            latLongs.add(new LatLong(0, 0));
+            latLongs.add(new LatLong(1, 1));
+            polygon.setPoints(latLongs);
             polygon.draw(boundingBox, (byte) 0, canvas, point);
 
             polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
@@ -76,7 +81,9 @@ public class PolygonTest {
         Assert.assertNull(polygon.getPaintFill());
         Assert.assertNull(polygon.getPaintStroke());
 
-        polygon.getLatLongs().add(latLong);
+        List<LatLong> latLongs = new ArrayList<>();
+        latLongs.add(latLong);
+        polygon.setPoints(latLongs);
         Assert.assertEquals(Arrays.asList(latLong), polygon.getLatLongs());
 
         polygon.setPaintFill(paintFill);

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +24,9 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.MapViewPositionObserver;
 import org.mapsforge.map.layer.overlay.Polyline;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An activity with a smaller mapview giving the position of the larger map
@@ -52,16 +55,13 @@ public class DualOverviewMapViewer extends DualMapViewer {
                         2, Style.STROKE);
                 Polyline polygon = new Polyline(paintStroke,
                         AndroidGraphicFactory.INSTANCE);
-                polygon.getLatLongs().add(
-                        new LatLong(bbox.minLatitude, bbox.minLongitude));
-                polygon.getLatLongs().add(
-                        new LatLong(bbox.minLatitude, bbox.maxLongitude));
-                polygon.getLatLongs().add(
-                        new LatLong(bbox.maxLatitude, bbox.maxLongitude));
-                polygon.getLatLongs().add(
-                        new LatLong(bbox.maxLatitude, bbox.minLongitude));
-                polygon.getLatLongs().add(
-                        new LatLong(bbox.minLatitude, bbox.minLongitude));
+                List<LatLong> latLongs = new ArrayList<>();
+                latLongs.add(new LatLong(bbox.minLatitude, bbox.minLongitude));
+                latLongs.add(new LatLong(bbox.minLatitude, bbox.maxLongitude));
+                latLongs.add(new LatLong(bbox.maxLatitude, bbox.maxLongitude));
+                latLongs.add(new LatLong(bbox.maxLatitude, bbox.minLongitude));
+                latLongs.add(new LatLong(bbox.minLatitude, bbox.minLongitude));
+                polygon.setPoints(latLongs);
                 if (this.lastLine != null) {
                     DualOverviewMapViewer.this.mapView2.getLayerManager().getLayers()
                             .remove(this.lastLine);
