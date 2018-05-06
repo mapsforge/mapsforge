@@ -48,6 +48,7 @@ public class LayerManager extends PausableThread implements Redrawer {
 
         this.drawingCanvas = graphicFactory.createCanvas();
         this.layers = new Layers(this, mapView.getModel().displayModel);
+        this.waitForWork = true;
     }
 
     public Layers getLayers() {

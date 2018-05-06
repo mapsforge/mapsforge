@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2017 MarcelHeckel
+ * Copyright 2018 Nicola Murino
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -61,6 +62,7 @@ public abstract class PausableThread extends Thread {
     private boolean pausing;
     private boolean shouldPause;
     private boolean shouldStop;
+    protected boolean waitForWork;
 
     /**
      * Causes the current thread to wait until this thread is pausing.
@@ -124,7 +126,7 @@ public abstract class PausableThread extends Thread {
         setName(getClass().getSimpleName());
         setPriority(getThreadPriority().priority);
 
-        while (!this.shouldStop && !isInterrupted()) {
+        while ((!this.shouldStop && !isInterrupted()) || (this.waitForWork && hasWork())) {
             synchronized (this) {
                 while (!this.shouldStop && !isInterrupted() && (this.shouldPause || !hasWork())) {
                     try {
@@ -139,7 +141,7 @@ public abstract class PausableThread extends Thread {
                 }
             }
 
-            if (this.shouldStop || isInterrupted()) {
+            if ((this.shouldStop || isInterrupted()) && (!this.waitForWork || !hasWork())) {
                 break;
             }
 
