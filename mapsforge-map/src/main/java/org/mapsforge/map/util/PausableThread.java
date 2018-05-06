@@ -123,8 +123,8 @@ public abstract class PausableThread extends Thread {
     public final void run() {
         setName(getClass().getSimpleName());
         setPriority(getThreadPriority().priority);
-
-        while (!this.shouldStop && !isInterrupted()) {
+		
+        while ((!this.shouldStop && !isInterrupted()) || hasWork()) {
             synchronized (this) {
                 while (!this.shouldStop && !isInterrupted() && (this.shouldPause || !hasWork())) {
                     try {
@@ -139,7 +139,7 @@ public abstract class PausableThread extends Thread {
                 }
             }
 
-            if (this.shouldStop || isInterrupted()) {
+            if ((this.shouldStop || isInterrupted()) && !hasWork()) {
                 break;
             }
 
