@@ -61,6 +61,7 @@ public abstract class PausableThread extends Thread {
     private boolean pausing;
     private boolean shouldPause;
     private boolean shouldStop;
+    protected boolean waitForDoWork;
 
     /**
      * Causes the current thread to wait until this thread is pausing.
@@ -124,7 +125,7 @@ public abstract class PausableThread extends Thread {
         setName(getClass().getSimpleName());
         setPriority(getThreadPriority().priority);
 
-        while (!this.shouldStop && !isInterrupted()) {
+        while ((!this.shouldStop && !isInterrupted()) || (waitForDoWork && hasWork())) {
             synchronized (this) {
                 while (!this.shouldStop && !isInterrupted() && (this.shouldPause || !hasWork())) {
                     try {
@@ -139,7 +140,7 @@ public abstract class PausableThread extends Thread {
                 }
             }
 
-            if (this.shouldStop || isInterrupted()) {
+            if ((this.shouldStop || isInterrupted()) && (!waitForDoWork || !hasWork())) {
                 break;
             }
 
