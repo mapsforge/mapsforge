@@ -1,6 +1,6 @@
 /*
  * Copyright 2015-2017 devemux86
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -472,6 +472,12 @@ public final class PoiWriter {
                 try {
                     // Get categories from tag
                     List<PoiCategory> pcs = this.tagMappingResolver.getCategoriesFromTag(tagStr);
+
+                    // Get categories from key, if tag wasn't matched
+                    // Note: key categories should be parents of their value categories
+                    if (pcs == null) {
+                        pcs = this.tagMappingResolver.getCategoriesFromTag(key);
+                    }
 
                     if (pcs != null) {
                         for (PoiCategory pc : pcs) {

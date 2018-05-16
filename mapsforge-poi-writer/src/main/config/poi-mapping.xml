@@ -1546,4 +1546,10 @@
         </category>
     </category>
 
+    <!-- Address search -->
+    <category title="Address">
+        <mapping tag="addr:street" />
+        <mapping tag="addr:housenumber" />
+    </category>
+
 </category>
