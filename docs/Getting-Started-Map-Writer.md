@@ -38,7 +38,8 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`tag-conf-file`|path to an XML file that customizes the definition which OSM-tags are recognized|path to an XML file, please read section 'Defining a Custom Tag Mapping via XML' carefully before using thsi parameter|(blank) internal default tag mapping is used|
 |`polygon-clipping`|use polygon clipping to reduce map file size (minimal performance overhead)|true/false|true|
 |`way-clipping`|use way clipping to reduce map file size (minimal performance overhead)|true/false|true|
-|`label-position`|compute label position for polygons that cover multiple tiles (minimal performance overhead)|true/false|false|
+|`label-position`|compute label/symbol position for polygons that cover multiple tiles|true/false|false|
+|`polylabel`|use in `label-position` calculation:<ul><li>Mapbox [polylabel](https://github.com/mapbox/polylabel) algorithm</li><li>JTS [interior point](https://locationtech.github.io/jts/javadoc/org/locationtech/jts/algorithm/InteriorPointArea.html) algorithm (minimal performance overhead)</li></ul>|<ul><li>true</li><li>false</li></ul>|false|
 |`simplification-factor`|simplifies ways and polygons with a topology preserving algorithm similar to the Douglas Peucker algorithm, using as the maximum distance difference value the given simplification factor (evaluated in pixels on max zoom level of a base zoom level); on base zoom levels higher than 12, no simplification is computed|positive real number|2.5|
 |`simplification-max-zoom`|The maximum base zoom level for which we apply a simplification algorithm to filter way points|positive integer|12|
 |`bbox-enlargement`|amount of meters used for enlarging bounding boxes in computations|positive integer|20|
@@ -101,6 +102,10 @@ Please consult the XML-Schema documentation of https://github.com/mapsforge/maps
 You need to be aware that this configuration only defines what data is to be included in the map file. How the data is eventually rendered is specified by a rule-set that is attached to the renderer. So if you add any tag to the writer’s tag configuration that is not recognized by the renderer, it will not be displayed in the map. In this case, you have to make sure that you also define in which way the new tag is to be rendered. How to configure the rendering is described in the article.
 
 ## Changelog
+
+## New since 0.9.0
+
+- Polygon label/symbol centroid
 
 ### 0.9.0
 

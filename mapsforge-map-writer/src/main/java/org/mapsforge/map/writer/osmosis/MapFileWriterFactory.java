@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  * Copyright 2016 mikes222
  * Copyright 2017 Gustl22
  *
@@ -38,6 +38,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
     private static final String PARAM_MAP_START_ZOOM = "map-start-zoom";
     private static final String PARAM_OUTFILE = "file";
     private static final String PARAM_POLYGON_CLIPPING = "polygon-clipping";
+    private static final String PARAM_POLYLABEL = "polylabel";
     private static final String PARAM_PREFERRED_LANGUAGES = "preferred-languages";
     // private static final String PARAM_WAYNODE_COMPRESSION = "waynode-compression";
     private static final String PARAM_SIMPLIFICATION_FACTOR = "simplification-factor";
@@ -65,6 +66,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
         configuration.setComment(getStringArgument(taskConfig, PARAM_COMMENT, null));
         configuration.setDebugStrings(getBooleanArgument(taskConfig, PARAM_DEBUG_INFO, false));
         configuration.setPolygonClipping(getBooleanArgument(taskConfig, PARAM_POLYGON_CLIPPING, true));
+        configuration.setPolylabel(getBooleanArgument(taskConfig, PARAM_POLYLABEL, false));
         configuration.setWayClipping(getBooleanArgument(taskConfig, PARAM_WAY_CLIPPING, true));
         configuration.setLabelPosition(getBooleanArgument(taskConfig, PARAM_LABEL_POSITION, false));
         // boolean waynodeCompression = getBooleanArgument(taskConfig, PARAM_WAYNODE_COMPRESSION,

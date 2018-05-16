@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
  * Copyright 2017 Gustl22
+ * Copyright 2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -159,6 +160,19 @@ public final class GeoUtils {
         Point centroid = geometry.getCentroid();
         if (centroid != null) {
             return new LatLong(centroid.getCoordinate().y, centroid.getCoordinate().x);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param geometry the JTS {@link Geometry} object
+     * @return the interior point of the given geometry
+     */
+    public static LatLong computeInteriorPoint(Geometry geometry) {
+        Point interiorPoint = geometry.getInteriorPoint();
+        if (interiorPoint != null) {
+            return new LatLong(interiorPoint.getCoordinate().y, interiorPoint.getCoordinate().x);
         }
 
         return null;

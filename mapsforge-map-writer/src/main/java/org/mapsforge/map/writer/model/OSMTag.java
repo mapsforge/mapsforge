@@ -154,7 +154,7 @@ public class OSMTag {
      * @return the labelPosition
      */
     public boolean isLabelPosition() {
-        return labelPosition;
+        return this.labelPosition;
     }
 
     /**

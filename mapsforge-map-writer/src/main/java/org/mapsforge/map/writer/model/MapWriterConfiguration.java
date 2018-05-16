@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  * Copyright 2016 mikes222
  * Copyright 2017 Gustl22
  *
@@ -47,6 +47,7 @@ public class MapWriterConfiguration {
     private int mapStartZoomLevel;
     private File outputFile;
     private boolean polygonClipping;
+    private boolean polylabel;
     private List<String> preferredLanguages;
 
     private double simplification;
@@ -304,6 +305,13 @@ public class MapWriterConfiguration {
     }
 
     /**
+     * @return the polylabel
+     */
+    public boolean isPolylabel() {
+        return this.polylabel;
+    }
+
+    /**
      * @return the skipInvalidRelations
      */
     public boolean isSkipInvalidRelations() {
@@ -437,6 +445,13 @@ public class MapWriterConfiguration {
      */
     public void setPolygonClipping(boolean polygonClipping) {
         this.polygonClipping = polygonClipping;
+    }
+
+    /**
+     * @param polylabel the polylabel to set
+     */
+    public void setPolylabel(boolean polylabel) {
+        this.polylabel = polylabel;
     }
 
     /**

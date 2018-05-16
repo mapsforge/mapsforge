@@ -3,7 +3,7 @@
  * Copyright 2015 lincomatic
  * Copyright 2016 Andrey Novikov
  * Copyright 2016 mikes222
- * Copyright 2016-2017 devemux86
+ * Copyright 2016-2018 devemux86
  * Copyright 2017 Ludwig M Brinckmann
  * Copyright 2017 Gustl22
  *
@@ -182,7 +182,7 @@ public final class MapFileWriter {
             short subtileMask = GeoUtils.computeBitmask(processedGeometry, this.tile,
                     this.configuration.getBboxEnlargement());
 
-            // Compute the label coordinates of the unclipped polygon
+            // Compute the label/symbol coordinates of the non clipped polygon
             LatLong labelCoordinate = null;
             if (this.way.isValidClosedLine()) {
                 boolean labelPosition = this.configuration.isLabelPosition();
@@ -195,8 +195,12 @@ public final class MapFileWriter {
                     }
                 }
                 if (labelPosition) {
-                    Point labelPoint = PolyLabel.get(originalGeometry);
-                    labelCoordinate = new LatLong(labelPoint.getY(), labelPoint.getX());
+                    if (this.configuration.isPolylabel()) {
+                        Point labelPoint = PolyLabel.get(originalGeometry);
+                        labelCoordinate = new LatLong(labelPoint.getY(), labelPoint.getX());
+                    } else {
+                        labelCoordinate = GeoUtils.computeInteriorPoint(originalGeometry);
+                    }
                 }
             }
 
