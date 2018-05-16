@@ -100,7 +100,10 @@ class TagMappingResolver {
 
         // For each mapping's tag: split and save key (uniquely)
         for (String tag : this.tagMap.keySet()) {
-            this.mappingTags.add(tag.split("=")[0]);
+            if (tag.contains("="))
+                this.mappingTags.add(tag.split("=")[0]);
+            else
+                this.mappingTags.add(tag);
         }
     }
 

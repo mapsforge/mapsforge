@@ -472,6 +472,10 @@ public final class PoiWriter {
                 try {
                     // Get categories from tag
                     List<PoiCategory> pcs = this.tagMappingResolver.getCategoriesFromTag(tagStr);
+                    // Get categories from key, if tag wasn't matching
+                    // This means that key categories should be parents of their tag values.
+                    if (pcs == null)
+                        pcs = this.tagMappingResolver.getCategoriesFromTag(key);
 
                     if (pcs != null) {
                         for (PoiCategory pc : pcs) {
