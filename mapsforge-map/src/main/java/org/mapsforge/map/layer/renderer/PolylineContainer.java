@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -52,9 +52,12 @@ public class PolylineContainer implements ShapeContainer {
         this.tags = way.tags;
         this.upperLeft = upperLeft;
         this.lowerRight = lowerRight;
-        layer = way.layer;
+        this.layer = way.layer;
         this.way = way;
         this.isClosedWay = LatLongUtils.isClosedWay(way.latLongs[0]);
+        if (this.way.labelPosition != null) {
+            this.center = MercatorProjection.getPixelAbsolute(this.way.labelPosition, this.upperLeft.mapSize);
+        }
     }
 
     public PolylineContainer(Point[] coordinates, final Tile upperLeft, final Tile lowerRight, List<Tag> tags) {
@@ -70,7 +73,7 @@ public class PolylineContainer implements ShapeContainer {
     }
 
     public Point getCenterAbsolute() {
-        if (null == center) {
+        if (this.center == null) {
             this.center = GeometryUtils.calculateCenterOfBoundingBox(getCoordinatesAbsolute()[0]);
         }
         return this.center;

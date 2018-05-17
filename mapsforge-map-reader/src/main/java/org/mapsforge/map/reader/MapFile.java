@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2017 devemux86
+ * Copyright 2014-2018 devemux86
  * Copyright 2015-2016 lincomatic
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
@@ -796,7 +796,10 @@ public class MapFile extends MapDataStore {
                 tags.add(new Tag(TAG_KEY_REF, readBuffer.readUTF8EncodedString()));
             }
 
-            LatLong labelPosition = readOptionalLabelPosition(tileLatitude, tileLongitude, featureLabelPosition, readBuffer);
+            int[] labelPosition = null;
+            if (featureLabelPosition) {
+                labelPosition = readOptionalLabelPosition(readBuffer);
+            }
 
             int wayDataBlocks = readOptionalWayDataBlocksByte(featureWayDataBlocksByte, readBuffer);
             if (wayDataBlocks < 1) {
@@ -811,7 +814,12 @@ public class MapFile extends MapDataStore {
                         continue;
                     }
                     if (Selector.ALL == selector || featureName || featureHouseNumber || featureRef || wayAsLabelTagFilter(tags)) {
-                        ways.add(new Way(layer, tags, wayNodes, labelPosition));
+                        LatLong labelLatLong = null;
+                        if (labelPosition != null) {
+                            labelLatLong = new LatLong(wayNodes[0][0].latitude + LatLongUtils.microdegreesToDegrees(labelPosition[1]),
+                                    wayNodes[0][0].longitude + LatLongUtils.microdegreesToDegrees(labelPosition[0]));
+                        }
+                        ways.add(new Way(layer, tags, wayNodes, labelLatLong));
                     }
                 }
             }
@@ -899,18 +907,16 @@ public class MapFile extends MapDataStore {
         }
     }
 
-    private LatLong readOptionalLabelPosition(double tileLatitude, double tileLongitude, boolean featureLabelPosition, ReadBuffer readBuffer) {
-        if (featureLabelPosition) {
-            // get the label position latitude offset (VBE-S)
-            double latitude = tileLatitude + LatLongUtils.microdegreesToDegrees(readBuffer.readSignedInt());
+    private int[] readOptionalLabelPosition(ReadBuffer readBuffer) {
+        int[] labelPosition = new int[2];
 
-            // get the label position longitude offset (VBE-S)
-            double longitude = tileLongitude + LatLongUtils.microdegreesToDegrees(readBuffer.readSignedInt());
+        // get the label position latitude offset (VBE-S)
+        labelPosition[1] = readBuffer.readSignedInt();
 
-            return new LatLong(latitude, longitude);
-        }
+        // get the label position longitude offset (VBE-S)
+        labelPosition[0] = readBuffer.readSignedInt();
 
-        return null;
+        return labelPosition;
     }
 
     private int readOptionalWayDataBlocksByte(boolean featureWayDataBlocksByte, ReadBuffer readBuffer) {
