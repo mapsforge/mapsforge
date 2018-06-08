@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -45,7 +45,7 @@ public class RotateView extends ViewGroup {
             return;
         }
 
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.save();
         canvas.rotate(-heading, getWidth() * 0.5f, getHeight() * 0.5f);
         smoothCanvas.delegate = canvas;
         super.dispatchDraw(smoothCanvas);
