@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,7 +21,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.TestUtils;
-import org.mapsforge.map.layer.download.tilesource.OpenCycleMap;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.RendererJob;
@@ -60,12 +60,9 @@ public class DownloadJobTest {
         Tile tile = new Tile(0, 0, (byte) 0, TILE_SIZE);
         DownloadJob downloadJob1 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
         DownloadJob downloadJob2 = new DownloadJob(tile, OpenStreetMapMapnik.INSTANCE);
-        DownloadJob downloadJob3 = new DownloadJob(tile, OpenCycleMap.INSTANCE);
 
         TestUtils.equalsTest(downloadJob1, downloadJob2);
 
-        Assert.assertNotEquals(downloadJob1, downloadJob3);
-        Assert.assertNotEquals(downloadJob3, downloadJob1);
         Assert.assertNotEquals(downloadJob1, new Object());
 
         MapFile mapFile = MapFile.TEST_MAP_FILE;

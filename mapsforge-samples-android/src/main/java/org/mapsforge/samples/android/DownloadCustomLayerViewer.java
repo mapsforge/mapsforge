@@ -26,10 +26,10 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
     protected void createLayers() {
         OnlineTileSource onlineTileSource = new OnlineTileSource(new String[]{
                 "a.tile.openstreetmap.fr", "b.tile.openstreetmap.fr", "c.tile.openstreetmap.fr"},
-                80);
+                443);
         onlineTileSource.setName("Humanitarian").setAlpha(false)
                 .setBaseUrl("/hot/")
-                .setParallelRequestsLimit(8).setProtocol("http").setTileSize(256)
+                .setParallelRequestsLimit(8).setProtocol("https").setTileSize(256)
                 .setZoomLevelMax((byte) 18).setZoomLevelMin((byte) 0);
         onlineTileSource.setUserAgent("Mapsforge Samples");
         this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),

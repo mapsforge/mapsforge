@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2017 devemux86
+ * Copyright 2014-2018 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -23,6 +23,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.os.Build;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
@@ -213,7 +214,13 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void resetClip() {
-        this.canvas.clipRect(0, 0, getWidth(), getHeight(), Region.Op.REPLACE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.canvas.save();
+            this.canvas.clipRect(0, 0, getWidth(), getHeight());
+            this.canvas.restore();
+        } else {
+            this.canvas.clipRect(0, 0, getWidth(), getHeight(), Region.Op.REPLACE);
+        }
     }
 
     @Override
@@ -223,7 +230,13 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void setClip(int left, int top, int width, int height) {
-        this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.canvas.save();
+            this.canvas.clipRect(left, top, left + width, top + height);
+            this.canvas.restore();
+        } else {
+            this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
+        }
     }
 
     @Override
@@ -237,7 +250,7 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void shadeBitmap(Bitmap bitmap, Rectangle hillRect, Rectangle tileRect, float magnitude) {
-        canvas.save();
+        this.canvas.save();
         final HilshadingTemps temps;
         if (this.hillshadingTemps == null) {
             this.hillshadingTemps = new HilshadingTemps();
@@ -245,16 +258,21 @@ class AndroidCanvas implements Canvas {
         temps = this.hillshadingTemps;
 
         android.graphics.Paint shadePaint = hillshadingTemps.useAlphaPaint((int) (255 * magnitude));
-        ;
 
         if (bitmap == null) {
             if (tileRect != null) {
-                this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    this.canvas.save();
+                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
+                    this.canvas.restore();
+                } else {
+                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
+                }
             }
             // scale a dummy pixel over the canvas - just drawing a paint would probably be faster, but the resulting colors can be inconsistent with the bitmap draw (maybe only on some devices?)
             this.canvas.drawBitmap(hillshadingTemps.useNeutralShadingPixel(), hillshadingTemps.useAsr(0, 0, 1, 1), hillshadingTemps.useAdr(0, 0, canvas.getWidth(), canvas.getHeight()), shadePaint);
 
-            canvas.restore();
+            this.canvas.restore();
             return;
         }
 
@@ -264,7 +282,13 @@ class AndroidCanvas implements Canvas {
 
         if (horizontalScale < 1 && verticalScale < 1) {
             // fast path for wide zoom (downscaling)
-            this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                this.canvas.save();
+                this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
+                this.canvas.restore();
+            } else {
+                this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
+            }
             android.graphics.Matrix transform = temps.useMatrix();
             transform.preTranslate((float) tileRect.left, (float) tileRect.top);
             transform.preScale((float) horizontalScale, (float) verticalScale);

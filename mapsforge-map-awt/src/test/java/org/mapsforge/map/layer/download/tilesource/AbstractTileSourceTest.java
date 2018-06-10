@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -56,12 +57,9 @@ public class AbstractTileSourceTest {
     public void equalsTest() {
         AbstractTileSource abstractTileSource1 = OpenStreetMapMapnik.INSTANCE;
         AbstractTileSource abstractTileSource2 = OpenStreetMapMapnik.INSTANCE;
-        AbstractTileSource abstractTileSource3 = OpenCycleMap.INSTANCE;
 
         TestUtils.equalsTest(abstractTileSource1, abstractTileSource2);
 
-        Assert.assertNotEquals(abstractTileSource1, abstractTileSource3);
-        Assert.assertNotEquals(abstractTileSource3, abstractTileSource1);
         Assert.assertNotEquals(abstractTileSource1, new Object());
     }
 }
