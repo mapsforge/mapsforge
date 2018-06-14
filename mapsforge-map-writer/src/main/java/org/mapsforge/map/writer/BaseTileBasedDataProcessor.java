@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  * Copyright 2017 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -37,6 +37,9 @@ import org.mapsforge.map.writer.model.WayResolver;
 import org.mapsforge.map.writer.model.ZoomIntervalConfiguration;
 import org.mapsforge.map.writer.util.GeoUtils;
 import org.mapsforge.map.writer.util.OSMUtils;
+import org.openstreetmap.osmosis.core.domain.v0_6.Node;
+import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
+import org.openstreetmap.osmosis.core.domain.v0_6.Way;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -75,7 +78,8 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
             }
 
             if (++this.nRelations % 100 == 0) {
-                System.out.printf("Progress: Relations " + nfCounts.format(this.nRelations) + "\r");
+                System.out.print("Progress: Relations " + nfCounts.format(this.nRelations)
+                        + " / " + nfCounts.format(getRelationCount()) + "\r");
             }
 
             this.extractedPolygons = null;
@@ -268,7 +272,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
             }
 
             if (++this.nWays % 10000 == 0) {
-                System.out.printf("Progress: Ways " + nfCounts.format(this.nWays) + "\r");
+                System.out.print("Progress: Ways " + nfCounts.format(this.nWays) + " / " + nfCounts.format(getWayCount()) + "\r");
             }
 
             // we only consider ways that have tags and which have not already
@@ -312,7 +316,11 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
     protected final Map<TileCoordinate, TLongHashSet> tilesToRootElements;
     protected final Map<Long, Long> partRootRelations;
 
-    private final NumberFormat nfCounts = NumberFormat.getInstance();
+    // Accounting
+    private int amountOfNodesProcessed = 0;
+    private int amountOfRelationsProcessed = 0;
+    private int amountOfWaysProcessed = 0;
+    protected final NumberFormat nfCounts = NumberFormat.getInstance();
 
     protected final ZoomIntervalConfiguration zoomIntervalConfiguration;
 
@@ -377,6 +385,43 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
     @Override
     public ZoomIntervalConfiguration getZoomIntervalConfiguration() {
         return this.zoomIntervalConfiguration;
+    }
+
+    @Override
+    public void addNode(Node node) {
+        if (++this.amountOfNodesProcessed % 1000000 == 0) {
+            System.out.print("\33[2KAdd nodes: " + nfCounts.format(this.amountOfNodesProcessed) + "\r");
+        }
+    }
+
+    @Override
+    public void addRelation(Relation relation) {
+        if (++this.amountOfRelationsProcessed % 10000 == 0) {
+            System.out.print("\33[2KAdd relations: " + nfCounts.format(this.amountOfRelationsProcessed) + "\r");
+        }
+    }
+
+    @Override
+    public void addWay(Way way) {
+        if (++this.amountOfWaysProcessed % 50000 == 0) {
+            // "\33[2K" sequence is needed to clear the line, to overwrite larger previous numbers
+            System.out.print("\33[2KAdd ways: " + nfCounts.format(this.amountOfWaysProcessed) + "\r");
+        }
+    }
+
+    @Override
+    public int getNodeCount() {
+        return amountOfNodesProcessed;
+    }
+
+    @Override
+    public int getRelationCount() {
+        return amountOfRelationsProcessed;
+    }
+
+    @Override
+    public int getWayCount() {
+        return amountOfWaysProcessed;
     }
 
     /**
