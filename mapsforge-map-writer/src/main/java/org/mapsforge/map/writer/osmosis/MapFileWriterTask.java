@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2017 devemux86
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -43,11 +43,6 @@ import java.util.logging.Logger;
  */
 public class MapFileWriterTask implements Sink {
     private static final Logger LOGGER = Logger.getLogger(MapFileWriterTask.class.getName());
-
-    // Accounting
-    private int amountOfNodesProcessed = 0;
-    private int amountOfRelationsProcessed = 0;
-    private int amountOfWaysProcessed = 0;
 
     private final MapWriterConfiguration configuration;
     private TileBasedDataProcessor tileBasedGeoObjectStore;
@@ -121,9 +116,9 @@ public class MapFileWriterTask implements Sink {
         }
 
         LOGGER.info("finished...");
-        LOGGER.fine("total processed nodes: " + nfCounts.format(this.amountOfNodesProcessed));
-        LOGGER.fine("total processed ways: " + nfCounts.format(this.amountOfWaysProcessed));
-        LOGGER.fine("total processed relations: " + nfCounts.format(this.amountOfRelationsProcessed));
+        LOGGER.fine("total processed nodes: " + nfCounts.format(this.tileBasedGeoObjectStore.getNodesNumber()));
+        LOGGER.fine("total processed ways: " + nfCounts.format(this.tileBasedGeoObjectStore.getWaysNumber()));
+        LOGGER.fine("total processed relations: " + nfCounts.format(this.tileBasedGeoObjectStore.getRelationsNumber()));
 
         LOGGER.info("estimated memory consumption: "
                 + nfMegabyte.format(+((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / Math
@@ -176,7 +171,6 @@ public class MapFileWriterTask implements Sink {
                 this.tileBasedGeoObjectStore.addNode((Node) entity);
                 // hint to GC
                 entity = null;
-                this.amountOfNodesProcessed++;
                 break;
 
             // *******************************************************
@@ -185,7 +179,6 @@ public class MapFileWriterTask implements Sink {
             case Way:
                 this.tileBasedGeoObjectStore.addWay((Way) entity);
                 entity = null;
-                this.amountOfWaysProcessed++;
                 break;
 
             // *******************************************************
@@ -194,7 +187,6 @@ public class MapFileWriterTask implements Sink {
             case Relation:
                 Relation currentRelation = (Relation) entity;
                 this.tileBasedGeoObjectStore.addRelation(currentRelation);
-                this.amountOfRelationsProcessed++;
                 entity = null;
                 break;
         }

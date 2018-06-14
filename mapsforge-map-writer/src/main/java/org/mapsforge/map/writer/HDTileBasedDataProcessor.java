@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
  * Copyright 2017 devemux86
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -97,6 +97,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 
     @Override
     public void addNode(Node node) {
+        super.addNode(node);
         this.indexedNodeStore.add(node.getId(), node);
         TDNode tdNode = TDNode.fromNode(node, this.preferredLanguages);
         addPOI(tdNode);
@@ -104,11 +105,13 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
 
     @Override
     public void addRelation(Relation relation) {
+        super.addRelation(relation);
         this.relationStore.add(relation);
     }
 
     @Override
     public void addWay(Way way) {
+        super.addWay(way);
         this.wayStore.add(way);
         this.indexedWayStore.add(way.getId(), way);
         this.maxWayID = Math.max(way.getId(), this.maxWayID);
@@ -131,11 +134,19 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
         this.indexedWayStore.complete();
         this.wayIndexReader = this.indexedWayStore.createReader();
 
+        LOGGER.info("handle coastlines" +
+                (this.tagValues ? " and implicit way relations..." : "..."));
         // Prepare implicit way relations
         // (should be done here, before handling ways, although
         // the WayHandler does only process ids in HD Processor)
+        int nWays = 0;
         ReleasableIterator<Way> wayReader = this.wayStore.iterate();
         while (wayReader.hasNext()) {
+            if (++nWays % 10000 == 0) {
+                System.out.print("Ways: " + this.nfCounts.format(nWays)
+                        + " / " + this.nfCounts.format(getWaysNumber()) + "\r");
+            }
+
             Way way = wayReader.next();
             TDWay tdWay = TDWay.fromWay(way, this, this.preferredLanguages);
             if (tdWay == null) {

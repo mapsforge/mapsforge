@@ -233,6 +233,7 @@ public class TDRelation {
     @Override
     public String toString() {
         return "TDRelation [id=" + this.id + ", layer=" + this.layer + ", name=" + this.name + ", ref=" + this.ref
-                + ", tags=" + Arrays.toString(this.tags.keySet().toArray()) + "]";
+                + ", tags=" + Arrays.toString(this.tags.keySet().toArray())
+                + ", members=" + this.memberWays.length + "]";
     }
 }

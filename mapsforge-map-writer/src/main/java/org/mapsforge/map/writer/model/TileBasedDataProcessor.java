@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2017 devemux86
+ * Copyright 2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -114,4 +115,19 @@ public interface TileBasedDataProcessor {
      * @return the underlying zoom interval configuration
      */
     ZoomIntervalConfiguration getZoomIntervalConfiguration();
+
+    /**
+     * @return the number of added nodes
+     */
+    int getNodesNumber();
+
+    /**
+     * @return the number of added relations
+     */
+    int getRelationsNumber();
+
+    /**
+     * @return the number of added ways
+     */
+    int getWaysNumber();
 }
