@@ -78,8 +78,10 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
             }
 
             if (++this.nRelations % 100 == 0) {
-                System.out.print("Progress: Relations " + nfCounts.format(this.nRelations)
-                        + " / " + nfCounts.format(getRelationsNumber()) + "\r");
+                if (progressLogs) {
+                    System.out.print("Progress: Relations " + nfCounts.format(this.nRelations)
+                            + " / " + nfCounts.format(getRelationsNumber()) + "\r");
+                }
             }
 
             this.extractedPolygons = null;
@@ -272,8 +274,10 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
             }
 
             if (++this.nWays % 10000 == 0) {
-                System.out.print("Progress: Ways " + nfCounts.format(this.nWays)
-                        + " / " + nfCounts.format(getWaysNumber()) + "\r");
+                if (progressLogs) {
+                    System.out.print("Progress: Ways " + nfCounts.format(this.nWays)
+                            + " / " + nfCounts.format(getWaysNumber()) + "\r");
+                }
             }
 
             // we only consider ways that have tags and which have not already
@@ -308,6 +312,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
     protected final TLongObjectHashMap<TLongArrayList> outerToInnerMapping;
 
     protected final List<String> preferredLanguages;
+    protected final boolean progressLogs;
     protected final boolean skipInvalidRelations;
     protected final boolean tagValues;
     protected TileGridLayout[] tileGridLayouts;
@@ -332,6 +337,7 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
         this.tileGridLayouts = new TileGridLayout[this.zoomIntervalConfiguration.getNumberOfZoomIntervals()];
         this.bboxEnlargement = configuration.getBboxEnlargement();
         this.preferredLanguages = configuration.getPreferredLanguages();
+        this.progressLogs = configuration.isProgressLogs();
         this.skipInvalidRelations = configuration.isSkipInvalidRelations();
         this.tagValues = configuration.isTagValues();
 
@@ -391,22 +397,31 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
     @Override
     public void addNode(Node node) {
         if (++this.amountOfNodesProcessed % 1000000 == 0) {
-            System.out.print("\33[2KAdd nodes: " + nfCounts.format(this.amountOfNodesProcessed) + "\r");
+            if (this.progressLogs) {
+                System.out.print("\33[2KAdd nodes: "
+                        + nfCounts.format(this.amountOfNodesProcessed) + "\r");
+            }
         }
     }
 
     @Override
     public void addRelation(Relation relation) {
         if (++this.amountOfRelationsProcessed % 10000 == 0) {
-            System.out.print("\33[2KAdd relations: " + nfCounts.format(this.amountOfRelationsProcessed) + "\r");
+            if (this.progressLogs) {
+                System.out.print("\33[2KAdd relations: "
+                        + nfCounts.format(this.amountOfRelationsProcessed) + "\r");
+            }
         }
     }
 
     @Override
     public void addWay(Way way) {
         if (++this.amountOfWaysProcessed % 50000 == 0) {
-            // "\33[2K" sequence is needed to clear the line, to overwrite larger previous numbers
-            System.out.print("\33[2KAdd ways: " + nfCounts.format(this.amountOfWaysProcessed) + "\r");
+            if (this.progressLogs) {
+                // "\33[2K" sequence is needed to clear the line, to overwrite larger previous numbers
+                System.out.print("\33[2KAdd ways: "
+                        + nfCounts.format(this.amountOfWaysProcessed) + "\r");
+            }
         }
     }
 
@@ -590,8 +605,10 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
             // Iterate through potential roots
             TLongIterator tileRootElementIterator = tileRootElementSet.iterator();
             while (tileRootElementIterator.hasNext()) {
-                /*if (++nRootElements % 1000 == 0) {
-                    System.out.printf((wayRelLog + " - Elements " + nfCounts.format(nRootElements) + "\r"));
+                /*if(this.progressLogs) {
+                    if (++nRootElements % 1000 == 0) {
+                        System.out.print((wayRelLog + " - Elements " + nfCounts.format(nRootElements) + "\r"));
+                    }
                 }*/
 
                 // Init root element
