@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -173,12 +173,13 @@ class GeoTagger {
     void processBoundaries() {
         int nPostalBounds = 0;
         for (Relation postalBoundary : postalBoundaries) {
-            if (nPostalBounds % 10 == 0) {
-                System.out.printf("Progress: PostalBounds " + nPostalBounds + "/"
-                        + postalBoundaries.size() + " \r");
+            if (writer.configuration.isProgressLogs()) {
+                if (++nPostalBounds % 10 == 0) {
+                    System.out.print("Progress: PostalBounds " + nPostalBounds + "/"
+                            + postalBoundaries.size() + " \r");
+                }
             }
             processBoundary(postalBoundary, true);
-            nPostalBounds++;
         }
         commit();
 
@@ -186,12 +187,13 @@ class GeoTagger {
             int nAdminBounds = 0;
             List<Relation> administrativeBoundary = administrativeBoundaries.get(i);
             for (Relation relation : administrativeBoundary) {
-                if (nAdminBounds % 10 == 0) {
-                    System.out.printf("Progress: AdminLevel " + i + ": " + nAdminBounds + "/"
-                            + administrativeBoundary.size() + " \r");
+                if (writer.configuration.isProgressLogs()) {
+                    if (++nAdminBounds % 10 == 0) {
+                        System.out.print("Progress: AdminLevel " + i + ": " + nAdminBounds + "/"
+                                + administrativeBoundary.size() + " \r");
+                    }
                 }
                 processBoundary(relation, false);
-                nAdminBounds++;
             }
             commit();
         }
