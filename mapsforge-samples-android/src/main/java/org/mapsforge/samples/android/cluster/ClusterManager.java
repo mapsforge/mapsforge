@@ -2,6 +2,7 @@
  * Copyright 2009 Huan Erdao
  * Copyright 2014 Martin Vennekamp
  * Copyright 2015 mapsforge.org
+ * Copyright 2018 Peter Storch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -264,7 +265,8 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
      * @return true if item is within viewport.
      */
     protected boolean isItemInViewport(final GeoItem item) {
-        return getCurBounds().contains(item.getLatLong());
+        BoundingBox curBounds = getCurBounds();
+        return curBounds != null && curBounds.contains(item.getLatLong());
     }
 
     /**
@@ -289,12 +291,14 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
             LatLong se_ = mapView.getMapViewProjection().fromPixels(mapView.getWidth(),
                     mapView.getHeight());
 //            Log.e(TAG, " se_.latitude => " + se_.latitude + " se_.longitude => " + se_.longitude );
-            if (se_.latitude > nw_.latitude) {
-                currBoundingBox = new BoundingBox(nw_.latitude, se_.longitude, se_.latitude,
-                        nw_.longitude);
-            } else {
-                currBoundingBox = new BoundingBox(se_.latitude, nw_.longitude, nw_.latitude,
-                        se_.longitude);
+            if (nw_ != null && se_ != null) {
+                if (se_.latitude > nw_.latitude) {
+                    currBoundingBox = new BoundingBox(nw_.latitude, se_.longitude, se_.latitude,
+                            nw_.longitude);
+                } else {
+                    currBoundingBox = new BoundingBox(se_.latitude, nw_.longitude, nw_.latitude,
+                            se_.longitude);
+                }
             }
         }
         return currBoundingBox;
