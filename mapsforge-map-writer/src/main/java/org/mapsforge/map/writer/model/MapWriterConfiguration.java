@@ -3,7 +3,7 @@
  * Copyright 2015 lincomatic
  * Copyright 2015-2018 devemux86
  * Copyright 2016 mikes222
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -49,6 +49,7 @@ public class MapWriterConfiguration {
     private boolean polygonClipping;
     private boolean polylabel;
     private List<String> preferredLanguages;
+    private boolean progressLogs;
 
     private double simplification;
     private byte simplificationMaxZoom;
@@ -312,6 +313,13 @@ public class MapWriterConfiguration {
     }
 
     /**
+     * @return the progressLogs
+     */
+    public boolean isProgressLogs() {
+        return this.progressLogs;
+    }
+
+    /**
      * @return the skipInvalidRelations
      */
     public boolean isSkipInvalidRelations() {
@@ -459,6 +467,13 @@ public class MapWriterConfiguration {
      */
     public void setPreferredLanguages(List<String> preferredLanguages) {
         this.preferredLanguages = preferredLanguages;
+    }
+
+    /**
+     * @param progressLogs the progressLogs to set
+     */
+    public void setProgressLogs(boolean progressLogs) {
+        this.progressLogs = progressLogs;
     }
 
     /**

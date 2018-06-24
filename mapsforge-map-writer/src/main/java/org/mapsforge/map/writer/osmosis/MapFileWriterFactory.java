@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015-2018 devemux86
  * Copyright 2016 mikes222
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,6 +40,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
     private static final String PARAM_POLYGON_CLIPPING = "polygon-clipping";
     private static final String PARAM_POLYLABEL = "polylabel";
     private static final String PARAM_PREFERRED_LANGUAGES = "preferred-languages";
+    private static final String PARAM_PROGRESS_LOGS = "progress-logs";
     // private static final String PARAM_WAYNODE_COMPRESSION = "waynode-compression";
     private static final String PARAM_SIMPLIFICATION_FACTOR = "simplification-factor";
     private static final String PARAM_SIMPLIFICATION_MAX_ZOOM = "simplification-max-zoom";
@@ -67,6 +68,7 @@ class MapFileWriterFactory extends TaskManagerFactory {
         configuration.setDebugStrings(getBooleanArgument(taskConfig, PARAM_DEBUG_INFO, false));
         configuration.setPolygonClipping(getBooleanArgument(taskConfig, PARAM_POLYGON_CLIPPING, true));
         configuration.setPolylabel(getBooleanArgument(taskConfig, PARAM_POLYLABEL, false));
+        configuration.setProgressLogs(getBooleanArgument(taskConfig, PARAM_PROGRESS_LOGS, true));
         configuration.setWayClipping(getBooleanArgument(taskConfig, PARAM_WAY_CLIPPING, true));
         configuration.setLabelPosition(getBooleanArgument(taskConfig, PARAM_LABEL_POSITION, false));
         // boolean waynodeCompression = getBooleanArgument(taskConfig, PARAM_WAYNODE_COMPRESSION,
