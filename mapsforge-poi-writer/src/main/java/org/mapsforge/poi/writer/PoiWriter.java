@@ -89,7 +89,7 @@ public final class PoiWriter {
 
     private static final Pattern NAME_LANGUAGE_PATTERN = Pattern.compile("(name)(:)([a-zA-Z]{1,3}(?:[-_][a-zA-Z0-9]{1,8})*)");
 
-    private final PoiWriterConfiguration configuration;
+    final PoiWriterConfiguration configuration;
     private final ProgressManager progressManager;
 
     private final NumberFormat nfCounts = NumberFormat.getInstance();
@@ -387,8 +387,10 @@ public final class PoiWriter {
                 if (this.nNodes == 0) {
                     LOGGER.info("Processing nodes...");
                 }
-                if (nNodes % 100000 == 0) {
-                    System.out.printf("Progress: Nodes " + nfCounts.format(nNodes) + " \r");
+                if (this.configuration.isProgressLogs()) {
+                    if (nNodes % 100000 == 0) {
+                        System.out.print("Progress: Nodes " + nfCounts.format(nNodes) + " \r");
+                    }
                 }
                 ++this.nNodes;
                 if (this.configuration.isWays()) {
@@ -409,8 +411,10 @@ public final class PoiWriter {
                             e.printStackTrace();
                         }
                     }
-                    if (nWays % 10000 == 0) {
-                        System.out.printf("Progress: Ways " + nfCounts.format(nWays) + " \r");
+                    if (this.configuration.isProgressLogs()) {
+                        if (nWays % 10000 == 0) {
+                            System.out.print("Progress: Ways " + nfCounts.format(nWays) + " \r");
+                        }
                     }
                     ++this.nWays;
                     processWay(way);
@@ -424,8 +428,10 @@ public final class PoiWriter {
                         this.geoTagger.commit();
                     }
                     this.geoTagger.filterBoundaries(relation);
-                    if (nRelations % 10000 == 0) {
-                        System.out.printf("Progress: Relations " + nfCounts.format(nRelations) + " \r");
+                    if (this.configuration.isProgressLogs()) {
+                        if (nRelations % 10000 == 0) {
+                            System.out.print("Progress: Relations " + nfCounts.format(nRelations) + " \r");
+                        }
                     }
                     ++this.nRelations;
                 }

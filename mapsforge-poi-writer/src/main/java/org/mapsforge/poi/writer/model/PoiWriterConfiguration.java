@@ -1,6 +1,6 @@
 /*
  * Copyright 2015-2017 devemux86
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -35,6 +35,7 @@ public class PoiWriterConfiguration {
     private boolean names;
     private File outputFile;
     private String preferredLanguage;
+    private boolean progressLogs;
     private URL tagMapping;
     private boolean ways;
     private String writerVersion;
@@ -148,6 +149,13 @@ public class PoiWriterConfiguration {
     }
 
     /**
+     * @return the progressLogs
+     */
+    public boolean isProgressLogs() {
+        return this.progressLogs;
+    }
+
+    /**
      * @return the ways
      */
     public boolean isWays() {
@@ -247,6 +255,13 @@ public class PoiWriterConfiguration {
         if (preferredLanguage != null && !preferredLanguage.isEmpty()) {
             this.preferredLanguage = preferredLanguage;
         }
+    }
+
+    /**
+     * @param progressLogs the progressLogs to set
+     */
+    public void setProgressLogs(boolean progressLogs) {
+        this.progressLogs = progressLogs;
     }
 
     /**

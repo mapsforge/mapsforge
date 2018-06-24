@@ -2,7 +2,7 @@
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
  * Copyright 2015-2017 devemux86
- * Copyright 2017 Gustl22
+ * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,6 +40,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
     private static final String PARAM_NAMES = "names";
     private static final String PARAM_OUTFILE = "file";
     private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
+    private static final String PARAM_PROGRESS_LOGS = "progress-logs";
     private static final String PARAM_TAG_MAPPING_FILE = "tag-conf-file";
     private static final String PARAM_WAYS = "ways";
 
@@ -54,6 +55,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
         configuration.setNames(getBooleanArgument(taskConfig, PARAM_NAMES, true));
         configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
         configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
+        configuration.setProgressLogs(getBooleanArgument(taskConfig, PARAM_PROGRESS_LOGS, true));
         configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
         configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, true));
 
