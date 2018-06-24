@@ -41,6 +41,7 @@ The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin sh
 |`all-tags`|Export all tags. If false only the name will be exported.|true/false|true|
 |`preferred-language`|If not specified, only the default language with no tag will be written to the file. If a language is specified, it will be written if its tag is found, otherwise the default language will be written. *Redundant if all-tags is true.*|language code as defined in ISO 639-1 or ISO 639-2 if an ISO 639-1 code doesn't exist|(blank)|
 |`comment`|Writes a comment to the file.||(blank)|
+|`progress-logs`|Enable progress logs|true/false|true|
 
 #### Advanced Options (only use when you know what you are doing)
 
