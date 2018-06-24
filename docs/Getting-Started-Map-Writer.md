@@ -28,8 +28,9 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 |`map-start-position`|write a start position to the file which is used, when the file is first opened in the MapViewer|latitude, longitude in degrees|(blank)|
 |`map-start-zoom`|write a start zoom level to the file which is used, when the file is first opened in the MapViewer|zoom level as integer in [0, 21]|(blank)|
 |`preferred-languages`|<ul><li>If not specified, only the default language with no tag will be written to the file.</li><li>If only one language is specified, it will be written if its tag is found, otherwise the default language will be written.</li><li>If multiple comma separated languages are specified, the default language will be written, followed by the specified languages (if present and if different than the default). (**v4**)</li></ul>|language code as defined in ISO 639-1 or ISO 639-2 if an ISO 639-1 code doesn't exist|(blank)|
-|`tag-values`|Enable usage of variable tag values, color strings and hex codes. (**v5 beta**)|true/false|false|
+|`tag-values`|enable usage of variable tag values, color strings and hex codes. (**v5 beta**)|true/false|false|
 |`comment`|writes a comment to the file||(blank)|
+|`progress-logs`|enable progress logs|true/false|true|
 
 ### Advanced Options (only use when you know what you are doing)
 

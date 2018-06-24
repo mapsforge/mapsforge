@@ -142,9 +142,11 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
         int nWays = 0;
         ReleasableIterator<Way> wayReader = this.wayStore.iterate();
         while (wayReader.hasNext()) {
-            if (++nWays % 10000 == 0) {
-                System.out.print("Ways: " + this.nfCounts.format(nWays)
-                        + " / " + this.nfCounts.format(getWaysNumber()) + "\r");
+            if (this.progressLogs) {
+                if (++nWays % 10000 == 0) {
+                    System.out.print("Ways: " + this.nfCounts.format(nWays)
+                            + " / " + this.nfCounts.format(getWaysNumber()) + "\r");
+                }
             }
 
             Way way = wayReader.next();
