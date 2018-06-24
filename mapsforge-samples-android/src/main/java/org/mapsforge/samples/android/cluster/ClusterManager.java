@@ -264,7 +264,8 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
      * @return true if item is within viewport.
      */
     protected boolean isItemInViewport(final GeoItem item) {
-        return getCurBounds().contains(item.getLatLong());
+        final BoundingBox curBounds = getCurBounds();
+        return curBounds != null && curBounds.contains(item.getLatLong());
     }
 
     /**
@@ -289,12 +290,14 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
             LatLong se_ = mapView.getMapViewProjection().fromPixels(mapView.getWidth(),
                     mapView.getHeight());
 //            Log.e(TAG, " se_.latitude => " + se_.latitude + " se_.longitude => " + se_.longitude );
-            if (se_.latitude > nw_.latitude) {
-                currBoundingBox = new BoundingBox(nw_.latitude, se_.longitude, se_.latitude,
-                        nw_.longitude);
-            } else {
-                currBoundingBox = new BoundingBox(se_.latitude, nw_.longitude, nw_.latitude,
-                        se_.longitude);
+            if (se_ != null && nw_ != null) {
+                if (se_.latitude > nw_.latitude) {
+                    currBoundingBox = new BoundingBox(nw_.latitude, se_.longitude, se_.latitude,
+                            nw_.longitude);
+                } else {
+                    currBoundingBox = new BoundingBox(se_.latitude, nw_.longitude, nw_.latitude,
+                            se_.longitude);
+                }
             }
         }
         return currBoundingBox;
