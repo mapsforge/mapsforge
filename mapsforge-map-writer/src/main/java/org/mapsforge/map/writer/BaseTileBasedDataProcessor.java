@@ -645,8 +645,12 @@ abstract class BaseTileBasedDataProcessor implements TileBasedDataProcessor, Nod
                         }
                     }
 
-                    // Memorize multi-polygons
-                    if (rPolygon.contains(pPolygon)) {
+                    /* Use interior point cause
+                     * - boundary points may intersect with other geometries
+                     * - part polygon often not completely covered by root polygon
+                     */
+                    if (rPolygon.covers(pPolygon.getInteriorPoint())) {
+                        // Memorize multi-polygons
                         if (!this.partRootRelations.containsKey(rElem.getId())) {
                             this.partRootRelations.put(rElem.getId(), null); // Add root element
                         }
