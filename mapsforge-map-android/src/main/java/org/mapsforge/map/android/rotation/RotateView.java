@@ -28,6 +28,7 @@ public class RotateView extends ViewGroup {
     private float heading = 0;
     private final Matrix matrix = new Matrix();
     private final float[] points = new float[2];
+    private int saveCount = -1;
     private final SmoothCanvas smoothCanvas = new SmoothCanvas();
 
     public RotateView(Context context) {
@@ -45,11 +46,14 @@ public class RotateView extends ViewGroup {
             return;
         }
 
-        canvas.save();
+        saveCount = canvas.save();
         canvas.rotate(-heading, getWidth() * 0.5f, getHeight() * 0.5f);
         smoothCanvas.delegate = canvas;
         super.dispatchDraw(smoothCanvas);
-        canvas.restore();
+        if (saveCount != -1) {
+            canvas.restoreToCount(saveCount);
+            saveCount = -1;
+        }
     }
 
     @Override
