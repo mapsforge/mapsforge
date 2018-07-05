@@ -2,7 +2,7 @@
 
 ## New since 0.9.1
 
-- Mapsforge maps **v5 beta**: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)
+- Mapsforge maps **v5**: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)
 - Read & render polygon label/symbol position [#1064](https://github.com/mapsforge/mapsforge/issues/1064)
 - Map writer: polygon label/symbol centroid [#1061](https://github.com/mapsforge/mapsforge/issues/1061)
 - POI: offline address search [#1063](https://github.com/mapsforge/mapsforge/issues/1063)
@@ -26,8 +26,8 @@
 
 ## Version 0.9.0 (2017-12-03)
 
-- Mapsforge maps **v5 beta**: variable tag values [#1006](https://github.com/mapsforge/mapsforge/pull/1006)
-- Mapsforge maps **v5 beta**: implicit relations of building parts [#1014](https://github.com/mapsforge/mapsforge/pull/1014)
+- Mapsforge maps **v5**: variable tag values [#1006](https://github.com/mapsforge/mapsforge/pull/1006)
+- Mapsforge maps **v5**: implicit relations of building parts [#1014](https://github.com/mapsforge/mapsforge/pull/1014)
 - Map frame buffer improvements [#977](https://github.com/mapsforge/mapsforge/issues/977)
 - Hillshading improvements [#923](https://github.com/mapsforge/mapsforge/issues/923)
 - Polyline overlay touch events [#998](https://github.com/mapsforge/mapsforge/issues/998)
