@@ -93,7 +93,7 @@ public final class Samples {
             args = Arrays.copyOfRange(args, 1, args.length);
         }
 
-        List<File> mapFiles = getMapFiles(args);
+        List<File> mapFiles = SHOW_RASTER_MAP ? null : getMapFiles(args);
         final MapView mapView = createMapView();
         final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsCfg);
 
@@ -210,7 +210,11 @@ public final class Samples {
 
     private static File getDemFolder(String[] args) {
         if (args.length == 0) {
-            throw new IllegalArgumentException("missing argument: <mapFile>");
+            if (SHOW_RASTER_MAP) {
+                return null;
+            } else {
+                throw new IllegalArgumentException("missing argument: <mapFile>");
+            }
         }
 
         File demFolder = new File(args[0]);
