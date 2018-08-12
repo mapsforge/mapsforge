@@ -1,6 +1,0 @@
-file('natives').eachDir() { dir ->
-    def task = project.tasks.create "nativesJar-${dir.name}", Jar
-    task.classifier = "natives-${dir.name}"
-    task.from(dir.path)
-    artifacts.add('archives', task)
-}

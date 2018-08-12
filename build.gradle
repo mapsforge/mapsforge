@@ -31,8 +31,8 @@ allprojects {
 
 static def androidCompileSdk() { return 28 }
 
-// Minimum API Level by Support Library
-static def androidMinSdk() { return 14 }
+// 14 for Support Library, 16 for sqlite-android
+static def androidMinSdk() { return 16 }
 
 static def androidTargetSdk() { return 22 }
 
@@ -56,7 +56,7 @@ subprojects {
 }
 
 // Configuration for all plain Java projects
-project.ext.javalibraryprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-themes", "mapsforge-map-reader", "mapsforge-map-awt", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "spatialite-android"]
+project.ext.javalibraryprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-map-awt", "mapsforge-map-reader", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "mapsforge-themes"]
 project.ext.javaprojects = project.javalibraryprojects + ["mapsforge-samples-awt"]
 
 configure(filterProjects(project.javalibraryprojects)) {
@@ -89,7 +89,7 @@ configure(filterProjects(project.javaprojects)) {
 }
 
 // Configuration for Android projects
-project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-poi-android"]
+project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-poi-android", "sqlite-android"]
 project.ext.androidapkprojects = ["mapsforge-samples-android"]
 project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
 

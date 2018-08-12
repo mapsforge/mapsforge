@@ -1,4 +1,4 @@
 dependencies {
     api project(":mapsforge-poi")
-    api project(":spatialite-android")
+    api project(":sqlite-android")
 }

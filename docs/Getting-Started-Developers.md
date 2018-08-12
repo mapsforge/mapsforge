@@ -26,14 +26,14 @@ Extra Android components:
 - mapsforge-map-android: android specific map elements.
 - mapsforge-poi-android: android specific poi elements.
 - [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
-- [spatialite-android](https://www.gaia-gis.it/fossil/libspatialite/wiki?name=splite-android): SQLite spatial library.
+- [sqlite-android](https://sqlite.org/android/): SQLite Android Bindings.
 
 Extra Java components:
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
 - mapsforge-poi-awt: java specific poi elements.
 - [svg-salamander](https://github.com/blackears/svgSalamander): SVG library for displaying SVG files as icons.
-- [xerial/sqlite-jdbc](https://github.com/xerial/sqlite-jdbc): SQLite JDBC library.
+- [xerial/sqlite-jdbc](https://github.com/xerial/sqlite-jdbc): SQLite JDBC Driver.
 
 ### Branches
 

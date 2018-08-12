@@ -5,6 +5,7 @@
 - Mapsforge maps **v5**: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)
 - Read & render polygon label/symbol position [#1064](https://github.com/mapsforge/mapsforge/issues/1064)
 - Map writer: polygon label/symbol centroid [#1061](https://github.com/mapsforge/mapsforge/issues/1061)
+- POI: SQLite Android Bindings [#1079](https://github.com/mapsforge/mapsforge/issues/1079)
 - POI: offline address search [#1063](https://github.com/mapsforge/mapsforge/issues/1063)
 - POI writer: tag keys as categories [#1062](https://github.com/mapsforge/mapsforge/pull/1062)
 - MyLocationOverlay implementation [#1035](https://github.com/mapsforge/mapsforge/issues/1035)

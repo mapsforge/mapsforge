@@ -16,7 +16,7 @@ android {
 
     sourceSets {
         main {
-            file("${rootDir}/spatialite-android/natives").eachDir() { dir ->
+            file("${rootDir}/sqlite-android/natives").eachDir() { dir ->
                 jniLibs.srcDirs += "${dir.path}/lib"
             }
         }

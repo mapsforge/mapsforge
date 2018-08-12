@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,20 +16,20 @@
  */
 package org.mapsforge.poi.android.storage;
 
+import android.database.Cursor;
+
 import org.mapsforge.poi.storage.AbstractPoiCategoryManager;
 import org.mapsforge.poi.storage.DoubleLinkedPoiCategory;
 import org.mapsforge.poi.storage.PoiCategory;
 import org.mapsforge.poi.storage.PoiCategoryManager;
 import org.mapsforge.poi.storage.UnknownPoiCategoryException;
+import org.sqlite.database.sqlite.SQLiteDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jsqlite.Database;
-import jsqlite.Stmt;
 
 /**
  * A {@link PoiCategoryManager} implementation using a SQLite database via wrapper.
@@ -42,7 +42,7 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
     /**
      * @param db SQLite database object. (Using SQLite wrapper for Android).
      */
-    AndroidPoiCategoryManager(Database db) {
+    AndroidPoiCategoryManager(SQLiteDatabase db) {
         this.categoryMap = new TreeMap<>();
 
         try {
@@ -57,21 +57,21 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
      *
      * @throws UnknownPoiCategoryException if a category cannot be retrieved by its ID or unique name.
      */
-    private void loadCategories(Database db) throws UnknownPoiCategoryException {
+    private void loadCategories(SQLiteDatabase db) throws UnknownPoiCategoryException {
         // Maximum ID (for root node)
         int maxID = 0;
 
         // Maps categories to their parent IDs
         Map<PoiCategory, Integer> parentMap = new HashMap<>();
 
+        Cursor cursor = null;
         try {
-            Stmt stmt = db.prepare(SELECT_STATEMENT);
-            stmt.reset();
-            while (stmt.step()) {
+            cursor = db.rawQuery(SELECT_STATEMENT, null);
+            while (cursor.moveToNext()) {
                 // Column values
-                int categoryID = stmt.column_int(0);
-                String categoryTitle = stmt.column_string(1);
-                int categoryParentID = stmt.column_int(2);
+                int categoryID = cursor.getInt(0);
+                String categoryTitle = cursor.getString(1);
+                int categoryParentID = cursor.getInt(2);
 
                 PoiCategory pc = new DoubleLinkedPoiCategory(categoryTitle, null, categoryID);
                 this.categoryMap.put(categoryID, pc);
@@ -84,9 +84,16 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
                     maxID = categoryID;
                 }
             }
-            stmt.close();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            try {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         // Set root category and remove it from parents map
