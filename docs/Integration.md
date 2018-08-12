@@ -19,12 +19,8 @@ implementation 'net.sf.kxml:kxml2:2.3.0'
 
 #### Android
 ```groovy
-repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-}
-
 implementation 'org.mapsforge:mapsforge-map-android:[CURRENT-VERSION]'
-implementation 'com.caverock:androidsvg:1.3-SNAPSHOT'
+implementation 'com.caverock:androidsvg:1.3'
 ```
 
 #### Desktop
