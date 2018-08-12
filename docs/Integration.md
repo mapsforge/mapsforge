@@ -29,8 +29,12 @@ implementation 'com.caverock:androidsvg:1.3-SNAPSHOT'
 
 #### Desktop
 ```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 implementation 'org.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]'
-implementation 'com.metsci.ext.com.kitfox.svg:svg-salamander:0.1.19'
+implementation 'com.github.blackears:svgSalamander:v1.1.1'
 ```
 
 ### POI

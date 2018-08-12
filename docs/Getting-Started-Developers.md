@@ -32,7 +32,7 @@ Extra Java components:
 
 - mapsforge-map-awt: a Java-only library to display mapsforge maps.
 - mapsforge-poi-awt: java specific poi elements.
-- [svg-salamander](https://svgsalamander.java.net/): SVG library for displaying SVG files as icons. Improved jar can be found at the site.
+- [svg-salamander](https://github.com/blackears/svgSalamander): SVG library for displaying SVG files as icons.
 - [xerial/sqlite-jdbc](https://github.com/xerial/sqlite-jdbc): SQLite JDBC library.
 
 ### Branches

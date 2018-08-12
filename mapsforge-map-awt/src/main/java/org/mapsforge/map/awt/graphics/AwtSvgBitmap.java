@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -63,8 +63,8 @@ public class AwtSvgBitmap extends AwtResourceBitmap {
 
             SVGIcon icon = new SVGIcon();
             icon.setAntiAlias(true);
+            icon.setAutosize(SVGIcon.AUTOSIZE_STRETCH);
             icon.setPreferredSize(new Dimension((int) bitmapWidth, (int) bitmapHeight));
-            icon.setScaleToFit(true);
             icon.setSvgURI(uri);
             BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             icon.paintIcon(null, bufferedImage.createGraphics(), 0, 0);
