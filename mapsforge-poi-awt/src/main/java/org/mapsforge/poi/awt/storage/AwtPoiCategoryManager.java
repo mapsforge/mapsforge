@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -63,9 +63,11 @@ class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
         // Maps categories to their parent IDs
         Map<PoiCategory, Integer> parentMap = new HashMap<>();
 
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            PreparedStatement stmt = conn.prepareStatement(SELECT_STATEMENT);
-            ResultSet rs = stmt.executeQuery();
+            stmt = conn.prepareStatement(SELECT_STATEMENT);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 // Column values
                 int categoryID = rs.getInt(1);
@@ -83,10 +85,19 @@ class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
                     maxID = categoryID;
                 }
             }
-            rs.close();
-            stmt.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         // Set root category and remove it from parents map

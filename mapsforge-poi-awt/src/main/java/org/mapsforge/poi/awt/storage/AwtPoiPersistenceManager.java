@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  * Copyright 2017 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -520,14 +520,22 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         // Check for table names
         // TODO Is it necessary to get the tables meta data as well?
         int numTables = 0;
+        ResultSet rs = null;
         try {
-            ResultSet rs = this.isValidDBStatement.executeQuery();
+            rs = this.isValidDBStatement.executeQuery();
             if (rs.next()) {
                 numTables = rs.getInt(1);
             }
-            rs.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         if (version < 2) {
@@ -544,12 +552,13 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
     public void readPoiFileInfo() {
         PoiFileInfoBuilder poiFileInfoBuilder = new PoiFileInfoBuilder();
 
+        ResultSet rs = null;
         try {
             if (this.metadataStatement == null) {
                 this.metadataStatement = this.conn.prepareStatement(DbConstants.FIND_METADATA_STATEMENT);
             }
 
-            ResultSet rs = this.metadataStatement.executeQuery();
+            rs = this.metadataStatement.executeQuery();
             while (rs.next()) {
                 String name = rs.getString(1);
 
@@ -580,9 +589,16 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                         break;
                 }
             }
-            rs.close();
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
 
         poiFileInfo = poiFileInfoBuilder.build();
