@@ -109,6 +109,9 @@ configure(filterProjects(project.androidlibraryprojects)) {
             return
         def task = project.tasks.create "jar${name.capitalize()}", Jar
         task.dependsOn variant.javaCompiler
+        task.exclude '**/BuildConfig.class'
+        task.exclude '**/R.class'
+        task.exclude '**/R$*.class'
         task.from variant.javaCompiler.destinationDir
         artifacts.add('archives', task)
     }
