@@ -49,6 +49,7 @@ public abstract class AbstractTileSource implements TileSource {
     protected int timeoutConnect = TIMEOUT_CONNECT;
     protected int timeoutRead = TIMEOUT_READ;
     protected String userAgent;
+    protected String authorization;
 
     protected AbstractTileSource(String[] hostNames, int port) {
         if (hostNames == null || hostNames.length == 0) {
@@ -142,6 +143,11 @@ public abstract class AbstractTileSource implements TileSource {
         return followRedirects;
     }
 
+    @Override
+    public String getAuthorization() {
+        return authorization;
+    }
+
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }
@@ -172,5 +178,9 @@ public abstract class AbstractTileSource implements TileSource {
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
     }
 }

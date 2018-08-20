@@ -82,4 +82,9 @@ public interface TileSource {
      * @return whether or not to follow HTTP redirects.
      */
     boolean isFollowRedirects();
+
+    /**
+     * @return the Authorization (may be null).
+     */
+    String getAuthorization();
 }
