@@ -61,6 +61,9 @@ class TileDownloader {
         if (this.downloadJob.tileSource.getReferer() != null) {
             urlConnection.setRequestProperty("Referer", this.downloadJob.tileSource.getReferer());
         }
+        if (this.downloadJob.tileSource.getAuthorization() != null) {
+            urlConnection.setRequestProperty("Authorization", this.downloadJob.tileSource.getAuthorization());
+        }
         if (urlConnection instanceof HttpURLConnection) {
             ((HttpURLConnection) urlConnection).setInstanceFollowRedirects(this.downloadJob.tileSource.isFollowRedirects());
         }
