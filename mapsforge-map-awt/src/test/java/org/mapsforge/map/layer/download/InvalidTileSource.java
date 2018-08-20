@@ -76,4 +76,9 @@ class InvalidTileSource implements TileSource {
     public boolean isFollowRedirects() {
         throw new AssertionError();
     }
+
+    @Override
+    public String getAuthorization() {
+        throw new AssertionError();
+    }
 }
