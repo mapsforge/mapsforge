@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2018 iPSAlex
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -60,6 +61,9 @@ class TileDownloader {
         }
         if (this.downloadJob.tileSource.getReferer() != null) {
             urlConnection.setRequestProperty("Referer", this.downloadJob.tileSource.getReferer());
+        }
+        if (this.downloadJob.tileSource.getAuthorization() != null) {
+            urlConnection.setRequestProperty("Authorization", this.downloadJob.tileSource.getAuthorization());
         }
         if (urlConnection instanceof HttpURLConnection) {
             ((HttpURLConnection) urlConnection).setInstanceFollowRedirects(this.downloadJob.tileSource.isFollowRedirects());

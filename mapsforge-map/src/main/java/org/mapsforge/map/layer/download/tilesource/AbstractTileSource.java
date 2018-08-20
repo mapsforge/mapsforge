@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2018 devemux86
+ * Copyright 2018 iPSAlex
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -34,6 +35,7 @@ public abstract class AbstractTileSource implements TileSource {
     private static final int TIMEOUT_READ = 10000;
 
     protected String apiKey;
+    protected String authorization;
     /**
      * The default time-to-live (TTL) for cached tiles (one day, or 86,400,000 milliseconds).
      */
@@ -83,6 +85,11 @@ public abstract class AbstractTileSource implements TileSource {
 
     public String getApiKey() {
         return apiKey;
+    }
+
+    @Override
+    public String getAuthorization() {
+        return authorization;
     }
 
     /**
@@ -137,6 +144,10 @@ public abstract class AbstractTileSource implements TileSource {
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
     }
 
     public void setFollowRedirects(boolean followRedirects) {

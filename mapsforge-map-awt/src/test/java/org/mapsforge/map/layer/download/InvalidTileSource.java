@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2018 iPSAlex
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +23,11 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import java.net.URL;
 
 class InvalidTileSource implements TileSource {
+    @Override
+    public String getAuthorization() {
+        throw new AssertionError();
+    }
+
     @Override
     public long getDefaultTimeToLive() {
         throw new AssertionError();
