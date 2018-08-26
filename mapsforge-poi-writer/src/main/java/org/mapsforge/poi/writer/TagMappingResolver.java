@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011 mapsforge.org
  * Copyright 2010, 2011 Karsten Groll
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -71,7 +71,7 @@ class TagMappingResolver {
         Unmarshaller um;
         Category xmlRootCategory = null;
         try {
-            ctx = JAXBContext.newInstance(Category.class);
+            ctx = JAXBContext.newInstance("org.mapsforge.poi.writer.jaxb", getClass().getClassLoader());
             um = ctx.createUnmarshaller();
             xmlRootCategory = (Category) um.unmarshal(configFilePath);
         } catch (JAXBException e) {

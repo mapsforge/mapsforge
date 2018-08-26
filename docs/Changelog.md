@@ -8,6 +8,7 @@
 - POI: SQLite Android Bindings [#1079](https://github.com/mapsforge/mapsforge/issues/1079)
 - POI: offline address search [#1063](https://github.com/mapsforge/mapsforge/issues/1063)
 - POI writer: tag keys as categories [#1062](https://github.com/mapsforge/mapsforge/pull/1062)
+- POI writer: latest Java compatibility [#1083](https://github.com/mapsforge/mapsforge/issues/1083)
 - MyLocationOverlay implementation [#1035](https://github.com/mapsforge/mapsforge/issues/1035)
 - Polyline / Polygon rendering optimizations [#1057](https://github.com/mapsforge/mapsforge/issues/1057)
 - Tile sources with api keys [#1028](https://github.com/mapsforge/mapsforge/issues/1028)
