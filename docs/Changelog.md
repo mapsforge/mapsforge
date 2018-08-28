@@ -1,6 +1,6 @@
 # Changelog
 
-## New since 0.9.1
+## Version 0.10.0 (2018-08-28)
 
 - Mapsforge maps **v5**: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)
 - Read & render polygon label/symbol position [#1064](https://github.com/mapsforge/mapsforge/issues/1064)
