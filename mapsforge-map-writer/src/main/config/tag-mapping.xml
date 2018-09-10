@@ -11,6 +11,7 @@
         <osm-tag key="highway" value="mini_roundabout" zoom-appear="17" />
         <osm-tag key="highway" value="traffic_signals" zoom-appear="17" />
         <osm-tag key="highway" value="turning_circle" zoom-appear="15" />
+        <osm-tag key="highway" value="street_lamp" zoom-appear="17" />
     </pois>
 
     <!-- PUBLIC AMENITIES -->
@@ -88,6 +89,7 @@
     <!-- TOURISM TAGS -->
     <pois>
         <osm-tag key="tourism" value="alpine_hut" zoom-appear="15" />
+        <osm-tag key="tourism" value="artwork" zoom-appear="17" />
         <osm-tag key="tourism" value="attraction" zoom-appear="17" />
         <osm-tag key="tourism" value="hostel" zoom-appear="17" />
         <osm-tag key="tourism" value="hotel" zoom-appear="17" />
@@ -113,9 +115,14 @@
 
     <!-- NATURAL TAGS -->
     <pois>
+        <osm-tag key="leaf_type" renderable="false" value="broadleaved" />
+        <osm-tag key="leaf_type" renderable="false" value="needleleaved" />
+        <osm-tag key="leaf_type" renderable="false" value="leafless" />
+
         <osm-tag key="natural" value="cave_entrance" zoom-appear="14" />
         <osm-tag key="natural" value="peak" zoom-appear="12" />
         <osm-tag key="natural" value="spring" zoom-appear="17" />
+        <osm-tag key="natural" value="tree" zoom-appear="17" />
         <osm-tag key="natural" value="volcano" zoom-appear="12" />
     </pois>
 
@@ -180,6 +187,10 @@
 
     <!-- NATURAL / WATERWAY TAGS -->
     <ways>
+        <osm-tag key="leaf_type" renderable="false" value="broadleaved" />
+        <osm-tag key="leaf_type" renderable="false" value="needleleaved" />
+        <osm-tag key="leaf_type" renderable="false" value="leafless" />
+
         <osm-tag key="lock" value="yes" zoom-appear="14" />
 
         <!-- mapsforge artificial tags for land/sea areas, do not remove -->
