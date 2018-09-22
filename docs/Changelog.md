@@ -2,6 +2,7 @@
 
 ## New since 0.10.0
 
+- Polyline scaled width [#1088](https://github.com/mapsforge/mapsforge/issues/1088)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.11.0)
 
