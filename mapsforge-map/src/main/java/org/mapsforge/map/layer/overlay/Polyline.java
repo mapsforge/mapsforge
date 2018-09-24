@@ -40,11 +40,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Polyline extends Layer {
 
+    private static final byte STROKE_MIN_ZOOM = 12;
+
     private BoundingBox boundingBox;
     private final GraphicFactory graphicFactory;
     private final boolean keepAligned;
     private final List<LatLong> latLongs = new CopyOnWriteArrayList<>();
     private Paint paintStroke;
+    private double strokeIncrease = 1;
 
     /**
      * @param paintStroke    the initial {@code Paint} used to stroke this polyline (may be null).
@@ -132,7 +135,13 @@ public class Polyline extends Layer {
         if (this.keepAligned) {
             this.paintStroke.setBitmapShaderShift(topLeftPoint);
         }
+        float strokeWidth = this.paintStroke.getStrokeWidth();
+        if (this.strokeIncrease > 1) {
+            float scale = (float) Math.pow(this.strokeIncrease, Math.max(zoomLevel - STROKE_MIN_ZOOM, 0));
+            this.paintStroke.setStrokeWidth(strokeWidth * scale);
+        }
         canvas.drawPath(path, this.paintStroke);
+        this.paintStroke.setStrokeWidth(strokeWidth);
     }
 
     /**
@@ -147,6 +156,13 @@ public class Polyline extends Layer {
      */
     public synchronized Paint getPaintStroke() {
         return this.paintStroke;
+    }
+
+    /**
+     * @return the base to scale polyline stroke per zoom (default 1 not scale).
+     */
+    public synchronized double getStrokeIncrease() {
+        return strokeIncrease;
     }
 
     /**
@@ -168,6 +184,13 @@ public class Polyline extends Layer {
         this.latLongs.clear();
         this.latLongs.addAll(points);
         updatePoints();
+    }
+
+    /**
+     * @param strokeIncrease the base to scale polyline stroke per zoom (default 1 not scale).
+     */
+    public synchronized void setStrokeIncrease(double strokeIncrease) {
+        this.strokeIncrease = strokeIncrease;
     }
 
     private void updatePoints() {

@@ -102,6 +102,7 @@ public class DirectRenderer extends StandardRenderer {
                     // now draw the ways and the labels
                     renderContext.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
                 }
+
                 if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
                     // blank out all areas outside of map
                     if (this.mapDataStore != null) {

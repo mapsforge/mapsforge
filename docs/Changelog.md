@@ -1,5 +1,11 @@
 # Changelog
 
+## New since 0.10.0
+
+- Polyline scaled width [#1088](https://github.com/mapsforge/mapsforge/issues/1088)
+- Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.11.0)
+
 ## Version 0.10.0 (2018-08-28)
 
 - Mapsforge maps **v5**: custom tag keys [#1041](https://github.com/mapsforge/mapsforge/issues/1041)

@@ -15,6 +15,7 @@
 | [Bike Computer](https://play.google.com/store/apps/details?id=de.rooehler.bikecomputer) | Routes and Tracks for Cycling | Proprietary/Free and Premium | Closed |
 | [Bladenight App](https://play.google.com/store/apps/details?id=fr.ocroquette.bladenight) | Tracking for inline skating events | Proprietary/Free | Closed |
 | [Calimoto](https://play.google.com/store/apps/details?id=com.calimoto.calimoto) | Motorrad navigation | Proprietary/Free (in-app purchases) | Closed |
+| [Cartograph 2 Maps](https://www.cartograph.eu/) | Map viewer and tracking | Proprietary/Commercial | Closed |
 | [Cruiser](http://wiki.openstreetmap.org/wiki/Cruiser) | Android / Desktop map and navigation application | Proprietary/Free | Closed |
 | [c:geo](https://github.com/cgeo/) | Geocaching | Apache 2.0/Free | Open |
 | [DogSheep](https://play.google.com/store/apps/details?id=com.dogsheep) | Customized maps and tours | Proprietary/Free | Closed |
