@@ -115,8 +115,7 @@ public class DirectRenderer extends StandardRenderer {
                 }
                 return bitmap;
             }
-            // outside of map area with background defined:
-            return createBackgroundBitmap(renderContext);
+            return null;
         } catch (Exception e) {
             // #1049: message can be null?
             LOGGER.warning("Exception: " + e.getMessage());
@@ -126,22 +125,6 @@ public class DirectRenderer extends StandardRenderer {
                 renderContext.destroy();
             }
         }
-    }
-
-    /**
-     * Draws a bitmap just with outside colour, used for bitmaps outside of map area.
-     *
-     * @param renderContext the RenderContext
-     * @return bitmap drawn in single colour.
-     */
-    private TileBitmap createBackgroundBitmap(RenderContext renderContext) {
-        TileBitmap bitmap = this.graphicFactory.createTileBitmap(renderContext.rendererJob.tile.tileSize, renderContext.rendererJob.hasAlpha);
-        renderContext.canvasRasterer.setCanvasBitmap(bitmap);
-        if (!renderContext.rendererJob.hasAlpha) {
-            renderContext.canvasRasterer.fill(renderContext.renderTheme.getMapBackgroundOutside());
-        }
-        return bitmap;
-
     }
 
     private Set<MapElementContainer> processLabels(RenderContext renderContext) {
