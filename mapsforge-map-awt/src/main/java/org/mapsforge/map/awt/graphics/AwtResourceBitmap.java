@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 devemux86
+ * Copyright 2018 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
  */
 package org.mapsforge.map.awt.graphics;
 
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.ResourceBitmap;
 
 import java.awt.image.BufferedImage;
@@ -23,8 +25,10 @@ import java.io.InputStream;
 
 public class AwtResourceBitmap extends AwtBitmap implements ResourceBitmap {
 
-    AwtResourceBitmap(InputStream inputStream) throws IOException {
+    AwtResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent) throws IOException {
         super(inputStream);
+        float[] newSize = GraphicUtils.imageSize(getWidth(), getHeight(), scaleFactor, width, height, percent);
+        scaleTo((int) newSize[0], (int) newSize[1]);
     }
 
     AwtResourceBitmap(BufferedImage bufferedImage) {

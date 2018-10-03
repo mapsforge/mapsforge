@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2017 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2018 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -258,8 +259,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-        return new AndroidResourceBitmap(inputStream, hash);
+    public ResourceBitmap createResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+        return new AndroidResourceBitmap(inputStream, scaleFactor, width, height, percent, hash);
     }
 
     @Override

@@ -1,5 +1,6 @@
 /*
  * Copyright 2015-2018 devemux86
+ * Copyright 2018 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +18,8 @@ package org.mapsforge.map.awt.graphics;
 import com.kitfox.svg.SVGCache;
 import com.kitfox.svg.SVGDiagram;
 import com.kitfox.svg.app.beans.SVGIcon;
+
+import org.mapsforge.core.graphics.GraphicUtils;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
@@ -37,34 +40,12 @@ public class AwtSvgBitmap extends AwtResourceBitmap {
 
             double scale = scaleFactor / Math.sqrt((diagram.getHeight() * diagram.getWidth()) / defaultSize);
 
-            float bitmapWidth = (float) (diagram.getWidth() * scale);
-            float bitmapHeight = (float) (diagram.getHeight() * scale);
-
-            float aspectRatio = diagram.getWidth() / diagram.getHeight();
-
-            if (width != 0 && height != 0) {
-                // both width and height set, override any other setting
-                bitmapWidth = width;
-                bitmapHeight = height;
-            } else if (width == 0 && height != 0) {
-                // only width set, calculate from aspect ratio
-                bitmapWidth = height * aspectRatio;
-                bitmapHeight = height;
-            } else if (width != 0 && height == 0) {
-                // only height set, calculate from aspect ratio
-                bitmapHeight = width / aspectRatio;
-                bitmapWidth = width;
-            }
-
-            if (percent != 100) {
-                bitmapWidth *= percent / 100f;
-                bitmapHeight *= percent / 100f;
-            }
+            float[] bmpSize = GraphicUtils.imageSize(diagram.getWidth(), diagram.getHeight(), (float) scale, width, height, percent);
 
             SVGIcon icon = new SVGIcon();
             icon.setAntiAlias(true);
             icon.setAutosize(SVGIcon.AUTOSIZE_STRETCH);
-            icon.setPreferredSize(new Dimension((int) bitmapWidth, (int) bitmapHeight));
+            icon.setPreferredSize(new Dimension((int) bmpSize[0], (int) bmpSize[1]));
             icon.setSvgURI(uri);
             BufferedImage bufferedImage = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
             icon.paintIcon(null, bufferedImage.createGraphics(), 0, 0);
