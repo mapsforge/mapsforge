@@ -51,7 +51,7 @@ public interface GraphicFactory {
     PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
                                                 SymbolContainer symbolContainer, Position position, int maxTextWidth);
 
-    ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException;
+    ResourceBitmap createResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException;
 
     TileBitmap createTileBitmap(InputStream inputStream, int tileSize, boolean isTransparent) throws IOException;
 

@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Pair;
 
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.ResourceBitmap;
 
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
         }
     }
 
-    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, int hash) throws IOException {
+    private static android.graphics.Bitmap getResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
         synchronized (RESOURCE_BITMAPS) {
             Pair<android.graphics.Bitmap, Integer> data = RESOURCE_BITMAPS.get(hash);
             if (data != null) {
@@ -82,6 +83,9 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
                 if (bitmap == null) {
                     throw new IOException("BitmapFactory failed to decodeStream");
                 }
+                float[] finalSize = GraphicUtils.computeFinalImageSize(bitmap.getWidth(), bitmap.getHeight(), scaleFactor, width, height, percent);
+                if ((int) finalSize[0] != width || (int) finalSize[1] != height)
+                    bitmap = Bitmap.createScaledBitmap(bitmap, (int) finalSize[0], (int) finalSize[1], true);
                 Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
                         Integer.valueOf(1));
                 RESOURCE_BITMAPS.put(hash, updated);
@@ -139,9 +143,9 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
         this.hash = hash;
     }
 
-    AndroidResourceBitmap(InputStream inputStream, int hash) throws IOException {
+    AndroidResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
         this(hash);
-        this.bitmap = getResourceBitmap(inputStream, hash);
+        this.bitmap = getResourceBitmap(inputStream, scaleFactor, width, height, percent, hash);
     }
 
     // destroy is the super method here, which will take care of bitmap accounting

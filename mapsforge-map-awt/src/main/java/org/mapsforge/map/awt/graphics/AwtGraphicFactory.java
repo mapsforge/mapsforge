@@ -194,8 +194,8 @@ public class AwtGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-        return new AwtResourceBitmap(inputStream);
+    public ResourceBitmap createResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+        return new AwtResourceBitmap(inputStream, scaleFactor, width, height, percent);
     }
 
     @Override

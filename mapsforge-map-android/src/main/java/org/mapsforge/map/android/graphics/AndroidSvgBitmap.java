@@ -24,6 +24,8 @@ import android.util.Pair;
 
 import com.caverock.androidsvg.SVG;
 
+import org.mapsforge.core.graphics.GraphicUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -41,34 +43,12 @@ public class AndroidSvgBitmap extends AndroidResourceBitmap {
 
             double scale = scaleFactor / Math.sqrt((picture.getHeight() * picture.getWidth()) / defaultSize);
 
-            float bitmapWidth = (float) (picture.getWidth() * scale);
-            float bitmapHeight = (float) (picture.getHeight() * scale);
+            float[] bmpSize = GraphicUtils.computeFinalImageSize(picture.getWidth(), picture.getHeight(), (float) scale, width, height, percent);
 
-            float aspectRatio = (1f * picture.getWidth()) / picture.getHeight();
-
-            if (width != 0 && height != 0) {
-                // both width and height set, override any other setting
-                bitmapWidth = width;
-                bitmapHeight = height;
-            } else if (width == 0 && height != 0) {
-                // only width set, calculate from aspect ratio
-                bitmapWidth = height * aspectRatio;
-                bitmapHeight = height;
-            } else if (width != 0 && height == 0) {
-                // only height set, calculate from aspect ratio
-                bitmapHeight = width / aspectRatio;
-                bitmapWidth = width;
-            }
-
-            if (percent != 100) {
-                bitmapWidth *= percent / 100f;
-                bitmapHeight *= percent / 100f;
-            }
-
-            android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bitmapWidth),
-                    (int) Math.ceil(bitmapHeight), AndroidGraphicFactory.TRANSPARENT_BITMAP);
+            android.graphics.Bitmap bitmap = android.graphics.Bitmap.createBitmap((int) Math.ceil(bmpSize[0]),
+                    (int) Math.ceil(bmpSize[1]), AndroidGraphicFactory.TRANSPARENT_BITMAP);
             Canvas canvas = new Canvas(bitmap);
-            canvas.drawPicture(picture, new RectF(0, 0, bitmapWidth, bitmapHeight));
+            canvas.drawPicture(picture, new RectF(0, 0, bmpSize[0], bmpSize[1]));
 
             return bitmap;
         } catch (Exception e) {
