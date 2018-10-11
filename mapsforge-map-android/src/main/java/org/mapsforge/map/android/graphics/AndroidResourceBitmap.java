@@ -84,7 +84,7 @@ public class AndroidResourceBitmap extends AndroidBitmap implements ResourceBitm
                     throw new IOException("BitmapFactory failed to decodeStream");
                 }
                 float[] finalSize = GraphicUtils.computeFinalImageSize(bitmap.getWidth(), bitmap.getHeight(), scaleFactor, width, height, percent);
-                if ((int) finalSize[0] != width || (int) finalSize[1] != height)
+                if ((int) finalSize[0] != bitmap.getWidth() || (int) finalSize[1] != bitmap.getHeight())
                     bitmap = Bitmap.createScaledBitmap(bitmap, (int) finalSize[0], (int) finalSize[1], true);
                 Pair<android.graphics.Bitmap, Integer> updated = new Pair<android.graphics.Bitmap, Integer>(bitmap,
                         Integer.valueOf(1));
