@@ -258,8 +258,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public ResourceBitmap createResourceBitmap(InputStream inputStream, int hash) throws IOException {
-        return new AndroidResourceBitmap(inputStream, hash);
+    public ResourceBitmap createResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent, int hash) throws IOException {
+        return new AndroidResourceBitmap(inputStream, scaleFactor, width, height, percent, hash);
     }
 
     @Override

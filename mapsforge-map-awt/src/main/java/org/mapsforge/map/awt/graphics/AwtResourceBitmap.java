@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.awt.graphics;
 
+import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.ResourceBitmap;
 
 import java.awt.image.BufferedImage;
@@ -23,8 +24,10 @@ import java.io.InputStream;
 
 public class AwtResourceBitmap extends AwtBitmap implements ResourceBitmap {
 
-    AwtResourceBitmap(InputStream inputStream) throws IOException {
+    AwtResourceBitmap(InputStream inputStream, float scaleFactor, int width, int height, int percent) throws IOException {
         super(inputStream);
+        float[] finalSize = GraphicUtils.computeFinalImageSize(getWidth(), getHeight(), scaleFactor, width, height, percent);
+        scaleTo((int) finalSize[0], (int) finalSize[1]);
     }
 
     AwtResourceBitmap(BufferedImage bufferedImage) {

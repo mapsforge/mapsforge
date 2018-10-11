@@ -68,7 +68,7 @@ public final class XmlUtils {
                 }
             }
             try {
-                return graphicFactory.createResourceBitmap(inputStream, absoluteName.hashCode());
+                return graphicFactory.createResourceBitmap(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
             } catch (IOException e) {
                 throw new IOException("Reading bitmap file failed " + src, e);
             }

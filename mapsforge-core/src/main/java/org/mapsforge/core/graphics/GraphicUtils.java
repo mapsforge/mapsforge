@@ -51,6 +51,44 @@ public final class GraphicUtils {
     }
 
     /**
+     *  Given the original image size, as well as symbol-width/height/percent parameters from the render theme,
+     *  this computes the final image size as it will appear on screen
+     * @param picWidth original image width
+     * @param picHeight original image height
+     * @param scaleFactor scale factor to scale to screen DPI
+     * @param width width from rendertheme
+     * @param height height from rendertheme
+     * @param percent scale percent from rendertheme
+     * @return
+     */
+    public static float[] computeFinalImageSize(float picWidth, float picHeight, float scaleFactor, int width, int height, int percent) {
+        float bitmapWidth = picWidth * scaleFactor;
+        float bitmapHeight = picHeight * scaleFactor;
+
+        float aspectRatio = picWidth / picHeight;
+
+        if (width != 0 && height != 0) {
+            // both width and height set, override any other setting
+            bitmapWidth = width;
+            bitmapHeight = height;
+        } else if (width == 0 && height != 0) {
+            // only width set, calculate from aspect ratio
+            bitmapWidth = height * aspectRatio;
+            bitmapHeight = height;
+        } else if (width != 0 && height == 0) {
+            // only height set, calculate from aspect ratio
+            bitmapHeight = width / aspectRatio;
+            bitmapWidth = width;
+        }
+
+        if (percent != 100) {
+            bitmapWidth *= percent / 100f;
+            bitmapHeight *= percent / 100f;
+        }
+        return new float[] { bitmapWidth, bitmapHeight };
+    }
+
+    /**
      * @param color color value in layout 0xAARRGGBB.
      * @return the alpha value for the color.
      */
