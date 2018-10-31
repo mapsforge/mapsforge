@@ -20,6 +20,14 @@ If you have any questions or problems, don't hesitate to ask our public [mailing
 - Mapsforge [map providers](docs/Mapsforge-Maps.md).
 - Mapsforge [talks](docs/Mapsforge-Talks.md).
 
+## License
+
+Mapsforge library is under [LGPL v3 license](http://www.gnu.org/licenses/lgpl-3.0), with an important simplification: the constraints mentioned in sections LGPL v3 §4(d) and §4(e) are waived.
+
+This means that you are allowed to convey a Combined Work without providing the user any way to recombine or relink the application and without providing any shared library mechanism.
+
+In other words, you are allowed to include Mapsforge library in your Android application, without making your application open source.
+
 ## Screenshots
 
 ### Android
