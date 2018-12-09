@@ -5,19 +5,19 @@ dependencies {
     implementation project(":mapsforge-themes")
 }
 
-task fatJar(type: Jar, dependsOn: classes) {
-    classifier = 'jar-with-dependencies'
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
-    manifest {
-        attributes 'Main-Class': 'org.mapsforge.samples.awt.Samples'
-    }
-    with jar
-}
-
 mainClassName = "org.mapsforge.samples.awt.Samples"
 run {
     if (project.hasProperty("args")) {
         args project.getProperty("args").split(",")
     }
+}
+
+task fatJar(type: Jar, dependsOn: classes) {
+    classifier = 'jar-with-dependencies'
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+    manifest {
+        attributes 'Main-Class': "${mainClassName}"
+    }
+    with jar
 }
