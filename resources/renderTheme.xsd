@@ -272,6 +272,7 @@
 
     <!-- hillshading element -->
     <xs:complexType name="hillShading">
+        <xs:attribute name="cat" type="xs:string" use="optional" />
         <xs:attribute name="zoom-min" default="5" type="xs:unsignedByte" use="optional" />
         <xs:attribute name="zoom-max" default="17" type="xs:unsignedByte" use="optional" />
         <xs:attribute name="magnitude" default="64" type="xs:unsignedByte" use="optional" />

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2017 devemux86
+ * Copyright 2014-2018 devemux86
  * Copyright 2017 usrusr
  * Copyright 2017 MarcelHeckel
  *
@@ -284,6 +284,7 @@ public final class RenderThemeHandler {
                 }
             } else if ("hillshading".equals(qName)) {
                 checkState(qName, Element.RULE);
+                String category = null;
                 byte minZoom = 5;
                 byte maxZoom = 17;
                 byte layer = 5;
@@ -294,7 +295,9 @@ public final class RenderThemeHandler {
                     String name = pullParser.getAttributeName(i);
                     String value = pullParser.getAttributeValue(i);
 
-                    if ("zoom-min".equals(name)) {
+                    if ("cat".equals(name)) {
+                        category = value;
+                    } else if ("zoom-min".equals(name)) {
                         minZoom = XmlUtils.parseNonNegativeByte("zoom-min", value);
                     } else if ("zoom-max".equals(name)) {
                         maxZoom = XmlUtils.parseNonNegativeByte("zoom-max", value);
@@ -312,7 +315,10 @@ public final class RenderThemeHandler {
                 int hillShadingLevel = this.level++;
                 Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, always, hillShadingLevel, this.graphicFactory);
 
-                renderTheme.addHillShadings(hillshading);
+                if (this.categories == null || category == null
+                        || this.categories.contains(category)) {
+                    this.renderTheme.addHillShadings(hillshading);
+                }
             } else {
                 throw new XmlPullParserException("unknown element: " + qName);
             }
