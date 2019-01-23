@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.0'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
@@ -108,11 +108,11 @@ configure(filterProjects(project.androidlibraryprojects)) {
         if (name == "debug")
             return
         def task = project.tasks.create "jar${name.capitalize()}", Jar
-        task.dependsOn variant.javaCompiler
+        task.dependsOn variant.javaCompileProvider
         task.exclude '**/BuildConfig.class'
         task.exclude '**/R.class'
         task.exclude '**/R$*.class'
-        task.from variant.javaCompiler.destinationDir
+        task.from variant.javaCompileProvider.get().destinationDir
         artifacts.add('archives', task)
     }
 
