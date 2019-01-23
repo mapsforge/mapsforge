@@ -1,3 +1,4 @@
+/*
 package org.mapsforge.samples.android.test;
 
 import android.test.ActivityInstrumentationTestCase2;
@@ -41,3 +42,4 @@ public class OverlayMapViewerTest extends ActivityInstrumentationTestCase2<Overl
         this.solo.finishOpenedActivities();
     }
 }
+*/

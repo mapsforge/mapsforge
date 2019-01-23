@@ -1,3 +1,4 @@
+/*
 package org.mapsforge.samples.android.test;
 
 import android.test.ActivityInstrumentationTestCase2;
@@ -53,3 +54,4 @@ public class TileStoreViewerTest extends ActivityInstrumentationTestCase2<TileSt
         this.solo.finishOpenedActivities();
     }
 }
+*/

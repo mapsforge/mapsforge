@@ -1,3 +1,4 @@
+/*
 package org.mapsforge.samples.android.test;
 
 import android.test.ActivityInstrumentationTestCase2;
@@ -81,3 +82,4 @@ public class ItemListActivityTest extends ActivityInstrumentationTestCase2<ItemL
         this.solo.finishOpenedActivities();
     }
 }
+*/
