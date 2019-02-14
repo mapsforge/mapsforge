@@ -98,7 +98,6 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 if (this.hasJobQueue && !this.tileCache.containsKey(job)) {
                     this.jobQueue.add(job);
                 }
-                drawParentTileBitmap(canvas, point, tile);
             } else {
                 if (isTileStale(tile, bitmap) && this.hasJobQueue && !this.tileCache.containsKey(job)) {
                     this.jobQueue.add(job);
@@ -147,51 +146,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
     protected void retrieveLabelsOnly(T job) {
     }
-
-    private void drawParentTileBitmap(Canvas canvas, Point point, Tile tile) {
-        Tile cachedParentTile = getCachedParentTile(tile, 4);
-        if (cachedParentTile != null) {
-            Bitmap bitmap = this.tileCache.getImmediately(createJob(cachedParentTile));
-            if (bitmap != null) {
-                int tileSize = this.displayModel.getTileSize();
-                long translateX = tile.getShiftX(cachedParentTile) * tileSize;
-                long translateY = tile.getShiftY(cachedParentTile) * tileSize;
-                byte zoomLevelDiff = (byte) (tile.zoomLevel - cachedParentTile.zoomLevel);
-                float scaleFactor = (float) Math.pow(2, zoomLevelDiff);
-
-                int x = (int) Math.round(point.x);
-                int y = (int) Math.round(point.y);
-
-                this.matrix.reset();
-                this.matrix.translate(x - translateX, y - translateY);
-                this.matrix.scale(scaleFactor, scaleFactor);
-
-                canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-                canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
-                canvas.resetClip();
-                bitmap.decrementRefCount();
-            }
-        }
-    }
-
-    /**
-     * @return the first parent object of the given object whose tileCacheBitmap is cached (may be null).
-     */
-    private Tile getCachedParentTile(Tile tile, int level) {
-        if (level == 0) {
-            return null;
-        }
-
-        Tile parentTile = tile.getParent();
-        if (parentTile == null) {
-            return null;
-        } else if (this.tileCache.containsKey(createJob(parentTile))) {
-            return parentTile;
-        }
-
-        return getCachedParentTile(parentTile, level - 1);
-    }
-
+    
     public TileCache getTileCache() {
         return this.tileCache;
     }
