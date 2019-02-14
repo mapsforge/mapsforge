@@ -2,7 +2,7 @@
 
 # Project conventions
 
-Our project conventions are based on the official [Code Conventions for the Java Programming Language](http://www.oracle.com/technetwork/java/codeconv-138413.html). In addition to these conventions, the following rules apply to all project members.
+Our project conventions are based on the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html). In addition to these conventions, the following rules apply to all project members.
 
 
 ## Language and character encoding
@@ -37,7 +37,7 @@ Please keep the visibility of all classes, methods and fields to a minimum. Use 
 
 We use Javadoc for documentation purposes. All important classes, methods and fields need a proper Javadoc comment. When writing a Javadoc comment for a method, all parameters and the return value must be documented. Please update Javadoc comments whenever the related code has been changed.
 
-In general you should follow the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html).
+In general you should follow the [Sun conventions for writing documentation comments](https://www.oracle.com/technetwork/java/javase/documentation/index-137868.html).
 
 
 ### Compiler warnings
