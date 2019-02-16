@@ -162,13 +162,19 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 int x = (int) Math.round(point.x);
                 int y = (int) Math.round(point.y);
 
-                this.matrix.reset();
-                this.matrix.translate(x - translateX, y - translateY);
-                this.matrix.scale(scaleFactor, scaleFactor);
+                final Rectangle src = new Rectangle
+                    ( translateX / scaleFactor,
+                      translateY / scaleFactor,
+                      ( translateX + this.displayModel.getTileSize() ) / scaleFactor,
+                      ( translateY + this.displayModel.getTileSize() ) / scaleFactor );
 
-                canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-                canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
-                canvas.resetClip();
+                final Rectangle dst = new Rectangle
+                    ( x, y,
+                      x + this.displayModel.getTileSize(),
+                      y + this.displayModel.getTileSize() );
+
+                canvas.drawBitmap( bitmap, src, dst, this.displayModel.getFilter() );
+
                 bitmap.decrementRefCount();
             }
         }
