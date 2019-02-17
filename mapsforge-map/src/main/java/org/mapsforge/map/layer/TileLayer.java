@@ -19,6 +19,7 @@ package org.mapsforge.map.layer;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.InterpolationMode;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
@@ -174,7 +175,12 @@ public abstract class TileLayer<T extends Job> extends Layer {
                       x + this.displayModel.getTileSize(),
                       y + this.displayModel.getTileSize() );
 
-                canvas.drawBitmap( bitmap, src, dst, this.displayModel.getFilter(), true );
+                final InterpolationMode modeBefore = canvas.getInterpolationMode();
+                canvas.setInterpolationMode(InterpolationMode.NEAREST_NEIGHBOR );
+
+                canvas.drawBitmap( bitmap, src, dst, this.displayModel.getFilter() );
+
+                canvas.setInterpolationMode(modeBefore);
 
                 bitmap.decrementRefCount();
             }

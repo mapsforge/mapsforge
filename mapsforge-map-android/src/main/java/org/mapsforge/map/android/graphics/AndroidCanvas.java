@@ -29,6 +29,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.InterpolationMode;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -136,8 +137,7 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst,
-                           Filter filter, boolean fastScaling) {
+    public void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst, Filter filter) {
 
         applyFilter(filter);
 
@@ -151,17 +151,8 @@ class AndroidCanvas implements Canvas {
                                        (int)dst.right, (int)dst.bottom ) :
             null;
 
-        final int flagsBefore = bitmapPaint.getFlags();
-
-        if (fastScaling) {
-            bitmapPaint.setFilterBitmap(false);
-            bitmapPaint.setAntiAlias(false);
-        }
-
         this.canvas.drawBitmap( AndroidGraphicFactory.getBitmap(bitmap),
                                 andSrc, andDst, bitmapPaint );
-
-        bitmapPaint.setFlags(flagsBefore);
 
         if (filter != Filter.NONE) {
             bitmapPaint.setColorFilter(null);
@@ -405,6 +396,26 @@ class AndroidCanvas implements Canvas {
         this.canvas.restore();
     }
 
+    @Override
+    public InterpolationMode getInterpolationMode() {
+        final boolean filterBitmapFlag =
+            ( bitmapPaint.getFlags() &
+              android.graphics.Paint.FILTER_BITMAP_FLAG ) > 0;
+
+        return filterBitmapFlag ?
+            InterpolationMode.BILINEAR :
+            InterpolationMode.NEAREST_NEIGHBOR;
+    }
+
+    @Override
+    public void setInterpolationMode(InterpolationMode mode) {
+        if ( mode == InterpolationMode.NEAREST_NEIGHBOR ) {
+            bitmapPaint.setFilterBitmap(false);
+        } else {
+            bitmapPaint.setFilterBitmap(true);
+        }
+    }
+
     private static class HilshadingTemps {
         private final Rect asr = new Rect(0, 0, 0, 0);
         private final Rect adr = new Rect(0, 0, 0, 0);
@@ -499,4 +510,3 @@ class AndroidCanvas implements Canvas {
         }
     }
 }
-
