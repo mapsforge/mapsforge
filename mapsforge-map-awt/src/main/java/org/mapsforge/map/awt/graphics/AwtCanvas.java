@@ -190,7 +190,7 @@ class AwtCanvas implements Canvas {
             ( RenderingHints.KEY_ANTIALIASING );
 
         final Object interpolationHintBefore = this.graphics2D.getRenderingHint
-            ( RenderingHints.KEY_ANTIALIASING );
+            ( RenderingHints.KEY_INTERPOLATION );
 
         if ( fastScaling ) {
             this.graphics2D.setRenderingHint
