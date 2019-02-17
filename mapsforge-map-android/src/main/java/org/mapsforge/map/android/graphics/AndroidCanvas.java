@@ -416,6 +416,17 @@ class AndroidCanvas implements Canvas {
         }
     }
 
+    @Override
+    public boolean getAntiAliasEnabled() {
+        return ( bitmapPaint.getFlags() &
+                 android.graphics.Paint.ANTI_ALIAS_FLAG ) > 0;
+    }
+
+    @Override
+    public void setAntiAliasEnabled(boolean enabled) {
+        bitmapPaint.setAntiAlias(enabled);
+    }
+
     private static class HilshadingTemps {
         private final Rect asr = new Rect(0, 0, 0, 0);
         private final Rect adr = new Rect(0, 0, 0, 0);

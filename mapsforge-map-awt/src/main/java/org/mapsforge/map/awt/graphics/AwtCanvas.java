@@ -458,4 +458,20 @@ class AwtCanvas implements Canvas {
             break;
         }
     }
+
+    @Override
+    public boolean getAntiAliasEnabled() {
+        return this.graphics2D.getRenderingHint
+            (RenderingHints.KEY_ANTIALIASING) ==
+            RenderingHints.VALUE_ANTIALIAS_ON;
+    }
+
+    @Override
+    public void setAntiAliasEnabled(boolean enabled) {
+        this.graphics2D.setRenderingHint
+            ( RenderingHints.KEY_ANTIALIASING,
+              enabled ?
+              RenderingHints.VALUE_ANTIALIAS_ON :
+              RenderingHints.VALUE_ANTIALIAS_OFF );
+    }
 }

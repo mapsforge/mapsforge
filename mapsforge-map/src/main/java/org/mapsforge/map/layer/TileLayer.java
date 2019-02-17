@@ -176,11 +176,15 @@ public abstract class TileLayer<T extends Job> extends Layer {
                       y + this.displayModel.getTileSize() );
 
                 final InterpolationMode modeBefore = canvas.getInterpolationMode();
+                final boolean antiAliasBefore = canvas.getAntiAliasEnabled();
+
                 canvas.setInterpolationMode(InterpolationMode.NEAREST_NEIGHBOR );
+                canvas.setAntiAliasEnabled(false);
 
                 canvas.drawBitmap( bitmap, src, dst, this.displayModel.getFilter() );
 
                 canvas.setInterpolationMode(modeBefore);
+                canvas.setAntiAliasEnabled(antiAliasBefore);
 
                 bitmap.decrementRefCount();
             }

@@ -53,6 +53,9 @@ public interface GraphicContext {
     InterpolationMode getInterpolationMode();
     void setInterpolationMode(InterpolationMode mode);
 
+    boolean getAntiAliasEnabled();
+    void setAntiAliasEnabled(boolean enabled);
+
     /**
      * Shade whole map tile when tileRect is null (and bitmap, shadeRect are null).
      * Shade tileRect neutral if bitmap is null (and shadeRect).
