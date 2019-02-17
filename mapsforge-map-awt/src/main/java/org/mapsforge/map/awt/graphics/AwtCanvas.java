@@ -177,18 +177,42 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, Matrix matrix,
+                           Filter filter) {
         this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
     }
 
     @Override
     public void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst,
-                           Filter filter) {
+                           Filter filter, boolean fastScaling) {
+
+        final Object antiAliasHintBefore = this.graphics2D.getRenderingHint
+            ( RenderingHints.KEY_ANTIALIASING );
+
+        final Object interpolationHintBefore = this.graphics2D.getRenderingHint
+            ( RenderingHints.KEY_ANTIALIASING );
+
+        if ( fastScaling ) {
+            this.graphics2D.setRenderingHint
+                ( RenderingHints.KEY_ANTIALIASING,
+                  RenderingHints.VALUE_ANTIALIAS_OFF );
+            this.graphics2D.setRenderingHint
+                ( RenderingHints.KEY_INTERPOLATION,
+                  RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR );
+        }
+
         this.graphics2D.drawImage
             ( applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter),
               (int)dst.left, (int)dst.top, (int)dst.right, (int)dst.bottom,
               (int)src.left, (int)src.top, (int)src.right, (int)src.bottom,
               null );
+
+        if ( fastScaling ) {
+            this.graphics2D.setRenderingHint
+                ( RenderingHints.KEY_ANTIALIASING, antiAliasHintBefore );
+            this.graphics2D.setRenderingHint
+                ( RenderingHints.KEY_INTERPOLATION, interpolationHintBefore );
+        }
     }
 
     @Override

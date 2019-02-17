@@ -174,7 +174,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                       x + this.displayModel.getTileSize(),
                       y + this.displayModel.getTileSize() );
 
-                canvas.drawBitmap( bitmap, src, dst, this.displayModel.getFilter() );
+                canvas.drawBitmap( bitmap, src, dst, this.displayModel.getFilter(), true );
 
                 bitmap.decrementRefCount();
             }

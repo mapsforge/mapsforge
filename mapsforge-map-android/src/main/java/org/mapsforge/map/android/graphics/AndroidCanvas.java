@@ -136,7 +136,8 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst,
+                           Filter filter, boolean fastScaling) {
 
         applyFilter(filter);
 
@@ -150,8 +151,17 @@ class AndroidCanvas implements Canvas {
                                        (int)dst.right, (int)dst.bottom ) :
             null;
 
+        final int flagsBefore = bitmapPaint.getFlags();
+
+        if (fastScaling) {
+            bitmapPaint.setFilterBitmap(false);
+            bitmapPaint.setAntiAlias(false);
+        }
+
         this.canvas.drawBitmap( AndroidGraphicFactory.getBitmap(bitmap),
                                 andSrc, andDst, bitmapPaint );
+
+        bitmapPaint.setFlags(flagsBefore);
 
         if (filter != Filter.NONE) {
             bitmapPaint.setColorFilter(null);

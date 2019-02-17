@@ -28,7 +28,8 @@ public interface GraphicContext {
 
     void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter);
 
-    void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst, Filter filter);
+    void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst,
+                    Filter filter, boolean fastScaling);
 
     void drawCircle(int x, int y, int radius, Paint paint);
 
