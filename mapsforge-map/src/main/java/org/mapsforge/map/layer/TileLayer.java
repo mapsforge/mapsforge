@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2019 devemux86
+ * Copyright 2019 cpt1gl0
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -99,7 +100,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 if (this.hasJobQueue && !this.tileCache.containsKey(job)) {
                     this.jobQueue.add(job);
                 }
-                if (Parameters.PARENT_TILES_RENDERING) {
+                if (Parameters.PARENT_TILES_RENDERING != Parameters.ParentTilesRendering.OFF) {
                     drawParentTileBitmap(canvas, point, tile);
                 }
             } else {
@@ -169,9 +170,22 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 this.matrix.translate(x - translateX, y - translateY);
                 this.matrix.scale(scaleFactor, scaleFactor);
 
+                boolean antiAlias = canvas.isAntiAlias();
+                boolean filterBitmap = canvas.isFilterBitmap();
+                if (Parameters.PARENT_TILES_RENDERING == Parameters.ParentTilesRendering.SPEED) {
+                    canvas.setAntiAlias(false);
+                    canvas.setFilterBitmap(false);
+                }
+
                 canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
                 canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
                 canvas.resetClip();
+
+                if (Parameters.PARENT_TILES_RENDERING == Parameters.ParentTilesRendering.SPEED) {
+                    canvas.setAntiAlias(antiAlias);
+                    canvas.setFilterBitmap(filterBitmap);
+                }
+
                 bitmap.decrementRefCount();
             }
         }

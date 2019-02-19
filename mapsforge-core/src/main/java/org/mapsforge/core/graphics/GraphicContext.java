@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2019 cpt1gl0
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -42,11 +43,19 @@ public interface GraphicContext {
 
     void fillColor(int color);
 
+    boolean isAntiAlias();
+
+    boolean isFilterBitmap();
+
     void resetClip();
+
+    void setAntiAlias(boolean aa);
 
     void setClip(int left, int top, int width, int height);
 
     void setClipDifference(int left, int top, int width, int height);
+
+    void setFilterBitmap(boolean filter);
 
     /**
      * Shade whole map tile when tileRect is null (and bitmap, shadeRect are null).

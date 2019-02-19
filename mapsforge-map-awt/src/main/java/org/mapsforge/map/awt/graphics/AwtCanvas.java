@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2017 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2019 cpt1gl0
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -318,8 +319,24 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
+    public boolean isAntiAlias() {
+        return this.graphics2D.getRenderingHints().containsValue(RenderingHints.VALUE_ANTIALIAS_ON);
+    }
+
+    @Override
+    public boolean isFilterBitmap() {
+        return this.graphics2D.getRenderingHints().containsValue(RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+                || this.graphics2D.getRenderingHints().containsValue(RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    }
+
+    @Override
     public void resetClip() {
         this.graphics2D.setClip(null);
+    }
+
+    @Override
+    public void setAntiAlias(boolean aa) {
+        this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aa ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
     }
 
     @Override
@@ -346,6 +363,11 @@ class AwtCanvas implements Canvas {
         Area clip = new Area(new Rectangle2D.Double(0, 0, getWidth(), getHeight()));
         clip.subtract(new Area(new Rectangle2D.Double(left, top, width, height)));
         this.graphics2D.setClip(clip);
+    }
+
+    @Override
+    public void setFilterBitmap(boolean filter) {
+        this.graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, filter ? RenderingHints.VALUE_INTERPOLATION_BILINEAR : RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
     }
 
     @Override
@@ -410,5 +432,4 @@ class AwtCanvas implements Canvas {
             this.graphics2D.setStroke(awtPaint.stroke);
         }
     }
-
 }

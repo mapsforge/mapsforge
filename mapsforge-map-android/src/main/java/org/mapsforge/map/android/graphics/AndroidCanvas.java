@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2018 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2019 cpt1gl0
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -213,6 +214,16 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
+    public boolean isAntiAlias() {
+        return this.bitmapPaint.isAntiAlias();
+    }
+
+    @Override
+    public boolean isFilterBitmap() {
+        return this.bitmapPaint.isFilterBitmap();
+    }
+
+    @Override
     public void resetClip() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.canvas.save();
@@ -221,6 +232,11 @@ class AndroidCanvas implements Canvas {
         } else {
             this.canvas.clipRect(0, 0, getWidth(), getHeight(), Region.Op.REPLACE);
         }
+    }
+
+    @Override
+    public void setAntiAlias(boolean aa) {
+        this.bitmapPaint.setAntiAlias(aa);
     }
 
     @Override
@@ -246,6 +262,11 @@ class AndroidCanvas implements Canvas {
 
     public void setClipInternal(int left, int top, int width, int height, Region.Op op) {
         this.canvas.clipRect(left, top, left + width, top + height, op);
+    }
+
+    @Override
+    public void setFilterBitmap(boolean filter) {
+        this.bitmapPaint.setFilterBitmap(filter);
     }
 
     @Override
@@ -466,4 +487,3 @@ class AndroidCanvas implements Canvas {
         }
     }
 }
-

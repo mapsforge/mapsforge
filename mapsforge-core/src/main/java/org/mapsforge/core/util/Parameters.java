@@ -16,6 +16,8 @@ package org.mapsforge.core.util;
 
 public final class Parameters {
 
+    public enum ParentTilesRendering {QUALITY, SPEED, OFF}
+
     /**
      * If true the <code>MapViewPosition2</code> will be used instead of default <code>MapViewPosition</code>.
      */
@@ -35,9 +37,9 @@ public final class Parameters {
     public static int NUMBER_OF_THREADS = 1;//Runtime.getRuntime().availableProcessors() + 1;
 
     /**
-     * If true draw also parent tiles during map rendering.
+     * Parent tiles rendering mode.
      */
-    public static boolean PARENT_TILES_RENDERING = true;
+    public static ParentTilesRendering PARENT_TILES_RENDERING = ParentTilesRendering.QUALITY;
 
     /**
      * If square frame buffer is enabled, the frame buffer allocated for drawing will be
