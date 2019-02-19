@@ -40,6 +40,13 @@ public final class Parameters {
     public static boolean PARENT_TILES_RENDERING = true;
 
     /**
+     * If true, use fast, less memory-consuming rendering for parent tiles.
+     * Note that fast parent tiles rendering will give poorer image quality
+     * for parent tiles as compared to default parent tile rendering.
+     */
+    public static boolean FAST_PARENT_TILES_RENDERING = false;
+
+    /**
      * If square frame buffer is enabled, the frame buffer allocated for drawing will be
      * large enough for drawing in either orientation, so no change is needed when the device
      * orientation changes. To avoid overly large frame buffers, the aspect ratio for this policy

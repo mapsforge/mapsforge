@@ -18,10 +18,12 @@ package org.mapsforge.map.layer;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.InterpolationMode;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -165,13 +167,36 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 int x = (int) Math.round(point.x);
                 int y = (int) Math.round(point.y);
 
-                this.matrix.reset();
-                this.matrix.translate(x - translateX, y - translateY);
-                this.matrix.scale(scaleFactor, scaleFactor);
+                if (Parameters.FAST_PARENT_TILES_RENDERING) {
+                    final Rectangle src = new Rectangle
+                        ( translateX / scaleFactor,
+                          translateY / scaleFactor,
+                          ( translateX + tileSize ) / scaleFactor,
+                          ( translateY + tileSize ) / scaleFactor );
 
-                canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-                canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
-                canvas.resetClip();
+                    final Rectangle dst = new Rectangle(x, y, x + tileSize, y + tileSize);
+
+                    final InterpolationMode interpolBefore = canvas.getInterpolationMode();
+                    final boolean antiAliasBefore = canvas.getAntiAliasEnabled();
+
+                    canvas.setInterpolationMode(InterpolationMode.NEAREST_NEIGHBOR);
+                    canvas.setAntiAliasEnabled(false);
+
+                    canvas.drawBitmap(bitmap, src, dst, this.displayModel.getFilter());
+
+                    canvas.setInterpolationMode(interpolBefore);
+                    canvas.setAntiAliasEnabled(antiAliasBefore);
+
+                } else {
+                    this.matrix.reset();
+                    this.matrix.translate(x - translateX, y - translateY);
+                    this.matrix.scale(scaleFactor, scaleFactor);
+
+                    canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
+                    canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
+                    canvas.resetClip();
+                }
+
                 bitmap.decrementRefCount();
             }
         }
