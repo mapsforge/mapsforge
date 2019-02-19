@@ -29,6 +29,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.InterpolationMode;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -130,6 +131,29 @@ class AndroidCanvas implements Canvas {
     public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
         applyFilter(filter);
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+        if (filter != Filter.NONE) {
+            bitmapPaint.setColorFilter(null);
+        }
+    }
+
+    @Override
+    public void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst, Filter filter) {
+
+        applyFilter(filter);
+
+        final android.graphics.Rect andSrc = (src != null) ?
+            new android.graphics.Rect( (int)src.left, (int)src.top,
+                                       (int)src.right, (int)src.bottom ) :
+            null;
+
+        final android.graphics.Rect andDst = (dst != null ) ?
+            new android.graphics.Rect( (int)dst.left, (int)dst.top,
+                                       (int)dst.right, (int)dst.bottom ) :
+            null;
+
+        this.canvas.drawBitmap( AndroidGraphicFactory.getBitmap(bitmap),
+                                andSrc, andDst, bitmapPaint );
+
         if (filter != Filter.NONE) {
             bitmapPaint.setColorFilter(null);
         }
@@ -372,6 +396,37 @@ class AndroidCanvas implements Canvas {
         this.canvas.restore();
     }
 
+    @Override
+    public InterpolationMode getInterpolationMode() {
+        final boolean filterBitmapFlag =
+            ( bitmapPaint.getFlags() &
+              android.graphics.Paint.FILTER_BITMAP_FLAG ) > 0;
+
+        return filterBitmapFlag ?
+            InterpolationMode.BILINEAR :
+            InterpolationMode.NEAREST_NEIGHBOR;
+    }
+
+    @Override
+    public void setInterpolationMode(InterpolationMode mode) {
+        if ( mode == InterpolationMode.NEAREST_NEIGHBOR ) {
+            bitmapPaint.setFilterBitmap(false);
+        } else {
+            bitmapPaint.setFilterBitmap(true);
+        }
+    }
+
+    @Override
+    public boolean getAntiAliasEnabled() {
+        return ( bitmapPaint.getFlags() &
+                 android.graphics.Paint.ANTI_ALIAS_FLAG ) > 0;
+    }
+
+    @Override
+    public void setAntiAliasEnabled(boolean enabled) {
+        bitmapPaint.setAntiAlias(enabled);
+    }
+
     private static class HilshadingTemps {
         private final Rect asr = new Rect(0, 0, 0, 0);
         private final Rect adr = new Rect(0, 0, 0, 0);
@@ -466,4 +521,3 @@ class AndroidCanvas implements Canvas {
         }
     }
 }
-

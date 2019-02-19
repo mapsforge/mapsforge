@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.InterpolationMode;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
@@ -177,8 +178,18 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, Matrix matrix,
+                           Filter filter) {
         this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+    }
+
+    @Override
+    public void drawBitmap(Bitmap bitmap, Rectangle src, Rectangle dst, Filter filter) {
+        this.graphics2D.drawImage
+            ( applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter),
+              (int)dst.left, (int)dst.top, (int)dst.right, (int)dst.bottom,
+              (int)src.left, (int)src.top, (int)src.right, (int)src.bottom,
+              null );
     }
 
     @Override
@@ -411,4 +422,56 @@ class AwtCanvas implements Canvas {
         }
     }
 
+    @Override
+    public InterpolationMode getInterpolationMode() {
+        final Object hint = this.graphics2D.getRenderingHint
+            ( RenderingHints.KEY_INTERPOLATION );
+
+        if ( hint == RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR ) {
+            return InterpolationMode.NEAREST_NEIGHBOR;
+        } else if ( hint == RenderingHints.VALUE_INTERPOLATION_BILINEAR ) {
+            return InterpolationMode.BILINEAR;
+        } else if ( hint == RenderingHints.VALUE_INTERPOLATION_BICUBIC ) {
+            return InterpolationMode.BICUBIC;
+        } else {
+            return InterpolationMode.UNKNOWN;
+        }
+    }
+
+    @Override
+    public void setInterpolationMode(InterpolationMode mode) {
+        switch (mode) {
+        case NEAREST_NEIGHBOR:
+            this.graphics2D.setRenderingHint
+                ( RenderingHints.KEY_INTERPOLATION,
+                  RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR );
+            break;
+        case BILINEAR:
+            this.graphics2D.setRenderingHint
+                ( RenderingHints.KEY_INTERPOLATION,
+                  RenderingHints.VALUE_INTERPOLATION_BILINEAR );
+            break;
+        case BICUBIC:
+            this.graphics2D.setRenderingHint
+                ( RenderingHints.KEY_INTERPOLATION,
+                  RenderingHints.VALUE_INTERPOLATION_BICUBIC );
+            break;
+        }
+    }
+
+    @Override
+    public boolean getAntiAliasEnabled() {
+        return this.graphics2D.getRenderingHint
+            (RenderingHints.KEY_ANTIALIASING) ==
+            RenderingHints.VALUE_ANTIALIAS_ON;
+    }
+
+    @Override
+    public void setAntiAliasEnabled(boolean enabled) {
+        this.graphics2D.setRenderingHint
+            ( RenderingHints.KEY_ANTIALIASING,
+              enabled ?
+              RenderingHints.VALUE_ANTIALIAS_ON :
+              RenderingHints.VALUE_ANTIALIAS_OFF );
+    }
 }
