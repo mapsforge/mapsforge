@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2018 devemux86
+ * Copyright 2017-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,6 +33,11 @@ public final class Parameters {
      * For stability reasons (see #591), we set default number of threads to 1.
      */
     public static int NUMBER_OF_THREADS = 1;//Runtime.getRuntime().availableProcessors() + 1;
+
+    /**
+     * If true draw also parent tiles during map rendering.
+     */
+    public static boolean PARENT_TILES_RENDERING = true;
 
     /**
      * If square frame buffer is enabled, the frame buffer allocated for drawing will be
