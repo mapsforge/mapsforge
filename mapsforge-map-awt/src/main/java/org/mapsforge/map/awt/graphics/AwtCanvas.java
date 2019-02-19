@@ -183,6 +183,15 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
+    public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
+                           int dstLeft, int dstTop, int dstRight, int dstBottom, Filter filter) {
+        this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter),
+                dstLeft, dstTop, dstRight, dstBottom,
+                srcLeft, srcTop, srcRight, srcBottom,
+                null);
+    }
+
+    @Override
     public void drawCircle(int x, int y, int radius, Paint paint) {
         if (paint.isTransparent()) {
             return;

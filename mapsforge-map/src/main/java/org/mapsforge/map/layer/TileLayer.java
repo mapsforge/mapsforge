@@ -166,24 +166,28 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 int x = (int) Math.round(point.x);
                 int y = (int) Math.round(point.y);
 
-                this.matrix.reset();
-                this.matrix.translate(x - translateX, y - translateY);
-                this.matrix.scale(scaleFactor, scaleFactor);
-
-                boolean antiAlias = canvas.isAntiAlias();
-                boolean filterBitmap = canvas.isFilterBitmap();
                 if (Parameters.PARENT_TILES_RENDERING == Parameters.ParentTilesRendering.SPEED) {
+                    boolean antiAlias = canvas.isAntiAlias();
+                    boolean filterBitmap = canvas.isFilterBitmap();
+
                     canvas.setAntiAlias(false);
                     canvas.setFilterBitmap(false);
-                }
 
-                canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-                canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
-                canvas.resetClip();
+                    canvas.drawBitmap(bitmap,
+                            (int) (translateX / scaleFactor), (int) (translateY / scaleFactor), (int) ((translateX + tileSize) / scaleFactor), (int) ((translateY + tileSize) / scaleFactor),
+                            x, y, x + tileSize, y + tileSize,
+                            this.displayModel.getFilter());
 
-                if (Parameters.PARENT_TILES_RENDERING == Parameters.ParentTilesRendering.SPEED) {
                     canvas.setAntiAlias(antiAlias);
                     canvas.setFilterBitmap(filterBitmap);
+                } else {
+                    this.matrix.reset();
+                    this.matrix.translate(x - translateX, y - translateY);
+                    this.matrix.scale(scaleFactor, scaleFactor);
+
+                    canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
+                    canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
+                    canvas.resetClip();
                 }
 
                 bitmap.decrementRefCount();

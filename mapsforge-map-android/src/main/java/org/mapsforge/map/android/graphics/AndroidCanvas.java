@@ -137,6 +137,21 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
+    public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
+                           int dstLeft, int dstTop, int dstRight, int dstBottom, Filter filter) {
+        applyFilter(filter);
+
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap),
+                new Rect(srcLeft, srcTop, srcRight, srcBottom),
+                new Rect(dstLeft, dstTop, dstRight, dstBottom),
+                this.bitmapPaint);
+
+        if (filter != Filter.NONE) {
+            this.bitmapPaint.setColorFilter(null);
+        }
+    }
+
+    @Override
     public void drawCircle(int x, int y, int radius, Paint paint) {
         if (paint.isTransparent()) {
             return;
