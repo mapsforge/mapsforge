@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014-2017 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
  *
@@ -180,6 +180,15 @@ class AwtCanvas implements Canvas {
     @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
         this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+    }
+
+    @Override
+    public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
+                           int dstLeft, int dstTop, int dstRight, int dstBottom) {
+        this.graphics2D.drawImage(AwtGraphicFactory.getBitmap(bitmap),
+                dstLeft, dstTop, dstRight, dstBottom,
+                srcLeft, srcTop, srcRight, srcBottom,
+                null);
     }
 
     @Override

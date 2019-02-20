@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2019 devemux86
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
  *
@@ -28,6 +28,9 @@ public interface GraphicContext {
     void drawBitmap(Bitmap bitmap, Matrix matrix);
 
     void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter);
+
+    void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
+                    int dstLeft, int dstTop, int dstRight, int dstBottom);
 
     void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
                     int dstLeft, int dstTop, int dstRight, int dstBottom, Filter filter);

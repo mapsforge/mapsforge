@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
  *
@@ -134,6 +134,15 @@ class AndroidCanvas implements Canvas {
         if (filter != Filter.NONE) {
             bitmapPaint.setColorFilter(null);
         }
+    }
+
+    @Override
+    public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
+                           int dstLeft, int dstTop, int dstRight, int dstBottom) {
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap),
+                new Rect(srcLeft, srcTop, srcRight, srcBottom),
+                new Rect(dstLeft, dstTop, dstRight, dstBottom),
+                this.bitmapPaint);
     }
 
     @Override
