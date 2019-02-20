@@ -5,7 +5,7 @@
 - Render themes: PNG scaling [#1090](https://github.com/mapsforge/mapsforge/issues/1090)
 - Polyline scaled width [#1088](https://github.com/mapsforge/mapsforge/issues/1088)
 - Hillshading in style menu [#1095](https://github.com/mapsforge/mapsforge/issues/1095)
-- Parent tiles rendering option
+- Parent tiles rendering quality option [#1102](https://github.com/mapsforge/mapsforge/pull/1102)
   - `Parameters.PARENT_TILES_RENDERING`
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.11.0)
