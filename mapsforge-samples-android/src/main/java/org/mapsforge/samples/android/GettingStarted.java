@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 devemux86
+ * Copyright 2018-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -33,13 +33,12 @@ import java.io.File;
 /**
  * A very basic Android app example.
  * <p>
- * You'll need a map with filename germany.map from download.mapsforge.org in device storage.
- * Can be berlin.map renamed as germany.map because of smaller size.
+ * You'll need a map with filename berlin.map from download.mapsforge.org in device storage.
  */
 public class GettingStarted extends Activity {
 
     // Name of the map file in device storage
-    private static final String MAP_FILE = "germany.map";
+    private static final String MAP_FILE = "berlin.map";
 
     private MapView mapView;
 

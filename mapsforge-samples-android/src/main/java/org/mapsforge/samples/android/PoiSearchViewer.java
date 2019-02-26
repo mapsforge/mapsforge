@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 devemux86
+ * Copyright 2015-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -46,7 +46,7 @@ import java.util.Collection;
  */
 public class PoiSearchViewer extends DefaultTheme {
 
-    private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/germany.poi";
+    private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/berlin.poi";
     private static final String POI_CATEGORY = "Restaurants";
 
     private GroupLayer groupLayer;

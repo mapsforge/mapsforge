@@ -51,8 +51,7 @@ Code before latest release is not supported anymore (we do not have the resource
 - The Samples app in mapsforge-samples-android is meant as a template and test case for building apps based on this version.
 - There is now a MapViewerTemplate class for building Android apps, that gives simple hooks to implement an Android based application. For its use refer to the Samples app.
 - After a successful build, you will find the Samples apk in mapsforge-samples-android/build/outputs/apk
-- To run the Samples app, you will need to install any map called 'germany.map' onto the sdcard of a device or emulator.
-- It is probably best if the map contains the area of central Berlin.
+- To run the Samples app, you will need to install any map called 'berlin.map' onto the sdcard of a device or emulator.
 
 ### mapsforge-samples-awt
 
