@@ -10,6 +10,6 @@ If you are only requesting a small change in the code, you may attach a patch fi
 
 Also please keep the pull request commits squashed, in order to avoid the clutter in repository and have only the finally changed files together. One way is described [here](http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html).
 
-Regarding syntax make sure your IDE uses for indentation 4 spaces (no tabs) and follow the conventions you already see in the code.
+Regarding code make sure your IDE uses UTF-8 endoding, for indentation 4 spaces (no tabs) and follow the conventions you already see in the code.
 
 Please note that the mapsforge project is licenced under the [GNU LGPL3 licence](http://www.gnu.org/licenses/lgpl.html). Thus, all your contributions are going to be published under this license.
