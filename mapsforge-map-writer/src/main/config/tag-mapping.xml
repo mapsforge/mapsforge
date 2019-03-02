@@ -464,9 +464,25 @@
         <osm-tag equivalent-values="WNW,wnw" key="roof:direction" renderable="false" value="292" />
         <osm-tag equivalent-values="NNW,nnw" key="roof:direction" renderable="false" value="337" />
 
+        <osm-tag key="building:colour" renderable="false" value="black" />
+        <osm-tag key="building:colour" renderable="false" value="blue" />
+        <osm-tag key="building:colour" renderable="false" value="brown" />
+        <osm-tag key="building:colour" renderable="false" value="green" />
+        <osm-tag equivalent-values="gray" key="building:colour" renderable="false" value="grey" />
+        <osm-tag key="building:colour" renderable="false" value="red" />
+        <osm-tag key="building:colour" renderable="false" value="white" />
+        <osm-tag key="building:colour" renderable="false" value="yellow" />
         <osm-tag key="building:colour" renderable="false" value="%f" />
         <!-- Detect unmatched tags -->
         <!--<osm-tag key="building:colour" renderable="false" value="%s" />-->
+        <osm-tag key="roof:colour" renderable="false" value="black" />
+        <osm-tag key="roof:colour" renderable="false" value="blue" />
+        <osm-tag key="roof:colour" renderable="false" value="brown" />
+        <osm-tag key="roof:colour" renderable="false" value="green" />
+        <osm-tag equivalent-values="gray" key="roof:colour" renderable="false" value="grey" />
+        <osm-tag key="roof:colour" renderable="false" value="red" />
+        <osm-tag key="roof:colour" renderable="false" value="white" />
+        <osm-tag key="roof:colour" renderable="false" value="yellow" />
         <osm-tag key="roof:colour" renderable="false" value="%f" />
         <!-- Detect unmatched tags -->
         <!--<osm-tag key="roof:colour" renderable="false" value="%s" />-->
