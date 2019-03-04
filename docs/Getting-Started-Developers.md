@@ -79,4 +79,4 @@ Android Studio integrates tightly with gradle. The easiest way to create a new a
 
 ## How to contribute
 
-[Guidelines](../.github/CONTRIBUTING.md) for repository contributors.
+[Guidelines](CONTRIBUTING.md) for repository contributors.
