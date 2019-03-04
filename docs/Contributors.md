@@ -6,4 +6,4 @@ Current owners and lead developers are:
 
 - [**devemux86**](https://github.com/devemux86)
 
-To contact the project, please use the [mapsforge mailing list](https://groups.google.com/forum/#!forum/mapsforge-dev).
+To contact the project, please use our public [forum](https://groups.google.com/forum/#!forum/mapsforge-dev).

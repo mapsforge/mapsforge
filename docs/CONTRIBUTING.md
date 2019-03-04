@@ -2,7 +2,7 @@
 
 As an open source project, we welcome new contributors and appreciate your help.
 
-Before you start working on an unresolved issue or try to implement a new feature, please contact us via our public [mailing list](https://groups.google.com/group/mapsforge-dev).
+Before you start working on an unresolved issue or try to implement a new feature, please contact us via our public [forum](https://groups.google.com/group/mapsforge-dev).
 
 You may also create a new issue on [Github](https://github.com/mapsforge/mapsforge/issues) or comment on an existing one to describe your ideas. We will then discuss the best way to realize your proposal and figure out how we can help you to get started quickly.
 
