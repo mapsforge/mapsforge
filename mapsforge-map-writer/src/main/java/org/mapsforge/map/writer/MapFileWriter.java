@@ -5,7 +5,7 @@
  * Copyright 2016 mikes222
  * Copyright 2016-2018 devemux86
  * Copyright 2017 Ludwig M Brinckmann
- * Copyright 2017 Gustl22
+ * Copyright 2017-2019 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -452,7 +452,7 @@ public final class MapFileWriter {
         int tagAmount = node.getTags() == null ? 0 : node.getTags().size();
         if (tagAmount > (1 << HALF_BYTE_SHIFT) - 1) {
             // See #971
-            LOGGER.info(Arrays.toString(node.getTags().keySet().toArray()) + "\n" + Arrays.toString(node.getTags().values().toArray()));
+            LOGGER.severe("Too many tags: \n" + node.toStringDetailed());
             throw new RuntimeException("more than 15 tags aren't supported");
         }
         return (byte) (layer << HALF_BYTE_SHIFT | (short) tagAmount);
@@ -494,7 +494,7 @@ public final class MapFileWriter {
         int tagAmount = way.getTags() == null ? 0 : way.getTags().size();
         if (tagAmount > (1 << HALF_BYTE_SHIFT) - 1) {
             // See #971
-            LOGGER.info(Arrays.toString(way.getTags().keySet().toArray()) + "\n" + Arrays.toString(way.getTags().values().toArray()));
+            LOGGER.severe("Too many tags: " + way.toStringDetailed());
             throw new RuntimeException("more than 15 tags aren't supported");
         }
         return (byte) (layer << HALF_BYTE_SHIFT | (short) tagAmount);
