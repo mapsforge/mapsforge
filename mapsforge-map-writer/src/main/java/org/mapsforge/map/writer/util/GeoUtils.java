@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
- * Copyright 2017 Gustl22
+ * Copyright 2017-2019 Gustl22
  * Copyright 2018 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -217,7 +217,9 @@ public final class GeoUtils {
             }
             return bb;
         } catch (IllegalArgumentException ex) {
-            LOGGER.warning("wrong coordinates on way: " + way.toString() + "\nLat: " + wayNodes[0].getLatitude() + " Lon: " + wayNodes[0].getLongitude());
+            LOGGER.warning("wrong coordinates on way: " + way.toString()
+                    + "\nLat: " + LatLongUtils.microdegreesToDegrees(wayNodes[0].getLatitude())
+                    + " Lon: " + LatLongUtils.microdegreesToDegrees(wayNodes[0].getLongitude()));
         }
         return null;
     }

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
- * Copyright 2017 Gustl22
+ * Copyright 2017-2019 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +16,7 @@
  */
 package org.mapsforge.map.writer.model;
 
+import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.writer.OSMTagMapping;
 import org.mapsforge.map.writer.util.GeoUtils;
 import org.mapsforge.map.writer.util.OSMUtils;
@@ -403,8 +404,17 @@ public class TDWay {
 
     @Override
     public String toString() {
-        return "TDWay [id=" + this.id + ", name=" + this.name + ", tags=" + Arrays.toString(this.tags.keySet().toArray()) + ", polygon="
-                + this.shape + "]";
+        return "TDWay [id=" + this.id
+                + (this.wayNodes.length > 0 ? (", latitude=" + LatLongUtils.microdegreesToDegrees(this.wayNodes[0].getLatitude())
+                + ", longitude=" + LatLongUtils.microdegreesToDegrees(this.wayNodes[0].getLongitude())) : "")
+                + ", name=" + this.name + ", tags=" + Arrays.toString(this.tags.keySet().toArray()) + ", polygon=" + this.shape + "]";
+    }
+
+    public String toStringDetailed() {
+        return "TDWay [id=" + this.id
+                + (this.wayNodes.length > 0 ? (", latitude=" + LatLongUtils.microdegreesToDegrees(this.wayNodes[0].getLatitude())
+                + ", longitude=" + LatLongUtils.microdegreesToDegrees(this.wayNodes[0].getLongitude())) : "")
+                + ", name=" + this.name + ", tags=" + OSMUtils.tagsToString(this.tags, true) + ", polygon=" + this.shape + "]";
     }
 
     private void addTags(Map<Short, Object> addendum) {

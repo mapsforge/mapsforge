@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
  * Copyright 2016 devemux86
- * Copyright 2017 Gustl22
+ * Copyright 2017-2019 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -211,7 +211,18 @@ public class TDNode {
 
     @Override
     public final String toString() {
-        return "TDNode [id=" + this.id + ", latitude=" + this.latitude + ", longitude=" + this.longitude + ", name="
-                + this.name + ", tags=" + Arrays.toString(this.tags.keySet().toArray()) + "]";
+        return "TDNode [id=" + this.id
+                + ", latitude=" + LatLongUtils.microdegreesToDegrees(this.latitude)
+                + ", longitude=" + LatLongUtils.microdegreesToDegrees(this.longitude)
+                + ", name=" + this.name
+                + ", tags=" + Arrays.toString(this.tags.keySet().toArray()) + "]";
+    }
+
+    public String toStringDetailed() {
+        return "TDNode [id=" + this.id
+                + ", latitude=" + LatLongUtils.microdegreesToDegrees(this.latitude)
+                + ", longitude=" + LatLongUtils.microdegreesToDegrees(this.longitude)
+                + ", name=" + this.name
+                + ", tags=" + OSMUtils.tagsToString(this.tags, false) + "]";
     }
 }

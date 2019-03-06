@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
- * Copyright 2017 Gustl22
+ * Copyright 2017-2019 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -234,6 +234,12 @@ public class TDRelation {
     public String toString() {
         return "TDRelation [id=" + this.id + ", layer=" + this.layer + ", name=" + this.name + ", ref=" + this.ref
                 + ", tags=" + Arrays.toString(this.tags.keySet().toArray())
+                + ", members=" + this.memberWays.length + "]";
+    }
+
+    public String toStringDetailed() {
+        return "TDRelation [id=" + this.id + ", layer=" + this.layer + ", name=" + this.name + ", ref=" + this.ref
+                + ", tags=" + OSMUtils.tagsToString(this.tags, true)
                 + ", members=" + this.memberWays.length + "]";
     }
 }
