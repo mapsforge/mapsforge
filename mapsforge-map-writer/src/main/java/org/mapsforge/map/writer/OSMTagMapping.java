@@ -680,5 +680,16 @@ public final class OSMTagMapping {
      */
     public void setTagValues(boolean tagValues) {
         this.tagValues = tagValues;
+
+        /* Ensure that implicit relations can be written (with id tag) */
+        if (this.tagValues) {
+            OSMTag tag = this.stringToWayTag.get(OSMTag.tagKey("id", "%f"));
+            if (tag == null) {
+                tag = new OSMTag(this.wayID, "id", "%f", Byte.MAX_VALUE, false, false, false);
+                if (addWayTag(tag, null)) {
+                    this.wayID++;
+                }
+            }
+        }
     }
 }
