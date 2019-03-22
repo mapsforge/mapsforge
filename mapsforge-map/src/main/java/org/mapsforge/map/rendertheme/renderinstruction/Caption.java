@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -182,7 +182,7 @@ public class Caption extends RenderInstruction {
             } else if (DY.equals(name)) {
                 this.dy = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (FILL.equals(name)) {
-                this.fill.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback()));
+                this.fill.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (FONT_FAMILY.equals(name)) {
                 fontFamily = FontFamily.fromString(value);
             } else if (FONT_SIZE.equals(name)) {
@@ -194,7 +194,7 @@ public class Caption extends RenderInstruction {
             } else if (PRIORITY.equals(name)) {
                 this.priority = Integer.parseInt(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback()));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
             } else if (SYMBOL_ID.equals(name)) {

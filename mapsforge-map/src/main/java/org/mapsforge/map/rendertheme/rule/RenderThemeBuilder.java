@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2016-2017 devemux86
+ * Copyright 2016-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -78,9 +78,9 @@ public class RenderThemeBuilder {
             } else if (VERSION.equals(name)) {
                 this.version = Integer.valueOf(XmlUtils.parseNonNegativeInteger(name, value));
             } else if (MAP_BACKGROUND.equals(name)) {
-                this.mapBackground = XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback());
+                this.mapBackground = XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), null);
             } else if (MAP_BACKGROUND_OUTSIDE.equals(name)) {
-                this.mapBackgroundOutside = XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback());
+                this.mapBackgroundOutside = XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), null);
                 this.hasBackgroundOutside = true;
             } else if (BASE_STROKE_WIDTH.equals(name)) {
                 this.baseStrokeWidth = XmlUtils.parseNonNegativeFloat(name, value);

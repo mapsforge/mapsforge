@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2018 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -20,6 +20,7 @@ package org.mapsforge.map.rendertheme;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.ResourceBitmap;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
@@ -96,19 +97,19 @@ public final class XmlUtils {
      * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
      */
     public static int getColor(GraphicFactory graphicFactory, String colorString) {
-        return getColor(graphicFactory, colorString, null);
+        return getColor(graphicFactory, colorString, null, null);
     }
 
     /**
      * Supported formats are {@code #RRGGBB} and {@code #AARRGGBB}.
      */
-    public static int getColor(GraphicFactory graphicFactory, String colorString, ThemeCallback themeCallback) {
+    public static int getColor(GraphicFactory graphicFactory, String colorString, ThemeCallback themeCallback, RenderInstruction origin) {
         if (colorString.isEmpty() || colorString.charAt(0) != '#') {
             throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
         } else if (colorString.length() == 7) {
-            return getColor(graphicFactory, colorString, 255, 1, themeCallback);
+            return getColor(graphicFactory, colorString, 255, 1, themeCallback, origin);
         } else if (colorString.length() == 9) {
-            return getColor(graphicFactory, colorString, Integer.parseInt(colorString.substring(1, 3), 16), 3, themeCallback);
+            return getColor(graphicFactory, colorString, Integer.parseInt(colorString.substring(1, 3), 16), 3, themeCallback, origin);
         } else {
             throw new IllegalArgumentException(UNSUPPORTED_COLOR_FORMAT + colorString);
         }
@@ -237,14 +238,14 @@ public final class XmlUtils {
         return relativePathPrefix + name;
     }
 
-    private static int getColor(GraphicFactory graphicFactory, String colorString, int alpha, int rgbStartIndex, ThemeCallback themeCallback) {
+    private static int getColor(GraphicFactory graphicFactory, String colorString, int alpha, int rgbStartIndex, ThemeCallback themeCallback, RenderInstruction origin) {
         int red = Integer.parseInt(colorString.substring(rgbStartIndex, rgbStartIndex + 2), 16);
         int green = Integer.parseInt(colorString.substring(rgbStartIndex + 2, rgbStartIndex + 4), 16);
         int blue = Integer.parseInt(colorString.substring(rgbStartIndex + 4, rgbStartIndex + 6), 16);
 
         int color = graphicFactory.createColor(alpha, red, green, blue);
         if (themeCallback != null) {
-            color = themeCallback.getColor(color);
+            color = themeCallback.getColor(origin, color);
         }
         return color;
     }

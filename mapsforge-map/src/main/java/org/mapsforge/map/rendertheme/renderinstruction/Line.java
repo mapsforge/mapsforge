@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -93,7 +93,7 @@ public class Line extends RenderInstruction {
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
-                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback()));
+                this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_DASHARRAY.equals(name)) {
                 this.strokeDasharray = parseFloatArray(name, value);
                 for (int f = 0; f < this.strokeDasharray.length; ++f) {
