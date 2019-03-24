@@ -104,7 +104,7 @@ You need to be aware that this configuration only defines what data is to be inc
 
 ## Changelog
 
-### New since 0.9.0
+### 0.10.0
 
 - Polygon label/symbol centroid
 
