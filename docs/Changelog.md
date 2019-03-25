@@ -1,6 +1,6 @@
 # Changelog
 
-## New since 0.10.0
+## Version 0.11.0 (2019-03-25)
 
 - Render themes: PNG scaling [#1090](https://github.com/mapsforge/mapsforge/issues/1090)
 - Polyline scaled width [#1088](https://github.com/mapsforge/mapsforge/issues/1088)
