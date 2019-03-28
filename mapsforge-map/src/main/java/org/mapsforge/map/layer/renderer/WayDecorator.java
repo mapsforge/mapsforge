@@ -16,11 +16,14 @@ package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.mapelements.WayTextContainer;
 import org.mapsforge.core.model.LineSegment;
+import org.mapsforge.core.model.LineString;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
@@ -28,6 +31,7 @@ import org.mapsforge.core.model.Tile;
 import java.util.List;
 
 final class WayDecorator {
+    private final static double MAX_LABEL_CORNER_ANGLE = 45;
 
     static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, boolean alignCenter,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
@@ -120,19 +124,12 @@ final class WayDecorator {
      * @param coordinates   the list of way coordinates
      * @param currentLabels the list of labels to which a new WayTextContainer will be added
      */
-    static void renderText(Tile upperLeft, Tile lowerRight, String text, Display display, int priority, float dy,
+    static void renderText(GraphicFactory graphicFactory, Tile upperLeft, Tile lowerRight, String text, Display display, int priority, float dy,
                            Paint fill, Paint stroke,
                            boolean repeat, float repeatGap, float repeatStart, boolean rotate, Point[][] coordinates,
                            List<MapElementContainer> currentLabels) {
-
-        // Calculate the way name length plus some margin of safety
-        int wayNameWidth = (stroke == null) ? fill.getTextWidth(text) + (int) repeatStart : stroke.getTextWidth(text) + (int) repeatStart;
-
-        // Compute the tile boundary on which we render the name.
-        double textHeight = (stroke == null) ? fill.getTextHeight(text) : stroke.getTextHeight(text);
-        final Rectangle tileBoundary = Tile.getBoundaryAbsolute(upperLeft, lowerRight);
-
-        int skipPixels = 0;
+        if (coordinates.length == 0)
+            return;
 
         Point[] c;
         if (dy == 0f) {
@@ -141,57 +138,35 @@ final class WayDecorator {
             c = RendererUtils.parallelPath(coordinates[0], dy);
         }
 
-        // iterate through the segments to find those long enough to draw the way name on them
-        for (int i = 1; i < c.length; ++i) {
+        if (c.length < 2)
+            return;
 
-            LineSegment currentSegment = new LineSegment(c[i - 1], c[i]);
-            double currentLength = currentSegment.length();
+        LineString path = new LineString();
+        for (int i = 1; i < c.length; i++) {
+            LineSegment segment = new LineSegment(c[i-1], c[i]);
+            path.addSegment(segment);
+        }
 
-            skipPixels -= currentLength;
+        int textWidth = (stroke == null) ? fill.getTextWidth(text) : stroke.getTextWidth(text);
+        double textHeight = (stroke == null) ? fill.getTextHeight(text) : stroke.getTextHeight(text);
 
-            if (skipPixels > 0) {
-                // we should still be skipping pixels, so skip this segment. Note that
-                // this does not guarantee that we skip any certain minimum of pixels,
-                // it is more a rule of thumb.
+        double pathLen = path.length();
+
+        for (float pos = repeatStart; pos + textWidth < pathLen; pos += repeatGap + textWidth) {
+            LineString linePart = path.extractPart(pos, pos + textWidth);
+
+            boolean tooSharp = false;
+            for (int i = 1; i < linePart.segmentCount(); i++) {
+                double cornerAngle = linePart.getSegment(i - 1).angleTo(linePart.getSegment(i));
+                if (Math.abs(cornerAngle) > MAX_LABEL_CORNER_ANGLE) {
+                    tooSharp = true;
+                    break;
+                }
+            }
+            if (tooSharp)
                 continue;
-            }
 
-            if (currentLength < wayNameWidth) {
-                // no point trying to clip, the segment is too short anyway
-                continue;
-            }
-
-            // clip the current segment to the tile, so that we never overlap tile boundaries
-            // with the way name
-            LineSegment drawableSegment = currentSegment.clipToRectangle(tileBoundary);
-
-            if (drawableSegment == null) {
-                // this happens if the segment does not intersect the tile
-                continue;
-            }
-
-            double segmentLengthInPixel = drawableSegment.length();
-            if (segmentLengthInPixel < wayNameWidth) {
-                // not enough space to draw name on this segment
-                continue;
-            }
-
-            // calculate the position so that we center the name in the middle of a segment:
-            double offset = (segmentLengthInPixel - wayNameWidth) / 2d;
-            // now calculate the actually used part of the segment to ensure the bbox of the waytext container
-            // is as small as possible.
-            LineSegment actuallyUsedSegment = drawableSegment.subSegment(offset + repeatStart / 2, wayNameWidth - repeatStart);
-            // check to prevent inverted way names
-            if (actuallyUsedSegment.start.x <= actuallyUsedSegment.end.x) {
-                currentLabels.add(new WayTextContainer(actuallyUsedSegment.start, actuallyUsedSegment.end, display, priority, text, fill, stroke, textHeight));
-            } else {
-                currentLabels.add(new WayTextContainer(actuallyUsedSegment.end, actuallyUsedSegment.start, display, priority, text, fill, stroke, textHeight));
-            }
-            if (!repeat) {
-                break;
-            }
-            // arbitrary distance, but should not depend on length of name
-            skipPixels = (int) repeatGap;
+            currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight));
         }
     }
 

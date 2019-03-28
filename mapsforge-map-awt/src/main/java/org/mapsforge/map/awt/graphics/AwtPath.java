@@ -18,7 +18,9 @@ package org.mapsforge.map.awt.graphics;
 import org.mapsforge.core.graphics.FillRule;
 import org.mapsforge.core.graphics.Path;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
 
 class AwtPath implements Path {
     private static int getWindingRule(FillRule fillRule) {
@@ -57,6 +59,14 @@ class AwtPath implements Path {
     @Override
     public void moveTo(float x, float y) {
         this.path2D.moveTo(x, y);
+    }
+
+    public PathIterator getPathIterator(AffineTransform transform) {
+        return this.path2D.getPathIterator(transform);
+    }
+
+    Path2D getRawPath() {
+        return this.path2D;
     }
 
     @Override

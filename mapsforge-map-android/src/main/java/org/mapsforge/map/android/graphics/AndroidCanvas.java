@@ -211,6 +211,15 @@ class AndroidCanvas implements Canvas {
         this.canvas.drawTextOnPath(text, path, 0, 3, AndroidGraphicFactory.getPaint(paint));
     }
 
+    public void drawPathText(String text, Path path, Paint paint) {
+        if (text == null || text.trim().isEmpty() || paint.isTransparent()) {
+            return;
+        }
+
+        android.graphics.Path p = AndroidGraphicFactory.getPath(path);
+        this.canvas.drawTextOnPath(text, p, 0, 3, AndroidGraphicFactory.getPaint(paint));
+    }
+
     @Override
     public void fillColor(Color color) {
         fillColor(AndroidGraphicFactory.getColor(color));

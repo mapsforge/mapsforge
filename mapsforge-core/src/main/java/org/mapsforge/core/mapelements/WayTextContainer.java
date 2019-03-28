@@ -19,48 +19,72 @@ package org.mapsforge.core.mapelements;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.model.LineSegment;
+import org.mapsforge.core.model.LineString;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Rectangle;
 
 public class WayTextContainer extends MapElementContainer {
     private final Paint paintFront;
     private final Paint paintBack;
     private final String text;
-    private final Point end;
+    private final LineString lineString;
+    private final GraphicFactory graphicFactory;
 
-    public WayTextContainer(Point point, Point end, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
-        super(point, display, priority);
+    public WayTextContainer(GraphicFactory graphicFactory, LineString lineString, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
+        super(lineString.getSegment(0).start, display, priority);
+        this.graphicFactory = graphicFactory;
+        this.lineString = lineString;
         this.text = text;
         this.paintFront = paintFront;
         this.paintBack = paintBack;
-        this.end = end;
+
 
         this.boundary = null;
-        // a way text container should always run left to right, but I leave this in because it might matter
-        // if we support right-to-left text.
-        // we also need to make the container larger by textHeight as otherwise the end points do
-        // not correctly reflect the size of the text on screen
-        this.boundaryAbsolute = new Rectangle(Math.min(point.x, end.x), Math.min(point.y, end.y),
-                Math.max(point.x, end.x), Math.max(point.y, end.y)).enlarge(0d, textHeight / 2d, 0d, textHeight / 2d);
+        this.boundaryAbsolute = lineString.getBoundingRect();
+        this.boundaryAbsolute.enlarge(0, textHeight, 0, textHeight);
+    }
+
+    private Path generatePath(Point origin) {
+        LineSegment start = lineString.getSegment(0);
+        // So text isn't upside down
+        boolean doInvert = start.end.x <= start.start.x;
+        Path textPath = graphicFactory.createPath();
+
+        if (!doInvert) {
+            Point startPt = start.start.offset(-origin.x, -origin.y);
+            textPath.moveTo((float) startPt.x, (float) startPt.y);
+            for (int i = 0; i < lineString.segmentCount(); i++) {
+                LineSegment seg = lineString.getSegment(i);
+                Point endPt = seg.end.offset(-origin.x, -origin.y);
+                textPath.lineTo((float) endPt.x, (float) endPt.y);
+            }
+        } else {
+            Point startPt = lineString.getSegment(lineString.segmentCount() - 1).end.offset(-origin.x, -origin.y);
+            textPath.moveTo((float) startPt.x, (float) startPt.y);
+            for (int i = lineString.segmentCount() - 1; i >= 0; i--) {
+                LineSegment seg = lineString.getSegment(i);
+                Point endPt = seg.start.offset(-origin.x, -origin.y);
+                textPath.lineTo((float) endPt.x, (float) endPt.y);
+            }
+        }
+        return textPath;
     }
 
     @Override
     public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
-        Point adjustedStart = xy.offset(-origin.x, -origin.y);
-        Point adjustedEnd = end.offset(-origin.x, -origin.y);
+        Path textPath = generatePath(origin);
 
-        if (this.paintBack != null) {
+        if (paintBack != null) {
             int color = this.paintBack.getColor();
             if (filter != Filter.NONE) {
                 this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
             }
-            canvas.drawTextRotated(text, (int) (adjustedStart.x),
-                    (int) (adjustedStart.y),
-                    (int) (adjustedEnd.x),
-                    (int) (adjustedEnd.y), this.paintBack);
+            canvas.drawPathText(this.text, textPath, this.paintBack);
             if (filter != Filter.NONE) {
                 this.paintBack.setColor(color);
             }
@@ -69,10 +93,7 @@ public class WayTextContainer extends MapElementContainer {
         if (filter != Filter.NONE) {
             this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
         }
-        canvas.drawTextRotated(text, (int) (adjustedStart.x),
-                (int) (adjustedStart.y),
-                (int) (adjustedEnd.x),
-                (int) (adjustedEnd.y), this.paintFront);
+        canvas.drawPathText(this.text, textPath, this.paintFront);
         if (filter != Filter.NONE) {
             this.paintFront.setColor(color);
         }

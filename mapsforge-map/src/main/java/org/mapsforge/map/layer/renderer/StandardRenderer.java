@@ -168,7 +168,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderWayText(final RenderContext renderContext, Display display, int priority, String textKey, float dy, Paint fill, Paint stroke,
                               boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
         if (renderLabels) {
-            WayDecorator.renderText(way.getUpperLeft(), way.getLowerRight(), textKey, display, priority, dy, fill, stroke,
+            WayDecorator.renderText(graphicFactory, way.getUpperLeft(), way.getLowerRight(), textKey, display, priority, dy, fill, stroke,
                     repeat, repeatGap, repeatStart, rotate, way.getCoordinatesAbsolute(), renderContext.labels);
         }
     }

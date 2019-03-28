@@ -192,6 +192,19 @@ public final class LineSegment {
         }
     }
 
+    /** Computes the angle between this linesegment and another one.
+     * @param other the other segment
+     * @return angle in degrees
+     */
+    public double angleTo(LineSegment other) {
+        double angle1 = Math.atan2(start.y - end.y, start.x - end.x);
+        double angle2 = Math.atan2(other.start.y - other.end.y, other.start.x - other.end.x);
+        double angle = Math.toDegrees(angle1 - angle2);
+        if (angle <= -180) angle += 360;
+        if (angle >= 180) angle -= 360;
+        return angle;
+    }
+
     /**
      * New line segment with start and end reversed.
      *

@@ -26,16 +26,24 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Dimension;
+import org.mapsforge.core.model.LineSegment;
 import org.mapsforge.core.model.Rectangle;
 
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.color.ColorSpace;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
+import java.awt.geom.FlatteningPathIterator;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
@@ -305,6 +313,24 @@ class AwtCanvas implements Canvas {
         drawText(text, x1 + dx, y1 + xy, paint);
 
         this.graphics2D.setTransform(affineTransform);
+    }
+
+    public void drawPathText(String text, Path path, Paint paint) {
+        if (text == null || text.trim().isEmpty() || paint.isTransparent()) {
+            return;
+        }
+
+        AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
+        if (awtPaint.stroke == null) {
+            this.graphics2D.setColor(awtPaint.color);
+            this.graphics2D.setFont(awtPaint.font);
+        } else {
+            setColorAndStroke(awtPaint);
+        }
+        AwtPath awtPath = AwtGraphicFactory.getPath(path);
+        TextStroke textStroke = new TextStroke(text, awtPaint.font, false, false);
+        Shape shape = textStroke.createStrokedShape(awtPath.getRawPath(), graphics2D.getFontRenderContext());
+        this.graphics2D.fill(shape);
     }
 
     @Override

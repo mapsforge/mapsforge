@@ -45,6 +45,8 @@ public interface GraphicContext {
 
     void drawTextRotated(String text, int x1, int y1, int x2, int y2, Paint paint);
 
+    void drawPathText(String text, Path path, Paint paint);
+
     void fillColor(Color color);
 
     void fillColor(int color);
