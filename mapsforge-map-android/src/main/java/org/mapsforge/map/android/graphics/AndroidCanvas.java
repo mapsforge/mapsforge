@@ -4,6 +4,7 @@
  * Copyright 2014-2019 devemux86
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
+ * Copyright 2019 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -183,6 +184,19 @@ class AndroidCanvas implements Canvas {
             return;
         }
         this.canvas.drawPath(AndroidGraphicFactory.getPath(path), AndroidGraphicFactory.getPaint(paint));
+    }
+
+    @Override
+    public void drawPathText(String text, Path path, Paint paint) {
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+        if (paint.isTransparent()) {
+            return;
+        }
+
+        android.graphics.Paint androidPaint = AndroidGraphicFactory.getPaint(paint);
+        this.canvas.drawTextOnPath(text, AndroidGraphicFactory.getPath(path), 0, androidPaint.getTextSize() / 4, androidPaint);
     }
 
     @Override

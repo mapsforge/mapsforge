@@ -3,6 +3,7 @@
  * Copyright 2014-2019 devemux86
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
+ * Copyright 2019 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -254,6 +255,40 @@ class AwtCanvas implements Canvas {
 
             case STROKE:
                 this.graphics2D.draw(awtPath.path2D);
+                return;
+        }
+
+        throw new IllegalArgumentException(UNKNOWN_STYLE + style);
+    }
+
+    @Override
+    public void drawPathText(String text, Path path, Paint paint) {
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+        if (paint.isTransparent()) {
+            return;
+        }
+
+        AwtPaint awtPaint = AwtGraphicFactory.getPaint(paint);
+        AwtPath awtPath = AwtGraphicFactory.getPath(path);
+
+        if (awtPaint.stroke == null) {
+            this.graphics2D.setColor(awtPaint.color);
+            this.graphics2D.setFont(awtPaint.font);
+        } else {
+            setColorAndStroke(awtPaint);
+        }
+
+        TextStroke textStroke = new TextStroke(text, awtPaint.font, this.graphics2D.getFontRenderContext(), false, false);
+        Style style = awtPaint.style;
+        switch (style) {
+            case FILL:
+                this.graphics2D.fill(textStroke.createStrokedShape(awtPath.path2D));
+                return;
+
+            case STROKE:
+                this.graphics2D.draw(textStroke.createStrokedShape(awtPath.path2D));
                 return;
         }
 

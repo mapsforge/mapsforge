@@ -4,6 +4,7 @@
  * Copyright 2016-2019 devemux86
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
+ * Copyright 2019 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,6 +41,8 @@ public interface GraphicContext {
     void drawLine(int x1, int y1, int x2, int y2, Paint paint);
 
     void drawPath(Path path, Paint paint);
+
+    void drawPathText(String text, Path path, Paint paint);
 
     void drawText(String text, int x, int y, Paint paint);
 

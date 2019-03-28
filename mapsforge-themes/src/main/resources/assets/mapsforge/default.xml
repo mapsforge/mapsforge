@@ -654,20 +654,20 @@
     <!-- highway captions etc. -->
     <rule e="way" k="tunnel" v="~|no|false">
         <rule e="way" k="highway" v="footway|path|track|bridleway|steps|byway" zoom-min="14">
-            <pathText display="always" fill="#606060" font-size="12" font-style="bold" k="name"
-                priority="-8" stroke="#FFFFFF" stroke-width="2" />
+            <pathText fill="#606060" font-size="12" font-style="bold" k="name" priority="-8"
+                stroke="#FFFFFF" stroke-width="2" />
         </rule>
         <rule e="way" k="highway"
             v="cycleway|service|construction|road|pedestrian|unclassified|residential|living_street|tertiary|tertiary_link"
             zoom-min="16">
-            <pathText display="always" fill="#000000" font-size="10" font-style="bold" k="name"
-                priority="-7" stroke="#FFFFFF" stroke-width="2.0" />
+            <pathText fill="#000000" font-size="10" font-style="bold" k="name" priority="-7"
+                stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="way" k="highway"
             v="secondary_link|primary_link|trunk_link|motorway_link|secondary|primary"
             zoom-min="15">
-            <pathText display="always" fill="#000000" font-size="12" font-style="bold" k="name"
-                priority="-6" stroke="#FFFFFF" stroke-width="2.0" />
+            <pathText fill="#000000" font-size="12" font-style="bold" k="name" priority="-6"
+                stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="any" k="highway" v="trunk|primary|secondary|tertiary" zoom-min="12">
             <rule e="way" k="name" v="~">

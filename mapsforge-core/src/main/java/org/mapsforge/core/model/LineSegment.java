@@ -1,5 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2019 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -49,6 +50,25 @@ public final class LineSegment {
     public LineSegment(Point start, Point direction, double distance) {
         this.start = start;
         this.end = new LineSegment(start, direction).pointAlongLineSegment(distance);
+    }
+
+    /**
+     * Computes the angle between this LineSegment and another one.
+     *
+     * @param other the other LineSegment
+     * @return angle in degrees
+     */
+    public double angleTo(LineSegment other) {
+        double angle1 = Math.atan2(this.start.y - this.end.y, this.start.x - this.end.x);
+        double angle2 = Math.atan2(other.start.y - other.end.y, other.start.x - other.end.x);
+        double angle = Math.toDegrees(angle1 - angle2);
+        if (angle <= -180) {
+            angle += 360;
+        }
+        if (angle >= 180) {
+            angle -= 360;
+        }
+        return angle;
     }
 
     /**
