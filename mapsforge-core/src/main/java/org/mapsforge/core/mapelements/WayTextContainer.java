@@ -17,6 +17,7 @@
 package org.mapsforge.core.mapelements;
 
 import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.GraphicFactory;
@@ -27,6 +28,7 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.LineSegment;
 import org.mapsforge.core.model.LineString;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 
 public class WayTextContainer extends MapElementContainer {
     private final Paint paintFront;
@@ -45,8 +47,7 @@ public class WayTextContainer extends MapElementContainer {
 
 
         this.boundary = null;
-        this.boundaryAbsolute = lineString.getBoundingRect();
-        this.boundaryAbsolute.enlarge(0, textHeight, 0, textHeight);
+        this.boundaryAbsolute = lineString.getBoundingRect().enlarge(textHeight / 2f, textHeight / 2f, textHeight / 2f, textHeight / 2f);
     }
 
     private Path generatePath(Point origin) {

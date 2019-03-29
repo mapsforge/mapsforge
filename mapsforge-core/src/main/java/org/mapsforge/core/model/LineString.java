@@ -40,7 +40,7 @@ public class LineString {
 
         for (LineSegment seg : segments) {
             double segLen = seg.length();
-            if (distance < segLen)
+            if (distance <= segLen)
                 return seg.pointAlongLineSegment(distance);
             distance -= segLen;
         }
@@ -100,10 +100,27 @@ public class LineString {
 
         for (LineSegment seg : segments) {
             xmin = Math.min(xmin, Math.min(seg.start.x, seg.end.x));
-            ymin = Math.min(xmin, Math.min(seg.start.y, seg.end.y));
+            ymin = Math.min(ymin, Math.min(seg.start.y, seg.end.y));
             xmax = Math.max(xmax, Math.max(seg.start.x, seg.end.x));
             ymax = Math.max(ymax, Math.max(seg.start.y, seg.end.y));
         }
         return new Rectangle(xmin, ymin, xmax, ymax);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof LineString))
+            return false;
+
+        LineString other = (LineString) o;
+        if (other.segmentCount() != segmentCount())
+            return false;
+        for (int i = 0; i < segmentCount(); i++) {
+            if (!getSegment(i).equals(other.getSegment(i)))
+                return false;
+        }
+        return true;
     }
 }
