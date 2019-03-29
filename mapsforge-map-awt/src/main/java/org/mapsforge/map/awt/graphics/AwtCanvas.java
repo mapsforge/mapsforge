@@ -328,8 +328,8 @@ class AwtCanvas implements Canvas {
             setColorAndStroke(awtPaint);
         }
         AwtPath awtPath = AwtGraphicFactory.getPath(path);
-        TextStroke textStroke = new TextStroke(text, awtPaint.font, false, false);
-        Shape shape = textStroke.createStrokedShape(awtPath.getRawPath(), graphics2D.getFontRenderContext());
+        TextStroke textStroke = new TextStroke(text, awtPaint.font, graphics2D.getFontRenderContext(), false, false);
+        Shape shape = textStroke.createStrokedShape(awtPath.getRawPath());
         this.graphics2D.fill(shape);
     }
 

@@ -61,16 +61,13 @@ class AwtPath implements Path {
         this.path2D.moveTo(x, y);
     }
 
-    public PathIterator getPathIterator(AffineTransform transform) {
-        return this.path2D.getPathIterator(transform);
-    }
-
-    Path2D getRawPath() {
-        return this.path2D;
-    }
 
     @Override
     public void setFillRule(FillRule fillRule) {
         this.path2D.setWindingRule(getWindingRule(fillRule));
+    }
+
+    Path2D getRawPath() {
+        return this.path2D;
     }
 }
