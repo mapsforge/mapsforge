@@ -216,8 +216,10 @@ class AndroidCanvas implements Canvas {
             return;
         }
 
-        android.graphics.Path p = AndroidGraphicFactory.getPath(path);
-        this.canvas.drawTextOnPath(text, p, 0, 3, AndroidGraphicFactory.getPaint(paint));
+        android.graphics.Path aPath = AndroidGraphicFactory.getPath(path);
+        android.graphics.Paint aPaint = AndroidGraphicFactory.getPaint(paint);
+        float textHeight = aPaint.getTextSize() / 2;
+        this.canvas.drawTextOnPath(text, aPath, 0, textHeight / 2, aPaint);
     }
 
     @Override

@@ -35,6 +35,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.color.ColorSpace;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
@@ -327,10 +328,14 @@ class AwtCanvas implements Canvas {
         } else {
             setColorAndStroke(awtPaint);
         }
+
         AwtPath awtPath = AwtGraphicFactory.getPath(path);
         TextStroke textStroke = new TextStroke(text, awtPaint.font, graphics2D.getFontRenderContext(), false, false);
-        Shape shape = textStroke.createStrokedShape(awtPath.getRawPath());
-        this.graphics2D.fill(shape);
+        if (awtPaint.style == Style.STROKE) {
+            graphics2D.draw(textStroke.createStrokedShape(awtPath.getRawPath()));
+        } else {
+            graphics2D.fill(textStroke.createStrokedShape(awtPath.getRawPath()));
+        }
     }
 
     @Override
