@@ -1,5 +1,6 @@
 /*
  * Copyright 2019 Adrian Batzill
+ * Copyright 2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -124,7 +125,8 @@ public class TextStroke implements Stroke {
                             t.setToTranslation(x, y);
                             t.rotate(angle);
                             t.translate(-px - advance, -py);
-                            t.translate(0, glyphVector.getVisualBounds().getHeight() / 2);
+                            // Way text container was made larger by text height
+                            t.translate(0, glyphVector.getVisualBounds().getHeight() / 4);
                             result.append(t.createTransformedShape(glyph), false);
                             next += (advance + nextAdvance) * factor;
                             currentChar++;

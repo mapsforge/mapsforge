@@ -196,6 +196,7 @@ class AndroidCanvas implements Canvas {
         }
 
         android.graphics.Paint androidPaint = AndroidGraphicFactory.getPaint(paint);
+        // Way text container was made larger by text height
         this.canvas.drawTextOnPath(text, AndroidGraphicFactory.getPath(path), 0, androidPaint.getTextSize() / 4, androidPaint);
     }
 
