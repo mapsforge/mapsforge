@@ -1,5 +1,11 @@
 # Changelog
 
+## New since 0.11.0
+
+- Curved path text rendering [#1112](https://github.com/mapsforge/mapsforge/pull/1112)
+- Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.12.0)
+
 ## Version 0.11.0 (2019-03-25)
 
 - Render themes: PNG scaling [#1090](https://github.com/mapsforge/mapsforge/issues/1090)
