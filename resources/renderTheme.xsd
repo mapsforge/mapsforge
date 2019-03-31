@@ -232,7 +232,7 @@
         <xs:attribute name="stroke" default="#000000" type="tns:color" use="optional" />
         <xs:attribute name="stroke-width" default="0" type="tns:nonNegativeFloat" use="optional" />
         <xs:attribute name="repeat" default="true" type="xs:boolean" use="optional" />
-        <xs:attribute name="repeat-gap" default="50" type="xs:float" use="optional" />
+        <xs:attribute name="repeat-gap" default="100" type="xs:float" use="optional" />
         <xs:attribute name="repeat-start" default="10" type="xs:float" use="optional" />
         <xs:attribute name="rotate" default="true" type="xs:boolean" use="optional" />
     </xs:complexType>

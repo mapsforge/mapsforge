@@ -16,14 +16,7 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.core.graphics.Align;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -40,7 +33,7 @@ import java.util.Map;
  * Represents a text along a polyline on the map.
  */
 public class PathText extends RenderInstruction {
-    private static final float REPEAT_GAP_DEFAULT = 50f;
+    private static final float REPEAT_GAP_DEFAULT = 100f;
     private static final float REPEAT_START_DEFAULT = 10f;
 
     private Display display;
