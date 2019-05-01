@@ -56,7 +56,7 @@
 | [UtalTransitMap](https://play.google.com/store/apps/details?id=com.mdmitry1973.utahtransitmap) | Transport Guide | Proprietary/Free | Closed |
 | [Vectorial Map](http://www.vectorialmap.com/) | Map viewer and tracking | Proprietary/Commercial | Closed |
 | [Villagers feng shui](https://play.google.com/store/apps/details?id=tacoball.com.geomancer) | Local service for Taiwan | LGPL3/Free | Open |
-| [Visitor](https://play.google.com/store/apps/details?id=org.treefish.visitor) | Save places and share them with others | Proprietary/Commercial | Closed |
+| [Visitor](https://play.google.com/store/apps/details?id=org.treefish.visitor) ([Demo](https://play.google.com/store/apps/details?id=org.treefish.visitor.demo)) | Save places and share them with others | Proprietary/Free and Commercial | Closed |
 | [Watertrack ECO](http://watertrack.de/) | GPS Tracking on Germany Waterways | Proprietary/Free | Closed |
 | [Wikiloc](http://www.wikiloc.com/outdoor-navigation-app) | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed |
 
