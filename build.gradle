@@ -135,8 +135,8 @@ configure(filterProjects(project.androidprojects)) {
         }
 
         defaultConfig {
-            versionCode versionCode()
-            versionName versionName()
+            versionCode project.versionCode()
+            versionName project.versionName()
             minSdkVersion androidMinSdk()
             targetSdkVersion androidTargetSdk()
         }
