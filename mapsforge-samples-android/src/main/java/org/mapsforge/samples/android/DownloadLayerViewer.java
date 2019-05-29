@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2018 devemux86
+ * Copyright 2015-2019 devemux86
  * Copyright 2015 Andreas Schildbach
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -34,13 +34,15 @@ public class DownloadLayerViewer extends SamplesBaseActivity {
 
     @Override
     protected void createLayers() {
+        OpenStreetMapMapnik tileSource = OpenStreetMapMapnik.INSTANCE;
+        tileSource.setUserAgent("mapsforge-samples-android");
         this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
-                this.mapView.getModel().mapViewPosition, OpenStreetMapMapnik.INSTANCE,
+                this.mapView.getModel().mapViewPosition, tileSource,
                 AndroidGraphicFactory.INSTANCE);
         mapView.getLayerManager().getLayers().add(this.downloadLayer);
 
-        mapView.setZoomLevelMin(OpenStreetMapMapnik.INSTANCE.getZoomLevelMin());
-        mapView.setZoomLevelMax(OpenStreetMapMapnik.INSTANCE.getZoomLevelMax());
+        mapView.setZoomLevelMin(tileSource.getZoomLevelMin());
+        mapView.setZoomLevelMax(tileSource.getZoomLevelMax());
     }
 
     @Override

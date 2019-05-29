@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -29,6 +29,8 @@ import java.net.URL;
  * the OSM server sets on a newly rendered tile.
  * <p/>
  * Refer to {@link org.mapsforge.map.layer.download.TileDownloadLayer} for details on the TTL mechanism.
+ * <p/>
+ * Requires a valid HTTP User-Agent identifying application: https://operations.osmfoundation.org/policies/tiles/
  */
 public class OpenStreetMapMapnik extends AbstractTileSource {
     public static final OpenStreetMapMapnik INSTANCE = new OpenStreetMapMapnik(new String[]{
