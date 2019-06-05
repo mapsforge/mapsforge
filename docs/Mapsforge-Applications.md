@@ -40,6 +40,7 @@
 | [myWorkouts](http://www.myworkouts.org/) | Sports and GPS Tracker | Proprietary/Free | Closed |
 | [Nautilus Charts](https://play.google.com/store/apps/details?id=gr.talent.nautiluscharts) | Offline Nautical Charts plotting and positioning system | Proprietary/Commercial | Closed |
 | [Navi Cyprus](https://play.google.com/store/apps/developer?id=Talent+S.A.) | Map and navigation application | Proprietary/Free and Commercial | Closed |
+| [nsoria Fitness](https://play.google.com/store/apps/details?id=com.nsoria.fit) | GPS Bike Computer, Activity Tracker, Map and Navigation Application | Proprietary/Free | Closed |
 | [Nutiteq](https://github.com/nutiteq/hellomap3d) | 2.5 / 3D Map View SDK with 3D Models | MIT/Free and Commercial | Open |
 | [Offline City Map](http://topobyte.de/) | Tourist Map | Proprietary/Commercial | Closed |
 | [Offline Maps](https://play.google.com/store/apps/developer?id=applantation.com) | Tourist Map | Proprietary/Commercial | Closed |
