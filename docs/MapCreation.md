@@ -12,7 +12,7 @@ The workaround requires no real changes to the map-writer nor the map-reader, as
 
 First of all we need a good set of either land or sea areas. OSM data does not natively have this as coastlines, as opposed to all other data for areas, are just lines. The main OSM renderers all employ some sort of intermediate processing to get the sea and land areas right.
 
-We're using the dataset that Jochen Topf has provided on his [OpenStreetMap Data](http://openstreetmapdata.com/) site, specifically the set: http://data.openstreetmapdata.com/land-polygons-split-4326.zip (the non split version could also work).
+We're using the dataset that Jochen Topf has provided on the [OpenStreetMap Data](https://osmdata.openstreetmap.de/) site, specifically the set: https://osmdata.openstreetmap.de/download/land-polygons-split-4326.zip (the non split version could also work).
 
 We cut the data down a bit, using [ogr2ogr](http://www.gdal.org/ogr2ogr.html) with the bounds for the desired map:
 
@@ -130,7 +130,7 @@ With the above procedure complicated coastline areas are all now rendered correc
 
 # World map creation
 
-We use land polygons from [OpenStreetMap Data](http://openstreetmapdata.com/), specifically the http://data.openstreetmapdata.com/simplified-land-polygons-complete-3857.zip variant.
+We use land polygons from [OpenStreetMap Data](https://osmdata.openstreetmap.de/), specifically the https://osmdata.openstreetmap.de/download/simplified-land-polygons-complete-3857.zip variant.
 
 The process is completed successfully in some minutes giving the map in our [server](http://download.mapsforge.org/maps/world/).
 Alternatively the non simplified variants can be used too.
