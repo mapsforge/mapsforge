@@ -16,8 +16,6 @@ package org.mapsforge.samples.android;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Environment;
-
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
@@ -33,7 +31,8 @@ import java.io.File;
 /**
  * A very basic Android app example.
  * <p>
- * You'll need a map with filename berlin.map from download.mapsforge.org in device storage.
+ * You'll need a map with filename berlin.map from download.mapsforge.org in device storage:
+ * /sdcard/Android/data/org.mapsforge.samples.android/files/
  */
 public class GettingStarted extends Activity {
 
@@ -91,7 +90,7 @@ public class GettingStarted extends Activity {
              * tiles, a map file from which the tiles are generated and Rendertheme that defines the
              * appearance of the map.
              */
-            File mapFile = new File(Environment.getExternalStorageDirectory(), MAP_FILE);
+            File mapFile = new File(getExternalFilesDir(null), MAP_FILE);
             MapDataStore mapDataStore = new MapFile(mapFile);
             TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
                     mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,9 +15,7 @@
  */
 package org.mapsforge.samples.android;
 
-import android.os.Environment;
 import android.util.Log;
-
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.ExternalRenderThemeUsingJarResources;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
@@ -86,7 +84,7 @@ public class RenderThemeChanger extends DefaultTheme {
     }
 
     void changeRenderTheme() {
-        File[] renderThemes = Environment.getExternalStorageDirectory().listFiles(renderThemesFilter);
+        File[] renderThemes = getExternalFilesDir(null).listFiles(renderThemesFilter);
         if (renderThemes.length > 0) {
             File nextTheme = renderThemes[iteration % renderThemes.length];
             iteration += 1;

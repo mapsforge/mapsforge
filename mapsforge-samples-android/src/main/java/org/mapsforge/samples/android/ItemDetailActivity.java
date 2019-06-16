@@ -16,9 +16,9 @@ package org.mapsforge.samples.android;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import androidx.core.app.NavUtils;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * An activity representing a single Item detail screen. This activity is only

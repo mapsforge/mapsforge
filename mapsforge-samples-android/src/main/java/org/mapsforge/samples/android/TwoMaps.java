@@ -1,5 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
+ * Copyright 2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -13,8 +14,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.mapsforge.samples.android;
-
-import android.os.Environment;
 
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -58,7 +57,7 @@ public class TwoMaps extends DefaultTheme {
      * @return the map file for the second view
      */
     protected MapFile getMapFile2() {
-        return new MapFile(new File(Environment.getExternalStorageDirectory(), this.getMapFileName2()));
+        return new MapFile(new File(getExternalFilesDir(null), this.getMapFileName2()));
     }
 
     /**

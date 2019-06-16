@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,8 +14,6 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.mapsforge.samples.android;
-
-import android.os.Environment;
 
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
@@ -51,7 +49,7 @@ public class TileStoreLayerViewer extends DefaultTheme {
     protected void createTileCaches() {
         // to use a tile store you provide it as a cache (which is pre-filled and never purges any files.
         // additionally you should use a memory tile store for faster refresh.
-        TileStore tileStore = new TileStore(new File(Environment.getExternalStorageDirectory(), "tilestore"), ".png", AndroidGraphicFactory.INSTANCE);
+        TileStore tileStore = new TileStore(new File(getExternalFilesDir(null), "tilestore"), ".png", AndroidGraphicFactory.INSTANCE);
         InMemoryTileCache memoryTileCache = new InMemoryTileCache(AndroidUtil.getMinimumCacheSize(this,
                 this.mapView.getModel().displayModel.getTileSize(),
                 this.mapView.getModel().frameBufferModel.getOverdrawFactor(), this.getScreenRatio()));

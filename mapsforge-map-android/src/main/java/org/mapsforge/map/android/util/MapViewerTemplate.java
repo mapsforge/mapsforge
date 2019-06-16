@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2014-2016 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -19,8 +19,6 @@ package org.mapsforge.map.android.util;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Environment;
-
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -185,12 +183,12 @@ public abstract class MapViewerTemplate extends Activity {
 
     /**
      * Provides the directory of the map file, by default the Android external storage
-     * directory (e.g. sdcard).
+     * directory: /sdcard/Android/data/org.mapsforge.samples.android/files/
      *
      * @return
      */
     protected File getMapFileDirectory() {
-        return Environment.getExternalStorageDirectory();
+        return getExternalFilesDir(null);
     }
 
     /**

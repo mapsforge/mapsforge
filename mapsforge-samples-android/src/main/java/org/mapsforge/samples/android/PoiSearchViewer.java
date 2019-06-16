@@ -17,10 +17,8 @@ package org.mapsforge.samples.android;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
@@ -30,12 +28,9 @@ import org.mapsforge.map.layer.GroupLayer;
 import org.mapsforge.map.layer.overlay.Marker;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.poi.android.storage.AndroidPoiPersistenceManagerFactory;
-import org.mapsforge.poi.storage.ExactMatchPoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiCategoryManager;
-import org.mapsforge.poi.storage.PoiPersistenceManager;
-import org.mapsforge.poi.storage.PointOfInterest;
+import org.mapsforge.poi.storage.*;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 
@@ -46,7 +41,7 @@ import java.util.Collection;
  */
 public class PoiSearchViewer extends DefaultTheme {
 
-    private static final String POI_FILE = Environment.getExternalStorageDirectory() + "/berlin.poi";
+    private static final String POI_FILE = "berlin.poi";
     private static final String POI_CATEGORY = "Restaurants";
 
     private GroupLayer groupLayer;
@@ -76,7 +71,7 @@ public class PoiSearchViewer extends DefaultTheme {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        persistenceManager = AndroidPoiPersistenceManagerFactory.getPoiPersistenceManager(POI_FILE);
+        persistenceManager = AndroidPoiPersistenceManagerFactory.getPoiPersistenceManager(new File(getExternalFilesDir(null), POI_FILE).getAbsolutePath());
     }
 
     @Override

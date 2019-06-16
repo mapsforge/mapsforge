@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2019 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -17,11 +17,9 @@
  */
 package org.mapsforge.samples.android;
 
-import android.os.Environment;
-import android.support.annotation.IdRes;
 import android.view.View;
 import android.widget.TextView;
-
+import androidx.annotation.IdRes;
 import org.mapsforge.map.android.util.AndroidPreferences;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
@@ -99,7 +97,7 @@ public class DualMapViewer extends DefaultTheme {
      * @return the map file for the second view
      */
     protected MapFile getMapFile2() {
-        return new MapFile(new File(Environment.getExternalStorageDirectory(), this.getMapFileName2()));
+        return new MapFile(new File(getExternalFilesDir(null), this.getMapFileName2()));
     }
 
     /**

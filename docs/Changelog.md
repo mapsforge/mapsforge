@@ -4,6 +4,7 @@
 
 - Curved path text rendering [#1112](https://github.com/mapsforge/mapsforge/pull/1112)
 - Layer groups implementation [#1116](https://github.com/mapsforge/mapsforge/issues/1116)
+- Android 10 compatibility [#1120](https://github.com/mapsforge/mapsforge/issues/1120)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.12.0)
 

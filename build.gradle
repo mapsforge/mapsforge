@@ -17,7 +17,7 @@ allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-    ext.androidBuildVersionTools = "28.0.3"
+    ext.androidBuildVersionTools = "29.0.0"
     ext.jUnitVersion = "4.12"
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -29,7 +29,7 @@ allprojects {
     }
 }
 
-static def androidCompileSdk() { return 28 }
+static def androidCompileSdk() { return 29 }
 
 // 14 for Support Library, 16 for sqlite-android
 static def androidMinSdk() { return 16 }

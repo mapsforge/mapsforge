@@ -18,13 +18,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
+import androidx.fragment.app.ListFragment;
 import org.mapsforge.samples.android.dummy.DummyContent;
 
 /**
