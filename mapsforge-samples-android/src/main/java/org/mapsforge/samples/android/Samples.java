@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -35,7 +35,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 
 /**
@@ -167,7 +166,7 @@ public class Samples extends Activity {
                             DownloadManager.Request downloadRequest = new DownloadManager.Request(
                                     Uri.parse("http://download.mapsforge.org/maps/world/world.map"));
                             downloadRequest.setDescription("Mapsforge low-res world map");
-                            downloadRequest.setDestinationInExternalFilesDir(Samples.this, SamplesApplication.MAPS, MultiMapLowResWorld.getWorldMapFileName());
+                            downloadRequest.setDestinationInExternalFilesDir(Samples.this, null, MultiMapLowResWorld.getWorldMapFileName());
                             downloadManager.enqueue(downloadRequest);
                         }
                     });

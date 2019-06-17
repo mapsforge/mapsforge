@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +17,6 @@ package org.mapsforge.samples.android;
 
 import android.content.Context;
 import android.os.Bundle;
-
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MultiMapDataStore;
@@ -59,7 +58,7 @@ public class MultiMapLowResWorld extends DefaultTheme {
      * @return the low res world map file.
      */
     public static File getWorldMapFile(Context context) {
-        return new File(context.getExternalFilesDir(SamplesApplication.MAPS), getWorldMapFileName());
+        return new File(context.getExternalFilesDir(null), getWorldMapFileName());
     }
 
     /**

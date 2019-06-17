@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2018 devemux86
+ * Copyright 2015-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,15 +16,16 @@
  */
 package org.mapsforge.samples.android;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
@@ -79,17 +80,26 @@ public class LocationOverlayMapViewer extends DownloadLayerViewer implements Loc
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onRequestPermissionsResult(final int requestCode, final String[] permissions, final int[] grantResults) {
+        if (requestCode == 0) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                enableAvailableProviders();
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         enableAvailableProviders();
     }
 
     @Override
-    public void onPause() {
+    public void onStop() {
         this.locationManager.removeUpdates(this);
 
-        super.onPause();
+        super.onStop();
     }
 
     @Override
@@ -113,6 +123,13 @@ public class LocationOverlayMapViewer extends DownloadLayerViewer implements Loc
     }
 
     private void enableAvailableProviders() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+                return;
+            }
+        }
+
         this.locationManager.removeUpdates(this);
 
         for (String provider : this.locationManager.getProviders(true)) {

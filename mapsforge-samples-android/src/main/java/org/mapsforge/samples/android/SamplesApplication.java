@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2014-2017 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,7 +19,6 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.model.DisplayModel;
@@ -28,11 +27,6 @@ import org.mapsforge.map.reader.MapFile;
 public class SamplesApplication extends Application {
 
     public static final String TAG = "Mapsforge Samples";
-
-    /*
-     * type to use for maps to store in the external files directory
-     */
-    public static final String MAPS = "maps";
 
     public static final String SETTING_DEBUG_TIMING = "debug_timing";
     public static final String SETTING_LANGUAGE_SHOWLOCAL = "language_showlocal";
