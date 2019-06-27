@@ -1,5 +1,6 @@
 /*
  * Copyright 2017-2019 devemux86
+ * Copyright 2019 Matthew Egeler
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,6 +18,11 @@ package org.mapsforge.core.util;
 public final class Parameters {
 
     public enum ParentTilesRendering {QUALITY, SPEED, OFF}
+
+    /**
+     * If true will use anti-aliasing in rendering.
+     */
+    public static boolean ANTI_ALIASING = true;
 
     /**
      * If true the <code>MapViewPosition2</code> will be used instead of default <code>MapViewPosition</code>.

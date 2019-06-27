@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2017 devemux86
+ * Copyright 2019 Matthew Egeler
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,25 +18,15 @@
 package org.mapsforge.map.android.graphics;
 
 import android.annotation.TargetApi;
-import android.graphics.BitmapShader;
-import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
-import android.graphics.PathEffect;
-import android.graphics.Rect;
-import android.graphics.Shader;
+import android.graphics.*;
 import android.graphics.Shader.TileMode;
-import android.graphics.Typeface;
 import android.os.Build;
-
-import org.mapsforge.core.graphics.Align;
-import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.Parameters;
 
 class AndroidPaint implements Paint {
     private static android.graphics.Paint.Align getAndroidAlign(Align align) {
@@ -129,7 +120,7 @@ class AndroidPaint implements Paint {
 
     AndroidPaint() {
         paint = new android.graphics.Paint();
-        this.paint.setAntiAlias(true);
+        this.paint.setAntiAlias(Parameters.ANTI_ALIASING);
         this.paint.setStrokeCap(getAndroidCap(Cap.ROUND));
         this.paint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
         this.paint.setStyle(getAndroidStyle(Style.FILL));
