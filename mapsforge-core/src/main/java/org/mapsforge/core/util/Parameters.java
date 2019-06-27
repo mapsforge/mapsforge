@@ -25,11 +25,6 @@ public final class Parameters {
     public static boolean ANTI_ALIASING = true;
 
     /**
-     * If true the <code>MapViewPosition2</code> will be used instead of default <code>MapViewPosition</code>.
-     */
-    public static boolean MAP_VIEW_POSITION2 = false;
-
-    /**
      * Maximum buffer size for map files.
      */
     public static int MAXIMUM_BUFFER_SIZE = 8000000;

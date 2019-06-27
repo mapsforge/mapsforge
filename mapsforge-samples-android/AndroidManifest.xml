@@ -125,9 +125,6 @@
             android:name=".LongPressAction"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name=".MapViewPosition2Viewer"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity
             android:name=".MoveAnimation"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
