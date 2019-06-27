@@ -28,6 +28,7 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.util.Parameters;
 
 import java.awt.AlphaComposite;
 import java.awt.Composite;
@@ -95,7 +96,7 @@ class AwtCanvas implements Canvas {
 
     AwtCanvas(Graphics2D graphics2D) {
         this.graphics2D = graphics2D;
-        enableAntiAliasing();
+        setAntiAlias(Parameters.USE_ANTI_ALIASING);
 
         createFilters();
     }
@@ -390,6 +391,8 @@ class AwtCanvas implements Canvas {
     @Override
     public void setAntiAlias(boolean aa) {
         this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aa ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
+        this.graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aa ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+        this.graphics2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, aa ? RenderingHints.VALUE_FRACTIONALMETRICS_ON : RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
     }
 
     @Override
@@ -400,7 +403,7 @@ class AwtCanvas implements Canvas {
         } else {
             this.bufferedImage = AwtGraphicFactory.getBitmap(bitmap);
             this.graphics2D = this.bufferedImage.createGraphics();
-            enableAntiAliasing();
+            setAntiAlias(Parameters.USE_ANTI_ALIASING);
             this.graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             this.graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
         }
@@ -463,12 +466,6 @@ class AwtCanvas implements Canvas {
         this.graphics2D.setClip(null);
 
         this.graphics2D.setComposite(oldComposite);
-    }
-
-    private void enableAntiAliasing() {
-        this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        this.graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        this.graphics2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     }
 
     private void fillColor(java.awt.Color color) {

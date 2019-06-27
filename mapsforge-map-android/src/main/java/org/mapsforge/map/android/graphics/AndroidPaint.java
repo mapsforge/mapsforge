@@ -36,6 +36,7 @@ import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.Parameters;
 
 class AndroidPaint implements Paint {
     private static android.graphics.Paint.Align getAndroidAlign(Align align) {
@@ -129,7 +130,7 @@ class AndroidPaint implements Paint {
 
     AndroidPaint() {
         paint = new android.graphics.Paint();
-        this.paint.setAntiAlias(true);
+        this.paint.setAntiAlias(Parameters.USE_ANTI_ALIASING);
         this.paint.setStrokeCap(getAndroidCap(Cap.ROUND));
         this.paint.setStrokeJoin(android.graphics.Paint.Join.ROUND);
         this.paint.setStyle(getAndroidStyle(Style.FILL));

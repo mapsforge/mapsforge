@@ -49,6 +49,11 @@ public final class Parameters {
      */
     public static boolean SQUARE_FRAME_BUFFER = true;
 
+    /**
+     * If enabled, will use anti-aliasing with all rendered output
+     */
+    public static boolean USE_ANTI_ALIASING = true;
+
     private Parameters() {
         throw new IllegalStateException();
     }
