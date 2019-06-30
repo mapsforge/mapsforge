@@ -33,6 +33,7 @@ public class PoiWriterConfiguration {
     private int fileSpecificationVersion;
     private boolean filterCategories;
     private boolean names;
+    private boolean normalizeNames;
     private File outputFile;
     private String preferredLanguage;
     private boolean progressLogs;
@@ -149,6 +150,13 @@ public class PoiWriterConfiguration {
     }
 
     /**
+     * @return the normalize-names
+     */
+    public boolean isNormalizeNames() {
+        return normalizeNames;
+    }
+
+    /**
      * @return the progressLogs
      */
     public boolean isProgressLogs() {
@@ -240,6 +248,14 @@ public class PoiWriterConfiguration {
     public void setNames(boolean names) {
         this.names = names;
     }
+
+    /**
+     * @param normalizeNames the normalize-names to set
+     */
+    public void setNormalizeNames(boolean normalizeNames) {
+        this.normalizeNames = normalizeNames;
+    }
+
 
     /**
      * @param outputFile the output file to set

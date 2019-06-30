@@ -45,6 +45,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -493,6 +494,13 @@ public final class PoiWriter {
                                 if (tagMap.isEmpty()) {
                                     for (Tag t : entity.getTags()) {
                                         tagMap.put(t.getKey().toLowerCase(Locale.ENGLISH), t.getValue());
+
+                                        // If normalize names is enabled and key == name
+                                        if (t.getKey().toLowerCase(Locale.ENGLISH).equals("name") && configuration.isNormalizeNames()) {
+                                            //LOGGER.info("Normalize name...");
+                                            String normalizeNameValue = deAccent(t.getValue().toLowerCase());
+                                            tagMap.put("normalize-name", normalizeNameValue);
+                                        }
                                     }
                                 }
                                 categories.add(pc);
@@ -757,5 +765,17 @@ public final class PoiWriter {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Remove accents from
+     *
+     * @param str string with accents
+     * @return string without accents
+     */
+    private String deAccent(String str) {
+        String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(nfdNormalizedString).replaceAll("");
     }
 }

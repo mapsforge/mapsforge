@@ -38,6 +38,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
     private static final String PARAM_FILTER_CATEGORIES = "filter-categories";
     private static final String PARAM_GEO_TAGS = "geo-tags";
     private static final String PARAM_NAMES = "names";
+    private static final String PARAM_NORMALIZE_NAMES = "normalize-names";
     private static final String PARAM_OUTFILE = "file";
     private static final String PARAM_PREFERRED_LANGUAGE = "preferred-language";
     private static final String PARAM_PROGRESS_LOGS = "progress-logs";
@@ -58,6 +59,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
         configuration.setProgressLogs(getBooleanArgument(taskConfig, PARAM_PROGRESS_LOGS, true));
         configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
         configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, true));
+        configuration.setNormalizeNames(getBooleanArgument(taskConfig, PARAM_NORMALIZE_NAMES, false));
 
         // If set to true, progress messages will be forwarded to a GUI message handler
         // boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);
