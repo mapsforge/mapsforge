@@ -52,6 +52,7 @@ The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin sh
 |`ways`|Also parse ways.|true/false|true|
 |`geo-tags`|Add geo tags.|true/false|false|
 |`filter-categories`|Drop empty categories.|true/false|true|
+|`normalize-names`|Add normalize-name (designed for accent-insensitive search by name).|true/false|false|
 
 ### Example
 
