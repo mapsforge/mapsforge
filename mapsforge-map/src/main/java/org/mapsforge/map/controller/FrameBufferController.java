@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2017 devemux86
+ * Copyright 2019 Alexander Schmidt
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,8 +29,6 @@ import org.mapsforge.map.view.FrameBuffer;
 
 public final class FrameBufferController implements Observer {
 
-    private static float maxAspectRatio = 2;
-
     public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
         FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
 
@@ -45,11 +44,8 @@ public final class FrameBufferController implements Observer {
         int width = (int) (mapViewDimension.width * overdrawFactor);
         int height = (int) (mapViewDimension.height * overdrawFactor);
         if (Parameters.SQUARE_FRAME_BUFFER) {
-            float aspectRatio = ((float) mapViewDimension.width) / mapViewDimension.height;
-            if (aspectRatio < maxAspectRatio && aspectRatio > 1 / maxAspectRatio) {
-                width = Math.max(width, height);
-                height = width;
-            }
+            width = Math.max(width, height);
+            height = width;
         }
         return new Dimension(width, height);
     }
