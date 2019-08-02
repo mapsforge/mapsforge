@@ -16,7 +16,6 @@
 package org.mapsforge.samples.android;
 
 import android.os.Bundle;
-
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.LatLongUtils;
@@ -33,13 +32,13 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 public class SimplestMapViewer extends MapViewerTemplate {
 
     /**
-     * This MapViewer uses the built-in Osmarender theme.
+     * This MapViewer uses the built-in default theme.
      *
      * @return the render theme to use
      */
     @Override
     protected XmlRenderTheme getRenderTheme() {
-        return InternalRenderTheme.OSMARENDER;
+        return InternalRenderTheme.DEFAULT;
     }
 
     /**

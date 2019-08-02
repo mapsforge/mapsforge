@@ -1,5 +1,6 @@
 /*
  * Copyright 2015-2016 Ludwig M Brinckmann
+ * Copyright 2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,13 +18,14 @@ package org.mapsforge.samples.android;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.labels.LabelLayer;
-import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.labels.MapDataStoreLabelStore;
+import org.mapsforge.map.layer.labels.ThreadedLabelLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
 /**
  * A map viewer that draws the labels onto a single separate layer. The LabelLayer used in this example
  * retrieves the data from the MapDataStore for the visible tile area, no caching involved.
+ * Uses a separate thread to retrieve the data from the MapDataStore to be more responsive.
  */
 public class LabelLayerUsingMapDataStoreMapViewer extends DefaultTheme {
     @Override
@@ -33,11 +35,7 @@ public class LabelLayerUsingMapDataStoreMapViewer extends DefaultTheme {
         mapView.getLayerManager().getLayers().add(tileRendererLayer);
         MapDataStoreLabelStore labelStore = new MapDataStoreLabelStore(getMapFile(), tileRendererLayer.getRenderThemeFuture(),
                 tileRendererLayer.getTextScale(), tileRendererLayer.getDisplayModel(), AndroidGraphicFactory.INSTANCE);
-        LabelLayer labelLayer = createLabelLayer(labelStore);
+        LabelLayer labelLayer = new ThreadedLabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
         mapView.getLayerManager().getLayers().add(labelLayer);
-    }
-
-    protected LabelLayer createLabelLayer(LabelStore labelStore) {
-        return new LabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
     }
 }
