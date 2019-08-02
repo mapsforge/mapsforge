@@ -1,1 +1,1 @@
-For questions or discussion please always use our [forum](https://groups.google.com/group/mapsforge-dev).
+For questions, reports and discussion please always use the [forum](https://groups.google.com/group/mapsforge-dev).
