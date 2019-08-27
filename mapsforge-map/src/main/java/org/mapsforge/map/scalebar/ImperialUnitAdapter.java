@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,16 +15,12 @@
  */
 package org.mapsforge.map.scalebar;
 
-public final class ImperialUnitAdapter implements DistanceUnitAdapter {
+public class ImperialUnitAdapter implements DistanceUnitAdapter {
     public static final ImperialUnitAdapter INSTANCE = new ImperialUnitAdapter();
-    private static final double METER_FOOT_RATIO = 0.3048;
-    private static final int ONE_MILE = 5280;
-    private static final int[] SCALE_BAR_VALUES = {26400000, 10560000, 5280000, 2640000, 1056000, 528000, 264000,
+    public static final double METER_FOOT_RATIO = 0.3048;
+    public static final int ONE_MILE = 5280;
+    public static final int[] SCALE_BAR_VALUES = {26400000, 10560000, 5280000, 2640000, 1056000, 528000, 264000,
             105600, 52800, 26400, 10560, 5280, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1};
-
-    private ImperialUnitAdapter() {
-        // do nothing
-    }
 
     @Override
     public double getMeterRatio() {

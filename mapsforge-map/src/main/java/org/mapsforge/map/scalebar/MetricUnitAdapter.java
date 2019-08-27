@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,15 +15,11 @@
  */
 package org.mapsforge.map.scalebar;
 
-public final class MetricUnitAdapter implements DistanceUnitAdapter {
+public class MetricUnitAdapter implements DistanceUnitAdapter {
     public static final MetricUnitAdapter INSTANCE = new MetricUnitAdapter();
-    private static final int ONE_KILOMETER = 1000;
-    private static final int[] SCALE_BAR_VALUES = {10000000, 5000000, 2000000, 1000000, 500000, 200000, 100000, 50000,
+    public static final int ONE_KILOMETER = 1000;
+    public static final int[] SCALE_BAR_VALUES = {10000000, 5000000, 2000000, 1000000, 500000, 200000, 100000, 50000,
             20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1};
-
-    private MetricUnitAdapter() {
-        // do nothing
-    }
 
     @Override
     public double getMeterRatio() {

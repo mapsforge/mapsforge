@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Christian Pesch
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,15 +15,11 @@
  */
 package org.mapsforge.map.scalebar;
 
-public final class NauticalUnitAdapter implements DistanceUnitAdapter {
+public class NauticalUnitAdapter implements DistanceUnitAdapter {
     public static final NauticalUnitAdapter INSTANCE = new NauticalUnitAdapter();
-    private static final int ONE_MILE = 1852;
-    private static final int[] SCALE_BAR_VALUES = {9260000, 3704000, 1852000, 926000, 370400, 185200, 92600,
+    public static final int ONE_MILE = 1852;
+    public static final int[] SCALE_BAR_VALUES = {9260000, 3704000, 1852000, 926000, 370400, 185200, 92600,
             37040, 18520, 9260, 3704, 1852, 926, 500, 200, 100, 50, 20, 10, 5, 2, 1};
-
-    private NauticalUnitAdapter() {
-        // do nothing
-    }
 
     @Override
     public double getMeterRatio() {
