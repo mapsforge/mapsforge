@@ -105,7 +105,7 @@ public class MapWorkerPool implements Runnable {
             if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {
                 this.self.shutdownNow();
                 if (!this.self.awaitTermination(100, TimeUnit.MILLISECONDS)) {
-                    LOGGER.warning("Shutdown self executor failed");
+                    LOGGER.fine("Shutdown self executor failed");
                 }
             }
         } catch (InterruptedException e) {
@@ -116,7 +116,7 @@ public class MapWorkerPool implements Runnable {
             if (!this.workers.awaitTermination(100, TimeUnit.MILLISECONDS)) {
                 this.workers.shutdownNow();
                 if (!this.workers.awaitTermination(100, TimeUnit.MILLISECONDS)) {
-                    LOGGER.warning("Shutdown workers executor failed");
+                    LOGGER.fine("Shutdown workers executor failed");
                 }
             }
         } catch (InterruptedException e) {

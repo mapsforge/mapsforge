@@ -86,7 +86,7 @@ public class FrameBufferHA extends FrameBuffer {
                     try {
                         this.lmBitmapLock.wait(); // wait until swapped
                     } catch (InterruptedException e) {
-                        LOGGER.warning("FrameBufferHA interrupted");
+                        LOGGER.fine("FrameBufferHA interrupted");
                     }
                 }
             }
