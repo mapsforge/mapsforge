@@ -1,4 +1,58 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
 dependencies {
     api project(":mapsforge-poi")
     api project(":sqlite-android")
+}
+
+android {
+    compileSdkVersion androidCompileSdk()
+    buildToolsVersion "$androidBuildVersionTools"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    defaultConfig {
+        versionCode project.versionCode()
+        versionName project.versionName()
+        minSdkVersion androidMinSdk()
+        targetSdkVersion androidTargetSdk()
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+android.libraryVariants.all { variant ->
+    def name = variant.buildType.name
+    if (name == "debug")
+        return
+
+    def jar = project.tasks.create "jar${name.capitalize()}", Jar
+    jar.dependsOn variant.javaCompileProvider
+    jar.exclude '**/BuildConfig.class'
+    jar.exclude '**/R.class'
+    jar.exclude '**/R$*.class'
+    jar.from variant.javaCompileProvider.get().destinationDir
+    artifacts.add('archives', jar)
+}
+
+if (project.hasProperty("SONATYPE_USERNAME")) {
+    afterEvaluate {
+        project.apply from: "${rootProject.projectDir}/deploy.gradle"
+    }
 }

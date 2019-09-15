@@ -1,3 +1,6 @@
+apply plugin: 'java-library'
+apply plugin: 'maven'
+
 dependencies {
     implementation project(":mapsforge-poi")
     implementation 'com.google.guava:guava:23.0'
@@ -28,4 +31,10 @@ task fatJar(type: Jar, dependsOn: classes) {
 
 artifacts {
     archives fatJar
+}
+
+if (project.hasProperty("SONATYPE_USERNAME")) {
+    afterEvaluate {
+        project.apply from: "${rootProject.projectDir}/deploy.gradle"
+    }
 }

@@ -3,6 +3,7 @@ apply plugin: 'application'
 dependencies {
     implementation project(":mapsforge-map-awt")
     implementation project(":mapsforge-themes")
+    testImplementation "junit:junit:$jUnitVersion"
 }
 
 mainClassName = "org.mapsforge.samples.awt.Samples"

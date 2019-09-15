@@ -5,19 +5,36 @@ dependencies {
     implementation project(":mapsforge-themes")
     implementation project(":mapsforge-poi-android")
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.core:core:1.0.2'
-    implementation 'androidx.fragment:fragment:1.0.0'
+    implementation 'androidx.core:core:1.1.0'
+    implementation 'androidx.fragment:fragment:1.1.0'
     androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.6.3'
 }
 
 android {
+    compileSdkVersion androidCompileSdk()
+    buildToolsVersion "$androidBuildVersionTools"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
     defaultConfig {
+        versionCode project.versionCode()
+        versionName project.versionName()
+        minSdkVersion androidMinSdk()
+        targetSdkVersion androidTargetSdk()
         testApplicationId "org.mapsforge.samples.android.test"
         testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 
     sourceSets {
         main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
             file("${rootDir}/sqlite-android/natives").eachDir() { dir ->
                 jniLibs.srcDirs += "${dir.path}/lib"
             }
@@ -25,5 +42,9 @@ android {
         androidTest {
             java.srcDirs = ['src/androidTest']
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }

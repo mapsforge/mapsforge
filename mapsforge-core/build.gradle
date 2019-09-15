@@ -1,0 +1,12 @@
+apply plugin: 'java-library'
+apply plugin: 'maven'
+
+dependencies {
+    testImplementation "junit:junit:$jUnitVersion"
+}
+
+if (project.hasProperty("SONATYPE_USERNAME")) {
+    afterEvaluate {
+        project.apply from: "${rootProject.projectDir}/deploy.gradle"
+    }
+}

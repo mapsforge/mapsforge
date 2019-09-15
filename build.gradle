@@ -9,14 +9,11 @@ buildscript {
     }
 }
 
-def filterProjects(filter) {
-    return subprojects.findAll { project -> filter.contains(project.name) }
-}
-
 allprojects {
     group = 'org.mapsforge'
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
     ext.androidBuildVersionTools = "29.0.2"
     ext.jUnitVersion = "4.12"
 
@@ -40,8 +37,6 @@ static def versionCode() { return 1 }
 
 def versionName() { return version }
 
-// Configuration injection for all subprojects
-
 subprojects {
     repositories {
         google()
@@ -52,107 +47,5 @@ subprojects {
     tasks.withType(JavaCompile) {
         sourceCompatibility = JavaVersion.VERSION_1_7
         targetCompatibility = JavaVersion.VERSION_1_7
-    }
-}
-
-// Configuration for all plain Java projects
-project.ext.javalibraryprojects = ["mapsforge-core", "mapsforge-map", "mapsforge-map-awt", "mapsforge-map-reader", "mapsforge-map-writer", "mapsforge-poi", "mapsforge-poi-awt", "mapsforge-poi-writer", "mapsforge-themes"]
-project.ext.javaprojects = project.javalibraryprojects + ["mapsforge-samples-awt"]
-
-configure(filterProjects(project.javalibraryprojects)) {
-    apply plugin: 'maven'
-
-    if (project.hasProperty("SONATYPE_USERNAME")) {
-        afterEvaluate {
-            project.apply from: "${rootProject.projectDir}/deploy.gradle"
-        }
-    }
-}
-
-configure(filterProjects(project.javaprojects)) {
-    apply plugin: 'java-library'
-    //apply plugin: 'checkstyle'
-
-    dependencies {
-        testImplementation "junit:junit:$jUnitVersion"
-    }
-
-    /*checkstyle {
-        showViolations = false  // turn on for reporting
-        // as of Gradle 2.2.1 every sub project seems to require a checkstyle file, this
-        // directive forces all projects to use the shared file in the root project
-        configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    }*/
-
-    // set java source encoding, otherwise some tests fail
-    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-}
-
-// Configuration for Android projects
-project.ext.androidlibraryprojects = ["mapsforge-map-android", "mapsforge-poi-android", "sqlite-android"]
-project.ext.androidapkprojects = ["mapsforge-samples-android"]
-project.ext.androidprojects = project.androidlibraryprojects + project.androidapkprojects
-
-// TODO get checkstyle and pmd working for android (right now it does not work out of the box, so better wait for official fix)
-
-configure(filterProjects(project.androidapkprojects)) {
-    apply plugin: 'com.android.application'
-}
-
-configure(filterProjects(project.androidlibraryprojects)) {
-    apply plugin: 'com.android.library'
-    apply plugin: 'com.github.dcendents.android-maven'
-
-    android.libraryVariants.all { variant ->
-        def name = variant.buildType.name
-        if (name == "debug")
-            return
-        def task = project.tasks.create "jar${name.capitalize()}", Jar
-        task.dependsOn variant.javaCompileProvider
-        task.exclude '**/BuildConfig.class'
-        task.exclude '**/R.class'
-        task.exclude '**/R$*.class'
-        task.from variant.javaCompileProvider.get().destinationDir
-        artifacts.add('archives', task)
-    }
-
-    if (project.hasProperty("SONATYPE_USERNAME")) {
-        afterEvaluate {
-            project.apply from: "${rootProject.projectDir}/deploy.gradle"
-        }
-    }
-}
-
-configure(filterProjects(project.androidprojects)) {
-
-    android {
-        compileSdkVersion androidCompileSdk()
-        buildToolsVersion "$androidBuildVersionTools"
-
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_7
-            targetCompatibility JavaVersion.VERSION_1_7
-        }
-
-        defaultConfig {
-            versionCode project.versionCode()
-            versionName project.versionName()
-            minSdkVersion androidMinSdk()
-            targetSdkVersion androidTargetSdk()
-        }
-
-        sourceSets {
-            main {
-                manifest.srcFile 'AndroidManifest.xml'
-                java.srcDirs = ['src/main/java']
-                resources.srcDirs = ['src']
-                res.srcDirs = ['res']
-                assets.srcDirs = ['assets']
-            }
-        }
-
-        lintOptions {
-            abortOnError false
-        }
     }
 }
