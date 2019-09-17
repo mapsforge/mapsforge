@@ -1,6 +1,6 @@
 # Changelog
 
-## New since 0.11.0
+## Version 0.12.0 (2019-09-17)
 
 - Curved path text rendering [#1112](https://github.com/mapsforge/mapsforge/pull/1112)
 - POI writer: normalize names option [#1123](https://github.com/mapsforge/mapsforge/pull/1123)
