@@ -3,12 +3,12 @@ apply plugin: 'maven'
 
 dependencies {
     implementation project(":mapsforge-poi")
-    implementation 'com.google.guava:guava:23.0'
+    implementation 'com.google.guava:guava:28.1-jre'
     implementation 'javax.activation:activation:1.1.1'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.0.1'
-    implementation 'org.locationtech.jts:jts-core:1.15.0'
-    implementation 'org.xerial:sqlite-jdbc:3.20.0'
-    compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.46'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+    implementation 'org.locationtech.jts:jts-core:1.16.1'
+    implementation 'org.xerial:sqlite-jdbc:3.28.0'
+    compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.47'
 }
 
 jar {

@@ -20,7 +20,7 @@ implementation 'net.sf.kxml:kxml2:2.3.0'
 #### Android
 ```groovy
 implementation 'org.mapsforge:mapsforge-map-android:[CURRENT-VERSION]'
-implementation 'com.caverock:androidsvg:1.3'
+implementation 'com.caverock:androidsvg:1.4'
 ```
 
 #### Desktop
@@ -54,7 +54,7 @@ implementation 'org.mapsforge:sqlite-android:[CURRENT-VERSION]:natives-x86_64'
 #### Desktop
 ```groovy
 implementation 'org.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]'
-implementation 'org.xerial:sqlite-jdbc:3.20.0'
+implementation 'org.xerial:sqlite-jdbc:3.28.0'
 ```
 
 ## Snapshots

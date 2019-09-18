@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 dependencies {
     api project(":mapsforge-map-reader")
-    api 'com.caverock:androidsvg:1.3'
+    api 'com.caverock:androidsvg:1.4'
 }
 
 android {

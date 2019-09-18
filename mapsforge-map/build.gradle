@@ -7,7 +7,7 @@ dependencies {
     testImplementation 'commons-io:commons-io:2.5'
     testImplementation "junit:junit:$jUnitVersion"
     testImplementation 'org.mortbay.jetty:jetty:6.1.26'
-    testImplementation 'org.slf4j:slf4j-log4j12:1.7.25'
+    testImplementation 'org.slf4j:slf4j-log4j12:1.7.28'
 }
 
 if (project.hasProperty("SONATYPE_USERNAME")) {

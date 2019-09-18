@@ -3,10 +3,10 @@ apply plugin: 'maven'
 
 dependencies {
     implementation project(":mapsforge-core")
-    implementation 'com.google.guava:guava:23.0'
+    implementation 'com.google.guava:guava:28.1-jre'
     implementation 'net.sf.trove4j:trove4j:3.0.3'
-    implementation 'org.locationtech.jts:jts-core:1.15.0'
-    compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.46'
+    implementation 'org.locationtech.jts:jts-core:1.16.1'
+    compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.47'
     testImplementation "junit:junit:$jUnitVersion"
 }
 
