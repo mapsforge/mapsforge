@@ -263,13 +263,13 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void resetClip() {
-        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        //     this.canvas.save();
-        //     this.canvas.clipRect(0, 0, getWidth(), getHeight());
-        //     this.canvas.restore();
-        // } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // this.canvas.save();
+            this.canvas.clipRect(0, 0, getWidth(), getHeight());
+            // this.canvas.restore();
+        } else {
             this.canvas.clipRect(0, 0, getWidth(), getHeight(), Region.Op.REPLACE);
-        // }
+        }
     }
 
     @Override
@@ -284,13 +284,13 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void setClip(int left, int top, int width, int height) {
-        // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        //     this.canvas.save();
-        //     this.canvas.clipRect(left, top, left + width, top + height);
-        //     this.canvas.restore();
-        // } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // this.canvas.save();
+            this.canvas.clipRect(left, top, left + width, top + height);
+            // this.canvas.restore();
+        } else {
             this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
-        // }
+        }
     }
 
     @Override
@@ -320,13 +320,13 @@ class AndroidCanvas implements Canvas {
 
         if (bitmap == null) {
             if (tileRect != null) {
-                // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                //     this.canvas.save();
-                //     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-                //     this.canvas.restore();
-                // } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    // this.canvas.save();
+                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
+                    // this.canvas.restore();
+                } else {
                     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
-                // }
+                }
             }
             // scale a dummy pixel over the canvas - just drawing a paint would probably be faster, but the resulting colors can be inconsistent with the bitmap draw (maybe only on some devices?)
             this.canvas.drawBitmap(hillshadingTemps.useNeutralShadingPixel(), hillshadingTemps.useAsr(0, 0, 1, 1), hillshadingTemps.useAdr(0, 0, canvas.getWidth(), canvas.getHeight()), shadePaint);
@@ -341,13 +341,13 @@ class AndroidCanvas implements Canvas {
 
         if (horizontalScale < 1 && verticalScale < 1) {
             // fast path for wide zoom (downscaling)
-            // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //     this.canvas.save();
-            //     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-            //     this.canvas.restore();
-            // } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // this.canvas.save();
+                this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
+                // this.canvas.restore();
+            } else {
                 this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
-            // }
+            }
             android.graphics.Matrix transform = temps.useMatrix();
             transform.preTranslate((float) tileRect.left, (float) tileRect.top);
             transform.preScale((float) horizontalScale, (float) verticalScale);
