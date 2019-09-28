@@ -400,11 +400,11 @@ class AwtCanvas implements Canvas {
 
     @Override
     public void setClip(int left, int top, int width, int height) {
-        setClip(left, top, width, height, true);
+        setClip(left, top, width, height, false);
     }
 
     @Override
-    public void setClip(int left, int top, int width, int height, boolean save) {
+    public void setClip(int left, int top, int width, int height, boolean intersect) {
         this.graphics2D.setClip(left, top, width, height);
     }
 

@@ -259,11 +259,7 @@ class AndroidCanvas implements Canvas {
     @SuppressWarnings("deprecation")
     @Override
     public void resetClip() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.canvas.save();
-            this.canvas.clipRect(0, 0, getWidth(), getHeight());
-            this.canvas.restore();
-        } else {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             this.canvas.clipRect(0, 0, getWidth(), getHeight(), Region.Op.REPLACE);
         }
     }
@@ -280,18 +276,14 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void setClip(int left, int top, int width, int height) {
-        setClip(left, top, width, height, true);
+        setClip(left, top, width, height, false);
     }
 
     @Override
-    public void setClip(int left, int top, int width, int height, boolean save) {
+    public void setClip(int left, int top, int width, int height, boolean intersect) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (save) {
-                this.canvas.save();
-            }
-            this.canvas.clipRect(left, top, left + width, top + height);
-            if (save) {
-                this.canvas.restore();
+            if (intersect) {
+                this.canvas.clipRect(left, top, left + width, top + height);
             }
         } else {
             this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
@@ -300,7 +292,11 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void setClipDifference(int left, int top, int width, int height) {
-        this.setClipInternal(left, top, width, height, Region.Op.DIFFERENCE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.canvas.clipOutRect(left, top, left + width, top + height);
+        } else {
+            this.setClipInternal(left, top, width, height, Region.Op.DIFFERENCE);
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -328,9 +324,7 @@ class AndroidCanvas implements Canvas {
         if (bitmap == null) {
             if (tileRect != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    //this.canvas.save();
                     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-                    //this.canvas.restore();
                 } else {
                     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
                 }
@@ -349,9 +343,7 @@ class AndroidCanvas implements Canvas {
         if (horizontalScale < 1 && verticalScale < 1) {
             // fast path for wide zoom (downscaling)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                //this.canvas.save();
                 this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-                //this.canvas.restore();
             } else {
                 this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
             }

@@ -449,25 +449,25 @@ class HgtCache {
             sink = center;
             source = neighbor;
             copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(sink.getWidth() - padding, padding, padding, sink.getHeight() - 2 * padding, false);
+            copyCanvas.setClip(sink.getWidth() - padding, padding, padding, sink.getHeight() - 2 * padding, true);
             copyCanvas.drawBitmap(source, (source.getWidth() - 2 * padding), 0);
         } else if (border == HillshadingBitmap.Border.WEST) {
             sink = center;
             source = neighbor;
             copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(0, padding, padding, sink.getHeight() - 2 * padding, false);
+            copyCanvas.setClip(0, padding, padding, sink.getHeight() - 2 * padding, true);
             copyCanvas.drawBitmap(source, 2 * padding - (source.getWidth()), 0);
         } else if (border == HillshadingBitmap.Border.NORTH) {
             sink = center;
             source = neighbor;
             copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(padding, 0, sink.getWidth() - 2 * padding, padding, false);
+            copyCanvas.setClip(padding, 0, sink.getWidth() - 2 * padding, padding, true);
             copyCanvas.drawBitmap(source, 0, 2 * padding - (source.getHeight()));
         } else if (border == HillshadingBitmap.Border.SOUTH) {
             sink = center;
             source = neighbor;
             copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding, false);
+            copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding, true);
             copyCanvas.drawBitmap(source, 0, (source.getHeight() - 2 * padding));
         }
     }
