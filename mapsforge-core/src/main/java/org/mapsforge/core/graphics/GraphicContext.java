@@ -62,6 +62,8 @@ public interface GraphicContext {
 
     void setClip(int left, int top, int width, int height);
 
+    void setClip(int left, int top, int width, int height, boolean save);
+
     void setClipDifference(int left, int top, int width, int height);
 
     void setFilterBitmap(boolean filter);

@@ -400,6 +400,11 @@ class AwtCanvas implements Canvas {
 
     @Override
     public void setClip(int left, int top, int width, int height) {
+        setClip(left, top, width, height, true);
+    }
+
+    @Override
+    public void setClip(int left, int top, int width, int height, boolean save) {
         this.graphics2D.setClip(left, top, width, height);
     }
 
@@ -465,7 +470,7 @@ class AwtCanvas implements Canvas {
         this.graphics2D.setComposite(originalComposite);
     }
 
-    public void setColorAndStroke(AwtPaint awtPaint) {
+    void setColorAndStroke(AwtPaint awtPaint) {
         this.graphics2D.setColor(awtPaint.color);
         if (awtPaint.stroke != null) {
             this.graphics2D.setStroke(awtPaint.stroke);

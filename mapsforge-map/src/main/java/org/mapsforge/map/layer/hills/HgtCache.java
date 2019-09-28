@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 usrusr
+ * Copyright 2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,12 +22,7 @@ import org.mapsforge.core.model.BoundingBox;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
@@ -80,7 +76,7 @@ class HgtCache {
         }
     }
 
-    class Lru {
+    private static class Lru {
         public int getSize() {
             return size;
         }
@@ -92,7 +88,6 @@ class HgtCache {
             if (size < lru.size()) synchronized (lru) {
                 Iterator<Future<HillshadingBitmap>> iterator = lru.iterator();
                 while (lru.size() > size) {
-                    Future<HillshadingBitmap> evicted = iterator.next();
                     iterator.remove();
                 }
             }
@@ -151,7 +146,7 @@ class HgtCache {
 
         hgtFiles = new LazyFuture<Map<TileKey, HgtFileInfo>>() {
             @Override
-            protected Map<TileKey, HgtFileInfo> calculate() throws ExecutionException, InterruptedException {
+            protected Map<TileKey, HgtFileInfo> calculate() {
                 Map<TileKey, HgtFileInfo> map = new HashMap<>();
                 Matcher matcher = Pattern.compile("([ns])(\\d{1,2})([ew])(\\d{1,3})\\.hgt", Pattern.CASE_INSENSITIVE).matcher("");
                 crawl(HgtCache.this.demFolder, matcher, map, problems);
@@ -437,7 +432,7 @@ class HgtCache {
     }
 
 
-    public HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, double pxPerLat, double pxPerLng) throws InterruptedException, ExecutionException {
+    HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, double pxPerLat, double pxPerLng) throws InterruptedException, ExecutionException {
         HgtFileInfo hgtFileInfo = hgtFiles.get().get(new TileKey(northInt, eastInt));
         if (hgtFileInfo == null)
             return null;
@@ -454,25 +449,25 @@ class HgtCache {
             sink = center;
             source = neighbor;
             copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(sink.getWidth() - padding, padding, padding, sink.getHeight() - 2 * padding);
+            copyCanvas.setClip(sink.getWidth() - padding, padding, padding, sink.getHeight() - 2 * padding, false);
             copyCanvas.drawBitmap(source, (source.getWidth() - 2 * padding), 0);
         } else if (border == HillshadingBitmap.Border.WEST) {
             sink = center;
             source = neighbor;
             copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(0, padding, padding, sink.getHeight() - 2 * padding);
+            copyCanvas.setClip(0, padding, padding, sink.getHeight() - 2 * padding, false);
             copyCanvas.drawBitmap(source, 2 * padding - (source.getWidth()), 0);
         } else if (border == HillshadingBitmap.Border.NORTH) {
             sink = center;
             source = neighbor;
             copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(padding, 0, sink.getWidth() - 2 * padding, padding);
+            copyCanvas.setClip(padding, 0, sink.getWidth() - 2 * padding, padding, false);
             copyCanvas.drawBitmap(source, 0, 2 * padding - (source.getHeight()));
         } else if (border == HillshadingBitmap.Border.SOUTH) {
             sink = center;
             source = neighbor;
             copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding);
+            copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding, false);
             copyCanvas.drawBitmap(source, 0, (source.getHeight() - 2 * padding));
         }
     }

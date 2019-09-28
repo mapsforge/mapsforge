@@ -19,21 +19,15 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.Region;
+import android.graphics.*;
 import android.os.Build;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.Rectangle;
 
@@ -262,6 +256,7 @@ class AndroidCanvas implements Canvas {
         return this.bitmapPaint.isFilterBitmap();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void resetClip() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -285,10 +280,19 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void setClip(int left, int top, int width, int height) {
+        setClip(left, top, width, height, true);
+    }
+
+    @Override
+    public void setClip(int left, int top, int width, int height, boolean save) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.canvas.save();
+            if (save) {
+                this.canvas.save();
+            }
             this.canvas.clipRect(left, top, left + width, top + height);
-            this.canvas.restore();
+            if (save) {
+                this.canvas.restore();
+            }
         } else {
             this.setClipInternal(left, top, width, height, Region.Op.REPLACE);
         }
@@ -299,7 +303,8 @@ class AndroidCanvas implements Canvas {
         this.setClipInternal(left, top, width, height, Region.Op.DIFFERENCE);
     }
 
-    public void setClipInternal(int left, int top, int width, int height, Region.Op op) {
+    @SuppressWarnings("deprecation")
+    private void setClipInternal(int left, int top, int width, int height, Region.Op op) {
         this.canvas.clipRect(left, top, left + width, top + height, op);
     }
 
@@ -308,6 +313,7 @@ class AndroidCanvas implements Canvas {
         this.bitmapPaint.setFilterBitmap(filter);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void shadeBitmap(Bitmap bitmap, Rectangle hillRect, Rectangle tileRect, float magnitude) {
         this.canvas.save();
@@ -322,9 +328,9 @@ class AndroidCanvas implements Canvas {
         if (bitmap == null) {
             if (tileRect != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    this.canvas.save();
+                    //this.canvas.save();
                     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-                    this.canvas.restore();
+                    //this.canvas.restore();
                 } else {
                     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
                 }
@@ -343,9 +349,9 @@ class AndroidCanvas implements Canvas {
         if (horizontalScale < 1 && verticalScale < 1) {
             // fast path for wide zoom (downscaling)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                this.canvas.save();
+                //this.canvas.save();
                 this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-                this.canvas.restore();
+                //this.canvas.restore();
             } else {
                 this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
             }
@@ -508,16 +514,16 @@ class AndroidCanvas implements Canvas {
             return tmpBitmap;
         }
 
-        public android.graphics.Paint useAlphaPaint(int alpha) {
+        android.graphics.Paint useAlphaPaint(int alpha) {
             shadePaint.setAlpha(alpha);
             return shadePaint;
         }
 
-        public android.graphics.Bitmap useNeutralShadingPixel() {
+        android.graphics.Bitmap useNeutralShadingPixel() {
             return neutralShadingPixel;
         }
 
-        public android.graphics.Matrix useMatrix() {
+        android.graphics.Matrix useMatrix() {
             if (tmpMatrix == null) {
                 tmpMatrix = new android.graphics.Matrix();
             }
