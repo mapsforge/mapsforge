@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
-
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.rotation.RotateView;
 import org.mapsforge.map.android.util.AndroidUtil;
@@ -64,13 +63,9 @@ public class RotateMapViewer extends OverlayMapViewer {
         });
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void createMapViews() {
         mapView = getMapView();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            findViewById(R.id.rotateView).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
         mapView.getModel().frameBufferModel.setOverdrawFactor(1.0d);
         mapView.getModel().init(this.preferencesFacade);
         mapView.setClickable(true);

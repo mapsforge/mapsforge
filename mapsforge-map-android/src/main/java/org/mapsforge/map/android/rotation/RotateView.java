@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2018 devemux86
+ * Copyright 2015-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -37,6 +37,10 @@ public class RotateView extends ViewGroup {
 
     public RotateView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
     }
 
     @Override

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2015 Andreas Schildbach
  * Copyright 2018 mikes222
  *
@@ -20,16 +20,11 @@ package org.mapsforge.map.android.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.View;
-import android.view.ViewGroup;
-
+import android.view.*;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
@@ -131,6 +126,10 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     public MapView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         setWillNotDraw(false);
