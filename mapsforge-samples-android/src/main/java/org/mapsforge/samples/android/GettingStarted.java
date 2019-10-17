@@ -70,7 +70,6 @@ public class GettingStarted extends Activity {
             /*
              * We then make some simple adjustments, such as showing a scale bar and zoom controls.
              */
-            mapView.setClickable(true);
             mapView.getMapScaleBar().setVisible(true);
             mapView.setBuiltInZoomControls(true);
 

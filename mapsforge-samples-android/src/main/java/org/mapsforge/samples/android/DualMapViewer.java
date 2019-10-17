@@ -60,7 +60,6 @@ public class DualMapViewer extends DefaultTheme {
         // second mapView is defined in layout
         this.mapView2 = (MapView) this.findViewById(R.id.mapView2);
         this.mapView2.getModel().init(this.preferencesFacade2);
-        this.mapView2.setClickable(true);
         this.mapView2.getMapScaleBar().setVisible(true);
         this.mapView2.setBuiltInZoomControls(hasZoomControls());
         this.mapView2.getMapZoomControls().setZoomLevelMin(getZoomLevelMin());

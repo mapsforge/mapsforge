@@ -68,7 +68,6 @@ public class RotateMapViewer extends OverlayMapViewer {
         mapView = getMapView();
         mapView.getModel().frameBufferModel.setOverdrawFactor(1.0d);
         mapView.getModel().init(this.preferencesFacade);
-        mapView.setClickable(true);
 
         // Use external scale bar
         mapView.getMapScaleBar().setVisible(false);

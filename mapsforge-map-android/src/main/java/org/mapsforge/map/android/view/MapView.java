@@ -131,6 +131,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
+        setClickable(true);
         setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
         setWillNotDraw(false);
 

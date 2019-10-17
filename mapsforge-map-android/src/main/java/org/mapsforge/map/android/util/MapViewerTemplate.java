@@ -131,7 +131,6 @@ public abstract class MapViewerTemplate extends Activity {
     protected void createMapViews() {
         mapView = getMapView();
         mapView.getModel().init(this.preferencesFacade);
-        mapView.setClickable(true);
         mapView.getMapScaleBar().setVisible(true);
         mapView.setBuiltInZoomControls(hasZoomControls());
         mapView.getMapZoomControls().setAutoHide(isZoomControlsAutoHide());

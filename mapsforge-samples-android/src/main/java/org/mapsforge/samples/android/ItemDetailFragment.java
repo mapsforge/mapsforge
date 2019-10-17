@@ -79,7 +79,6 @@ public class ItemDetailFragment extends Fragment {
 
         if (this.dummyItem != null) {
             this.mapView = (MapView) rootView.findViewById(R.id.mapView);
-            this.mapView.setClickable(true);
             this.mapView.getMapScaleBar().setVisible(true);
 
             createLayers();
