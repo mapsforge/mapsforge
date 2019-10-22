@@ -91,6 +91,19 @@ public abstract class Layer {
     }
 
     /**
+     * Handles a scroll event. A return value of true indicates that the scroll event has been handled by this overlay and
+     * stops its propagation to other overlays.
+     * @param scrollStartX      the x position of the of the start of the scroll event.
+     * @param scrollStartY      the y position of the of the start of the scroll event.
+     * @param scrollCurrentX    the x position of the of the current end of the scroll event.
+     * @param scrollCurrentY    the y position of the of the current end of the scroll event.
+     * @return true if the scroll event was handled, false otherwise.
+     */
+    public boolean onScroll(float scrollStartX, float scrollStartY, float scrollCurrentX, float scrollCurrentY){
+        return false;
+    }
+
+    /**
      * Requests an asynchronous redrawing of all layers.
      */
     public final synchronized void requestRedraw() {

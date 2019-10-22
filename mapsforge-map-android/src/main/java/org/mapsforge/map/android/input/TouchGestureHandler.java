@@ -237,6 +237,14 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
+
+            for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
+                Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                if (layer.onScroll(e1.getX(), e1.getY(), e2.getX(), e2.getY())) {
+                    return true;
+                }
+            }
+
             this.mapView.onMoveEvent();
             this.mapView.getModel().mapViewPosition.moveCenter(-distanceX, -distanceY, false);
             return true;
