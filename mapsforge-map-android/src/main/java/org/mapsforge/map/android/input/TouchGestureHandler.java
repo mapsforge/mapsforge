@@ -5,6 +5,7 @@
  * Copyright 2014 Jordan Black
  * Copyright 2015 Andreas Schildbach
  * Copyright 2018 mikes222
+ * Copyright 2019 mg4gh
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,7 +25,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.Scroller;
-
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.view.MapView;
@@ -237,6 +237,13 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
+            for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
+                Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                if (layer.onScroll(e1.getX(), e1.getY(), e2.getX(), e2.getY())) {
+                    return true;
+                }
+            }
+
             this.mapView.onMoveEvent();
             this.mapView.getModel().mapViewPosition.moveCenter(-distanceX, -distanceY, false);
             return true;

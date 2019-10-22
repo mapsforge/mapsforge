@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
+ * Copyright 2019 mg4gh
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -71,6 +72,20 @@ public abstract class Layer {
      * @return true if the long press event was handled, false otherwise.
      */
     public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+        return false;
+    }
+
+    /**
+     * Handles a scroll event. A return value of true indicates that the scroll event has been handled by this overlay
+     * and stops its propagation to other overlays.
+     *
+     * @param scrollX1 the x position of the first down motion event that started the scrolling.
+     * @param scrollY1 the y position of the first down motion event that started the scrolling.
+     * @param scrollX2 the x position of the move motion event that triggered the current onScroll.
+     * @param scrollY2 the y position of the move motion event that triggered the current onScroll.
+     * @return true if the scroll event was handled, false otherwise.
+     */
+    public boolean onScroll(float scrollX1, float scrollY1, float scrollX2, float scrollY2) {
         return false;
     }
 
