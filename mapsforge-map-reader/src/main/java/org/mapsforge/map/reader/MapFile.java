@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2015-2016 lincomatic
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
@@ -27,11 +27,7 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.core.util.Parameters;
-import org.mapsforge.map.datastore.MapDataStore;
-import org.mapsforge.map.datastore.MapReadResult;
-import org.mapsforge.map.datastore.PoiWayBundle;
-import org.mapsforge.map.datastore.PointOfInterest;
-import org.mapsforge.map.datastore.Way;
+import org.mapsforge.map.datastore.*;
 import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
@@ -241,6 +237,35 @@ public class MapFile extends MapDataStore {
             this.databaseIndexCache = new IndexCache(this.inputChannel, INDEX_CACHE_SIZE);
 
             this.timestamp = mapFile.lastModified();
+        } catch (Exception e) {
+            // make sure that the channel is closed
+            closeFileChannel();
+            throw new MapFileException(e.getMessage());
+        }
+    }
+
+    /**
+     * Opens the given map file input stream, reads its header data and validates them.
+     *
+     * @param mapFileInputStream the map file input stream.
+     * @param language           the language to use (may be null).
+     * @throws MapFileException if the given map file is null or invalid.
+     */
+    public MapFile(FileInputStream mapFileInputStream, long lastModified, String language) {
+        super(language);
+        if (mapFileInputStream == null) {
+            throw new MapFileException("mapFileInputStream must not be null");
+        }
+        try {
+            this.inputChannel = mapFileInputStream.getChannel();
+            this.fileSize = this.inputChannel.size();
+
+            ReadBuffer readBuffer = new ReadBuffer(this.inputChannel);
+            this.mapFileHeader = new MapFileHeader();
+            this.mapFileHeader.readHeader(readBuffer, this.fileSize);
+            this.databaseIndexCache = new IndexCache(this.inputChannel, INDEX_CACHE_SIZE);
+
+            this.timestamp = lastModified;
         } catch (Exception e) {
             // make sure that the channel is closed
             closeFileChannel();
