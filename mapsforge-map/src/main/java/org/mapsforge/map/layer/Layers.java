@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016-2019 devemux86
  * Copyright 2016 Andrey Novikov
+ * Copyright 2019 Christian Pesch
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -419,6 +420,28 @@ public class Layers implements Iterable<Layer>, RandomAccess {
                 if (pointer > index) {
                     this.groupIndex.put(group, pointer - 1);
                 }
+            }
+
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Removes multiple layers.
+     *
+     * @param layers The layers to remove
+     * @param redraw Whether the map should be redrawn after removing the layers
+     * @see List#removeAll(Collection)
+     */
+    public synchronized boolean removeAll(Collection<Layer> layers, boolean redraw) {
+        checkIsNull(layers);
+        if (this.layersList.removeAll(layers)) {
+            for (Layer layer : layers) {
+                layer.unassign();
             }
 
             if (redraw) {
