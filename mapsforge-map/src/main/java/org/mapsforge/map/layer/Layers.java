@@ -430,6 +430,28 @@ public class Layers implements Iterable<Layer>, RandomAccess {
     }
 
     /**
+     * Removes multiple layers.
+     *
+     * @param layers The layers to remove
+     * @param redraw Whether the map should be redrawn after removing the layers
+     * @see List#addAll(Collection)
+     */
+    public synchronized boolean removeAll(Collection<Layer> layers, boolean redraw) {
+        checkIsNull(layers);
+        if(this.layersList.removeAll(layers)) {
+            for (Layer layer : layers) {
+                layer.unassign();
+            }
+
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @see List#size()
      */
     public synchronized int size() {
