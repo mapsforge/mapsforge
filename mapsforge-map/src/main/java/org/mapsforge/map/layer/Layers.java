@@ -100,8 +100,8 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param layer The new layer to add
      * @see List#add(Object)
      */
-    public synchronized void add(Layer layer) {
-        add(layer, true);
+    public synchronized boolean add(Layer layer) {
+        return add(layer, true);
     }
 
     /**
@@ -111,15 +111,18 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param redraw Whether the map should be redrawn after adding the layer
      * @see List#add(Object)
      */
-    public synchronized void add(Layer layer, boolean redraw) {
+    public synchronized boolean add(Layer layer, boolean redraw) {
         checkIsNull(layer);
         layer.setDisplayModel(this.displayModel);
 
-        this.layersList.add(layer);
-        layer.assign(this.redrawer);
-        if (redraw) {
-            this.redrawer.redrawLayers();
+        if(this.layersList.add(layer)) {
+            layer.assign(this.redrawer);
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
+            return true;
         }
+        return false;
     }
 
     /**
