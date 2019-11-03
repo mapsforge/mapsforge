@@ -432,6 +432,19 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 
     /**
      * Removes multiple layers.
+     * <p/>
+     * Note: By default a redraw will take place afterwards.
+     * To avoid this, use {@link #removeAll(Collection, boolean)}.
+     *
+     * @param layers The layers to remove
+     * @see List#removeAll(Collection)
+     */
+    public synchronized boolean removeAll(Collection<Layer> layers) {
+        return removeAll(layers, true);
+    }
+
+    /**
+     * Removes multiple layers.
      *
      * @param layers The layers to remove
      * @param redraw Whether the map should be redrawn after removing the layers
@@ -439,9 +452,24 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      */
     public synchronized boolean removeAll(Collection<Layer> layers, boolean redraw) {
         checkIsNull(layers);
+        int[] indexes = new int[layers.size()];
+        int i = 0;
+        for (Layer layer : layers) {
+            indexes[i++] = this.layersList.indexOf(layer);
+        }
         if (this.layersList.removeAll(layers)) {
             for (Layer layer : layers) {
                 layer.unassign();
+            }
+
+            // update layer group pointers
+            for (int index : indexes) {
+                for (Integer group : this.groupIndex.keySet()) {
+                    int pointer = this.groupIndex.get(group);
+                    if (pointer > index) {
+                        this.groupIndex.put(group, pointer - 1);
+                    }
+                }
             }
 
             if (redraw) {
