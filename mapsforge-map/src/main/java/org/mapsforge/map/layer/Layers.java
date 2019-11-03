@@ -171,8 +171,8 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param layers The new layers to add
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers) {
-        addAll(layers, true);
+    public synchronized boolean addAll(Collection<Layer> layers) {
+        return addAll(layers, true);
     }
 
     /**
@@ -182,18 +182,21 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param redraw Whether the map should be redrawn after adding the layers
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers, boolean redraw) {
+    public synchronized boolean addAll(Collection<Layer> layers, boolean redraw) {
         checkIsNull(layers);
         for (Layer layer : layers) {
             layer.setDisplayModel(this.displayModel);
         }
-        this.layersList.addAll(layers);
-        for (Layer layer : layers) {
-            layer.assign(this.redrawer);
+        if (this.layersList.addAll(layers)) {
+            for (Layer layer : layers) {
+                layer.assign(this.redrawer);
+            }
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
+            return true;
         }
-        if (redraw) {
-            this.redrawer.redrawLayers();
-        }
+        return false;
     }
 
     /**
@@ -206,8 +209,8 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param layers The new layers to add
      * @see List#addAll(int, Collection)
      */
-    public synchronized void addAll(int index, Collection<Layer> layers) {
-        addAll(index, layers, true);
+    public synchronized boolean addAll(int index, Collection<Layer> layers) {
+        return addAll(index, layers, true);
     }
 
     /**
@@ -218,16 +221,19 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param redraw Whether the map should be redrawn after adding the layers
      * @see List#addAll(int, Collection)
      */
-    public synchronized void addAll(int index, Collection<Layer> layers, boolean redraw) {
+    public synchronized boolean addAll(int index, Collection<Layer> layers, boolean redraw) {
         checkIsNull(layers);
-        this.layersList.addAll(index, layers);
-        for (Layer layer : layers) {
-            layer.setDisplayModel(this.displayModel);
-            layer.assign(this.redrawer);
+        if (this.layersList.addAll(index, layers)) {
+            for (Layer layer : layers) {
+                layer.setDisplayModel(this.displayModel);
+                layer.assign(this.redrawer);
+            }
+            if (redraw) {
+                this.redrawer.redrawLayers();
+            }
+            return true;
         }
-        if (redraw) {
-            this.redrawer.redrawLayers();
-        }
+        return false;
     }
 
     /**
@@ -240,8 +246,8 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param group  The layer group
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers, int group) {
-        addAll(layers, group, true);
+    public synchronized boolean addAll(Collection<Layer> layers, int group) {
+        return addAll(layers, group, true);
     }
 
     /**
@@ -252,7 +258,7 @@ public class Layers implements Iterable<Layer>, RandomAccess {
      * @param redraw Whether the map should be redrawn after adding the layers
      * @see List#addAll(Collection)
      */
-    public synchronized void addAll(Collection<Layer> layers, int group, boolean redraw) {
+    public synchronized boolean addAll(Collection<Layer> layers, int group, boolean redraw) {
         int index = this.groupList.indexOf(group);
         if (index < 0) {
             throw new IllegalArgumentException("unknown layer group");
@@ -260,14 +266,17 @@ public class Layers implements Iterable<Layer>, RandomAccess {
 
         index++;
         if (index == this.groupList.size()) {
-            addAll(layers, redraw);
+            return addAll(layers, redraw);
         } else {
-            addAll(this.groupIndex.get(this.groupList.get(index)), layers, redraw);
-            for (int i = index; i < this.groupList.size(); i++) {
-                group = this.groupList.get(i);
-                this.groupIndex.put(group, this.groupIndex.get(group) + layers.size());
+            if (addAll(this.groupIndex.get(this.groupList.get(index)), layers, redraw)) {
+                for (int i = index; i < this.groupList.size(); i++) {
+                    group = this.groupList.get(i);
+                    this.groupIndex.put(group, this.groupIndex.get(group) + layers.size());
+                }
+                return true;
             }
         }
+        return false;
     }
 
     /**
