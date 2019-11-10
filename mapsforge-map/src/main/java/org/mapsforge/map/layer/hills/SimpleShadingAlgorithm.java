@@ -70,7 +70,7 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
      */
     protected double exaggerate(double in) {
         double x = in * scale;
-        x = Math.max(-128d, Math.min(128d, x));
+        x = Math.max(-128d, Math.min(127d, x));
         double ret = (Math.sin(0.5d * Math.PI * Math.sin(0.5d * Math.PI * Math.sin(0.5d * Math.PI * x / 128d))) * 128 * (1d - linearity) + x * linearity);
         return ret;
     }
