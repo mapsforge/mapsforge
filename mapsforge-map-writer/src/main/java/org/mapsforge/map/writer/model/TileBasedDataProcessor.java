@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2017 devemux86
+ * Copyright 2017-2019 devemux86
  * Copyright 2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -119,15 +119,15 @@ public interface TileBasedDataProcessor {
     /**
      * @return the number of added nodes
      */
-    int getNodesNumber();
+    long getNodesNumber();
 
     /**
      * @return the number of added relations
      */
-    int getRelationsNumber();
+    long getRelationsNumber();
 
     /**
      * @return the number of added ways
      */
-    int getWaysNumber();
+    long getWaysNumber();
 }

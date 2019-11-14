@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2019 devemux86
  * Copyright 2017-2018 Gustl22
  * Copyright 2019 Kamil Donoval
  *
@@ -85,10 +85,10 @@ public final class PoiWriter {
     private GeoTagger geoTagger;
 
     // Statistics
-    private int nNodes = 0;
-    private int nWays = 0;
-    private int nRelations = 0;
-    private int poiAdded = 0;
+    private long nNodes = 0;
+    private long nWays = 0;
+    private long nRelations = 0;
+    private long poiAdded = 0;
 
     // Database
     Connection conn = null;

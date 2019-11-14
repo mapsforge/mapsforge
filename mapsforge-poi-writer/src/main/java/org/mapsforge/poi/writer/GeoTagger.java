@@ -1,5 +1,6 @@
 /*
  * Copyright 2017-2018 Gustl22
+ * Copyright 2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,7 +16,6 @@
 package org.mapsforge.poi.writer;
 
 import com.google.common.collect.Lists;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -24,22 +24,12 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.poi.storage.DbConstants;
 import org.mapsforge.poi.writer.logging.LoggerWrapper;
-import org.openstreetmap.osmosis.core.domain.v0_6.EntityType;
-import org.openstreetmap.osmosis.core.domain.v0_6.Relation;
-import org.openstreetmap.osmosis.core.domain.v0_6.RelationMember;
-import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
-import org.openstreetmap.osmosis.core.domain.v0_6.Way;
-import org.openstreetmap.osmosis.core.domain.v0_6.WayNode;
+import org.openstreetmap.osmosis.core.domain.v0_6.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -171,7 +161,7 @@ class GeoTagger {
     }
 
     void processBoundaries() {
-        int nPostalBounds = 0;
+        long nPostalBounds = 0;
         for (Relation postalBoundary : postalBoundaries) {
             if (writer.configuration.isProgressLogs()) {
                 if (++nPostalBounds % 10 == 0) {
@@ -184,7 +174,7 @@ class GeoTagger {
         commit();
 
         for (int i = administrativeBoundaries.size() - 1; i >= 0; i--) {
-            int nAdminBounds = 0;
+            long nAdminBounds = 0;
             List<Relation> administrativeBoundary = administrativeBoundaries.get(i);
             for (Relation relation : administrativeBoundary) {
                 if (writer.configuration.isProgressLogs()) {

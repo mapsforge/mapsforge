@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2015 lincomatic
- * Copyright 2017 devemux86
+ * Copyright 2017-2019 devemux86
  * Copyright 2017-2018 Gustl22
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -139,7 +139,7 @@ public final class HDTileBasedDataProcessor extends BaseTileBasedDataProcessor {
         // Prepare implicit way relations
         // (should be done here, before handling ways, although
         // the WayHandler does only process ids in HD Processor)
-        int nWays = 0;
+        long nWays = 0;
         ReleasableIterator<Way> wayReader = this.wayStore.iterate();
         while (wayReader.hasNext()) {
             if (this.progressLogs) {
