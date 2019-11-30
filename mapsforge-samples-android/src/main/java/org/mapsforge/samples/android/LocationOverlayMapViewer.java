@@ -17,18 +17,19 @@
 package org.mapsforge.samples.android;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.layers.MyLocationOverlay;
 import org.mapsforge.map.layer.overlay.Circle;
@@ -52,15 +53,13 @@ public class LocationOverlayMapViewer extends DownloadLayerViewer implements Loc
     private LocationManager locationManager;
     private MyLocationOverlay myLocationOverlay;
 
-    @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void createLayers() {
         super.createLayers();
 
         // marker to show at the location
-        Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.ic_maps_indicator_current_position) : getResources().getDrawable(R.drawable.ic_maps_indicator_current_position);
-        Marker marker = new Marker(null, AndroidGraphicFactory.convertToBitmap(drawable), 0, 0);
+        Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.ic_maps_indicator_current_position));
+        Marker marker = new Marker(null, bitmap, 0, 0);
 
         // circle to show the location accuracy (optional)
         Circle circle = new Circle(null, 0,

@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2015-2018 devemux86
+ * Copyright 2015-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,22 +15,17 @@
  */
 package org.mapsforge.samples.android;
 
-import android.annotation.TargetApi;
-import android.os.Build;
+import android.graphics.BitmapFactory;
 import android.widget.Toast;
-
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.Layers;
-import org.mapsforge.map.layer.overlay.Circle;
-import org.mapsforge.map.layer.overlay.FixedPixelCircle;
-import org.mapsforge.map.layer.overlay.Marker;
-import org.mapsforge.map.layer.overlay.Polygon;
-import org.mapsforge.map.layer.overlay.Polyline;
+import org.mapsforge.map.layer.overlay.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +52,6 @@ public class OverlayMapViewer extends DefaultTheme {
     protected LatLong latLong14 = new LatLong(52.516, 13.4245);
     protected LatLong latLong15 = new LatLong(52.526, 13.4345);
 
-
-    @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     protected void addOverlayLayers(Layers layers) {
 
         Polyline polyline = new Polyline(Utils.createPaint(
@@ -75,7 +67,7 @@ public class OverlayMapViewer extends DefaultTheme {
         // this illustrates that bitmap shaders can be used on a path, but then any dash effect
         // will not be applied.
         Paint shaderPaint = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 90, Style.STROKE);
-        shaderPaint.setBitmapShader(AndroidGraphicFactory.convertToBitmap(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_green) : getResources().getDrawable(R.drawable.marker_green)));
+        shaderPaint.setBitmapShader(new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_green)));
 
         Polyline polylineWithShader = new Polyline(shaderPaint, AndroidGraphicFactory.INSTANCE, true) {
             @Override
@@ -120,7 +112,7 @@ public class OverlayMapViewer extends DefaultTheme {
         Paint paintFill2 = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 2,
                 Style.FILL);
-        paintFill2.setBitmapShader(AndroidGraphicFactory.convertToBitmap(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_green) : getResources().getDrawable(R.drawable.marker_green)));
+        paintFill2.setBitmapShader(new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_green)));
 
         Paint paintStroke2 = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,
@@ -137,7 +129,7 @@ public class OverlayMapViewer extends DefaultTheme {
         Paint paintFill3 = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 2,
                 Style.FILL);
-        paintFill3.setBitmapShader(AndroidGraphicFactory.convertToBitmap(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? getDrawable(R.drawable.marker_red) : getResources().getDrawable(R.drawable.marker_red)));
+        paintFill3.setBitmapShader(new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_red)));
 
         Paint paintStroke3 = Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 2,

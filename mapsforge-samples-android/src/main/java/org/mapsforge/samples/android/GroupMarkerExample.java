@@ -1,6 +1,6 @@
 /*
  * Copyright 2016 mapicke
- * Copyright 2016 devemux86
+ * Copyright 2016-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,11 +15,13 @@
  */
 package org.mapsforge.samples.android;
 
+import android.graphics.BitmapFactory;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.samples.android.group.ChildMarker;
 import org.mapsforge.samples.android.group.GroupMarker;
@@ -39,10 +41,9 @@ public class GroupMarkerExample extends DefaultTheme {
         addGroupMarker();
     }
 
-    @SuppressWarnings("deprecation")
     private void addGroupMarker() {
         LatLong latLong = new LatLong(52.525582, 13.370061);
-        Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(getResources().getDrawable(R.drawable.marker_green));
+        Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_green));
         GroupMarker groupMarker = new GroupMarker(latLong, bitmap, 0, -bitmap.getHeight() / 2, mapView.getLayerManager().getLayers(), BLACK);
         for (int i = 0; i < 10.; i++) {
             groupMarker.getChildren().add(new ChildMarker(latLong, bitmap, 0, 0, BLACK));

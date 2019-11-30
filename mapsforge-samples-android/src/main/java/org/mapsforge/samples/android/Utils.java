@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2014, 2015 devemux86
+ * Copyright 2014-2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,18 +18,19 @@ package org.mapsforge.samples.android;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.widget.Toast;
-
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.Marker;
 
@@ -67,12 +68,9 @@ public final class Utils {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     static Marker createMarker(Context c, int resourceIdentifier,
                                LatLong latLong) {
-        Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? c.getDrawable(resourceIdentifier) : c.getResources().getDrawable(resourceIdentifier);
-        Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
+        Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(c.getResources(), resourceIdentifier));
         return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2);
     }
 
@@ -84,12 +82,9 @@ public final class Utils {
         return paint;
     }
 
-    @SuppressWarnings("deprecation")
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     static Marker createTappableMarker(final Context c, int resourceIdentifier,
                                        LatLong latLong) {
-        Drawable drawable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? c.getDrawable(resourceIdentifier) : c.getResources().getDrawable(resourceIdentifier);
-        Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(drawable);
+        Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(c.getResources(), resourceIdentifier));
         bitmap.incrementRefCount();
         return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {
             @Override

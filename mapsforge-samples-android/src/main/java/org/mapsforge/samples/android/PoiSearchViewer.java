@@ -14,8 +14,8 @@
  */
 package org.mapsforge.samples.android;
 
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.GroupLayer;
 import org.mapsforge.map.layer.overlay.Marker;
@@ -104,7 +105,6 @@ public class PoiSearchViewer extends DefaultTheme {
             return null;
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         protected void onPostExecute(Collection<PointOfInterest> pointOfInterests) {
             final PoiSearchViewer activity = weakActivity.get();
@@ -118,7 +118,7 @@ public class PoiSearchViewer extends DefaultTheme {
 
             // Overlay POI
             groupLayer = new GroupLayer();
-            Bitmap bitmap = AndroidGraphicFactory.convertToBitmap(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? activity.getDrawable(R.drawable.marker_green) : activity.getResources().getDrawable(R.drawable.marker_green));
+            Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_green));
             for (final PointOfInterest pointOfInterest : pointOfInterests) {
                 Marker marker = new MarkerImpl(pointOfInterest.getLatLong(), bitmap, 0, -bitmap.getHeight() / 2, pointOfInterest);
                 groupLayer.layers.add(marker);

@@ -1,6 +1,7 @@
 /*
  * Copyright 2014 Martin Vennekamp
  * Copyright 2015 mapsforge.org
+ * Copyright 2019 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,7 +16,7 @@
  */
 package org.mapsforge.samples.android;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,16 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
-
-import org.mapsforge.core.graphics.Align;
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.samples.android.cluster.ClusterManager;
 import org.mapsforge.samples.android.cluster.GeoItem;
@@ -63,13 +58,10 @@ public class ClusterMapActivity extends DefaultTheme {
     private List<MarkerBitmap> getMarkerBitmap() {
         List<MarkerBitmap> markerBitmaps = new ArrayList<MarkerBitmap>();
         // prepare for marker icons.
-        Drawable balloon;
         // small icon for maximum single item
-        balloon = getResources().getDrawable(R.drawable.marker_green);
-        Bitmap bitmapClimbingPeak = AndroidGraphicFactory.convertToBitmap(balloon);
+        Bitmap bitmapClimbingPeak = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_green));
         bitmapClimbingPeak.incrementRefCount();
-        balloon = getResources().getDrawable(R.drawable.marker_red);
-        Bitmap markerRedS = AndroidGraphicFactory.convertToBitmap(balloon);
+        Bitmap markerRedS = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_red));
         markerRedS.incrementRefCount();
         Paint paint1;
         paint1 = AndroidGraphicFactory.INSTANCE.createPaint();
@@ -82,12 +74,9 @@ public class ClusterMapActivity extends DefaultTheme {
         markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmapClimbingPeak, markerRedS,
                 new Point(0, 0), 10f, 1, paint1));
         // small icon. for 10 or less items.
-        balloon = getResources().getDrawable(R.drawable.balloon_s_n);
-        Bitmap bitmapBalloonSN = AndroidGraphicFactory
-                .convertToBitmap(balloon);
+        Bitmap bitmapBalloonSN = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.balloon_s_n));
         bitmapBalloonSN.incrementRefCount();
-        balloon = getResources().getDrawable(R.drawable.balloon_s_s);
-        Bitmap bitmapBalloonSS = AndroidGraphicFactory.convertToBitmap(balloon);
+        Bitmap bitmapBalloonSS = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.balloon_s_s));
         bitmapBalloonSS.incrementRefCount();
         Paint paint2;
         paint2 = AndroidGraphicFactory.INSTANCE.createPaint();
@@ -100,12 +89,9 @@ public class ClusterMapActivity extends DefaultTheme {
         markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmapBalloonSN,
                 bitmapBalloonSS, new Point(0, 0), 9f, 10, paint2));
         // large icon. 100 will be ignored.
-        balloon = getResources().getDrawable(R.drawable.balloon_m_n);
-        Bitmap bitmapBalloonMN = AndroidGraphicFactory.convertToBitmap(balloon);
+        Bitmap bitmapBalloonMN = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.balloon_m_n));
         bitmapBalloonMN.incrementRefCount();
-        balloon = getResources().getDrawable(R.drawable.balloon_m_s);
-        Bitmap bitmapBalloonMS = AndroidGraphicFactory
-                .convertToBitmap(balloon);
+        Bitmap bitmapBalloonMS = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.balloon_m_s));
         bitmapBalloonMS.incrementRefCount();
         Paint paint3;
         paint3 = AndroidGraphicFactory.INSTANCE.createPaint();
