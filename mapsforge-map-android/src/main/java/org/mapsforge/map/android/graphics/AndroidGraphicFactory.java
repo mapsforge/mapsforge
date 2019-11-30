@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2017 devemux86
+ * Copyright 2014-2019 devemux86
  * Copyright 2017 usrusr
  * Copyright 2018 Adrian Batzill
  *
@@ -24,31 +24,16 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextUtils;
-
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.Position;
-import org.mapsforge.core.graphics.ResourceBitmap;
-import org.mapsforge.core.graphics.TileBitmap;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
@@ -80,7 +65,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
 
     public static android.graphics.Bitmap convertToAndroidBitmap(Drawable drawable) {
         android.graphics.Bitmap bitmap;
-        if (drawable instanceof BitmapDrawable) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P && drawable instanceof BitmapDrawable) {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         } else {
             int width = drawable.getIntrinsicWidth();
