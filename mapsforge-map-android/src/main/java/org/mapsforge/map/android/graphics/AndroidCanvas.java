@@ -63,6 +63,15 @@ class AndroidCanvas implements Canvas {
         createFilters();
     }
 
+    private int getAlphaColorForAlphaValue(float alphaValue){
+        if (alphaValue < 0){
+            alphaValue = 0;
+        } else if (alphaValue > 1){
+            alphaValue = 1;
+        }
+        return (int)(alphaValue*255);
+    }
+
     private void applyFilter(Filter filter) {
         if (filter == Filter.NONE) {
             return;
@@ -118,6 +127,19 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
+    public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter, float alpha) {
+        applyFilter(filter);
+        int saveAlpha = bitmapPaint.getAlpha();
+        bitmapPaint.setAlpha(getAlphaColorForAlphaValue(alpha));
+        System.out.println("XX: "+bitmapPaint.getAlpha());
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
+        if (filter != Filter.NONE) {
+            bitmapPaint.setColorFilter(null);
+        }
+        bitmapPaint.setAlpha(saveAlpha);
+    }
+
+    @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix) {
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
     }
@@ -129,6 +151,18 @@ class AndroidCanvas implements Canvas {
         if (filter != Filter.NONE) {
             bitmapPaint.setColorFilter(null);
         }
+    }
+
+    @Override
+    public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter, float alpha) {
+        applyFilter(filter);
+        int saveAlpha = bitmapPaint.getAlpha();
+        bitmapPaint.setAlpha(getAlphaColorForAlphaValue(alpha));
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
+        if (filter != Filter.NONE) {
+            bitmapPaint.setColorFilter(null);
+        }
+        bitmapPaint.setAlpha(saveAlpha);
     }
 
     @Override
@@ -153,6 +187,24 @@ class AndroidCanvas implements Canvas {
         if (filter != Filter.NONE) {
             this.bitmapPaint.setColorFilter(null);
         }
+    }
+
+    @Override
+    public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
+                           int dstLeft, int dstTop, int dstRight, int dstBottom, Filter filter, float alpha) {
+        applyFilter(filter);
+
+        int saveAlpha = bitmapPaint.getAlpha();
+        bitmapPaint.setAlpha(getAlphaColorForAlphaValue(alpha));
+        this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap),
+                new Rect(srcLeft, srcTop, srcRight, srcBottom),
+                new Rect(dstLeft, dstTop, dstRight, dstBottom),
+                this.bitmapPaint);
+
+        if (filter != Filter.NONE) {
+            this.bitmapPaint.setColorFilter(null);
+        }
+        bitmapPaint.setAlpha(saveAlpha);
     }
 
     @Override

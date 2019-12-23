@@ -43,6 +43,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
     protected final TileCache tileCache;
     private final IMapViewPosition mapViewPosition;
     private final Matrix matrix;
+    private float alpha = 1f;
 
     public TileLayer(TileCache tileCache, IMapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent) {
         this(tileCache, mapViewPosition, matrix, isTransparent, true);
@@ -108,7 +109,11 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     this.jobQueue.add(job);
                 }
                 retrieveLabelsOnly(job);
-                canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.displayModel.getFilter());
+                if (alpha == 1){
+                    canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.displayModel.getFilter());
+                } else {
+                    canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.displayModel.getFilter(), alpha);
+                }
                 bitmap.decrementRefCount();
             }
         }
@@ -173,11 +178,17 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     canvas.setAntiAlias(false);
                     canvas.setFilterBitmap(false);
 
-                    canvas.drawBitmap(bitmap,
-                            (int) (translateX / scaleFactor), (int) (translateY / scaleFactor), (int) ((translateX + tileSize) / scaleFactor), (int) ((translateY + tileSize) / scaleFactor),
-                            x, y, x + tileSize, y + tileSize,
-                            this.displayModel.getFilter());
-
+                    if (alpha == 1){
+                        canvas.drawBitmap(bitmap,
+                                (int) (translateX / scaleFactor), (int) (translateY / scaleFactor), (int) ((translateX + tileSize) / scaleFactor), (int) ((translateY + tileSize) / scaleFactor),
+                                x, y, x + tileSize, y + tileSize,
+                                this.displayModel.getFilter());
+                    } else {
+                        canvas.drawBitmap(bitmap,
+                                (int) (translateX / scaleFactor), (int) (translateY / scaleFactor), (int) ((translateX + tileSize) / scaleFactor), (int) ((translateY + tileSize) / scaleFactor),
+                                x, y, x + tileSize, y + tileSize,
+                                this.displayModel.getFilter(), alpha);
+                    }
                     canvas.setAntiAlias(antiAlias);
                     canvas.setFilterBitmap(filterBitmap);
                 } else {
@@ -186,7 +197,11 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     this.matrix.scale(scaleFactor, scaleFactor);
 
                     canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-                    canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
+                    if (alpha == 1){
+                        canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
+                    } else {
+                        canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter(), alpha);
+                    }
                     canvas.resetClip();
                 }
 
@@ -215,5 +230,13 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
     public TileCache getTileCache() {
         return this.tileCache;
+    }
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
     }
 }

@@ -163,6 +163,14 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
+    public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter, float alpha) {
+        Composite composite = this.graphics2D.getComposite();
+        this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), left, top, null);
+        this.graphics2D.setComposite(composite);
+    }
+
+    @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix) {
         this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBitmap(bitmap),
                 AwtGraphicFactory.getAffineTransform(matrix));
@@ -171,6 +179,14 @@ class AwtCanvas implements Canvas {
     @Override
     public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
         this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+    }
+
+    @Override
+    public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter, float alpha) {
+        Composite composite = this.graphics2D.getComposite();
+        this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+        this.graphics2D.setComposite(composite);
     }
 
     @Override
@@ -189,6 +205,18 @@ class AwtCanvas implements Canvas {
                 dstLeft, dstTop, dstRight, dstBottom,
                 srcLeft, srcTop, srcRight, srcBottom,
                 null);
+    }
+
+    @Override
+    public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
+                           int dstLeft, int dstTop, int dstRight, int dstBottom, Filter filter, float alpha) {
+        Composite composite = this.graphics2D.getComposite();
+        this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter),
+                dstLeft, dstTop, dstRight, dstBottom,
+                srcLeft, srcTop, srcRight, srcBottom,
+                null);
+        this.graphics2D.setComposite(composite);
     }
 
     @Override
