@@ -131,7 +131,6 @@ class AndroidCanvas implements Canvas {
         applyFilter(filter);
         int saveAlpha = bitmapPaint.getAlpha();
         bitmapPaint.setAlpha(getAlphaColorForAlphaValue(alpha));
-        System.out.println("XX: "+bitmapPaint.getAlpha());
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
         if (filter != Filter.NONE) {
             bitmapPaint.setColorFilter(null);
