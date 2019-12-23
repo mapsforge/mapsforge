@@ -78,7 +78,11 @@ public class TileStore implements TileCache {
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream(file);
-            return this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+            TileBitmap tileBitmap = this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+            if ((tileBitmap.getWidth() != key.tile.tileSize) || (tileBitmap.getHeight() != key.tile.tileSize)){
+                tileBitmap.scaleTo(key.tile.tileSize,key.tile.tileSize);
+            }
+            return tileBitmap;
         } catch (CorruptedInputStreamException e) {
             // this can happen, at least on Android, when the input stream
             // is somehow corrupted, returning null ensures it will be loaded
