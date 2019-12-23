@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2019 mg4gh
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -78,7 +79,11 @@ public class TileStore implements TileCache {
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream(file);
-            return this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+            TileBitmap bitmap = this.graphicFactory.createTileBitmap(inputStream, key.tile.tileSize, key.hasAlpha);
+            if (bitmap.getWidth() != key.tile.tileSize || bitmap.getHeight() != key.tile.tileSize) {
+                bitmap.scaleTo(key.tile.tileSize, key.tile.tileSize);
+            }
+            return bitmap;
         } catch (CorruptedInputStreamException e) {
             // this can happen, at least on Android, when the input stream
             // is somehow corrupted, returning null ensures it will be loaded
