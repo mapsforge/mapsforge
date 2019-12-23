@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2019 devemux86
  * Copyright 2019 cpt1gl0
+ * Copyright 2019 mg4gh
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class TileLayer<T extends Job> extends Layer {
+    private float alpha = 1.0f;
     protected final boolean hasJobQueue;
     protected final boolean isTransparent;
     protected JobQueue<T> jobQueue;
@@ -108,7 +110,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     this.jobQueue.add(job);
                 }
                 retrieveLabelsOnly(job);
-                canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.displayModel.getFilter());
+                canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.alpha, this.displayModel.getFilter());
                 bitmap.decrementRefCount();
             }
         }
@@ -176,7 +178,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     canvas.drawBitmap(bitmap,
                             (int) (translateX / scaleFactor), (int) (translateY / scaleFactor), (int) ((translateX + tileSize) / scaleFactor), (int) ((translateY + tileSize) / scaleFactor),
                             x, y, x + tileSize, y + tileSize,
-                            this.displayModel.getFilter());
+                            this.alpha, this.displayModel.getFilter());
 
                     canvas.setAntiAlias(antiAlias);
                     canvas.setFilterBitmap(filterBitmap);
@@ -186,13 +188,17 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     this.matrix.scale(scaleFactor, scaleFactor);
 
                     canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-                    canvas.drawBitmap(bitmap, this.matrix, this.displayModel.getFilter());
+                    canvas.drawBitmap(bitmap, this.matrix, this.alpha, this.displayModel.getFilter());
                     canvas.resetClip();
                 }
 
                 bitmap.decrementRefCount();
             }
         }
+    }
+
+    public float getAlpha() {
+        return this.alpha;
     }
 
     /**
@@ -215,5 +221,9 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
     public TileCache getTileCache() {
         return this.tileCache;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = Math.max(0, Math.min(1, alpha));
     }
 }

@@ -5,6 +5,7 @@
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
  * Copyright 2019 Adrian Batzill
+ * Copyright 2019 mg4gh
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,17 +25,17 @@ import org.mapsforge.core.model.Rectangle;
 public interface GraphicContext {
     void drawBitmap(Bitmap bitmap, int left, int top);
 
-    void drawBitmap(Bitmap bitmap, int left, int top, Filter filter);
+    void drawBitmap(Bitmap bitmap, int left, int top, float alpha, Filter filter);
 
     void drawBitmap(Bitmap bitmap, Matrix matrix);
 
-    void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter);
+    void drawBitmap(Bitmap bitmap, Matrix matrix, float alpha, Filter filter);
 
     void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
                     int dstLeft, int dstTop, int dstRight, int dstBottom);
 
     void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
-                    int dstLeft, int dstTop, int dstRight, int dstBottom, Filter filter);
+                    int dstLeft, int dstTop, int dstRight, int dstBottom, float alpha, Filter filter);
 
     void drawCircle(int x, int y, int radius, Paint paint);
 

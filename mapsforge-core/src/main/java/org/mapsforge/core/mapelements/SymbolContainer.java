@@ -16,11 +16,7 @@
  */
 package org.mapsforge.core.mapelements;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.Filter;
-import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
@@ -81,6 +77,6 @@ public class SymbolContainer extends MapElementContainer {
         } else {
             matrix.rotate(theta);
         }
-        canvas.drawBitmap(this.symbol, matrix, filter);
+        canvas.drawBitmap(this.symbol, matrix, 1, filter);
     }
 }

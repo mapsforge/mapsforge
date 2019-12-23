@@ -5,6 +5,7 @@
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
  * Copyright 2019 Adrian Batzill
+ * Copyright 2019 mg4gh
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -109,11 +110,18 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, int left, int top, float alpha, Filter filter) {
+        int oldAlpha = this.bitmapPaint.getAlpha();
+        if (alpha != 1) {
+            this.bitmapPaint.setAlpha((int) (alpha * 255));
+        }
         applyFilter(filter);
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
         if (filter != Filter.NONE) {
             bitmapPaint.setColorFilter(null);
+        }
+        if (alpha != 1) {
+            this.bitmapPaint.setAlpha(oldAlpha);
         }
     }
 
@@ -123,11 +131,18 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, Matrix matrix, float alpha, Filter filter) {
+        int oldAlpha = this.bitmapPaint.getAlpha();
+        if (alpha != 1) {
+            this.bitmapPaint.setAlpha((int) (alpha * 255));
+        }
         applyFilter(filter);
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
         if (filter != Filter.NONE) {
             bitmapPaint.setColorFilter(null);
+        }
+        if (alpha != 1) {
+            this.bitmapPaint.setAlpha(oldAlpha);
         }
     }
 
@@ -142,16 +157,21 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
-                           int dstLeft, int dstTop, int dstRight, int dstBottom, Filter filter) {
+                           int dstLeft, int dstTop, int dstRight, int dstBottom, float alpha, Filter filter) {
+        int oldAlpha = this.bitmapPaint.getAlpha();
+        if (alpha != 1) {
+            this.bitmapPaint.setAlpha((int) (alpha * 255));
+        }
         applyFilter(filter);
-
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap),
                 new Rect(srcLeft, srcTop, srcRight, srcBottom),
                 new Rect(dstLeft, dstTop, dstRight, dstBottom),
                 this.bitmapPaint);
-
         if (filter != Filter.NONE) {
             this.bitmapPaint.setColorFilter(null);
+        }
+        if (alpha != 1) {
+            this.bitmapPaint.setAlpha(oldAlpha);
         }
     }
 

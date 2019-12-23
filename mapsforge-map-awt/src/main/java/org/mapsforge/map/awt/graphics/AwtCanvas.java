@@ -5,6 +5,7 @@
  * Copyright 2019 cpt1gl0
  * Copyright 2019 Adrian Batzill
  * Copyright 2019 Matthew Egeler
+ * Copyright 2019 mg4gh
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -158,8 +159,15 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, int left, int top, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, int left, int top, float alpha, Filter filter) {
+        Composite composite = this.graphics2D.getComposite();
+        if (alpha != 1) {
+            this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        }
         this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), left, top, null);
+        if (alpha != 1) {
+            this.graphics2D.setComposite(composite);
+        }
     }
 
     @Override
@@ -169,8 +177,15 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, Matrix matrix, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, Matrix matrix, float alpha, Filter filter) {
+        Composite composite = this.graphics2D.getComposite();
+        if (alpha != 1) {
+            this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        }
         this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+        if (alpha != 1) {
+            this.graphics2D.setComposite(composite);
+        }
     }
 
     @Override
@@ -184,11 +199,18 @@ class AwtCanvas implements Canvas {
 
     @Override
     public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
-                           int dstLeft, int dstTop, int dstRight, int dstBottom, Filter filter) {
+                           int dstLeft, int dstTop, int dstRight, int dstBottom, float alpha, Filter filter) {
+        Composite composite = this.graphics2D.getComposite();
+        if (alpha != 1) {
+            this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        }
         this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter),
                 dstLeft, dstTop, dstRight, dstBottom,
                 srcLeft, srcTop, srcRight, srcBottom,
                 null);
+        if (alpha != 1) {
+            this.graphics2D.setComposite(composite);
+        }
     }
 
     @Override
