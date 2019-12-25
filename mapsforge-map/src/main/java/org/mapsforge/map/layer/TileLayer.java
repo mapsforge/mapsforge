@@ -45,6 +45,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
     protected final TileCache tileCache;
     private final IMapViewPosition mapViewPosition;
     private final Matrix matrix;
+    private Parameters.ParentTilesRendering parentTilesRendering = Parameters.PARENT_TILES_RENDERING;
 
     public TileLayer(TileCache tileCache, IMapViewPosition mapViewPosition, Matrix matrix, boolean isTransparent) {
         this(tileCache, mapViewPosition, matrix, isTransparent, true);
@@ -102,7 +103,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 if (this.hasJobQueue && !this.tileCache.containsKey(job)) {
                     this.jobQueue.add(job);
                 }
-                if (Parameters.PARENT_TILES_RENDERING != Parameters.ParentTilesRendering.OFF) {
+                if (this.parentTilesRendering != Parameters.ParentTilesRendering.OFF) {
                     drawParentTileBitmap(canvas, point, tile);
                 }
             } else {
@@ -168,7 +169,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 int x = (int) Math.round(point.x);
                 int y = (int) Math.round(point.y);
 
-                if (Parameters.PARENT_TILES_RENDERING == Parameters.ParentTilesRendering.SPEED) {
+                if (this.parentTilesRendering == Parameters.ParentTilesRendering.SPEED) {
                     boolean antiAlias = canvas.isAntiAlias();
                     boolean filterBitmap = canvas.isFilterBitmap();
 
@@ -225,5 +226,9 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
     public void setAlpha(float alpha) {
         this.alpha = Math.max(0, Math.min(1, alpha));
+    }
+
+    public void setParentTilesRendering(Parameters.ParentTilesRendering parentTilesRendering) {
+        this.parentTilesRendering = parentTilesRendering;
     }
 }
