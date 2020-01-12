@@ -1,6 +1,6 @@
 # Changelog
 
-## New since 0.12.0
+## Version 0.13.0 (2020-01-12)
 
 - Fix marker placement on Android 9+ [#1138](https://github.com/mapsforge/mapsforge/issues/1138)
 - Fix hillshading on Android 8+ [#1131](https://github.com/mapsforge/mapsforge/pull/1131)
