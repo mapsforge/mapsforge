@@ -73,13 +73,13 @@ public class Symbol extends RenderInstruction {
             } else if (PRIORITY.equals(name)) {
                 this.priority = Integer.parseInt(value);
             } else if (SYMBOL_HEIGHT.equals(name)) {
-                this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+                this.height = XmlUtils.parseNonNegativeInteger(name, value);
             } else if (SYMBOL_PERCENT.equals(name)) {
                 this.percent = XmlUtils.parseNonNegativeInteger(name, value);
             } else if (SYMBOL_SCALING.equals(name)) {
                 // no-op
             } else if (SYMBOL_WIDTH.equals(name)) {
-                this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+                this.width = XmlUtils.parseNonNegativeInteger(name, value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
