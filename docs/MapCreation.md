@@ -132,7 +132,7 @@ With the above procedure complicated coastline areas are all now rendered correc
 
 We use land polygons from [OpenStreetMap Data](https://osmdata.openstreetmap.de/), specifically the https://osmdata.openstreetmap.de/download/simplified-land-polygons-complete-3857.zip variant.
 
-The process is completed successfully in some minutes giving the map in our [server](http://download.mapsforge.org/maps/world/).
+The process is completed successfully in some minutes giving the map in our [server](https://download.mapsforge.org/maps/world/).
 Alternatively the non simplified variants can be used too.
 
 To convert shp files in osm / pbf format there are many [tools](http://wiki.openstreetmap.org/wiki/Software_comparison/Import_a_shapefile) available.
