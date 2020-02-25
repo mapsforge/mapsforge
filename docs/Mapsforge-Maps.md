@@ -3,7 +3,7 @@
 - [AndroidMaps](https://www.androidmaps.co.uk/)
 - [BBBike](https://extract.bbbike.org/?format=mapsforge-osm.zip)
 - [Freizeitkarte](https://www.freizeitkarte-osm.de/android/en/index.html)
-- [Kurviger](https://offline-maps.kurviger.de/)
+- [Kurviger](https://download.kurviger.de/)
 - [Mapsforge](https://download.mapsforge.org/)
 - [OpenAndroMaps](https://www.openandromaps.org/en/)
 - [OpenMaps](https://openmaps.eu/)
