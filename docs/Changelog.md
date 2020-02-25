@@ -1,5 +1,10 @@
 # Changelog
 
+## New since 0.13.0
+
+- Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.14.0)
+
 ## Version 0.13.0 (2020-01-12)
 
 - Fix marker placement on Android 9+ [#1138](https://github.com/mapsforge/mapsforge/issues/1138)
