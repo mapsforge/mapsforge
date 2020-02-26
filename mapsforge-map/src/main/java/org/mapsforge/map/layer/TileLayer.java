@@ -107,6 +107,9 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     drawParentTileBitmap(canvas, point, tile);
                 }
             } else {
+                if (tileSizeHasChanged(tile, bitmap)) {
+                    this.tileCache.purge();
+                }
                 if (isTileStale(tile, bitmap) && this.hasJobQueue && !this.tileCache.containsKey(job)) {
                     this.jobQueue.add(job);
                 }
@@ -118,6 +121,10 @@ public abstract class TileLayer<T extends Job> extends Layer {
         if (this.hasJobQueue) {
             this.jobQueue.notifyWorkers();
         }
+    }
+
+    private boolean tileSizeHasChanged(Tile tile, TileBitmap bitmap) {
+        return tile.tileSize != bitmap.getWidth() || tile.tileSize != bitmap.getHeight();
     }
 
     @Override
