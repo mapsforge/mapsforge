@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2020 devemux86
  * Copyright 2019 Matthew Egeler
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -214,8 +214,7 @@ class AndroidPaint implements Paint {
 
     @Override
     public void setDashPathEffect(float[] strokeDasharray) {
-        PathEffect pathEffect = new DashPathEffect(strokeDasharray, 0);
-        this.paint.setPathEffect(pathEffect);
+        this.paint.setPathEffect(strokeDasharray != null ? new DashPathEffect(strokeDasharray, 0) : null);
     }
 
     @Override
