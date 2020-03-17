@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2020 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,7 +31,7 @@ public class DownloadCustomLayerViewer extends DownloadLayerViewer {
                 .setBaseUrl("/hot/")
                 .setParallelRequestsLimit(8).setProtocol("https").setTileSize(256)
                 .setZoomLevelMax((byte) 18).setZoomLevelMin((byte) 0);
-        onlineTileSource.setUserAgent("Mapsforge Samples");
+        onlineTileSource.setUserAgent("mapsforge-samples-android");
         this.downloadLayer = new TileDownloadLayer(this.tileCaches.get(0),
                 this.mapView.getModel().mapViewPosition, onlineTileSource,
                 AndroidGraphicFactory.INSTANCE);
