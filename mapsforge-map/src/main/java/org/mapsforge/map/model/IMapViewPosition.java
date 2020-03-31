@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2018 devemux86
+ * Copyright 2015-2020 devemux86
  * Copyright 2015 Andreas Schildbach
  * Copyright 2016-2018 mikes222
  *
@@ -274,9 +274,19 @@ public interface IMapViewPosition {
     void zoomIn();
 
     /**
+     * Increases the current zoom level by one if possible. Zooming is always around the center.
+     */
+    void zoomIn(boolean animated);
+
+    /**
      * Decreases the current zoom level by one if possible. Zooming is always around the center.
      * <p/>
      * The default zoom level changes are animated.
      */
     void zoomOut();
+
+    /**
+     * Decreases the current zoom level by one if possible. Zooming is always around the center.
+     */
+    void zoomOut(boolean animated);
 }

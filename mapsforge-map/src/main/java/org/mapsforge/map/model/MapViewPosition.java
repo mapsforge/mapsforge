@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2020 devemux86
  * Copyright 2015 Andreas Schildbach
  * Copyright 2016 mikes222
  *
@@ -522,6 +522,7 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     /**
      * Increases the current zoom level by one if possible.
      */
+    @Override
     public void zoomIn(boolean animated) {
         zoom((byte) 1, animated);
     }
@@ -539,6 +540,7 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     /**
      * Decreases the current zoom level by one if possible.
      */
+    @Override
     public void zoomOut(boolean animated) {
         zoom((byte) -1, animated);
     }
