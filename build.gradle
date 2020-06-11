@@ -14,7 +14,7 @@ allprojects {
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
-    ext.androidBuildVersionTools = "29.0.3"
+    ext.androidBuildVersionTools = "30.0.0"
     ext.jUnitVersion = "4.12"
 
     if (JavaVersion.current().isJava8Compatible()) {
