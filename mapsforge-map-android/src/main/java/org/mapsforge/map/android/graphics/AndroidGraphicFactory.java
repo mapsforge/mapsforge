@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2019 devemux86
+ * Copyright 2014-2020 devemux86
  * Copyright 2017 usrusr
  * Copyright 2018 Adrian Batzill
  *
@@ -165,8 +165,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     private AndroidGraphicFactory(Application app) {
         this.application = app;
         if (app != null) {
-            // the scaledDensity is an approximate scale factor for the device
-            DisplayModel.setDeviceScaleFactor(app.getResources().getDisplayMetrics().scaledDensity);
+            // the density is an approximate scale factor for the device
+            DisplayModel.setDeviceScaleFactor(app.getResources().getDisplayMetrics().density);
         }
     }
 
