@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015-2018 devemux86
+ * Copyright 2015-2020 devemux86
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
  * Copyright 2017 Gustl22
@@ -28,6 +28,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -85,7 +86,12 @@ public class ReadBuffer {
                 LOGGER.warning("invalid read length: " + length);
                 return false;
             }
-            this.bufferData = new byte[length];
+            try {
+                this.bufferData = new byte[length];
+            } catch (Throwable t) {
+                LOGGER.log(Level.SEVERE, t.getMessage(), t);
+                return false;
+            }
             this.bufferWrapper = ByteBuffer.wrap(this.bufferData, 0, length);
         }
 
@@ -113,7 +119,12 @@ public class ReadBuffer {
                 LOGGER.warning("invalid read length: " + length);
                 return false;
             }
-            this.bufferData = new byte[length];
+            try {
+                this.bufferData = new byte[length];
+            } catch (Throwable t) {
+                LOGGER.log(Level.SEVERE, t.getMessage(), t);
+                return false;
+            }
             this.bufferWrapper = ByteBuffer.wrap(this.bufferData, 0, length);
         }
 
