@@ -1,6 +1,6 @@
 # Changelog
 
-## New since 0.13.0
+## Version 0.14.0 (2020-08-25)
 
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.14.0)
