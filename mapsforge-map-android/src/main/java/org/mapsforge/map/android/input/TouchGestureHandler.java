@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2014-2018 devemux86
+ * Copyright 2014-2020 devemux86
  * Copyright 2014 Jordan Black
  * Copyright 2015 Andreas Schildbach
  * Copyright 2018 mikes222
@@ -27,6 +27,7 @@ import android.view.ScaleGestureDetector;
 import android.widget.Scroller;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.model.IMapViewPosition;
@@ -237,10 +238,12 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
-            for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-                Layer layer = this.mapView.getLayerManager().getLayers().get(i);
-                if (layer.onScroll(e1.getX(), e1.getY(), e2.getX(), e2.getY())) {
-                    return true;
+            if (Parameters.LAYER_SCROLL_EVENT) {
+                for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
+                    Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                    if (layer.onScroll(e1.getX(), e1.getY(), e2.getX(), e2.getY())) {
+                        return true;
+                    }
                 }
             }
 
