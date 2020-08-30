@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 devemux86
+ * Copyright 2017-2020 devemux86
  * Copyright 2019 Matthew Egeler
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -23,6 +23,11 @@ public final class Parameters {
      * If true will use anti-aliasing in rendering.
      */
     public static boolean ANTI_ALIASING = true;
+
+    /**
+     * Process layer scroll events.
+     */
+    public static boolean LAYER_SCROLL_EVENT = false;
 
     /**
      * Maximum buffer size for map files.
