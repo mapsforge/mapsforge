@@ -14,7 +14,7 @@ allprojects {
     version = 'master-SNAPSHOT'
     ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
-    ext.androidBuildVersionTools = "29.0.3"
+    ext.androidBuildVersionTools = "30.0.2"
     ext.jUnitVersion = "4.12"
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -26,12 +26,12 @@ allprojects {
     }
 }
 
-static def androidCompileSdk() { return 29 }
+static def androidCompileSdk() { return 30 }
 
 // 14 for Support Library, 16 for sqlite-android
 static def androidMinSdk() { return 16 }
 
-static def androidTargetSdk() { return 29 }
+static def androidTargetSdk() { return 30 }
 
 static def versionCode() { return 1 }
 
