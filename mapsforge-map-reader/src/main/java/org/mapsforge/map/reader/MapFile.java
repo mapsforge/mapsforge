@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2014-2019 devemux86
+ * Copyright 2014-2020 devemux86
  * Copyright 2015-2016 lincomatic
  * Copyright 2016 bvgastel
  * Copyright 2017 linuskr
@@ -248,6 +248,27 @@ public class MapFile extends MapDataStore {
      * Opens the given map file input stream, reads its header data and validates them.
      *
      * @param mapFileInputStream the map file input stream.
+     * @throws MapFileException if the given map file is null or invalid.
+     */
+    public MapFile(FileInputStream mapFileInputStream) {
+        this(mapFileInputStream, null);
+    }
+
+    /**
+     * Opens the given map file input stream, reads its header data and validates them.
+     *
+     * @param mapFileInputStream the map file input stream.
+     * @param language           the language to use (may be null).
+     * @throws MapFileException if the given map file is null or invalid.
+     */
+    public MapFile(FileInputStream mapFileInputStream, String language) {
+        this(mapFileInputStream, System.currentTimeMillis(), language);
+    }
+
+    /**
+     * Opens the given map file input stream, reads its header data and validates them.
+     *
+     * @param mapFileInputStream the map file input stream.
      * @param language           the language to use (may be null).
      * @throws MapFileException if the given map file is null or invalid.
      */
@@ -271,6 +292,27 @@ public class MapFile extends MapDataStore {
             closeFileChannel();
             throw new MapFileException(e.getMessage());
         }
+    }
+
+    /**
+     * Opens the given map file channel, reads its header data and validates them.
+     *
+     * @param mapFileChannel the map file channel.
+     * @throws MapFileException if the given map file channel is null or invalid.
+     */
+    public MapFile(FileChannel mapFileChannel) {
+        this(mapFileChannel, null);
+    }
+
+    /**
+     * Opens the given map file channel, reads its header data and validates them.
+     *
+     * @param mapFileChannel the map file channel.
+     * @param language       the language to use (may be null).
+     * @throws MapFileException if the given map file channel is null or invalid.
+     */
+    public MapFile(FileChannel mapFileChannel, String language) {
+        this(mapFileChannel, System.currentTimeMillis(), language);
     }
 
     /**
