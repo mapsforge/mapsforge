@@ -46,6 +46,7 @@
 | [Offline Maps](https://play.google.com/store/apps/developer?id=applantation.com) | Tourist Map | Proprietary/Commercial | Closed |
 | [OpenTrail](http://wiki.openstreetmap.org/wiki/OpenTrail) | Freemap for Android | GPL/Free | Open |
 | [OruxMaps](http://www.oruxmaps.com/) | Map Viewer | Proprietary/Free | Closed |
+| [OSM Dashboard for OpenTracks](https://github.com/OpenTracksApp/OSMDashboard) | OpenStreetMap dashboard for OpenTracks | Apache 2.0/Free | Open |
 | [OSMapTuner](http://osmaptuner.salzburgresearch.at/) | Map Viewer & Tag-Editor | Proprietary/Free | Closed |
 | [Pocket Coruna](https://play.google.com/store/apps/details?id=com.dolphinziyo.corunaentubolsillo) | Tourist guide | Proprietary/Free | Closed |
 | [Pocket Maps](https://github.com/junjunguo/PocketMaps) | Offline maps, routing & tracking functions | MIT/Free | Open |
