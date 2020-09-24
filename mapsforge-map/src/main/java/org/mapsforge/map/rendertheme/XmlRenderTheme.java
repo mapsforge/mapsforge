@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2017 devemux86
+ * Copyright 2017-2020 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,7 +15,7 @@
  */
 package org.mapsforge.map.rendertheme;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -34,9 +34,9 @@ public interface XmlRenderTheme {
 
     /**
      * @return an InputStream to read the render theme data from.
-     * @throws FileNotFoundException if the render theme file cannot be found.
+     * @throws IOException if the render theme file cannot be found.
      */
-    InputStream getRenderThemeAsStream() throws FileNotFoundException;
+    InputStream getRenderThemeAsStream() throws IOException;
 
     /**
      * @param menuCallback the interface callback to create a settings menu on the fly.
