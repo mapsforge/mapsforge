@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
- * Copyright 2016-2017 devemux86
+ * Copyright 2016-2020 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,37 +15,48 @@
  */
 package org.mapsforge.map.android.rendertheme;
 
-import android.content.Context;
+import android.content.res.AssetManager;
 import android.text.TextUtils;
-
 import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder.
  */
 public class AssetsRenderTheme implements XmlRenderTheme {
 
-    private final String assetName;
-    private final InputStream inputStream;
+    private static final Logger LOGGER = Logger.getLogger(AssetsRenderTheme.class.getName());
+
+    private final AssetManager assetManager;
+    private final String fileName;
     private XmlRenderThemeMenuCallback menuCallback;
     private final String relativePathPrefix;
 
-    /*
-     * Creates AssetsRenderTheme without menuCallback for compatibility with version 0.4.x
+    /**
+     * @param assetManager       the Android asset manager.
+     * @param relativePathPrefix the prefix for all relative resource paths.
+     * @param fileName           the path to the XML render theme file.
      */
-    public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName) throws IOException {
-        this(context, relativePathPrefix, fileName, null);
+    public AssetsRenderTheme(AssetManager assetManager, String relativePathPrefix, String fileName) {
+        this(assetManager, relativePathPrefix, fileName, null);
     }
 
-    public AssetsRenderTheme(Context context, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) throws IOException {
-        this.assetName = fileName;
+    /**
+     * @param assetManager       the Android asset manager.
+     * @param relativePathPrefix the prefix for all relative resource paths.
+     * @param fileName           the path to the XML render theme file.
+     * @param menuCallback       the interface callback to create a settings menu on the fly.
+     */
+    public AssetsRenderTheme(AssetManager assetManager, String relativePathPrefix, String fileName, XmlRenderThemeMenuCallback menuCallback) {
+        this.assetManager = assetManager;
         this.relativePathPrefix = relativePathPrefix;
-        this.inputStream = context.getAssets().open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.assetName);
+        this.fileName = fileName;
         this.menuCallback = menuCallback;
     }
 
@@ -57,7 +68,7 @@ public class AssetsRenderTheme implements XmlRenderTheme {
             return false;
         }
         AssetsRenderTheme other = (AssetsRenderTheme) obj;
-        if (!Utils.equals(this.assetName, other.assetName)) {
+        if (getRenderThemeAsStream() != other.getRenderThemeAsStream()) {
             return false;
         }
         if (!Utils.equals(this.relativePathPrefix, other.relativePathPrefix)) {
@@ -65,7 +76,6 @@ public class AssetsRenderTheme implements XmlRenderTheme {
         }
         return true;
     }
-
 
     @Override
     public XmlRenderThemeMenuCallback getMenuCallback() {
@@ -79,14 +89,20 @@ public class AssetsRenderTheme implements XmlRenderTheme {
 
     @Override
     public InputStream getRenderThemeAsStream() {
-        return this.inputStream;
+        try {
+            return this.assetManager.open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.fileName);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            return null;
+        }
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.assetName == null) ? 0 : this.assetName.hashCode());
+        InputStream inputStream = getRenderThemeAsStream();
+        result = prime * result + ((inputStream == null) ? 0 : inputStream.hashCode());
         result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
         return result;
     }

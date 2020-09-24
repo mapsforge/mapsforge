@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2014 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2020 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +17,6 @@ package org.mapsforge.samples.android;
 
 import android.content.SharedPreferences;
 import android.util.Log;
-
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -26,7 +25,6 @@ import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
 
-import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -36,12 +34,7 @@ public class StyleMenuMapViewer extends SamplesBaseActivity implements XmlRender
 
     @Override
     protected XmlRenderTheme getRenderTheme() {
-        try {
-            return new AssetsRenderTheme(this, getRenderThemePrefix(), getRenderThemeFile(), this);
-        } catch (IOException e) {
-            Log.e(SamplesApplication.TAG, "Render theme failure " + e.toString());
-        }
-        return null;
+        return new AssetsRenderTheme(getAssets(), getRenderThemePrefix(), getRenderThemeFile(), this);
     }
 
     protected String getRenderThemePrefix() {

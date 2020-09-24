@@ -2,6 +2,7 @@
 
 ## New since 0.14.0
 
+- AssetsRenderTheme: stream improvements [#1167](https://github.com/mapsforge/mapsforge/pull/1167)
 - Layer scroll event option [#1163](https://github.com/mapsforge/mapsforge/pull/1163)
   - `Parameters.LAYER_SCROLL_EVENT`
 - Many other minor improvements and bug fixes
@@ -124,6 +125,7 @@
 - New default internal render theme [#903](https://github.com/mapsforge/mapsforge/issues/903)
 - Internal render themes new SVG resources [#904](https://github.com/mapsforge/mapsforge/issues/904)
 - Render theme resources optional location prefixes [#847](https://github.com/mapsforge/mapsforge/issues/847)
+- Render theme from input stream [#872](https://github.com/mapsforge/mapsforge/issues/872)
 - SpatiaLite natives published artifacts [#849](https://github.com/mapsforge/mapsforge/issues/849)
 - SNAPSHOT builds publish to Sonatype OSSRH [#873](https://github.com/mapsforge/mapsforge/issues/873)
 - Deprecate Maven build [#852](https://github.com/mapsforge/mapsforge/issues/852)
