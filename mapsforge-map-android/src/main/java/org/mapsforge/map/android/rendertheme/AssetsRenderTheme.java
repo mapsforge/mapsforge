@@ -23,15 +23,12 @@ import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * An AssetRenderTheme is an XmlRenderTheme that is picked up from the Android apk assets folder.
+ * An AssetsRenderTheme allows for customizing the rendering style of the map
+ * via an XML from the Android assets folder.
  */
 public class AssetsRenderTheme implements XmlRenderTheme {
-
-    private static final Logger LOGGER = Logger.getLogger(AssetsRenderTheme.class.getName());
 
     private final AssetManager assetManager;
     private final String fileName;
@@ -68,7 +65,12 @@ public class AssetsRenderTheme implements XmlRenderTheme {
             return false;
         }
         AssetsRenderTheme other = (AssetsRenderTheme) obj;
-        if (getRenderThemeAsStream() != other.getRenderThemeAsStream()) {
+        try {
+            if (getRenderThemeAsStream() != other.getRenderThemeAsStream()) {
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
         if (!Utils.equals(this.relativePathPrefix, other.relativePathPrefix)) {
@@ -88,20 +90,20 @@ public class AssetsRenderTheme implements XmlRenderTheme {
     }
 
     @Override
-    public InputStream getRenderThemeAsStream() {
-        try {
-            return this.assetManager.open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.fileName);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            return null;
-        }
+    public InputStream getRenderThemeAsStream() throws IOException {
+        return this.assetManager.open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.fileName);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        InputStream inputStream = getRenderThemeAsStream();
+        InputStream inputStream = null;
+        try {
+            inputStream = getRenderThemeAsStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         result = prime * result + ((inputStream == null) ? 0 : inputStream.hashCode());
         result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
         return result;

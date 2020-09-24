@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2016-2017 devemux86
+ * Copyright 2016-2020 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,13 +15,11 @@
  */
 package org.mapsforge.map.rendertheme;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
- * An ExternalRenderTheme allows for customizing the rendering style of the map via an XML file.
+ * An ExternalRenderTheme allows for customizing the rendering style of the map
+ * via an XML file.
  */
 public class ExternalRenderTheme implements XmlRenderTheme {
     private final long lastModifiedTime;
@@ -106,7 +104,7 @@ public class ExternalRenderTheme implements XmlRenderTheme {
     }
 
     @Override
-    public InputStream getRenderThemeAsStream() throws FileNotFoundException {
+    public InputStream getRenderThemeAsStream() throws IOException {
         return new FileInputStream(this.renderThemeFile);
     }
 
