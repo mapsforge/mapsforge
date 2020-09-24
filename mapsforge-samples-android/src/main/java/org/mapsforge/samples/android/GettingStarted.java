@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 devemux86
+ * Copyright 2018-2020 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +15,9 @@
 package org.mapsforge.samples.android;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
@@ -27,6 +30,7 @@ import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * A very basic Android app example.
@@ -38,6 +42,9 @@ public class GettingStarted extends Activity {
 
     // Name of the map file in device storage
     private static final String MAP_FILE = "berlin.map";
+
+    // Request code for selecting a map file
+    private static final int PICK_MAP_FILE = 0;
 
     private MapView mapView;
 
@@ -66,6 +73,30 @@ public class GettingStarted extends Activity {
         mapView = new MapView(this);
         setContentView(mapView);
 
+        /*
+         * Open map.
+         */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            startActivityForResult(intent, PICK_MAP_FILE);
+        } else {
+            openMap(null);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_MAP_FILE && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                Uri uri = data.getData();
+                openMap(uri);
+            }
+        }
+    }
+
+    private void openMap(Uri uri) {
         try {
             /*
              * We then make some simple adjustments, such as showing a scale bar and zoom controls.
@@ -89,8 +120,14 @@ public class GettingStarted extends Activity {
              * tiles, a map file from which the tiles are generated and Rendertheme that defines the
              * appearance of the map.
              */
-            File mapFile = new File(getExternalFilesDir(null), MAP_FILE);
-            MapDataStore mapDataStore = new MapFile(mapFile);
+            MapDataStore mapDataStore;
+            if (uri != null) {
+                FileInputStream fis = (FileInputStream) getContentResolver().openInputStream(uri);
+                mapDataStore = new MapFile(fis);
+            } else {
+                File mapFile = new File(getExternalFilesDir(null), MAP_FILE);
+                mapDataStore = new MapFile(mapFile);
+            }
             TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
                     mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
             tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
