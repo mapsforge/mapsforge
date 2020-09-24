@@ -2,6 +2,7 @@
 
 ## New since 0.14.0
 
+- Render theme from Android content providers [#1169](https://github.com/mapsforge/mapsforge/pull/1169)
 - AssetsRenderTheme: stream improvements [#1167](https://github.com/mapsforge/mapsforge/pull/1167)
 - Layer scroll event option [#1163](https://github.com/mapsforge/mapsforge/pull/1163)
   - `Parameters.LAYER_SCROLL_EVENT`
