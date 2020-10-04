@@ -1,6 +1,7 @@
 /*
  * Copyright 2017-2020 devemux86
  * Copyright 2019 Matthew Egeler
+ * Copyright 2020 Lukas Bai
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,6 +24,11 @@ public final class Parameters {
      * If true will use anti-aliasing in rendering.
      */
     public static boolean ANTI_ALIASING = true;
+
+    /**
+     * If true the <code>FrameBufferHA3</code> will be used instead of default <code>FrameBufferHA2}</code>.
+     */
+    public static boolean FRAME_BUFFER_HA3 = true;
 
     /**
      * Process layer scroll events.

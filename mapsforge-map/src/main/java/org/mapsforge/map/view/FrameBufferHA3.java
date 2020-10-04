@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2017 devemux86
- * Copyright 2017 Lukas Bai
+ * Copyright 2017, 2020 Lukas Bai
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,12 +20,16 @@ package org.mapsforge.map.view;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicContext;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
-public class FrameBufferHA2 extends FrameBufferOld {
+public class FrameBufferHA3 extends FrameBuffer {
+
+    private static final boolean IS_TRANSPARENT = false;
 
     /*
      *  lm: layer manager
@@ -34,17 +38,36 @@ public class FrameBufferHA2 extends FrameBufferOld {
      *      swaps the two bitmaps and puts one bitmap to the screen
      *      while the layer manager draws the next off-screen bitmap.
      */
-    private final FrameBufferBitmap lmBitmap = new FrameBufferBitmap();
-    private final FrameBufferBitmap odBitmap = new FrameBufferBitmap();
+    private final FrameBufferBitmapHA3 lmBitmap = new FrameBufferBitmapHA3();
+    private final FrameBufferBitmapHA3 odBitmap = new FrameBufferBitmapHA3();
 
-    private final FrameBufferBitmap.Lock allowSwap = new FrameBufferBitmap.Lock();
+    private Dimension dimension;
+    private final DisplayModel displayModel;
+    private final FrameBufferModel frameBufferModel;
+    private final GraphicFactory graphicFactory;
+
+    /**
+     * <pre>
+     * {Scale X, Skew X, Transform X
+     * Skew Y, Scale Y, Transform Y
+     * Perspective 0, Perspective 1, Perspective 2}
+     * </pre>
+     * <p>
+     * See https://stackoverflow.com/questions/13246415/clearly-understand-matrix-calculation/13246914
+     */
+    private final Matrix matrix;
+
+    private final FrameBufferBitmapHA3.Lock framesLock = new FrameBufferBitmapHA3.Lock();
     private MapPosition lmMapPosition;
 
-    public FrameBufferHA2(FrameBufferModel frameBufferModel, DisplayModel displayModel,
+    public FrameBufferHA3(FrameBufferModel frameBufferModel, DisplayModel displayModel,
                           GraphicFactory graphicFactory) {
-        super(frameBufferModel, displayModel, graphicFactory);
+        this.frameBufferModel = frameBufferModel;
+        this.displayModel = displayModel;
+        this.graphicFactory = graphicFactory;
 
-        this.allowSwap.disable();
+        this.matrix = graphicFactory.createMatrix();
+        this.framesLock.unlock();
     }
 
     @Override
@@ -66,10 +89,25 @@ public class FrameBufferHA2 extends FrameBufferOld {
         }
     }
 
+    private void centerFrameBufferToMapView(Dimension mapViewDimension) {
+        float dx = (this.dimension.width - mapViewDimension.width) / -2f;
+        float dy = (this.dimension.height - mapViewDimension.height) / -2f;
+        this.matrix.translate(dx, dy);
+    }
+
+    /**
+     * This must be called from MapView after all drawing is done.
+     */
     @Override
     public synchronized void destroy() {
-        this.odBitmap.destroy();
-        this.lmBitmap.destroy();
+        synchronized (this.framesLock) {
+            this.odBitmap.destroy();
+            this.lmBitmap.destroy();
+
+            // This is to unlock LayerManager->getDrawingBitmap()
+            // and to prevent allocation new frame bitmaps.
+            framesLock.hardLock();
+        }
     }
 
     /**
@@ -108,11 +146,16 @@ public class FrameBufferHA2 extends FrameBufferOld {
      */
     @Override
     public void frameFinished(MapPosition framePosition) {
-        synchronized (this.allowSwap) {
+        synchronized (this.framesLock) {
             this.lmMapPosition = framePosition;
             this.lmBitmap.release();
-            this.allowSwap.enable();
+            this.framesLock.lock();
         }
+    }
+
+    @Override
+    public synchronized Dimension getDimension() {
+        return this.dimension;
     }
 
     /**
@@ -127,13 +170,22 @@ public class FrameBufferHA2 extends FrameBufferOld {
          * the screen). This ensures that the layer manager draws not too many frames. (only as
          * much as can get displayed).
          */
-        synchronized (this.allowSwap) {
-            this.allowSwap.waitDisabled();
+        synchronized (this.framesLock) {
+            this.framesLock.waitUntilUnlocked();
             Bitmap b = this.lmBitmap.lock();
             if (b != null) {
                 b.setBackgroundColor(this.displayModel.getBackgroundColor());
             }
             return b;
+        }
+    }
+
+    private void scale(float scaleFactor, float pivotDistanceX, float pivotDistanceY) {
+        if (scaleFactor != 1) {
+            final Point center = this.dimension.getCenter();
+            float pivotX = (float) (pivotDistanceX + center.x);
+            float pivotY = (float) (pivotDistanceY + center.y);
+            this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
         }
     }
 
@@ -146,7 +198,7 @@ public class FrameBufferHA2 extends FrameBufferOld {
             this.dimension = dimension;
         }
 
-        synchronized (this.allowSwap) {
+        synchronized (this.framesLock) {
             this.odBitmap.create(this.graphicFactory, dimension, this.displayModel.getBackgroundColor(), IS_TRANSPARENT);
             this.lmBitmap.create(this.graphicFactory, dimension, this.displayModel.getBackgroundColor(), IS_TRANSPARENT);
         }
@@ -157,11 +209,11 @@ public class FrameBufferHA2 extends FrameBufferOld {
          *  Swap bitmaps only if the layerManager is currently not working and
          *  has drawn a new bitmap since the last swap
          */
-        synchronized (this.allowSwap) {
-            if (this.allowSwap.isEnabled()) {
-                FrameBufferBitmap.swap(this.odBitmap, this.lmBitmap);
+        synchronized (this.framesLock) {
+            if (this.framesLock.isSoftLocked()) {
+                FrameBufferBitmapHA3.swap(this.odBitmap, this.lmBitmap);
                 this.frameBufferModel.setMapPosition(this.lmMapPosition);
-                this.allowSwap.disable();
+                this.framesLock.unlock();
             }
         }
     }

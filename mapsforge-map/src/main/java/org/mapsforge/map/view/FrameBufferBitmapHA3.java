@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lukas Bai
+ * Copyright 2017, 2020 Lukas Bai
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,7 +20,7 @@ import org.mapsforge.core.model.Dimension;
 
 import java.util.logging.Logger;
 
-class FrameBufferBitmap {
+class FrameBufferBitmapHA3 {
 
     private static class BitmapRequest {
         private final GraphicFactory factory;
@@ -46,25 +46,50 @@ class FrameBufferBitmap {
     }
 
     static class Lock {
-        private boolean enabled = false;
+        private static final int HARD_LOCKED = -1;
+        private static final int SOFT_LOCKED = 1;
+        private static final int UNLOCKED = 0;
 
-        synchronized void disable() {
-            enabled = false;
+        private int state = UNLOCKED;
+
+        synchronized void hardLock() {
+            state = HARD_LOCKED;
             notifyAll();
         }
 
-        synchronized void enable() {
-            enabled = true;
+        synchronized boolean isHardLocked() {
+            return (state == HARD_LOCKED);
         }
 
-        boolean isEnabled() {
-            return enabled;
+        synchronized boolean isLocked() {
+            return (state == SOFT_LOCKED || state == HARD_LOCKED);
         }
 
-        synchronized void waitDisabled() {
+        synchronized boolean isSoftLocked() {
+            return (state == SOFT_LOCKED);
+        }
+
+        synchronized boolean isUnlocked() {
+            return (state == UNLOCKED);
+        }
+
+        synchronized void lock() {
+            if (state == UNLOCKED) {
+                state = SOFT_LOCKED;
+            }
+        }
+
+        synchronized void unlock() {
+            if (state == SOFT_LOCKED) {
+                state = UNLOCKED;
+            }
+            notifyAll();
+        }
+
+        synchronized void waitUntilUnlocked() {
             try {
-                while (enabled) {
-                    wait();
+                while (state == SOFT_LOCKED) {
+                    wait(); // leaves synchronised block here
                 }
             } catch (InterruptedException e) {
                 LOGGER.fine("Frame buffer interrupted");
@@ -72,7 +97,7 @@ class FrameBufferBitmap {
         }
     }
 
-    private static final Logger LOGGER = Logger.getLogger(FrameBufferBitmap.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FrameBufferBitmapHA3.class.getName());
 
     private Bitmap bitmap = null;
     private BitmapRequest bitmapRequest = null;
@@ -80,8 +105,12 @@ class FrameBufferBitmap {
     private final Lock frameLock = new Lock();
 
     void create(GraphicFactory factory, Dimension dimension, int color, boolean isTransparent) {
-        synchronized (bitmapRequestSync) {
-            bitmapRequest = new BitmapRequest(factory, dimension, color, isTransparent);
+        synchronized (frameLock) {
+            if (!frameLock.isHardLocked()) {
+                synchronized (bitmapRequestSync) {
+                    bitmapRequest = new BitmapRequest(factory, dimension, color, isTransparent);
+                }
+            }
         }
     }
 
@@ -98,8 +127,8 @@ class FrameBufferBitmap {
     void destroy() {
         synchronized (frameLock) {
             if (bitmap != null) {
-                frameLock.waitDisabled();
                 destroyBitmap();
+                frameLock.hardLock();
             }
         }
     }
@@ -113,9 +142,11 @@ class FrameBufferBitmap {
 
     Bitmap lock() {
         synchronized (frameLock) {
-            createBitmapIfRequested();
-            if (bitmap != null) {
-                frameLock.enable();
+            if (frameLock.isUnlocked()) {
+                createBitmapIfRequested();
+                if (bitmap != null) {
+                    frameLock.lock();
+                }
             }
             return bitmap;
         }
@@ -123,11 +154,11 @@ class FrameBufferBitmap {
 
     void release() {
         synchronized (frameLock) {
-            frameLock.disable();
+            frameLock.unlock();
         }
     }
 
-    static void swap(FrameBufferBitmap a, FrameBufferBitmap b) {
+    static void swap(FrameBufferBitmapHA3 a, FrameBufferBitmapHA3 b) {
         Bitmap t = a.bitmap;
         a.bitmap = b.bitmap;
         b.bitmap = t;

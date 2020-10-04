@@ -4,6 +4,7 @@
  * Copyright 2014-2019 devemux86
  * Copyright 2015 Andreas Schildbach
  * Copyright 2018 mikes222
+ * Copyright 2020 Lukas Bai
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,6 +31,7 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
 import org.mapsforge.map.android.input.TouchGestureHandler;
@@ -47,10 +49,7 @@ import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
-import org.mapsforge.map.view.FpsCounter;
-import org.mapsforge.map.view.FrameBuffer;
-import org.mapsforge.map.view.FrameBufferHA2;
-import org.mapsforge.map.view.InputListener;
+import org.mapsforge.map.view.*;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -138,7 +137,13 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         this.model = new Model();
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
-        this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+
+        if (Parameters.FRAME_BUFFER_HA3) {
+            this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        } else {
+            this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        }
+
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
         this.layerManager = new LayerManager(this, this.model.mapViewPosition, GRAPHIC_FACTORY);
