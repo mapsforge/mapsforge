@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2017 devemux86
  * Copyright 2019 Alexander Schmidt
+ * Copyright 2020 Lukas Bai
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,6 +29,13 @@ import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.FrameBuffer;
 
 public final class FrameBufferController implements Observer {
+
+
+    /**
+     * If true the {@link FrameBufferHA3} will be used instead of {@link FrameBufferHA2}.
+     */
+    public static boolean FRAME_BUFFER_HA3 = true;
+
 
     public static FrameBufferController create(FrameBuffer frameBuffer, Model model) {
         FrameBufferController frameBufferController = new FrameBufferController(frameBuffer, model);
