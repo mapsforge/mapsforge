@@ -687,7 +687,7 @@
                 <line src="jar:patterns/access-private.png" stroke-width="1.0" />
             </rule>
             <rule e="way" k="oneway" v="yes|true|1" zoom-min="16">
-                <lineSymbol align-center="true" display="always" priority="-50" repeat="true"
+                <lineSymbol position="center" display="always" priority="-50" repeat="true"
                     src="jar:symbols/oneway.svg" />
             </rule>
         </rule>

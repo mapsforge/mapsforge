@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014-2019 devemux86
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,16 +17,8 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
-import org.mapsforge.core.graphics.Align;
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Position;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -47,7 +40,7 @@ import java.util.Map;
 public class Caption extends RenderInstruction {
     public static final float DEFAULT_GAP = 5f;
 
-    private Bitmap bitmap;
+    private Rectangle boundary;
     private Display display;
     private float dy;
     private final Map<Byte, Float> dyScaled;
@@ -87,13 +80,13 @@ public class Caption extends RenderInstruction {
         if (this.symbolId != null) {
             Symbol symbol = symbols.get(this.symbolId);
             if (symbol != null) {
-                this.bitmap = symbol.getBitmap();
+                this.boundary = symbol.getBoundary();
             }
         }
 
         if (this.position == null) {
             // sensible defaults: below if symbolContainer is present, center if not
-            if (this.bitmap == null) {
+            if (this.boundary == null) {
                 this.position = Position.CENTER;
             } else {
                 this.position = Position.BELOW;
@@ -130,31 +123,23 @@ public class Caption extends RenderInstruction {
     private float computeHorizontalOffset() {
         // compute only the offset required by the bitmap, not the text size,
         // because at this point we do not know the text boxing
-        if (Position.RIGHT == this.position || Position.LEFT == this.position
-                || Position.BELOW_RIGHT == this.position || Position.BELOW_LEFT == this.position
-                || Position.ABOVE_RIGHT == this.position || Position.ABOVE_LEFT == this.position) {
-            float horizontalOffset = this.bitmap.getWidth() / 2f + this.gap;
-            if (Position.LEFT == this.position
-                    || Position.BELOW_LEFT == this.position
-                    || Position.ABOVE_LEFT == this.position) {
-                horizontalOffset *= -1f;
-            }
-            return horizontalOffset;
+        if (this.position.isOnRightSide()) {
+            return (float) (this.boundary.right + this.gap);
+        } else if (this.position.isOnLeftSide()) {
+            return (float) (this.boundary.left - this.gap);
         }
-        return 0;
+        return (float) ((this.boundary.right + this.boundary.left) / 2);
     }
 
     private float computeVerticalOffset(byte zoomLevel) {
         float verticalOffset = this.dyScaled.get(zoomLevel);
 
-        if (Position.ABOVE == this.position
-                || Position.ABOVE_LEFT == this.position
-                || Position.ABOVE_RIGHT == this.position) {
-            verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
-        } else if (Position.BELOW == this.position
-                || Position.BELOW_LEFT == this.position
-                || Position.BELOW_RIGHT == this.position) {
-            verticalOffset += this.bitmap.getHeight() / 2f + this.gap;
+        if (this.position.isOnUpperSide()) {
+            verticalOffset += this.boundary.top - this.gap;
+        } else if (this.position.isOnLowerSide()) {
+            verticalOffset += this.boundary.bottom + this.gap;
+        } else {
+            verticalOffset += (this.boundary.top + this.boundary.bottom) / 2;
         }
         return verticalOffset;
     }
@@ -244,7 +229,7 @@ public class Caption extends RenderInstruction {
             verticalOffset = this.dy;
         }
 
-        if (this.bitmap != null) {
+        if (this.boundary != null) {
             horizontalOffset = computeHorizontalOffset();
             verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
         }
@@ -270,7 +255,7 @@ public class Caption extends RenderInstruction {
             verticalOffset = this.dy;
         }
 
-        if (this.bitmap != null) {
+        if (this.boundary != null) {
             horizontalOffset = computeHorizontalOffset();
             verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
         }

@@ -18,6 +18,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 
@@ -90,7 +91,7 @@ public interface RenderCallback {
      * @param renderContext
      * @param symbol
      */
-    void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PointOfInterest poi);
+    void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Rectangle boundary, Bitmap symbol, PointOfInterest poi);
 
     /**
      * Renders a way with the given parameters.
@@ -108,12 +109,12 @@ public interface RenderCallback {
      * @param renderContext
      * @param symbol        the symbol to be rendered.
      * @param dy            the offset of the way.
-     * @param alignCenter   true if the symbol should be centered, false otherwise.
+     * @param boundary      the relative positioning of the symbol
      * @param repeat        true if the symbol should be repeated, false otherwise.
      * @param repeatGap     distance between repetitions.
      * @param repeatStart
      */
-    void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way);
+    void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way);
 
     /**
      * Renders a way with the given text along the way path.

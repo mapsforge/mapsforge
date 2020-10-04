@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,8 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -36,8 +39,10 @@ import java.io.IOException;
 public class Symbol extends RenderInstruction {
     private Bitmap bitmap;
     private boolean bitmapInvalid;
+    private final Rectangle boundary;
     private Display display;
     private String id;
+    private Position position;
     private int priority;
     private final String relativePathPrefix;
     private String src;
@@ -47,7 +52,11 @@ public class Symbol extends RenderInstruction {
         super(graphicFactory, displayModel);
         this.relativePathPrefix = relativePathPrefix;
         this.display = Display.IFSPACE;
+        this.position = Position.CENTER;
         extractValues(elementName, pullParser);
+
+        Bitmap bitmap = getBitmap();
+        this.boundary = computeBoundary(bitmap.getWidth(), bitmap.getHeight(), this.position);
     }
 
     @Override
@@ -80,6 +89,8 @@ public class Symbol extends RenderInstruction {
                 // no-op
             } else if (SYMBOL_WIDTH.equals(name)) {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (POSITION.equals(name)) {
+                this.position = Position.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -97,6 +108,10 @@ public class Symbol extends RenderInstruction {
         return this.bitmap;
     }
 
+    public Rectangle getBoundary() {
+        return this.boundary;
+    }
+
     public String getId() {
         return this.id;
     }
@@ -108,7 +123,7 @@ public class Symbol extends RenderInstruction {
         }
 
         if (getBitmap() != null) {
-            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, poi);
+            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.boundary, this.bitmap, poi);
         }
     }
 

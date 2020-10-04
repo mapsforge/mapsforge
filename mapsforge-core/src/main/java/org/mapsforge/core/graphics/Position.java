@@ -1,6 +1,7 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014 devemux86
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -45,4 +46,19 @@ public enum Position {
         throw new IllegalArgumentException("Invalid value for Position: " + value);
     }
 
+    public boolean isOnLeftSide() {
+        return this == LEFT || this == ABOVE_LEFT || this == BELOW_LEFT;
+    }
+
+    public boolean isOnLowerSide() {
+        return this == BELOW || this == BELOW_LEFT || this == BELOW_RIGHT;
+    }
+
+    public boolean isOnRightSide() {
+        return this == RIGHT || this == ABOVE_RIGHT || this == BELOW_RIGHT;
+    }
+
+    public boolean isOnUpperSide() {
+        return this == ABOVE || this == ABOVE_LEFT || this == ABOVE_RIGHT;
+    }
 }

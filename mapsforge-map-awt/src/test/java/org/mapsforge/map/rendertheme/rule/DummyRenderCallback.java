@@ -18,6 +18,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.rendertheme.RenderCallback;
@@ -50,7 +51,7 @@ class DummyRenderCallback implements RenderCallback {
     }
 
     @Override
-    public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PointOfInterest poi) {
+    public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Rectangle boundary, Bitmap symbol, PointOfInterest poi) {
         // do nothing
     }
 
@@ -60,7 +61,7 @@ class DummyRenderCallback implements RenderCallback {
     }
 
     @Override
-    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
+    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
         // do nothing
     }
 

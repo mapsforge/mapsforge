@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2016 devemux86
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,25 +22,22 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public class SymbolContainer extends MapElementContainer {
-    final boolean alignCenter;
     public Bitmap symbol;
     public final float theta;
 
-    public SymbolContainer(Point point, Display display, int priority, Bitmap symbol) {
-        this(point, display, priority, symbol, 0, true);
+    public SymbolContainer(Point point, Display display, int priority, Rectangle boundary, Bitmap symbol) {
+        this(point, display, priority, boundary, symbol, 0);
     }
 
-    public SymbolContainer(Point point, Display display, int priority, Bitmap symbol, float theta, boolean alignCenter) {
+    public SymbolContainer(Point point, Display display, int priority, Rectangle boundary, Bitmap symbol, float theta) {
         super(point, display, priority);
         this.symbol = symbol;
         this.theta = theta;
-        this.alignCenter = alignCenter;
-        if (alignCenter) {
+        this.boundary = boundary;
+        if (this.boundary == null) {
             double halfWidth = this.symbol.getWidth() / 2d;
             double halfHeight = this.symbol.getHeight() / 2d;
             this.boundary = new Rectangle(-halfWidth, -halfHeight, halfWidth, halfHeight);
-        } else {
-            this.boundary = new Rectangle(0, 0, this.symbol.getWidth(), this.symbol.getHeight());
         }
 
         this.symbol.incrementRefCount();
@@ -72,10 +70,8 @@ public class SymbolContainer extends MapElementContainer {
         matrix.reset();
         // We cast to int for pixel perfect positioning
         matrix.translate((int) (this.xy.x - origin.x + boundary.left), (int) (this.xy.y - origin.y + boundary.top));
-        if (theta != 0 && alignCenter) {
+        if (theta != 0) {
             matrix.rotate(theta, (float) -boundary.left, (float) -boundary.top);
-        } else {
-            matrix.rotate(theta);
         }
         canvas.drawBitmap(this.symbol, matrix, 1, filter);
     }

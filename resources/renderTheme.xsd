@@ -199,7 +199,7 @@
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
-        <xs:attribute name="align-center" default="false" type="xs:boolean" use="optional" />
+        <xs:attribute name="position" default="below_right" type="tns:position" use="optional" />
         <xs:attribute name="priority" default="0" type="xs:integer" use="optional" />
         <xs:attribute name="repeat" default="false" type="xs:boolean" use="optional" />
         <xs:attribute name="repeat-gap" default="200" type="xs:float" use="optional" />
@@ -246,6 +246,7 @@
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
+        <xs:attribute name="position" default="center" type="tns:position" use="optional" />
     </xs:complexType>
 
     <!-- rule elements -->

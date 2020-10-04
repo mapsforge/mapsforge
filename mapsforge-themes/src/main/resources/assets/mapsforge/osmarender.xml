@@ -815,8 +815,7 @@
             <rule e="way" k="area" v="~|false|no">
                 <rule e="way" k="highway" v="*">
                     <rule e="way" k="oneway" v="yes|true" zoom-min="16">
-                        <lineSymbol align-center="true" repeat="true"
-                            src="jar:symbols/oneway.svg" />
+                        <lineSymbol position="center" repeat="true" src="jar:symbols/oneway.svg" />
                     </rule>
                 </rule>
             </rule>
