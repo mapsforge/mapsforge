@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.map.view;
 
 import org.mapsforge.core.graphics.Bitmap;
@@ -39,8 +38,8 @@ public class FrameBufferHA3 extends FrameBuffer {
      *      swaps the two bitmaps and puts one bitmap to the screen
      *      while the layer manager draws the next off-screen bitmap.
      */
-    private final FrameBufferBitmap lmBitmap = new FrameBufferBitmap();
-    private final FrameBufferBitmap odBitmap = new FrameBufferBitmap();
+    private final FrameBufferBitmapHA3 lmBitmap = new FrameBufferBitmapHA3();
+    private final FrameBufferBitmapHA3 odBitmap = new FrameBufferBitmapHA3();
 
     Dimension dimension;
     final DisplayModel displayModel;
@@ -60,7 +59,7 @@ public class FrameBufferHA3 extends FrameBuffer {
 
 
 
-    private final FrameBufferBitmap.Lock allowSwap = new FrameBufferBitmap.Lock();
+    private final FrameBufferBitmapHA3.Lock swapLock = new FrameBufferBitmapHA3.Lock();
     private MapPosition lmMapPosition;
 
     public FrameBufferHA3(FrameBufferModel frameBufferModel, DisplayModel displayModel,
@@ -69,7 +68,7 @@ public class FrameBufferHA3 extends FrameBuffer {
         this.displayModel = displayModel;
         this.graphicFactory = graphicFactory;
         this.matrix = graphicFactory.createMatrix();
-        this.allowSwap.disable();
+        this.swapLock.unlock();
     }
 
     public void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
@@ -96,9 +95,18 @@ public class FrameBufferHA3 extends FrameBuffer {
         this.matrix.translate(dx, dy);
     }
 
+    /**
+     * This gets called from MapView after all drawing is done.
+     *
+     * This function must call swapBitmaps().
+     * This is to unlock LayerManager->getDrawingBitmap().
+     */
     public synchronized void destroy() {
-        this.odBitmap.destroy();
-        this.lmBitmap.destroy();
+        synchronized (this.swapLock) {
+            this.odBitmap.destroy();
+            this.lmBitmap.destroy();
+            swapLock.hardLock();
+        }
     }
 
     /**
@@ -135,10 +143,10 @@ public class FrameBufferHA3 extends FrameBuffer {
      * This is called from <code>LayerManager</code> when drawing is finished.
      */
     public void frameFinished(MapPosition framePosition) {
-        synchronized (this.allowSwap) {
+        synchronized (this.swapLock) {
             this.lmMapPosition = framePosition;
             this.lmBitmap.release();
-            this.allowSwap.enable();
+            this.swapLock.lock();
         }
     }
 
@@ -159,8 +167,8 @@ public class FrameBufferHA3 extends FrameBuffer {
          * the screen). This ensures that the layer manager draws not too many frames. (only as
          * much as can get displayed).
          */
-        synchronized (this.allowSwap) {
-            this.allowSwap.waitDisabled();
+        synchronized (this.swapLock) {
+            this.swapLock.waitUntilUnlocked();
             Bitmap b = this.lmBitmap.lock();
             if (b != null) {
                 b.setBackgroundColor(this.displayModel.getBackgroundColor());
@@ -186,7 +194,7 @@ public class FrameBufferHA3 extends FrameBuffer {
             this.dimension = dimension;
         }
 
-        synchronized (this.allowSwap) {
+        synchronized (this.swapLock) {
             this.odBitmap.create(this.graphicFactory, dimension, this.displayModel.getBackgroundColor(), IS_TRANSPARENT);
             this.lmBitmap.create(this.graphicFactory, dimension, this.displayModel.getBackgroundColor(), IS_TRANSPARENT);
         }
@@ -197,11 +205,11 @@ public class FrameBufferHA3 extends FrameBuffer {
          *  Swap bitmaps only if the layerManager is currently not working and
          *  has drawn a new bitmap since the last swap
          */
-        synchronized (this.allowSwap) {
-            if (this.allowSwap.isEnabled()) {
-                FrameBufferBitmap.swap(this.odBitmap, this.lmBitmap);
+        synchronized (this.swapLock) {
+            if (this.swapLock.isSoftLocked()) {
+                FrameBufferBitmapHA3.swap(this.odBitmap, this.lmBitmap);
                 this.frameBufferModel.setMapPosition(this.lmMapPosition);
-                this.allowSwap.disable();
+                this.swapLock.unlock();
             }
         }
     }
