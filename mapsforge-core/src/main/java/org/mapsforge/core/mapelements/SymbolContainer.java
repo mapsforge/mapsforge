@@ -21,28 +21,42 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 
 public class SymbolContainer extends MapElementContainer {
-    final boolean alignCenter;
     public Bitmap symbol;
     public final float theta;
+    public Position position;
 
-    public SymbolContainer(Point point, Display display, int priority, Bitmap symbol) {
-        this(point, display, priority, symbol, 0, true);
+    public SymbolContainer(Point point, Display display, int priority, Position position, Bitmap symbol) {
+        this(point, display, priority, position, symbol, 0);
     }
 
-    public SymbolContainer(Point point, Display display, int priority, Bitmap symbol, float theta, boolean alignCenter) {
+    public SymbolContainer(Point point, Display display, int priority, Position position, Bitmap symbol, float theta) {
         super(point, display, priority);
         this.symbol = symbol;
         this.theta = theta;
-        this.alignCenter = alignCenter;
-        if (alignCenter) {
-            double halfWidth = this.symbol.getWidth() / 2d;
-            double halfHeight = this.symbol.getHeight() / 2d;
-            this.boundary = new Rectangle(-halfWidth, -halfHeight, halfWidth, halfHeight);
-        } else {
-            this.boundary = new Rectangle(0, 0, this.symbol.getWidth(), this.symbol.getHeight());
-        }
-
+        this.position = position;
+        computeBoundary();
         this.symbol.incrementRefCount();
+    }
+
+    private void computeBoundary() {
+        // Center by default
+        double xfactor = -0.5, yfactor = -0.5;
+
+        if (position == Position.ABOVE_LEFT || position == Position.LEFT || position == Position.BELOW_LEFT)
+            xfactor = -1;
+        else if (position == Position.ABOVE_RIGHT || position == Position.RIGHT || position == Position.BELOW_RIGHT)
+            xfactor = 0;
+
+        if (position == Position.ABOVE_LEFT || position == Position.ABOVE || position == Position.ABOVE_RIGHT)
+            yfactor = -1;
+        else if (position == Position.BELOW_LEFT || position == Position.BELOW || position == Position.BELOW_RIGHT)
+            yfactor = 0;
+
+        int width = this.symbol.getWidth();
+        int height = this.symbol.getHeight();
+        double left = xfactor * width;
+        double top = yfactor * width;
+        this.boundary = new Rectangle(left, top, left + width, top + height);
     }
 
     @Override
@@ -72,10 +86,8 @@ public class SymbolContainer extends MapElementContainer {
         matrix.reset();
         // We cast to int for pixel perfect positioning
         matrix.translate((int) (this.xy.x - origin.x + boundary.left), (int) (this.xy.y - origin.y + boundary.top));
-        if (theta != 0 && alignCenter) {
+        if (theta != 0) {
             matrix.rotate(theta, (float) -boundary.left, (float) -boundary.top);
-        } else {
-            matrix.rotate(theta);
         }
         canvas.drawBitmap(this.symbol, matrix, 1, filter);
     }

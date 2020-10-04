@@ -19,6 +19,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.mapelements.WayTextContainer;
@@ -33,7 +34,7 @@ final class WayDecorator {
 
     private static final double MAX_LABEL_CORNER_ANGLE = 45;
 
-    static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, boolean alignCenter,
+    static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, Position position,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
                              boolean rotate, Point[][] coordinates,
                              List<MapElementContainer> currentItems) {
@@ -81,7 +82,7 @@ final class WayDecorator {
 
                 Point point = new Point(previousX, previousY);
 
-                currentItems.add(new SymbolContainer(point, display, priority, symbolBitmap, theta, alignCenter));
+                currentItems.add(new SymbolContainer(point, display, priority, position, symbolBitmap, theta));
 
                 // check if the symbolContainer should only be rendered once
                 if (!repeatSymbol) {

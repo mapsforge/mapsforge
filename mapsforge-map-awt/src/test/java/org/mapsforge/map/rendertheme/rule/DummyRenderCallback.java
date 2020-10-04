@@ -50,7 +50,7 @@ class DummyRenderCallback implements RenderCallback {
     }
 
     @Override
-    public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PointOfInterest poi) {
+    public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Position position, Bitmap symbol, PointOfInterest poi) {
         // do nothing
     }
 
@@ -60,7 +60,7 @@ class DummyRenderCallback implements RenderCallback {
     }
 
     @Override
-    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
+    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Position position, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
         // do nothing
     }
 

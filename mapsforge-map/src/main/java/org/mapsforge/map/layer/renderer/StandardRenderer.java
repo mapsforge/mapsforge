@@ -122,7 +122,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderAreaSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PolylineContainer way) {
         if (renderLabels) {
             Point centerPosition = way.getCenterAbsolute();
-            renderContext.labels.add(new SymbolContainer(centerPosition, display, priority, symbol));
+            renderContext.labels.add(new SymbolContainer(centerPosition, display, priority, Position.CENTER, symbol));
         }
     }
 
@@ -144,10 +144,10 @@ public class StandardRenderer implements RenderCallback {
     }
 
     @Override
-    public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PointOfInterest poi) {
+    public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Position position, Bitmap symbol, PointOfInterest poi) {
         if (renderLabels) {
             Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
-            renderContext.labels.add(new SymbolContainer(poiPosition, display, priority, symbol));
+            renderContext.labels.add(new SymbolContainer(poiPosition, display, priority, position, symbol));
         }
     }
 
@@ -157,9 +157,9 @@ public class StandardRenderer implements RenderCallback {
     }
 
     @Override
-    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, boolean alignCenter, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
+    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Position position, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
         if (renderLabels) {
-            WayDecorator.renderSymbol(symbol, display, priority, dy, alignCenter, repeat, repeatGap,
+            WayDecorator.renderSymbol(symbol, display, priority, dy, position, repeat, repeatGap,
                     repeatStart, rotate, way.getCoordinatesAbsolute(), renderContext.labels);
         }
     }

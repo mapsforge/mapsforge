@@ -19,6 +19,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -41,12 +42,14 @@ public class Symbol extends RenderInstruction {
     private int priority;
     private final String relativePathPrefix;
     private String src;
+    private Position position;
 
     public Symbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                   XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
         this.relativePathPrefix = relativePathPrefix;
         this.display = Display.IFSPACE;
+        this.position = Position.CENTER;
         extractValues(elementName, pullParser);
     }
 
@@ -80,6 +83,8 @@ public class Symbol extends RenderInstruction {
                 // no-op
             } else if (SYMBOL_WIDTH.equals(name)) {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (POSITION.equals(name)) {
+                this.position = Position.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -108,7 +113,7 @@ public class Symbol extends RenderInstruction {
         }
 
         if (getBitmap() != null) {
-            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.bitmap, poi);
+            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.position, this.bitmap, poi);
         }
     }
 
