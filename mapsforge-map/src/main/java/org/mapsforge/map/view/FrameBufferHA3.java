@@ -59,7 +59,7 @@ public class FrameBufferHA3 extends FrameBuffer {
 
 
 
-    private final FrameBufferBitmapHA3.Lock swapLock = new FrameBufferBitmapHA3.Lock();
+    private final FrameBufferBitmapHA3.Lock framesLock = new FrameBufferBitmapHA3.Lock();
     private MapPosition lmMapPosition;
 
     public FrameBufferHA3(FrameBufferModel frameBufferModel, DisplayModel displayModel,
@@ -68,7 +68,7 @@ public class FrameBufferHA3 extends FrameBuffer {
         this.displayModel = displayModel;
         this.graphicFactory = graphicFactory;
         this.matrix = graphicFactory.createMatrix();
-        this.swapLock.unlock();
+        this.framesLock.unlock();
     }
 
     public void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
@@ -96,16 +96,16 @@ public class FrameBufferHA3 extends FrameBuffer {
     }
 
     /**
-     * This gets called from MapView after all drawing is done.
-     *
-     * This function must call swapBitmaps().
-     * This is to unlock LayerManager->getDrawingBitmap().
+     * This must be called from MapView after all drawing is done.
      */
     public synchronized void destroy() {
-        synchronized (this.swapLock) {
+        synchronized (this.framesLock) {
             this.odBitmap.destroy();
             this.lmBitmap.destroy();
-            swapLock.hardLock();
+
+            // This is to unlock LayerManager->getDrawingBitmap()
+            // and to prevent allocation new frame bitmaps.
+            framesLock.hardLock();
         }
     }
 
@@ -143,10 +143,10 @@ public class FrameBufferHA3 extends FrameBuffer {
      * This is called from <code>LayerManager</code> when drawing is finished.
      */
     public void frameFinished(MapPosition framePosition) {
-        synchronized (this.swapLock) {
+        synchronized (this.framesLock) {
             this.lmMapPosition = framePosition;
             this.lmBitmap.release();
-            this.swapLock.lock();
+            this.framesLock.lock();
         }
     }
 
@@ -167,8 +167,8 @@ public class FrameBufferHA3 extends FrameBuffer {
          * the screen). This ensures that the layer manager draws not too many frames. (only as
          * much as can get displayed).
          */
-        synchronized (this.swapLock) {
-            this.swapLock.waitUntilUnlocked();
+        synchronized (this.framesLock) {
+            this.framesLock.waitUntilUnlocked();
             Bitmap b = this.lmBitmap.lock();
             if (b != null) {
                 b.setBackgroundColor(this.displayModel.getBackgroundColor());
@@ -194,7 +194,7 @@ public class FrameBufferHA3 extends FrameBuffer {
             this.dimension = dimension;
         }
 
-        synchronized (this.swapLock) {
+        synchronized (this.framesLock) {
             this.odBitmap.create(this.graphicFactory, dimension, this.displayModel.getBackgroundColor(), IS_TRANSPARENT);
             this.lmBitmap.create(this.graphicFactory, dimension, this.displayModel.getBackgroundColor(), IS_TRANSPARENT);
         }
@@ -205,11 +205,11 @@ public class FrameBufferHA3 extends FrameBuffer {
          *  Swap bitmaps only if the layerManager is currently not working and
          *  has drawn a new bitmap since the last swap
          */
-        synchronized (this.swapLock) {
-            if (this.swapLock.isSoftLocked()) {
+        synchronized (this.framesLock) {
+            if (this.framesLock.isSoftLocked()) {
                 FrameBufferBitmapHA3.swap(this.odBitmap, this.lmBitmap);
                 this.frameBufferModel.setMapPosition(this.lmMapPosition);
-                this.swapLock.unlock();
+                this.framesLock.unlock();
             }
         }
     }

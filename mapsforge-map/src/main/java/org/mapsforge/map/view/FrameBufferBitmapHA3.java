@@ -21,13 +21,6 @@ import org.mapsforge.core.model.Dimension;
 import java.util.logging.Logger;
 
 class FrameBufferBitmapHA3 {
-    private static int allocatedBitmaps=0;
-
-    public static int getAllocatedBitmaps() {
-        return allocatedBitmaps;
-    }
-
-
     private static class BitmapRequest {
         private final GraphicFactory factory;
         private final Dimension dimension;
@@ -43,7 +36,6 @@ class FrameBufferBitmapHA3 {
 
         Bitmap create() {
             if (dimension.width > 0 && dimension.height > 0) {
-                allocatedBitmaps++;
                 Bitmap bitmap = factory.createBitmap(dimension.width, dimension.height, isTransparent);
                 bitmap.setBackgroundColor(color);
                 return bitmap;
@@ -77,20 +69,13 @@ class FrameBufferBitmapHA3 {
         synchronized boolean isHardLocked() {
             return (state == HARD_LOCKED);
         }
-
+        synchronized boolean isLocked() {
+            return (state == SOFT_LOCKED || state == HARD_LOCKED);
+        }
         synchronized boolean isSoftLocked() {
             return (state == SOFT_LOCKED);
         }
-
-        synchronized boolean isLocked() {
-            return state == SOFT_LOCKED || state == HARD_LOCKED;
-        }
-
-        synchronized boolean isUnlocked() {
-            return state == UNLOCKED;
-        }
-
-
+        synchronized boolean isUnlocked() { return (state == UNLOCKED);}
 
 
         synchronized void waitUntilUnlocked() {
@@ -143,16 +128,17 @@ class FrameBufferBitmapHA3 {
     private void destroyBitmap() {
         if (bitmap != null) {
             bitmap.decrementRefCount();
-            allocatedBitmaps--;
             bitmap = null;
         }
     }
 
     Bitmap lock() {
         synchronized (frameLock) {
-            createBitmapIfRequested();
-            if (bitmap != null) {
-                frameLock.lock();
+            if (frameLock.isUnlocked()) {
+                createBitmapIfRequested();
+                if (bitmap != null) {
+                    frameLock.lock();
+                }
             }
             return bitmap;
         }
@@ -173,5 +159,4 @@ class FrameBufferBitmapHA3 {
         a.bitmapRequest = b.bitmapRequest;
         b.bitmapRequest = r;
     }
-
 }
