@@ -25,7 +25,7 @@ import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
-public class FrameBufferHA2 extends FrameBuffer {
+public class FrameBufferHA2 extends FrameBufferOld {
 
     /*
      *  lm: layer manager
