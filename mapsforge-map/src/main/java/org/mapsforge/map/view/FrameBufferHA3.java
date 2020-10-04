@@ -28,7 +28,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
-class FrameBufferHA3 extends FrameBuffer {
+public class FrameBufferHA3 extends FrameBuffer {
 
     static final boolean IS_TRANSPARENT = false;
 
