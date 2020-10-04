@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -43,6 +44,7 @@ public class Symbol extends RenderInstruction {
     private final String relativePathPrefix;
     private String src;
     private Position position;
+    private Rectangle symbolBoundary;
 
     public Symbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                   XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
@@ -51,6 +53,9 @@ public class Symbol extends RenderInstruction {
         this.display = Display.IFSPACE;
         this.position = Position.CENTER;
         extractValues(elementName, pullParser);
+
+        Bitmap bitmap = getBitmap();
+        this.symbolBoundary = computeImageBoundary(bitmap.getWidth(), bitmap.getHeight(), this.position);
     }
 
     @Override
@@ -106,6 +111,10 @@ public class Symbol extends RenderInstruction {
         return this.id;
     }
 
+    public Rectangle getSymbolBoundary() {
+        return this.symbolBoundary;
+    }
+
     @Override
     public void renderNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
         if (Display.NEVER == this.display) {
@@ -113,7 +122,7 @@ public class Symbol extends RenderInstruction {
         }
 
         if (getBitmap() != null) {
-            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.position, this.bitmap, poi);
+            renderCallback.renderPointOfInterestSymbol(renderContext, this.display, this.priority, this.symbolBoundary, this.bitmap, poi);
         }
     }
 

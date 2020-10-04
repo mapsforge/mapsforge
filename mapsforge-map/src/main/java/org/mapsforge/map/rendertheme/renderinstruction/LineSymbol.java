@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -150,7 +151,8 @@ public class LineSymbol extends RenderInstruction {
         }
 
         if (this.bitmap != null) {
-            renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, this.position,
+            Rectangle boundary = computeImageBoundary(this.bitmap.getWidth(), this.bitmap.getHeight(), this.position);
+            renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, boundary,
                     this.repeat, this.repeatGap, this.repeatStart, this.rotate, way);
         }
     }

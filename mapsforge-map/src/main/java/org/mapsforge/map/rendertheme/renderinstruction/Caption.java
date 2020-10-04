@@ -26,6 +26,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -47,7 +48,7 @@ import java.util.Map;
 public class Caption extends RenderInstruction {
     public static final float DEFAULT_GAP = 5f;
 
-    private Bitmap bitmap;
+    private Rectangle symbolBoundary;
     private Display display;
     private float dy;
     private final Map<Byte, Float> dyScaled;
@@ -86,14 +87,13 @@ public class Caption extends RenderInstruction {
 
         if (this.symbolId != null) {
             Symbol symbol = symbols.get(this.symbolId);
-            if (symbol != null) {
-                this.bitmap = symbol.getBitmap();
-            }
+            if (symbol != null)
+                this.symbolBoundary = symbol.getSymbolBoundary();
         }
 
         if (this.position == null) {
             // sensible defaults: below if symbolContainer is present, center if not
-            if (this.bitmap == null) {
+            if (this.symbolBoundary == null) {
                 this.position = Position.CENTER;
             } else {
                 this.position = Position.BELOW;
@@ -130,31 +130,23 @@ public class Caption extends RenderInstruction {
     private float computeHorizontalOffset() {
         // compute only the offset required by the bitmap, not the text size,
         // because at this point we do not know the text boxing
-        if (Position.RIGHT == this.position || Position.LEFT == this.position
-                || Position.BELOW_RIGHT == this.position || Position.BELOW_LEFT == this.position
-                || Position.ABOVE_RIGHT == this.position || Position.ABOVE_LEFT == this.position) {
-            float horizontalOffset = this.bitmap.getWidth() / 2f + this.gap;
-            if (Position.LEFT == this.position
-                    || Position.BELOW_LEFT == this.position
-                    || Position.ABOVE_LEFT == this.position) {
-                horizontalOffset *= -1f;
-            }
-            return horizontalOffset;
+        if (this.position.isOnRightSide()) {
+            return (float) (symbolBoundary.right + this.gap);
+        } else if (this.position.isOnLeftSide()) {
+            return (float) (symbolBoundary.left - this.gap);
         }
-        return 0;
+        return (float) ((symbolBoundary.right + symbolBoundary.left) / 2);
     }
 
     private float computeVerticalOffset(byte zoomLevel) {
         float verticalOffset = this.dyScaled.get(zoomLevel);
 
-        if (Position.ABOVE == this.position
-                || Position.ABOVE_LEFT == this.position
-                || Position.ABOVE_RIGHT == this.position) {
-            verticalOffset -= this.bitmap.getHeight() / 2f + this.gap;
-        } else if (Position.BELOW == this.position
-                || Position.BELOW_LEFT == this.position
-                || Position.BELOW_RIGHT == this.position) {
-            verticalOffset += this.bitmap.getHeight() / 2f + this.gap;
+        if (this.position.isOnUpperSide()) {
+            verticalOffset += symbolBoundary.top - this.gap;
+        } else if (this.position.isOnLowerSide()) {
+            verticalOffset += symbolBoundary.bottom + this.gap;
+        } else {
+            verticalOffset += (symbolBoundary.top + symbolBoundary.bottom) / 2;
         }
         return verticalOffset;
     }
@@ -244,7 +236,7 @@ public class Caption extends RenderInstruction {
             verticalOffset = this.dy;
         }
 
-        if (this.bitmap != null) {
+        if (this.symbolBoundary != null) {
             horizontalOffset = computeHorizontalOffset();
             verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
         }
@@ -270,7 +262,7 @@ public class Caption extends RenderInstruction {
             verticalOffset = this.dy;
         }
 
-        if (this.bitmap != null) {
+        if (this.symbolBoundary != null) {
             horizontalOffset = computeHorizontalOffset();
             verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
         }

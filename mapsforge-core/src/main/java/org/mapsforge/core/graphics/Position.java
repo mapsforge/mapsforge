@@ -45,4 +45,20 @@ public enum Position {
         throw new IllegalArgumentException("Invalid value for Position: " + value);
     }
 
+    public boolean isOnLeftSide() {
+        return this == LEFT || this == ABOVE_LEFT || this == BELOW_LEFT;
+    }
+
+    public boolean isOnRightSide() {
+        return this == RIGHT || this == ABOVE_RIGHT || this == BELOW_RIGHT;
+    }
+
+    public boolean isOnUpperSide() {
+        return this == ABOVE || this == ABOVE_LEFT || this == ABOVE_RIGHT;
+    }
+
+    public boolean isOnLowerSide() {
+        return this == BELOW || this == BELOW_LEFT || this == BELOW_RIGHT;
+    }
+
 }

@@ -26,6 +26,7 @@ import org.mapsforge.core.mapelements.WayTextContainer;
 import org.mapsforge.core.model.LineSegment;
 import org.mapsforge.core.model.LineString;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 
 import java.util.List;
@@ -34,7 +35,7 @@ final class WayDecorator {
 
     private static final double MAX_LABEL_CORNER_ANGLE = 45;
 
-    static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, Position position,
+    static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, Rectangle symbolBoundary,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
                              boolean rotate, Point[][] coordinates,
                              List<MapElementContainer> currentItems) {
@@ -82,7 +83,7 @@ final class WayDecorator {
 
                 Point point = new Point(previousX, previousY);
 
-                currentItems.add(new SymbolContainer(point, display, priority, position, symbolBitmap, theta));
+                currentItems.add(new SymbolContainer(point, display, priority, symbolBoundary, symbolBitmap, theta));
 
                 // check if the symbolContainer should only be rendered once
                 if (!repeatSymbol) {

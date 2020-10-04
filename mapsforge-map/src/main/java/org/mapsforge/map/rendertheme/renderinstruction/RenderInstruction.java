@@ -18,6 +18,8 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -120,6 +122,25 @@ public abstract class RenderInstruction {
             return Scale.NONE;
         }
         return Scale.STROKE;
+    }
+
+    protected Rectangle computeImageBoundary(int width, int height, Position position) {
+        // Center by default
+        double xfactor = -0.5, yfactor = -0.5;
+
+        if (position == Position.ABOVE_LEFT || position == Position.LEFT || position == Position.BELOW_LEFT)
+            xfactor = -1;
+        else if (position == Position.ABOVE_RIGHT || position == Position.RIGHT || position == Position.BELOW_RIGHT)
+            xfactor = 0;
+
+        if (position == Position.ABOVE_LEFT || position == Position.ABOVE || position == Position.ABOVE_RIGHT)
+            yfactor = -1;
+        else if (position == Position.BELOW_LEFT || position == Position.BELOW || position == Position.BELOW_RIGHT)
+            yfactor = 0;
+
+        double left = xfactor * width;
+        double top = yfactor * width;
+        return new Rectangle(left, top, left + width, top + height);
     }
 
     /**

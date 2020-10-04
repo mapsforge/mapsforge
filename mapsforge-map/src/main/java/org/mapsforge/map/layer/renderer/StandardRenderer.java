@@ -25,6 +25,7 @@ import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.datastore.MapDataStore;
@@ -122,7 +123,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderAreaSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PolylineContainer way) {
         if (renderLabels) {
             Point centerPosition = way.getCenterAbsolute();
-            renderContext.labels.add(new SymbolContainer(centerPosition, display, priority, Position.CENTER, symbol));
+            renderContext.labels.add(new SymbolContainer(centerPosition, display, priority, null, symbol));
         }
     }
 
@@ -144,10 +145,10 @@ public class StandardRenderer implements RenderCallback {
     }
 
     @Override
-    public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Position position, Bitmap symbol, PointOfInterest poi) {
+    public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Rectangle symbolBoundary, Bitmap symbol, PointOfInterest poi) {
         if (renderLabels) {
             Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
-            renderContext.labels.add(new SymbolContainer(poiPosition, display, priority, position, symbol));
+            renderContext.labels.add(new SymbolContainer(poiPosition, display, priority, symbolBoundary, symbol));
         }
     }
 
@@ -157,9 +158,9 @@ public class StandardRenderer implements RenderCallback {
     }
 
     @Override
-    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Position position, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
+    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Rectangle symbolBoundary, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
         if (renderLabels) {
-            WayDecorator.renderSymbol(symbol, display, priority, dy, position, repeat, repeatGap,
+            WayDecorator.renderSymbol(symbol, display, priority, dy, symbolBoundary, repeat, repeatGap,
                     repeatStart, rotate, way.getCoordinatesAbsolute(), renderContext.labels);
         }
     }
