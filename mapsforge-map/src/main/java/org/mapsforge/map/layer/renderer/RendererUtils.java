@@ -19,6 +19,9 @@ import org.mapsforge.core.model.Point;
 
 class RendererUtils {
 
+    static final double ANGLE_LIMIT = 170;
+    static final double ANGLE_LIMIT_COS = Math.cos(ANGLE_LIMIT * Math.PI / 180.0);
+
     /**
      * Computes a polyline with distance dy parallel to given coordinates.
      * http://objectmix.com/graphics/132987-draw-parallel-polyline-algorithm-needed.html
@@ -37,6 +40,12 @@ class RendererUtils {
                 u[k] = new Point(0, 0);
             } else {
                 u[k] = new Point(c / l, s / l);
+            }
+
+            // Detect angles above the allowed limit - return original path in this case
+            if (k == 0) continue;
+            if (u[k].x*u[k-1].x + u[k].y*u[k-1].y < ANGLE_LIMIT_COS){
+                return p;
             }
         }
 
