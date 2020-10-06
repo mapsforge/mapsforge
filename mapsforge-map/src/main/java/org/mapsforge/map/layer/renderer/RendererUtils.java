@@ -1,6 +1,7 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015 devemux86
+ * Copyright 2020 mg4gh
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +19,9 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.model.Point;
 
 class RendererUtils {
+
+    private static final double ANGLE_LIMIT = 170;
+    private static final double ANGLE_LIMIT_COS = Math.cos(Math.toRadians(ANGLE_LIMIT));
 
     /**
      * Computes a polyline with distance dy parallel to given coordinates.
@@ -37,6 +41,14 @@ class RendererUtils {
                 u[k] = new Point(0, 0);
             } else {
                 u[k] = new Point(c / l, s / l);
+            }
+
+            // Detect angles above the allowed limit - return original path in this case
+            if (k == 0) {
+                continue;
+            }
+            if (u[k].x * u[k - 1].x + u[k].y * u[k - 1].y < ANGLE_LIMIT_COS) {
+                return p;
             }
         }
 
