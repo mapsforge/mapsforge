@@ -4,6 +4,7 @@
 
 - Android: scoped storage example [#1170](https://github.com/mapsforge/mapsforge/pull/1170)
 - Render theme from Android content providers [#1169](https://github.com/mapsforge/mapsforge/pull/1169)
+- Render themes: symbol and lineSymbol position attribute [#1172](https://github.com/mapsforge/mapsforge/pull/1172)
 - AssetsRenderTheme: stream improvements [#1167](https://github.com/mapsforge/mapsforge/pull/1167)
 - Layer scroll event option [#1163](https://github.com/mapsforge/mapsforge/pull/1163)
   - `Parameters.LAYER_SCROLL_EVENT`
