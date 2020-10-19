@@ -32,7 +32,7 @@ public final class Parameters {
     /**
      * Maximum buffer size for map files.
      */
-    public static int MAXIMUM_BUFFER_SIZE = 8000000;
+    public static int MAXIMUM_BUFFER_SIZE = 10000000;
 
     /**
      * The default number of threads is one greater than the number of processors, as one thread is
