@@ -6,8 +6,6 @@ Processing of coastlines was part of Mapsforge rendering engine, running live on
 
 The workaround requires no real changes to the map-writer nor the map-reader, as it just uses the render theme mechanism.
 
-![Screenshot MultiMap1](images/multimap1.png)
-
 ## Land
 
 First of all we need a good set of either land or sea areas. OSM data does not natively have this as coastlines, as opposed to all other data for areas, are just lines. The main OSM renderers all employ some sort of intermediate processing to get the sea and land areas right.
