@@ -20,7 +20,7 @@ ogr2ogr -overwrite -progress -skipfailures -clipsrc $LEFT $BOTTOM $RIGHT $TOP la
 
 This produces, depending on the bounds, a much smaller coastline shapefile. We usually extend the boundaries of this file a bit over the actual area for the map, to make sure we don't get any funny cut-offs.
 
-Then we convert the resulting shapefile with [shape2osm.py](https://github.com/mapsforge/mapsforge-creator/blob/master/shape2osm.py) (Python 2.x) and slight modifications (as are always required with shape2osm). We have set:
+Then we convert the resulting shapefile with [shape2osm.py](https://github.com/mapsforge/mapsforge-creator/blob/master/shape2osm.py) (Python 3.x) and slight modifications (as are always required with shape2osm). We have set:
 
 ```python
 fixed_tags = {
@@ -32,7 +32,7 @@ fixed_tags = {
 which will attach this tag to all polygons. We also changed the starting id for the OSM ids, as otherwise there is chance of collision with real OSM ids, which will create strange artifacts, like lines running through the map. We also changed the setting for the maximum length of ways, which does not seem to cause a problem.
 
 ```bash
-python shape2osm.py -l land land.shp
+python3 shape2osm.py -l land land.shp
 ```
 
 We now have `land1.osm`, an OSM XML file with land represented as polygons with the tag "natural" -> "nosea".
