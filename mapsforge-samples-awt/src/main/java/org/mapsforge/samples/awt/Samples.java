@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2019 devemux86
+ * Copyright 2014-2020 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -48,6 +48,7 @@ import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.InternalRenderTheme;
 
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -56,10 +57,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.prefs.Preferences;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 
 public final class Samples {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -76,9 +73,6 @@ public final class Samples {
      *             with possible SRTM hgt folder as 1st argument.
      */
     public static void main(String[] args) {
-        // Multithreaded map rendering
-        Parameters.NUMBER_OF_THREADS = 2;
-
         // Square frame buffer
         Parameters.SQUARE_FRAME_BUFFER = false;
 
