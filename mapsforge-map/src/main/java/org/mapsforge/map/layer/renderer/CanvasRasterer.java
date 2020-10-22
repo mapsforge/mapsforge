@@ -3,6 +3,7 @@
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2016 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -24,6 +25,7 @@ import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
@@ -61,7 +63,7 @@ public class CanvasRasterer {
                 List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
                 for (int index = wayList.size() - 1; index >= 0; --index) {
-                    drawShapePaintContainer(wayList.get(index));
+                    drawShapePaintContainer(renderContext, wayList.get(index));
                 }
             }
         }
@@ -129,7 +131,7 @@ public class CanvasRasterer {
         canvas.shadeBitmap(container.bitmap, container.hillsRect, container.tileRect, container.magnitude);
     }
 
-    private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
+    private void drawPath(RenderContext renderContext, ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
         this.path.clear();
 
         for (Point[] innerList : coordinates) {
@@ -148,11 +150,16 @@ public class CanvasRasterer {
                 }
             }
         }
-
-        this.canvas.drawPath(this.path, shapePaintContainer.paint);
+        Paint paint = shapePaintContainer.paint;
+        synchronized (paint) {
+            // Make sure setting the shader shift and actual drawing is synchronized, since the paint object
+            // is shared between multiple threads
+            paint.setBitmapShaderShift(renderContext.rendererJob.tile.getOrigin());
+            this.canvas.drawPath(this.path, paint);
+        }
     }
 
-    private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
+    private void drawShapePaintContainer(RenderContext renderContext, ShapePaintContainer shapePaintContainer) {
         ShapeContainer shapeContainer = shapePaintContainer.shapeContainer;
         ShapeType shapeType = shapeContainer.getShapeType();
         switch (shapeType) {
@@ -165,7 +172,7 @@ public class CanvasRasterer {
                 break;
             case POLYLINE:
                 PolylineContainer polylineContainer = (PolylineContainer) shapeContainer;
-                drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
+                drawPath(renderContext, shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
                 break;
         }
     }
