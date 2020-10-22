@@ -1,8 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2020 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,18 +18,12 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Filter;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicUtils;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.rendertheme.RenderContext;
 
 import java.util.ArrayList;
@@ -61,7 +56,7 @@ public class CanvasRasterer {
                 List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
 
                 for (int index = wayList.size() - 1; index >= 0; --index) {
-                    drawShapePaintContainer(wayList.get(index));
+                    drawShapePaintContainer(renderContext, wayList.get(index));
                 }
             }
         }
@@ -129,7 +124,7 @@ public class CanvasRasterer {
         canvas.shadeBitmap(container.bitmap, container.hillsRect, container.tileRect, container.magnitude);
     }
 
-    private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
+    private void drawPath(RenderContext renderContext, ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
         this.path.clear();
 
         for (Point[] innerList : coordinates) {
@@ -149,10 +144,19 @@ public class CanvasRasterer {
             }
         }
 
-        this.canvas.drawPath(this.path, shapePaintContainer.paint);
+        if (Parameters.NUMBER_OF_THREADS > 1) {
+            // Make sure setting the shader shift and actual drawing is synchronized,
+            // since the paint object is shared between multiple threads.
+            synchronized (shapePaintContainer.paint) {
+                shapePaintContainer.paint.setBitmapShaderShift(renderContext.rendererJob.tile.getOrigin());
+                this.canvas.drawPath(this.path, shapePaintContainer.paint);
+            }
+        } else {
+            this.canvas.drawPath(this.path, shapePaintContainer.paint);
+        }
     }
 
-    private void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
+    private void drawShapePaintContainer(RenderContext renderContext, ShapePaintContainer shapePaintContainer) {
         ShapeContainer shapeContainer = shapePaintContainer.shapeContainer;
         ShapeType shapeType = shapeContainer.getShapeType();
         switch (shapeType) {
@@ -165,7 +169,7 @@ public class CanvasRasterer {
                 break;
             case POLYLINE:
                 PolylineContainer polylineContainer = (PolylineContainer) shapeContainer;
-                drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
+                drawPath(renderContext, shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
                 break;
         }
     }
