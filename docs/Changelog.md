@@ -89,8 +89,6 @@
 - POI: add named entities option [#949](https://github.com/mapsforge/mapsforge/issues/949)
 - POI: fix multiple POI categories [#940](https://github.com/mapsforge/mapsforge/issues/940)
 - Feature parameters [#994](https://github.com/mapsforge/mapsforge/issues/994)
-  - `FrameBufferController.setUseSquareFrameBuffer` removed
-  - `ReadBuffer.setMaximumBufferSize` removed
 - Writers: Osmosis 0.46 with protobuf 3 [#1002](https://github.com/mapsforge/mapsforge/issues/1002)
 - Gradle 4 / Android plugin 3 support [#1009](https://github.com/mapsforge/mapsforge/issues/1009)
 - Internal render themes various improvements [#857](https://github.com/mapsforge/mapsforge/issues/857)
