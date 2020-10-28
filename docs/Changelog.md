@@ -6,6 +6,8 @@
 - Render theme from Android content providers [#1169](https://github.com/mapsforge/mapsforge/pull/1169)
 - Render themes: symbol and lineSymbol position attribute [#1172](https://github.com/mapsforge/mapsforge/pull/1172)
 - AssetsRenderTheme: stream improvements [#1167](https://github.com/mapsforge/mapsforge/pull/1167)
+- Map frame buffer improvements [#1178](https://github.com/mapsforge/mapsforge/pull/1178)
+  - `Parameters.FRAME_BUFFER_HA3`
 - Layer scroll event option [#1163](https://github.com/mapsforge/mapsforge/pull/1163)
   - `Parameters.LAYER_SCROLL_EVENT`
 - Many other minor improvements and bug fixes
