@@ -8,6 +8,8 @@
 - AssetsRenderTheme: stream improvements [#1167](https://github.com/mapsforge/mapsforge/pull/1167)
 - Map frame buffer improvements [#1178](https://github.com/mapsforge/mapsforge/pull/1178)
   - `Parameters.FRAME_BUFFER_HA3`
+- Symbol scale option [#1179](https://github.com/mapsforge/mapsforge/pull/1179)
+  - `Parameters.SYMBOL_SCALING`
 - Layer scroll event option [#1163](https://github.com/mapsforge/mapsforge/pull/1163)
   - `Parameters.LAYER_SCROLL_EVENT`
 - Many other minor improvements and bug fixes
