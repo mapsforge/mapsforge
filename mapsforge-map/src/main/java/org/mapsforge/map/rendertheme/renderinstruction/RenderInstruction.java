@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2020 devemux86
  * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -21,6 +21,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
@@ -112,7 +113,20 @@ public abstract class RenderInstruction {
             return null;
         }
 
-        return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height, percent);
+        float symbolScale = 1;
+        switch (Parameters.SYMBOL_SCALING) {
+            case ALL:
+                if (this instanceof Symbol || this instanceof LineSymbol) {
+                    symbolScale = DisplayModel.symbolScale;
+                }
+                break;
+            case POI:
+                if (this instanceof Symbol) {
+                    symbolScale = DisplayModel.symbolScale;
+                }
+                break;
+        }
+        return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height, (int) (percent * symbolScale));
     }
 
     public abstract void destroy();

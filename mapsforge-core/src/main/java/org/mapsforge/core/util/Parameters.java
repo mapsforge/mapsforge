@@ -20,6 +20,8 @@ public final class Parameters {
 
     public enum ParentTilesRendering {QUALITY, SPEED, OFF}
 
+    public enum SymbolScaling {ALL, POI}
+
     /**
      * If true will use anti-aliasing in rendering.
      */
@@ -60,6 +62,11 @@ public final class Parameters {
      * determines when this will be used.
      */
     public static boolean SQUARE_FRAME_BUFFER = true;
+
+    /**
+     * Symbol scaling mode.
+     */
+    public static SymbolScaling SYMBOL_SCALING = SymbolScaling.POI;
 
     private Parameters() {
         throw new IllegalStateException();

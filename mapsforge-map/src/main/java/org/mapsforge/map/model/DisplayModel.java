@@ -1,6 +1,6 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2020 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,6 +32,11 @@ public class DisplayModel extends Observable {
     private static final int DEFAULT_TILE_SIZE = 256;
     private static final float DEFAULT_MAX_TEXT_WIDTH_FACTOR = 0.7f;
     private static final int DEFAULT_MAX_TEXT_WIDTH = (int) (DEFAULT_TILE_SIZE * DEFAULT_MAX_TEXT_WIDTH_FACTOR);
+
+    /**
+     * The symbol scale.
+     */
+    public static float symbolScale = 1;
 
     private static float defaultUserScaleFactor = 1f;
     private static float deviceScaleFactor = 1f;
