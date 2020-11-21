@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2016 devemux86
+ * Copyright 2016-2020 devemux86
  * Copyright 2020 Adrian Batzill
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -39,7 +39,7 @@ import java.io.IOException;
 public class Symbol extends RenderInstruction {
     private Bitmap bitmap;
     private boolean bitmapInvalid;
-    private final Rectangle boundary;
+    private Rectangle boundary;
     private Display display;
     private String id;
     private Position position;
@@ -56,7 +56,9 @@ public class Symbol extends RenderInstruction {
         extractValues(elementName, pullParser);
 
         Bitmap bitmap = getBitmap();
-        this.boundary = computeBoundary(bitmap.getWidth(), bitmap.getHeight(), this.position);
+        if (bitmap != null) {
+            this.boundary = computeBoundary(bitmap.getWidth(), bitmap.getHeight(), this.position);
+        }
     }
 
     @Override
