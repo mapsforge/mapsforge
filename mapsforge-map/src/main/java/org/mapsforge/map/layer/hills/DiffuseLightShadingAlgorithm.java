@@ -16,14 +16,8 @@ package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.util.MercatorProjection;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -33,7 +27,7 @@ import java.util.logging.Logger;
  * <p>
  * <p>More accurate than {@link SimpleShadingAlgorithm}, but maybe not as useful for visualizing both softly rolling hills and dramatic mountain ranges at the same time.</p>
  */
-public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
+public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
 
     private static final Logger LOGGER = Logger.getLogger(DiffuseLightShadingAlgorithm.class.getName());
     private static final double halfPi = Math.PI / 2d;
@@ -87,39 +81,8 @@ public class DiffuseLightShadingAlgorithm implements ShadingAlgorithm {
         return rowLen - 1;
     }
 
-    @Override
-    public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
-        int axisLength = getAxisLenght(source);
-        int rowLen = axisLength + 1;
-        FileInputStream stream = null;
-        FileChannel channel = null;
-        try {
-            File file = source.getFile();
-            stream = new FileInputStream(file);
-            channel = stream.getChannel();
-            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
-            map.order(ByteOrder.BIG_ENDIAN);
-            byte[] bytes = convert(map, axisLength, rowLen, padding, source);
 
-            return new RawShadingResult(bytes, axisLength, axisLength, padding);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            return null;
-        } finally {
-            if (channel != null) try {
-                channel.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (stream != null) try {
-                stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private byte[] convert(MappedByteBuffer din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
+    protected byte[] convert(ByteBuffer din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
         byte[] bytes;
 
         short[] ringbuffer = new short[rowLen];
