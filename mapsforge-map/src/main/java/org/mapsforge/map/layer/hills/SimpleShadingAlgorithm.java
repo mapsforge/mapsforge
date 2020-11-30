@@ -14,14 +14,8 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -29,7 +23,7 @@ import java.util.logging.Logger;
  * <p>
  * <p>variations can be created by overriding {@link #exaggerate(double)}</p>
  */
-public class SimpleShadingAlgorithm implements ShadingAlgorithm {
+public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
     private static final Logger LOGGER = Logger.getLogger(SimpleShadingAlgorithm.class.getName());
     public final double linearity;
     public final double scale;
@@ -86,39 +80,8 @@ public class SimpleShadingAlgorithm implements ShadingAlgorithm {
         return rowLen - 1;
     }
 
-    @Override
-    public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
-        int axisLength = getAxisLenght(source);
-        int rowLen = axisLength + 1;
-        FileInputStream stream = null;
-        FileChannel channel = null;
-        try {
-            File file = source.getFile();
-            stream = new FileInputStream(file);
-            channel = stream.getChannel();
-            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
-            map.order(ByteOrder.BIG_ENDIAN);
-            byte[] bytes = convert(map, axisLength, rowLen, padding);
 
-            return new RawShadingResult(bytes, axisLength, axisLength, padding);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            return null;
-        } finally {
-            if (channel != null) try {
-                channel.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (stream != null) try {
-                stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private byte[] convert(MappedByteBuffer din, int axisLength, int rowLen, int padding) throws IOException {
+    protected byte[] convert(ByteBuffer din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
         byte[] bytes;
 
         short[] ringbuffer = new short[rowLen];

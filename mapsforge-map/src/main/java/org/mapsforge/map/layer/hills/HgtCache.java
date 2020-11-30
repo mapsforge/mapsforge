@@ -21,13 +21,16 @@ import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.BoundingBox;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * immutably configured, does the work for {@link MemoryCachingHgtReaderTileSource}
@@ -148,7 +151,7 @@ class HgtCache {
             @Override
             protected Map<TileKey, HgtFileInfo> calculate() {
                 Map<TileKey, HgtFileInfo> map = new HashMap<>();
-                Matcher matcher = Pattern.compile("([ns])(\\d{1,2})([ew])(\\d{1,3})\\.hgt", Pattern.CASE_INSENSITIVE).matcher("");
+                Matcher matcher = Pattern.compile("([ns])(\\d{1,2})([ew])(\\d{1,3})\\.(?:(hgt)|(zip))", Pattern.CASE_INSENSITIVE).matcher("");
                 crawl(HgtCache.this.demFolder, matcher, map, problems);
                 return map;
             }
@@ -164,19 +167,46 @@ class HgtCache {
                             int north = "n".equals(matcher.group(1).toLowerCase()) ? northsouth : -northsouth;
                             int east = "e".equals(matcher.group(3).toLowerCase()) ? eastwest : -eastwest;
 
-                            long length = file.length();
+                            long length = 0;
+
+                            if (matcher.group(6) == null) {
+                                length = file.length();
+                            } else {
+                                // zip
+                                ZipInputStream zipInputStream = null;
+                                try {
+                                    zipInputStream = new ZipInputStream(new FileInputStream(file));
+                                    String expectedHgt = name.toLowerCase().substring(0, name.length() - 4) + ".hgt";
+                                    ZipEntry entry;
+                                    while (null != (entry = zipInputStream.getNextEntry())) {
+                                        if (expectedHgt.equals(entry.getName().toLowerCase())) {
+                                            length = entry.getSize();
+                                            break;
+                                        }
+                                    }
+                                } catch (IOException e) {
+                                    problems.add("could not read zip file " + file.getName());
+                                }
+                                if (zipInputStream != null) {
+                                    try {
+                                        zipInputStream.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                             long heights = length / 2;
                             long sqrt = (long) Math.sqrt(heights);
-                            if (sqrt * sqrt != heights) {
+                            if (heights == 0 || sqrt * sqrt != heights) {
                                 if (problems != null)
                                     problems.add(file + " length in shorts (" + heights + ") is not a square number");
-                            } else {
-                                TileKey tileKey = new TileKey(north, east);
-                                HgtFileInfo existing = map.get(tileKey);
-                                if (existing == null || existing.size < length) {
-//                                hgtFiles.put(tileKey, new HgtFileInfo(file, east, north, east+1, north-1));
-                                    map.put(tileKey, new HgtFileInfo(file, north - 1, east, north, east + 1));
-                                }
+                                return;
+                            }
+
+                            TileKey tileKey = new TileKey(north, east);
+                            HgtFileInfo existing = map.get(tileKey);
+                            if (existing == null || existing.size < length) {
+                                map.put(tileKey, new HgtFileInfo(file, north - 1, east, north, east + 1, length));
                             }
                         }
                     } else if (file.isDirectory()) {
@@ -269,10 +299,10 @@ class HgtCache {
 
         final long size;
 
-        HgtFileInfo(File file, double minLatitude, double minLongitude, double maxLatitude, double maxLongitude) {
+        HgtFileInfo(File file, double minLatitude, double minLongitude, double maxLatitude, double maxLongitude, long size) {
             super(minLatitude, minLongitude, maxLatitude, maxLongitude);
             this.file = file;
-            size = file.length();
+            this.size = size;
         }
 
         Future<HillshadingBitmap> getBitmapFuture(double pxPerLat, double pxPerLng) {
