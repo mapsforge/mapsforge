@@ -5,6 +5,7 @@
 - Android: scoped storage example [#1170](https://github.com/mapsforge/mapsforge/pull/1170)
 - Render theme from Android content providers [#1169](https://github.com/mapsforge/mapsforge/pull/1169)
 - Render themes: symbol and lineSymbol position attribute [#1172](https://github.com/mapsforge/mapsforge/pull/1172)
+- Hillshading from zipped HGT [#1181](https://github.com/mapsforge/mapsforge/pull/1181)
 - AssetsRenderTheme: stream improvements [#1167](https://github.com/mapsforge/mapsforge/pull/1167)
 - Map frame buffer improvements [#1178](https://github.com/mapsforge/mapsforge/pull/1178)
   - `Parameters.FRAME_BUFFER_HA3`
