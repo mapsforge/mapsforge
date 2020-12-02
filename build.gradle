@@ -48,5 +48,13 @@ subprojects {
         sourceCompatibility = JavaVersion.VERSION_1_7
         targetCompatibility = JavaVersion.VERSION_1_7
         options.encoding = 'UTF-8'
+        if (JavaVersion.current().isJava9Compatible()) {
+            if (!project.properties.containsKey('android')) {
+                if (project.name.contains('writer'))
+                    options.compilerArgs.addAll(['--release', '8'])
+                else
+                    options.compilerArgs.addAll(['--release', '7'])
+            }
+        }
     }
 }
