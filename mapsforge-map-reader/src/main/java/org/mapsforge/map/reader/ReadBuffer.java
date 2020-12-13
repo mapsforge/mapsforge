@@ -51,7 +51,7 @@ public class ReadBuffer {
     }
 
     /**
-     * Returns one signed byte from the read buffer.
+     * Returns one byte from the read buffer.
      *
      * @return the byte value.
      */
