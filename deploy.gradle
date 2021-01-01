@@ -9,6 +9,7 @@ if (project.hasProperty("android")) {
     task javadoc(type: Javadoc) {
         source = android.sourceSets.main.java.srcDirs
         classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        classpath += project.android.libraryVariants.toList().first().javaCompileProvider.get().classpath
     }
 } else {
     task sourcesJar(type: Jar) {
