@@ -1,6 +1,11 @@
 # Changelog
 
-## New since 0.14.0
+## New since 0.15.0
+
+- Many other minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.16.0)
+
+## Version 0.15.0 (2021-01-01)
 
 - Android: scoped storage example [#1170](https://github.com/mapsforge/mapsforge/pull/1170)
 - Render theme from Android content providers [#1169](https://github.com/mapsforge/mapsforge/pull/1169)
