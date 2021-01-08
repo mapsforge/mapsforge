@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/themes"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/theme_default"
+            android:checked="true"
+            android:title="@string/theme_default" />
+        <item
+            android:id="@+id/theme_osmarender"
+            android:title="@string/theme_osmarender" />
+        <item
+            android:id="@+id/theme_external"
+            android:title="@string/theme_external" />
+    </group>
+
+</menu>

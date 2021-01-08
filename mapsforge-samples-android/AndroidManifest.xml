@@ -100,6 +100,9 @@
             android:name=".LongPressAction"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
+            android:name=".MapsforgeMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
             android:name=".MultiLingualMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
