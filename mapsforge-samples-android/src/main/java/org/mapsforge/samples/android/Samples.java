@@ -91,6 +91,7 @@ public class Samples extends Activity {
         LinearLayout linearLayout = findViewById(R.id.samples);
         linearLayout.addView(createButton(GettingStarted.class));
         linearLayout.addView(createLabel(null));
+        linearLayout.addView(createButton(MapsforgeMapViewer.class));
         linearLayout.addView(createButton(SimplestMapViewer.class));
         linearLayout.addView(createButton(DiagnosticsMapViewer.class));
 
