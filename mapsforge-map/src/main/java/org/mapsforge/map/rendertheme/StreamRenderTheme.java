@@ -1,5 +1,6 @@
 /*
- * Copyright 2016-2017 devemux86
+ * Copyright 2016-2021 devemux86
+ * Copyright 2021 eddiemuc
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,6 +28,7 @@ public class StreamRenderTheme implements XmlRenderTheme {
     private final InputStream inputStream;
     private XmlRenderThemeMenuCallback menuCallback;
     private final String relativePathPrefix;
+    private final XmlThemeResourceProvider resourceProvider;
 
     /**
      * @param relativePathPrefix the prefix for all relative resource paths.
@@ -39,11 +41,22 @@ public class StreamRenderTheme implements XmlRenderTheme {
     /**
      * @param relativePathPrefix the prefix for all relative resource paths.
      * @param inputStream        an input stream containing valid render theme XML data.
+     * @param resourceProvider   (optional) custom provider to retrieve resources internally referenced by "src" attribute (e.g. images, icons).
+     */
+    public StreamRenderTheme(String relativePathPrefix, InputStream inputStream, XmlThemeResourceProvider resourceProvider) {
+        this(relativePathPrefix, inputStream, resourceProvider, null);
+    }
+
+    /**
+     * @param relativePathPrefix the prefix for all relative resource paths.
+     * @param inputStream        an input stream containing valid render theme XML data.
+     * @param resourceProvider   (optional) custom provider to retrieve resources internally referenced by "src" attribute (e.g. images, icons).
      * @param menuCallback       the interface callback to create a settings menu on the fly.
      */
-    public StreamRenderTheme(String relativePathPrefix, InputStream inputStream, XmlRenderThemeMenuCallback menuCallback) {
+    public StreamRenderTheme(String relativePathPrefix, InputStream inputStream, XmlThemeResourceProvider resourceProvider, XmlRenderThemeMenuCallback menuCallback) {
         this.relativePathPrefix = relativePathPrefix;
         this.inputStream = inputStream;
+        this.resourceProvider = resourceProvider;
         this.menuCallback = menuCallback;
     }
 
@@ -80,11 +93,17 @@ public class StreamRenderTheme implements XmlRenderTheme {
     }
 
     @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        return this.resourceProvider;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((this.inputStream == null) ? 0 : this.inputStream.hashCode());
         result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
+        result = prime * result + ((this.resourceProvider == null) ? 0 : this.resourceProvider.hashCode());
         return result;
     }
 
