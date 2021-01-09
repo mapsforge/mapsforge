@@ -12,6 +12,9 @@
             android:id="@+id/theme_osmarender"
             android:title="@string/theme_osmarender" />
         <item
+            android:id="@+id/theme_external_archive"
+            android:title="@string/theme_external_archive" />
+        <item
             android:id="@+id/theme_external"
             android:title="@string/theme_external" />
     </group>

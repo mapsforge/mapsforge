@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,6 +93,12 @@ public class AssetsRenderTheme implements XmlRenderTheme {
     @Override
     public InputStream getRenderThemeAsStream() throws IOException {
         return this.assetManager.open((TextUtils.isEmpty(this.relativePathPrefix) ? "" : this.relativePathPrefix) + this.fileName);
+    }
+
+    @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        // Use default resource provider
+        return null;
     }
 
     @Override

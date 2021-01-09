@@ -1,5 +1,6 @@
 /*
- * Copyright 2020 devemux86
+ * Copyright 2020-2021 devemux86
+ * Copyright 2021 eddiemuc
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,9 +17,9 @@ package org.mapsforge.map.android.rendertheme;
 
 import android.content.ContentResolver;
 import android.net.Uri;
-import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,28 +32,38 @@ public class ContentRenderTheme implements XmlRenderTheme {
 
     private final ContentResolver contentResolver;
     private XmlRenderThemeMenuCallback menuCallback;
-    private final String relativePathPrefix;
+    private final XmlThemeResourceProvider resourceProvider;
     private final Uri uri;
 
     /**
-     * @param contentResolver    the Android content resolver.
-     * @param relativePathPrefix the prefix for all relative resource paths.
-     * @param uri                the XML render theme URI.
+     * @param contentResolver the Android content resolver.
+     * @param uri             the XML render theme URI.
      */
-    public ContentRenderTheme(ContentResolver contentResolver, String relativePathPrefix, Uri uri) {
-        this(contentResolver, relativePathPrefix, uri, null);
+    public ContentRenderTheme(ContentResolver contentResolver, Uri uri) {
+        this(contentResolver, uri, null);
     }
 
     /**
-     * @param contentResolver    the Android content resolver.
-     * @param relativePathPrefix the prefix for all relative resource paths.
-     * @param uri                the XML render theme URI.
-     * @param menuCallback       the interface callback to create a settings menu on the fly.
+     * @param contentResolver the Android content resolver.
+     * @param uri             the XML render theme URI.
+     * @param relativePathUri the Document Uri pointing to the relative root for resource resolving.
+     *                        Requires Android 5.0 (API 21), value will be ignored in lower API levels.
      */
-    public ContentRenderTheme(ContentResolver contentResolver, String relativePathPrefix, Uri uri, XmlRenderThemeMenuCallback menuCallback) {
+    public ContentRenderTheme(ContentResolver contentResolver, Uri uri, Uri relativePathUri) {
+        this(contentResolver, uri, relativePathUri, null);
+    }
+
+    /**
+     * @param contentResolver the Android content resolver.
+     * @param uri             the XML render theme URI.
+     * @param relativePathUri the Document Uri pointing to the relative root for resource resolving.
+     *                        Requires Android 5.0 (API 21), value will be ignored in lower API levels.
+     * @param menuCallback    the interface callback to create a settings menu on the fly.
+     */
+    public ContentRenderTheme(ContentResolver contentResolver, Uri uri, Uri relativePathUri, XmlRenderThemeMenuCallback menuCallback) {
         this.contentResolver = contentResolver;
-        this.relativePathPrefix = relativePathPrefix;
         this.uri = uri;
+        this.resourceProvider = new ContentResolverResourceProvider(contentResolver, relativePathUri);
         this.menuCallback = menuCallback;
     }
 
@@ -72,9 +83,6 @@ public class ContentRenderTheme implements XmlRenderTheme {
             e.printStackTrace();
             return false;
         }
-        if (!Utils.equals(this.relativePathPrefix, other.relativePathPrefix)) {
-            return false;
-        }
         return true;
     }
 
@@ -85,12 +93,17 @@ public class ContentRenderTheme implements XmlRenderTheme {
 
     @Override
     public String getRelativePathPrefix() {
-        return this.relativePathPrefix;
+        return "";
     }
 
     @Override
     public InputStream getRenderThemeAsStream() throws IOException {
         return this.contentResolver.openInputStream(uri);
+    }
+
+    @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        return this.resourceProvider;
     }
 
     @Override
@@ -104,7 +117,7 @@ public class ContentRenderTheme implements XmlRenderTheme {
             e.printStackTrace();
         }
         result = prime * result + ((inputStream == null) ? 0 : inputStream.hashCode());
-        result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
+        result = prime * result + ((this.resourceProvider == null) ? 0 : this.resourceProvider.hashCode());
         return result;
     }
 
