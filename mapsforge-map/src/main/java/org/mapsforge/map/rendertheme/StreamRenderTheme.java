@@ -27,6 +27,7 @@ public class StreamRenderTheme implements XmlRenderTheme {
     private final InputStream inputStream;
     private XmlRenderThemeMenuCallback menuCallback;
     private final String relativePathPrefix;
+    private final XmlThemeResourceProvider resourceProvider;
 
     /**
      * @param relativePathPrefix the prefix for all relative resource paths.
@@ -42,9 +43,20 @@ public class StreamRenderTheme implements XmlRenderTheme {
      * @param menuCallback       the interface callback to create a settings menu on the fly.
      */
     public StreamRenderTheme(String relativePathPrefix, InputStream inputStream, XmlRenderThemeMenuCallback menuCallback) {
+        this(relativePathPrefix, inputStream, menuCallback, null);
+    }
+
+    /**
+     * @param relativePathPrefix the prefix for all relative resource paths.
+     * @param inputStream        an input stream containing valid render theme XML data.
+     * @param menuCallback       the interface callback to create a settings menu on the fly.
+     * @param resourceProvider   (optional) custom provider to retrieve resources internally referenced by "src" attribute (e.g. images, icons)
+     */
+    public StreamRenderTheme(String relativePathPrefix, InputStream inputStream, XmlRenderThemeMenuCallback menuCallback, XmlThemeResourceProvider resourceProvider) {
         this.relativePathPrefix = relativePathPrefix;
         this.inputStream = inputStream;
         this.menuCallback = menuCallback;
+        this.resourceProvider = resourceProvider;
     }
 
     @Override
@@ -77,6 +89,11 @@ public class StreamRenderTheme implements XmlRenderTheme {
     @Override
     public InputStream getRenderThemeAsStream() {
         return this.inputStream;
+    }
+
+    @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        return this.resourceProvider;
     }
 
     @Override

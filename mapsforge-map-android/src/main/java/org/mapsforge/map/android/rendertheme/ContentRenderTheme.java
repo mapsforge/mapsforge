@@ -19,6 +19,7 @@ import android.net.Uri;
 import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ public class ContentRenderTheme implements XmlRenderTheme {
     private XmlRenderThemeMenuCallback menuCallback;
     private final String relativePathPrefix;
     private final Uri uri;
+    private final XmlThemeResourceProvider resourceProvider;
 
     /**
      * @param contentResolver    the Android content resolver.
@@ -47,13 +49,25 @@ public class ContentRenderTheme implements XmlRenderTheme {
      * @param contentResolver    the Android content resolver.
      * @param relativePathPrefix the prefix for all relative resource paths.
      * @param uri                the XML render theme URI.
+     * @param relativePathUri    the Document Uri pointing to the relative root for resource resolving. Requires API level 21 (LOLLIPOP), value will be ignored in lower API levels.
+     */
+    public ContentRenderTheme(ContentResolver contentResolver, String relativePathPrefix, Uri uri, Uri relativePathUri) {
+        this(contentResolver, relativePathPrefix, uri, relativePathUri, null);
+    }
+
+    /**
+     * @param contentResolver    the Android content resolver.
+     * @param relativePathPrefix the prefix for all relative resource paths.
+     * @param uri                the XML render theme URI.
+     * @param relativePathUri    the Document Uri pointing to the relative root for resource resolving. Requires API level 21 (LOLLIPOP), value will be ignored in lower API levels.
      * @param menuCallback       the interface callback to create a settings menu on the fly.
      */
-    public ContentRenderTheme(ContentResolver contentResolver, String relativePathPrefix, Uri uri, XmlRenderThemeMenuCallback menuCallback) {
+    public ContentRenderTheme(ContentResolver contentResolver, String relativePathPrefix, Uri uri, Uri relativePathUri, XmlRenderThemeMenuCallback menuCallback) {
         this.contentResolver = contentResolver;
         this.relativePathPrefix = relativePathPrefix;
         this.uri = uri;
         this.menuCallback = menuCallback;
+        this.resourceProvider = new ContentResolverResourceProvider(contentResolver, relativePathUri);
     }
 
     @Override
@@ -86,6 +100,11 @@ public class ContentRenderTheme implements XmlRenderTheme {
     @Override
     public String getRelativePathPrefix() {
         return this.relativePathPrefix;
+    }
+
+    @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        return this.resourceProvider;
     }
 
     @Override

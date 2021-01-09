@@ -24,6 +24,7 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -40,6 +41,7 @@ public class Area extends RenderInstruction {
     private final Paint fill;
     private final int level;
     private final String relativePathPrefix;
+    private final XmlThemeResourceProvider resourceProvider;
     private Scale scale = Scale.STROKE;
     private Bitmap shaderBitmap;
     private String src;
@@ -48,11 +50,12 @@ public class Area extends RenderInstruction {
     private float strokeWidth;
 
     public Area(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-                XmlPullParser pullParser, int level, String relativePathPrefix) throws IOException, XmlPullParserException {
+                XmlPullParser pullParser, int level, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
 
         this.level = level;
         this.relativePathPrefix = relativePathPrefix;
+        this.resourceProvider = resourceProvider;
 
         this.fill = graphicFactory.createPaint();
         this.fill.setColor(Color.TRANSPARENT);
@@ -131,7 +134,7 @@ public class Area extends RenderInstruction {
             Paint fillPaint = getFillPaint();
             if (shaderBitmap == null && !bitmapInvalid) {
                 try {
-                    shaderBitmap = createBitmap(relativePathPrefix, src);
+                    shaderBitmap = createBitmap(relativePathPrefix, src, resourceProvider);
                     if (shaderBitmap != null) {
                         fillPaint.setBitmapShader(shaderBitmap);
                         shaderBitmap.decrementRefCount();

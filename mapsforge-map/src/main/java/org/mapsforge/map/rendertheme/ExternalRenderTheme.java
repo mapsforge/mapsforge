@@ -22,6 +22,7 @@ import java.io.*;
  * via an XML file.
  */
 public class ExternalRenderTheme implements XmlRenderTheme {
+
     private final long lastModifiedTime;
     private XmlRenderThemeMenuCallback menuCallback;
     private final File renderThemeFile;
@@ -106,6 +107,12 @@ public class ExternalRenderTheme implements XmlRenderTheme {
     @Override
     public InputStream getRenderThemeAsStream() throws IOException {
         return new FileInputStream(this.renderThemeFile);
+    }
+
+    @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        //Use default resource provider
+        return null;
     }
 
     @Override

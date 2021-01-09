@@ -12,8 +12,14 @@
             android:id="@+id/theme_osmarender"
             android:title="@string/theme_osmarender" />
         <item
-            android:id="@+id/theme_external"
-            android:title="@string/theme_external" />
+            android:id="@+id/theme_external_no_resources"
+            android:title="@string/theme_external_no_resources" />
+        <item
+            android:id="@+id/theme_external_with_resources"
+            android:title="@string/theme_external_with_resources" />
+        <item
+            android:id="@+id/theme_external_custom_resources"
+            android:title="@string/theme_external_custom_resources" />
     </group>
 
 </menu>

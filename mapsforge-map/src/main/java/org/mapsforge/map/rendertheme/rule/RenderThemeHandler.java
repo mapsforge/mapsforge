@@ -24,6 +24,7 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleLayer;
 import org.mapsforge.map.rendertheme.XmlRenderThemeStyleMenu;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.mapsforge.map.rendertheme.renderinstruction.Area;
 import org.mapsforge.map.rendertheme.renderinstruction.Caption;
@@ -65,7 +66,7 @@ public final class RenderThemeHandler {
         XmlPullParser pullParser = getXmlPullParserFactory().newPullParser();
 
         RenderThemeHandler renderThemeHandler = new RenderThemeHandler(graphicFactory, displayModel,
-                xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme, pullParser);
+                xmlRenderTheme.getRelativePathPrefix(), xmlRenderTheme.getResourceProvider(), xmlRenderTheme, pullParser);
         InputStream inputStream = null;
         try {
             inputStream = xmlRenderTheme.getRenderThemeAsStream();
@@ -97,6 +98,7 @@ public final class RenderThemeHandler {
     private final XmlPullParser pullParser;
     private String qName;
     private final String relativePathPrefix;
+    private final XmlThemeResourceProvider resourceProvider;
     private RenderTheme renderTheme;
     private final Stack<Rule> ruleStack = new Stack<Rule>();
     private Map<String, Symbol> symbols = new HashMap<String, Symbol>();
@@ -105,12 +107,13 @@ public final class RenderThemeHandler {
     private XmlRenderThemeStyleLayer currentLayer;
 
     private RenderThemeHandler(GraphicFactory graphicFactory, DisplayModel displayModel, String relativePathPrefix,
-                               XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
+                               XmlThemeResourceProvider resourceProvider,  XmlRenderTheme xmlRenderTheme, XmlPullParser pullParser) {
         super();
         this.pullParser = pullParser;
         this.graphicFactory = graphicFactory;
         this.displayModel = displayModel;
         this.relativePathPrefix = relativePathPrefix;
+        this.resourceProvider = resourceProvider;
         this.xmlRenderTheme = xmlRenderTheme;
     }
 
@@ -187,7 +190,7 @@ public final class RenderThemeHandler {
             } else if ("area".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
                 Area area = new Area(this.graphicFactory, this.displayModel, qName, pullParser, this.level++,
-                        this.relativePathPrefix);
+                        this.relativePathPrefix, this.resourceProvider);
                 if (isVisible(area)) {
                     this.currentRule.addRenderingInstruction(area);
                 }
@@ -233,14 +236,14 @@ public final class RenderThemeHandler {
             } else if ("line".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
                 Line line = new Line(this.graphicFactory, this.displayModel, qName, pullParser, this.level++,
-                        this.relativePathPrefix);
+                        this.relativePathPrefix, this.resourceProvider);
                 if (isVisible(line)) {
                     this.currentRule.addRenderingInstruction(line);
                 }
             } else if ("lineSymbol".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
                 LineSymbol lineSymbol = new LineSymbol(this.graphicFactory, this.displayModel, qName,
-                        pullParser, this.relativePathPrefix);
+                        pullParser, this.relativePathPrefix, this.resourceProvider);
                 if (isVisible(lineSymbol)) {
                     this.currentRule.addRenderingInstruction(lineSymbol);
                 }
@@ -274,7 +277,7 @@ public final class RenderThemeHandler {
             } else if ("symbol".equals(qName)) {
                 checkState(qName, Element.RENDERING_INSTRUCTION);
                 Symbol symbol = new Symbol(this.graphicFactory, this.displayModel, qName, pullParser,
-                        this.relativePathPrefix);
+                        this.relativePathPrefix, this.resourceProvider);
                 if (isVisible(symbol)) {
                     this.currentRule.addRenderingInstruction(symbol);
                 }

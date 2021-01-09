@@ -50,6 +50,12 @@ public enum InternalRenderTheme implements XmlRenderTheme {
     }
 
     @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        //Use default resource provider
+        return null;
+    }
+
+    @Override
     public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
     }
 }

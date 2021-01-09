@@ -27,6 +27,7 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 
 import java.io.IOException;
@@ -107,7 +108,7 @@ public abstract class RenderInstruction {
         return new Rectangle(left, top, left + width, top + height);
     }
 
-    protected Bitmap createBitmap(String relativePathPrefix, String src)
+    protected Bitmap createBitmap(String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider)
             throws IOException {
         if (null == src || src.isEmpty()) {
             return null;
@@ -126,7 +127,7 @@ public abstract class RenderInstruction {
                 }
                 break;
         }
-        return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, (int) width, (int) height, (int) (percent * symbolScale));
+        return XmlUtils.createBitmap(graphicFactory, displayModel, relativePathPrefix, src, resourceProvider, (int) width, (int) height, (int) (percent * symbolScale));
     }
 
     public abstract void destroy();

@@ -39,6 +39,11 @@ public interface XmlRenderTheme {
     InputStream getRenderThemeAsStream() throws IOException;
 
     /**
+     * @return an (optional) custom provider to retrieve resources internally referenced by "src" attribute (e.g. images, icons).
+     */
+    XmlThemeResourceProvider getResourceProvider();
+
+    /**
      * @param menuCallback the interface callback to create a settings menu on the fly.
      */
     void setMenuCallback(XmlRenderThemeMenuCallback menuCallback);

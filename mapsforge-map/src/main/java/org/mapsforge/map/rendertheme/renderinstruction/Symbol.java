@@ -27,6 +27,7 @@ import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -45,12 +46,14 @@ public class Symbol extends RenderInstruction {
     private Position position;
     private int priority;
     private final String relativePathPrefix;
+    private final XmlThemeResourceProvider resourceProvider;
     private String src;
 
     public Symbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
-                  XmlPullParser pullParser, String relativePathPrefix) throws IOException, XmlPullParserException {
+                  XmlPullParser pullParser, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
         this.relativePathPrefix = relativePathPrefix;
+        this.resourceProvider = resourceProvider;
         this.display = Display.IFSPACE;
         this.position = Position.CENTER;
         extractValues(elementName, pullParser);
@@ -102,7 +105,7 @@ public class Symbol extends RenderInstruction {
     public Bitmap getBitmap() {
         if (this.bitmap == null && !bitmapInvalid) {
             try {
-                this.bitmap = createBitmap(relativePathPrefix, src);
+                this.bitmap = createBitmap(relativePathPrefix, src, resourceProvider);
             } catch (IOException ioException) {
                 this.bitmapInvalid = true;
             }

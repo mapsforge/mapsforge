@@ -50,18 +50,19 @@ public final class XmlUtils {
     }
 
     public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
-                                              String relativePathPrefix, String src, int width, int height, int percent) throws IOException {
+                                              String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider, int width, int height, int percent) throws IOException {
         if (src == null || src.length() == 0) {
             // no image source defined
             return null;
         }
 
-        InputStream inputStream = createInputStream(graphicFactory, relativePathPrefix, src);
+        InputStream inputStream = createInputStream(graphicFactory, relativePathPrefix, src, resourceProvider);
         try {
             String absoluteName = getAbsoluteName(relativePathPrefix, src);
             // we need to hash with the width/height included as the same symbol could be required
             // in a different size and must be cached with a size-specific hash
-            int hash = new StringBuilder().append(absoluteName).append(width).append(height).append(percent).toString().hashCode();
+            // we also need to include the resourceProvider as different providers may give different inputstreams for same source
+            int hash = new StringBuilder().append(absoluteName).append(width).append(height).append(percent).append(resourceProvider==null?"null":resourceProvider.hashCode()).toString().hashCode();
             if (src.toLowerCase(Locale.ENGLISH).endsWith(".svg")) {
                 try {
                     return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
@@ -144,8 +145,19 @@ public final class XmlUtils {
      * <p/>
      * If the resource has not a location prefix, then the search order is (file, assets, jar).
      */
-    private static InputStream createInputStream(GraphicFactory graphicFactory, String relativePathPrefix, String src) throws IOException {
+    private static InputStream createInputStream(GraphicFactory graphicFactory, String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider) throws IOException {
         InputStream inputStream;
+        if (resourceProvider != null) {
+            try {
+                inputStream = resourceProvider.createInputStream(src);
+                if (inputStream != null) {
+                    return inputStream;
+                }
+            } catch (IOException ioe) {
+                LOGGER.fine("Exception trying to access resource '" + src + "' using custom provider: " + ioe);
+                //ignore and try to resolve inputStream using the standard process
+            }
+        }
         if (src.startsWith(PREFIX_ASSETS)) {
             src = src.substring(PREFIX_ASSETS.length());
             inputStream = inputStreamFromAssets(graphicFactory, relativePathPrefix, src);

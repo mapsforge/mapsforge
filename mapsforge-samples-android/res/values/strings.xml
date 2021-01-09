@@ -86,7 +86,10 @@
 
     <string name="theme_default">Default</string>
     <string name="theme_osmarender">Osmarender</string>
-    <string name="theme_external">External theme</string>
+    <string name="theme_external_no_resources">Theme w/a resources</string>
+    <string name="theme_external_with_resources">Theme with resources (API21 req.)</string>
+    <string name="theme_external_custom_resources">Theme with programmed resource</string>
+
 
     <string name="startup_dontshowagain">Don\'t show again</string>
     <string name="startup_message">To run this samples app, you need any map with filename berlin.map installed on storage.</string>
