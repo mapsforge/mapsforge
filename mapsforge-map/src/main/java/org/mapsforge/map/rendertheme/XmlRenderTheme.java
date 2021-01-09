@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2017-2020 devemux86
+ * Copyright 2017-2021 devemux86
+ * Copyright 2021 eddiemuc
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -39,7 +40,17 @@ public interface XmlRenderTheme {
     InputStream getRenderThemeAsStream() throws IOException;
 
     /**
+     * @return a custom provider to retrieve resources internally referenced by "src" attribute (e.g. images, icons).
+     */
+    XmlThemeResourceProvider getResourceProvider();
+
+    /**
      * @param menuCallback the interface callback to create a settings menu on the fly.
      */
     void setMenuCallback(XmlRenderThemeMenuCallback menuCallback);
+
+    /**
+     * @param resourceProvider a custom provider to retrieve resources internally referenced by "src" attribute (e.g. images, icons).
+     */
+    void setResourceProvider(XmlThemeResourceProvider resourceProvider);
 }

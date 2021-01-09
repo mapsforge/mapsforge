@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012 mapsforge.org
- * Copyright 2016-2020 devemux86
+ * Copyright 2016-2021 devemux86
+ * Copyright 2021 eddiemuc
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,6 +21,7 @@ import android.text.TextUtils;
 import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +36,7 @@ public class AssetsRenderTheme implements XmlRenderTheme {
     private final String fileName;
     private XmlRenderThemeMenuCallback menuCallback;
     private final String relativePathPrefix;
+    private XmlThemeResourceProvider resourceProvider;
 
     /**
      * @param assetManager       the Android asset manager.
@@ -95,6 +98,11 @@ public class AssetsRenderTheme implements XmlRenderTheme {
     }
 
     @Override
+    public XmlThemeResourceProvider getResourceProvider() {
+        return this.resourceProvider;
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -112,5 +120,10 @@ public class AssetsRenderTheme implements XmlRenderTheme {
     @Override
     public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
         this.menuCallback = menuCallback;
+    }
+
+    @Override
+    public void setResourceProvider(XmlThemeResourceProvider resourceProvider) {
+        this.resourceProvider = resourceProvider;
     }
 }

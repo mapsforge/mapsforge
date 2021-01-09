@@ -1,8 +1,9 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2019 devemux86
+ * Copyright 2014-2021 devemux86
  * Copyright 2018 Adrian Batzill
+ * Copyright 2021 eddiemuc
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -23,11 +24,7 @@ import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.renderinstruction.RenderInstruction;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -35,7 +32,7 @@ public final class XmlUtils {
     private static final Logger LOGGER = Logger.getLogger(XmlUtils.class.getName());
 
     private static final String PREFIX_ASSETS = "assets:";
-    private static final String PREFIX_FILE = "file:";
+    public static final String PREFIX_FILE = "file:";
     private static final String PREFIX_JAR = "jar:";
 
     private static final String PREFIX_JAR_V1 = "jar:/org/mapsforge/android/maps/rendertheme";
@@ -50,18 +47,23 @@ public final class XmlUtils {
     }
 
     public static ResourceBitmap createBitmap(GraphicFactory graphicFactory, DisplayModel displayModel,
-                                              String relativePathPrefix, String src, int width, int height, int percent) throws IOException {
+                                              String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider,
+                                              int width, int height, int percent) throws IOException {
         if (src == null || src.length() == 0) {
             // no image source defined
             return null;
         }
 
-        InputStream inputStream = createInputStream(graphicFactory, relativePathPrefix, src);
+        InputStream inputStream = createInputStream(graphicFactory, relativePathPrefix, src, resourceProvider);
         try {
             String absoluteName = getAbsoluteName(relativePathPrefix, src);
             // we need to hash with the width/height included as the same symbol could be required
             // in a different size and must be cached with a size-specific hash
-            int hash = new StringBuilder().append(absoluteName).append(width).append(height).append(percent).toString().hashCode();
+            // we also need to include the resourceProvider as different providers may give different input streams for same source
+            StringBuilder sb = new StringBuilder().append(absoluteName).append(width).append(height).append(percent);
+            if (resourceProvider != null)
+                sb.append(resourceProvider.hashCode());
+            int hash = sb.toString().hashCode();
             if (src.toLowerCase(Locale.ENGLISH).endsWith(".svg")) {
                 try {
                     return graphicFactory.renderSvg(inputStream, displayModel.getScaleFactor(), width, height, percent, hash);
@@ -144,7 +146,19 @@ public final class XmlUtils {
      * <p/>
      * If the resource has not a location prefix, then the search order is (file, assets, jar).
      */
-    private static InputStream createInputStream(GraphicFactory graphicFactory, String relativePathPrefix, String src) throws IOException {
+    private static InputStream createInputStream(GraphicFactory graphicFactory, String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider) throws IOException {
+        if (resourceProvider != null) {
+            try {
+                InputStream inputStream = resourceProvider.createInputStream(relativePathPrefix, src);
+                if (inputStream != null) {
+                    return inputStream;
+                }
+            } catch (IOException ioe) {
+                LOGGER.fine("Exception trying to access resource: " + src + " using custom provider: " + ioe);
+                // Ignore and try to resolve input stream using the standard process
+            }
+        }
+
         InputStream inputStream;
         if (src.startsWith(PREFIX_ASSETS)) {
             src = src.substring(PREFIX_ASSETS.length());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 devemux86
+ * Copyright 2021 devemux86
  * Copyright 2021 eddiemuc
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -17,47 +17,55 @@ package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.util.Utils;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * A StreamRenderTheme allows for customizing the rendering style of the map
- * via an XML input stream.
+ * A ZipRenderTheme allows for customizing the rendering style of the map
+ * via an XML from an archive.
  */
-public class StreamRenderTheme implements XmlRenderTheme {
+public class ZipRenderTheme implements XmlRenderTheme {
 
-    private final InputStream inputStream;
     private XmlRenderThemeMenuCallback menuCallback;
     private final String relativePathPrefix;
     private XmlThemeResourceProvider resourceProvider;
+    protected final String xmlTheme;
 
     /**
-     * @param relativePathPrefix the prefix for all relative resource paths.
-     * @param inputStream        an input stream containing valid render theme XML data.
+     * @param xmlTheme         the XML theme path in the archive.
+     * @param resourceProvider the custom provider to retrieve resources internally referenced by "src" attribute (e.g. images, icons).
      */
-    public StreamRenderTheme(String relativePathPrefix, InputStream inputStream) {
-        this(relativePathPrefix, inputStream, null);
+    public ZipRenderTheme(String xmlTheme, XmlThemeResourceProvider resourceProvider) {
+        this(xmlTheme, resourceProvider, null);
     }
 
     /**
-     * @param relativePathPrefix the prefix for all relative resource paths.
-     * @param inputStream        an input stream containing valid render theme XML data.
-     * @param menuCallback       the interface callback to create a settings menu on the fly.
+     * @param xmlTheme         the XML theme path in the archive.
+     * @param resourceProvider the custom provider to retrieve resources internally referenced by "src" attribute (e.g. images, icons).
+     * @param menuCallback     the interface callback to create a settings menu on the fly.
      */
-    public StreamRenderTheme(String relativePathPrefix, InputStream inputStream, XmlRenderThemeMenuCallback menuCallback) {
-        this.relativePathPrefix = relativePathPrefix;
-        this.inputStream = inputStream;
+    public ZipRenderTheme(String xmlTheme, XmlThemeResourceProvider resourceProvider, XmlRenderThemeMenuCallback menuCallback) {
+        this.xmlTheme = xmlTheme;
+        this.resourceProvider = resourceProvider;
         this.menuCallback = menuCallback;
+
+        this.relativePathPrefix = xmlTheme.substring(0, xmlTheme.lastIndexOf("/") + 1);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
-        } else if (!(obj instanceof StreamRenderTheme)) {
+        } else if (!(obj instanceof ZipRenderTheme)) {
             return false;
         }
-        StreamRenderTheme other = (StreamRenderTheme) obj;
-        if (this.inputStream != other.inputStream) {
+        ZipRenderTheme other = (ZipRenderTheme) obj;
+        try {
+            if (getRenderThemeAsStream() != other.getRenderThemeAsStream()) {
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
         if (!Utils.equals(this.relativePathPrefix, other.relativePathPrefix)) {
@@ -77,8 +85,8 @@ public class StreamRenderTheme implements XmlRenderTheme {
     }
 
     @Override
-    public InputStream getRenderThemeAsStream() {
-        return this.inputStream;
+    public InputStream getRenderThemeAsStream() throws IOException {
+        return this.resourceProvider.createInputStream(this.relativePathPrefix, this.xmlTheme.substring(this.xmlTheme.lastIndexOf("/") + 1));
     }
 
     @Override
@@ -90,7 +98,13 @@ public class StreamRenderTheme implements XmlRenderTheme {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.inputStream == null) ? 0 : this.inputStream.hashCode());
+        InputStream inputStream = null;
+        try {
+            inputStream = getRenderThemeAsStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        result = prime * result + ((inputStream == null) ? 0 : inputStream.hashCode());
         result = prime * result + ((this.relativePathPrefix == null) ? 0 : this.relativePathPrefix.hashCode());
         return result;
     }
