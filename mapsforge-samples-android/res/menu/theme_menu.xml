@@ -20,6 +20,9 @@
         <item
             android:id="@+id/theme_external_custom_resources"
             android:title="@string/theme_external_custom_resources" />
+        <item
+            android:id="@+id/theme_external_zipped"
+            android:title="@string/theme_external_zipped" />
     </group>
 
 </menu>

@@ -18,21 +18,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
-import android.provider.OpenableColumns;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.rendertheme.ContentRenderTheme;
-import org.mapsforge.map.android.rendertheme.ContentResolverResourceProvider;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.datastore.MapDataStore;
@@ -43,18 +37,14 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.StreamRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
+import org.mapsforge.map.rendertheme.ZippedXmlThemeResource;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
-import static org.mapsforge.core.util.IOUtils.closeQuietly;
+import java.util.zip.ZipInputStream;
 
 /**
  * Android app example.
@@ -66,6 +56,7 @@ public class MapsforgeMapViewer extends Activity {
     private static final int SELECT_THEMES_DIRECTORY = 2;
     private static final int SELECT_THEMES_DIRECTORY_FILE = 3;
     private static final int SELECT_THEME_FILE_CUSTOMRESOURCE = 4;
+    private static final int SELECT_THEME_FILE_ZIPPED = 5;
 
     private MapView mapView;
     private Menu menu;
@@ -125,6 +116,12 @@ public class MapsforgeMapViewer extends Activity {
                 intent.setType("*/*");
                 startActivityForResult(intent, SELECT_THEME_FILE_CUSTOMRESOURCE);
                 return true;
+        } else if (itemId == R.id.theme_external_zipped) {
+            intent = new Intent(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Intent.ACTION_OPEN_DOCUMENT : Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            startActivityForResult(intent, SELECT_THEME_FILE_ZIPPED);
+            return true;
         }
         return false;
     }
@@ -216,6 +213,33 @@ public class MapsforgeMapViewer extends Activity {
             }
 
             menu.findItem(R.id.theme_external_custom_resources).setChecked(true);
+        } else if (requestCode == SELECT_THEME_FILE_ZIPPED) {
+            if (resultCode != Activity.RESULT_OK || data == null)
+                return;
+
+            Uri uri = data.getData();
+            try {
+                final ZippedXmlThemeResource zxts = new ZippedXmlThemeResource(new ZipInputStream(getContentResolver().openInputStream(uri)));
+                final List<String> xmlThemes = zxts.getXmlThemes();
+                if (!xmlThemes.isEmpty()) {
+                    new AlertDialog.Builder(this).setTitle("Select Theme")
+                            .setSingleChoiceItems(xmlThemes.toArray(new String[xmlThemes.size()]), -1, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    XmlRenderTheme theme = new StreamRenderTheme("", zxts.createInputStream(xmlThemes.get(which)), null, zxts);
+
+                                    loadTheme(theme);
+                                    menu.findItem(R.id.theme_external_zipped).setChecked(true);
+                                }
+                            })
+                            .create().show();
+                }
+
+
+            } catch (IOException fnfe) {
+                //ignore in this example
+            }
         }
     }
 
