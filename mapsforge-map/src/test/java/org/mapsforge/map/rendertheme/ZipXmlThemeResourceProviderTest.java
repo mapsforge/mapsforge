@@ -10,14 +10,14 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 
-public class ZippedXmlThemeResourceTest {
+public class ZipXmlThemeResourceProviderTest {
 
     @Test
     public void openZip() throws IOException {
-        final ZipInputStream zis = new ZipInputStream(ZippedXmlThemeResourceTest.class.getResourceAsStream("/xmlthemetest.zip"));
+        final ZipInputStream zis = new ZipInputStream(ZipXmlThemeResourceProviderTest.class.getResourceAsStream("/xmlthemetest.zip"));
         Assert.assertNotNull(zis);
 
-        final ZippedXmlThemeResource zts = new ZippedXmlThemeResource(zis);
+        final ZipXmlThemeResourceProvider zts = new ZipXmlThemeResourceProvider(zis);
 
         //all files contained
         Assert.assertNotNull(zts.createInputStream("file:one.xml"));
@@ -28,6 +28,12 @@ public class ZippedXmlThemeResourceTest {
         Assert.assertNotNull(zts.createInputStream("file:res/sub/four.xml"));
         Assert.assertNotNull(zts.createInputStream("file:res/sub/blue_star_sub_1.svg"));
         Assert.assertNotNull(zts.createInputStream("file:res/sub/blue_star_sub_2.svg"));
+
+        //can get same files using various other formats
+        Assert.assertNotNull(zts.createInputStream("res/sub/blue_star_sub_2.svg"));
+        Assert.assertNotNull(zts.createInputStream("/res/sub/blue_star_sub_2.svg"));
+        Assert.assertNotNull(zts.createInputStream("file:/res/sub/blue_star_sub_2.svg"));
+
 
         //dirs NOT contained!
         Assert.assertNull(zts.createInputStream("file:res/"));
@@ -54,6 +60,6 @@ public class ZippedXmlThemeResourceTest {
 
     @Test
     public void openEmpty() throws IOException {
-        Assert.assertTrue(new ZippedXmlThemeResource(null).getXmlThemes().isEmpty());
+        Assert.assertTrue(new ZipXmlThemeResourceProvider(null).getXmlThemes().isEmpty());
     }
 }

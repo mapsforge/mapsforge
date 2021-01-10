@@ -37,7 +37,7 @@ import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.StreamRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
-import org.mapsforge.map.rendertheme.ZippedXmlThemeResource;
+import org.mapsforge.map.rendertheme.ZipXmlThemeResourceProvider;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -219,7 +219,7 @@ public class MapsforgeMapViewer extends Activity {
 
             Uri uri = data.getData();
             try {
-                final ZippedXmlThemeResource zxts = new ZippedXmlThemeResource(new ZipInputStream(getContentResolver().openInputStream(uri)));
+                final ZipXmlThemeResourceProvider zxts = new ZipXmlThemeResourceProvider(new ZipInputStream(getContentResolver().openInputStream(uri)));
                 final List<String> xmlThemes = zxts.getXmlThemes();
                 if (!xmlThemes.isEmpty()) {
                     new AlertDialog.Builder(this).setTitle("Select Theme")
