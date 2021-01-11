@@ -149,7 +149,7 @@ public final class XmlUtils {
     private static InputStream createInputStream(GraphicFactory graphicFactory, String relativePathPrefix, String src, XmlThemeResourceProvider resourceProvider) throws IOException {
         if (resourceProvider != null) {
             try {
-                InputStream inputStream = resourceProvider.createInputStream(src);
+                InputStream inputStream = resourceProvider.createInputStream(relativePathPrefix, src);
                 if (inputStream != null) {
                     return inputStream;
                 }

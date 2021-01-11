@@ -149,17 +149,23 @@ public class MapsforgeMapViewer extends Activity {
                 Uri uri = data.getData();
 
                 final ZipXmlThemeResourceProvider resourceProvider = new ZipXmlThemeResourceProvider(new ZipInputStream(new BufferedInputStream(getContentResolver().openInputStream(uri))));
-                final List<String> xmlThemes = resourceProvider.getXmlThemes();
+                final List<ZipXmlThemeResourceProvider.XmlTheme> xmlThemes = resourceProvider.getXmlThemes();
                 if (xmlThemes.isEmpty())
                     return;
 
+                String[] xmlThemeItems = new String[xmlThemes.size()];
+                int idx = 0;
+                for(ZipXmlThemeResourceProvider.XmlTheme theme : xmlThemes) {
+                    xmlThemeItems[idx++] = theme.toString();
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.dialog_theme_title);
-                builder.setSingleChoiceItems(xmlThemes.toArray(new String[0]), -1, new DialogInterface.OnClickListener() {
+                builder.setSingleChoiceItems(xmlThemeItems, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        XmlRenderTheme theme = new StreamRenderTheme("", resourceProvider.createInputStream(xmlThemes.get(which)), resourceProvider);
+                        XmlRenderTheme theme = new StreamRenderTheme(xmlThemes.get(which).path, resourceProvider.createInputStream(xmlThemes.get(which).path, xmlThemes.get(which).name), resourceProvider);
                         loadTheme(theme);
                         menu.findItem(R.id.theme_external_archive).setChecked(true);
                     }

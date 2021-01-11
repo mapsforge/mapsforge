@@ -23,9 +23,10 @@ import java.io.InputStream;
 public interface XmlThemeResourceProvider {
 
     /**
+     * @param relativePath a relative path to use as a base for search in the resource provuider
      * @param source a source string parsed out of an XML render theme "src" attribute.
      * @return an InputStream to read the resource data from.
      * @throws IOException if the resource cannot be found or an access error occurred.
      */
-    InputStream createInputStream(final String source) throws IOException;
+    InputStream createInputStream(final String relativePath, final String source) throws IOException;
 }

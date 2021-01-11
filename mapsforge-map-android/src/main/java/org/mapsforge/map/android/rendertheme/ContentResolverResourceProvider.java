@@ -77,8 +77,9 @@ public class ContentResolverResourceProvider implements XmlThemeResourceProvider
     }
 
     @Override
-    public InputStream createInputStream(String source) throws FileNotFoundException {
-        Uri docUri = resourceUriCache.get(source);
+    public InputStream createInputStream(String relativePath, String source) throws FileNotFoundException {
+        String sourceKey = (relativePath == null ? source : relativePath + "/" + source);
+        Uri docUri = resourceUriCache.get(sourceKey);
         if (docUri != null) {
             return contentResolver.openInputStream(docUri);
         }

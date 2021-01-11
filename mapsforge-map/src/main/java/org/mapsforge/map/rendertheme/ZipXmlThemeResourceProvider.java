@@ -36,7 +36,27 @@ import java.util.zip.ZipInputStream;
 public class ZipXmlThemeResourceProvider implements XmlThemeResourceProvider {
 
     private final Map<String, byte[]> files = new HashMap<>();
-    private final List<String> xmlThemes = new ArrayList<>();
+    private final List<XmlTheme> xmlThemes = new ArrayList<>();
+
+    public static class XmlTheme {
+        public final String name;
+        public final String path;
+
+        public XmlTheme(String zipName) {
+            int idx = zipName == null ? -1 : zipName.lastIndexOf("/");
+            if (idx<0) {
+                this.name = zipName == null ? "" : zipName;
+                this.path = "";
+            } else {
+                this.name = zipName.substring(idx + 1);
+                this.path = zipName.substring(0, idx);
+            }
+        }
+
+        public String toString() {
+            return path.isEmpty() ? name : path + "/" + name;
+        }
+    }
 
     /**
      * @param zipInputStream zip stream to read resources from
@@ -58,20 +78,20 @@ public class ZipXmlThemeResourceProvider implements XmlThemeResourceProvider {
 
         try {
             ZipEntry zipEntry = zipInputStream.getNextEntry();
-            String folder = zipEntry != null && zipEntry.isDirectory() ? zipEntry.getName() : null;
+            //String folder = zipEntry != null && zipEntry.isDirectory() ? zipEntry.getName() : null;
             while (zipEntry != null) {
                 if (!zipEntry.isDirectory() && zipEntry.getSize() <= maxResourceSizeToCache) {
                     byte[] entry = readComplete(zipInputStream, (int) zipEntry.getSize());
                     String fileName = zipEntry.getName();
-                    if (folder != null && fileName.startsWith(folder)) {
-                        fileName = fileName.substring(folder.length());
-                    }
+//                    if (folder != null && fileName.startsWith(folder)) {
+//                        fileName = fileName.substring(folder.length());
+//                    }
                     if (fileName.startsWith("/")) {
                         fileName = fileName.substring(1);
                     }
                     files.put(fileName, entry);
                     if (fileName.endsWith(".xml")) {
-                        xmlThemes.add(fileName);
+                        xmlThemes.add(new XmlTheme(fileName));
                     }
                 }
                 zipEntry = zipInputStream.getNextEntry();
@@ -82,13 +102,22 @@ public class ZipXmlThemeResourceProvider implements XmlThemeResourceProvider {
     }
 
     @Override
-    public InputStream createInputStream(String source) {
+    public InputStream createInputStream(String relativePath, String source) {
         String sourceKey = source;
         if (sourceKey.startsWith(XmlUtils.PREFIX_FILE)) {
             sourceKey = sourceKey.substring(XmlUtils.PREFIX_FILE.length());
         }
         if (sourceKey.startsWith("/")) {
             sourceKey = sourceKey.substring(1);
+        }
+        if (relativePath != null) {
+            if (relativePath.startsWith("/")) {
+                relativePath = relativePath.substring(1);
+            }
+            if (relativePath.endsWith("/")) {
+                relativePath = relativePath.substring(0, relativePath.length() - 1);
+            }
+            sourceKey = relativePath.isEmpty() ? sourceKey : relativePath + "/" + sourceKey;
         }
         if (files.containsKey(sourceKey)) {
             return new ByteArrayInputStream(files.get(sourceKey));
@@ -100,7 +129,7 @@ public class ZipXmlThemeResourceProvider implements XmlThemeResourceProvider {
         return files.size();
     }
 
-    public List<String> getXmlThemes() {
+    public List<XmlTheme> getXmlThemes() {
         return xmlThemes;
     }
 
