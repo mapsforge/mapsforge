@@ -2,13 +2,16 @@
 
 ## New since 0.15.0
 
+- Android: scoped storage map / theme example [#1186](https://github.com/mapsforge/mapsforge/pull/1186)
+- Render theme from zip archive [#1186](https://github.com/mapsforge/mapsforge/pull/1186)
+- Render themes: custom resource providers [#1186](https://github.com/mapsforge/mapsforge/pull/1186)
 - Nautical unit adapter with feet [#1188](https://github.com/mapsforge/mapsforge/pull/1188)
 - Many other minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.16.0)
 
 ## Version 0.15.0 (2021-01-01)
 
-- Android: scoped storage example [#1170](https://github.com/mapsforge/mapsforge/pull/1170)
+- Android: scoped storage map example [#1170](https://github.com/mapsforge/mapsforge/pull/1170)
 - Render theme from Android content providers [#1169](https://github.com/mapsforge/mapsforge/pull/1169)
 - Render themes: symbol and lineSymbol position attribute [#1172](https://github.com/mapsforge/mapsforge/pull/1172)
 - Hillshading from zipped HGT [#1181](https://github.com/mapsforge/mapsforge/pull/1181)
