@@ -59,12 +59,9 @@ public class ZipXmlThemeResourceProvider implements XmlThemeResourceProvider {
                     continue;
                 }
                 byte[] entry = streamToBytes(zipInputStream, (int) zipEntry.getSize());
-                String fileName = zipEntry.getName();
-                if (fileName.startsWith("/")) {
-                    fileName = fileName.substring(1);
-                }
+                String fileName = zipNameToFileName(zipEntry.getName());
                 files.put(fileName, entry);
-                if (fileName.toLowerCase(Locale.ROOT).endsWith(".xml")) {
+                if (isXmlTheme(fileName)) {
                     xmlThemes.add(fileName);
                 }
             }
@@ -111,6 +108,39 @@ public class ZipXmlThemeResourceProvider implements XmlThemeResourceProvider {
         return xmlThemes;
     }
 
+    /**
+     * Scans a given zip stream for contained xml themes without actually reading and storing its content in memory.
+     *
+     * This method is useful e.g. to find out which Xml Themes are available across multiple Zip files without actually have to read them all into memory.
+     *
+     * @param zipInputStream zip stream to read resources from
+     * @return the XML theme paths in the archive
+     * @throws IOException if a problem occurs reading the stream     */
+    public static List<String> getXmlThemesIn(ZipInputStream zipInputStream) throws IOException {
+        if (zipInputStream == null) {
+            return Collections.emptyList();
+        }
+
+        List<String> xmlThemes = new ArrayList<>();
+
+        try {
+            ZipEntry zipEntry;
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                if (zipEntry.isDirectory()) {
+                    continue;
+                }
+                String fileName = zipNameToFileName(zipEntry.getName());
+                if (isXmlTheme(fileName)) {
+                    xmlThemes.add(fileName);
+                }
+            }
+        } finally {
+            IOUtils.closeQuietly(zipInputStream);
+        }
+
+        return xmlThemes;
+    }
+
     private static byte[] streamToBytes(InputStream in, int size) throws IOException {
         byte[] bytes = new byte[size];
         int count, offset = 0;
@@ -119,5 +149,17 @@ public class ZipXmlThemeResourceProvider implements XmlThemeResourceProvider {
             offset += count;
         }
         return bytes;
+    }
+
+    private static String zipNameToFileName(String zipName) {
+        String fileName = zipName;
+        if (fileName.startsWith("/")) {
+            fileName = fileName.substring(1);
+        }
+        return fileName;
+    }
+
+    private static boolean isXmlTheme(String fileName) {
+        return fileName.toLowerCase(Locale.ROOT).endsWith(".xml");
     }
 }
