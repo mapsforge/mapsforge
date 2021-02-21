@@ -83,4 +83,18 @@ public class ZipXmlThemeResourceProviderTest {
     public void openEmpty() throws IOException {
         Assert.assertTrue(new ZipXmlThemeResourceProvider(null).getXmlThemes().isEmpty());
     }
+
+    @Test
+    public void scanZipForXmlThemes() throws IOException {
+        ZipInputStream zis = new ZipInputStream(new BufferedInputStream(ZipXmlThemeResourceProviderTest.class.getResourceAsStream("/xmlthemetest.zip")));
+        Assert.assertNotNull(zis);
+
+        List<String> xmlThemes = ZipXmlThemeResourceProvider.scanXmlThemes(zis);
+
+        Assert.assertEquals(4, xmlThemes.size());
+        Assert.assertTrue(xmlThemes.contains("one.xml"));
+        Assert.assertTrue(xmlThemes.contains("two.xml"));
+        Assert.assertTrue(xmlThemes.contains("res/three.xml"));
+        Assert.assertTrue(xmlThemes.contains("res/sub/four.xml"));
+    }
 }

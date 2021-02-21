@@ -147,10 +147,9 @@ public class MapsforgeMapViewer extends Activity {
                 return;
 
             try {
-                Uri uri = data.getData();
+                final Uri uri = data.getData();
 
-                final ZipXmlThemeResourceProvider resourceProvider = new ZipXmlThemeResourceProvider(new ZipInputStream(new BufferedInputStream(getContentResolver().openInputStream(uri))));
-                final List<String> xmlThemes = resourceProvider.getXmlThemes();
+                final List<String> xmlThemes = ZipXmlThemeResourceProvider.scanXmlThemes(new ZipInputStream(new BufferedInputStream(getContentResolver().openInputStream(uri))));
                 if (xmlThemes.isEmpty())
                     return;
 
@@ -159,10 +158,14 @@ public class MapsforgeMapViewer extends Activity {
                 builder.setSingleChoiceItems(xmlThemes.toArray(new String[0]), -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        XmlRenderTheme theme = new ZipRenderTheme(xmlThemes.get(which), resourceProvider);
-                        loadTheme(theme);
-                        menu.findItem(R.id.theme_external_archive).setChecked(true);
+                        try {
+                            dialog.dismiss();
+                            XmlRenderTheme theme = new ZipRenderTheme(xmlThemes.get(which), new ZipXmlThemeResourceProvider(new ZipInputStream(new BufferedInputStream(getContentResolver().openInputStream(uri)))));
+                            loadTheme(theme);
+                            menu.findItem(R.id.theme_external_archive).setChecked(true);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 builder.show();
