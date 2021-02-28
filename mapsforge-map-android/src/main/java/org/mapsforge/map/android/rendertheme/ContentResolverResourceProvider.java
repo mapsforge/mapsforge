@@ -40,6 +40,7 @@ public class ContentResolverResourceProvider implements XmlThemeResourceProvider
 
     private final ContentResolver contentResolver;
     private final Uri relativeRootUri;
+    private final boolean isDocumentUri;
 
     private final Map<String, Uri> resourceUriCache = new HashMap<>();
 
@@ -55,9 +56,32 @@ public class ContentResolverResourceProvider implements XmlThemeResourceProvider
         }
     }
 
-    public ContentResolverResourceProvider(ContentResolver contentResolver, Uri treeUri) {
+    /**
+     * Creates a new ContentResolverResource provider
+     * @param contentResolver content resolver used to read content
+     * @param relativeRootUri uri pointing to a directory. Uri is assumed to be a pure tree Uri (as e.g. returned by {@link android.content.Intent#ACTION_OPEN_DOCUMENT_TREE}).
+     */
+    public ContentResolverResourceProvider(ContentResolver contentResolver, Uri relativeRootUri) {
+        this(contentResolver, relativeRootUri, false);
+    }
+
+    /**
+     * Creates a new ContentResolverResource provider
+     * @param contentResolver content resolver used to read content
+     * @param relativeRootUri uri pointing to a directory
+     * @param isDocumentUri
+     *    Uris as returned e.g. by {@link android.content.Intent#ACTION_OPEN_DOCUMENT_TREE}) cannot directly be used to scan directories and read content,
+     *    they must be converted to a document uris first using {@link DocumentsContract#buildChildDocumentsUriUsingTree(Uri, String)}.
+     *    However, in some situations this conversion was done previously by caller (e.g. if root dir should be subdirectory of a directory returned by {@link android.content.Intent#ACTION_OPEN_DOCUMENT_TREE})
+     *    In these cases, converting Uri will point to original root directory which is not always the wanted behaviour.
+     *    Thus, flag 'isDocumentUri' allows caller to control whether conversion should be done or not.
+     *    If set to true, then given Uri is considered to be a document uri already and no conversion is done.
+     *    If set to false, uri is considered to be a pure tree uri as returned e.g. by {@link android.content.Intent#ACTION_OPEN_DOCUMENT_TREE}) and it is converted.
+     */
+    public ContentResolverResourceProvider(ContentResolver contentResolver, Uri relativeRootUri, boolean isDocumentUri) {
         this.contentResolver = contentResolver;
-        this.relativeRootUri = treeUri;
+        this.relativeRootUri = relativeRootUri;
+        this.isDocumentUri = isDocumentUri;
 
         refreshCache();
     }
@@ -140,7 +164,12 @@ public class ContentResolverResourceProvider implements XmlThemeResourceProvider
             return;
         }
 
-        Uri dirUri = DocumentsContract.buildDocumentUriUsingTree(relativeRootUri, DocumentsContract.getTreeDocumentId(relativeRootUri));
+        Uri dirUri = relativeRootUri;
+        if (!isDocumentUri) {
+            //convert "tree uri" to a "document uri"
+            dirUri = DocumentsContract.buildDocumentUriUsingTree(dirUri, DocumentsContract.getTreeDocumentId(dirUri));
+        }
         buildCacheLevel(XmlUtils.PREFIX_FILE, dirUri);
     }
 }
+
