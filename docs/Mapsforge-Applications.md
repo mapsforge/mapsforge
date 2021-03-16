@@ -63,4 +63,4 @@
 | [Watertrack ECO](http://watertrack.de/) | GPS Tracking on Germany Waterways | Proprietary/Free | Closed |
 | [Wikiloc](http://www.wikiloc.com/outdoor-navigation-app) | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed |
 
-You know an application that is missing here? Please inform us by sending a message via the [GitHub Discussions](https://github.com/mapsforge/mapsforge/discussions).
+You know an application that is missing here? Please inform us by sending a message via the [Discussions](https://github.com/mapsforge/mapsforge/discussions).

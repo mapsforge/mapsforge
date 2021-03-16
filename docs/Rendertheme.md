@@ -2,7 +2,7 @@
 
 **This article describes how to use XML-based renderthemes to style maps, including the extensions of Rendertheme V4 or newer (new with release 0.5).**
 
-If you have any questions or problems, don't hesitate to ask the [GitHub Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
+If you have any questions or problems, don't hesitate to ask the [Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
 
 ## Introduction
 

@@ -4,7 +4,7 @@
 
 This article describes how to build the mapsforge project and libraries from scratch and how developers should start working.
 
-If you have any questions or problems, don't hesitate to ask the [GitHub Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
+If you have any questions or problems, don't hesitate to ask the [Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
 
 ## Checkout the code
 

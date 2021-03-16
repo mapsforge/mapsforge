@@ -4,7 +4,7 @@ The Mapsforge Map-Writer is a plug-in for the OpenStreetMap Osmosis Tool to conv
 
 This documentation is intended for those who want to create map files for use with mapsforge.
 
-If you have any questions or problems, don't hesitate to ask the [GitHub Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
+If you have any questions or problems, don't hesitate to ask the [Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
 
 ## Introduction
 

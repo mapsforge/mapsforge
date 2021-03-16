@@ -2,7 +2,7 @@
 
 As an open source project, we welcome new contributors and appreciate your help.
 
-Before you start working on an unresolved issue or try to implement a new feature, please contact us via the [GitHub Discussions](https://github.com/mapsforge/mapsforge/discussions). We will then discuss the best way to realize your proposal and figure out how we can help you to get started quickly.
+Before you start working on an unresolved issue or try to implement a new feature, please contact us via the [Discussions](https://github.com/mapsforge/mapsforge/discussions). We will then discuss the best way to realize your proposal and figure out how we can help you to get started quickly.
 
 If you are only requesting a small change in the code, you may attach a patch file to the corresponding issue, but it is best to create a pull request on Github. Make sure that your patch is derived from the latest version in our **master** repository, otherwise we might be unable to apply it. Important is to keep pull requests simple with one feature in each. Please follow our code and style conventions.
 
