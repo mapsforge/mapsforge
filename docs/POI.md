@@ -2,7 +2,7 @@
 
 This article describes how to use the POI API in mapsforge POI library (from `prototypes` branch).
 
-If you have any questions or problems, don't hesitate to ask our public [forum](https://groups.google.com/group/mapsforge-dev) for help.
+If you have any questions or problems, don't hesitate to ask the [GitHub Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
 
 ## Introduction
 

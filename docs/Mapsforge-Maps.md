@@ -9,4 +9,4 @@
 - [OpenMaps](https://openmaps.eu/)
 - [vector.city](https://vector.city/)
 
-You know a Mapsforge map provider that is missing here? Please inform us by sending a message via our public [forum](https://groups.google.com/group/mapsforge-dev).
+You know a Mapsforge map provider that is missing here? Please inform us by sending a message via the [GitHub Discussions](https://github.com/mapsforge/mapsforge/discussions).
