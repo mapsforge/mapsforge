@@ -2,8 +2,6 @@
 
 This article describes how to use the POI API in mapsforge POI library (from `prototypes` branch).
 
-If you have any questions or problems, don't hesitate to ask the [Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
-
 ## Introduction
 
 _Points of Interest_ (POIs) are points with a given position, category and data. A POI database is used to store a set of POIs and to search for POIs within a given area.

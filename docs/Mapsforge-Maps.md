@@ -8,5 +8,3 @@
 - [OpenAndroMaps](https://www.openandromaps.org/en/)
 - [OpenMaps](https://openmaps.eu/)
 - [vector.city](https://vector.city/)
-
-You know a Mapsforge map provider that is missing here? Please inform us by sending a message via the [Discussions](https://github.com/mapsforge/mapsforge/discussions).

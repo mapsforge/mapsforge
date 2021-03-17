@@ -4,8 +4,6 @@ The Mapsforge Map-Writer is a plug-in for the OpenStreetMap Osmosis Tool to conv
 
 This documentation is intended for those who want to create map files for use with mapsforge.
 
-If you have any questions or problems, don't hesitate to ask the [Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
-
 ## Introduction
 
 This document describes the mapsforge map-writer plugin. It allows to convert OpenStreetMap data into the .map format which is needed to display maps with mapsforge-based applications. The tool is implemented as a plugin to the [Osmosis](http://wiki.openstreetmap.org/wiki/Osmosis) software. To use the tool, you are required to have a working installation of Osmosis and the writer plugin copied to the plugins directory of Osmosis. You should also be familiar with the Osmosis tool.

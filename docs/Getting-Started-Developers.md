@@ -4,8 +4,6 @@
 
 This article describes how to build the mapsforge project and libraries from scratch and how developers should start working.
 
-If you have any questions or problems, don't hesitate to ask the [Discussions](https://github.com/mapsforge/mapsforge/discussions) for help.
-
 ## Checkout the code
 
 The mapsforge code is now **only** at https://github.com/mapsforge/mapsforge. The old repositories are not maintained anymore.
