@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2020 devemux86
+ * Copyright 2014-2021 devemux86
  * Copyright 2017 usrusr
  * Copyright 2018 Adrian Batzill
  *
@@ -18,7 +18,6 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap.Config;
 import android.graphics.Rect;
@@ -100,8 +99,8 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         return new AndroidCanvas(canvas);
     }
 
-    public static void createInstance(Application app) {
-        INSTANCE = new AndroidGraphicFactory(app);
+    public static void createInstance(Context context) {
+        INSTANCE = new AndroidGraphicFactory(context);
     }
 
     /**
@@ -159,14 +158,14 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         return ((AndroidPath) path).path;
     }
 
-    private final Application application;
+    private final Context context;
     private File svgCacheDir;
 
-    private AndroidGraphicFactory(Application app) {
-        this.application = app;
-        if (app != null) {
+    private AndroidGraphicFactory(Context context) {
+        this.context = context;
+        if (context != null) {
             // the density is an approximate scale factor for the device
-            DisplayModel.setDeviceScaleFactor(app.getResources().getDisplayMetrics().density);
+            DisplayModel.setDeviceScaleFactor(context.getResources().getDisplayMetrics().density);
         }
     }
 
@@ -266,7 +265,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (this.svgCacheDir != null) {
             return new File(this.svgCacheDir, name).delete();
         }
-        return this.application.deleteFile(name);
+        return this.context.deleteFile(name);
     }
 
     /*
@@ -276,7 +275,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (this.svgCacheDir != null) {
             return this.svgCacheDir.list();
         }
-        return this.application.fileList();
+        return this.context.fileList();
     }
 
     /*
@@ -286,7 +285,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (this.svgCacheDir != null) {
             return new FileInputStream(new File(this.svgCacheDir, name));
         }
-        return this.application.openFileInput(name);
+        return this.context.openFileInput(name);
     }
 
     /*
@@ -296,7 +295,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         if (this.svgCacheDir != null) {
             return new FileOutputStream(new File(this.svgCacheDir, name), mode == Context.MODE_APPEND);
         }
-        return this.application.openFileOutput(name, mode);
+        return this.context.openFileOutput(name, mode);
     }
 
     @Override
@@ -304,7 +303,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
         // this allows loading of resource bitmaps from the Android assets folder
         String pathName = (TextUtils.isEmpty(relativePathPrefix) ? "" : relativePathPrefix) + src;
         try {
-            return this.application.getAssets().open(pathName);
+            return this.context.getAssets().open(pathName);
         } catch (IOException e) {
             throw new FileNotFoundException("invalid resource: " + pathName);
         }
