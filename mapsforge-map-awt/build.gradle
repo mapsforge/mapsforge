@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 dependencies {
     api project(":mapsforge-map-reader")
-    api 'com.github.blackears:svgSalamander:v1.1.1'
+    api 'com.formdev:svgSalamander:1.1.2.4'
     testImplementation project(":mapsforge-themes")
     testImplementation "junit:junit:$jUnitVersion"
 }

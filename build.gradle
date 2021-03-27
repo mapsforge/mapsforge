@@ -53,7 +53,6 @@ subprojects {
             }
         }
         mavenCentral()
-        maven { url 'https://jitpack.io' }
     }
 
     tasks.withType(JavaCompile) {
