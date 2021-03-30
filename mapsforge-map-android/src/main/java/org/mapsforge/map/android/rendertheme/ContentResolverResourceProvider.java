@@ -98,7 +98,9 @@ public class ContentResolverResourceProvider implements XmlThemeResourceProvider
             if (doc.isDirectory) {
                 buildCacheLevel(prefix + doc.name + "/", doc.uri);
             } else {
-                resourceUriCache.put(prefix + doc.name, doc.uri);
+                //store both relative Urls (e.g. used by OpenAndroMaps/Elevate-Theme) and absolute Urls (e.g. used by Freizeitkarte)
+                resourceUriCache.put(XmlUtils.PREFIX_FILE + prefix + doc.name, doc.uri);
+                resourceUriCache.put(XmlUtils.PREFIX_FILE + "/" + prefix + doc.name, doc.uri);
             }
         }
     }
@@ -172,6 +174,6 @@ public class ContentResolverResourceProvider implements XmlThemeResourceProvider
             // Convert "tree uri" to a "document uri"
             dirUri = DocumentsContract.buildDocumentUriUsingTree(dirUri, DocumentsContract.getTreeDocumentId(dirUri));
         }
-        buildCacheLevel(XmlUtils.PREFIX_FILE, dirUri);
+        buildCacheLevel("", dirUri);
     }
 }
