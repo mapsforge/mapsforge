@@ -57,7 +57,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 
 - The plugin requires a bounding box definition, which is either included in the data or is given via the command line parameter `bbox`. Take note that the XML export functionality of the OSM website currently produces invalid bounding box definitions, so that the `bbox` parameter must be used in this case.
 - If you installed the plugin into the user home, please make sure that you run osmosis with exactly this user and not with another user (e.g. the root user).
-- There is a potential issue with tile grid artifacts inside areas at zoom levels 12-13, specially if they have stroke or semi-transparent fill. To solve this you can try a different zoom interval:
+- There is a potential issue with tile grid artifacts inside areas at zoom levels 12-13, specially if they have stroke or semi-transparent fill. To solve this you can try adding `force-polygon-line="true"` in the tag-mapping or a different zoom interval:
 ```bash
 zoom-interval-conf=5,0,7,10,8,11,12,12,13,14,14,21
 ```
