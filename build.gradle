@@ -1,12 +1,6 @@
 buildscript {
     repositories {
         google()
-        jcenter {
-            content {
-                // https://youtrack.jetbrains.com/issue/IDEA-261387
-                includeModule("org.jetbrains.trove4j", "trove4j")
-            }
-        }
         mavenCentral()
     }
     dependencies {
@@ -46,12 +40,6 @@ def versionName() { return version }
 subprojects {
     repositories {
         google()
-        jcenter {
-            content {
-                // https://youtrack.jetbrains.com/issue/IDEA-261387
-                includeModule("org.jetbrains.trove4j", "trove4j")
-            }
-        }
         mavenCentral()
     }
 
