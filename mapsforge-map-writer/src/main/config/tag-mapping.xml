@@ -111,6 +111,7 @@
         <osm-tag key="place" value="suburb" zoom-appear="12" />
         <osm-tag key="place" value="town" zoom-appear="9" />
         <osm-tag key="place" value="village" zoom-appear="12" />
+        <osm-tag key="place" value="neighbourhood" equivalent-values="neighborhood" zoom-appear="12"/>
     </pois>
 
     <!-- NATURAL TAGS -->
