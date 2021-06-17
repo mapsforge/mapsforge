@@ -1,5 +1,5 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.mapsforge/mapsforge-core.svg)](https://search.maven.org/search?q=g:org.mapsforge)
-[![Build Status](https://travis-ci.org/mapsforge/mapsforge.svg?branch=master)](https://travis-ci.org/mapsforge/mapsforge)
+[![Build Status](https://travis-ci.com/mapsforge/mapsforge.svg?branch=master)](https://travis-ci.com/mapsforge/mapsforge)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 
 # Mapsforge
