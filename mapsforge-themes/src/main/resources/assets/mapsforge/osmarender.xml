@@ -1242,6 +1242,10 @@
                 <caption fill="#606060" font-size="12" font-style="bold" k="name" stroke="#ffffff"
                     stroke-width="2.0" />
             </rule>
+            <rule e="node" k="place" v="neighbourhood" zoom-min="13">
+                <caption fill="#000000" font-size="13" font-style="bold" k="name" stroke="#ffffff"
+                    stroke-width="2.0" />
+            </rule>
             <rule e="node" k="place" v="hamlet" zoom-min="13">
                 <caption fill="#000000" font-size="13" font-style="bold" k="name" stroke="#ffffff"
                     stroke-width="2.0" />
