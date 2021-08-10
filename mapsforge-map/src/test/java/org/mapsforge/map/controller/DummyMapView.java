@@ -124,4 +124,8 @@ public class DummyMapView implements MapView {
     public void setZoomLevelMin(byte zoomLevelMin) {
         // no-op
     }
+    @Override
+    public byte getZoomLevel() {
+        return 0;
+    }
 }
