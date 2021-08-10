@@ -18,12 +18,14 @@ package org.mapsforge.map.layer.overlay;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.view.MapView;
 
 /**
  * A {@code Circle} consists of a center {@link LatLong} and a non-negative radius in meters.
@@ -67,6 +69,10 @@ public class Circle extends Layer {
         setRadiusInternal(radius);
         this.paintFill = paintFill;
         this.paintStroke = paintStroke;
+
+        // Set stroke as stroke.
+        if(paintStroke != null)
+            paintStroke.setStyle(Style.STROKE);
     }
 
     public synchronized boolean contains(Point center, Point point, double latitude, byte zoomLevel) {
@@ -74,6 +80,10 @@ public class Circle extends Layer {
         double distance = Math.max(20 / 2 * this.displayModel.getScaleFactor(),
                 getRadiusInPixels(latitude, zoomLevel));
         return center.distance(point) < distance;
+    }
+
+    public boolean contains(MapView mapView, Point point) {
+        return contains(mapView.getMapViewProjection().toPixels(latLong),point,radius,mapView.getZoomLevel());
     }
 
     @Override

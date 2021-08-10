@@ -73,6 +73,8 @@ public interface MapView {
 
     void setZoomLevel(byte zoomLevel);
 
+    byte getZoomLevel();
+
     void setZoomLevelMax(byte zoomLevelMax);
 
     void setZoomLevelMin(byte zoomLevelMin);

@@ -515,6 +515,11 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     }
 
     @Override
+    public byte getZoomLevel() {
+        return this.model.mapViewPosition.getZoomLevel();
+    }
+
+    @Override
     public void setZoomLevelMax(byte zoomLevelMax) {
         this.model.mapViewPosition.setZoomLevelMax(zoomLevelMax);
         this.mapZoomControls.setZoomLevelMax(zoomLevelMax);
