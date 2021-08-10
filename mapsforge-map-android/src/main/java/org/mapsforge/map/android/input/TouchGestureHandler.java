@@ -31,6 +31,10 @@ import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.util.ConsumableEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Central handling of touch gestures.
@@ -107,9 +111,17 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                         double moveVertical = (center.y - e.getY()) / Math.pow(2, zoomLevelDiff);
                         LatLong pivot = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
                         if (pivot != null) {
-                            this.mapView.onMoveEvent();
-                            this.mapView.onZoomEvent();
+                            ConsumableEvent mEventMove = new ConsumableEvent(e);
+                            ConsumableEvent mEventZoom = new ConsumableEvent(e);
+                            this.mapView.onMoveEvent(mEventMove);
+                            this.mapView.onZoomEvent(mEventZoom);
                             mapViewPosition.setPivot(pivot);
+                            if(mEventZoom.isConsumed())
+                                zoomLevelDiff = 0;
+                            if(mEventMove.isConsumed()) {
+                                moveHorizontal = 0;
+                                moveVertical = 0;
+                            }
                             mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
                         }
                     }
@@ -178,11 +190,11 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
         // Quick scale (no pivot)
         if (this.isInDoubleTap) {
-            this.mapView.onZoomEvent();
+            this.mapView.onZoomEvent(new ConsumableEvent());
             this.pivot = null;
         } else {
-            this.mapView.onMoveEvent();
-            this.mapView.onZoomEvent();
+            this.mapView.onMoveEvent(new ConsumableEvent());
+            this.mapView.onZoomEvent(new ConsumableEvent());
             this.focusX = detector.getFocusX();
             this.focusY = detector.getFocusY();
             this.pivot = this.mapView.getMapViewProjection().fromPixels(focusX, focusY);
@@ -246,9 +258,14 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                     }
                 }
             }
-
-            this.mapView.onMoveEvent();
-            this.mapView.getModel().mapViewPosition.moveCenter(-distanceX, -distanceY, false);
+            List<MotionEvent> motionEvents = new ArrayList<>();
+            motionEvents.add(e1);
+            motionEvents.add(e2);
+            ConsumableEvent mEvent = new ConsumableEvent(motionEvents);
+            this.mapView.onMoveEvent(mEvent);
+            if(!mEvent.isConsumed()) {
+                this.mapView.getModel().mapViewPosition.moveCenter(-distanceX, -distanceY, false);
+            }
             return true;
         }
         return false;

@@ -38,6 +38,7 @@ import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.util.ConsumableEvent;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.*;
@@ -194,10 +195,13 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
      * notify registered {@link InputListener} about the start of a manual move.
      * Note that this method may be called multiple times while the move has been started.
      * Also note that only manual moves get notified.
+     * @param e is the consumable mouse event
      */
-    public void onMoveEvent() {
+    public void onMoveEvent(ConsumableEvent e) {
         for (InputListener listener : inputListeners) {
-            listener.onMoveEvent();
+            listener.onMoveEvent(e);
+            if(e.isConsumed())
+                return;
         }
     }
 
@@ -206,10 +210,13 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
      * notify registered {@link InputListener} about the start of a manual zoom.
      * Note that this method may be called multiple times while the zoom has been started.
      * Also note that only manual zooms get notified.
+     * @param e is the consumable mouse event
      */
-    public void onZoomEvent() {
+    public void onZoomEvent(ConsumableEvent e) {
         for (InputListener listener : inputListeners) {
-            listener.onZoomEvent();
+            listener.onZoomEvent(e);
+            if(e.isConsumed())
+                return;
         }
     }
 

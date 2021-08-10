@@ -47,6 +47,7 @@ import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
+import org.mapsforge.map.util.ConsumableEvent;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.*;
@@ -424,9 +425,11 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
      * Note that this method may be called multiple times while the move has been started.
      * Also note that only manual moves get notified.
      */
-    public void onMoveEvent() {
+    public void onMoveEvent(ConsumableEvent e) {
         for (InputListener listener : inputListeners) {
-            listener.onMoveEvent();
+            listener.onMoveEvent(e);
+            if(e.isConsumed())
+                return;
         }
     }
 
@@ -459,9 +462,11 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
      * Note that this method may be called multiple times while the zoom has been started.
      * Also note that only manual zooms get notified.
      */
-    public void onZoomEvent() {
+    public void onZoomEvent(ConsumableEvent e) {
         for (InputListener listener : inputListeners) {
-            listener.onZoomEvent();
+            listener.onZoomEvent(e);
+            if(e.isConsumed())
+                return;
         }
     }
 

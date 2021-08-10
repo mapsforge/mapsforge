@@ -32,6 +32,7 @@ import android.widget.ZoomControls;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.model.common.Observer;
+import org.mapsforge.map.util.ConsumableEvent;
 
 /**
  * A MapZoomControls instance displays buttons for zooming in and out in a map.
@@ -149,14 +150,14 @@ public class MapZoomControls extends LinearLayout implements Observer {
         buttonZoomIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mapView.onZoomEvent();
+                mapView.onZoomEvent(new ConsumableEvent());
                 MapZoomControls.this.mapView.getModel().mapViewPosition.zoomIn();
             }
         });
         buttonZoomOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mapView.onZoomEvent();
+                mapView.onZoomEvent(new ConsumableEvent());
                 MapZoomControls.this.mapView.getModel().mapViewPosition.zoomOut();
             }
         });

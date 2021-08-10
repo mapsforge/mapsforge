@@ -19,6 +19,7 @@ package org.mapsforge.map.awt.input;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.map.awt.view.MapView;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.util.ConsumableEvent;
 
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -55,10 +56,16 @@ public class MouseEventListener extends MouseAdapter {
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        ConsumableEvent mEvent = new ConsumableEvent(e);
+        this.mapView.onMoveEvent(mEvent);
+        if(mEvent.isConsumed()) {
+            e.consume();
+            this.lastDragPoint = null;
+            return;
+        }
         if (SwingUtilities.isLeftMouseButton(e)) {
             Point point = e.getPoint();
             if (this.lastDragPoint != null) {
-                this.mapView.onMoveEvent();
                 int moveHorizontal = point.x - this.lastDragPoint.x;
                 int moveVertical = point.y - this.lastDragPoint.y;
                 this.mapView.getModel().mapViewPosition.moveCenter(moveHorizontal, moveVertical);
@@ -81,7 +88,12 @@ public class MouseEventListener extends MouseAdapter {
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        this.mapView.onZoomEvent();
+        ConsumableEvent mEvent = new ConsumableEvent(e);
+        this.mapView.onZoomEvent(mEvent);
+        if(mEvent.isConsumed()) {
+            e.consume();
+            return;
+        }
         byte zoomLevelDiff = (byte) -e.getWheelRotation();
         this.mapView.getModel().mapViewPosition.zoom(zoomLevelDiff);
     }
