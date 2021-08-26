@@ -49,7 +49,12 @@
         <osm-tag key="amenity" value="townhall" zoom-appear="17" />
         <osm-tag key="amenity" value="toilets" zoom-appear="17" />
         <osm-tag key="amenity" value="university" zoom-appear="17" />
+        <osm-tag key="amenity" value="table" zoom-appear="18"/>
+        <osm-tag key="amenity" value="bench" zoom-appear="18"/>
+        <osm-tag key="amenity" value="waste_basket" zoom-appear="19" />
 
+        <osm-tag key="emergency" value="fire_alarm_box" zoom-appear="19" />
+        <osm-tag key="emergency" value="fire_extinguisher" zoom-appear="19" />
         <osm-tag key="emergency" value="phone" zoom-appear="16" />
 
         <osm-tag key="leisure" value="playground" zoom-appear="17" />
@@ -599,6 +604,56 @@
 
         <osm-tag key="area" value="yes" zoom-appear="12" />
     </ways>
+
+    <!-- INDOOR TAGS -->
+    <ways>
+        <osm-tag key="indoor" value="room" zoom-appear="18"/>
+        <osm-tag key="indoor" value="area" zoom-appear="18"/>
+        <osm-tag key="indoor" value="wall" zoom-appear="18"/>
+        <osm-tag key="indoor" value="corridor" zoom-appear="18"/>
+        <osm-tag key="indoor" value="level" zoom-appear="18"/>
+    </ways>
+    <ways>
+        <osm-tag key="door" value="yes" zoom-appear="18"/>
+        <osm-tag key="material" value="concrete" zoom-appear="18"/>
+        <osm-tag key="material" value="glass" zoom-appear="18"/>
+        <osm-tag key="material" value="wood" zoom-appear="18"/>
+        <osm-tag key="public_bookcase:type" value="shelf" zoom-appear="18"/>
+    </ways>
+    
+    <pois>
+        <osm-tag key="support" value="column" zoom-appear="18"/>
+    </pois>
+
+    <ways>
+        <osm-tag key="level" value="%f" zoom-appear="18"/>
+        <osm-tag key="level" value="%s" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="%f" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="%s" zoom-appear="18"/>
+    </ways>
+
+    <pois> <!-- problems with %s (probably caused by mapfile-writer) -> must specify every common level -->
+        <osm-tag key="level" value="%f" zoom-appear="18"/>
+        <osm-tag key="level" value="-3" zoom-appear="18"/>
+        <osm-tag key="level" value="-2" zoom-appear="18"/>
+        <osm-tag key="level" value="-1" zoom-appear="18"/>
+        <osm-tag key="level" value="0" zoom-appear="18"/>
+        <osm-tag key="level" value="1" zoom-appear="18"/>
+        <osm-tag key="level" value="2" zoom-appear="18"/>
+        <osm-tag key="level" value="3" zoom-appear="18"/>
+        <osm-tag key="level" value="4" zoom-appear="18"/>
+        <osm-tag key="level" value="5" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="%f" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="-3" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="-2" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="-1" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="0" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="1" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="2" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="3" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="4" zoom-appear="18"/>
+        <osm-tag key="repeat_on" value="5" zoom-appear="18"/>
+    </pois>
 
     <!-- NOT TO RENDER -->
     <ways>
