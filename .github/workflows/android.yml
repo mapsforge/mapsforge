@@ -19,6 +19,12 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
+    - name: Android Build Tools
+      env:
+        ANDROID_BUILD_TOOLS: 31.0.0
+      run: |
+           ln -s ${ANDROID_HOME}/build-tools/$ANDROID_BUILD_TOOLS/d8 ${ANDROID_HOME}/build-tools/$ANDROID_BUILD_TOOLS/dx
+           ln -s ${ANDROID_HOME}/build-tools/$ANDROID_BUILD_TOOLS/lib/d8.jar ${ANDROID_HOME}/build-tools/$ANDROID_BUILD_TOOLS/lib/dx.jar
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
