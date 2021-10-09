@@ -1,55 +1,25 @@
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
 
-android {
-    compileSdkVersion androidCompileSdk()
-    buildToolsVersion "$androidBuildVersionTools"
+dependencies {
+    compileOnly files("${System.env.ANDROID_HOME}/platforms/android-${androidCompileSdk()}/android.jar")
+}
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    defaultConfig {
-        versionCode project.versionCode()
-        versionName project.versionName()
-        minSdkVersion androidMinSdk()
-        targetSdkVersion androidTargetSdk()
-    }
-
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src/main/java']
-            resources.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
-        }
-    }
-
-    lintOptions {
-        abortOnError false
+file('natives').eachDir() { dir ->
+    task("nativesJar-${dir.name}", type: Jar) {
+        classifier "natives-${dir.name}"
+        from(dir.path)
     }
 }
 
-android.libraryVariants.all { variant ->
-    def name = variant.buildType.name
-    if (name == "debug")
-        return
-
-    def jar = project.tasks.create "jar${name.capitalize()}", Jar
-    jar.dependsOn variant.javaCompileProvider
-    jar.exclude '**/BuildConfig.class'
-    jar.exclude '**/R.class'
-    jar.exclude '**/R$*.class'
-    jar.from variant.javaCompileProvider.get().destinationDir
-    artifacts.add('archives', jar)
-
-    file('natives').eachDir() { dir ->
-        def nativesJar = project.tasks.create "nativesJar${name.capitalize()}-${dir.name}", Jar
-        nativesJar.classifier = "natives-${dir.name}"
-        nativesJar.from(dir.path)
-        artifacts.add('archives', nativesJar)
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            file('natives').eachDir() { dir ->
+                artifact tasks["nativesJar-${dir.name}"]
+            }
+        }
     }
 }
 
