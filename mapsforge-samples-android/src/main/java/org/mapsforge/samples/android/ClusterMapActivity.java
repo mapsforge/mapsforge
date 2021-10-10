@@ -19,6 +19,7 @@ package org.mapsforge.samples.android;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -223,7 +224,7 @@ public class ClusterMapActivity extends DefaultTheme {
                 break;
             case 5678:
                 setProgressBarIndeterminateVisibility(true);
-                Handler myHandler = new Handler() {
+                Handler myHandler = new Handler(Looper.myLooper()) {
                     @Override
                     public void handleMessage(Message msg) {
                         switch (msg.what) {

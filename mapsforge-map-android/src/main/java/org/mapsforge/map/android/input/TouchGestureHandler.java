@@ -21,6 +21,7 @@
 package org.mapsforge.map.android.input;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -50,7 +51,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     private final Scroller flinger;
     private int flingLastX, flingLastY;
     private float focusX, focusY;
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.myLooper());
     private boolean isInDoubleTap, isInScale;
     private final MapView mapView;
     private LatLong pivot;

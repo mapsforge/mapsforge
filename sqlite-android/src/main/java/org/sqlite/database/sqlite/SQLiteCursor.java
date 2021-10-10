@@ -225,6 +225,7 @@ public class SQLiteCursor extends AbstractWindowedCursor {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean requery() {
         if (isClosed()) {

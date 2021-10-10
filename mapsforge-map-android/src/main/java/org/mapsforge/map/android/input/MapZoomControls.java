@@ -19,6 +19,7 @@ package org.mapsforge.map.android.input;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -26,9 +27,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
-import android.widget.ZoomButton;
-import android.widget.ZoomControls;
-
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.model.common.Observer;
@@ -36,6 +34,7 @@ import org.mapsforge.map.model.common.Observer;
 /**
  * A MapZoomControls instance displays buttons for zooming in and out in a map.
  */
+@SuppressWarnings("deprecation")
 public class MapZoomControls extends LinearLayout implements Observer {
 
     public static enum Orientation {
@@ -67,8 +66,6 @@ public class MapZoomControls extends LinearLayout implements Observer {
             this.zoomInFirst = zoomInFirst;
         }
     }
-
-    ;
 
     /**
      * Default {@link Gravity} of the zoom controls.
@@ -111,7 +108,7 @@ public class MapZoomControls extends LinearLayout implements Observer {
     private static final long ZOOM_CONTROLS_TIMEOUT = ViewConfiguration.getZoomControlsTimeout();
 
     private boolean autoHide;
-    private final ZoomButton buttonZoomIn, buttonZoomOut;
+    private final android.widget.ZoomButton buttonZoomIn, buttonZoomOut;
     private final MapView mapView;
     private boolean showMapZoomControls;
     private int zoomControlsGravity;
@@ -130,7 +127,7 @@ public class MapZoomControls extends LinearLayout implements Observer {
         setVisibility(View.GONE);
         this.zoomControlsGravity = DEFAULT_ZOOM_CONTROLS_GRAVITY;
 
-        this.zoomControlsHideHandler = new Handler() {
+        this.zoomControlsHideHandler = new Handler(Looper.myLooper()) {
             @Override
             public void handleMessage(Message message) {
                 MapZoomControls.this.hide();
@@ -138,9 +135,9 @@ public class MapZoomControls extends LinearLayout implements Observer {
         };
 
         // Hack to get default zoom buttons
-        ZoomControls defaultZoomControls = new ZoomControls(context);
-        buttonZoomIn = (ZoomButton) defaultZoomControls.getChildAt(1);
-        buttonZoomOut = (ZoomButton) defaultZoomControls.getChildAt(0);
+        android.widget.ZoomControls defaultZoomControls = new android.widget.ZoomControls(context);
+        buttonZoomIn = (android.widget.ZoomButton) defaultZoomControls.getChildAt(1);
+        buttonZoomOut = (android.widget.ZoomButton) defaultZoomControls.getChildAt(0);
         defaultZoomControls.removeAllViews();
         setOrientation(defaultZoomControls.getOrientation());
         setZoomInFirst(false);
