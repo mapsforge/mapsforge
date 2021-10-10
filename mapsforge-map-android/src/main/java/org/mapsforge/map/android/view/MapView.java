@@ -111,7 +111,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     private GestureDetector gestureDetectorExternal;
     private final List<InputListener> inputListeners = new CopyOnWriteArrayList<>();
     private final LayerManager layerManager;
-    private final Handler layoutHandler = new Handler();
+    private final Handler layoutHandler = new Handler(Looper.myLooper());
     private MapScaleBar mapScaleBar;
     private final MapViewProjection mapViewProjection;
     private final MapZoomControls mapZoomControls;

@@ -172,7 +172,7 @@ public abstract class MapViewerTemplate extends Activity {
             Byte startZoomLevel = mapFile.startZoomLevel();
             if (startZoomLevel == null) {
                 // it is actually possible to have no start zoom level in the file
-                startZoomLevel = new Byte((byte) 12);
+                startZoomLevel = (byte) 12;
             }
             return new MapPosition(mapFile.startPosition(), startZoomLevel);
         } else {

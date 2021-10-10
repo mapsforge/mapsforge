@@ -19,14 +19,7 @@
  */
 package org.mapsforge.map.writer.util;
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.CoordinateFilter;
-import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.*;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -68,7 +61,7 @@ public class PolyLabel {
         }
 
         // As original geometry is used in other places clone it before re-projecting
-        polygon = (Polygon) polygon.clone();
+        polygon = (Polygon) polygon.copy();
 
         // Re-project coordinates. This is needed to get proper visual results for polygons
         // distorted my Mercator projection

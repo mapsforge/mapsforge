@@ -61,6 +61,7 @@ public final class SQLiteGlobal {
     /**
      * Gets the default page size to use when creating a database.
      */
+    @SuppressWarnings("deprecation")
     public static int getDefaultPageSize() {
         synchronized (sLock) {
             if (sDefaultPageSize == 0) {
