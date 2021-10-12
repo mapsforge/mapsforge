@@ -117,6 +117,7 @@ public class LocationOverlayMapViewer extends DownloadLayerViewer implements Loc
     public void onProviderEnabled(String provider) {
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }

@@ -17,13 +17,13 @@ package org.mapsforge.samples.android;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.reader.MapFile;
 
+@SuppressWarnings("deprecation")
 public class SamplesApplication extends Application {
 
     public static final String TAG = "Mapsforge Samples";
@@ -45,7 +45,7 @@ public class SamplesApplication extends Application {
         Log.e(TAG,
                 "Device scale factor "
                         + Float.toString(DisplayModel.getDeviceScaleFactor()));
-        SharedPreferences preferences = PreferenceManager
+        SharedPreferences preferences = android.preference.PreferenceManager
                 .getDefaultSharedPreferences(this);
         float fs = Float.valueOf(preferences.getString(SETTING_SCALE,
                 Float.toString(DisplayModel.getDefaultUserScaleFactor())));

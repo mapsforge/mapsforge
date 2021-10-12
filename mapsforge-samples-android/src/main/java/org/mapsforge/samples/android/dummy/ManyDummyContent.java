@@ -16,7 +16,6 @@
  */
 package org.mapsforge.samples.android.dummy;
 
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 
@@ -36,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class ManyDummyContent extends DummyContent {
 
     /**
@@ -191,7 +191,7 @@ public class ManyDummyContent extends DummyContent {
     // Taken from standard example in ANDROID-DOC:
     // http://developer.android.com/training/basics/network-ops/xml.html
     // Implementation of AsyncTask used to download XML feed from nominatim.openstreetmap.org.
-    private class DownloadXmlTask extends AsyncTask<String, Void, Void> {
+    private class DownloadXmlTask extends android.os.AsyncTask<String, Void, Void> {
 
 
         @Override
