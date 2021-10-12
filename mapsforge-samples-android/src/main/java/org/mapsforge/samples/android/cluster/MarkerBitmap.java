@@ -88,6 +88,7 @@ public class MarkerBitmap {
         this.paint.setTextSize(getTextSize());
     }
 
+    @SuppressWarnings("deprecation")
     public static Bitmap getBitmapFromTitle(String title, Paint paint) {
         if (!captionViews.containsKey(title)) {
             TextView bubbleView = new TextView(context);

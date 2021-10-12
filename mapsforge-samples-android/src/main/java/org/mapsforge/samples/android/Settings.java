@@ -19,11 +19,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -37,15 +32,16 @@ import java.util.Map;
 /**
  * Activity to edit the application preferences.
  */
-public class Settings extends PreferenceActivity implements
+@SuppressWarnings("deprecation")
+public class Settings extends android.preference.PreferenceActivity implements
         OnSharedPreferenceChangeListener {
 
     public static final String RENDERTHEME_MENU = "renderthememenu";
 
-    ListPreference baseLayerPreference;
+    android.preference.ListPreference baseLayerPreference;
     SharedPreferences prefs;
     XmlRenderThemeStyleMenu renderthemeOptions;
-    PreferenceCategory renderthemeMenu;
+    android.preference.PreferenceCategory renderthemeMenu;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -80,11 +76,10 @@ public class Settings extends PreferenceActivity implements
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        this.prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
         Utils.enableHome(this);
         addPreferencesFromResource(R.xml.preferences);
 
@@ -94,7 +89,7 @@ public class Settings extends PreferenceActivity implements
 
             // the preference category is hard-wired into the Samples app and serves as
             // the hook to add a list preference to allow users to select a style
-            this.renderthemeMenu = (PreferenceCategory) findPreference(RENDERTHEME_MENU);
+            this.renderthemeMenu = (android.preference.PreferenceCategory) findPreference(RENDERTHEME_MENU);
 
             createRenderthemeMenu();
         }
@@ -113,11 +108,10 @@ public class Settings extends PreferenceActivity implements
     }
 
 
-    @SuppressWarnings("deprecation")
     private void createRenderthemeMenu() {
         this.renderthemeMenu.removeAll();
 
-        this.baseLayerPreference = new ListPreference(this);
+        this.baseLayerPreference = new android.preference.ListPreference(this);
 
         // the id of the setting is the id of the stylemenu, that allows this
         // app to store different settings for different render themes.
@@ -169,7 +163,7 @@ public class Settings extends PreferenceActivity implements
         baseLayerPreference.setSummary(renderthemeOptions.getLayer(selection).getTitle(language));
 
         for (XmlRenderThemeStyleLayer overlay : this.renderthemeOptions.getLayer(selection).getOverlays()) {
-            CheckBoxPreference checkbox = new CheckBoxPreference(this);
+            android.preference.CheckBoxPreference checkbox = new android.preference.CheckBoxPreference(this);
             checkbox.setKey(overlay.getId());
             checkbox.setPersistent(true);
             checkbox.setTitle(overlay.getTitle(language));

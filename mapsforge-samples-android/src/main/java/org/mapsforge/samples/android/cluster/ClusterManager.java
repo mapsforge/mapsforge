@@ -17,7 +17,6 @@
  */
 package org.mapsforge.samples.android.cluster;
 
-import android.os.AsyncTask;
 import android.widget.Toast;
 
 import org.mapsforge.core.model.BoundingBox;
@@ -48,6 +47,7 @@ import java.util.List;
  * <p/>
  * Should be added as Observer on Mapsforge frameBufferModel.
  */
+@SuppressWarnings("deprecation")
 public class ClusterManager<T extends GeoItem> implements Observer, SelectionHandler<T> {
     /**
      * A 'Toast' to display information, intended to show information on {@link ClusterMarker}
@@ -104,7 +104,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
      * saves the actual Center as LatLong of the MapViewPosition
      */
     private LatLong oldCenterLatLong;
-    private AsyncTask<Boolean, Void, Void> clusterTask;
+    private android.os.AsyncTask<Boolean, Void, Void> clusterTask;
     private boolean ignoreOnTapCallBack;
 
     /**
@@ -405,7 +405,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
         return this.ignoreOnTapCallBack;
     }
 
-    private class ClusterTask extends AsyncTask<Boolean, Void, Void> {
+    private class ClusterTask extends android.os.AsyncTask<Boolean, Void, Void> {
 
         @Override
         protected Void doInBackground(Boolean... params) {

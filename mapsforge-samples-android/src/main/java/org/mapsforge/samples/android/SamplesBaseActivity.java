@@ -24,7 +24,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,6 +57,7 @@ import java.io.File;
 /**
  * Code common to most activities in the Samples app.
  */
+@SuppressWarnings("deprecation")
 public abstract class SamplesBaseActivity extends MapViewerTemplate implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final String SETTING_SCALEBAR = "scalebar";
@@ -166,18 +166,17 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
     protected void createSharedPreferences() {
         super.createSharedPreferences();
 
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        this.sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
 
         // problem that the first call to getAll() returns nothing, apparently the
         // following two calls have to be made to read all the values correctly
         // http://stackoverflow.com/questions/9310479/how-to-iterate-through-all-keys-of-shared-preferences
         this.sharedPreferences.edit().clear();
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
+        android.preference.PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
 
         this.sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
-    @SuppressWarnings("deprecation")
     @SuppressLint("InflateParams")
     @Override
     protected Dialog onCreateDialog(int id) {
@@ -215,7 +214,6 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
         return true;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -238,7 +236,6 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void onPrepareDialog(int id, final Dialog dialog) {
         if (id == DIALOG_ENTER_COORDINATES) {

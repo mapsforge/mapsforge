@@ -15,7 +15,6 @@
 package org.mapsforge.samples.android;
 
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -40,6 +39,7 @@ import java.util.Collection;
  * Long press on map to search inside visible bounding box.<br/>
  * Tap on POIs to show their name (in default locale).
  */
+@SuppressWarnings("deprecation")
 public class PoiSearchViewer extends DefaultTheme {
 
     private static final String POI_FILE = "berlin.poi";
@@ -82,7 +82,7 @@ public class PoiSearchViewer extends DefaultTheme {
         super.onDestroy();
     }
 
-    private class PoiSearchTask extends AsyncTask<BoundingBox, Void, Collection<PointOfInterest>> {
+    private class PoiSearchTask extends android.os.AsyncTask<BoundingBox, Void, Collection<PointOfInterest>> {
         private final WeakReference<PoiSearchViewer> weakActivity;
         private final String category;
 

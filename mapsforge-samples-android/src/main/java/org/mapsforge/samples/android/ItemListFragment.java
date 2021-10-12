@@ -84,6 +84,7 @@ public class ItemListFragment extends ListFragment {
         super();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);

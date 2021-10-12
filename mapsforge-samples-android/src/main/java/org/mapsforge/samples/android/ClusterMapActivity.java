@@ -39,11 +39,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClusterMapActivity extends DefaultTheme {
-    protected ClusterManager clusterer = null;
+    protected ClusterManager<GeoItem> clusterer = null;
     private MenuItem displayItems;
     private MenuItem displayMoreItems;
     private MenuItem hideItems;
-    private MyGeoItem[] geoItems = {
+    private final MyGeoItem[] geoItems = {
             new MyGeoItem("1st Item", new LatLong(52.504266, 13.392996)),
             new MyGeoItem("2nd Item", new LatLong(52.514266, 13.392996)),
             new MyGeoItem("3rd Item", new LatLong(52.524266, 13.392996)),
@@ -57,7 +57,7 @@ public class ClusterMapActivity extends DefaultTheme {
     };
 
     private List<MarkerBitmap> getMarkerBitmap() {
-        List<MarkerBitmap> markerBitmaps = new ArrayList<MarkerBitmap>();
+        List<MarkerBitmap> markerBitmaps = new ArrayList<>();
         // prepare for marker icons.
         // small icon for maximum single item
         Bitmap bitmapClimbingPeak = new AndroidBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.marker_green));
@@ -83,8 +83,6 @@ public class ClusterMapActivity extends DefaultTheme {
         paint2 = AndroidGraphicFactory.INSTANCE.createPaint();
         paint2.setStyle(Style.STROKE);
         paint2.setTextAlign(Align.CENTER);
-        fontFamily = FontFamily.DEFAULT;
-        fontStyle = FontStyle.BOLD;
         paint2.setTypeface(fontFamily, fontStyle);
         paint2.setColor(Color.WHITE);
         markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmapBalloonSN,
@@ -98,8 +96,6 @@ public class ClusterMapActivity extends DefaultTheme {
         paint3 = AndroidGraphicFactory.INSTANCE.createPaint();
         paint3.setStyle(Style.STROKE);
         paint3.setTextAlign(Align.CENTER);
-        fontFamily = FontFamily.DEFAULT;
-        fontStyle = FontStyle.BOLD;
         paint3.setTypeface(fontFamily, fontStyle);
         paint3.setColor(Color.WHITE);
         markerBitmaps.add(new MarkerBitmap(this.getApplicationContext(), bitmapBalloonMN,
@@ -108,6 +104,7 @@ public class ClusterMapActivity extends DefaultTheme {
     }
 
     //##################sample geo items class ####################################
+    @SuppressWarnings("deprecation")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -118,7 +115,7 @@ public class ClusterMapActivity extends DefaultTheme {
     protected void onResume() {
         super.onResume();
         // create clusterer instance
-        clusterer = new ClusterManager(
+        clusterer = new ClusterManager<>(
                 mapView,
                 getMarkerBitmap(),
                 getZoomLevelMax(),
@@ -131,8 +128,8 @@ public class ClusterMapActivity extends DefaultTheme {
         // what the user sees on the screen if an animation is in progress
         this.mapView.getModel().frameBufferModel.addObserver(clusterer);
         // add geoitems for clustering
-        for (int i = 0; i < geoItems.length; i++) {
-            clusterer.addItem(geoItems[i]);
+        for (MyGeoItem geoItem : geoItems) {
+            clusterer.addItem(geoItem);
         }
     }
 
@@ -151,6 +148,7 @@ public class ClusterMapActivity extends DefaultTheme {
     }
 
 
+    @SuppressWarnings("deprecation")
     private void addMarker() {
 
         if (ManyDummyContent.MANYITEMS.isEmpty()) {
@@ -189,6 +187,7 @@ public class ClusterMapActivity extends DefaultTheme {
      * since clustering need MapView to be created and visible,
      * this sample do clustering here.
      */
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
@@ -198,7 +197,7 @@ public class ClusterMapActivity extends DefaultTheme {
                     break;
                 }
                 // create clusterer instance
-                clusterer = new ClusterManager(
+                clusterer = new ClusterManager<>(
                         mapView,
                         getMarkerBitmap(),
                         getZoomLevelMax(),
@@ -211,8 +210,8 @@ public class ClusterMapActivity extends DefaultTheme {
                 // what the user sees on the screen if an animation is in progress
                 this.mapView.getModel().frameBufferModel.addObserver(clusterer);
                 // add geoitems for clustering
-                for (int i = 0; i < geoItems.length; i++) {
-                    clusterer.addItem(geoItems[i]);
+                for (MyGeoItem geoItem : geoItems) {
+                    clusterer.addItem(geoItem);
                 }
                 // now redraw the cluster. it will create markers.
                 clusterer.redraw();
@@ -227,14 +226,10 @@ public class ClusterMapActivity extends DefaultTheme {
                 Handler myHandler = new Handler(Looper.myLooper()) {
                     @Override
                     public void handleMessage(Message msg) {
-                        switch (msg.what) {
-                            case 0:
-                                // calling to this function from other places
-                                // The notice call method of doing things
-                                addMarker();
-                                break;
-                            default:
-                                break;
+                        if (msg.what == 0) {
+                            // calling to this function from other places
+                            // The notice call method of doing things
+                            addMarker();
                         }
                     }
                 };
@@ -257,7 +252,7 @@ public class ClusterMapActivity extends DefaultTheme {
 
     // sample geo items
     //############################# internal class ####################################
-    protected class MyGeoItem implements GeoItem {
+    protected static class MyGeoItem implements GeoItem {
         public String title;
         public LatLong latLong;
 
