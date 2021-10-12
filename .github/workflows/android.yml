@@ -18,6 +18,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+        cache: gradle
 
     - name: Android Build Tools
       env:
@@ -29,3 +30,9 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Publish
+      if: github.event_name != 'pull_request'
+      env:
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      run: ./gradlew -PSONATYPE_USERNAME="$SONATYPE_USERNAME" -PSONATYPE_PASSWORD="$SONATYPE_PASSWORD" publish
