@@ -1,11 +1,19 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 dependencies {
     api project(":mapsforge-map-reader")
     api 'com.formdev:svgSalamander:1.1.2.4'
     testImplementation project(":mapsforge-themes")
     testImplementation "junit:junit:$jUnitVersion"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 if (project.hasProperty("SONATYPE_USERNAME")) {

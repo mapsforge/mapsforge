@@ -1,5 +1,5 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 dependencies {
     implementation project(":mapsforge-core")
@@ -10,29 +10,35 @@ dependencies {
     testImplementation "junit:junit:$jUnitVersion"
 }
 
-sourceSets.test.compileClasspath += configurations.compileOnly
-sourceSets.test.runtimeClasspath += configurations.compileOnly
+sourceSets.test.compileClasspath += configurations.compileClasspath - configurations.runtimeClasspath
+sourceSets.test.runtimeClasspath += configurations.compileClasspath - configurations.runtimeClasspath
 
 jar {
     from('src/main/config/') {
         filter {
-            line -> line.replace('${mapfile.writer.version}', version)
+            line -> line.replace('${mapfile.writer.version}', project.version)
         }
     }
 }
 
-task fatJar(type: Jar, dependsOn: classes) {
-    classifier = 'jar-with-dependencies'
+task fatJar(type: Jar, dependsOn: configurations.runtimeClasspath) {
+    classifier 'jar-with-dependencies'
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
     from {
-        (configurations.compileClasspath - configurations.compileOnly).collect {
+        configurations.runtimeClasspath.collect {
             it.isDirectory() ? it : zipTree(it)
         }
     }
     with jar
 }
 
-artifacts {
-    archives fatJar
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact fatJar
+        }
+    }
 }
 
 if (project.hasProperty("SONATYPE_USERNAME")) {

@@ -13,8 +13,8 @@ run {
     }
 }
 
-task fatJar(type: Jar, dependsOn: classes) {
-    classifier = 'jar-with-dependencies'
+task fatJar(type: Jar, dependsOn: configurations.runtimeClasspath) {
+    classifier 'jar-with-dependencies'
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
     manifest {

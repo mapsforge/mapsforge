@@ -1,9 +1,17 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 dependencies {
     api project(":mapsforge-map")
     testImplementation "junit:junit:$jUnitVersion"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 if (project.hasProperty("SONATYPE_USERNAME")) {

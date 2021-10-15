@@ -1,9 +1,17 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 dependencies {
     api project(":mapsforge-poi")
     api 'org.xerial:sqlite-jdbc:3.28.0'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 if (project.hasProperty("SONATYPE_USERNAME")) {

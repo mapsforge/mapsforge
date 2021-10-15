@@ -1,8 +1,16 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 dependencies {
     testImplementation "junit:junit:$jUnitVersion"
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 if (project.hasProperty("SONATYPE_USERNAME")) {
