@@ -28,7 +28,7 @@ static def androidCompileSdk() { return 31 }
 // 14 for Support Library, 16 for sqlite-android
 static def androidMinSdk() { return 21 }
 
-static def androidTargetSdk() { return 30 }
+static def androidTargetSdk() { return 31 }
 
 static def versionCode() { return 1 }
 
