@@ -31,6 +31,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.model.IMapViewPosition;
 
 /**
@@ -150,7 +151,11 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
             LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
             if (tapLatLong != null) {
                 for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-                    Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                    Layer layer = safeGet(this.mapView.getLayerManager().getLayers(), i);
+                    if (layer == null) {
+                        //Layers was modified in the meantime, stop processing outdated data
+                        break;
+                    }
                     Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
                     if (layer.onLongPress(tapLatLong, layerXY, tapXY)) {
                         break;
@@ -241,7 +246,11 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
             if (Parameters.LAYER_SCROLL_EVENT) {
                 for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-                    Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                    Layer layer = safeGet(this.mapView.getLayerManager().getLayers(), i);
+                    if (layer == null) {
+                        //Layers was modified in the meantime, stop processing outdated data
+                        break;
+                    }
                     if (layer.onScroll(e1.getX(), e1.getY(), e2.getX(), e2.getY())) {
                         return true;
                     }
@@ -261,7 +270,11 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
         if (tapLatLong != null) {
             for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
-                Layer layer = this.mapView.getLayerManager().getLayers().get(i);
+                Layer layer = safeGet(this.mapView.getLayerManager().getLayers(), i);
+                if (layer == null) {
+                    //Layers was modified in the meantime, stop processing outdated data
+                    break;
+                }
                 Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
                 if (layer.onTap(tapLatLong, layerXY, tapXY)) {
                     return true;
@@ -299,5 +312,19 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
      */
     public void setScaleEnabled(boolean scaleEnabled) {
         this.scaleEnabled = scaleEnabled;
+    }
+
+    /**
+     * returns element of index index from given layers object, or null if index is out of bounds.
+     * This method is intended to be used in situations where existing of element on position 'index' is
+     * unsure due to parallel usage
+     * @param layers layers to get element from
+     * @param index index of element to get
+     * @return element of layers, or null if there is no such element
+     */
+    private static Layer safeGet(final Layers layers, final int index) {
+        synchronized (layers) {
+            return index >= 0 && index < layers.size() ? layers.get(index) : null;
+        }
     }
 }
