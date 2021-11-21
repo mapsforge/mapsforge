@@ -62,7 +62,7 @@ public final class XmlUtils {
             // we also need to include the resourceProvider as different providers may give different input streams for same source
             StringBuilder sb = new StringBuilder().append(absoluteName).append(width).append(height).append(percent);
             if (resourceProvider != null)
-                sb.append(resourceProvider.hashCode());
+                sb.append(resourceProvider.getClass().getName());
             int hash = sb.toString().hashCode();
             if (src.toLowerCase(Locale.ENGLISH).endsWith(".svg")) {
                 try {
