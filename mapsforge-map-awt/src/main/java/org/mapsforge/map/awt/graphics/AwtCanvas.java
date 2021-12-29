@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2014-2019 devemux86
+ * Copyright 2014-2021 devemux86
  * Copyright 2017 usrusr
  * Copyright 2019 cpt1gl0
  * Copyright 2019 Adrian Batzill
@@ -361,7 +361,7 @@ class AwtCanvas implements Canvas {
 
     @Override
     public void fillColor(int color) {
-        fillColor(new java.awt.Color(color));
+        fillColor(new java.awt.Color(color, true));
     }
 
     @Override
