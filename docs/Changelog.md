@@ -1,6 +1,11 @@
 # Changelog
 
-## New since 0.16.0
+## New since 0.17.0
+
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.18.0)
+
+## Version 0.17.0 (2022-01-03)
 
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.17.0)

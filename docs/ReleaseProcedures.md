@@ -8,8 +8,8 @@ Set the new version number in `build.gradle`.
 
 Deployment to Sonatype OSSRH
 ----------------------------
-```
-gradlew -Dorg.gradle.parallel=false uploadArchives
+```bash
+gradlew -Dorg.gradle.parallel=false publish
 ```
 
 Your `gradle.properties` needs to contain:
