@@ -17,7 +17,7 @@
 | [Calimoto](https://play.google.com/store/apps/details?id=com.calimoto.calimoto) | Motorrad navigation | Proprietary/Free (in-app purchases) | Closed |
 | [Cartograph 2 Maps](https://www.cartograph.eu/) | Map viewer and tracking | Proprietary/Commercial | Closed |
 | [Cruiser](https://wiki.openstreetmap.org/wiki/Cruiser) | Map and navigation platform for Android and Desktop | Proprietary/Free | Closed |
-| [c:geo](https://github.com/cgeo/) | Geocaching | Apache 2.0/Free | Open |
+| [c:geo](https://www.cgeo.org) | Geocaching | Apache 2.0/Free | Open |
 | [DogSheep](https://play.google.com/store/apps/details?id=com.dogsheep) | Customized maps and tours | Proprietary/Free | Closed |
 | [ELEMNT](http://eu.wahoofitness.com/devices/gps-bike-computer-elemnt.html) | GPS bike computer | Proprietary/Commercial | Closed |
 | [Forest(M)ap(p)](https://play.google.com/store/apps/details?id=de.inforst.waldkarte) | Tool for forestry | Proprietary/Commercial | Closed |
@@ -62,4 +62,5 @@
 | [Villagers feng shui](https://play.google.com/store/apps/details?id=tacoball.com.geomancer) | Local service for Taiwan | LGPL3/Free | Open |
 | [Visitor](https://play.google.com/store/apps/details?id=org.treefish.visitor) ([Demo](https://play.google.com/store/apps/details?id=org.treefish.visitor.demo)) | Save places and share them with others | Proprietary/Free and Commercial | Closed |
 | [Watertrack ECO](http://watertrack.de/) | GPS Tracking on Germany Waterways | Proprietary/Free | Closed |
+| [WhereYouGo](https://www.whereyougo.org) | Geocaching | GPL3/Free | Open |
 | [Wikiloc](http://www.wikiloc.com/outdoor-navigation-app) | Map Viewer & Track recording/following | Proprietary/Free (in-app purchases) | Closed |
