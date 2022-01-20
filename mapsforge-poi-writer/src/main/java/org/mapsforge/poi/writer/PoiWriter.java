@@ -2,6 +2,7 @@
  * Copyright 2015-2019 devemux86
  * Copyright 2017-2018 Gustl22
  * Copyright 2019 Kamil Donoval
+ * Copyright 2022 Juanjo-MC
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -576,11 +577,11 @@ public final class PoiWriter {
     Map<String, String> stringToTags(String tagsmapstring) {
         String[] sb = tagsmapstring.split("\\r");
         Map<String, String> map = new HashMap<>();
-        for (String key : sb) {
-            if (key.contains("=")) {
-                String[] set = key.split("=");
-                if (set.length == 2)
-                    map.put(set[0], set[1]);
+        for (String set : sb) {
+            if (set.indexOf(org.mapsforge.core.model.Tag.KEY_VALUE_SEPARATOR) > -1) {
+                String key = set.split(String.valueOf(org.mapsforge.core.model.Tag.KEY_VALUE_SEPARATOR))[0];
+                String value = set.substring(key.length() + 1);
+                map.put(key, value);
             }
         }
         return map;

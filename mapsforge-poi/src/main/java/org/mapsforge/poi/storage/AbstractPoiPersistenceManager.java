@@ -1,6 +1,7 @@
 /*
  * Copyright 2015-2017 devemux86
  * Copyright 2017 Gustl22
+ * Copyright 2022 Juanjo-MC
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,11 +21,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.LatLongUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Abstract implementation for the {@link PoiPersistenceManager} interface. This implementation
@@ -126,10 +123,9 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
         String[] split = data.split("\r");
         for (String s : split) {
             if (s.indexOf(Tag.KEY_VALUE_SEPARATOR) > -1) {
-                String[] keyValue = s.split(String.valueOf(Tag.KEY_VALUE_SEPARATOR));
-                if (keyValue.length == 2) {
-                    tags.add(new Tag(keyValue[0], keyValue[1]));
-                }
+                String key = s.split(String.valueOf(Tag.KEY_VALUE_SEPARATOR))[0];
+                String value = s.substring(key.length() + 1);
+                tags.add(new Tag(key, value));
             }
         }
         return tags;
