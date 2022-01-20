@@ -126,10 +126,9 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
         String[] split = data.split("\r");
         for (String s : split) {
             if (s.indexOf(Tag.KEY_VALUE_SEPARATOR) > -1) {
-                String[] keyValue = s.split(String.valueOf(Tag.KEY_VALUE_SEPARATOR));
-                if (keyValue.length == 2) {
-                    tags.add(new Tag(keyValue[0], keyValue[1]));
-                }
+                String key = s.split(String.valueOf(Tag.KEY_VALUE_SEPARATOR))[0];
+                String value = s.substring(key.length() + String.valueOf(Tag.KEY_VALUE_SEPARATOR).length());
+                tags.add(new Tag(key, value));
             }
         }
         return tags;
