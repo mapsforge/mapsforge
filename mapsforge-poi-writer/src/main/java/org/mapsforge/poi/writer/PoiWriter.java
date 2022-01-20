@@ -576,11 +576,11 @@ public final class PoiWriter {
     Map<String, String> stringToTags(String tagsmapstring) {
         String[] sb = tagsmapstring.split("\\r");
         Map<String, String> map = new HashMap<>();
-        for (String key : sb) {
-            if (key.contains("=")) {
-                String[] set = key.split("=");
-                if (set.length == 2)
-                    map.put(set[0], set[1]);
+        for (String set : sb){
+            if (set.contains("=")){
+                String key = set.split("=")[0];
+                String value = set.substring(key.length() + 1);
+                map.put(key, value);
             }
         }
         return map;
