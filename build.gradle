@@ -1,11 +1,5 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
-    }
+plugins {
+    id 'com.android.application' version '7.0.4' apply false
 }
 
 allprojects {
@@ -35,11 +29,6 @@ static def versionCode() { return 1 }
 def versionName() { return version }
 
 subprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
     tasks.withType(JavaCompile) {
         sourceCompatibility = JavaVersion.VERSION_1_7
         targetCompatibility = JavaVersion.VERSION_1_7
