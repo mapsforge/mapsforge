@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2015 Ludwig M Brinckmann
- * Copyright 2015-2017 devemux86
+ * Copyright 2015-2022 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -32,8 +32,7 @@ import java.util.List;
  * one file contains contour lines, another road data.
  * - DEDUPLICATE: the data from all files will be returned but duplicates will be eliminated. This is
  * suitable when multiple maps cover the different areas, but there is some overlap at boundaries. This
- * is the most expensive operation and often it is actually faster to double paint objects as otherwise
- * all objects have to be compared with all others.
+ * is the most expensive operation and often it is actually faster to double paint objects.
  */
 public class MultiMapDataStore extends MapDataStore {
 

@@ -2,7 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
  * Copyright 2014 Ludwig M Brinckmann
- * Copyright 2014-2020 devemux86
+ * Copyright 2014-2022 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -151,7 +151,7 @@ public final class Samples {
         } else {
             // Vector
             mapView.getModel().displayModel.setFixedTileSize(tileSize);
-            MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+            MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE);
             for (File file : mapFiles) {
                 mapDataStore.addMapDataStore(new MapFile(file), false, false);
             }
@@ -227,13 +227,13 @@ public final class Samples {
         for (String arg : args) {
             File mapFile = new File(arg);
             if (!mapFile.exists()) {
-                throw new IllegalArgumentException("file does not exist: " + mapFile);
+                System.err.println("file does not exist: " + mapFile);
             } else if (!mapFile.isFile()) {
-                throw new IllegalArgumentException("not a file: " + mapFile);
+                System.err.println("not a file: " + mapFile);
             } else if (!mapFile.canRead()) {
-                throw new IllegalArgumentException("cannot read file: " + mapFile);
-            }
-            result.add(mapFile);
+                System.err.println("cannot read file: " + mapFile);
+            } else
+                result.add(mapFile);
         }
         return result;
     }

@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2015-2022 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,12 +17,20 @@
 package org.mapsforge.map.datastore;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An immutable container for the data returned from a MapDataStore.
  */
 public class MapReadResult {
+
+    /**
+     * Hash codes.
+     */
+    private final Set<Integer> hashPois = new HashSet<>();
+    private final Set<Integer> hashWays = new HashSet<>();
 
     /**
      * True if the read area is completely covered by water, false otherwise.
@@ -49,8 +58,8 @@ public class MapReadResult {
     }
 
     /**
-     * Adds other MapReadResult by combining pois and ways. Optionally, deduplication can
-     * be requested (much more expensive).
+     * Adds other MapReadResult by combining pois and ways.
+     * Optionally deduplication can be requested (more expensive).
      *
      * @param other       the MapReadResult to add to this.
      * @param deduplicate true if check for duplicates is required.
@@ -58,12 +67,12 @@ public class MapReadResult {
     public void add(MapReadResult other, boolean deduplicate) {
         if (deduplicate) {
             for (PointOfInterest poi : other.pointOfInterests) {
-                if (!this.pointOfInterests.contains(poi)) {
+                if (this.hashPois.add(poi.hashCode())) {
                     this.pointOfInterests.add(poi);
                 }
             }
             for (Way way : other.ways) {
-                if (!this.ways.contains(way)) {
+                if (this.hashWays.add(way.hashCode())) {
                     this.ways.add(way);
                 }
             }
@@ -72,5 +81,4 @@ public class MapReadResult {
             this.ways.addAll(other.ways);
         }
     }
-
 }

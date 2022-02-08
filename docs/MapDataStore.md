@@ -72,7 +72,7 @@ public enum DataPolicy {
     
  - RETURN_FIRST will only render data from the first source that has data for a tile. This is useful if the stores are known not to overlap in their coverage or where it is enough to render data from the first store if they overlap.
  - RETURN_ALL will combine the data from all stores. This is the most useful policy if the MultiDataStore is used to combine multiple maps into one.
- - DEDUPLICATE will use data from all stores, but eliminate duplicates. Testing has shown that it is very costly to eliminate duplicates and generally cheaper to render overlapping data twice, so the use of this policy is discouraged.
+ - DEDUPLICATE will use data from all stores, but eliminate duplicates. Testing has shown that it is more costly to eliminate duplicates and generally cheaper to render overlapping data twice.
 
 ## An Example
 
