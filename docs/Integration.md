@@ -26,7 +26,7 @@ implementation 'com.caverock:androidsvg:1.4'
 #### Desktop
 ```groovy
 implementation 'org.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]'
-implementation 'com.formdev:svgSalamander:1.1.2.4'
+implementation 'com.formdev:svgSalamander:1.1.3'
 ```
 
 ### POI

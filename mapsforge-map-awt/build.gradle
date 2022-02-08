@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 
 dependencies {
     api project(":mapsforge-map-reader")
-    api 'com.formdev:svgSalamander:1.1.2.4'
+    api 'com.formdev:svgSalamander:1.1.3'
     testImplementation project(":mapsforge-themes")
     testImplementation "junit:junit:$jUnitVersion"
 }
