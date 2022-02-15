@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 devemux86
+ * Copyright 2017-2022 devemux86
  * Copyright 2019 Matthew Egeler
  * Copyright 2020 Lukas Bai
  *
@@ -67,6 +67,11 @@ public final class Parameters {
      * Symbol scaling mode.
      */
     public static SymbolScaling SYMBOL_SCALING = SymbolScaling.POI;
+
+    /**
+     * Validate coordinates.
+     */
+    public static boolean VALIDATE_COORDINATES = true;
 
     private Parameters() {
         throw new IllegalStateException();

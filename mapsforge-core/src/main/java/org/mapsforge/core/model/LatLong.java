@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2022 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,6 +16,7 @@
 package org.mapsforge.core.model;
 
 import org.mapsforge.core.util.LatLongUtils;
+import org.mapsforge.core.util.Parameters;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,8 +50,8 @@ public class LatLong implements Comparable<LatLong> {
      * @throws IllegalArgumentException if the latitude or longitude value is invalid.
      */
     public LatLong(double latitude, double longitude) throws IllegalArgumentException {
-        this.latitude = LatLongUtils.validateLatitude(latitude);
-        this.longitude = LatLongUtils.validateLongitude(longitude);
+        this.latitude = Parameters.VALIDATE_COORDINATES ? LatLongUtils.validateLatitude(latitude) : latitude;
+        this.longitude = Parameters.VALIDATE_COORDINATES ? LatLongUtils.validateLongitude(longitude) : longitude;
     }
 
     /**
@@ -66,8 +67,10 @@ public class LatLong implements Comparable<LatLong> {
     public LatLong(String wellKnownText) {
         Matcher m = WKT_POINT_PATTERN.matcher(wellKnownText);
         m.matches();
-        this.longitude = LatLongUtils.validateLongitude(Double.parseDouble(m.group(1)));
-        this.latitude = LatLongUtils.validateLatitude(Double.parseDouble(m.group(2)));
+        double longitude = Double.parseDouble(m.group(1));
+        this.longitude = Parameters.VALIDATE_COORDINATES ? LatLongUtils.validateLongitude(longitude) : longitude;
+        double latitude = Double.parseDouble(m.group(2));
+        this.latitude = Parameters.VALIDATE_COORDINATES ? LatLongUtils.validateLatitude(latitude) : latitude;
     }
 
     /**
