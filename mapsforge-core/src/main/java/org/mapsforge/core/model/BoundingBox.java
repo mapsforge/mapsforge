@@ -1,7 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Christian Pesch
- * Copyright 2015-2016 devemux86
+ * Copyright 2015-2022 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +18,7 @@ package org.mapsforge.core.model;
 
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.core.util.Parameters;
 
 import java.io.Serializable;
 import java.util.List;
@@ -69,10 +70,12 @@ public class BoundingBox implements Serializable {
      * @throws IllegalArgumentException if a coordinate is invalid.
      */
     public BoundingBox(double minLatitude, double minLongitude, double maxLatitude, double maxLongitude) {
-        LatLongUtils.validateLatitude(minLatitude);
-        LatLongUtils.validateLongitude(minLongitude);
-        LatLongUtils.validateLatitude(maxLatitude);
-        LatLongUtils.validateLongitude(maxLongitude);
+        if (Parameters.VALIDATE_COORDINATES) {
+            LatLongUtils.validateLatitude(minLatitude);
+            LatLongUtils.validateLongitude(minLongitude);
+            LatLongUtils.validateLatitude(maxLatitude);
+            LatLongUtils.validateLongitude(maxLongitude);
+        }
 
         if (minLatitude > maxLatitude) {
             throw new IllegalArgumentException("invalid latitude range: " + minLatitude + ' ' + maxLatitude);

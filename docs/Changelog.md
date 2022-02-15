@@ -3,6 +3,8 @@
 ## New since 0.17.0
 
 - Multiple maps: optimize deduplicate [#1288](https://github.com/mapsforge/mapsforge/pull/1288)
+- Validate coordinates option [#1294](https://github.com/mapsforge/mapsforge/pull/1294)
+  - `Parameters.VALIDATE_COORDINATES`
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.18.0)
 
