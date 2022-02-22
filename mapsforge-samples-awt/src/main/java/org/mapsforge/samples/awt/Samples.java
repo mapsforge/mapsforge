@@ -151,7 +151,7 @@ public final class Samples {
         } else {
             // Vector
             mapView.getModel().displayModel.setFixedTileSize(tileSize);
-            MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.DEDUPLICATE);
+            MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
             for (File file : mapFiles) {
                 mapDataStore.addMapDataStore(new MapFile(file), false, false);
             }
