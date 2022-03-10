@@ -1,6 +1,6 @@
 /*
  * Copyright 2013-2015 Ludwig M Brinckmann
- * Copyright 2014-2020 devemux86
+ * Copyright 2014-2022 devemux86
  * Copyright 2017 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -126,7 +126,6 @@ public class Samples extends Activity {
         linearLayout.addView(createLabel("User Interaction"));
         linearLayout.addView(createButton(LongPressAction.class));
         linearLayout.addView(createButton(ItemListActivity.class));
-        linearLayout.addView(createButton(RotateMapViewer.class));
 
         linearLayout.addView(createLabel("Dual Map Views"));
         linearLayout.addView(createButton(DualMapViewer.class));
@@ -164,6 +163,7 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewer.class));
         linearLayout.addView(createButton(ClusterMapActivity.class));
         linearLayout.addView(createButton(GroupMarkerExample.class));
+        linearLayout.addView(createButton(RotateMapViewer.class));
     }
 
     @Override
