@@ -20,6 +20,7 @@ If you have any questions or problems, don't hesitate to ask the Discussions for
 - Mapsforge is in active [development](docs/Contributors.md). 
 - Mapsforge [map providers](docs/Mapsforge-Maps.md).
 - Mapsforge [talks](docs/Mapsforge-Talks.md).
+- Building Mapsforge: set `ANDROID_HOME` environment variable with the Android SDK installation directory
 
 ## License
 
