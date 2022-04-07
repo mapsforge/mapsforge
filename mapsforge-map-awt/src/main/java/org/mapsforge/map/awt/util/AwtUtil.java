@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2017 devemux86
+ * Copyright 2016-2022 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,8 +20,7 @@ import org.mapsforge.map.layer.cache.InMemoryTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.io.File;
 
 public final class AwtUtil {
@@ -54,9 +53,9 @@ public final class AwtUtil {
      * @return the minimum cache size for the view
      */
     public static int getMinimumCacheSize(int tileSize, double overdrawFactor) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        return (int) Math.max(4, Math.round((2 + screenSize.getWidth() * overdrawFactor / tileSize)
-                * (2 + screenSize.getHeight() * overdrawFactor / tileSize)));
+        DisplayMode displayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
+        return (int) Math.max(4, Math.round((2 + displayMode.getWidth() * overdrawFactor / tileSize)
+                * (2 + displayMode.getHeight() * overdrawFactor / tileSize)));
     }
 
     private AwtUtil() {
