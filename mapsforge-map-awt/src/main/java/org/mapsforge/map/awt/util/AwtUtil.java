@@ -54,11 +54,11 @@ public final class AwtUtil {
      */
     public static int getMinimumCacheSize(int tileSize, double overdrawFactor) {
         GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-        int size = 0;
+        int size = 4;
         for (GraphicsDevice screenDevice : screenDevices) {
             DisplayMode displayMode = screenDevice.getDisplayMode();
-            size = Math.max(size, (int) Math.max(4, Math.round((2 + displayMode.getWidth() * overdrawFactor / tileSize)
-                    * (2 + displayMode.getHeight() * overdrawFactor / tileSize))));
+            size = Math.max(size, (int) Math.round((2 + displayMode.getWidth() * overdrawFactor / tileSize)
+                    * (2 + displayMode.getHeight() * overdrawFactor / tileSize)));
         }
         return size;
     }
