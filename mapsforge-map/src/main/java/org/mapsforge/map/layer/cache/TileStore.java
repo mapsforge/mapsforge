@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2019 mg4gh
+ * Copyright 2022 devemux86
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -125,20 +126,20 @@ public class TileStore implements TileCache {
         // slow descent at the moment, better for debugging.
         File l1 = new File(this.rootDirectory, Byte.toString(key.tile.zoomLevel));
         if (!l1.isDirectory() || !l1.canRead()) {
-            LOGGER.info("Failed to find directory " + l1.getAbsolutePath());
+            LOGGER.warning("Failed to find directory " + l1.getAbsolutePath());
             return null;
         }
         File l2 = new File(l1, Long.toString(key.tile.tileX));
         if (!l2.isDirectory() || !l2.canRead()) {
-            LOGGER.info("Failed to find directory " + l2.getAbsolutePath());
+            LOGGER.warning("Failed to find directory " + l2.getAbsolutePath());
             return null;
         }
         File l3 = new File(l2, Long.toString(key.tile.tileY) + this.suffix);
         if (!l3.isFile() || !l3.canRead()) {
-            LOGGER.info("Failed to find file " + l3.getAbsolutePath());
+            LOGGER.warning("Failed to find file " + l3.getAbsolutePath());
             return null;
         }
-        LOGGER.info("Found file " + l3.getAbsolutePath());
+        //LOGGER.info("Found file " + l3.getAbsolutePath());
         return l3;
     }
 
