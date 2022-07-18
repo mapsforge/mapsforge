@@ -38,5 +38,4 @@ public interface ShadeTileSource {
 
     void setShadingAlgorithm(ShadingAlgorithm algorithm);
 
-    void setDemFolder(File demFolder);
 }

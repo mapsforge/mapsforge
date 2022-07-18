@@ -21,12 +21,12 @@ import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.BoundingBox;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -36,7 +36,9 @@ import java.util.zip.ZipInputStream;
  * immutably configured, does the work for {@link MemoryCachingHgtReaderTileSource}
  */
 class HgtCache {
-    final File demFolder;
+    private static final Logger LOGGER = Logger.getLogger(HgtCache.class.getName());
+
+    final DemFolder demFolder;
     final boolean interpolatorOverlap;
     final ShadingAlgorithm algorithm;
     final int mainCacheSize;
@@ -136,7 +138,8 @@ class HgtCache {
 
     private List<String> problems = new ArrayList<>();
 
-    HgtCache(File demFolder, boolean interpolationOverlap, GraphicFactory graphicsFactory, ShadingAlgorithm algorithm, int mainCacheSize, int neighborCacheSize) {
+
+    HgtCache(DemFolder demFolder, final boolean interpolationOverlap, GraphicFactory graphicsFactory, ShadingAlgorithm algorithm, int mainCacheSize, int neighborCacheSize) {
         this.demFolder = demFolder;
         this.interpolatorOverlap = interpolationOverlap;
         this.graphicsFactory = graphicsFactory;
@@ -156,67 +159,64 @@ class HgtCache {
                 return map;
             }
 
-            void crawl(File file, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
-                if (file.exists()) {
-                    if (file.isFile()) {
-                        String name = file.getName();
-                        if (matcher.reset(name).matches()) {
-                            int northsouth = Integer.parseInt(matcher.group(2));
-                            int eastwest = Integer.parseInt(matcher.group(4));
+            void crawl(DemFile file, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
+                String name = file.getName();
+                if (matcher.reset(name).matches()) {
+                    int northsouth = Integer.parseInt(matcher.group(2));
+                    int eastwest = Integer.parseInt(matcher.group(4));
 
-                            int north = "n".equals(matcher.group(1).toLowerCase()) ? northsouth : -northsouth;
-                            int east = "e".equals(matcher.group(3).toLowerCase()) ? eastwest : -eastwest;
+                    int north = "n".equals(matcher.group(1).toLowerCase()) ? northsouth : -northsouth;
+                    int east = "e".equals(matcher.group(3).toLowerCase()) ? eastwest : -eastwest;
 
-                            long length = 0;
+                    long length = 0;
 
-                            if (matcher.group(6) == null) {
-                                length = file.length();
-                            } else {
-                                // zip
-                                ZipInputStream zipInputStream = null;
-                                try {
-                                    zipInputStream = new ZipInputStream(new FileInputStream(file));
-                                    String expectedHgt = name.toLowerCase().substring(0, name.length() - 4) + ".hgt";
-                                    ZipEntry entry;
-                                    while (null != (entry = zipInputStream.getNextEntry())) {
-                                        if (expectedHgt.equals(entry.getName().toLowerCase())) {
-                                            length = entry.getSize();
-                                            break;
-                                        }
-                                    }
-                                } catch (IOException e) {
-                                    problems.add("could not read zip file " + file.getName());
-                                }
-                                if (zipInputStream != null) {
-                                    try {
-                                        zipInputStream.close();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                    if (matcher.group(6) == null) {
+                        length = file.getSize();
+                    } else {
+                        // zip
+                        ZipInputStream zipInputStream = null;
+                        try {
+                            zipInputStream = new ZipInputStream(file.openInputStream());
+                            String expectedHgt = name.toLowerCase().substring(0, name.length() - 4) + ".hgt";
+                            ZipEntry entry;
+                            while (null != (entry = zipInputStream.getNextEntry())) {
+                                if (expectedHgt.equals(entry.getName().toLowerCase())) {
+                                    length = entry.getSize();
+                                    break;
                                 }
                             }
-                            long heights = length / 2;
-                            long sqrt = (long) Math.sqrt(heights);
-                            if (heights == 0 || sqrt * sqrt != heights) {
-                                if (problems != null)
-                                    problems.add(file + " length in shorts (" + heights + ") is not a square number");
-                                return;
-                            }
-
-                            TileKey tileKey = new TileKey(north, east);
-                            HgtFileInfo existing = map.get(tileKey);
-                            if (existing == null || existing.size < length) {
-                                map.put(tileKey, new HgtFileInfo(file, north - 1, east, north, east + 1, length));
-                            }
+                        } catch (IOException e) {
+                            problems.add("could not read zip file " + file.getName());
                         }
-                    } else if (file.isDirectory()) {
-                        File[] files = file.listFiles();
-                        if (files != null) {
-                            for (File sub : files) {
-                                crawl(sub, matcher, map, problems);
+                        if (zipInputStream != null) {
+                            try {
+                                zipInputStream.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
+                    long heights = length / 2;
+                    long sqrt = (long) Math.sqrt(heights);
+                    if (heights == 0 || sqrt * sqrt != heights) {
+                        if (problems != null)
+                            problems.add(file + " length in shorts (" + heights + ") is not a square number");
+                        return;
+                    }
+
+                    TileKey tileKey = new TileKey(north, east);
+                    HgtFileInfo existing = map.get(tileKey);
+                    if (existing == null || existing.size < length) {
+                        map.put(tileKey, new HgtFileInfo(file, north - 1, east, north, east + 1, length));
+                    }
+                }
+            }
+            void crawl(DemFolder file, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
+                for(DemFile demFile : file.files()) {
+                    crawl(demFile, matcher, map, problems);
+                }
+                for(DemFolder sub : file.subs()) {
+                    crawl(sub, matcher, map, problems);
                 }
             }
         };
@@ -294,12 +294,12 @@ class HgtCache {
 
 
     class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHillTileSource {
-        final File file;
+        final DemFile file;
         WeakReference<Future<HillshadingBitmap>> weakRef = null;
 
         final long size;
 
-        HgtFileInfo(File file, double minLatitude, double minLongitude, double maxLatitude, double maxLongitude, long size) {
+        HgtFileInfo(DemFile file, double minLatitude, double minLongitude, double maxLatitude, double maxLongitude, long size) {
             super(minLatitude, minLongitude, maxLatitude, maxLongitude);
             this.file = file;
             this.size = size;
@@ -414,7 +414,7 @@ class HgtCache {
         }
 
         @Override
-        public File getFile() {
+        public DemFile getFile() {
             return file;
         }
 
@@ -464,8 +464,9 @@ class HgtCache {
 
     HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, double pxPerLat, double pxPerLng) throws InterruptedException, ExecutionException {
         HgtFileInfo hgtFileInfo = hgtFiles.get().get(new TileKey(northInt, eastInt));
-        if (hgtFileInfo == null)
+        if (hgtFileInfo == null) {
             return null;
+        }
 
         Future<HillshadingBitmap> future = hgtFileInfo.getBitmapFuture(pxPerLat, pxPerLng);
         return future.get();

@@ -35,13 +35,6 @@ public class HillsRenderConfig {
         this.tileSource = tileSource;
     }
 
-    public HillsRenderConfig(File demFolder, GraphicFactory graphicsFactory, ShadeTileSource tileSource, ShadingAlgorithm algorithm) {
-
-        this.tileSource = (tileSource == null) ? new MemoryCachingHgtReaderTileSource(demFolder, algorithm, graphicsFactory) : tileSource;
-        this.tileSource.setDemFolder(demFolder);
-        this.tileSource.setShadingAlgorithm(algorithm);
-
-    }
 
     /**
      * call after initialization, after a set of changes to the settable properties or after forceReindex to initiate background indexing
