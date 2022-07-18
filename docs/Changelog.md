@@ -2,6 +2,7 @@
 
 ## New since 0.18.0
 
+- Hillshading: Android scoped storage [#1338](https://github.com/mapsforge/mapsforge/pull/1338)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.19.0)
 
