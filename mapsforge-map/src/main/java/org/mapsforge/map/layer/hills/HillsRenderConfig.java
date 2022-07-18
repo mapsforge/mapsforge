@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 usrusr
+ * Copyright 2017-2022 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,10 +14,8 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.HillshadingBitmap;
 
-import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -35,13 +33,6 @@ public class HillsRenderConfig {
         this.tileSource = tileSource;
     }
 
-    public HillsRenderConfig(File demFolder, GraphicFactory graphicsFactory, ShadeTileSource tileSource, ShadingAlgorithm algorithm) {
-
-        this.tileSource = (tileSource == null) ? new MemoryCachingHgtReaderTileSource(demFolder, algorithm, graphicsFactory) : tileSource;
-        this.tileSource.setDemFolder(demFolder);
-        this.tileSource.setShadingAlgorithm(algorithm);
-
-    }
 
     /**
      * call after initialization, after a set of changes to the settable properties or after forceReindex to initiate background indexing

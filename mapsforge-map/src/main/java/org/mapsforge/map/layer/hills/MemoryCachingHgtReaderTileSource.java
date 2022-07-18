@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 usrusr
+ * Copyright 2017-2022 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +17,6 @@ package org.mapsforge.map.layer.hills;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.HillshadingBitmap;
 
-import java.io.File;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -29,11 +28,11 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
     private int mainCacheSize = 4;
     private int neighborCacheSize = 4;
     private boolean enableInterpolationOverlap = true;
-    private File demFolder;
+    private DemFolder demFolder;
     private ShadingAlgorithm algorithm;
     private boolean configurationChangePending = true;
 
-    public MemoryCachingHgtReaderTileSource(File demFolder, ShadingAlgorithm algorithm, GraphicFactory graphicsFactory) {
+    public MemoryCachingHgtReaderTileSource(DemFolder demFolder, ShadingAlgorithm algorithm, GraphicFactory graphicsFactory) {
         this(graphicsFactory);
         this.demFolder = demFolder;
         this.algorithm = algorithm;
@@ -50,7 +49,7 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
         if (allowParallel && latest != null && latest != before) latest.indexOnThread();
     }
 
-    private HgtCache latestCache() {
+    protected HgtCache latestCache() {
         HgtCache ret = this.currentCache;
         if (ret != null && !configurationChangePending) return ret;
         if (demFolder == null || algorithm == null) {
@@ -62,8 +61,7 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
                 || mainCacheSize != this.currentCache.mainCacheSize
                 || neighborCacheSize != this.currentCache.neighborCacheSize
                 || !demFolder.equals(this.currentCache.demFolder)
-                || !algorithm.equals(this.currentCache.algorithm)
-                ) {
+                || !algorithm.equals(this.currentCache.algorithm)) {
             ret = new HgtCache(demFolder, enableInterpolationOverlap, graphicsFactory, algorithm, mainCacheSize, neighborCacheSize);
             this.currentCache = ret;
         }
@@ -90,8 +88,7 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
         this.algorithm = algorithm;
     }
 
-    @Override
-    public void setDemFolder(File demFolder) {
+    public void setDemFolder(DemFolder demFolder) {
         this.demFolder = demFolder;
     }
 
@@ -129,9 +126,6 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
         return enableInterpolationOverlap;
     }
 
-    public File getDemFolder() {
-        return demFolder;
-    }
 
     public ShadingAlgorithm getAlgorithm() {
         return algorithm;

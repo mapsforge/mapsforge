@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 usrusr
+ * Copyright 2022 usrusr
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,27 +14,11 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import org.mapsforge.core.graphics.HillshadingBitmap;
-
-import java.util.concurrent.ExecutionException;
-
 /**
- * {@link MemoryCachingHgtReaderTileSource} or a wrapper thereof
+ * should implement equals
  */
-public interface ShadeTileSource {
+public interface DemFolder {
+    Iterable<DemFolder> subs();
 
-    /**
-     * prepare anything lazily derived from configuration off this thread
-     */
-    void prepareOnThread();
-
-    /**
-     * main work method
-     */
-    HillshadingBitmap getHillshadingBitmap(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException;
-
-    void applyConfiguration(boolean allowParallel);
-
-    void setShadingAlgorithm(ShadingAlgorithm algorithm);
-
+    Iterable<DemFile> files();
 }
