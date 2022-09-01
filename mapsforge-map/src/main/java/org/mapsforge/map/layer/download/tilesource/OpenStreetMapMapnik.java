@@ -33,8 +33,7 @@ import java.net.URL;
  * Requires a valid HTTP User-Agent identifying application: https://operations.osmfoundation.org/policies/tiles/
  */
 public class OpenStreetMapMapnik extends AbstractTileSource {
-    public static final OpenStreetMapMapnik INSTANCE = new OpenStreetMapMapnik(new String[]{
-            "a.tile.openstreetmap.org", "b.tile.openstreetmap.org", "c.tile.openstreetmap.org"}, 443);
+    public static final OpenStreetMapMapnik INSTANCE = new OpenStreetMapMapnik(new String[]{"tile.openstreetmap.org"}, 443);
     private static final int PARALLEL_REQUESTS_LIMIT = 8;
     private static final String PROTOCOL = "https";
     private static final int ZOOM_LEVEL_MAX = 18;
