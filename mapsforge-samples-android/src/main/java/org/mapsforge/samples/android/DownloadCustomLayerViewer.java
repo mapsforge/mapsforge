@@ -24,9 +24,7 @@ import org.mapsforge.map.layer.download.tilesource.OnlineTileSource;
 public class DownloadCustomLayerViewer extends DownloadLayerViewer {
     @Override
     protected void createLayers() {
-        OnlineTileSource onlineTileSource = new OnlineTileSource(new String[]{
-                "a.tile.openstreetmap.fr", "b.tile.openstreetmap.fr", "c.tile.openstreetmap.fr"},
-                443);
+        OnlineTileSource onlineTileSource = new OnlineTileSource(new String[]{"tile.openstreetmap.fr"}, 443);
         onlineTileSource.setName("Humanitarian").setAlpha(false)
                 .setBaseUrl("/hot/")
                 .setParallelRequestsLimit(8).setProtocol("https").setTileSize(256)
