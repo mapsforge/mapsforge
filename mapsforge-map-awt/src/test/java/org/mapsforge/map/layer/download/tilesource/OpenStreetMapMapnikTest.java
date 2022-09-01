@@ -35,7 +35,7 @@ public class OpenStreetMapMapnikTest {
         TileSource tileSource = OpenStreetMapMapnik.INSTANCE;
 
         URL tileUrl = tileSource.getTileUrl(new Tile(0, 1, (byte) 2, 256));
-        Assert.assertTrue(tileUrl.toExternalForm().endsWith(".tile.openstreetmap.org:443/2/0/1.png"));
+        Assert.assertTrue(tileUrl.toExternalForm().endsWith("tile.openstreetmap.org:443/2/0/1.png"));
     }
 
     @Test
