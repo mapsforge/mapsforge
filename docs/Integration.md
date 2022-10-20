@@ -40,11 +40,11 @@ implementation 'org.mapsforge:mapsforge-poi:[CURRENT-VERSION]'
 #### Android
 ```groovy
 implementation 'org.mapsforge:mapsforge-poi-android:[CURRENT-VERSION]'
-implementation 'org.mapsforge:sqlite-android:[CURRENT-VERSION]'
 implementation 'org.mapsforge:sqlite-android:[CURRENT-VERSION]:natives-armeabi-v7a'
 implementation 'org.mapsforge:sqlite-android:[CURRENT-VERSION]:natives-arm64-v8a'
 implementation 'org.mapsforge:sqlite-android:[CURRENT-VERSION]:natives-x86'
 implementation 'org.mapsforge:sqlite-android:[CURRENT-VERSION]:natives-x86_64'
+implementation 'org.mapsforge:sqlite-android:[CURRENT-VERSION]'
 ```
 
 #### Desktop
