@@ -7,4 +7,5 @@
 - [Mapsforge](https://download.mapsforge.org/)
 - [OpenAndroMaps](https://www.openandromaps.org/en/)
 - [OpenMaps](https://openmaps.eu/)
+- [paws.cz](https://osm.paws.cz/)
 - [vector.city](https://vector.city/)
