@@ -28,7 +28,7 @@ public final class Parameters {
     public static boolean ANTI_ALIASING = true;
 
     /**
-     * If true the <code>FrameBufferHA3</code> will be used instead of default <code>FrameBufferHA2}</code>.
+     * If true the <code>FrameBufferHA3</code> will be used instead of default <code>FrameBufferHA2</code>.
      */
     public static boolean FRAME_BUFFER_HA3 = true;
 
