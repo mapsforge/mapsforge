@@ -16,10 +16,10 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class ValueMatcher implements AttributeMatcher {
+
     private final List<String> values;
 
     ValueMatcher(List<String> values) {
@@ -32,20 +32,16 @@ class ValueMatcher implements AttributeMatcher {
             return true;
         }
 
-        List<Tag> tags = new ArrayList<Tag>(this.values.size());
         for (int i = 0, n = this.values.size(); i < n; ++i) {
-            tags.add(new Tag(null, this.values.get(i)));
-        }
-        return attributeMatcher.matches(tags);
-    }
-
-    @Override
-    public boolean matches(List<Tag> tags) {
-        for (int i = 0, n = tags.size(); i < n; ++i) {
-            if (this.values.contains(tags.get(i).value)) {
+            if (attributeMatcher.matches(new Tag(null, this.values.get(i)))) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean matches(Tag tag) {
+        return values.contains(tag.value);
     }
 }

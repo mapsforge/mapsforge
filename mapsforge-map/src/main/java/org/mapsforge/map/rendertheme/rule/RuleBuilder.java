@@ -120,15 +120,15 @@ public class RuleBuilder {
      */
     public Rule build() {
         if (this.valueList.remove(STRING_NEGATION)) {
-            AttributeMatcher attributeMatcher = new NegativeMatcher(this.keyList, this.valueList);
+            NegativeMatcher attributeMatcher = new NegativeMatcher(this.keyList, this.valueList);
             return new NegativeRule(this, attributeMatcher);
         }
 
         AttributeMatcher keyMatcher = getKeyMatcher(this.keyList);
         AttributeMatcher valueMatcher = getValueMatcher(this.valueList);
 
-        keyMatcher = RuleOptimizer.optimize(keyMatcher, this.ruleStack);
-        valueMatcher = RuleOptimizer.optimize(valueMatcher, this.ruleStack);
+//        keyMatcher = RuleOptimizer.optimize(keyMatcher, this.ruleStack);
+//        valueMatcher = RuleOptimizer.optimize(valueMatcher, this.ruleStack);
 
         return new PositiveRule(this, keyMatcher, valueMatcher);
     }
@@ -165,8 +165,8 @@ public class RuleBuilder {
         this.elementMatcher = getElementMatcher(this.element);
         this.closedMatcher = getClosedMatcher(this.closed);
 
-        this.elementMatcher = RuleOptimizer.optimize(this.elementMatcher, this.ruleStack);
-        this.closedMatcher = RuleOptimizer.optimize(this.closedMatcher, this.ruleStack);
+//        this.elementMatcher = RuleOptimizer.optimize(this.elementMatcher, this.ruleStack);
+//        this.closedMatcher = RuleOptimizer.optimize(this.closedMatcher, this.ruleStack);
     }
 
     private void validate(String elementName) throws XmlPullParserException {

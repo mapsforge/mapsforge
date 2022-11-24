@@ -16,10 +16,9 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
 
-import java.util.List;
-
 interface AttributeMatcher {
+
     boolean isCoveredBy(AttributeMatcher attributeMatcher);
 
-    boolean matches(List<Tag> tags);
+    boolean matches(Tag tag);
 }

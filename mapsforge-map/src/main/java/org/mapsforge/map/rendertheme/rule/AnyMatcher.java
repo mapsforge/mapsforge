@@ -16,9 +16,8 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
 
-import java.util.List;
-
 final class AnyMatcher implements ElementMatcher, AttributeMatcher, ClosedMatcher {
+
     static final AnyMatcher INSTANCE = new AnyMatcher();
 
     private AnyMatcher() {
@@ -51,7 +50,7 @@ final class AnyMatcher implements ElementMatcher, AttributeMatcher, ClosedMatche
     }
 
     @Override
-    public boolean matches(List<Tag> tags) {
+    public boolean matches(Tag tag) {
         return true;
     }
 }
