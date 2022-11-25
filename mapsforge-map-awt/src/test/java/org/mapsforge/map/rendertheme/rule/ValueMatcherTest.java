@@ -42,7 +42,7 @@ public class ValueMatcherTest {
         Tag tag2 = new Tag(null, VALUE2);
         AttributeMatcher attributeMatcher = new ValueMatcher(Arrays.asList(VALUE1));
 
-        Assert.assertTrue(attributeMatcher.matches(Arrays.asList(tag1)));
-        Assert.assertFalse(attributeMatcher.matches(Arrays.asList(tag2)));
+        Assert.assertTrue(attributeMatcher.matches(tag1));
+        Assert.assertFalse(attributeMatcher.matches(tag2));
     }
 }

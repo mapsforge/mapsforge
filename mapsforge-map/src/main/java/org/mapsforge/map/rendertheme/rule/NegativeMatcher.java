@@ -19,6 +19,7 @@ import org.mapsforge.core.model.Tag;
 import java.util.List;
 
 class NegativeMatcher implements AttributeMatcher {
+
     private final List<String> keyList;
     private final List<String> valueList;
 
@@ -33,20 +34,11 @@ class NegativeMatcher implements AttributeMatcher {
     }
 
     @Override
-    public boolean matches(List<Tag> tags) {
-        if (keyListDoesNotContainKeys(tags)) {
-            return true;
-        }
-
-        for (int i = 0, n = tags.size(); i < n; ++i) {
-            if (this.valueList.contains(tags.get(i).value)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean matches(Tag tag) {
+        return this.valueList.contains(tag.value);
     }
 
-    private boolean keyListDoesNotContainKeys(List<Tag> tags) {
+    boolean keyListDoesNotContainKeys(List<Tag> tags) {
         for (int i = 0, n = tags.size(); i < n; ++i) {
             if (this.keyList.contains(tags.get(i).key)) {
                 return false;

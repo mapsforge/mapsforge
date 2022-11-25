@@ -42,7 +42,7 @@ public class KeyMatcherTest {
         Tag tag2 = new Tag(KEY2, null);
         AttributeMatcher attributeMatcher = new KeyMatcher(Arrays.asList(KEY1));
 
-        Assert.assertTrue(attributeMatcher.matches(Arrays.asList(tag1)));
-        Assert.assertFalse(attributeMatcher.matches(Arrays.asList(tag2)));
+        Assert.assertTrue(attributeMatcher.matches(tag1));
+        Assert.assertFalse(attributeMatcher.matches(tag2));
     }
 }
