@@ -19,7 +19,6 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * An immutable container for all data associated with a single way or area (closed way).
@@ -43,9 +42,9 @@ public class Way {
     /**
      * The tags of this way.
      */
-    public final List<Tag> tags;
+    public final Tag[] tags;
 
-    public Way(byte layer, List<Tag> tags, LatLong[][] latLongs, LatLong labelPosition) {
+    public Way(byte layer, Tag[] tags, LatLong[][] latLongs, LatLong labelPosition) {
         this.layer = layer;
         this.tags = tags;
         this.latLongs = latLongs;

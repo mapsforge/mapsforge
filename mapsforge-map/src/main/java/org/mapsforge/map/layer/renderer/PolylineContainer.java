@@ -39,7 +39,7 @@ public class PolylineContainer implements ShapeContainer {
     private Point center;
     private Point[][] coordinatesAbsolute;
     private Point[][] coordinatesRelativeToTile;
-    private final List<Tag> tags;
+    private final Tag[] tags;
     private final byte layer;
     private final Tile upperLeft;
     private final Tile lowerRight;
@@ -60,7 +60,7 @@ public class PolylineContainer implements ShapeContainer {
         }
     }
 
-    public PolylineContainer(Point[] coordinates, final Tile upperLeft, final Tile lowerRight, List<Tag> tags) {
+    public PolylineContainer(Point[] coordinates, final Tile upperLeft, final Tile lowerRight, Tag[] tags) {
         this.coordinatesAbsolute = new Point[1][];
         this.coordinatesRelativeToTile = null;
         this.coordinatesAbsolute[0] = new Point[coordinates.length];
@@ -118,7 +118,7 @@ public class PolylineContainer implements ShapeContainer {
         return ShapeType.POLYLINE;
     }
 
-    public List<Tag> getTags() {
+    public Tag[] getTags() {
         return tags;
     }
 

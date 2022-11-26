@@ -17,7 +17,11 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
@@ -31,8 +35,6 @@ import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
-
-import java.util.Collections;
 
 /**
  * The DatabaseRenderer renders map tiles by reading from a {@link MapDataStore}.
@@ -186,7 +188,9 @@ public class StandardRenderer implements RenderCallback {
         for (int i = 0; i < coordinates.length; i++) {
             coordinates[i] = coordinates[i].offset(tileOrigin.x, tileOrigin.y);
         }
-        PolylineContainer way = new PolylineContainer(coordinates, renderContext.rendererJob.tile, renderContext.rendererJob.tile, Collections.singletonList(TAG_NATURAL_WATER));
+        Tag[] tags = new Tag[1];
+        tags[0] = TAG_NATURAL_WATER;
+        PolylineContainer way = new PolylineContainer(coordinates, renderContext.rendererJob.tile, renderContext.rendererJob.tile, tags);
         renderContext.renderTheme.matchClosedWay(this, renderContext, way);
     }
 

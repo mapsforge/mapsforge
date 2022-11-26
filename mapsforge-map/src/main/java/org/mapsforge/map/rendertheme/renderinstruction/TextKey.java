@@ -18,7 +18,6 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.model.Tag;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 final class TextKey {
@@ -39,10 +38,11 @@ final class TextKey {
         this.key = key;
     }
 
-    String getValue(List<Tag> tags) {
-        for (int i = 0, n = tags.size(); i < n; ++i) {
-            if (this.key.equals(tags.get(i).key)) {
-                return tags.get(i).value;
+    String getValue(Tag[] tags) {
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0, n = tags.length; i < n; ++i) {
+            if (this.key.equals(tags[i].key)) {
+                return tags[i].value;
             }
         }
         return null;

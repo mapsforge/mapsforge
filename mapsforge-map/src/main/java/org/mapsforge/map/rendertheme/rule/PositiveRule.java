@@ -16,8 +16,6 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
 
-import java.util.List;
-
 class PositiveRule extends Rule {
 
     final AttributeMatcher keyMatcher;
@@ -31,7 +29,7 @@ class PositiveRule extends Rule {
     }
 
     @Override
-    boolean matchesNode(List<Tag> tags, byte zoomLevel) {
+    boolean matchesNode(Tag[] tags, byte zoomLevel) {
         return this.zoomMin <= zoomLevel
                 && this.zoomMax >= zoomLevel
                 && this.elementMatcher.matches(Element.NODE)
@@ -39,7 +37,7 @@ class PositiveRule extends Rule {
     }
 
     @Override
-    boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed) {
+    boolean matchesWay(Tag[] tags, byte zoomLevel, Closed closed) {
         return this.zoomMin <= zoomLevel
                 && this.zoomMax >= zoomLevel
                 && this.elementMatcher.matches(Element.WAY)
@@ -47,10 +45,10 @@ class PositiveRule extends Rule {
                 && matchesAnyTag(tags);
     }
 
-    private boolean matchesAnyTag(List<Tag> tags) {
-        for (int i = 0; i < tags.size(); i++) {
-            Tag tag = tags.get(i);
-            if (keyMatcher.matches(tag) && valueMatcher.matches(tag)) {
+    private boolean matchesAnyTag(Tag[] tags) {
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < tags.length; i++) {
+            if (keyMatcher.matches(tags[i]) && valueMatcher.matches(tags[i])) {
                 return true;
             }
         }

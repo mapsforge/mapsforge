@@ -27,7 +27,11 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.core.util.Parameters;
-import org.mapsforge.map.datastore.*;
+import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.datastore.PoiWayBundle;
+import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.reader.header.MapFileException;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
@@ -183,6 +187,9 @@ public class MapFile extends MapDataStore {
 
     private byte zoomLevelMin = 0;
     private byte zoomLevelMax = Byte.MAX_VALUE;
+
+    // container for loaded tags
+    private final ArrayList<Tag> tags = new ArrayList<>();
 
     private MapFile() {
         // only to create a dummy empty file.
@@ -707,8 +714,8 @@ public class MapFile extends MapDataStore {
             byte numberOfTags = (byte) (specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 
             // get the tags from IDs (VBE-U)
-            List<Tag> tags = readBuffer.readTags(poiTags, numberOfTags);
-            if (tags == null) {
+            tags.clear();
+            if (!readBuffer.readTags(poiTags, numberOfTags, tags)) {
                 return null;
             }
 
@@ -739,7 +746,9 @@ public class MapFile extends MapDataStore {
             // depending on the zoom level configuration the poi can lie outside
             // the tile requested, we filter them out here
             if (!filterRequired || boundingBox.contains(position)) {
-                pois.add(new PointOfInterest(layer, tags, position));
+                Tag[] tagsA = new Tag[tags.size()];
+                tags.toArray(tagsA);
+                pois.add(new PointOfInterest(layer, tagsA, position));
             }
         }
 
@@ -832,8 +841,8 @@ public class MapFile extends MapDataStore {
             byte numberOfTags = (byte) (specialByte & WAY_NUMBER_OF_TAGS_BITMASK);
 
             // get the tags from IDs (VBE-U)
-            List<Tag> tags = readBuffer.readTags(wayTags, numberOfTags);
-            if (tags == null) {
+            tags.clear();
+            if (!readBuffer.readTags(wayTags, numberOfTags, tags)) {
                 return null;
             }
 
@@ -886,7 +895,9 @@ public class MapFile extends MapDataStore {
                             labelLatLong = new LatLong(wayNodes[0][0].latitude + LatLongUtils.microdegreesToDegrees(labelPosition[1]),
                                     wayNodes[0][0].longitude + LatLongUtils.microdegreesToDegrees(labelPosition[0]));
                         }
-                        ways.add(new Way(layer, tags, wayNodes, labelLatLong));
+                        Tag[] tagsA = new Tag[tags.size()];
+                        tags.toArray(tagsA);
+                        ways.add(new Way(layer, tagsA, wayNodes, labelLatLong));
                     }
                 }
             }

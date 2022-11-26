@@ -31,8 +31,8 @@ import java.util.Map;
 
 public abstract class Rule {
 
-    static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<List<String>, AttributeMatcher>();
-    static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<List<String>, AttributeMatcher>();
+    static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<>();
+    static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<>();
 
     public static class RuleVisitor {
         public void apply(Rule r) {
@@ -82,9 +82,9 @@ public abstract class Rule {
         }
     }
 
-    abstract boolean matchesNode(List<Tag> tags, byte zoomLevel);
+    abstract boolean matchesNode(Tag[] tags, byte zoomLevel);
 
-    abstract boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed);
+    abstract boolean matchesWay(Tag[] tags, byte zoomLevel, Closed closed);
 
     void matchNode(RenderCallback renderCallback, final RenderContext renderContext, List<RenderInstruction> matchingList, PointOfInterest pointOfInterest) {
         if (matchesNode(pointOfInterest.tags, renderContext.rendererJob.tile.zoomLevel)) {

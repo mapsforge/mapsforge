@@ -201,8 +201,7 @@ public class ReadBuffer {
         return variableByteDecode | ((this.bufferData[this.bufferPosition++] & 0x3f) << variableByteShift);
     }
 
-    List<Tag> readTags(Tag[] tagsArray, byte numberOfTags) {
-        List<Tag> tags = new ArrayList<>();
+    boolean readTags(Tag[] tagsArray, byte numberOfTags, ArrayList<Tag> tags) {
         tagIds.clear();
 
         int maxTag = tagsArray.length;
@@ -211,7 +210,7 @@ public class ReadBuffer {
             int tagId = readUnsignedInt();
             if (tagId < 0 || tagId >= maxTag) {
                 LOGGER.warning("invalid tag ID: " + tagId);
-                return null;
+                return false;
             }
             tagIds.add(tagId);
         }
@@ -240,8 +239,7 @@ public class ReadBuffer {
             }
             tags.add(tag);
         }
-
-        return tags;
+        return true;
     }
 
     /**

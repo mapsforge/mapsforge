@@ -18,8 +18,6 @@ package org.mapsforge.map.datastore;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 
-import java.util.List;
-
 /**
  * An immutable container for all data associated with a single point of interest node (POI).
  */
@@ -37,9 +35,9 @@ public class PointOfInterest {
     /**
      * The tags of this POI.
      */
-    public final List<Tag> tags;
+    public final Tag[] tags;
 
-    public PointOfInterest(byte layer, List<Tag> tags, LatLong position) {
+    public PointOfInterest(byte layer, Tag[] tags, LatLong position) {
         this.layer = layer;
         this.tags = tags;
         this.position = position;
