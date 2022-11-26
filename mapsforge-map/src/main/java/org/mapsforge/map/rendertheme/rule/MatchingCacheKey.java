@@ -33,7 +33,8 @@ class MatchingCacheKey {
         this.closed = closed;
         this.tagsWithoutName = new HashSet<Tag>();
         if (this.tags != null) {
-            for (Tag tag : tags) {
+            for (int i = 0; i < tags.size(); i++) {
+                Tag tag = tags.get(i);
                 if (!"name".equals(tag.key)) {
                     this.tagsWithoutName.add(tag);
                 }

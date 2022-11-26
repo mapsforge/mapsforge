@@ -187,8 +187,8 @@ public final class MapFileWriter {
                 boolean labelPosition = this.configuration.isLabelPosition();
                 if (!labelPosition) {
                     List<OSMTag> tags = this.configuration.getTagMapping().getWayTags(this.way.getTags().keySet());
-                    for (OSMTag tag : tags) {
-                        labelPosition = tag.isLabelPosition();
+                    for (int i = 0; i < tags.size(); i++) {
+                        labelPosition = tags.get(i).isLabelPosition();
                         if (labelPosition)
                             break;
                     }
