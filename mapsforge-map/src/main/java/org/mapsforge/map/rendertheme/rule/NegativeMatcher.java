@@ -15,33 +15,29 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.util.Utils;
 
 import java.util.List;
 
 class NegativeMatcher implements AttributeMatcher {
 
-    private final List<String> keyList;
-    private final List<String> valueList;
+    private final int[] keyList;
+    private final int[] valueList;
 
     NegativeMatcher(List<String> keyList, List<String> valueList) {
-        this.keyList = keyList;
-        this.valueList = valueList;
-    }
-
-    @Override
-    public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
-        return false;
+        this.keyList = Utils.convertListString(keyList);
+        this.valueList = Utils.convertListString(valueList);
     }
 
     @Override
     public boolean matches(Tag tag) {
-        return this.valueList.contains(tag.value);
+        return Utils.contains(valueList, tag.valueCode);
     }
 
     boolean keyListDoesNotContainKeys(Tag[] tags) {
         //noinspection ForLoopReplaceableByForEach
         for (int i = 0, n = tags.length; i < n; ++i) {
-            if (this.keyList.contains(tags[i].key)) {
+            if (Utils.contains(keyList, tags[i].keyCode)) {
                 return false;
             }
         }

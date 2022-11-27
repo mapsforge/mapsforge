@@ -18,7 +18,5 @@ import org.mapsforge.core.model.Tag;
 
 interface AttributeMatcher {
 
-    boolean isCoveredBy(AttributeMatcher attributeMatcher);
-
     boolean matches(Tag tag);
 }

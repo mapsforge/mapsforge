@@ -14,6 +14,8 @@
  */
 package org.mapsforge.core.util;
 
+import java.util.List;
+
 public final class Utils {
 
     /**
@@ -25,5 +27,29 @@ public final class Utils {
 
     private Utils() {
         throw new IllegalStateException();
+    }
+
+    // UTILS FOR RULES
+
+    public static int hashTagParameter(String keyValue) {
+        return keyValue.hashCode();
+    }
+
+    public static int[] convertListString(List<String> list) {
+        int[] values = new int[list.size()];
+        for (int i = 0, m = list.size(); i < m; i++) {
+            values[i] = hashTagParameter(list.get(i));
+        }
+        return values;
+    }
+
+    public static boolean contains(int[] data, int item) {
+        //noinspection ForLoopReplaceableByForEach
+        for (int i = 0; i < data.length; i++) {
+            if (data[i] == item) {
+                return true;
+            }
+        }
+        return false;
     }
 }

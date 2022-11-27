@@ -15,33 +15,20 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.util.Utils;
 
 import java.util.List;
 
 class ValueMatcher implements AttributeMatcher {
 
-    private final List<String> values;
+    private final int[] values;
 
     ValueMatcher(List<String> values) {
-        this.values = values;
-    }
-
-    @Override
-    public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
-        if (attributeMatcher == this) {
-            return true;
-        }
-
-        for (int i = 0, n = this.values.size(); i < n; ++i) {
-            if (attributeMatcher.matches(new Tag(null, this.values.get(i)))) {
-                return true;
-            }
-        }
-        return false;
+        this.values = Utils.convertListString(values);
     }
 
     @Override
     public boolean matches(Tag tag) {
-        return values.contains(tag.value);
+        return Utils.contains(values, tag.valueCode);
     }
 }
