@@ -30,6 +30,8 @@ import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 
+import java.util.List;
+
 /**
  * Reverse Geocoding with long press.
  * <p/>
@@ -83,10 +85,9 @@ public class ReverseGeocodeViewer extends DefaultTheme {
                 continue;
             }
             sb.append("\n");
-            Tag[] tags = pointOfInterest.tags;
-            //noinspection ForLoopReplaceableByForEach
-            for (int i = 0; i < tags.length; i++) {
-                Tag tag = tags[i];
+            List<Tag> tags = pointOfInterest.tags;
+            for (int i = 0, n = tags.size(); i < n; i++) {
+                Tag tag = tags.get(i);
                 sb.append("\n").append(tag.key).append("=").append(tag.value);
             }
         }
@@ -99,9 +100,9 @@ public class ReverseGeocodeViewer extends DefaultTheme {
                 continue;
             }
             sb.append("\n");
-            Tag[] tags = way.tags;
-            for (int i = 0; i < tags.length; i++) {
-                Tag tag = tags[i];
+            List<Tag> tags = way.tags;
+            for (int i = 0, n = tags.size(); i < n; i++) {
+                Tag tag = tags.get(i);
                 sb.append("\n").append(tag.key).append("=").append(tag.value);
             }
         }

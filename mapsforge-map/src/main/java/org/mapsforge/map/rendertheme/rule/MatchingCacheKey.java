@@ -19,6 +19,7 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.Utils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 class MatchingCacheKey {
@@ -27,14 +28,13 @@ class MatchingCacheKey {
     private final byte zoomLevel;
     private static final int keyCodeName = Utils.hashTagParameter("name");
 
-    MatchingCacheKey(Tag[] tags, byte zoomLevel, Closed closed) {
+    MatchingCacheKey(List<Tag> tags, byte zoomLevel, Closed closed) {
         this.zoomLevel = zoomLevel;
         this.closed = closed;
         this.tagsWithoutName = new HashSet<>();
         if (tags != null) {
-            //noinspection ForLoopReplaceableByForEach
-            for (int i = 0; i < tags.length; i++) {
-                Tag tag = tags[i];
+            for (int i = 0, n = tags.size(); i < n; i++) {
+                Tag tag = tags.get(i);
                 if (keyCodeName != tag.keyCode) {
                     this.tagsWithoutName.add(tag);
                 }

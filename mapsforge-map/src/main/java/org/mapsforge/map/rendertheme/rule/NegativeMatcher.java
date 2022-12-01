@@ -34,10 +34,9 @@ class NegativeMatcher implements AttributeMatcher {
         return Utils.contains(valueList, tag.valueCode);
     }
 
-    boolean keyListDoesNotContainKeys(Tag[] tags) {
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0, n = tags.length; i < n; ++i) {
-            if (Utils.contains(keyList, tags[i].keyCode)) {
+    boolean keyListDoesNotContainKeys(List<Tag> tags) {
+        for (int i = 0, n = tags.size(); i < n; ++i) {
+            if (Utils.contains(keyList, tags.get(i).keyCode)) {
                 return false;
             }
         }

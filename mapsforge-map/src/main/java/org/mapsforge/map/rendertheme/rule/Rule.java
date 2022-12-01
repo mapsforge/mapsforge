@@ -82,9 +82,9 @@ public abstract class Rule {
         }
     }
 
-    abstract boolean matchesNode(Tag[] tags, byte zoomLevel);
+    abstract boolean matchesNode(List<Tag> tags, byte zoomLevel);
 
-    abstract boolean matchesWay(Tag[] tags, byte zoomLevel, Closed closed);
+    abstract boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed);
 
     void matchNode(RenderCallback renderCallback, final RenderContext renderContext, List<RenderInstruction> matchingList, PointOfInterest pointOfInterest) {
         if (matchesNode(pointOfInterest.tags, renderContext.rendererJob.tile.zoomLevel)) {

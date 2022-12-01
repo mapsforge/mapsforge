@@ -36,6 +36,8 @@ import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 
+import java.util.Collections;
+
 /**
  * The DatabaseRenderer renders map tiles by reading from a {@link MapDataStore}.
  */
@@ -188,9 +190,7 @@ public class StandardRenderer implements RenderCallback {
         for (int i = 0; i < coordinates.length; i++) {
             coordinates[i] = coordinates[i].offset(tileOrigin.x, tileOrigin.y);
         }
-        Tag[] tags = new Tag[1];
-        tags[0] = TAG_NATURAL_WATER;
-        PolylineContainer way = new PolylineContainer(coordinates, renderContext.rendererJob.tile, renderContext.rendererJob.tile, tags);
+        PolylineContainer way = new PolylineContainer(coordinates, renderContext.rendererJob.tile, renderContext.rendererJob.tile, Collections.singletonList(TAG_NATURAL_WATER));
         renderContext.renderTheme.matchClosedWay(this, renderContext, way);
     }
 

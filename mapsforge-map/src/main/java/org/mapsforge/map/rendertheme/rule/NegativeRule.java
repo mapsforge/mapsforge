@@ -16,18 +16,29 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
 
+import java.util.List;
+
 class NegativeRule extends Rule {
 
-    private final NegativeMatcher attributeMatcher;
+    final NegativeMatcher attributeMatcher;
 
     NegativeRule(RuleBuilder ruleBuilder, NegativeMatcher attributeMatcher) {
-        super(ruleBuilder);
+        this(ruleBuilder.cat,
+                ruleBuilder.closedMatcher,
+                ruleBuilder.elementMatcher,
+                ruleBuilder.zoomMax,
+                ruleBuilder.zoomMin,
+                attributeMatcher);
+    }
 
+    NegativeRule(String cat, ClosedMatcher closedMatcher, ElementMatcher elementMatcher,
+                 byte zoomMax, byte zoomMin, NegativeMatcher attributeMatcher) {
+        super(cat, closedMatcher, elementMatcher, zoomMax, zoomMin);
         this.attributeMatcher = attributeMatcher;
     }
 
     @Override
-    boolean matchesNode(Tag[] tags, byte zoomLevel) {
+    boolean matchesNode(List<Tag> tags, byte zoomLevel) {
         return this.zoomMin <= zoomLevel
                 && this.zoomMax >= zoomLevel
                 && this.elementMatcher.matches(Element.NODE)
@@ -35,7 +46,7 @@ class NegativeRule extends Rule {
     }
 
     @Override
-    boolean matchesWay(Tag[] tags, byte zoomLevel, Closed closed) {
+    boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed) {
         return this.zoomMin <= zoomLevel
                 && this.zoomMax >= zoomLevel
                 && this.elementMatcher.matches(Element.WAY)
@@ -43,15 +54,14 @@ class NegativeRule extends Rule {
                 && matchesTags(tags);
     }
 
-    private boolean matchesTags(Tag[] tags) {
+    private boolean matchesTags(List<Tag> tags) {
         if (attributeMatcher.keyListDoesNotContainKeys(tags)) {
             return true;
         }
 
         // check tags
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < tags.length; i++) {
-            if (attributeMatcher.matches(tags[i])) {
+        for (int i = 0, n = tags.size(); i < n; i++) {
+            if (attributeMatcher.matches(tags.get(i))) {
                 return true;
             }
         }

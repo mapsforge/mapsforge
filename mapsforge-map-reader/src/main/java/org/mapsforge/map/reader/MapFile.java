@@ -188,9 +188,6 @@ public class MapFile extends MapDataStore {
     private byte zoomLevelMin = 0;
     private byte zoomLevelMax = Byte.MAX_VALUE;
 
-    // container for loaded tags
-    private final ArrayList<Tag> tags = new ArrayList<>();
-
     private MapFile() {
         // only to create a dummy empty file.
         databaseIndexCache = null;
@@ -714,8 +711,8 @@ public class MapFile extends MapDataStore {
             byte numberOfTags = (byte) (specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 
             // get the tags from IDs (VBE-U)
-            tags.clear();
-            if (!readBuffer.readTags(poiTags, numberOfTags, tags)) {
+            List<Tag> tags = readBuffer.readTags(poiTags, numberOfTags);
+            if (tags == null) {
                 return null;
             }
 
@@ -746,9 +743,7 @@ public class MapFile extends MapDataStore {
             // depending on the zoom level configuration the poi can lie outside
             // the tile requested, we filter them out here
             if (!filterRequired || boundingBox.contains(position)) {
-                Tag[] tagsA = new Tag[tags.size()];
-                tags.toArray(tagsA);
-                pois.add(new PointOfInterest(layer, tagsA, position));
+                pois.add(new PointOfInterest(layer, tags, position));
             }
         }
 
@@ -841,8 +836,8 @@ public class MapFile extends MapDataStore {
             byte numberOfTags = (byte) (specialByte & WAY_NUMBER_OF_TAGS_BITMASK);
 
             // get the tags from IDs (VBE-U)
-            tags.clear();
-            if (!readBuffer.readTags(wayTags, numberOfTags, tags)) {
+            List<Tag> tags = readBuffer.readTags(wayTags, numberOfTags);
+            if (tags == null) {
                 return null;
             }
 
@@ -895,9 +890,7 @@ public class MapFile extends MapDataStore {
                             labelLatLong = new LatLong(wayNodes[0][0].latitude + LatLongUtils.microdegreesToDegrees(labelPosition[1]),
                                     wayNodes[0][0].longitude + LatLongUtils.microdegreesToDegrees(labelPosition[0]));
                         }
-                        Tag[] tagsA = new Tag[tags.size()];
-                        tags.toArray(tagsA);
-                        ways.add(new Way(layer, tagsA, wayNodes, labelLatLong));
+                        ways.add(new Way(layer, tags, wayNodes, labelLatLong));
                     }
                 }
             }

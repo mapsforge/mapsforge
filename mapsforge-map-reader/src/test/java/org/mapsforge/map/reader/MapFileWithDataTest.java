@@ -20,14 +20,12 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
-import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
 import java.io.File;
-import java.util.Arrays;
 
 public class MapFileWithDataTest {
     private static final File MAP_FILE = new File("src/test/resources/with_data/output.map");
@@ -54,11 +52,11 @@ public class MapFileWithDataTest {
         Assert.assertEquals(7, pointOfInterest.layer);
         Assert.assertEquals(0.04, pointOfInterest.position.latitude, 0.000001);
         Assert.assertEquals(0.08, pointOfInterest.position.longitude, 0);
-        Assert.assertEquals(4, pointOfInterest.tags.length);
-        Assert.assertTrue(Arrays.asList(pointOfInterest.tags).contains(new Tag("place=country")));
-        Assert.assertTrue(Arrays.asList(pointOfInterest.tags).contains(new Tag("name=АБВГДЕЖЗ")));
-        Assert.assertTrue(Arrays.asList(pointOfInterest.tags).contains(new Tag("addr:housenumber=абвгдежз")));
-        Assert.assertTrue(Arrays.asList(pointOfInterest.tags).contains(new Tag("ele=25")));
+        Assert.assertEquals(4, pointOfInterest.tags.size());
+        Assert.assertTrue(pointOfInterest.tags.contains(new Tag("place=country")));
+        Assert.assertTrue(pointOfInterest.tags.contains(new Tag("name=АБВГДЕЖЗ")));
+        Assert.assertTrue(pointOfInterest.tags.contains(new Tag("addr:housenumber=абвгдежз")));
+        Assert.assertTrue(pointOfInterest.tags.contains(new Tag("ele=25")));
     }
 
     private static void checkWay(Way way) {
@@ -71,10 +69,10 @@ public class MapFileWithDataTest {
         LatLong[][] latLongsExpected = new LatLong[][]{{latLong1, latLong2, latLong3}};
 
         assertLatLongsEquals(latLongsExpected, way.latLongs);
-        Assert.assertEquals(3, way.tags.length);
-        Assert.assertTrue(Arrays.asList(way.tags).contains(new Tag("highway=motorway")));
-        Assert.assertTrue(Arrays.asList(way.tags).contains(new Tag("name=ÄÖÜ")));
-        Assert.assertTrue(Arrays.asList(way.tags).contains(new Tag("ref=äöü")));
+        Assert.assertEquals(3, way.tags.size());
+        Assert.assertTrue(way.tags.contains(new Tag("highway=motorway")));
+        Assert.assertTrue(way.tags.contains(new Tag("name=ÄÖÜ")));
+        Assert.assertTrue(way.tags.contains(new Tag("ref=äöü")));
     }
 
     @Test

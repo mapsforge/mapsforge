@@ -16,20 +16,32 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
 
+import java.util.List;
+
 class PositiveRule extends Rule {
 
     final AttributeMatcher keyMatcher;
     final AttributeMatcher valueMatcher;
 
     PositiveRule(RuleBuilder ruleBuilder, AttributeMatcher keyMatcher, AttributeMatcher valueMatcher) {
-        super(ruleBuilder);
+        this(ruleBuilder.cat,
+                ruleBuilder.closedMatcher,
+                ruleBuilder.elementMatcher,
+                ruleBuilder.zoomMax,
+                ruleBuilder.zoomMin,
+                keyMatcher,
+                valueMatcher);
+    }
 
+    PositiveRule(String cat, ClosedMatcher closedMatcher, ElementMatcher elementMatcher,
+                 byte zoomMax, byte zoomMin, AttributeMatcher keyMatcher, AttributeMatcher valueMatcher) {
+        super(cat, closedMatcher, elementMatcher, zoomMax, zoomMin);
         this.keyMatcher = keyMatcher;
         this.valueMatcher = valueMatcher;
     }
 
     @Override
-    boolean matchesNode(Tag[] tags, byte zoomLevel) {
+    boolean matchesNode(List<Tag> tags, byte zoomLevel) {
         return this.zoomMin <= zoomLevel
                 && this.zoomMax >= zoomLevel
                 && this.elementMatcher.matches(Element.NODE)
@@ -37,7 +49,7 @@ class PositiveRule extends Rule {
     }
 
     @Override
-    boolean matchesWay(Tag[] tags, byte zoomLevel, Closed closed) {
+    boolean matchesWay(List<Tag> tags, byte zoomLevel, Closed closed) {
         return this.zoomMin <= zoomLevel
                 && this.zoomMax >= zoomLevel
                 && this.elementMatcher.matches(Element.WAY)
@@ -45,10 +57,10 @@ class PositiveRule extends Rule {
                 && matchesAnyTag(tags);
     }
 
-    private boolean matchesAnyTag(Tag[] tags) {
-        //noinspection ForLoopReplaceableByForEach
-        for (int i = 0; i < tags.length; i++) {
-            if (keyMatcher.matches(tags[i]) && valueMatcher.matches(tags[i])) {
+    private boolean matchesAnyTag(List<Tag> tags) {
+        for (int i = 0, n = tags.size(); i < n; i++) {
+            Tag tag = tags.get(i);
+            if (keyMatcher.matches(tag) && valueMatcher.matches(tag)) {
                 return true;
             }
         }
