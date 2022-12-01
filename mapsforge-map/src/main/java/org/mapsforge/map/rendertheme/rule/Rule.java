@@ -52,22 +52,14 @@ public abstract class Rule {
     private final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
 
     Rule(RuleBuilder ruleBuilder) {
-        this(ruleBuilder.cat,
-                ruleBuilder.closedMatcher,
-                ruleBuilder.elementMatcher,
-                ruleBuilder.zoomMax,
-                ruleBuilder.zoomMin);
-    }
+        this.cat = ruleBuilder.cat;
+        this.closedMatcher = ruleBuilder.closedMatcher;
+        this.elementMatcher = ruleBuilder.elementMatcher;
+        this.zoomMax = ruleBuilder.zoomMax;
+        this.zoomMin = ruleBuilder.zoomMin;
 
-    Rule(String cat, ClosedMatcher closedMatcher, ElementMatcher elementMatcher, byte zoomMax, byte zoomMin) {
-        this.cat = cat;
-        this.closedMatcher = closedMatcher;
-        this.elementMatcher = elementMatcher;
-        this.zoomMax = zoomMax;
-        this.zoomMin = zoomMin;
-
-        this.renderInstructions = new ArrayList<>();
-        this.subRules = new ArrayList<>();
+        this.renderInstructions = new ArrayList<>(4);
+        this.subRules = new ArrayList<>(4);
     }
 
     void addRenderingInstruction(RenderInstruction renderInstruction) {

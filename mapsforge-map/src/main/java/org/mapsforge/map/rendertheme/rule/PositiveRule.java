@@ -24,18 +24,8 @@ class PositiveRule extends Rule {
     final AttributeMatcher valueMatcher;
 
     PositiveRule(RuleBuilder ruleBuilder, AttributeMatcher keyMatcher, AttributeMatcher valueMatcher) {
-        this(ruleBuilder.cat,
-                ruleBuilder.closedMatcher,
-                ruleBuilder.elementMatcher,
-                ruleBuilder.zoomMax,
-                ruleBuilder.zoomMin,
-                keyMatcher,
-                valueMatcher);
-    }
+        super(ruleBuilder);
 
-    PositiveRule(String cat, ClosedMatcher closedMatcher, ElementMatcher elementMatcher,
-                 byte zoomMax, byte zoomMin, AttributeMatcher keyMatcher, AttributeMatcher valueMatcher) {
-        super(cat, closedMatcher, elementMatcher, zoomMax, zoomMin);
         this.keyMatcher = keyMatcher;
         this.valueMatcher = valueMatcher;
     }

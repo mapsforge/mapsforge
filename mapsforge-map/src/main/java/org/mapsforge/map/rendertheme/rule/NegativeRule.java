@@ -23,17 +23,8 @@ class NegativeRule extends Rule {
     final NegativeMatcher attributeMatcher;
 
     NegativeRule(RuleBuilder ruleBuilder, NegativeMatcher attributeMatcher) {
-        this(ruleBuilder.cat,
-                ruleBuilder.closedMatcher,
-                ruleBuilder.elementMatcher,
-                ruleBuilder.zoomMax,
-                ruleBuilder.zoomMin,
-                attributeMatcher);
-    }
+        super(ruleBuilder);
 
-    NegativeRule(String cat, ClosedMatcher closedMatcher, ElementMatcher elementMatcher,
-                 byte zoomMax, byte zoomMin, NegativeMatcher attributeMatcher) {
-        super(cat, closedMatcher, elementMatcher, zoomMax, zoomMin);
         this.attributeMatcher = attributeMatcher;
     }
 
