@@ -47,18 +47,27 @@ public abstract class Rule {
     final ElementMatcher elementMatcher;
     final byte zoomMax;
     final byte zoomMin;
-    public final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
-    public final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
+    // conversion to Array[] tested, but performance difference was not measurable
+    private final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
+    private final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
 
     Rule(RuleBuilder ruleBuilder) {
-        this.cat = ruleBuilder.cat;
-        this.closedMatcher = ruleBuilder.closedMatcher;
-        this.elementMatcher = ruleBuilder.elementMatcher;
-        this.zoomMax = ruleBuilder.zoomMax;
-        this.zoomMin = ruleBuilder.zoomMin;
+        this(ruleBuilder.cat,
+                ruleBuilder.closedMatcher,
+                ruleBuilder.elementMatcher,
+                ruleBuilder.zoomMax,
+                ruleBuilder.zoomMin);
+    }
 
-        this.renderInstructions = new ArrayList<>(4);
-        this.subRules = new ArrayList<>(4);
+    Rule(String cat, ClosedMatcher closedMatcher, ElementMatcher elementMatcher, byte zoomMax, byte zoomMin) {
+        this.cat = cat;
+        this.closedMatcher = closedMatcher;
+        this.elementMatcher = elementMatcher;
+        this.zoomMax = zoomMax;
+        this.zoomMin = zoomMin;
+
+        this.renderInstructions = new ArrayList<>();
+        this.subRules = new ArrayList<>();
     }
 
     void addRenderingInstruction(RenderInstruction renderInstruction) {
