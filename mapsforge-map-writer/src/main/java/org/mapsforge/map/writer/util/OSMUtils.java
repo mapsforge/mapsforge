@@ -119,7 +119,7 @@ public final class OSMUtils {
 
                 String defaultName = null;
                 List<String> restPreferredLanguages = new ArrayList<String>(preferredLanguages);
-                for (int i = 0; i < tags.size(); i++) {
+                for (int i = 0, n = tags.size(); i < n; i++) {
                     Tag tag = tags.get(i);
                     String key = tag.getKey().toLowerCase(Locale.ENGLISH);
                     if ("name".equals(key)) { // Default 'name'
@@ -145,7 +145,7 @@ public final class OSMUtils {
                 if (!restPreferredLanguages.isEmpty()) {
                     Map<String, String> fallbacks = new HashMap<String, String>();
                     for (String preferredLanguage : restPreferredLanguages) {
-                        for (int i = 0; i < tags.size(); i++) {
+                        for (int i = 0, n = tags.size(); i < n; i++) {
                             Tag tag = tags.get(i);
                             String key = tag.getKey().toLowerCase(Locale.ENGLISH);
                             Matcher matcher = NAME_LANGUAGE_PATTERN.matcher(key);
