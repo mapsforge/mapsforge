@@ -17,7 +17,9 @@
  */
 package org.mapsforge.map.rendertheme.rule;
 
+import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.LRUCache;
+import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.layer.renderer.StandardRenderer;
@@ -35,7 +37,8 @@ import java.util.Map;
  * A RenderTheme defines how ways and nodes are drawn.
  */
 public class RenderTheme {
-    private static final int MATCHING_CACHE_SIZE = 1024;
+
+    private static final int MATCHING_CACHE_SIZE = 8192;
 
     private final float baseStrokeWidth;
     private final float baseTextSize;
@@ -43,8 +46,8 @@ public class RenderTheme {
     private int levels;
     private final int mapBackground;
     private final int mapBackgroundOutside;
-    private final LRUCache<MatchingCacheKey, List<RenderInstruction>> wayMatchingCache;
-    private final LRUCache<MatchingCacheKey, List<RenderInstruction>> poiMatchingCache;
+    private final LRUCache<Integer, RenderInstruction[]> wayMatchingCache;
+    private final LRUCache<Integer, RenderInstruction[]> poiMatchingCache;
     private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
     private ArrayList<Hillshading> hillShadings = new ArrayList<>(); // NOPMD specific interface for trimToSize
 
@@ -131,24 +134,25 @@ public class RenderTheme {
      * @param poi            the point of interest.
      */
     public synchronized void matchNode(RenderCallback renderCallback, final RenderContext renderContext, PointOfInterest poi) {
-        MatchingCacheKey matchingCacheKey = new MatchingCacheKey(poi.tags, renderContext.rendererJob.tile.zoomLevel, Closed.NO);
-
-        List<RenderInstruction> matchingList = this.poiMatchingCache.get(matchingCacheKey);
-        if (matchingList != null) {
-            // cache hit
-            for (int i = 0, n = matchingList.size(); i < n; ++i) {
-                matchingList.get(i).renderNode(renderCallback, renderContext, poi);
+        // check cached instructions
+        int matchingCacheKey = computeMatchingCacheKey(poi.tags, renderContext.rendererJob.tile.zoomLevel, Closed.NO);
+        RenderInstruction[] instructions = this.poiMatchingCache.get(matchingCacheKey);
+        if (instructions != null) {
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < instructions.length; ++i) {
+                instructions[i].renderNode(renderCallback, renderContext, poi);
             }
             return;
         }
 
         // cache miss
-        matchingList = new ArrayList<RenderInstruction>();
-
-        for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-            this.rulesList.get(i).matchNode(renderCallback, renderContext, matchingList, poi);
+        List<RenderInstruction> matchingList = new ArrayList<>();
+        for (int i = 0, n = rulesList.size(); i < n; i++) {
+            rulesList.get(i).matchNode(renderCallback, renderContext, matchingList, poi);
         }
-        this.poiMatchingCache.put(matchingCacheKey, matchingList);
+        RenderInstruction[] matchingListA = new RenderInstruction[matchingList.size()];
+        matchingList.toArray(matchingListA);
+        this.poiMatchingCache.put(matchingCacheKey, matchingListA);
     }
 
     /**
@@ -208,24 +212,25 @@ public class RenderTheme {
     }
 
     private synchronized void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
-        MatchingCacheKey matchingCacheKey = new MatchingCacheKey(way.getTags(), way.getUpperLeft().zoomLevel, closed);
-
-        List<RenderInstruction> matchingList = this.wayMatchingCache.get(matchingCacheKey);
-        if (matchingList != null) {
-            // cache hit
-            for (int i = 0, n = matchingList.size(); i < n; ++i) {
-                matchingList.get(i).renderWay(renderCallback, renderContext, way);
+        // check cached instructions
+        int matchingCacheKey = computeMatchingCacheKey(way.getTags(), way.getUpperLeft().zoomLevel, closed);
+        RenderInstruction[] instructions = this.wayMatchingCache.get(matchingCacheKey);
+        if (instructions != null) {
+            //noinspection ForLoopReplaceableByForEach
+            for (int i = 0; i < instructions.length; ++i) {
+                instructions[i].renderWay(renderCallback, renderContext, way);
             }
             return;
         }
 
         // cache miss
-        matchingList = new ArrayList<RenderInstruction>();
-        for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
-            this.rulesList.get(i).matchWay(renderCallback, way, way.getUpperLeft(), closed, matchingList, renderContext);
+        List<RenderInstruction> matchingList = new ArrayList<>();
+        for (int i = 0, n = rulesList.size(); i < n; i++) {
+            rulesList.get(i).matchWay(renderCallback, way, way.getUpperLeft(), closed, matchingList, renderContext);
         }
-
-        this.wayMatchingCache.put(matchingCacheKey, matchingList);
+        RenderInstruction[] matchingListA = new RenderInstruction[matchingList.size()];
+        matchingList.toArray(matchingListA);
+        this.wayMatchingCache.put(matchingCacheKey, matchingListA);
     }
 
     public void traverseRules(Rule.RuleVisitor visitor) {
@@ -237,5 +242,25 @@ public class RenderTheme {
     public void matchHillShadings(StandardRenderer renderer, RenderContext renderContext) {
         for (Hillshading hillShading : hillShadings)
             hillShading.render(renderContext, renderer.hillsRenderConfig);
+    }
+
+    private static final int keyCodeName = Utils.hashTagParameter("name");
+
+    /**
+     * Compute key for matching cached set of instructions.
+     */
+    private Integer computeMatchingCacheKey(List<Tag> tags, byte zoomLevel, Closed closed) {
+        int result = 1;
+        result = 31 * result + ((closed == null) ? 0 : closed.hashCode());
+        if (tags != null) {
+            for (int i = 0, n = tags.size(); i < n; i++) {
+                Tag tag = tags.get(i);
+                if (keyCodeName != tag.keyCode) {
+                    result = 31 * result + tag.hashCode();
+                }
+            }
+        }
+        result = 31 * result + zoomLevel;
+        return result;
     }
 }
