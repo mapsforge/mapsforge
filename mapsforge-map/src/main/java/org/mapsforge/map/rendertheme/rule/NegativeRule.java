@@ -16,12 +16,11 @@ package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
 
-import java.util.ArrayList;
 import java.util.List;
 
 class NegativeRule extends Rule {
 
-    private final NegativeMatcher attributeMatcher;
+    final NegativeMatcher attributeMatcher;
 
     NegativeRule(RuleBuilder ruleBuilder, NegativeMatcher attributeMatcher) {
         super(ruleBuilder);
@@ -52,8 +51,8 @@ class NegativeRule extends Rule {
         }
 
         // check tags
-        for (Tag tag : tags) {
-            if (attributeMatcher.matches(tag)) {
+        for (int i = 0, n = tags.size(); i < n; i++) {
+            if (attributeMatcher.matches(tags.get(i))) {
                 return true;
             }
         }

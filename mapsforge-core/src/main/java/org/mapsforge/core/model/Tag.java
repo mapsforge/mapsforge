@@ -15,6 +15,8 @@
  */
 package org.mapsforge.core.model;
 
+import org.mapsforge.core.util.Utils;
+
 import java.io.Serializable;
 
 /**
@@ -31,9 +33,19 @@ public class Tag implements Comparable<Tag>, Serializable {
     public final String key;
 
     /**
+     * Key of this tag in short "int" version.
+     */
+    public final int keyCode;
+
+    /**
      * The value of this tag.
      */
     public final String value;
+
+    /**
+     * Value of this tag in short "int" version.
+     */
+    public final int valueCode;
 
     /**
      * @param tag the textual representation of the tag.
@@ -48,7 +60,9 @@ public class Tag implements Comparable<Tag>, Serializable {
      */
     public Tag(String key, String value) {
         this.key = key;
+        this.keyCode = (key == null) ? 0 : Utils.hashTagParameter(key);
         this.value = value;
+        this.valueCode = (value == null) ? 0 : Utils.hashTagParameter(value);
     }
 
     private Tag(String tag, int splitPosition) {
@@ -101,8 +115,8 @@ public class Tag implements Comparable<Tag>, Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
-        result = prime * result + ((this.value == null) ? 0 : this.value.hashCode());
+        result = prime * result + keyCode;
+        result = prime * result + valueCode;
         return result;
     }
 

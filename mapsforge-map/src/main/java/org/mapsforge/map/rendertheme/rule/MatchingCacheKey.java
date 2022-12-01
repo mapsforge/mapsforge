@@ -16,6 +16,7 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.util.Utils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,18 +24,18 @@ import java.util.Set;
 
 class MatchingCacheKey {
     private final Closed closed;
-    private final List<Tag> tags;
     private final Set<Tag> tagsWithoutName;
     private final byte zoomLevel;
+    private static final int keyCodeName = Utils.hashTagParameter("name");
 
     MatchingCacheKey(List<Tag> tags, byte zoomLevel, Closed closed) {
-        this.tags = tags;
         this.zoomLevel = zoomLevel;
         this.closed = closed;
-        this.tagsWithoutName = new HashSet<Tag>();
-        if (this.tags != null) {
-            for (Tag tag : tags) {
-                if (!"name".equals(tag.key)) {
+        this.tagsWithoutName = new HashSet<>();
+        if (tags != null) {
+            for (int i = 0, n = tags.size(); i < n; i++) {
+                Tag tag = tags.get(i);
+                if (keyCodeName != tag.keyCode) {
                     this.tagsWithoutName.add(tag);
                 }
             }

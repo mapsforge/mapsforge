@@ -31,8 +31,8 @@ import java.util.Map;
 
 public abstract class Rule {
 
-    static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<List<String>, AttributeMatcher>();
-    static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<List<String>, AttributeMatcher>();
+    static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_KEY = new HashMap<>();
+    static final Map<List<String>, AttributeMatcher> MATCHERS_CACHE_VALUE = new HashMap<>();
 
     public static class RuleVisitor {
         public void apply(Rule r) {
@@ -47,8 +47,9 @@ public abstract class Rule {
     final ElementMatcher elementMatcher;
     final byte zoomMax;
     final byte zoomMin;
-    public final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
-    public final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
+    // conversion to Array[] tested, but performance difference was not measurable
+    private final ArrayList<RenderInstruction> renderInstructions; // NOSONAR NOPMD we need specific interface
+    private final ArrayList<Rule> subRules; // NOSONAR NOPMD we need specific interface
 
     Rule(RuleBuilder ruleBuilder) {
         this.cat = ruleBuilder.cat;

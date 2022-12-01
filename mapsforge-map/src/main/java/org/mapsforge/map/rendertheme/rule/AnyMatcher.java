@@ -25,11 +25,6 @@ final class AnyMatcher implements ElementMatcher, AttributeMatcher, ClosedMatche
     }
 
     @Override
-    public boolean isCoveredBy(AttributeMatcher attributeMatcher) {
-        return attributeMatcher == this;
-    }
-
-    @Override
     public boolean isCoveredBy(ClosedMatcher closedMatcher) {
         return closedMatcher == this;
     }

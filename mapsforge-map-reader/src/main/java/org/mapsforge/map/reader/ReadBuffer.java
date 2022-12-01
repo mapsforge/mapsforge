@@ -202,7 +202,6 @@ public class ReadBuffer {
     }
 
     List<Tag> readTags(Tag[] tagsArray, byte numberOfTags) {
-        List<Tag> tags = new ArrayList<>();
         tagIds.clear();
 
         int maxTag = tagsArray.length;
@@ -216,6 +215,7 @@ public class ReadBuffer {
             tagIds.add(tagId);
         }
 
+        List<Tag> tags = new ArrayList<>();
         for (int tagId : tagIds) {
             Tag tag = tagsArray[tagId];
             // Decode variable values of tags

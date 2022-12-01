@@ -86,7 +86,8 @@ public class ReverseGeocodeViewer extends DefaultTheme {
             }
             sb.append("\n");
             List<Tag> tags = pointOfInterest.tags;
-            for (Tag tag : tags) {
+            for (int i = 0, n = tags.size(); i < n; i++) {
+                Tag tag = tags.get(i);
                 sb.append("\n").append(tag.key).append("=").append(tag.value);
             }
         }
@@ -100,7 +101,8 @@ public class ReverseGeocodeViewer extends DefaultTheme {
             }
             sb.append("\n");
             List<Tag> tags = way.tags;
-            for (Tag tag : tags) {
+            for (int i = 0, n = tags.size(); i < n; i++) {
+                Tag tag = tags.get(i);
                 sb.append("\n").append(tag.key).append("=").append(tag.value);
             }
         }

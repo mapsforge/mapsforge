@@ -16,32 +16,34 @@
 package org.mapsforge.map.rendertheme.renderinstruction;
 
 import org.mapsforge.core.model.Tag;
+import org.mapsforge.core.util.Utils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 final class TextKey {
-    private static final Map<String, TextKey> TEXT_KEYS = new HashMap<>();
+    private static final Map<Integer, TextKey> TEXT_KEYS = new HashMap<>();
 
     static TextKey getInstance(String key) {
-        TextKey textKey = TEXT_KEYS.get(key);
+        int keyCode = Utils.hashTagParameter(key);
+        TextKey textKey = TEXT_KEYS.get(keyCode);
         if (textKey == null) {
-            textKey = new TextKey(key);
-            TEXT_KEYS.put(key, textKey);
+            textKey = new TextKey(keyCode);
+            TEXT_KEYS.put(keyCode, textKey);
         }
         return textKey;
     }
 
-    private final String key;
+    private final int keyCode;
 
-    private TextKey(String key) {
-        this.key = key;
+    private TextKey(int key) {
+        this.keyCode = key;
     }
 
     String getValue(List<Tag> tags) {
         for (int i = 0, n = tags.size(); i < n; ++i) {
-            if (this.key.equals(tags.get(i).key)) {
+            if (this.keyCode == tags.get(i).keyCode) {
                 return tags.get(i).value;
             }
         }

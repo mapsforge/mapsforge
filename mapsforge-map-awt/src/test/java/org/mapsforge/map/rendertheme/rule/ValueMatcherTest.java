@@ -25,18 +25,6 @@ public class ValueMatcherTest {
     private static final String VALUE2 = "bar";
 
     @Test
-    public void isCoveredByTest() {
-        AttributeMatcher attributeMatcher1 = new ValueMatcher(Arrays.asList(VALUE1));
-        AttributeMatcher attributeMatcher2 = new ValueMatcher(Arrays.asList(VALUE1));
-
-        Assert.assertTrue(attributeMatcher1.isCoveredBy(attributeMatcher1));
-        Assert.assertTrue(attributeMatcher1.isCoveredBy(attributeMatcher2));
-        Assert.assertTrue(attributeMatcher1.isCoveredBy(AnyMatcher.INSTANCE));
-
-        Assert.assertFalse(AnyMatcher.INSTANCE.isCoveredBy(attributeMatcher1));
-    }
-
-    @Test
     public void matchesTest() {
         Tag tag1 = new Tag(null, VALUE1);
         Tag tag2 = new Tag(null, VALUE2);
