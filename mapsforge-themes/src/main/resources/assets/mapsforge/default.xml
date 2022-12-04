@@ -966,22 +966,26 @@
 
     <!-- emergency -->
     <rule e="any" k="*" v="*">
-        <rule e="any" k="amenity|building" v="hospital|clinic" zoom-min="15">
+        <rule e="any" k="amenity|building" v="hospital|clinic" zoom-min="14">
             <symbol id="hospital" src="jar:symbols/health/hospital.svg" />
             <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#DA0092" font-size="12" font-style="bold" k="name" position="above"
                     priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="hospital" />
             </rule>
         </rule>
-        <rule e="any" k="amenity" v="pharmacy" zoom-min="13">
+        <rule e="any" k="amenity" v="pharmacy" zoom-min="15">
             <symbol id="pharmacy" src="jar:symbols/health/pharmacy.svg" />
-            <caption fill="#DA0092" font-size="12" font-style="bold" k="name" position="above"
-                priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="pharmacy" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#DA0092" font-size="12" font-style="bold" k="name" position="above"
+                    priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="pharmacy" />
+            </rule>
         </rule>
-        <rule e="any" k="amenity" v="doctors" zoom-min="14">
+        <rule e="any" k="amenity" v="doctors" zoom-min="15">
             <symbol id="doctors" src="jar:symbols/health/doctors2.svg" />
-            <caption fill="#DA0092" font-size="12" font-style="bold" k="name" position="above"
-                priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="doctors" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#DA0092" font-size="12" font-style="bold" k="name" position="above"
+                    priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="doctors" />
+            </rule>
         </rule>
         <rule e="any" k="amenity|building" v="embassy" zoom-min="17">
             <symbol id="embassy" src="jar:symbols/poi/embassy2.svg" />
@@ -1034,21 +1038,21 @@
         </rule>
         <rule e="any" k="tourism" v="hostel" zoom-min="13">
             <symbol id="hostel" src="jar:symbols/accommodation/hostel.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#0092DA" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2" symbol-id="hostel" />
             </rule>
         </rule>
         <rule e="any" k="tourism|building" v="hotel|guest_house|motel" zoom-min="13">
             <symbol id="hotel" src="jar:symbols/accommodation/hotel2.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption display="never" fill="#0092DA" font-size="12" font-style="bold" k="name"
                     stroke="#FFFFFF" stroke-width="2" symbol-id="hotel" />
             </rule>
         </rule>
         <rule e="any" k="tourism" v="chalet" zoom-min="13">
             <symbol id="chalet" src="jar:symbols/accommodation/chalet.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#0092DA" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2" symbol-id="chalet" />
             </rule>
@@ -1103,7 +1107,7 @@
 
     <!-- food -->
     <rule e="any" k="*" v="*">
-        <rule e="any" k="amenity" v="restaurant" zoom-min="14">
+        <rule e="any" k="amenity" v="restaurant" zoom-min="15">
             <symbol id="restaurant" src="jar:symbols/food/restaurant.svg" />
             <rule e="node" k="*" v="*" zoom-min="16">
                 <caption fill="#734A08" font-size="12" font-style="bold" k="name" position="above"
@@ -1126,25 +1130,25 @@
 
     <!-- shopping -->
     <rule e="any" k="*" v="*">
-        <rule e="any" k="shop" v="supermarket|department_store|mall" zoom-min="14">
+        <rule e="any" k="shop" v="supermarket|department_store|mall" zoom-min="15">
             <symbol src="jar:symbols/shopping/supermarket.svg" />
         </rule>
-        <rule e="any" k="shop" v="convenience|general|kiosk" zoom-min="14">
+        <rule e="any" k="shop" v="convenience|general|kiosk" zoom-min="15">
             <symbol src="jar:symbols/shopping/convenience.svg" />
         </rule>
-        <rule e="any" k="shop" v="bakery" zoom-min="14">
+        <rule e="any" k="shop" v="bakery" zoom-min="15">
             <symbol src="jar:symbols/shopping/bakery.svg" />
         </rule>
-        <rule e="any" k="amenity" v="fuel" zoom-min="13">
+        <rule e="any" k="amenity" v="fuel" zoom-min="14">
             <symbol id="fuel" src="jar:symbols/transport/fuel.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#0092DA" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2.0" symbol-id="fuel" />
             </rule>
         </rule>
         <rule e="any" k="amenity" v="marketplace" zoom-min="15">
             <symbol id="marketplace" src="jar:symbols/shopping/marketplace.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#AC39AC" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2.0" symbol-id="marketplace" />
             </rule>
@@ -1191,14 +1195,14 @@
         </rule>
         <rule e="any" k="amenity" v="atm" zoom-min="15">
             <symbol id="atm" src="jar:symbols/money/atm2.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#666666" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#FFFFFF" stroke-width="2.0" symbol-id="atm" />
             </rule>
         </rule>
         <rule e="any" k="amenity" v="bank" zoom-min="15">
             <symbol id="bank" src="jar:symbols/money/bank2.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#666666" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#FFFFFF" stroke-width="2.0" symbol-id="bank" />
             </rule>
@@ -1231,35 +1235,35 @@
         </rule>
         <rule e="any" k="leisure" v="playground" zoom-min="16">
             <symbol id="playground" src="jar:symbols/amenity/playground.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#39AC39" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2.0" symbol-id="playground" />
             </rule>
         </rule>
         <rule e="any" k="amenity" v="kindergarten" zoom-min="17">
             <symbol id="nursery" src="jar:symbols/education/nursery3.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#39AC39" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2.0" symbol-id="nursery" />
             </rule>
         </rule>
         <rule e="any" k="amenity|building" v="library" zoom-min="17">
             <symbol id="library" src="jar:symbols/amenity/library.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#39AC39" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2.0" symbol-id="library" />
             </rule>
         </rule>
         <rule e="any" k="amenity|building" v="school" zoom-min="17">
             <symbol id="school" src="jar:symbols/education/school.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#39AC39" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2.0" symbol-id="school" />
             </rule>
         </rule>
         <rule e="any" k="amenity" v="theatre" zoom-min="17">
             <symbol id="theatre" src="jar:symbols/tourist/theatre.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                     stroke-width="2.0" symbol-id="theatre" />
             </rule>
@@ -1337,25 +1341,25 @@
         </rule>
         <rule e="node" k="man_made" v="lighthouse" zoom-min="14">
             <symbol id="lighthouse" src="jar:symbols/transport/lighthouse.svg" />
-            <rule e="any" k="*" v="*" zoom-min="18">
+            <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#0092DA" font-size="12" font-style="bold" k="name" position="above"
                     stroke="#FFFFFF" stroke-width="2.0" symbol-id="lighthouse" />
             </rule>
         </rule>
-        <rule e="any" k="building" v="church|cathedral|chapel" zoom-min="14">
+        <rule e="any" k="building" v="church|cathedral|chapel" zoom-min="15">
             <symbol src="jar:symbols/place_of_worship/christian.svg" />
         </rule>
-        <rule e="any" k="amenity" v="place_of_worship" zoom-min="14">
+        <rule e="any" k="amenity" v="place_of_worship" zoom-min="15">
             <rule e="any" k="religion" v="buddhist">
                 <symbol id="buddhist" src="jar:symbols/place_of_worship/buddhist.svg" />
-                <rule e="any" k="*" v="*" zoom-min="18">
+                <rule e="any" k="*" v="*" zoom-min="17">
                     <caption fill="#666666" font-size="12" font-style="bold" k="name"
                         position="above" stroke="#FFFFFF" stroke-width="2.0" symbol-id="buddhist" />
                 </rule>
             </rule>
             <rule e="any" k="religion" v="christian">
                 <symbol id="christian" src="jar:symbols/place_of_worship/christian.svg" />
-                <rule e="any" k="*" v="*" zoom-min="18">
+                <rule e="any" k="*" v="*" zoom-min="17">
                     <caption fill="#666666" font-size="12" font-style="bold" k="name"
                         position="above" stroke="#FFFFFF" stroke-width="2.0"
                         symbol-id="christian" />
@@ -1363,35 +1367,35 @@
             </rule>
             <rule e="any" k="religion" v="hindu">
                 <symbol id="hindu" src="jar:symbols/place_of_worship/hindu.svg" />
-                <rule e="any" k="*" v="*" zoom-min="18">
+                <rule e="any" k="*" v="*" zoom-min="17">
                     <caption fill="#666666" font-size="12" font-style="bold" k="name"
                         position="above" stroke="#FFFFFF" stroke-width="2.0" symbol-id="hindu" />
                 </rule>
             </rule>
             <rule e="any" k="religion" v="jewish">
                 <symbol id="jewish" src="jar:symbols/place_of_worship/jewish.svg" />
-                <rule e="any" k="*" v="*" zoom-min="18">
+                <rule e="any" k="*" v="*" zoom-min="17">
                     <caption fill="#666666" font-size="12" font-style="bold" k="name"
                         position="above" stroke="#FFFFFF" stroke-width="2.0" symbol-id="jewish" />
                 </rule>
             </rule>
             <rule e="any" k="religion" v="muslim">
                 <symbol id="muslim" src="jar:symbols/place_of_worship/islamic.svg" />
-                <rule e="any" k="*" v="*" zoom-min="18">
+                <rule e="any" k="*" v="*" zoom-min="17">
                     <caption fill="#666666" font-size="12" font-style="bold" k="name"
                         position="above" stroke="#FFFFFF" stroke-width="2.0" symbol-id="muslim" />
                 </rule>
             </rule>
             <rule e="any" k="religion" v="shinto">
                 <symbol id="shinto" src="jar:symbols/place_of_worship/shinto.svg" />
-                <rule e="any" k="*" v="*" zoom-min="18">
+                <rule e="any" k="*" v="*" zoom-min="17">
                     <caption fill="#666666" font-size="12" font-style="bold" k="name"
                         position="above" stroke="#FFFFFF" stroke-width="2.0" symbol-id="shinto" />
                 </rule>
             </rule>
             <rule e="any" k="religion" v="~|*">
                 <symbol id="religion-unknown" src="jar:symbols/place_of_worship/unknown.svg" />
-                <rule e="any" k="*" v="*" zoom-min="18">
+                <rule e="any" k="*" v="*" zoom-min="17">
                     <caption fill="#666666" font-size="12" font-style="bold" k="name"
                         position="above" stroke="#FFFFFF" stroke-width="2.0"
                         symbol-id="religion-unknown" />
@@ -1403,15 +1407,15 @@
 
     <!-- sports -->
     <rule e="any" k="*" v="*">
-        <rule e="any" k="leisure" v="water_park" zoom-min="14">
+        <rule e="any" k="leisure" v="water_park" zoom-min="15">
             <symbol src="jar:symbols/sport/swimming_outdoor.svg" />
         </rule>
-        <rule e="way" k="leisure" v="~" zoom-min="14">
+        <rule e="way" k="leisure" v="~" zoom-min="15">
             <rule e="way" k="sport" v="swimming">
                 <symbol src="jar:symbols/sport/swimming_outdoor.svg" />
             </rule>
         </rule>
-        <rule e="node" k="sport" v="swimming" zoom-min="14">
+        <rule e="node" k="sport" v="swimming" zoom-min="15">
             <symbol src="jar:symbols/sport/swimming_outdoor.svg" />
         </rule>
         <rule e="any" k="sport" v="soccer" zoom-min="16">

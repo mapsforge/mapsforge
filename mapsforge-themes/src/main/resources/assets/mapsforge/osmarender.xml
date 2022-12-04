@@ -1085,7 +1085,7 @@
             <rule e="node" k="amenity" v="fountain" zoom-min="17">
                 <symbol src="jar:symbols/amenity/fountain2.svg" />
             </rule>
-            <rule e="node" k="amenity" v="fuel" zoom-min="17">
+            <rule e="node" k="amenity" v="fuel" zoom-min="15">
                 <symbol src="jar:symbols/transport/fuel.svg" />
             </rule>
             <rule e="node" k="amenity" v="hospital" zoom-min="15">
