@@ -26,5 +26,17 @@ public interface Path {
 
     void moveTo(float x, float y);
 
+    /**
+     * Add a quadratic bezier from the last point, approaching control point
+     * (x1,y1), and ending at (x2,y2). If no moveTo() call has been made for
+     * this contour, the first point is automatically set to (0,0).
+     *
+     * @param x1 The x-coordinate of the control point on a quadratic curve
+     * @param y1 The y-coordinate of the control point on a quadratic curve
+     * @param x2 The x-coordinate of the end point on a quadratic curve
+     * @param y2 The y-coordinate of the end point on a quadratic curve
+     */
+    void quadTo(float x1, float y1, float x2, float y2);
+
     void setFillRule(FillRule fillRule);
 }

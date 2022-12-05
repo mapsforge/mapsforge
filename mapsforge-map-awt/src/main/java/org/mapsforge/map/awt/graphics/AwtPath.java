@@ -60,6 +60,11 @@ class AwtPath implements Path {
     }
 
     @Override
+    public void quadTo(float x1, float y1, float x2, float y2) {
+        this.path2D.quadTo(x1, y1, x2, y2);
+    }
+
+    @Override
     public void setFillRule(FillRule fillRule) {
         this.path2D.setWindingRule(getWindingRule(fillRule));
     }

@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Curve;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
@@ -101,7 +102,7 @@ public interface RenderCallback {
      * @param dy            the offset of the way.
      * @param level
      */
-    void renderWay(final RenderContext renderContext, Paint stroke, float dy, int level, PolylineContainer way);
+    void renderWay(final RenderContext renderContext, Paint stroke, float dy, Curve curveStyle, int level, PolylineContainer way);
 
     /**
      * Renders a way with the given symbol along the way path.
