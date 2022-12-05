@@ -3,6 +3,7 @@
 ## New since 0.18.0
 
 - Fix incorrect handling of nested tags [#1366](https://github.com/mapsforge/mapsforge/pull/1366)
+- Render themes: support curved lines [#1371](https://github.com/mapsforge/mapsforge/pull/1371)
 - Hillshading: Android scoped storage [#1338](https://github.com/mapsforge/mapsforge/pull/1338)
 - Performance improvements [#1367](https://github.com/mapsforge/mapsforge/pull/1367) [#1369](https://github.com/mapsforge/mapsforge/pull/1369)
 - Minor improvements and bug fixes
