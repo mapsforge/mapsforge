@@ -18,7 +18,15 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Curve;
+import org.mapsforge.core.graphics.Filter;
+import org.mapsforge.core.graphics.GraphicFactory;
+import org.mapsforge.core.graphics.GraphicUtils;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
@@ -135,11 +143,38 @@ public class CanvasRasterer {
                 points = innerList;
             }
             if (points.length >= 2) {
-                Point point = points[0];
-                this.path.moveTo((float) point.x, (float) point.y);
-                for (int i = 1; i < points.length; ++i) {
-                    point = points[i];
-                    this.path.lineTo((int) point.x, (int) point.y);
+                // iterate over lines based on curveStyle
+                if (shapePaintContainer.curveStyle == Curve.CUBIC) {
+                    // prepare variables
+                    float[] p1 = new float[]{(float) points[0].x, (float) points[0].y};
+                    float[] p2 = new float[]{0.0f, 0.0f};
+                    float[] p3 = new float[]{0.0f, 0.0f};
+
+                    // add first point
+                    this.path.moveTo(p1[0], p1[1]);
+                    for (int i = 1; i < points.length; ++i) {
+                        // get ending coordinates
+                        p3[0] = (float) points[i].x;
+                        p3[1] = (float) points[i].y;
+                        p2[0] = (p1[0] + p3[0]) / 2.0f;
+                        p2[1] = (p1[1] + p3[1]) / 2.0f;
+
+                        // add spline over middle point and end on 'end' point
+                        this.path.quadTo(p1[0], p1[1], p2[0], p2[1]);
+
+                        // store end point as start point for next section
+                        p1[0] = p3[0];
+                        p1[1] = p3[1];
+                    }
+
+                    // add last segment
+                    this.path.quadTo(p2[0], p2[1], p3[0], p3[1]);
+                } else {
+                    // construct line
+                    this.path.moveTo((float) points[0].x, (float) points[0].y);
+                    for (int i = 1; i < points.length; ++i) {
+                        this.path.lineTo((int) points[i].x, (int) points[i].y);
+                    }
                 }
             }
         }

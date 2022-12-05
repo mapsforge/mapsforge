@@ -15,6 +15,7 @@
 package org.mapsforge.map.rendertheme.rule;
 
 import org.mapsforge.core.graphics.Bitmap;
+import org.mapsforge.core.graphics.Curve;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
@@ -56,7 +57,7 @@ class DummyRenderCallback implements RenderCallback {
     }
 
     @Override
-    public void renderWay(final RenderContext renderContext, Paint stroke, float dy, int level, PolylineContainer way) {
+    public void renderWay(final RenderContext renderContext, Paint stroke, float dy, Curve curve, int level, PolylineContainer way) {
         // do nothing
     }
 

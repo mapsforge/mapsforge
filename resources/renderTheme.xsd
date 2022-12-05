@@ -42,6 +42,13 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="curve">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="cubic" />
+            <xs:enumeration value="no" />
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="display">
         <xs:restriction base="xs:string">
             <xs:enumeration value="always" />
@@ -188,6 +195,7 @@
         <xs:attribute name="stroke-dasharray" type="tns:strokeDasharray" use="optional" />
         <xs:attribute name="stroke-linecap" default="round" type="tns:cap" use="optional" />
         <xs:attribute name="stroke-linejoin" default="round" type="tns:linejoin" use="optional" />
+        <xs:attribute name="curve" type="xs:string" use="optional" />
     </xs:complexType>
 
     <xs:complexType name="lineSymbol">

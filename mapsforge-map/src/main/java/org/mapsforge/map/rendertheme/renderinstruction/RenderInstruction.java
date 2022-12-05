@@ -39,6 +39,7 @@ public abstract class RenderInstruction {
     static final String ALIGN_CENTER = "align-center";
     static final String ALL = "all";
     static final String CAT = "cat";
+    static final String CURVE = "curve";
     static final String DISPLAY = "display";
     static final String DY = "dy";
     static final String FILL = "fill";

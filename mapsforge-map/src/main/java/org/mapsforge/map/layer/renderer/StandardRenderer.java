@@ -149,8 +149,8 @@ public class StandardRenderer implements RenderCallback {
     }
 
     @Override
-    public void renderWay(final RenderContext renderContext, Paint stroke, float dy, int level, PolylineContainer way) {
-        renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(way, stroke, dy));
+    public void renderWay(final RenderContext renderContext, Paint stroke, float dy, Curve curveStyle, int level, PolylineContainer way) {
+        renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(way, stroke, dy, curveStyle));
     }
 
     @Override

@@ -12,25 +12,24 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.layer.renderer;
+package org.mapsforge.core.graphics;
 
-import org.mapsforge.core.graphics.Curve;
-import org.mapsforge.core.graphics.Paint;
+public enum Curve {
 
-public class ShapePaintContainer {
-    final float dy;
-    final Paint paint;
-    final ShapeContainer shapeContainer;
-    final Curve curveStyle;
+    /**
+     * No curvature to draw, so draw line as direct line.
+     */
+    NO,
+    /**
+     * Curve line with cubic spline.
+     */
+    CUBIC;
 
-    public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint) {
-        this(shapeContainer, paint, 0f, Curve.NO);
-    }
-
-    public ShapePaintContainer(ShapeContainer shapeContainer, Paint paint, float dy, Curve curveStyle) {
-        this.shapeContainer = shapeContainer;
-        this.paint = paint;
-        this.dy = dy;
-        this.curveStyle = curveStyle;
+    public static Curve fromString(String value) {
+        if ("cubic".equals(value)) {
+            return CUBIC;
+        } else {
+            return NO;
+        }
     }
 }
