@@ -32,6 +32,7 @@ import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 import org.mapsforge.map.rendertheme.XmlUtils;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * A RenderInstruction is a basic graphical primitive to draw a map.
@@ -184,11 +185,11 @@ public abstract class RenderInstruction {
             return text;
         }
         if (transformation == TextTransform.UPPERCASE) {
-            return text.toUpperCase();
+            return text.toUpperCase(Locale.ROOT);
         } else if (transformation == TextTransform.LOWERCASE) {
-            return text.toLowerCase();
+            return text.toLowerCase(Locale.ROOT);
         } else if (transformation == TextTransform.CAPITALIZE) {
-            return text.substring(0, 1).toUpperCase() + text.substring(1);
+            return text.substring(0, 1).toUpperCase(Locale.ROOT) + text.substring(1);
         } else {
             return text;
         }
