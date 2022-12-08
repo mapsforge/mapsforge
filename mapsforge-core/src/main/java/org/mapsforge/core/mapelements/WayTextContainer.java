@@ -35,8 +35,9 @@ public class WayTextContainer extends MapElementContainer {
     private final Paint paintFront;
     private final Paint paintBack;
     private final String text;
+    private final boolean rotate;
 
-    public WayTextContainer(GraphicFactory graphicFactory, LineString lineString, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight) {
+    public WayTextContainer(GraphicFactory graphicFactory, LineString lineString, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight, boolean rotate) {
         super(lineString.segments.get(0).start, display, priority);
         this.graphicFactory = graphicFactory;
         this.lineString = lineString;
@@ -50,6 +51,7 @@ public class WayTextContainer extends MapElementContainer {
         // we also need to make the container larger by textHeight as otherwise the end points do
         // not correctly reflect the size of the text on screen
         this.boundaryAbsolute = lineString.getBounds().enlarge(textHeight / 2d, textHeight / 2d, textHeight / 2d, textHeight / 2d);
+        this.rotate = rotate;
     }
 
     @Override
@@ -82,7 +84,7 @@ public class WayTextContainer extends MapElementContainer {
         boolean doInvert = firstSegment.end.x <= firstSegment.start.x;
         Path path = this.graphicFactory.createPath();
 
-        if (!doInvert) {
+        if (!doInvert || !rotate) {
             Point start = firstSegment.start.offset(-origin.x, -origin.y);
             path.moveTo((float) start.x, (float) start.y);
             for (int i = 0; i < this.lineString.segments.size(); i++) {
