@@ -165,7 +165,7 @@ final class WayDecorator {
             if (tooSharp)
                 continue;
 
-            currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight));
+            currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight, rotate));
         }
     }
 
