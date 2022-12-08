@@ -20,6 +20,7 @@ package org.mapsforge.map.rendertheme.renderinstruction;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.TextTransform;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.PointOfInterest;
@@ -70,6 +71,7 @@ public abstract class RenderInstruction {
     static final String SYMBOL_PERCENT = "symbol-percent";
     static final String SYMBOL_SCALING = "symbol-scaling";
     static final String SYMBOL_WIDTH = "symbol-width";
+    static final String TEXT_TRANSFORM = "text-transform";
 
     enum Scale {
         ALL,
@@ -173,4 +175,22 @@ public abstract class RenderInstruction {
      * @param scaleFactor the factor by which the text size should be scaled.
      */
     public abstract void scaleTextSize(float scaleFactor, byte zoomLevel);
+
+    /**
+     * Transform text before render based on the selected text transformation.
+     */
+    protected String transformText(String text, TextTransform transformation) {
+        if (text.length() == 0) {
+            return text;
+        }
+        if (transformation == TextTransform.UPPERCASE) {
+            return text.toUpperCase();
+        } else if (transformation == TextTransform.LOWERCASE) {
+            return text.toLowerCase();
+        } else if (transformation == TextTransform.CAPITALIZE) {
+            return text.substring(0, 1).toUpperCase() + text.substring(1);
+        } else {
+            return text;
+        }
+    }
 }
