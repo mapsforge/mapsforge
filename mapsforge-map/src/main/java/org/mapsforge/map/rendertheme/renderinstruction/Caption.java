@@ -74,7 +74,7 @@ public class Caption extends RenderInstruction {
         this.display = Display.IFSPACE;
 
         this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
-        this.textTransform = TextTransform.CAPITALIZE;
+        this.textTransform = TextTransform.NONE;
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
 

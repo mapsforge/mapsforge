@@ -71,7 +71,7 @@ public class PathText extends RenderInstruction {
         this.strokes = new HashMap<>();
         this.dyScaled = new HashMap<>();
         this.display = Display.IFSPACE;
-        this.textTransform = TextTransform.CAPITALIZE;
+        this.textTransform = TextTransform.NONE;
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
     }
