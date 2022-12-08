@@ -127,6 +127,15 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="textTransform">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="none" />
+            <xs:enumeration value="uppercase" />
+            <xs:enumeration value="lowercase" />
+            <xs:enumeration value="capitalize" />
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="area">
         <xs:attribute name="cat" type="xs:string" use="optional" />
         <xs:attribute name="src" type="tns:src" use="optional" />
@@ -137,6 +146,7 @@
         <xs:attribute name="scale" default="stroke" type="tns:scale" use="optional" />
         <xs:attribute name="stroke" default="#00000000" type="tns:color" use="optional" />
         <xs:attribute name="stroke-width" default="0" type="tns:nonNegativeFloat" use="optional" />
+        <xs:attribute name="text-transform" default="none" type="tns:textTransform" use="optional" />
     </xs:complexType>
 
     <xs:complexType name="caption">
@@ -153,6 +163,7 @@
         <xs:attribute name="stroke-width" default="0" type="tns:nonNegativeFloat" use="optional" />
         <xs:attribute name="position" default="auto" type="tns:position" use="optional" />
         <xs:attribute name="symbol-id" type="xs:string" use="optional" />
+        <xs:attribute name="text-transform" default="none" type="tns:textTransform" use="optional" />
     </xs:complexType>
 
     <!-- style menu cat element -->
@@ -195,7 +206,7 @@
         <xs:attribute name="stroke-dasharray" type="tns:strokeDasharray" use="optional" />
         <xs:attribute name="stroke-linecap" default="round" type="tns:cap" use="optional" />
         <xs:attribute name="stroke-linejoin" default="round" type="tns:linejoin" use="optional" />
-        <xs:attribute name="curve" default="no" type="xs:string" use="optional" />
+        <xs:attribute name="curve" default="no" type="tns:curve" use="optional" />
     </xs:complexType>
 
     <xs:complexType name="lineSymbol">
@@ -243,6 +254,7 @@
         <xs:attribute name="repeat-gap" default="100" type="xs:float" use="optional" />
         <xs:attribute name="repeat-start" default="10" type="xs:float" use="optional" />
         <xs:attribute name="rotate" default="true" type="xs:boolean" use="optional" />
+        <xs:attribute name="text-transform" default="none" type="tns:textTransform" use="optional" />
     </xs:complexType>
 
     <xs:complexType name="symbol">

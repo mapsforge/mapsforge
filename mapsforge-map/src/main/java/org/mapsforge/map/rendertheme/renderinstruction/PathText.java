@@ -51,6 +51,7 @@ public class PathText extends RenderInstruction {
     private float repeatStart;
     private boolean rotate;
     private TextKey textKey;
+    private TextTransform textTransform;
 
     public PathText(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                     XmlPullParser pullParser) throws XmlPullParserException {
@@ -70,6 +71,7 @@ public class PathText extends RenderInstruction {
         this.strokes = new HashMap<>();
         this.dyScaled = new HashMap<>();
         this.display = Display.IFSPACE;
+        this.textTransform = TextTransform.NONE;
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
     }
@@ -123,6 +125,8 @@ public class PathText extends RenderInstruction {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
+            } else if (TEXT_TRANSFORM.equals(name)) {
+                this.textTransform = TextTransform.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -171,7 +175,8 @@ public class PathText extends RenderInstruction {
             dyScale = this.dy;
         }
 
-        renderCallback.renderWayText(renderContext, this.display, this.priority, caption, dyScale,
+        renderCallback.renderWayText(renderContext, this.display, this.priority,
+                transformText(caption, textTransform), dyScale,
                 getFillPaint(renderContext.rendererJob.tile.zoomLevel),
                 getStrokePaint(renderContext.rendererJob.tile.zoomLevel),
                 this.repeat, this.repeatGap, this.repeatStart, this.rotate,

@@ -55,6 +55,7 @@ public class Caption extends RenderInstruction {
     private final Map<Byte, Paint> strokes;
     private String symbolId;
     private TextKey textKey;
+    private TextTransform textTransform;
 
     public Caption(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                    XmlPullParser pullParser, Map<String, Symbol> symbols) throws XmlPullParserException {
@@ -70,10 +71,10 @@ public class Caption extends RenderInstruction {
         this.strokes = new HashMap<>();
         this.dyScaled = new HashMap<>();
 
-
         this.display = Display.IFSPACE;
 
         this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
+        this.textTransform = TextTransform.NONE;
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
 
@@ -115,9 +116,7 @@ public class Caption extends RenderInstruction {
                 throw new IllegalArgumentException("Position invalid");
         }
 
-
         this.maxTextWidth = displayModel.getMaxTextWidth();
-
     }
 
     private float computeHorizontalOffset() {
@@ -184,6 +183,8 @@ public class Caption extends RenderInstruction {
                 this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
             } else if (SYMBOL_ID.equals(name)) {
                 this.symbolId = value;
+            } else if (TEXT_TRANSFORM.equals(name)) {
+                this.textTransform = TextTransform.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -234,7 +235,8 @@ public class Caption extends RenderInstruction {
             verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
         }
 
-        renderCallback.renderPointOfInterestCaption(renderContext, this.display, this.priority, caption, horizontalOffset, verticalOffset,
+        renderCallback.renderPointOfInterestCaption(renderContext, this.display, this.priority,
+                transformText(caption, textTransform), horizontalOffset, verticalOffset,
                 getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, poi);
     }
 
@@ -260,7 +262,8 @@ public class Caption extends RenderInstruction {
             verticalOffset = computeVerticalOffset(renderContext.rendererJob.tile.zoomLevel);
         }
 
-        renderCallback.renderAreaCaption(renderContext, this.display, this.priority, caption, horizontalOffset, verticalOffset,
+        renderCallback.renderAreaCaption(renderContext, this.display, this.priority,
+                transformText(caption, textTransform), horizontalOffset, verticalOffset,
                 getFillPaint(renderContext.rendererJob.tile.zoomLevel), getStrokePaint(renderContext.rendererJob.tile.zoomLevel), this.position, this.maxTextWidth, way);
     }
 
