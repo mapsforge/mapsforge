@@ -462,7 +462,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             this.insertPoiCatStatement.clearParameters();
 
             Statement stmt = this.conn.createStatement();
-            stmt.execute("BEGIN;");
+            //stmt.execute("BEGIN;");
 
             for (PointOfInterest poi : pois) {
                 // POI location
@@ -625,7 +625,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             this.deletePoiCatStatement.clearParameters();
 
             Statement stmt = this.conn.createStatement();
-            stmt.execute("BEGIN;");
+            //stmt.execute("BEGIN;");
 
             this.deletePoiLocStatement.setLong(1, poi.getId());
             this.deletePoiDataStatement.setLong(1, poi.getId());
