@@ -26,6 +26,7 @@ public enum InternalRenderTheme implements XmlRenderTheme {
     DEFAULT("/assets/mapsforge/default.xml"),
     OSMARENDER("/assets/mapsforge/osmarender.xml");
 
+    private XmlRenderThemeMenuCallback menuCallback;
     private final String path;
 
     InternalRenderTheme(String path) {
@@ -34,7 +35,7 @@ public enum InternalRenderTheme implements XmlRenderTheme {
 
     @Override
     public XmlRenderThemeMenuCallback getMenuCallback() {
-        return null;
+        return menuCallback;
     }
 
     /**
@@ -57,6 +58,7 @@ public enum InternalRenderTheme implements XmlRenderTheme {
 
     @Override
     public void setMenuCallback(XmlRenderThemeMenuCallback menuCallback) {
+        this.menuCallback = menuCallback;
     }
 
     @Override
