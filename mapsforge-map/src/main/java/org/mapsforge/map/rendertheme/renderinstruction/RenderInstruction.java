@@ -73,6 +73,7 @@ public abstract class RenderInstruction {
     static final String SYMBOL_SCALING = "symbol-scaling";
     static final String SYMBOL_WIDTH = "symbol-width";
     static final String TEXT_TRANSFORM = "text-transform";
+    static final String TEXT_WRAP_WIDTH = "text-wrap-width";
 
     enum Scale {
         ALL,

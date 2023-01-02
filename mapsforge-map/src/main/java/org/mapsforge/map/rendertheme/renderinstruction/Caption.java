@@ -48,7 +48,7 @@ public class Caption extends RenderInstruction {
     private final Map<Byte, Paint> fills;
     private float fontSize;
     private final float gap;
-    private final int maxTextWidth;
+    private int maxTextWidth;
     private Position position;
     private int priority;
     private final Paint stroke;
@@ -75,6 +75,7 @@ public class Caption extends RenderInstruction {
 
         this.gap = DEFAULT_GAP * displayModel.getScaleFactor();
         this.textTransform = TextTransform.NONE;
+        this.maxTextWidth = displayModel.getMaxTextWidth();
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
 
@@ -115,8 +116,6 @@ public class Caption extends RenderInstruction {
             default:
                 throw new IllegalArgumentException("Position invalid");
         }
-
-        this.maxTextWidth = displayModel.getMaxTextWidth();
     }
 
     private float computeHorizontalOffset() {
@@ -185,6 +184,13 @@ public class Caption extends RenderInstruction {
                 this.symbolId = value;
             } else if (TEXT_TRANSFORM.equals(name)) {
                 this.textTransform = TextTransform.fromString(value);
+            } else if (TEXT_WRAP_WIDTH .equals(name)) {
+                int maxWidth = XmlUtils.parseNonNegativeInteger(name, value);
+                if (maxWidth == 0) {
+                    maxTextWidth = Integer.MAX_VALUE;
+                } else {
+                    maxTextWidth = maxWidth;
+                }
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
