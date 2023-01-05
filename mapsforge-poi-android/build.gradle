@@ -20,3 +20,7 @@ if (project.hasProperty("SONATYPE_USERNAME")) {
         project.apply from: "${rootProject.projectDir}/deploy.gradle"
     }
 }
+
+if (System.getenv('ANDROID_HOME') == null) {
+    throw new GradleException("Environment variable ANDROID_HOME needs to be set to SDK folder")
+}
