@@ -164,7 +164,7 @@
         <xs:attribute name="position" default="auto" type="tns:position" use="optional" />
         <xs:attribute name="symbol-id" type="xs:string" use="optional" />
         <xs:attribute name="text-transform" default="none" type="tns:textTransform" use="optional" />
-        <xs:attribute name="text-wrap-width" default="none" type="xs:integer" use="optional" />
+        <xs:attribute name="text-wrap-width" default="0" type="xs:integer" use="optional" />
     </xs:complexType>
 
     <!-- style menu cat element -->
