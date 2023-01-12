@@ -8,6 +8,7 @@
 - Render themes: `text-wrap-width` parameter [#1379](https://github.com/mapsforge/mapsforge/pull/1379)
 - Hillshading: Android scoped storage [#1338](https://github.com/mapsforge/mapsforge/pull/1338)
 - Performance improvements [#1367](https://github.com/mapsforge/mapsforge/pull/1367) [#1369](https://github.com/mapsforge/mapsforge/pull/1369)
+- POI: add all entities by default [#1382](https://github.com/mapsforge/mapsforge/pull/1382)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.19.0)
 
