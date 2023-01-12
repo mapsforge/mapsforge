@@ -54,7 +54,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
         configuration.setComment(getStringArgument(taskConfig, PARAM_COMMENT, null));
         configuration.setFilterCategories(getBooleanArgument(taskConfig, PARAM_FILTER_CATEGORIES, true));
         configuration.setGeoTags(getBooleanArgument(taskConfig, PARAM_GEO_TAGS, false));
-        configuration.setNames(getBooleanArgument(taskConfig, PARAM_NAMES, true));
+        configuration.setNames(getBooleanArgument(taskConfig, PARAM_NAMES, false));
         configuration.setNormalize(getBooleanArgument(taskConfig, PARAM_NORMALIZE, false));
         configuration.addOutputFile(getStringArgument(taskConfig, PARAM_OUTFILE, Constants.DEFAULT_PARAM_OUTFILE));
         configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
