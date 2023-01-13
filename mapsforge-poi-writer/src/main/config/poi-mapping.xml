@@ -173,9 +173,9 @@
             </category>
         </category>
         <category title="Other amenities">
-            <category title="Public benches">
+            <!--<category title="Public benches">
                 <mapping tag="amenity=bench" />
-            </category>
+            </category>-->
             <!-- Why not.. -->
             <category title="Brothels">
                 <mapping tag="amenity=brothel" />
@@ -216,7 +216,7 @@
             <category title="Post offices">
                 <mapping tag="amenity=post_office" />
             </category>
-            <category title="Prisons (not including schools)">
+            <category title="Prisons">
                 <mapping tag="amenity=prison" />
             </category>
             <!-- Not enough -->
@@ -627,9 +627,9 @@
         <!--<category title="Footway">
             <mapping tag="highway=footway" />
         </category>-->
-        <category title="Living street">
+        <!--<category title="Living street">
             <mapping tag="highway=living_street" />
-        </category>
+        </category>-->
         <!--<category title="Motorway">
             <mapping tag="highway=motorway" />
         </category>-->
@@ -651,12 +651,12 @@
         <!--<category title="Raceway">
             <mapping tag="highway=raceway" />
         </category>-->
-        <category title="Residential way">
+        <!--<category title="Residential way">
             <mapping tag="highway=residential" />
-        </category>
-        <category title="Road">
+        </category>-->
+        <!--<category title="Road">
             <mapping tag="highway=road" />
-        </category>
+        </category>-->
         <!--<category title="Secondary way">
             <mapping tag="highway=secondary" />
         </category>-->
@@ -681,9 +681,9 @@
         <!--<category title="Track way">
             <mapping tag="highway=track" />
         </category>-->
-        <category title="Trunk way">
+        <!--<category title="Trunk way">
             <mapping tag="highway=trunk" />
-        </category>
+        </category>-->
         <!--<category title="Trunk way link">
             <mapping tag="highway=trunk_link" />
         </category>-->
@@ -895,6 +895,9 @@
     <category title="Natural">
         <category title="Peak">
             <mapping tag="natural=peak" />
+        </category>
+        <category title="Mountain pass">
+            <mapping tag="mountain_pass=yes" />
         </category>
         <category title="Volcano">
             <mapping tag="natural=volcano" />
@@ -1197,6 +1200,7 @@
         </category>
         <category title="Motorcycles">
             <mapping tag="shop=motorcycle" />
+            <mapping tag="shop=motorcycle_repair" />
         </category>
         <category title="Musical instruments">
             <mapping tag="shop=musical_instrument" />
@@ -1547,9 +1551,9 @@
     </category>
 
     <!-- Address search -->
-    <category title="Address">
+    <!--<category title="Address">
         <mapping tag="addr:street" />
         <mapping tag="addr:housenumber" />
-    </category>
+    </category>-->
 
 </category>
