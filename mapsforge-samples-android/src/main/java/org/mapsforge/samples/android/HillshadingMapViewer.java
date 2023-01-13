@@ -38,6 +38,7 @@ public class HillshadingMapViewer extends DefaultTheme {
     private static final String demUseFiles = "demFolderFiles";
     private static final int SELECT_DEM_FOLDER = 0;
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void createLayers() {
 
