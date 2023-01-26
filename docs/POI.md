@@ -46,7 +46,7 @@ The `--poi-writer`, or short `--pw` task indicates that the POI writer plugin sh
 |**Option**|**Description**|**Valid values**|**Default value**|
 |----------|---------------|----------------|-----------------|
 |`tag-conf-file`|Path to an XML configuration file that contains mappings from OSM tags to category names and a hierarchy of those categories.|path to an XML file|(blank) internal default poi mapping is used|
-|`names`|Add only named entities.|true/false|true|
+|`names`|Add only named entities.|true/false|false|
 |`ways`|Also parse ways.|true/false|true|
 |`normalize`|Add normalized_name (for accent insensitive search). *Works if all-tags is true.*|true/false|false|
 |`geo-tags`|Add geo tags.|true/false|false|
