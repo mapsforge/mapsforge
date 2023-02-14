@@ -185,7 +185,7 @@ public class Caption extends RenderInstruction {
             } else if (TEXT_TRANSFORM.equals(name)) {
                 this.textTransform = TextTransform.fromString(value);
             } else if (TEXT_WRAP_WIDTH .equals(name)) {
-                int maxWidth = XmlUtils.parseNonNegativeInteger(name, value);
+                int maxWidth = (int) (XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor());
                 if (maxWidth == 0) {
                     maxTextWidth = Integer.MAX_VALUE;
                 } else {
