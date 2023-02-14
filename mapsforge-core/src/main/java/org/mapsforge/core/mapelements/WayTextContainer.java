@@ -82,18 +82,16 @@ public class WayTextContainer extends MapElementContainer {
     private Path generatePath(Point origin) {
         // compute rotation so text isn't upside down
         LineSegment firstSegment = this.lineString.segments.get(0);
-        boolean isWest = firstSegment.end.x <= firstSegment.start.x;
-        boolean doInvert = false;
+        boolean doInvert;
         switch (upright) {
             case RIGHT:
-                //noinspection ConstantConditions
                 doInvert = false;
                 break;
             case LEFT:
                 doInvert = true;
                 break;
-            case AUTO:
-                doInvert = isWest;
+            default: // AUTO
+                doInvert = firstSegment.end.x <= firstSegment.start.x;
                 break;
         }
 

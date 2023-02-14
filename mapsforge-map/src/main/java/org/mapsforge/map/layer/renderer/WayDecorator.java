@@ -60,18 +60,16 @@ final class WayDecorator {
             double currentY = c[i].y;
 
             // compute rotation so text isn't upside down
-            boolean isWest = currentX <= previousX;
-            boolean doInvert = false;
+            boolean doInvert;
             switch (upright) {
                 case RIGHT:
-                    //noinspection ConstantConditions
                     doInvert = false;
                     break;
                 case LEFT:
                     doInvert = true;
                     break;
-                case AUTO:
-                    doInvert = isWest;
+                default: // AUTO
+                    doInvert = currentX <= previousX;
                     break;
             }
 
