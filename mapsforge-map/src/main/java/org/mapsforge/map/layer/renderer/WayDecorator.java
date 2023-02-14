@@ -19,6 +19,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Upright;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.mapelements.WayTextContainer;
@@ -32,7 +33,7 @@ final class WayDecorator {
 
     static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, Rectangle boundary,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
-                             boolean rotate, Point[][] coordinates,
+                             Upright upright, Point[][] coordinates,
                              List<MapElementContainer> currentItems) {
         int skipPixels = (int) repeatStart;
 
@@ -58,6 +59,20 @@ final class WayDecorator {
             double currentX = c[i].x;
             double currentY = c[i].y;
 
+            // compute rotation so text isn't upside down
+            boolean doInvert;
+            switch (upright) {
+                case RIGHT:
+                    doInvert = false;
+                    break;
+                case LEFT:
+                    doInvert = true;
+                    break;
+                default: // AUTO
+                    doInvert = currentX <= previousX;
+                    break;
+            }
+
             // calculate the length of the current segment (Euclidian distance)
             double diffX = currentX - previousX;
             double diffY = currentY - previousY;
@@ -71,7 +86,7 @@ final class WayDecorator {
                 // move the previous point forward towards the current point
                 previousX += diffX * segmentSkipPercentage;
                 previousY += diffY * segmentSkipPercentage;
-                if (rotate) {
+                if (doInvert) {
                     // if we do not rotate theta will be 0, which is correct
                     theta = (float) Math.atan2(currentY - previousY, currentX - previousX);
                 }
@@ -123,7 +138,7 @@ final class WayDecorator {
      */
     static void renderText(GraphicFactory graphicFactory, Tile upperLeft, Tile lowerRight, String text, Display display, int priority, float dy,
                            Paint fill, Paint stroke,
-                           boolean repeat, float repeatGap, float repeatStart, boolean rotate, Point[][] coordinates,
+                           boolean repeat, float repeatGap, float repeatStart, Upright upright, Point[][] coordinates,
                            List<MapElementContainer> currentLabels) {
         if (coordinates.length == 0) {
             return;
@@ -165,7 +180,7 @@ final class WayDecorator {
             if (tooSharp)
                 continue;
 
-            currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight, rotate));
+            currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight, upright));
         }
     }
 

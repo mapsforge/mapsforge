@@ -49,9 +49,9 @@ public class PathText extends RenderInstruction {
     private boolean repeat;
     private float repeatGap;
     private float repeatStart;
-    private boolean rotate;
     private TextKey textKey;
     private TextTransform textTransform;
+    private Upright upright;
 
     public PathText(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                     XmlPullParser pullParser) throws XmlPullParserException {
@@ -61,7 +61,6 @@ public class PathText extends RenderInstruction {
         this.fill.setStyle(Style.FILL);
         this.fill.setTextAlign(Align.CENTER);
         this.fills = new HashMap<>();
-        this.rotate = true;
         this.repeat = true;
 
         this.stroke = graphicFactory.createPaint();
@@ -72,6 +71,7 @@ public class PathText extends RenderInstruction {
         this.dyScaled = new HashMap<>();
         this.display = Display.IFSPACE;
         this.textTransform = TextTransform.NONE;
+        this.upright = Upright.AUTO;
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
     }
@@ -115,10 +115,12 @@ public class PathText extends RenderInstruction {
                 this.repeatGap = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (REPEAT_START.equals(name)) {
                 this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
-            } else if (ROTATE.equals(name)) {
-                this.rotate = Boolean.parseBoolean(value);
             } else if (PRIORITY.equals(name)) {
                 this.priority = Integer.parseInt(value);
+            } else if (ROTATE.equals(name)) {
+                if (!Boolean.parseBoolean(value)) {
+                    this.upright = Upright.RIGHT;
+                }
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
@@ -127,6 +129,8 @@ public class PathText extends RenderInstruction {
                 this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
             } else if (TEXT_TRANSFORM.equals(name)) {
                 this.textTransform = TextTransform.fromString(value);
+            } else if (UPRIGHT.equals(name)) {
+                this.upright = Upright.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -179,7 +183,7 @@ public class PathText extends RenderInstruction {
                 transformText(caption, textTransform), dyScale,
                 getFillPaint(renderContext.rendererJob.tile.zoomLevel),
                 getStrokePaint(renderContext.rendererJob.tile.zoomLevel),
-                this.repeat, this.repeatGap, this.repeatStart, this.rotate,
+                this.repeat, this.repeatGap, this.repeatStart, this.upright,
                 way);
     }
 

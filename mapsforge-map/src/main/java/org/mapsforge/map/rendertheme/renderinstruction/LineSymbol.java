@@ -21,6 +21,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.Upright;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
@@ -55,21 +56,21 @@ public class LineSymbol extends RenderInstruction {
     private float repeatGap;
     private float repeatStart;
     private final XmlThemeResourceProvider resourceProvider;
-    private boolean rotate;
     private Scale scale = Scale.STROKE;
     private String src;
+    private Upright upright;
 
     public LineSymbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                       XmlPullParser pullParser, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
         super(graphicFactory, displayModel);
 
         this.display = Display.IFSPACE;
-        this.rotate = true;
         this.relativePathPrefix = relativePathPrefix;
         this.resourceProvider = resourceProvider;
         this.dyScaled = new HashMap<>();
         // Probably not a good default, but backwards compatible
         this.position = Position.BELOW_RIGHT;
+        this.upright = Upright.AUTO;
 
         extractValues(elementName, pullParser);
     }
@@ -112,7 +113,9 @@ public class LineSymbol extends RenderInstruction {
             } else if (REPEAT_START.equals(name)) {
                 this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (ROTATE.equals(name)) {
-                this.rotate = Boolean.parseBoolean(value);
+                if (!Boolean.parseBoolean(value)) {
+                    this.upright = Upright.RIGHT;
+                }
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (SYMBOL_HEIGHT.equals(name)) {
@@ -125,6 +128,8 @@ public class LineSymbol extends RenderInstruction {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else if (POSITION.equals(name)) {
                 this.position = Position.fromString(value);
+            } else if (UPRIGHT.equals(name)) {
+                this.upright = Upright.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -158,7 +163,7 @@ public class LineSymbol extends RenderInstruction {
         if (this.bitmap != null) {
             Rectangle boundary = computeBoundary(this.bitmap.getWidth(), this.bitmap.getHeight(), this.position);
             renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, boundary,
-                    this.repeat, this.repeatGap, this.repeatStart, this.rotate, way);
+                    this.repeat, this.repeatGap, this.repeatStart, this.upright, way);
         }
     }
 
