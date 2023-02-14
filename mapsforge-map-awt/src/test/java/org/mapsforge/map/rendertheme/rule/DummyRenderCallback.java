@@ -19,6 +19,7 @@ import org.mapsforge.core.graphics.Curve;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.Upright;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
@@ -62,13 +63,13 @@ class DummyRenderCallback implements RenderCallback {
     }
 
     @Override
-    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
+    public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart, Upright upright, PolylineContainer way) {
         // do nothing
     }
 
     @Override
     public void renderWayText(final RenderContext renderContext, Display display, int priority, String text, float dy, Paint fill, Paint stroke,
-                              boolean repeat, float repeatGap, float repeatStart, boolean rotate, PolylineContainer way) {
+                              boolean repeat, float repeatGap, float repeatStart, Upright upright, PolylineContainer way) {
         // do nothing
     }
 }

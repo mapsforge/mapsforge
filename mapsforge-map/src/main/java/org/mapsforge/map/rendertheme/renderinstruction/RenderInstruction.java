@@ -58,7 +58,6 @@ public abstract class RenderInstruction {
     static final String REPEAT = "repeat";
     static final String REPEAT_GAP = "repeat-gap";
     static final String REPEAT_START = "repeat-start";
-    static final String ROTATE = "rotate";
     static final String SCALE = "scale";
     static final String SCALE_RADIUS = "scale-radius";
     static final String SRC = "src";
@@ -74,6 +73,7 @@ public abstract class RenderInstruction {
     static final String SYMBOL_WIDTH = "symbol-width";
     static final String TEXT_TRANSFORM = "text-transform";
     static final String TEXT_WRAP_WIDTH = "text-wrap-width";
+    static final String UPRIGHT = "upright";
 
     enum Scale {
         ALL,
