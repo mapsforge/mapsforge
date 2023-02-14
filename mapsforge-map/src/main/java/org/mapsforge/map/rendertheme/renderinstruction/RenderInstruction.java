@@ -58,6 +58,9 @@ public abstract class RenderInstruction {
     static final String REPEAT = "repeat";
     static final String REPEAT_GAP = "repeat-gap";
     static final String REPEAT_START = "repeat-start";
+    // Use "upright" parameter instead.
+    @Deprecated
+    static final String ROTATE = "rotate";
     static final String SCALE = "scale";
     static final String SCALE_RADIUS = "scale-radius";
     static final String SRC = "src";

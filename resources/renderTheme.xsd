@@ -232,6 +232,7 @@
         <xs:attribute name="repeat" default="false" type="xs:boolean" use="optional" />
         <xs:attribute name="repeat-gap" default="200" type="xs:float" use="optional" />
         <xs:attribute name="repeat-start" default="30" type="xs:float" use="optional" />
+        <xs:attribute name="rotate" default="true" type="xs:boolean" use="optional" />
         <xs:attribute name="upright" default="auto" type="tns:upright" use="optional" />
     </xs:complexType>
 
@@ -262,6 +263,7 @@
         <xs:attribute name="repeat" default="true" type="xs:boolean" use="optional" />
         <xs:attribute name="repeat-gap" default="100" type="xs:float" use="optional" />
         <xs:attribute name="repeat-start" default="10" type="xs:float" use="optional" />
+        <xs:attribute name="rotate" default="true" type="xs:boolean" use="optional" />
         <xs:attribute name="text-transform" default="none" type="tns:textTransform" use="optional" />
         <xs:attribute name="upright" default="auto" type="tns:upright" use="optional" />
     </xs:complexType>

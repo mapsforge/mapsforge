@@ -112,6 +112,10 @@ public class LineSymbol extends RenderInstruction {
                 this.repeatGap = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (REPEAT_START.equals(name)) {
                 this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
+            } else if (ROTATE.equals(name)) {
+                if (!Boolean.parseBoolean(value)) {
+                    this.upright = Upright.RIGHT;
+                }
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (SYMBOL_HEIGHT.equals(name)) {

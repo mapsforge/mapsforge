@@ -117,6 +117,10 @@ public class PathText extends RenderInstruction {
                 this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (PRIORITY.equals(name)) {
                 this.priority = Integer.parseInt(value);
+            } else if (ROTATE.equals(name)) {
+                if (!Boolean.parseBoolean(value)) {
+                    this.upright = Upright.RIGHT;
+                }
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (STROKE.equals(name)) {
