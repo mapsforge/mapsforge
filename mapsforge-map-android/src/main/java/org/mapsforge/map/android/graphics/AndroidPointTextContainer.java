@@ -30,7 +30,6 @@ public class AndroidPointTextContainer extends PointTextContainer {
     private StaticLayout backLayout;
     private StaticLayout frontLayout;
 
-    @SuppressWarnings("deprecation")
     AndroidPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
                               SymbolContainer symbolContainer, Position position, int maxTextWidth) {
         super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
@@ -117,6 +116,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private StaticLayout createTextLayout(TextPaint paint, Layout.Alignment alignment) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // API29+, A10+
