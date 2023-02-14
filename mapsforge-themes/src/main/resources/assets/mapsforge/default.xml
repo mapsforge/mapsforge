@@ -834,13 +834,13 @@
         <line stroke="#202020" stroke-linecap="butt" stroke-width="0.4" />
         <line stroke="#202020" stroke-dasharray="2,200" stroke-linecap="butt" stroke-width="4.0" />
         <rule e="way" k="aerialway" v="cable_car" zoom-min="15">
-            <lineSymbol repeat="true" rotate="false" src="jar:symbols/cable_car.svg" />
+            <lineSymbol repeat="true" upright="right" src="jar:symbols/cable_car.svg" />
         </rule>
         <rule e="way" k="aerialway" v="chair_lift" zoom-min="15">
-            <lineSymbol repeat="true" rotate="false" src="jar:symbols/chair_lift.svg" />
+            <lineSymbol repeat="true" upright="right" src="jar:symbols/chair_lift.svg" />
         </rule>
         <rule e="way" k="aerialway" v="gondola" zoom-min="15">
-            <lineSymbol repeat="true" rotate="false" src="jar:symbols/gondola.svg" />
+            <lineSymbol repeat="true" upright="right" src="jar:symbols/gondola.svg" />
         </rule>
         <rule e="any" k="*" v="*" zoom-min="15">
             <pathText fill="#606060" font-size="10" font-style="bold" k="name" stroke="#FFFFFF"
