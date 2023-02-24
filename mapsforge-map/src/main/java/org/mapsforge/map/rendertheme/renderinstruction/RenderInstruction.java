@@ -71,12 +71,13 @@ public abstract class RenderInstruction {
     static final String STROKE_WIDTH = "stroke-width";
     static final String SYMBOL_HEIGHT = "symbol-height";
     static final String SYMBOL_ID = "symbol-id";
+    static final String SYMBOL_ORIENTATION = "symbol-orientation";
     static final String SYMBOL_PERCENT = "symbol-percent";
     static final String SYMBOL_SCALING = "symbol-scaling";
     static final String SYMBOL_WIDTH = "symbol-width";
+    static final String TEXT_ORIENTATION = "text-orientation";
     static final String TEXT_TRANSFORM = "text-transform";
     static final String TEXT_WRAP_WIDTH = "text-wrap-width";
-    static final String UPRIGHT = "upright";
 
     enum Scale {
         ALL,
