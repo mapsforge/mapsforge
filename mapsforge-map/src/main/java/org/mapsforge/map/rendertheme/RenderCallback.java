@@ -117,7 +117,9 @@ public interface RenderCallback {
      * @param repeatGap     distance between repetitions.
      * @param repeatStart
      */
-    void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart, SymbolOrientation symbolOrientation, PolylineContainer way);
+    void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol,
+                         float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart,
+                         SymbolOrientation symbolOrientation, PolylineContainer way);
 
     /**
      * Renders a way with the given text along the way path.

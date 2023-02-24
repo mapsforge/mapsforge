@@ -120,6 +120,8 @@ public class LineSymbol extends RenderInstruction {
                 this.scale = scaleFromValue(value);
             } else if (SYMBOL_HEIGHT.equals(name)) {
                 this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (SYMBOL_ORIENTATION.equals(name)) {
+                this.symbolOrientation = SymbolOrientation.fromString(value);
             } else if (SYMBOL_PERCENT.equals(name)) {
                 this.percent = XmlUtils.parseNonNegativeInteger(name, value);
             } else if (SYMBOL_SCALING.equals(name)) {
@@ -128,8 +130,6 @@ public class LineSymbol extends RenderInstruction {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else if (POSITION.equals(name)) {
                 this.position = Position.fromString(value);
-            } else if (SYMBOL_ORIENTATION.equals(name)) {
-                this.symbolOrientation = SymbolOrientation.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }

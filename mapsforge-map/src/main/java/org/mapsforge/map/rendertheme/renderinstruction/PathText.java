@@ -127,10 +127,10 @@ public class PathText extends RenderInstruction {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
-            } else if (TEXT_TRANSFORM.equals(name)) {
-                this.textTransform = TextTransform.fromString(value);
             } else if (TEXT_ORIENTATION.equals(name)) {
                 this.textOrientation = TextOrientation.fromString(value);
+            } else if (TEXT_TRANSFORM.equals(name)) {
+                this.textTransform = TextTransform.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
