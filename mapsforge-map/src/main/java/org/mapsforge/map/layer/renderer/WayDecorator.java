@@ -110,7 +110,7 @@ final class WayDecorator {
                 // increment offset by the gap and the width of drawn image
                 segmentOffset += symbolBitmap.getWidth() + repeatGap;
                 if (!repeatSymbol) {
-                    break;
+                    return;
                 }
             }
 
