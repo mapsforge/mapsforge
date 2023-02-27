@@ -70,7 +70,7 @@ public class LineSymbol extends RenderInstruction {
         this.dyScaled = new HashMap<>();
         // Probably not a good default, but backwards compatible
         this.position = Position.BELOW_RIGHT;
-        this.symbolOrientation = SymbolOrientation.RIGHT;
+        this.symbolOrientation = SymbolOrientation.LEFT;
 
         extractValues(elementName, pullParser);
     }
@@ -114,7 +114,7 @@ public class LineSymbol extends RenderInstruction {
                 this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (ROTATE.equals(name)) {
                 if (!Boolean.parseBoolean(value)) {
-                    this.symbolOrientation = SymbolOrientation.RIGHT;
+                    this.symbolOrientation = SymbolOrientation.UP;
                 }
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
