@@ -51,7 +51,7 @@ public class PathText extends RenderInstruction {
     private float repeatStart;
     private TextKey textKey;
     private TextTransform textTransform;
-    private Upright upright;
+    private TextOrientation textOrientation;
 
     public PathText(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                     XmlPullParser pullParser) throws XmlPullParserException {
@@ -71,7 +71,7 @@ public class PathText extends RenderInstruction {
         this.dyScaled = new HashMap<>();
         this.display = Display.IFSPACE;
         this.textTransform = TextTransform.NONE;
-        this.upright = Upright.AUTO;
+        this.textOrientation = TextOrientation.AUTO;
 
         extractValues(graphicFactory, displayModel, elementName, pullParser);
     }
@@ -119,7 +119,7 @@ public class PathText extends RenderInstruction {
                 this.priority = Integer.parseInt(value);
             } else if (ROTATE.equals(name)) {
                 if (!Boolean.parseBoolean(value)) {
-                    this.upright = Upright.RIGHT;
+                    this.textOrientation = TextOrientation.RIGHT;
                 }
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
@@ -127,10 +127,10 @@ public class PathText extends RenderInstruction {
                 this.stroke.setColor(XmlUtils.getColor(graphicFactory, value, displayModel.getThemeCallback(), this));
             } else if (STROKE_WIDTH.equals(name)) {
                 this.stroke.setStrokeWidth(XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor());
+            } else if (TEXT_ORIENTATION.equals(name)) {
+                this.textOrientation = TextOrientation.fromString(value);
             } else if (TEXT_TRANSFORM.equals(name)) {
                 this.textTransform = TextTransform.fromString(value);
-            } else if (UPRIGHT.equals(name)) {
-                this.upright = Upright.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -183,7 +183,7 @@ public class PathText extends RenderInstruction {
                 transformText(caption, textTransform), dyScale,
                 getFillPaint(renderContext.rendererJob.tile.zoomLevel),
                 getStrokePaint(renderContext.rendererJob.tile.zoomLevel),
-                this.repeat, this.repeatGap, this.repeatStart, this.upright,
+                this.repeat, this.repeatGap, this.repeatStart, this.textOrientation,
                 way);
     }
 

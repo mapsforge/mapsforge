@@ -25,7 +25,7 @@ import org.mapsforge.core.graphics.GraphicUtils;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.Upright;
+import org.mapsforge.core.graphics.TextOrientation;
 import org.mapsforge.core.model.LineSegment;
 import org.mapsforge.core.model.LineString;
 import org.mapsforge.core.model.Point;
@@ -36,9 +36,9 @@ public class WayTextContainer extends MapElementContainer {
     private final Paint paintFront;
     private final Paint paintBack;
     private final String text;
-    private final Upright upright;
+    private final TextOrientation textOrientation;
 
-    public WayTextContainer(GraphicFactory graphicFactory, LineString lineString, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight, Upright upright) {
+    public WayTextContainer(GraphicFactory graphicFactory, LineString lineString, Display display, int priority, String text, Paint paintFront, Paint paintBack, double textHeight, TextOrientation textOrientation) {
         super(lineString.segments.get(0).start, display, priority);
         this.graphicFactory = graphicFactory;
         this.lineString = lineString;
@@ -52,7 +52,7 @@ public class WayTextContainer extends MapElementContainer {
         // we also need to make the container larger by textHeight as otherwise the end points do
         // not correctly reflect the size of the text on screen
         this.boundaryAbsolute = lineString.getBounds().enlarge(textHeight / 2d, textHeight / 2d, textHeight / 2d, textHeight / 2d);
-        this.upright = upright;
+        this.textOrientation = textOrientation;
     }
 
     @Override
@@ -83,7 +83,10 @@ public class WayTextContainer extends MapElementContainer {
         // compute rotation so text isn't upside down
         LineSegment firstSegment = this.lineString.segments.get(0);
         boolean doInvert;
-        switch (upright) {
+        switch (textOrientation) {
+            case AUTO_DOWN:
+                doInvert = firstSegment.end.x > firstSegment.start.x;
+                break;
             case RIGHT:
                 doInvert = false;
                 break;

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--suppress XmlDefaultAttributeValue -->
 <xs:schema xmlns:tns="http://mapsforge.org/renderTheme" xmlns:xs="http://www.w3.org/2001/XMLSchema"
     elementFormDefault="qualified" targetNamespace="http://mapsforge.org/renderTheme" xml:lang="en">
     <!-- attribute types -->
@@ -118,6 +119,17 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="symbolOrientation">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="auto" />
+            <xs:enumeration value="auto_down" />
+            <xs:enumeration value="right" />
+            <xs:enumeration value="left" />
+            <xs:enumeration value="up" />
+            <xs:enumeration value="down" />
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="textKey">
         <xs:restriction base="xs:string">
             <xs:enumeration value="ele" />
@@ -127,20 +139,21 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="textOrientation">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="auto" />
+            <xs:enumeration value="auto_down" />
+            <xs:enumeration value="right" />
+            <xs:enumeration value="left" />
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="textTransform">
         <xs:restriction base="xs:string">
             <xs:enumeration value="none" />
             <xs:enumeration value="uppercase" />
             <xs:enumeration value="lowercase" />
             <xs:enumeration value="capitalize" />
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="upright">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="auto" />
-            <xs:enumeration value="right" />
-            <xs:enumeration value="left" />
         </xs:restriction>
     </xs:simpleType>
 
@@ -227,13 +240,13 @@
         <xs:attribute name="symbol-width" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-height" type="xs:positiveInteger" use="optional" />
         <xs:attribute name="symbol-percent" type="xs:positiveInteger" use="optional" />
+        <xs:attribute name="symbol-orientation" default="right" type="tns:symbolOrientation" use="optional" />
         <xs:attribute name="position" default="below_right" type="tns:position" use="optional" />
         <xs:attribute name="priority" default="0" type="xs:integer" use="optional" />
         <xs:attribute name="repeat" default="false" type="xs:boolean" use="optional" />
         <xs:attribute name="repeat-gap" default="200" type="xs:float" use="optional" />
         <xs:attribute name="repeat-start" default="30" type="xs:float" use="optional" />
         <xs:attribute name="rotate" default="true" type="xs:boolean" use="optional" />
-        <xs:attribute name="upright" default="auto" type="tns:upright" use="optional" />
     </xs:complexType>
 
     <!-- style menu name element -->
@@ -264,8 +277,8 @@
         <xs:attribute name="repeat-gap" default="100" type="xs:float" use="optional" />
         <xs:attribute name="repeat-start" default="10" type="xs:float" use="optional" />
         <xs:attribute name="rotate" default="true" type="xs:boolean" use="optional" />
+        <xs:attribute name="text-orientation" default="auto" type="tns:textOrientation" use="optional" />
         <xs:attribute name="text-transform" default="none" type="tns:textTransform" use="optional" />
-        <xs:attribute name="upright" default="auto" type="tns:upright" use="optional" />
     </xs:complexType>
 
     <xs:complexType name="symbol">

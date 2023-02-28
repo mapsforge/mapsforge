@@ -21,7 +21,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Position;
-import org.mapsforge.core.graphics.Upright;
+import org.mapsforge.core.graphics.SymbolOrientation;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
@@ -58,7 +58,7 @@ public class LineSymbol extends RenderInstruction {
     private final XmlThemeResourceProvider resourceProvider;
     private Scale scale = Scale.STROKE;
     private String src;
-    private Upright upright;
+    private SymbolOrientation symbolOrientation;
 
     public LineSymbol(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                       XmlPullParser pullParser, String relativePathPrefix, XmlThemeResourceProvider resourceProvider) throws IOException, XmlPullParserException {
@@ -70,7 +70,7 @@ public class LineSymbol extends RenderInstruction {
         this.dyScaled = new HashMap<>();
         // Probably not a good default, but backwards compatible
         this.position = Position.BELOW_RIGHT;
-        this.upright = Upright.AUTO;
+        this.symbolOrientation = SymbolOrientation.LEFT;
 
         extractValues(elementName, pullParser);
     }
@@ -114,12 +114,14 @@ public class LineSymbol extends RenderInstruction {
                 this.repeatStart = Float.parseFloat(value) * displayModel.getScaleFactor();
             } else if (ROTATE.equals(name)) {
                 if (!Boolean.parseBoolean(value)) {
-                    this.upright = Upright.RIGHT;
+                    this.symbolOrientation = SymbolOrientation.UP;
                 }
             } else if (SCALE.equals(name)) {
                 this.scale = scaleFromValue(value);
             } else if (SYMBOL_HEIGHT.equals(name)) {
                 this.height = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
+            } else if (SYMBOL_ORIENTATION.equals(name)) {
+                this.symbolOrientation = SymbolOrientation.fromString(value);
             } else if (SYMBOL_PERCENT.equals(name)) {
                 this.percent = XmlUtils.parseNonNegativeInteger(name, value);
             } else if (SYMBOL_SCALING.equals(name)) {
@@ -128,8 +130,6 @@ public class LineSymbol extends RenderInstruction {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else if (POSITION.equals(name)) {
                 this.position = Position.fromString(value);
-            } else if (UPRIGHT.equals(name)) {
-                this.upright = Upright.fromString(value);
             } else {
                 throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
             }
@@ -163,7 +163,7 @@ public class LineSymbol extends RenderInstruction {
         if (this.bitmap != null) {
             Rectangle boundary = computeBoundary(this.bitmap.getWidth(), this.bitmap.getHeight(), this.position);
             renderCallback.renderWaySymbol(renderContext, this.display, this.priority, this.bitmap, dyScale, boundary,
-                    this.repeat, this.repeatGap, this.repeatStart, this.upright, way);
+                    this.repeat, this.repeatGap, this.repeatStart, this.symbolOrientation, way);
         }
     }
 
