@@ -589,9 +589,9 @@
         <category title="Rest areas">
             <mapping tag="highway=rest_area" />
         </category>
-        <!--<category title="Speed cameras">
+        <category title="Speed cameras">
             <mapping tag="highway=speed_camera" />
-        </category>-->
+        </category>
         <!--<category title="Street lamps">
             <mapping tag="highway=street_lamp" />
         </category>-->
