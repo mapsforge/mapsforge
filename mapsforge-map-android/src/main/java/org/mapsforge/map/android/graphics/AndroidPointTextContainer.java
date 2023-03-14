@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import android.graphics.RectF;
 import android.graphics.text.LineBreaker;
 import android.os.Build;
 import android.text.Layout;
@@ -123,6 +124,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
             return StaticLayout.Builder
                     .obtain(this.text, 0, this.text.length(), paint, this.maxTextWidth)
                     .setBreakStrategy(LineBreaker.BREAK_STRATEGY_HIGH_QUALITY)
+                    .setAlignment(alignment)
                     .setIncludePad(false)
                     .build();
         } else {
