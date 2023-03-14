@@ -98,7 +98,7 @@ public class WayTextContainer extends MapElementContainer {
                 break;
         }
 
-        // draw text based on the upright requirement
+        // draw text based on the orientation requirement
         Path path = this.graphicFactory.createPath();
         if (!doInvert) {
             Point start = firstSegment.start.offset(-origin.x, -origin.y);

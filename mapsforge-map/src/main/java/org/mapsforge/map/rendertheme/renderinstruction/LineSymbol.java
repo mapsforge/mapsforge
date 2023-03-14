@@ -82,6 +82,7 @@ public class LineSymbol extends RenderInstruction {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void extractValues(String elementName, XmlPullParser pullParser) throws IOException, XmlPullParserException {
         this.repeatGap = REPEAT_GAP_DEFAULT * displayModel.getScaleFactor();
         this.repeatStart = REPEAT_START_DEFAULT * displayModel.getScaleFactor();

@@ -81,6 +81,7 @@ public class PathText extends RenderInstruction {
         // no-op
     }
 
+    @SuppressWarnings("deprecation")
     private void extractValues(GraphicFactory graphicFactory, DisplayModel displayModel, String elementName,
                                XmlPullParser pullParser) throws XmlPullParserException {
         this.repeatGap = REPEAT_GAP_DEFAULT * displayModel.getScaleFactor();
