@@ -46,13 +46,13 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
     @Override
     public Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
                                                         PoiCategoryFilter filter, List<Tag> patterns,
-                                                        int limit) {
+                                                        LatLong orderBy, int limit) {
         double minLat = point.latitude - LatLongUtils.latitudeDistance(distance);
         double minLon = point.longitude - LatLongUtils.longitudeDistance(distance, point.latitude);
         double maxLat = point.latitude + LatLongUtils.latitudeDistance(distance);
         double maxLon = point.longitude + LatLongUtils.longitudeDistance(distance, point.latitude);
 
-        return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, patterns, limit);
+        return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, patterns, orderBy, limit);
     }
 
     /**
@@ -88,12 +88,13 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
      *
      * @param filter  The filter object for determining all wanted categories (may be null).
      * @param count   Count of patterns to search in points of interest data (may be 0).
+     * @param orderBy {@link LatLong} location of the sort.
      * @param version POI specification version.
      * @return The SQL query.
      */
-    protected static String getSQLSelectString(PoiCategoryFilter filter, int count, int version) {
+    protected static String getSQLSelectString(PoiCategoryFilter filter, int count, LatLong orderBy, int version) {
         if (filter != null) {
-            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, count, version);
+            return PoiCategoryRangeQueryGenerator.getSQLSelectString(filter, count, orderBy, version);
         }
         StringBuilder sb = new StringBuilder();
         sb.append(DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
@@ -103,6 +104,10 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
         sb.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
         for (int i = 0; i < count; i++) {
             sb.append(DbConstants.FIND_BY_DATA_CLAUSE);
+        }
+        if (orderBy != null) {
+            sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.minLat) * (").append(orderBy.latitude).append(" - poi_index.minLat))")
+                    .append(" + ((").append(orderBy.longitude).append(" - poi_index.minLon) * (").append(orderBy.longitude).append(" - poi_index.minLon)) ASC");
         }
         return sb.append(" LIMIT ?;").toString();
     }
