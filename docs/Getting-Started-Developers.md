@@ -24,7 +24,6 @@ Extra Android components:
 - mapsforge-map-android: android specific map elements.
 - mapsforge-poi-android: android specific poi elements.
 - [androidsvg](http://bigbadaboom.github.io/androidsvg/): SVG library for displaying SVG files as icons.
-- [sqlite-android](https://sqlite.org/android/): SQLite Android Bindings.
 
 Extra Java components:
 

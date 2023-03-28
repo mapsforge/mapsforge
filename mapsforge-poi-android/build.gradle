@@ -4,7 +4,6 @@ apply plugin: 'maven-publish'
 dependencies {
     compileOnly files("${System.env.ANDROID_HOME}/platforms/android-${androidCompileSdk()}/android.jar")
     api project(":mapsforge-poi")
-    api project(":sqlite-android")
 }
 
 publishing {

@@ -19,7 +19,7 @@ allprojects {
 
 static def androidCompileSdk() { return 33 }
 
-// 14 for Support Library, 16 for sqlite-android
+// 14 for Support Library
 static def androidMinSdk() { return 21 }
 
 static def androidTargetSdk() { return 33 }
