@@ -18,27 +18,11 @@ package org.mapsforge.poi.awt.storage;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
-import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
-import org.mapsforge.poi.storage.DbConstants;
-import org.mapsforge.poi.storage.PoiCategory;
-import org.mapsforge.poi.storage.PoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiFileInfoBuilder;
-import org.mapsforge.poi.storage.PoiPersistenceManager;
-import org.mapsforge.poi.storage.PointOfInterest;
-import org.mapsforge.poi.storage.UnknownPoiCategoryException;
+import org.mapsforge.poi.storage.*;
 import org.sqlite.SQLiteConfig;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -320,7 +304,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     @Override
     public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
-                                                  List<Tag> patterns, int limit) {
+                                                  List<Tag> patterns, LatLong orderBy, int limit) {
         // Clear previous results
         this.ret.clear();
 
@@ -329,7 +313,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         ResultSet rs = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, getPoiFileInfo().version));
+            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderBy, getPoiFileInfo().version));
 
             stmt.clearParameters();
 

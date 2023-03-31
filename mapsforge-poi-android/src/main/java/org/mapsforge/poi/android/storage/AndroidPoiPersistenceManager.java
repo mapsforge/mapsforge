@@ -18,25 +18,13 @@
 package org.mapsforge.poi.android.storage;
 
 import android.database.Cursor;
-
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tag;
-import org.mapsforge.poi.storage.AbstractPoiPersistenceManager;
-import org.mapsforge.poi.storage.DbConstants;
-import org.mapsforge.poi.storage.PoiCategory;
-import org.mapsforge.poi.storage.PoiCategoryFilter;
-import org.mapsforge.poi.storage.PoiFileInfoBuilder;
-import org.mapsforge.poi.storage.PoiPersistenceManager;
-import org.mapsforge.poi.storage.PointOfInterest;
+import org.mapsforge.poi.storage.*;
 import org.sqlite.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -195,7 +183,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     @Override
     public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
-                                                  List<Tag> patterns, int limit) {
+                                                  List<Tag> patterns, LatLong orderBy, int limit) {
         // Clear previous results
         this.ret.clear();
 
@@ -203,7 +191,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         Cursor cursor = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            String sql = AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, getPoiFileInfo().version);
+            String sql = AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderBy, getPoiFileInfo().version);
 
             List<String> selectionArgs = new ArrayList<>();
             selectionArgs.add(String.valueOf(bb.maxLatitude));

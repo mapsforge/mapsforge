@@ -10,6 +10,7 @@
 - Android text wrap improvements [#1392](https://github.com/mapsforge/mapsforge/pull/1392)
 - Hillshading: Android scoped storage [#1338](https://github.com/mapsforge/mapsforge/pull/1338)
 - Performance improvements [#1367](https://github.com/mapsforge/mapsforge/pull/1367) [#1369](https://github.com/mapsforge/mapsforge/pull/1369)
+- POI: sort by distance [#1402](https://github.com/mapsforge/mapsforge/pull/1402)
 - POI: add all entities by default [#1382](https://github.com/mapsforge/mapsforge/pull/1382)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.19.0)
