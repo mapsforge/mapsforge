@@ -11,7 +11,8 @@
 - Hillshading: Android scoped storage [#1338](https://github.com/mapsforge/mapsforge/pull/1338)
 - Performance improvements [#1367](https://github.com/mapsforge/mapsforge/pull/1367) [#1369](https://github.com/mapsforge/mapsforge/pull/1369)
 - POI: sort by distance [#1402](https://github.com/mapsforge/mapsforge/pull/1402)
-- POI: add all entities by default [#1382](https://github.com/mapsforge/mapsforge/pull/1382)
+- POI writer: add all entities by default [#1382](https://github.com/mapsforge/mapsforge/pull/1382)
+- POI writer: add normalized name by default [e2eb716](https://github.com/mapsforge/mapsforge/commit/e2eb716936e32d9eced0012de79c3eb6b7577668)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.19.0)
 
