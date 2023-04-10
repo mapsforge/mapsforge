@@ -330,6 +330,13 @@ public class Layers implements Iterable<Layer>, RandomAccess {
     }
 
     /**
+     * @see List#contains(Object)
+     */
+    public synchronized boolean containsGroup(int group) {
+        return this.groupList.contains(group);
+    }
+
+    /**
      * @see List#get(int)
      */
     public synchronized Layer get(int index) {
