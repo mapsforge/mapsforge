@@ -21,6 +21,7 @@ import java.net.URL;
 
 public class OnlineTileSource extends AbstractTileSource {
     private boolean alpha = false;
+    private float alphaValue = 1.0f;
     private String baseUrl = "/";
     private String extension = "png";
     private String name;
@@ -47,6 +48,10 @@ public class OnlineTileSource extends AbstractTileSource {
             return false;
         }
         return true;
+    }
+
+    public float getAlphaValue() {
+        return alphaValue;
     }
 
     public String getBaseUrl() {
@@ -117,6 +122,12 @@ public class OnlineTileSource extends AbstractTileSource {
 
     public OnlineTileSource setAlpha(boolean alpha) {
         this.alpha = alpha;
+        return this;
+    }
+
+    public OnlineTileSource setAlphaValue(float alphaValue) {
+        this.alphaValue = Math.max(0, Math.min(1, alphaValue));
+        ;
         return this;
     }
 
