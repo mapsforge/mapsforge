@@ -127,7 +127,6 @@ public class OnlineTileSource extends AbstractTileSource {
 
     public OnlineTileSource setAlphaValue(float alphaValue) {
         this.alphaValue = Math.max(0, Math.min(1, alphaValue));
-        ;
         return this;
     }
 
