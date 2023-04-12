@@ -27,7 +27,7 @@ import org.mapsforge.samples.android.dummy.DummyContent;
 /**
  * Basic map viewer that shows <code>View</code>s with content at a few locations.
  */
-public class ViewOverlayViewer extends DefaultTheme {
+public class ViewOverlayViewer extends DownloadLayerViewer {
 
     @SuppressLint("InflateParams")
     @Override

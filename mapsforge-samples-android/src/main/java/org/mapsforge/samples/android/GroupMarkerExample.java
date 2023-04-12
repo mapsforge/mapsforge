@@ -29,7 +29,7 @@ import org.mapsforge.samples.android.group.GroupMarker;
 /**
  * Group marker example.
  */
-public class GroupMarkerExample extends DefaultTheme {
+public class GroupMarkerExample extends DownloadLayerViewer {
 
     private static final Paint BLACK = Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.BLACK), 0, Style.FILL);
 

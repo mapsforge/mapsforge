@@ -38,7 +38,7 @@ import org.mapsforge.samples.android.dummy.ManyDummyContent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClusterMapActivity extends DefaultTheme {
+public class ClusterMapActivity extends DownloadLayerViewer {
     protected ClusterManager<GeoItem> clusterer = null;
     private MenuItem displayItems;
     private MenuItem displayMoreItems;
@@ -112,7 +112,7 @@ public class ClusterMapActivity extends DefaultTheme {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         // create clusterer instance
         clusterer = new ClusterManager<>(
@@ -135,7 +135,7 @@ public class ClusterMapActivity extends DefaultTheme {
 
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         if (clusterer != null) {
             clusterer.destroyGeoClusterer();
