@@ -20,7 +20,7 @@ jar {
 }
 
 task fatJar(type: Jar, dependsOn: configurations.runtimeClasspath) {
-    classifier 'jar-with-dependencies'
+    archiveClassifier = 'jar-with-dependencies'
     duplicatesStrategy DuplicatesStrategy.INCLUDE
     from {
         configurations.runtimeClasspath.collect {
