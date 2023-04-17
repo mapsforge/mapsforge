@@ -176,20 +176,18 @@ public class Samples extends Activity {
     @SuppressWarnings("deprecation")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.menu_preferences:
-                intent = new Intent(this, Settings.class);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-                } else {
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                }
-                startActivity(intent);
-                return true;
-            case R.id.menu_svgclear:
-                AndroidGraphicFactory.clearResourceFileCache();
-                break;
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_preferences) {
+            Intent intent = new Intent(this, Settings.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            } else {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            }
+            startActivity(intent);
+            return true;
+        } else if (itemId == R.id.menu_svgclear) {
+            AndroidGraphicFactory.clearResourceFileCache();
         }
         return false;
     }

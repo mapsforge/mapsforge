@@ -216,22 +216,19 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.menu_preferences:
-                intent = new Intent(this, Settings.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                if (renderThemeStyleMenu != null) {
-                    intent.putExtra(Settings.RENDERTHEME_MENU, renderThemeStyleMenu);
-                }
-                startActivity(intent);
-                return true;
-            case R.id.menu_position_enter_coordinates:
-                showDialog(DIALOG_ENTER_COORDINATES);
-                break;
-            case R.id.menu_svgclear:
-                AndroidGraphicFactory.clearResourceFileCache();
-                break;
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_preferences) {
+            Intent intent = new Intent(this, Settings.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            if (renderThemeStyleMenu != null) {
+                intent.putExtra(Settings.RENDERTHEME_MENU, renderThemeStyleMenu);
+            }
+            startActivity(intent);
+            return true;
+        } else if (itemId == R.id.menu_position_enter_coordinates) {
+            showDialog(DIALOG_ENTER_COORDINATES);
+        } else if (itemId == R.id.menu_svgclear) {
+            AndroidGraphicFactory.clearResourceFileCache();
         }
         return false;
     }

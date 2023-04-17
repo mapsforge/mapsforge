@@ -84,28 +84,29 @@ public class MapsforgeMapViewer extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.theme_default:
-                loadTheme(InternalRenderTheme.DEFAULT);
-                item.setChecked(true);
-                return true;
-            case R.id.theme_osmarender:
-                loadTheme(InternalRenderTheme.OSMARENDER);
-                item.setChecked(true);
-                return true;
-            case R.id.theme_external_archive:
-                Intent intent = new Intent(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Intent.ACTION_OPEN_DOCUMENT : Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("*/*");
-                startActivityForResult(intent, SELECT_THEME_ARCHIVE);
-                return true;
-            case R.id.theme_external:
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-                    return false;
-                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivityForResult(intent, SELECT_THEME_DIR);
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == R.id.theme_default) {
+            loadTheme(InternalRenderTheme.DEFAULT);
+            item.setChecked(true);
+            return true;
+        } else if (itemId == R.id.theme_osmarender) {
+            loadTheme(InternalRenderTheme.OSMARENDER);
+            item.setChecked(true);
+            return true;
+        } else if (itemId == R.id.theme_external_archive) {
+            Intent intent = new Intent(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Intent.ACTION_OPEN_DOCUMENT : Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            startActivityForResult(intent, SELECT_THEME_ARCHIVE);
+            return true;
+        } else if (itemId == R.id.theme_external) {
+            Intent intent;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                return false;
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivityForResult(intent, SELECT_THEME_DIR);
+            return true;
         }
         return false;
     }

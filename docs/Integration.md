@@ -14,7 +14,6 @@ implementation 'org.mapsforge:mapsforge-core:[CURRENT-VERSION]'
 implementation 'org.mapsforge:mapsforge-map:[CURRENT-VERSION]'
 implementation 'org.mapsforge:mapsforge-map-reader:[CURRENT-VERSION]'
 implementation 'org.mapsforge:mapsforge-themes:[CURRENT-VERSION]'
-implementation 'net.sf.kxml:kxml2:2.3.0'
 ```
 
 #### Android
@@ -26,7 +25,8 @@ implementation 'com.caverock:androidsvg:1.4'
 #### Desktop
 ```groovy
 implementation 'org.mapsforge:mapsforge-map-awt:[CURRENT-VERSION]'
-implementation 'com.formdev:svgSalamander:1.1.3'
+implementation 'guru.nidi.com.kitfox:svgSalamander:1.1.3'
+implementation 'net.sf.kxml:kxml2:2.3.0'
 ```
 
 ### POI
