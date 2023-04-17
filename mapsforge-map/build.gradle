@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 
 dependencies {
     api project(":mapsforge-core")
-    api 'net.sf.kxml:kxml2:2.3.0'
+    compileOnly 'net.sf.kxml:kxml2:2.3.0'
     testImplementation 'commons-io:commons-io:2.5'
     testImplementation "junit:junit:$jUnitVersion"
     testImplementation 'org.mortbay.jetty:jetty:6.1.26'
