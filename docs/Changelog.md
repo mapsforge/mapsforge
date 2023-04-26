@@ -1,6 +1,11 @@
 # Changelog
 
-## New since 0.18.0
+## New since 0.19.0
+
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.20.0)
+
+## Version 0.19.0 (2023-04-26)
 
 - Fix incorrect handling of nested tags [#1366](https://github.com/mapsforge/mapsforge/pull/1366)
 - Render themes: `curve` parameter [#1371](https://github.com/mapsforge/mapsforge/pull/1371)
