@@ -531,14 +531,14 @@ class GeoTagger {
                 + "; maxLat: " + bbox.maxLatitude + "; maxLon: " + bbox.maxLongitude + ";");
         try {
 
-            this.pStmtNodesInBox.setDouble(1, bbox.maxLatitude); //poi_index.minLat <= ?
-            this.pStmtNodesInBox.setDouble(2, bbox.maxLongitude); //poi_index.minLon <= ?
-            this.pStmtNodesInBox.setDouble(3, bbox.minLatitude); //poi_index.minLat >= ?
-            this.pStmtNodesInBox.setDouble(4, bbox.minLongitude); //poi_index.minLon >= ?
+            this.pStmtNodesInBox.setDouble(1, bbox.maxLatitude); //poi_index.lat <= ?
+            this.pStmtNodesInBox.setDouble(2, bbox.maxLongitude); //poi_index.lon <= ?
+            this.pStmtNodesInBox.setDouble(3, bbox.minLatitude); //poi_index.lat >= ?
+            this.pStmtNodesInBox.setDouble(4, bbox.minLongitude); //poi_index.lon >= ?
 
             ResultSet rs = this.pStmtNodesInBox.executeQuery();
             while (rs.next()) {
-                //poi_index.id, poi_index.minLat, poi_index.minLon, poi_data.data, poi_categories.name
+                //poi_index.id, poi_index.lat, poi_index.lon, poi_data.data, poi_categories.name
                 long id = rs.getLong(1);
                 double lat = rs.getDouble(2);
                 double lon = rs.getDouble(3);

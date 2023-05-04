@@ -207,15 +207,19 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         Statement stmt = this.conn.createStatement();
 
         stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
+        stmt.execute(DbConstants.DROP_INDEX_IDX_STATEMENT);
         stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORY_MAP_STATEMENT);
+        stmt.execute(DbConstants.DROP_DATA_IDX_STATEMENT);
         stmt.execute(DbConstants.DROP_DATA_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
 
         stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
         stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
+        stmt.execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
         stmt.execute(DbConstants.CREATE_CATEGORY_MAP_STATEMENT);
         stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
+        stmt.execute(DbConstants.CREATE_INDEX_IDX_STATEMENT);
         stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
 
         stmt.close();
@@ -229,11 +233,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         ResultSet rs = null;
         try {
             if (this.findCatByIDStatement == null) {
-                if (getPoiFileInfo().version < 2) {
-                    this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT_V1);
-                } else {
-                    this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT);
-                }
+                this.findCatByIDStatement = this.conn.prepareStatement(DbConstants.FIND_CATEGORIES_BY_ID_STATEMENT);
             }
 
             this.findCatByIDStatement.clearParameters();
@@ -313,7 +313,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         ResultSet rs = null;
         try {
             int pSize = patterns == null ? 0 : patterns.size();
-            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderBy, getPoiFileInfo().version));
+            stmt = this.conn.prepareStatement(AbstractPoiPersistenceManager.getSQLSelectString(filter, pSize, orderBy));
 
             stmt.clearParameters();
 
@@ -452,9 +452,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 // POI location
                 this.insertPoiLocStatement.setLong(1, poi.getId());
                 this.insertPoiLocStatement.setDouble(2, poi.getLatitude());
-                this.insertPoiLocStatement.setDouble(3, poi.getLatitude());
-                this.insertPoiLocStatement.setDouble(4, poi.getLongitude());
-                this.insertPoiLocStatement.setDouble(5, poi.getLongitude());
+                this.insertPoiLocStatement.setDouble(3, poi.getLongitude());
                 this.insertPoiLocStatement.executeUpdate();
 
                 // POI data
@@ -490,13 +488,8 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     @Override
     public boolean isValidDataBase() {
-        int version = getPoiFileInfo().version;
         try {
-            if (version < 2) {
-                this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT_V1);
-            } else {
-                this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT);
-            }
+            this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT);
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -522,11 +515,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             }
         }
 
-        if (version < 2) {
-            return numTables == DbConstants.NUMBER_OF_TABLES_V1;
-        } else {
-            return numTables == DbConstants.NUMBER_OF_TABLES;
-        }
+        return numTables == DbConstants.NUMBER_OF_TABLES;
     }
 
     /**

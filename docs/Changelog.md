@@ -2,6 +2,7 @@
 
 ## New since 0.19.0
 
+- POI: v3 Android without external libs [#1411](https://github.com/mapsforge/mapsforge/pull/1411)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.20.0)
 
