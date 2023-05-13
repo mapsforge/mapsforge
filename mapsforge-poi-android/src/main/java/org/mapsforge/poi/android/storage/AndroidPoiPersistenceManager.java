@@ -101,19 +101,19 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     private void createTables() {
         this.db.execSQL(DbConstants.DROP_METADATA_STATEMENT);
-        this.db.execSQL(DbConstants.DROP_INDEX_IDX_STATEMENT);
+        //this.db.execSQL(DbConstants.DROP_INDEX_IDX_STATEMENT);
         this.db.execSQL(DbConstants.DROP_INDEX_STATEMENT);
         this.db.execSQL(DbConstants.DROP_CATEGORY_MAP_STATEMENT);
-        this.db.execSQL(DbConstants.DROP_DATA_IDX_STATEMENT);
+        //this.db.execSQL(DbConstants.DROP_DATA_IDX_STATEMENT);
         this.db.execSQL(DbConstants.DROP_DATA_STATEMENT);
         this.db.execSQL(DbConstants.DROP_CATEGORIES_STATEMENT);
 
         this.db.execSQL(DbConstants.CREATE_CATEGORIES_STATEMENT);
         this.db.execSQL(DbConstants.CREATE_DATA_STATEMENT);
-        this.db.execSQL(DbConstants.CREATE_DATA_IDX_STATEMENT);
+        //this.db.execSQL(DbConstants.CREATE_DATA_IDX_STATEMENT);
         this.db.execSQL(DbConstants.CREATE_CATEGORY_MAP_STATEMENT);
         this.db.execSQL(DbConstants.CREATE_INDEX_STATEMENT);
-        this.db.execSQL(DbConstants.CREATE_INDEX_IDX_STATEMENT);
+        //this.db.execSQL(DbConstants.CREATE_INDEX_IDX_STATEMENT);
         this.db.execSQL(DbConstants.CREATE_METADATA_STATEMENT);
     }
 

@@ -60,7 +60,7 @@ public class PoiWriterFactory extends TaskManagerFactory {
         configuration.setPreferredLanguage(getStringArgument(taskConfig, PARAM_PREFERRED_LANGUAGE, null));
         configuration.setProgressLogs(getBooleanArgument(taskConfig, PARAM_PROGRESS_LOGS, true));
         configuration.loadTagMappingFile(getStringArgument(taskConfig, PARAM_TAG_MAPPING_FILE, null));
-        configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, true));
+        configuration.setWays(getBooleanArgument(taskConfig, PARAM_WAYS, false));
 
         // If set to true, progress messages will be forwarded to a GUI message handler
         // boolean guiMode = getBooleanArgument(taskConfig, "gui-mode", false);

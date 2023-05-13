@@ -207,19 +207,19 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         Statement stmt = this.conn.createStatement();
 
         stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
-        stmt.execute(DbConstants.DROP_INDEX_IDX_STATEMENT);
+        //stmt.execute(DbConstants.DROP_INDEX_IDX_STATEMENT);
         stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORY_MAP_STATEMENT);
-        stmt.execute(DbConstants.DROP_DATA_IDX_STATEMENT);
+        //stmt.execute(DbConstants.DROP_DATA_IDX_STATEMENT);
         stmt.execute(DbConstants.DROP_DATA_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
 
         stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
         stmt.execute(DbConstants.CREATE_DATA_STATEMENT);
-        stmt.execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
+        //stmt.execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
         stmt.execute(DbConstants.CREATE_CATEGORY_MAP_STATEMENT);
         stmt.execute(DbConstants.CREATE_INDEX_STATEMENT);
-        stmt.execute(DbConstants.CREATE_INDEX_IDX_STATEMENT);
+        //stmt.execute(DbConstants.CREATE_INDEX_IDX_STATEMENT);
         stmt.execute(DbConstants.CREATE_METADATA_STATEMENT);
 
         stmt.close();

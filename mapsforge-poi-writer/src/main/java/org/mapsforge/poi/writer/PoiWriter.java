@@ -298,10 +298,10 @@ public final class PoiWriter {
         LOGGER.info("Post-processing...");
 
         this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
-        this.conn.createStatement().execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
-        this.conn.createStatement().execute(DbConstants.CREATE_INDEX_IDX_STATEMENT);
         this.conn.createStatement().execute(DbConstants.DROP_NODES_STATEMENT);
         this.conn.createStatement().execute(DbConstants.DROP_WAYNODES_STATEMENT);
+        /*this.conn.createStatement().execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
+        this.conn.createStatement().execute(DbConstants.CREATE_INDEX_IDX_STATEMENT);*/
         this.conn.close();
 
         this.conn = DriverManager.getConnection("jdbc:sqlite:" + this.configuration.getOutputFile().getAbsolutePath());
@@ -323,10 +323,10 @@ public final class PoiWriter {
         stmt.execute(DbConstants.DROP_WAYNODES_STATEMENT);
         stmt.execute(DbConstants.DROP_NODES_STATEMENT);
         stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
-        stmt.execute(DbConstants.DROP_INDEX_IDX_STATEMENT);
+        //stmt.execute(DbConstants.DROP_INDEX_IDX_STATEMENT);
         stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORY_MAP_STATEMENT);
-        stmt.execute(DbConstants.DROP_DATA_IDX_STATEMENT);
+        //stmt.execute(DbConstants.DROP_DATA_IDX_STATEMENT);
         stmt.execute(DbConstants.DROP_DATA_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORIES_STATEMENT);
         stmt.execute(DbConstants.CREATE_CATEGORIES_STATEMENT);
