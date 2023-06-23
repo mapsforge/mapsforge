@@ -387,7 +387,7 @@ public final class PoiWriter {
                     }
                 }
                 ++this.nNodes;
-                if (this.configuration.isWays()) {
+                if (this.configuration.isWays() && node.getTags().isEmpty()) {
                     writeNode(node);
                 }
                 processEntity(node, node.getLatitude(), node.getLongitude());
