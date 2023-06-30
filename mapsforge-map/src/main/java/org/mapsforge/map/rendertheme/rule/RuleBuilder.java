@@ -153,7 +153,7 @@ public class RuleBuilder {
             } else if (ZOOM_MAX.equals(name)) {
                 this.zoomMax = XmlUtils.parseNonNegativeByte(name, value);
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
 

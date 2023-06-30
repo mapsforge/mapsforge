@@ -192,7 +192,7 @@ public class Caption extends RenderInstruction {
                     maxTextWidth = maxWidth;
                 }
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
 

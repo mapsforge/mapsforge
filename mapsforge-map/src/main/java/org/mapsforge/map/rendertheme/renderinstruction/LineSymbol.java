@@ -132,7 +132,7 @@ public class LineSymbol extends RenderInstruction {
             } else if (POSITION.equals(name)) {
                 this.position = Position.fromString(value);
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
     }

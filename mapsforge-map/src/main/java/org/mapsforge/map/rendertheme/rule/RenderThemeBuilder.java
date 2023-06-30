@@ -87,7 +87,7 @@ public class RenderThemeBuilder {
             } else if (BASE_TEXT_SIZE.equals(name)) {
                 this.baseTextSize = XmlUtils.parseNonNegativeFloat(name, value);
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
 

@@ -133,7 +133,7 @@ public class PathText extends RenderInstruction {
             } else if (TEXT_TRANSFORM.equals(name)) {
                 this.textTransform = TextTransform.fromString(value);
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
 

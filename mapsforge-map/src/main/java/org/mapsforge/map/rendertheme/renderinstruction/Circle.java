@@ -95,7 +95,7 @@ public class Circle extends RenderInstruction {
             } else if (STROKE_WIDTH.equals(name)) {
                 this.strokeWidth = XmlUtils.parseNonNegativeFloat(name, value) * displayModel.getScaleFactor();
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
 

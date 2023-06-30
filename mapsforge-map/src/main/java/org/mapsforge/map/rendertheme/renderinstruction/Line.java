@@ -116,7 +116,7 @@ public class Line extends RenderInstruction {
             } else if (SYMBOL_WIDTH.equals(name)) {
                 this.width = XmlUtils.parseNonNegativeInteger(name, value) * displayModel.getScaleFactor();
             } else {
-                throw XmlUtils.createXmlPullParserException(elementName, name, value, i);
+                XmlUtils.logUnknownAttribute(elementName, name, value, i);
             }
         }
     }
