@@ -81,18 +81,18 @@ public final class XmlUtils {
         }
     }
 
-    public static XmlPullParserException createXmlPullParserException(String element, String name, String value, int attributeIndex) {
+    public static void logUnknownAttribute(String element, String name, String value, int attributeIndex) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("unknown attribute (");
-        stringBuilder.append(attributeIndex);
-        stringBuilder.append(") in element '");
+        stringBuilder.append("unknown attribute in element ");
         stringBuilder.append(element);
-        stringBuilder.append("': ");
+        stringBuilder.append(" ");
+        stringBuilder.append(attributeIndex);
+        stringBuilder.append(" : ");
         stringBuilder.append(name);
-        stringBuilder.append('=');
+        stringBuilder.append(" = ");
         stringBuilder.append(value);
 
-        return new XmlPullParserException(stringBuilder.toString());
+        LOGGER.warning(stringBuilder.toString());
     }
 
     /**

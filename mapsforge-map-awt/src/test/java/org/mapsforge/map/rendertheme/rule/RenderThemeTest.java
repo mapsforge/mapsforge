@@ -44,7 +44,7 @@ public class RenderThemeTest {
 
     @Test
     public void invalidRenderThemeTest() throws XmlPullParserException, IOException {
-        verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme1.xml");
+        //verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme1.xml");
         verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme2.xml");
         verifyInvalid(RESOURCE_FOLDER + "invalid-render-theme3.xml");
     }
