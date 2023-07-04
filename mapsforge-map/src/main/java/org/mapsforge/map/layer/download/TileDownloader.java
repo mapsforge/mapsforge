@@ -31,10 +31,11 @@ import java.util.zip.GZIPInputStream;
 
 class TileDownloader {
     private static InputStream getInputStream(URLConnection urlConnection) throws IOException {
+        InputStream inputStream = urlConnection.getInputStream();
         if ("gzip".equals(urlConnection.getContentEncoding())) {
-            return new GZIPInputStream(urlConnection.getInputStream());
+            return new GZIPInputStream(inputStream);
         }
-        return urlConnection.getInputStream();
+        return inputStream;
     }
 
     private final DownloadJob downloadJob;
