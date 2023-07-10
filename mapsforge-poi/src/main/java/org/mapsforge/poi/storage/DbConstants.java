@@ -21,7 +21,7 @@ package org.mapsforge.poi.storage;
 public final class DbConstants {
     public static final String CREATE_CATEGORIES_STATEMENT = "CREATE TABLE poi_categories (id INTEGER, name TEXT, parent INTEGER, PRIMARY KEY (id));";
     public static final String CREATE_CATEGORY_MAP_STATEMENT = "CREATE TABLE poi_category_map (id INTEGER, category INTEGER, PRIMARY KEY (id, category)); ";
-    public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id INTEGER, data TEXT COLLATE NOCASE, PRIMARY KEY (id));";
+    public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id INTEGER, data TEXT, PRIMARY KEY (id));";
     //public static final String CREATE_DATA_IDX_STATEMENT = "CREATE INDEX poi_data_idx ON poi_data (data);";
     public static final String CREATE_INDEX_STATEMENT = "CREATE TABLE poi_index (id INTEGER, lat REAL, lon REAL, PRIMARY KEY (id));";
     //public static final String CREATE_INDEX_IDX_STATEMENT = "CREATE INDEX poi_index_idx ON poi_index (lat, lon);";
