@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/org.mapsforge/mapsforge-core.svg)](https://search.maven.org/search?q=g:org.mapsforge)
+[![Maven Central](https://img.shields.io/maven-central/v/org.mapsforge/mapsforge-core.svg)](https://repo1.maven.org/maven2/org/mapsforge/)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 
 # Mapsforge
