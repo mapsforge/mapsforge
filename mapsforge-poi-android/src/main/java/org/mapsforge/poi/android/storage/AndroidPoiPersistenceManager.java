@@ -121,7 +121,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * @param poiID Id of POI
      * @return Set of PoiCategories
      */
-    private Set<PoiCategory> findCategoriesByID(long poiID) {
+    private Set<PoiCategory> findCategoriesByID(long poiID) throws UnknownPoiCategoryException {
         Cursor cursor = null;
         try {
             Set<PoiCategory> categories = new HashSet<>();
@@ -132,8 +132,6 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 categories.add(this.categoryManager.getPoiCategoryByID((int) id));
             }
             return categories;
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 if (cursor != null) {
@@ -143,7 +141,6 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-        return null;
     }
 
     /**
@@ -160,8 +157,6 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 tags.addAll(stringToTags(data));
             }
             return tags;
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 if (cursor != null) {
@@ -171,7 +166,6 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-        return null;
     }
 
     /**
@@ -179,7 +173,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     @Override
     public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
-                                                  List<Tag> patterns, LatLong orderBy, int limit) {
+                                                  List<Tag> patterns, LatLong orderBy, int limit, boolean findCategories) {
         // Clear previous results
         this.ret.clear();
 
@@ -199,9 +193,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     if (tag == null) {
                         continue;
                     }
-                    selectionArgs.add("%"
-                            + (tag.key.equals("*") ? "" : (tag.key + "="))
-                            + tag.value + "%");
+                    selectionArgs.add((tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value);
                 }
             }
             selectionArgs.add(String.valueOf(limit));
@@ -211,8 +203,9 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 long id = cursor.getLong(0);
                 double lat = cursor.getDouble(1);
                 double lon = cursor.getDouble(2);
+                String data = cursor.getString(3);
 
-                this.poi = new PointOfInterest(id, lat, lon, findDataByID(id), findCategoriesByID(id));
+                this.poi = new PointOfInterest(id, lat, lon, stringToTags(data), findCategories ? findCategoriesByID(id) : null);
                 this.ret.add(this.poi);
             }
         } catch (Exception e) {
@@ -243,8 +236,6 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 double lon = cursor.getDouble(2);
                 return new LatLong(lat, lon);
             }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 if (cursor != null) {
@@ -266,10 +257,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
         this.poi = null;
 
         // Query
-        LatLong latlong = findLocationByID(poiID);
-        if (latlong != null) {
-            this.poi = new PointOfInterest(poiID, latlong.latitude, latlong.longitude,
-                    findDataByID(poiID), findCategoriesByID(poiID));
+        try {
+            LatLong latlong = findLocationByID(poiID);
+            if (latlong != null) {
+                this.poi = new PointOfInterest(poiID, latlong.latitude, latlong.longitude,
+                        findDataByID(poiID), findCategoriesByID(poiID));
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return this.poi;

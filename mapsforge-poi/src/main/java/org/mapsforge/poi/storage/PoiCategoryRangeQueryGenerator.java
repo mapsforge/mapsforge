@@ -43,13 +43,15 @@ public final class PoiCategoryRangeQueryGenerator {
         StringBuilder sb = new StringBuilder();
         sb.append(DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
         sb.append(DbConstants.JOIN_CATEGORY_CLAUSE);
-        if (count > 0) {
-            sb.append(DbConstants.JOIN_DATA_CLAUSE);
-        }
+        sb.append(DbConstants.JOIN_DATA_CLAUSE);
         sb.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
         sb.append(getSQLWhereClauseString(filter));
         for (int i = 0; i < count; i++) {
+            sb.append(i == 0 ? " AND (" : " OR ");
             sb.append(DbConstants.FIND_BY_DATA_CLAUSE);
+            if (i == count - 1) {
+                sb.append(")");
+            }
         }
         if (orderBy != null) {
             sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.lat) * (").append(orderBy.latitude).append(" - poi_index.lat))")
