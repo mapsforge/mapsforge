@@ -265,7 +265,7 @@ public final class MapFileWriter {
 
     static final int MIN_TILE_BUFFER_SIZE = 0xF00000; // 15MB
 
-    static final int POI_DATA_BUFFER_SIZE = 0x100000; // 1MB
+    static final int POI_DATA_BUFFER_SIZE = 0xA00000; // 10MB
 
     static final int TILE_BUFFER_SIZE = 0xA00000; // 10MB
 
