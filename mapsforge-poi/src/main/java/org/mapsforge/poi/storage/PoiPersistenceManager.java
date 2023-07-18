@@ -44,37 +44,39 @@ public interface PoiPersistenceManager {
      * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the data
      * pattern will be returned.
      *
-     * @param bb       {@link BoundingBox} specifying the rectangle.
-     * @param filter   POI category filter object that helps determining whether a POI should be added to
-     *                 the set or not (may be null).
-     * @param patterns the patterns to search in points of interest data (may be null).
-     * @param orderBy  {@link LatLong} location of the sort.
-     * @param limit    max number of {@link PointOfInterest} to be returned.
+     * @param bb             {@link BoundingBox} specifying the rectangle.
+     * @param filter         POI category filter object that helps determining whether a POI should be added to
+     *                       the set or not (may be null).
+     * @param patterns       the patterns to search in points of interest data (may be null).
+     * @param orderBy        {@link LatLong} location of the sort.
+     * @param limit          max number of {@link PointOfInterest} to be returned.
+     * @param findCategories find POI categories.
      * @return {@link Collection} of {@link PointOfInterest} matching a given
      * {@link PoiCategoryFilter} and data pattern contained in the rectangle specified by
      * the given {@link BoundingBox}.
      */
     Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter, List<Tag> patterns,
-                                           LatLong orderBy, int limit);
+                                           LatLong orderBy, int limit, boolean findCategories);
 
     /**
      * Fetch {@link PointOfInterest} from underlying storage near a given position.
      * Only the POIs that are allowed by the {@link PoiCategoryFilter} object and matching the data
      * pattern will be returned.
      *
-     * @param point    {@link LatLong} center of the search.
-     * @param distance in meters
-     * @param filter   POI category filter object that helps determining whether a POI should be added to
-     *                 the set or not (may be null).
-     * @param patterns the patterns to search in points of interest data (may be null).
-     * @param orderBy  {@link LatLong} location of the sort.
-     * @param limit    max number of {@link PointOfInterest} to be returned.
+     * @param point          {@link LatLong} center of the search.
+     * @param distance       in meters
+     * @param filter         POI category filter object that helps determining whether a POI should be added to
+     *                       the set or not (may be null).
+     * @param patterns       the patterns to search in points of interest data (may be null).
+     * @param orderBy        {@link LatLong} location of the sort.
+     * @param limit          max number of {@link PointOfInterest} to be returned.
+     * @param findCategories find POI categories.
      * @return {@link Collection} of {@link PointOfInterest} matching a given
      * {@link PoiCategoryFilter} and data pattern near the given position.
      */
     Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
                                                  PoiCategoryFilter filter, List<Tag> patterns,
-                                                 LatLong orderBy, int limit);
+                                                 LatLong orderBy, int limit, boolean findCategories);
 
     /**
      * @param poiID the id of the point of interest that shall be returned.

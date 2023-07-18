@@ -229,7 +229,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * @param poiID Id of POI
      * @return Set of PoiCategories
      */
-    private Set<PoiCategory> findCategoriesByID(long poiID) {
+    private Set<PoiCategory> findCategoriesByID(long poiID) throws SQLException, UnknownPoiCategoryException {
         ResultSet rs = null;
         try {
             if (this.findCatByIDStatement == null) {
@@ -247,8 +247,6 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 categories.add(this.categoryManager.getPoiCategoryByID((int) id));
             }
             return categories;
-        } catch (SQLException | UnknownPoiCategoryException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 if (rs != null) {
@@ -259,14 +257,13 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-        return null;
     }
 
     /**
      * @param poiID Id of POI
      * @return Set of Tags
      */
-    private Set<Tag> findDataByID(long poiID) {
+    private Set<Tag> findDataByID(long poiID) throws SQLException {
         ResultSet rs = null;
         try {
             if (this.findDataByIDStatement == null) {
@@ -284,8 +281,6 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 tags.addAll(stringToTags(data));
             }
             return tags;
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 if (rs != null) {
@@ -296,7 +291,6 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-        return null;
     }
 
     /**
@@ -304,7 +298,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      */
     @Override
     public Collection<PointOfInterest> findInRect(BoundingBox bb, PoiCategoryFilter filter,
-                                                  List<Tag> patterns, LatLong orderBy, int limit) {
+                                                  List<Tag> patterns, LatLong orderBy, int limit, boolean findCategories) {
         // Clear previous results
         this.ret.clear();
 
@@ -328,9 +322,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     if (tag == null) {
                         continue;
                     }
-                    stmt.setString(5 + i, "%"
-                            + (tag.key.equals("*") ? "" : (tag.key + "="))
-                            + tag.value + "%");
+                    stmt.setString(5 + i, (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value);
                     i++;
                 }
             }
@@ -341,11 +333,12 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 long id = rs.getLong(1);
                 double lat = rs.getDouble(2);
                 double lon = rs.getDouble(3);
+                String data = rs.getString(4);
 
-                this.poi = new PointOfInterest(id, lat, lon, findDataByID(id), findCategoriesByID(id));
+                this.poi = new PointOfInterest(id, lat, lon, stringToTags(data), findCategories ? findCategoriesByID(id) : null);
                 this.ret.add(this.poi);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
@@ -367,7 +360,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
      * @param poiID Id of POI
      * @return Latitude and longitude values of POI
      */
-    private LatLong findLocationByID(long poiID) {
+    private LatLong findLocationByID(long poiID) throws SQLException {
         ResultSet rs = null;
         try {
             if (this.findLocByIDStatement == null) {
@@ -384,8 +377,6 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 double lon = rs.getDouble(3);
                 return new LatLong(lat, lon);
             }
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             try {
                 if (rs != null) {
@@ -408,10 +399,14 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         this.poi = null;
 
         // Query
-        LatLong latlong = findLocationByID(poiID);
-        if (latlong != null) {
-            this.poi = new PointOfInterest(poiID, latlong.latitude, latlong.longitude,
-                    findDataByID(poiID), findCategoriesByID(poiID));
+        try {
+            LatLong latlong = findLocationByID(poiID);
+            if (latlong != null) {
+                this.poi = new PointOfInterest(poiID, latlong.latitude, latlong.longitude,
+                        findDataByID(poiID), findCategoriesByID(poiID));
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return this.poi;

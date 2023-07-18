@@ -689,7 +689,7 @@
     <!-- Historic -->
     <category title="Historic">
         <category title="Archaeological sites">
-            <mapping tag="historic=archaeological" />
+            <mapping tag="historic=archaeological_site" />
         </category>
         <category title="Battlefields">
             <mapping tag="historic=battlefield" />

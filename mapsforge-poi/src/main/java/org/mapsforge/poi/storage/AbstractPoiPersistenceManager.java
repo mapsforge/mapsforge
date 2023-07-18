@@ -46,13 +46,13 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
     @Override
     public Collection<PointOfInterest> findNearPosition(LatLong point, int distance,
                                                         PoiCategoryFilter filter, List<Tag> patterns,
-                                                        LatLong orderBy, int limit) {
+                                                        LatLong orderBy, int limit, boolean findCategories) {
         double minLat = point.latitude - LatLongUtils.latitudeDistance(distance);
         double minLon = point.longitude - LatLongUtils.longitudeDistance(distance, point.latitude);
         double maxLat = point.latitude + LatLongUtils.latitudeDistance(distance);
         double maxLon = point.longitude + LatLongUtils.longitudeDistance(distance, point.latitude);
 
-        return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, patterns, orderBy, limit);
+        return findInRect(new BoundingBox(minLat, minLon, maxLat, maxLon), filter, patterns, orderBy, limit, findCategories);
     }
 
     /**
@@ -97,12 +97,14 @@ public abstract class AbstractPoiPersistenceManager implements PoiPersistenceMan
         }
         StringBuilder sb = new StringBuilder();
         sb.append(DbConstants.FIND_IN_BOX_CLAUSE_SELECT);
-        if (count > 0) {
-            sb.append(DbConstants.JOIN_DATA_CLAUSE);
-        }
+        sb.append(DbConstants.JOIN_DATA_CLAUSE);
         sb.append(DbConstants.FIND_IN_BOX_CLAUSE_WHERE);
         for (int i = 0; i < count; i++) {
+            sb.append(i == 0 ? " AND (" : " OR ");
             sb.append(DbConstants.FIND_BY_DATA_CLAUSE);
+            if (i == count - 1) {
+                sb.append(")");
+            }
         }
         if (orderBy != null) {
             sb.append(" ORDER BY ((").append(orderBy.latitude).append(" - poi_index.lat) * (").append(orderBy.latitude).append(" - poi_index.lat))")
