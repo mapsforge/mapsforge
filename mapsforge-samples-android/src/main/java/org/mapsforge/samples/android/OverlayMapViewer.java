@@ -17,6 +17,7 @@ package org.mapsforge.samples.android;
 
 import android.graphics.BitmapFactory;
 import android.widget.Toast;
+
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
@@ -28,6 +29,7 @@ import org.mapsforge.map.layer.Layers;
 import org.mapsforge.map.layer.overlay.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,6 +53,8 @@ public class OverlayMapViewer extends DownloadLayerViewer {
     protected LatLong latLong13 = new LatLong(52.516, 13.4145);
     protected LatLong latLong14 = new LatLong(52.516, 13.4245);
     protected LatLong latLong15 = new LatLong(52.526, 13.4345);
+
+    protected LatLong anchorPolygonWithHoles = new LatLong(52.499, 13.430);
 
     protected void addOverlayLayers(Layers layers) {
 
@@ -190,6 +194,53 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         layers.add(circle);
         layers.add(marker1);
         layers.add(tappableCircle);
+        layers.add(createPolygonWithHoles(anchorPolygonWithHoles));
+    }
+
+    private Polygon createPolygonWithHoles(final LatLong anchor) {
+        Paint paintFill = Utils.createPaint(
+                AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 2,
+                Style.FILL);
+        Paint paintStroke = Utils.createPaint(
+                AndroidGraphicFactory.INSTANCE.createColor(Color.RED), 10,
+                Style.STROKE);
+        Polygon polygonWithHoles = new Polygon(paintFill, paintStroke, AndroidGraphicFactory.INSTANCE) {
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(tapLatLong)) {
+                    Toast.makeText(OverlayMapViewer.this, "PolygonWithHoles tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        };
+        polygonWithHoles.addPoint(anchor);
+        polygonWithHoles.addPoint(addFraction(anchor, 10, 10));
+        polygonWithHoles.addPoint(addFraction(anchor, 50, 10));
+        polygonWithHoles.addPoint(addFraction(anchor, 50, 80));
+        polygonWithHoles.addPoint(addFraction(anchor, 10, 80));
+
+        polygonWithHoles.addHole(Arrays.asList(
+                addFraction(anchor, 20, 20),
+                addFraction(anchor, 25, 30),
+                addFraction(anchor, 15, 30)));
+        polygonWithHoles.addHole(Arrays.asList(
+                addFraction(anchor, 40, 40),
+                addFraction(anchor, 45, 40),
+                addFraction(anchor, 45, 60),
+                addFraction(anchor, 40, 60)));
+        polygonWithHoles.addHole(Arrays.asList(
+                addFraction(anchor, 20, 40),
+                addFraction(anchor, 35, 70),
+                addFraction(anchor, 25, 60),
+                addFraction(anchor, 15, 60)));
+
+        return polygonWithHoles;
+    }
+
+    private static LatLong addFraction(final LatLong latLon, final int latAdd, final int lonAdd) {
+        return new LatLong(latLon.getLatitude() + ((double) latAdd / 5000d),
+                latLon.getLongitude() + ((double) lonAdd / 5000d));
     }
 
     @Override
