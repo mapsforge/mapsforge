@@ -193,7 +193,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     if (tag == null) {
                         continue;
                     }
-                    selectionArgs.add((tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value);
+                    selectionArgs.add("%" + (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value + "%");
                 }
             }
             selectionArgs.add(String.valueOf(limit));

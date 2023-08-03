@@ -43,7 +43,7 @@ public final class DbConstants {
     public static final String DROP_NODES_STATEMENT = "DROP TABLE IF EXISTS nodes;";
     public static final String DROP_WAYNODES_STATEMENT = "DROP TABLE IF EXISTS waynodes;";
 
-    public static final String FIND_BY_DATA_CLAUSE = "INSTR(poi_data.data, ?)";
+    public static final String FIND_BY_DATA_CLAUSE = "poi_data.data LIKE ?";
     public static final String FIND_CATEGORIES_BY_ID_STATEMENT =
             "SELECT poi_category_map.id, poi_category_map.category "
                     + "FROM poi_category_map "

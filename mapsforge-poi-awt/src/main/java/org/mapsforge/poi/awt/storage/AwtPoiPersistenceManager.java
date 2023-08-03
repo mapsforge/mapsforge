@@ -322,7 +322,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     if (tag == null) {
                         continue;
                     }
-                    stmt.setString(5 + i, (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value);
+                    stmt.setString(5 + i, "%" + (tag.key.equals("*") ? "" : (tag.key + "=")) + tag.value + "%");
                     i++;
                 }
             }
