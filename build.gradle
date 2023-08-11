@@ -17,12 +17,12 @@ allprojects {
     }
 }
 
-static def androidCompileSdk() { return 33 }
+static def androidCompileSdk() { return 34 }
 
 // 14 for Support Library
 static def androidMinSdk() { return 21 }
 
-static def androidTargetSdk() { return 33 }
+static def androidTargetSdk() { return 34 }
 
 static def versionCode() { return 1 }
 
