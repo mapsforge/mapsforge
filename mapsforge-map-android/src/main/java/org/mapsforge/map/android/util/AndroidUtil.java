@@ -18,16 +18,13 @@
 package org.mapsforge.map.android.util;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Looper;
 import android.os.StatFs;
 import android.view.Display;
 import android.view.WindowManager;
-
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.view.MapView;
@@ -398,26 +395,6 @@ public final class AndroidUtil {
         Dimension dimension = FrameBufferController.calculateFrameBufferDimension(new Dimension(width, height), overdrawFactor);
         return Math.max(4, (2 + (dimension.height / tileSize))
                 * (2 + (dimension.width / tileSize)));
-    }
-
-    /**
-     * Restarts activity, from http://stackoverflow.com/questions/1397361/how-do-i-restart-an-android-activity
-     *
-     * @param activity the activity to restart
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static void restartActivity(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            activity.recreate();
-        } else {
-            Intent intent = activity.getIntent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            activity.finish();
-            activity.overridePendingTransition(0, 0);
-
-            activity.startActivity(intent);
-            activity.overridePendingTransition(0, 0);
-        }
     }
 
     /**

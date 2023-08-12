@@ -18,7 +18,6 @@ package org.mapsforge.samples.android;
 import android.content.SharedPreferences;
 import android.util.Log;
 import org.mapsforge.map.android.rendertheme.AssetsRenderTheme;
-import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
@@ -82,6 +81,6 @@ public class StyleMenuMapViewer extends SamplesBaseActivity implements XmlRender
         for (TileCache tileCache : tileCaches) {
             tileCache.purge();
         }
-        AndroidUtil.restartActivity(this);
+        recreate();
     }
 }
