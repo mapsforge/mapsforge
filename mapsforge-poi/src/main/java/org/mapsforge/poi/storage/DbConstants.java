@@ -43,6 +43,9 @@ public final class DbConstants {
     public static final String DROP_NODES_STATEMENT = "DROP TABLE IF EXISTS nodes;";
     public static final String DROP_WAYNODES_STATEMENT = "DROP TABLE IF EXISTS waynodes;";
 
+    public static final String JOIN_CATEGORY_CLAUSE = "JOIN poi_category_map ON poi_index.id = poi_category_map.id ";
+    public static final String JOIN_DATA_CLAUSE = "JOIN poi_data ON poi_index.id = poi_data.id ";
+
     public static final String FIND_BY_DATA_CLAUSE = "poi_data.data LIKE ?";
     public static final String FIND_CATEGORIES_BY_ID_STATEMENT =
             "SELECT poi_category_map.id, poi_category_map.category "
@@ -62,7 +65,7 @@ public final class DbConstants {
                     + "poi_index.lat >= ? AND "
                     + "poi_index.lon >= ?";
     public static final String FIND_IN_BOX_CLAUSE_WHERE_CATEGORY_IN = "poi_category_map.category IN (";
-    public static final String FIND_IN_BOX_STATEMENT = FIND_IN_BOX_CLAUSE_SELECT + FIND_IN_BOX_CLAUSE_WHERE;
+    public static final String FIND_IN_BOX_STATEMENT = FIND_IN_BOX_CLAUSE_SELECT + JOIN_DATA_CLAUSE + FIND_IN_BOX_CLAUSE_WHERE;
     public static final String FIND_LOCATION_BY_ID_STATEMENT =
             "SELECT poi_index.id, poi_index.lat, poi_index.lon "
                     + "FROM poi_index "
@@ -78,9 +81,6 @@ public final class DbConstants {
     public static final String INSERT_METADATA_STATEMENT = "INSERT INTO metadata VALUES (?, ?);";
     public static final String INSERT_NODES_STATEMENT = "INSERT INTO nodes VALUES (?, ?, ?);";
     public static final String INSERT_WAYNODES_STATEMENT = "INSERT INTO waynodes VALUES (?, ?, ?);";
-
-    public static final String JOIN_CATEGORY_CLAUSE = "JOIN poi_category_map ON poi_index.id = poi_category_map.id ";
-    public static final String JOIN_DATA_CLAUSE = "JOIN poi_data ON poi_index.id = poi_data.id ";
 
     public static final String UPDATE_DATA_STATEMENT = "UPDATE poi_data SET data = ? WHERE id = ?;";
 
