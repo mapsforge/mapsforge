@@ -45,7 +45,7 @@ implementation 'org.mapsforge:mapsforge-poi-android:[CURRENT-VERSION]'
 #### Desktop
 ```groovy
 implementation 'org.mapsforge:mapsforge-poi-awt:[CURRENT-VERSION]'
-implementation 'org.xerial:sqlite-jdbc:3.28.0'
+implementation 'org.xerial:sqlite-jdbc:3.43.0.0'
 ```
 
 ## Snapshots

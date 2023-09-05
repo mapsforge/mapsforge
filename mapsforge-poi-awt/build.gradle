@@ -3,7 +3,7 @@ apply plugin: 'maven-publish'
 
 dependencies {
     api project(":mapsforge-poi")
-    api 'org.xerial:sqlite-jdbc:3.28.0'
+    api 'org.xerial:sqlite-jdbc:3.43.0.0'
 }
 
 publishing {
