@@ -182,12 +182,12 @@ public abstract class MapViewerTemplate extends Activity {
 
     /**
      * Provides the directory of the map file, by default the Android external storage
-     * directory: /sdcard/Android/data/org.mapsforge.samples.android/files/
+     * directory: /Android/media/org.mapsforge.samples.android/
      *
      * @return
      */
     protected File getMapFileDirectory() {
-        return getExternalFilesDir(null);
+        return getExternalMediaDirs()[0];
     }
 
     /**

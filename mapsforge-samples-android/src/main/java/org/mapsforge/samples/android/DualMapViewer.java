@@ -96,7 +96,7 @@ public class DualMapViewer extends DefaultTheme {
      * @return the map file for the second view
      */
     protected MapFile getMapFile2() {
-        return new MapFile(new File(getExternalFilesDir(null), this.getMapFileName2()));
+        return new MapFile(new File(getExternalMediaDirs()[0], this.getMapFileName2()));
     }
 
     /**

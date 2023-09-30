@@ -58,7 +58,7 @@ public class MultiMapLowResWorld extends DefaultTheme {
      * @return the low res world map file.
      */
     public static File getWorldMapFile(Context context) {
-        return new File(context.getExternalFilesDir(null), getWorldMapFileName());
+        return new File(context.getExternalMediaDirs()[0], getWorldMapFileName());
     }
 
     /**

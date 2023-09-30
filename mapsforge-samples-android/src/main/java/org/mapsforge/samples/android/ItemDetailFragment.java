@@ -115,7 +115,7 @@ public class ItemDetailFragment extends Fragment {
     }
 
     protected File getMapFileDirectory() {
-        return getContext().getExternalFilesDir(null);
+        return getContext().getExternalMediaDirs()[0];
     }
 
     protected String getMapFileName() {
