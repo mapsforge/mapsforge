@@ -24,7 +24,8 @@ public final class DbConstants {
     public static final String CREATE_DATA_STATEMENT = "CREATE TABLE poi_data (id INTEGER, data TEXT, PRIMARY KEY (id));";
     //public static final String CREATE_DATA_IDX_STATEMENT = "CREATE INDEX poi_data_idx ON poi_data (data);";
     public static final String CREATE_INDEX_STATEMENT = "CREATE TABLE poi_index (id INTEGER, lat REAL, lon REAL, PRIMARY KEY (id));";
-    //public static final String CREATE_INDEX_IDX_STATEMENT = "CREATE INDEX poi_index_idx ON poi_index (lat, lon);";
+    public static final String CREATE_INDEX_IDX_LAT_STATEMENT = "CREATE INDEX poi_index_idx_lat ON poi_index (lat);";
+    public static final String CREATE_INDEX_IDX_LON_STATEMENT = "CREATE INDEX poi_index_idx_lon ON poi_index (lon);";
     public static final String CREATE_METADATA_STATEMENT = "CREATE TABLE metadata (name TEXT, value TEXT);";
     public static final String CREATE_NODES_STATEMENT = "CREATE TABLE nodes (id INTEGER, lat REAL, lon REAL, PRIMARY KEY (id));";
     public static final String CREATE_WAYNODES_STATEMENT = "CREATE TABLE waynodes (way INTEGER, node INTEGER, position INTEGER, PRIMARY KEY (way, node, position));";
@@ -38,7 +39,8 @@ public final class DbConstants {
     public static final String DROP_DATA_STATEMENT = "DROP TABLE IF EXISTS poi_data;";
     //public static final String DROP_DATA_IDX_STATEMENT = "DROP INDEX IF EXISTS poi_data_idx;";
     public static final String DROP_INDEX_STATEMENT = "DROP TABLE IF EXISTS poi_index;";
-    //public static final String DROP_INDEX_IDX_STATEMENT = "DROP INDEX IF EXISTS poi_index_idx;";
+    public static final String DROP_INDEX_IDX_LAT_STATEMENT = "DROP INDEX IF EXISTS poi_index_idx_lat;";
+    public static final String DROP_INDEX_IDX_LON_STATEMENT = "DROP INDEX IF EXISTS poi_index_idx_lon;";
     public static final String DROP_METADATA_STATEMENT = "DROP TABLE IF EXISTS metadata;";
     public static final String DROP_NODES_STATEMENT = "DROP TABLE IF EXISTS nodes;";
     public static final String DROP_WAYNODES_STATEMENT = "DROP TABLE IF EXISTS waynodes;";

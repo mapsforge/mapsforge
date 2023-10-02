@@ -301,9 +301,10 @@ public final class PoiWriter {
         this.conn.createStatement().execute(DbConstants.DROP_NODES_STATEMENT);
         this.conn.createStatement().execute(DbConstants.DROP_WAYNODES_STATEMENT);
         this.conn.createStatement().execute("VACUUM;");
-        /*this.conn.createStatement().execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
-        this.conn.createStatement().execute(DbConstants.CREATE_INDEX_IDX_STATEMENT);
-        this.conn.createStatement().execute("VACUUM;");*/
+        //this.conn.createStatement().execute(DbConstants.CREATE_DATA_IDX_STATEMENT);
+        this.conn.createStatement().execute(DbConstants.CREATE_INDEX_IDX_LAT_STATEMENT);
+        this.conn.createStatement().execute(DbConstants.CREATE_INDEX_IDX_LON_STATEMENT);
+        this.conn.createStatement().execute("VACUUM;");
         this.conn.close();
     }
 
@@ -321,7 +322,8 @@ public final class PoiWriter {
         stmt.execute(DbConstants.DROP_WAYNODES_STATEMENT);
         stmt.execute(DbConstants.DROP_NODES_STATEMENT);
         stmt.execute(DbConstants.DROP_METADATA_STATEMENT);
-        //stmt.execute(DbConstants.DROP_INDEX_IDX_STATEMENT);
+        stmt.execute(DbConstants.DROP_INDEX_IDX_LAT_STATEMENT);
+        stmt.execute(DbConstants.DROP_INDEX_IDX_LON_STATEMENT);
         stmt.execute(DbConstants.DROP_INDEX_STATEMENT);
         stmt.execute(DbConstants.DROP_CATEGORY_MAP_STATEMENT);
         //stmt.execute(DbConstants.DROP_DATA_IDX_STATEMENT);
