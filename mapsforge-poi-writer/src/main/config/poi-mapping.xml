@@ -33,6 +33,7 @@
                 <mapping tag="amenity=cafe" />
             </category>
             <category title="Beer gardens">
+                <mapping tag="amenity=biergarten" />
                 <mapping tag="amenity=beer_garden" />
             </category>
             <category title="Ice cream shops">
