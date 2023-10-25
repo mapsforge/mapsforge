@@ -23,6 +23,7 @@ import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.layer.renderer.StandardRenderer;
+import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
 import org.mapsforge.map.rendertheme.renderinstruction.Hillshading;
@@ -166,7 +167,7 @@ public class RenderTheme {
             for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
                 Rule rule = this.rulesList.get(i);
                 if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
-                    rule.scaleStrokeWidth(scaleFactor * this.baseStrokeWidth, zoomLevel);
+                    rule.scaleStrokeWidth(scaleFactor * this.baseStrokeWidth * DisplayModel.lineScale, zoomLevel);
                 }
             }
             strokeScales.put(zoomLevel, scaleFactor);
@@ -184,7 +185,7 @@ public class RenderTheme {
             for (int i = 0, n = this.rulesList.size(); i < n; ++i) {
                 Rule rule = this.rulesList.get(i);
                 if (rule.zoomMin <= zoomLevel && rule.zoomMax >= zoomLevel) {
-                    rule.scaleTextSize(scaleFactor * this.baseTextSize, zoomLevel);
+                    rule.scaleTextSize(scaleFactor * this.baseTextSize * DisplayModel.textScale, zoomLevel);
                 }
             }
             textScales.put(zoomLevel, scaleFactor);

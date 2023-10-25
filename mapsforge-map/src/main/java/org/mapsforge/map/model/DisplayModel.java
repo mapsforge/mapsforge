@@ -34,9 +34,19 @@ public class DisplayModel extends Observable {
     private static final int DEFAULT_MAX_TEXT_WIDTH = (int) (DEFAULT_TILE_SIZE * DEFAULT_MAX_TEXT_WIDTH_FACTOR);
 
     /**
+     * The line scale.
+     */
+    public static float lineScale = 1;
+
+    /**
      * The symbol scale.
      */
     public static float symbolScale = 1;
+
+    /**
+     * The text scale.
+     */
+    public static float textScale = 1;
 
     private static float defaultUserScaleFactor = 1f;
     private static float deviceScaleFactor = 1f;
