@@ -20,7 +20,7 @@ import org.mapsforge.core.model.Dimension;
 
 import java.util.logging.Logger;
 
-class FrameBufferBitmapHA3 {
+class FrameBufferBitmap {
 
     private static class BitmapRequest {
         private final GraphicFactory factory;
@@ -93,7 +93,7 @@ class FrameBufferBitmapHA3 {
         }
     }
 
-    private static final Logger LOGGER = Logger.getLogger(FrameBufferBitmapHA3.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FrameBufferBitmap.class.getName());
 
     private Bitmap bitmap = null;
     private BitmapRequest bitmapRequest = null;
@@ -154,7 +154,7 @@ class FrameBufferBitmapHA3 {
         }
     }
 
-    static void swap(FrameBufferBitmapHA3 a, FrameBufferBitmapHA3 b) {
+    static void swap(FrameBufferBitmap a, FrameBufferBitmap b) {
         Bitmap t = a.bitmap;
         a.bitmap = b.bitmap;
         b.bitmap = t;

@@ -41,7 +41,7 @@ import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.FpsCounter;
 import org.mapsforge.map.view.FrameBuffer;
-import org.mapsforge.map.view.FrameBufferHA3;
+import org.mapsforge.map.view.FrameBufferImp;
 import org.mapsforge.map.view.InputListener;
 
 import java.awt.Container;
@@ -70,7 +70,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
 
-        this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        this.frameBuffer = new FrameBufferImp(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
 
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
