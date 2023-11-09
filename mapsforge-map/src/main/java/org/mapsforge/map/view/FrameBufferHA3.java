@@ -27,7 +27,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
-public class FrameBufferImp extends FrameBuffer {
+public class FrameBufferHA3 extends FrameBuffer {
 
     private static final boolean IS_TRANSPARENT = false;
 
@@ -38,8 +38,8 @@ public class FrameBufferImp extends FrameBuffer {
      *      swaps the two bitmaps and puts one bitmap to the screen
      *      while the layer manager draws the next off-screen bitmap.
      */
-    private final FrameBufferBitmap lmBitmap = new FrameBufferBitmap();
-    private final FrameBufferBitmap odBitmap = new FrameBufferBitmap();
+    private final FrameBufferBitmapHA3 lmBitmap = new FrameBufferBitmapHA3();
+    private final FrameBufferBitmapHA3 odBitmap = new FrameBufferBitmapHA3();
 
     private Dimension dimension;
     private final DisplayModel displayModel;
@@ -57,10 +57,10 @@ public class FrameBufferImp extends FrameBuffer {
      */
     private final Matrix matrix;
 
-    private final FrameBufferBitmap.Lock framesLock = new FrameBufferBitmap.Lock();
+    private final FrameBufferBitmapHA3.Lock framesLock = new FrameBufferBitmapHA3.Lock();
     private MapPosition lmMapPosition;
 
-    public FrameBufferImp(FrameBufferModel frameBufferModel, DisplayModel displayModel,
+    public FrameBufferHA3(FrameBufferModel frameBufferModel, DisplayModel displayModel,
                           GraphicFactory graphicFactory) {
         this.frameBufferModel = frameBufferModel;
         this.displayModel = displayModel;
@@ -211,7 +211,7 @@ public class FrameBufferImp extends FrameBuffer {
          */
         synchronized (this.framesLock) {
             if (this.framesLock.isSoftLocked()) {
-                FrameBufferBitmap.swap(this.odBitmap, this.lmBitmap);
+                FrameBufferBitmapHA3.swap(this.odBitmap, this.lmBitmap);
                 this.frameBufferModel.setMapPosition(this.lmMapPosition);
                 this.framesLock.unlock();
             }

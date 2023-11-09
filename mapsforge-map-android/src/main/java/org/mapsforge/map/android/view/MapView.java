@@ -25,13 +25,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.View;
-import android.view.ViewGroup;
-
+import android.view.*;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
@@ -54,10 +48,7 @@ import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
-import org.mapsforge.map.view.FpsCounter;
-import org.mapsforge.map.view.FrameBuffer;
-import org.mapsforge.map.view.FrameBufferImp;
-import org.mapsforge.map.view.InputListener;
+import org.mapsforge.map.view.*;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -146,7 +137,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
 
-        this.frameBuffer = new FrameBufferImp(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
+        this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
 
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 
