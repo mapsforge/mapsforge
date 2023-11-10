@@ -23,7 +23,6 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.input.MapViewComponentListener;
 import org.mapsforge.map.awt.input.MouseEventListener;
@@ -41,7 +40,6 @@ import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
 import org.mapsforge.map.view.*;
-
 import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -67,11 +65,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
 
-        if (Parameters.FRAME_BUFFER_HA3) {
-            this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        } else {
-            this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        }
+        this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
 
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 

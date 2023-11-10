@@ -31,7 +31,6 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
-import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
 import org.mapsforge.map.android.input.TouchGestureHandler;
@@ -138,11 +137,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
         this.fpsCounter = new FpsCounter(GRAPHIC_FACTORY, this.model.displayModel);
 
-        if (Parameters.FRAME_BUFFER_HA3) {
-            this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        } else {
-            this.frameBuffer = new FrameBufferHA2(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
-        }
+        this.frameBuffer = new FrameBufferHA3(this.model.frameBufferModel, this.model.displayModel, GRAPHIC_FACTORY);
 
         this.frameBufferController = FrameBufferController.create(this.frameBuffer, this.model);
 

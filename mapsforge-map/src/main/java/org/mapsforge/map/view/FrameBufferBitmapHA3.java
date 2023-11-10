@@ -61,10 +61,6 @@ class FrameBufferBitmapHA3 {
             return (state == HARD_LOCKED);
         }
 
-        synchronized boolean isLocked() {
-            return (state == SOFT_LOCKED || state == HARD_LOCKED);
-        }
-
         synchronized boolean isSoftLocked() {
             return (state == SOFT_LOCKED);
         }
