@@ -6,19 +6,21 @@ dependencies {
     testImplementation "junit:junit:$jUnitVersion"
 }
 
-mainClassName = "org.mapsforge.samples.awt.Samples"
-run {
-    if (project.hasProperty("args")) {
-        args project.getProperty("args").split(",")
+application {
+    mainClass = "org.mapsforge.samples.awt.Samples"
+    run {
+        if (project.hasProperty("args")) {
+            args project.getProperty("args").split(",")
+        }
     }
-}
 
-task fatJar(type: Jar, dependsOn: configurations.runtimeClasspath) {
-    archiveClassifier = 'jar-with-dependencies'
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
-    manifest {
-        attributes 'Main-Class': "${mainClassName}"
+    task fatJar(type: Jar, dependsOn: configurations.runtimeClasspath) {
+        archiveClassifier = 'jar-with-dependencies'
+        from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+        exclude 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.SF'
+        manifest {
+            attributes 'Main-Class': "${mainClass}"
+        }
+        with jar
     }
-    with jar
 }
