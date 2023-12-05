@@ -143,7 +143,7 @@ public class Samples extends Activity {
                             // TODO show progress and wait for download
                             DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                             DownloadManager.Request downloadRequest = new DownloadManager.Request(
-                                    Uri.parse("https://download.mapsforge.org/maps/world/world.map"));
+                                    Uri.parse("https://download.mapsforge.org/maps/v5/world/world.map"));
                             downloadRequest.setDescription("Mapsforge low-res world map");
                             downloadRequest.setDestinationInExternalFilesDir(Samples.this, null, MultiMapLowResWorld.getWorldMapFileName());
                             downloadManager.enqueue(downloadRequest);
