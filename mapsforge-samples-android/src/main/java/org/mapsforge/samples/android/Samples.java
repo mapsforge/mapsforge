@@ -163,7 +163,6 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewer.class));
         linearLayout.addView(createButton(ClusterMapActivity.class));
         linearLayout.addView(createButton(GroupMarkerExample.class));
-        linearLayout.addView(createButton(RotateMapViewer.class));
     }
 
     @Override
