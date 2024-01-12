@@ -2,6 +2,7 @@
 
 ## New since 0.20.0
 
+- POI writer: way-filtering option [#1457](https://github.com/mapsforge/mapsforge/pull/1457)
 - Display model: line, text scale options [#1445](https://github.com/mapsforge/mapsforge/pull/1445)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.21.0)

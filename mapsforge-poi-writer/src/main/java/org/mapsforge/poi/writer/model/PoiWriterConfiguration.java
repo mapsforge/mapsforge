@@ -39,6 +39,7 @@ public class PoiWriterConfiguration {
     private String preferredLanguage;
     private boolean progressLogs;
     private URL tagMapping;
+    private boolean wayFiltering;
     private boolean ways;
     private String writerVersion;
 
@@ -165,6 +166,13 @@ public class PoiWriterConfiguration {
     }
 
     /**
+     * @return the way filtering
+     */
+    public boolean isWayFiltering() {
+        return wayFiltering;
+    }
+
+    /**
      * @return the ways
      */
     public boolean isWays() {
@@ -279,6 +287,13 @@ public class PoiWriterConfiguration {
      */
     public void setProgressLogs(boolean progressLogs) {
         this.progressLogs = progressLogs;
+    }
+
+    /**
+     * @param wayFiltering the way filtering to set
+     */
+    public void setWayFiltering(boolean wayFiltering) {
+        this.wayFiltering = wayFiltering;
     }
 
     /**
