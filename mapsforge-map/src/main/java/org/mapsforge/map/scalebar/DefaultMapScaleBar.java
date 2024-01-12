@@ -27,8 +27,8 @@ import org.mapsforge.map.model.MapViewDimension;
  * Displays the default MapScaleBar.
  */
 public class DefaultMapScaleBar extends MapScaleBar {
-    private static final int BITMAP_HEIGHT = 40;
-    private static final int BITMAP_WIDTH = 120;
+    public static int BITMAP_HEIGHT = 40;
+    public static int BITMAP_WIDTH = 120;
     private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
     private static final int DEFAULT_VERTICAL_MARGIN = 0;
     private static final int SCALE_BAR_MARGIN = 10;
