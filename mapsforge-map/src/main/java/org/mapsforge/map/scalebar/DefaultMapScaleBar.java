@@ -29,22 +29,22 @@ import org.mapsforge.map.model.MapViewDimension;
 public class DefaultMapScaleBar extends MapScaleBar {
     public static int BITMAP_HEIGHT = 40;
     public static int BITMAP_WIDTH = 120;
-    private static final int DEFAULT_HORIZONTAL_MARGIN = 5;
-    private static final int DEFAULT_VERTICAL_MARGIN = 0;
-    private static final int SCALE_BAR_MARGIN = 10;
-    private static final float STROKE_EXTERNAL = 4;
-    private static final float STROKE_INTERNAL = 2;
-    private static final int TEXT_MARGIN = 1;
+    public static final int DEFAULT_HORIZONTAL_MARGIN = 5;
+    public static final int DEFAULT_VERTICAL_MARGIN = 0;
+    public static final int SCALE_BAR_MARGIN = 10;
+    public static final float STROKE_EXTERNAL = 4;
+    public static final float STROKE_INTERNAL = 2;
+    public static final int TEXT_MARGIN = 1;
 
     public enum ScaleBarMode {BOTH, SINGLE}
 
     private ScaleBarMode scaleBarMode;
     private DistanceUnitAdapter secondaryDistanceUnitAdapter;
 
-    private final Paint paintScaleBar;
-    private final Paint paintScaleBarStroke;
-    private final Paint paintScaleText;
-    private final Paint paintScaleTextStroke;
+    protected final Paint paintScaleBar;
+    protected final Paint paintScaleBarStroke;
+    protected final Paint paintScaleText;
+    protected final Paint paintScaleTextStroke;
 
     public DefaultMapScaleBar(IMapViewPosition mapViewPosition, MapViewDimension mapViewDimension,
                               GraphicFactory graphicFactory, DisplayModel displayModel) {
@@ -143,7 +143,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
         drawScaleText(canvas, scaleText1, scaleText2, this.paintScaleText, this.scale);
     }
 
-    private void drawScaleBar(Canvas canvas, int scaleBarLength1, int scaleBarLength2, Paint paint, float scale) {
+    protected void drawScaleBar(Canvas canvas, int scaleBarLength1, int scaleBarLength2, Paint paint, float scale) {
         int maxScaleBarLength = Math.max(scaleBarLength1, scaleBarLength2);
 
         switch (scaleBarPosition) {
@@ -264,7 +264,7 @@ public class DefaultMapScaleBar extends MapScaleBar {
         }
     }
 
-    private void drawScaleText(Canvas canvas, String scaleText1, String scaleText2, Paint paint, float scale) {
+    protected void drawScaleText(Canvas canvas, String scaleText1, String scaleText2, Paint paint, float scale) {
         switch (scaleBarPosition) {
             case BOTTOM_CENTER:
                 if (scaleText2.length() == 0) {
