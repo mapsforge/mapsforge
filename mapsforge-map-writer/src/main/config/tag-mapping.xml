@@ -379,6 +379,7 @@
         <osm-tag key="building" label-position="true" value="factory" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="farm" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="farm_auxiliary" zoom-appear="15"/>
+        <osm-tag key="building" label-position="true" value="fire_station" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="government" zoom-appear="13"/>
         <osm-tag key="building" label-position="true" value="greenhouse" zoom-appear="15"/>
         <osm-tag key="building" label-position="true" value="gym" zoom-appear="15"/>
