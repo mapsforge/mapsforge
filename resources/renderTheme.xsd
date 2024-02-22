@@ -337,7 +337,6 @@
     <xs:complexType name="rendertheme">
         <xs:sequence maxOccurs="1" minOccurs="0">
             <xs:element name="stylemenu" maxOccurs="1" minOccurs="0" type="tns:stylemenu" />
-            <xs:element name="rule" maxOccurs="unbounded" minOccurs="0" type="tns:rule" />
             <xs:choice maxOccurs="unbounded" minOccurs="0">
                 <xs:element name="hillshading" maxOccurs="1" minOccurs="0" type="tns:hillShading" />
                 <xs:element name="rule" maxOccurs="unbounded" minOccurs="0" type="tns:rule" />
