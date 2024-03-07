@@ -34,7 +34,7 @@ The mapsforge writer has not changed significantly from version 0.3 and files ge
 
 |**Option**|**Description**|**Valid Values**|**Default Value**|
 |----------|---------------|----------------|-----------------|
-|`tag-conf-file`|path to an XML file that customizes the definition which OSM-tags are recognized|path to an XML file, please read section 'Defining a Custom Tag Mapping via XML' carefully before using thsi parameter|(blank) internal default tag mapping is used|
+|`tag-conf-file`|path to an XML file that customizes the definition which OSM-tags are recognized|path to an XML file, please read section 'Defining a Custom Tag Mapping via XML' carefully before using this parameter|(blank) internal default tag mapping is used|
 |`polygon-clipping`|use polygon clipping to reduce map file size (minimal performance overhead)|true/false|true|
 |`way-clipping`|use way clipping to reduce map file size (minimal performance overhead)|true/false|true|
 |`label-position`|compute label/symbol position for polygons that cover multiple tiles|true/false|false|
