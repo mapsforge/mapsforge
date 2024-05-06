@@ -660,5 +660,8 @@
         <osm-tag key="wood" renderable="false" value="coniferous"/>
         <osm-tag key="wood" renderable="false" value="deciduous"/>
         <osm-tag key="wood" renderable="false" value="mixed"/>
+
+        <osm-tag key="motor_vehicle" renderable="false" value="yes"/>
+        <osm-tag key="motor_vehicle" renderable="false" value="no"/>
     </ways>
 </tag-mapping>
