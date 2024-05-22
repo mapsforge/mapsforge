@@ -16,12 +16,15 @@
 package org.mapsforge.samples.android;
 
 import android.graphics.BitmapFactory;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.Layers;
@@ -32,30 +35,31 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Map viewer with a few overlays added.
+ * Map viewer with a few overlays added and map rotation.
  */
 public class OverlayMapViewer extends DownloadLayerViewer {
 
-    protected LatLong latLong1 = new LatLong(52.5, 13.4);
-    protected LatLong latLong2 = new LatLong(52.499, 13.402);
-    protected LatLong latLong3 = new LatLong(52.503, 13.399);
-    protected LatLong latLong4 = new LatLong(52.51, 13.401);
-    protected LatLong latLong5 = new LatLong(52.508, 13.408);
-    protected LatLong latLong6 = new LatLong(52.515, 13.420);
-    protected LatLong latLong7 = new LatLong(52.51, 13.41);
-    protected LatLong latLong8 = new LatLong(52.51, 13.42);
-    protected LatLong latLong9 = new LatLong(52.52, 13.43);
+    private final LatLong latLong1 = new LatLong(52.5, 13.4);
+    private final LatLong latLong2 = new LatLong(52.499, 13.402);
+    private final LatLong latLong3 = new LatLong(52.503, 13.399);
+    private final LatLong latLong4 = new LatLong(52.51, 13.401);
+    private final LatLong latLong5 = new LatLong(52.508, 13.408);
+    private final LatLong latLong6 = new LatLong(52.515, 13.420);
+    private final LatLong latLong7 = new LatLong(52.51, 13.41);
+    private final LatLong latLong8 = new LatLong(52.51, 13.42);
+    private final LatLong latLong9 = new LatLong(52.52, 13.43);
+    private final LatLong latLong10 = new LatLong(52.514, 13.413);
+    private final LatLong latLong11 = new LatLong(52.514, 13.423);
+    private final LatLong latLong12 = new LatLong(52.524, 13.433);
+    private final LatLong latLong13 = new LatLong(52.516, 13.4145);
+    private final LatLong latLong14 = new LatLong(52.516, 13.4245);
+    private final LatLong latLong15 = new LatLong(52.526, 13.4345);
 
-    protected LatLong latLong10 = new LatLong(52.514, 13.413);
-    protected LatLong latLong11 = new LatLong(52.514, 13.423);
-    protected LatLong latLong12 = new LatLong(52.524, 13.433);
-    protected LatLong latLong13 = new LatLong(52.516, 13.4145);
-    protected LatLong latLong14 = new LatLong(52.516, 13.4245);
-    protected LatLong latLong15 = new LatLong(52.526, 13.4345);
+    private final LatLong anchorPolygonWithHoles = new LatLong(52.499, 13.430);
 
-    protected LatLong anchorPolygonWithHoles = new LatLong(52.499, 13.430);
+    private float rotationAngle;
 
-    protected void addOverlayLayers(Layers layers) {
+    private void addOverlayLayers(Layers layers) {
 
         Polyline polyline = new Polyline(Utils.createPaint(
                 AndroidGraphicFactory.INSTANCE.createColor(Color.BLUE),
@@ -273,19 +277,61 @@ public class OverlayMapViewer extends DownloadLayerViewer {
     }
 
     @Override
+    protected void createControls() {
+        super.createControls();
+
+        // Three rotation buttons: rotate counterclockwise, reset, clockwise
+        Button rotateCCWButton = findViewById(R.id.rotateCounterClockWiseButton);
+        rotateCCWButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rotationAngle -= 15;
+                mapView.rotate(new Rotation(rotationAngle, mapView.getWidth() * 0.5f, mapView.getHeight() * 0.5f));
+                redrawLayers();
+            }
+        });
+
+        Button rotateResetButton = findViewById(R.id.rotateResetButton);
+        rotateResetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rotationAngle = 0;
+                mapView.rotate(new Rotation(rotationAngle, mapView.getWidth() * 0.5f, mapView.getHeight() * 0.5f));
+                redrawLayers();
+            }
+        });
+
+        Button rotateCWButton = findViewById(R.id.rotateClockwiseButton);
+        rotateCWButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rotationAngle += 15;
+                mapView.rotate(new Rotation(rotationAngle, mapView.getWidth() * 0.5f, mapView.getHeight() * 0.5f));
+                redrawLayers();
+            }
+        });
+    }
+
+    @Override
     protected void createLayers() {
         super.createLayers();
 
         // we just add a few more overlays
         addOverlayLayers(mapView.getLayerManager().getLayers());
 
-        /*new Handler(Looper.myLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mapView.setMapViewCenterY(0.75f);
-                mapView.rotate(new Rotation(90, mapView.getWidth() * 0.5f, mapView.getHeight() * 0.5f));
-                redrawLayers();
-            }
-        }, 2000);*/
+        mapView.setMapViewCenterY(0.75f);
+        mapView.getModel().frameBufferModel.setOverdrawFactor(Math.max(mapView.getModel().frameBufferModel.getOverdrawFactor(), mapView.getMapViewCenterY() * 2));
+        rotationAngle = mapView.getMapRotation().degrees;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.rotation;
+    }
+
+    @Override
+    protected float getScreenRatio() {
+        // just to get the cache bigger right now.
+        return 2f;
     }
 }

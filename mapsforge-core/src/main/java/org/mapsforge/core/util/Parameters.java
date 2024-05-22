@@ -60,6 +60,11 @@ public final class Parameters {
     public static boolean ROTATION_GESTURE = false;
 
     /**
+     * Faster map rotation with matrix.
+     */
+    public static boolean ROTATION_MATRIX = true;
+
+    /**
      * If square frame buffer is enabled, the frame buffer allocated for drawing will be
      * large enough for drawing in either orientation, so no change is needed when the device
      * orientation changes. To avoid overly large frame buffers, the aspect ratio for this policy

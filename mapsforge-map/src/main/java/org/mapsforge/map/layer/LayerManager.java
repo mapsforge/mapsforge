@@ -21,6 +21,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.*;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.PausableThread;
@@ -78,7 +79,7 @@ public class LayerManager extends PausableThread implements Redrawer {
         FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
         Bitmap bitmap = frameBuffer.getDrawingBitmap();
         if (bitmap != null) {
-            this.drawingCanvas.setBitmap(bitmap, mapView.getMapRotation());
+            this.drawingCanvas.setBitmap(bitmap);
 
             MapPosition mapPosition = this.mapViewPosition.getMapPosition();
             Rotation rotation = this.mapView.getMapRotation();
@@ -93,9 +94,13 @@ public class LayerManager extends PausableThread implements Redrawer {
             float dy = this.mapView.getOffsetY();
             float px = rotation.px + (canvasDimension.width - this.mapView.getWidth()) * 0.5f;
             float py = rotation.py + (canvasDimension.height - this.mapView.getHeight()) * 0.5f;
-            this.drawingCanvas.translate(dx, dy);
-            if (!Rotation.noRotation(rotation)) {
-                this.drawingCanvas.rotate(rotation.degrees, px, py);
+            if (!Parameters.ROTATION_MATRIX) {
+                if (dx != 0 || dy != 0) {
+                    this.drawingCanvas.translate(dx, dy);
+                }
+                if (!Rotation.noRotation(rotation)) {
+                    this.drawingCanvas.rotate(rotation.degrees, px, py);
+                }
             }
             synchronized (this.layers) {
                 for (Layer layer : this.layers) {
@@ -104,10 +109,14 @@ public class LayerManager extends PausableThread implements Redrawer {
                     }
                 }
             }
-            if (!Rotation.noRotation(rotation)) {
-                this.drawingCanvas.rotate(-rotation.degrees, px, py);
+            if (!Parameters.ROTATION_MATRIX) {
+                if (!Rotation.noRotation(rotation)) {
+                    this.drawingCanvas.rotate(-rotation.degrees, px, py);
+                }
+                if (dx != 0 || dy != 0) {
+                    this.drawingCanvas.translate(-dx, -dy);
+                }
             }
-            this.drawingCanvas.translate(-dx, -dy);
 
             if (!mapViewPosition.animationInProgress()) {
                 // this causes a lot of flickering when an animation

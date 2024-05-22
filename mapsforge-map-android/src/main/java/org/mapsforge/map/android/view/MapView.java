@@ -334,13 +334,13 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     @Override
     protected void onDraw(Canvas androidCanvas) {
-        org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
-        this.frameBuffer.draw(graphicContext, getMapRotation());
+        org.mapsforge.core.graphics.Canvas canvas = AndroidGraphicFactory.createGraphicContext(androidCanvas);
+        this.frameBuffer.draw(canvas, getMapRotation());
         if (this.mapScaleBar != null) {
-            this.mapScaleBar.draw(graphicContext);
+            this.mapScaleBar.draw(canvas);
         }
-        this.fpsCounter.draw(graphicContext);
-        graphicContext.destroy();
+        this.fpsCounter.draw(canvas);
+        canvas.destroy();
     }
 
     @Override
@@ -524,7 +524,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     @Override
     public void rotate(Rotation rotation) {
         this.getModel().mapViewPosition.setRotation(rotation);
-        repaint();
+        //repaint();
     }
 
     /**

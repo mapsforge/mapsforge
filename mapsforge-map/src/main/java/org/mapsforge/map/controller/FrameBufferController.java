@@ -93,14 +93,18 @@ public final class FrameBufferController implements Observer {
                 if (mapPositionFrameBuffer != null) {
                     double scaleFactor = this.model.mapViewPosition.getScaleFactor();
                     LatLong pivot = this.model.mapViewPosition.getPivot();
-                    adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor, pivot);
+                    float mapViewCenterX = this.model.mapViewPosition.getMapViewCenterX();
+                    float mapViewCenterY = this.model.mapViewPosition.getMapViewCenterY();
+                    adjustFrameBufferMatrix(mapPositionFrameBuffer, mapViewDimension, scaleFactor, pivot,
+                            mapViewCenterX, mapViewCenterY);
                 }
             }
         }
     }
 
     private void adjustFrameBufferMatrix(MapPosition mapPositionFrameBuffer, Dimension mapViewDimension,
-                                         double scaleFactor, LatLong pivot) {
+                                         double scaleFactor, LatLong pivot,
+                                         float mapViewCenterX, float mapViewCenterY) {
 
         MapPosition mapViewPosition = this.model.mapViewPosition.getMapPosition();
 
@@ -111,11 +115,13 @@ public final class FrameBufferController implements Observer {
 
         double diffX = pointFrameBuffer.x - pointMapPosition.x;
         double diffY = pointFrameBuffer.y - pointMapPosition.y;
-        if (!Rotation.noRotation(this.model.mapViewPosition.getRotation())) {
-            Rotation mapRotation = new Rotation(this.model.mapViewPosition.getRotation().degrees, 0, 0);
-            Point rotated = mapRotation.rotate(diffX, diffY, true);
-            diffX = rotated.x;
-            diffY = rotated.y;
+        if (!Parameters.ROTATION_MATRIX) {
+            if ((diffX != 0 || diffY != 0) && !Rotation.noRotation(mapPositionFrameBuffer.rotation)) {
+                Rotation mapRotation = new Rotation(mapPositionFrameBuffer.rotation.degrees, 0, 0);
+                Point rotated = mapRotation.rotate(diffX, diffY, true);
+                diffX = rotated.x;
+                diffY = rotated.y;
+            }
         }
 
         // we need to compute the pivot distance from the map center
@@ -132,11 +138,9 @@ public final class FrameBufferController implements Observer {
 
         float currentScaleFactor = this.model.frameBufferModel.isScaleEnabled() ? (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel)) : 1;
 
-        float offsetX = this.model.mapViewDimension.getDimension().width * (this.model.mapViewPosition.getMapViewCenterX() - 0.5f);
-        float offsetY = this.model.mapViewDimension.getDimension().height * (this.model.mapViewPosition.getMapViewCenterY() - 0.5f);
-
         this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension,
-                (float) pivotDistanceX, (float) pivotDistanceY, offsetX, offsetY);
+                (float) pivotDistanceX, (float) pivotDistanceY,
+                mapPositionFrameBuffer.rotation, mapViewCenterX, mapViewCenterY);
     }
 
     private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {

@@ -18,7 +18,7 @@
 package org.mapsforge.map.view;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.GraphicContext;
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Rotation;
@@ -26,11 +26,12 @@ import org.mapsforge.core.model.Rotation;
 public abstract class FrameBuffer {
 
     public abstract void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
-                                      float pivotDistanceX, float pivotDistanceY, float offsetX, float offsetY);
+                                      float pivotDistanceX, float pivotDistanceY,
+                                      Rotation rotation, float mapViewCenterX, float mapViewCenterY);
 
     public abstract void destroy();
 
-    public abstract void draw(GraphicContext graphicContext, Rotation rotation);
+    public abstract void draw(Canvas canvas, Rotation rotation);
 
     public abstract void frameFinished(MapPosition frameMapPosition);
 

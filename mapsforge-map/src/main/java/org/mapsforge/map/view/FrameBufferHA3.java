@@ -18,13 +18,13 @@
 package org.mapsforge.map.view;
 
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.GraphicContext;
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rotation;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
@@ -73,23 +73,34 @@ public class FrameBufferHA3 extends FrameBuffer {
 
     @Override
     public void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
-                             float pivotDistanceX, float pivotDistanceY, float offsetX, float offsetY) {
+                             float pivotDistanceX, float pivotDistanceY,
+                             Rotation rotation, float mapViewCenterX, float mapViewCenterY) {
         synchronized (this.matrix) {
             if (this.dimension == null) {
                 return;
             }
             this.matrix.reset();
             centerFrameBufferToMapView(mapViewDimension);
-            if (pivotDistanceX == 0 && pivotDistanceY == 0) {
-                // only translate the matrix if we are not zooming around a pivot,
-                // the translation happens only once the zoom is finished.
-                this.matrix.translate(diffX, diffY);
-            }
 
+            final float offsetX = mapViewDimension.width * (mapViewCenterX - 0.5f);
+            final float offsetY = mapViewDimension.height * (mapViewCenterY - 0.5f);
             if (pivotDistanceX == 0 && pivotDistanceY == 0) {
                 scale(scaleFactor, offsetX, offsetY);
             } else {
                 scale(scaleFactor, pivotDistanceX, pivotDistanceY);
+            }
+
+            if (Parameters.ROTATION_MATRIX) {
+                this.matrix.translate(offsetX, offsetY);
+                if (!Rotation.noRotation(rotation)) {
+                    this.matrix.rotate((float) rotation.radians, this.dimension.width * 0.5f, this.dimension.height * 0.5f);
+                }
+            }
+
+            if (pivotDistanceX == 0 && pivotDistanceY == 0) {
+                // only translate the matrix if we are not zooming around a pivot,
+                // the translation happens only once the zoom is finished.
+                this.matrix.translate(diffX, diffY);
             }
         }
     }
@@ -120,7 +131,7 @@ public class FrameBufferHA3 extends FrameBuffer {
      * and (Desktop) <code>MapView.paint</code>.
      */
     @Override
-    public void draw(GraphicContext graphicContext, Rotation rotation) {
+    public void draw(Canvas canvas, Rotation rotation) {
         /*
          * Swap bitmaps here (and only here).
          * Swapping is done when layer manager has finished. Else draw old bitmap again.
@@ -129,14 +140,14 @@ public class FrameBufferHA3 extends FrameBuffer {
          */
 
         // FIXME: resetting the background color is redundant if the background color of the map view is already set
-        graphicContext.fillColor(this.displayModel.getBackgroundColor());
+        canvas.fillColor(this.displayModel.getBackgroundColor());
 
         swapBitmaps();
 
         synchronized (this.matrix) {
             Bitmap b = this.odBitmap.lock();
             if (b != null) {
-                graphicContext.drawBitmap(b, this.matrix);
+                canvas.drawBitmap(b, this.matrix);
             }
         }
 
@@ -187,9 +198,8 @@ public class FrameBufferHA3 extends FrameBuffer {
 
     private void scale(float scaleFactor, float pivotDistanceX, float pivotDistanceY) {
         if (scaleFactor != 1) {
-            final Point center = this.dimension.getCenter();
-            float pivotX = (float) (pivotDistanceX + center.x);
-            float pivotY = (float) (pivotDistanceY + center.y);
+            float pivotX = pivotDistanceX + this.dimension.width * 0.5f;
+            float pivotY = pivotDistanceY + this.dimension.height * 0.5f;
             this.matrix.scale(scaleFactor, scaleFactor, pivotX, pivotY);
         }
     }
