@@ -16,15 +16,10 @@
  */
 package org.mapsforge.map.layer.debug;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.FontFamily;
-import org.mapsforge.core.graphics.FontStyle;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.TilePosition;
@@ -75,24 +70,35 @@ public class TileCoordinatesLayer extends Layer {
     }
 
     @Override
-    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
                 this.displayModel.getTileSize());
         for (int i = tilePositions.size() - 1; i >= 0; --i) {
-            drawTileCoordinates(tilePositions.get(i), canvas);
+            drawTileCoordinates(tilePositions.get(i), rotation, canvas);
         }
     }
 
-    private void drawTileCoordinates(TilePosition tilePosition, Canvas canvas) {
+    private void drawTileCoordinates(TilePosition tilePosition, Rotation rotation, Canvas canvas) {
         Tile tile = tilePosition.tile;
         if (drawSimple) {
             stringBuilder.setLength(0);
             stringBuilder.append(tile.zoomLevel).append(" / ").append(tile.tileX).append(" / ").append(tile.tileY);
             String text = stringBuilder.toString();
-            int x = (int) (tilePosition.point.x + (tile.tileSize - this.paintBack.getTextWidth(text)) / 2);
-            int y = (int) (tilePosition.point.y + (tile.tileSize + this.paintBack.getTextHeight(text)) / 2);
+            int x = (int) (tilePosition.point.x + tile.tileSize * 0.5);
+            int y = (int) (tilePosition.point.y + tile.tileSize * 0.5);
+            if (!Rotation.noRotation(rotation)) {
+                canvas.rotate(-rotation.degrees, rotation.px, rotation.py);
+                Point rotated = rotation.rotate(x, y, true);
+                x = (int) rotated.x;
+                y = (int) rotated.y;
+            }
+            x -= this.paintBack.getTextWidth(text) / 2;
+            y += this.paintBack.getTextHeight(text) / 2;
             canvas.drawText(text, x, y, this.paintBack);
             canvas.drawText(text, x, y, this.paintFront);
+            if (!Rotation.noRotation(rotation)) {
+                canvas.rotate(rotation.degrees, rotation.px, rotation.py);
+            }
         } else {
             int x = (int) (tilePosition.point.x + 8 * displayModel.getScaleFactor());
             int y = (int) (tilePosition.point.y + 24 * displayModel.getScaleFactor());
@@ -117,6 +123,13 @@ public class TileCoordinatesLayer extends Layer {
             text = stringBuilder.toString();
             canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintBack);
             canvas.drawText(text, x, (int) (y + 48 * displayModel.getScaleFactor()), this.paintFront);
+
+            stringBuilder.setLength(0);
+            stringBuilder.append("R: ");
+            stringBuilder.append(Math.round(rotation.degrees));
+            text = stringBuilder.toString();
+            canvas.drawText(text, x, (int) (y + 72 * displayModel.getScaleFactor()), this.paintBack);
+            canvas.drawText(text, x, (int) (y + 72 * displayModel.getScaleFactor()), this.paintFront);
         }
     }
 

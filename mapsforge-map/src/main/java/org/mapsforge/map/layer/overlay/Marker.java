@@ -18,10 +18,7 @@ package org.mapsforge.map.layer.overlay;
 
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 
@@ -62,7 +59,7 @@ public class Marker extends Layer {
     }
 
     @Override
-    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         if (this.latLong == null || this.bitmap == null || this.bitmap.isDestroyed()) {
             return;
         }
@@ -85,7 +82,13 @@ public class Marker extends Layer {
             return;
         }
 
+        if (!Rotation.noRotation(rotation)) {
+            canvas.rotate(new Rotation(-rotation.degrees, (float) (pixelX - topLeftPoint.x), (float) (pixelY - topLeftPoint.y)));
+        }
         canvas.drawBitmap(this.bitmap, left, top);
+        if (!Rotation.noRotation(rotation)) {
+            canvas.rotate(new Rotation(rotation.degrees, (float) (pixelX - topLeftPoint.x), (float) (pixelY - topLeftPoint.y)));
+        }
     }
 
     /**

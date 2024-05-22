@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.overlay.Circle;
 import org.mapsforge.map.layer.overlay.Marker;
@@ -55,11 +56,11 @@ public class MyLocationOverlay extends Layer {
     }
 
     @Override
-    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         if (this.circle != null) {
-            this.circle.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+            this.circle.draw(boundingBox, zoomLevel, canvas, topLeftPoint, Rotation.NULL_ROTATION);
         }
-        this.marker.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+        this.marker.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotation);
     }
 
     @Override

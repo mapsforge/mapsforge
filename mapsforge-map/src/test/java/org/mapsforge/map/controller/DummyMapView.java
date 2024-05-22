@@ -18,6 +18,7 @@ package org.mapsforge.map.controller;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
@@ -76,8 +77,23 @@ public class DummyMapView implements MapView {
     }
 
     @Override
+    public Rotation getMapRotation() {
+        return Rotation.NULL_ROTATION;
+    }
+
+    @Override
     public MapScaleBar getMapScaleBar() {
         return null;
+    }
+
+    @Override
+    public float getMapViewCenterX() {
+        return 0.5f;
+    }
+
+    @Override
+    public float getMapViewCenterY() {
+        return 0.5f;
     }
 
     @Override
@@ -91,6 +107,16 @@ public class DummyMapView implements MapView {
     }
 
     @Override
+    public float getOffsetX() {
+        return 0;
+    }
+
+    @Override
+    public float getOffsetY() {
+        return 0;
+    }
+
+    @Override
     public int getWidth() {
         return 0;
     }
@@ -101,12 +127,26 @@ public class DummyMapView implements MapView {
     }
 
     @Override
+    public void rotate(Rotation rotation) {
+    }
+
+    @Override
     public void setCenter(LatLong center) {
         // no-op
     }
 
     @Override
     public void setMapScaleBar(MapScaleBar mapScaleBar) {
+        // no-op
+    }
+
+    @Override
+    public void setMapViewCenterX(float mapViewCenterX) {
+        // no-op
+    }
+
+    @Override
+    public void setMapViewCenterY(float mapViewCenterY) {
         // no-op
     }
 

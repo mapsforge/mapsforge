@@ -26,6 +26,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.Parameters;
 
 import java.awt.*;
@@ -400,6 +401,30 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
+    public void restore() {
+        // no-op here
+    }
+
+    @Override
+    public void rotate(float degrees, float px, float py) {
+        if (degrees != 0) {
+            this.graphics2D.rotate(degrees, px, py);
+        }
+    }
+
+    @Override
+    public void rotate(Rotation rotation) {
+        if (!Rotation.noRotation(rotation)) {
+            rotate(rotation.degrees, rotation.px, rotation.py);
+        }
+    }
+
+    @Override
+    public void save() {
+        // no-op here
+    }
+
+    @Override
     public void setAntiAlias(boolean aa) {
         this.graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, aa ? RenderingHints.VALUE_ANTIALIAS_ON : RenderingHints.VALUE_ANTIALIAS_OFF);
         this.graphics2D.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, aa ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
@@ -408,6 +433,20 @@ class AwtCanvas implements Canvas {
 
     @Override
     public void setBitmap(Bitmap bitmap) {
+        if (bitmap == null) {
+            this.bufferedImage = null;
+            this.graphics2D = null;
+        } else {
+            this.bufferedImage = AwtGraphicFactory.getBitmap(bitmap);
+            this.graphics2D = this.bufferedImage.createGraphics();
+            setAntiAlias(Parameters.ANTI_ALIASING);
+            this.graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            this.graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+        }
+    }
+
+    @Override
+    public void setBitmap(Bitmap bitmap, Rotation rotation) {
         if (bitmap == null) {
             this.bufferedImage = null;
             this.graphics2D = null;
@@ -482,6 +521,11 @@ class AwtCanvas implements Canvas {
         this.graphics2D.setClip(null);
 
         this.graphics2D.setComposite(oldComposite);
+    }
+
+    @Override
+    public void translate(float dx, float dy) {
+        this.graphics2D.translate(dx, dy);
     }
 
     private void fillColor(java.awt.Color color) {

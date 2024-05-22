@@ -29,6 +29,7 @@ import android.view.ScaleGestureDetector;
 import android.widget.Scroller;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
@@ -46,6 +47,7 @@ import org.mapsforge.map.model.IMapViewPosition;
  * <li>Double tap (zoom with focus)</li>
  * <li>Tap (overlay)</li>
  * <li>Long press (overlay)</li>
+ * <li>Rotation</li>
  * </ul>
  */
 public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener, Runnable {
@@ -57,8 +59,13 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     private boolean isInDoubleTap, isInScale;
     private final MapView mapView;
     private LatLong pivot;
+    private boolean rotationEnabled = true;
     private boolean scaleEnabled = true;
     private float scaleFactorCumulative;
+
+    // Rotation
+    private float currentAngle;
+    private long lastTime;
 
     public TouchGestureHandler(MapView mapView) {
         this.mapView = mapView;
@@ -75,6 +82,10 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
      */
     public boolean isDoubleTapEnabled() {
         return doubleTapEnabled;
+    }
+
+    public boolean isRotationEnabled() {
+        return rotationEnabled;
     }
 
     /**
@@ -106,13 +117,19 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                     if (this.doubleTapEnabled && mapViewPosition.getZoomLevel() < mapViewPosition.getZoomLevelMax()) {
                         Point center = this.mapView.getModel().mapViewDimension.getDimension().getCenter();
                         byte zoomLevelDiff = 1;
-                        double moveHorizontal = (center.x - e.getX()) / Math.pow(2, zoomLevelDiff);
-                        double moveVertical = (center.y - e.getY()) / Math.pow(2, zoomLevelDiff);
+                        double moveHorizontal = (center.x - e.getX() + this.mapView.getOffsetX()) / Math.pow(2, zoomLevelDiff);
+                        double moveVertical = (center.y - e.getY() + this.mapView.getOffsetY()) / Math.pow(2, zoomLevelDiff);
                         LatLong pivot = this.mapView.getMapViewProjection().fromPixels(e.getX(), e.getY());
                         if (pivot != null) {
                             this.mapView.onMoveEvent();
                             this.mapView.onZoomEvent();
                             mapViewPosition.setPivot(pivot);
+                            if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+                                Rotation mapRotation = new Rotation(this.mapView.getMapRotation().degrees, 0, 0);
+                                Point rotated = mapRotation.rotate(moveHorizontal, moveVertical);
+                                moveHorizontal = rotated.x;
+                                moveVertical = rotated.y;
+                            }
                             mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
                         }
                     }
@@ -149,7 +166,14 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         // Normal or quick scale (no long press)
         if (!this.isInScale && !this.isInDoubleTap) {
             Point tapXY = new Point(e.getX(), e.getY());
-            LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
+            LatLong tapLatLong;
+            Point offset = tapXY.offset(-this.mapView.getOffsetX(), -this.mapView.getOffsetY());
+            if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+                Point rotated = this.mapView.getMapRotation().rotate(offset);
+                tapLatLong = this.mapView.getMapViewProjection().fromPixels(rotated.x, rotated.y);
+            } else {
+                tapLatLong = this.mapView.getMapViewProjection().fromPixels(offset.x, offset.y);
+            }
             if (tapLatLong != null) {
                 for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
                     Layer layer = safeGet(this.mapView.getLayerManager().getLayers(), i);
@@ -158,6 +182,12 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                         break;
                     }
                     Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
+                    if (layerXY != null) {
+                        if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+                            layerXY = this.mapView.getMapRotation().rotate(layerXY, true);
+                        }
+                        layerXY = layerXY.offset(this.mapView.getOffsetX(), this.mapView.getOffsetY());
+                    }
                     if (layer.onLongPress(tapLatLong, layerXY, tapXY)) {
                         break;
                     }
@@ -183,10 +213,17 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         this.isInScale = true;
         this.scaleFactorCumulative = 1f;
 
-        // Quick scale (no pivot)
+        // Quick scale
         if (this.isInDoubleTap) {
             this.mapView.onZoomEvent();
-            this.pivot = null;
+            if (this.mapView.getOffsetX() != 0 || this.mapView.getOffsetY() != 0) {
+                this.mapView.onMoveEvent();
+                this.focusX = this.mapView.getWidth() * 0.5f + this.mapView.getOffsetX();
+                this.focusY = this.mapView.getHeight() * 0.5f + this.mapView.getOffsetY();
+                this.pivot = this.mapView.getMapViewProjection().fromPixels(focusX, focusY);
+            } else {
+                this.pivot = null;
+            }
         } else {
             this.mapView.onMoveEvent();
             this.mapView.onZoomEvent();
@@ -200,13 +237,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
         double zoomLevelOffset = Math.log(this.scaleFactorCumulative) / Math.log(2);
-        byte zoomLevelDiff;
-        if (Math.abs(zoomLevelOffset) > 1) {
-            // Complete large zooms towards gesture direction
-            zoomLevelDiff = (byte) Math.round(zoomLevelOffset < 0 ? Math.floor(zoomLevelOffset) : Math.ceil(zoomLevelOffset));
-        } else {
-            zoomLevelDiff = (byte) Math.round(zoomLevelOffset);
-        }
+        byte zoomLevelDiff = (byte) Math.round(zoomLevelOffset < 0 ? Math.floor(zoomLevelOffset) : Math.ceil(zoomLevelOffset));
 
         IMapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
         if (zoomLevelDiff != 0 && pivot != null) {
@@ -219,8 +250,8 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                     if (mapViewPosition.getZoomLevel() + i > mapViewPosition.getZoomLevelMax()) {
                         break;
                     }
-                    moveHorizontal += (center.x - focusX) / Math.pow(2, i);
-                    moveVertical += (center.y - focusY) / Math.pow(2, i);
+                    moveHorizontal += (center.x - focusX + this.mapView.getOffsetX()) / Math.pow(2, i);
+                    moveVertical += (center.y - focusY + this.mapView.getOffsetY()) / Math.pow(2, i);
                 }
             } else {
                 // Zoom out
@@ -228,11 +259,17 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                     if (mapViewPosition.getZoomLevel() + i < mapViewPosition.getZoomLevelMin()) {
                         break;
                     }
-                    moveHorizontal -= (center.x - focusX) / Math.pow(2, i + 1);
-                    moveVertical -= (center.y - focusY) / Math.pow(2, i + 1);
+                    moveHorizontal -= (center.x - focusX + this.mapView.getOffsetX()) / Math.pow(2, i + 1);
+                    moveVertical -= (center.y - focusY + this.mapView.getOffsetY()) / Math.pow(2, i + 1);
                 }
             }
             mapViewPosition.setPivot(pivot);
+            if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+                Rotation mapRotation = new Rotation(this.mapView.getMapRotation().degrees, 0, 0);
+                Point rotated = mapRotation.rotate(moveHorizontal, moveVertical);
+                moveHorizontal = rotated.x;
+                moveVertical = rotated.y;
+            }
             mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff);
         } else {
             // Zoom without focus
@@ -258,6 +295,13 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                 }
             }
 
+            if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+                Rotation mapRotation = new Rotation(this.mapView.getMapRotation().degrees, 0, 0);
+                Point rotated = mapRotation.rotate(distanceX, distanceY);
+                distanceX = (float) rotated.x;
+                distanceY = (float) rotated.y;
+            }
+
             this.mapView.onMoveEvent();
             this.mapView.getModel().mapViewPosition.moveCenter(-distanceX, -distanceY, false);
             return true;
@@ -268,7 +312,14 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         Point tapXY = new Point(e.getX(), e.getY());
-        LatLong tapLatLong = this.mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
+        LatLong tapLatLong;
+        Point offset = tapXY.offset(-this.mapView.getOffsetX(), -this.mapView.getOffsetY());
+        if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+            Point rotated = this.mapView.getMapRotation().rotate(offset);
+            tapLatLong = this.mapView.getMapViewProjection().fromPixels(rotated.x, rotated.y);
+        } else {
+            tapLatLong = this.mapView.getMapViewProjection().fromPixels(offset.x, offset.y);
+        }
         if (tapLatLong != null) {
             for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
                 Layer layer = safeGet(this.mapView.getLayerManager().getLayers(), i);
@@ -277,6 +328,12 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                     break;
                 }
                 Point layerXY = this.mapView.getMapViewProjection().toPixels(layer.getPosition());
+                if (layerXY != null) {
+                    if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+                        layerXY = this.mapView.getMapRotation().rotate(layerXY, true);
+                    }
+                    layerXY = layerXY.offset(this.mapView.getOffsetX(), this.mapView.getOffsetY());
+                }
                 if (layer.onTap(tapLatLong, layerXY, tapXY)) {
                     return true;
                 }
@@ -285,10 +342,44 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         return false;
     }
 
+    public boolean onTouchEvent(MotionEvent event) {
+        // TODO Rotation
+        if (Parameters.ROTATION_GESTURE && this.rotationEnabled && event.getPointerCount() == 2) {
+            int action = event.getActionMasked();
+            if (action == MotionEvent.ACTION_POINTER_DOWN) {
+                this.currentAngle = rotation(event);
+            }
+            final float delta = rotation(event) - this.currentAngle;
+            this.currentAngle += delta;
+            if (System.currentTimeMillis() - 25 > this.lastTime) {
+                this.lastTime = System.currentTimeMillis();
+                float px = (event.getX(0) + event.getX(1)) * 0.5f;
+                float py = (event.getY(0) + event.getY(1)) * 0.5f;
+                this.mapView.rotate(new Rotation(this.mapView.getMapRotation().degrees + delta, px, py));
+                this.mapView.getLayerManager().redrawLayers();
+            }
+        }
+        return true;
+    }
+
+    private static float rotation(MotionEvent event) {
+        double dx = event.getX(0) - event.getX(1);
+        double dy = event.getY(0) - event.getY(1);
+        return (float) Math.toDegrees(Math.atan2(dy, dx));
+    }
+
     @Override
     public void run() {
         boolean flingerRunning = !this.flinger.isFinished() && this.flinger.computeScrollOffset();
-        this.mapView.getModel().mapViewPosition.moveCenter(this.flingLastX - this.flinger.getCurrX(), this.flingLastY - this.flinger.getCurrY());
+        double moveHorizontal = this.flingLastX - this.flinger.getCurrX();
+        double moveVertical = this.flingLastY - this.flinger.getCurrY();
+        if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+            Rotation mapRotation = new Rotation(this.mapView.getMapRotation().degrees, 0, 0);
+            Point rotated = mapRotation.rotate(moveHorizontal, moveVertical);
+            moveHorizontal = rotated.x;
+            moveVertical = rotated.y;
+        }
+        this.mapView.getModel().mapViewPosition.moveCenter(moveHorizontal, moveVertical);
         this.flingLastX = this.flinger.getCurrX();
         this.flingLastY = this.flinger.getCurrY();
         if (flingerRunning) {
@@ -317,6 +408,10 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
      */
     public void setDoubleTapEnabled(boolean doubleTapEnabled) {
         this.doubleTapEnabled = doubleTapEnabled;
+    }
+
+    public void setRotationEnabled(boolean rotationEnabled) {
+        this.rotationEnabled = rotationEnabled;
     }
 
     /**

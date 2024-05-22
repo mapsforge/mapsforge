@@ -18,18 +18,11 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Curve;
-import org.mapsforge.core.graphics.Filter;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicUtils;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.rendertheme.RenderContext;
@@ -81,7 +74,7 @@ public class CanvasRasterer {
 
         for (MapElementContainer element : elementsAsList) {
             // The color filtering takes place in TileLayer
-            element.draw(canvas, tile.getOrigin(), this.symbolMatrix, Filter.NONE);
+            element.draw(canvas, tile.getOrigin(), this.symbolMatrix, Rotation.NULL_ROTATION, Filter.NONE);
         }
     }
 

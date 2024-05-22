@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 /**
  * The MapElementContainer is the abstract base class for annotations that can be placed on the
@@ -86,7 +87,7 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
      * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
      * using the matrix if rotation is required. Additionally a color filter can be applied.
      */
-    public abstract void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter);
+    public abstract void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter);
 
     /**
      * Gets the pixel absolute boundary for this element.
@@ -110,7 +111,7 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
      * @param other element to test against
      * @return true if they overlap
      */
-    public boolean clashesWith(MapElementContainer other) {
+    public boolean clashesWith(MapElementContainer other, Rotation rotation) {
         // if either of the elements is always drawn, the elements do not clash
         if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
             return false;

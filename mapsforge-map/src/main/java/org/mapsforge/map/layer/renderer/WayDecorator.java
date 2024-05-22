@@ -15,12 +15,7 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.SymbolOrientation;
-import org.mapsforge.core.graphics.TextOrientation;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.mapelements.WayTextContainer;
@@ -105,7 +100,7 @@ final class WayDecorator {
                 double cooX = previousX + segmentOffset * diffXpx;
                 double cooY = previousY + segmentOffset * diffYpx;
                 Point point = new Point(cooX, cooY);
-                currentItems.add(new SymbolContainer(point, display, priority, boundary, symbolBitmap, theta));
+                currentItems.add(new SymbolContainer(point, display, priority, boundary, symbolBitmap, theta, false));
 
                 // increment offset by the gap and the width of drawn image
                 segmentOffset += symbolBitmap.getWidth() + repeatGap;
@@ -182,6 +177,8 @@ final class WayDecorator {
             if (tooSharp)
                 continue;
 
+            // check to prevent inverted way names now happens when drawing, because with rotation we do
+            // not know the screen positions in advance any more.
             currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight, textOrientation));
         }
     }

@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
@@ -213,14 +214,14 @@ public class DatabaseRenderer extends StandardRenderer {
             // they already overlap from other tiles. The second one is currentLabels that contains
             // the elements on this tile that do not overlap onto a drawn tile. Now we sort this list and
             // remove those elements that clash in this list already.
-            List<MapElementContainer> currentElementsOrdered = LayerUtil.collisionFreeOrdered(renderContext.labels);
+            List<MapElementContainer> currentElementsOrdered = LayerUtil.collisionFreeOrdered(renderContext.labels, Rotation.NULL_ROTATION);
 
             // now we go through this list, ordered by priority, to see which can be drawn without clashing.
             Iterator<MapElementContainer> currentMapElementsIterator = currentElementsOrdered.iterator();
             while (currentMapElementsIterator.hasNext()) {
                 MapElementContainer current = currentMapElementsIterator.next();
                 for (MapElementContainer label : labelsToDraw) {
-                    if (label.clashesWith(current)) {
+                    if (label.clashesWith(current, Rotation.NULL_ROTATION)) {
                         currentMapElementsIterator.remove();
                         break;
                     }

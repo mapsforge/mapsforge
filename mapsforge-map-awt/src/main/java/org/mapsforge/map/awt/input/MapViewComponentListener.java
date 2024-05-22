@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.awt.input;
 
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.awt.view.MapView;
 
 import java.awt.event.ComponentAdapter;
@@ -33,5 +34,10 @@ public class MapViewComponentListener extends ComponentAdapter {
             return;
         }
         this.mapView.getModel().mapViewDimension.setDimension(new org.mapsforge.core.model.Dimension(this.mapView.getWidth(), this.mapView.getHeight()));
+
+        if (!Rotation.noRotation(this.mapView.getMapRotation())) {
+            this.mapView.rotate(new Rotation(this.mapView.getMapRotation().degrees, this.mapView.getWidth() * 0.5f, this.mapView.getHeight() * 0.5f));
+            this.mapView.getLayerManager().redrawLayers();
+        }
     }
 }

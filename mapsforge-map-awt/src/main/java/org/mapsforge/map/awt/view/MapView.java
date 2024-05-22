@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.awt.input.MapViewComponentListener;
 import org.mapsforge.map.awt.input.MouseEventListener;
@@ -39,7 +40,11 @@ import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
-import org.mapsforge.map.view.*;
+import org.mapsforge.map.view.FpsCounter;
+import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.FrameBufferHA3;
+import org.mapsforge.map.view.InputListener;
+
 import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -144,8 +149,8 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
 
     @Override
     public BoundingBox getBoundingBox() {
-        return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(),
-                getDimension(), this.model.displayModel.getTileSize());
+        return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(), getMapRotation(),
+                this.model.displayModel.getTileSize(), getDimension(), getMapViewCenterX(), getMapViewCenterY());
     }
 
     @Override
@@ -169,8 +174,23 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     }
 
     @Override
+    public Rotation getMapRotation() {
+        return this.getModel().mapViewPosition.getRotation();
+    }
+
+    @Override
     public MapScaleBar getMapScaleBar() {
         return this.mapScaleBar;
+    }
+
+    @Override
+    public float getMapViewCenterX() {
+        return this.model.mapViewPosition.getMapViewCenterX();
+    }
+
+    @Override
+    public float getMapViewCenterY() {
+        return this.model.mapViewPosition.getMapViewCenterY();
     }
 
     @Override
@@ -181,6 +201,16 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     @Override
     public Model getModel() {
         return this.model;
+    }
+
+    @Override
+    public float getOffsetX() {
+        return getWidth() * (getMapViewCenterX() - 0.5f);
+    }
+
+    @Override
+    public float getOffsetY() {
+        return getHeight() * (getMapViewCenterY() - 0.5f);
     }
 
     /**
@@ -212,7 +242,7 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
         super.paint(graphics);
 
         GraphicContext graphicContext = AwtGraphicFactory.createGraphicContext(graphics);
-        this.frameBuffer.draw(graphicContext);
+        this.frameBuffer.draw(graphicContext, getMapRotation());
         if (this.mapScaleBar != null) {
             this.mapScaleBar.draw(graphicContext);
         }
@@ -228,6 +258,16 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
         this.inputListeners.remove(listener);
     }
 
+    /**
+     * Rotates the view by degrees around pivot point.
+     *
+     * @param rotation the rotation definition.
+     */
+    @Override
+    public void rotate(Rotation rotation) {
+        this.getModel().mapViewPosition.setRotation(rotation);
+    }
+
     @Override
     public void setCenter(LatLong center) {
         this.model.mapViewPosition.setCenter(center);
@@ -239,6 +279,16 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
             this.mapScaleBar.destroy();
         }
         this.mapScaleBar = mapScaleBar;
+    }
+
+    @Override
+    public void setMapViewCenterX(float mapViewCenterX) {
+        this.model.mapViewPosition.setMapViewCenterX(mapViewCenterX);
+    }
+
+    @Override
+    public void setMapViewCenterY(float mapViewCenterY) {
+        this.model.mapViewPosition.setMapViewCenterY(mapViewCenterY);
     }
 
     @Override

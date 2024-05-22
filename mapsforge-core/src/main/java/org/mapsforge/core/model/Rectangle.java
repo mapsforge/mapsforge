@@ -28,16 +28,28 @@ public class Rectangle implements Serializable {
     public final double top;
 
     public Rectangle(double left, double top, double right, double bottom) {
-        if (left > right) {
-            throw new IllegalArgumentException("left: " + left + ", right: " + right);
-        } else if (top > bottom) {
-            throw new IllegalArgumentException("top: " + top + ", bottom: " + bottom);
-        }
-
+        check(left, top, right, bottom);
         this.left = left;
         this.top = top;
         this.right = right;
         this.bottom = bottom;
+    }
+
+    /**
+     * Constructs minimum Rectangle from the four points given so that all points are contained
+     * in it (envelope of points).
+     *
+     * @param a point in arbitrary order.
+     * @param b ..
+     * @param c ..
+     * @param d ..
+     */
+    public Rectangle(Point a, Point b, Point c, Point d) {
+        this.left = minimum(a.x, b.x, c.x, d.x);
+        this.right = maximum(a.x, b.x, c.x, d.x);
+        this.bottom = maximum(a.y, b.y, c.y, d.y);
+        this.top = minimum(a.y, b.y, c.y, d.y);
+        check(this.left, this.top, this.right, this.bottom);
     }
 
     /**
@@ -49,9 +61,10 @@ public class Rectangle implements Serializable {
 
     /**
      * Enlarges the Rectangle sides individually
-     * @param left left enlargement
-     * @param top top enlargement
-     * @param right right enlargement
+     *
+     * @param left   left enlargement
+     * @param top    top enlargement
+     * @param right  right enlargement
      * @param bottom bottom enlargement
      * @return
      */
@@ -166,6 +179,17 @@ public class Rectangle implements Serializable {
         return cornerDistanceX * cornerDistanceX + cornerDistanceY * cornerDistanceY <= radius * radius;
     }
 
+    /**
+     * Rotates the rectangle with {@link Rotation}. This method can be chained to apply multiple
+     * rotations to one rectangle.
+     *
+     * @param rotation the rotation
+     * @return a new rotated rectangle.
+     */
+    public Rectangle rotate(Rotation rotation) {
+        return rotation.rotate(this);
+    }
+
     public Rectangle shift(Point origin) {
         if (origin.x == 0 && origin.y == 0) {
             return this;
@@ -185,5 +209,39 @@ public class Rectangle implements Serializable {
         stringBuilder.append(", bottom=");
         stringBuilder.append(this.bottom);
         return stringBuilder.toString();
+    }
+
+    private static double minimum(double a, double b, double c, double d) {
+        if (b < a) {
+            a = b;
+        }
+        if (c < a) {
+            a = c;
+        }
+        if (d < a) {
+            a = d;
+        }
+        return a;
+    }
+
+    private static double maximum(double a, double b, double c, double d) {
+        if (b > a) {
+            a = b;
+        }
+        if (c > a) {
+            a = c;
+        }
+        if (d > a) {
+            a = d;
+        }
+        return a;
+    }
+
+    private static void check(double left, double top, double right, double bottom) {
+        if (left > right) {
+            throw new IllegalArgumentException("left: " + left + ", right: " + right);
+        } else if (top > bottom) {
+            throw new IllegalArgumentException("top: " + top + ", bottom: " + bottom);
+        }
     }
 }

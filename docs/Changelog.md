@@ -2,6 +2,7 @@
 
 ## New since 0.21.0
 
+- Map rotation [#7](https://github.com/mapsforge/mapsforge/issues/7)
 - `mapsforge-themes` change package [#1135](https://github.com/mapsforge/mapsforge/issues/1135)
   - Rename `InternalRenderTheme` to `MapsforgeThemes`
 - Minor improvements and bug fixes

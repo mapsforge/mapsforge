@@ -41,17 +41,17 @@ public class MapPositionUtilTest {
 
             BoundingBox expectedBoundingBox = new BoundingBox(latitudeMin, -180, latitudeMax, 180);
             Assert.assertEquals(expectedBoundingBox,
-                    MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
+                    MapPositionUtil.getBoundingBox(mapPosition, null, tileSize, canvas.getDimension(), 0.5f, 0.5f));
 
             mapPosition = new MapPosition(new LatLong(0, 90), (byte) 0);
             expectedBoundingBox = new BoundingBox(latitudeMin, -90, latitudeMax, 180);
             Assert.assertEquals(expectedBoundingBox,
-                    MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
+                    MapPositionUtil.getBoundingBox(mapPosition, null, tileSize, canvas.getDimension(), 0.5f, 0.5f));
 
             mapPosition = new MapPosition(new LatLong(90, -180), (byte) 0);
             expectedBoundingBox = new BoundingBox(0, -180, latitudeMax, 0);
             Assert.assertEquals(expectedBoundingBox,
-                    MapPositionUtil.getBoundingBox(mapPosition, canvas.getDimension(), tileSize));
+                    MapPositionUtil.getBoundingBox(mapPosition, null, tileSize, canvas.getDimension(), 0.5f, 0.5f));
         }
     }
 

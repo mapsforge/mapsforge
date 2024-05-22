@@ -24,6 +24,7 @@ import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
@@ -56,17 +57,17 @@ public class PolygonTest {
             Canvas canvas = GRAPHIC_FACTORY.createCanvas();
             canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
             Point point = new Point(0, 0);
-            polygon.draw(boundingBox, (byte) 0, canvas, point);
+            polygon.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
             List<LatLong> latLongs = new ArrayList<>();
             latLongs.add(new LatLong(0, 0));
             latLongs.add(new LatLong(1, 1));
             polygon.setPoints(latLongs);
-            polygon.draw(boundingBox, (byte) 0, canvas, point);
+            polygon.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
             polygon.setPaintFill(GRAPHIC_FACTORY.createPaint());
             polygon.setPaintStroke(GRAPHIC_FACTORY.createPaint());
-            polygon.draw(boundingBox, (byte) 0, canvas, point);
+            polygon.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
         }
     }
 

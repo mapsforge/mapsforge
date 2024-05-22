@@ -15,7 +15,6 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.graphics.RectF;
 import android.graphics.text.LineBreaker;
 import android.os.Build;
 import android.text.Layout;
@@ -26,14 +25,17 @@ import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 public class AndroidPointTextContainer extends PointTextContainer {
     private StaticLayout backLayout;
     private StaticLayout frontLayout;
 
-    AndroidPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+    AndroidPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
+                              Display display, int priority, String text, Paint paintFront, Paint paintBack,
                               SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-        super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+        super(xy, horizontalOffset, verticalOffset, display, priority, text,
+                paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
         final float boxWidth, boxHeight;
         if (this.textWidth > this.maxTextWidth) {
@@ -133,7 +135,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
     }
 
     @Override
-    public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
+    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter) {
         if (!this.isVisible) {
             return;
         }
@@ -144,7 +146,21 @@ public class AndroidPointTextContainer extends PointTextContainer {
             // in this case we draw the precomputed staticLayout onto the canvas by translating
             // the canvas.
             androidCanvas.save();
-            androidCanvas.translate((float) (this.xy.x - origin.x + boundary.left), (float) (this.xy.y - origin.y + boundary.top));
+
+            double x = this.xy.x - origin.x;
+            double y = this.xy.y - origin.y;
+            if (!Rotation.noRotation(rotation)) {
+                androidCanvas.rotate(-rotation.degrees, rotation.px, rotation.py);
+                Point rotated = rotation.rotate(x, y, true);
+                x = rotated.x;
+                y = rotated.y;
+            }
+            // the offsets can only be applied after rotation, because the label needs to be rotated
+            // around its center.
+            x += this.horizontalOffset + boundary.left;
+            y += this.verticalOffset + boundary.top;
+
+            androidCanvas.translate((float) x, (float) y);
 
             if (this.backLayout != null) {
                 int color = this.backLayout.getPaint().getColor();
@@ -184,15 +200,26 @@ public class AndroidPointTextContainer extends PointTextContainer {
                     break;
             }
 
-            float adjustedX = (float) (this.xy.x - origin.x);
-            float adjustedY = (float) (this.xy.y - origin.y) + textOffset;
+            double x = this.xy.x - origin.x;
+            double y = this.xy.y - origin.y;
+            if (!Rotation.noRotation(rotation)) {
+                androidCanvas.save();
+                androidCanvas.rotate(-rotation.degrees, rotation.px, rotation.py);
+                Point rotated = rotation.rotate(x, y, true);
+                x = rotated.x;
+                y = rotated.y;
+            }
+            // the offsets can only be applied after rotation, because the label needs to be rotated
+            // around its center.
+            x += this.horizontalOffset;
+            y += this.verticalOffset + textOffset; // the text offset has nothing to do with rotation, so add later
 
             if (this.paintBack != null) {
                 int color = this.paintBack.getColor();
                 if (filter != Filter.NONE) {
                     this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
                 }
-                androidCanvas.drawText(this.text, adjustedX, adjustedY, AndroidGraphicFactory.getPaint(this.paintBack));
+                androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintBack));
                 if (filter != Filter.NONE) {
                     this.paintBack.setColor(color);
                 }
@@ -201,9 +228,12 @@ public class AndroidPointTextContainer extends PointTextContainer {
             if (filter != Filter.NONE) {
                 this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
             }
-            androidCanvas.drawText(this.text, adjustedX, adjustedY, AndroidGraphicFactory.getPaint(this.paintFront));
+            androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintFront));
             if (filter != Filter.NONE) {
                 this.paintFront.setColor(color);
+            }
+            if (!Rotation.noRotation(rotation)) {
+                androidCanvas.restore();
             }
         }
     }

@@ -23,10 +23,11 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
-import org.mapsforge.map.util.MapViewProjection;
+import org.mapsforge.map.view.MapView;
 
 import java.util.Iterator;
 import java.util.List;
@@ -86,14 +87,18 @@ public class Polyline extends Layer {
         updatePoints();
     }
 
-    public synchronized boolean contains(Point tapXY, MapViewProjection mapViewProjection) {
+    public synchronized boolean contains(Point tapXY, MapView mapView) {
+        tapXY = tapXY.offset(-mapView.getOffsetX(), -mapView.getOffsetY());
+        if (!Rotation.noRotation(mapView.getMapRotation())) {
+            tapXY = mapView.getMapRotation().rotate(tapXY);
+        }
         // Touch min 20 px at baseline mdpi (160dpi)
         double distance = Math.max(20 / 2 * this.displayModel.getScaleFactor(),
                 this.paintStroke.getStrokeWidth() / 2);
         Point point2 = null;
         for (int i = 0; i < this.latLongs.size() - 1; i++) {
-            Point point1 = i == 0 ? mapViewProjection.toPixels(this.latLongs.get(i)) : point2;
-            point2 = mapViewProjection.toPixels(this.latLongs.get(i + 1));
+            Point point1 = i == 0 ? mapView.getMapViewProjection().toPixels(this.latLongs.get(i)) : point2;
+            point2 = mapView.getMapViewProjection().toPixels(this.latLongs.get(i + 1));
             if (LatLongUtils.distanceSegmentPoint(point1.x, point1.y, point2.x, point2.y, tapXY.x, tapXY.y) <= distance) {
                 return true;
             }
@@ -102,7 +107,7 @@ public class Polyline extends Layer {
     }
 
     @Override
-    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         if (this.latLongs.isEmpty() || this.paintStroke == null) {
             return;
         }

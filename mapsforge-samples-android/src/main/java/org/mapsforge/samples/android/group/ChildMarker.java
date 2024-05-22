@@ -18,10 +18,7 @@ package org.mapsforge.samples.android.group;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.overlay.Marker;
 
@@ -65,7 +62,7 @@ public class ChildMarker extends Marker {
     }
 
     @Override
-    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         if (this.getLatLong() == null || this.getBitmap() == null || this.getBitmap().isDestroyed()) {
             return;
         }

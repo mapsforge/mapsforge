@@ -19,6 +19,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.util.LayerUtil;
 
@@ -48,22 +49,22 @@ public class ThreadedLabelLayer extends LabelLayer {
     }
 
     @Override
-    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, this.displayModel.getTileSize());
         Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, this.displayModel.getTileSize());
         if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
                 || this.lastLabelStoreVersion != this.labelStore.getVersion()) {
-            getData(newUpperLeft, newLowerRight);
+            getData(newUpperLeft, newLowerRight, rotation);
         }
 
         if (this.upperLeft != null && Tile.tileAreasOverlap(this.upperLeft, this.lowerRight, newUpperLeft, newLowerRight)) {
             // draw data if the area of data overlaps, even if the areas are not the same. This
             // is to make layer more responsive.
-            draw(canvas, topLeftPoint);
+            draw(canvas, topLeftPoint, rotation);
         }
     }
 
-    protected void getData(final Tile upperLeft, final Tile lowerRight) {
+    protected void getData(final Tile upperLeft, final Tile lowerRight, Rotation rotation) {
         if (upperLeft.equals(this.requestedUpperLeft) && lowerRight.equals(this.requestedLowerRight)) {
             // same data already requested
             return;
@@ -82,7 +83,7 @@ public class ThreadedLabelLayer extends LabelLayer {
             public void run() {
                 List<MapElementContainer> visibleItems = ThreadedLabelLayer.this.labelStore.getVisibleItems(upperLeft, lowerRight);
 
-                ThreadedLabelLayer.this.elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
+                ThreadedLabelLayer.this.elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems, rotation);
 
                 // TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out
                 // what LayerUtil.collisionFreeOrdered gave us is a list where highest priority comes first,

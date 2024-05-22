@@ -111,7 +111,8 @@ public class StandardRenderer implements RenderCallback {
     public void renderAreaCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PolylineContainer way) {
         if (renderLabels) {
             Point centerPoint = way.getCenterAbsolute().offset(horizontalOffset, verticalOffset);
-            renderContext.labels.add(this.graphicFactory.createPointTextContainer(centerPoint, display, priority, caption, fill, stroke, null, position, maxTextWidth));
+            renderContext.labels.add(this.graphicFactory.createPointTextContainer(centerPoint, horizontalOffset, verticalOffset,
+                    display, priority, caption, fill, stroke, null, position, maxTextWidth));
         }
     }
 
@@ -119,7 +120,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderAreaSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PolylineContainer way) {
         if (renderLabels) {
             Point centerPosition = way.getCenterAbsolute();
-            renderContext.labels.add(new SymbolContainer(centerPosition, display, priority, null, symbol));
+            renderContext.labels.add(new SymbolContainer(centerPosition, display, priority, null, symbol, true));
         }
     }
 
@@ -127,9 +128,8 @@ public class StandardRenderer implements RenderCallback {
     public void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PointOfInterest poi) {
         if (renderLabels) {
             Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
-
-            renderContext.labels.add(this.graphicFactory.createPointTextContainer(poiPosition.offset(horizontalOffset, verticalOffset), display, priority, caption, fill,
-                    stroke, null, position, maxTextWidth));
+            renderContext.labels.add(this.graphicFactory.createPointTextContainer(poiPosition, horizontalOffset, verticalOffset,
+                    display, priority, caption, fill, stroke, null, position, maxTextWidth));
         }
     }
 
@@ -144,7 +144,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Rectangle boundary, Bitmap symbol, PointOfInterest poi) {
         if (renderLabels) {
             Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
-            renderContext.labels.add(new SymbolContainer(poiPosition, display, priority, boundary, symbol));
+            renderContext.labels.add(new SymbolContainer(poiPosition, display, priority, boundary, symbol, true));
         }
     }
 

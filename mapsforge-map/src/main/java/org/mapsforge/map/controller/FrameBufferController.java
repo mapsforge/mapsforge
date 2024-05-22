@@ -17,10 +17,7 @@
  */
 package org.mapsforge.map.controller;
 
-import org.mapsforge.core.model.Dimension;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.model.Model;
@@ -44,7 +41,7 @@ public final class FrameBufferController implements Observer {
         int width = (int) (mapViewDimension.width * overdrawFactor);
         int height = (int) (mapViewDimension.height * overdrawFactor);
         if (Parameters.SQUARE_FRAME_BUFFER) {
-            width = Math.max(width, height);
+            width = (int) Math.hypot(width, height);
             height = width;
         }
         return new Dimension(width, height);
@@ -114,6 +111,13 @@ public final class FrameBufferController implements Observer {
 
         double diffX = pointFrameBuffer.x - pointMapPosition.x;
         double diffY = pointFrameBuffer.y - pointMapPosition.y;
+        if (!Rotation.noRotation(this.model.mapViewPosition.getRotation())) {
+            Rotation mapRotation = new Rotation(this.model.mapViewPosition.getRotation().degrees, 0, 0);
+            Point rotated = mapRotation.rotate(diffX, diffY, true);
+            diffX = rotated.x;
+            diffY = rotated.y;
+        }
+
         // we need to compute the pivot distance from the map center
         // as we will need to find the pivot point for the
         // frame buffer (which generally has not the same size as the
@@ -128,8 +132,11 @@ public final class FrameBufferController implements Observer {
 
         float currentScaleFactor = (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
 
-        this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension, (float) pivotDistanceX,
-                (float) pivotDistanceY);
+        float offsetX = this.model.mapViewDimension.getDimension().width * (this.model.mapViewPosition.getMapViewCenterX() - 0.5f);
+        float offsetY = this.model.mapViewDimension.getDimension().height * (this.model.mapViewPosition.getMapViewCenterY() - 0.5f);
+
+        this.frameBuffer.adjustMatrix((float) diffX, (float) diffY, currentScaleFactor, mapViewDimension,
+                (float) pivotDistanceX, (float) pivotDistanceY, offsetX, offsetY);
     }
 
     private boolean dimensionChangeNeeded(Dimension mapViewDimension, double overdrawFactor) {

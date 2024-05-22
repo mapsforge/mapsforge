@@ -21,6 +21,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.util.LayerUtil;
@@ -43,7 +44,7 @@ public class LabelLayer extends Layer {
     }
 
     @Override
-    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
         Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
         if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
@@ -54,7 +55,7 @@ public class LabelLayer extends Layer {
             lastLabelStoreVersion = labelStore.getVersion();
             List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(upperLeft, lowerRight);
 
-            elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems);
+            elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems, rotation);
 
             // TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out
             // what LayerUtil.collisionFreeOrdered gave us is a list where highest priority comes first,
@@ -64,12 +65,12 @@ public class LabelLayer extends Layer {
             Collections.sort(elementsToDraw);
         }
 
-        draw(canvas, topLeftPoint);
+        draw(canvas, topLeftPoint, rotation);
     }
 
-    protected void draw(Canvas canvas, Point topLeftPoint) {
+    protected void draw(Canvas canvas, Point topLeftPoint, Rotation rotation) {
         for (MapElementContainer item : elementsToDraw) {
-            item.draw(canvas, topLeftPoint, this.matrix, this.displayModel.getFilter());
+            item.draw(canvas, topLeftPoint, this.matrix, rotation, this.displayModel.getFilter());
         }
     }
 }
