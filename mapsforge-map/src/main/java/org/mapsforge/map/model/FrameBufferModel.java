@@ -22,6 +22,7 @@ public class FrameBufferModel extends Observable {
     private Dimension dimension;
     private MapPosition mapPosition;
     private double overdrawFactor = 1.2;
+    private boolean scaleEnabled = true;
 
     /**
      * @return the current dimension of the {@code FrameBuffer} (may be null).
@@ -39,6 +40,13 @@ public class FrameBufferModel extends Observable {
 
     public synchronized double getOverdrawFactor() {
         return this.overdrawFactor;
+    }
+
+    /**
+     * @return true if it is scaled between zoom levels, false otherwise.
+     */
+    public synchronized boolean isScaleEnabled() {
+        return this.scaleEnabled;
     }
 
     public void setDimension(Dimension dimension) {
@@ -64,6 +72,16 @@ public class FrameBufferModel extends Observable {
         }
         synchronized (this) {
             this.overdrawFactor = overdrawFactor;
+        }
+        notifyObservers();
+    }
+
+    /**
+     * @param scaleEnabled true if it is scaled between zoom levels, false otherwise.
+     */
+    public void setScaleEnabled(boolean scaleEnabled) {
+        synchronized (this) {
+            this.scaleEnabled = scaleEnabled;
         }
         notifyObservers();
     }

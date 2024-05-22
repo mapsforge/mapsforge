@@ -28,6 +28,11 @@ public final class Parameters {
     public static boolean ANTI_ALIASING = true;
 
     /**
+     * Enable the fractional zoom.
+     */
+    public static boolean FRACTIONAL_ZOOM = false;
+
+    /**
      * Process layer scroll events.
      */
     public static boolean LAYER_SCROLL_EVENT = false;

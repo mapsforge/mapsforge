@@ -164,13 +164,12 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         latLongs5.add(latLong13);
         polygonWithShaderAligned.setPoints(latLongs5);
 
-        Marker marker1 = Utils.createTappableMarker(this,
-                R.drawable.marker_red, latLong1);
+        Marker marker1 = Utils.createTappableMarker(this, R.drawable.marker_red, latLong1, mapView);
 
         Circle circle = new Circle(latLong3, 100, Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0, Style.FILL), null) {
             @Override
             public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (this.contains(layerXY, tapXY, tapLatLong.latitude, mapView.getModel().mapViewPosition.getZoomLevel())) {
+                if (this.contains(layerXY, tapXY, tapLatLong.latitude, mapView)) {
                     Toast.makeText(OverlayMapViewer.this, "Circle long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -179,7 +178,7 @@ public class OverlayMapViewer extends DownloadLayerViewer {
 
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (this.contains(layerXY, tapXY, tapLatLong.latitude, mapView.getModel().mapViewPosition.getZoomLevel())) {
+                if (this.contains(layerXY, tapXY, tapLatLong.latitude, mapView)) {
                     Toast.makeText(OverlayMapViewer.this, "Circle tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -190,7 +189,7 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         FixedPixelCircle fixedPixelCircle = new FixedPixelCircle(latLong6, 20, Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL), null) {
             @Override
             public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (this.contains(layerXY, tapXY)) {
+                if (this.contains(layerXY, tapXY, mapView)) {
                     Toast.makeText(OverlayMapViewer.this, "Circle long press\n" + tapLatLong.toString(), Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -199,7 +198,7 @@ public class OverlayMapViewer extends DownloadLayerViewer {
 
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (this.contains(layerXY, tapXY)) {
+                if (this.contains(layerXY, tapXY, mapView)) {
                     Toast.makeText(OverlayMapViewer.this, "Circle tap\n" + tapLatLong.toString(), Toast.LENGTH_SHORT).show();
                     return true;
                 }

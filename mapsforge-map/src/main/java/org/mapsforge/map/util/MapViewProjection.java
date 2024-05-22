@@ -20,6 +20,7 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.view.MapView;
 
 public class MapViewProjection {
@@ -52,7 +53,12 @@ public class MapViewProjection {
 
         // calculate the pixel coordinates of the top left corner
         LatLong latLong = mapPosition.latLong;
-        long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
+        long mapSize;
+        if (Parameters.FRACTIONAL_ZOOM) {
+            mapSize = MercatorProjection.getMapSizeWithScaleFactor(this.mapView.getModel().mapViewPosition.getScaleFactor(), this.mapView.getModel().displayModel.getTileSize());
+        } else {
+            mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
+        }
         double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
         double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
         pixelX -= this.mapView.getWidth() >> 1;
@@ -116,7 +122,12 @@ public class MapViewProjection {
 
         // calculate the pixel coordinates of the top left corner
         LatLong latLong = mapPosition.latLong;
-        long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
+        long mapSize;
+        if (Parameters.FRACTIONAL_ZOOM) {
+            mapSize = MercatorProjection.getMapSizeWithScaleFactor(this.mapView.getModel().mapViewPosition.getScaleFactor(), this.mapView.getModel().displayModel.getTileSize());
+        } else {
+            mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, this.mapView.getModel().displayModel.getTileSize());
+        }
         double pixelX = MercatorProjection.longitudeToPixelX(latLong.longitude, mapSize);
         double pixelY = MercatorProjection.latitudeToPixelY(latLong.latitude, mapSize);
         pixelX -= this.mapView.getWidth() >> 1;

@@ -19,6 +19,7 @@ package org.mapsforge.map.layer.overlay;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.map.view.MapView;
 
 /**
  * A Circle class that is always drawn with the same size in pixels.
@@ -51,10 +52,12 @@ public class FixedPixelCircle extends Circle {
         super(latLong, radius, paintFill, paintStroke, keepAligned);
     }
 
-    public synchronized boolean contains(Point center, Point point) {
+    public synchronized boolean contains(Point center, Point point, MapView mapView) {
+        double scaleFactor = Math.pow(2, mapView.getModel().mapViewPosition.getZoom())
+                / Math.pow(2, mapView.getModel().mapViewPosition.getZoomLevel());
         // Touch min 20x20 px at baseline mdpi (160dpi)
-        double distance = Math.max(20 / 2 * this.displayModel.getScaleFactor(),
-                getRadius() * (this.scaleRadius ? this.displayModel.getScaleFactor() : 1));
+        double distance = Math.max(20 * 0.5 * this.displayModel.getScaleFactor(),
+                getRadius() * (this.scaleRadius ? this.displayModel.getScaleFactor() : 1) * scaleFactor);
         return center.distance(point) < distance;
     }
 

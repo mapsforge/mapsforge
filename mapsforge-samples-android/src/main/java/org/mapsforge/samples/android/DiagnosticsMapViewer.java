@@ -15,6 +15,7 @@
  */
 package org.mapsforge.samples.android;
 
+import android.view.View;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
@@ -23,6 +24,29 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
  * Viewer with tile grid and coordinates visible and frame counter displayed.
  */
 public class DiagnosticsMapViewer extends DownloadLayerViewer {
+
+    private static final double ZOOM_OFFSET = 0.5;
+
+    @Override
+    protected void createControls() {
+        super.createControls();
+
+        mapView.getMapZoomControls().getButtonZoomIn().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapView.onZoomEvent();
+                mapView.getModel().mapViewPosition.setZoom(mapView.getModel().mapViewPosition.getZoom() + ZOOM_OFFSET);
+            }
+        });
+        mapView.getMapZoomControls().getButtonZoomOut().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapView.onZoomEvent();
+                mapView.getModel().mapViewPosition.setZoom(Math.max(0, mapView.getModel().mapViewPosition.getZoom() - ZOOM_OFFSET));
+            }
+        });
+    }
+
     @Override
     protected void createLayers() {
         super.createLayers();

@@ -130,7 +130,7 @@ public final class FrameBufferController implements Observer {
             pivotDistanceY = pivotXY.y - pointFrameBuffer.y;
         }
 
-        float currentScaleFactor = (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel));
+        float currentScaleFactor = this.model.frameBufferModel.isScaleEnabled() ? (float) (scaleFactor / Math.pow(2, mapPositionFrameBuffer.zoomLevel)) : 1;
 
         float offsetX = this.model.mapViewDimension.getDimension().width * (this.model.mapViewPosition.getMapViewCenterX() - 0.5f);
         float offsetY = this.model.mapViewDimension.getDimension().height * (this.model.mapViewPosition.getMapViewCenterY() - 0.5f);

@@ -35,13 +35,13 @@ public class ModelTest {
         MapPosition mapPosition2 = new MapPosition(new LatLong(2, 2), (byte) 2);
 
         Model model = new Model();
-        model.mapViewPosition.setMapPosition(mapPosition1);
+        model.mapViewPosition.setMapPosition(mapPosition1, false);
         Assert.assertEquals(mapPosition1, model.mapViewPosition.getMapPosition());
 
         PreferencesFacade preferencesFacade = new DummyPreferences();
         model.save(preferencesFacade);
 
-        model.mapViewPosition.setMapPosition(mapPosition2);
+        model.mapViewPosition.setMapPosition(mapPosition2, false);
         Assert.assertEquals(mapPosition2, model.mapViewPosition.getMapPosition());
 
         model.init(preferencesFacade);

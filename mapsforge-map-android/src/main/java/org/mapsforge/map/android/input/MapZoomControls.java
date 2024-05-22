@@ -177,6 +177,14 @@ public class MapZoomControls extends LinearLayout implements Observer {
         setVisibility(visibility);
     }
 
+    public android.widget.ZoomButton getButtonZoomIn() {
+        return buttonZoomIn;
+    }
+
+    public android.widget.ZoomButton getButtonZoomOut() {
+        return buttonZoomOut;
+    }
+
     /**
      * @return the current gravity for the placing of the zoom controls.
      * @see Gravity
