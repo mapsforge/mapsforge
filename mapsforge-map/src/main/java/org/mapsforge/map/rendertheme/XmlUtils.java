@@ -188,9 +188,9 @@ public final class XmlUtils {
         // Fallback to internal resources
         if (inputStream == null) {
             inputStream = inputStreamFromJar("/assets/", src);
-            if (inputStream != null) {
+            /*if (inputStream != null) {
                 LOGGER.info("internal resource: " + src);
-            }
+            }*/
         }
 
         if (inputStream != null) {
