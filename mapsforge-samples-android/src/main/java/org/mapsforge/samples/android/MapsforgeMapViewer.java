@@ -34,10 +34,10 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.ZipRenderTheme;
 import org.mapsforge.map.rendertheme.ZipXmlThemeResourceProvider;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -86,11 +86,11 @@ public class MapsforgeMapViewer extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.theme_default) {
-            loadTheme(InternalRenderTheme.DEFAULT);
+            loadTheme(MapsforgeThemes.DEFAULT);
             item.setChecked(true);
             return true;
         } else if (itemId == R.id.theme_osmarender) {
-            loadTheme(InternalRenderTheme.OSMARENDER);
+            loadTheme(MapsforgeThemes.OSMARENDER);
             item.setChecked(true);
             return true;
         } else if (itemId == R.id.theme_external_archive) {
@@ -133,7 +133,7 @@ public class MapsforgeMapViewer extends Activity {
                 MapDataStore mapDataStore = new MapFile(fis);
                 tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
                         mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-                tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
+                tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.DEFAULT);
 
                 mapView.getLayerManager().getLayers().add(tileRendererLayer);
 

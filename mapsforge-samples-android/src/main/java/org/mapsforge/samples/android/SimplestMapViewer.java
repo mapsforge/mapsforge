@@ -22,8 +22,8 @@ import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.util.MapViewerTemplate;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
 /**
  * The simplest form of creating a map viewer based on the MapViewerTemplate.
@@ -38,7 +38,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
      */
     @Override
     protected XmlRenderTheme getRenderTheme() {
-        return InternalRenderTheme.DEFAULT;
+        return MapsforgeThemes.DEFAULT;
     }
 
     /**

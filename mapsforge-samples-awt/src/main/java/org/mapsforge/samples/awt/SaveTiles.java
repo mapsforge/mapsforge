@@ -27,8 +27,8 @@ import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
 
 import java.io.File;
@@ -63,7 +63,7 @@ public class SaveTiles {
 
         // Create requirements.
         GraphicFactory gf = AwtGraphicFactory.INSTANCE;
-        XmlRenderTheme theme = InternalRenderTheme.OSMARENDER;
+        XmlRenderTheme theme = MapsforgeThemes.OSMARENDER;
         DisplayModel dm = new FixedTileSizeDisplayModel(256);
         RenderThemeFuture rtf = new RenderThemeFuture(gf, theme, dm);
         RendererJob theJob = new RendererJob(tile, mapData, rtf, dm, 1.0f, false, false);

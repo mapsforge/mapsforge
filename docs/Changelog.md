@@ -2,6 +2,8 @@
 
 ## New since 0.21.0
 
+- `mapsforge-themes` change package [#1135](https://github.com/mapsforge/mapsforge/issues/1135)
+  - Rename `InternalRenderTheme` to `MapsforgeThemes`
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.22.0)
 
