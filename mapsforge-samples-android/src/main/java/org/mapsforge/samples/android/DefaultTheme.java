@@ -14,8 +14,8 @@
  */
 package org.mapsforge.samples.android;
 
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
 /**
  * Standard map view with use of default theme.
@@ -29,6 +29,6 @@ public class DefaultTheme extends SamplesBaseActivity {
      */
     @Override
     protected XmlRenderTheme getRenderTheme() {
-        return InternalRenderTheme.DEFAULT;
+        return MapsforgeThemes.DEFAULT;
     }
 }

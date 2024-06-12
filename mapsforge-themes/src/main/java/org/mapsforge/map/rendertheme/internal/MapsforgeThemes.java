@@ -14,14 +14,18 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.mapsforge.map.rendertheme;
+package org.mapsforge.map.rendertheme.internal;
+
+import org.mapsforge.map.rendertheme.XmlRenderTheme;
+import org.mapsforge.map.rendertheme.XmlRenderThemeMenuCallback;
+import org.mapsforge.map.rendertheme.XmlThemeResourceProvider;
 
 import java.io.InputStream;
 
 /**
  * Enumeration of all internal rendering themes.
  */
-public enum InternalRenderTheme implements XmlRenderTheme {
+public enum MapsforgeThemes implements XmlRenderTheme {
 
     DEFAULT("/assets/mapsforge/default.xml"),
     OSMARENDER("/assets/mapsforge/osmarender.xml");
@@ -29,7 +33,7 @@ public enum InternalRenderTheme implements XmlRenderTheme {
     private XmlRenderThemeMenuCallback menuCallback;
     private final String path;
 
-    InternalRenderTheme(String path) {
+    MapsforgeThemes(String path) {
         this.path = path;
     }
 

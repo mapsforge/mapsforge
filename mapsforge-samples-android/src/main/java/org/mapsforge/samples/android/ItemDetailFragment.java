@@ -25,7 +25,7 @@ import org.mapsforge.map.android.util.AndroidUtil;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 import org.mapsforge.samples.android.dummy.DummyContent;
 
 import java.io.File;
@@ -103,7 +103,7 @@ public class ItemDetailFragment extends Fragment {
                 this.mapView.getModel().displayModel.getTileSize(), 1.0f, 1.5);
         this.mapView.getLayerManager().getLayers().add(AndroidUtil.createTileRendererLayer(
                 tileCache, this.mapView.getModel().mapViewPosition, getMapFile(),
-                InternalRenderTheme.DEFAULT));
+                MapsforgeThemes.DEFAULT));
 
         this.mapView.setCenter(this.dummyItem.location);
         this.mapView.setZoomLevel((byte) 16);

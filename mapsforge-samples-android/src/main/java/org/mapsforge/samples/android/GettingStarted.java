@@ -27,7 +27,7 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
 import java.io.FileInputStream;
 
@@ -115,7 +115,7 @@ public class GettingStarted extends Activity {
             MapDataStore mapDataStore = new MapFile(fis);
             TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
                     mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-            tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
+            tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.DEFAULT);
 
             /*
              * On its own a tileRendererLayer does not know where to display the map, so we need to

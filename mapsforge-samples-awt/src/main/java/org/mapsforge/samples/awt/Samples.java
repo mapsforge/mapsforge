@@ -47,7 +47,7 @@ import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.Model;
 import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -199,7 +199,7 @@ public final class Samples {
                 return true;
             }
         };
-        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.DEFAULT);
+        tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.DEFAULT);
         return tileRendererLayer;
     }
 

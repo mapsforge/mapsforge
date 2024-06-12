@@ -21,23 +21,24 @@ import org.junit.Test;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.model.DisplayModel;
+import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 import org.mapsforge.map.rendertheme.rule.RenderThemeHandler;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class InternalRenderThemeTest {
+public class MapsforgeThemesTest {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
 
     @Test
     public void defaultTest() throws XmlPullParserException, IOException {
-        XmlRenderTheme xmlRenderTheme = InternalRenderTheme.DEFAULT;
+        XmlRenderTheme xmlRenderTheme = MapsforgeThemes.DEFAULT;
         Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
     }
 
     @Test
     public void osmarenderTest() throws XmlPullParserException, IOException {
-        XmlRenderTheme xmlRenderTheme = InternalRenderTheme.OSMARENDER;
+        XmlRenderTheme xmlRenderTheme = MapsforgeThemes.OSMARENDER;
         Assert.assertNotNull(RenderThemeHandler.getRenderTheme(GRAPHIC_FACTORY, new DisplayModel(), xmlRenderTheme));
     }
 }
