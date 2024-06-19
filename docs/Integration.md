@@ -1,6 +1,6 @@
 # Integration guide
 
-This article describes how to integrate the library in your project.
+This article describes how to integrate the library in your project with JitPack ([instructions](https://jitpack.io/#mapsforge/mapsforge)).
 
 ```groovy
 repositories {
