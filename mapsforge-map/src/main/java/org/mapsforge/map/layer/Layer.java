@@ -23,10 +23,14 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
 
+import java.util.logging.Logger;
+
 public abstract class Layer {
     protected DisplayModel displayModel;
     private Redrawer assignedRedrawer;
     private boolean visible = true;
+
+    private static final Logger LOGGER = Logger.getLogger(Layer.class.getName());
 
     /**
      * Draws this {@code Layer} on the given canvas.
@@ -169,7 +173,8 @@ public abstract class Layer {
 
     final synchronized void assign(Redrawer redrawer) {
         if (this.assignedRedrawer != null) {
-            throw new IllegalStateException("layer already assigned");
+            LOGGER.warning("layer already assigned");
+            return;
         }
 
         this.assignedRedrawer = redrawer;
@@ -178,7 +183,8 @@ public abstract class Layer {
 
     final synchronized void unassign() {
         if (this.assignedRedrawer == null) {
-            throw new IllegalStateException("layer is not assigned");
+            LOGGER.warning("layer is not assigned");
+            return;
         }
 
         this.assignedRedrawer = null;
