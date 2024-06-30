@@ -27,10 +27,7 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.*;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.Dimension;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.*;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.android.input.MapZoomControls;
 import org.mapsforge.map.android.input.TouchGestureHandler;
@@ -48,7 +45,10 @@ import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.MapScaleBar;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.MapViewProjection;
-import org.mapsforge.map.view.*;
+import org.mapsforge.map.view.FpsCounter;
+import org.mapsforge.map.view.FrameBuffer;
+import org.mapsforge.map.view.FrameBufferHA3;
+import org.mapsforge.map.view.InputListener;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -236,8 +236,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
 
     @Override
     public BoundingBox getBoundingBox() {
-        return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(),
-                getDimension(), this.model.displayModel.getTileSize());
+        return MapPositionUtil.getBoundingBox(this.model.mapViewPosition.getMapPosition(), getMapRotation(),
+                this.model.displayModel.getTileSize(), getDimension(), getMapViewCenterX(), getMapViewCenterY());
     }
 
     @Override
@@ -261,8 +261,23 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     }
 
     @Override
+    public Rotation getMapRotation() {
+        return this.getModel().mapViewPosition.getRotation();
+    }
+
+    @Override
     public MapScaleBar getMapScaleBar() {
         return this.mapScaleBar;
+    }
+
+    @Override
+    public float getMapViewCenterX() {
+        return this.model.mapViewPosition.getMapViewCenterX();
+    }
+
+    @Override
+    public float getMapViewCenterY() {
+        return this.model.mapViewPosition.getMapViewCenterY();
     }
 
     @Override
@@ -280,6 +295,16 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     @Override
     public Model getModel() {
         return this.model;
+    }
+
+    @Override
+    public float getOffsetX() {
+        return getWidth() * (getMapViewCenterX() - 0.5f);
+    }
+
+    @Override
+    public float getOffsetY() {
+        return getHeight() * (getMapViewCenterY() - 0.5f);
     }
 
     public TouchGestureHandler getTouchGestureHandler() {
@@ -310,7 +335,7 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     @Override
     protected void onDraw(Canvas androidCanvas) {
         org.mapsforge.core.graphics.Canvas graphicContext = AndroidGraphicFactory.createGraphicContext(androidCanvas);
-        this.frameBuffer.draw(graphicContext);
+        this.frameBuffer.draw(graphicContext, getMapRotation());
         if (this.mapScaleBar != null) {
             this.mapScaleBar.draw(graphicContext);
         }
@@ -434,6 +459,11 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     @Override
     protected void onSizeChanged(int width, int height, int oldWidth, int oldHeight) {
         this.model.mapViewDimension.setDimension(new Dimension(width, height));
+
+        if (oldWidth != 0 && oldHeight != 0 && !Rotation.noRotation(getMapRotation())) {
+            rotate(new Rotation(getMapRotation().degrees, width * 0.5f, height * 0.5f));
+            layerManager.redrawLayers();
+        }
     }
 
     @Override
@@ -446,6 +476,8 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
         if (this.gestureDetectorExternal != null && this.gestureDetectorExternal.onTouchEvent(event)) {
             return true;
         }
+
+        this.touchGestureHandler.onTouchEvent(event);
 
         boolean retVal = this.scaleGestureDetector.onTouchEvent(event);
         if (!this.scaleGestureDetector.isInProgress()) {
@@ -485,6 +517,17 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
     }
 
     /**
+     * Rotates the view by degrees around pivot point.
+     *
+     * @param rotation the rotation definition.
+     */
+    @Override
+    public void rotate(Rotation rotation) {
+        this.getModel().mapViewPosition.setRotation(rotation);
+        repaint();
+    }
+
+    /**
      * Sets the visibility of the zoom controls.
      *
      * @param showZoomControls true if the zoom controls should be visible, false otherwise.
@@ -508,6 +551,16 @@ public class MapView extends ViewGroup implements org.mapsforge.map.view.MapView
             this.mapScaleBar.destroy();
         }
         this.mapScaleBar = mapScaleBar;
+    }
+
+    @Override
+    public void setMapViewCenterX(float mapViewCenterX) {
+        this.model.mapViewPosition.setMapViewCenterX(mapViewCenterX);
+    }
+
+    @Override
+    public void setMapViewCenterY(float mapViewCenterY) {
+        this.model.mapViewPosition.setMapViewCenterY(mapViewCenterY);
     }
 
     @Override

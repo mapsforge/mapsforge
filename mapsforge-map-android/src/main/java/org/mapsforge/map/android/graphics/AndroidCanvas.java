@@ -31,6 +31,7 @@ import org.mapsforge.core.graphics.Path;
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 class AndroidCanvas implements Canvas {
     private static final float[] INVERT_MATRIX = {
@@ -285,6 +286,30 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
+    public void restore() {
+        this.canvas.restore();
+    }
+
+    @Override
+    public void rotate(float degrees, float px, float py) {
+        if (degrees != 0) {
+            this.canvas.rotate(degrees, px, py);
+        }
+    }
+
+    @Override
+    public void rotate(Rotation rotation) {
+        if (!Rotation.noRotation(rotation)) {
+            rotate(rotation.degrees, rotation.px, rotation.py);
+        }
+    }
+
+    @Override
+    public void save() {
+        this.canvas.save();
+    }
+
+    @Override
     public void setAntiAlias(boolean aa) {
         this.bitmapPaint.setAntiAlias(aa);
     }
@@ -292,6 +317,14 @@ class AndroidCanvas implements Canvas {
     @Override
     public void setBitmap(Bitmap bitmap) {
         this.canvas.setBitmap(AndroidGraphicFactory.getBitmap(bitmap));
+    }
+
+    @Override
+    public void setBitmap(Bitmap bitmap, Rotation rotation) {
+        this.canvas.setBitmap(AndroidGraphicFactory.getBitmap(bitmap));
+        //android.graphics.Matrix matrix = new android.graphics.Matrix();
+        //matrix.preRotate(rotation.degrees, rotation.px, rotation.py);
+        //this.canvas.setMatrix(matrix);
     }
 
     @Override
@@ -448,6 +481,11 @@ class AndroidCanvas implements Canvas {
             this.canvas.drawBitmap(scaleTemp, drawOffsetLeft, drawOffsetTop, shadePaint);
         }
         this.canvas.restore();
+    }
+
+    @Override
+    public void translate(float dx, float dy) {
+        this.canvas.translate(dx, dy);
     }
 
     private static class HilshadingTemps {

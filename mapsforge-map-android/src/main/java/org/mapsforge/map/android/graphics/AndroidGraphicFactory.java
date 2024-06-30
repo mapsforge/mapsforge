@@ -238,9 +238,11 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public PointTextContainer createPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+    public PointTextContainer createPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
+                                                       Display display, int priority, String text, Paint paintFront, Paint paintBack,
                                                        SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-        return new AndroidPointTextContainer(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+        return new AndroidPointTextContainer(xy, horizontalOffset, verticalOffset, display,
+                priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
     }
 
     @Override

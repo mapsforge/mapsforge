@@ -17,18 +17,11 @@
  */
 package org.mapsforge.core.mapelements;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.Filter;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.GraphicUtils;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.TextOrientation;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.LineSegment;
 import org.mapsforge.core.model.LineString;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 
 public class WayTextContainer extends MapElementContainer {
     private final GraphicFactory graphicFactory;
@@ -56,8 +49,8 @@ public class WayTextContainer extends MapElementContainer {
     }
 
     @Override
-    public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
-        Path path = generatePath(origin);
+    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter) {
+        Path path = generatePath(origin, rotation);
 
         if (this.paintBack != null) {
             int color = this.paintBack.getColor();
@@ -79,22 +72,37 @@ public class WayTextContainer extends MapElementContainer {
         }
     }
 
-    private Path generatePath(Point origin) {
+    private Path generatePath(Point origin, Rotation rotation) {
         // compute rotation so text isn't upside down
         LineSegment firstSegment = this.lineString.segments.get(0);
+        LineSegment lastSegment = this.lineString.segments.get(this.lineString.segments.size() - 1);
         boolean doInvert;
         switch (textOrientation) {
             case AUTO_DOWN:
-                doInvert = firstSegment.end.x > firstSegment.start.x;
+                if (!Rotation.noRotation(rotation)) {
+                    Point startRotated = rotation.rotate(firstSegment.start, true);
+                    Point endRotated = rotation.rotate(lastSegment.end, true);
+                    doInvert = endRotated.x > startRotated.x;
+                } else {
+                    doInvert = lastSegment.end.x > firstSegment.start.x;
+                }
                 break;
             case RIGHT:
+                // TODO Rotation
                 doInvert = false;
                 break;
             case LEFT:
+                // TODO Rotation
                 doInvert = true;
                 break;
             default: // AUTO
-                doInvert = firstSegment.end.x <= firstSegment.start.x;
+                if (!Rotation.noRotation(rotation)) {
+                    Point startRotated = rotation.rotate(firstSegment.start, true);
+                    Point endRotated = rotation.rotate(lastSegment.end, true);
+                    doInvert = endRotated.x <= startRotated.x;
+                } else {
+                    doInvert = lastSegment.end.x <= firstSegment.start.x;
+                }
                 break;
         }
 

@@ -21,6 +21,7 @@ package org.mapsforge.map.model;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.model.common.PreferencesFacade;
 
@@ -41,46 +42,6 @@ public interface IMapViewPosition {
      * of the screen after the animation. The position is assured to be within the map limit.
      */
     void animateTo(final LatLong latLong);
-
-    /**
-     * Animates the new zoom level of the map. If a pivot is set the zoom takes place around pivot
-     * and pivot is deleted afterwards.
-     * <p/>
-     * // TODO Better ignore/delete pivot or set pivot with this method
-     *
-     * @throws IllegalArgumentException if the zoom level is negative.
-     */
-    //void animateTo(byte zoomLevel);
-
-    /**
-     * Animates the map to the given zoomlevel (zoom). The zoomlevel is assured to be in between
-     * zoomLevelMin and zoomLevelMax. The center is moved to the given position while zooming.
-     * <p>
-     * NOT used internally.
-     *
-     * @param latLong   the new center of the map or null.
-     * @param zoomLevel the new zoomlevel.
-     */
-    //void animateTo(LatLong latLong, byte zoomLevel);
-
-    /**
-     * This method moves and zooms the map to the desired position and zoomlevel difference. Note
-     * that the pivot is NOT the center of the screen but instead points to the lat/lon coordinates
-     * which should be fixed while moving/zooming everything around this coordinate. The new center
-     * of the screen is set based on the pivot (which should not move on screen) and the given new
-     * zoomLevel.
-     * <p>
-     * TouchGestureHandler calls this method as an alternative to mapViewPosition.setPivot(pivot)
-     * and mapViewPosition.moveCenterAndZoom(moveHorizontal, moveVertical, zoomLevelDiff).
-     * <p>
-     * Internal use only.
-     *
-     * @param pivot the pivot point which should be fixed during the animation or null if the map
-     *              should be zoomed around the center.
-     * @param zoomLevelDiff the difference of the zoomlevel, positive values for zooming in,
-     *                      negative values for zooming-out.
-     */
-    //void animateToPivot(LatLong pivot, byte zoomLevelDiff);
 
     /**
      * @return true if animation is in progress or animation is in the queue for being processed.
@@ -114,7 +75,13 @@ public interface IMapViewPosition {
      */
     MapPosition getMapPosition();
 
+    float getMapViewCenterX();
+
+    float getMapViewCenterY();
+
     LatLong getPivot();
+
+    Rotation getRotation();
 
     /**
      * Gets the current scale factor. The scale factor is normally 2^zoomLevel but it may differ if
@@ -210,20 +177,18 @@ public interface IMapViewPosition {
      */
     void setMapPosition(MapPosition mapPosition, boolean animated);
 
+    void setMapViewCenterX(float mapViewCenterX);
+
+    void setMapViewCenterY(float mapViewCenterY);
+
     void setPivot(LatLong pivot);
 
-    void setScaleFactorAdjustment(double scaleFactorCumulative);
-
     /**
-     * Sets the scale factor adjustment. This is the multiplication factor between the last
-     * zoomLevel and the next scale factor.
-     *
-     * This method is used by pinch-to-zoom functionality.
-     *
-     * @param adjustment the adjustment based on the current zoom level.
-     * @param pivot      the pivot.
+     * Sets the new rotation of the map.
      */
-    //void setScaleFactorAdjustment(LatLong pivot, double adjustment);
+    void setRotation(Rotation rotation);
+
+    void setScaleFactorAdjustment(double scaleFactorCumulative);
 
     /**
      * Sets the new zoom level of the map.
@@ -250,21 +215,7 @@ public interface IMapViewPosition {
 
     void setZoomLevelMin(byte zoomLevelMin);
 
-    /**
-     * Stops running or queued animations and wait until the animation has been stopped.
-     */
-    //void stopAnimation();
-
     void zoom(byte zoomLevelDiff);
-
-    /**
-     * Changes the current zoom level by the given value if possible.
-     * <p/>
-     * The default zoom level changes are animated.
-     *
-     * @param pivot the pivot to zoom around or null to zoom around the center of the screen.
-     */
-    //void zoom(LatLong pivot, byte zoomLevelDiff);
 
     /**
      * Increases the current zoom level by one if possible. Zooming is always around the center.

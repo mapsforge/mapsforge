@@ -299,7 +299,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
             MapWorkerPool.DEBUG_TIMING = preferences.getBoolean(SamplesApplication.SETTING_DEBUG_TIMING, false);
         }
         if (SamplesApplication.SETTING_RENDERING_THREADS.equals(key)) {
-            Parameters.NUMBER_OF_THREADS = preferences.getInt(SamplesApplication.SETTING_RENDERING_THREADS, 1);
+            Parameters.NUMBER_OF_THREADS = preferences.getInt(SamplesApplication.SETTING_RENDERING_THREADS, Parameters.NUMBER_OF_THREADS);
             recreate();
         }
         if (SamplesApplication.SETTING_WAYFILTERING_DISTANCE.equals(key) ||

@@ -20,6 +20,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
@@ -49,12 +50,12 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
     }
 
     @Override
-    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         if (zoomLevel < this.tileSource.getZoomLevelMin() || zoomLevel > this.tileSource.getZoomLevelMax()) {
             return;
         }
 
-        super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+        super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotation);
     }
 
     /**
@@ -138,8 +139,8 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
     /**
      * Whether the tile is stale and should be refreshed.
      * <p/>
-     * This method is called from {@link #draw(BoundingBox, byte, Canvas, Point)} to determine whether the tile needs to
-     * be refreshed.
+     * This method is called from {@link #draw(BoundingBox, byte, Canvas, Point, Rotation)} to determine whether the
+     * tile needs to be refreshed.
      * <p/>
      * A tile is considered stale if one or more of the following two conditions apply:
      * <ul>

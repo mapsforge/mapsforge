@@ -44,7 +44,7 @@
         android:summary="@string/preferences_debug_timing_desc"
         android:title="@string/preferences_debug_timing" />
     <EditTextPreference
-        android:defaultValue="1"
+        android:defaultValue="4"
         android:inputType="number"
         android:key="rendering_threads"
         android:summary="@string/preferences_rendering_threads_desc"

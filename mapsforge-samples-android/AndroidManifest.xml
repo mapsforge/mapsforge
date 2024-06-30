@@ -119,6 +119,9 @@
             android:name=".ReverseGeocodeViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
+            android:name=".RotationMapViewer"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
             android:name=".SimplestMapViewer"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity

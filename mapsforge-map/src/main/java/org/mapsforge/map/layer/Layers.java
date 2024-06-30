@@ -357,6 +357,13 @@ public class Layers implements Iterable<Layer>, RandomAccess {
     }
 
     /**
+     * Not synchronized, read only.
+     */
+    public List<Layer> getLayers() {
+        return this.layersList;
+    }
+
+    /**
      * @see List#indexOf(Object)
      */
     public synchronized int indexOf(Layer layer) {

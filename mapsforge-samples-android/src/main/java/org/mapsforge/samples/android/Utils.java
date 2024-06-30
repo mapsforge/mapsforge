@@ -68,8 +68,7 @@ public final class Utils {
         }
     }
 
-    static Marker createMarker(Context c, int resourceIdentifier,
-                               LatLong latLong) {
+    static Marker createMarker(Context c, int resourceIdentifier, LatLong latLong) {
         Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(c.getResources(), resourceIdentifier));
         return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2);
     }
@@ -82,18 +81,23 @@ public final class Utils {
         return paint;
     }
 
-    static Marker createTappableMarker(final Context c, int resourceIdentifier,
-                                       LatLong latLong) {
+    static Marker createTappableMarker(Context c, int resourceIdentifier, LatLong latLong) {
         Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(c.getResources(), resourceIdentifier));
         bitmap.incrementRefCount();
         return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {
             @Override
-            public boolean onTap(LatLong geoPoint, Point viewPosition,
-                                 Point tapPoint) {
-                if (contains(viewPosition, tapPoint)) {
-                    Toast.makeText(c,
-                            "The Marker was tapped " + geoPoint.toString(),
-                            Toast.LENGTH_SHORT).show();
+            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(layerXY, tapXY)) {
+                    Toast.makeText(c, "Marker long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(layerXY, tapXY)) {
+                    Toast.makeText(c, "Marker tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;

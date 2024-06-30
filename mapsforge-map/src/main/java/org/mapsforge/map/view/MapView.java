@@ -18,6 +18,7 @@ package org.mapsforge.map.view;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.LatLong;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.LayerManager;
 import org.mapsforge.map.model.Model;
@@ -54,11 +55,21 @@ public interface MapView {
 
     LayerManager getLayerManager();
 
+    Rotation getMapRotation();
+
     MapScaleBar getMapScaleBar();
+
+    float getMapViewCenterX();
+
+    float getMapViewCenterY();
 
     MapViewProjection getMapViewProjection();
 
     Model getModel();
+
+    float getOffsetX();
+
+    float getOffsetY();
 
     int getWidth();
 
@@ -67,9 +78,15 @@ public interface MapView {
      */
     void repaint();
 
+    void rotate(Rotation rotation);
+
     void setCenter(LatLong center);
 
     void setMapScaleBar(MapScaleBar mapScaleBar);
+
+    void setMapViewCenterX(float mapViewCenterY);
+
+    void setMapViewCenterY(float mapViewCenterY);
 
     void setZoomLevel(byte zoomLevel);
 

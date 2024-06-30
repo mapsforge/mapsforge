@@ -41,14 +41,18 @@ public final class Parameters {
      * The default number of threads is one greater than the number of processors, as one thread is
      * likely to be blocked on I/O reading map data. Technically this value can change to a better
      * implementation, maybe one that also takes the available memory into account would be good.
-     * For stability reasons (see #591), we set default number of threads to 1.
      */
-    public static int NUMBER_OF_THREADS = 1;//Runtime.getRuntime().availableProcessors() + 1;
+    public static int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors() + 1;
 
     /**
      * Parent tiles rendering mode.
      */
     public static ParentTilesRendering PARENT_TILES_RENDERING = ParentTilesRendering.QUALITY;
+
+    /**
+     * Enable the rotation gesture.
+     */
+    public static boolean ROTATION_GESTURE = false;
 
     /**
      * If square frame buffer is enabled, the frame buffer allocated for drawing will be

@@ -18,16 +18,12 @@ package org.mapsforge.map.util;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.TilePosition;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class LayerUtil {
 
@@ -115,17 +111,16 @@ public final class LayerUtil {
      * @param input list of MapElements
      * @return collision-free, ordered list, a subset of the input.
      */
-
-    public static List<MapElementContainer> collisionFreeOrdered(List<MapElementContainer> input) {
+    public static List<MapElementContainer> collisionFreeOrdered(List<MapElementContainer> input, Rotation rotation) {
         // sort items by priority (highest first)
         Collections.sort(input, Collections.reverseOrder());
         // in order of priority, see if an item can be drawn, i.e. none of the items
         // in the currentItemsToDraw list clashes with it.
-        List<MapElementContainer> output = new LinkedList<MapElementContainer>();
+        List<MapElementContainer> output = new LinkedList<>();
         for (MapElementContainer item : input) {
             boolean hasSpace = true;
             for (MapElementContainer outputElement : output) {
-                if (outputElement.clashesWith(item)) {
+                if (outputElement.clashesWith(item, rotation)) {
                     hasSpace = false;
                     break;
                 }

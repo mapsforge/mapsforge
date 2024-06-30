@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.GroupLayer;
@@ -140,6 +141,9 @@ public class PoiSearchViewer extends DefaultTheme {
         public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
             // GroupLayer does not have a position, layerXY is null
             layerXY = mapView.getMapViewProjection().toPixels(getPosition());
+            if (!Rotation.noRotation(mapView.getMapRotation()) && layerXY != null) {
+                layerXY = mapView.getMapRotation().rotate(layerXY, true);
+            }
             if (contains(layerXY, tapXY)) {
                 Toast.makeText(PoiSearchViewer.this, pointOfInterest.getName(), Toast.LENGTH_SHORT).show();
                 return true;

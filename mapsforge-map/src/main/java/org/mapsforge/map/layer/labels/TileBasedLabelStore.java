@@ -15,15 +15,12 @@
 package org.mapsforge.map.layer.labels;
 
 import org.mapsforge.core.mapelements.MapElementContainer;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.WorkingSetCache;
 import org.mapsforge.map.util.LayerUtil;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A LabelStore where the data is stored per tile.
@@ -51,7 +48,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
      * @param mapItems the map elements.
      */
     public synchronized void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
-        this.put(tile, LayerUtil.collisionFreeOrdered(mapItems));
+        this.put(tile, LayerUtil.collisionFreeOrdered(mapItems, Rotation.NULL_ROTATION));
         this.version += 1;
     }
 

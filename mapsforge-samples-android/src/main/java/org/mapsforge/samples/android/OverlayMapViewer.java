@@ -17,7 +17,6 @@ package org.mapsforge.samples.android;
 
 import android.graphics.BitmapFactory;
 import android.widget.Toast;
-
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
@@ -75,8 +74,17 @@ public class OverlayMapViewer extends DownloadLayerViewer {
 
         Polyline polylineWithShader = new Polyline(shaderPaint, AndroidGraphicFactory.INSTANCE, true) {
             @Override
+            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(tapXY, mapView)) {
+                    Toast.makeText(OverlayMapViewer.this, "Polyline long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (contains(tapXY, mapView.getMapViewProjection())) {
+                if (contains(tapXY, mapView)) {
                     Toast.makeText(OverlayMapViewer.this, "Polyline tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -97,8 +105,17 @@ public class OverlayMapViewer extends DownloadLayerViewer {
                 Style.STROKE);
         Polygon polygon = new Polygon(paintFill, paintStroke, AndroidGraphicFactory.INSTANCE) {
             @Override
+            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(tapXY, mapView)) {
+                    Toast.makeText(OverlayMapViewer.this, "Polygon long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (contains(tapLatLong)) {
+                if (contains(tapXY, mapView)) {
                     Toast.makeText(OverlayMapViewer.this, "Polygon tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -150,36 +167,40 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         Marker marker1 = Utils.createTappableMarker(this,
                 R.drawable.marker_red, latLong1);
 
-        Circle circle = new Circle(latLong3, 100, Utils.createPaint(
-                AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0,
-                Style.FILL), null) {
+        Circle circle = new Circle(latLong3, 100, Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.WHITE), 0, Style.FILL), null) {
             @Override
-            public boolean onTap(LatLong geoPoint, Point viewPosition,
-                                 Point tapPoint) {
-                if (this.contains(viewPosition, tapPoint, geoPoint.latitude,
-                        mapView.getModel().mapViewPosition.getZoomLevel())) {
-                    Toast.makeText(OverlayMapViewer.this,
-                            "The Circle was tapped " + geoPoint.toString(),
-                            Toast.LENGTH_SHORT).show();
+            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (this.contains(layerXY, tapXY, tapLatLong.latitude, mapView.getModel().mapViewPosition.getZoomLevel())) {
+                    Toast.makeText(OverlayMapViewer.this, "Circle long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (this.contains(layerXY, tapXY, tapLatLong.latitude, mapView.getModel().mapViewPosition.getZoomLevel())) {
+                    Toast.makeText(OverlayMapViewer.this, "Circle tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
             }
         };
 
-        FixedPixelCircle tappableCircle = new FixedPixelCircle(
-                latLong6,
-                20,
-                Utils.createPaint(
-                        AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN),
-                        0, Style.FILL), null) {
+        FixedPixelCircle fixedPixelCircle = new FixedPixelCircle(latLong6, 20, Utils.createPaint(AndroidGraphicFactory.INSTANCE.createColor(Color.GREEN), 0, Style.FILL), null) {
             @Override
-            public boolean onTap(LatLong geoPoint, Point viewPosition,
-                                 Point tapPoint) {
-                if (this.contains(viewPosition, tapPoint)) {
-                    Toast.makeText(OverlayMapViewer.this,
-                            "The Circle was tapped " + geoPoint.toString(),
-                            Toast.LENGTH_SHORT).show();
+            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (this.contains(layerXY, tapXY)) {
+                    Toast.makeText(OverlayMapViewer.this, "Circle long press\n" + tapLatLong.toString(), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (this.contains(layerXY, tapXY)) {
+                    Toast.makeText(OverlayMapViewer.this, "Circle tap\n" + tapLatLong.toString(), Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
@@ -193,7 +214,7 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         layers.add(polygonWithShaderNonAligned);
         layers.add(circle);
         layers.add(marker1);
-        layers.add(tappableCircle);
+        layers.add(fixedPixelCircle);
         layers.add(createPolygonWithHoles(anchorPolygonWithHoles));
     }
 
@@ -206,9 +227,18 @@ public class OverlayMapViewer extends DownloadLayerViewer {
                 Style.STROKE);
         Polygon polygonWithHoles = new Polygon(paintFill, paintStroke, AndroidGraphicFactory.INSTANCE) {
             @Override
+            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (contains(tapXY, mapView)) {
+                    Toast.makeText(OverlayMapViewer.this, "Polygon long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (contains(tapLatLong)) {
-                    Toast.makeText(OverlayMapViewer.this, "PolygonWithHoles tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
+                if (contains(tapXY, mapView)) {
+                    Toast.makeText(OverlayMapViewer.this, "Polygon tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
@@ -249,5 +279,14 @@ public class OverlayMapViewer extends DownloadLayerViewer {
 
         // we just add a few more overlays
         addOverlayLayers(mapView.getLayerManager().getLayers());
+
+        /*new Handler(Looper.myLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mapView.setMapViewCenterY(0.75f);
+                mapView.rotate(new Rotation(90, mapView.getWidth() * 0.5f, mapView.getHeight() * 0.5f));
+                redrawLayers();
+            }
+        }, 2000);*/
     }
 }

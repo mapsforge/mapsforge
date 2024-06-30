@@ -19,9 +19,12 @@ import org.mapsforge.core.graphics.Display;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 public abstract class PointTextContainer extends MapElementContainer {
 
+    public final double horizontalOffset;
     public final boolean isVisible;
     public final int maxTextWidth;
     public final Paint paintBack;
@@ -31,12 +34,14 @@ public abstract class PointTextContainer extends MapElementContainer {
     public final String text;
     public final int textHeight;
     public final int textWidth;
+    public final double verticalOffset;
 
     /**
      * Create a new point container, that holds the x-y coordinates of a point, a text variable, two paint objects, and
      * a reference on a symbolContainer, if the text is connected with a POI.
      */
-    protected PointTextContainer(Point point, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+    protected PointTextContainer(Point point, double horizontalOffset, double verticalOffset,
+                                 Display display, int priority, String text, Paint paintFront, Paint paintBack,
                                  SymbolContainer symbolContainer, Position position, int maxTextWidth) {
         super(point, display, priority);
 
@@ -53,18 +58,28 @@ public abstract class PointTextContainer extends MapElementContainer {
             this.textWidth = paintFront.getTextWidth(text);
             this.textHeight = paintFront.getTextHeight(text);
         }
+        this.horizontalOffset = horizontalOffset;
+        this.verticalOffset = verticalOffset;
         this.isVisible = !this.paintFront.isTransparent() || (this.paintBack != null && !this.paintBack.isTransparent());
     }
 
     @Override
-    public boolean clashesWith(MapElementContainer other) {
-        if (super.clashesWith(other)) {
+    public boolean clashesWith(MapElementContainer other, Rotation rotation) {
+        if (super.clashesWith(other, rotation)) {
             return true;
         }
         if (!(other instanceof PointTextContainer)) {
             return false;
         }
         PointTextContainer ptc = (PointTextContainer) other;
+        if (!Rotation.noRotation(rotation)) {
+            Rotation mapRotation = new Rotation(rotation.degrees, (float) this.xy.x, (float) this.xy.y);
+            Rectangle rotated = mapRotation.rotate(this.boundary.shift(xy)).shift(new Point(this.horizontalOffset, this.verticalOffset));
+            Rotation otherRotation = new Rotation(rotation.degrees, (float) ptc.xy.x, (float) ptc.xy.y);
+            Rectangle otherRotated = otherRotation.rotate(ptc.boundary.shift(ptc.xy)).shift(new Point(ptc.horizontalOffset, ptc.verticalOffset));
+            if (rotated.intersects(otherRotated))
+                return true;
+        }
         if (this.text.equals(ptc.text) && this.xy.distance(ptc.xy) < 200) {
             return true;
         }
@@ -86,13 +101,23 @@ public abstract class PointTextContainer extends MapElementContainer {
         return true;
     }
 
+    /**
+     * Gets the pixel absolute boundary for this element.
+     *
+     * @return Rectangle with absolute pixel coordinates.
+     */
+    protected Rectangle getBoundaryAbsolute() {
+        Rectangle result = super.getBoundaryAbsolute();
+        // we need to add the offset in this case as it is not applied automatically.
+        return result.shift(new Point(this.horizontalOffset, this.verticalOffset));
+    }
+
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + text.hashCode();
         return result;
     }
-
 
     @Override
     public String toString() {

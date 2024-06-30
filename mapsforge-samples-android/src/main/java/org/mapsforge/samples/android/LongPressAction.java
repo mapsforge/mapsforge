@@ -22,6 +22,7 @@ import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.FixedPixelCircle;
@@ -78,8 +79,8 @@ public class LongPressAction extends DefaultTheme {
 
             @Override
             public void draw(BoundingBox boundingBox, byte zoomLevel, Canvas
-                    canvas, Point topLeftPoint) {
-                super.draw(boundingBox, zoomLevel, canvas, topLeftPoint);
+                    canvas, Point topLeftPoint, Rotation rotation) {
+                super.draw(boundingBox, zoomLevel, canvas, topLeftPoint, rotation);
 
                 long mapSize = MercatorProjection.getMapSize(zoomLevel, this.displayModel.getTileSize());
 
@@ -90,22 +91,18 @@ public class LongPressAction extends DefaultTheme {
             }
 
             @Override
-            public boolean onLongPress(LatLong geoPoint, Point viewPosition,
-                                       Point tapPoint) {
-                if (this.contains(viewPosition, tapPoint)) {
-                    LongPressAction.this.mapView.getLayerManager()
-                            .getLayers().remove(this);
-                    LongPressAction.this.mapView.getLayerManager()
-                            .redrawLayers();
+            public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (this.contains(layerXY, tapXY)) {
+                    LongPressAction.this.mapView.getLayerManager().getLayers().remove(this);
+                    LongPressAction.this.mapView.getLayerManager().redrawLayers();
                     return true;
                 }
                 return false;
             }
 
             @Override
-            public boolean onTap(LatLong geoPoint, Point viewPosition,
-                                 Point tapPoint) {
-                if (this.contains(viewPosition, tapPoint)) {
+            public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
+                if (this.contains(layerXY, tapXY)) {
                     toggleColor();
                     this.requestRedraw();
                     return true;

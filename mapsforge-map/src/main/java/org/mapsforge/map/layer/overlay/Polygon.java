@@ -16,17 +16,15 @@
  */
 package org.mapsforge.map.layer.overlay;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.FillRule;
-import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.LatLongUtils;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.view.MapView;
 
 import java.util.Iterator;
 import java.util.List;
@@ -110,7 +108,12 @@ public class Polygon extends Layer {
         updatePoints();
     }
 
-    public synchronized boolean contains(LatLong tapLatLong) {
+    public synchronized boolean contains(Point tapXY, MapView mapView) {
+        tapXY = tapXY.offset(-mapView.getOffsetX(), -mapView.getOffsetY());
+        if (!Rotation.noRotation(mapView.getMapRotation())) {
+            tapXY = mapView.getMapRotation().rotate(tapXY);
+        }
+        LatLong tapLatLong = mapView.getMapViewProjection().fromPixels(tapXY.x, tapXY.y);
         final boolean contains = LatLongUtils.contains(latLongs, tapLatLong);
         if (holes == null || !contains) {
             return contains;
@@ -126,7 +129,7 @@ public class Polygon extends Layer {
     }
 
     @Override
-    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint) {
+    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
         if (this.latLongs.size() < 2 || (this.paintStroke == null && this.paintFill == null)) {
             return;
         }

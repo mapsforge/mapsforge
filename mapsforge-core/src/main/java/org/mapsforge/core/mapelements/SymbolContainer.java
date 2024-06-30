@@ -20,19 +20,22 @@ package org.mapsforge.core.mapelements;
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 public class SymbolContainer extends MapElementContainer {
+    public final boolean alignCanvas; // if it has a fixed angle to canvas.
     public Bitmap symbol;
     public final float theta;
 
-    public SymbolContainer(Point point, Display display, int priority, Rectangle boundary, Bitmap symbol) {
-        this(point, display, priority, boundary, symbol, 0);
+    public SymbolContainer(Point point, Display display, int priority, Rectangle boundary, Bitmap symbol, boolean alignCanvas) {
+        this(point, display, priority, boundary, symbol, 0, alignCanvas);
     }
 
-    public SymbolContainer(Point point, Display display, int priority, Rectangle boundary, Bitmap symbol, float theta) {
+    public SymbolContainer(Point point, Display display, int priority, Rectangle boundary, Bitmap symbol, float theta, boolean alignCanvas) {
         super(point, display, priority);
         this.symbol = symbol;
         this.theta = theta;
+        this.alignCanvas = alignCanvas;
         this.boundary = boundary;
         if (this.boundary == null) {
             double halfWidth = this.symbol.getWidth() / 2d;
@@ -66,12 +69,16 @@ public class SymbolContainer extends MapElementContainer {
     }
 
     @Override
-    public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
+    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter) {
         matrix.reset();
         // We cast to int for pixel perfect positioning
         matrix.translate((int) (this.xy.x - origin.x + boundary.left), (int) (this.xy.y - origin.y + boundary.top));
-        if (theta != 0) {
-            matrix.rotate(theta, (float) -boundary.left, (float) -boundary.top);
+        float totalTheta = theta; // this is the rotation angle combined from map rotation and symbol rotation
+        if (!Rotation.noRotation(rotation) && this.alignCanvas) {
+            totalTheta -= (float) rotation.radians;
+        }
+        if (totalTheta != 0) {
+            matrix.rotate(totalTheta, (float) -boundary.left, (float) -boundary.top);
         }
         canvas.drawBitmap(this.symbol, matrix, 1, filter);
     }

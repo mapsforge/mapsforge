@@ -14,6 +14,8 @@
  */
 package org.mapsforge.core.model;
 
+import java.util.Objects;
+
 /**
  * A MapPosition represents an immutable pair of {@link LatLong} and zoom level.
  */
@@ -30,11 +32,26 @@ public class MapPosition {
     public final byte zoomLevel;
 
     /**
+     * The rotation of the map (may be null).
+     */
+    public final Rotation rotation;
+
+    /**
      * @param latLong   the geographical coordinates of the map center.
      * @param zoomLevel the zoom level of the map.
      * @throws IllegalArgumentException if {@code latLong} is null or {@code zoomLevel} is negative.
      */
     public MapPosition(LatLong latLong, byte zoomLevel) {
+        this(latLong, zoomLevel, Rotation.NULL_ROTATION);
+    }
+
+    /**
+     * @param latLong   the geographical coordinates of the map center.
+     * @param zoomLevel the zoom level of the map.
+     * @param rotation  the rotation of the map (may be null).
+     * @throws IllegalArgumentException if {@code latLong} is null or {@code zoomLevel} is negative.
+     */
+    public MapPosition(LatLong latLong, byte zoomLevel, Rotation rotation) {
         if (latLong == null) {
             throw new IllegalArgumentException("latLong must not be null");
         } else if (zoomLevel < 0) {
@@ -42,6 +59,7 @@ public class MapPosition {
         }
         this.latLong = latLong;
         this.zoomLevel = zoomLevel;
+        this.rotation = rotation;
     }
 
     @Override
@@ -56,6 +74,8 @@ public class MapPosition {
             return false;
         } else if (this.zoomLevel != other.zoomLevel) {
             return false;
+        } else if (!Objects.equals(this.rotation, other.rotation)) {
+            return false;
         }
         return true;
     }
@@ -66,6 +86,7 @@ public class MapPosition {
         int result = 1;
         result = prime * result + this.latLong.hashCode();
         result = prime * result + this.zoomLevel;
+        result = prime * result + this.rotation.hashCode();
         return result;
     }
 
@@ -76,6 +97,8 @@ public class MapPosition {
         stringBuilder.append(this.latLong);
         stringBuilder.append(", zoomLevel=");
         stringBuilder.append(this.zoomLevel);
+        stringBuilder.append(", rotation=");
+        stringBuilder.append(this.rotation);
         return stringBuilder.toString();
     }
 }

@@ -23,6 +23,7 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.awt.graphics.AwtGraphicFactory;
 import org.mapsforge.map.model.FixedTileSizeDisplayModel;
 
@@ -52,13 +53,13 @@ public class MarkerTest {
             Canvas canvas = GRAPHIC_FACTORY.createCanvas();
             canvas.setBitmap(GRAPHIC_FACTORY.createBitmap(tileSize, tileSize));
             Point point = new Point(0, 0);
-            marker.draw(boundingBox, (byte) 0, canvas, point);
+            marker.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
             marker.setLatLong(new LatLong(0, 0));
-            marker.draw(boundingBox, (byte) 0, canvas, point);
+            marker.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
 
             marker.setBitmap(GRAPHIC_FACTORY.createBitmap(10, 20));
-            marker.draw(boundingBox, (byte) 0, canvas, point);
+            marker.draw(boundingBox, (byte) 0, canvas, point, Rotation.NULL_ROTATION);
         }
     }
 

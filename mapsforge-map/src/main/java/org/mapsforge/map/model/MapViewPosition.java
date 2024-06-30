@@ -18,10 +18,7 @@
  */
 package org.mapsforge.map.model;
 
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.model.common.Persistable;
@@ -128,6 +125,9 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     private static final String LONGITUDE = "longitude";
     private static final String LONGITUDE_MAX = "longitudeMax";
     private static final String LONGITUDE_MIN = "longitudeMin";
+    private static final String ROTATION_ANGLE = "rotationAngle";
+    private static final String ROTATION_PX = "rotationPx";
+    private static final String ROTATION_PY = "rotationPy";
     private static final String ZOOM_LEVEL = "zoomLevel";
     private static final String ZOOM_LEVEL_MAX = "zoomLevelMax";
     private static final String ZOOM_LEVEL_MIN = "zoomLevelMin";
@@ -146,7 +146,10 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     private final DisplayModel displayModel;
     private double latitude, longitude;
     private BoundingBox mapLimit;
+    private float mapViewCenterX = 0.5f;
+    private float mapViewCenterY = 0.5f;
     private LatLong pivot;
+    private Rotation rotation;
     private double scaleFactor;
     private byte zoomLevel, zoomLevelMax, zoomLevelMin;
 
@@ -156,6 +159,7 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
         this.zoomLevelMax = Byte.MAX_VALUE;
         this.animator = new Animator();
         this.animator.start();
+        this.rotation = Rotation.NULL_ROTATION;
     }
 
     /**
@@ -197,7 +201,17 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
      */
     @Override
     public synchronized MapPosition getMapPosition() {
-        return new MapPosition(getCenter(), this.zoomLevel);
+        return new MapPosition(getCenter(), this.zoomLevel, this.rotation);
+    }
+
+    @Override
+    public synchronized float getMapViewCenterX() {
+        return this.mapViewCenterX;
+    }
+
+    @Override
+    public synchronized float getMapViewCenterY() {
+        return this.mapViewCenterY;
     }
 
     /**
@@ -227,6 +241,11 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     }
 
     @Override
+    public synchronized Rotation getRotation() {
+        return this.rotation;
+    }
+
+    @Override
     public synchronized double getScaleFactor() {
         return this.scaleFactor;
     }
@@ -253,6 +272,10 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     public synchronized void init(PreferencesFacade preferencesFacade) {
         this.latitude = preferencesFacade.getDouble(LATITUDE, 0);
         this.longitude = preferencesFacade.getDouble(LONGITUDE, 0);
+        float rotationAngle = preferencesFacade.getFloat(ROTATION_ANGLE, 0);
+        float rotationPx = preferencesFacade.getFloat(ROTATION_PX, 0);
+        float rotationPy = preferencesFacade.getFloat(ROTATION_PY, 0);
+        this.rotation = new Rotation(rotationAngle, rotationPx, rotationPy);
 
         double maxLatitude = preferencesFacade.getDouble(LATITUDE_MAX, Double.NaN);
         double minLatitude = preferencesFacade.getDouble(LATITUDE_MIN, Double.NaN);
@@ -317,8 +340,7 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     public void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff, boolean animated) {
         synchronized (this) {
             long mapSize = MercatorProjection.getMapSize(this.zoomLevel, this.displayModel.getTileSize());
-            double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, mapSize)
-                    - moveHorizontal;
+            double pixelX = MercatorProjection.longitudeToPixelX(this.longitude, mapSize) - moveHorizontal;
             double pixelY = MercatorProjection.latitudeToPixelY(this.latitude, mapSize) - moveVertical;
 
             pixelX = Math.min(Math.max(0, pixelX), mapSize);
@@ -327,7 +349,9 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
             double newLatitude = MercatorProjection.pixelYToLatitude(pixelY, mapSize);
             double newLongitude = MercatorProjection.pixelXToLongitude(pixelX, mapSize);
             setCenterInternal(newLatitude, newLongitude);
-            setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
+            if (zoomLevelDiff != 0) {
+                setZoomLevelInternal(this.zoomLevel + zoomLevelDiff, animated);
+            }
         }
         notifyObservers();
     }
@@ -336,6 +360,9 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     public synchronized void save(PreferencesFacade preferencesFacade) {
         preferencesFacade.putDouble(LATITUDE, this.latitude);
         preferencesFacade.putDouble(LONGITUDE, this.longitude);
+        preferencesFacade.putFloat(ROTATION_ANGLE, this.rotation.degrees);
+        preferencesFacade.putFloat(ROTATION_PX, this.rotation.px);
+        preferencesFacade.putFloat(ROTATION_PY, this.rotation.py);
 
         if (this.mapLimit == null) {
             preferencesFacade.putDouble(LATITUDE_MAX, Double.NaN);
@@ -394,8 +421,29 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
         synchronized (this) {
             setCenterInternal(mapPosition.latLong.latitude, mapPosition.latLong.longitude);
             setZoomLevelInternal(mapPosition.zoomLevel, animated);
+            setRotation(mapPosition.rotation);
         }
         notifyObservers();
+    }
+
+    @Override
+    public void setMapViewCenterX(float mapViewCenterX) {
+        if (mapViewCenterX < 0 || mapViewCenterX > 1) {
+            throw new IllegalArgumentException("mapViewCenterX must be between 0 and 1: " + mapViewCenterX);
+        }
+        synchronized (this) {
+            this.mapViewCenterX = mapViewCenterX;
+        }
+    }
+
+    @Override
+    public void setMapViewCenterY(float mapViewCenterY) {
+        if (mapViewCenterY < 0 || mapViewCenterY > 1) {
+            throw new IllegalArgumentException("mapViewCenterY must be between 0 and 1: " + mapViewCenterY);
+        }
+        synchronized (this) {
+            this.mapViewCenterY = mapViewCenterY;
+        }
     }
 
     /**
@@ -410,6 +458,16 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     public void setPivot(LatLong pivot) {
         synchronized (this) {
             this.pivot = pivot;
+        }
+    }
+
+    /**
+     * Sets the new rotation of the map.
+     */
+    @Override
+    public void setRotation(Rotation rotation) {
+        synchronized (this) {
+            this.rotation = rotation;
         }
     }
 

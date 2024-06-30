@@ -15,17 +15,12 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.Filter;
-import org.mapsforge.core.graphics.GraphicUtils;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Position;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.model.Rotation;
 
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
@@ -36,21 +31,23 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
 public class AwtPointTextContainer extends PointTextContainer {
-    AwtPointTextContainer(Point xy, Display display, int priority, String text, Paint paintFront, Paint paintBack,
+    AwtPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
+                          Display display, int priority, String text, Paint paintFront, Paint paintBack,
                           SymbolContainer symbolContainer, Position position, int maxTextWidth) {
-        super(xy, display, priority, text, paintFront, paintBack, symbolContainer, position, maxTextWidth);
+        super(xy, horizontalOffset, verticalOffset, display, priority, text,
+                paintFront, paintBack, symbolContainer, position, maxTextWidth);
         this.boundary = computeBoundary();
     }
 
     @Override
-    public void draw(Canvas canvas, Point origin, Matrix matrix, Filter filter) {
+    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter) {
         if (this.paintFront.isTransparent() && (this.paintBack == null || this.paintBack.isTransparent())) {
             return;
         }
 
         AwtCanvas awtCanvas = (AwtCanvas) canvas;
 
-        Point pointAdjusted = this.xy.offset(-origin.x, -origin.y);
+        Point pointAdjusted = this.xy.offset(this.horizontalOffset - origin.x, this.verticalOffset - origin.y);
 
         int textWidth = this.paintFront.getTextWidth(this.text);
         if (textWidth > maxTextWidth) {

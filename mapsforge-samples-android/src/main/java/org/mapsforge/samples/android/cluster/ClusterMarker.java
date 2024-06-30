@@ -17,12 +17,9 @@
 package org.mapsforge.samples.android.cluster;
 
 import android.util.Log;
-
 import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.LatLong;
-import org.mapsforge.core.model.Point;
-import org.mapsforge.core.model.Rectangle;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.samples.android.SamplesApplication;
@@ -78,8 +75,8 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
     }
 
     @Override
-    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel
-            , org.mapsforge.core.graphics.Canvas canvas, Point topLeftPoint) {
+    public synchronized void draw(BoundingBox boundingBox, byte zoomLevel,
+                                  Canvas canvas, Point topLeftPoint, Rotation rotation) {
         Boolean isSelected = isSelected();
         if (cluster.getClusterManager() == null ||
                 cluster.getClusterManager().isClustering ||
@@ -161,17 +158,16 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
     }
 
     @Override
-    public synchronized boolean onTap(LatLong geoPoint, Point viewPosition,
-                                      Point tapPoint) {
+    public synchronized boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
         if (ignoreOnTap) return false;
         // Log.w(TAG, "onTap is called...");
-        if (cluster.getItems().size() == 1 && contains(viewPosition, tapPoint)) {
+        if (cluster.getItems().size() == 1 && contains(layerXY, tapXY)) {
             Log.w(SamplesApplication.TAG, "The Marker was touched with onTap: "
                     + this.getPosition().toString());
             cluster.getClusterManager().setSelectedItem(null, cluster.getItems().get(0));
             requestRedraw();
             return true;
-        } else if (contains(viewPosition, tapPoint)) {
+        } else if (contains(layerXY, tapXY)) {
             StringBuilder mText = new StringBuilder(cluster.getItems().size() + " items:");
             for (int i = 0; i < cluster.getItems().size(); i++) {
                 mText.append("\n- ");
@@ -189,8 +185,8 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
         return false;
     }
 
-    public synchronized boolean contains(Point viewPosition, Point tapPoint) {
-        return getBitmapRectangle(viewPosition).contains(tapPoint);
+    public synchronized boolean contains(Point layerXY, Point tapXY) {
+        return getBitmapRectangle(layerXY).contains(tapXY);
     }
 
     private Rectangle getBitmapRectangle(Point center) {

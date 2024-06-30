@@ -20,10 +20,7 @@ package org.mapsforge.map.layer;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.model.BoundingBox;
-import org.mapsforge.core.model.Dimension;
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.*;
 import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.util.MapPositionUtil;
 import org.mapsforge.map.util.PausableThread;
@@ -81,21 +78,36 @@ public class LayerManager extends PausableThread implements Redrawer {
         FrameBuffer frameBuffer = this.mapView.getFrameBuffer();
         Bitmap bitmap = frameBuffer.getDrawingBitmap();
         if (bitmap != null) {
-            this.drawingCanvas.setBitmap(bitmap);
+            this.drawingCanvas.setBitmap(bitmap, mapView.getMapRotation());
 
             MapPosition mapPosition = this.mapViewPosition.getMapPosition();
-            Dimension canvasDimension = this.drawingCanvas.getDimension();
+            Rotation rotation = this.mapView.getMapRotation();
             int tileSize = this.mapView.getModel().displayModel.getTileSize();
-            BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, canvasDimension, tileSize);
+            Dimension canvasDimension = this.drawingCanvas.getDimension();
+            float mapViewCenterX = this.mapView.getMapViewCenterX();
+            float mapViewCenterY = this.mapView.getMapViewCenterY();
+            BoundingBox boundingBox = MapPositionUtil.getBoundingBox(mapPosition, rotation, tileSize, canvasDimension, mapViewCenterX, mapViewCenterY);
             Point topLeftPoint = MapPositionUtil.getTopLeftPoint(mapPosition, canvasDimension, tileSize);
 
+            float dx = this.mapView.getOffsetX();
+            float dy = this.mapView.getOffsetY();
+            float px = rotation.px + (canvasDimension.width - this.mapView.getWidth()) * 0.5f;
+            float py = rotation.py + (canvasDimension.height - this.mapView.getHeight()) * 0.5f;
+            this.drawingCanvas.translate(dx, dy);
+            if (!Rotation.noRotation(rotation)) {
+                this.drawingCanvas.rotate(rotation.degrees, px, py);
+            }
             synchronized (this.layers) {
                 for (Layer layer : this.layers) {
                     if (layer.isVisible()) {
-                        layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint);
+                        layer.draw(boundingBox, mapPosition.zoomLevel, this.drawingCanvas, topLeftPoint, rotation);
                     }
                 }
             }
+            if (!Rotation.noRotation(rotation)) {
+                this.drawingCanvas.rotate(-rotation.degrees, px, py);
+            }
+            this.drawingCanvas.translate(-dx, -dy);
 
             if (!mapViewPosition.animationInProgress()) {
                 // this causes a lot of flickering when an animation

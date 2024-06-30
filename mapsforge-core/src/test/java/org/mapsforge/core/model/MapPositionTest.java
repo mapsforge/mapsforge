@@ -18,7 +18,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MapPositionTest {
-    private static final String MAP_POSITION_TO_STRING = "latLong=latitude=1.0, longitude=2.0, zoomLevel=3";
+    private static final String MAP_POSITION_TO_STRING = "latLong=latitude=1.0, longitude=2.0, zoomLevel=3, rotation=degrees=0.0, px=0.0, py=0.0, radians=0.0";
 
     private static MapPosition invokeConstructor(LatLong latLong, byte zoomLevel) {
         return new MapPosition(latLong, zoomLevel);

@@ -24,6 +24,7 @@ import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rotation;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.FrameBufferModel;
 
@@ -72,7 +73,7 @@ public class FrameBufferHA3 extends FrameBuffer {
 
     @Override
     public void adjustMatrix(float diffX, float diffY, float scaleFactor, Dimension mapViewDimension,
-                             float pivotDistanceX, float pivotDistanceY) {
+                             float pivotDistanceX, float pivotDistanceY, float offsetX, float offsetY) {
         synchronized (this.matrix) {
             if (this.dimension == null) {
                 return;
@@ -85,7 +86,11 @@ public class FrameBufferHA3 extends FrameBuffer {
                 this.matrix.translate(diffX, diffY);
             }
 
-            scale(scaleFactor, pivotDistanceX, pivotDistanceY);
+            if (pivotDistanceX == 0 && pivotDistanceY == 0) {
+                scale(scaleFactor, offsetX, offsetY);
+            } else {
+                scale(scaleFactor, pivotDistanceX, pivotDistanceY);
+            }
         }
     }
 
@@ -115,7 +120,7 @@ public class FrameBufferHA3 extends FrameBuffer {
      * and (Desktop) <code>MapView.paint</code>.
      */
     @Override
-    public void draw(GraphicContext graphicContext) {
+    public void draw(GraphicContext graphicContext, Rotation rotation) {
         /*
          * Swap bitmaps here (and only here).
          * Swapping is done when layer manager has finished. Else draw old bitmap again.
