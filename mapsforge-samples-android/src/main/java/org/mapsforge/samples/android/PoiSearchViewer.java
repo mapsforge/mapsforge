@@ -144,7 +144,7 @@ public class PoiSearchViewer extends DefaultTheme {
             if (!Rotation.noRotation(mapView.getMapRotation()) && layerXY != null) {
                 layerXY = mapView.getMapRotation().rotate(layerXY, true);
             }
-            if (contains(layerXY, tapXY)) {
+            if (contains(layerXY, tapXY, mapView)) {
                 Toast.makeText(PoiSearchViewer.this, pointOfInterest.getName(), Toast.LENGTH_SHORT).show();
                 return true;
             }

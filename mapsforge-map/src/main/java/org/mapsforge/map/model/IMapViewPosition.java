@@ -92,6 +92,11 @@ public interface IMapViewPosition {
     double getScaleFactor();
 
     /**
+     * @return the current zoom of the map.
+     */
+    double getZoom();
+
+    /**
      * @return the current zoom level of the map.
      */
     byte getZoomLevel();
@@ -108,9 +113,9 @@ public interface IMapViewPosition {
     void init(PreferencesFacade preferencesFacade);
 
     /**
-     * Moves the center position of the map by the given amount of pixels.
+     * Animates the center position of the map by the given amount of pixels.
      * <p>
-     * Does NOT animate the move.
+     * Used by TouchGestureHandler.
      *
      * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
      * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
@@ -138,6 +143,18 @@ public interface IMapViewPosition {
      * @param zoomLevelDiff  the difference in desired zoom level.
      */
     void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff);
+
+    /**
+     * Moves the center position of the map by the given amount of pixels.
+     * <p>
+     * This method is used by the TouchGestureHandler to perform a zoom on double-tap action.
+     *
+     * @param moveHorizontal the amount of pixels to move this MapViewPosition horizontally.
+     * @param moveVertical   the amount of pixels to move this MapViewPosition vertically.
+     * @param zoomLevelDiff  the difference in desired zoom level.
+     * @param animated       whether the move should be animated.
+     */
+    void moveCenterAndZoom(double moveHorizontal, double moveVertical, byte zoomLevelDiff, boolean animated);
 
     /**
      * Removes an observer from the class.
@@ -191,6 +208,27 @@ public interface IMapViewPosition {
     void setScaleFactorAdjustment(double scaleFactorCumulative);
 
     /**
+     * Sets the new zoom of the map.
+     * <p>
+     * Animation is NOT used.
+     * <p>
+     * Implemented for external use, NOT used internally.
+     *
+     * @param zoom new zoom.
+     * @throws IllegalArgumentException if the zoom is negative.
+     */
+    void setZoom(double zoom);
+
+    /**
+     * Sets the new zoom of the map.
+     *
+     * @param zoom     desired zoom
+     * @param animated true if the transition should be animated, false otherwise
+     * @throws IllegalArgumentException if the zoom is negative.
+     */
+    void setZoom(double zoom, boolean animated);
+
+    /**
      * Sets the new zoom level of the map.
      * <p>
      * Animation is NOT used.
@@ -215,7 +253,17 @@ public interface IMapViewPosition {
 
     void setZoomLevelMin(byte zoomLevelMin);
 
+    /**
+     * Changes the current zoom level by the given value if possible.
+     * <p/>
+     * Note: The default zoom level changes are animated.
+     */
     void zoom(byte zoomLevelDiff);
+
+    /**
+     * Changes the current zoom level by the given value if possible.
+     */
+    void zoom(byte zoomLevelDiff, boolean animated);
 
     /**
      * Increases the current zoom level by one if possible. Zooming is always around the center.

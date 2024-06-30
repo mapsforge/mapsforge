@@ -3,6 +3,8 @@
 ## New since 0.21.0
 
 - Map rotation [#7](https://github.com/mapsforge/mapsforge/issues/7)
+- Fractional zoom [#75](https://github.com/mapsforge/mapsforge/issues/75)
+    - `Parameters.FRACTIONAL_ZOOM`
 - `mapsforge-themes` change package [#1135](https://github.com/mapsforge/mapsforge/issues/1135)
   - Rename `InternalRenderTheme` to `MapsforgeThemes`
 - Minor improvements and bug fixes

@@ -92,9 +92,11 @@ public class Polyline extends Layer {
         if (!Rotation.noRotation(mapView.getMapRotation())) {
             tapXY = mapView.getMapRotation().rotate(tapXY);
         }
+        double scaleFactor = Math.pow(2, mapView.getModel().mapViewPosition.getZoom())
+                / Math.pow(2, mapView.getModel().mapViewPosition.getZoomLevel());
         // Touch min 20 px at baseline mdpi (160dpi)
-        double distance = Math.max(20 / 2 * this.displayModel.getScaleFactor(),
-                this.paintStroke.getStrokeWidth() / 2);
+        double distance = Math.max(20 * 0.5 * this.displayModel.getScaleFactor(),
+                this.paintStroke.getStrokeWidth() / 2 * scaleFactor);
         Point point2 = null;
         for (int i = 0; i < this.latLongs.size() - 1; i++) {
             Point point1 = i == 0 ? mapView.getMapViewProjection().toPixels(this.latLongs.get(i)) : point2;

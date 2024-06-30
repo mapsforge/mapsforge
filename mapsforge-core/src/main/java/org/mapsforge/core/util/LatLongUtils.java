@@ -74,6 +74,8 @@ public final class LatLongUtils {
 
     private static final String DELIMITER = ",";
 
+    private static final double LOG_2 = Math.log(2);
+
     /**
      * Find if the given point lies within this polygon.
      * <p>
@@ -407,10 +409,10 @@ public final class LatLongUtils {
         long mapSize = MercatorProjection.getMapSize((byte) 0, tileSize);
         double pixelXMax = MercatorProjection.longitudeToPixelX(boundingBox.maxLongitude, mapSize);
         double pixelXMin = MercatorProjection.longitudeToPixelX(boundingBox.minLongitude, mapSize);
-        double zoomX = -Math.log(Math.abs(pixelXMax - pixelXMin) / dimension.width) / Math.log(2);
+        double zoomX = -Math.log(Math.abs(pixelXMax - pixelXMin) / dimension.width) / LOG_2;
         double pixelYMax = MercatorProjection.latitudeToPixelY(boundingBox.maxLatitude, mapSize);
         double pixelYMin = MercatorProjection.latitudeToPixelY(boundingBox.minLatitude, mapSize);
-        double zoomY = -Math.log(Math.abs(pixelYMax - pixelYMin) / dimension.height) / Math.log(2);
+        double zoomY = -Math.log(Math.abs(pixelYMax - pixelYMin) / dimension.height) / LOG_2;
         double zoom = Math.floor(Math.min(zoomX, zoomY));
         if (zoom < 0) {
             return 0;

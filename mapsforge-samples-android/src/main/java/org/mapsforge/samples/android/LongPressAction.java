@@ -92,7 +92,7 @@ public class LongPressAction extends DefaultTheme {
 
             @Override
             public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (this.contains(layerXY, tapXY)) {
+                if (this.contains(layerXY, tapXY, mapView)) {
                     LongPressAction.this.mapView.getLayerManager().getLayers().remove(this);
                     LongPressAction.this.mapView.getLayerManager().redrawLayers();
                     return true;
@@ -102,7 +102,7 @@ public class LongPressAction extends DefaultTheme {
 
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (this.contains(layerXY, tapXY)) {
+                if (this.contains(layerXY, tapXY, mapView)) {
                     toggleColor();
                     this.requestRedraw();
                     return true;

@@ -46,6 +46,8 @@ public final class MercatorProjection {
      */
     public static final double LATITUDE_MIN = -LATITUDE_MAX;
 
+    private static final double LOG_2 = Math.log(2);
+
     // TODO some operations actually do not rely on the tile size, but are composited
     // from operations that require a tileSize parameter (which is effectively cancelled
     // out). A shortcut version of those operations should be implemented and then this
@@ -443,7 +445,7 @@ public final class MercatorProjection {
      * @return the zoom level.
      */
     public static double scaleFactorToZoomLevel(double scaleFactor) {
-        return Math.log(scaleFactor) / Math.log(2);
+        return Math.log(scaleFactor) / LOG_2;
     }
 
     /**

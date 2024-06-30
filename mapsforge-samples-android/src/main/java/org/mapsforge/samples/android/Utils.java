@@ -33,6 +33,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.map.android.graphics.AndroidBitmap;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.overlay.Marker;
+import org.mapsforge.map.view.MapView;
 
 /**
  * Utility functions that can be used across different mapsforge based
@@ -81,13 +82,13 @@ public final class Utils {
         return paint;
     }
 
-    static Marker createTappableMarker(Context c, int resourceIdentifier, LatLong latLong) {
+    static Marker createTappableMarker(Context c, int resourceIdentifier, LatLong latLong, MapView mapView) {
         Bitmap bitmap = new AndroidBitmap(BitmapFactory.decodeResource(c.getResources(), resourceIdentifier));
         bitmap.incrementRefCount();
         return new Marker(latLong, bitmap, 0, -bitmap.getHeight() / 2) {
             @Override
             public boolean onLongPress(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (contains(layerXY, tapXY)) {
+                if (contains(layerXY, tapXY, mapView)) {
                     Toast.makeText(c, "Marker long press\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -96,7 +97,7 @@ public final class Utils {
 
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                if (contains(layerXY, tapXY)) {
+                if (contains(layerXY, tapXY, mapView)) {
                     Toast.makeText(c, "Marker tap\n" + tapLatLong, Toast.LENGTH_SHORT).show();
                     return true;
                 }

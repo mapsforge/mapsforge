@@ -21,6 +21,7 @@ import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.model.*;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.layer.Layer;
+import org.mapsforge.map.view.MapView;
 
 /**
  * A {@code Marker} draws a {@link Bitmap} at a given geographical position.
@@ -46,15 +47,17 @@ public class Marker extends Layer {
         this.verticalOffset = verticalOffset;
     }
 
-    public synchronized boolean contains(Point center, Point point) {
+    public synchronized boolean contains(Point center, Point point, MapView mapView) {
+        double scaleFactor = Math.pow(2, mapView.getModel().mapViewPosition.getZoom())
+                / Math.pow(2, mapView.getModel().mapViewPosition.getZoomLevel());
         // Touch min 20x20 px at baseline mdpi (160dpi)
-        double width = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getWidth());
-        double height = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getHeight());
+        double width = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getWidth() * scaleFactor);
+        double height = Math.max(20 * this.displayModel.getScaleFactor(), this.bitmap.getHeight() * scaleFactor);
         Rectangle r = new Rectangle(
-                center.x - width / 2 + this.horizontalOffset,
-                center.y - height / 2 + this.verticalOffset,
-                center.x + width / 2 + this.horizontalOffset,
-                center.y + height / 2 + this.verticalOffset);
+                center.x - width / 2 + this.horizontalOffset * scaleFactor,
+                center.y - height / 2 + this.verticalOffset * scaleFactor,
+                center.x + width / 2 + this.horizontalOffset * scaleFactor,
+                center.y + height / 2 + this.verticalOffset * scaleFactor);
         return r.contains(point);
     }
 

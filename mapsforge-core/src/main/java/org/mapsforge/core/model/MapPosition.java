@@ -27,6 +27,11 @@ public class MapPosition {
     public final LatLong latLong;
 
     /**
+     * The fractional zoom of the map.
+     */
+    public final double zoom;
+
+    /**
      * The zoom level of the map.
      */
     public final byte zoomLevel;
@@ -46,19 +51,20 @@ public class MapPosition {
     }
 
     /**
-     * @param latLong   the geographical coordinates of the map center.
-     * @param zoomLevel the zoom level of the map.
-     * @param rotation  the rotation of the map (may be null).
-     * @throws IllegalArgumentException if {@code latLong} is null or {@code zoomLevel} is negative.
+     * @param latLong  the geographical coordinates of the map center.
+     * @param zoom     the fractional zoom of the map.
+     * @param rotation the rotation of the map (may be null).
+     * @throws IllegalArgumentException if {@code latLong} is null or {@code zoom} is negative.
      */
-    public MapPosition(LatLong latLong, byte zoomLevel, Rotation rotation) {
+    public MapPosition(LatLong latLong, double zoom, Rotation rotation) {
         if (latLong == null) {
             throw new IllegalArgumentException("latLong must not be null");
-        } else if (zoomLevel < 0) {
-            throw new IllegalArgumentException("zoomLevel must not be negative: " + zoomLevel);
+        } else if (zoom < 0) {
+            throw new IllegalArgumentException("zoom must not be negative: " + zoom);
         }
         this.latLong = latLong;
-        this.zoomLevel = zoomLevel;
+        this.zoom = zoom;
+        this.zoomLevel = (byte) Math.floor(zoom);
         this.rotation = rotation;
     }
 
