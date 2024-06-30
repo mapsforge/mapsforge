@@ -36,7 +36,7 @@ public interface Canvas extends GraphicContext {
 
     void setBitmap(Bitmap bitmap);
 
-    void setBitmap(Bitmap bitmap, Rotation rotation);
+    void setBitmap(Bitmap bitmap, float dx, float dy, float degrees, float px, float py);
 
     void translate(float dx, float dy);
 }

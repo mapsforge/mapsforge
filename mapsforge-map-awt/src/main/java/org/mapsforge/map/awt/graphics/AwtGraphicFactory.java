@@ -54,7 +54,7 @@ public class AwtGraphicFactory implements GraphicFactory {
         monoColorModel = new IndexColorModel(8, 256, linear, linear, linear);
     }
 
-    public static GraphicContext createGraphicContext(Graphics graphics) {
+    public static Canvas createGraphicContext(Graphics graphics) {
         return new org.mapsforge.map.awt.graphics.AwtCanvas((Graphics2D) graphics);
     }
 

@@ -18,7 +18,7 @@
  */
 package org.mapsforge.map.awt.view;
 
-import org.mapsforge.core.graphics.GraphicContext;
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Dimension;
@@ -241,12 +241,12 @@ public class MapView extends Container implements org.mapsforge.map.view.MapView
     public void paint(Graphics graphics) {
         super.paint(graphics);
 
-        GraphicContext graphicContext = AwtGraphicFactory.createGraphicContext(graphics);
-        this.frameBuffer.draw(graphicContext, getMapRotation());
+        Canvas canvas = AwtGraphicFactory.createGraphicContext(graphics);
+        this.frameBuffer.draw(canvas, getMapRotation());
         if (this.mapScaleBar != null) {
-            this.mapScaleBar.draw(graphicContext);
+            this.mapScaleBar.draw(canvas);
         }
-        this.fpsCounter.draw(graphicContext);
+        this.fpsCounter.draw(canvas);
     }
 
     public void removeInputListener(InputListener listener) {
