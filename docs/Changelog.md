@@ -3,6 +3,7 @@
 ## New since 0.21.0
 
 - Map rotation [#7](https://github.com/mapsforge/mapsforge/issues/7)
+    - See [RotationMapViewer](https://github.com/mapsforge/mapsforge/blob/master/mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/RotationMapViewer.java)
 - Fractional zoom [#75](https://github.com/mapsforge/mapsforge/issues/75)
     - `Parameters.FRACTIONAL_ZOOM`
 - Motorider map theme [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
