@@ -499,12 +499,14 @@ class AwtCanvas implements Canvas {
         BufferedImage bufferedImage = AwtGraphicFactory.getBitmap(bitmap);
         transform.setToIdentity();
 
-        double horizontalScale = tileRect.getWidth() / shadeRect.getWidth();
-        double verticalScale = tileRect.getHeight() / shadeRect.getHeight();
+        if (shadeRect.getWidth() != 0 && shadeRect.getHeight() != 0) {
+            double horizontalScale = tileRect.getWidth() / shadeRect.getWidth();
+            double verticalScale = tileRect.getHeight() / shadeRect.getHeight();
 
-        transform.translate(tileRect.left, tileRect.top);
-        transform.scale(horizontalScale, verticalScale);
-        transform.translate(-shadeRect.left, -shadeRect.top);
+            transform.translate(tileRect.left, tileRect.top);
+            transform.scale(horizontalScale, verticalScale);
+            transform.translate(-shadeRect.left, -shadeRect.top);
+        }
 
         this.graphics2D.setClip(
                 (int) Math.round(tileRect.left), (int) Math.round(tileRect.top),

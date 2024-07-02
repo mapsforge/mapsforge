@@ -110,6 +110,7 @@ public class Samples extends Activity {
         linearLayout.addView(createButton(StyleMenuMapViewer.class));
         linearLayout.addView(createButton(LabelLayerUsingLabelCacheMapViewer.class));
         linearLayout.addView(createButton(LabelLayerUsingMapDataStoreMapViewer.class));
+        linearLayout.addView(createButton(HillshadingMapViewer.class));
 
         linearLayout.addView(createLabel("Raster Maps"));
         linearLayout.addView(createButton(DownloadLayerViewer.class));
@@ -160,7 +161,6 @@ public class Samples extends Activity {
         }));
 
         linearLayout.addView(createLabel("Experiments"));
-        linearLayout.addView(createButton(HillshadingMapViewer.class));
         linearLayout.addView(createButton(ReverseGeocodeViewer.class));
         linearLayout.addView(createButton(ClusterMapActivity.class));
         linearLayout.addView(createButton(GroupMarkerExample.class));
