@@ -369,7 +369,7 @@ class AndroidCanvas implements Canvas {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void shadeBitmap(Bitmap bitmap, Rectangle hillRect, Rectangle tileRect, float magnitude) {
+    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
         this.canvas.save();
         final HilshadingTemps temps;
         if (this.hillshadingTemps == null) {
@@ -395,8 +395,8 @@ class AndroidCanvas implements Canvas {
         }
 
         android.graphics.Bitmap hillsBitmap = AndroidGraphicFactory.getBitmap(bitmap);
-        double horizontalScale = tileRect.getWidth() / hillRect.getWidth();
-        double verticalScale = tileRect.getHeight() / hillRect.getHeight();
+        double horizontalScale = shadeRect.getWidth() > 0 ? tileRect.getWidth() / shadeRect.getWidth() : 1;
+        double verticalScale = shadeRect.getHeight() > 0 ? tileRect.getHeight() / shadeRect.getHeight() : 1;
 
         if (horizontalScale < 1 && verticalScale < 1) {
             // fast path for wide zoom (downscaling)
@@ -408,37 +408,37 @@ class AndroidCanvas implements Canvas {
             android.graphics.Matrix transform = temps.useMatrix();
             transform.preTranslate((float) tileRect.left, (float) tileRect.top);
             transform.preScale((float) horizontalScale, (float) verticalScale);
-            transform.preTranslate((float) -hillRect.left, (float) -hillRect.top);
+            transform.preTranslate((float) -shadeRect.left, (float) -shadeRect.top);
             this.canvas.drawBitmap(hillsBitmap, transform, shadePaint);
         } else {
 
-            double leftRestUnlimited = 1 + (hillRect.left - Math.floor(hillRect.left));
-            double leftRest = Math.min(hillRect.left, leftRestUnlimited);
+            double leftRestUnlimited = 1 + (shadeRect.left - Math.floor(shadeRect.left));
+            double leftRest = Math.min(shadeRect.left, leftRestUnlimited);
             double leftExtra = horizontalScale * leftRest;
 
-            double rightRestUnlimited = Math.floor(hillRect.right) + 2 - hillRect.right;
-            double rightRest = Math.min(bitmap.getWidth() - hillRect.right, rightRestUnlimited);
+            double rightRestUnlimited = Math.floor(shadeRect.right) + 2 - shadeRect.right;
+            double rightRest = Math.min(bitmap.getWidth() - shadeRect.right, rightRestUnlimited);
             double rightExtra = horizontalScale * rightRest;
 
-            double tempWidthDouble = rightExtra + leftExtra + (hillRect.right - hillRect.left) * horizontalScale;
+            double tempWidthDouble = rightExtra + leftExtra + (shadeRect.right - shadeRect.left) * horizontalScale;
             int tempWidth = (int) Math.ceil(tempWidthDouble);
 
 
-            double topRestUnlimited = 1 + (hillRect.top - Math.floor(hillRect.top));
-            double topRest = Math.min(hillRect.top, topRestUnlimited);
+            double topRestUnlimited = 1 + (shadeRect.top - Math.floor(shadeRect.top));
+            double topRest = Math.min(shadeRect.top, topRestUnlimited);
             double topExtra = verticalScale * topRest;
 
-            double bottomRestUnlimited = Math.floor(hillRect.bottom) + 2 - hillRect.bottom;
-            double bottomRest = Math.min(bitmap.getHeight() - hillRect.bottom, bottomRestUnlimited);
+            double bottomRestUnlimited = Math.floor(shadeRect.bottom) + 2 - shadeRect.bottom;
+            double bottomRest = Math.min(bitmap.getHeight() - shadeRect.bottom, bottomRestUnlimited);
             double bottomExtra = verticalScale * bottomRest;
 
-            double tempHeightDouble = bottomExtra + topExtra + (hillRect.bottom - hillRect.top) * verticalScale;
+            double tempHeightDouble = bottomExtra + topExtra + (shadeRect.bottom - shadeRect.top) * verticalScale;
             int tempHeight = (int) Math.ceil(tempHeightDouble);
 
-            int srcLeft = (int) Math.round(hillRect.left - leftRest);
-            int srcTop = (int) Math.round(hillRect.top - topRest);
-            int srcRight = (int) Math.round(hillRect.right + rightRest);
-            int srcBottom = (int) Math.round(hillRect.bottom + bottomRest);
+            int srcLeft = (int) Math.round(shadeRect.left - leftRest);
+            int srcTop = (int) Math.round(shadeRect.top - topRest);
+            int srcRight = (int) Math.round(shadeRect.right + rightRest);
+            int srcBottom = (int) Math.round(shadeRect.bottom + bottomRest);
 
             android.graphics.Canvas tempCanvas = temps.useCanvas();
 
