@@ -16,6 +16,11 @@
  */
 package org.mapsforge.core.util;
 
+import org.mapsforge.core.model.Tag;
+
+import java.util.HashSet;
+import java.util.Set;
+
 public final class Parameters {
 
     public enum ParentTilesRendering {QUALITY, SPEED, OFF}
@@ -55,6 +60,17 @@ public final class Parameters {
     public static ParentTilesRendering PARENT_TILES_RENDERING = ParentTilesRendering.QUALITY;
 
     /**
+     * Polygon exceptions.
+     */
+    public static final Set<Tag> POLYGON_EXCEPTIONS = new HashSet<>();
+
+    /**
+     * Zoom level to render polygons.
+     * e.g. 10 for better performance.
+     */
+    public static int POLYGON_ZOOM_MIN = -1;
+
+    /**
      * Enable the rotation gesture.
      */
     public static boolean ROTATION_GESTURE = false;
@@ -81,6 +97,14 @@ public final class Parameters {
      * Validate coordinates.
      */
     public static boolean VALIDATE_COORDINATES = true;
+
+    static {
+        POLYGON_EXCEPTIONS.add(new Tag("natural", "sea"));
+        POLYGON_EXCEPTIONS.add(new Tag("natural", "nosea"));
+
+        POLYGON_EXCEPTIONS.add(new Tag("freizeitkarte", "meer"));
+        POLYGON_EXCEPTIONS.add(new Tag("freizeitkarte", "land"));
+    }
 
     private Parameters() {
         throw new IllegalStateException();
