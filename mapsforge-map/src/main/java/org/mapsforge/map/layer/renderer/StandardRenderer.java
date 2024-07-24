@@ -24,6 +24,7 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
@@ -194,7 +195,16 @@ public class StandardRenderer implements RenderCallback {
         renderContext.setDrawingLayers(way.getLayer());
 
         if (way.isClosedWay()) {
-            renderContext.renderTheme.matchClosedWay(this, renderContext, way);
+            if (renderContext.rendererJob.tile.zoomLevel >= Parameters.POLYGON_ZOOM_MIN) {
+                renderContext.renderTheme.matchClosedWay(this, renderContext, way);
+            } else if (!Parameters.POLYGON_EXCEPTIONS.isEmpty()) {
+                for (Tag tag : Parameters.POLYGON_EXCEPTIONS) {
+                    if (way.getTags().contains(tag)) {
+                        renderContext.renderTheme.matchClosedWay(this, renderContext, way);
+                        break;
+                    }
+                }
+            }
         } else {
             renderContext.renderTheme.matchLinearWay(this, renderContext, way);
         }
