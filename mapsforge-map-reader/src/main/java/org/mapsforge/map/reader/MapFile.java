@@ -952,7 +952,7 @@ public class MapFile extends MapDataStore {
 
         try {
             QueryParameters queryParameters = new QueryParameters();
-            queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(upperLeft.zoomLevel);
+            queryParameters.queryZoomLevel = this.mapFileHeader.getQueryZoomLevel(upperLeft.zoomLevel, getMapCallback());
 
             // get and check the sub-file for the query zoom level
             SubFileParameter subFileParameter = this.mapFileHeader.getSubFileParameter(queryParameters.queryZoomLevel);
