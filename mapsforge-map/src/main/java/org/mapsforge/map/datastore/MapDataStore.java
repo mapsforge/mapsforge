@@ -67,6 +67,11 @@ public abstract class MapDataStore {
     }
 
     /**
+     * Callback methods for map reader.
+     */
+    private MapCallback mapCallback;
+
+    /**
      * the preferred language when extracting labels from this data store. The actual
      * implementation is up to the concrete implementation, which can also simply ignore
      * this setting.
@@ -116,6 +121,10 @@ public abstract class MapDataStore {
      * @return the timestamp of the data used to render the tile
      */
     public abstract long getDataTimestamp(Tile tile);
+
+    public MapCallback getMapCallback() {
+        return mapCallback;
+    }
 
     /**
      * Reads only labels for tile. Labels are pois as well as ways that carry a name tag.
@@ -215,6 +224,10 @@ public abstract class MapDataStore {
             }
         }
         return result;
+    }
+
+    public void setMapCallback(MapCallback mapCallback) {
+        this.mapCallback = mapCallback;
     }
 
     /**

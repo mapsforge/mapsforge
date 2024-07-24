@@ -10,6 +10,7 @@
 - Fix hillshading at 0 lat / lon [#1497](https://github.com/mapsforge/mapsforge/issues/1497)
 - Polygon rendering zoom option [#1503](https://github.com/mapsforge/mapsforge/pull/1503)
   - `Parameters.POLYGON_ZOOM_MIN`
+- Callback methods for map reader [#1504](https://github.com/mapsforge/mapsforge/pull/1504)
 - `mapsforge-themes` change package [#1135](https://github.com/mapsforge/mapsforge/issues/1135)
   - Rename `InternalRenderTheme` to `MapsforgeThemes`
 - Minor improvements and bug fixes

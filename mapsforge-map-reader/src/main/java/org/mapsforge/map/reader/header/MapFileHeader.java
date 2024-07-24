@@ -15,6 +15,7 @@
  */
 package org.mapsforge.map.reader.header;
 
+import org.mapsforge.map.datastore.MapCallback;
 import org.mapsforge.map.reader.ReadBuffer;
 
 import java.io.IOException;
@@ -59,11 +60,14 @@ public class MapFileHeader {
      * @param zoomLevel the originally requested zoom level.
      * @return the closest possible zoom level which is covered by a sub-file.
      */
-    public byte getQueryZoomLevel(byte zoomLevel) {
+    public byte getQueryZoomLevel(byte zoomLevel, MapCallback mapCallback) {
         if (zoomLevel > this.zoomLevelMaximum) {
             return this.zoomLevelMaximum;
         } else if (zoomLevel < this.zoomLevelMinimum) {
             return this.zoomLevelMinimum;
+        }
+        if (mapCallback != null) {
+            return mapCallback.getQueryZoomLevel(zoomLevel);
         }
         return zoomLevel;
     }
