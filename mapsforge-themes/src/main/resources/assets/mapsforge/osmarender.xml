@@ -177,7 +177,7 @@
         </rule>
 
 
-        <rule e="way" k="natural|landuse" v="forest|wood|scrub">
+        <rule e="way" k="natural|landuse" v="forest|wood|scrub" zoom-min="9">
             <rule e="way" k="wood" v="*">
                 <rule e="way" k="wood" v="coniferous">
                     <area src="jar:patterns/wood-coniferous.png" />

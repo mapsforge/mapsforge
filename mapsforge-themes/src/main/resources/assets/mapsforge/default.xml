@@ -58,7 +58,7 @@
         v="park|zoo|picnic_site|camp_site|caravan_site|recreation_ground" zoom-min="14">
         <area fill="#BBC7F1A3" stroke="#6FC18E" stroke-width="0.2" />
     </rule>
-    <rule e="way" k="natural|landuse" v="forest|wood">
+    <rule e="way" k="natural|landuse" v="forest|wood" zoom-min="9">
         <area fill="#A5CBA5" />
         <rule e="any" k="*" v="*" zoom-min="13">
             <rule e="any" k="wood" v="coniferous">
