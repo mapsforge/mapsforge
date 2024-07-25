@@ -97,7 +97,7 @@ final class OptionalFields {
             try {
                 this.startPosition = new LatLong(mapStartLatitude, mapStartLongitude);
             } catch (IllegalArgumentException e) {
-                throw new MapFileException(e.getMessage());
+                throw new MapFileException(e.toString());
             }
         }
     }

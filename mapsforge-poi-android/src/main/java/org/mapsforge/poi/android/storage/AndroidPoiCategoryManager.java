@@ -43,7 +43,7 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
         try {
             loadCategories(db);
         } catch (UnknownPoiCategoryException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -80,14 +80,14 @@ class AndroidPoiCategoryManager extends AbstractPoiCategoryManager {
                 }
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
                 if (cursor != null) {
                     cursor.close();
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 

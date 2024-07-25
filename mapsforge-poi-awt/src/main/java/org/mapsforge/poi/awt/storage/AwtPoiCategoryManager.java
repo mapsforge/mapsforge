@@ -47,7 +47,7 @@ class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
         try {
             loadCategories(conn);
         } catch (UnknownPoiCategoryException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -86,7 +86,7 @@ class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
                 if (rs != null) {
@@ -96,7 +96,7 @@ class AwtPoiCategoryManager extends AbstractPoiCategoryManager {
                     stmt.close();
                 }
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 

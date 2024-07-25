@@ -119,7 +119,7 @@ public final class PoiWriter {
         try {
             this.categoryFilter.addCategory(this.categoryManager.getRootCategory());
         } catch (UnknownPoiCategoryException e) {
-            LOGGER.warning("Could not add category to filter: " + e.getMessage());
+            LOGGER.warning("Could not add category to filter: " + e.toString());
         }
 
         LOGGER.info("Adding tag mappings...");
@@ -500,7 +500,7 @@ public final class PoiWriter {
                         }
                     }
                 } catch (UnknownPoiCategoryException e) {
-                    LOGGER.warning("The '" + tagStr + "' tag refers to a POI that does not exist: " + e.getMessage());
+                    LOGGER.warning("The '" + tagStr + "' tag refers to a POI that does not exist: " + e.toString());
                 }
             }
         }

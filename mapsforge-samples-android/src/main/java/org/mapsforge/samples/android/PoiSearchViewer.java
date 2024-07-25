@@ -101,7 +101,7 @@ public class PoiSearchViewer extends DefaultTheme {
                 categoryFilter.addCategory(categoryManager.getPoiCategoryByTitle(category));
                 return persistenceManager.findInRect(params[0], categoryFilter, null, null, Integer.MAX_VALUE, true);
             } catch (Throwable t) {
-                Log.e(SamplesApplication.TAG, t.getMessage(), t);
+                Log.e(SamplesApplication.TAG, t.toString(), t);
             }
             return null;
         }

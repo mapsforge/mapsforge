@@ -266,7 +266,7 @@ public final class OSMUtils {
                 LOGGER.finest("ColorHex: #" + Integer.toHexString(integer));
             } catch (NumberFormatException e) {
                 integer = 0;
-                LOGGER.warning("Color conversion failed: " + value + "\n" + e.getMessage());
+                LOGGER.warning("Color conversion failed: " + value + "\n" + e.toString());
             }
         } else {
             integer = OSMUtils.parseDoubleUnit(value).intValue();

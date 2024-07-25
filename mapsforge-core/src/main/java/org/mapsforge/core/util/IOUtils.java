@@ -37,7 +37,7 @@ public final class IOUtils {
                 closeable.close();
             }
         } catch (IOException e) {
-            LOGGER.log(Level.FINE, e.getMessage(), e);
+            LOGGER.log(Level.FINE, e.toString(), e);
         }
     }
 

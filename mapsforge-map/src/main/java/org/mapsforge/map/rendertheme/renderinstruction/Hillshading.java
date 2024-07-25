@@ -96,7 +96,7 @@ public class Hillshading {
                 try {
                     shadingTile = hillsRenderConfig.getShadingTile(shadingBottomLat, shadingLeftLng, pxPerLat, pxPerLng);
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                    LOGGER.log(Level.SEVERE, e.toString(), e);
                 }
                 if (shadingTile == null) {
                     if (!always) {

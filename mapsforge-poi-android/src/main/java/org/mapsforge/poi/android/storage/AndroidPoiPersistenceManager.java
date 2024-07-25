@@ -66,7 +66,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.db.close();
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -83,7 +83,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             this.db = SQLiteDatabase.openDatabase(dbFilePath, null, readOnly ? SQLiteDatabase.OPEN_READONLY : SQLiteDatabase.CREATE_IF_NECESSARY);
             this.poiFile = dbFilePath;
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
 
         // Create file
@@ -91,7 +91,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 createTables();
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
     }
@@ -140,7 +140,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     cursor.close();
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
     }
@@ -165,7 +165,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     cursor.close();
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
     }
@@ -211,14 +211,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 this.ret.add(this.poi);
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
                 if (cursor != null) {
                     cursor.close();
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -244,7 +244,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     cursor.close();
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
         return null;
@@ -266,7 +266,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                         findDataByID(poiID), findCategoriesByID(poiID));
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
 
         return this.poi;
@@ -309,7 +309,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 }
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -337,14 +337,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 numTables = cursor.getInt(0);
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
                 if (cursor != null) {
                     cursor.close();
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -392,14 +392,14 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 }
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
                 if (cursor != null) {
                     cursor.close();
                 }
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -416,7 +416,7 @@ class AndroidPoiPersistenceManager extends AbstractPoiPersistenceManager {
             this.db.execSQL(DbConstants.DELETE_DATA_STATEMENT, new String[]{String.valueOf(poi.getId())});
             this.db.execSQL(DbConstants.DELETE_CATEGORY_MAP_STATEMENT, new String[]{String.valueOf(poi.getId())});
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 }

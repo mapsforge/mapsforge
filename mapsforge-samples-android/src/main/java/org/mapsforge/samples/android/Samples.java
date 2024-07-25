@@ -222,7 +222,7 @@ public class Samples extends Activity {
                     startActivity(new Intent(Samples.this, clazz));
                 }
             } catch (ClassNotFoundException e) {
-                Log.e(SamplesApplication.TAG, e.getMessage(), e);
+                Log.e(SamplesApplication.TAG, e.toString(), e);
             }
         }
     }

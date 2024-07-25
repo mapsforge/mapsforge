@@ -89,7 +89,7 @@ public class ReadBuffer {
             try {
                 this.bufferData = new byte[length];
             } catch (Throwable t) {
-                LOGGER.log(Level.SEVERE, t.getMessage(), t);
+                LOGGER.log(Level.SEVERE, t.toString(), t);
                 return false;
             }
             this.bufferWrapper = ByteBuffer.wrap(this.bufferData, 0, length);
@@ -122,7 +122,7 @@ public class ReadBuffer {
             try {
                 this.bufferData = new byte[length];
             } catch (Throwable t) {
-                LOGGER.log(Level.SEVERE, t.getMessage(), t);
+                LOGGER.log(Level.SEVERE, t.toString(), t);
                 return false;
             }
             this.bufferWrapper = ByteBuffer.wrap(this.bufferData, 0, length);

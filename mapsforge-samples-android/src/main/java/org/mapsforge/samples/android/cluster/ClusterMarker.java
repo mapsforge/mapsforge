@@ -97,7 +97,7 @@ public class ClusterMarker<T extends GeoItem> extends Layer {
                     .get(markerType).getBitmap(isSelected).getWidth() / 2f;
             halfBitmapHeight = cluster.getClusterManager().markerIconBmps.get(markerType).getBitmap(isSelected).getHeight() / 2f;
         } catch (NullPointerException e) {
-            Log.e(SamplesApplication.TAG, e.getMessage(), e);
+            Log.e(SamplesApplication.TAG, e.toString(), e);
             return;
         }
         int left = (int) (pixelX - topLeftPoint.x - halfBitmapWidth

@@ -77,7 +77,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.findCatByIDStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -85,7 +85,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.findDataByIDStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -93,7 +93,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.findLocByIDStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -101,7 +101,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.insertPoiCatStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -109,7 +109,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.insertPoiDataStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -117,7 +117,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.insertPoiLocStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -125,7 +125,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.deletePoiCatStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -133,7 +133,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.deletePoiDataStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -141,7 +141,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.deletePoiLocStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -149,7 +149,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.isValidDBStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -157,7 +157,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.metadataStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -166,7 +166,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 this.conn.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -187,7 +187,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             this.conn.setAutoCommit(false);
             this.poiFile = dbFilePath;
         } catch (ClassNotFoundException | SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
 
         // Create file
@@ -195,7 +195,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             try {
                 createTables();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
     }
@@ -256,7 +256,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 }
                 // Statements are closed in close() method
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
     }
@@ -290,7 +290,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 }
                 // Statements are closed in close() method
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
     }
@@ -341,7 +341,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 this.ret.add(this.poi);
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
                 if (rs != null) {
@@ -351,7 +351,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                     stmt.close();
                 }
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -386,7 +386,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 }
                 // Statements are closed in close() method
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
         return null;
@@ -408,7 +408,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                         findDataByID(poiID), findCategoriesByID(poiID));
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
 
         return this.poi;
@@ -468,7 +468,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             stmt.execute("COMMIT;");
             stmt.close();
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -488,7 +488,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
         try {
             this.isValidDBStatement = this.conn.prepareStatement(DbConstants.VALID_DB_STATEMENT);
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
 
         // Check for table names
@@ -501,14 +501,14 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 numTables = rs.getInt(1);
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -560,14 +560,14 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                LOGGER.log(Level.SEVERE, e.toString(), e);
             }
         }
 
@@ -608,7 +608,7 @@ class AwtPoiPersistenceManager extends AbstractPoiPersistenceManager {
             stmt.execute("COMMIT;");
             stmt.close();
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 }
