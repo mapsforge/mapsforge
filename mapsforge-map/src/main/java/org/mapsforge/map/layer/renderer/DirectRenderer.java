@@ -116,8 +116,7 @@ public class DirectRenderer extends StandardRenderer {
             // outside of map area
             return null;
         } catch (Exception e) {
-            // #1049: message can be null?
-            LOGGER.warning("Exception: " + e.getMessage());
+            LOGGER.warning(e.toString());
             return null;
         } finally {
             if (renderContext != null) {

@@ -60,7 +60,7 @@ class TileDownloadThread extends PausableThread {
                 downloadTile(downloadJob);
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         } finally {
             this.jobQueue.remove(downloadJob);
         }

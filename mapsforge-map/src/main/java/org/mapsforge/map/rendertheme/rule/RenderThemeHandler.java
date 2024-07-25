@@ -312,7 +312,7 @@ public final class RenderThemeHandler {
                 throw new XmlPullParserException("unknown element: " + qName);
             }
         } catch (IOException e) {
-            LOGGER.warning("Rendertheme missing or invalid resource " + e.getMessage());
+            LOGGER.warning("Rendertheme missing or invalid resource " + e.toString());
         }
     }
 

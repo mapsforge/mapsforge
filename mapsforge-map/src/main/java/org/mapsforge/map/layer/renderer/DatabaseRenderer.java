@@ -131,8 +131,7 @@ public class DatabaseRenderer extends StandardRenderer {
             // outside of map area with background defined:
             return createBackgroundBitmap(renderContext);
         } catch (Exception e) {
-            // #1049: message can be null?
-            LOGGER.warning("Exception: " + e.getMessage());
+            LOGGER.warning(e.toString());
             return null;
         } finally {
             if (renderContext != null) {

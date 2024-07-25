@@ -35,7 +35,7 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
             byte[] bytes = convert(map, axisLength, rowLen, padding, source);
             return new RawShadingResult(bytes, axisLength, axisLength, padding);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
             return null;
         }
     }

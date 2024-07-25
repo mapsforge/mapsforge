@@ -240,7 +240,7 @@ public class MapFile extends MapDataStore {
         } catch (Exception e) {
             // make sure that the channel is closed
             closeFileChannel();
-            throw new MapFileException(e.getMessage());
+            throw new MapFileException(e.toString());
         }
     }
 
@@ -290,7 +290,7 @@ public class MapFile extends MapDataStore {
         } catch (Exception e) {
             // make sure that the channel is closed
             closeFileChannel();
-            throw new MapFileException(e.getMessage());
+            throw new MapFileException(e.toString());
         }
     }
 
@@ -340,7 +340,7 @@ public class MapFile extends MapDataStore {
         } catch (Exception e) {
             // make sure that the channel is closed
             closeFileChannel();
-            throw new MapFileException(e.getMessage());
+            throw new MapFileException(e.toString());
         }
     }
 
@@ -389,7 +389,7 @@ public class MapFile extends MapDataStore {
                 this.inputChannel.close();
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -664,7 +664,7 @@ public class MapFile extends MapDataStore {
                         mapFileReadResult.add(poiWayBundle);
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
+                    LOGGER.log(Level.SEVERE, e.toString(), e);
                 }
             }
         }
@@ -969,7 +969,7 @@ public class MapFile extends MapDataStore {
             // overlap onto this tile.
             return processBlocks(queryParameters, subFileParameter, Tile.getBoundingBox(upperLeft, lowerRight), selector);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            LOGGER.log(Level.SEVERE, e.toString(), e);
             return null;
         }
     }

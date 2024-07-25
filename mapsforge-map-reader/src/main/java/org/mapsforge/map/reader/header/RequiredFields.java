@@ -62,7 +62,7 @@ final class RequiredFields {
         try {
             mapFileInfoBuilder.boundingBox = new BoundingBox(minLatitude, minLongitude, maxLatitude, maxLongitude);
         } catch (IllegalArgumentException e) {
-            throw new MapFileException(e.getMessage());
+            throw new MapFileException(e.toString());
         }
     }
 

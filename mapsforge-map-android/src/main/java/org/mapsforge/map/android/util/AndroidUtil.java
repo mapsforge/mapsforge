@@ -107,7 +107,7 @@ public final class AndroidUtil {
                                 org.mapsforge.map.android.graphics.AndroidGraphicFactory.INSTANCE, persistent);
                         return new TwoLevelTileCache(firstLevelTileCache, secondLevelTileCache);
                     } catch (IllegalArgumentException e) {
-                        LOGGER.warning(e.getMessage());
+                        LOGGER.warning(e.toString());
                     }
                 }
             }
