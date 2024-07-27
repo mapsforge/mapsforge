@@ -6,13 +6,12 @@
     - See [RotationMapViewer](https://github.com/mapsforge/mapsforge/blob/master/mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/RotationMapViewer.java)
 - Fractional zoom [#75](https://github.com/mapsforge/mapsforge/issues/75)
     - `Parameters.FRACTIONAL_ZOOM`
+- Pre-cache map tiles (+-zoom, margin) [#1507](https://github.com/mapsforge/mapsforge/issues/1507)
 - Motorider map theme [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Fix hillshading at 0 lat / lon [#1497](https://github.com/mapsforge/mapsforge/issues/1497)
-- Polygon rendering zoom option [#1503](https://github.com/mapsforge/mapsforge/pull/1503)
-  - `Parameters.POLYGON_ZOOM_MIN`
-- Callback methods for map reader [#1504](https://github.com/mapsforge/mapsforge/pull/1504)
 - `mapsforge-themes` change package [#1135](https://github.com/mapsforge/mapsforge/issues/1135)
   - Rename `InternalRenderTheme` to `MapsforgeThemes`
+- Enable multithreaded map rendering
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.22.0)
 
@@ -260,7 +259,7 @@
 
 ## Version 0.5.2 (2015-08-23)
 
-- Multi-threaded map rendering [#73](https://github.com/mapsforge/mapsforge/issues/73)
+- Multithreaded map rendering [#73](https://github.com/mapsforge/mapsforge/issues/73)
 - Hardware acceleration improvements [#613](https://github.com/mapsforge/mapsforge/issues/613)
 - Touch gesture improvements and fixes [#616](https://github.com/mapsforge/mapsforge/issues/616)
 - Scale gesture through focal point [#626](https://github.com/mapsforge/mapsforge/issues/626)

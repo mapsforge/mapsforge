@@ -64,7 +64,7 @@ public class ThreadedLabelLayer extends LabelLayer {
         }
     }
 
-    protected void getData(final Tile upperLeft, final Tile lowerRight, Rotation rotation) {
+    protected void getData(final Tile upperLeft, final Tile lowerRight, final Rotation rotation) {
         if (upperLeft.equals(this.requestedUpperLeft) && lowerRight.equals(this.requestedLowerRight)) {
             // same data already requested
             return;
