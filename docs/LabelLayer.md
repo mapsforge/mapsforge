@@ -42,15 +42,9 @@ TileRendererLayer:
 ------------------
 
 The TileRendererLayer now takes an additional argument of the TileBasedLabelStore, which receives the labels that the DatabaseRenderer produces. Alongside the TileRendererLayer we need the LabelLayer.
-```java
-    protected void createLayers() {
-        TileRendererLayer tileRendererLayer = AndroidUtil.createTileRendererLayer(this.tileCaches.get(0),
-                this.mapView.getModel().mapViewPosition, getMapFile(), getRenderTheme(), false, false, true);
-        mapView.getLayerManager().getLayers().add(tileRendererLayer);
-        LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
-        mapView.getLayerManager().getLayers().add(labelLayer);
-    }
-```
+
+See the examples in [mapsforge-samples-android](https://github.com/mapsforge/mapsforge/tree/master/mapsforge-samples-android).
+
 If you do not want any labels, pass null for the TileBasedLabelStore to the TileRendererLayer.
 
 Rendertheme Change:
@@ -60,14 +54,4 @@ The priority attribute has been added to caption, pathText, lineSymbol and symbo
 Remaining Problems:
 -------------------
 
-  * Memory as usual: mapsforge sails close to OOM all the time and keeping the label data for all the visible tiles in memory can cause an app to OOM. Finding the right balance is difficult. 
-
-Notes for Rotation:
--------------------
-
-This is only one step towards a proper map rotation.
-
-One of the issues is that the calculation of the layout is quite expensive. For that reason it is precomputed in a separate thread, rather than on the UI thread. However, for rotation tis layout has to be done for every change in rotation as different labels will clash. This introduces some instability in the label layout as with different rotations different labels will be drawn. 
-A different approach would be to calculate the maximum radius of a label and assume it is actually not rectangular, but circular. That way the layout would not change with rotation and could be done only once for a set of tiles. It would also mean that the overlap of labels could be computed quicker: it is only combined radius < distance. With line-breaking labels that would be possible.
-
-It might also be that at the moment the center point of labels to the left/right/below/above symbols are calculated wrong and will not be correct for rotating maps.
+  * Memory as usual: mapsforge sails close to OOM all the time and keeping the label data for all the visible tiles in memory can cause an app to OOM. Finding the right balance is difficult.
