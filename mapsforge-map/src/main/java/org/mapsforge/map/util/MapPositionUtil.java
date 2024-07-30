@@ -22,9 +22,14 @@ import org.mapsforge.core.util.MercatorProjection;
 public final class MapPositionUtil {
     public static BoundingBox getBoundingBox(MapPosition mapPosition, Rotation rotation, int tileSize,
                                              Dimension canvasDimension, float mapViewCenterX, float mapViewCenterY) {
-        long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, tileSize);
-        double pixelX = MercatorProjection.longitudeToPixelX(mapPosition.latLong.longitude, mapSize);
-        double pixelY = MercatorProjection.latitudeToPixelY(mapPosition.latLong.latitude, mapSize);
+        return getBoundingBox(mapPosition.latLong, mapPosition.zoomLevel, rotation, tileSize, canvasDimension, mapViewCenterX, mapViewCenterY);
+    }
+
+    public static BoundingBox getBoundingBox(LatLong center, byte zoomLevel, Rotation rotation, int tileSize,
+                                             Dimension canvasDimension, float mapViewCenterX, float mapViewCenterY) {
+        long mapSize = MercatorProjection.getMapSize(zoomLevel, tileSize);
+        double pixelX = MercatorProjection.longitudeToPixelX(center.longitude, mapSize);
+        double pixelY = MercatorProjection.latitudeToPixelY(center.latitude, mapSize);
 
         float halfCanvasWidth = canvasDimension.width * 0.5f;
         float halfCanvasHeight = canvasDimension.height * 0.5f;
@@ -67,14 +72,16 @@ public final class MapPositionUtil {
     }
 
     public static Point getTopLeftPoint(MapPosition mapPosition, Dimension canvasDimension, int tileSize) {
-        LatLong centerPoint = mapPosition.latLong;
+        return getTopLeftPoint(mapPosition.latLong, mapPosition.zoomLevel, canvasDimension, tileSize);
+    }
 
+    public static Point getTopLeftPoint(LatLong center, byte zoomLevel, Dimension canvasDimension, int tileSize) {
         int halfCanvasWidth = canvasDimension.width / 2;
         int halfCanvasHeight = canvasDimension.height / 2;
 
-        long mapSize = MercatorProjection.getMapSize(mapPosition.zoomLevel, tileSize);
-        double pixelX = Math.round(MercatorProjection.longitudeToPixelX(centerPoint.longitude, mapSize));
-        double pixelY = Math.round(MercatorProjection.latitudeToPixelY(centerPoint.latitude, mapSize));
+        long mapSize = MercatorProjection.getMapSize(zoomLevel, tileSize);
+        double pixelX = Math.round(MercatorProjection.longitudeToPixelX(center.longitude, mapSize));
+        double pixelY = Math.round(MercatorProjection.latitudeToPixelY(center.latitude, mapSize));
         return new Point((long) pixelX - halfCanvasWidth, (long) pixelY - halfCanvasHeight);
     }
 

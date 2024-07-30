@@ -27,12 +27,15 @@ import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.Parameters;
+import org.mapsforge.map.layer.cache.FileSystemTileCache;
 import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.queue.Job;
 import org.mapsforge.map.layer.queue.JobQueue;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.util.LayerUtil;
+import org.mapsforge.map.util.MapPositionUtil;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +43,7 @@ import java.util.Set;
 
 public abstract class TileLayer<T extends Job> extends Layer {
     private float alpha = 1.0f;
+    private int cacheTileMargin = 0, cacheZoomMinus = 0, cacheZoomPlus = 0;
     protected final boolean hasJobQueue;
     protected final boolean isTransparent;
     protected JobQueue<T> jobQueue;
@@ -116,8 +120,67 @@ public abstract class TileLayer<T extends Job> extends Layer {
                 bitmap.decrementRefCount();
             }
         }
+        if (zoomLevel > 0) {
+            // Pre-cache tiles outside the screen
+            if (this.cacheTileMargin > 0) {
+                processTilePositions(boundingBox, zoomLevel, canvas, topLeftPoint, rotation);
+            }
+
+            // Pre-cache tiles for +zoom
+            if (this.cacheZoomPlus > 0) {
+                for (int i = 1; i <= this.cacheZoomPlus; i++) {
+                    byte zoom = (byte) (zoomLevel + i);
+                    if (zoom > this.mapViewPosition.getZoomLevelMax()) {
+                        break;
+                    }
+                    processTilePositions(null, zoom, canvas, null, rotation);
+                }
+            }
+
+            // Pre-cache tiles for -zoom
+            if (this.cacheZoomMinus > 0) {
+                for (int i = 1; i <= this.cacheZoomMinus; i++) {
+                    byte zoom = (byte) (zoomLevel - i);
+                    if (zoom < this.mapViewPosition.getZoomLevelMin()) {
+                        break;
+                    }
+                    processTilePositions(null, zoom, canvas, null, rotation);
+                }
+            }
+        }
         if (this.hasJobQueue) {
             this.jobQueue.notifyWorkers();
+        }
+    }
+
+    private void processTilePositions(BoundingBox boundingBox, byte zoomLevel, Canvas canvas, Point topLeftPoint, Rotation rotation) {
+        if (!(this.tileCache instanceof TwoLevelTileCache)) {
+            return;
+        }
+        TileCache secondLevelTileCache = ((TwoLevelTileCache) this.tileCache).getSecondLevelTileCache();
+        if (!(secondLevelTileCache instanceof FileSystemTileCache)) {
+            return;
+        }
+        if (boundingBox == null) {
+            boundingBox = MapPositionUtil.getBoundingBox(this.mapViewPosition.getCenter(), zoomLevel, rotation,
+                    this.displayModel.getTileSize(), canvas.getDimension(),
+                    this.mapViewPosition.getMapViewCenterX(), this.mapViewPosition.getMapViewCenterY());
+        }
+        if (topLeftPoint == null) {
+            topLeftPoint = MapPositionUtil.getTopLeftPoint(this.mapViewPosition.getCenter(), zoomLevel,
+                    canvas.getDimension(), this.displayModel.getTileSize());
+        }
+        List<TilePosition> tilePositions = LayerUtil.getTilePositions(boundingBox, zoomLevel, topLeftPoint,
+                this.displayModel.getTileSize(), this.cacheTileMargin);
+
+        for (int i = tilePositions.size() - 1; i >= 0; --i) {
+            TilePosition tilePosition = tilePositions.get(i);
+            Tile tile = tilePosition.tile;
+            T job = createJob(tile);
+
+            if (this.hasJobQueue && !secondLevelTileCache.containsKey(job)) {
+                this.jobQueue.add(job);
+            }
         }
     }
 
@@ -132,6 +195,27 @@ public abstract class TileLayer<T extends Job> extends Layer {
     }
 
     protected abstract T createJob(Tile tile);
+
+    /**
+     * @return the margin to pre-cache tiles (≥ 0).
+     */
+    public int getCacheTileMargin() {
+        return this.cacheTileMargin;
+    }
+
+    /**
+     * @return the -zoom to pre-cache tiles (≥ 0).
+     */
+    public int getCacheZoomMinus() {
+        return this.cacheZoomMinus;
+    }
+
+    /**
+     * @return the +zoom to pre-cache tiles (≥ 0).
+     */
+    public int getCacheZoomPlus() {
+        return this.cacheZoomPlus;
+    }
 
     /**
      * Whether the tile is stale and should be refreshed.
@@ -231,5 +315,26 @@ public abstract class TileLayer<T extends Job> extends Layer {
 
     public void setParentTilesRendering(Parameters.ParentTilesRendering parentTilesRendering) {
         this.parentTilesRendering = parentTilesRendering;
+    }
+
+    /**
+     * Set the margin to pre-cache tiles (≥ 0).
+     */
+    public void setCacheTileMargin(int cacheTileMargin) {
+        this.cacheTileMargin = Math.max(0, cacheTileMargin);
+    }
+
+    /**
+     * Set the -zoom to pre-cache tiles (≥ 0).
+     */
+    public void setCacheZoomMinus(int cacheZoomMinus) {
+        this.cacheZoomMinus = Math.max(0, cacheZoomMinus);
+    }
+
+    /**
+     * Set the +zoom to pre-cache tiles (≥ 0).
+     */
+    public void setCacheZoomPlus(int cacheZoomPlus) {
+        this.cacheZoomPlus = Math.max(0, cacheZoomPlus);
     }
 }
