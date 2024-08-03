@@ -3,27 +3,6 @@
     map-background-outside="#DDDDDD" version="5" xmlns="http://mapsforge.org/renderTheme"
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
-    <!-- Styles -->
-    <stylemenu defaultlang="en" defaultvalue="normal" id="menu">
-        <layer enabled="true" id="hillshading">
-            <name lang="ar" value="ظلال التضاريس" />
-            <name lang="ca" value="Ombrejat de turons" />
-            <name lang="de" value="Geländerelief" />
-            <name lang="el" value="Ανάγλυφο" />
-            <name lang="en" value="Hillshading" />
-            <name lang="es" value="Sombreado" />
-            <name lang="fr" value="Ombrage du relief" />
-            <name lang="it" value="Ombreggiatura" />
-            <name lang="ko" value="언덕 음영" />
-            <name lang="nl" value="Heuvelschaduw" />
-            <name lang="pl" value="Cieniowanie wzgórz" />
-            <cat id="hillshading" />
-        </layer>
-        <layer id="normal" visible="true">
-            <overlay id="hillshading" />
-        </layer>
-    </stylemenu>
-
     <rule e="way" k="natural" v="issea|sea">
         <area fill="#B3DDFF" />
     </rule>
@@ -391,7 +370,7 @@
 
 
     <!-- hillshading -->
-    <hillshading cat="hillshading" zoom-min="9" zoom-max="17" />
+    <hillshading zoom-min="9" zoom-max="17" />
 
 
     <!-- buildings -->

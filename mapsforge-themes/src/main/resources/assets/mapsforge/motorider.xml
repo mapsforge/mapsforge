@@ -192,20 +192,6 @@
             <name lang="pl" value="Więcej szczegółów drogi" />
             <cat id="road_detail" />
         </layer>
-        <layer enabled="true" id="hillshading">
-            <name lang="ar" value="ظلال التضاريس" />
-            <name lang="ca" value="Ombrejat de turons" />
-            <name lang="de" value="Geländerelief" />
-            <name lang="el" value="Ανάγλυφο" />
-            <name lang="en" value="Hillshading" />
-            <name lang="es" value="Sombreado" />
-            <name lang="fr" value="Ombrage du relief" />
-            <name lang="it" value="Ombreggiatura" />
-            <name lang="ko" value="언덕 음영" />
-            <name lang="nl" value="Heuvelschaduw" />
-            <name lang="pl" value="Cieniowanie wzgórz" />
-            <cat id="hillshading" />
-        </layer>
         <layer id="normal" visible="true">
             <overlay id="accommodation" />
             <overlay id="food" />
@@ -220,7 +206,6 @@
             <overlay id="view" />
             <overlay id="housenumber" />
             <overlay id="road_detail" />
-            <overlay id="hillshading" />
         </layer>
     </stylemenu>
 
@@ -587,7 +572,7 @@
     </rule>
 
     <!-- hillshading -->
-    <hillshading cat="hillshading" zoom-min="9" zoom-max="17" />
+    <hillshading zoom-min="9" zoom-max="17" />
 
     <!-- buildings -->
     <rule e="any" k="*" v="*">
