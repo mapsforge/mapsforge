@@ -33,7 +33,6 @@ import java.util.List;
  * map. In order to save memory, after evaluation, the internally stored way is
  * released.
  */
-
 public class PolylineContainer implements ShapeContainer {
 
     private Point center;
@@ -74,7 +73,11 @@ public class PolylineContainer implements ShapeContainer {
 
     public Point getCenterAbsolute() {
         if (this.center == null) {
-            this.center = GeometryUtils.calculateCenterOfBoundingBox(getCoordinatesAbsolute()[0]);
+            if (isClosedWay) {
+                this.center = GeometryUtils.calculateCenterOfBoundingBox(getCoordinatesAbsolute()[0]);
+            } else {
+                this.center = GeometryUtils.calculateCenterPoint(getCoordinatesAbsolute()[0]);
+            }
         }
         return this.center;
     }
