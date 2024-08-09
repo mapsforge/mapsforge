@@ -46,6 +46,16 @@ final class GeometryUtils {
         return new Point((pointXMin + pointXMax) / 2, (pointYMax + pointYMin) / 2);
     }
 
+    /**
+     * Calculates the center of the given coordinates.
+     *
+     * @param coordinates the coordinates for which calculation should be done.
+     * @return the center coordinates.
+     */
+    static Point calculateCenterPoint(Point[] coordinates) {
+        return coordinates[coordinates.length / 2];
+    }
+
     private GeometryUtils() {
         throw new IllegalStateException();
     }
