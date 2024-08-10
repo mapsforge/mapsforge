@@ -264,7 +264,12 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
         if (!Parameters.FRACTIONAL_ZOOM) {
             double zoomLevelOffset = Math.log(this.scaleFactorCumulative) / LOG_2;
             if (!Double.isNaN(zoomLevelOffset) && zoomLevelOffset != 0) {
-                byte zoomLevelDiff = (byte) Math.round(zoomLevelOffset < 0 ? Math.floor(zoomLevelOffset) : Math.ceil(zoomLevelOffset));
+                byte zoomLevelDiff;
+                if (Parameters.ELASTIC_ZOOM) {
+                    zoomLevelDiff = (byte) Math.round(zoomLevelOffset);
+                } else {
+                    zoomLevelDiff = (byte) Math.round(zoomLevelOffset < 0 ? Math.floor(zoomLevelOffset) : Math.ceil(zoomLevelOffset));
+                }
 
                 IMapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
                 if (zoomLevelDiff != 0 && pivot != null) {

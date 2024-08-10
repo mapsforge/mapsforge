@@ -33,6 +33,11 @@ public final class Parameters {
     public static boolean ANTI_ALIASING = true;
 
     /**
+     * Enable the elastic zoom.
+     */
+    public static boolean ELASTIC_ZOOM = false;
+
+    /**
      * Enable the fractional zoom.
      */
     public static boolean FRACTIONAL_ZOOM = false;
