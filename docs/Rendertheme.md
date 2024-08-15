@@ -102,7 +102,7 @@ But if you want to develop your renderthemes further, Rendertheme V4 offers a nu
     xsi:schemaLocation="http://mapsforge.org/renderTheme renderTheme.xsd" version="5" map-background="#f8f8f8" map-background-outside="#dddddd">
 ```
 
-###Header Elements
+### Header Elements
  
 The following header elements can be used:
  - version: should be "4" or newer now.
