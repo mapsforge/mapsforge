@@ -1,5 +1,6 @@
 /*
  * Copyright 2022 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,6 +16,7 @@
 package org.mapsforge.map.android.hills;
 
 import android.content.ContentResolver;
+
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.hills.DemFile;
 import org.mapsforge.map.layer.hills.DemFileFS;
@@ -22,11 +24,10 @@ import org.mapsforge.map.layer.hills.DemFileFS;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 public class DemFileAndroidContent implements DemFile {
-    private final DemFolderAndroidContent.Entry entry;
-    private final ContentResolver contentResolver;
+    protected final DemFolderAndroidContent.Entry entry;
+    protected final ContentResolver contentResolver;
 
     public DemFileAndroidContent(DemFolderAndroidContent.Entry entry, ContentResolver contentResolver) {
         this.entry = entry;
@@ -49,7 +50,7 @@ public class DemFileAndroidContent implements DemFile {
     }
 
     @Override
-    public ByteBuffer asByteBuffer() throws IOException {
+    public InputStream asStream() throws IOException {
         InputStream stream = null;
         try {
             String nameLowerCase = entry.name.toLowerCase();
@@ -57,7 +58,7 @@ public class DemFileAndroidContent implements DemFile {
             if (nameLowerCase.endsWith(".zip")) {
                 return DemFileFS.tryZippedSingleHgt(entry.name, stream);
             } else {
-                return DemFileFS.streamAsByteBuffer(entry.name, stream, (int) entry.size);
+                return DemFileFS.streamReadPart(entry.name, stream, (int) entry.size);
             }
         } finally {
             IOUtils.closeQuietly(stream);

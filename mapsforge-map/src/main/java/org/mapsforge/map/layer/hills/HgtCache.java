@@ -34,7 +34,7 @@ import java.util.zip.ZipInputStream;
 /**
  * immutably configured, does the work for {@link MemoryCachingHgtReaderTileSource}
  */
-class HgtCache {
+public class HgtCache {
     private static final Logger LOGGER = Logger.getLogger(HgtCache.class.getName());
 
     final DemFolder demFolder;
@@ -292,7 +292,7 @@ class HgtCache {
     }
 
 
-    class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHillTileSource {
+    public class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHillTileSource {
         final DemFile file;
         WeakReference<Future<HillshadingBitmap>> weakRef = null;
 
