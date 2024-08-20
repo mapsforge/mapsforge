@@ -1,5 +1,6 @@
 /*
  * Copyright 2022 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,7 +18,6 @@ package org.mapsforge.map.layer.hills;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 public interface DemFile {
     String getName();
@@ -26,5 +26,5 @@ public interface DemFile {
 
     long getSize();
 
-    ByteBuffer asByteBuffer() throws IOException;
+    InputStream asStream() throws IOException;
 }

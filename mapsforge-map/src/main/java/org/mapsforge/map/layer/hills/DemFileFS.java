@@ -1,5 +1,6 @@
 /*
  * Copyright 2022 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,10 +17,13 @@ package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.util.IOUtils;
 
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -29,7 +33,7 @@ public class DemFileFS implements DemFile {
     private static final Logger LOGGER = Logger.getLogger(AbsShadingAlgorithmDefaults.class.getName());
 
 
-    final private File file;
+    final protected File file;
 
     public DemFileFS(File file) {
         this.file = file;
@@ -51,7 +55,7 @@ public class DemFileFS implements DemFile {
     }
 
 
-    public static ByteBuffer tryZippedSingleHgt(String name, InputStream inputStream) throws IOException {
+    public static InputStream tryZippedSingleHgt(String name, InputStream inputStream) throws IOException {
         ZipInputStream zipInputStream = null;
         try {
             zipInputStream = new ZipInputStream(inputStream);
@@ -62,7 +66,7 @@ public class DemFileFS implements DemFile {
                 if (!expectedNameLC.equals(entry.getName().toLowerCase())) continue;
 
                 int todo = (int) entry.getSize();
-                return streamAsByteBuffer(name, zipInputStream, todo);
+                return streamReadPart(name, zipInputStream, todo);
             }
         } finally {
             IOUtils.closeQuietly(zipInputStream);
@@ -73,11 +77,12 @@ public class DemFileFS implements DemFile {
     /**
      * does *not* close the stream!
      */
-    public static ByteBuffer streamAsByteBuffer(String name, InputStream stream, int todo) throws IOException {
-        ByteBuffer map = ByteBuffer.allocate(todo);
+    public static InputStream streamReadPart(String name, InputStream stream, int todo) throws IOException {
+        final byte[] bytes = new byte[todo];
+
         int done = 0;
         while (todo > 0) {
-            int read = stream.read(map.array(), done, todo);
+            int read = stream.read(bytes, done, todo);
             if (read == 0) {
                 LOGGER.log(Level.SEVERE, "failed to read entire .hgt in " + name + " " + done + " of " + todo + " done");
                 return null;
@@ -85,29 +90,17 @@ public class DemFileFS implements DemFile {
             done += read;
             todo -= read;
         }
-        map.order(ByteOrder.BIG_ENDIAN);
-        return map;
+
+        return new ByteArrayInputStream(bytes);
     }
 
     @Override
-    public ByteBuffer asByteBuffer() throws IOException {
-        FileChannel channel = null;
-        FileInputStream stream = null;
-        try {
-            String nameLowerCase = file.getName().toLowerCase();
-            if (nameLowerCase.endsWith(".zip")) {
-                return tryZippedSingleHgt(file.getName(), new FileInputStream(file));
-            } else {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                channel = fileInputStream.getChannel();
-                stream = fileInputStream;
-                ByteBuffer map = channel.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
-                map.order(ByteOrder.BIG_ENDIAN);
-                return map;
-            }
-        } finally {
-            IOUtils.closeQuietly(channel);
-            IOUtils.closeQuietly(stream);
+    public InputStream asStream() throws IOException {
+        String nameLowerCase = file.getName().toLowerCase();
+        if (nameLowerCase.endsWith(".zip")) {
+            return tryZippedSingleHgt(file.getName(), new FileInputStream(file));
+        } else {
+            return openInputStream();
         }
     }
 }
