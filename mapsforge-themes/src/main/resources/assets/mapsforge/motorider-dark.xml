@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    this is the MotorRider "Dark" theme, revision 17, which is based on the default.xml Mapsforge theme available at:
+    this is the MotorRider "Dark" theme, revision 21, which is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
 
@@ -24,33 +24,61 @@
             <name lang="pl" value="Zakwaterowanie" />
             <cat id="accommodation" />
         </layer>
+        <layer id="money">
+            <name lang="ar" value="البنوك وأجهزة الصراف الآلي" />
+            <name lang="ca" value="Bancs i caixers automàtics" />
+            <name lang="de" value="Banken und Geldautomaten" />
+            <name lang="el" value="Τράπεζες και ΑΤΜ" />
+            <name lang="en" value="Banks and ATM" />
+            <name lang="es" value="Bancos y cajeros automáticos" />
+            <name lang="fr" value="Banques et distributeurs automatiques de billets" />
+            <name lang="it" value="Banche e bancomat" />
+            <name lang="ko" value="은행 및 ATM" />
+            <name lang="nl" value="Banken en geldautomaten" />
+            <name lang="pl" value="Banki i bankomaty" />
+            <cat id="money" />
+        </layer>
+        <layer id="entertainment">
+            <name lang="ar" value="ترفيه" />
+            <name lang="ca" value="Entreteniment" />
+            <name lang="de" value="Unterhaltung" />
+            <name lang="el" value="Ψυχαγωγία" />
+            <name lang="en" value="Entertainment" />
+            <name lang="es" value="Entretenimiento" />
+            <name lang="fr" value="Divertissement" />
+            <name lang="it" value="Divertimento" />
+            <name lang="ko" value="오락" />
+            <name lang="nl" value="Vermaak" />
+            <name lang="pl" value="Rozrywka" />
+            <cat id="entertainment" />
+        </layer>
         <layer id="food">
-            <name lang="ar" value="طعام" />
-            <name lang="ca" value="Menjar" />
-            <name lang="de" value="Speisen" />
-            <name lang="el" value="Φαγητό" />
-            <name lang="en" value="Food" />
-            <name lang="es" value="Alimentación" />
-            <name lang="fr" value="Alimentation" />
-            <name lang="it" value="Alimentari" />
-            <name lang="ko" value="음식" />
-            <name lang="nl" value="Eten" />
-            <name lang="pl" value="Wyżywienie" />
+            <name lang="ar" value="الطعام والشراب" />
+            <name lang="ca" value="Menjar i beure" />
+            <name lang="de" value="Essen und Trinken" />
+            <name lang="el" value="Φαγητό και ποτό" />
+            <name lang="en" value="Food and drink" />
+            <name lang="es" value="Comida y bebida" />
+            <name lang="fr" value="Nourriture et boisson" />
+            <name lang="it" value="Cibo e bevande" />
+            <name lang="ko" value="주식" />
+            <name lang="nl" value="Eten en drinken" />
+            <name lang="pl" value="Jedzenie i picie" />
             <cat id="food" />
         </layer>
-        <layer id="health">
-            <name lang="ar" value="رعاية صحية" />
-            <name lang="ca" value="Salut" />
-            <name lang="de" value="Gesundheit" />
-            <name lang="el" value="Υγεία" />
-            <name lang="en" value="Health" />
-            <name lang="es" value="Salud" />
-            <name lang="fr" value="Santé" />
-            <name lang="it" value="Sanità" />
-            <name lang="ko" value="보건소" />
-            <name lang="nl" value="Gezondheid" />
-            <name lang="pl" value="Zdrowie" />
-            <cat id="health" />
+        <layer id="emergency">
+            <name lang="ar" value="خدمات الطوارئ" />
+            <name lang="ca" value="Serveis d'emergència" />
+            <name lang="de" value="Gesundheit und Notdienste" />
+            <name lang="el" value="Υπηρεσίες έκτακτης ανάγκης" />
+            <name lang="en" value="Emergency services" />
+            <name lang="es" value="Servicios de emergencia" />
+            <name lang="fr" value="Services d'urgence" />
+            <name lang="it" value="Servizi di emergenza" />
+            <name lang="ko" value="응급 서비스" />
+            <name lang="nl" value="Hulpdiensten" />
+            <name lang="pl" value="Służby ratunkowe" />
+            <cat id="emergency" />
         </layer>
         <layer id="fuel">
             <name lang="ar" value="محطات وقود" />
@@ -98,7 +126,7 @@
             <name lang="ar" value="متنوع" />
             <name lang="ca" value="Diversos" />
             <name lang="de" value="Verschiedenes" />
-            <name lang="el" value="Ανάμικτος" />
+            <name lang="el" value="Διάφορα" />
             <name lang="en" value="Miscellaneous" />
             <name lang="es" value="Misceláneos" />
             <name lang="fr" value="Divers" />
@@ -192,6 +220,20 @@
             <name lang="pl" value="Punkty widokowe" />
             <cat id="view" />
         </layer>
+        <layer id="contour">
+            <name lang="ar" value="خطوط الكنتور" />
+            <name lang="ca" value="Línies de contorn" />
+            <name lang="de" value="Höhenlinien" />
+            <name lang="el" value="Γραμμές περιγράμματος" />
+            <name lang="en" value="Contour lines" />
+            <name lang="es" value="Líneas de contorno" />
+            <name lang="fr" value="Courbes de niveau" />
+            <name lang="it" value="Linee di contorno" />
+            <name lang="ko" value="등고선" />
+            <name lang="nl" value="Contourlijnen" />
+            <name lang="pl" value="Linie konturowe" />
+            <cat id="contour" />
+        </layer>
         <layer id="housenumber">
             <name lang="ar" value="أرقام المنازل" />
             <name lang="ca" value="Números de casa" />
@@ -236,8 +278,10 @@
         </layer>
         <layer id="normal" visible="true">
             <overlay id="accommodation" />
+            <overlay id="money" />
+            <overlay id="entertainment" />
             <overlay id="food" />
-            <overlay id="health" />
+            <overlay id="emergency" />
             <overlay id="fuel" />
             <overlay id="charging_station" />
             <overlay id="parking" />
@@ -248,6 +292,7 @@
             <overlay id="shop" />
             <overlay id="attraction" />
             <overlay id="view" />
+            <overlay id="contour" />
             <overlay id="housenumber" />
             <overlay id="off_road" />
             <overlay id="road_detail" />
@@ -510,13 +555,16 @@
     <rule closed="yes" e="way" k="amenity" v="fountain">
         <area fill="#003866" stroke="#000080" stroke-width="0.15" />
     </rule>
+	<rule e="way" k="highway" v="services" zoom-min="14">
+        <area fill="#40F3D6B6"/>
+	</rule>
 
     <!-- leisure -->
     <rule e="way" k="leisure|sport" v="sports_centre|shooting|stadium">
-        <area fill="#2d4e18" stroke="#6FC18E" stroke-width="0.2" />
+        <area fill="#2d4e18" />
     </rule>
     <rule closed="yes" e="way" k="leisure" v="track">
-        <area fill="#2f1204" stroke="#B36C4C" stroke-width="0.2" />
+        <area fill="#2f1204" />
     </rule>
     <rule closed="no" e="way" k="leisure" v="track">
         <line stroke="#B36C4C" stroke-width="1.6" />
@@ -578,16 +626,16 @@
             <line stroke="#4d3300" stroke-linecap="butt" stroke-width="2" />
             <line stroke="#000000" stroke-dasharray="15, 5, 5, 5" stroke-width="0.25" />
         </rule>
-        <rule e="way" k="admin_level" v="6">
+        <rule e="way" k="admin_level" v="6" zoom-min="15">
             <line stroke="#4d3300" stroke-linecap="butt" stroke-width="2" />
             <line stroke="#000000" stroke-dasharray="5, 5" stroke-width="0.25" />
         </rule>
-        <rule e="way" k="admin_level" v="8">
+        <rule e="way" k="admin_level" v="8" zoom-min="15">
             <line stroke="#70EDC2EC" stroke-dasharray="15, 5, 5, 5" stroke-linecap="butt"
                 stroke-width="4" />
             <line stroke="#693937" stroke-dasharray="15, 5, 5, 5" stroke-width="0.25" />
         </rule>
-        <rule e="way" k="admin_level" v="9">
+        <rule e="way" k="admin_level" v="9" zoom-min="15">
             <line stroke="#70EDC2EC" stroke-dasharray="15, 15" stroke-linecap="butt"
                 stroke-width="4" />
             <line stroke="#693937" stroke-dasharray="15, 15" stroke-width="0.25" />
@@ -726,8 +774,8 @@
         </rule>
         <rule e="way" k="highway" v="road|pedestrian|unclassified|residential|living_street" zoom-min="12">
             <line stroke="#333333" stroke-linecap="butt" stroke-width="2.7" />
-            <line stroke="#EEEEEE" stroke-linecap="butt" stroke-width="2.2" />
-            <line stroke="#000000" stroke-linecap="butt" stroke-width="1.5" />
+            <line stroke="#a6a6a6" stroke-linecap="butt" stroke-width="2.2" />
+            <line stroke="#000000" stroke-linecap="butt" stroke-width="0.5" />
         </rule>
         <rule e="way" k="highway"
             v="tertiary|tertiary_link|secondary_link|primary_link|secondary|primary" zoom-min="12">
@@ -922,8 +970,11 @@
 
     <!-- highway captions etc - these parameters define the look and visibility of road names/references -->
     <rule e="node" k="highway" v="motorway_junction" zoom-min="14">
-        <caption k="name" fill="#FFFFFF" font-style="bold_italic" font-size="11" priority="95" stroke="#003399" stroke-width="4"/>
+        <caption k="name" fill="#FFFFFF" font-style="bold_italic" font-size="11" priority="95" stroke="#003399" stroke-width="2"/>
     </rule>
+	<rule e="way" k="highway" v="services" zoom-min="14">
+		<caption k="name" fill="#FFFFFF" font-size="11" font-style="bold" priority="85" stroke="#804000" stroke-width="2"/>
+	</rule>
     <rule e="way" k="tunnel" v="~|no|false">
         <rule e="way" k="highway" v="footway|path|track|bridleway|steps|byway" zoom-min="17">
             <pathText fill="#FFFFFF" font-size="12" font-style="bold" k="name" priority="40"
@@ -968,7 +1019,7 @@
             <pathText k="name" fill="#FFFFFF" font-size="10" font-style="bold" priority="30" repeat-gap="125" repeat-start="50" stroke="#000000" stroke-width="3" />
             <pathText k="ref" fill="#ffe6cc" font-size="10" font-style="bold" priority="30" repeat-gap="125" repeat-start="50" stroke="#000000" stroke-width="2" />
         </rule>
-        <rule e="way" k="highway" v="~track" zoom-min="15">
+        <rule e="way" k="highway" v="motorway|motorway_link|primary|primary_link|secondary|secondary_link|tertiary|tertiary_link|service|unclassified|residential|living_street|construction|road" zoom-min="15">
             <rule e="way" k="access" v="destination">
                 <line src="jar:patterns/access-destination.png" stroke-width="1.0" />
             </rule>
@@ -1064,7 +1115,7 @@
 		</rule>
     </rule>
 
-    <!-- provides additional road captions for Primary and Secondary at levels 10 and 11 respectively -->
+    <!-- provides additional road captions for Motorway, Trunk, Primary/Secondary at levels 10, 11 and 12 respectively -->
     <rule cat="road_detail" e="way" k="highway" v="*" zoom-min="8">
         <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="12" zoom-max="12">
             <caption k="ref" fill="#ffe6cc" font-size="10" font-style="bold" priority="30" stroke="#000000" stroke-width="4"/>
@@ -1208,7 +1259,7 @@
             </rule>
             <rule e="way" k="railway" v="rail">
             <line stroke="#181818" stroke-width="0.75" stroke-linecap="butt"/>
-            <line stroke="#e6e6e6" stroke-width="0.6" stroke-linecap="butt"/>
+            <line stroke="#bfbfbf" stroke-width="0.6" stroke-linecap="butt"/>
             <line stroke="#181818" stroke-width="0.3" scale="all" stroke-dasharray="2.4,2.4" stroke-linecap="butt"/>
 
             </rule>
@@ -1319,13 +1370,6 @@
                 <caption fill="#FFFFFF" font-size="12" font-style="italic" k="name" priority="10"
                     stroke="#000000" stroke-width="2.0" />
         </rule>
-        <rule e="node" k="natural" v="cave_entrance" zoom-min="14">
-            <symbol id="cave" src="jar:symbols/poi/cave.svg" />
-            <rule e="any" k="*" v="*" zoom-min="16">
-                <caption fill="#666666" font-size="12" font-style="bold" k="name" priority="10"
-                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="cave" />
-            </rule>
-        </rule>
         <rule e="node" k="natural" v="volcano" zoom-min="11">
             <symbol id="volcano" src="jar:symbols/volcano.svg" />
             <caption fill="#000000" font-size="14" font-style="bold" k="name"
@@ -1365,37 +1409,37 @@
     </rule>
 
     <!-- emergency -->
-    <rule e="any" k="*" v="*">
-        <rule cat="health" e="any" k="amenity|building" v="hospital|clinic" zoom-min="14">
+    <rule cat="emergency" e="any" k="*" v="*">
+        <rule e="any" k="amenity|building" v="hospital|clinic" zoom-min="14">
             <symbol id="hospital" src="jar:symbols/health/hospital.svg" />
             <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#DA0092" font-size="12" font-style="bold" k="name"
                     priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="hospital" />
             </rule>
         </rule>
-        <rule cat="health" e="any" k="amenity" v="pharmacy" zoom-min="15">
+        <rule e="any" k="amenity" v="pharmacy" zoom-min="15">
             <symbol id="pharmacy" src="jar:symbols/health/pharmacy.svg" />
             <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#DA0092" font-size="12" font-style="bold" k="name"
                     priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="pharmacy" />
             </rule>
         </rule>
-        <rule cat="health" e="any" k="amenity" v="doctors" zoom-min="15">
+        <rule e="any" k="amenity" v="doctors" zoom-min="15">
             <symbol id="doctors" src="jar:symbols/health/doctors2.svg" />
             <rule e="any" k="*" v="*" zoom-min="17">
                 <caption fill="#DA0092" font-size="12" font-style="bold" k="name"
                     priority="10" stroke="#FFFFFF" stroke-width="2.0" symbol-id="doctors" />
             </rule>
         </rule>
-        <rule e="any" k="amenity|building" v="embassy" zoom-min="17">
+        <rule e="any" k="amenity|building" v="embassy" zoom-min="16">
             <symbol id="embassy" src="jar:symbols/poi/embassy2.svg" />
             <caption fill="#666666" font-size="12" font-style="bold" k="name" priority="10"
                 stroke="#FFFFFF" stroke-width="2.0" symbol-id="embassy" />
         </rule>
-        <rule e="any" k="amenity" v="police" zoom-min="17">
+        <rule e="any" k="amenity" v="police" zoom-min="16">
             <symbol src="jar:symbols/amenity/police2.svg" />
         </rule>
-        <rule e="any" k="amenity|building" v="fire_station" zoom-min="17">
+        <rule e="any" k="amenity|building" v="fire_station" zoom-min="16">
             <symbol src="jar:symbols/amenity/firestation3.svg" />
         </rule>
     </rule>
@@ -1544,74 +1588,6 @@
         </rule>
     </rule>
 
-    <!-- amenity -->
-    <rule e="any" k="*" v="*">
-        <rule e="any" k="amenity" v="drinking_water" zoom-min="16">
-            <symbol src="jar:symbols/food/drinkingtap.svg" />
-        </rule>
-        <rule cat="attraction" e="any" k="tourism" v="picnic_site" zoom-min="15">
-            <symbol src="jar:symbols/tourist/picnic.svg" />
-        </rule>
-        <!--<rule e="node" k="amenity" v="bench" zoom-min="17">
-            <symbol src="jar:symbols/bench.svg" />
-        </rule>-->
-        <rule e="any" k="amenity" v="atm" zoom-min="16">
-            <symbol id="atm" src="jar:symbols/money/atm2.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-                <caption fill="#734A08" font-size="12" font-style="bold" k="name"
-                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="atm" />
-            </rule>
-        </rule>
-        <rule e="any" k="amenity" v="recycling" zoom-min="15">
-            <symbol src="jar:symbols/amenity/recycling.svg" />
-        </rule>
-        <rule e="any" k="amenity" v="fountain" zoom-min="15">
-            <rule e="any" k="drinking_water" v="yes">
-                <symbol src="jar:symbols/food/drinkingtap.svg" />
-            </rule>
-            <rule e="any" k="*" v="*">
-                <symbol src="jar:symbols/amenity/fountain2.svg" />
-            </rule>
-        </rule>
-        <rule e="any" k="amenity" v="cinema" zoom-min="17">
-            <symbol src="jar:symbols/tourist/cinema2.svg" />
-        </rule>
-        <rule e="any" k="amenity" v="bicycle_rental" zoom-min="16">
-            <symbol src="jar:symbols/transport/rental_bicycle.svg" />
-        </rule>
-        <rule e="any" k="leisure" v="playground" zoom-min="16">
-            <symbol id="playground" src="jar:symbols/amenity/playground.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-                <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#000000"
-                    stroke-width="2.0" symbol-id="playground" />
-            </rule>
-        </rule>
-        <rule e="any" k="amenity" v="kindergarten" zoom-min="17">
-            <symbol id="nursery" src="jar:symbols/education/nursery3.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-                <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
-                    stroke-width="2.0" symbol-id="nursery" />
-            </rule>
-        </rule>
-        <rule e="any" k="amenity|building" v="library" zoom-min="17">
-            <symbol id="library" src="jar:symbols/amenity/library.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-                <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
-                    stroke-width="2.0" symbol-id="library" />
-            </rule>
-        </rule>
-        <rule e="any" k="amenity" v="theatre" zoom-min="17">
-            <symbol id="theatre" src="jar:symbols/tourist/theatre.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-                <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
-                    stroke-width="2.0" symbol-id="theatre" />
-            </rule>
-        </rule>
-        <rule e="any" k="leisure" v="slipway" zoom-min="17">
-            <symbol src="jar:symbols/transport/slipway.svg" />
-        </rule>
-    </rule>
-
     <!-- highway -->
     <rule e="any" k="*" v="*">
         <rule cat="parking" e="any" k="amenity" v="parking" zoom-min="14">
@@ -1637,15 +1613,15 @@
                     stroke="#FFFFFF" stroke-width="2.0" symbol-id="viewpoint" />
             </rule>
         </rule>
-        <rule cat="attraction" e="any" k="tourism" v="attraction" zoom-min="15">
+        <rule cat="attraction" e="any" k="tourism" v="attraction" zoom-min="16">
             <symbol id="attraction" src="jar:symbols/tourist/attraction.svg" />
             <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
                 stroke-width="2.0" symbol-id="attraction" />
         </rule>
-        <rule e="any" k="tourism" v="information" zoom-min="16">
+        <rule cat="attraction" e="any" k="tourism" v="information" zoom-min="16">
             <symbol src="jar:symbols/tourist/information.svg" />
         </rule>
-        <rule e="any" k="tourism" v="zoo" zoom-min="15">
+        <rule cat="attraction" e="any" k="tourism" v="zoo" zoom-min="16">
             <symbol src="jar:symbols/tourist/zoo.svg" />
         </rule>
         <rule cat="attraction" e="any" k="tourism|building" v="museum" zoom-min="16">
@@ -1738,36 +1714,6 @@
         </rule>
     </rule>
 
-    <!-- sports -->
-    <rule e="any" k="*" v="*">
-        <rule e="any" k="leisure" v="water_park" zoom-min="16">
-            <symbol src="jar:symbols/sport/swimming_outdoor.svg" />
-        </rule>
-        <rule e="way" k="leisure" v="~" zoom-min="16">
-            <rule e="way" k="sport" v="swimming">
-                <symbol src="jar:symbols/sport/swimming_outdoor.svg" />
-            </rule>
-        </rule>
-        <rule e="node" k="sport" v="swimming" zoom-min="16">
-            <symbol src="jar:symbols/sport/swimming_outdoor.svg" />
-        </rule>
-        <rule e="any" k="sport" v="soccer" zoom-min="16">
-            <symbol src="jar:symbols/sport/soccer.svg" />
-        </rule>
-        <rule e="any" k="sport" v="tennis" zoom-min="16">
-            <symbol src="jar:symbols/sport/tennis.svg" />
-        </rule>
-        <rule e="any" k="sport|leisure" v="golf|golf_course" zoom-min="16">
-            <symbol src="jar:symbols/sport/golf.svg" />
-        </rule>
-        <rule e="any" k="sport" v="shooting" zoom-min="16">
-            <symbol src="jar:symbols/sport/shooting.svg" />
-        </rule>
-        <rule e="any" k="leisure" v="stadium" zoom-min="16">
-            <symbol src="jar:symbols/sport/stadium.svg" />
-        </rule>
-    </rule>
-
     <!-- railway -->
     <rule e="node" k="railway" v="crossing" zoom-min="15">
         <symbol src="jar:symbols/railway-crossing-small.svg" />
@@ -1810,7 +1756,7 @@
         <caption fill="#734A08" font-size="12" font-style="bold" k="name"
             stroke="#FFFFFF" stroke-width="2.0" />
     </rule>
-    <rule e="any" k="sport|leisure|amenity" v="swimming|water_park|soccer|tennis|golf|golf_course|shooting|stadium" zoom-min="17">
+    <rule cat="misc" e="any" k="sport|leisure|amenity" v="swimming|water_park|soccer|tennis|golf|golf_course|shooting|stadium" zoom-min="17">
         <caption fill="#39AC39" font-size="12" font-style="bold" k="name"
             stroke="#FFFFFF" stroke-width="2.0" />
     </rule>
@@ -1818,47 +1764,6 @@
     <rule cat="shop" e="any" k="shop" v="*" zoom-min="17">
         <caption fill="#AC39AC" font-size="12" font-style="bold" k="name"
             stroke="#FFFFFF" stroke-width="2.0" />
-    </rule>
-
-	<!-- POI miscellaneous and holding area -->
-    <rule cat="misc" e="any" k="*" v="*" zoom-min="16">
-        <rule e="any" k="amenity|building" v="school" zoom-min="16">
-            <symbol id="school" src="jar:symbols/education/school.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-				<caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#000000"
-					stroke-width="2.0" symbol-id="school" />
-			</rule>
-		</rule>
-        <rule e="any" k="amenity|building" v="university|college" zoom-min="16">
-            <symbol src="jar:symbols/education/university.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-				<caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#000000"
-					stroke-width="2.0" symbol-id="school" />
-			</rule>
-        </rule>
-        <rule e="any" k="amenity" v="post_box" zoom-min="16">
-            <symbol src="jar:symbols/amenity/post_box.svg" />
-        </rule>
-        <rule e="any" k="amenity" v="post_office" zoom-min="16">
-            <symbol id="post_office" src="jar:symbols/amenity/post_office.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-				<caption fill="#FFFFFF" font-size="12" font-style="bold" k="name"
-					stroke="#000000" stroke-width="2.0" symbol-id="post_office" />
-			</rule>
-        </rule>
-        <rule e="any" k="amenity" v="telephone" zoom-min="16">
-            <symbol src="jar:symbols/amenity/telephone.svg" />
-        </rule>
-        <rule e="any" k="amenity" v="bank" zoom-min="16">
-            <symbol id="bank" src="jar:symbols/money/bank2.svg" />
-            <rule e="any" k="*" v="*" zoom-min="17">
-				<caption fill="#FFFFFF" font-size="12" font-style="bold" k="name"
-					stroke="#000000" stroke-width="2.0" symbol-id="bank" />
-			</rule>
-        </rule>
-        <rule e="any" k="amenity" v="toilets" zoom-min="16">
-            <symbol src="jar:symbols/amenity/toilets.svg" />
-        </rule>
     </rule>
 
 	<!-- public transport, bus, train, tram etc -->
@@ -1907,6 +1812,155 @@
         </rule>
     </rule>
 
+	<!-- banks, ATM, buro-de-change, cash-points -->
+    <rule cat="money" e="any" k="*" v="*" zoom-min="16">
+        <rule e="any" k="amenity" v="bank" zoom-min="16">
+            <symbol id="bank" src="jar:symbols/money/bank2.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+				<caption fill="#FFFFFF" font-size="12" font-style="bold" k="name"
+					priority="50" stroke="#000000" stroke-width="2.0" symbol-id="bank" />
+			</rule>
+        </rule>
+        <rule e="any" k="amenity" v="atm" zoom-min="16">
+            <symbol id="atm" src="jar:symbols/money/atm2.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#734A08" font-size="12" font-style="bold" k="name"
+                    priority="50" stroke="#FFFFFF" stroke-width="2.0" symbol-id="atm" />
+            </rule>
+        </rule>
+	</rule>
+	
+	<!-- entertainment venues -->
+    <rule cat="entertainment" e="any" k="*" v="*" zoom-min="16">
+        <rule e="any" k="amenity" v="cinema" zoom-min="16">
+            <symbol src="jar:symbols/tourist/cinema2.svg" />
+        </rule>
+        <rule e="any" k="amenity" v="theatre" zoom-min="16">
+            <symbol id="theatre" src="jar:symbols/tourist/theatre.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
+                    stroke-width="2.0" symbol-id="theatre" />
+            </rule>
+        </rule>
+	</rule>
+
+	<!-- POI miscellaneous and holding area -->
+    <rule cat="misc" e="any" k="*" v="*" zoom-min="16">
+        <rule e="any" k="amenity" v="kindergarten" zoom-min="16">
+            <symbol id="nursery" src="jar:symbols/education/nursery3.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
+                    stroke-width="2.0" symbol-id="nursery" />
+            </rule>
+        </rule>
+        <rule e="any" k="amenity|building" v="school" zoom-min="16">
+            <symbol id="school" src="jar:symbols/education/school.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+				<caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#000000"
+					stroke-width="2.0" symbol-id="school" />
+			</rule>
+		</rule>
+        <rule e="any" k="amenity|building" v="university|college" zoom-min="16">
+            <symbol src="jar:symbols/education/university.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+				<caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#000000"
+					stroke-width="2.0" symbol-id="school" />
+			</rule>
+        </rule>
+        <rule e="any" k="amenity" v="post_box" zoom-min="16">
+            <symbol src="jar:symbols/amenity/post_box.svg" />
+        </rule>
+        <rule e="any" k="amenity" v="post_office" zoom-min="16">
+            <symbol id="post_office" src="jar:symbols/amenity/post_office.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+				<caption fill="#FFFFFF" font-size="12" font-style="bold" k="name"
+					stroke="#000000" stroke-width="2.0" symbol-id="post_office" />
+			</rule>
+        </rule>
+        <rule e="any" k="amenity" v="telephone" zoom-min="16">
+            <symbol src="jar:symbols/amenity/telephone.svg" />
+        </rule>
+        <rule e="any" k="amenity" v="toilets" zoom-min="16">
+            <symbol src="jar:symbols/amenity/toilets.svg" />
+        </rule>
+        <rule e="any" k="amenity|building" v="library" zoom-min="16">
+            <symbol id="library" src="jar:symbols/amenity/library.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#734A08" font-size="12" font-style="bold" k="name" stroke="#FFFFFF"
+                    stroke-width="2.0" symbol-id="library" />
+            </rule>
+        </rule>
+		<!-- sports -->
+		<rule e="any" k="*" v="*">
+			<rule e="any" k="leisure" v="water_park" zoom-min="16">
+				<symbol src="jar:symbols/sport/swimming_outdoor.svg" />
+			</rule>
+			<rule e="way" k="leisure" v="~" zoom-min="16">
+				<rule e="way" k="sport" v="swimming">
+					<symbol src="jar:symbols/sport/swimming_outdoor.svg" />
+				</rule>
+			</rule>
+			<rule e="node" k="sport" v="swimming" zoom-min="16">
+				<symbol src="jar:symbols/sport/swimming_outdoor.svg" />
+			</rule>
+			<rule e="any" k="sport" v="soccer" zoom-min="16">
+				<symbol src="jar:symbols/sport/soccer.svg" />
+			</rule>
+			<rule e="any" k="sport" v="tennis" zoom-min="16">
+				<symbol src="jar:symbols/sport/tennis.svg" />
+			</rule>
+			<rule e="any" k="sport|leisure" v="golf|golf_course" zoom-min="16">
+				<symbol src="jar:symbols/sport/golf.svg" />
+			</rule>
+			<rule e="any" k="sport" v="shooting" zoom-min="16">
+				<symbol src="jar:symbols/sport/shooting.svg" />
+			</rule>
+			<rule e="any" k="leisure" v="stadium" zoom-min="16">
+				<symbol src="jar:symbols/sport/stadium.svg" />
+			</rule>
+		</rule>
+        <rule e="any" k="leisure" v="playground" zoom-min="16">
+            <symbol id="playground" src="jar:symbols/amenity/playground.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#FFFFFF" font-size="12" font-style="bold" k="name" stroke="#000000"
+                    stroke-width="2.0" symbol-id="playground" />
+            </rule>
+        </rule>
+        <rule e="any" k="amenity" v="drinking_water" zoom-min="16">
+            <symbol src="jar:symbols/food/drinkingtap.svg" />
+        </rule>
+        <rule cat="attraction" e="any" k="tourism" v="picnic_site" zoom-min="15">
+            <symbol src="jar:symbols/tourist/picnic.svg" />
+        </rule>
+        <!--<rule e="node" k="amenity" v="bench" zoom-min="17">
+            <symbol src="jar:symbols/bench.svg" />
+        </rule>-->
+        <rule e="any" k="amenity" v="recycling" zoom-min="15">
+            <symbol src="jar:symbols/amenity/recycling.svg" />
+        </rule>
+        <rule e="any" k="amenity" v="fountain" zoom-min="15">
+            <rule e="any" k="drinking_water" v="yes">
+                <symbol src="jar:symbols/food/drinkingtap.svg" />
+            </rule>
+            <rule e="any" k="*" v="*">
+                <symbol src="jar:symbols/amenity/fountain2.svg" />
+            </rule>
+        </rule>
+        <rule e="any" k="amenity" v="bicycle_rental" zoom-min="16">
+            <symbol src="jar:symbols/transport/rental_bicycle.svg" />
+        </rule>
+        <rule e="any" k="leisure" v="slipway" zoom-min="17">
+            <symbol src="jar:symbols/transport/slipway.svg" />
+        </rule>
+        <rule e="node" k="natural" v="cave_entrance" zoom-min="16">
+            <symbol id="cave" src="jar:symbols/poi/cave.svg" />
+            <rule e="any" k="*" v="*" zoom-min="17">
+                <caption fill="#666666" font-size="12" font-style="bold" k="name" priority="10"
+                    stroke="#FFFFFF" stroke-width="2.0" symbol-id="cave" />
+            </rule>
+        </rule>
+    </rule>
+
     <!-- building captions -->
     <rule e="any" k="*" v="*">
         <!--<rule e="any" k="building" v="*" zoom-min="18">
@@ -1918,5 +1972,65 @@
                 stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
     </rule>
+
+	<!-- contour lines, to work with Freizeitkarte and OpenAndroMaps -->
+	<rule cat="contour" e="any" k="contour_ext" v="*">
+		<rule e="way" k="*" v="*" zoom-max="12">
+			<rule e="way" k="contour_ext" v="elevation_major">
+				<line stroke="#a4998e" stroke-width="0.3" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="12" zoom-max="13">
+			<rule e="way" k="contour_ext" v="elevation_medium">
+				<line stroke="#a4998e" stroke-width="0.2" />
+			</rule>
+			<rule e="way" k="contour_ext" v="elevation_major">
+				<line stroke="#a4998e" stroke-width="0.5" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="14" zoom-max="15">
+			<rule e="way" k="contour_ext" v="elevation_minor" zoom-max="15">
+				<line stroke="#a4998e" stroke-width="0.12" curve="cubic" />
+			</rule>
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<line stroke="#a4998e" stroke-width="0.3" curve="cubic" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="16" zoom-max="16">
+			<rule e="way" k="contour_ext" v="elevation_minor">
+				<line stroke="#a4998e" stroke-width="0.08" curve="cubic" />
+			</rule>
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<line stroke="#a4998e" stroke-width="0.2" curve="cubic" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="17">
+			<rule e="way" k="contour_ext" v="elevation_minor">
+				<line stroke="#a4998e" stroke-width="0.06" curve="cubic" />
+			</rule>
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<line stroke="#a4998e" stroke-width="0.15" curve="cubic" />
+			</rule>
+		</rule>
+		<!-- captions -->
+		<rule e="way" k="*" v="*" zoom-min="13" zoom-max="13">
+			<rule e="way" k="contour_ext" v="elevation_major">
+				<pathText k="ele" font-style="bold" font-size="8" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="50" repeat-gap="150" text-orientation="left" />
+				<pathText k="name" font-style="bold" font-size="8" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="50" repeat-gap="150" text-orientation="left" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="14" zoom-max="15">
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<pathText k="ele" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="100" repeat-gap="150" text-orientation="left" />
+				<pathText k="name" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="1" repeat-start="100" repeat-gap="150" text-orientation="left" />
+			</rule>
+		</rule>
+		<rule e="way" k="*" v="*" zoom-min="16">
+			<rule e="way" k="contour_ext" v="elevation_medium|elevation_major">
+				<pathText k="ele" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="2" repeat-start="200" repeat-gap="200" text-orientation="left" />
+				<pathText k="name" font-style="bold" font-size="10" fill="#FFFFFF" stroke="#000000" stroke-width="2" repeat-start="200" repeat-gap="200" text-orientation="left" />
+			</rule>
+		</rule>
+	</rule>
 
 </rendertheme>
