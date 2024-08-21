@@ -8,6 +8,7 @@
     - `Parameters.FRACTIONAL_ZOOM`
 - Pre-cache map tiles (+-zoom, margin) [#1507](https://github.com/mapsforge/mapsforge/issues/1507)
 - Motorider map theme [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
+- Hillshading new algorithm [#1521](https://github.com/mapsforge/mapsforge/pull/1521)
 - Fix hillshading at 0 lat / lon [#1497](https://github.com/mapsforge/mapsforge/issues/1497)
 - `mapsforge-themes` change package [#1135](https://github.com/mapsforge/mapsforge/issues/1135)
   - Rename `InternalRenderTheme` to `MapsforgeThemes`
