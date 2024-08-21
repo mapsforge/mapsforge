@@ -22,10 +22,23 @@ class NegativeRule extends Rule {
 
     final NegativeMatcher attributeMatcher;
 
-    NegativeRule(RuleBuilder ruleBuilder, NegativeMatcher attributeMatcher) {
+    /* (-) 'exclusive negation' matches when either KEY is not present
+     * or KEY is present and any VALUE is NOT present
+     *
+     * (\) 'except negation' matches when KEY is present
+     * none items of VALUE is present (TODO).
+     * (can be emulated by <m k="a"><m k=a v="-|b|c">...</m></m>)
+     *
+     * (~) 'non-exclusive negation' matches when either KEY is not present
+     * or KEY is present and any VALUE is present */
+
+    final boolean exclusive;
+
+    NegativeRule(RuleBuilder ruleBuilder, NegativeMatcher attributeMatcher, boolean exclusive) {
         super(ruleBuilder);
 
         this.attributeMatcher = attributeMatcher;
+        this.exclusive = exclusive;
     }
 
     @Override
@@ -53,9 +66,9 @@ class NegativeRule extends Rule {
         // check tags
         for (int i = 0, n = tags.size(); i < n; i++) {
             if (attributeMatcher.matches(tags.get(i))) {
-                return true;
+                return !exclusive;
             }
         }
-        return false;
+        return exclusive;
     }
 }

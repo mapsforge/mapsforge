@@ -35,6 +35,7 @@ public class RuleBuilder {
     private static final String K = "k";
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\|");
     private static final String STRING_NEGATION = "~";
+    private static final String STRING_EXCLUSIVE = "-";
     private static final String STRING_WILDCARD = "*";
     private static final String V = "v";
     private static final String ZOOM_MAX = "zoom-max";
@@ -121,7 +122,12 @@ public class RuleBuilder {
     public Rule build() {
         if (this.valueList.remove(STRING_NEGATION)) {
             NegativeMatcher attributeMatcher = new NegativeMatcher(this.keyList, this.valueList);
-            return new NegativeRule(this, attributeMatcher);
+            return new NegativeRule(this, attributeMatcher, false);
+        }
+
+        if (this.valueList.remove(STRING_EXCLUSIVE)) {
+            NegativeMatcher attributeMatcher = new NegativeMatcher(this.keyList, this.valueList);
+            return new NegativeRule(this, attributeMatcher, true);
         }
 
         AttributeMatcher keyMatcher = getKeyMatcher(this.keyList);
