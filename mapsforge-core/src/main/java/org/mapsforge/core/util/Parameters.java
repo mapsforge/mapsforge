@@ -48,6 +48,11 @@ public final class Parameters {
     public static boolean LAYER_SCROLL_EVENT = false;
 
     /**
+     * Use AwtLuminanceShadingComposite or AlphaComposite.
+     */
+    public static boolean LUMINANCE_COMPOSITE = true;
+
+    /**
      * Maximum buffer size for map files.
      */
     public static int MAXIMUM_BUFFER_SIZE = 10000000;
