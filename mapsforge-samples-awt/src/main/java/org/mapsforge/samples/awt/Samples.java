@@ -38,8 +38,8 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.hills.ClearAsymmetryShadingAlgorithm;
 import org.mapsforge.map.layer.hills.DemFolderFS;
-import org.mapsforge.map.layer.hills.DiffuseLightShadingAlgorithm;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
@@ -80,7 +80,7 @@ public final class Samples {
         HillsRenderConfig hillsCfg = null;
         File demFolder = getDemFolder(args);
         if (demFolder != null) {
-            MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new DiffuseLightShadingAlgorithm(), AwtGraphicFactory.INSTANCE);
+            MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new ClearAsymmetryShadingAlgorithm(), AwtGraphicFactory.INSTANCE);
             tileSource.setEnableInterpolationOverlap(true);
             hillsCfg = new HillsRenderConfig(tileSource);
             hillsCfg.indexOnThread();
