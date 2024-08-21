@@ -1,5 +1,6 @@
 /*
  * Copyright 2022 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.DocumentsContract;
+
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.hills.DemFile;
 import org.mapsforge.map.layer.hills.DemFolder;
@@ -134,7 +136,7 @@ public class DemFolderAndroidContent implements DemFolder {
         }
     }
 
-    static class Entry {
+    public static class Entry {
         final Uri uri;
         final String name;
         final boolean isDir;
@@ -178,11 +180,11 @@ public class DemFolderAndroidContent implements DemFolder {
         };
 
         Cursor c = null;
+        List<Entry> result = new ArrayList<>();
         try {
             c = contentResolver.query(childrenUri, columns, null, null, null);
 
-            List<Entry> result = new ArrayList<>();
-            while (c.moveToNext()) {
+            while (c != null && c.moveToNext()) {
                 String fileDocId = c.getString(0);
                 String name = c.getString(1);
                 String mimeType = c.getString(2);

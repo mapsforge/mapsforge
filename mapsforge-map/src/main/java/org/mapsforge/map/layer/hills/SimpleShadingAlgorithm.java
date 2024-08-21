@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,11 +16,11 @@
 package org.mapsforge.map.layer.hills;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 /**
- * Simple, but expressive slope visualisation (e.g. no pretentions of physical accuracy, separate north and west lightsources instead of one northwest, so a round dome would not look round, saturation works different depending on slope direction)
+ * Simple, but expressive slope visualisation (e.g. no pretensions of physical accuracy, separate north and west light sources instead of one northwest, so a round dome would not look round, saturation works different depending on slope direction)
  * <p>
  * <p>variations can be created by overriding {@link #exaggerate(double)}</p>
  */
@@ -28,8 +29,8 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
     public final double linearity;
     public final double scale;
 
-    private byte[] lookup;
-    private int lookupOffset;
+    protected byte[] lookup;
+    protected int lookupOffset;
 
     public SimpleShadingAlgorithm() {
         this(0.1d, 0.666d);
@@ -50,13 +51,6 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
         this.scale = Math.max(0d, scale);
     }
 
-    private static short readNext(ByteBuffer din, short fallback) throws IOException {
-        short read = din.getShort();
-        if (read == Short.MIN_VALUE)
-            return fallback;
-        return read;
-    }
-
     /**
      * should calculate values from -128 to +127 using whatever range required (within reason)
      *
@@ -69,19 +63,7 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
         return ret;
     }
 
-    @Override
-    public int getAxisLenght(HgtCache.HgtFileInfo source) {
-        long size = source.getSize();
-        long elements = size / 2;
-        int rowLen = (int) Math.ceil(Math.sqrt(elements));
-        if (rowLen * rowLen * 2 != size) {
-            return 0;
-        }
-        return rowLen - 1;
-    }
-
-
-    protected byte[] convert(ByteBuffer din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
+    protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
         byte[] bytes;
 
         short[] ringbuffer = new short[rowLen];
@@ -140,12 +122,12 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
         return bytes;
     }
 
-    private byte exaggerate(byte[] lookup, int x) {
+    protected byte exaggerate(byte[] lookup, int x) {
 
         return lookup[Math.max(0, Math.min(lookup.length - 1, x + lookupOffset))];
     }
 
-    private void fillLookup() {
+    protected void fillLookup() {
         int lowest = 0;
         while (lowest > -1024) {
             double exaggerate = exaggerate(lowest);
