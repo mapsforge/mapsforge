@@ -63,7 +63,7 @@ public class SaveTiles {
 
         // Create requirements.
         GraphicFactory gf = AwtGraphicFactory.INSTANCE;
-        XmlRenderTheme theme = MapsforgeThemes.OSMARENDER;
+        XmlRenderTheme theme = MapsforgeThemes.MOTORIDER;
         DisplayModel dm = new FixedTileSizeDisplayModel(256);
         RenderThemeFuture rtf = new RenderThemeFuture(gf, theme, dm);
         RendererJob theJob = new RendererJob(tile, mapData, rtf, dm, 1.0f, false, false);

@@ -85,7 +85,15 @@ public class MapsforgeMapViewer extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.theme_default) {
+        if (itemId == R.id.theme_motorider) {
+            loadTheme(MapsforgeThemes.MOTORIDER);
+            item.setChecked(true);
+            return true;
+        } else if (itemId == R.id.theme_motorider_dark) {
+            loadTheme(MapsforgeThemes.MOTORIDER_DARK);
+            item.setChecked(true);
+            return true;
+        } else if (itemId == R.id.theme_default) {
             loadTheme(MapsforgeThemes.DEFAULT);
             item.setChecked(true);
             return true;
@@ -136,7 +144,7 @@ public class MapsforgeMapViewer extends Activity {
                 tileRendererLayer.setCacheTileMargin(1);
                 tileRendererLayer.setCacheZoomMinus(1);
                 tileRendererLayer.setCacheZoomPlus(2);
-                tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.DEFAULT);
+                tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.MOTORIDER);
 
                 mapView.getLayerManager().getLayers().add(tileRendererLayer);
 

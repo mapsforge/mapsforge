@@ -115,7 +115,7 @@ public class GettingStarted extends Activity {
             MapDataStore mapDataStore = new MapFile(fis);
             TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore,
                     mapView.getModel().mapViewPosition, AndroidGraphicFactory.INSTANCE);
-            tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.DEFAULT);
+            tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.MOTORIDER);
 
             /*
              * On its own a tileRendererLayer does not know where to display the map, so we need to

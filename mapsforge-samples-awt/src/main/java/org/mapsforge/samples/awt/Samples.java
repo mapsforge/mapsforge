@@ -199,7 +199,7 @@ public final class Samples {
                 return true;
             }
         };
-        tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.DEFAULT);
+        tileRendererLayer.setXmlRenderTheme(MapsforgeThemes.MOTORIDER);
         return tileRendererLayer;
     }
 

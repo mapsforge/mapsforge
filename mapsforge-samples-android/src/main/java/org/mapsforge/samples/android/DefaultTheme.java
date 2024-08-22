@@ -29,6 +29,6 @@ public class DefaultTheme extends SamplesBaseActivity {
      */
     @Override
     protected XmlRenderTheme getRenderTheme() {
-        return MapsforgeThemes.DEFAULT;
+        return MapsforgeThemes.MOTORIDER;
     }
 }

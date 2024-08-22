@@ -103,7 +103,7 @@ public class ItemDetailFragment extends Fragment {
                 this.mapView.getModel().displayModel.getTileSize(), 1.0f, 1.5);
         this.mapView.getLayerManager().getLayers().add(AndroidUtil.createTileRendererLayer(
                 tileCache, this.mapView.getModel().mapViewPosition, getMapFile(),
-                MapsforgeThemes.DEFAULT));
+                MapsforgeThemes.MOTORIDER));
 
         this.mapView.setCenter(this.dummyItem.location);
         this.mapView.setZoomLevel((byte) 16);
