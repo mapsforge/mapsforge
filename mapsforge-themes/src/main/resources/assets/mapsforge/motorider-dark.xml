@@ -730,13 +730,13 @@
     <!-- aeroways -->
     <!-- runways areas -->
     <rule closed="yes" e="way" k="aeroway" v="aerodrome">
-        <area fill="#373c2a" stroke="#FFFFFF" stroke-width="0.2" />
+        <area fill="#373c2a" />
     </rule>
     <rule e="way" k="aeroway" v="apron">
         <area fill="#bfbfbf" />
     </rule>
     <rule e="way" k="aeroway" v="terminal">
-        <area fill="#404040" stroke="#6A5A8E" stroke-width="0.2" />
+        <area fill="#404040" />
     </rule>
     <rule e="node" k="aeroway" v="gate">
         <caption fill="#FFD900" font-size="12" font-style="bold" k="name" stroke="#000000"
@@ -1146,22 +1146,6 @@
     <rule closed="yes" e="way" k="aeroway" v="runway" zoom-min="11">
         <area fill="#D4DCBD" />
         <line stroke="#000000" stroke-linecap="butt" stroke-width="0.5" />
-    </rule>
-
-    <!-- aeroway symbols and captions -->
-    <rule e="node" k="aeroway" v="helipad" zoom-min="14">
-        <symbol id="helipad" src="jar:symbols/transport/helicopter.svg" />
-        <rule e="any" k="*" v="*" zoom-min="17">
-            <caption fill="#80d4ff" font-size="12" font-style="bold" k="name"
-                priority="-20" stroke="#000000" stroke-width="2.0" symbol-id="helipad" />
-        </rule>
-    </rule>
-    <rule e="node" k="aeroway" v="aerodrome|airport" zoom-min="13">
-        <!--<symbol id="airport" src="jar:symbols/transport/airport2.svg" />-->
-        <rule e="any" k="*" v="*" zoom-min="15">
-            <caption fill="#80d4ff" font-size="12" font-style="bold" k="name"
-                priority="-10" stroke="#000000" stroke-width="2.0" symbol-id="airport" />
-        </rule>
     </rule>
 
     <!-- ferry routes -->
@@ -1771,7 +1755,21 @@
     </rule>
 
 	<!-- public transport, bus, train, tram etc -->
-    <rule cat="public_transport" e="any" k="*" v="*" zoom-min="16">
+    <rule cat="public_transport" e="any" k="*" v="*" zoom-min="14">
+		<rule e="way" k="aeroway" v="helipad" zoom-min="14">
+			<symbol id="helipad" src="jar:symbols/transport/helicopter.svg" />
+			<rule e="any" k="*" v="*" zoom-min="17">
+				<caption fill="#80d4ff" font-size="12" font-style="bold" k="name"
+					priority="-20" stroke="#000000" stroke-width="2.0" symbol-id="helipad" />
+			</rule>
+		</rule>
+		<rule e="way" k="aeroway" v="aerodrome|airport" zoom-min="14">
+			<symbol id="airport" src="jar:symbols/transport/airport2.svg" />
+			<rule e="any" k="*" v="*" zoom-min="14">
+				<caption fill="#80d4ff" font-size="12" font-style="bold" k="name"
+					priority="-10" stroke="#000000" stroke-width="2.0" symbol-id="airport" />
+			</rule>
+		</rule>
         <rule e="any" k="railway" v="station" zoom-min="16">
             <symbol id="train-station" src="jar:symbols/transport/train_station2.svg" />
             <rule e="any" k="*" v="*" zoom-min="17">
