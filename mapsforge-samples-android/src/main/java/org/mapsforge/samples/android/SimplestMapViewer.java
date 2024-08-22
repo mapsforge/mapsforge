@@ -38,7 +38,7 @@ public class SimplestMapViewer extends MapViewerTemplate {
      */
     @Override
     protected XmlRenderTheme getRenderTheme() {
-        return MapsforgeThemes.DEFAULT;
+        return MapsforgeThemes.MOTORIDER;
     }
 
     /**
