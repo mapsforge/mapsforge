@@ -215,7 +215,8 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
 
     @Override
     protected void retrieveLabelsOnly(RendererJob job) {
-        if (this.hasJobQueue && this.tileBasedLabelStore != null && this.tileBasedLabelStore.requiresTile(job.tile)) {
+        if (this.hasJobQueue && this.tileBasedLabelStore != null && this.tileBasedLabelStore.requiresTile(job.tile)
+                && this.mapDataStore.supportsTile(job.tile)) {
             job.setRetrieveLabelsOnly();
             this.jobQueue.add(job);
         }
