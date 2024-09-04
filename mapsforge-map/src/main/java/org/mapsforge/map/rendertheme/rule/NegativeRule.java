@@ -27,7 +27,7 @@ class NegativeRule extends Rule {
      *
      * (\) 'except negation' matches when KEY is present
      * none items of VALUE is present (TODO).
-     * (can be emulated by <m k="a"><m k=a v="-|b|c">...</m></m>)
+     * (can be emulated by <rule k="a"><rule k=a v="-|b|c">...</rule></rule>)
      *
      * (~) 'non-exclusive negation' matches when either KEY is not present
      * or KEY is present and any VALUE is present */
