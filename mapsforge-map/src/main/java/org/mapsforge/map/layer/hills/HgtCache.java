@@ -307,7 +307,7 @@ public class HgtCache {
         Future<HillshadingBitmap> getBitmapFuture(double pxPerLat, double pxPerLng) {
             if (HgtCache.this.interpolatorOverlap) {
 
-                int axisLen = algorithm.getAxisLenght(this);
+                int axisLen = algorithm.getAxisLen(this);
                 if (pxPerLat > axisLen || pxPerLng > axisLen) {
                     return getForHires();
                 } else {
