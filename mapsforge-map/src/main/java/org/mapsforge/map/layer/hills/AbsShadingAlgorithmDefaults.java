@@ -28,12 +28,12 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
 
     protected abstract byte[] convert(InputStream map, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo source) throws IOException;
 
-    public static short readNext(InputStream din, short fallback) throws IOException {
+    public short readNext(InputStream din, short fallback) throws IOException {
         final int read1 = din.read();
         final int read2 = din.read();
 
         if (read1 != -1 && read2 != -1) {
-            short read = (short) ((read1 << 8) + read2);
+            short read = (short) ((read1 << 8) | read2);
 
             if (read == Short.MIN_VALUE)
                 return fallback;
@@ -45,7 +45,7 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
     }
 
     @Override
-    public int getAxisLenght(HgtCache.HgtFileInfo source) {
+    public int getAxisLen(HgtCache.HgtFileInfo source) {
         long size = source.getSize();
         long elements = size / 2;
         int rowLen = (int) Math.ceil(Math.sqrt(elements));
@@ -57,7 +57,7 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
 
     @Override
     public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
-        int axisLength = getAxisLenght(source);
+        int axisLength = getAxisLen(source);
         int rowLen = axisLength + 1;
         InputStream map = null;
         try {
@@ -68,8 +68,7 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
             return null;
-        }
-        finally {
+        } finally {
             IOUtils.closeQuietly(map);
         }
     }

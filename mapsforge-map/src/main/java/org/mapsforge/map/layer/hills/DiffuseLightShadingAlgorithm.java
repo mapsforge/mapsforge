@@ -64,10 +64,8 @@ public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
     }
 
     protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
-        byte[] bytes;
-
-        short[] ringbuffer = new short[rowLen];
-        bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
+        final byte[] bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
+        final short[] ringbuffer = new short[rowLen];
 
         int outidx = (axisLength + 2 * padding) * padding + padding;
         int rbcur = 0;
@@ -79,57 +77,47 @@ public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
             }
         }
 
-        double southPerPixel = MercatorProjection.calculateGroundResolution(fileInfo.southLat(), axisLength * 170L);
-        double northPerPixel = MercatorProjection.calculateGroundResolution(fileInfo.northLat(), axisLength * 170L);
+        final double southPerPixel = MercatorProjection.calculateGroundResolution(fileInfo.southLat(), axisLength * 170L);
+        final double northPerPixel = MercatorProjection.calculateGroundResolution(fileInfo.northLat(), axisLength * 170L);
 
-        double southPerPixelByLine = southPerPixel / (2 * axisLength);
-        double northPerPixelByLine = northPerPixel / (2 * axisLength);
+        final double southPerPixelByLine = southPerPixel / (2 * axisLength);
+        final double northPerPixelByLine = northPerPixel / (2 * axisLength);
 
         for (int line = 1; line <= axisLength; line++) {
             if (rbcur >= rowLen) {
                 rbcur = 0;
             }
+
             short nw = ringbuffer[rbcur];
             short sw = readNext(din, nw);
             ringbuffer[rbcur++] = sw;
-            double halfmetersPerPixel = (southPerPixelByLine * line + northPerPixelByLine * (axisLength - line));
+
+            final double halfmetersPerPixel = (southPerPixelByLine * line + northPerPixelByLine * (axisLength - line));
+
             for (int col = 1; col <= axisLength; col++) {
-                short ne = ringbuffer[rbcur];
-                short se = readNext(din, ne);
+                final short ne = ringbuffer[rbcur];
+                final short se = readNext(din, ne);
                 ringbuffer[rbcur++] = se;
 
-                int noso = -((se - ne) + (sw - nw));
+                final int noso = (se - ne) + (sw - nw);
+                final int eawe = (ne - nw) + (se - sw);
 
-                int eawe = -((ne - nw) + (se - sw));
-
-                int zeroIsFlat = calculate(noso / halfmetersPerPixel, eawe / halfmetersPerPixel);
-
-                int intVal = Math.min(255, Math.max(0, zeroIsFlat + 127));
-
-                int shade = intVal & 0xFF;
-
-                bytes[outidx++] = (byte) shade;
+                bytes[outidx++] = calculate(noso / halfmetersPerPixel, eawe / halfmetersPerPixel);
 
                 nw = ne;
                 sw = se;
             }
+
             outidx += 2 * padding;
         }
+
         return bytes;
     }
 
-    protected int calculate(double n, double e) {
-        double raw = calculateRaw(n, e);
+    protected byte calculate(double n, double e) {
+        final double raw = calculateRaw(n, e);
 
-        double v = raw - neutral;
-
-        if (v < 0) {
-            return (int) Math.round((128 * (v / neutral)));
-        } else if (v > 0) {
-            return (int) Math.round((127 * (v / (1d - neutral))));
-        } else {
-            return 0;
-        }
+        return (byte) Math.min(255, Math.round(255 * Math.abs(raw - neutral)));
     }
 
     /**

@@ -20,7 +20,7 @@ public interface ShadingAlgorithm {
 
     //HillshadingBitmap convertTile(RawHillTileSource source, GraphicFactory graphicFactory);
 
-    int getAxisLenght(HgtCache.HgtFileInfo source);
+    int getAxisLen(HgtCache.HgtFileInfo source);
 
     RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo hgtFileInfo, int padding);
 

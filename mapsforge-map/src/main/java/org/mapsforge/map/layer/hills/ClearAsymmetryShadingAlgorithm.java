@@ -22,7 +22,6 @@ import java.io.InputStream;
 
 /**
  * Flat surfaces, or all surfaces with slope less than minSlope, will have no shade (they look the same as without hill shading);
- * It is the main distinguishing feature of this algorithm.
  * Slopes are shaded non-linearly using sqrt mapping by default, so gentle slopes will have more pronounced differences between them.
  * Linear and square mappings are also available.
  * There is a special factor, less than 1, that determines in a simple way how much less shading the northwest slopes get,
@@ -43,6 +42,8 @@ public class ClearAsymmetryShadingAlgorithm extends AbsShadingAlgorithmDefaults 
     public static final double NW_FACTOR_DEFAULT = 0.6;
 
     public static final int SHADE_MIN = 0, SHADE_MAX = 255;
+
+    public static double SqrtTwo = Math.sqrt(2);
 
     protected final double mMinSlope, mMaxSlope, mNorthWestFactor;
     protected final int mMode;
@@ -204,6 +205,10 @@ public class ClearAsymmetryShadingAlgorithm extends AbsShadingAlgorithmDefaults 
         return retVal;
     }
 
+    protected double getSlopeToUse(final double slope, final double slopeInPerpendicularDirection) {
+        return Math.abs(slopeInPerpendicularDirection) > Math.abs(slope) ? slopeInPerpendicularDirection : slope;
+    }
+
     @Override
     protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
         final byte[] bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
@@ -234,16 +239,18 @@ public class ClearAsymmetryShadingAlgorithm extends AbsShadingAlgorithmDefaults 
             short sw = readNext(din, nw);
             ringbuffer[rbcur++] = sw;
 
-            double metersPerPixelDiagonal = Math.sqrt(2) * (southPerPixelByLine * line + northPerPixelByLine * (axisLength - line));
+            final double metersPerPixelDiagonal = SqrtTwo * (southPerPixelByLine * line + northPerPixelByLine * (axisLength - line));
+            final double metersPerPixelDiagonalInv = 1. / metersPerPixelDiagonal;
 
             for (int col = 1; col <= axisLength; col++) {
                 short ne = ringbuffer[rbcur];
                 short se = readNext(din, ne);
                 ringbuffer[rbcur++] = se;
 
-                bytes[outidx++] = getShade(100 * (nw - se) / metersPerPixelDiagonal);
+                bytes[outidx++] = getShade(100 * getSlopeToUse(nw - se, ne - sw) * metersPerPixelDiagonalInv);
 
                 nw = ne;
+                sw = se;
             }
             outidx += 2 * padding;
         }

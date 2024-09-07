@@ -64,17 +64,11 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
     }
 
     protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
-        byte[] bytes;
+        final byte[] bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
+        final short[] ringbuffer = new short[rowLen];
 
-        short[] ringbuffer = new short[rowLen];
-        bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
-
-//        din.load();
-
-        byte[] lookup = this.lookup;
         if (lookup == null) {
             fillLookup();
-            lookup = this.lookup;
         }
 
         int outidx = (axisLength + 2 * padding) * padding + padding;
@@ -86,6 +80,7 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
                 ringbuffer[rbcur++] = last;
             }
         }
+
         for (int line = 1; line <= axisLength; line++) {
             if (rbcur >= rowLen) {
                 rbcur = 0;
@@ -96,35 +91,44 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
             ringbuffer[rbcur++] = sw;
 
             for (int col = 1; col <= axisLength; col++) {
-                short ne = ringbuffer[rbcur];
-                short se = readNext(din, ne);
+                final short ne = ringbuffer[rbcur];
+                final short se = readNext(din, ne);
                 ringbuffer[rbcur++] = se;
 
-                int noso = -((se - ne) + (sw - nw));
+                final int noso = -((se - ne) + (sw - nw));
+                final int eawe = -((ne - nw) + (se - sw));
 
-                int eawe = -((ne - nw) + (se - sw));
+                final int zeroIsFlat = exaggerate(lookup, noso) + exaggerate(lookup, eawe);
 
-                noso = (int) exaggerate(lookup, noso);
-                eawe = (int) exaggerate(lookup, eawe);
-
-                int zeroIsFlat = noso + eawe;
-                int intVal = Math.min(255, Math.max(0, zeroIsFlat + 127));
-
-                int shade = intVal & 0xFF;
+                final int shade = fixFlatBias(zeroIsFlat + 127);
 
                 bytes[outidx++] = (byte) shade;
 
                 nw = ne;
                 sw = se;
             }
+
             outidx += 2 * padding;
         }
+
         return bytes;
     }
 
     protected byte exaggerate(byte[] lookup, int x) {
 
         return lookup[Math.max(0, Math.min(lookup.length - 1, x + lookupOffset))];
+    }
+
+    protected int fixFlatBias(final int shade) {
+        final int output;
+
+        if (shade > 127) {
+            output = 2 * (shade - 127);
+        } else {
+            output = 127 - shade;
+        }
+
+        return Math.min(255, Math.max(0, output));
     }
 
     protected void fillLookup() {
