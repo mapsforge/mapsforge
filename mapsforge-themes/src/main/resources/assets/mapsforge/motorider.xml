@@ -4,7 +4,8 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    this is the MotorRider theme, revision 26, which is based on the default.xml Mapsforge theme available at:
+    REVISION 28, 7th September 2024
+	this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
 
@@ -320,13 +321,13 @@
 
     <!-- landuse -->
     <rule e="way" k="landuse" v="military" zoom-min="12">
-        <area fill="#ffe6e6" stroke="#ffe6e6" stroke-width="0.4" />
+        <area fill="#ffe6e6" stroke="#ff3333" stroke-width="0.4" />
     </rule>
     <rule e="way" k="landuse" v="residential" zoom-min="12">
         <area fill="#f2f2f2" />
     </rule>
     <rule e="way" k="landuse" v="retail" zoom-min="12">
-        <area fill="#f8e7d3" stroke="#E4E4E4" stroke-width="0.2" />
+        <area fill="#f8e7d3" />
     </rule>
 
     <rule e="way" k="landuse" v="commercial|industrial|brownfield|railway|garages|construction"
@@ -572,8 +573,8 @@
         <area fill="#e6ffcc" />
     </rule>
     <rule closed="no" e="way" k="leisure" v="track">
-        <line stroke="#B36C4C" stroke-width="1.6" />
-        <line stroke="#F2A07B" stroke-width="1.2" />
+        <line stroke="#B36C4C" stroke-width="0.6" />
+        <line stroke="#F2A07B" stroke-width="0.2" />
     </rule>
     <rule e="way" k="leisure" v="playground|pitch|dog_park" zoom-min="14">
         <area fill="#D3EBD9" />
@@ -849,10 +850,10 @@
                 <rule e="way" k="highway" v="construction" zoom-min="12">
                     <line stroke="#60888888" stroke-width="2.0" />
                 </rule>
-                <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="10" zoom-max="11">
+                <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="10" zoom-max="10">
                     <line stroke="#000000" stroke-width="0.3" />
                 </rule>
-                <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="12">
+                <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="11">
                     <line stroke="#000000" stroke-width="2.5" />
                 </rule>
                 <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="10">
@@ -949,7 +950,7 @@
             <rule e="way" k="highway" v="residential|living_street|road" zoom-min="13">
                 <line stroke="#FFFFFF" stroke-width="1.4" />
             </rule>
-            <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="12">
+            <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="11">
                 <line stroke="#ffff80" stroke-width="2.2" />
             </rule>
             <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="9">
@@ -991,17 +992,13 @@
             <pathText fill="#606060" font-size="12" font-style="bold" k="name" priority="40"
                 stroke="#FFFFFF" stroke-width="2" />
         </rule>
-        <rule e="way" k="highway"
-            v="cycleway|service|construction|road|pedestrian|unclassified|residential|living_street|tertiary|tertiary_link"
-            zoom-min="14" zoom-max="14">
-            <pathText fill="#000000" font-size="10" font-style="bold" k="name" priority="50"
-                stroke="#FFFFFF" stroke-width="2.0" />
+        <rule e="way" k="highway" v="tertiary|tertiary_link" zoom-min="14">
+            <pathText k="ref" fill="#000000" font-size="10" font-style="bold" priority="40" stroke="#FFFFFF" stroke-width="2" />
         </rule>
         <rule e="way" k="highway"
             v="cycleway|service|construction|road|pedestrian|unclassified|residential|living_street|tertiary|tertiary_link"
-            zoom-min="15">
-            <pathText fill="#000000" font-size="11" font-style="bold" k="name" priority="50"
-                stroke="#FFFFFF" stroke-width="2.0" />
+            zoom-min="14">
+            <pathText fill="#000000" font-size="10" font-style="bold" k="name" priority="50" stroke="#FFFFFF" stroke-width="2.0" />
         </rule>
         <rule e="way" k="highway" v="motorway|motorway_link" zoom-min="11" zoom-max="12">
             <caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="95" stroke="#42618a" stroke-width="4"/>
@@ -1449,6 +1446,9 @@
                 stroke-width="2.0" symbol-id="alpine-hut" />
             <caption fill="#0092DA" font-size="12" font-style="bold" k="ele" position="above"
                 stroke="#FFFFFF" stroke-width="2.0" symbol-id="alpine-hut" />
+        </rule>
+        <rule e="any" k="tourism" v="wilderness_hut" zoom-min="12">
+            <symbol id="alpine-hut" src="jar:symbols/accommodation/alpinehut.svg" />
         </rule>
         <rule e="any" k="tourism" v="camp_site" zoom-min="13">
             <symbol id="camping" src="jar:symbols/accommodation/camping.svg" />
