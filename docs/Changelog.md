@@ -1,6 +1,6 @@
 # Changelog
 
-## New since 0.21.0
+## Next version
 
 - Map rotation [#7](https://github.com/mapsforge/mapsforge/issues/7)
     - See [RotationMapViewer](https://github.com/mapsforge/mapsforge/blob/master/mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/RotationMapViewer.java)
