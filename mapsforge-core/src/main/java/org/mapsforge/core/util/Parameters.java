@@ -81,11 +81,6 @@ public final class Parameters {
     public static int POLYGON_ZOOM_MIN = -1;
 
     /**
-     * Enable the rotation gesture.
-     */
-    public static boolean ROTATION_GESTURE = false;
-
-    /**
      * Faster map rotation with matrix.
      */
     public static boolean ROTATION_MATRIX = true;

@@ -16,6 +16,7 @@
 package org.mapsforge.samples.android;
 
 import android.view.View;
+import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
 import org.mapsforge.map.layer.debug.TileCoordinatesLayer;
 import org.mapsforge.map.layer.debug.TileGridLayer;
@@ -31,20 +32,22 @@ public class DiagnosticsMapViewer extends DownloadLayerViewer {
     protected void createControls() {
         super.createControls();
 
-        mapView.getMapZoomControls().getButtonZoomIn().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mapView.onZoomEvent();
-                mapView.getModel().mapViewPosition.setZoom(mapView.getModel().mapViewPosition.getZoom() + ZOOM_OFFSET);
-            }
-        });
-        mapView.getMapZoomControls().getButtonZoomOut().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mapView.onZoomEvent();
-                mapView.getModel().mapViewPosition.setZoom(Math.max(0, mapView.getModel().mapViewPosition.getZoom() - ZOOM_OFFSET));
-            }
-        });
+        if (Parameters.FRACTIONAL_ZOOM) {
+            mapView.getMapZoomControls().getButtonZoomIn().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mapView.onZoomEvent();
+                    mapView.getModel().mapViewPosition.setZoom(mapView.getModel().mapViewPosition.getZoom() + ZOOM_OFFSET);
+                }
+            });
+            mapView.getMapZoomControls().getButtonZoomOut().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mapView.onZoomEvent();
+                    mapView.getModel().mapViewPosition.setZoom(Math.max(0, mapView.getModel().mapViewPosition.getZoom() - ZOOM_OFFSET));
+                }
+            });
+        }
     }
 
     @Override
@@ -59,6 +62,15 @@ public class DiagnosticsMapViewer extends DownloadLayerViewer {
 
         // Enable frame counter
         mapView.getFpsCounter().setVisible(true);
+
+        // Enable rotation gesture
+        mapView.getTouchGestureHandler().setRotationEnabled(true);
+    }
+
+    @Override
+    protected float getScreenRatio() {
+        // just to get the cache bigger right now.
+        return 2f;
     }
 
     @Override

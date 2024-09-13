@@ -33,5 +33,14 @@ public class LabelLayerUsingLabelCacheMapViewer extends DefaultTheme {
         mapView.getLayerManager().getLayers().add(tileRendererLayer);
         LabelLayer labelLayer = new LabelLayer(AndroidGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
         mapView.getLayerManager().getLayers().add(labelLayer);
+
+        // Enable rotation gesture
+        mapView.getTouchGestureHandler().setRotationEnabled(true);
+    }
+
+    @Override
+    protected float getScreenRatio() {
+        // just to get the cache bigger right now.
+        return 2f;
     }
 }

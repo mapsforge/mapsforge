@@ -319,8 +319,11 @@ public class OverlayMapViewer extends DownloadLayerViewer {
         // we just add a few more overlays
         addOverlayLayers(mapView.getLayerManager().getLayers());
 
-        mapView.setMapViewCenterY(0.75f);
-        mapView.getModel().frameBufferModel.setOverdrawFactor(Math.max(mapView.getModel().frameBufferModel.getOverdrawFactor(), mapView.getMapViewCenterY() * 2));
+        // Enable rotation gesture
+        mapView.getTouchGestureHandler().setRotationEnabled(true);
+
+        /*mapView.setMapViewCenterY(0.75f);
+        mapView.getModel().frameBufferModel.setOverdrawFactor(Math.max(mapView.getModel().frameBufferModel.getOverdrawFactor(), mapView.getMapViewCenterY() * 2));*/
         rotationAngle = mapView.getMapRotation().degrees;
     }
 
