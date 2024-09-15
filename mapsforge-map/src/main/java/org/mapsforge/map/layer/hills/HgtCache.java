@@ -1,6 +1,7 @@
 /*
  * Copyright 2017-2022 usrusr
  * Copyright 2019 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,22 +21,32 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.BoundingBox;
 
-import java.io.IOException;
+import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * immutably configured, does the work for {@link MemoryCachingHgtReaderTileSource}
  */
 public class HgtCache {
     private static final Logger LOGGER = Logger.getLogger(HgtCache.class.getName());
+
+    // Should be lower-case
+    public static final String ZipFileExtension = "zip";
+    public static final String HgtFileExtension = "hgt";
+    public static final String DotZipFileExtension = "." + ZipFileExtension;
+    public static final String DotHgtFileExtension = "." + HgtFileExtension;
 
     final DemFolder demFolder;
     final boolean interpolatorOverlap;
@@ -48,7 +59,7 @@ public class HgtCache {
     final private Lru secondaryLru;
     final private Lru mainLru;
 
-    private LazyFuture<Map<TileKey, HgtFileInfo>> hgtFiles;
+    private final LazyFuture<Map<TileKey, HgtFileInfo>> hgtFiles;
 
 
     protected static final class TileKey {
@@ -135,7 +146,7 @@ public class HgtCache {
         }
     }
 
-    private List<String> problems = new ArrayList<>();
+    protected final List<String> problems = new ArrayList<>();
 
     HgtCache(DemFolder demFolder, boolean interpolationOverlap, GraphicFactory graphicsFactory, ShadingAlgorithm algorithm, int mainCacheSize, int neighborCacheSize) {
         this.demFolder = demFolder;
@@ -151,71 +162,49 @@ public class HgtCache {
         hgtFiles = new LazyFuture<Map<TileKey, HgtFileInfo>>() {
             @Override
             protected Map<TileKey, HgtFileInfo> calculate() {
-                Map<TileKey, HgtFileInfo> map = new HashMap<>();
-                Matcher matcher = Pattern.compile("([ns])(\\d{1,2})([ew])(\\d{1,3})\\.(?:(hgt)|(zip))", Pattern.CASE_INSENSITIVE).matcher("");
-                crawl(HgtCache.this.demFolder, matcher, map, problems);
+                final Map<TileKey, HgtFileInfo> map = new HashMap<>();
+                final String regex = ".*([ns])(\\d{1,2})([ew])(\\d{1,3})\\.(?:(" + HgtFileExtension + ")|(" + ZipFileExtension + "))";
+                final Matcher matcher = Pattern
+                        .compile(regex, Pattern.CASE_INSENSITIVE)
+                        .matcher("");
+                indexFolder(HgtCache.this.demFolder, matcher, map, problems);
                 return map;
             }
 
-            void crawl(DemFile file, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
-                String name = file.getName();
-                if (matcher.reset(name).matches()) {
-                    int northsouth = Integer.parseInt(matcher.group(2));
-                    int eastwest = Integer.parseInt(matcher.group(4));
+            void indexFile(DemFile file, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
+                final String name = file.getName();
+                if (matcher
+                        .reset(name)
+                        .matches()) {
+                    final int northsouth = Integer.parseInt(matcher.group(2));
+                    final int eastwest = Integer.parseInt(matcher.group(4));
 
-                    int north = "n".equals(matcher.group(1).toLowerCase()) ? northsouth : -northsouth;
-                    int east = "e".equals(matcher.group(3).toLowerCase()) ? eastwest : -eastwest;
+                    final int north = "n".equalsIgnoreCase(matcher.group(1)) ? northsouth : -northsouth;
+                    final int east = "e".equalsIgnoreCase(matcher.group(3)) ? eastwest : -eastwest;
 
-                    long length = 0;
-
-                    if (matcher.group(6) == null) {
-                        length = file.getSize();
-                    } else {
-                        // zip
-                        ZipInputStream zipInputStream = null;
-                        try {
-                            zipInputStream = new ZipInputStream(file.openInputStream());
-                            String expectedHgt = name.toLowerCase().substring(0, name.length() - 4) + ".hgt";
-                            ZipEntry entry;
-                            while (null != (entry = zipInputStream.getNextEntry())) {
-                                if (expectedHgt.equals(entry.getName().toLowerCase())) {
-                                    length = entry.getSize();
-                                    break;
-                                }
-                            }
-                        } catch (IOException e) {
-                            problems.add("could not read zip file " + file.getName());
-                        }
-                        if (zipInputStream != null) {
-                            try {
-                                zipInputStream.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    long heights = length / 2;
-                    long sqrt = (long) Math.sqrt(heights);
+                    final long length = file.getSize();
+                    final long heights = length / 2;
+                    final long sqrt = (long) Math.sqrt(heights);
                     if (heights == 0 || sqrt * sqrt != heights) {
                         if (problems != null)
                             problems.add(file + " length in shorts (" + heights + ") is not a square number");
                         return;
                     }
 
-                    TileKey tileKey = new TileKey(north, east);
-                    HgtFileInfo existing = map.get(tileKey);
+                    final TileKey tileKey = new TileKey(north, east);
+                    final HgtFileInfo existing = map.get(tileKey);
                     if (existing == null || existing.size < length) {
                         map.put(tileKey, new HgtFileInfo(file, north - 1, east, north, east + 1, length));
                     }
                 }
             }
 
-            void crawl(DemFolder file, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
-                for (DemFile demFile : file.files()) {
-                    crawl(demFile, matcher, map, problems);
+            void indexFolder(DemFolder folder, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
+                for (DemFile demFile : folder.files()) {
+                    indexFile(demFile, matcher, map, problems);
                 }
-                for (DemFolder sub : file.subs()) {
-                    crawl(sub, matcher, map, problems);
+                for (DemFolder sub : folder.subs()) {
+                    indexFolder(sub, matcher, map, problems);
                 }
             }
         };
@@ -247,7 +236,7 @@ public class HgtCache {
     /* */
     class MergeOverlapFuture extends LazyFuture<HillshadingBitmap> {
         final LoadUnmergedFuture loadFuture;
-        private HgtFileInfo hgtFileInfo;
+        private final HgtFileInfo hgtFileInfo;
 
         MergeOverlapFuture(HgtFileInfo hgtFileInfo, LoadUnmergedFuture loadFuture) {
 
@@ -271,11 +260,12 @@ public class HgtCache {
         }
 
         private void mergePaddingOnBitmap(HillshadingBitmap fresh, HgtFileInfo neighbor, HillshadingBitmap.Border border) {
-            int padding = fresh.getPadding();
+            final int padding = fresh.getPadding();
 
             if (padding < 1) return;
+
             if (neighbor != null) {
-                Future<HillshadingBitmap> neighborUnmergedFuture = neighbor.getUnmergedAsMergePartner();
+                final Future<HillshadingBitmap> neighborUnmergedFuture = neighbor.getUnmergedAsMergePartner();
                 if (neighborUnmergedFuture != null) {
                     try {
                         HillshadingBitmap other = neighborUnmergedFuture.get();
@@ -284,7 +274,8 @@ public class HgtCache {
                         mergeSameSized(fresh, other, border, padding, copyCanvas);
 
                     } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
+//                        e.printStackTrace();
+                        LOGGER.log(Level.WARNING, e.toString());
                     }
                 }
             }
@@ -294,6 +285,7 @@ public class HgtCache {
 
     public class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHillTileSource {
         final DemFile file;
+        final Object mWeakRefSync = new Object();
         WeakReference<Future<HillshadingBitmap>> weakRef = null;
 
         final long size;
@@ -325,26 +317,29 @@ public class HgtCache {
          * @return MergeOverlapFuture or LoadUnmergedFuture as available
          */
         private MergeOverlapFuture getForHires() {
-            final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
-            Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
+            synchronized (mWeakRefSync) {
+                final MergeOverlapFuture ret;
 
-            final MergeOverlapFuture ret;
-            if (candidate instanceof MergeOverlapFuture) {
-                ret = ((MergeOverlapFuture) candidate);
-            } else if (candidate instanceof LoadUnmergedFuture) {
-                LoadUnmergedFuture loadFuture = (LoadUnmergedFuture) candidate;
-                ret = new MergeOverlapFuture(this, loadFuture);
-                this.weakRef = new WeakReference<Future<HillshadingBitmap>>(ret);
-                secondaryLru.evict(loadFuture);  // candidate will henceforth be referenced via created (until created is gone)
-            } else {
-                ret = new MergeOverlapFuture(this);
-//logLru("new merged", mainLru, ret);
-                weakRef = new WeakReference<Future<HillshadingBitmap>>(ret);
+                final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
+                final Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
+
+                if (candidate instanceof MergeOverlapFuture) {
+                    ret = ((MergeOverlapFuture) candidate);
+                } else if (candidate instanceof LoadUnmergedFuture) {
+                    LoadUnmergedFuture loadFuture = (LoadUnmergedFuture) candidate;
+                    ret = new MergeOverlapFuture(this, loadFuture);
+                    this.weakRef = new WeakReference<>(ret);
+                    secondaryLru.evict(loadFuture);  // candidate will henceforth be referenced via created (until created is gone)
+                } else {
+                    ret = new MergeOverlapFuture(this);
+                    //logLru("new merged", mainLru, ret);
+                    weakRef = new WeakReference<>(ret);
+                }
+                mainLru.markUsed(ret);
+
+                //logLru("merged", mainLru, ret);
+                return ret;
             }
-            mainLru.markUsed(ret);
-
-//logLru("merged", mainLru, ret);
-            return ret;
         }
 
         /**
@@ -353,24 +348,26 @@ public class HgtCache {
          * @return MergeOverlapFuture or LoadUnmergedFuture as available
          */
         private LoadUnmergedFuture getUnmergedAsMergePartner() {
-            final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
-            Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
+            synchronized (mWeakRefSync) {
+                final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
+                Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
 
 
-            final LoadUnmergedFuture ret;
-            if (candidate instanceof LoadUnmergedFuture) {
-                secondaryLru.markUsed(candidate);
-                ret = (LoadUnmergedFuture) candidate;
-            } else if (candidate instanceof MergeOverlapFuture) {
-                mainLru.markUsed(candidate);
-                ret = ((MergeOverlapFuture) candidate).loadFuture;
-            } else {
-                final LoadUnmergedFuture created = new LoadUnmergedFuture(this);
-                this.weakRef = new WeakReference<Future<HillshadingBitmap>>(created);
-                secondaryLru.markUsed(created);
-                ret = created;
+                final LoadUnmergedFuture ret;
+                if (candidate instanceof LoadUnmergedFuture) {
+                    secondaryLru.markUsed(candidate);
+                    ret = (LoadUnmergedFuture) candidate;
+                } else if (candidate instanceof MergeOverlapFuture) {
+                    mainLru.markUsed(candidate);
+                    ret = ((MergeOverlapFuture) candidate).loadFuture;
+                } else {
+                    final LoadUnmergedFuture created = new LoadUnmergedFuture(this);
+                    this.weakRef = new WeakReference<Future<HillshadingBitmap>>(created);
+                    secondaryLru.markUsed(created);
+                    ret = created;
+                }
+                return ret;
             }
-            return ret;
         }
 
         /**
@@ -379,32 +376,37 @@ public class HgtCache {
          * @return MergeOverlapFuture or LoadUnmergedFuture as available
          */
         private Future<HillshadingBitmap> getForLores() {
-            final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
-            Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
+            synchronized (mWeakRefSync) {
+                final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
+                Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
 
-            if (candidate == null) {
-                candidate = new LoadUnmergedFuture(this);
-                this.weakRef = new WeakReference<>(candidate);
+                if (candidate == null) {
+                    candidate = new LoadUnmergedFuture(this);
+                    this.weakRef = new WeakReference<>(candidate);
+                }
+                final Future<HillshadingBitmap> evicted = mainLru.markUsed(candidate);
+                if (secondaryLru != null) secondaryLru.markUsed(evicted);
+                return candidate;
             }
-            Future<HillshadingBitmap> evicted = mainLru.markUsed(candidate);
-            if (secondaryLru != null) secondaryLru.markUsed(evicted);
-            return candidate;
         }
 
         @Override
         public HillshadingBitmap getFinishedConverted() {
-            WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
-            if (weak != null) {
-                Future<HillshadingBitmap> hillshadingBitmapFuture = weak.get();
-                if (hillshadingBitmapFuture != null && hillshadingBitmapFuture.isDone()) {
-                    try {
-                        return hillshadingBitmapFuture.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
+            synchronized (mWeakRefSync) {
+                WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
+                if (weak != null) {
+                    Future<HillshadingBitmap> hillshadingBitmapFuture = weak.get();
+                    if (hillshadingBitmapFuture != null && hillshadingBitmapFuture.isDone()) {
+                        try {
+                            return hillshadingBitmapFuture.get();
+                        } catch (InterruptedException | ExecutionException e) {
+//                        e.printStackTrace();
+                            LOGGER.log(Level.WARNING, e.toString());
+                        }
                     }
                 }
+                return null;
             }
-            return null;
         }
 
         @Override
@@ -462,7 +464,10 @@ public class HgtCache {
 
 
     HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, double pxPerLat, double pxPerLng) throws InterruptedException, ExecutionException {
-        HgtFileInfo hgtFileInfo = hgtFiles.get().get(new TileKey(northInt, eastInt));
+        final HgtFileInfo hgtFileInfo = hgtFiles
+                .get()
+                .get(new TileKey(northInt, eastInt));
+
         if (hgtFileInfo == null) {
             return null;
         }
@@ -472,8 +477,8 @@ public class HgtCache {
     }
 
     static void mergeSameSized(HillshadingBitmap center, HillshadingBitmap neighbor, HillshadingBitmap.Border border, int padding, Canvas copyCanvas) {
-        HillshadingBitmap sink;
-        HillshadingBitmap source;
+        final HillshadingBitmap sink;
+        final HillshadingBitmap source;
 
         if (border == HillshadingBitmap.Border.EAST) {
             sink = center;
@@ -500,6 +505,42 @@ public class HgtCache {
             copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding, true);
             copyCanvas.drawBitmap(source, 0, (source.getHeight() - 2 * padding));
         }
+    }
+
+    public static boolean isFileNameZip(final String fileName) {
+        boolean retVal = false;
+
+        if (fileName != null) {
+            retVal = fileName
+                    .toLowerCase()
+                    .endsWith(HgtCache.DotZipFileExtension);
+        }
+
+        return retVal;
+    }
+
+    public static boolean isFileNameHgt(final String fileName) {
+        boolean retVal = false;
+
+        if (fileName != null) {
+            retVal = fileName
+                    .toLowerCase()
+                    .endsWith(HgtCache.DotHgtFileExtension);
+        }
+
+        return retVal;
+    }
+
+    public static boolean isFileZip(final File file) {
+        return isFileNameZip(file.getName());
+    }
+
+    public static boolean isFileHgt(final File file) {
+        return isFileNameHgt(file.getName());
+    }
+
+    public static boolean isFileZip(final DemFile file) {
+        return isFileNameZip(file.getName());
     }
 
 //    private void logLru(String merged, Lru lru, Future<HillshadingBitmap> ret) {

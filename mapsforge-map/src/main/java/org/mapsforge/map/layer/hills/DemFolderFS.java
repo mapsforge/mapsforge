@@ -1,5 +1,6 @@
 /*
  * Copyright 2022 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,8 +17,11 @@ package org.mapsforge.map.layer.hills;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.zip.ZipFile;
 
 public class DemFolderFS implements DemFolder {
     public final File file;
@@ -31,7 +35,7 @@ public class DemFolderFS implements DemFolder {
         final File[] files = file.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isDirectory();
+                return file.isDirectory() || HgtCache.isFileZip(file);
             }
         });
         if (files == null) return Collections.emptyList();
@@ -48,7 +52,21 @@ public class DemFolderFS implements DemFolder {
 
                     @Override
                     public DemFolder next() {
-                        DemFolderFS ret = new DemFolderFS(files[nextidx]);
+                        final File nextFile = files[nextidx];
+                        DemFolder ret = null;
+                        if (HgtCache.isFileZip(nextFile))
+                        {
+                            try {
+                                ret = new DemFolderZipFS(new ZipFile(nextFile));
+                            } catch (IOException e) {
+                                LOGGER.log(Level.WARNING, e.toString());
+                            }
+                        }
+
+                        if (ret == null) {
+                            ret = new DemFolderFS(nextFile);
+                        }
+
                         nextidx++;
                         return ret;
                     }
@@ -67,7 +85,7 @@ public class DemFolderFS implements DemFolder {
         final File[] files = file.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                return file.isFile();
+                return file.isFile() && HgtCache.isFileHgt(file) && false == HgtCache.isFileZip(file);
             }
         });
         if (files == null) return Collections.emptyList();

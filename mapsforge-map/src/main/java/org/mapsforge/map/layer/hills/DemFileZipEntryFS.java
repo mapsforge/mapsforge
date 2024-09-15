@@ -1,5 +1,4 @@
 /*
- * Copyright 2022 usrusr
  * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -16,33 +15,39 @@
 package org.mapsforge.map.layer.hills;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-public class DemFileFS implements DemFile {
+public class DemFileZipEntryFS implements DemFile {
 
-    final protected File file;
+    protected final ZipFile zipFile;
+    protected final ZipEntry zipEntry;
 
-    public DemFileFS(File file) {
-        this.file = file;
+    public DemFileZipEntryFS(ZipFile zipFile, ZipEntry zipEntry) {
+        this.zipFile = zipFile;
+        this.zipEntry = zipEntry;
     }
 
     @Override
     public String getName() {
-        return file.getName();
+        return zipEntry.getName();
     }
 
     @Override
     public long getSize() {
-        return file.length();
+        return zipEntry.getSize();
     }
 
     @Override
     public InputStream openInputStream() throws FileNotFoundException {
-        return new BufferedInputStream(new FileInputStream(file));
+        try {
+            return new BufferedInputStream(zipFile.getInputStream(zipEntry));
+        } catch (IOException e) {
+            throw new FileNotFoundException(zipFile.getName() + " (" + zipEntry.getName() + ")");
+        }
     }
 
     @Override

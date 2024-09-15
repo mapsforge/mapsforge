@@ -14,10 +14,14 @@
  */
 package org.mapsforge.map.layer.hills;
 
+import java.util.logging.Logger;
+
 /**
  * should implement equals
  */
 public interface DemFolder {
+    Logger LOGGER = Logger.getLogger(AbsShadingAlgorithmDefaults.class.getName());
+
     Iterable<DemFolder> subs();
 
     Iterable<DemFile> files();

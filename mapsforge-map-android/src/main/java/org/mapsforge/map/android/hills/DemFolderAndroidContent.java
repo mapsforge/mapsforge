@@ -24,6 +24,7 @@ import android.provider.DocumentsContract;
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.hills.DemFile;
 import org.mapsforge.map.layer.hills.DemFolder;
+import org.mapsforge.map.layer.hills.HgtCache;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,12 +51,16 @@ public class DemFolderAndroidContent implements DemFolder {
         return new TransformedIt<DemFolder>(children) {
             @Override
             boolean accept(Entry entry) {
-                return entry.isDir;
+                return entry.isDir || HgtCache.isFileNameZip(entry.name);
             }
 
             @Override
             DemFolder transform(Entry entry) {
-                return new DemFolderAndroidContent(entry.uri, context, contentResolver);
+                if (HgtCache.isFileNameZip(entry.name)) {
+                    return new DemFolderZipAndroidContent(entry, contentResolver);
+                } else {
+                    return new DemFolderAndroidContent(entry.uri, context, contentResolver);
+                }
             }
         };
     }
@@ -66,7 +71,7 @@ public class DemFolderAndroidContent implements DemFolder {
         return new TransformedIt<DemFile>(children) {
             @Override
             boolean accept(Entry entry) {
-                return !entry.isDir;
+                return HgtCache.isFileNameHgt(entry.name) && false == (entry.isDir || HgtCache.isFileNameZip(entry.name));
             }
 
             @Override
@@ -76,7 +81,7 @@ public class DemFolderAndroidContent implements DemFolder {
         };
     }
 
-    abstract class TransformedIt<T> implements Iterable<T> {
+    abstract static class TransformedIt<T> implements Iterable<T> {
         protected TransformedIt(Iterable<Entry> source) {
             this.source = source;
         }
@@ -142,7 +147,7 @@ public class DemFolderAndroidContent implements DemFolder {
         final boolean isDir;
         final long size;
 
-        private Entry(Uri uri, String name, boolean isDir, long size) {
+        public Entry(Uri uri, String name, boolean isDir, long size) {
             this.uri = uri;
             this.name = name;
             this.isDir = isDir;

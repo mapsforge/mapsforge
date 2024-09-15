@@ -19,14 +19,14 @@ import org.mapsforge.core.graphics.HillshadingBitmap;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Mutable frontend for the hillshading cache/processing in {@link HgtCache}
+ * Mutable frontend for the hill shading cache/processing in {@link HgtCache}
  * <p>All changes are lazily applied when a tile is requested with {@link #getShadingTile}, which includes a full reindex of the .hgt files.
  * Eager indexing on a dedicated thread can be triggered with {@link #indexOnThread} (e.g. after a configuration change or during setup)</p>
  */
 public class HillsRenderConfig {
     private ShadeTileSource tileSource;
 
-    private float maginuteScaleFactor = 1f;
+    private float magnitudeScaleFactor = 1f;
 
 
     public HillsRenderConfig(ShadeTileSource tileSource) {
@@ -45,36 +45,36 @@ public class HillsRenderConfig {
 
     /**
      * @param latitudeOfSouthWestCorner  tile ID latitude (southwest corner, as customary in .hgt)
-     * @param longituedOfSouthWestCorner tile ID longitude (southwest corner, as customary in .hgt)
+     * @param longitudeOfSouthWestCorner tile ID longitude (southwest corner, as customary in .hgt)
      * @param pxPerLat                   pixels per degree of latitude (to determine padding quality requirements)
      * @param pxPerLng                   pixels per degree of longitude (to determine padding quality requirements)
      * @return
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public HillshadingBitmap getShadingTile(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException {
+    public HillshadingBitmap getShadingTile(int latitudeOfSouthWestCorner, int longitudeOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException {
         ShadeTileSource tileSource = this.tileSource;
         if (tileSource == null) return null;
 
-        HillshadingBitmap ret = tileSource.getHillshadingBitmap(latitudeOfSouthWestCorner, longituedOfSouthWestCorner, pxPerLat, pxPerLng);
-        if (ret == null && Math.abs(longituedOfSouthWestCorner) > 178) { // don't think too hard about where exactly the border is (not much height data there anyway)
-            int eastInt = longituedOfSouthWestCorner > 0 ? longituedOfSouthWestCorner - 180 : longituedOfSouthWestCorner + 180;
+        HillshadingBitmap ret = tileSource.getHillshadingBitmap(latitudeOfSouthWestCorner, longitudeOfSouthWestCorner, pxPerLat, pxPerLng);
+        if (ret == null && Math.abs(longitudeOfSouthWestCorner) > 178) { // don't think too hard about where exactly the border is (not much height data there anyway)
+            int eastInt = longitudeOfSouthWestCorner > 0 ? longitudeOfSouthWestCorner - 180 : longitudeOfSouthWestCorner + 180;
             ret = tileSource.getHillshadingBitmap(latitudeOfSouthWestCorner, eastInt, pxPerLat, pxPerLng);
         }
 
         return ret;
     }
 
-    public float getMaginuteScaleFactor() {
-        return maginuteScaleFactor;
+    public float getMagnitudeScaleFactor() {
+        return magnitudeScaleFactor;
     }
 
     /**
-     * Increase (&gt;1) or decrease (&lt;1) the hillshading magnitude relative to the value set in themes
+     * Increase (&gt;1) or decrease (&lt;1) the hill shading magnitude relative to the value set in themes
      * <p>When designing a theme, this should be one</p>
      */
-    public void setMaginuteScaleFactor(float maginuteScaleFactor) {
-        this.maginuteScaleFactor = maginuteScaleFactor;
+    public void setMagnitudeScaleFactor(float magnitudeScaleFactor) {
+        this.magnitudeScaleFactor = magnitudeScaleFactor;
     }
 
     public ShadeTileSource getTileSource() {

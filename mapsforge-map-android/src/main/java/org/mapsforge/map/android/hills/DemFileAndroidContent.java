@@ -17,10 +17,9 @@ package org.mapsforge.map.android.hills;
 
 import android.content.ContentResolver;
 
-import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.hills.DemFile;
-import org.mapsforge.map.layer.hills.DemFileFS;
 
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,28 +39,23 @@ public class DemFileAndroidContent implements DemFile {
     }
 
     @Override
-    public InputStream openInputStream() throws FileNotFoundException {
-        return contentResolver.openInputStream(entry.uri);
-    }
-
-    @Override
     public long getSize() {
         return entry.size;
     }
 
     @Override
-    public InputStream asStream() throws IOException {
-        InputStream stream = null;
-        try {
-            String nameLowerCase = entry.name.toLowerCase();
-            stream = contentResolver.openInputStream(entry.uri);
-            if (nameLowerCase.endsWith(".zip")) {
-                return DemFileFS.tryZippedSingleHgt(entry.name, stream);
-            } else {
-                return DemFileFS.streamReadPart(entry.name, stream, (int) entry.size);
-            }
-        } finally {
-            IOUtils.closeQuietly(stream);
+    public InputStream openInputStream() throws FileNotFoundException {
+        InputStream output = contentResolver.openInputStream(entry.uri);
+
+        if (output != null) {
+            output = new BufferedInputStream(output);
         }
+
+        return output;
+    }
+
+    @Override
+    public InputStream asStream() throws IOException {
+        return openInputStream();
     }
 }
