@@ -63,7 +63,7 @@ public class Hillshading {
             }
             return;
         }
-        float effectiveMagnitude = Math.min(Math.max(0f, this.magnitude * hillsRenderConfig.getMaginuteScaleFactor()), 255f) / 255f;
+        float effectiveMagnitude = Math.min(Math.max(0f, this.magnitude * hillsRenderConfig.getMagnitudeScaleFactor()), 255f) / 255f;
         Tile tile = renderContext.rendererJob.tile;
         byte zoomLevel = tile.zoomLevel;
         if (zoomLevel > maxZoom || zoomLevel < minZoom)
@@ -133,7 +133,7 @@ public class Hillshading {
                 double maptileSubrectRight = tile.tileSize;
                 double maptileSubrectBottom = tile.tileSize;
 
-                // find the intersection between map tile and shading tile in earth coordinates and determine the pixel 
+                // find the intersection between map tile and shading tile in earth coordinates and determine the pixel
                 if (shadingTopLat > maptileTopLat) { // map tile ends in shading tile
                     shadingSubrectTop = padding + shadingInnerHeight * ((shadingTopLat - maptileTopLat) / shadingLatStep);
                 } else if (maptileTopLat > shadingTopLat) {

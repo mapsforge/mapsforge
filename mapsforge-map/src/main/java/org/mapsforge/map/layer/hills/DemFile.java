@@ -18,13 +18,16 @@ package org.mapsforge.map.layer.hills;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 public interface DemFile {
+    Logger LOGGER = Logger.getLogger(AbsShadingAlgorithmDefaults.class.getName());
+
     String getName();
 
-    InputStream openInputStream() throws FileNotFoundException;
-
     long getSize();
+
+    InputStream openInputStream() throws FileNotFoundException;
 
     InputStream asStream() throws IOException;
 }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2017-2022 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -30,7 +31,6 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
     private boolean enableInterpolationOverlap = true;
     private DemFolder demFolder;
     private ShadingAlgorithm algorithm;
-    private boolean configurationChangePending = true;
 
     public MemoryCachingHgtReaderTileSource(DemFolder demFolder, ShadingAlgorithm algorithm, GraphicFactory graphicsFactory) {
         this(graphicsFactory);
@@ -50,22 +50,30 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
     }
 
     protected HgtCache latestCache() {
-        HgtCache ret = this.currentCache;
-        if (ret != null && !configurationChangePending) return ret;
         if (demFolder == null || algorithm == null) {
             this.currentCache = null;
             return null;
         }
-        if (ret == null
+
+        if (isNewCacheNeeded()) {
+            synchronized (graphicsFactory) {
+                if (isNewCacheNeeded()) {
+                    this.currentCache = new HgtCache(demFolder, enableInterpolationOverlap, graphicsFactory, algorithm, mainCacheSize, neighborCacheSize);
+                }
+            }
+        }
+
+        return this.currentCache;
+    }
+
+    protected boolean isNewCacheNeeded()
+    {
+        return (this.currentCache == null
                 || enableInterpolationOverlap != this.currentCache.interpolatorOverlap
                 || mainCacheSize != this.currentCache.mainCacheSize
                 || neighborCacheSize != this.currentCache.neighborCacheSize
                 || !demFolder.equals(this.currentCache.demFolder)
-                || !algorithm.equals(this.currentCache.algorithm)) {
-            ret = new HgtCache(demFolder, enableInterpolationOverlap, graphicsFactory, algorithm, mainCacheSize, neighborCacheSize);
-            this.currentCache = ret;
-        }
-        return ret;
+                || !algorithm.equals(this.currentCache.algorithm));
     }
 
     @Override

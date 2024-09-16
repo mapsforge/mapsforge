@@ -57,13 +57,23 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
 
     @Override
     public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
-        int axisLength = getAxisLen(source);
-        int rowLen = axisLength + 1;
+        final int axisLength = getAxisLen(source);
+        final int rowLen = axisLength + 1;
+
         InputStream map = null;
         try {
             map = source.getFile().asStream();
 
-            byte[] bytes = convert(map, axisLength, rowLen, padding, source);
+            final byte[] bytes;
+            if (map != null) {
+                bytes = convert(map, axisLength, rowLen, padding, source);
+            }
+            else
+            {
+                // If stream could not be opened, simply return zeros
+                final int bitmapWidth = axisLength + 2 * padding;
+                bytes = new byte[bitmapWidth * bitmapWidth];
+            }
             return new RawShadingResult(bytes, axisLength, axisLength, padding);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
