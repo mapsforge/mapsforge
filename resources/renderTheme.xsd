@@ -318,9 +318,9 @@
     <!-- hillshading element -->
     <xs:complexType name="hillShading">
         <xs:attribute name="cat" type="xs:string" use="optional" />
-        <xs:attribute name="zoom-min" default="5" type="xs:unsignedByte" use="optional" />
+        <xs:attribute name="zoom-min" default="9" type="xs:unsignedByte" use="optional" />
         <xs:attribute name="zoom-max" default="17" type="xs:unsignedByte" use="optional" />
-        <xs:attribute name="magnitude" default="64" type="xs:unsignedByte" use="optional" />
+        <xs:attribute name="magnitude" default="128" type="xs:unsignedByte" use="optional" />
         <xs:attribute name="always" default="false" type="xs:boolean" use="optional">
             <xs:annotation>
                 <xs:documentation>Apply neutral shading when tiles are missing or shading is

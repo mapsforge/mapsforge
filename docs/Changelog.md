@@ -9,7 +9,7 @@
 - Pre-cache map tiles (+-zoom, margin) [#1507](https://github.com/mapsforge/mapsforge/issues/1507)
 - Render themes: exclusive / except negation [#1524](https://github.com/mapsforge/mapsforge/pull/1524)
 - Motorider map theme [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
-- Hillshading improvements, new algorithm [#1521](https://github.com/mapsforge/mapsforge/pull/1521),  [#1534](https://github.com/mapsforge/mapsforge/pull/1534)  [#1537](https://github.com/mapsforge/mapsforge/pull/1537)
+- Hillshading improvements, new algorithm [#1521](https://github.com/mapsforge/mapsforge/pull/1521)  [#1534](https://github.com/mapsforge/mapsforge/pull/1534)  [#1537](https://github.com/mapsforge/mapsforge/pull/1537)  [#1540](https://github.com/mapsforge/mapsforge/issues/1540)
 - Fix hillshading at 0 lat / lon [#1497](https://github.com/mapsforge/mapsforge/issues/1497)
 - `mapsforge-themes` change package [#1135](https://github.com/mapsforge/mapsforge/issues/1135)
   - Rename `InternalRenderTheme` to `MapsforgeThemes`

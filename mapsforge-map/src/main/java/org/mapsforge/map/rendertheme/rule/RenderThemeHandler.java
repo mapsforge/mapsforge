@@ -53,6 +53,11 @@ public final class RenderThemeHandler {
     private static final String UNEXPECTED_ELEMENT = "unexpected element: ";
     private static XmlPullParserFactory xmlPullParserFactory = null;
 
+    // Override hillshading values
+    public static short HILLSHADING_MAGNITUDE = -1;
+    public static byte HILLSHADING_ZOOM_MIN = -1;
+    public static byte HILLSHADING_ZOOM_MAX = -1;
+
     public static RenderTheme getRenderTheme(GraphicFactory graphicFactory, DisplayModel displayModel,
                                              XmlRenderTheme xmlRenderTheme) throws IOException, XmlPullParserException {
         XmlPullParser pullParser = getXmlPullParserFactory().newPullParser();
@@ -274,10 +279,10 @@ public final class RenderThemeHandler {
             } else if ("hillshading".equals(qName)) {
                 checkState(qName, Element.RULE);
                 String category = null;
-                byte minZoom = 5;
+                byte minZoom = 9;
                 byte maxZoom = 17;
                 byte layer = 5;
-                short magnitude = 64;
+                short magnitude = 128;
                 boolean always = false;
 
                 for (int i = 0; i < pullParser.getAttributeCount(); ++i) {
@@ -300,6 +305,11 @@ public final class RenderThemeHandler {
                         layer = XmlUtils.parseNonNegativeByte("layer", value);
                     }
                 }
+
+                // Override hillshading values
+                minZoom = HILLSHADING_ZOOM_MIN != -1 ? HILLSHADING_ZOOM_MIN : minZoom;
+                maxZoom = HILLSHADING_ZOOM_MAX != -1 ? HILLSHADING_ZOOM_MAX : maxZoom;
+                magnitude = HILLSHADING_MAGNITUDE != -1 ? HILLSHADING_MAGNITUDE : magnitude;
 
                 int hillShadingLevel = this.level++;
                 Hillshading hillshading = new Hillshading(minZoom, maxZoom, magnitude, layer, always, hillShadingLevel, this.graphicFactory);
