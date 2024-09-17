@@ -455,7 +455,7 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
             } else {
                 setZoomLevelInternal(mapPosition.zoomLevel, animated);
             }
-            setRotation(mapPosition.rotation);
+            setRotationInternal(mapPosition.rotation);
         }
         notifyObservers();
     }
@@ -501,8 +501,9 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
     @Override
     public void setRotation(Rotation rotation) {
         synchronized (this) {
-            this.rotation = rotation;
+            setRotationInternal(rotation);
         }
+        notifyObservers();
     }
 
     /**
@@ -676,6 +677,10 @@ public class MapViewPosition extends Observable implements IMapViewPosition, Per
             this.latitude = Math.max(Math.min(latitude, this.mapLimit.maxLatitude), this.mapLimit.minLatitude);
             this.longitude = Math.max(Math.min(longitude, this.mapLimit.maxLongitude), this.mapLimit.minLongitude);
         }
+    }
+
+    private void setRotationInternal(Rotation rotation) {
+        this.rotation = rotation;
     }
 
     private void setZoomInternal(double zoom, boolean animated) {

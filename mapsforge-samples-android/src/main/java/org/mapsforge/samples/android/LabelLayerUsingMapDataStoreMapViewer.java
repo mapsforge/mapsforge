@@ -37,5 +37,14 @@ public class LabelLayerUsingMapDataStoreMapViewer extends DefaultTheme {
                 tileRendererLayer.getTextScale(), tileRendererLayer.getDisplayModel(), AndroidGraphicFactory.INSTANCE);
         LabelLayer labelLayer = new ThreadedLabelLayer(AndroidGraphicFactory.INSTANCE, labelStore);
         mapView.getLayerManager().getLayers().add(labelLayer);
+
+        // Enable rotation gesture
+        mapView.getTouchGestureHandler().setRotationEnabled(true);
+    }
+
+    @Override
+    protected float getScreenRatio() {
+        // just to get the cache bigger right now.
+        return 2f;
     }
 }

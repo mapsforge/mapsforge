@@ -51,6 +51,10 @@ import org.mapsforge.map.model.IMapViewPosition;
  */
 public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener implements ScaleGestureDetector.OnScaleGestureListener, Runnable {
 
+    public static double DELTA_ANGLE = 15;
+    public static double DELTA_SCALE = 0.2;
+    public static long DELTA_TIME = 25;
+
     private static final double LOG_2 = Math.log(2);
 
     private boolean doubleTapEnabled = true;
@@ -58,21 +62,25 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     private int flingLastX, flingLastY;
     private float focusX, focusY;
     private final Handler handler = new Handler(Looper.myLooper());
-    private boolean isInDoubleTap, isInScale;
+    private boolean isInDoubleTap, isInRotation, isInScale;
     private final MapView mapView;
     private LatLong pivot;
-    private boolean rotationEnabled = true;
+    private boolean rotationEnabled = false;
     private boolean scaleEnabled = true;
     private float scaleFactorCumulative;
     private byte zoomLevelStart;
 
     // Rotation
-    private float currentAngle;
+    private float currentAngle, startAngle, startScaleFactorCumulative;
     private long lastTime;
 
     public TouchGestureHandler(MapView mapView) {
         this.mapView = mapView;
         this.flinger = new Scroller(mapView.getContext());
+    }
+
+    private static double angleDifference(double angle1, double angle2) {
+        return 180 - Math.abs(Math.abs(angle1 - angle2) - 180);
     }
 
     public void destroy() {
@@ -151,6 +159,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public boolean onDown(MotionEvent e) {
+        this.isInRotation = false;
         this.isInScale = false;
         this.flinger.forceFinished(true);
         return true;
@@ -158,7 +167,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
+        if (!this.isInScale && !this.isInRotation && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
             this.flinger.fling(0, 0, (int) -velocityX, (int) -velocityY, Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE, Integer.MAX_VALUE);
             this.flingLastX = this.flingLastY = 0;
             this.handler.removeCallbacksAndMessages(null);
@@ -170,8 +179,8 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public void onLongPress(MotionEvent e) {
-        // Normal or quick scale (no long press)
-        if (!this.isInScale && !this.isInDoubleTap) {
+        // Normal or quick scale or rotation (no long press)
+        if (!this.isInScale && !this.isInDoubleTap && !this.isInRotation) {
             Point tapXY = new Point(e.getX(), e.getY());
             LatLong tapLatLong;
             Point offset = tapXY.offset(-this.mapView.getOffsetX(), -this.mapView.getOffsetY());
@@ -205,9 +214,17 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
+        if (this.isInRotation) {
+            return true;
+        }
         if (detector.getScaleFactor() <= 0) {
             return true;
         }
+        this.startScaleFactorCumulative *= detector.getScaleFactor();
+        if (this.rotationEnabled && !this.isInScale && Math.abs(this.startScaleFactorCumulative - 1) <= DELTA_SCALE) {
+            return true;
+        }
+        this.isInScale = true;
         this.scaleFactorCumulative *= detector.getScaleFactor();
         if (!Parameters.FRACTIONAL_ZOOM) {
             this.mapView.getModel().mapViewPosition.setPivot(pivot);
@@ -225,13 +242,16 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        if (!scaleEnabled) {
+        if (!this.scaleEnabled) {
+            return false;
+        }
+        if (this.isInRotation) {
             return false;
         }
 
-        this.isInScale = true;
         this.scaleFactorCumulative = (float) (this.mapView.getModel().mapViewPosition.getScaleFactor()
                 / Math.pow(2, this.mapView.getModel().mapViewPosition.getZoomLevel()));
+        this.startScaleFactorCumulative = this.scaleFactorCumulative;
         this.zoomLevelStart = this.mapView.getModel().mapViewPosition.getZoomLevel();
 
         if (Parameters.FRACTIONAL_ZOOM) {
@@ -315,7 +335,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (!this.isInScale && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
+        if (!this.isInScale && !this.isInRotation && e1.getPointerCount() == 1 && e2.getPointerCount() == 1) {
             if (Parameters.LAYER_SCROLL_EVENT) {
                 for (int i = this.mapView.getLayerManager().getLayers().size() - 1; i >= 0; --i) {
                     Layer layer = safeGet(this.mapView.getLayerManager().getLayers(), i);
@@ -377,19 +397,21 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
     }
 
     public boolean onTouchEvent(MotionEvent event) {
-        // TODO Rotation
-        if (Parameters.ROTATION_GESTURE && this.rotationEnabled && event.getPointerCount() == 2) {
+        if (this.rotationEnabled && event.getPointerCount() == 2 && !this.isInScale) {
             int action = event.getActionMasked();
             if (action == MotionEvent.ACTION_POINTER_DOWN) {
                 this.currentAngle = rotation(event);
+                this.startAngle = this.currentAngle;
             }
             final float delta = rotation(event) - this.currentAngle;
             this.currentAngle += delta;
-            if (System.currentTimeMillis() - 25 > this.lastTime) {
+            if (!this.isInRotation && angleDifference(this.startAngle, this.currentAngle) < DELTA_ANGLE) {
+                return false;
+            }
+            if (System.currentTimeMillis() - DELTA_TIME > this.lastTime) {
+                this.isInRotation = true;
                 this.lastTime = System.currentTimeMillis();
-                float px = (event.getX(0) + event.getX(1)) * 0.5f;
-                float py = (event.getY(0) + event.getY(1)) * 0.5f;
-                this.mapView.rotate(new Rotation(this.mapView.getMapRotation().degrees + delta, px, py));
+                this.mapView.rotate(new Rotation(this.mapView.getMapRotation().degrees + delta, this.mapView.getWidth() * 0.5f, this.mapView.getHeight() * 0.5f));
                 this.mapView.getLayerManager().redrawLayers();
             }
         }
