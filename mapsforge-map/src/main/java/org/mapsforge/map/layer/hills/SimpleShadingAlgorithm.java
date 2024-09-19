@@ -17,15 +17,18 @@ package org.mapsforge.map.layer.hills;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
 
 /**
- * Simple, but expressive slope visualisation (e.g. no pretensions of physical accuracy, separate north and west light sources instead of one northwest, so a round dome would not look round, saturation works different depending on slope direction)
+ * Simple, but expressive slope visualisation (e.g. no pretensions of physical accuracy, separate north and west light sources instead of one northwest,
+ * so a round dome would not look round, saturation works different depending on slope direction)
  * <p>
  * <p>variations can be created by overriding {@link #exaggerate(double)}</p>
+ * <p>
+ * Note: For better results and greater flexibility consider using the newer algorithm, {@link StandardClasyHillShading}.
+ * </p>
  */
 public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
-    private static final Logger LOGGER = Logger.getLogger(SimpleShadingAlgorithm.class.getName());
+//    private static final Logger LOGGER = Logger.getLogger(SimpleShadingAlgorithm.class.getName());
     public final double linearity;
     public final double scale;
 

@@ -22,6 +22,11 @@ import java.io.InputStream;
 import java.util.logging.Logger;
 
 /**
+ * <p>
+ * Simulates diffuse lighting to some degree, while leaving horizontal surfaces unshaded (desired property).
+ * Note: For better results and greater flexibility consider using the newer algorithm, {@link StandardClasyHillShading}.
+ * </p>
+ * <em>(2024) The original description from 2017, which is no longer entirely accurate:</em>
  * simulates diffuse lighting (without self-shadowing) except for scaling the light values below horizontal and above horizontal
  * differently so that both make full use of the available dynamic range while maintaining horizontal neutral identical to {@link SimpleShadingAlgorithm}
  * and to the standard neutral value that is filled in when there is no hill shading but the always-option is set to true in the theme.

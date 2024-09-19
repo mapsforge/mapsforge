@@ -16,6 +16,7 @@
 package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.util.IOUtils;
+import org.mapsforge.core.util.MercatorProjection;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,8 +45,11 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int getAxisLen(HgtCache.HgtFileInfo source) {
+    public int getInputAxisLen(HgtCache.HgtFileInfo source) {
         long size = source.getSize();
         long elements = size / 2;
         int rowLen = (int) Math.ceil(Math.sqrt(elements));
@@ -55,9 +59,17 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
         return rowLen - 1;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getOutputAxisLen(HgtCache.HgtFileInfo source) {
+        return getInputAxisLen(source);
+    }
+
     @Override
     public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
-        final int axisLength = getAxisLen(source);
+        final int axisLength = getOutputAxisLen(source);
         final int rowLen = axisLength + 1;
 
         InputStream map = null;
@@ -81,5 +93,11 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
         } finally {
             IOUtils.closeQuietly(map);
         }
+    }
+
+    public double getLatUnitDistance(final double latitude, final long fileAxisLen)
+    {
+        // ~85 north + ~85 south = ~170 north to south
+        return MercatorProjection.calculateGroundResolution(latitude, 170L * fileAxisLen);
     }
 }

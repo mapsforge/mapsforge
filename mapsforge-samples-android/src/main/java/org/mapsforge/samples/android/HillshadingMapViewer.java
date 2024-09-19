@@ -84,7 +84,7 @@ public class HillshadingMapViewer extends DefaultTheme {
         }
         if (anyDems != null) {
             // minimum setup for hillshading
-            MemoryCachingHgtReaderTileSource hillTileSource = new MemoryCachingHgtReaderTileSource(anyDems, new ClearAsymmetryShadingAlgorithm(), AndroidGraphicFactory.INSTANCE);
+            MemoryCachingHgtReaderTileSource hillTileSource = new MemoryCachingHgtReaderTileSource(anyDems, new StandardClasyHillShading(), AndroidGraphicFactory.INSTANCE);
             customizeConfig(hillTileSource);
             hillsConfig = new HillsRenderConfig(hillTileSource);
 
