@@ -1072,6 +1072,11 @@ public class MapFile extends MapDataStore {
                 && (tile.zoomLevel >= this.zoomLevelMin && tile.zoomLevel <= this.zoomLevelMax);
     }
 
+    @Override
+    public boolean supportsArea(BoundingBox boundingBox) {
+        return boundingBox.intersects(getMapFileInfo().boundingBox);
+    }
+
     /**
      * The Selector enum is used to specify which data subset is to be retrieved from a MapFile:
      * ALL: all data (as in version 0.6.0)
