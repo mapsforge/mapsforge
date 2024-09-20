@@ -162,7 +162,10 @@ public class MultiMapDataStore extends MapDataStore {
         switch (this.dataPolicy) {
             case RETURN_FIRST:
                 for (MapDataStore mdb : mapDatabases) {
-                    if (mdb.supportsArea(upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()))) {
+                    if (mdb.supportsArea(
+                            upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                            upperLeft.zoomLevel
+                    )) {
                         return mdb.readLabels(upperLeft, lowerRight);
                     }
                 }
@@ -179,7 +182,10 @@ public class MultiMapDataStore extends MapDataStore {
     private MapReadResult readLabels(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
         for (MapDataStore mdb : mapDatabases) {
-            if (mdb.supportsArea(upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()))) {
+            if (mdb.supportsArea(
+                    upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                    upperLeft.zoomLevel
+            )) {
                 MapReadResult result = mdb.readLabels(upperLeft, lowerRight);
                 if (result == null) {
                     continue;
@@ -231,7 +237,10 @@ public class MultiMapDataStore extends MapDataStore {
         switch (this.dataPolicy) {
             case RETURN_FIRST:
                 for (MapDataStore mdb : mapDatabases) {
-                    if (mdb.supportsArea(upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()))) {
+                    if (mdb.supportsArea(
+                            upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                            upperLeft.zoomLevel
+                    )) {
                         return mdb.readMapData(upperLeft, lowerRight);
                     }
                 }
@@ -247,7 +256,10 @@ public class MultiMapDataStore extends MapDataStore {
     private MapReadResult readMapData(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
         for (MapDataStore mdb : mapDatabases) {
-            if (mdb.supportsArea(upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()))) {
+            if (mdb.supportsArea(
+                    upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                    upperLeft.zoomLevel)
+            ) {
                 MapReadResult result = mdb.readMapData(upperLeft, lowerRight);
                 if (result == null) {
                     continue;
@@ -300,7 +312,10 @@ public class MultiMapDataStore extends MapDataStore {
         switch (this.dataPolicy) {
             case RETURN_FIRST:
                 for (MapDataStore mdb : mapDatabases) {
-                    if (mdb.supportsArea(upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()))) {
+                    if (mdb.supportsArea(
+                            upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                            upperLeft.zoomLevel)
+                    ) {
                         return mdb.readPoiData(upperLeft, lowerRight);
                     }
                 }
@@ -317,7 +332,10 @@ public class MultiMapDataStore extends MapDataStore {
     private MapReadResult readPoiData(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
         for (MapDataStore mdb : mapDatabases) {
-            if (mdb.supportsArea(upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()))) {
+            if (mdb.supportsArea(
+                    upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                    upperLeft.zoomLevel)
+            ) {
                 MapReadResult result = mdb.readPoiData(upperLeft, lowerRight);
                 if (result == null) {
                     continue;
@@ -365,9 +383,9 @@ public class MultiMapDataStore extends MapDataStore {
     }
 
     @Override
-    public boolean supportsArea(BoundingBox boundingBox) {
+    public boolean supportsArea(BoundingBox boundingBox, byte zoomLevel) {
         for (MapDataStore mdb : mapDatabases) {
-            if (mdb.supportsArea(boundingBox)) {
+            if (mdb.supportsArea(boundingBox, zoomLevel)) {
                 return true;
             }
         }

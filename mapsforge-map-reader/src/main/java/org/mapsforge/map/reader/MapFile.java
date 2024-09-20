@@ -1073,8 +1073,9 @@ public class MapFile extends MapDataStore {
     }
 
     @Override
-    public boolean supportsArea(BoundingBox boundingBox) {
-        return boundingBox.intersects(getMapFileInfo().boundingBox);
+    public boolean supportsArea(BoundingBox boundingBox, byte zoomLevel) {
+        return boundingBox.intersects(getMapFileInfo().boundingBox)
+                && (zoomLevel >= this.zoomLevelMin && zoomLevel <= this.zoomLevelMax);
     }
 
     /**

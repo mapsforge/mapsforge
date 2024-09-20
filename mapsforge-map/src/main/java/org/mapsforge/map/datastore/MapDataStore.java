@@ -253,12 +253,13 @@ public abstract class MapDataStore {
     public abstract boolean supportsTile(Tile tile);
 
     /**
-     * Returns true if MapDatabase covers (even partially) certain area.
+     * Returns true if MapDatabase covers (even partially) certain area in required zoom level.
      *
      * @param boundingBox area we test
+     * @param zoomLevel zoom level we test
      * @return true if area is part of the database.
      */
-    public abstract boolean supportsArea(BoundingBox boundingBox);
+    public abstract boolean supportsArea(BoundingBox boundingBox, byte zoomLevel);
 
     /**
      * Returns true if a way should be included in the result set for readLabels()
