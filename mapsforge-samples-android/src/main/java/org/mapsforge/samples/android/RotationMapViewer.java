@@ -86,9 +86,14 @@ public class RotationMapViewer extends DefaultTheme {
         mapView.getLayerManager().getLayers()
                 .add(new TileCoordinatesLayer(AndroidGraphicFactory.INSTANCE, mapView.getModel().displayModel));
 
-        mapView.setMapViewCenterY(0.75f);
-        mapView.getModel().frameBufferModel.setOverdrawFactor(Math.max(mapView.getModel().frameBufferModel.getOverdrawFactor(), mapView.getMapViewCenterY() * 2));
         rotationAngle = mapView.getMapRotation().degrees;
+    }
+
+    @Override
+    protected void createMapViews() {
+        super.createMapViews();
+        mapView.setMapViewCenterY(0.75f);
+        mapView.getModel().frameBufferModel.setOverdrawFactor(1.5);
     }
 
     @Override
