@@ -23,6 +23,12 @@ package org.mapsforge.map.layer.hills;
  * This is currently the algorithm of choice, as it provides the best results with excellent performance.
  * It is also more accurate than {@link SimpleClasyHillShading}.
  * </p>
+ * <p>
+ * High resolution version is also available: {@link HiResStandardClasyHillShading}.
+ * It provides high quality output using bicubic interpolation, use it when performance is not an issue.
+ * </p>
+ *
+ * @see HiResStandardClasyHillShading
  */
 public class StandardClasyHillShading extends AClasyHillShading {
 
@@ -37,12 +43,24 @@ public class StandardClasyHillShading extends AClasyHillShading {
     }
 
     /**
-     * Uses a default values for all parameters.
+     * Uses default values for all parameters.
      *
      * @see AClasyHillShading#AClasyHillShading()
      */
     public StandardClasyHillShading() {
         super();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int processOneUnitElement(double nw, double sw, double se, double ne, double mpe, int outputIx, ComputingParams computingParams) {
+        computingParams.mOutput[outputIx] = unitElementToShadePixel(nw, sw, se, ne, mpe);
+
+        outputIx++;
+
+        return outputIx;
     }
 
     /**
@@ -79,17 +97,5 @@ public class StandardClasyHillShading extends AClasyHillShading {
      */
     protected byte unitElementToShadePixel(double nw, double sw, double se, double ne, double mpe) {
         return getAverageNormalShadePixel(nw, sw, se, ne, mpe);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected int processOneUnitElement(double nw, double sw, double se, double ne, double mpe, int outputIx, ComputingParams computingParams) {
-        computingParams.mOutput[outputIx] = unitElementToShadePixel(nw, sw, se, ne, mpe);
-
-        outputIx++;
-
-        return outputIx;
     }
 }
