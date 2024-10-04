@@ -13,6 +13,7 @@ If you have any questions or problems, don't hesitate to ask the Discussions for
 - It provides [simple boilerplate code](mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/GettingStarted.java) to build applications for Android that display OpenStreetMap based maps with rotation.
 - It provides a library to build standalone applications in Java ([instructions](docs/Desktop.md)).
 - Mapsforge maps can be flexibly styled with XML style files ([render themes](docs/Rendertheme.md)).
+- Mapsforge library supports offline high resolution [hill shading](https://github.com/mapsforge/mapsforge/blob/master/mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/HillshadingMapViewer.java).
 - We provide [tools & library](docs/POI.md) for POI search and also [precompiled POI](https://download.mapsforge.org/).
 - Mapsforge supports Android 2.3.3 (API level 10) and above.
 - Mapsforge is used by many [applications](docs/Mapsforge-Applications.md).
