@@ -54,8 +54,7 @@ public class DemFolderFS implements DemFolder {
                     public DemFolder next() {
                         final File nextFile = files[nextidx];
                         DemFolder ret = null;
-                        if (HgtCache.isFileZip(nextFile))
-                        {
+                        if (HgtCache.isFileZip(nextFile)) {
                             try {
                                 ret = new DemFolderZipFS(new ZipFile(nextFile));
                             } catch (IOException e) {

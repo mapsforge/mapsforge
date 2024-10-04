@@ -19,14 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
@@ -236,8 +229,7 @@ public class HillShadingUtils {
                         executor.execute(task);
                     } catch (Exception ignored) {
                     }
-                }
-                else {
+                } else {
                     notifyTaskRejected(task);
                 }
             }
@@ -398,9 +390,7 @@ public class HillShadingUtils {
     }
 
     public static class Awaiter {
-        protected final Logger LOGGER = Logger.getLogger(this
-                                                                 .getClass()
-                                                                 .getName());
+        protected final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
         protected final int CheckTimeoutMillis = 100;
         protected final Object mSync = new Object();
@@ -490,8 +480,7 @@ public class HillShadingUtils {
 
             if (output == null) {
                 output = new short[length];
-            }
-            else if (output.length < length) {
+            } else if (output.length < length) {
                 recycleArray(output);
 
                 output = new short[length];

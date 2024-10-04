@@ -66,8 +66,7 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
         return this.currentCache;
     }
 
-    protected boolean isNewCacheNeeded()
-    {
+    protected boolean isNewCacheNeeded() {
         return (this.currentCache == null
                 || enableInterpolationOverlap != this.currentCache.interpolatorOverlap
                 || mainCacheSize != this.currentCache.mainCacheSize

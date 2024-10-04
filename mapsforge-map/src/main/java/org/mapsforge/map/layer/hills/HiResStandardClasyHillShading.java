@@ -40,9 +40,9 @@ public class HiResStandardClasyHillShading extends StandardClasyHillShading {
      */
     public HiResStandardClasyHillShading() {
         super(new ClasyParams.Builder()
-                      .setComputingThreadsCount(ComputingThreadsCountDefault)
-                      .setHighQuality(true)
-                      .build());
+                .setComputingThreadsCount(ComputingThreadsCountDefault)
+                .setHighQuality(true)
+                .build());
     }
 
     /**

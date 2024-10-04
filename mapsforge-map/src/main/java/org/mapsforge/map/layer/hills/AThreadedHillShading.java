@@ -685,8 +685,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                     if (readingTaskIndex < readingTasksCount - 1) {
                         computingTaskTo = computingTaskFrom + computeTasksPerReadingTask;
-                    }
-                    else {
+                    } else {
                         computingTaskTo = computingTasksCount;
                     }
                 }
@@ -731,8 +730,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                 if (readingTaskIndex < readingTasksCount - 1) {
                     postToThreadPoolOrRun(readingTask);
-                }
-                else {
+                } else {
                     readingTask.run();
                 }
             }
@@ -836,8 +834,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
             }
 
             return read;
-        }
-        else {
+        } else {
             return fallbackInput[fallbackIx - offset];
         }
     }
@@ -881,8 +878,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     protected SilentFutureTask getReadingTask(InputStream readStream, int computingTasksCount, int computingTaskFrom, int computingTaskTo, int linesPerComputeTask, ComputingParams computingParams) {
         if (mIsHighQuality) {
             return new SilentFutureTask(new ReadingTask_4x4(readStream, computingTasksCount, computingTaskFrom, computingTaskTo, linesPerComputeTask, computingParams));
-        }
-        else {
+        } else {
             return new SilentFutureTask(new ReadingTask_2x2(readStream, computingTasksCount, computingTaskFrom, computingTaskTo, linesPerComputeTask, computingParams));
         }
     }
@@ -890,8 +886,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     protected SilentFutureTask getComputingTask(int lineFrom, int lineTo, ComputingData computingData, ComputingParams computingParams) {
         if (mIsHighQuality) {
             return new SilentFutureTask(new ComputingTask_4x4(lineFrom, lineTo, computingData, computingParams));
-        }
-        else {
+        } else {
             return new SilentFutureTask(new ComputingTask_2x2(lineFrom, lineTo, computingData, computingParams));
         }
     }
@@ -941,8 +936,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                             if (compTaskIndex < mComputingTasksCount - 1) {
                                 lineTo = lineFrom + mLinesPerCompTask;
-                            }
-                            else {
+                            } else {
                                 lineTo = inputLineLen;
                             }
 
@@ -950,11 +944,9 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                             if (compTaskIndex < mComputingTasksCount - 2) {
                                 inputNextSize = inputSize;
-                            }
-                            else if (compTaskIndex == mComputingTasksCount - 2) {
+                            } else if (compTaskIndex == mComputingTasksCount - 2) {
                                 inputNextSize = 1 + inputLineLen - mLinesPerCompTask * (mComputingTasksCount - 1);
-                            }
-                            else {
+                            } else {
                                 inputNextSize = 1;
                             }
                         }
@@ -963,8 +955,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                             firstLine = firstLineNext;
                             secondLine = secondLineNext;
                             input = inputNext;
-                        }
-                        else {
+                        } else {
                             firstLine = lineBuffersPool.getArray(inputLineLen);
                             secondLine = lineBuffersPool.getArray(inputLineLen);
                             input = inputArraysPool.getArray(inputLineLen * inputSize);
@@ -1030,8 +1021,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                         if (compTaskIndex < mComputingTaskTo - 1) {
                             postToThreadPoolOrRun(computingTask);
-                        }
-                        else {
+                        } else {
                             computingTask.run();
                         }
                     }
@@ -1098,16 +1088,14 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                             if (compTaskIndex < mComputingTasksCount - 1) {
                                 lineTo = lineFrom + mLinesPerCompTask;
-                            }
-                            else {
+                            } else {
                                 lineTo = inputAxisLen;
                             }
                         }
 
                         if (compTaskIndex > mComputingTaskFrom) {
                             secondLine = secondLineNext;
-                        }
-                        else {
+                        } else {
                             secondLine = lineBuffersPool.getArray(inputLineLen);
 
                             short last = 0;
@@ -1151,8 +1139,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                         if (compTaskIndex < mComputingTaskTo - 1) {
                             postToThreadPoolOrRun(computingTask);
-                        }
-                        else {
+                        } else {
                             computingTask.run();
                         }
                     }
@@ -1215,8 +1202,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                 if (mLineFrom > 0) {
                     outputIx += resolutionFactor * (mLineFrom - 2) * mComputingParams.mOutputWidth;
-                }
-                else {
+                } else {
                     // The very first line of the input data is done separately
                     {
                         int secondLineIx = 1;

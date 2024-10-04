@@ -24,9 +24,7 @@ import java.util.logging.Logger;
 
 public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
 
-    protected final Logger LOGGER = Logger.getLogger(this
-                                                             .getClass()
-                                                             .getName());
+    protected final Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
     protected abstract byte[] convert(InputStream map, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo source) throws IOException;
 
@@ -42,8 +40,7 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
             }
 
             return read;
-        }
-        else {
+        } else {
             return fallback;
         }
     }
