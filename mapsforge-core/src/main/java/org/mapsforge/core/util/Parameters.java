@@ -96,7 +96,7 @@ public final class Parameters {
     /**
      * Symbol scaling mode.
      */
-    public static SymbolScaling SYMBOL_SCALING = SymbolScaling.POI;
+    public static SymbolScaling SYMBOL_SCALING = SymbolScaling.ALL;
 
     /**
      * Validate coordinates.
