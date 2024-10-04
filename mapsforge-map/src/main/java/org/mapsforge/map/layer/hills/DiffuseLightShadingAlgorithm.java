@@ -15,27 +15,30 @@
  */
 package org.mapsforge.map.layer.hills;
 
+import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.core.util.MercatorProjection;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * <p>
  * Simulates diffuse lighting to some degree, while leaving horizontal surfaces unshaded (desired property).
- * Note: For better results and greater flexibility consider using the newer algorithm, {@link StandardClasyHillShading}.
+ * Note: For better results and greater flexibility consider using the newer algorithms, {@link StandardClasyHillShading} or {@link HiResStandardClasyHillShading}.
  * </p>
  * <em>(2024) The original description from 2017, which is no longer entirely accurate:</em>
- * simulates diffuse lighting (without self-shadowing) except for scaling the light values below horizontal and above horizontal
+ * Simulates diffuse lighting (without self-shadowing) except for scaling the light values below horizontal and above horizontal
  * differently so that both make full use of the available dynamic range while maintaining horizontal neutral identical to {@link SimpleShadingAlgorithm}
  * and to the standard neutral value that is filled in when there is no hill shading but the always-option is set to true in the theme.
  * <p>
  * <p>More accurate than {@link SimpleShadingAlgorithm}, but maybe not as useful for visualizing both softly rolling hills and dramatic mountain ranges at the same time.</p>
+ *
+ * @see StandardClasyHillShading
+ * @see HiResStandardClasyHillShading
  */
 public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
 
-    protected static final Logger LOGGER = Logger.getLogger(DiffuseLightShadingAlgorithm.class.getName());
     protected final float heightAngle;
     protected final double ast2;
     protected final double neutral;
@@ -66,6 +69,34 @@ public class DiffuseLightShadingAlgorithm extends AbsShadingAlgorithmDefaults {
 
     public double getLightHeight() {
         return a;
+    }
+
+    @Override
+    public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
+        final int axisLength = getOutputAxisLen(source);
+        final int rowLen = axisLength + 1;
+
+        InputStream map = null;
+        try {
+            map = source
+                    .getFile()
+                    .asStream();
+
+            final byte[] bytes;
+            if (map != null) {
+                bytes = convert(map, axisLength, rowLen, padding, source);
+            } else {
+                // If stream could not be opened, simply return zeros
+                final int bitmapWidth = axisLength + 2 * padding;
+                bytes = new byte[bitmapWidth * bitmapWidth];
+            }
+            return new RawShadingResult(bytes, axisLength, axisLength, padding);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+            return null;
+        } finally {
+            IOUtils.closeQuietly(map);
+        }
     }
 
     protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {

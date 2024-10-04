@@ -14,6 +14,8 @@
  */
 package org.mapsforge.map.layer.hills;
 
+import java.io.InputStream;
+
 import static org.mapsforge.map.layer.hills.HillShadingUtils.SqrtTwo;
 
 /**
@@ -49,6 +51,9 @@ import static org.mapsforge.map.layer.hills.HillShadingUtils.SqrtTwo;
  * <br />
  * {@link #normalToShade(double, double, double)} to change the whole 3D normal to shade mapping.
  * </p>
+ *
+ * @see StandardClasyHillShading
+ * @see HiResStandardClasyHillShading
  */
 public abstract class AClasyHillShading extends AThreadedHillShading {
 
@@ -64,7 +69,7 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
     protected final double mAsymmetryMappingFactor;
 
     public AClasyHillShading(final ClasyParams clasyParams) {
-        super(clasyParams.getComputingThreadsCount());
+        super(clasyParams.getReadingThreadsCount(), clasyParams.getComputingThreadsCount(), clasyParams.isHighQuality());
 
         mMaxSlope = clasyParams.getMaxSlope();
         mMinSlope = clasyParams.getMinSlope();
@@ -212,8 +217,12 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         AClasyHillShading that = (AClasyHillShading) o;
 
@@ -235,27 +244,33 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
     }
 
     /**
-     * Parameters that are used by a {@link AClasyHillShading}.
+     * Parameters that are used by an {@link AClasyHillShading}.
      * An instance should be created using the provided builder, {@link Builder}.
      */
     public static class ClasyParams {
         public final double mMaxSlope;
         public final double mMinSlope;
         public final double mAsymmetryFactor;
+        public final int mReadingThreadsCount;
         public final int mComputingThreadsCount;
+        public final boolean mIsHighQuality;
 
         protected ClasyParams(final Builder builder) {
             mMaxSlope = builder.mMaxSlope;
             mMinSlope = builder.mMinSlope;
             mAsymmetryFactor = builder.mAsymmetryFactor;
+            mReadingThreadsCount = builder.mReadingThreadsCount;
             mComputingThreadsCount = builder.mComputingThreadsCount;
+            mIsHighQuality = builder.mIsHighQuality;
         }
 
         public static class Builder {
             protected volatile double mMaxSlope = MaxSlopeDefault;
             protected volatile double mMinSlope = MinSlopeDefault;
             protected volatile double mAsymmetryFactor = AsymmetryFactorDefault;
+            protected volatile int mReadingThreadsCount = ReadingThreadsCountDefault;
             protected volatile int mComputingThreadsCount = ComputingThreadsCountDefault;
+            protected volatile boolean mIsHighQuality = IsHighQualityDefault;
 
             public Builder() {
             }
@@ -308,15 +323,40 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
             }
 
             /**
-             * @param computingThreadsCount Number of threads that will do the computations.
-             *                              This is in addition to the calling thread, which only does the reading and synchronization in this case.
-             *                              Can be zero, in which case the calling thread does all the work.
+             * @param readingThreadsCount Number of "producer" threads that will do the reading, >= 0.
+             *                            Number N (>0) means there will be N additional threads (per caller thread) that will do the reading,
+             *                            while 0 means that only the caller thread will do the reading.
+             *                            The only time you'd want to set this to zero is when your data source does not support skipping,
+             *                            ie. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
+             *                            The default is 1.
+             */
+            public Builder setReadingThreadsCount(final int readingThreadsCount) {
+                mReadingThreadsCount = readingThreadsCount;
+                return this;
+            }
+
+            /**
+             * @param computingThreadsCount Number of "consumer" threads that will do the computations (per caller thread), >= 0.
+             *                              Number M (>0) means there will be M additional threads (per caller thread) that will do the computing,
+             *                              while 0 means that producer thread(s) will also do the computing.
              *                              The only times you'd want to set this to zero are when memory conservation is a top priority
              *                              or when you're running on a single-threaded system.
              *                              The default is 1.
              */
             public Builder setComputingThreadsCount(final int computingThreadsCount) {
                 mComputingThreadsCount = computingThreadsCount;
+                return this;
+            }
+
+            /**
+             * @param highQuality When {@code true}, a unit element is 4x4 data points in size instead of 2x2, for better interpolation capabilities.
+             *                    To make use of this, you should override the
+             *                    {@link #processOneUnitElement(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)}
+             *                    method.
+             *                    The default is {@code false}.
+             */
+            public Builder setHighQuality(boolean highQuality) {
+                mIsHighQuality = highQuality;
                 return this;
             }
         }
@@ -333,8 +373,16 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
             return mAsymmetryFactor;
         }
 
+        public int getReadingThreadsCount() {
+            return mReadingThreadsCount;
+        }
+
         public int getComputingThreadsCount() {
             return mComputingThreadsCount;
+        }
+
+        public boolean isHighQuality() {
+            return mIsHighQuality;
         }
     }
 }

@@ -15,7 +15,6 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.core.util.MercatorProjection;
 
 import java.io.IOException;
@@ -25,7 +24,9 @@ import java.util.logging.Logger;
 
 public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
 
-    private static final Logger LOGGER = Logger.getLogger(AbsShadingAlgorithmDefaults.class.getName());
+    protected final Logger LOGGER = Logger.getLogger(this
+                                                             .getClass()
+                                                             .getName());
 
     protected abstract byte[] convert(InputStream map, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo source) throws IOException;
 
@@ -36,11 +37,13 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
         if (read1 != -1 && read2 != -1) {
             short read = (short) ((read1 << 8) | read2);
 
-            if (read == Short.MIN_VALUE)
+            if (read == Short.MIN_VALUE) {
                 return fallback;
+            }
 
             return read;
-        } else {
+        }
+        else {
             return fallback;
         }
     }
@@ -72,32 +75,17 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
         final int axisLength = getOutputAxisLen(source);
         final int rowLen = axisLength + 1;
 
-        InputStream map = null;
         try {
-            map = source.getFile().asStream();
+            final byte[] bytes = convert(null, axisLength, rowLen, padding, source);
 
-            final byte[] bytes;
-            if (map != null) {
-                bytes = convert(map, axisLength, rowLen, padding, source);
-            }
-            else
-            {
-                // If stream could not be opened, simply return zeros
-                final int bitmapWidth = axisLength + 2 * padding;
-                bytes = new byte[bitmapWidth * bitmapWidth];
-            }
             return new RawShadingResult(bytes, axisLength, axisLength, padding);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.toString(), e);
             return null;
-        } finally {
-            IOUtils.closeQuietly(map);
         }
     }
 
-    public double getLatUnitDistance(final double latitude, final long fileAxisLen)
-    {
-        // ~85 north + ~85 south = ~170 north to south
-        return MercatorProjection.calculateGroundResolution(latitude, 170L * fileAxisLen);
+    public double getLatUnitDistance(final double latitude, final long fileAxisLen) {
+        return MercatorProjection.calculateGroundResolution(latitude, 360 * fileAxisLen);
     }
 }
