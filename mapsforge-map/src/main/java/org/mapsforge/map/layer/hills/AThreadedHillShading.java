@@ -700,7 +700,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                 }
 
                 if (readingTaskIndex > 0) {
-                    final long skipAmount = inputWidth * ((long) linesPerComputeTask * computingTaskFrom - (mIsHighQuality ? 3 : 0));
+                    final long skipAmount = inputWidth * ((long) linesPerComputeTask * computingTaskFrom - (mIsHighQuality ? 1 : 0));
 
                     try {
                         HillShadingUtils.skipNBytes(readStream, skipAmount * Short.SIZE / Byte.SIZE);
@@ -916,6 +916,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                 if (mInputStream != null) {
                     final SilentFutureTask[] computingTasks = new SilentFutureTask[mComputingTaskTo - mComputingTaskFrom];
 
+                    final int inputAxisLen = mComputingParams.mInputAxisLen;
                     final int inputLineLen = mComputingParams.mInputWidth;
                     final AtomicInteger activeTasksCount = mComputingParams.mActiveTasksCount;
                     final Awaiter awaiter = mComputingParams.mAwaiter;
@@ -937,7 +938,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                             if (compTaskIndex < mComputingTasksCount - 1) {
                                 lineTo = lineFrom + mLinesPerCompTask;
                             } else {
-                                lineTo = inputLineLen;
+                                lineTo = inputAxisLen;
                             }
 
                             inputSize = 1 + lineTo - lineFrom;
@@ -945,7 +946,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                             if (compTaskIndex < mComputingTasksCount - 2) {
                                 inputNextSize = inputSize;
                             } else if (compTaskIndex == mComputingTasksCount - 2) {
-                                inputNextSize = 1 + inputLineLen - mLinesPerCompTask * (mComputingTasksCount - 1);
+                                inputNextSize = 1 + inputAxisLen - mLinesPerCompTask * (mComputingTasksCount - 1);
                             } else {
                                 inputNextSize = 1;
                             }
@@ -985,10 +986,13 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                         secondLineNext = lineBuffersPool.getArray(inputLineLen);
                         inputNext = inputArraysPool.getArray(inputLineLen * inputNextSize);
 
+                        final int mainLoopFrom = lineFrom + 1 + (compTaskIndex <= 0 ? 1 : 0);
+                        final int mainLoopTo = lineTo - 3 + 1;
+
                         // Skip the line already in the array
                         int inputIx = inputLineLen;
 
-                        for (int line = lineFrom + (compTaskIndex <= 0 ? 3 : 0); line < lineTo - 3 && isNotStopped(); line++) {
+                        for (int line = mainLoopFrom; line < mainLoopTo && isNotStopped(); line++) {
                             // Inner loop, critical for performance
                             for (int col = 0; col < inputLineLen; col++, inputIx++) {
                                 input[inputIx] = readNext(mInputStream, input, inputIx, inputLineLen);
@@ -1199,10 +1203,9 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                 int line = mLineFrom;
 
                 int outputIx = mComputingParams.mOutputWidth * mComputingParams.mPadding + mComputingParams.mPadding;
+                outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidth;
 
-                if (mLineFrom > 0) {
-                    outputIx += resolutionFactor * (mLineFrom - 2) * mComputingParams.mOutputWidth;
-                } else {
+                if (mLineFrom <= 0) {
                     // The very first line of the input data is done separately
                     {
                         int secondLineIx = 1;
@@ -1219,7 +1222,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                         outputIx = processOneUnitElementNorthFirstEast(mComputingData, metersPerElement, secondLineIx, secondLineIx, secondLineIx, outputIx, mComputingParams);
 
                         outputIx += outputIxIncrement;
-                        line = mLineFrom + 3;
+                        line++;
                     }
                 }
 
@@ -1316,31 +1319,6 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                         firstLineIx++;
 
                         outputIx += outputIxIncrement;
-                    }
-
-                    if (mLineTo >= mComputingParams.mInputAxisLen) {
-                        // The last line of the input data is done separately
-                        {
-                            inputIx++;
-                            secondLineIx++;
-                            firstLineIx++;
-
-                            final double metersPerElement = mComputingParams.mSouthUnitDistancePerLine * line + mComputingParams.mNorthUnitDistancePerLine * (mComputingParams.mInputAxisLen - line);
-
-                            outputIx = processOneUnitElementSouthWest(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, outputIx, mComputingParams);
-                            inputIx++;
-                            secondLineIx++;
-                            firstLineIx++;
-
-                            for (int col = 2; col <= mComputingParams.mInputAxisLen - 1; col++) {
-                                outputIx = processOneUnitElementSouth(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, outputIx, mComputingParams);
-                                inputIx++;
-                                secondLineIx++;
-                                firstLineIx++;
-                            }
-
-                            outputIx = processOneUnitElementSouthEast(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, outputIx, mComputingParams);
-                        }
                     }
                 }
 
