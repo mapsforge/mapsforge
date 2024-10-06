@@ -67,7 +67,7 @@ public final class Parameters {
     /**
      * Parent tiles rendering mode.
      */
-    public static ParentTilesRendering PARENT_TILES_RENDERING = ParentTilesRendering.QUALITY;
+    public static ParentTilesRendering PARENT_TILES_RENDERING = ParentTilesRendering.SPEED;
 
     /**
      * Polygon exceptions.
