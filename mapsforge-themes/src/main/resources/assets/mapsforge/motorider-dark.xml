@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 28, 7th September 2024
+    REVISION 29, 6th October 2024
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -448,18 +448,29 @@
             <line stroke="#60999999" stroke-dasharray="12,4" stroke-linecap="butt"
                 stroke-width="1.3" />
         </rule>
-        <rule e="way" k="highway"
-            v="tertiary|tertiary_link|secondary_link|primary_link|trunk_link|motorway_link|secondary|primary|trunk">
-            <line stroke="#80CCCCCC" stroke-dasharray="0,16,6,0" stroke-linecap="butt"
-                stroke-width="1.5" />
-            <line stroke="#60999999" stroke-dasharray="16,6" stroke-linecap="butt"
-                stroke-width="1.5" />
+        <rule e="way" k="highway" v="secondary|secondary_link|tertiary|tertiary_link">
+            <line stroke="#80CCCCCC" stroke-dasharray="0,10,8,0" stroke-linecap="butt"
+                stroke-width="2.2" />
+            <line stroke="#804000" stroke-dasharray="10,8" stroke-linecap="butt"
+                stroke-width="2.2" />
         </rule>
-        <rule e="way" k="highway" v="motorway">
-            <line stroke="#80CCCCCC" stroke-dasharray="0,20,8,0" stroke-linecap="butt"
-                stroke-width="1.7" />
-            <line stroke="#60999999" stroke-dasharray="20,8" stroke-linecap="butt"
-                stroke-width="1.7" />
+        <rule e="way" k="highway" v="primary|primary_link">
+            <line stroke="#999999" stroke-dasharray="0,10,8,0" stroke-linecap="butt"
+                stroke-width="2.2" />
+            <line stroke="#660000" stroke-dasharray="10,8" stroke-linecap="butt"
+                stroke-width="2.2" />
+        </rule>
+        <rule e="way" k="highway" v="trunk|trunk_link">
+            <line stroke="#999999" stroke-dasharray="0,10,8,0" stroke-linecap="butt"
+                stroke-width="2.2" />
+            <line stroke="#004d26" stroke-dasharray="10,8" stroke-linecap="butt"
+                stroke-width="2.2" />
+        </rule>
+        <rule e="way" k="highway" v="motorway|motorway_link">
+            <line stroke="#999999" stroke-dasharray="0,10,8,0" stroke-linecap="butt"
+                stroke-width="2.5" />
+            <line stroke="#004080" stroke-dasharray="10,8" stroke-linecap="butt"
+                stroke-width="2.5" />
         </rule>
 
         <!-- railway tunnel -->
