@@ -2,6 +2,11 @@
 
 ## Next version
 
+- Minor improvements and bug fixes
+- [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.23.0)
+
+## Version 0.22.0 (2024-10-10)
+
 - Map rotation [#7](https://github.com/mapsforge/mapsforge/issues/7)
     - Rotation gesture [#1495](https://github.com/mapsforge/mapsforge/issues/1495)
 - Fractional zoom [#75](https://github.com/mapsforge/mapsforge/issues/75)
