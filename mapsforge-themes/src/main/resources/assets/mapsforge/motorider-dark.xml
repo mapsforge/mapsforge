@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 29, 6th October 2024
+    REVISION 30, 7th October 2024
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -939,7 +939,7 @@
                 <line stroke="#1a1a1a" stroke-dasharray="10,12" stroke-linecap="round"
                     stroke-width="0.6" />
             </rule>
-            <rule e="way" k="highway" v="cycleway" zoom-min="17">
+            <rule e="way" k="highway" v="cycleway|raceway" zoom-min="16">
                 <line stroke="#1a1a1a" stroke-width="0.6" />
             </rule>
             <rule e="way" k="highway" v="service" >
