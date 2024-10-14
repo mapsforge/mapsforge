@@ -66,8 +66,8 @@ public class MapsforgeMapViewer extends Activity {
 
         AndroidGraphicFactory.createInstance(getApplication());
 
-        mapView = new MapView(this);
-        setContentView(mapView);
+        setContentView(R.layout.mapviewer);
+        mapView = findViewById(R.id.mapView);
 
         Intent intent = new Intent(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ? Intent.ACTION_OPEN_DOCUMENT : Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);

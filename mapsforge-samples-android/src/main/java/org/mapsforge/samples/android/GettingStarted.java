@@ -61,12 +61,10 @@ public class GettingStarted extends Activity {
         /*
          * A MapView is an Android View (or ViewGroup) that displays a mapsforge map. You can have
          * multiple MapViews in your app or even a single Activity. Have a look at the mapviewer.xml
-         * on how to create a MapView using the Android XML Layout definitions. Here we create a
-         * MapView on the fly and make the content view of the activity the MapView. This means
-         * that no other elements make up the content of this activity.
+         * on how to create a MapView using the Android XML Layout definitions.
          */
-        mapView = new MapView(this);
-        setContentView(mapView);
+        setContentView(R.layout.mapviewer);
+        mapView = findViewById(R.id.mapView);
 
         /*
          * Open map.
