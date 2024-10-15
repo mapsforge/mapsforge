@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppThemeDark" parent="android:Theme.Material">
+        <item name="android:fitsSystemWindows" tools:targetApi="VANILLA_ICE_CREAM">true</item>
+    </style>
+
+    <style name="AppThemeLight" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="android:fitsSystemWindows" tools:targetApi="VANILLA_ICE_CREAM">true</item>
+    </style>
+
+</resources>

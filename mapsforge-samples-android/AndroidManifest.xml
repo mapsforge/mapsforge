@@ -18,6 +18,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Mapsforge Samples"
         android:requestLegacyExternalStorage="true"
+        android:theme="@style/AppThemeLight"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".Samples"
