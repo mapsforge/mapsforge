@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 30, 7th October 2024
+    REVISION 31, 23rd October 2024
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -357,7 +357,8 @@
         </rule>-->
     </rule>
 
-	<!--<rule e="way" k="leisure|boundary" v="nature_reserve|national_park|protected_area" zoom-min="12">
+	<!-- removed due to rendering issues
+	<rule e="way" k="leisure|boundary" v="nature_reserve|national_park|protected_area" zoom-min="12">
 		<area fill="#40C0FFBF" />
 	</rule>-->
     <rule e="way" k="landuse|natural" v="meadow|grassland" zoom-min="11">
