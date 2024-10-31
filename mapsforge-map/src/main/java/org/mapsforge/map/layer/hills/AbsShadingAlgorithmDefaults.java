@@ -28,6 +28,17 @@ public abstract class AbsShadingAlgorithmDefaults implements ShadingAlgorithm {
 
     protected abstract byte[] convert(InputStream map, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo source) throws IOException;
 
+    public short readNext(final InputStream is) throws IOException {
+        final int read1 = is.read();
+        final int read2 = is.read();
+
+        if (read1 != -1 && read2 != -1) {
+            return (short) ((read1 << 8) | read2);
+        } else {
+            return Short.MIN_VALUE;
+        }
+    }
+
     public short readNext(InputStream din, short fallback) throws IOException {
         final int read1 = din.read();
         final int read2 = din.read();

@@ -1,6 +1,7 @@
 /*
  * Copyright 2017 usrusr
  * Copyright 2017 oruxman
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,12 +16,14 @@
  */
 package org.mapsforge.map.rendertheme.renderinstruction;
 
+import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
+import org.mapsforge.map.layer.hills.HgtCache;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.renderer.HillshadingContainer;
 import org.mapsforge.map.layer.renderer.ShapeContainer;
@@ -38,12 +41,16 @@ public class Hillshading {
 
     private static final Logger LOGGER = Logger.getLogger(Hillshading.class.getName());
 
-    private boolean always;
+    public static final int ShadingLatStep = 1;
+    public static final int ShadingLonStep = 1;
+
+    private final boolean always;
     private final int level;
     private final byte layer;
     private final byte minZoom;
     private final byte maxZoom;
     private final float magnitude;
+    private final GraphicFactory mGraphicFactory;
 
     public Hillshading(byte minZoom, byte maxZoom, short magnitude, byte layer, boolean always, int level, GraphicFactory graphicFactory) {
         this.always = always;
@@ -52,6 +59,7 @@ public class Hillshading {
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
         this.magnitude = magnitude;
+        this.mGraphicFactory = graphicFactory;
     }
 
     public void render(final RenderContext renderContext, HillsRenderConfig hillsRenderConfig) {
@@ -63,38 +71,35 @@ public class Hillshading {
             }
             return;
         }
-        float effectiveMagnitude = Math.min(Math.max(0f, this.magnitude * hillsRenderConfig.getMagnitudeScaleFactor()), 255f) / 255f;
-        Tile tile = renderContext.rendererJob.tile;
-        byte zoomLevel = tile.zoomLevel;
+
+        final float effectiveMagnitude = Math.min(Math.max(0f, this.magnitude * hillsRenderConfig.getMagnitudeScaleFactor()), 255f) / 255f;
+        final Tile tile = renderContext.rendererJob.tile;
+        final byte zoomLevel = tile.zoomLevel;
+
         if (zoomLevel > maxZoom || zoomLevel < minZoom)
             return;
 
-        Point origin = tile.getOrigin();
-        double maptileTopLat = MercatorProjection.pixelYToLatitude((long) origin.y, tile.mapSize);
-        double maptileLeftLng = MercatorProjection.pixelXToLongitude((long) origin.x, tile.mapSize);
+        final Point origin = tile.getOrigin();
+        final double maptileTopLat = MercatorProjection.pixelYToLatitude(origin.y, tile.mapSize);
+        final double maptileLeftLon = MercatorProjection.pixelXToLongitude(origin.x, tile.mapSize);
+        final double maptileBottomLat = MercatorProjection.pixelYToLatitude(origin.y + tile.tileSize, tile.mapSize);
+        double maptileRightLon = MercatorProjection.pixelXToLongitude(origin.x + tile.tileSize, tile.mapSize);
+        if (maptileRightLon < maptileLeftLon)
+            maptileRightLon += tile.mapSize;
 
-        double maptileBottomLat = MercatorProjection.pixelYToLatitude((long) origin.y + tile.tileSize, tile.mapSize);
-        double maptileRightLng = MercatorProjection.pixelXToLongitude((long) origin.x + tile.tileSize, tile.mapSize);
+        final double mapTileLatDegrees = maptileTopLat - maptileBottomLat;
+        final double mapTileLonDegrees = maptileRightLon - maptileLeftLon;
+        final double pxPerLat = (tile.tileSize / mapTileLatDegrees);
+        final double pxPerLon = (tile.tileSize / mapTileLonDegrees);
 
-        double mapTileLatDegrees = maptileTopLat - maptileBottomLat;
-        double mapTileLngDegrees = maptileRightLng - maptileLeftLng;
-        double pxPerLat = (tile.tileSize / mapTileLatDegrees);
-        double pxPerLng = (tile.tileSize / mapTileLngDegrees);
-
-        if (maptileRightLng < maptileLeftLng)
-            maptileRightLng += tile.mapSize;
-
-
-        int shadingLngStep = 1;
-        int shadingLatStep = 1;
-        for (int shadingLeftLng = (int) Math.floor(maptileLeftLng); shadingLeftLng <= maptileRightLng; shadingLeftLng += shadingLngStep) {
-            for (int shadingBottomLat = (int) Math.floor(maptileBottomLat); shadingBottomLat <= maptileTopLat; shadingBottomLat += shadingLatStep) {
-                int shadingRightLng = shadingLeftLng + 1;
-                int shadingTopLat = shadingBottomLat + 1;
+        for (int shadingLeftLon = (int) Math.floor(maptileLeftLon); shadingLeftLon <= maptileRightLon; shadingLeftLon += ShadingLonStep) {
+            for (int shadingBottomLat = (int) Math.floor(maptileBottomLat); shadingBottomLat <= maptileTopLat; shadingBottomLat += ShadingLatStep) {
+                final int shadingRightLon = shadingLeftLon + ShadingLonStep;
+                final int shadingTopLat = shadingBottomLat + ShadingLatStep;
 
                 HillshadingBitmap shadingTile = null;
                 try {
-                    shadingTile = hillsRenderConfig.getShadingTile(shadingBottomLat, shadingLeftLng, pxPerLat, pxPerLng);
+                    shadingTile = hillsRenderConfig.getShadingTile(shadingBottomLat, shadingLeftLon, pxPerLat, pxPerLon);
                 } catch (Exception e) {
                     LOGGER.log(Level.SEVERE, e.toString(), e);
                 }
@@ -103,8 +108,6 @@ public class Hillshading {
                         continue;
                     }
                 }
-                double shadingPixelOffset = 0d;
-
 
                 final int padding;
                 final int shadingInnerWidth;
@@ -116,14 +119,13 @@ public class Hillshading {
                 } else {
                     // dummy values to not confuse the maptile calculations
                     padding = 0;
-                    shadingInnerWidth = 1;
-                    shadingInnerHeight = 1;
+                    shadingInnerWidth = 0;
+                    shadingInnerHeight = 0;
                 }
 
                 // shading tile subset if it fully fits inside map tile
                 double shadingSubrectTop = padding;
                 double shadingSubrectLeft = padding;
-
                 double shadingSubrectRight = shadingSubrectLeft + shadingInnerWidth;
                 double shadingSubrectBottom = shadingSubrectTop + shadingInnerHeight;
 
@@ -134,34 +136,90 @@ public class Hillshading {
                 double maptileSubrectBottom = tile.tileSize;
 
                 // find the intersection between map tile and shading tile in earth coordinates and determine the pixel
-                if (shadingTopLat > maptileTopLat) { // map tile ends in shading tile
-                    shadingSubrectTop = padding + shadingInnerHeight * ((shadingTopLat - maptileTopLat) / shadingLatStep);
-                } else if (maptileTopLat > shadingTopLat) {
-                    maptileSubrectTop = MercatorProjection.latitudeToPixelY(shadingTopLat + (shadingPixelOffset / shadingInnerHeight), tile.mapSize) - origin.y;
-                }
-                if (shadingBottomLat < maptileBottomLat) { // map tile ends in shading tile
-                    shadingSubrectBottom = padding + shadingInnerHeight - shadingInnerHeight * ((maptileBottomLat - shadingBottomLat) / shadingLatStep);
-                } else if (maptileBottomLat < shadingBottomLat) {
-                    maptileSubrectBottom = MercatorProjection.latitudeToPixelY(shadingBottomLat + (shadingPixelOffset / shadingInnerHeight), tile.mapSize) - origin.y;
-                }
-                if (shadingLeftLng < maptileLeftLng) { // map tile ends in shading tile
-                    shadingSubrectLeft = padding + shadingInnerWidth * ((maptileLeftLng - shadingLeftLng) / shadingLngStep);
-                } else if (maptileLeftLng < shadingLeftLng) {
-                    maptileSubrectLeft = MercatorProjection.longitudeToPixelX(shadingLeftLng + (shadingPixelOffset / shadingInnerWidth), tile.mapSize) - origin.x;
-                }
-                if (shadingRightLng > maptileRightLng) { // map tile ends in shading tile
-                    shadingSubrectRight = padding + shadingInnerWidth - shadingInnerWidth * ((shadingRightLng - maptileRightLng) / shadingLngStep);
-                } else if (maptileRightLng > shadingRightLng) {
-                    maptileSubrectRight = MercatorProjection.longitudeToPixelX(shadingRightLng + (shadingPixelOffset / shadingInnerHeight), tile.mapSize) - origin.x;
+
+                if (shadingBottomLat > maptileBottomLat) {
+                    // Shading tile ends in map tile
+                    maptileSubrectBottom = Math.round(MercatorProjection.latitudeToPixelY(shadingBottomLat, tile.mapSize)) - origin.y;
+                    mergeNeighbor(shadingTile, padding, hillsRenderConfig, HillshadingBitmap.Border.SOUTH, shadingBottomLat, shadingLeftLon, pxPerLat, pxPerLon);
+                } else if (shadingBottomLat < maptileBottomLat) {
+                    // Map tile ends in shading tile
+                    shadingSubrectBottom -= shadingInnerHeight * ((maptileBottomLat - shadingBottomLat) / ShadingLatStep);
                 }
 
-                Rectangle hillsRect = (shadingTile == null) ? null : new Rectangle(shadingSubrectLeft, shadingSubrectTop, shadingSubrectRight, shadingSubrectBottom);
-                Rectangle maptileRect = new Rectangle(maptileSubrectLeft, maptileSubrectTop, maptileSubrectRight, maptileSubrectBottom);
-                ShapeContainer hillShape = new HillshadingContainer(shadingTile, effectiveMagnitude, hillsRect, maptileRect);
+                if (shadingTopLat < maptileTopLat) {
+                    // Shading tile ends in map tile
+                    maptileSubrectTop = Math.round(MercatorProjection.latitudeToPixelY(shadingTopLat, tile.mapSize)) - origin.y;
+                    mergeNeighbor(shadingTile, padding, hillsRenderConfig, HillshadingBitmap.Border.NORTH, shadingBottomLat, shadingLeftLon, pxPerLat, pxPerLon);
+                } else if (shadingTopLat > maptileTopLat) {
+                    // Map tile ends in shading tile
+                    shadingSubrectTop += shadingInnerHeight * ((shadingTopLat - maptileTopLat) / ShadingLatStep);
+                }
+
+                if (shadingLeftLon > maptileLeftLon) {
+                    // Shading tile ends in map tile
+                    maptileSubrectLeft = Math.round(MercatorProjection.longitudeToPixelX(shadingLeftLon, tile.mapSize)) - origin.x;
+                    mergeNeighbor(shadingTile, padding, hillsRenderConfig, HillshadingBitmap.Border.WEST, shadingBottomLat, shadingLeftLon, pxPerLat, pxPerLon);
+                } else if (shadingLeftLon < maptileLeftLon) {
+                    // Map tile ends in shading tile
+                    shadingSubrectLeft += shadingInnerWidth * ((maptileLeftLon - shadingLeftLon) / ShadingLonStep);
+                }
+
+                if (shadingRightLon < maptileRightLon) {
+                    // Shading tile ends in map tile
+                    maptileSubrectRight = Math.round(MercatorProjection.longitudeToPixelX(shadingRightLon, tile.mapSize)) - origin.x;
+                    mergeNeighbor(shadingTile, padding, hillsRenderConfig, HillshadingBitmap.Border.EAST, shadingBottomLat, shadingLeftLon, pxPerLat, pxPerLon);
+                } else if (shadingRightLon > maptileRightLon) {
+                    // Map tile ends in shading tile
+                    shadingSubrectRight -= shadingInnerWidth * ((shadingRightLon - maptileRightLon) / ShadingLonStep);
+                }
+
+                final Rectangle hillsRect = (shadingTile == null) ? null : new Rectangle(shadingSubrectLeft, shadingSubrectTop, shadingSubrectRight, shadingSubrectBottom);
+                final Rectangle maptileRect = new Rectangle(maptileSubrectLeft, maptileSubrectTop, maptileSubrectRight, maptileSubrectBottom);
+                final ShapeContainer hillShape = new HillshadingContainer(shadingTile, effectiveMagnitude, hillsRect, maptileRect);
 
                 renderContext.setDrawingLayers(layer);
                 renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
             }
+        }
+    }
+
+    protected HillshadingBitmap getNeighbor(HillsRenderConfig hillsRenderConfig, HillshadingBitmap.Border border, int shadingBottomLat, int shadingLeftLon, double pxPerLat, double pxPerLon) {
+
+        HillshadingBitmap neighbor = null;
+        try {
+            switch (border) {
+                case NORTH:
+                    neighbor = hillsRenderConfig.getShadingTile(shadingBottomLat + ShadingLatStep, shadingLeftLon, pxPerLat, pxPerLon);
+                    break;
+                case SOUTH:
+                    neighbor = hillsRenderConfig.getShadingTile(shadingBottomLat - ShadingLatStep, shadingLeftLon, pxPerLat, pxPerLon);
+                    break;
+                case EAST:
+                    neighbor = hillsRenderConfig.getShadingTile(shadingBottomLat, shadingLeftLon + ShadingLonStep, pxPerLat, pxPerLon);
+                    break;
+                case WEST:
+                    neighbor = hillsRenderConfig.getShadingTile(shadingBottomLat, shadingLeftLon - ShadingLonStep, pxPerLat, pxPerLon);
+                    break;
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
+        }
+
+        return neighbor;
+    }
+
+    protected synchronized void mergePaddingOnBitmap(HillshadingBitmap center, HillshadingBitmap neighbor, HillshadingBitmap.Border border, int padding) {
+        if (neighbor != null && padding > 0) {
+            final Canvas copyCanvas = mGraphicFactory.createCanvas();
+
+            HgtCache.mergeSameSized(center, neighbor, border, padding, copyCanvas);
+        }
+    }
+
+    protected void mergeNeighbor(HillshadingBitmap monoBitmap, int padding, HillsRenderConfig hillsRenderConfig, HillshadingBitmap.Border border, int shadingBottomLat, int shadingLeftLon, double pxPerLat, double pxPerLon) {
+        if (monoBitmap != null && padding > 0) {
+            final HillshadingBitmap neighbor = getNeighbor(hillsRenderConfig, border, shadingBottomLat, shadingLeftLon, pxPerLat, pxPerLon);
+            mergePaddingOnBitmap(monoBitmap, neighbor, border, padding);
         }
     }
 }

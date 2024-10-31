@@ -44,7 +44,8 @@ public class DemFileZipEntryFS implements DemFile {
     @Override
     public InputStream openInputStream() throws FileNotFoundException {
         try {
-            return new BufferedInputStream(zipFile.getInputStream(zipEntry));
+            // Buffer size is relatively small to reduce wasteful read-ahead (buffer fill) during multi-threaded processing
+            return new BufferedInputStream(zipFile.getInputStream(zipEntry), 512);
         } catch (IOException e) {
             throw new FileNotFoundException(zipFile.getName() + " (" + zipEntry.getName() + ")");
         }

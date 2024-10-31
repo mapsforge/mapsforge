@@ -26,11 +26,15 @@ import java.util.concurrent.ExecutionException;
 public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
     private final GraphicFactory graphicsFactory;
     private HgtCache currentCache;
-    private int mainCacheSize = 4;
-    private int neighborCacheSize = 4;
-    private boolean enableInterpolationOverlap = true;
+    private int mainCacheSize = 12;
     private DemFolder demFolder;
     private ShadingAlgorithm algorithm;
+
+    /**
+     * 2024-10: This no longer affects performance, so it simply needs to be set to {@code true}.
+     * Performance is not affected because no excess shading tiles are loaded beyond the required tiles used for display.
+     */
+    private final boolean enableInterpolationOverlap = true;
 
     public MemoryCachingHgtReaderTileSource(DemFolder demFolder, ShadingAlgorithm algorithm, GraphicFactory graphicsFactory) {
         this(graphicsFactory);
@@ -58,7 +62,7 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
         if (isNewCacheNeeded()) {
             synchronized (graphicsFactory) {
                 if (isNewCacheNeeded()) {
-                    this.currentCache = new HgtCache(demFolder, enableInterpolationOverlap, graphicsFactory, algorithm, mainCacheSize, neighborCacheSize);
+                    this.currentCache = new HgtCache(demFolder, enableInterpolationOverlap, graphicsFactory, algorithm, mainCacheSize);
                 }
             }
         }
@@ -70,7 +74,6 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
         return (this.currentCache == null
                 || enableInterpolationOverlap != this.currentCache.interpolatorOverlap
                 || mainCacheSize != this.currentCache.mainCacheSize
-                || neighborCacheSize != this.currentCache.neighborCacheSize
                 || !demFolder.equals(this.currentCache.demFolder)
                 || !algorithm.equals(this.currentCache.algorithm));
     }
@@ -81,13 +84,13 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
     }
 
     @Override
-    public HillshadingBitmap getHillshadingBitmap(int latitudeOfSouthWestCorner, int longituedOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException {
+    public HillshadingBitmap getHillshadingBitmap(int latitudeOfSouthWestCorner, int longitudeOfSouthWestCorner, double pxPerLat, double pxPerLng) throws ExecutionException, InterruptedException {
 
         if (latestCache() == null) {
 
             return null;
         }
-        return currentCache.getHillshadingBitmap(latitudeOfSouthWestCorner, longituedOfSouthWestCorner, pxPerLat, pxPerLng);
+        return currentCache.getHillshadingBitmap(latitudeOfSouthWestCorner, longitudeOfSouthWestCorner, pxPerLat, pxPerLng);
     }
 
     @Override
@@ -100,35 +103,27 @@ public class MemoryCachingHgtReaderTileSource implements ShadeTileSource {
     }
 
     /**
-     * @param mainCacheSize number of recently used shading tiles (whole numer latitude/longitude grid) that are kept in memory (default: 4)
+     * @param mainCacheSize number of recently used shading tiles (whole number latitude/longitude grid) that are kept in memory (default: 4)
      */
     public void setMainCacheSize(int mainCacheSize) {
         this.mainCacheSize = mainCacheSize;
     }
 
     /**
-     * @param neighborCacheSize number of additional shading tiles to keep in memory for interpolationOverlap (ignored if enableInterpolationOverlap is false)
-     */
-    public void setNeighborCacheSize(int neighborCacheSize) {
-        this.neighborCacheSize = neighborCacheSize;
-    }
-
-    /**
-     * @param enableInterpolationOverlap false is faster, but shows minor artifacts along the latitude/longitude
-     *                                   (if true, preparing a shading tile for high resolution use requires all 4 neighboring tiles to be loaded if they are not in memory)
+     * 2024-10: No longer used; does nothing. The flag is always {@code true}.
      */
     public void setEnableInterpolationOverlap(boolean enableInterpolationOverlap) {
-        this.enableInterpolationOverlap = enableInterpolationOverlap;
     }
 
     public int getMainCacheSize() {
         return mainCacheSize;
     }
 
-    public int getNeighborCacheSize() {
-        return neighborCacheSize;
-    }
-
+    /**
+     * 2024-10: This no longer affects performance, so it simply needs to return {@code true}.
+     *
+     * @return Always {@code true}.
+     */
     public boolean isEnableInterpolationOverlap() {
         return enableInterpolationOverlap;
     }

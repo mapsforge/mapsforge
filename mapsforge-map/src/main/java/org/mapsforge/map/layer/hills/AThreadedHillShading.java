@@ -16,7 +16,6 @@ package org.mapsforge.map.layer.hills;
 
 import org.mapsforge.core.util.IOUtils;
 import org.mapsforge.map.layer.hills.HgtCache.HgtFileInfo;
-import org.mapsforge.map.layer.hills.HillShadingUtils.Awaiter;
 import org.mapsforge.map.layer.hills.HillShadingUtils.HillShadingThreadPool;
 import org.mapsforge.map.layer.hills.HillShadingUtils.ShortArraysPool;
 import org.mapsforge.map.layer.hills.HillShadingUtils.SilentFutureTask;
@@ -24,7 +23,8 @@ import org.mapsforge.map.layer.hills.HillShadingUtils.SilentFutureTask;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -34,44 +34,57 @@ import java.util.logging.Level;
  * that are processed in parallel by multiple threads.
  * </p>
  * <p>
- * The implementation is such that there are 1 + N (N>=0) "producer" threads (ie. the caller thread and N additional threads)
- * that read from the input and do the synchronization, and 1 + M (>=0) "consumer" threads that do the computations.
- * It should be emphasized that every caller thread has its own thread pool: Thread pools are not shared.
+ * The implementation is such that there are N (>=1) "producer" threads that read from the input
+ * and do the synchronization, and M (>=0) "consumer" threads that do the computations.
+ * It should be emphasized that all caller threads share one (static) thread pool.
  * </p>
  * <p>
  * Special attention is paid to reducing memory consumption.
  * A producer thread will throttle itself and stop reading until the computation catches up.
- * If this happens, a {@link #notifyReadingPaced(int)} will be called.
+ * If this happens, {@link #notifyReadingPaced(long, int, int, int)} will be called.
  * </p>
  * <p>
- * Rough estimate of the <em>maximum</em> memory used per caller is as follows:
+ * Rough estimate of the <em>maximum</em> memory used at any given moment is as follows:
  * <br />
  * <br />
- * max_bytes_used = {@link #ElementsPerComputingTask} * (1 + 2 * M) * (1 + N) * {@link Short#BYTES}
+ * {@code max_bytes_used = (1 + 2 * M) *} {@link #ElementsPerComputingTask} {@code *} {@link Short#BYTES}
  * <br />
  * <br />
- * By default, with two reading threads and one additional computing thread used, this is around 2 * 96000 bytes (cca 200 kB) max memory usage per caller.
- * If the computations are fast enough, the real memory usage is usually going to be several times smaller.
+ * Default max memory usage:
+ * <br />
+ * For a system with 8 processors, N = 2 and M = 8, about 544000 * 2 bytes (cca 1.1 MB);
+ * <br />
+ * For a system with 4 processors, N = 1 and M = 4, about 288000 * 2 bytes (cca 600 kB);
+ * <br />
+ * For a system with 1 processor, N = 1 and M = 1, about 96000 * 2 bytes (cca 200 kB).
+ * <br />
+ * <br />
+ * If the computations are fast enough, average memory usage will be several times smaller.
+ * Note that this only counts the working memory used while the hill shading algorithm computes and that is freed when the algorithm finishes;
+ * memory used by algorithm products, such as the final shading bitmap, is not counted.
  * </p>
  * <p>
  * You can set the algorithm to the "high quality" setting.
- * The unit element is then 4x4 data points in size instead of 2x2, except at the global outer edges and vertices of the input data set where you will still get 2x2.
- * This allows better interpolation possibilities.
- * To make use of this, you should override the
- * {@link #processOneUnitElement(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)}
- * method.
- * The default implementation will just call the standard quality method,
- * {@link #processOneUnitElement(double, double, double, double, double, int, ComputingParams)}.
+ * The unit element is then 4x4 data points in size instead of 2x2, allowing for better interpolation possibilities.
+ * To make use of this, you should override both the
+ * {@link #processRow_4x4(short[], int, int, int, int, double, int, ComputingParams)}
+ * and {@link #processUnitElement_4x4(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)}
+ * methods.
+ * The latter method will get called for the edges of the input data.
  * </p>
  * <p>
- * A 2x2 unit element layout:
+ * For standard quality, it's enough to override only one of those methods: Override {@code processRow_2x2()}
+ * for efficiency; override {@code processUnitElement_4x4()} for simplicity.
+ * </p>
+ * <p>
+ * 2x2 unit element layout:
  * <pre>{@code
  * nw ne
  * sw se}
  * </pre>
  * </p>
  * <p>
- * A 4x4 unit element layout:
+ * 4x4 unit element layout:
  * <pre>{@code
  * nwnw nnw nne nene
  * wnw   nw ne   ene
@@ -83,18 +96,31 @@ import java.util.logging.Level;
 public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
     /**
-     * Default number of additional reading threads ("producer" threads) per caller thread.
-     * Number N (>0) means there will be N additional threads (per caller thread) that will do the reading,
-     * while 0 means that only the caller thread will do the reading.
+     * The number of processors available to the Java runtime.
      */
-    public static final int ReadingThreadsCountDefault = 1;
+    public static final int AvailableProcessors = Runtime
+            .getRuntime()
+            .availableProcessors();
 
     /**
-     * Default number of additional computing threads ("consumer" threads) per caller thread.
-     * Number N (>0) means there will be N additional threads (per caller thread) that will do the computing,
-     * while 0 means that producer thread(s) will also do the computing.
+     * Default number of reading threads ("producer" threads).
+     * Number N (>=1) means there will be N threads that will do the reading.
+     * Zero (0) is not permitted.
      */
-    public static final int ComputingThreadsCountDefault = 1;
+    public static final int ReadingThreadsCountDefault = Math.max(1, AvailableProcessors / 3);
+
+    /**
+     * Default number of computing threads ("consumer" threads).
+     * Number M (>=0) means there will be M threads that will do the computing.
+     * Zero means that reading/producer thread(s) will also do the computing.
+     */
+    public static final int ComputingThreadsCountDefault = AvailableProcessors;
+
+    /**
+     * Approximate number of unit elements that each computing task will process.
+     * The actual number is calculated during execution and can be slightly different.
+     */
+    protected final int ElementsPerComputingTask = 32000;
 
     /**
      * When high quality, a unit element is 4x4 data points in size; otherwise it is 2x2.
@@ -102,23 +128,27 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     public static final boolean IsHighQualityDefault = false;
 
     /**
-     * Default name prefix for additional threads created and used by hill shading. A numbered suffix will be appended.
+     * Whether input data preprocessing is enabled, to remove invalid values.
      */
-    public final String ThreadPoolName = "MapsforgeHillShading";
+    public static final boolean IsPreprocessDefault = true;
 
     /**
-     * Approximate number of unit elements that each computing task will process.
-     * The actual number is calculated during execution and can be slightly different.
+     * Default name prefix for additional reading threads created and used by hill shading. A numbered suffix will be appended.
      */
-    protected final int ElementsPerComputingTask = 16000;
+    public final String ReadingThreadPoolName = "MapsforgeHillShadingRead";
 
     /**
-     * Number of additional "producer" threads that will do the reading (per caller thread), >= 0.
+     * Default name prefix for additional computing threads created and used by hill shading. A numbered suffix will be appended.
+     */
+    public final String ComputingThreadPoolName = "MapsforgeHillShadingComp";
+
+    /**
+     * Number of "producer" threads that will do the reading, >= 1.
      */
     protected final int mReadingThreadsCount;
 
     /**
-     * Number of additional "consumer" threads that will do the computations (per caller thread), >= 0.
+     * Number of "consumer" threads that will do the computations, >= 0.
      */
     protected final int mComputingThreadsCount;
 
@@ -128,72 +158,108 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
     protected final boolean mIsHighQuality;
 
     /**
-     * Max number of active computing tasks per caller; if this limit is exceeded the reading will be throttled.
-     * It is computed as (1 + 2 * {@link #mComputingThreadsCount}) * (1 + {@link #mReadingThreadsCount}) by default.
+     * Whether input data preprocessing is enabled, to remove invalid values.
+     */
+    protected final boolean mIsPreprocess;
+
+    /**
+     * Max number of active computing tasks per reading task; if this limit is exceeded the reading will be throttled.
+     * It is computed as {@code (1 + 2 *} {@link #mComputingThreadsCount}{@code )} by default.
      * An active task is a task that is currently being processed or has been prepared and is waiting to be processed.
      */
     protected final int mActiveTasksCountMax;
 
-    protected static final ThreadLocal<AtomicReference<HillShadingThreadPool>> mThreadPool = new ThreadLocal<AtomicReference<HillShadingThreadPool>>() {
-        @Override
-        protected AtomicReference<HillShadingThreadPool> initialValue() {
-            return new AtomicReference<>(null);
-        }
-    };
+    /**
+     * Static thread pools shared by all tasks.
+     */
+    protected static final AtomicReference<HillShadingThreadPool> mReadThreadPool = new AtomicReference<>(null);
+    protected static final AtomicReference<HillShadingThreadPool> mCompThreadPool = new AtomicReference<>(null);
 
+    /**
+     * Stop signal flag, indicating that processing should be stopped as soon as possible (not used by default).
+     *
+     * @see #isNotStopped()
+     */
     protected volatile boolean mStopSignal = false;
 
     /**
-     * @param readingThreadsCount   Number of additional "producer" threads that will do the reading, >= 0.
-     *                              Number N (>0) means there will be N additional threads (per caller thread) that will do the reading,
-     *                              while 0 means that only the caller thread will do the reading.
-     *                              The only time you'd want to set this to zero is when your data source does not support skipping,
-     *                              ie. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
-     *                              The default is 1.
-     * @param computingThreadsCount Number of additional "consumer" threads that will do the computations, >= 0.
-     *                              Number M (>0) means there will be M additional threads (per caller thread) that will do the computing,
-     *                              while 0 means that producer thread(s) will also do the computing.
+     * Counter used to assign IDs to reading tasks.
+     */
+    protected final AtomicLong mReadTaskCounter = new AtomicLong(0);
+
+    /**
+     * @param readingThreadsCount   Number of "producer" threads that will do the reading, >= 1.
+     *                              Number N (>=1) means there will be N threads that will do the reading.
+     *                              Zero (0) is not permitted.
+     *                              The only time you'd want to set this to 1 is when your data source does not support skipping,
+     *                              i.e. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
+     *                              The default is computed as {@code Math.max(1,} {@link #AvailableProcessors} {@code / 3)}.
+     * @param computingThreadsCount Number of "consumer" threads that will do the computations, >= 0.
+     *                              Number M (>=0) means there will be M threads that will do the computing.
+     *                              Zero (0) means that producer thread(s) will also do the computing.
      *                              The only times you'd want to set this to zero are when memory conservation is a top priority
      *                              or when you're running on a single-threaded system.
-     *                              The default is 1.
+     *                              The default is {@link #AvailableProcessors}, the number of processors available to the Java runtime.
      * @param highQuality           When {@code true}, a unit element is 4x4 data points in size instead of 2x2, for better interpolation possibilities.
-     *                              To make use of this, you should override the
-     *                              {@link #processOneUnitElement(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)}
-     *                              method.
      *                              The default is {@code false}.
+     * @param preprocess            When {@code true}, input data will be preprocessed to remove possible invalid values.
+     *                              The default is {@code true}.
      */
-    public AThreadedHillShading(final int readingThreadsCount, final int computingThreadsCount, final boolean highQuality) {
+    public AThreadedHillShading(final int readingThreadsCount, final int computingThreadsCount, final boolean highQuality, final boolean preprocess) {
         super();
 
-        mReadingThreadsCount = Math.max(0, readingThreadsCount);
+        mReadingThreadsCount = Math.max(1, readingThreadsCount);
         mComputingThreadsCount = Math.max(0, computingThreadsCount);
-        mActiveTasksCountMax = (1 + 2 * mComputingThreadsCount) * (1 + mReadingThreadsCount);
+        mActiveTasksCountMax = 1 + 2 * mComputingThreadsCount;
         mIsHighQuality = highQuality;
+        mIsPreprocess = preprocess;
     }
 
     /**
-     * Employs standard quality unit elements (2x2 in size) by default.
-     * Use {@link #AThreadedHillShading(int, int, boolean)} if you need high-quality unit elements (4x4 in size), for better interpolation possibilities.
+     * Preprocessing will be enabled by default.
      *
-     * @param readingThreadsCount   Number of additional "producer" threads that will do the reading, >= 0.
-     *                              Number N (>0) means there will be N additional threads (per caller thread) that will do the reading,
-     *                              while 0 means that only the caller thread will do the reading.
-     *                              The only time you'd want to set this to zero is when your data source does not support skipping,
-     *                              ie. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
-     *                              The default is 1.
-     * @param computingThreadsCount Number of additional "consumer" threads that will do the computations, >= 0.
-     *                              Number M (>0) means there will be M additional threads (per caller thread) that will do the computing,
-     *                              while 0 means that producer thread(s) will also do the computing.
+     * @param readingThreadsCount   Number of "producer" threads that will do the reading, >= 1.
+     *                              Number N (>=1) means there will be N threads that will do the reading.
+     *                              Zero (0) is not permitted.
+     *                              The only time you'd want to set this to 1 is when your data source does not support skipping,
+     *                              i.e. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
+     *                              The default is computed as {@code Math.max(1,} {@link #AvailableProcessors} {@code / 3)}.
+     * @param computingThreadsCount Number of "consumer" threads that will do the computations, >= 0.
+     *                              Number M (>=0) means there will be M threads that will do the computing.
+     *                              Zero (0) means that producer thread(s) will also do the computing.
      *                              The only times you'd want to set this to zero are when memory conservation is a top priority
      *                              or when you're running on a single-threaded system.
-     *                              The default is 1.
+     *                              The default is {@link #AvailableProcessors}, the number of processors available to the Java runtime.
+     * @param highQuality           When {@code true}, a unit element is 4x4 data points in size instead of 2x2, for better interpolation possibilities.
+     *                              The default is {@code false}.
+     */
+    public AThreadedHillShading(final int readingThreadsCount, final int computingThreadsCount, final boolean highQuality) {
+        this(readingThreadsCount, computingThreadsCount, highQuality, IsPreprocessDefault);
+    }
+
+    /**
+     * Employs standard quality unit elements (2x2 in size), and preprocessing enabled by default.
+     * Use {@link #AThreadedHillShading(int, int, boolean)} if you need high-quality unit elements (4x4 in size), for better interpolation possibilities.
+     *
+     * @param readingThreadsCount   Number of "producer" threads that will do the reading, >= 1.
+     *                              Number N (>=1) means there will be N threads that will do the reading.
+     *                              Zero (0) is not permitted.
+     *                              The only time you'd want to set this to 1 is when your data source does not support skipping,
+     *                              i.e. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
+     *                              The default is computed as {@code Math.max(1,} {@link #AvailableProcessors} {@code / 3)}.
+     * @param computingThreadsCount Number of "consumer" threads that will do the computations, >= 0.
+     *                              Number M (>=0) means there will be M threads that will do the computing.
+     *                              Zero (0) means that producer thread(s) will also do the computing.
+     *                              The only times you'd want to set this to zero are when memory conservation is a top priority
+     *                              or when you're running on a single-threaded system.
+     *                              The default is {@link #AvailableProcessors}, the number of processors available to the Java runtime.
      */
     public AThreadedHillShading(final int readingThreadsCount, final int computingThreadsCount) {
         this(readingThreadsCount, computingThreadsCount, IsHighQualityDefault);
     }
 
     /**
-     * Uses one additional reading thread, one additional computing thread, and standard quality unit elements (2x2 in size) by default.
+     * Uses default values for all parameters.
      */
     public AThreadedHillShading() {
         this(ReadingThreadsCountDefault, ComputingThreadsCountDefault);
@@ -201,39 +267,102 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
     /**
      * <p>
-     * Process one unit element, a smallest subdivision of the input, which consists of 2x2=4 points on a "square"
-     * with vertices in NW-SW-SE-NE directions from the center.
+     * Process one line of the input array.
+     * Subclasses using high-quality mode are required to override this method.
      * </p>
      * <p>
-     * Note: This method is not needed in the "high quality" mode -- just implement it as a dummy.
-     * To work in the "high-quality" mode, you should override the overloaded method which takes 16 points as arguments.
+     * <strong>Note</strong>: This method should not process the first (westmost) and last (eastmost) elements of the line!
+     * These and other elements at the edges of the input data are processed by calling
+     * {@link #processUnitElement_4x4(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)}.
+     * This is why a high-quality implementation should override both methods.
      * </p>
      * <p>
-     * A 2x2 unit element layout:
+     * 4x4 unit element layout:
+     * <pre>{@code
+     * nwnw nnw nne nene
+     * wnw   nw ne   ene
+     * wsw   sw se   ese
+     * swsw ssw sse sese}
+     * </pre>
+     * </p>
+     *
+     * @param input            Input array.
+     * @param firstLineIx      Index on the input array where the first row of the unit element is located. More exactly, this points to the {@code nnw} value.
+     * @param secondLineOffset Index offset on the input array to get from the first row to the second row of the unit element. More exactly, this is the offset to the {@code nw} value.
+     * @param thirdLineOffset  Index offset on the input array to get from the first row to the third row of the unit element. More exactly, this is the offset to the {@code sw} value.
+     * @param fourthLineOffset Index offset on the input array to get from the first row to the fourth row of the unit element. More exactly, this is the offset to the {@code ssw} value.
+     * @param dsf              Distance scale factor, that is half the length of one side of the standard 2x2 unit element inverted, i.e. {@code 0.5 / length}. [1/meters]
+     * @param outputIx         Output array index, i.e. the index on the output array where writing should be performed.
+     * @param computingParams  Various parameters that are to be used during computations.
+     * @return Updated {@code outputIx}, to be used for the next iteration.
+     * @see #processUnitElement_4x4(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)
+     * @see ComputingParams
+     */
+    protected int processRow_4x4(short[] input, int firstLineIx, int secondLineOffset, int thirdLineOffset, int fourthLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+        throw new IllegalArgumentException("Please implement the processRow_4x4(short[], int, int, int, int, double, int, ComputingParams) method!");
+    }
+
+    /**
+     * <p>
+     * Process one line of the input array.
+     * In default implementation the elements are processed one by one by calling
+     * {@link #processUnitElement_2x2(double, double, double, double, double, int, ComputingParams)}.
+     * Subclasses are encouraged to override this method and provide a more efficient implementation.
+     * </p>
+     * <p>
+     * 2x2 unit element layout:
      * <pre>{@code
      * nw ne
      * sw se}
      * </pre>
      * </p>
      *
-     * @param nw              North-west value. [meters]
-     * @param sw              South-west value. [meters]
-     * @param se              South-east value. [meters]
-     * @param ne              North-east value. [meters]
-     * @param mpe             Meters per unit element, ie. the length of one side of the unit element. [meters]
-     * @param outputIx        Output array index, ie. index on the output array where.
-     * @param computingParams Various parameters that are to be used during computations.
+     * @param input            Input array.
+     * @param firstLineIx      Index on the input array where the first row of the unit element is located. More exactly, this points to the {@code nw} value.
+     * @param secondLineOffset Index offset on the input array to get from the first row to the second row of the unit element. More exactly, this is the offset to the {@code sw} value.
+     * @param dsf              Distance scale factor, that is half the length of one side of the standard 2x2 unit element inverted, i.e. {@code 0.5 / length}. [1/meters]
+     * @param outputIx         Output array index, i.e. the index on the output array where writing should be performed.
+     * @param computingParams  Various parameters that are to be used during computations.
      * @return Updated {@code outputIx}, to be used for the next iteration.
+     * @see #processUnitElement_2x2(double, double, double, double, double, int, ComputingParams)
      * @see ComputingParams
-     * @see #processOneUnitElement(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)
      */
-    protected abstract int processOneUnitElement(double nw, double sw, double se, double ne, double mpe, int outputIx, ComputingParams computingParams);
+    protected int processRow_2x2(short[] input, int firstLineIx, int secondLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+        double nw = input[firstLineIx];
+        double sw = input[firstLineIx + secondLineOffset];
+
+        ++firstLineIx;
+
+        final int limit = firstLineIx + computingParams.mInputAxisLen;
+
+        for (; ; ) {
+            final double ne = input[firstLineIx];
+            final double se = input[firstLineIx + secondLineOffset];
+
+            outputIx = processUnitElement_2x2(nw, sw, se, ne, dsf, outputIx, computingParams);
+
+            if (++firstLineIx < limit) {
+                nw = ne;
+                sw = se;
+            } else {
+                break;
+            }
+        }
+
+        return outputIx;
+    }
 
     /**
-     * Process one unit element, a smallest subdivision of the input, which consists of 4x4=16 points on a "square" with layout like shown below.
-     * Override this method if you are working in the "high-quality" mode and need square unit elements of size 4x4 for better interpolation possibilities.
      * <p>
-     * A 4x4 unit element layout:
+     * Process one unit element, a smallest subdivision of the input, which consists of 4x4 points on a "square" with layout like shown below.
+     * </p>
+     * <p>
+     * If you are working in the high-quality mode you should override this method in addition to the
+     * {@link #processRow_4x4(short[], int, int, int, int, double, int, ComputingParams)},
+     * because this one is used on the edges of the input data.
+     * </p>
+     * <p>
+     * 4x4 unit element layout:
      * <pre>{@code
      * nwnw nnw nne nene
      * wnw   nw ne   ene
@@ -258,392 +387,174 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * @param nene            North-east-north-east value. [meters]
      * @param nne             North-north-east value. [meters]
      * @param nnw             North-north-west value. [meters]
-     * @param mpe             Meters per unit element, ie. the length of one side of the unit element. [meters]
-     * @param outputIx        Output array index, ie. index on the output array where.
+     * @param dsf             Distance scale factor, that is half the length of one side of the standard 2x2 unit element inverted, i.e. {@code 0.5 / length}. [1/meters]
+     * @param outputIx        Output array index, i.e. the index on the output array where writing should be performed.
      * @param computingParams Various parameters that are to be used during computations.
      * @return Updated {@code outputIx}, to be used for the next iteration.
+     * @see #processRow_4x4(short[], int, int, int, int, double, int, ComputingParams)
      * @see ComputingParams
-     * @see #processOneUnitElement(double, double, double, double, double, int, ComputingParams)
      */
-    protected int processOneUnitElement(double nw, double sw, double se, double ne, double nwnw, double wnw, double wsw, double swsw, double ssw, double sse, double sese, double ese, double ene, double nene, double nne, double nnw, double mpe, int outputIx, ComputingParams computingParams) {
-        return processOneUnitElement(nw, sw, se, ne, mpe, outputIx, computingParams);
+    protected int processUnitElement_4x4(double nw, double sw, double se, double ne, double nwnw, double wnw, double wsw, double swsw, double ssw, double sse, double sese, double ese, double ene, double nene, double nne, double nnw, double dsf, int outputIx, ComputingParams computingParams) {
+        throw new IllegalArgumentException("Please implement the processUnitElement_4x4() method!");
     }
 
-    protected int processOneUnitElement(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
-
-        final short nwnw = computingData.mInput[firstLineIx - 2];
-        final short wnw = computingData.mInput[secondLineIx - 2];
-        final short wsw = computingData.mInput[thirdLineIx - 2];
-        final short swsw = computingData.mInput[fourthLineIx - 2];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short sese = computingData.mInput[fourthLineIx + 1];
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mInput[secondLineIx + 1];
-        final short nene = computingData.mInput[firstLineIx + 1];
-        final short nne = computingData.mInput[firstLineIx];
-        final short nnw = computingData.mInput[firstLineIx - 1];
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
+    /**
+     * <p>
+     * Process one unit element, a smallest subdivision of the input, which consists of 2x2 points on a "square" with layout like shown below.
+     * </p>
+     * <p>
+     * It is preferable to override the
+     * {@link #processRow_2x2(short[], int, int, double, int, ComputingParams)}
+     * method instead to provide a more efficient implementation, if possible.
+     * </p>
+     * <p>
+     * 2x2 unit element layout:
+     * <pre>{@code
+     * nw ne
+     * sw se}
+     * </pre>
+     * </p>
+     *
+     * @param nw              North-west value. [meters]
+     * @param sw              South-west value. [meters]
+     * @param se              South-east value. [meters]
+     * @param ne              North-east value. [meters]
+     * @param dsf             Distance scale factor, that is half the length of one side of the standard 2x2 unit element inverted, i.e. {@code 0.5 / length}. [1/meters]
+     * @param outputIx        Output array index, i.e. the index on the output array where writing should be performed.
+     * @param computingParams Various parameters that are to be used during computations.
+     * @return Updated {@code outputIx}, to be used for the next iteration.
+     * @see #processRow_2x2(short[], int, int, double, int, ComputingParams)
+     * @see ComputingParams
+     */
+    protected int processUnitElement_2x2(double nw, double sw, double se, double ne, double dsf, int outputIx, ComputingParams computingParams) {
+        throw new IllegalArgumentException("Please implement the processUnitElement_2x2() method!");
     }
 
-    protected int processOneUnitElementNorthNorthWest(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mSecondLine[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mSecondLine[secondLineIx];
+    /**
+     * Remove invalid values from the input array.
+     * An invalid value is a value equal to {@link Short#MIN_VALUE}.
+     *
+     * @param input Input array to preprocess.
+     * @param width Width of one line of the input array.
+     */
+    protected void preprocess(final short[] input, final int width) {
+        int nw = 0, sw = nw + width;
 
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short sese = computingData.mInput[fourthLineIx + 1];
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mSecondLine[secondLineIx + 1];
-        final short nene = computingData.mFirstLine[firstLineIx + 1];
-        final short nne = computingData.mFirstLine[firstLineIx];
-        final short nnw = computingData.mFirstLine[firstLineIx - 1];
-
-        // Linear interpolation
-        final short nwnw = (short) (2 * nw - se);
-        final short wnw = (short) (2 * nw - ne);
-        final short wsw = (short) (2 * sw - se);
-        final short swsw = (short) (2 * sw - ne);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
+        for (int line = 0; line < input.length / width - 1; line++) {
+            for (int col = 0; col < width - 1; col++, nw++, sw++) {
+                preprocess2x2Element(input, nw, sw, sw + 1, nw + 1);
+            }
+            nw++;
+            sw++;
+        }
     }
 
-    protected int processOneUnitElementNorthWest(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
+    /**
+     * Remove invalid values from one 2x2 unit element defined by four indices on the input array.
+     * An invalid value is a value equal to {@link Short#MIN_VALUE}.
+     *
+     * @param in Input array to preprocess.
+     * @param nw Index of the north-west value.
+     * @param sw Index of the south-west value.
+     * @param se Index of the south-east value.
+     * @param ne Index of the north-east value.
+     */
+    protected void preprocess2x2Element(short[] in, int nw, int sw, int se, int ne) {
+        if (in[nw] == Short.MIN_VALUE || in[sw] == Short.MIN_VALUE || in[se] == Short.MIN_VALUE || in[ne] == Short.MIN_VALUE) {
+            // Preprocessing step, to remove invalid input values.
+            // We'll get here rarely, ideally never.
 
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short sese = computingData.mInput[fourthLineIx + 1];
-        final short ese = computingData.mInput[thirdLineIx + 1];
+            double sum = 0;
+            int count = 0;
 
-        final short ene = computingData.mInput[secondLineIx + 1];
-        final short nene = computingData.mSecondLine[firstLineIx + 1];
-        final short nne = computingData.mSecondLine[firstLineIx];
-        final short nnw = computingData.mSecondLine[firstLineIx - 1];
+            if (in[nw] != Short.MIN_VALUE) {
+                sum += in[nw];
+                count++;
+            }
 
-        // Linear interpolation
-        final short nwnw = (short) (2 * nw - se);
-        final short wnw = (short) (2 * nw - ne);
-        final short wsw = (short) (2 * sw - se);
-        final short swsw = (short) (2 * sw - ne);
+            if (in[sw] != Short.MIN_VALUE) {
+                sum += in[sw];
+                count++;
+            }
 
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
+            if (in[se] != Short.MIN_VALUE) {
+                sum += in[se];
+                count++;
+            }
+
+            if (in[ne] != Short.MIN_VALUE) {
+                sum += in[ne];
+                count++;
+            }
+
+            if (count == 3) {
+                if (in[nw] == Short.MIN_VALUE) {
+                    in[nw] = (short) Math.round((sum - in[se]) / 2);
+                } else if (in[sw] == Short.MIN_VALUE) {
+                    in[sw] = (short) Math.round((sum - in[ne]) / 2);
+                } else if (in[se] == Short.MIN_VALUE) {
+                    in[se] = (short) Math.round((sum - in[nw]) / 2);
+                } else {
+                    in[ne] = (short) Math.round((sum - in[sw]) / 2);
+                }
+            } else if (count == 2) {
+                if (in[nw] == Short.MIN_VALUE && in[ne] == Short.MIN_VALUE) {
+                    in[nw] = in[sw];
+                    in[ne] = in[se];
+                } else if (in[nw] == Short.MIN_VALUE && in[sw] == Short.MIN_VALUE) {
+                    in[nw] = in[ne];
+                    in[sw] = in[se];
+                } else if (in[se] == Short.MIN_VALUE && in[sw] == Short.MIN_VALUE) {
+                    in[sw] = in[nw];
+                    in[se] = in[ne];
+                } else if (in[se] == Short.MIN_VALUE && in[ne] == Short.MIN_VALUE) {
+                    in[se] = in[sw];
+                    in[ne] = in[nw];
+                } else if (in[nw] == Short.MIN_VALUE) {
+                    in[nw] = (short) Math.round(sum / 2);
+                    in[se] = in[nw];
+                } else {
+                    in[sw] = (short) Math.round(sum / 2);
+                    in[ne] = in[sw];
+                }
+            } else {
+                if (in[nw] == Short.MIN_VALUE) {
+                    in[nw] = (short) sum;
+                }
+
+                if (in[sw] == Short.MIN_VALUE) {
+                    in[sw] = (short) sum;
+                }
+
+                if (in[se] == Short.MIN_VALUE) {
+                    in[se] = (short) sum;
+                }
+
+                if (in[ne] == Short.MIN_VALUE) {
+                    in[ne] = (short) sum;
+                }
+            }
+        }
     }
 
-    protected int processOneUnitElementWest(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short sese = computingData.mInput[fourthLineIx + 1];
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mInput[secondLineIx + 1];
-        final short nene = computingData.mInput[firstLineIx + 1];
-        final short nne = computingData.mInput[firstLineIx];
-        final short nnw = computingData.mInput[firstLineIx - 1];
-
-        // Linear interpolation
-        final short nwnw = (short) (2 * nw - se);
-        final short wnw = (short) (2 * nw - ne);
-        final short wsw = (short) (2 * sw - se);
-        final short swsw = (short) (2 * sw - ne);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementSouthWest(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
-
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mInput[secondLineIx + 1];
-        final short nene = computingData.mInput[firstLineIx + 1];
-        final short nne = computingData.mInput[firstLineIx];
-        final short nnw = computingData.mInput[firstLineIx - 1];
-
-        // Linear interpolation
-        final short swsw = (short) (2 * sw - ne);
-        final short ssw = (short) (2 * sw - nw);
-        final short sse = (short) (2 * se - ne);
-        final short sese = (short) (2 * se - nw);
-
-        final short nwnw = (short) (2 * nw - se);
-        final short wnw = (short) (2 * nw - ne);
-        final short wsw = (short) (2 * sw - se);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementSouth(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
-
-        final short nwnw = computingData.mInput[firstLineIx - 2];
-        final short wnw = computingData.mInput[secondLineIx - 2];
-        final short wsw = computingData.mInput[thirdLineIx - 2];
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mInput[secondLineIx + 1];
-        final short nene = computingData.mInput[firstLineIx + 1];
-        final short nne = computingData.mInput[firstLineIx];
-        final short nnw = computingData.mInput[firstLineIx - 1];
-
-        // Linear interpolation
-        final short swsw = (short) (2 * sw - ne);
-        final short ssw = (short) (2 * sw - nw);
-        final short sse = (short) (2 * se - ne);
-        final short sese = (short) (2 * se - nw);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementSouthEast(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
-
-        final short nwnw = computingData.mInput[firstLineIx - 2];
-        final short wnw = computingData.mInput[secondLineIx - 2];
-        final short wsw = computingData.mInput[thirdLineIx - 2];
-
-        final short nne = computingData.mInput[firstLineIx];
-        final short nnw = computingData.mInput[firstLineIx - 1];
-
-        // Linear interpolation
-        final short swsw = (short) (2 * sw - ne);
-        final short ssw = (short) (2 * sw - nw);
-        final short sse = (short) (2 * se - ne);
-        final short sese = (short) (2 * se - nw);
-
-        final short ese = (short) (2 * se - sw);
-        final short ene = (short) (2 * ne - nw);
-        final short nene = (short) (2 * ne - sw);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementEast(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
-
-        final short nwnw = computingData.mInput[firstLineIx - 2];
-        final short wnw = computingData.mInput[secondLineIx - 2];
-        final short wsw = computingData.mInput[thirdLineIx - 2];
-        final short swsw = computingData.mInput[fourthLineIx - 2];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short nne = computingData.mInput[firstLineIx];
-        final short nnw = computingData.mInput[firstLineIx - 1];
-
-        // Linear interpolation
-        final short sese = (short) (2 * se - nw);
-        final short ese = (short) (2 * se - sw);
-        final short ene = (short) (2 * ne - nw);
-        final short nene = (short) (2 * ne - sw);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementNorthEast(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
-
-        final short nwnw = computingData.mSecondLine[firstLineIx - 2];
-        final short wnw = computingData.mInput[secondLineIx - 2];
-        final short wsw = computingData.mInput[thirdLineIx - 2];
-        final short swsw = computingData.mInput[fourthLineIx - 2];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short nne = computingData.mSecondLine[firstLineIx];
-        final short nnw = computingData.mSecondLine[firstLineIx - 1];
-
-        // Linear interpolation
-        final short ene = (short) (2 * ne - nw);
-        final short nene = (short) (2 * ne - sw);
-        final short sese = (short) (2 * se - nw);
-        final short ese = (short) (2 * se - sw);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementNorthNorthEast(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mSecondLine[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mSecondLine[secondLineIx];
-
-        final short nwnw = computingData.mFirstLine[firstLineIx - 2];
-        final short wnw = computingData.mSecondLine[secondLineIx - 2];
-        final short wsw = computingData.mInput[thirdLineIx - 2];
-        final short swsw = computingData.mInput[fourthLineIx - 2];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short nne = computingData.mFirstLine[firstLineIx];
-        final short nnw = computingData.mFirstLine[firstLineIx - 1];
-
-        // Linear interpolation
-        final short ene = (short) (2 * ne - nw);
-        final short nene = (short) (2 * ne - sw);
-        final short sese = (short) (2 * se - nw);
-        final short ese = (short) (2 * se - sw);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementNorth(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mInput[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mInput[secondLineIx];
-
-        final short nwnw = computingData.mSecondLine[firstLineIx - 2];
-        final short wnw = computingData.mInput[secondLineIx - 2];
-        final short wsw = computingData.mInput[thirdLineIx - 2];
-        final short swsw = computingData.mInput[fourthLineIx - 2];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short sese = computingData.mInput[fourthLineIx + 1];
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mInput[secondLineIx + 1];
-        final short nene = computingData.mSecondLine[firstLineIx + 1];
-        final short nne = computingData.mSecondLine[firstLineIx];
-        final short nnw = computingData.mSecondLine[firstLineIx - 1];
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementNorthNorth(ComputingData computingData, double mpe, int firstLineIx, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mSecondLine[secondLineIx - 1];
-        final short sw = computingData.mInput[thirdLineIx - 1];
-        final short se = computingData.mInput[thirdLineIx];
-        final short ne = computingData.mSecondLine[secondLineIx];
-
-        final short nwnw = computingData.mFirstLine[firstLineIx - 2];
-        final short wnw = computingData.mSecondLine[secondLineIx - 2];
-        final short wsw = computingData.mInput[thirdLineIx - 2];
-        final short swsw = computingData.mInput[fourthLineIx - 2];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short sese = computingData.mInput[fourthLineIx + 1];
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mSecondLine[secondLineIx + 1];
-        final short nene = computingData.mFirstLine[firstLineIx + 1];
-        final short nne = computingData.mFirstLine[firstLineIx];
-        final short nnw = computingData.mFirstLine[firstLineIx - 1];
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementNorthFirstWest(ComputingData computingData, double mpe, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mFirstLine[secondLineIx - 1];
-        final short sw = computingData.mSecondLine[thirdLineIx - 1];
-        final short se = computingData.mSecondLine[thirdLineIx];
-        final short ne = computingData.mFirstLine[secondLineIx];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short sese = computingData.mInput[fourthLineIx + 1];
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mInput[secondLineIx + 1];
-
-        // Linear interpolation
-        final short nene = (short) (2 * ne - sw);
-        final short nne = (short) (2 * ne - se);
-        final short nnw = (short) (2 * nw - sw);
-
-        final short nwnw = (short) (2 * nw - se);
-        final short wnw = (short) (2 * nw - ne);
-        final short wsw = (short) (2 * sw - se);
-        final short swsw = (short) (2 * sw - ne);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementNorthFirst(ComputingData computingData, double mpe, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mFirstLine[secondLineIx - 1];
-        final short sw = computingData.mSecondLine[thirdLineIx - 1];
-        final short se = computingData.mSecondLine[thirdLineIx];
-        final short ne = computingData.mFirstLine[secondLineIx];
-
-        final short wnw = computingData.mFirstLine[secondLineIx - 2];
-        final short wsw = computingData.mSecondLine[thirdLineIx - 2];
-        final short swsw = computingData.mInput[fourthLineIx - 2];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-        final short sese = computingData.mInput[fourthLineIx + 1];
-        final short ese = computingData.mInput[thirdLineIx + 1];
-
-        final short ene = computingData.mInput[secondLineIx + 1];
-
-        // Linear interpolation
-        final short nene = (short) (2 * ne - sw);
-        final short nne = (short) (2 * ne - se);
-        final short nnw = (short) (2 * nw - sw);
-        final short nwnw = (short) (2 * nw - se);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
-    }
-
-    protected int processOneUnitElementNorthFirstEast(ComputingData computingData, double mpe, int secondLineIx, int thirdLineIx, int fourthLineIx, int outputIx, ComputingParams computingParams) {
-        final short nw = computingData.mFirstLine[secondLineIx - 1];
-        final short sw = computingData.mSecondLine[thirdLineIx - 1];
-        final short se = computingData.mSecondLine[thirdLineIx];
-        final short ne = computingData.mFirstLine[secondLineIx];
-
-        final short wnw = computingData.mFirstLine[secondLineIx - 2];
-        final short wsw = computingData.mSecondLine[thirdLineIx - 2];
-        final short swsw = computingData.mInput[fourthLineIx - 2];
-
-        final short ssw = computingData.mInput[fourthLineIx - 1];
-        final short sse = computingData.mInput[fourthLineIx];
-
-        // Linear interpolation
-        final short sese = (short) (2 * se - nw);
-        final short ese = (short) (2 * se - sw);
-        final short ene = (short) (2 * ne - nw);
-
-        final short nene = (short) (2 * ne - sw);
-        final short nne = (short) (2 * ne - se);
-        final short nnw = (short) (2 * nw - sw);
-        final short nwnw = (short) (2 * nw - se);
-
-        return processOneUnitElement(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, mpe, outputIx, computingParams);
+    /**
+     * <p>
+     * Computes a "distance scale factor" or dsf, as a half the length of one side of the standard 2x2 unit element inverted, i.e. {@code dsf = 0.5 / length}.
+     * Dsf is a concept that anticipates "average normal" calculations like it's being done in
+     * {@link StandardClasyHillShading#unitElementToShadePixel(double, double, double, double, double)},
+     * and by its very nature it simplifies the calculations there.
+     * </p>
+     * <p>
+     * To get a more intuitive measure of "meters per unit element" from dsf, if you ever need it, simply do this:
+     * {@code mpe = length = 0.5 / dsf}
+     * </p>
+     *
+     * @param line
+     * @param computingParams
+     * @return
+     */
+    protected double computeDistanceScaleFactor(int line, ComputingParams computingParams) {
+        return 0.5 / (computingParams.mSouthUnitDistancePerLine * line + computingParams.mNorthUnitDistancePerLine * (computingParams.mInputAxisLen - line));
     }
 
     /**
@@ -661,18 +572,45 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
         final int inputWidth = inputAxisLen + 1;
         final double northUnitDistancePerLine = getLatUnitDistance(fileInfo.northLat(), inputAxisLen) / inputAxisLen;
         final double southUnitDistancePerLine = getLatUnitDistance(fileInfo.southLat(), inputAxisLen) / inputAxisLen;
+        final int resolutionFactor = outputAxisLen / inputAxisLen;
+        final int outputIxInit = outputWidth * padding + padding;
+        // Must add two additional paddings (after possibly skipping a line) to get to a starting position of the next line
+        final int outputIxIncrement = (resolutionFactor - 1) * outputWidth + 2 * padding;
 
         final byte[] output = new byte[outputWidth * outputWidth];
 
         if (isNotStopped()) {
-            final AtomicInteger activeTasksCount = new AtomicInteger(0);
-            final int lineArraysPoolSize = 1 + (mIsHighQuality ? 2 : 1) * mActiveTasksCountMax;
-            final ShortArraysPool inputArraysPool = new ShortArraysPool(1 + mActiveTasksCountMax), lineBuffersPool = new ShortArraysPool(lineArraysPoolSize);
+            createThreadPoolsMaybe();
 
-            final int readingTasksCount = 1 + mReadingThreadsCount;
+            final Semaphore activeTasksCount = new Semaphore(mActiveTasksCountMax);
+            final ShortArraysPool inputArraysPool = new ShortArraysPool((1 + mActiveTasksCountMax) * mReadingThreadsCount);
 
-            final int computingTasksCount = Math.max(readingTasksCount, determineComputingTasksCount(inputAxisLen));
-            final int linesPerComputeTask = inputAxisLen / computingTasksCount;
+            final ComputingParams computingParams = new ComputingParams.Builder()
+                    .setOutput(output)
+                    .setInputAxisLen(inputAxisLen)
+                    .setOutputAxisLen(outputAxisLen)
+                    .setOutputWidth(outputWidth)
+                    .setInputWidth(inputWidth)
+                    .setPadding(padding)
+                    .setResolutionFactor(resolutionFactor)
+                    .setOutputIxInit(outputIxInit)
+                    .setOutputIxIncrement(outputIxIncrement)
+                    .setNorthUnitDistancePerLine(northUnitDistancePerLine)
+                    .setSouthUnitDistancePerLine(southUnitDistancePerLine)
+                    .setActiveTasksCount(activeTasksCount)
+                    .setInputArraysPool(inputArraysPool)
+                    .build();
+
+            final int readingTasksCount = mReadingThreadsCount;
+
+            final int computingTasksCount, linesPerComputeTask;
+            {
+                // Note, integer arithmetic and truncations are deliberate here.
+                // We also want to make sure that the last task processes no less than "linesPerComputeTask" lines, and no more than 2x that.
+                final int computingTasksCountCoarse = Math.max(readingTasksCount, determineComputingTasksCount(inputAxisLen));
+                linesPerComputeTask = inputAxisLen / computingTasksCountCoarse;
+                computingTasksCount = inputAxisLen / linesPerComputeTask;
+            }
 
             final int computeTasksPerReadingTask = computingTasksCount / readingTasksCount;
             final SilentFutureTask[] readingTasks = new SilentFutureTask[readingTasksCount];
@@ -709,36 +647,14 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                     }
                 }
 
-                final ComputingParams computingParams = new ComputingParams.Builder()
-                        .setInputStream(readStream)
-                        .setOutput(output)
-                        .setAwaiter(new Awaiter())
-                        .setInputAxisLen(inputAxisLen)
-                        .setOutputAxisLen(outputAxisLen)
-                        .setOutputWidth(outputWidth)
-                        .setInputWidth(inputWidth)
-                        .setPadding(padding)
-                        .setNorthUnitDistancePerLine(northUnitDistancePerLine)
-                        .setSouthUnitDistancePerLine(southUnitDistancePerLine)
-                        .setActiveTasksCount(activeTasksCount)
-                        .setInputArraysPool(inputArraysPool)
-                        .setLineBuffersPool(lineBuffersPool)
-                        .build();
-
                 final SilentFutureTask readingTask = getReadingTask(readStream, computingTasksCount, computingTaskFrom, computingTaskTo, linesPerComputeTask, computingParams);
                 readingTasks[readingTaskIndex] = readingTask;
 
-                if (readingTaskIndex < readingTasksCount - 1) {
-                    postToThreadPoolOrRun(readingTask);
-                } else {
-                    readingTask.run();
-                }
+                postToThreadPoolOrRun(readingTask, mReadThreadPool);
             }
 
-            if (readingTasksCount > 1) {
-                for (final SilentFutureTask readingTask : readingTasks) {
-                    readingTask.get();
-                }
+            for (final SilentFutureTask readingTask : readingTasks) {
+                readingTask.get();
             }
         }
 
@@ -749,39 +665,38 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * If there are already too many active computing tasks, this will cause the caller to wait
      * until at least one computing task completes, to conserve memory.
      */
-    protected void paceReading(final Awaiter awaiter, final AtomicInteger activeTasksCount, final int activeTasksCountMax) {
+    protected void paceReading(final Semaphore activeTasksCount, final long readingTaskId, final int compTaskIndex, final int compTasksCount, final int activeCompTasks) {
         if (mComputingThreadsCount > 0) {
-            if (false == HillShadingUtils.atomicIncreaseIfLess(activeTasksCount, activeTasksCountMax)) {
-                notifyReadingPaced(activeTasksCount.get());
+            if (false == activeTasksCount.tryAcquire()) {
 
-                awaiter.doWait(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() {
-                        return HillShadingUtils.atomicIncreaseIfLess(activeTasksCount, activeTasksCountMax);
-                    }
-                });
+                notifyReadingPaced(readingTaskId, compTaskIndex, compTasksCount, activeCompTasks);
+
+                try {
+                    activeTasksCount.acquire();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
     /**
      * Called when there are already too many active computing tasks (being processed or waiting in queue), so the reading must be slowed down to conserve memory.
-     * If you get this notification, you may consider increasing the number of computing threads.
+     * The thread will go to sleep waiting on a semaphore after returning from this.
      *
-     * @param activeComputingTasksCount How many computing tasks are waiting for completion at the time this is called.
+     * @param readingTaskId   ID of a reading task calling this.
+     * @param compTaskIndex   Serial number of a computing task that was about to be prepared. Ranges from 0 to {@code compTasksCount}-1.
+     * @param compTasksCount  Total number of computing tasks being prepared by this reading task.
+     * @param activeCompTasks How many computing tasks are waiting for completion at the time this is called.
      */
-    protected void notifyReadingPaced(final int activeComputingTasksCount) {
+    protected void notifyReadingPaced(final long readingTaskId, final int compTaskIndex, final int compTasksCount, final int activeCompTasks) {
     }
 
     /**
      * Decides a total number of computing tasks that will be used for the given input parameters.
      */
     protected int determineComputingTasksCount(final int inputAxisLen) {
-        return (int) Math.max(1L, Math.min(inputAxisLen / 8, (long) inputAxisLen * inputAxisLen / ((mIsHighQuality ? 2 : 1) * ElementsPerComputingTask)));
-    }
-
-    protected int threadCount() {
-        return mComputingThreadsCount + mReadingThreadsCount;
+        return (int) Math.max(1L, Math.min(inputAxisLen / 8, (long) inputAxisLen * inputAxisLen / ElementsPerComputingTask));
     }
 
     /**
@@ -789,25 +704,13 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      *
      * @param code A code to run.
      */
-    protected void postToThreadPoolOrRun(final Runnable code) {
+    protected void postToThreadPoolOrRun(final Runnable code, final AtomicReference<HillShadingThreadPool> threadPoolReference) {
         boolean status = false;
 
-        final AtomicReference<HillShadingThreadPool> threadPoolReference = mThreadPool.get();
+        final HillShadingThreadPool threadPool = threadPoolReference.get();
 
-        if (threadPoolReference != null) {
-            if (threadPoolReference.get() == null && threadCount() > 0) {
-                synchronized (threadPoolReference) {
-                    if (threadPoolReference.get() == null) {
-                        threadPoolReference.set(createThreadPool());
-                    }
-                }
-            }
-
-            final HillShadingThreadPool threadPool = threadPoolReference.get();
-
-            if (threadPool != null) {
-                status = threadPool.execute(code);
-            }
+        if (threadPool != null) {
+            status = threadPool.execute(code);
         }
 
         if (false == status) {
@@ -817,31 +720,49 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
         }
     }
 
-    protected HillShadingThreadPool createThreadPool() {
-        final int threadCount = threadCount();
-        return new HillShadingThreadPool(threadCount, threadCount, Integer.MAX_VALUE, 1, ThreadPoolName).start();
+    protected void createThreadPoolsMaybe() {
+        if (mReadingThreadsCount > 1) {
+            final AtomicReference<HillShadingThreadPool> threadPoolReference = mReadThreadPool;
+
+            if (threadPoolReference != null) {
+                if (threadPoolReference.get() == null) {
+                    synchronized (threadPoolReference) {
+                        if (threadPoolReference.get() == null) {
+                            threadPoolReference.set(createReadingThreadPool());
+                        }
+                    }
+                }
+            }
+        }
+
+        if (mComputingThreadsCount > 0) {
+            final AtomicReference<HillShadingThreadPool> threadPoolReference = mCompThreadPool;
+
+            if (threadPoolReference != null) {
+                if (threadPoolReference.get() == null) {
+                    synchronized (threadPoolReference) {
+                        if (threadPoolReference.get() == null) {
+                            threadPoolReference.set(createComputingThreadPool());
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    public short readNext(final InputStream is, final short[] fallbackInput, final int fallbackIx, final int offset) throws IOException {
-        final int read1 = is.read();
-        final int read2 = is.read();
+    protected HillShadingThreadPool createReadingThreadPool() {
+        final int threadCount = mReadingThreadsCount;
+        return new HillShadingThreadPool(threadCount, threadCount, 10, mReadingThreadsCount, ReadingThreadPoolName).start();
+    }
 
-        if (read1 != -1 && read2 != -1) {
-            short read = (short) ((read1 << 8) | read2);
-
-            if (read == Short.MIN_VALUE) {
-                return fallbackInput[fallbackIx - offset];
-            }
-
-            return read;
-        } else {
-            return fallbackInput[fallbackIx - offset];
-        }
+    protected HillShadingThreadPool createComputingThreadPool() {
+        final int threadCount = mComputingThreadsCount;
+        return new HillShadingThreadPool(threadCount, threadCount, mActiveTasksCountMax, 10, ComputingThreadPoolName).start();
     }
 
     /**
      * Default implementation always returns {@code true}.
-     * Override to return a more meaningful value if needed, e.g. {@code return }!{@link #isStopped()}.
+     * Override to return a more meaningful value if needed, e.g. {@code return !}{@link #isStopped()}.
      *
      * @return {@code false} to stop processing. Default implementation always returns {@code true}.
      */
@@ -883,11 +804,11 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
         }
     }
 
-    protected SilentFutureTask getComputingTask(int lineFrom, int lineTo, ComputingData computingData, ComputingParams computingParams) {
+    protected SilentFutureTask getComputingTask(int lineFrom, int lineTo, short[] input, Semaphore activeTasksCount, ComputingParams computingParams) {
         if (mIsHighQuality) {
-            return new SilentFutureTask(new ComputingTask_4x4(lineFrom, lineTo, computingData, computingParams));
+            return new SilentFutureTask(new ComputingTask_4x4(lineFrom, lineTo, input, activeTasksCount, computingParams));
         } else {
-            return new SilentFutureTask(new ComputingTask_2x2(lineFrom, lineTo, computingData, computingParams));
+            return new SilentFutureTask(new ComputingTask_2x2(lineFrom, lineTo, input, activeTasksCount, computingParams));
         }
     }
 
@@ -898,6 +819,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
         protected final InputStream mInputStream;
         protected final int mComputingTasksCount, mComputingTaskFrom, mComputingTaskTo, mLinesPerCompTask;
         protected final ComputingParams mComputingParams;
+        protected final long mTaskId;
 
         public ReadingTask_4x4(InputStream inputStream, int computingTasksCount, int taskFrom, int taskTo, int linesPerTask, ComputingParams computingParams) {
             mInputStream = inputStream;
@@ -906,6 +828,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
             mComputingTaskTo = taskTo;
             mLinesPerCompTask = linesPerTask;
             mComputingParams = computingParams;
+            mTaskId = mReadTaskCounter.getAndIncrement();
         }
 
         @Override
@@ -918,17 +841,14 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                     final int inputAxisLen = mComputingParams.mInputAxisLen;
                     final int inputLineLen = mComputingParams.mInputWidth;
-                    final AtomicInteger activeTasksCount = mComputingParams.mActiveTasksCount;
-                    final Awaiter awaiter = mComputingParams.mAwaiter;
-                    final ShortArraysPool inputArraysPool = mComputingParams.mInputArraysPool, lineBuffersPool = mComputingParams.mLineBuffersPool;
+                    final Semaphore activeTasksCount = mComputingParams.mActiveTasksCount;
+                    final ShortArraysPool inputArraysPool = mComputingParams.mInputArraysPool;
 
-                    short[] firstLine = null, firstLineNext = null;
-                    short[] secondLine = null, secondLineNext = null;
                     short[] input = null, inputNext = null;
 
                     for (int compTaskIndex = mComputingTaskFrom; compTaskIndex < mComputingTaskTo; compTaskIndex++) {
 
-                        paceReading(awaiter, activeTasksCount, mActiveTasksCountMax);
+                        paceReading(activeTasksCount, mTaskId, compTaskIndex, mComputingTasksCount, mActiveTasksCountMax);
 
                         final int lineFrom, lineTo;
                         final int inputSize, inputNextSize;
@@ -941,94 +861,68 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                                 lineTo = inputAxisLen;
                             }
 
-                            inputSize = 1 + lineTo - lineFrom;
+                            inputSize = 3 + lineTo - lineFrom;
 
                             if (compTaskIndex < mComputingTasksCount - 2) {
                                 inputNextSize = inputSize;
                             } else if (compTaskIndex == mComputingTasksCount - 2) {
-                                inputNextSize = 1 + inputAxisLen - mLinesPerCompTask * (mComputingTasksCount - 1);
+                                inputNextSize = 3 + inputAxisLen - mLinesPerCompTask * (mComputingTasksCount - 1);
                             } else {
-                                inputNextSize = 1;
+                                inputNextSize = 3;
                             }
                         }
 
                         if (compTaskIndex > mComputingTaskFrom) {
-                            firstLine = firstLineNext;
-                            secondLine = secondLineNext;
                             input = inputNext;
                         } else {
-                            firstLine = lineBuffersPool.getArray(inputLineLen);
-                            secondLine = lineBuffersPool.getArray(inputLineLen);
                             input = inputArraysPool.getArray(inputLineLen * inputSize);
 
-                            {
-                                short last = 0;
-
-                                // First line is done separately
-                                for (int col = 0; col < inputLineLen; col++) {
-                                    last = readNext(mInputStream, last);
-                                    firstLine[col] = last;
+                            // First three lines are done separately
+                            int inputIx = 0;
+                            for (int line = 0; line < 3 && isNotStopped(); line++) {
+                                for (int col = 0; col < inputLineLen; col++, inputIx++) {
+                                    input[inputIx] = readNext(mInputStream);
                                 }
-                            }
-
-                            // Second line is done separately
-                            for (int col = 0; col < inputLineLen; col++) {
-                                secondLine[col] = readNext(mInputStream, firstLine, col, 0);
-                            }
-
-                            // Third line is done separately
-                            for (int col = 0; col < inputLineLen; col++) {
-                                input[col] = readNext(mInputStream, secondLine, col, 0);
                             }
                         }
 
-                        firstLineNext = lineBuffersPool.getArray(inputLineLen);
-                        secondLineNext = lineBuffersPool.getArray(inputLineLen);
                         inputNext = inputArraysPool.getArray(inputLineLen * inputNextSize);
 
-                        final int mainLoopFrom = lineFrom + 1 + (compTaskIndex <= 0 ? 1 : 0);
-                        final int mainLoopTo = lineTo - 3 + 1;
+                        final int mainLoopFrom = lineFrom + (compTaskIndex <= 0 ? 1 : 0);
+                        final int mainLoopTo = lineTo - 3 - (compTaskIndex < mComputingTasksCount - 1 ? 0 : 1);
 
-                        // Skip the line already in the array
-                        int inputIx = inputLineLen;
+                        // Skip three lines already in the array
+                        int inputIx = 3 * inputLineLen;
 
                         for (int line = mainLoopFrom; line < mainLoopTo && isNotStopped(); line++) {
                             // Inner loop, critical for performance
                             for (int col = 0; col < inputLineLen; col++, inputIx++) {
-                                input[inputIx] = readNext(mInputStream, input, inputIx, inputLineLen);
+                                input[inputIx] = readNext(mInputStream);
                             }
                         }
 
-                        // Third-to-last line is done separately
-                        for (int col = 0; col < inputLineLen; col++, inputIx++) {
-                            final short point = readNext(mInputStream, input, inputIx, inputLineLen);
-                            input[inputIx] = point;
-                            firstLineNext[col] = point;
+                        int inputNextIx = 0;
+
+                        // Last three lines are done separately
+                        for (int line = 0; line < 3 && isNotStopped(); line++) {
+                            for (int col = 0; col < inputLineLen; col++, inputIx++, inputNextIx++) {
+                                final short point = readNext(mInputStream);
+                                input[inputIx] = point;
+                                inputNext[inputNextIx] = point;
+                            }
                         }
 
-                        // Second-to-last line is done separately
-                        for (int col = 0; col < inputLineLen; col++, inputIx++) {
-                            final short point = readNext(mInputStream, input, inputIx, inputLineLen);
-                            input[inputIx] = point;
-                            secondLineNext[col] = point;
-                        }
-
-                        // Last line is done separately
-                        for (int col = 0; col < inputLineLen; col++, inputIx++) {
-                            final short point = readNext(mInputStream, input, inputIx, inputLineLen);
-                            input[inputIx] = point;
-                            inputNext[col] = point;
-                        }
-
-                        final SilentFutureTask computingTask = getComputingTask(lineFrom, lineTo, new ComputingData(firstLine, secondLine, input), mComputingParams);
+                        final SilentFutureTask computingTask = getComputingTask(lineFrom, lineTo, input, activeTasksCount, mComputingParams);
                         computingTasks[compTaskIndex - mComputingTaskFrom] = computingTask;
 
-                        if (compTaskIndex < mComputingTaskTo - 1) {
-                            postToThreadPoolOrRun(computingTask);
+                        if (compTaskIndex < mComputingTaskTo - 1 && mComputingThreadsCount > 0) {
+                            postToThreadPoolOrRun(computingTask, mCompThreadPool);
                         } else {
                             computingTask.run();
                         }
                     }
+
+                    IOUtils.closeQuietly(mInputStream);
 
                     if (computingTasks.length > 1) {
                         for (final SilentFutureTask computingTask : computingTasks) {
@@ -1056,6 +950,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
         protected final InputStream mInputStream;
         protected final int mComputingTasksCount, mComputingTaskFrom, mComputingTaskTo, mLinesPerCompTask;
         protected final ComputingParams mComputingParams;
+        protected final long mTaskId;
 
         public ReadingTask_2x2(InputStream inputStream, int computingTasksCount, int taskFrom, int taskTo, int linesPerTask, ComputingParams computingParams) {
             mInputStream = inputStream;
@@ -1064,6 +959,7 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
             mComputingTaskTo = taskTo;
             mLinesPerCompTask = linesPerTask;
             mComputingParams = computingParams;
+            mTaskId = mReadTaskCounter.getAndIncrement();
         }
 
         @Override
@@ -1076,17 +972,17 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
                     final int inputAxisLen = mComputingParams.mInputAxisLen;
                     final int inputLineLen = mComputingParams.mInputWidth;
-                    final AtomicInteger activeTasksCount = mComputingParams.mActiveTasksCount;
-                    final Awaiter awaiter = mComputingParams.mAwaiter;
-                    final ShortArraysPool inputArraysPool = mComputingParams.mInputArraysPool, lineBuffersPool = mComputingParams.mLineBuffersPool;
+                    final Semaphore activeTasksCount = mComputingParams.mActiveTasksCount;
+                    final ShortArraysPool inputArraysPool = mComputingParams.mInputArraysPool;
 
-                    short[] secondLine = null, secondLineNext = null;
+                    short[] input = null, inputNext = null;
 
                     for (int compTaskIndex = mComputingTaskFrom; compTaskIndex < mComputingTaskTo; compTaskIndex++) {
 
-                        paceReading(awaiter, activeTasksCount, mActiveTasksCountMax);
+                        paceReading(activeTasksCount, mTaskId, compTaskIndex, mComputingTasksCount, mActiveTasksCountMax);
 
                         final int lineFrom, lineTo;
+                        final int inputSize, inputNextSize;
                         {
                             lineFrom = mLinesPerCompTask * compTaskIndex;
 
@@ -1095,58 +991,64 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                             } else {
                                 lineTo = inputAxisLen;
                             }
+
+                            inputSize = 1 + lineTo - lineFrom;
+
+                            if (compTaskIndex < mComputingTasksCount - 2) {
+                                inputNextSize = inputSize;
+                            } else if (compTaskIndex == mComputingTasksCount - 2) {
+                                inputNextSize = 1 + inputAxisLen - mLinesPerCompTask * (mComputingTasksCount - 1);
+                            } else {
+                                inputNextSize = 1;
+                            }
                         }
 
                         if (compTaskIndex > mComputingTaskFrom) {
-                            secondLine = secondLineNext;
+                            input = inputNext;
                         } else {
-                            secondLine = lineBuffersPool.getArray(inputLineLen);
-
-                            short last = 0;
+                            input = inputArraysPool.getArray(inputLineLen * inputSize);
 
                             // First line is done separately
                             for (int col = 0; col < inputLineLen; col++) {
-                                last = readNext(mInputStream, last);
-                                secondLine[col] = last;
+                                input[col] = readNext(mInputStream);
                             }
                         }
 
-                        final short[] input;
-                        {
-                            secondLineNext = lineBuffersPool.getArray(inputLineLen);
-                            input = inputArraysPool.getArray(inputLineLen * (lineTo - lineFrom));
+                        inputNext = inputArraysPool.getArray(inputLineLen * inputNextSize);
 
-                            int inputIx = 0;
+                        final int mainLoopFrom = lineFrom;
+                        final int mainLoopTo = lineTo - 1;
 
-                            // First line is done separately
-                            for (; inputIx < inputLineLen; inputIx++) {
-                                input[inputIx] = readNext(mInputStream, secondLine, inputIx, 0);
-                            }
+                        // Skip the line already in the array
+                        int inputIx = inputLineLen;
 
-                            for (int line = lineFrom + 1; line < lineTo - 1 && isNotStopped(); line++) {
-                                // Inner loop, critical for performance
-                                for (int col = 0; col < inputLineLen; col++, inputIx++) {
-                                    input[inputIx] = readNext(mInputStream, input, inputIx, inputLineLen);
-                                }
-                            }
-
-                            // Last line is done separately
+                        for (int line = mainLoopFrom; line < mainLoopTo && isNotStopped(); line++) {
+                            // Inner loop, critical for performance
                             for (int col = 0; col < inputLineLen; col++, inputIx++) {
-                                final short point = readNext(mInputStream, input, inputIx, inputLineLen);
-                                input[inputIx] = point;
-                                secondLineNext[col] = point;
+                                input[inputIx] = readNext(mInputStream);
                             }
                         }
 
-                        final SilentFutureTask computingTask = getComputingTask(lineFrom, lineTo, new ComputingData(null, secondLine, input), mComputingParams);
+                        int inputNextIx = 0;
+
+                        // Last line is done separately
+                        for (int col = 0; col < inputLineLen; col++, inputIx++, inputNextIx++) {
+                            final short point = readNext(mInputStream);
+                            input[inputIx] = point;
+                            inputNext[inputNextIx] = point;
+                        }
+
+                        final SilentFutureTask computingTask = getComputingTask(lineFrom, lineTo, input, activeTasksCount, mComputingParams);
                         computingTasks[compTaskIndex - mComputingTaskFrom] = computingTask;
 
-                        if (compTaskIndex < mComputingTaskTo - 1) {
-                            postToThreadPoolOrRun(computingTask);
+                        if (compTaskIndex < mComputingTaskTo - 1 && mComputingThreadsCount > 0) {
+                            postToThreadPoolOrRun(computingTask, mCompThreadPool);
                         } else {
                             computingTask.run();
                         }
                     }
+
+                    IOUtils.closeQuietly(mInputStream);
 
                     if (computingTasks.length > 1) {
                         for (final SilentFutureTask computingTask : computingTasks) {
@@ -1169,188 +1071,373 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
 
     /**
      * A "high quality" computing task which converts part of the input to part of the output, by calling
-     * {@link #processOneUnitElement(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)}
-     * on all input unit elements of size 4x4 from the given part.
+     * {@link #processRow_2x2(short[], int, int, int, int, double, int, ComputingParams)}
+     * on all rows of input unit elements of size 4x4 from the given part (except the edges of the input data),
+     * and {@link #processUnitElement_4x4(double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, double, int, ComputingParams)}
+     * on all input unit elements of size 4x4 that are on the edges of the input data.
      */
     protected class ComputingTask_4x4 implements Callable<Boolean> {
         protected final int mLineFrom, mLineTo;
-        protected final ComputingData mComputingData;
+        protected final short[] mInput;
+        protected final Semaphore mActiveTasksCount;
         protected final ComputingParams mComputingParams;
 
-        public ComputingTask_4x4(int lineFrom, int lineTo, ComputingData computingData, ComputingParams computingParams) {
+        public ComputingTask_4x4(int lineFrom, int lineTo, short[] input, Semaphore activeTasksCount, ComputingParams computingParams) {
             mLineFrom = lineFrom;
             mLineTo = lineTo;
-            mComputingData = computingData;
+            mInput = input;
+            mActiveTasksCount = activeTasksCount;
             mComputingParams = computingParams;
         }
 
         @Override
         public Boolean call() {
-            // TODO 2024-10: Uses linear interpolation on the edge lines of a DEM file data, where there are too few points to use bicubic.
+            // TODO (2024-10): Uses linear interpolation on the edges of a DEM file data, where there are too few points to use bicubic.
             //  It should be considered whether this can be improved by obtaining edge lines from neighboring DEM files, so we have a bicubic interpolation
             //  everywhere except at the outer edges of the entire DEM data set.
 
             boolean retVal = false;
 
             try {
-                final int resolutionFactor = mComputingParams.mOutputAxisLen / mComputingParams.mInputAxisLen;
+                if (mIsPreprocess) {
+                    preprocess(mInput, mComputingParams.mInputWidth);
+                }
 
-                // Must add two additional paddings (after possibly skipping a line) to get to a starting position of the next line
-                final int outputIxIncrement = (resolutionFactor - 1) * mComputingParams.mOutputWidth + 2 * mComputingParams.mPadding;
+                final int resolutionFactor = mComputingParams.mResolutionFactor;
+                final int outputIxIncrement = mComputingParams.mOutputIxIncrement;
+                final int secondLineOffset = mComputingParams.mInputWidth;
+                final int thirdLineOffset = secondLineOffset + mComputingParams.mInputWidth;
+                final int fourthLineOffset = thirdLineOffset + mComputingParams.mInputWidth;
 
-                int inputIx = 1;
-                int fourthLineIx = inputIx + mComputingParams.mInputWidth;
-                int line = mLineFrom;
-
-                int outputIx = mComputingParams.mOutputWidth * mComputingParams.mPadding + mComputingParams.mPadding;
+                int outputIx = mComputingParams.mOutputIxInit;
                 outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidth;
+
+                int line = mLineFrom;
 
                 if (mLineFrom <= 0) {
                     // The very first line of the input data is done separately
-                    {
-                        int secondLineIx = 1;
-                        final double metersPerElement = mComputingParams.mSouthUnitDistancePerLine * line + mComputingParams.mNorthUnitDistancePerLine * (mComputingParams.mInputAxisLen - line);
 
-                        outputIx = processOneUnitElementNorthFirstWest(mComputingData, metersPerElement, secondLineIx, secondLineIx, secondLineIx, outputIx, mComputingParams);
-                        secondLineIx++;
+                    int secondLineIx = 0;
 
-                        for (int col = 2; col <= mComputingParams.mInputAxisLen - 1; col++) {
-                            outputIx = processOneUnitElementNorthFirst(mComputingData, metersPerElement, secondLineIx, secondLineIx, secondLineIx, outputIx, mComputingParams);
-                            secondLineIx++;
-                        }
+                    final double distanceScaleFactor = computeDistanceScaleFactor(line, mComputingParams);
 
-                        outputIx = processOneUnitElementNorthFirstEast(mComputingData, metersPerElement, secondLineIx, secondLineIx, secondLineIx, outputIx, mComputingParams);
-
-                        outputIx += outputIxIncrement;
-                        line++;
-                    }
-                }
-
-                // The first line of the input data part is done separately
-                {
-                    final double metersPerElement = mComputingParams.mSouthUnitDistancePerLine * line + mComputingParams.mNorthUnitDistancePerLine * (mComputingParams.mInputAxisLen - line);
-
-                    outputIx = processOneUnitElementNorthNorthWest(mComputingData, metersPerElement, inputIx, inputIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                    inputIx++;
-                    fourthLineIx++;
-
-                    for (int col = 2; col <= mComputingParams.mInputAxisLen - 1; col++) {
-                        outputIx = processOneUnitElementNorthNorth(mComputingData, metersPerElement, inputIx, inputIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                        inputIx++;
-                        fourthLineIx++;
-                    }
-
-                    outputIx = processOneUnitElementNorthNorthEast(mComputingData, metersPerElement, inputIx, inputIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                    inputIx++;
-                    fourthLineIx++;
-
-                    outputIx += outputIxIncrement;
-                    line++;
-
-                    mComputingParams.mLineBuffersPool.recycleArray(mComputingData.mFirstLine);
-                }
-
-                // The second line of the input data part is done separately
-                {
-                    inputIx++;
-                    fourthLineIx++;
-
-                    int firstLineIx = 1;
-                    int secondLineIx = inputIx - mComputingParams.mInputWidth;
-                    final double metersPerElement = mComputingParams.mSouthUnitDistancePerLine * line + mComputingParams.mNorthUnitDistancePerLine * (mComputingParams.mInputAxisLen - line);
-
-                    outputIx = processOneUnitElementNorthWest(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                    inputIx++;
-                    fourthLineIx++;
+                    outputIx = processUnitElementFirstRowWest(mInput, secondLineIx, secondLineOffset, thirdLineOffset, distanceScaleFactor, outputIx, mComputingParams);
                     secondLineIx++;
-                    firstLineIx++;
 
-                    for (int col = 2; col <= mComputingParams.mInputAxisLen - 1; col++) {
-                        outputIx = processOneUnitElementNorth(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                        inputIx++;
-                        fourthLineIx++;
+                    for (int col = 0; col < mComputingParams.mInputAxisLen - 2; col++) {
+                        outputIx = processUnitElementFirstRow(mInput, secondLineIx, secondLineOffset, thirdLineOffset, distanceScaleFactor, outputIx, mComputingParams);
                         secondLineIx++;
-                        firstLineIx++;
                     }
 
-                    outputIx = processOneUnitElementNorthEast(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                    inputIx++;
-                    fourthLineIx++;
+                    outputIx = processUnitElementFirstRowEast(mInput, secondLineIx, secondLineOffset, thirdLineOffset, distanceScaleFactor, outputIx, mComputingParams);
 
                     outputIx += outputIxIncrement;
                     line++;
-
-                    mComputingParams.mLineBuffersPool.recycleArray(mComputingData.mSecondLine);
                 }
 
                 // Bulk of the input data part is processed here
                 {
-                    int secondLineIx = inputIx - mComputingParams.mInputWidth;
-                    int firstLineIx = secondLineIx - mComputingParams.mInputWidth;
+                    int firstLineIx = -1;
 
                     // Outer loop
-                    for (; line < mLineTo && isNotStopped(); line++) {
-                        final double metersPerElement = mComputingParams.mSouthUnitDistancePerLine * line + mComputingParams.mNorthUnitDistancePerLine * (mComputingParams.mInputAxisLen - line);
+                    for (; line < Math.min(mLineTo, mComputingParams.mInputAxisLen - 1) && isNotStopped(); line++) {
+                        final double distanceScaleFactor = computeDistanceScaleFactor(line, mComputingParams);
 
-                        inputIx++;
-                        fourthLineIx++;
-                        secondLineIx++;
                         firstLineIx++;
 
-                        outputIx = processOneUnitElementWest(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                        inputIx++;
-                        fourthLineIx++;
-                        secondLineIx++;
+                        outputIx = processUnitElementWest(mInput, firstLineIx, secondLineOffset, thirdLineOffset, fourthLineOffset, distanceScaleFactor, outputIx, mComputingParams);
                         firstLineIx++;
 
                         // Inner loop, critical for performance
-                        for (int col = 2; col <= mComputingParams.mInputAxisLen - 1; col++) {
-                            outputIx = processOneUnitElement(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                            inputIx++;
-                            fourthLineIx++;
-                            secondLineIx++;
-                            firstLineIx++;
-                        }
+                        outputIx = processRow_4x4(mInput, firstLineIx, secondLineOffset, thirdLineOffset, fourthLineOffset, distanceScaleFactor, outputIx, mComputingParams);
 
-                        outputIx = processOneUnitElementEast(mComputingData, metersPerElement, firstLineIx, secondLineIx, inputIx, fourthLineIx, outputIx, mComputingParams);
-                        inputIx++;
-                        fourthLineIx++;
-                        secondLineIx++;
+                        firstLineIx += mComputingParams.mInputAxisLen - 2;
+
+                        outputIx = processUnitElementEast(mInput, firstLineIx, secondLineOffset, thirdLineOffset, fourthLineOffset, distanceScaleFactor, outputIx, mComputingParams);
                         firstLineIx++;
 
                         outputIx += outputIxIncrement;
                     }
-                }
 
-                mComputingParams.mInputArraysPool.recycleArray(mComputingData.mInput);
+                    if (mLineTo >= mComputingParams.mInputAxisLen) {
+                        // The very last line of the input data is done separately
+
+                        firstLineIx++;
+
+                        final double distanceScaleFactor = computeDistanceScaleFactor(line, mComputingParams);
+
+                        outputIx = processUnitElementLastRowWest(mInput, firstLineIx, secondLineOffset, thirdLineOffset, distanceScaleFactor, outputIx, mComputingParams);
+                        firstLineIx++;
+
+                        for (int col = 0; col < mComputingParams.mInputAxisLen - 2; col++) {
+                            outputIx = processUnitElementLastRow(mInput, firstLineIx, secondLineOffset, thirdLineOffset, distanceScaleFactor, outputIx, mComputingParams);
+                            firstLineIx++;
+                        }
+
+                        outputIx = processUnitElementLastRowEast(mInput, firstLineIx, secondLineOffset, thirdLineOffset, distanceScaleFactor, outputIx, mComputingParams);
+                    }
+                }
 
                 retVal = true;
 
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, e.toString());
             } finally {
-                mComputingParams.mActiveTasksCount.decrementAndGet();
-                mComputingParams.mAwaiter.doNotify();
+                mActiveTasksCount.release();
+                mComputingParams.mInputArraysPool.recycleArray(mInput);
             }
 
             return retVal;
+        }
+
+        protected int processUnitElementWest(short[] input, int firstLineIx, int secondLineOffset, int thirdLineOffset, int fourthLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+            final int secondLineIx = firstLineIx + secondLineOffset;
+            final int thirdLineIx = firstLineIx + thirdLineOffset;
+            final int fourthLineIx = firstLineIx + fourthLineOffset;
+
+            final short nw = input[secondLineIx];
+            final short sw = input[thirdLineIx];
+            final short se = input[thirdLineIx + 1];
+            final short ne = input[secondLineIx + 1];
+
+            final short ssw = input[fourthLineIx];
+            final short sse = input[fourthLineIx + 1];
+            final short sese = input[fourthLineIx + 2];
+            final short ese = input[thirdLineIx + 2];
+
+            final short ene = input[secondLineIx + 2];
+            final short nene = input[firstLineIx + 2];
+            final short nne = input[firstLineIx + 1];
+            final short nnw = input[firstLineIx];
+
+            // Linear interpolation
+            final int nwnw = 2 * nw - se;
+            final int wnw = 2 * nw - ne;
+            final int wsw = 2 * sw - se;
+            final int swsw = 2 * sw - ne;
+
+            return processUnitElement_4x4(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, dsf, outputIx, computingParams);
+        }
+
+        protected int processUnitElementEast(short[] input, int firstLineIx, int secondLineOffset, int thirdLineOffset, int fourthLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+            final int secondLineIx = firstLineIx + secondLineOffset;
+            final int thirdLineIx = firstLineIx + thirdLineOffset;
+            final int fourthLineIx = firstLineIx + fourthLineOffset;
+
+            final short nw = input[secondLineIx];
+            final short sw = input[thirdLineIx];
+            final short se = input[thirdLineIx + 1];
+            final short ne = input[secondLineIx + 1];
+
+            final short nwnw = input[firstLineIx - 1];
+            final short wnw = input[secondLineIx - 1];
+            final short wsw = input[thirdLineIx - 1];
+            final short swsw = input[fourthLineIx - 1];
+
+            final short ssw = input[fourthLineIx];
+            final short sse = input[fourthLineIx + 1];
+            final short nne = input[firstLineIx + 1];
+            final short nnw = input[firstLineIx];
+
+            // Linear interpolation
+            final int sese = 2 * se - nw;
+            final int ese = 2 * se - sw;
+            final int ene = 2 * ne - nw;
+            final int nene = 2 * ne - sw;
+
+            return processUnitElement_4x4(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, dsf, outputIx, computingParams);
+        }
+
+        protected int processUnitElementFirstRowWest(short[] input, int secondLineIx, int thirdLineOffset, int fourthLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+            final int thirdLineIx = secondLineIx + thirdLineOffset;
+            final int fourthLineIx = secondLineIx + fourthLineOffset;
+
+            final short nw = input[secondLineIx];
+            final short sw = input[thirdLineIx];
+            final short se = input[thirdLineIx + 1];
+            final short ne = input[secondLineIx + 1];
+
+            final short ssw = input[fourthLineIx];
+            final short sse = input[fourthLineIx + 1];
+            final short sese = input[fourthLineIx + 2];
+            final short ese = input[thirdLineIx + 2];
+
+            final short ene = input[secondLineIx + 2];
+
+            // Linear interpolation
+            final int nene = 2 * ne - sw;
+            final int nne = 2 * ne - se;
+            final int nnw = 2 * nw - sw;
+
+            final int nwnw = 2 * nw - se;
+            final int wnw = 2 * nw - ne;
+            final int wsw = 2 * sw - se;
+            final int swsw = 2 * sw - ne;
+
+            return processUnitElement_4x4(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, dsf, outputIx, computingParams);
+        }
+
+        protected int processUnitElementFirstRow(short[] input, int secondLineIx, int thirdLineOffset, int fourthLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+            final int thirdLineIx = secondLineIx + thirdLineOffset;
+            final int fourthLineIx = secondLineIx + fourthLineOffset;
+
+            final short nw = input[secondLineIx];
+            final short sw = input[thirdLineIx];
+            final short se = input[thirdLineIx + 1];
+            final short ne = input[secondLineIx + 1];
+
+            final short wnw = input[secondLineIx - 1];
+            final short wsw = input[thirdLineIx - 1];
+            final short swsw = input[fourthLineIx - 1];
+
+            final short ssw = input[fourthLineIx];
+            final short sse = input[fourthLineIx + 1];
+            final short sese = input[fourthLineIx + 2];
+            final short ese = input[thirdLineIx + 2];
+
+            final short ene = input[secondLineIx + 2];
+
+            // Linear interpolation
+            final int nene = 2 * ne - sw;
+            final int nne = 2 * ne - se;
+            final int nnw = 2 * nw - sw;
+            final int nwnw = 2 * nw - se;
+
+            return processUnitElement_4x4(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, dsf, outputIx, computingParams);
+        }
+
+        protected int processUnitElementFirstRowEast(short[] input, int secondLineIx, int thirdLineOffset, int fourthLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+            final int thirdLineIx = secondLineIx + thirdLineOffset;
+            final int fourthLineIx = secondLineIx + fourthLineOffset;
+
+            final short nw = input[secondLineIx];
+            final short sw = input[thirdLineIx];
+            final short se = input[thirdLineIx + 1];
+            final short ne = input[secondLineIx + 1];
+
+            final short wnw = input[secondLineIx - 1];
+            final short wsw = input[thirdLineIx - 1];
+            final short swsw = input[fourthLineIx - 1];
+
+            final short ssw = input[fourthLineIx];
+            final short sse = input[fourthLineIx + 1];
+
+            // Linear interpolation
+            final int sese = 2 * se - nw;
+            final int ese = 2 * se - sw;
+            final int ene = 2 * ne - nw;
+
+            final int nene = 2 * ne - sw;
+            final int nne = 2 * ne - se;
+            final int nnw = 2 * nw - sw;
+            final int nwnw = 2 * nw - se;
+
+            return processUnitElement_4x4(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, dsf, outputIx, computingParams);
+        }
+
+        protected int processUnitElementLastRowWest(short[] input, int firstLineIx, int secondLineOffset, int thirdLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+            final int secondLineIx = firstLineIx + secondLineOffset;
+            final int thirdLineIx = firstLineIx + thirdLineOffset;
+
+            final short nw = input[secondLineIx];
+            final short sw = input[thirdLineIx];
+            final short se = input[thirdLineIx + 1];
+            final short ne = input[secondLineIx + 1];
+
+            final short ese = input[thirdLineIx + 2];
+
+            final short ene = input[secondLineIx + 2];
+            final short nene = input[firstLineIx + 2];
+            final short nne = input[firstLineIx + 1];
+            final short nnw = input[firstLineIx];
+
+            // Linear interpolation
+            final int swsw = 2 * sw - ne;
+            final int ssw = 2 * sw - nw;
+            final int sse = 2 * se - ne;
+            final int sese = 2 * se - nw;
+
+            final int nwnw = 2 * nw - se;
+            final int wnw = 2 * nw - ne;
+            final int wsw = 2 * sw - se;
+
+            return processUnitElement_4x4(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, dsf, outputIx, computingParams);
+        }
+
+        protected int processUnitElementLastRow(short[] input, int firstLineIx, int secondLineOffset, int thirdLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+            final int secondLineIx = firstLineIx + secondLineOffset;
+            final int thirdLineIx = firstLineIx + thirdLineOffset;
+
+            final short nw = input[secondLineIx];
+            final short sw = input[thirdLineIx];
+            final short se = input[thirdLineIx + 1];
+            final short ne = input[secondLineIx + 1];
+
+            final short nwnw = input[firstLineIx - 1];
+            final short wnw = input[secondLineIx - 1];
+            final short wsw = input[thirdLineIx - 1];
+            final short ese = input[thirdLineIx + 2];
+
+            final short ene = input[secondLineIx + 2];
+            final short nene = input[firstLineIx + 2];
+            final short nne = input[firstLineIx + 1];
+            final short nnw = input[firstLineIx];
+
+            // Linear interpolation
+            final int swsw = 2 * sw - ne;
+            final int ssw = 2 * sw - nw;
+            final int sse = 2 * se - ne;
+            final int sese = 2 * se - nw;
+
+            return processUnitElement_4x4(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, dsf, outputIx, computingParams);
+        }
+
+        protected int processUnitElementLastRowEast(short[] input, int firstLineIx, int secondLineOffset, int thirdLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
+            final int secondLineIx = firstLineIx + secondLineOffset;
+            final int thirdLineIx = firstLineIx + thirdLineOffset;
+
+            final short nw = input[secondLineIx];
+            final short sw = input[thirdLineIx];
+            final short se = input[thirdLineIx + 1];
+            final short ne = input[secondLineIx + 1];
+
+            final short nwnw = input[firstLineIx - 1];
+            final short wnw = input[secondLineIx - 1];
+            final short wsw = input[thirdLineIx - 1];
+
+            final short nne = input[firstLineIx + 1];
+            final short nnw = input[firstLineIx];
+
+            // Linear interpolation
+            final int swsw = 2 * sw - ne;
+            final int ssw = 2 * sw - nw;
+            final int sse = 2 * se - ne;
+            final int sese = 2 * se - nw;
+
+            final int ese = 2 * se - sw;
+            final int ene = 2 * ne - nw;
+            final int nene = 2 * ne - sw;
+
+            return processUnitElement_4x4(nw, sw, se, ne, nwnw, wnw, wsw, swsw, ssw, sse, sese, ese, ene, nene, nne, nnw, dsf, outputIx, computingParams);
         }
     }
 
     /**
      * A "standard quality" computing task which converts part of the input to part of the output, by calling
-     * {@link #processOneUnitElement(double, double, double, double, double, int, ComputingParams)}
-     * on all input unit elements of size 2x2 from the given part.
+     * {@link #processRow_2x2(short[], int, int, int, int, double, int, ComputingParams)}
+     * on all lines of input unit elements of size 2x2 from the given part.
      */
     protected class ComputingTask_2x2 implements Callable<Boolean> {
         protected final int mLineFrom, mLineTo;
-        protected final ComputingData mComputingData;
+        protected final short[] mInput;
+        protected final Semaphore mActiveTasksCount;
         protected final ComputingParams mComputingParams;
 
-        public ComputingTask_2x2(int lineFrom, int lineTo, ComputingData computingData, ComputingParams computingParams) {
+        public ComputingTask_2x2(int lineFrom, int lineTo, short[] input, Semaphore activeTasksCount, ComputingParams computingParams) {
             mLineFrom = lineFrom;
             mLineTo = lineTo;
-            mComputingData = computingData;
+            mInput = input;
+            mActiveTasksCount = activeTasksCount;
             mComputingParams = computingParams;
         }
 
@@ -1359,88 +1446,41 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
             boolean retVal = false;
 
             try {
-                final int resolutionFactor = mComputingParams.mOutputAxisLen / mComputingParams.mInputAxisLen;
+                if (mIsPreprocess) {
+                    preprocess(mInput, mComputingParams.mInputWidth);
+                }
 
-                // Must add two additional paddings (after possibly skipping a line) to get to a starting position of the next line
-                final int outputIxIncrement = (resolutionFactor - 1) * mComputingParams.mOutputWidth + 2 * mComputingParams.mPadding;
+                final int resolutionFactor = mComputingParams.mResolutionFactor;
+                final int outputIxIncrement = mComputingParams.mOutputIxIncrement;
+                final int secondLineOffset = mComputingParams.mInputWidth;
 
-                int outputIx = mComputingParams.mOutputWidth * mComputingParams.mPadding + mComputingParams.mPadding;
+                int outputIx = mComputingParams.mOutputIxInit;
                 outputIx += resolutionFactor * mLineFrom * mComputingParams.mOutputWidth;
 
                 int inputIx = 0;
 
-                // First line done separately, using the line buffer
-                {
-                    short nw = mComputingData.mSecondLine[inputIx];
-                    short sw = mComputingData.mInput[inputIx++];
-
-                    final double metersPerElement = mComputingParams.mSouthUnitDistancePerLine * mLineFrom + mComputingParams.mNorthUnitDistancePerLine * (mComputingParams.mInputAxisLen - mLineFrom);
-
-                    for (int col = 1; col <= mComputingParams.mInputAxisLen; col++) {
-                        final short ne = mComputingData.mSecondLine[inputIx];
-                        final short se = mComputingData.mInput[inputIx++];
-
-                        outputIx = processOneUnitElement(nw, sw, se, ne, metersPerElement, outputIx, mComputingParams);
-
-                        nw = ne;
-                        sw = se;
-                    }
-
-                    outputIx += outputIxIncrement;
-                }
-
-                mComputingParams.mLineBuffersPool.recycleArray(mComputingData.mSecondLine);
-
-                int offsetInputIx = inputIx - mComputingParams.mInputWidth;
-
-                for (int line = mLineFrom + 1; line < mLineTo && isNotStopped(); line++) {
-                    short nw = mComputingData.mInput[offsetInputIx++];
-                    short sw = mComputingData.mInput[inputIx++];
-
-                    final double metersPerElement = mComputingParams.mSouthUnitDistancePerLine * line + mComputingParams.mNorthUnitDistancePerLine * (mComputingParams.mInputAxisLen - line);
+                // Outer loop
+                for (int line = mLineFrom; line < mLineTo && isNotStopped(); line++) {
+                    final double distanceScaleFactor = computeDistanceScaleFactor(line, mComputingParams);
 
                     // Inner loop, critical for performance
-                    for (int col = 1; col <= mComputingParams.mInputAxisLen; col++) {
-                        final short ne = mComputingData.mInput[offsetInputIx++];
-                        final short se = mComputingData.mInput[inputIx++];
+                    outputIx = processRow_2x2(mInput, inputIx, secondLineOffset, distanceScaleFactor, outputIx, mComputingParams);
 
-                        outputIx = processOneUnitElement(nw, sw, se, ne, metersPerElement, outputIx, mComputingParams);
-
-                        nw = ne;
-                        sw = se;
-                    }
+                    inputIx += mComputingParams.mInputWidth;
 
                     outputIx += outputIxIncrement;
                 }
-
-                mComputingParams.mInputArraysPool.recycleArray(mComputingData.mInput);
 
                 retVal = true;
 
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, e.toString());
             } finally {
-                mComputingParams.mActiveTasksCount.decrementAndGet();
-                mComputingParams.mAwaiter.doNotify();
+                mActiveTasksCount.release();
+                mComputingParams.mInputArraysPool.recycleArray(mInput);
             }
 
             return retVal;
-        }
-    }
-
-    /**
-     * Input data used for computing.
-     */
-    protected class ComputingData {
-        // Data representing the first two lines of the input
-        protected short[] mFirstLine, mSecondLine;
-        // Data representing the rest of the input
-        protected short[] mInput;
-
-        public ComputingData(short[] firstLine, short[] secondLine, short[] input) {
-            mFirstLine = firstLine;
-            mSecondLine = secondLine;
-            mInput = input;
         }
     }
 
@@ -1448,49 +1488,51 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
      * Parameters that are used by a {@link AThreadedHillShading}.
      * An instance should be created using the provided builder, {@link Builder}.
      */
-    public static class ComputingParams {
-        public final InputStream mInputStream;
+    protected static class ComputingParams {
         public final byte[] mOutput;
         public final int mInputAxisLen;
         public final int mOutputAxisLen;
         public final int mInputWidth;
         public final int mOutputWidth;
         public final int mPadding;
+        public final int mResolutionFactor;
+        public final int mOutputIxInit;
+        public final int mOutputIxIncrement;
         public final double mNorthUnitDistancePerLine;
         public final double mSouthUnitDistancePerLine;
-        public final Awaiter mAwaiter;
-        public final AtomicInteger mActiveTasksCount;
-        public final ShortArraysPool mInputArraysPool, mLineBuffersPool;
+        public final Semaphore mActiveTasksCount;
+        public final ShortArraysPool mInputArraysPool;
 
         protected ComputingParams(final Builder builder) {
-            mInputStream = builder.mInputStream;
             mOutput = builder.mOutput;
             mInputAxisLen = builder.mInputAxisLen;
             mOutputAxisLen = builder.mOutputAxisLen;
             mInputWidth = builder.mInputWidth;
             mOutputWidth = builder.mOutputWidth;
             mPadding = builder.mPadding;
+            mResolutionFactor = builder.mResolutionFactor;
+            mOutputIxInit = builder.mOutputIxInit;
+            mOutputIxIncrement = builder.mOutputIxIncrement;
             mNorthUnitDistancePerLine = builder.mNorthUnitDistancePerLine;
             mSouthUnitDistancePerLine = builder.mSouthUnitDistancePerLine;
-            mAwaiter = builder.mAwaiter;
             mActiveTasksCount = builder.mActiveTasksCount;
             mInputArraysPool = builder.mInputArraysPool;
-            mLineBuffersPool = builder.mLineBuffersPool;
         }
 
         public static class Builder {
-            protected volatile InputStream mInputStream;
             protected volatile byte[] mOutput;
             protected volatile int mInputAxisLen;
             protected volatile int mOutputAxisLen;
             protected volatile int mInputWidth;
             protected volatile int mOutputWidth;
             protected volatile int mPadding;
+            protected volatile int mResolutionFactor;
+            protected volatile int mOutputIxInit;
+            protected volatile int mOutputIxIncrement;
             protected volatile double mNorthUnitDistancePerLine;
             protected volatile double mSouthUnitDistancePerLine;
-            protected volatile Awaiter mAwaiter;
-            protected volatile AtomicInteger mActiveTasksCount;
-            protected volatile ShortArraysPool mInputArraysPool, mLineBuffersPool;
+            protected volatile Semaphore mActiveTasksCount;
+            protected volatile ShortArraysPool mInputArraysPool;
 
             public Builder() {
             }
@@ -1503,11 +1545,6 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
              */
             public ComputingParams build() {
                 return new ComputingParams(this);
-            }
-
-            public Builder setInputStream(InputStream inputStream) {
-                this.mInputStream = inputStream;
-                return this;
             }
 
             public Builder setOutput(byte[] output) {
@@ -1540,6 +1577,21 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                 return this;
             }
 
+            public Builder setOutputIxInit(int outputIxInit) {
+                this.mOutputIxInit = outputIxInit;
+                return this;
+            }
+
+            public Builder setOutputIxIncrement(int outputIxIncrement) {
+                this.mOutputIxIncrement = outputIxIncrement;
+                return this;
+            }
+
+            public Builder setResolutionFactor(int resolutionFactor) {
+                this.mResolutionFactor = resolutionFactor;
+                return this;
+            }
+
             public Builder setNorthUnitDistancePerLine(double northUnitDistancePerLine) {
                 this.mNorthUnitDistancePerLine = northUnitDistancePerLine;
                 return this;
@@ -1550,23 +1602,13 @@ public abstract class AThreadedHillShading extends AbsShadingAlgorithmDefaults {
                 return this;
             }
 
-            public Builder setAwaiter(Awaiter awaiter) {
-                this.mAwaiter = awaiter;
-                return this;
-            }
-
-            public Builder setActiveTasksCount(AtomicInteger activeTasksCount) {
+            public Builder setActiveTasksCount(Semaphore activeTasksCount) {
                 this.mActiveTasksCount = activeTasksCount;
                 return this;
             }
 
             public Builder setInputArraysPool(ShortArraysPool inputArraysPool) {
                 this.mInputArraysPool = inputArraysPool;
-                return this;
-            }
-
-            public Builder setLineBuffersPool(ShortArraysPool lineBuffersPool) {
-                this.mLineBuffersPool = lineBuffersPool;
                 return this;
             }
         }

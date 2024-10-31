@@ -37,7 +37,8 @@ public class DemFileFS implements DemFile {
 
     @Override
     public InputStream openInputStream() throws FileNotFoundException {
-        return new BufferedInputStream(new FileInputStream(file));
+        // Buffer size is relatively small to reduce wasteful read-ahead (buffer fill) during multi-threaded processing
+        return new BufferedInputStream(new FileInputStream(file), 512);
     }
 
     @Override

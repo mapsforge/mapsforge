@@ -19,34 +19,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class HillShadingUtils {
 
     public static final double SqrtTwo = Math.sqrt(2);
 
-    /**
-     * Intended to be faster than {@code Math.abs()} for well-behaved numbers: no NaN-s, infinities, etc.
-     */
-    public static double abs(final double x) {
-        return (x < 0.0D) ? 0.0D - x : x;
-    }
-
-    /**
-     * Rounding mode is "half away from zero". Intended to be faster than {@code Math.round()} for small positive numbers.
-     */
-    public static byte crudeRoundSmallPositives(final double x) {
-        return (byte) (x + 0.5d);
-    }
-
     public static double linearMapping(double start, double param, double paramLow, double paramHigh, double factor) {
-        return start + (boundToLimits(paramLow, paramHigh, param) - paramLow) * factor;
+        return start + (Math.max(paramLow, Math.min(paramHigh, param)) - paramLow) * factor;
     }
 
     public static double linearMappingWithoutLimits(double start, double param, double paramLow, double factor) {
@@ -70,21 +57,7 @@ public class HillShadingUtils {
     }
 
     public static double boundToLimits(final double min, final double max, final double value) {
-        return Math.max(min, Math.min(value, max));
-    }
-
-    /**
-     * @return Approximation to the {@code Math.sqrt()}, could be faster but probably isn't.
-     */
-    public static double sqrtApprox(final double x) {
-        return Double.longBitsToDouble(((Double.doubleToLongBits(x) - (1L << 52)) >> 1) + (1L << 61));
-    }
-
-    /**
-     * @return {@code Math.sqrt(0)} if {@code x <= 0}; {@code Math.sqrt(x)} otherwise.
-     */
-    public static double safeSqrt(final double x) {
-        return Math.sqrt(Math.max(0, x));
+        return Math.max(min, Math.min(max, value));
     }
 
     /**
@@ -92,6 +65,20 @@ public class HillShadingUtils {
      */
     public static double square(final double x) {
         return x * x;
+    }
+
+    /**
+     * Rounding mode is "half away from zero". Intended to be faster than {@code Math.round()} for small positive numbers.
+     */
+    public static byte crudeRoundSmallPositives(final double x) {
+        return (byte) (x + 0.5d);
+    }
+
+    /**
+     * Intended to be faster than {@code Math.abs()} for well-defined numbers: no NaN-s, infinities, etc.
+     */
+    public static double abs(final double x) {
+        return (x < 0.0D) ? 0.0D - x : x;
     }
 
     /**
@@ -133,47 +120,6 @@ public class HillShadingUtils {
         return ax * by - ay * bx;
     }
 
-    public static void lock(final Lock lock) {
-        lock.lock();
-    }
-
-    public static void unlock(final Lock lock) {
-        lock.unlock();
-    }
-
-    /**
-     * Calls {@link Thread#sleep(long)}, catching any {@link Exception} that could happen.
-     *
-     * @param milliseconds How many milliseconds (max) to wait.
-     */
-    public static void threadSleep(long milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (Exception ignored) {
-        }
-    }
-
-    /**
-     * Atomically increase the parameter if it is less than the limit value provided.
-     *
-     * @param atomic     Parameter to increase.
-     * @param limitValue Limit value.
-     * @return {@code true} iff the parameter was increased to a value <= {@code limitValue}, {@code false} otherwise.
-     */
-    public static boolean atomicIncreaseIfLess(final AtomicInteger atomic, final int limitValue) {
-        while (true) {
-            final int currValue = atomic.get();
-
-            if (currValue >= limitValue) {
-                return false;
-            }
-
-            if (atomic.compareAndSet(currValue, currValue + 1)) {
-                return true;
-            }
-        }
-    }
-
     public static void skipNBytes(InputStream stream, long n) throws IOException {
         if (stream != null) {
             while (true) {
@@ -202,47 +148,22 @@ public class HillShadingUtils {
     }
 
     /**
-     * A {@link ThreadPoolExecutor} with a custom {@link BlockAndRetryOnRejection} handler when bounds are reached, normal priority threads,
-     * and {@code allowCoreThreadTimeOut} set to true.
+     * A {@link ThreadPoolExecutor} with normal priority threads and {@code allowCoreThreadTimeOut} set to true.
      */
     public static class HillShadingThreadPool {
-        protected final ReentrantLock mSyncLock = new ReentrantLock();
-        protected final int mCorePoolSize, mMaxPoolSize, mIdleThreadReleaseTimeout, mQueueSizeMax;
-        protected final AtomicLong mRejectCount = new AtomicLong(0);
+        protected final Object mSync = new Object();
+        protected final int mCorePoolSize, mMaxPoolSize, mIdleThreadReleaseTimeout, mQueueSize;
         protected final String mName;
 
         protected volatile ThreadPoolExecutor mThreadPool = null;
 
-        public class BlockAndRetryOnRejection implements RejectedExecutionHandler {
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public void rejectedExecution(final Runnable task, final ThreadPoolExecutor executor) {
-                final int maxRetries = 7;
-
-                if (mRejectCount.getAndIncrement() < maxRetries) {
-                    // The pool is full. Wait, then try again.
-                    threadSleep(100);
-
-                    try {
-                        executor.execute(task);
-                    } catch (Exception ignored) {
-                    }
-                } else {
-                    notifyTaskRejected(task);
-                }
-            }
-        }
-
         public static class NormPriorityThreadFactory implements ThreadFactory {
-            protected final int mThreadPriority = Thread.NORM_PRIORITY;
             protected final ThreadFactory mDefaultThreadFactory = Executors.defaultThreadFactory();
             protected final AtomicInteger mCounter = new AtomicInteger(1);
             protected final String mName;
 
             /**
-             * @param name Name for the new threads. A numbered suffix will be appended. May be {@code null},
+             * @param name Name for new threads. A numbered suffix will be appended. May be {@code null},
              *             in which case the threads will have system default names.
              */
             public NormPriorityThreadFactory(final String name) {
@@ -256,8 +177,6 @@ public class HillShadingUtils {
             public Thread newThread(final Runnable task) {
                 final Thread thread = mDefaultThreadFactory.newThread(task);
 
-                thread.setPriority(mThreadPriority);
-
                 if (mName != null) {
                     thread.setName(mName + "-thread-" + mCounter.getAndIncrement());
                 }
@@ -267,21 +186,20 @@ public class HillShadingUtils {
         }
 
         /**
-         * A {@link ThreadPoolExecutor} with a custom {@link BlockAndRetryOnRejection} handler when bounds are reached, normal priority threads,
-         * and {@code allowCoreThreadTimeOut} set to true.
+         * A {@link ThreadPoolExecutor} with normal priority threads and {@code allowCoreThreadTimeOut} set to true.
          *
-         * @param corePoolSize             The number of threads to keep in the pool until they are idle for {@code idleThreadReleaseTimeout} seconds.
-         * @param maxPoolSize              The maximum number of threads to allow in the pool.
-         * @param queueSizeMax             The maximum number of tasks to keep in the execution waiting queue.
+         * @param corePoolSize             Number of threads to keep in the pool until they are idle for {@code idleThreadReleaseTimeout} seconds.
+         * @param maxPoolSize              Maximum number of threads to allow in the pool.
+         * @param queueSize                The capacity of the execution waiting queue.
          * @param idleThreadReleaseTimeout How many seconds a thread must be idle before being released.
          *                                 If released, it will be created again the next time it is needed. [seconds]
          * @param name                     Name to give to the threads of this thread pool. A numbered suffix will be appended. May be {@code null},
          *                                 in which case the threads will have system default names.
          */
-        public HillShadingThreadPool(final int corePoolSize, final int maxPoolSize, final int queueSizeMax, final int idleThreadReleaseTimeout, final String name) {
+        public HillShadingThreadPool(final int corePoolSize, final int maxPoolSize, final int queueSize, final int idleThreadReleaseTimeout, final String name) {
             mCorePoolSize = corePoolSize;
             mMaxPoolSize = maxPoolSize;
-            mQueueSizeMax = queueSizeMax;
+            mQueueSize = queueSize;
             mIdleThreadReleaseTimeout = idleThreadReleaseTimeout;
             mName = name;
         }
@@ -292,18 +210,15 @@ public class HillShadingUtils {
          * @return {@code this}
          */
         public HillShadingThreadPool start() {
-            lock(mSyncLock);
-            try {
+            synchronized (mSync) {
                 if (mThreadPool == null) {
-                    mThreadPool = new ThreadPoolExecutor(mCorePoolSize, mMaxPoolSize, mIdleThreadReleaseTimeout, TimeUnit.SECONDS, new LinkedBlockingQueue<>(mQueueSizeMax), new NormPriorityThreadFactory(mName), new BlockAndRetryOnRejection()) {
+                    mThreadPool = new ThreadPoolExecutor(mCorePoolSize, mMaxPoolSize, mIdleThreadReleaseTimeout, TimeUnit.SECONDS, new ArrayBlockingQueue<>(mQueueSize), new NormPriorityThreadFactory(mName), new ThreadPoolExecutor.CallerRunsPolicy()) {
                     };
 
                     if (mIdleThreadReleaseTimeout > 0) {
                         mThreadPool.allowCoreThreadTimeOut(true);
                     }
                 }
-            } finally {
-                unlock(mSyncLock);
             }
 
             return this;
@@ -315,14 +230,11 @@ public class HillShadingUtils {
          * @return {@code this}
          */
         public HillShadingThreadPool stop() {
-            lock(mSyncLock);
-            try {
+            synchronized (mSync) {
                 if (mThreadPool != null) {
                     mThreadPool.shutdown();
                     mThreadPool = null;
                 }
-            } finally {
-                unlock(mSyncLock);
             }
 
             return this;
@@ -334,10 +246,9 @@ public class HillShadingUtils {
          * @return {@code true} if task was successfully submitted or executed on the calling thread.
          */
         public boolean execute(final Runnable runnable) {
-            lock(mSyncLock);
-            try {
-                boolean retVal = false;
+            boolean retVal = false;
 
+            synchronized (mSync) {
                 if (runnable != null) {
                     try {
                         if (mThreadPool != null) {
@@ -345,29 +256,15 @@ public class HillShadingUtils {
 
                             retVal = true;
                         }
-
-                        if (retVal) {
-                            mRejectCount.set(0);
-                        }
                     } catch (Exception | OutOfMemoryError e) {
                         runnable.run();
 
                         retVal = true;
                     }
                 }
-
-                return retVal;
-            } finally {
-                unlock(mSyncLock);
             }
-        }
 
-        /**
-         * Does nothing by default; can be overridden.
-         *
-         * @param task A task which was rejected.
-         */
-        public void notifyTaskRejected(final Runnable task) {
+            return retVal;
         }
     }
 
@@ -389,53 +286,10 @@ public class HillShadingUtils {
         }
     }
 
-    public static class Awaiter {
-        protected final Logger LOGGER = Logger.getLogger(this.getClass().getName());
-
-        protected final int CheckTimeoutMillis = 100;
-        protected final Object mSync = new Object();
-
-        /**
-         * Wait for the {@code condition} to become {@code true}.
-         *
-         * @param condition Condition to wait until it becomes {@code true}.
-         */
-        public void doWait(final Callable<Boolean> condition) {
-            if (condition != null) {
-                synchronized (mSync) {
-                    while (true) {
-                        try {
-                            if (condition.call()) {
-                                break;
-                            }
-                        } catch (Exception e) {
-                            LOGGER.log(Level.WARNING, e.toString());
-                        }
-
-                        try {
-                            mSync.wait(CheckTimeoutMillis);
-                        } catch (InterruptedException ignored) {
-                        }
-                    }
-                }
-            }
-        }
-
-        /**
-         * Notify {@code Awaiter} to check the condition again immediately, as it may have changed.
-         */
-        public synchronized void doNotify() {
-            synchronized (mSync) {
-                try {
-                    mSync.notify();
-                } catch (Exception ignored) {
-                }
-            }
-        }
-    }
-
     /**
      * A pool that holds a number of recycled {@code short[]} arrays that can be reused, to save on allocating/initializing new arrays during intensive computations.
+     * It is assumed that arrays in the pool are of similar size, not necessarily the exact same size.
+     * Thus, a larger array may be returned sometimes, but an array smaller than requested will never be returned.
      */
     public static class ShortArraysPool {
         protected final Deque<short[]> mPool = new ArrayDeque<>();
@@ -459,7 +313,7 @@ public class HillShadingUtils {
             if (array != null) {
                 synchronized (mPool) {
                     if (mPool.size() < mPoolCapacity) {
-                        mPool.offerFirst(array);
+                        mPool.offerLast(array);
                     }
                 }
             }
@@ -467,6 +321,8 @@ public class HillShadingUtils {
 
         /**
          * Returns an array from the pool (possibly not zero-initialized), or a newly created array if an array from the pool is not available.
+         * It is assumed that arrays in the pool are of similar size, not necessarily the exact same size.
+         * Thus, a larger array may be returned sometimes, but an array smaller than requested will never be returned.
          *
          * @param length Required array length.
          * @return An array from the pool containing at least {@code length} elements, possibly not zero-initialized, or newly created array.
