@@ -399,18 +399,39 @@ class AndroidCanvas implements Canvas {
                 // (2024-10) On some other systems (see AwtCanvas), a scaling transform with large factors would cause the entire hill shading bitmap to be upscaled,
                 // thus wasting large amounts of memory and CPU time when only a small part of the bitmap is really needed. This is especially prominent on
                 // larger zoom levels when horizontalScale and verticalScale become very large.
-                // It turns out that Android is not susceptible to this problem, so sub-image paradigm was not implemented.
+                // It turns out that Android is not susceptible to this problem, so sub-image paradigm was not implemented (at least not for Android Oreo+).
                 transform.preTranslate((float) tileRect.left, (float) tileRect.top);
                 transform.preScale((float) horizontalScale, (float) verticalScale);
-                transform.preTranslate((float) -shadeRect.left, (float) -shadeRect.top);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-                } else {
-                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
-                }
+                    transform.preTranslate((float) -shadeRect.left, (float) -shadeRect.top);
 
-                this.canvas.drawBitmap(hillsBitmap, transform, shadePaint);
+                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
+                    this.canvas.drawBitmap(hillsBitmap, transform, shadePaint);
+                } else {
+                    // Using a rectangle slightly larger than necessary to prevent resize artifacts
+                    final int srcLeft = Math.max(0, (int) shadeRect.left - 1);
+                    final int srcTop = Math.max(0, (int) shadeRect.top - 1);
+                    final int srcWidth = Math.min(hillsBitmap.getWidth() - srcLeft, (int) shadeRect.getWidth() + 4);
+                    final int srcHeight = Math.min(hillsBitmap.getHeight() - srcTop, (int) shadeRect.getHeight() + 4);
+
+                    final android.graphics.Bitmap subImageArgb;
+                    {
+                        final android.graphics.Bitmap subImage = android.graphics.Bitmap.createBitmap(hillsBitmap, srcLeft, srcTop, srcWidth, srcHeight);
+
+                        if (false == android.graphics.Bitmap.Config.ARGB_8888.equals(subImage.getConfig())) {
+                            // We need to copy the original bitmap to the ARGB configuration, otherwise the drawn bitmap will not be filtered
+                            subImageArgb = subImage.copy(android.graphics.Bitmap.Config.ARGB_8888, false);
+                        } else {
+                            subImageArgb = subImage;
+                        }
+                    }
+
+                    transform.preTranslate((float) -(shadeRect.left - srcLeft), (float) -(shadeRect.top - srcTop));
+
+                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
+                    this.canvas.drawBitmap(subImageArgb, transform, shadePaint);
+                }
             }
 
             // (2024-10) An old workaround that doesn't seem to be needed anymore (tested on Sony Xperia).
