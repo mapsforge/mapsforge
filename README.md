@@ -11,7 +11,7 @@ If you have any questions or problems, don't hesitate to ask the Discussions for
 
 - Mapsforge project uses a [compact file format](docs/Specification-Binary-Map-File.md) for fast ad-hoc rendering of OpenStreetMap data.
 - We provide tools to [compile your own maps](docs/Getting-Started-Map-Writer.md) with detailed [instructions](docs/MapCreation.md) and also [precompiled maps](https://download.mapsforge.org/).
-- It provides [simple boilerplate code](mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/GettingStarted.java) to build applications for Android that display OpenStreetMap based maps with rotation.
+- It provides [simple boilerplate code](mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/GettingStarted.java) to build applications for Android that display OpenStreetMap based maps with rotation and hillshading.
 - It provides a library to build standalone applications in Java ([instructions](docs/Desktop.md)).
 - Mapsforge maps can be flexibly styled with XML style files ([render themes](docs/Rendertheme.md)).
 - Mapsforge library supports offline high resolution [hill shading](https://github.com/mapsforge/mapsforge/blob/master/mapsforge-samples-android/src/main/java/org/mapsforge/samples/android/HillshadingMapViewer.java).
