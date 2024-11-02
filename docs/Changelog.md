@@ -2,6 +2,8 @@
 
 ## Next version
 
+- Hillshading performance improvements [#1551](https://github.com/mapsforge/mapsforge/issues/1551)
+- Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.23.0)
 
