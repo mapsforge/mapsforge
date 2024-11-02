@@ -6,6 +6,7 @@
  * Copyright 2019 cpt1gl0
  * Copyright 2019 Adrian Batzill
  * Copyright 2019 mg4gh
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,15 +21,21 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.graphics.*;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.Region;
 import android.os.Build;
+
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Path;
-import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
@@ -42,19 +49,24 @@ class AndroidCanvas implements Canvas {
     };
 
     android.graphics.Canvas canvas;
-    private final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
-    private ColorFilter grayscaleFilter, grayscaleInvertFilter, invertFilter;
+    protected final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
+    protected final android.graphics.Paint shadePaint = new android.graphics.Paint();
+    protected final android.graphics.Matrix tmpMatrix = new android.graphics.Matrix();
+    protected ColorFilter grayscaleFilter, grayscaleInvertFilter, invertFilter;
 
     /**
      * A set of reusable temporaries that is not needed when hillshading is inactive.
      */
-    private HilshadingTemps hillshadingTemps = null;
+    protected HillshadingTemps hillshadingTemps = null;
 
     AndroidCanvas() {
         this.canvas = new android.graphics.Canvas();
 
         this.bitmapPaint.setAntiAlias(true);
         this.bitmapPaint.setFilterBitmap(true);
+
+        shadePaint.setAntiAlias(true);
+        shadePaint.setFilterBitmap(true);
 
         createFilters();
     }
@@ -371,15 +383,81 @@ class AndroidCanvas implements Canvas {
     @Override
     public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
         this.canvas.save();
-        final HilshadingTemps temps;
-        if (this.hillshadingTemps == null) {
-            this.hillshadingTemps = new HilshadingTemps();
-        }
-        temps = this.hillshadingTemps;
 
-        android.graphics.Paint shadePaint = hillshadingTemps.useAlphaPaint((int) (255 * magnitude));
+        shadePaint.setAlpha((int) (255 * magnitude));
 
-        if (bitmap == null) {
+        if (bitmap != null && tileRect != null) {
+            final android.graphics.Bitmap hillsBitmap = AndroidGraphicFactory.getBitmap(bitmap);
+
+            if (shadeRect.getWidth() != 0 && shadeRect.getHeight() != 0) {
+                final double horizontalScale = tileRect.getWidth() / shadeRect.getWidth();
+                final double verticalScale = tileRect.getHeight() / shadeRect.getHeight();
+
+                final android.graphics.Matrix transform = tmpMatrix;
+                transform.reset();
+
+                // (2024-10) On some other systems (see AwtCanvas), a scaling transform with large factors would cause the entire hill shading bitmap to be upscaled,
+                // thus wasting large amounts of memory and CPU time when only a small part of the bitmap is really needed. This is especially prominent on
+                // larger zoom levels when horizontalScale and verticalScale become very large.
+                // It turns out that Android is not susceptible to this problem, so sub-image paradigm was not implemented (at least not for Android Oreo+).
+                transform.preTranslate((float) tileRect.left, (float) tileRect.top);
+                transform.preScale((float) horizontalScale, (float) verticalScale);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    transform.preTranslate((float) -shadeRect.left, (float) -shadeRect.top);
+
+                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
+                    this.canvas.drawBitmap(hillsBitmap, transform, shadePaint);
+                } else {
+                    // Using a rectangle slightly larger than necessary to prevent resize artifacts
+                    final int srcLeft = Math.max(0, (int) shadeRect.left - 1);
+                    final int srcTop = Math.max(0, (int) shadeRect.top - 1);
+                    final int srcWidth = Math.min(hillsBitmap.getWidth() - srcLeft, (int) shadeRect.getWidth() + 4);
+                    final int srcHeight = Math.min(hillsBitmap.getHeight() - srcTop, (int) shadeRect.getHeight() + 4);
+
+                    final android.graphics.Bitmap subImageArgb;
+                    {
+                        final android.graphics.Bitmap subImage = android.graphics.Bitmap.createBitmap(hillsBitmap, srcLeft, srcTop, srcWidth, srcHeight);
+
+                        if (false == android.graphics.Bitmap.Config.ARGB_8888.equals(subImage.getConfig())) {
+                            // We need to copy the original bitmap to the ARGB configuration, otherwise the drawn bitmap will not be filtered
+                            subImageArgb = subImage.copy(android.graphics.Bitmap.Config.ARGB_8888, false);
+                        } else {
+                            subImageArgb = subImage;
+                        }
+                    }
+
+                    transform.preTranslate((float) -(shadeRect.left - srcLeft), (float) -(shadeRect.top - srcTop));
+
+                    this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
+                    this.canvas.drawBitmap(subImageArgb, transform, shadePaint);
+                }
+            }
+
+            // (2024-10) An old workaround that doesn't seem to be needed anymore (tested on Sony Xperia).
+//            final android.graphics.Bitmap sourceImage;
+//            if (srcLeft == 0 && srcTop == 0) {
+//                // special handling for an inconsistency in android where rect->rect drawImage upscaling is unfiltered if source top,left is 0,0
+//                // (seems to be shortcutting to a different implementation, observed on sony)
+//
+//                android.graphics.Bitmap shiftedTemp = android.graphics.Bitmap.createBitmap(srcRight + 1, srcBottom, hillsBitmap.getConfig());
+//                tempCanvas.setBitmap(shiftedTemp);
+//                tempCanvas.drawBitmap(hillsBitmap, 1, 0, null);
+//
+//
+//                sourceImage = shiftedTemp;
+//
+//                srcLeft += 1;
+//                srcRight += 1;
+//            } else {
+//                sourceImage = hillsBitmap;
+//            }
+
+        } else {
+            if (this.hillshadingTemps == null) {
+                this.hillshadingTemps = new HillshadingTemps();
+            }
+
             if (tileRect != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
@@ -387,104 +465,11 @@ class AndroidCanvas implements Canvas {
                     this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
                 }
             }
+
             // scale a dummy pixel over the canvas - just drawing a paint would probably be faster, but the resulting colors can be inconsistent with the bitmap draw (maybe only on some devices?)
             this.canvas.drawBitmap(hillshadingTemps.useNeutralShadingPixel(), hillshadingTemps.useAsr(0, 0, 1, 1), hillshadingTemps.useAdr(0, 0, canvas.getWidth(), canvas.getHeight()), shadePaint);
-
-            this.canvas.restore();
-            return;
         }
 
-        android.graphics.Bitmap hillsBitmap = AndroidGraphicFactory.getBitmap(bitmap);
-        double horizontalScale = shadeRect.getWidth() > 0 ? tileRect.getWidth() / shadeRect.getWidth() : 1;
-        double verticalScale = shadeRect.getHeight() > 0 ? tileRect.getHeight() / shadeRect.getHeight() : 1;
-
-        if (horizontalScale < 1 && verticalScale < 1) {
-            // fast path for wide zoom (downscaling)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-            } else {
-                this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom, Region.Op.REPLACE);
-            }
-            android.graphics.Matrix transform = temps.useMatrix();
-            transform.preTranslate((float) tileRect.left, (float) tileRect.top);
-            transform.preScale((float) horizontalScale, (float) verticalScale);
-            transform.preTranslate((float) -shadeRect.left, (float) -shadeRect.top);
-            this.canvas.drawBitmap(hillsBitmap, transform, shadePaint);
-        } else {
-
-            double leftRestUnlimited = 1 + (shadeRect.left - Math.floor(shadeRect.left));
-            double leftRest = Math.min(shadeRect.left, leftRestUnlimited);
-            double leftExtra = horizontalScale * leftRest;
-
-            double rightRestUnlimited = Math.floor(shadeRect.right) + 2 - shadeRect.right;
-            double rightRest = Math.min(bitmap.getWidth() - shadeRect.right, rightRestUnlimited);
-            double rightExtra = horizontalScale * rightRest;
-
-            double tempWidthDouble = rightExtra + leftExtra + (shadeRect.right - shadeRect.left) * horizontalScale;
-            int tempWidth = (int) Math.ceil(tempWidthDouble);
-
-
-            double topRestUnlimited = 1 + (shadeRect.top - Math.floor(shadeRect.top));
-            double topRest = Math.min(shadeRect.top, topRestUnlimited);
-            double topExtra = verticalScale * topRest;
-
-            double bottomRestUnlimited = Math.floor(shadeRect.bottom) + 2 - shadeRect.bottom;
-            double bottomRest = Math.min(bitmap.getHeight() - shadeRect.bottom, bottomRestUnlimited);
-            double bottomExtra = verticalScale * bottomRest;
-
-            double tempHeightDouble = bottomExtra + topExtra + (shadeRect.bottom - shadeRect.top) * verticalScale;
-            int tempHeight = (int) Math.ceil(tempHeightDouble);
-
-            int srcLeft = (int) Math.round(shadeRect.left - leftRest);
-            int srcTop = (int) Math.round(shadeRect.top - topRest);
-            int srcRight = (int) Math.round(shadeRect.right + rightRest);
-            int srcBottom = (int) Math.round(shadeRect.bottom + bottomRest);
-
-            android.graphics.Canvas tempCanvas = temps.useCanvas();
-
-            final android.graphics.Bitmap sourceImage;
-            if (srcLeft == 0 && srcTop == 0) {
-                // special handling for an inconsistency in android where rect->rect drawImage upscaling is unfiltered if source top,left is 0,0
-                // (seems to be shortcutting to a different implementation, observed on sony)
-
-                android.graphics.Bitmap shiftedTemp = android.graphics.Bitmap.createBitmap(srcRight + 1, srcBottom, hillsBitmap.getConfig());
-                tempCanvas.setBitmap(shiftedTemp);
-                tempCanvas.drawBitmap(hillsBitmap, 1, 0, null);
-
-
-                sourceImage = shiftedTemp;
-
-                srcLeft += 1;
-                srcRight += 1;
-            } else {
-                sourceImage = hillsBitmap;
-            }
-
-
-            Rect asr = temps.useAsr(
-                    srcLeft,
-                    srcTop,
-                    srcRight,
-                    srcBottom
-            );
-            Rect adr = temps.useAdr(
-                    0,
-                    0,
-                    tempWidth,
-                    tempHeight
-            );
-
-            android.graphics.Bitmap scaleTemp = temps.useScaleBitmap(tempWidth, tempHeight, hillsBitmap.getConfig());
-            tempCanvas.setBitmap(scaleTemp);
-            tempCanvas.drawBitmap(sourceImage, asr, adr, bitmapPaint);
-
-
-            this.canvas.clipRect((float) tileRect.left, (float) tileRect.top, (float) tileRect.right, (float) tileRect.bottom);
-            int drawOffsetLeft = (int) Math.round((tileRect.left - leftExtra));
-            int drawOffsetTop = (int) Math.round((tileRect.top - topExtra));
-
-            this.canvas.drawBitmap(scaleTemp, drawOffsetLeft, drawOffsetTop, shadePaint);
-        }
         this.canvas.restore();
     }
 
@@ -493,22 +478,13 @@ class AndroidCanvas implements Canvas {
         this.canvas.translate(dx, dy);
     }
 
-    private static class HilshadingTemps {
+    protected static class HillshadingTemps {
         private final Rect asr = new Rect(0, 0, 0, 0);
         private final Rect adr = new Rect(0, 0, 0, 0);
-        private final android.graphics.Canvas tmpCanvas = new android.graphics.Canvas();
-        private android.graphics.Bitmap scaleTemp;
-        private android.graphics.Bitmap shiftTemp;
 
-        private final android.graphics.Paint shadePaint;
-        private android.graphics.Bitmap neutralShadingPixel = AndroidGraphicFactory.INSTANCE.createMonoBitmap(1, 1, new byte[]{(byte) (127 & 0xFF)}, 0, null).bitmap;
-        private android.graphics.Matrix tmpMatrix;
+        private final android.graphics.Bitmap neutralShadingPixel = AndroidGraphicFactory.INSTANCE.createMonoBitmap(1, 1, new byte[]{0}, 0, null).bitmap;
 
-        private HilshadingTemps() {
-            shadePaint = new android.graphics.Paint();
-
-            shadePaint.setAntiAlias(true);
-            shadePaint.setFilterBitmap(true);
+        private HillshadingTemps() {
         }
 
         Rect useAsr(int srcLeft, int srcTop, int srcRight, int srcBottom) {
@@ -527,63 +503,8 @@ class AndroidCanvas implements Canvas {
             return adr;
         }
 
-        /**
-         * returns a temporary canvas that may be used in useScaleBitmap
-         */
-        android.graphics.Canvas useCanvas() {
-            return tmpCanvas;
-        }
-
-        /**
-         * returns a reuseable bitmap of size or larger and sets it for the temp canvas
-         * (some internal operations use the canvas, setting it all the time makes this more uniform)
-         */
-        android.graphics.Bitmap useScaleBitmap(int tempWidth, int tempHeight, android.graphics.Bitmap.Config config) {
-            scaleTemp = internalUseBitmap(scaleTemp, tempWidth, tempHeight, config);
-            return scaleTemp;
-        }
-
-        /**
-         * returns a reuseable bitmap of size or larger and sets it for the temp canvas
-         * (some internal operations use the canvas, setting it all the time makes this more uniform)
-         */
-        android.graphics.Bitmap useShiftBitmap(int tempWidth, int tempHeight, android.graphics.Bitmap.Config config) {
-            shiftTemp = internalUseBitmap(shiftTemp, tempWidth, tempHeight, config);
-            return shiftTemp;
-        }
-
-        private android.graphics.Bitmap internalUseBitmap(android.graphics.Bitmap tmpBitmap, int tempWidth, int tempHeight, android.graphics.Bitmap.Config config) {
-            if (tmpBitmap == null) {
-                tmpBitmap = android.graphics.Bitmap.createBitmap(tempWidth, tempHeight, config);
-                tmpCanvas.setBitmap(tmpBitmap);
-            } else {
-                if (tmpBitmap.getWidth() < tempWidth || tmpBitmap.getHeight() < tempHeight || !tmpBitmap.getConfig().equals(config)) {
-                    tmpBitmap.recycle();
-                    tmpBitmap = android.graphics.Bitmap.createBitmap(tempWidth, tempHeight, config);
-                    tmpCanvas.setBitmap(tmpBitmap);
-                } else {
-                    tmpCanvas.setBitmap(tmpBitmap);
-                    tmpCanvas.drawColor(android.graphics.Color.argb(0, 0, 0, 0), PorterDuff.Mode.SRC);
-                }
-            }
-            return tmpBitmap;
-        }
-
-        android.graphics.Paint useAlphaPaint(int alpha) {
-            shadePaint.setAlpha(alpha);
-            return shadePaint;
-        }
-
         android.graphics.Bitmap useNeutralShadingPixel() {
             return neutralShadingPixel;
-        }
-
-        android.graphics.Matrix useMatrix() {
-            if (tmpMatrix == null) {
-                tmpMatrix = new android.graphics.Matrix();
-            }
-            tmpMatrix.reset();
-            return tmpMatrix;
         }
     }
 }

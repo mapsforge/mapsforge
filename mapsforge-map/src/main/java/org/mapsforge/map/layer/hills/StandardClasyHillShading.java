@@ -14,10 +14,21 @@
  */
 package org.mapsforge.map.layer.hills;
 
+import static org.mapsforge.map.layer.hills.HillShadingUtils.SqrtTwo;
+
 /**
  * <p>
  * A standard implementation of the {@link AClasyHillShading}. Divides square unit elements into two triangles/planes
  * to calculate their average normal, which is then used to shade the unit element.
+ * </p>
+ * <p>
+ * Horizontal surfaces, or all surfaces with slope less than {@code minSlope}, will have minimum shade.
+ * </p>
+ * <p>
+ * Slopes are shaded linearly by default, i.e. main shade (shade before applying azimuthal asymmetry factor) is a linear function of slope, for performance.
+ * </p>
+ * <p>
+ * For performance reasons, azimuthal asymmetry is also a linear function of the azimuth angle cosine.
  * </p>
  * <p>
  * This is currently the algorithm of choice, as it provides the best results with excellent performance.
@@ -25,21 +36,34 @@ package org.mapsforge.map.layer.hills;
  * </p>
  * <p>
  * High resolution version is also available: {@link HiResStandardClasyHillShading}.
- * It provides high quality output using bicubic interpolation, use it when performance is not an issue.
+ * It provides high quality output using bicubic interpolation, use it when you are not limited by memory or processing performance.
  * </p>
  *
  * @see HiResStandardClasyHillShading
  */
 public class StandardClasyHillShading extends AClasyHillShading {
 
+    // Scaled parameters are used to save some arithmetic cycles later in a loop
+    protected final double mMinSlopeScaled, mMaxSlopeScaled;
+    protected final double mMainMappingFactorScaled;
+    protected final double mAzimuthLowScaled, mAsymmetryMappingFactorScaled;
+
     /**
      * Construct this using the parameters provided.
      *
      * @param clasyParams Parameters to use while constructing this.
      * @see AClasyHillShading#AClasyHillShading(ClasyParams)
+     * @see AClasyHillShading.ClasyParams
      */
     public StandardClasyHillShading(final ClasyParams clasyParams) {
         super(clasyParams);
+
+        mMinSlopeScaled = mMinSlope / 100.;
+        mMaxSlopeScaled = mMaxSlope / 100.;
+        mMainMappingFactorScaled = mMainMappingFactor * 100.;
+
+        mAzimuthLowScaled = -1. * SqrtTwo;
+        mAsymmetryMappingFactorScaled = mAsymmetryMappingFactor / SqrtTwo;
     }
 
     /**
@@ -49,53 +73,70 @@ public class StandardClasyHillShading extends AClasyHillShading {
      */
     public StandardClasyHillShading() {
         super();
+
+        mMinSlopeScaled = mMinSlope / 100.;
+        mMaxSlopeScaled = mMaxSlope / 100.;
+        mMainMappingFactorScaled = mMainMappingFactor * 100.;
+
+        mAzimuthLowScaled = -1. * SqrtTwo;
+        mAsymmetryMappingFactorScaled = mAsymmetryMappingFactor / SqrtTwo;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected int processOneUnitElement(double nw, double sw, double se, double ne, double mpe, int outputIx, ComputingParams computingParams) {
-        computingParams.mOutput[outputIx] = unitElementToShadePixel(nw, sw, se, ne, mpe);
-
-        outputIx++;
-
-        return outputIx;
+    protected double azimuthalDotProduct(final double normalX, final double normalY) {
+        // Dot product of the normal with a unit vector in NW direction multiplied by sqrt(2), (-i + j)
+        return -normalX + normalY;
     }
 
     /**
-     * Map one unit element to a shade pixel, by dividing the unit element into two triangles/planes and using the average normal.
-     *
-     * @param nw  North-west value. [meters]
-     * @param sw  South-west value. [meters]
-     * @param se  South-east value. [meters]
-     * @param ne  North-east value. [meters]
-     * @param mpe Meters per unit element, ie. the length of one side of the unit element. [meters]
-     * @return Shade value as a {@code byte}.
+     * {@inheritDoc}
      */
-    protected byte getAverageNormalShadePixel(double nw, double sw, double se, double ne, double mpe) {
-        final double swne = sw - ne;
-        final double senw = se - nw;
+    @Override
+    protected int processUnitElement_2x2(double nw, double sw, double se, double ne, double dsf, int outputIx, ComputingParams computingParams) {
+        computingParams.mOutput[outputIx] = unitElementToShadePixel(nw, sw, se, ne, dsf);
 
-        // "Average" normal of two triangles, NW-SW-NE and SE-NE-SW, after simplifying the algebra and canceling the scaling factor
-        final double normalX = swne - senw;
-        final double normalY = swne + senw;
-        final double normalZ = 2 * mpe;
-
-        return normalToShadePixel(normalX, normalY, normalZ);
+        return outputIx + 1;
     }
 
     /**
-     * Map one unit element to a shade pixel.
-     *
-     * @param nw  North-west value. [meters]
-     * @param sw  South-west value. [meters]
-     * @param se  South-east value. [meters]
-     * @param ne  North-east value. [meters]
-     * @param mpe Meters per unit element, ie. the length of one side of the unit element. [meters]
-     * @return Shade value as a {@code byte}.
+     * {@inheritDoc}
      */
-    protected byte unitElementToShadePixel(double nw, double sw, double se, double ne, double mpe) {
-        return getAverageNormalShadePixel(nw, sw, se, ne, mpe);
+    @Override
+    protected byte unitElementToShadePixel(final double nw, final double sw, final double se, final double ne, final double dsf) {
+        double shade = ShadeMin;
+
+        if (sw != ne || se != nw) {
+            final double swne = sw - ne;
+            final double senw = se - nw;
+
+            // "Average" normal of two triangles, NW-SW-NE and SE-NE-SW, after simplifying the algebra and canceling the scaling factor
+            final double normalX = swne - senw;
+            final double normalY = swne + senw;
+            final double normalZInv = dsf;
+
+            // Always greater than zero due to checks above
+            final double normalXYLen = Math.sqrt(normalX * normalX + normalY * normalY);
+
+            // Tangent of the angle between the 3D normal and the z-axis.
+            // Z-component of the normal is always above zero due to hills being a graph of a function; thus no abs() and no special checks needed.
+            // This is our slope as a simple ratio (i.e. slope as a percent, divided by 100).
+            final double zenithAngleTangent = normalXYLen * normalZInv;
+
+            shade = HillShadingUtils.linearMapping(ShadeMin, zenithAngleTangent, mMinSlopeScaled, mMaxSlopeScaled, mMainMappingFactorScaled);
+
+            // Cosine of the azimuth angle between the normal and the reference direction ("light source"; NW by default convention), multiplied by sqrt(2)
+            final double azimuthAngleCosine = azimuthalDotProduct(normalX, normalY) / normalXYLen;
+
+            // This is just to provide asymmetry (NW-SE by default convention), accuracy is not important,
+            // thus we are content with simply using cos to maximize performance.
+            shade *= HillShadingUtils.linearMappingWithoutLimits(1, azimuthAngleCosine, mAzimuthLowScaled, mAsymmetryMappingFactorScaled);
+        }
+
+        // Crude rounding of small positive numbers. Rounding mode is "half away from zero".
+        // Intended to be faster than Math.round() for small positive numbers.
+        return (byte) (shade + 0.5);
     }
 }

@@ -6,6 +6,7 @@
  * Copyright 2019 Adrian Batzill
  * Copyright 2019 Matthew Egeler
  * Copyright 2019 mg4gh
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -498,25 +499,38 @@ class AwtCanvas implements Canvas {
             return;
         }
 
-
-        BufferedImage bufferedImage = AwtGraphicFactory.getBitmap(bitmap);
-        transform.setToIdentity();
-
         if (shadeRect.getWidth() != 0 && shadeRect.getHeight() != 0) {
-            double horizontalScale = tileRect.getWidth() / shadeRect.getWidth();
-            double verticalScale = tileRect.getHeight() / shadeRect.getHeight();
+            final double horizontalScale = tileRect.getWidth() / shadeRect.getWidth();
+            final double verticalScale = tileRect.getHeight() / shadeRect.getHeight();
 
+            // Using a rectangle slightly larger than necessary to prevent resize artifacts
+            final int srcLeft = Math.max(0, (int) shadeRect.left - 1);
+            final int srcTop = Math.max(0, (int) shadeRect.top - 1);
+            final int srcWidth = Math.min(bitmap.getWidth() - srcLeft, (int) shadeRect.getWidth() + 4);
+            final int srcHeight = Math.min(bitmap.getHeight() - srcTop, (int) shadeRect.getHeight() + 4);
+
+            // (2024-10) Sub-image is extracted to prevent needless upscaling of the entire hill shading bitmap with the transform below.
+            // This would waste large amounts of memory and CPU time when only a small part of the bitmap is really needed,
+            // and could potentially cause an OOM exception, especially on larger zoom levels when horizontalScale and verticalScale become very large.
+            // Note: It appears that Android is not susceptible to this problem, only AWT.
+            final BufferedImage subImage = AwtGraphicFactory
+                    .getBitmap(bitmap)
+                    .getSubimage(srcLeft, srcTop, srcWidth, srcHeight);
+
+            transform.setToIdentity();
             transform.translate(tileRect.left, tileRect.top);
             transform.scale(horizontalScale, verticalScale);
-            transform.translate(-shadeRect.left, -shadeRect.top);
-        }
+            transform.translate(-(shadeRect.left - srcLeft), -(shadeRect.top - srcTop));
 
-        this.graphics2D.setClip(
-                (int) Math.round(tileRect.left), (int) Math.round(tileRect.top),
-                (int) Math.round(tileRect.right - (int) tileRect.left), (int) Math.round(tileRect.bottom) - (int) Math.round(tileRect.top) // subtract in after rounding to get same error as on neighbor tile
-        );
-        this.graphics2D.drawRenderedImage(bufferedImage, transform);
-        this.graphics2D.setClip(null);
+            this.graphics2D.setClip(
+                    (int) Math.round(tileRect.left), (int) Math.round(tileRect.top),
+                    (int) Math.round(tileRect.right) - (int) Math.round(tileRect.left), (int) Math.round(tileRect.bottom) - (int) Math.round(tileRect.top) // subtract in after rounding to get same error as on neighbor tile
+            );
+
+            this.graphics2D.drawRenderedImage(subImage, transform);
+
+            this.graphics2D.setClip(null);
+        }
 
         this.graphics2D.setComposite(oldComposite);
     }

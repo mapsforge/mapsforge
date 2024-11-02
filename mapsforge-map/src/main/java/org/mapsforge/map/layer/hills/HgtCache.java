@@ -23,7 +23,12 @@ import org.mapsforge.core.model.BoundingBox;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -37,6 +42,9 @@ import java.util.regex.Pattern;
 public class HgtCache {
     private static final Logger LOGGER = Logger.getLogger(HgtCache.class.getName());
 
+    /** No need for this to ever be greater than 1 */
+    public static final int PaddingSizeDefault = 1;
+
     // Should be lower-case
     public static final String ZipFileExtension = "zip";
     public static final String HgtFileExtension = "hgt";
@@ -44,15 +52,13 @@ public class HgtCache {
     public static final String DotHgtFileExtension = "." + HgtFileExtension;
 
     final DemFolder demFolder;
-    final boolean interpolatorOverlap;
     final ShadingAlgorithm algorithm;
+    final boolean interpolatorOverlap;
     final int mainCacheSize;
-    final int neighborCacheSize;
 
     private final GraphicFactory graphicsFactory;
 
-    final private Lru secondaryLru;
-    final private Lru mainLru;
+    private final Lru mainLru;
 
     private final LazyFuture<Map<TileKey, HgtFileInfo>> hgtFiles;
 
@@ -87,28 +93,12 @@ public class HgtCache {
     }
 
     private static class Lru {
-        public int getSize() {
-            return size;
-        }
-
-        public void setSize(int size) {
-
-            this.size = Math.max(0, size);
-
-            if (size < lru.size()) synchronized (lru) {
-                Iterator<Future<HillshadingBitmap>> iterator = lru.iterator();
-                while (lru.size() > size) {
-                    iterator.remove();
-                }
-            }
-        }
-
-        private int size;
-        final private LinkedHashSet<Future<HillshadingBitmap>> lru;
+        protected final int size;
+        protected final LinkedHashSet<Future<HillshadingBitmap>> lru;
 
         Lru(int size) {
             this.size = size;
-            lru = size > 0 ? new LinkedHashSet<Future<HillshadingBitmap>>() : null;
+            lru = size > 0 ? new LinkedHashSet<>() : null;
         }
 
         /**
@@ -139,20 +129,22 @@ public class HgtCache {
                 }
             }
         }
+
+        public int getSize() {
+            return size;
+        }
     }
 
     protected final List<String> problems = new ArrayList<>();
 
-    HgtCache(DemFolder demFolder, boolean interpolationOverlap, GraphicFactory graphicsFactory, ShadingAlgorithm algorithm, int mainCacheSize, int neighborCacheSize) {
+    HgtCache(DemFolder demFolder, boolean interpolationOverlap, GraphicFactory graphicsFactory, ShadingAlgorithm algorithm, int mainCacheSize) {
         this.demFolder = demFolder;
         this.interpolatorOverlap = interpolationOverlap;
         this.graphicsFactory = graphicsFactory;
         this.algorithm = algorithm;
         this.mainCacheSize = mainCacheSize;
-        this.neighborCacheSize = neighborCacheSize;
 
         mainLru = new Lru(this.mainCacheSize);
-        secondaryLru = (interpolatorOverlap ? new Lru(neighborCacheSize) : null);
 
         hgtFiles = new LazyFuture<Map<TileKey, HgtFileInfo>>() {
             @Override
@@ -219,64 +211,11 @@ public class HgtCache {
         }
 
         public HillshadingBitmap calculate() {
-            ShadingAlgorithm.RawShadingResult raw = algorithm.transformToByteBuffer(hgtFileInfo, HgtCache.this.interpolatorOverlap ? 1 : 0);
-
-            // is this really necessary? Maybe, if some downscaling is filtered and rounding is not as expected
-            raw.fillPadding();
+            final ShadingAlgorithm.RawShadingResult raw = algorithm.transformToByteBuffer(hgtFileInfo, HgtCache.this.interpolatorOverlap ? PaddingSizeDefault : 0);
 
             return graphicsFactory.createMonoBitmap(raw.width, raw.height, raw.bytes, raw.padding, hgtFileInfo);
         }
     }
-
-    /* */
-    class MergeOverlapFuture extends LazyFuture<HillshadingBitmap> {
-        final LoadUnmergedFuture loadFuture;
-        private final HgtFileInfo hgtFileInfo;
-
-        MergeOverlapFuture(HgtFileInfo hgtFileInfo, LoadUnmergedFuture loadFuture) {
-
-            this.hgtFileInfo = hgtFileInfo;
-            this.loadFuture = loadFuture;
-        }
-
-        MergeOverlapFuture(HgtFileInfo hgtFileInfo) {
-            this(hgtFileInfo, new LoadUnmergedFuture(hgtFileInfo));
-        }
-
-        public HillshadingBitmap calculate() throws ExecutionException, InterruptedException {
-            HillshadingBitmap monoBitmap = loadFuture.get();
-
-            for (HillshadingBitmap.Border border : HillshadingBitmap.Border.values()) {
-                HgtFileInfo neighbor = hgtFileInfo.getNeighbor(border);
-                mergePaddingOnBitmap(monoBitmap, neighbor, border);
-            }
-
-            return monoBitmap;
-        }
-
-        private void mergePaddingOnBitmap(HillshadingBitmap fresh, HgtFileInfo neighbor, HillshadingBitmap.Border border) {
-            final int padding = fresh.getPadding();
-
-            if (padding < 1) return;
-
-            if (neighbor != null) {
-                final Future<HillshadingBitmap> neighborUnmergedFuture = neighbor.getUnmergedAsMergePartner();
-                if (neighborUnmergedFuture != null) {
-                    try {
-                        HillshadingBitmap other = neighborUnmergedFuture.get();
-                        Canvas copyCanvas = graphicsFactory.createCanvas();
-
-                        mergeSameSized(fresh, other, border, padding, copyCanvas);
-
-                    } catch (InterruptedException | ExecutionException e) {
-//                        e.printStackTrace();
-                        LOGGER.log(Level.WARNING, e.toString());
-                    }
-                }
-            }
-        }
-    }
-
 
     public class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHillTileSource {
         final DemFile file;
@@ -292,85 +231,6 @@ public class HgtCache {
         }
 
         Future<HillshadingBitmap> getBitmapFuture(double pxPerLat, double pxPerLng) {
-            if (HgtCache.this.interpolatorOverlap) {
-
-                int axisLen = algorithm.getOutputAxisLen(this);
-                if (pxPerLat > axisLen || pxPerLng > axisLen) {
-                    return getForHires();
-                } else {
-                    return getForLores();
-                }
-            } else {
-                return getForLores();
-            }
-        }
-
-
-        /**
-         * for zoomed in view (if padding): merged or unmerged padding for padding merge of a neighbor
-         *
-         * @return MergeOverlapFuture or LoadUnmergedFuture as available
-         */
-        private MergeOverlapFuture getForHires() {
-            synchronized (mWeakRefSync) {
-                final MergeOverlapFuture ret;
-
-                final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
-                final Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
-
-                if (candidate instanceof MergeOverlapFuture) {
-                    ret = ((MergeOverlapFuture) candidate);
-                } else if (candidate instanceof LoadUnmergedFuture) {
-                    LoadUnmergedFuture loadFuture = (LoadUnmergedFuture) candidate;
-                    ret = new MergeOverlapFuture(this, loadFuture);
-                    this.weakRef = new WeakReference<>(ret);
-                    secondaryLru.evict(loadFuture);  // candidate will henceforth be referenced via created (until created is gone)
-                } else {
-                    ret = new MergeOverlapFuture(this);
-                    //logLru("new merged", mainLru, ret);
-                    weakRef = new WeakReference<>(ret);
-                }
-                mainLru.markUsed(ret);
-
-                //logLru("merged", mainLru, ret);
-                return ret;
-            }
-        }
-
-        /**
-         * for zoomed in view (if padding): merged or unmerged padding for padding merge of a neighbor
-         *
-         * @return MergeOverlapFuture or LoadUnmergedFuture as available
-         */
-        private LoadUnmergedFuture getUnmergedAsMergePartner() {
-            synchronized (mWeakRefSync) {
-                final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
-                Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
-
-
-                final LoadUnmergedFuture ret;
-                if (candidate instanceof LoadUnmergedFuture) {
-                    secondaryLru.markUsed(candidate);
-                    ret = (LoadUnmergedFuture) candidate;
-                } else if (candidate instanceof MergeOverlapFuture) {
-                    mainLru.markUsed(candidate);
-                    ret = ((MergeOverlapFuture) candidate).loadFuture;
-                } else {
-                    final LoadUnmergedFuture created = new LoadUnmergedFuture(this);
-                    this.weakRef = new WeakReference<Future<HillshadingBitmap>>(created);
-                    secondaryLru.markUsed(created);
-                    ret = created;
-                }
-                return ret;
-            }
-        }
-
-        /**
-         * for zoomed out view (or all resolutions, if no padding): merged or unmerged padding, primary LRU spilling over to secondary (if available)
-         *
-         * @return MergeOverlapFuture or LoadUnmergedFuture as available
-         */
-        private Future<HillshadingBitmap> getForLores() {
             synchronized (mWeakRefSync) {
                 final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
                 Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
@@ -379,8 +239,9 @@ public class HgtCache {
                     candidate = new LoadUnmergedFuture(this);
                     this.weakRef = new WeakReference<>(candidate);
                 }
-                final Future<HillshadingBitmap> evicted = mainLru.markUsed(candidate);
-                if (secondaryLru != null) secondaryLru.markUsed(evicted);
+
+                mainLru.markUsed(candidate);
+
                 return candidate;
             }
         }
@@ -434,29 +295,12 @@ public class HgtCache {
             return maxLongitude;
         }
 
-        private HgtFileInfo getNeighbor(HillshadingBitmap.Border border) throws ExecutionException, InterruptedException {
-
-            Map<TileKey, HgtFileInfo> map = hgtFiles.get();
-            switch (border) {
-                case NORTH:
-                    return map.get(new TileKey((int) maxLatitude + 1, (int) minLongitude));
-                case SOUTH:
-                    return map.get(new TileKey((int) maxLatitude - 1, (int) minLongitude));
-                case EAST:
-                    return map.get(new TileKey((int) maxLatitude, (int) minLongitude + 1));
-                case WEST:
-                    return map.get(new TileKey((int) maxLatitude, (int) minLongitude - 1));
-            }
-            return null;
-        }
-
         @Override
         public String toString() {
             Future<HillshadingBitmap> future = weakRef == null ? null : weakRef.get();
             return "[lt:" + minLatitude + "-" + maxLatitude + " ln:" + minLongitude + "-" + maxLongitude + (future == null ? "" : future.isDone() ? "done" : "wip") + "]";
         }
     }
-
 
     HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, double pxPerLat, double pxPerLng) throws InterruptedException, ExecutionException {
         final HgtFileInfo hgtFileInfo = hgtFiles
@@ -471,34 +315,29 @@ public class HgtCache {
         return future.get();
     }
 
-    static void mergeSameSized(HillshadingBitmap center, HillshadingBitmap neighbor, HillshadingBitmap.Border border, int padding, Canvas copyCanvas) {
-        final HillshadingBitmap sink;
-        final HillshadingBitmap source;
+    public static void mergeSameSized(HillshadingBitmap center, HillshadingBitmap neighbor, HillshadingBitmap.Border border, int padding, Canvas copyCanvas) {
+        final HillshadingBitmap sink = center;
+        final HillshadingBitmap source = neighbor;
 
-        if (border == HillshadingBitmap.Border.EAST) {
-            sink = center;
-            source = neighbor;
-            copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(sink.getWidth() - padding, padding, padding, sink.getHeight() - 2 * padding, true);
-            copyCanvas.drawBitmap(source, (source.getWidth() - 2 * padding), 0);
-        } else if (border == HillshadingBitmap.Border.WEST) {
-            sink = center;
-            source = neighbor;
-            copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(0, padding, padding, sink.getHeight() - 2 * padding, true);
-            copyCanvas.drawBitmap(source, 2 * padding - (source.getWidth()), 0);
-        } else if (border == HillshadingBitmap.Border.NORTH) {
-            sink = center;
-            source = neighbor;
-            copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(padding, 0, sink.getWidth() - 2 * padding, padding, true);
-            copyCanvas.drawBitmap(source, 0, 2 * padding - (source.getHeight()));
-        } else if (border == HillshadingBitmap.Border.SOUTH) {
-            sink = center;
-            source = neighbor;
-            copyCanvas.setBitmap(sink);
-            copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding, true);
-            copyCanvas.drawBitmap(source, 0, (source.getHeight() - 2 * padding));
+        copyCanvas.setBitmap(sink);
+
+        switch (border) {
+            case WEST:
+                copyCanvas.setClip(0, padding, padding, sink.getHeight() - 2 * padding, true);
+                copyCanvas.drawBitmap(source, -sink.getWidth() + 2 * padding, 0);
+                break;
+            case EAST:
+                copyCanvas.setClip(sink.getWidth() - padding, padding, padding, sink.getHeight() - 2 * padding, true);
+                copyCanvas.drawBitmap(source, sink.getWidth() - 2 * padding, 0);
+                break;
+            case NORTH:
+                copyCanvas.setClip(padding, 0, sink.getWidth() - 2 * padding, padding, true);
+                copyCanvas.drawBitmap(source, 0, -sink.getHeight() + 2 * padding);
+                break;
+            case SOUTH:
+                copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding, true);
+                copyCanvas.drawBitmap(source, 0, sink.getHeight() - 2 * padding);
+                break;
         }
     }
 

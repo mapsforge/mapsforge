@@ -60,7 +60,7 @@ public class SimpleClasyHillShading extends StandardClasyHillShading {
      * @return Shade value as a {@code byte}.
      */
     protected byte getShadePixel(final double slope) {
-        double shade = slopeToShade(slope);
+        double shade = HillShadingUtils.linearMapping(ShadeMin, slope, mMinSlope, mMaxSlope, mMainMappingFactor);
 
         if (slope < 0) {
             shade = (1 - mAsymmetryFactor) * shade;
@@ -72,8 +72,8 @@ public class SimpleClasyHillShading extends StandardClasyHillShading {
     /**
      * {@inheritDoc}
      */
-    protected byte unitElementToShadePixel(double nw, double sw, double se, double ne, double mpe) {
-        final double metersPerPixelDiagonal = SqrtTwo * mpe;
+    protected byte unitElementToShadePixel(double nw, double sw, double se, double ne, double dsf) {
+        final double metersPerPixelDiagonal = SqrtTwo * 0.5 / dsf;
 
         final double slope = 100 * getSlopeToUse(nw - se, ne - sw) / metersPerPixelDiagonal;
 
