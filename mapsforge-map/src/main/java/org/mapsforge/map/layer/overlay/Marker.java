@@ -27,6 +27,7 @@ import org.mapsforge.map.view.MapView;
  * A {@code Marker} draws a {@link Bitmap} at a given geographical position.
  */
 public class Marker extends Layer {
+    private boolean billboard = true;
     private Bitmap bitmap;
     private int horizontalOffset;
     private LatLong latLong;
@@ -85,13 +86,17 @@ public class Marker extends Layer {
             return;
         }
 
-        if (!Rotation.noRotation(rotation)) {
+        if (billboard && !Rotation.noRotation(rotation)) {
             canvas.rotate(new Rotation(-rotation.degrees, (float) (pixelX - topLeftPoint.x), (float) (pixelY - topLeftPoint.y)));
         }
         canvas.drawBitmap(this.bitmap, left, top);
-        if (!Rotation.noRotation(rotation)) {
+        if (billboard && !Rotation.noRotation(rotation)) {
             canvas.rotate(new Rotation(rotation.degrees, (float) (pixelX - topLeftPoint.x), (float) (pixelY - topLeftPoint.y)));
         }
+    }
+
+    public synchronized boolean isBillboard() {
+        return this.billboard;
     }
 
     /**
@@ -135,6 +140,10 @@ public class Marker extends Layer {
         if (this.bitmap != null) {
             this.bitmap.decrementRefCount();
         }
+    }
+
+    public synchronized void setBillboard(boolean billboard) {
+        this.billboard = billboard;
     }
 
     /**
