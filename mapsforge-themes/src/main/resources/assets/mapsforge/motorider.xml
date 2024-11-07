@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 31, 23rd October 2024
+    REVISION 32, 2nd November 2024
 	this is the default/light Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -1020,6 +1020,7 @@
         </rule>
         <rule e="way" k="highway" v="trunk|trunk_link" zoom-min="12" zoom-max="12">
             <caption k="ref" fill="#ffff00" font-size="10" font-style="bold" priority="80" stroke="#006600" stroke-width="4"/>
+            <!--<pathText k="ref" fill="#ffff00" font-size="10" font-style="bold" priority="80" repeat-gap="50" repeat-start="25" stroke="#006600" stroke-width="3" />-->
         </rule>
         <rule e="way" k="highway" v="trunk|trunk_link" zoom-min="13">
             <pathText k="name" fill="#000000" font-size="10" font-style="bold" priority="80" repeat-gap="250" repeat-start="50" stroke="#FFFFFF" stroke-width="3" />
@@ -1137,13 +1138,16 @@
     <!-- provides additional road captions for Motorway, Trunk, Primary/Secondary at levels 10, 11 and 12 respectively -->
     <rule cat="road_detail" e="way" k="highway" v="*" zoom-min="8">
         <rule e="way" k="highway" v="secondary|secondary_link" zoom-min="12" zoom-max="12">
-            <caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="30" stroke="#804000" stroke-width="4"/>
+            <!--<caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="30" stroke="#804000" stroke-width="4"/>-->
+            <pathText k="ref" fill="#000000" font-size="10" font-style="bold" priority="30" repeat-gap="35" repeat-start="15" stroke="#FFFFFF" stroke-width="2" />
         </rule>
         <rule e="way" k="highway" v="primary|primary_link" zoom-min="12" zoom-max="12">
-            <caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="40" stroke="#b30000" stroke-width="4"/>
+            <!--<caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="40" stroke="#b30000" stroke-width="4"/>-->
+            <pathText k="ref" fill="#000000" font-size="10" font-style="bold" priority="40" repeat-gap="35" repeat-start="15" stroke="#FFFFFF" stroke-width="2" />
         </rule>
         <rule e="way" k="highway" v="trunk|trunk_link" zoom-min="11" zoom-max="11">
             <caption k="ref" fill="#ffff00" font-size="10" font-style="bold" priority="80" stroke="#006600" stroke-width="4"/>
+            <!--<pathText k="ref" fill="#ffff00" font-size="10" font-style="bold" priority="80" repeat-gap="125" repeat-start="50" stroke="#006600" stroke-width="4" />-->
         </rule>
         <rule e="way" k="highway" v="motorway|motorway_link" zoom-min="10" zoom-max="12">
             <caption k="ref" fill="#FFFFFF" font-size="10" font-style="bold" priority="95" stroke="#42618a" stroke-width="4"/>
