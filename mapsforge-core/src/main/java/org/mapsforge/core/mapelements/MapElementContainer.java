@@ -13,12 +13,10 @@
  * You should have received a copy of the GNU Lesser General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.mapsforge.core.mapelements;
 
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.Display;
-import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.core.graphics.Matrix;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.model.Rectangle;
@@ -85,9 +83,9 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 
     /**
      * Drawing method: element will draw itself on canvas shifted by origin point of canvas and
-     * using the matrix if rotation is required. Additionally a color filter can be applied.
+     * using the matrix if rotation is required.
      */
-    public abstract void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter);
+    public abstract void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation);
 
     /**
      * Gets the pixel absolute boundary for this element.

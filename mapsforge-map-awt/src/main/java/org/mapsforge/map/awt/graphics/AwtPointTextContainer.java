@@ -40,7 +40,7 @@ public class AwtPointTextContainer extends PointTextContainer {
     }
 
     @Override
-    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter) {
+    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation) {
         if (this.paintFront.isTransparent() && (this.paintBack == null || this.paintBack.isTransparent())) {
             return;
         }
@@ -51,10 +51,6 @@ public class AwtPointTextContainer extends PointTextContainer {
 
         int textWidth = this.paintFront.getTextWidth(this.text);
         if (textWidth > maxTextWidth) {
-            int colorF = this.paintFront.getColor();
-            if (filter != Filter.NONE) {
-                this.paintFront.setColor(GraphicUtils.filterColor(colorF, filter));
-            }
             AttributedString attrString = new AttributedString(this.text);
             org.mapsforge.map.awt.graphics.AwtPaint awtPaintFront = org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintFront);
             attrString.addAttribute(TextAttribute.FOREGROUND, awtPaintFront.color);
@@ -106,43 +102,19 @@ public class AwtPointTextContainer extends PointTextContainer {
                     throw new IllegalArgumentException("No position for drawing PointTextContainer");
                 }
                 if (this.paintBack != null) {
-                    int colorB = this.paintBack.getColor();
-                    if (filter != Filter.NONE) {
-                        this.paintBack.setColor(GraphicUtils.filterColor(colorB, filter));
-                    }
                     awtCanvas.setColorAndStroke(org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintBack));
                     AffineTransform affineTransform = new AffineTransform();
                     affineTransform.translate(posX, posY);
                     awtCanvas.getGraphicObject().draw(layout.getOutline(affineTransform));
-                    if (filter != Filter.NONE) {
-                        this.paintBack.setColor(colorB);
-                    }
                 }
                 layout.draw(awtCanvas.getGraphicObject(), posX, posY);
                 drawPosY += layout.getAscent() + layout.getDescent() + layout.getLeading();
-                if (filter != Filter.NONE) {
-                    this.paintFront.setColor(colorF);
-                }
             }
         } else {
             if (this.paintBack != null) {
-                int color = this.paintBack.getColor();
-                if (filter != Filter.NONE) {
-                    this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
-                }
                 canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintBack);
-                if (filter != Filter.NONE) {
-                    this.paintBack.setColor(color);
-                }
-            }
-            int color = this.paintFront.getColor();
-            if (filter != Filter.NONE) {
-                this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
             }
             canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintFront);
-            if (filter != Filter.NONE) {
-                this.paintFront.setColor(color);
-            }
         }
     }
 

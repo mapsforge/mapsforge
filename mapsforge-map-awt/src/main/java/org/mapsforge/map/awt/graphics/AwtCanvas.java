@@ -31,12 +31,11 @@ import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.util.Parameters;
 
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 import java.util.AbstractMap;
 import java.util.Map;
 
@@ -45,7 +44,6 @@ class AwtCanvas implements Canvas {
 
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;
-    private BufferedImageOp grayscaleOp, invertOp, invertOp4;
 
     private static final java.awt.Color NEUTRAL_HILLS = new java.awt.Color(127, 127, 127);
     private static Map.Entry<Float, Composite> sizeOneShadingCompositeCache = null;
@@ -86,71 +84,11 @@ class AwtCanvas implements Canvas {
     }
 
     AwtCanvas() {
-        createFilters();
     }
 
     AwtCanvas(Graphics2D graphics2D) {
         this.graphics2D = graphics2D;
         setAntiAlias(Parameters.ANTI_ALIASING);
-
-        createFilters();
-    }
-
-    private BufferedImage applyFilter(BufferedImage src, Filter filter) {
-        if (filter == Filter.NONE) {
-            return src;
-        }
-        BufferedImage dest = null;
-        switch (filter) {
-            case GRAYSCALE:
-                dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-                this.grayscaleOp.filter(src, dest);
-                break;
-            case GRAYSCALE_INVERT:
-                dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-                this.grayscaleOp.filter(src, dest);
-                dest = applyInvertFilter(dest);
-                break;
-            case INVERT:
-                dest = applyInvertFilter(src);
-                break;
-        }
-        return dest;
-    }
-
-    private BufferedImage applyInvertFilter(BufferedImage src) {
-        final BufferedImage newSrc;
-        if (src.getColorModel() instanceof IndexColorModel) {
-            newSrc = new BufferedImage(src.getWidth(), src.getHeight(), src.getColorModel().getNumComponents() == 3 ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2 = newSrc.createGraphics();
-            g2.drawImage(src, 0, 0, null);
-            g2.dispose();
-        } else {
-            newSrc = src;
-        }
-        BufferedImage dest = new BufferedImage(newSrc.getWidth(), newSrc.getHeight(), newSrc.getType());
-        switch (newSrc.getColorModel().getNumComponents()) {
-            case 3:
-                this.invertOp.filter(newSrc, dest);
-                break;
-            case 4:
-                this.invertOp4.filter(newSrc, dest);
-                break;
-        }
-        return dest;
-    }
-
-    private void createFilters() {
-        this.grayscaleOp = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-
-        short[] invert = new short[256];
-        short[] straight = new short[256];
-        for (int i = 0; i < 256; i++) {
-            invert[i] = (short) (255 - i);
-            straight[i] = (short) i;
-        }
-        this.invertOp = new LookupOp(new ShortLookupTable(0, invert), null);
-        this.invertOp4 = new LookupOp(new ShortLookupTable(0, new short[][]{invert, invert, invert, straight}), null);
     }
 
     @Override
@@ -164,12 +102,12 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, int left, int top, float alpha, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, int left, int top, float alpha) {
         Composite composite = this.graphics2D.getComposite();
         if (alpha != 1) {
             this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         }
-        this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), left, top, null);
+        this.graphics2D.drawImage(AwtGraphicFactory.getBitmap(bitmap), left, top, null);
         if (alpha != 1) {
             this.graphics2D.setComposite(composite);
         }
@@ -182,12 +120,12 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, Matrix matrix, float alpha, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, Matrix matrix, float alpha) {
         Composite composite = this.graphics2D.getComposite();
         if (alpha != 1) {
             this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         }
-        this.graphics2D.drawRenderedImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter), AwtGraphicFactory.getAffineTransform(matrix));
+        this.graphics2D.drawRenderedImage(AwtGraphicFactory.getBitmap(bitmap), AwtGraphicFactory.getAffineTransform(matrix));
         if (alpha != 1) {
             this.graphics2D.setComposite(composite);
         }
@@ -204,12 +142,12 @@ class AwtCanvas implements Canvas {
 
     @Override
     public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
-                           int dstLeft, int dstTop, int dstRight, int dstBottom, float alpha, Filter filter) {
+                           int dstLeft, int dstTop, int dstRight, int dstBottom, float alpha) {
         Composite composite = this.graphics2D.getComposite();
         if (alpha != 1) {
             this.graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         }
-        this.graphics2D.drawImage(applyFilter(AwtGraphicFactory.getBitmap(bitmap), filter),
+        this.graphics2D.drawImage(AwtGraphicFactory.getBitmap(bitmap),
                 dstLeft, dstTop, dstRight, dstBottom,
                 srcLeft, srcTop, srcRight, srcBottom,
                 null);

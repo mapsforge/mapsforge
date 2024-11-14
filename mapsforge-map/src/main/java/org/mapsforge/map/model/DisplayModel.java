@@ -15,7 +15,6 @@
  */
 package org.mapsforge.map.model;
 
-import org.mapsforge.core.graphics.Filter;
 import org.mapsforge.map.model.common.Observable;
 import org.mapsforge.map.rendertheme.ThemeCallback;
 
@@ -89,7 +88,6 @@ public class DisplayModel extends Observable {
     }
 
     private int backgroundColor = DEFAULT_BACKGROUND_COLOR;
-    private Filter filter = Filter.NONE;
     private int fixedTileSize;
     private int maxTextWidth = DEFAULT_MAX_TEXT_WIDTH;
     private float maxTextWidthFactor = DEFAULT_MAX_TEXT_WIDTH_FACTOR;
@@ -111,8 +109,6 @@ public class DisplayModel extends Observable {
             return false;
         DisplayModel other = (DisplayModel) obj;
         if (this.backgroundColor != other.backgroundColor)
-            return false;
-        if (this.filter != other.filter)
             return false;
         if (this.fixedTileSize != other.fixedTileSize)
             return false;
@@ -136,13 +132,6 @@ public class DisplayModel extends Observable {
      */
     public synchronized int getBackgroundColor() {
         return backgroundColor;
-    }
-
-    /**
-     * Color filtering in map rendering.
-     */
-    public synchronized Filter getFilter() {
-        return this.filter;
     }
 
     /**
@@ -198,7 +187,6 @@ public class DisplayModel extends Observable {
         final int prime = 31;
         int result = 1;
         result = prime * result + this.backgroundColor;
-        result = prime * result + this.filter.hashCode();
         result = prime * result + this.fixedTileSize;
         result = prime * result + this.maxTextWidth;
         result = prime * result + Float.floatToIntBits(this.maxTextWidthFactor);
@@ -215,13 +203,6 @@ public class DisplayModel extends Observable {
      */
     public synchronized void setBackgroundColor(int color) {
         this.backgroundColor = color;
-    }
-
-    /**
-     * Color filtering in map rendering.
-     */
-    public synchronized void setFilter(Filter filter) {
-        this.filter = filter;
     }
 
     /**

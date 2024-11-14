@@ -116,7 +116,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     this.jobQueue.add(job);
                 }
                 retrieveLabelsOnly(job);
-                canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.alpha, this.displayModel.getFilter());
+                canvas.drawBitmap(bitmap, (int) Math.round(point.x), (int) Math.round(point.y), this.alpha);
                 bitmap.decrementRefCount();
             }
         }
@@ -264,7 +264,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     canvas.drawBitmap(bitmap,
                             (int) (translateX / scaleFactor), (int) (translateY / scaleFactor), (int) ((translateX + tileSize) / scaleFactor), (int) ((translateY + tileSize) / scaleFactor),
                             x, y, x + tileSize, y + tileSize,
-                            this.alpha, this.displayModel.getFilter());
+                            this.alpha);
 
                     canvas.setAntiAlias(antiAlias);
                     canvas.setFilterBitmap(filterBitmap);
@@ -274,7 +274,7 @@ public abstract class TileLayer<T extends Job> extends Layer {
                     this.matrix.scale(scaleFactor, scaleFactor);
 
                     canvas.setClip(x, y, this.displayModel.getTileSize(), this.displayModel.getTileSize());
-                    canvas.drawBitmap(bitmap, this.matrix, this.alpha, this.displayModel.getFilter());
+                    canvas.drawBitmap(bitmap, this.matrix, this.alpha);
                     canvas.resetClip();
                 }
 

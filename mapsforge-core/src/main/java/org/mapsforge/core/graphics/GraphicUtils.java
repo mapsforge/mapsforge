@@ -20,36 +20,6 @@ package org.mapsforge.core.graphics;
  * Utility class for graphics operations.
  */
 public final class GraphicUtils {
-    /**
-     * Color filtering.
-     *
-     * @param color  color value in layout 0xAARRGGBB.
-     * @param filter filter to apply on the color.
-     * @return the filtered color.
-     */
-    public static int filterColor(int color, Filter filter) {
-        if (filter == Filter.NONE) {
-            return color;
-        }
-        int a = color >>> 24;
-        int r = (color >> 16) & 0xFF;
-        int g = (color >> 8) & 0xFF;
-        int b = color & 0xFF;
-        switch (filter) {
-            case GRAYSCALE:
-                r = g = b = (int) (0.213f * r + 0.715f * g + 0.072f * b);
-                break;
-            case GRAYSCALE_INVERT:
-                r = g = b = 255 - (int) (0.213f * r + 0.715f * g + 0.072f * b);
-                break;
-            case INVERT:
-                r = 255 - r;
-                g = 255 - g;
-                b = 255 - b;
-                break;
-        }
-        return (a << 24) | (r << 16) | (g << 8) | b;
-    }
 
     /**
      * @param color color value in layout 0xAARRGGBB.

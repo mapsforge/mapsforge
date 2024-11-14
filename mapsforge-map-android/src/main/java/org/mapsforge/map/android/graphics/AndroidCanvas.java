@@ -21,38 +21,21 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.os.Build;
-
-import org.mapsforge.core.graphics.Bitmap;
-import org.mapsforge.core.graphics.Canvas;
-import org.mapsforge.core.graphics.Color;
-import org.mapsforge.core.graphics.Filter;
-import org.mapsforge.core.graphics.Matrix;
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Path;
+import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.Dimension;
 import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
 
 class AndroidCanvas implements Canvas {
-    private static final float[] INVERT_MATRIX = {
-            -1, 0, 0, 0, 255,
-            0, -1, 0, 0, 255,
-            0, 0, -1, 0, 255,
-            0, 0, 0, 1, 0
-    };
 
     android.graphics.Canvas canvas;
     protected final android.graphics.Paint bitmapPaint = new android.graphics.Paint();
     protected final android.graphics.Paint shadePaint = new android.graphics.Paint();
     protected final android.graphics.Matrix tmpMatrix = new android.graphics.Matrix();
-    protected ColorFilter grayscaleFilter, grayscaleInvertFilter, invertFilter;
 
     /**
      * A set of reusable temporaries that is not needed when hillshading is inactive.
@@ -67,44 +50,10 @@ class AndroidCanvas implements Canvas {
 
         shadePaint.setAntiAlias(true);
         shadePaint.setFilterBitmap(true);
-
-        createFilters();
     }
 
     AndroidCanvas(android.graphics.Canvas canvas) {
         this.canvas = canvas;
-
-        createFilters();
-    }
-
-    private void applyFilter(Filter filter) {
-        if (filter == Filter.NONE) {
-            return;
-        }
-        switch (filter) {
-            case GRAYSCALE:
-                bitmapPaint.setColorFilter(grayscaleFilter);
-                break;
-            case GRAYSCALE_INVERT:
-                bitmapPaint.setColorFilter(grayscaleInvertFilter);
-                break;
-            case INVERT:
-                bitmapPaint.setColorFilter(invertFilter);
-                break;
-        }
-    }
-
-    private void createFilters() {
-        ColorMatrix grayscaleMatrix = new ColorMatrix();
-        grayscaleMatrix.setSaturation(0);
-        grayscaleFilter = new ColorMatrixColorFilter(grayscaleMatrix);
-
-        ColorMatrix grayscaleInvertMatrix = new ColorMatrix();
-        grayscaleInvertMatrix.setSaturation(0);
-        grayscaleInvertMatrix.postConcat(new ColorMatrix(INVERT_MATRIX));
-        grayscaleInvertFilter = new ColorMatrixColorFilter(grayscaleInvertMatrix);
-
-        invertFilter = new ColorMatrixColorFilter(INVERT_MATRIX);
     }
 
     @Override
@@ -123,16 +72,12 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, int left, int top, float alpha, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, int left, int top, float alpha) {
         int oldAlpha = this.bitmapPaint.getAlpha();
         if (alpha != 1) {
             this.bitmapPaint.setAlpha((int) (alpha * 255));
         }
-        applyFilter(filter);
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), left, top, bitmapPaint);
-        if (filter != Filter.NONE) {
-            bitmapPaint.setColorFilter(null);
-        }
         if (alpha != 1) {
             this.bitmapPaint.setAlpha(oldAlpha);
         }
@@ -144,16 +89,12 @@ class AndroidCanvas implements Canvas {
     }
 
     @Override
-    public void drawBitmap(Bitmap bitmap, Matrix matrix, float alpha, Filter filter) {
+    public void drawBitmap(Bitmap bitmap, Matrix matrix, float alpha) {
         int oldAlpha = this.bitmapPaint.getAlpha();
         if (alpha != 1) {
             this.bitmapPaint.setAlpha((int) (alpha * 255));
         }
-        applyFilter(filter);
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap), AndroidGraphicFactory.getMatrix(matrix), bitmapPaint);
-        if (filter != Filter.NONE) {
-            bitmapPaint.setColorFilter(null);
-        }
         if (alpha != 1) {
             this.bitmapPaint.setAlpha(oldAlpha);
         }
@@ -170,19 +111,15 @@ class AndroidCanvas implements Canvas {
 
     @Override
     public void drawBitmap(Bitmap bitmap, int srcLeft, int srcTop, int srcRight, int srcBottom,
-                           int dstLeft, int dstTop, int dstRight, int dstBottom, float alpha, Filter filter) {
+                           int dstLeft, int dstTop, int dstRight, int dstBottom, float alpha) {
         int oldAlpha = this.bitmapPaint.getAlpha();
         if (alpha != 1) {
             this.bitmapPaint.setAlpha((int) (alpha * 255));
         }
-        applyFilter(filter);
         this.canvas.drawBitmap(AndroidGraphicFactory.getBitmap(bitmap),
                 new Rect(srcLeft, srcTop, srcRight, srcBottom),
                 new Rect(dstLeft, dstTop, dstRight, dstBottom),
                 this.bitmapPaint);
-        if (filter != Filter.NONE) {
-            this.bitmapPaint.setColorFilter(null);
-        }
         if (alpha != 1) {
             this.bitmapPaint.setAlpha(oldAlpha);
         }
@@ -419,7 +356,7 @@ class AndroidCanvas implements Canvas {
                     {
                         final android.graphics.Bitmap subImage = android.graphics.Bitmap.createBitmap(hillsBitmap, srcLeft, srcTop, srcWidth, srcHeight);
 
-                        if (false == android.graphics.Bitmap.Config.ARGB_8888.equals(subImage.getConfig())) {
+                        if (!android.graphics.Bitmap.Config.ARGB_8888.equals(subImage.getConfig())) {
                             // We need to copy the original bitmap to the ARGB configuration, otherwise the drawn bitmap will not be filtered
                             subImageArgb = subImage.copy(android.graphics.Bitmap.Config.ARGB_8888, false);
                         } else {

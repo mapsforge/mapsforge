@@ -73,8 +73,7 @@ public class CanvasRasterer {
         Collections.sort(elementsAsList);
 
         for (MapElementContainer element : elementsAsList) {
-            // The color filtering takes place in TileLayer
-            element.draw(canvas, tile.getOrigin(), this.symbolMatrix, Rotation.NULL_ROTATION, Filter.NONE);
+            element.draw(canvas, tile.getOrigin(), this.symbolMatrix, Rotation.NULL_ROTATION);
         }
     }
 
