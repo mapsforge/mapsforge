@@ -54,8 +54,6 @@ class AndroidCanvas implements Canvas {
 
         shadePaint.setAntiAlias(true);
         shadePaint.setFilterBitmap(true);
-
-        createFilters();
     }
 
     @Override
