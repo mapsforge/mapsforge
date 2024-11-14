@@ -49,27 +49,13 @@ public class WayTextContainer extends MapElementContainer {
     }
 
     @Override
-    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter) {
+    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation) {
         Path path = generatePath(origin, rotation);
 
         if (this.paintBack != null) {
-            int color = this.paintBack.getColor();
-            if (filter != Filter.NONE) {
-                this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
-            }
             canvas.drawPathText(this.text, path, this.paintBack);
-            if (filter != Filter.NONE) {
-                this.paintBack.setColor(color);
-            }
-        }
-        int color = this.paintFront.getColor();
-        if (filter != Filter.NONE) {
-            this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
         }
         canvas.drawPathText(this.text, path, this.paintFront);
-        if (filter != Filter.NONE) {
-            this.paintFront.setColor(color);
-        }
     }
 
     private Path generatePath(Point origin, Rotation rotation) {

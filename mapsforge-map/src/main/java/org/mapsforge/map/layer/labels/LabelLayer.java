@@ -70,7 +70,7 @@ public class LabelLayer extends Layer {
 
     protected void draw(Canvas canvas, Point topLeftPoint, Rotation rotation) {
         for (MapElementContainer item : elementsToDraw) {
-            item.draw(canvas, topLeftPoint, this.matrix, rotation, this.displayModel.getFilter());
+            item.draw(canvas, topLeftPoint, this.matrix, rotation);
         }
     }
 }

@@ -135,7 +135,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
     }
 
     @Override
-    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation, Filter filter) {
+    public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation) {
         if (!this.isVisible) {
             return;
         }
@@ -163,23 +163,9 @@ public class AndroidPointTextContainer extends PointTextContainer {
             androidCanvas.translate((float) x, (float) y);
 
             if (this.backLayout != null) {
-                int color = this.backLayout.getPaint().getColor();
-                if (filter != Filter.NONE) {
-                    this.backLayout.getPaint().setColor(GraphicUtils.filterColor(color, filter));
-                }
                 this.backLayout.draw(androidCanvas);
-                if (filter != Filter.NONE) {
-                    this.backLayout.getPaint().setColor(color);
-                }
-            }
-            int color = this.frontLayout.getPaint().getColor();
-            if (filter != Filter.NONE) {
-                this.frontLayout.getPaint().setColor(GraphicUtils.filterColor(color, filter));
             }
             this.frontLayout.draw(androidCanvas);
-            if (filter != Filter.NONE) {
-                this.frontLayout.getPaint().setColor(color);
-            }
             androidCanvas.restore();
         } else {
             // the origin of the text is the base line, so we need to make adjustments
@@ -215,23 +201,9 @@ public class AndroidPointTextContainer extends PointTextContainer {
             y += this.verticalOffset + textOffset; // the text offset has nothing to do with rotation, so add later
 
             if (this.paintBack != null) {
-                int color = this.paintBack.getColor();
-                if (filter != Filter.NONE) {
-                    this.paintBack.setColor(GraphicUtils.filterColor(color, filter));
-                }
                 androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintBack));
-                if (filter != Filter.NONE) {
-                    this.paintBack.setColor(color);
-                }
-            }
-            int color = this.paintFront.getColor();
-            if (filter != Filter.NONE) {
-                this.paintFront.setColor(GraphicUtils.filterColor(color, filter));
             }
             androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintFront));
-            if (filter != Filter.NONE) {
-                this.paintFront.setColor(color);
-            }
             if (!Rotation.noRotation(rotation)) {
                 androidCanvas.restore();
             }
