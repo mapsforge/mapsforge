@@ -43,17 +43,19 @@ class AndroidCanvas implements Canvas {
     protected HillshadingTemps hillshadingTemps = null;
 
     AndroidCanvas() {
-        this.canvas = new android.graphics.Canvas();
+        this(new android.graphics.Canvas());
+    }
+
+    AndroidCanvas(android.graphics.Canvas canvas) {
+        this.canvas = canvas;
 
         this.bitmapPaint.setAntiAlias(true);
         this.bitmapPaint.setFilterBitmap(true);
 
         shadePaint.setAntiAlias(true);
         shadePaint.setFilterBitmap(true);
-    }
 
-    AndroidCanvas(android.graphics.Canvas canvas) {
-        this.canvas = canvas;
+        createFilters();
     }
 
     @Override
