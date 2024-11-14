@@ -3,10 +3,14 @@
 
     <style name="AppThemeDark" parent="AppThemeDarkBase">
         <item name="android:fitsSystemWindows">true</item>
+        <item name="android:enforceNavigationBarContrast">true</item>
+        <item name="android:enforceStatusBarContrast">true</item>
     </style>
 
     <style name="AppThemeLight" parent="AppThemeLightBase">
         <item name="android:fitsSystemWindows">true</item>
+        <item name="android:enforceNavigationBarContrast">true</item>
+        <item name="android:enforceStatusBarContrast">true</item>
     </style>
 
 </resources>
