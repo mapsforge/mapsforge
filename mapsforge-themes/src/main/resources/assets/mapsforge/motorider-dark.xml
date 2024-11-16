@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://mapsforge.org/renderTheme https://raw.githubusercontent.com/mapsforge/mapsforge/master/resources/renderTheme.xsd">
 
     <!--
-    REVISION 32, 2nd November 2024
+    REVISION 33, 16 November 2024
     this is the "Dark" Cruiser theme and is based on the default.xml Mapsforge theme available at:
     https://github.com/mapsforge/mapsforge/tree/master/mapsforge-themes/src/main/resources/assets/mapsforge
     -->
@@ -23,6 +23,7 @@
             <name lang="ko" value="숙소" />
             <name lang="nl" value="Onderkomen" />
             <name lang="pl" value="Zakwaterowanie" />
+            <name lang="zh" value="住宿" />
             <cat id="accommodation" />
         </layer>
         <layer id="money">
@@ -37,6 +38,7 @@
             <name lang="ko" value="은행 및 ATM" />
             <name lang="nl" value="Banken en geldautomaten" />
             <name lang="pl" value="Banki i bankomaty" />
+            <name lang="zh" value="银行和 ATM" />
             <cat id="money" />
         </layer>
         <layer id="entertainment">
@@ -51,6 +53,7 @@
             <name lang="ko" value="오락" />
             <name lang="nl" value="Vermaak" />
             <name lang="pl" value="Rozrywka" />
+            <name lang="zh" value="娱乐" />
             <cat id="entertainment" />
         </layer>
         <layer id="food">
@@ -65,6 +68,7 @@
             <name lang="ko" value="주식" />
             <name lang="nl" value="Eten en drinken" />
             <name lang="pl" value="Jedzenie i picie" />
+            <name lang="zh" value="餐饮" />
             <cat id="food" />
         </layer>
         <layer id="emergency">
@@ -79,6 +83,7 @@
             <name lang="ko" value="응급 서비스" />
             <name lang="nl" value="Hulpdiensten" />
             <name lang="pl" value="Służby ratunkowe" />
+            <name lang="zh" value="紧急服务" />
             <cat id="emergency" />
         </layer>
         <layer id="fuel">
@@ -93,6 +98,7 @@
             <name lang="ko" value="주유소" />
             <name lang="nl" value="Tankstations" />
             <name lang="pl" value="Stacje paliw" />
+            <name lang="zh" value="加油站" />
             <cat id="fuel" />
         </layer>
         <layer id="charging_station">
@@ -107,6 +113,7 @@
             <name lang="ko" value="충전소" />
             <name lang="nl" value="Laadstations" />
             <name lang="pl" value="Stacje ładowania" />
+            <name lang="zh" value="充电站" />
             <cat id="charging_station" />
         </layer>
         <layer id="parking">
@@ -121,6 +128,7 @@
             <name lang="ko" value="주차장" />
             <name lang="nl" value="Parkeerplaatsen" />
             <name lang="pl" value="Miejsca parkingowe" />
+            <name lang="zh" value="停车场" />
             <cat id="parking" />
         </layer>
         <layer id="misc">
@@ -135,6 +143,7 @@
             <name lang="ko" value="여러 가지 잡다한" />
             <name lang="nl" value="Gemengd" />
             <name lang="pl" value="Różnorodny" />
+            <name lang="zh" value="杂项" />
             <cat id="misc" />
         </layer>
         <layer id="mountain_pass">
@@ -149,6 +158,7 @@
             <name lang="ko" value="산악 패스" />
             <name lang="nl" value="Bergpassen" />
             <name lang="pl" value="Przełęcze górskie" />
+            <name lang="zh" value="垭口" />
             <cat id="mountain_pass" />
         </layer>
         <layer id="mountain_peak">
@@ -163,6 +173,7 @@
             <name lang="ko" value="산봉우리" />
             <name lang="nl" value="Bergpieken" />
             <name lang="pl" value="Szczyty górskie" />
+            <name lang="zh" value="山峰" />
             <cat id="mountain_peak" />
         </layer>
         <layer id="public_transport">
@@ -177,6 +188,7 @@
             <name lang="ko" value="대중 교통" />
             <name lang="nl" value="Openbaar vervoer" />
             <name lang="pl" value="Transport publiczny" />
+            <name lang="zh" value="公共交通" />
             <cat id="public_transport" />
         </layer>
         <layer id="shop">
@@ -191,6 +203,7 @@
             <name lang="ko" value="상점" />
             <name lang="nl" value="Winkels" />
             <name lang="pl" value="Sklepy" />
+            <name lang="zh" value="商店" />
             <cat id="shop" />
         </layer>
         <layer id="attraction">
@@ -205,6 +218,7 @@
             <name lang="ko" value="관광 명소" />
             <name lang="nl" value="Touristische attracties" />
             <name lang="pl" value="Atrakcje turystyczne" />
+            <name lang="zh" value="旅游景点" />
             <cat id="attraction" />
         </layer>
         <layer id="view">
@@ -219,6 +233,7 @@
             <name lang="ko" value="뷰 포인트" />
             <name lang="nl" value="Uitzichtspunten" />
             <name lang="pl" value="Punkty widokowe" />
+            <name lang="zh" value="观景点" />
             <cat id="view" />
         </layer>
         <layer id="contour">
@@ -233,6 +248,7 @@
             <name lang="ko" value="등고선" />
             <name lang="nl" value="Contourlijnen" />
             <name lang="pl" value="Linie konturowe" />
+            <name lang="zh" value="等高线" />
             <cat id="contour" />
         </layer>
         <layer id="housenumber">
@@ -247,6 +263,7 @@
             <name lang="ko" value="집 번호" />
             <name lang="nl" value="Huis nummers" />
             <name lang="pl" value="Numery domów" />
+            <name lang="zh" value="门牌号" />
             <cat id="housenumber" />
         </layer>
         <layer id="off_road">
@@ -261,6 +278,7 @@
             <name lang="ko" value="오프로드 트랙" />
             <name lang="nl" value="Off-road/circuitdetails" />
             <name lang="pl" value="Trasy terenowe" />
+            <name lang="zh" value="非铺装/越野路线" />
             <cat id="off_road" />
         </layer>
         <layer id="road_detail">
@@ -275,6 +293,7 @@
             <name lang="ko" value="자세한 도로 정보" />
             <name lang="nl" value="Meer wegdetails" />
             <name lang="pl" value="Więcej szczegółów drogi" />
+            <name lang="zh" value="更多道路详情" />
             <cat id="road_detail" />
         </layer>
         <layer id="normal" visible="true">
