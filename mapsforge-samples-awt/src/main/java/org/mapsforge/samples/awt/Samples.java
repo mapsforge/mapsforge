@@ -39,10 +39,10 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
-import org.mapsforge.map.layer.hills.AdaptiveClasyHillShading;
 import org.mapsforge.map.layer.hills.DemFolderFS;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
+import org.mapsforge.map.layer.hills.StandardClasyHillShading;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.Model;
@@ -84,7 +84,7 @@ public final class Samples {
         final HillsRenderConfig hillsCfg;
         File demFolder = getDemFolder(args);
         if (demFolder != null) {
-            MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new AdaptiveClasyHillShading(), AwtGraphicFactory.INSTANCE);
+            MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new StandardClasyHillShading(), AwtGraphicFactory.INSTANCE);
             hillsCfg = new HillsRenderConfig(tileSource);
             hillsCfg.indexOnThread();
             args = Arrays.copyOfRange(args, 1, args.length);
