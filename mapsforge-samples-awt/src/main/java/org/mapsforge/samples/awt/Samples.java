@@ -39,10 +39,10 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.hills.AdaptiveClasyHillShading;
 import org.mapsforge.map.layer.hills.DemFolderFS;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
-import org.mapsforge.map.layer.hills.StandardClasyHillShading;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.Model;
@@ -84,7 +84,7 @@ public final class Samples {
         final HillsRenderConfig hillsCfg;
         File demFolder = getDemFolder(args);
         if (demFolder != null) {
-            MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new StandardClasyHillShading(), AwtGraphicFactory.INSTANCE);
+            MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new AdaptiveClasyHillShading(), AwtGraphicFactory.INSTANCE);
             hillsCfg = new HillsRenderConfig(tileSource);
             hillsCfg.indexOnThread();
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -148,7 +148,7 @@ public final class Samples {
             mapView.getModel().displayModel.setFixedTileSize(tileSize);
             OpenStreetMapMapnik tileSource = OpenStreetMapMapnik.INSTANCE;
             tileSource.setUserAgent("mapsforge-samples-awt");
-            TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(tileCache, mapView, mapView.getModel().mapViewPosition, tileSource);
+            TileDownloadLayer tileDownloadLayer = createTileDownloadLayer(tileCache, mapView.getModel().mapViewPosition, tileSource);
             layers.add(tileDownloadLayer);
             tileDownloadLayer.start();
             mapView.setZoomLevelMin(tileSource.getZoomLevelMin());
@@ -161,7 +161,7 @@ public final class Samples {
             for (File file : mapFiles) {
                 mapDataStore.addMapDataStore(new MapFile(file), false, false);
             }
-            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView, mapView.getModel().mapViewPosition, hillsRenderConfig);
+            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition, hillsRenderConfig);
             layers.add(tileRendererLayer);
             boundingBox = mapDataStore.boundingBox();
         }
@@ -186,22 +186,22 @@ public final class Samples {
     }
 
     @SuppressWarnings("unused")
-    private static TileDownloadLayer createTileDownloadLayer(TileCache tileCache, MapView mapView, IMapViewPosition mapViewPosition, TileSource tileSource) {
+    private static TileDownloadLayer createTileDownloadLayer(TileCache tileCache, IMapViewPosition mapViewPosition, TileSource tileSource) {
         return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                final byte currentZoomLevel = mapView.getModel().mapViewPosition.getZoomLevel();
+                final byte currentZoomLevel = mapViewPosition.getZoomLevel();
                 System.out.println("Tap on: " + tapLatLong + ", zoom level: " + currentZoomLevel);
                 return true;
             }
         };
     }
 
-    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapView mapView, IMapViewPosition mapViewPosition, HillsRenderConfig hillsRenderConfig) {
+    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, IMapViewPosition mapViewPosition, HillsRenderConfig hillsRenderConfig) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, false, true, false, GRAPHIC_FACTORY, hillsRenderConfig) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                final byte currentZoomLevel = mapView.getModel().mapViewPosition.getZoomLevel();
+                final byte currentZoomLevel = mapViewPosition.getZoomLevel();
                 System.out.println("Tap on: " + tapLatLong + ", zoom level: " + currentZoomLevel);
                 return true;
             }
