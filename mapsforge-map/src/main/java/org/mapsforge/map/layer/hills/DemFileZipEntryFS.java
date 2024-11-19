@@ -24,36 +24,36 @@ import java.util.zip.ZipFile;
 
 public class DemFileZipEntryFS implements DemFile {
 
-    protected final File mFile;
-    protected final String mZipEntryName;
-    protected final long mZipEntrySize;
+    protected final File zipFile;
+    protected final String zipEntryName;
+    protected final long zipEntrySize;
 
     public DemFileZipEntryFS(File zipFile, String zipEntry, long zipEntrySize) {
-        mFile = zipFile;
-        mZipEntryName = zipEntry;
-        mZipEntrySize = zipEntrySize;
+        this.zipFile = zipFile;
+        this.zipEntryName = zipEntry;
+        this.zipEntrySize = zipEntrySize;
     }
 
     @Override
     public String getName() {
-        return mZipEntryName;
+        return zipEntryName;
     }
 
     @Override
     public long getSize() {
-        return mZipEntrySize;
+        return zipEntrySize;
     }
 
     @Override
     public InputStream openInputStream() throws FileNotFoundException {
         try {
-            final ZipFile zipFile = new ZipFile(mFile);
-            final ZipEntry zipEntry = zipFile.getEntry(mZipEntryName);
+            final ZipFile zipFile = new ZipFile(this.zipFile);
+            final ZipEntry zipEntry = zipFile.getEntry(zipEntryName);
 
             // Buffer size is relatively small to reduce wasteful read-ahead (buffer fill) during multi-threaded processing
             return new BufferedInputStream(new DemZipInputStream(zipFile, zipEntry), 512);
         } catch (IOException e) {
-            throw new FileNotFoundException(mFile + " (" + mZipEntryName + ")");
+            throw new FileNotFoundException(zipFile + " (" + zipEntryName + ")");
         }
     }
 

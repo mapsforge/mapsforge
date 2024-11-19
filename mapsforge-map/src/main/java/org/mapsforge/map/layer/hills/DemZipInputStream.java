@@ -21,69 +21,69 @@ import java.util.zip.ZipFile;
 
 public class DemZipInputStream extends InputStream {
 
-    protected final ZipFile mZipFile;
-    protected final InputStream mZipInputStream;
+    protected final ZipFile zipFile;
+    protected final InputStream zipInputStream;
 
     public DemZipInputStream(ZipFile zipFile, ZipEntry zipEntry) throws IOException {
-        mZipFile = zipFile;
-        mZipInputStream = zipFile.getInputStream(zipEntry);
+        this.zipFile = zipFile;
+        this.zipInputStream = zipFile.getInputStream(zipEntry);
     }
 
     public void close() throws IOException {
-        mZipInputStream.close();
-        mZipFile.close();
+        zipInputStream.close();
+        zipFile.close();
     }
 
     public int read() throws IOException {
-        return mZipInputStream.read();
+        return zipInputStream.read();
     }
 
     public int read(byte[] bytes) throws IOException {
-        return mZipInputStream.read(bytes);
+        return zipInputStream.read(bytes);
     }
 
     public int read(byte[] bytes, int i, int i1) throws IOException {
-        return mZipInputStream.read(bytes, i, i1);
+        return zipInputStream.read(bytes, i, i1);
     }
 
     public long skip(long l) throws IOException {
-        return mZipInputStream.skip(l);
+        return zipInputStream.skip(l);
     }
 
     public int available() throws IOException {
-        return mZipInputStream.available();
+        return zipInputStream.available();
     }
 
     public void mark(int i) {
-        mZipInputStream.mark(i);
+        zipInputStream.mark(i);
     }
 
     public void reset() throws IOException {
-        mZipInputStream.reset();
+        zipInputStream.reset();
     }
 
     public boolean markSupported() {
-        return mZipInputStream.markSupported();
+        return zipInputStream.markSupported();
     }
 
     // TODO (2024-11): Methods below must wait for Java 9/12
 //    public byte[] readAllBytes() throws IOException {
-//        return mZipInputStream.readAllBytes();
+//        return zipInputStream.readAllBytes();
 //    }
 //
 //    public byte[] readNBytes(int i) throws IOException {
-//        return mZipInputStream.readNBytes(i);
+//        return zipInputStream.readNBytes(i);
 //    }
 //
 //    public int readNBytes(byte[] bytes, int i, int i1) throws IOException {
-//        return mZipInputStream.readNBytes(bytes, i, i1);
+//        return zipInputStream.readNBytes(bytes, i, i1);
 //    }
 //
 //    public void skipNBytes(long l) throws IOException {
-//        mZipInputStream.skipNBytes(l);
+//        zipInputStream.skipNBytes(l);
 //    }
 //
 //    public long transferTo(OutputStream outputStream) throws IOException {
-//        return mZipInputStream.transferTo(outputStream);
+//        return zipInputStream.transferTo(outputStream);
 //    }
 }

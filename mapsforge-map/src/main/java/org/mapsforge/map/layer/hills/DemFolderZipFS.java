@@ -26,10 +26,10 @@ import java.util.zip.ZipFile;
 
 public class DemFolderZipFS implements DemFolder {
 
-    protected final File mZipFile;
+    protected final File zipFile;
 
     public DemFolderZipFS(File zipFile) throws IOException {
-        mZipFile = zipFile;
+        this.zipFile = zipFile;
     }
 
     @Override
@@ -41,14 +41,14 @@ public class DemFolderZipFS implements DemFolder {
     public Iterable<DemFile> files() {
         final List<DemFile> items = new ArrayList<>();
 
-        try (ZipFile zipFile = new ZipFile(mZipFile)) {
+        try (ZipFile zipFile = new ZipFile(this.zipFile)) {
             final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
             ZipEntry zipEntry;
 
             while (entries.hasMoreElements() && (zipEntry = entries.nextElement()) != null) {
                 if (false == zipEntry.isDirectory()) {
-                    items.add(new DemFileZipEntryFS(mZipFile, zipEntry.getName(), zipEntry.getSize()));
+                    items.add(new DemFileZipEntryFS(this.zipFile, zipEntry.getName(), zipEntry.getSize()));
                 }
             }
         } catch (IOException e) {
@@ -64,6 +64,6 @@ public class DemFolderZipFS implements DemFolder {
         if (!(obj instanceof DemFolderZipFS)) {
             return false;
         }
-        return mZipFile.equals(((DemFolderZipFS) obj).mZipFile);
+        return zipFile.equals(((DemFolderZipFS) obj).zipFile);
     }
 }
