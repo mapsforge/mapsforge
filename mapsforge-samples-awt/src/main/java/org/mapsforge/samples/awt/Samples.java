@@ -4,6 +4,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2022 devemux86
  * Copyright 2017-2022 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -38,10 +39,10 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
-import org.mapsforge.map.layer.hills.StandardClasyHillShading;
 import org.mapsforge.map.layer.hills.DemFolderFS;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
+import org.mapsforge.map.layer.hills.StandardClasyHillShading;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.Model;
@@ -49,7 +50,6 @@ import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
-import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -58,6 +58,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.prefs.Preferences;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 public final class Samples {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -77,19 +81,19 @@ public final class Samples {
         // Square frame buffer
         Parameters.SQUARE_FRAME_BUFFER = false;
 
-        HillsRenderConfig hillsCfg = null;
+        final HillsRenderConfig hillsCfg;
         File demFolder = getDemFolder(args);
         if (demFolder != null) {
             MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new StandardClasyHillShading(), AwtGraphicFactory.INSTANCE);
-            tileSource.setEnableInterpolationOverlap(true);
             hillsCfg = new HillsRenderConfig(tileSource);
             hillsCfg.indexOnThread();
             args = Arrays.copyOfRange(args, 1, args.length);
+        } else {
+            hillsCfg = null;
         }
 
         List<File> mapFiles = SHOW_RASTER_MAP ? null : getMapFiles(args);
         final MapView mapView = createMapView();
-        final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsCfg);
 
         final PreferencesFacade preferencesFacade = new JavaPreferences(Preferences.userNodeForPackage(Samples.class));
 
@@ -114,6 +118,7 @@ public final class Samples {
 
             @Override
             public void windowOpened(WindowEvent e) {
+                final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsCfg);
                 final Model model = mapView.getModel();
                 model.init(preferencesFacade);
                 if (model.mapViewPosition.getZoomLevel() == 0 || !boundingBox.contains(model.mapViewPosition.getCenter())) {
@@ -185,7 +190,8 @@ public final class Samples {
         return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                System.out.println("Tap on: " + tapLatLong);
+                final byte currentZoomLevel = mapViewPosition.getZoomLevel();
+                System.out.println("Tap on: " + tapLatLong + ", zoom level: " + currentZoomLevel);
                 return true;
             }
         };
@@ -195,7 +201,8 @@ public final class Samples {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, false, true, false, GRAPHIC_FACTORY, hillsRenderConfig) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
-                System.out.println("Tap on: " + tapLatLong);
+                final byte currentZoomLevel = mapViewPosition.getZoomLevel();
+                System.out.println("Tap on: " + tapLatLong + ", zoom level: " + currentZoomLevel);
                 return true;
             }
         };
