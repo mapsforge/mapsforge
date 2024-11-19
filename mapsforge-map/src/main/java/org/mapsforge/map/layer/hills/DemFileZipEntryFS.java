@@ -28,9 +28,9 @@ public class DemFileZipEntryFS implements DemFile {
     protected final String zipEntryName;
     protected final long zipEntrySize;
 
-    public DemFileZipEntryFS(File zipFile, String zipEntry, long zipEntrySize) {
+    public DemFileZipEntryFS(File zipFile, String zipEntryName, long zipEntrySize) {
         this.zipFile = zipFile;
-        this.zipEntryName = zipEntry;
+        this.zipEntryName = zipEntryName;
         this.zipEntrySize = zipEntrySize;
     }
 
