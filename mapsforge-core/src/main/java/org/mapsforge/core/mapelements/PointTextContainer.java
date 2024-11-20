@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -74,9 +75,9 @@ public abstract class PointTextContainer extends MapElementContainer {
         PointTextContainer ptc = (PointTextContainer) other;
         if (!Rotation.noRotation(rotation)) {
             Rotation mapRotation = new Rotation(rotation.degrees, (float) this.xy.x, (float) this.xy.y);
-            Rectangle rotated = mapRotation.rotate(this.boundary.shift(xy)).shift(new Point(this.horizontalOffset, this.verticalOffset));
+            Rectangle rotated = mapRotation.rotate(this.boundary.shift(xy));
             Rotation otherRotation = new Rotation(rotation.degrees, (float) ptc.xy.x, (float) ptc.xy.y);
-            Rectangle otherRotated = otherRotation.rotate(ptc.boundary.shift(ptc.xy)).shift(new Point(ptc.horizontalOffset, ptc.verticalOffset));
+            Rectangle otherRotated = otherRotation.rotate(ptc.boundary.shift(ptc.xy));
             if (rotated.intersects(otherRotated))
                 return true;
         }
