@@ -14,17 +14,21 @@
  */
 package org.mapsforge.map.layer.hills;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class DemFolderZipFS implements DemFolder {
-    protected final ZipFile zipFile;
 
-    public DemFolderZipFS(ZipFile zipFile) {
+    protected final File zipFile;
+
+    public DemFolderZipFS(File zipFile) throws IOException {
         this.zipFile = zipFile;
     }
 
@@ -35,16 +39,20 @@ public class DemFolderZipFS implements DemFolder {
 
     @Override
     public Iterable<DemFile> files() {
-        final Enumeration<? extends ZipEntry> entries = zipFile.entries();
-
         final List<DemFile> items = new ArrayList<>();
 
-        ZipEntry zipEntry;
+        try (ZipFile zipFile = new ZipFile(this.zipFile)) {
+            final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-        while (entries.hasMoreElements() && (zipEntry = entries.nextElement()) != null) {
-            if (false == zipEntry.isDirectory()) {
-                items.add(new DemFileZipEntryFS(zipFile, zipEntry));
+            ZipEntry zipEntry;
+
+            while (entries.hasMoreElements() && (zipEntry = entries.nextElement()) != null) {
+                if (false == zipEntry.isDirectory()) {
+                    items.add(new DemFileZipEntryFS(this.zipFile, zipEntry.getName(), zipEntry.getSize()));
+                }
             }
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, e.toString());
         }
 
         return items;

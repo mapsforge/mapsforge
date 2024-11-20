@@ -15,6 +15,7 @@
 package org.mapsforge.map.layer.hills;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,31 +24,36 @@ import java.util.zip.ZipFile;
 
 public class DemFileZipEntryFS implements DemFile {
 
-    protected final ZipFile zipFile;
-    protected final ZipEntry zipEntry;
+    protected final File zipFile;
+    protected final String zipEntryName;
+    protected final long zipEntrySize;
 
-    public DemFileZipEntryFS(ZipFile zipFile, ZipEntry zipEntry) {
+    public DemFileZipEntryFS(File zipFile, String zipEntryName, long zipEntrySize) {
         this.zipFile = zipFile;
-        this.zipEntry = zipEntry;
+        this.zipEntryName = zipEntryName;
+        this.zipEntrySize = zipEntrySize;
     }
 
     @Override
     public String getName() {
-        return zipEntry.getName();
+        return zipEntryName;
     }
 
     @Override
     public long getSize() {
-        return zipEntry.getSize();
+        return zipEntrySize;
     }
 
     @Override
     public InputStream openInputStream() throws FileNotFoundException {
         try {
+            final ZipFile zipFile = new ZipFile(this.zipFile);
+            final ZipEntry zipEntry = zipFile.getEntry(zipEntryName);
+
             // Buffer size is relatively small to reduce wasteful read-ahead (buffer fill) during multi-threaded processing
-            return new BufferedInputStream(zipFile.getInputStream(zipEntry), 512);
+            return new BufferedInputStream(new DemZipInputStream(zipFile, zipEntry), 512);
         } catch (IOException e) {
-            throw new FileNotFoundException(zipFile.getName() + " (" + zipEntry.getName() + ")");
+            throw new FileNotFoundException(zipFile + " (" + zipEntryName + ")");
         }
     }
 

@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Level;
-import java.util.zip.ZipFile;
 
 public class DemFolderFS implements DemFolder {
+
     public final File file;
 
     public DemFolderFS(File file) {
@@ -56,7 +56,7 @@ public class DemFolderFS implements DemFolder {
                         DemFolder ret = null;
                         if (HgtCache.isFileZip(nextFile)) {
                             try {
-                                ret = new DemFolderZipFS(new ZipFile(nextFile));
+                                ret = new DemFolderZipFS(nextFile);
                             } catch (IOException e) {
                                 LOGGER.log(Level.WARNING, e.toString());
                             }
