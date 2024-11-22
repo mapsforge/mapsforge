@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016 devemux86
  * Copyright 2019 Adrian Batzill
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,10 +22,12 @@ import org.mapsforge.core.graphics.*;
 import org.mapsforge.core.model.LineSegment;
 import org.mapsforge.core.model.LineString;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
 
 public class WayTextContainer extends MapElementContainer {
     private final GraphicFactory graphicFactory;
+    protected final Rectangle boundary;
     private final LineString lineString;
     private final Paint paintFront;
     private final Paint paintBack;
@@ -46,6 +49,11 @@ public class WayTextContainer extends MapElementContainer {
         // not correctly reflect the size of the text on screen
         this.boundaryAbsolute = lineString.getBounds().enlarge(textHeight / 2d, textHeight / 2d, textHeight / 2d, textHeight / 2d);
         this.textOrientation = textOrientation;
+    }
+
+    @Override
+    protected Rectangle getBoundary() {
+        return boundary;
     }
 
     @Override

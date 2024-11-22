@@ -1,5 +1,6 @@
 /*
  * Copyright 2016 Ludwig M Brinckmann
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -42,6 +43,7 @@ public class ThreadedLabelLayer extends LabelLayer {
     Future<?> future;
     Tile requestedUpperLeft;
     Tile requestedLowerRight;
+    Rotation requestedRotation;
 
     public ThreadedLabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
         super(graphicFactory, labelStore);
@@ -53,7 +55,7 @@ public class ThreadedLabelLayer extends LabelLayer {
         Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, this.displayModel.getTileSize());
         Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, this.displayModel.getTileSize());
         if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
-                || this.lastLabelStoreVersion != this.labelStore.getVersion()) {
+                || this.lastLabelStoreVersion != this.labelStore.getVersion() || !rotation.equals(this.rotation)) {
             getData(newUpperLeft, newLowerRight, rotation);
         }
 
@@ -65,13 +67,14 @@ public class ThreadedLabelLayer extends LabelLayer {
     }
 
     protected void getData(final Tile upperLeft, final Tile lowerRight, final Rotation rotation) {
-        if (upperLeft.equals(this.requestedUpperLeft) && lowerRight.equals(this.requestedLowerRight)) {
+        if (upperLeft.equals(this.requestedUpperLeft) && lowerRight.equals(this.requestedLowerRight) && rotation.equals(requestedRotation)) {
             // same data already requested
             return;
         }
 
         this.requestedUpperLeft = upperLeft;
         this.requestedLowerRight = lowerRight;
+        this.requestedRotation = rotation;
 
         if (this.future != null) {
             // we only want a single item in the queue, no point retrieving data that is not required
@@ -93,6 +96,7 @@ public class ThreadedLabelLayer extends LabelLayer {
                 Collections.sort(ThreadedLabelLayer.this.elementsToDraw);
                 ThreadedLabelLayer.this.upperLeft = upperLeft;
                 ThreadedLabelLayer.this.lowerRight = lowerRight;
+                ThreadedLabelLayer.this.rotation = rotation;
                 ThreadedLabelLayer.this.lastLabelStoreVersion = labelStore.getVersion();
                 ThreadedLabelLayer.this.requestRedraw();
 

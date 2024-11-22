@@ -1,6 +1,7 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -31,11 +32,24 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
 public class AwtPointTextContainer extends PointTextContainer {
+    protected final Rectangle boundary;
+    public final int textHeight;
+    public final int textWidth;
+
     AwtPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
                           Display display, int priority, String text, Paint paintFront, Paint paintBack,
                           SymbolContainer symbolContainer, Position position, int maxTextWidth) {
         super(xy, horizontalOffset, verticalOffset, display, priority, text,
                 paintFront, paintBack, symbolContainer, position, maxTextWidth);
+
+        if (paintBack != null) {
+            this.textWidth = paintBack.getTextWidth(text);
+            this.textHeight = paintBack.getTextHeight(text);
+        } else {
+            this.textWidth = paintFront.getTextWidth(text);
+            this.textHeight = paintFront.getTextHeight(text);
+        }
+
         this.boundary = computeBoundary();
     }
 
@@ -116,6 +130,11 @@ public class AwtPointTextContainer extends PointTextContainer {
             }
             canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintFront);
         }
+    }
+
+    @Override
+    protected Rectangle getBoundary() {
+        return boundary;
     }
 
     private Rectangle computeBoundary() {

@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2020 devemux86
  * Copyright 2019 Matthew Egeler
+ * Copyright 2024 Sublimis / Urban Biker
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -22,6 +23,10 @@ import android.graphics.Matrix;
 import android.graphics.*;
 import android.graphics.Shader.TileMode;
 import android.os.Build;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+
 import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.*;
@@ -149,6 +154,90 @@ class AndroidPaint implements Paint {
     @Override
     public int getTextWidth(String text) {
         return (int) this.paint.measureText(text);
+    }
+
+    /**
+     * Uses StaticLayout to measure text accurately, and respects Spans.
+     * Returns width of the widest line.
+     */
+    @Override
+    public int getTextWidth(final String text, final int widthMax, boolean includePadding) {
+        int retVal = 0;
+
+        if (text != null && widthMax >= 0) {
+
+            final TextPaint myPaint;
+            if (this.paint instanceof TextPaint) {
+                myPaint = (TextPaint) this.paint;
+            } else {
+                myPaint = new TextPaint(this.paint);
+            }
+
+            final StaticLayout layout = new StaticLayout(text, myPaint, widthMax, Layout.Alignment.ALIGN_NORMAL, 1, 0, includePadding);
+
+            final int lineCount = layout.getLineCount();
+            float maxWidth = 0;
+
+            for (int i = 0; i < lineCount; i++) {
+                final float lw = layout.getLineWidth(i);
+
+                if (maxWidth < lw) {
+                    maxWidth = lw;
+                }
+            }
+
+            retVal = (int) maxWidth;
+        }
+
+        return retVal;
+    }
+
+    /**
+     * Uses StaticLayout to measure text accurately, and respects Spans.
+     * Returns width of the widest line.
+     */
+    public static int getTextWidth(final StaticLayout layout, boolean includePadding) {
+        int retVal = 0;
+
+        if (layout != null) {
+
+            final int lineCount = layout.getLineCount();
+            double maxWidth = 0;
+
+            for (int i = 0; i < lineCount; i++) {
+                final float lw = layout.getLineWidth(i);
+
+                if (maxWidth < lw) {
+                    maxWidth = lw;
+                }
+            }
+
+            retVal = (int) maxWidth;
+
+            if (includePadding && retVal > 0) {
+                retVal += getFontPadding(layout.getPaint());
+            }
+        }
+
+        return retVal;
+    }
+
+    /**
+     * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
+     */
+    @Override
+    public int getFontPadding() {
+        return getFontPadding(this.paint);
+    }
+
+    /**
+     * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
+     * The value is computed as (ascent - top + bottom).
+     */
+    public static int getFontPadding(android.graphics.Paint paint) {
+        final android.graphics.Paint.FontMetricsInt fontMetricsInt = paint.getFontMetricsInt();
+
+        return fontMetricsInt.ascent - fontMetricsInt.top + fontMetricsInt.bottom;
     }
 
     @Override

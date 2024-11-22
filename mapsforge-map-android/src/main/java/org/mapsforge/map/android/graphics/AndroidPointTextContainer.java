@@ -1,6 +1,7 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2024 Sublimis / Urban Biker
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -15,12 +16,18 @@
  */
 package org.mapsforge.map.android.graphics;
 
+import android.graphics.RectF;
 import android.graphics.text.LineBreaker;
 import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import org.mapsforge.core.graphics.*;
+
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
@@ -28,8 +35,15 @@ import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
 
 public class AndroidPointTextContainer extends PointTextContainer {
+
+    protected final Rectangle boundary;
     private StaticLayout backLayout;
     private StaticLayout frontLayout;
+    public final int textHeight;
+    public final int textWidth;
+    protected final boolean isMultiline;
+
+    protected final android.graphics.Paint debugClashBoundsPaint;
 
     AndroidPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
                               Display display, int priority, String text, Paint paintFront, Paint paintBack,
@@ -37,8 +51,17 @@ public class AndroidPointTextContainer extends PointTextContainer {
         super(xy, horizontalOffset, verticalOffset, display, priority, text,
                 paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
+        final Paint measurePaint;
+        if (paintBack != null) {
+            measurePaint = paintBack;
+        } else {
+            measurePaint = paintFront;
+        }
+
+        final int myTextWidth = measurePaint.getTextWidth(text, true);
+
         final float boxWidth, boxHeight;
-        if (this.textWidth > this.maxTextWidth) {
+        if (myTextWidth > this.maxTextWidth) {
             // if the text is too wide its layout is done by the Android StaticLayout class,
             // which automatically inserts line breaks. There is not a whole lot of useful
             // documentation of this class.
@@ -46,8 +69,8 @@ public class AndroidPointTextContainer extends PointTextContainer {
             // and for right on the left.
             // One disadvantage is that it will always keep the text within the maxWidth,
             // even if that means breaking text mid-word.
-            // This code currently does not play that well with the LabelPlacement algorithm.
-            // The best way to disable it is to make the maxWidth really wide.
+
+            this.isMultiline = true;
 
             TextPaint frontTextPaint = new TextPaint(AndroidGraphicFactory.getPaint(this.paintFront));
             TextPaint backTextPaint = null;
@@ -55,39 +78,41 @@ public class AndroidPointTextContainer extends PointTextContainer {
                 backTextPaint = new TextPaint(AndroidGraphicFactory.getPaint(this.paintBack));
             }
 
-            Layout.Alignment alignment = Layout.Alignment.ALIGN_CENTER;
-            if (Position.LEFT == this.position
-                    || Position.BELOW_LEFT == this.position
-                    || Position.ABOVE_LEFT == this.position) {
-                alignment = Layout.Alignment.ALIGN_OPPOSITE;
-            } else if (Position.RIGHT == this.position
-                    || Position.BELOW_RIGHT == this.position
-                    || Position.ABOVE_RIGHT == this.position) {
-                alignment = Layout.Alignment.ALIGN_NORMAL;
-            }
-
             // strange Android behaviour: if alignment is set to center, then
             // text is rendered with right alignment if using StaticLayout
             frontTextPaint.setTextAlign(android.graphics.Paint.Align.LEFT);
-            if (this.paintBack != null) {
+            if (backTextPaint != null) {
                 backTextPaint.setTextAlign(android.graphics.Paint.Align.LEFT);
             }
 
-            frontLayout = createTextLayout(frontTextPaint, alignment);
-            backLayout = null;
-            if (this.paintBack != null) {
-                backLayout = createTextLayout(backTextPaint, alignment);
+            this.frontLayout = createTextLayout(frontTextPaint);
+            if (backTextPaint != null) {
+                this.backLayout = createTextLayout(backTextPaint);
+            } else {
+                this.backLayout = null;
             }
 
-            boxWidth = frontLayout.getWidth();
-            boxHeight = frontLayout.getHeight();
+            boxWidth = AndroidPaint.getTextWidth(backLayout != null ? backLayout : frontLayout, true);
+            boxHeight = (backLayout != null ? backLayout : frontLayout).getHeight();
+
+            this.textWidth = (int) boxWidth;
+            this.textHeight = (int) boxHeight;
         } else {
-            boxWidth = textWidth;
-            boxHeight = textHeight;
+            this.isMultiline = false;
+
+            final int myTextHeight = measurePaint.getTextHeight(text, true);
+
+            boxWidth = myTextWidth;
+            boxHeight = myTextHeight;
+
+            // A trick to avoid measuring text twice
+            this.textWidth = (int) (boxWidth - measurePaint.getFontPadding());
+            this.textHeight = (int) (boxHeight - measurePaint.getFontPadding());
         }
 
         switch (this.position) {
             case CENTER:
+            default:
                 boundary = new Rectangle(-boxWidth / 2f, -boxHeight / 2f, boxWidth / 2f, boxHeight / 2f);
                 break;
             case BELOW:
@@ -114,24 +139,34 @@ public class AndroidPointTextContainer extends PointTextContainer {
             case RIGHT:
                 boundary = new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
                 break;
-            default:
-                break;
+        }
+
+        if (DEBUG_CLASH_BOUNDS) {
+            debugClashBoundsPaint = AndroidGraphicFactory.getPaint(AndroidGraphicFactory.INSTANCE.createPaint(measurePaint));
+            debugClashBoundsPaint.setColor(android.graphics.Color.BLACK);
+        } else {
+            debugClashBoundsPaint = null;
         }
     }
 
     @SuppressWarnings("deprecation")
-    private StaticLayout createTextLayout(TextPaint paint, Layout.Alignment alignment) {
+    private StaticLayout createTextLayout(TextPaint paint) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // API29+, A10+
             return StaticLayout.Builder
                     .obtain(this.text, 0, this.text.length(), paint, this.maxTextWidth)
                     .setBreakStrategy(LineBreaker.BREAK_STRATEGY_HIGH_QUALITY)
-                    .setAlignment(alignment)
-                    .setIncludePad(false)
+                    .setAlignment(Layout.Alignment.ALIGN_CENTER)
+                    .setIncludePad(true)
                     .build();
         } else {
-            return new StaticLayout(this.text, paint, this.maxTextWidth, alignment, 1, 0, false);
+            return new StaticLayout(this.text, paint, this.maxTextWidth, Layout.Alignment.ALIGN_CENTER, 1, 0, true);
         }
+    }
+
+    @Override
+    protected Rectangle getBoundary() {
+        return boundary;
     }
 
     @Override
@@ -142,23 +177,28 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
         android.graphics.Canvas androidCanvas = AndroidGraphicFactory.getCanvas(canvas);
 
-        if (this.textWidth > this.maxTextWidth) {
+        final Point rotRelPosition = getRotRelPosition(origin.x, origin.y, rotation);
+
+        if (isMultiline) {
             // in this case we draw the precomputed staticLayout onto the canvas by translating
             // the canvas.
+
             androidCanvas.save();
 
-            double x = this.xy.x - origin.x;
-            double y = this.xy.y - origin.y;
             if (!Rotation.noRotation(rotation)) {
                 androidCanvas.rotate(-rotation.degrees, rotation.px, rotation.py);
-                Point rotated = rotation.rotate(x, y, true);
-                x = rotated.x;
-                y = rotated.y;
             }
-            // the offsets can only be applied after rotation, because the label needs to be rotated
-            // around its center.
-            x += this.horizontalOffset + boundary.left;
-            y += this.verticalOffset + boundary.top;
+
+            if (DEBUG_CLASH_BOUNDS) {
+                drawClashBounds(origin.x, origin.y, rotation, androidCanvas);
+            }
+
+            double x = rotRelPosition.x;
+            double y = rotRelPosition.y;
+
+            x += boundary.getWidth() / 2f;
+            // Because our StaticLayout is this.maxTextWidth wide, and centered
+            x -= this.maxTextWidth / 2f;
 
             androidCanvas.translate((float) x, (float) y);
 
@@ -166,47 +206,43 @@ public class AndroidPointTextContainer extends PointTextContainer {
                 this.backLayout.draw(androidCanvas);
             }
             this.frontLayout.draw(androidCanvas);
+
             androidCanvas.restore();
         } else {
-            // the origin of the text is the base line, so we need to make adjustments
-            // so that the text will be within its box
-            float textOffset = 0;
-            switch (this.position) {
-                case CENTER:
-                case LEFT:
-                case RIGHT:
-                    textOffset = textHeight / 2f;
-                    break;
-                case BELOW:
-                case BELOW_LEFT:
-                case BELOW_RIGHT:
-                    textOffset = textHeight;
-                    break;
-                default:
-                    break;
-            }
-
-            double x = this.xy.x - origin.x;
-            double y = this.xy.y - origin.y;
             if (!Rotation.noRotation(rotation)) {
                 androidCanvas.save();
                 androidCanvas.rotate(-rotation.degrees, rotation.px, rotation.py);
-                Point rotated = rotation.rotate(x, y, true);
-                x = rotated.x;
-                y = rotated.y;
             }
-            // the offsets can only be applied after rotation, because the label needs to be rotated
-            // around its center.
-            x += this.horizontalOffset;
-            y += this.verticalOffset + textOffset; // the text offset has nothing to do with rotation, so add later
+
+            if (DEBUG_CLASH_BOUNDS) {
+                drawClashBounds(origin.x, origin.y, rotation, androidCanvas);
+            }
+
+            double x = rotRelPosition.x;
+            double y = rotRelPosition.y;
+
+            x += boundary.getWidth() / 2f;
+            // Because the origin of our text is the base line, and height is this.textHeight (without padding)
+            y += boundary.getHeight() / 2f;
+            y += this.textHeight / 2f;
 
             if (this.paintBack != null) {
                 androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintBack));
             }
+
             androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintFront));
+
             if (!Rotation.noRotation(rotation)) {
                 androidCanvas.restore();
             }
+        }
+    }
+
+    protected void drawClashBounds(double originX, double originY, Rotation rotation, android.graphics.Canvas androidCanvas) {
+        final Rectangle transformed = getClashRectTransformed(this, originX, originY, rotation);
+
+        if (transformed != null) {
+            androidCanvas.drawRect(new RectF((float) transformed.left, (float) transformed.top, (float) transformed.right, (float) transformed.bottom), debugClashBoundsPaint);
         }
     }
 }

@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016-2017 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -25,7 +26,39 @@ public interface Paint {
 
     int getTextHeight(String text);
 
+    default int getTextHeight(final String text, boolean includePadding) {
+        int retVal = 0;
+
+        retVal = getTextHeight(text);
+
+        if (includePadding && retVal > 0) {
+            retVal += getFontPadding();
+        }
+
+        return retVal;
+    }
+
     int getTextWidth(String text);
+
+    default int getTextWidth(String text, boolean includePadding) {
+        int retVal = 0;
+
+        retVal = getTextWidth(text);
+
+        if (includePadding && retVal > 0) {
+            retVal += getFontPadding();
+        }
+
+        return retVal;
+    }
+
+    default int getTextWidth(final String text, final int widthMax, boolean includePadding) {
+        return getTextWidth(text);
+    }
+
+    default int getFontPadding() {
+        return 0;
+    }
 
     boolean isTransparent();
 

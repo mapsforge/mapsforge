@@ -1,6 +1,7 @@
 /*
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,7 +37,6 @@ import org.mapsforge.core.model.Rotation;
  * drawn.
  */
 public abstract class MapElementContainer implements Comparable<MapElementContainer> {
-    protected Rectangle boundary;
     protected Rectangle boundaryAbsolute;
     protected Display display;
     protected final int priority;
@@ -47,6 +47,8 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
         this.display = display;
         this.priority = priority;
     }
+
+    protected abstract Rectangle getBoundary();
 
     /**
      * Compares elements according to their priority.
@@ -94,7 +96,7 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
      */
     protected Rectangle getBoundaryAbsolute() {
         if (boundaryAbsolute == null) {
-            boundaryAbsolute = this.boundary.shift(xy);
+            boundaryAbsolute = this.getBoundary().shift(xy);
         }
         return boundaryAbsolute;
     }

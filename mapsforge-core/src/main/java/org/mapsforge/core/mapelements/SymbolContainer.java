@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2016 devemux86
  * Copyright 2020 Adrian Batzill
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -26,6 +27,7 @@ import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
 
 public class SymbolContainer extends MapElementContainer {
+    protected final Rectangle boundary;
     public final boolean alignCanvas; // if it has a fixed angle to canvas.
     public Bitmap symbol;
     public final float theta;
@@ -39,14 +41,20 @@ public class SymbolContainer extends MapElementContainer {
         this.symbol = symbol;
         this.theta = theta;
         this.alignCanvas = alignCanvas;
-        this.boundary = boundary;
-        if (this.boundary == null) {
+        if (boundary != null) {
+            this.boundary = boundary;
+        } else {
             double halfWidth = this.symbol.getWidth() / 2d;
             double halfHeight = this.symbol.getHeight() / 2d;
             this.boundary = new Rectangle(-halfWidth, -halfHeight, halfWidth, halfHeight);
         }
 
         this.symbol.incrementRefCount();
+    }
+
+    @Override
+    protected Rectangle getBoundary() {
+        return boundary;
     }
 
     @Override
