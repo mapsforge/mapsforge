@@ -1,9 +1,7 @@
-apply plugin: 'com.android.library'
+apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
 dependencies {
-    testImplementation "junit:junit:4.13.2"
-    testImplementation 'org.robolectric:robolectric:4.14.1'
     compileOnly files("${System.env.ANDROID_HOME}/platforms/android-${androidCompileSdk()}/android.jar")
     api project(":mapsforge-map-reader")
     api 'com.caverock:androidsvg:1.4'
@@ -11,14 +9,8 @@ dependencies {
 
 publishing {
     publications {
-        release(MavenPublication) {
-            groupId = group()
-            artifactId = 'mapsforge-map-android'
-            version = getVersion()
-
-            afterEvaluate {
-                from components.release
-            }
+        maven(MavenPublication) {
+            from components.java
         }
     }
 }
@@ -31,15 +23,4 @@ if (project.hasProperty("SONATYPE_USERNAME")) {
 
 if (System.getenv('ANDROID_HOME') == null) {
     throw new GradleException("Environment variable ANDROID_HOME needs to be set to SDK folder")
-}
-
-android {
-    namespace 'org.mapsforge.map.android'
-    compileSdk androidCompileSdk()
-
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-        }
-    }
 }
