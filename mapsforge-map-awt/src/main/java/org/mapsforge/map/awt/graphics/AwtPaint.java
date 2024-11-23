@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2017 devemux86
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -199,11 +200,6 @@ public class AwtPaint implements Paint {
         return retVal;
     }
 
-    @Override
-    public int getTextWidth(final String text, final int widthMax, boolean includePadding) {
-        return getTextWidth(text, includePadding);
-    }
-
     /**
      * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
      */
@@ -217,8 +213,13 @@ public class AwtPaint implements Paint {
     }
 
     /**
+     * <p>
      * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
      * The value is computed as 12.5% of {@code fontMetrics.getHeight()}.
+     * <p>
+     * Why 12.5%, why not 10%?
+     * <p>
+     * 0.125 is a power-of-two number so has an exact binary representation, but that aside, it also has a more practical property for us. On standard screens (dot pitch values cca 0.25-0.27mm) and with AWT sample app defaults, the calculated padding with 10% constant is only 1 pixel for many labels, while with the 12.5% it results in a padding of 2 (our padding is defined as top+bottom, so this is appealing because each side gets 1 pixel of padding).
      */
     public static int getFontPadding(FontMetrics fontMetrics) {
         return (int) (0.125 * fontMetrics.getHeight());

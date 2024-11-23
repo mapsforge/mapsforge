@@ -19,17 +19,24 @@
 package org.mapsforge.map.android.graphics;
 
 import android.annotation.TargetApi;
+import android.graphics.BitmapShader;
+import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
-import android.graphics.*;
+import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
+import android.graphics.Typeface;
 import android.os.Build;
-import android.text.Layout;
 import android.text.StaticLayout;
-import android.text.TextPaint;
 
+import org.mapsforge.core.graphics.Align;
+import org.mapsforge.core.graphics.Cap;
 import org.mapsforge.core.graphics.Color;
+import org.mapsforge.core.graphics.FontFamily;
+import org.mapsforge.core.graphics.FontStyle;
+import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.core.util.Parameters;
 
@@ -166,50 +173,13 @@ class AndroidPaint implements Paint {
     public int getTextWidth(String text) {
         return (int) this.paint.measureText(text);
     }
-
+    
     @Override
     public int getTextWidth(String text, boolean includePadding) {
         int retVal = getTextWidth(text);
 
         if (includePadding && retVal > 0) {
             retVal += getFontPadding();
-        }
-
-        return retVal;
-    }
-
-    /**
-     * Uses StaticLayout to measure text accurately, and respects Spans.
-     * Returns width of the widest line.
-     */
-    @SuppressWarnings("deprecation")
-    @Override
-    public int getTextWidth(final String text, final int widthMax, boolean includePadding) {
-        int retVal = 0;
-
-        if (text != null && widthMax >= 0) {
-
-            final TextPaint myPaint;
-            if (this.paint instanceof TextPaint) {
-                myPaint = (TextPaint) this.paint;
-            } else {
-                myPaint = new TextPaint(this.paint);
-            }
-
-            final StaticLayout layout = new StaticLayout(text, myPaint, widthMax, Layout.Alignment.ALIGN_NORMAL, 1, 0, includePadding);
-
-            final int lineCount = layout.getLineCount();
-            float maxWidth = 0;
-
-            for (int i = 0; i < lineCount; i++) {
-                final float lw = layout.getLineWidth(i);
-
-                if (maxWidth < lw) {
-                    maxWidth = lw;
-                }
-            }
-
-            retVal = (int) maxWidth;
         }
 
         return retVal;

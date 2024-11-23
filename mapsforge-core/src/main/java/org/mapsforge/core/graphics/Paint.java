@@ -32,8 +32,6 @@ public interface Paint {
 
     int getTextWidth(String text, boolean includePadding);
 
-    int getTextWidth(final String text, final int widthMax, boolean includePadding);
-
     int getFontPadding();
 
     boolean isTransparent();
