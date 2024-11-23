@@ -150,6 +150,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 
         switch (this.position) {
             case CENTER:
+            default:
                 return new Rectangle(-boxWidth / 2f, -boxHeight / 2f, boxWidth / 2f, boxHeight / 2f);
             case BELOW:
                 return new Rectangle(-boxWidth / 2f, 0, boxWidth / 2f, boxHeight);
@@ -167,9 +168,6 @@ public class AwtPointTextContainer extends PointTextContainer {
                 return new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
             case RIGHT:
                 return new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
-            default:
-                break;
         }
-        return null;
     }
 }
