@@ -43,11 +43,11 @@ public class AwtPointTextContainer extends PointTextContainer {
                 paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
         if (paintBack != null) {
-            this.textWidth = paintBack.getTextWidth(text);
-            this.textHeight = paintBack.getTextHeight(text);
+            this.textWidth = paintBack.getTextWidth(text, true);
+            this.textHeight = paintBack.getTextHeight(text, true);
         } else {
-            this.textWidth = paintFront.getTextWidth(text);
-            this.textHeight = paintFront.getTextHeight(text);
+            this.textWidth = paintFront.getTextWidth(text, true);
+            this.textHeight = paintFront.getTextHeight(text, true);
         }
 
         this.boundary = computeBoundary();

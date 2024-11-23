@@ -130,14 +130,14 @@ public abstract class PointTextContainer extends MapElementContainer {
     /**
      * @return New rotated x,y position of the container relative to the origin point
      */
-    protected Point getRotRelPosition(double originX, double originY, Rotation rotation) {
-        return getRotRelPosition(this, originX, originY, rotation);
+    protected Point getRotatedRelativePosition(double originX, double originY, Rotation rotation) {
+        return getRotatedRelativePosition(this, originX, originY, rotation);
     }
 
     /**
      * @return New rotated x,y position of the container relative to the origin point
      */
-    public static Point getRotRelPosition(PointTextContainer pointTextContainer, double originX, double originY, Rotation rotation) {
+    public static Point getRotatedRelativePosition(PointTextContainer pointTextContainer, double originX, double originY, Rotation rotation) {
         double x = pointTextContainer.xy.x - originX;
         double y = pointTextContainer.xy.y - originY;
 
@@ -252,7 +252,7 @@ public abstract class PointTextContainer extends MapElementContainer {
      *
      * @return Clash rectangle transformed back to label space
      */
-    public static Rectangle getClashRectTransformed(PointTextContainer pointTextContainer, double originX, double originY, Rotation rotation) {
+    public static Rectangle getClashRectangleTransformed(PointTextContainer pointTextContainer, double originX, double originY, Rotation rotation) {
         Rectangle output = null;
 
         final Rectangle clashBounds = pointTextContainer.clashRect;

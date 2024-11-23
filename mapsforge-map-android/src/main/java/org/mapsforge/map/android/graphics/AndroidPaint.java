@@ -152,14 +152,37 @@ class AndroidPaint implements Paint {
     }
 
     @Override
+    public int getTextHeight(final String text, boolean includePadding) {
+        int retVal = getTextHeight(text);
+
+        if (includePadding && retVal > 0) {
+            retVal += getFontPadding();
+        }
+
+        return retVal;
+    }
+
+    @Override
     public int getTextWidth(String text) {
         return (int) this.paint.measureText(text);
+    }
+
+    @Override
+    public int getTextWidth(String text, boolean includePadding) {
+        int retVal = getTextWidth(text);
+
+        if (includePadding && retVal > 0) {
+            retVal += getFontPadding();
+        }
+
+        return retVal;
     }
 
     /**
      * Uses StaticLayout to measure text accurately, and respects Spans.
      * Returns width of the widest line.
      */
+    @SuppressWarnings("deprecation")
     @Override
     public int getTextWidth(final String text, final int widthMax, boolean includePadding) {
         int retVal = 0;

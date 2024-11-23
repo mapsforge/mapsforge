@@ -51,7 +51,7 @@
 //        final Point origin = new Point(17, 19);
 //
 //        // Imitate drawing the label
-//        final Point labelPosition = AndroidPointTextContainer.getRotRelPosition(container, origin.x, origin.y, rotation);
+//        final Point labelPosition = AndroidPointTextContainer.getRotatedRelativePosition(container, origin.x, origin.y, rotation);
 //        // Coordinates are chosen for the ABOVE position
 //        final Rectangle labelRect = new Rectangle(labelPosition.x, labelPosition.y, labelPosition.x + container.boundary.getWidth(), labelPosition.y + container.boundary.getHeight());
 //
@@ -61,7 +61,7 @@
 //        assert clashRect != null;
 //
 //        // Imitate drawing the clash rectangle as a label
-//        final Rectangle clashRectAsLabel = AndroidPointTextContainer.getClashRectTransformed(container, origin.x, origin.y, rotation);
+//        final Rectangle clashRectAsLabel = AndroidPointTextContainer.getClashRectangleTransformed(container, origin.x, origin.y, rotation);
 //
 //        Assert.assertEquals("Label and clash rect centers do not match!", labelRect.getCenterX(), clashRectAsLabel.getCenterX(), Delta);
 //        Assert.assertEquals("Label and clash rect widths not equal!", labelRect.getWidth(), clashRectAsLabel.getWidth(), Delta);

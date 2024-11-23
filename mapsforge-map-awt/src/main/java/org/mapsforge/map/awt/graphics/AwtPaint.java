@@ -164,11 +164,64 @@ public class AwtPaint implements Paint {
     }
 
     @Override
+    public int getTextHeight(final String text, boolean includePadding) {
+        Graphics2D graphics2d = bufferedImage.createGraphics();
+        FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
+        graphics2d.dispose();
+        int retVal = (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getHeight();
+
+        if (includePadding && retVal > 0) {
+            retVal += getFontPadding(fontMetrics);
+        }
+
+        return retVal;
+    }
+
+    @Override
     public int getTextWidth(String text) {
         Graphics2D graphics2d = bufferedImage.createGraphics();
         FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
         graphics2d.dispose();
         return fontMetrics.stringWidth(text);
+    }
+
+    @Override
+    public int getTextWidth(String text, boolean includePadding) {
+        Graphics2D graphics2d = bufferedImage.createGraphics();
+        FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
+        graphics2d.dispose();
+        int retVal = fontMetrics.stringWidth(text);
+
+        if (includePadding && retVal > 0) {
+            retVal += getFontPadding(fontMetrics);
+        }
+
+        return retVal;
+    }
+
+    @Override
+    public int getTextWidth(final String text, final int widthMax, boolean includePadding) {
+        return getTextWidth(text, includePadding);
+    }
+
+    /**
+     * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
+     */
+    @Override
+    public int getFontPadding() {
+        Graphics2D graphics2d = bufferedImage.createGraphics();
+        FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
+        graphics2d.dispose();
+
+        return getFontPadding(fontMetrics);
+    }
+
+    /**
+     * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
+     * The value is computed as 12.5% of {@code fontMetrics.getHeight()}.
+     */
+    public static int getFontPadding(FontMetrics fontMetrics) {
+        return (int) (0.125 * fontMetrics.getHeight());
     }
 
     @Override

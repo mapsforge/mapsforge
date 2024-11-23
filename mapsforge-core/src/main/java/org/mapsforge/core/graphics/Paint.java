@@ -26,39 +26,15 @@ public interface Paint {
 
     int getTextHeight(String text);
 
-    default int getTextHeight(final String text, boolean includePadding) {
-        int retVal = 0;
-
-        retVal = getTextHeight(text);
-
-        if (includePadding && retVal > 0) {
-            retVal += getFontPadding();
-        }
-
-        return retVal;
-    }
+    int getTextHeight(final String text, boolean includePadding);
 
     int getTextWidth(String text);
 
-    default int getTextWidth(String text, boolean includePadding) {
-        int retVal = 0;
+    int getTextWidth(String text, boolean includePadding);
 
-        retVal = getTextWidth(text);
+    int getTextWidth(final String text, final int widthMax, boolean includePadding);
 
-        if (includePadding && retVal > 0) {
-            retVal += getFontPadding();
-        }
-
-        return retVal;
-    }
-
-    default int getTextWidth(final String text, final int widthMax, boolean includePadding) {
-        return getTextWidth(text);
-    }
-
-    default int getFontPadding() {
-        return 0;
-    }
+    int getFontPadding();
 
     boolean isTransparent();
 

@@ -177,7 +177,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
         android.graphics.Canvas androidCanvas = AndroidGraphicFactory.getCanvas(canvas);
 
-        final Point rotRelPosition = getRotRelPosition(origin.x, origin.y, rotation);
+        final Point rotRelPosition = getRotatedRelativePosition(origin.x, origin.y, rotation);
 
         if (isMultiline) {
             // in this case we draw the precomputed staticLayout onto the canvas by translating
@@ -239,7 +239,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
     }
 
     protected void drawClashBounds(double originX, double originY, Rotation rotation, android.graphics.Canvas androidCanvas) {
-        final Rectangle transformed = getClashRectTransformed(this, originX, originY, rotation);
+        final Rectangle transformed = getClashRectangleTransformed(this, originX, originY, rotation);
 
         if (transformed != null) {
             androidCanvas.drawRect(new RectF((float) transformed.left, (float) transformed.top, (float) transformed.right, (float) transformed.bottom), debugClashBoundsPaint);
