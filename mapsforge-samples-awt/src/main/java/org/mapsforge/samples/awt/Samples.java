@@ -43,6 +43,7 @@ import org.mapsforge.map.layer.hills.DemFolderFS;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
 import org.mapsforge.map.layer.hills.StandardClasyHillShading;
+import org.mapsforge.map.layer.labels.LabelLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.Model;
@@ -50,6 +51,7 @@ import org.mapsforge.map.model.common.PreferencesFacade;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.rendertheme.internal.MapsforgeThemes;
 
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -58,10 +60,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.prefs.Preferences;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.WindowConstants;
 
 public final class Samples {
     private static final GraphicFactory GRAPHIC_FACTORY = AwtGraphicFactory.INSTANCE;
@@ -92,7 +90,7 @@ public final class Samples {
             hillsCfg = null;
         }
 
-        List<File> mapFiles = SHOW_RASTER_MAP ? null : getMapFiles(args);
+        final List<File> mapFiles = SHOW_RASTER_MAP ? null : getMapFiles(args);
         final MapView mapView = createMapView();
 
         final PreferencesFacade preferencesFacade = new JavaPreferences(Preferences.userNodeForPackage(Samples.class));
@@ -163,6 +161,8 @@ public final class Samples {
             }
             TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition, hillsRenderConfig);
             layers.add(tileRendererLayer);
+            LabelLayer labelLayer = new LabelLayer(AwtGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
+            mapView.getLayerManager().getLayers().add(labelLayer);
             boundingBox = mapDataStore.boundingBox();
         }
 
@@ -185,8 +185,7 @@ public final class Samples {
         return mapView;
     }
 
-    @SuppressWarnings("unused")
-    private static TileDownloadLayer createTileDownloadLayer(TileCache tileCache, IMapViewPosition mapViewPosition, TileSource tileSource) {
+    private static TileDownloadLayer createTileDownloadLayer(TileCache tileCache, final IMapViewPosition mapViewPosition, TileSource tileSource) {
         return new TileDownloadLayer(tileCache, mapViewPosition, tileSource, GRAPHIC_FACTORY) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
@@ -197,8 +196,8 @@ public final class Samples {
         };
     }
 
-    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, IMapViewPosition mapViewPosition, HillsRenderConfig hillsRenderConfig) {
-        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, false, true, false, GRAPHIC_FACTORY, hillsRenderConfig) {
+    private static TileRendererLayer createTileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, final IMapViewPosition mapViewPosition, HillsRenderConfig hillsRenderConfig) {
+        TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, mapViewPosition, false, false, true, GRAPHIC_FACTORY, hillsRenderConfig) {
             @Override
             public boolean onTap(LatLong tapLatLong, Point layerXY, Point tapXY) {
                 final byte currentZoomLevel = mapViewPosition.getZoomLevel();
