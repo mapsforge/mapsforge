@@ -35,6 +35,9 @@ public class AwtPointTextContainer extends PointTextContainer {
     protected final Rectangle boundary;
     public final int textHeight;
     public final int textWidth;
+    public final int boxWidth;
+    public final int boxHeight;
+    protected final boolean isMultiline;
 
     AwtPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
                           Display display, int priority, String text, Paint paintFront, Paint paintBack,
@@ -42,13 +45,23 @@ public class AwtPointTextContainer extends PointTextContainer {
         super(xy, horizontalOffset, verticalOffset, display, priority, text,
                 paintFront, paintBack, symbolContainer, position, maxTextWidth);
 
+        final Paint measurePaint;
         if (paintBack != null) {
-            this.textWidth = paintBack.getTextWidth(text, true);
-            this.textHeight = paintBack.getTextHeight(text, true);
+            measurePaint = paintBack;
         } else {
-            this.textWidth = paintFront.getTextWidth(text, true);
-            this.textHeight = paintFront.getTextHeight(text, true);
+            measurePaint = paintFront;
         }
+
+        final int myTextWidth = measurePaint.getTextWidth(text, true);
+
+        this.isMultiline = myTextWidth > this.maxTextWidth;
+
+        this.boxWidth = myTextWidth;
+        this.boxHeight = measurePaint.getTextHeight(text, true);
+
+        // A trick to avoid measuring text twice
+        this.textWidth = boxWidth - measurePaint.getFontPadding();
+        this.textHeight = boxHeight - measurePaint.getFontPadding();
 
         this.boundary = computeBoundary();
     }
@@ -63,8 +76,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 
         Point pointAdjusted = this.xy.offset(this.horizontalOffset - origin.x, this.verticalOffset - origin.y);
 
-        int textWidth = this.paintFront.getTextWidth(this.text);
-        if (textWidth > maxTextWidth) {
+        if (this.isMultiline) {
             if (DEBUG_CLASH_BOUNDS) {
                 drawClashBounds(origin.x, origin.y, rotation, awtCanvas);
             }
@@ -133,10 +145,12 @@ public class AwtPointTextContainer extends PointTextContainer {
                 drawClashBounds(origin.x, origin.y, rotation, awtCanvas);
             }
 
+            int padding = (this.boxWidth - this.textWidth) / 2;
+
             if (this.paintBack != null) {
-                canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintBack);
+                canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left + padding), (int) (pointAdjusted.y + boundary.top + this.boxHeight - padding), this.paintBack);
             }
-            canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintFront);
+            canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left + padding), (int) (pointAdjusted.y + boundary.top + this.boxHeight - padding), this.paintFront);
         }
     }
 
@@ -146,14 +160,18 @@ public class AwtPointTextContainer extends PointTextContainer {
     }
 
     private Rectangle computeBoundary() {
-        int lines = this.textWidth / maxTextWidth + 1;
-        double boxWidth = this.textWidth;
-        double boxHeight = this.textHeight;
+        int lines = this.textWidth / this.maxTextWidth + 1;
+        double boxWidth = this.boxWidth;
+        double boxHeight = this.boxHeight;
 
         if (lines > 1) {
+            int padding = (this.boxWidth - this.textWidth) / 2;
+
             // a crude approximation of the size of the text box
-            boxWidth = maxTextWidth;
-            boxHeight = this.textHeight * lines;
+            boxWidth = this.maxTextWidth + 2 * padding;
+
+            // TODO (2024-11): Adding extra padding to textHeight as it seems that raw textHeight is too small, probably should include some spacing between lines
+            boxHeight = (this.textHeight + padding) * lines + 2 * padding;
         }
 
         switch (this.position) {

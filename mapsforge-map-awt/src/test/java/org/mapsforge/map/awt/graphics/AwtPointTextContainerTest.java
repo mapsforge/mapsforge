@@ -84,8 +84,8 @@ public class AwtPointTextContainerTest {
             final AwtPointTextContainer container1 = new AwtPointTextContainer(new Point(211, 143), 9, 17, Display.ALWAYS, 5, "12345 67890", paint, null, null, Position.ABOVE, 150);
             final AwtPointTextContainer container2 = new AwtPointTextContainer(new Point(207, 140), 9, 17, Display.ALWAYS, 5, "12345 67890", paint, null, null, Position.ABOVE, 150);
 
-            final int lines1 = container1.textWidth / container1.maxTextWidth + 1;
-            final int lines2 = container2.textWidth / container2.maxTextWidth + 1;
+            final int lines1 = container1.boxWidth / container1.maxTextWidth + 1;
+            final int lines2 = container2.boxWidth / container2.maxTextWidth + 1;
 
             assert lines1 <= 1;
             assert lines2 <= 1;
@@ -112,8 +112,8 @@ public class AwtPointTextContainerTest {
             final AwtPointTextContainer container1 = new AwtPointTextContainer(new Point(211, 143), 9, 17, Display.ALWAYS, 5, "12345 67890", paint, null, null, Position.ABOVE, 20);
             final AwtPointTextContainer container2 = new AwtPointTextContainer(new Point(207, 140), 9, 17, Display.ALWAYS, 5, "12345 67890", paint, null, null, Position.ABOVE, 20);
 
-            final int lines1 = container1.textWidth / container1.maxTextWidth + 1;
-            final int lines2 = container2.textWidth / container2.maxTextWidth + 1;
+            final int lines1 = container1.boxWidth / container1.maxTextWidth + 1;
+            final int lines2 = container2.boxWidth / container2.maxTextWidth + 1;
 
             assert lines1 > 1;
             assert lines2 > 1;
