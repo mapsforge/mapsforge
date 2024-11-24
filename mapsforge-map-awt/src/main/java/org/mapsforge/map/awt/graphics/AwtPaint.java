@@ -219,7 +219,11 @@ public class AwtPaint implements Paint {
      * <p>
      * Why 12.5%, why not 10%?
      * <p>
-     * 0.125 is a power-of-two number so has an exact binary representation, but that aside, it also has a more practical property for us. On standard screens (dot pitch values cca 0.25-0.27mm) and with AWT sample app defaults, the calculated padding with 10% constant is only 1 pixel for many labels, while with the 12.5% it results in a padding of 2 (our padding is defined as top+bottom, so this is appealing because each side gets 1 pixel of padding).
+     * 0.125 is a power-of-two number so has an exact binary representation, but that aside, it also has a
+     * more practical property for us. On standard screens (dot pitch values cca 0.25-0.27mm) and with AWT
+     * sample app defaults, the calculated padding with 10% constant is only 1 pixel for many labels, while
+     * with the 12.5% it results in a padding of 2 (our padding is defined as top+bottom, so this is appealing
+     * because each side gets 1 pixel of padding).
      */
     public static int getFontPadding(FontMetrics fontMetrics) {
         return (int) (0.125 * fontMetrics.getHeight());
