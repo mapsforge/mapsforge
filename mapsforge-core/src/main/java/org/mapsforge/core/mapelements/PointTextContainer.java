@@ -25,6 +25,9 @@ import org.mapsforge.core.model.Rotation;
 
 public abstract class PointTextContainer extends MapElementContainer {
 
+    /**
+     * This will draw clash rectangles around labels (for debugging purposes).
+     */
     protected static final boolean DEBUG_CLASH_BOUNDS = false;
 
     public final double horizontalOffset;

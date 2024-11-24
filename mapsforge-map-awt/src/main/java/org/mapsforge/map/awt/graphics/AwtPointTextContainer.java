@@ -65,6 +65,10 @@ public class AwtPointTextContainer extends PointTextContainer {
 
         int textWidth = this.paintFront.getTextWidth(this.text);
         if (textWidth > maxTextWidth) {
+            if (DEBUG_CLASH_BOUNDS) {
+                drawClashBounds(origin.x, origin.y, rotation, awtCanvas);
+            }
+
             AttributedString attrString = new AttributedString(this.text);
             org.mapsforge.map.awt.graphics.AwtPaint awtPaintFront = org.mapsforge.map.awt.graphics.AwtGraphicFactory.getPaint(this.paintFront);
             attrString.addAttribute(TextAttribute.FOREGROUND, awtPaintFront.color);
@@ -125,6 +129,10 @@ public class AwtPointTextContainer extends PointTextContainer {
                 drawPosY += layout.getAscent() + layout.getDescent() + layout.getLeading();
             }
         } else {
+            if (DEBUG_CLASH_BOUNDS) {
+                drawClashBounds(origin.x, origin.y, rotation, awtCanvas);
+            }
+
             if (this.paintBack != null) {
                 canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left), (int) (pointAdjusted.y + boundary.top + this.textHeight), this.paintBack);
             }
@@ -168,6 +176,16 @@ public class AwtPointTextContainer extends PointTextContainer {
                 return new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
             case RIGHT:
                 return new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
+        }
+    }
+
+    protected void drawClashBounds(double originX, double originY, Rotation rotation, AwtCanvas awtCanvas) {
+        final Rectangle transformed = getClashRectangleTransformed(this, originX, originY, rotation);
+
+        if (transformed != null) {
+            awtCanvas
+                    .getGraphicObject()
+                    .drawRect((int) transformed.left, (int) transformed.top, (int) transformed.getWidth(), (int) transformed.getHeight());
         }
     }
 }
