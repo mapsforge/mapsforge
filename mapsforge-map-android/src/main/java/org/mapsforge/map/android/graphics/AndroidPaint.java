@@ -18,7 +18,6 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.annotation.TargetApi;
 import android.graphics.BitmapShader;
 import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
@@ -26,7 +25,6 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.text.StaticLayout;
 
 import org.mapsforge.core.graphics.Align;
@@ -38,6 +36,7 @@ import org.mapsforge.core.graphics.Join;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.util.Parameters;
 
 class AndroidPaint implements Paint {
@@ -121,6 +120,39 @@ class AndroidPaint implements Paint {
         throw new IllegalArgumentException("unknown font family: " + fontFamily);
     }
 
+    /**
+     * Returns font padding calculated as {@link Paint#FONT_PADDING_FACTOR} * {@code fontHeight}, with a
+     * minimum value of 1.
+     */
+    public static int getFontPadding(int fontHeight) {
+        return (int) Math.max(1, FONT_PADDING_FACTOR * fontHeight);
+    }
+
+    /**
+     * Uses StaticLayout to measure text accurately, and respects Spans. Returns width of the widest line.
+     */
+    public static int getTextWidth(final StaticLayout layout) {
+        int retVal = 0;
+
+        if (layout != null) {
+
+            final int lineCount = layout.getLineCount();
+            double maxWidth = 0;
+
+            for (int i = 0; i < lineCount; i++) {
+                final float lw = layout.getLineWidth(i);
+
+                if (maxWidth < lw) {
+                    maxWidth = lw;
+                }
+            }
+
+            retVal = (int) maxWidth;
+        }
+
+        return retVal;
+    }
+
     final android.graphics.Paint paint;
 
     // needed to record size of bitmap shader to compute the shift
@@ -153,84 +185,20 @@ class AndroidPaint implements Paint {
     }
 
     @Override
+    public Rectangle getTextBounds(String text) {
+        this.paint.getTextBounds(text, 0, text.length(), rect);
+        return new Rectangle(rect.left, rect.top, rect.right, rect.bottom);
+    }
+
+    @Override
     public int getTextHeight(String text) {
         this.paint.getTextBounds(text, 0, text.length(), rect);
         return rect.height();
     }
 
     @Override
-    public int getTextHeight(final String text, boolean includePadding) {
-        int retVal = getTextHeight(text);
-
-        if (includePadding && retVal > 0) {
-            retVal += getFontPadding();
-        }
-
-        return retVal;
-    }
-
-    @Override
     public int getTextWidth(String text) {
         return (int) this.paint.measureText(text);
-    }
-    
-    @Override
-    public int getTextWidth(String text, boolean includePadding) {
-        int retVal = getTextWidth(text);
-
-        if (includePadding && retVal > 0) {
-            retVal += getFontPadding();
-        }
-
-        return retVal;
-    }
-
-    /**
-     * Uses StaticLayout to measure text accurately, and respects Spans.
-     * Returns width of the widest line.
-     */
-    public static int getTextWidth(final StaticLayout layout, boolean includePadding) {
-        int retVal = 0;
-
-        if (layout != null) {
-
-            final int lineCount = layout.getLineCount();
-            double maxWidth = 0;
-
-            for (int i = 0; i < lineCount; i++) {
-                final float lw = layout.getLineWidth(i);
-
-                if (maxWidth < lw) {
-                    maxWidth = lw;
-                }
-            }
-
-            retVal = (int) maxWidth;
-
-            if (includePadding && retVal > 0) {
-                retVal += getFontPadding(layout.getPaint());
-            }
-        }
-
-        return retVal;
-    }
-
-    /**
-     * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
-     */
-    @Override
-    public int getFontPadding() {
-        return getFontPadding(this.paint);
-    }
-
-    /**
-     * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
-     * The value is computed as (ascent - top + bottom).
-     */
-    public static int getFontPadding(android.graphics.Paint paint) {
-        final android.graphics.Paint.FontMetricsInt fontMetricsInt = paint.getFontMetricsInt();
-
-        return fontMetricsInt.ascent - fontMetricsInt.top + fontMetricsInt.bottom;
     }
 
     @Override
@@ -238,8 +206,6 @@ class AndroidPaint implements Paint {
         return this.paint.getShader() == null && this.paint.getAlpha() == 0;
     }
 
-    @SuppressWarnings("unused")
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void setBitmapShader(org.mapsforge.core.graphics.Bitmap bitmap) {
         if (bitmap == null) {
@@ -252,7 +218,7 @@ class AndroidPaint implements Paint {
 
         this.shaderWidth = bitmap.getWidth();
         this.shaderHeight = bitmap.getHeight();
-        if (!AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (!AndroidGraphicFactory.KEEP_RESOURCE_BITMAPS) {
             // there is an problem when bitmaps are recycled too early on honeycomb and up,
             // where shaders are corrupted. This problem does of course not arise if
             // the bitmaps are cached for future use.

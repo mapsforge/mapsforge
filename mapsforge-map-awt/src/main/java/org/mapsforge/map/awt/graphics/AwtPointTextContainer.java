@@ -16,7 +16,11 @@
  */
 package org.mapsforge.map.awt.graphics;
 
-import org.mapsforge.core.graphics.*;
+import org.mapsforge.core.graphics.Canvas;
+import org.mapsforge.core.graphics.Display;
+import org.mapsforge.core.graphics.Matrix;
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Position;
 import org.mapsforge.core.mapelements.PointTextContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.model.Point;
@@ -37,7 +41,9 @@ public class AwtPointTextContainer extends PointTextContainer {
     public final int textWidth;
     public final int boxWidth;
     public final int boxHeight;
-    protected final boolean isMultiline;
+    public final boolean isMultiline;
+    public final Rectangle textBounds;
+    public final int fontPadding;
 
     AwtPointTextContainer(Point xy, double horizontalOffset, double verticalOffset,
                           Display display, int priority, String text, Paint paintFront, Paint paintBack,
@@ -52,16 +58,16 @@ public class AwtPointTextContainer extends PointTextContainer {
             measurePaint = paintFront;
         }
 
-        final int myTextWidth = measurePaint.getTextWidth(text, true);
+        this.textBounds = measurePaint.getTextBounds(text);
+        this.fontPadding = AwtPaint.getFontPadding((int) Math.round(this.textBounds.getHeight()));
 
-        this.isMultiline = myTextWidth > this.maxTextWidth;
+        this.textWidth = (int) Math.round(this.textBounds.getWidth());
+        this.textHeight = (int) Math.round(this.textBounds.getHeight());
 
-        this.boxWidth = myTextWidth;
-        this.boxHeight = measurePaint.getTextHeight(text, true);
+        this.boxWidth = this.textWidth + 2 * this.fontPadding;
+        this.boxHeight = this.textHeight + 2 * this.fontPadding;
 
-        // A trick to avoid measuring text twice
-        this.textWidth = boxWidth - measurePaint.getFontPadding();
-        this.textHeight = boxHeight - measurePaint.getFontPadding();
+        this.isMultiline = this.boxWidth > this.maxTextWidth;
 
         this.boundary = computeBoundary();
     }
@@ -74,7 +80,13 @@ public class AwtPointTextContainer extends PointTextContainer {
 
         AwtCanvas awtCanvas = (AwtCanvas) canvas;
 
-        Point pointAdjusted = this.xy.offset(this.horizontalOffset - origin.x, this.verticalOffset - origin.y);
+        final Point rotRelPosition = getRotatedRelativePosition(origin.x, origin.y, rotation);
+
+        double x = rotRelPosition.x;
+        double y = rotRelPosition.y;
+
+        x += fontPadding;
+        y += -fontPadding;
 
         if (this.isMultiline) {
             if (DEBUG_CLASH_BOUNDS) {
@@ -98,11 +110,16 @@ public class AwtPointTextContainer extends PointTextContainer {
                 layoutHeight += layout.getAscent() + layout.getDescent() + layout.getLeading();
             }
 
-            float drawPosY = (float) pointAdjusted.y;
+            x += boundary.getWidth() / 2;
+
+            // Because the origin of our text box is on top
+            y += boundary.getHeight() / 2;
+
+            float drawPosY = (float) y;
             lineMeasurer.setPosition(paragraphStart);
             while (lineMeasurer.getPosition() < paragraphEnd) {
                 TextLayout layout = lineMeasurer.nextLayout(maxTextWidth);
-                float posX = (float) pointAdjusted.x;
+                float posX = (float) x;
                 float posY = drawPosY;
                 if (Position.CENTER == this.position) {
                     posX += -layout.getAdvance() * 0.5f;
@@ -145,12 +162,17 @@ public class AwtPointTextContainer extends PointTextContainer {
                 drawClashBounds(origin.x, origin.y, rotation, awtCanvas);
             }
 
-            int padding = (this.boxWidth - this.textWidth) / 2;
+            x += -textBounds.left;
+
+            // Because the origin of our text box is on top
+            y += boundary.getHeight();
+            // Because the origin of our text is the baseline
+            y += -textBounds.bottom;
 
             if (this.paintBack != null) {
-                canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left + padding), (int) (pointAdjusted.y + boundary.top + this.boxHeight - padding), this.paintBack);
+                canvas.drawText(this.text, (int) Math.round(x), (int) Math.round(y), this.paintBack);
             }
-            canvas.drawText(this.text, (int) (pointAdjusted.x + boundary.left + padding), (int) (pointAdjusted.y + boundary.top + this.boxHeight - padding), this.paintFront);
+            canvas.drawText(this.text, (int) Math.round(x), (int) Math.round(y), this.paintFront);
         }
     }
 
@@ -165,35 +187,31 @@ public class AwtPointTextContainer extends PointTextContainer {
         double boxHeight = this.boxHeight;
 
         if (lines > 1) {
-            int padding = (this.boxWidth - this.textWidth) / 2;
-
             // a crude approximation of the size of the text box
-            boxWidth = this.maxTextWidth + 2 * padding;
-
-            // TODO (2024-11): Adding extra padding to textHeight as it seems that raw textHeight is too small, probably should include some spacing between lines
-            boxHeight = (this.textHeight + padding) * lines + 2 * padding;
+            boxWidth = this.maxTextWidth;
+            boxHeight = this.textHeight * lines + 2 * fontPadding;
         }
 
         switch (this.position) {
             case CENTER:
             default:
-                return new Rectangle(-boxWidth / 2f, -boxHeight / 2f, boxWidth / 2f, boxHeight / 2f);
+                return new Rectangle(-boxWidth / 2, -boxHeight / 2, boxWidth / 2, boxHeight / 2);
             case BELOW:
-                return new Rectangle(-boxWidth / 2f, 0, boxWidth / 2f, boxHeight);
+                return new Rectangle(-boxWidth / 2, 0, boxWidth / 2, boxHeight);
             case BELOW_LEFT:
                 return new Rectangle(-boxWidth, 0, 0, boxHeight);
             case BELOW_RIGHT:
                 return new Rectangle(0, 0, boxWidth, boxHeight);
             case ABOVE:
-                return new Rectangle(-boxWidth / 2f, -boxHeight, boxWidth / 2f, 0);
+                return new Rectangle(-boxWidth / 2, -boxHeight, boxWidth / 2, 0);
             case ABOVE_LEFT:
                 return new Rectangle(-boxWidth, -boxHeight, 0, 0);
             case ABOVE_RIGHT:
                 return new Rectangle(0, -boxHeight, boxWidth, 0);
             case LEFT:
-                return new Rectangle(-boxWidth, -boxHeight / 2f, 0, boxHeight / 2f);
+                return new Rectangle(-boxWidth, -boxHeight / 2, 0, boxHeight / 2);
             case RIGHT:
-                return new Rectangle(0, -boxHeight / 2f, boxWidth, boxHeight / 2f);
+                return new Rectangle(0, -boxHeight / 2, boxWidth, boxHeight / 2);
         }
     }
 
@@ -203,7 +221,7 @@ public class AwtPointTextContainer extends PointTextContainer {
         if (transformed != null) {
             awtCanvas
                     .getGraphicObject()
-                    .drawRect((int) transformed.left, (int) transformed.top, (int) transformed.getWidth(), (int) transformed.getHeight());
+                    .drawRect((int) Math.round(transformed.left), (int) Math.round(transformed.top), (int) Math.round(transformed.getWidth()), (int) Math.round(transformed.getHeight()));
         }
     }
 }

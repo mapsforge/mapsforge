@@ -18,21 +18,23 @@
 package org.mapsforge.core.graphics;
 
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 
 public interface Paint {
+    /**
+     * Factor to obtain the font padding value by multiplying it with the font height.
+     */
+    double FONT_PADDING_FACTOR = 0.2;
+
     int getColor();
 
     float getStrokeWidth();
 
+    Rectangle getTextBounds(String text);
+
     int getTextHeight(String text);
 
-    int getTextHeight(final String text, boolean includePadding);
-
     int getTextWidth(String text);
-
-    int getTextWidth(String text, boolean includePadding);
-
-    int getFontPadding();
 
     boolean isTransparent();
 

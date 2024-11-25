@@ -98,6 +98,14 @@ public class AwtPaint implements Paint {
         throw new IllegalArgumentException("unknown cap: " + join);
     }
 
+    /**
+     * Returns font padding calculated as {@link Paint#FONT_PADDING_FACTOR} * {@code fontHeight}, with a
+     * minimum value of 1.
+     */
+    public static int getFontPadding(int fontHeight) {
+        return (int) Math.max(1, FONT_PADDING_FACTOR * fontHeight);
+    }
+
     private static final Map<AttributedCharacterIterator.Attribute, Object> TEXT_ATTRIBUTES = new HashMap<>();
 
     static {
@@ -157,6 +165,20 @@ public class AwtPaint implements Paint {
     }
 
     @Override
+    public org.mapsforge.core.model.Rectangle getTextBounds(String text) {
+        Graphics2D graphics2d = bufferedImage.createGraphics();
+        FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
+        graphics2d.dispose();
+
+        final Rectangle bounds = this.font
+                .createGlyphVector(fontMetrics.getFontRenderContext(), text)
+                .getVisualBounds()
+                .getBounds();
+
+        return new org.mapsforge.core.model.Rectangle(bounds.x, bounds.y, bounds.x + bounds.width, bounds.y + bounds.height);
+    }
+
+    @Override
     public int getTextHeight(String text) {
         Graphics2D graphics2d = bufferedImage.createGraphics();
         FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
@@ -165,68 +187,11 @@ public class AwtPaint implements Paint {
     }
 
     @Override
-    public int getTextHeight(final String text, boolean includePadding) {
-        Graphics2D graphics2d = bufferedImage.createGraphics();
-        FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
-        graphics2d.dispose();
-        int retVal = (int) this.font.createGlyphVector(fontMetrics.getFontRenderContext(), text).getVisualBounds().getHeight();
-
-        if (includePadding && retVal > 0) {
-            retVal += getFontPadding(fontMetrics);
-        }
-
-        return retVal;
-    }
-
-    @Override
     public int getTextWidth(String text) {
         Graphics2D graphics2d = bufferedImage.createGraphics();
         FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
         graphics2d.dispose();
         return fontMetrics.stringWidth(text);
-    }
-
-    @Override
-    public int getTextWidth(String text, boolean includePadding) {
-        Graphics2D graphics2d = bufferedImage.createGraphics();
-        FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
-        graphics2d.dispose();
-        int retVal = fontMetrics.stringWidth(text);
-
-        if (includePadding && retVal > 0) {
-            retVal += getFontPadding(fontMetrics);
-        }
-
-        return retVal;
-    }
-
-    /**
-     * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
-     */
-    @Override
-    public int getFontPadding() {
-        Graphics2D graphics2d = bufferedImage.createGraphics();
-        FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
-        graphics2d.dispose();
-
-        return getFontPadding(fontMetrics);
-    }
-
-    /**
-     * <p>
-     * Returns total vertical font padding (top+bottom). The value can also be used for horizontal padding.
-     * The value is computed as 12.5% of {@code fontMetrics.getHeight()}.
-     * <p>
-     * Why 12.5%, why not 10%?
-     * <p>
-     * 0.125 is a power-of-two number so has an exact binary representation, but that aside, it also has a
-     * more practical property for us. On standard screens (dot pitch values cca 0.25-0.27mm) and with AWT
-     * sample app defaults, the calculated padding with 10% constant is only 1 pixel for many labels, while
-     * with the 12.5% it results in a padding of 2 (our padding is defined as top+bottom, so this is appealing
-     * because each side gets 1 pixel of padding).
-     */
-    public static int getFontPadding(FontMetrics fontMetrics) {
-        return (int) (0.125 * fontMetrics.getHeight());
     }
 
     @Override

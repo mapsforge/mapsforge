@@ -41,7 +41,9 @@ public class AndroidPointTextContainer extends PointTextContainer {
     private StaticLayout frontLayout;
     public final int textHeight;
     public final int textWidth;
-    protected final boolean isMultiline;
+    public final boolean isMultiline;
+    public final Rectangle textBounds;
+    public final int fontPadding;
 
     protected final android.graphics.Paint debugClashBoundsPaint;
 
@@ -58,7 +60,10 @@ public class AndroidPointTextContainer extends PointTextContainer {
             measurePaint = paintFront;
         }
 
-        final int myTextWidth = measurePaint.getTextWidth(text, true);
+        this.textBounds = measurePaint.getTextBounds(text);
+        this.fontPadding = AndroidPaint.getFontPadding((int) Math.round(this.textBounds.getHeight()));
+
+        final int myTextWidth = (int) Math.round(this.textBounds.getWidth()) + 2 * this.fontPadding;
 
         final float boxWidth, boxHeight;
         if (myTextWidth > this.maxTextWidth) {
@@ -92,22 +97,19 @@ public class AndroidPointTextContainer extends PointTextContainer {
                 this.backLayout = null;
             }
 
-            boxWidth = AndroidPaint.getTextWidth(backLayout != null ? backLayout : frontLayout, true);
-            boxHeight = (backLayout != null ? backLayout : frontLayout).getHeight();
+            this.textWidth = AndroidPaint.getTextWidth(backLayout != null ? backLayout : frontLayout);
+            this.textHeight = (backLayout != null ? backLayout : frontLayout).getHeight();
 
-            this.textWidth = (int) boxWidth;
-            this.textHeight = (int) boxHeight;
+            boxWidth = this.textWidth + 2 * this.fontPadding;
+            boxHeight = this.textHeight + 2 * this.fontPadding;
         } else {
             this.isMultiline = false;
 
-            final int myTextHeight = measurePaint.getTextHeight(text, true);
+            this.textWidth = myTextWidth - 2 * this.fontPadding;
+            this.textHeight = (int) Math.round(this.textBounds.getHeight());
 
             boxWidth = myTextWidth;
-            boxHeight = myTextHeight;
-
-            // A trick to avoid measuring text twice
-            this.textWidth = (int) (boxWidth - measurePaint.getFontPadding());
-            this.textHeight = (int) (boxHeight - measurePaint.getFontPadding());
+            boxHeight = this.textHeight + 2 * this.fontPadding;
         }
 
         switch (this.position) {
@@ -179,6 +181,9 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
         final Point rotRelPosition = getRotatedRelativePosition(origin.x, origin.y, rotation);
 
+        double x = rotRelPosition.x;
+        double y = rotRelPosition.y;
+
         if (isMultiline) {
             // in this case we draw the precomputed staticLayout onto the canvas by translating
             // the canvas.
@@ -193,12 +198,9 @@ public class AndroidPointTextContainer extends PointTextContainer {
                 drawClashBounds(origin.x, origin.y, rotation, androidCanvas);
             }
 
-            double x = rotRelPosition.x;
-            double y = rotRelPosition.y;
+            x -= (this.maxTextWidth - boundary.getWidth()) / 2f;
 
-            x += boundary.getWidth() / 2f;
-            // Because our StaticLayout is this.maxTextWidth wide, and centered
-            x -= this.maxTextWidth / 2f;
+            y += fontPadding;
 
             androidCanvas.translate((float) x, (float) y);
 
@@ -218,13 +220,10 @@ public class AndroidPointTextContainer extends PointTextContainer {
                 drawClashBounds(origin.x, origin.y, rotation, androidCanvas);
             }
 
-            double x = rotRelPosition.x;
-            double y = rotRelPosition.y;
+            x += fontPadding - textBounds.left;
 
-            x += boundary.getWidth() / 2f;
-            // Because the origin of our text is the base line, and height is this.textHeight (without padding)
-            y += boundary.getHeight() / 2f;
-            y += this.textHeight / 2f;
+            y += boundary.getHeight();
+            y += -fontPadding - textBounds.bottom;
 
             if (this.paintBack != null) {
                 androidCanvas.drawText(this.text, (float) x, (float) y, AndroidGraphicFactory.getPaint(this.paintBack));
