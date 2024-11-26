@@ -3,6 +3,7 @@
 ## Next version
 
 - Map rotation: marker billboard option [#1563](https://github.com/mapsforge/mapsforge/pull/1563)
+- Map label improvements [#1579](https://github.com/mapsforge/mapsforge/pull/1579)
 - Hillshading performance improvements [#1551](https://github.com/mapsforge/mapsforge/issues/1551)
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Remove `Filter`, use `ThemeCallback` [#1573](https://github.com/mapsforge/mapsforge/pull/1573)
