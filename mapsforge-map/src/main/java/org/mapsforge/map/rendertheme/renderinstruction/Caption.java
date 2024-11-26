@@ -3,6 +3,7 @@
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014-2019 devemux86
  * Copyright 2020 Adrian Batzill
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -93,28 +94,6 @@ public class Caption extends RenderInstruction {
             } else {
                 this.position = Position.BELOW;
             }
-        }
-        switch (this.position) {
-            case CENTER:
-            case BELOW:
-            case ABOVE:
-                this.stroke.setTextAlign(Align.CENTER);
-                this.fill.setTextAlign(Align.CENTER);
-                break;
-            case BELOW_LEFT:
-            case ABOVE_LEFT:
-            case LEFT:
-                this.stroke.setTextAlign(Align.RIGHT);
-                this.fill.setTextAlign(Align.RIGHT);
-                break;
-            case BELOW_RIGHT:
-            case ABOVE_RIGHT:
-            case RIGHT:
-                this.stroke.setTextAlign(Align.LEFT);
-                this.fill.setTextAlign(Align.LEFT);
-                break;
-            default:
-                throw new IllegalArgumentException("Position invalid");
         }
     }
 
