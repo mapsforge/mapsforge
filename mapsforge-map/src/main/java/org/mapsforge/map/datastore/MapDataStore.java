@@ -2,6 +2,7 @@
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
  * Copyright 2015 lincomatic
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -253,6 +254,14 @@ public abstract class MapDataStore {
     public abstract boolean supportsTile(Tile tile);
 
     /**
+     * Returns true if MapDatabase contains a complete tile.
+     *
+     * @param tile tile to be rendered.
+     * @return true if complete tile is part of database.
+     */
+    public abstract boolean supportsFullTile(Tile tile);
+
+    /**
      * Returns true if MapDatabase covers (even partially) certain area in required zoom level.
      *
      * @param boundingBox area we test
@@ -260,6 +269,15 @@ public abstract class MapDataStore {
      * @return true if area is part of the database.
      */
     public abstract boolean supportsArea(BoundingBox boundingBox, byte zoomLevel);
+
+    /**
+     * Returns true if MapDatabase covers certain area completely in required zoom level.
+     *
+     * @param boundingBox area we test
+     * @param zoomLevel   zoom level we test
+     * @return true if complete area is part of the database.
+     */
+    public abstract boolean supportsFullArea(BoundingBox boundingBox, byte zoomLevel);
 
     /**
      * Returns true if a way should be included in the result set for readLabels()
