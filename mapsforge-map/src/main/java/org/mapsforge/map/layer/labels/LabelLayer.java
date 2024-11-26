@@ -1,6 +1,7 @@
 /*
  * Copyright 2014-2016 Ludwig M Brinckmann
  * Copyright 2016 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -35,6 +36,7 @@ public class LabelLayer extends Layer {
     protected List<MapElementContainer> elementsToDraw;
     protected Tile upperLeft;
     protected Tile lowerRight;
+    protected Rotation rotation;
     protected int lastLabelStoreVersion;
 
     public LabelLayer(GraphicFactory graphicFactory, LabelStore labelStore) {
@@ -48,10 +50,11 @@ public class LabelLayer extends Layer {
         Tile newUpperLeft = LayerUtil.getUpperLeft(boundingBox, zoomLevel, displayModel.getTileSize());
         Tile newLowerRight = LayerUtil.getLowerRight(boundingBox, zoomLevel, displayModel.getTileSize());
         if (!newUpperLeft.equals(this.upperLeft) || !newLowerRight.equals(this.lowerRight)
-                || lastLabelStoreVersion != labelStore.getVersion()) {
-            // only need to get new data set if either set of tiles changed or the label store
+                || lastLabelStoreVersion != labelStore.getVersion() || !rotation.equals(this.rotation)) {
+            // only need to get new data set if either set of tiles changed or the label store or the rotation
             this.upperLeft = newUpperLeft;
             this.lowerRight = newLowerRight;
+            this.rotation = rotation;
             lastLabelStoreVersion = labelStore.getVersion();
             List<MapElementContainer> visibleItems = this.labelStore.getVisibleItems(upperLeft, lowerRight);
 

@@ -59,7 +59,7 @@ public class MultiMapLowResWorld extends DefaultTheme {
      * @return the low res world map file.
      */
     public static File getWorldMapFile(Context context) {
-        return new File(context.getExternalMediaDirs()[0], getWorldMapFileName());
+        return new File(context.getExternalFilesDirs(null)[0], getWorldMapFileName());
     }
 
     /**
@@ -80,7 +80,7 @@ public class MultiMapLowResWorld extends DefaultTheme {
         };
         multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_AUTOFILL);
         MapFile mapFile1 = (MapFile) getMapFile1();
-        mapFile1.restrictToZoomRange((byte) 8, Byte.MAX_VALUE);
+        //mapFile1.restrictToZoomRange((byte) 8, Byte.MAX_VALUE);
         multiMapDataStore.addMapDataStore(mapFile1, true, true);
         multiMapDataStore.addMapDataStore(getMapFile2(), false, false);
 

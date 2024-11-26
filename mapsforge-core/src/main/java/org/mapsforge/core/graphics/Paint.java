@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2016-2017 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -17,11 +18,19 @@
 package org.mapsforge.core.graphics;
 
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 
 public interface Paint {
+    /**
+     * Factor to obtain the font padding value by multiplying it with the font height.
+     */
+    double FONT_PADDING_FACTOR = 0.2;
+
     int getColor();
 
     float getStrokeWidth();
+
+    Rectangle getTextBounds(String text);
 
     int getTextHeight(String text);
 

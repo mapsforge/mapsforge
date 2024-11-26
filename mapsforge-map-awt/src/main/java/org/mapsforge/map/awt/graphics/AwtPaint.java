@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2017 devemux86
  * Copyright 2014 Ludwig M Brinckmann
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -97,6 +98,14 @@ public class AwtPaint implements Paint {
         throw new IllegalArgumentException("unknown cap: " + join);
     }
 
+    /**
+     * Returns font padding calculated as {@link Paint#FONT_PADDING_FACTOR} * {@code fontHeight}, with a
+     * minimum value of 1.
+     */
+    public static int getFontPadding(int fontHeight) {
+        return (int) Math.max(1, FONT_PADDING_FACTOR * fontHeight);
+    }
+
     private static final Map<AttributedCharacterIterator.Attribute, Object> TEXT_ATTRIBUTES = new HashMap<>();
 
     static {
@@ -153,6 +162,20 @@ public class AwtPaint implements Paint {
     @Override
     public float getStrokeWidth() {
         return this.strokeWidth;
+    }
+
+    @Override
+    public org.mapsforge.core.model.Rectangle getTextBounds(String text) {
+        Graphics2D graphics2d = bufferedImage.createGraphics();
+        FontMetrics fontMetrics = graphics2d.getFontMetrics(this.font);
+        graphics2d.dispose();
+
+        final Rectangle bounds = this.font
+                .createGlyphVector(fontMetrics.getFontRenderContext(), text)
+                .getVisualBounds()
+                .getBounds();
+
+        return new org.mapsforge.core.model.Rectangle(bounds.x, bounds.y, bounds.x + bounds.width, bounds.y + bounds.height);
     }
 
     @Override
