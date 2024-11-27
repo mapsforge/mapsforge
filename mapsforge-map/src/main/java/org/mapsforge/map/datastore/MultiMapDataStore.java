@@ -20,21 +20,23 @@ import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A MapDatabase that reads and combines data from multiple map files.
  * The MultiMapDatabase supports the following modes for reading from multiple files:
  * <p>
- * - RETURN_FIRST: the data from the first database to support a tile will be returned. This is the
+ * - RETURN_FIRST: The data from the first database to support a tile will be returned. This is the
  * fastest operation suitable when you know there is no overlap between map files.
  * <p>
- * - RETURN_ALL: the data from all files will be returned, the data will be combined. This is suitable
+ * - RETURN_ALL: The data from all files will be returned, the data will be combined. This is suitable
  * if more than one file can contain data for a tile, but you know there is no semantic overlap, e.g.
- * one file contains contour lines, another road data.
+ * one file contains contour lines, another road data. Use {@link #setPriority(int)} to prioritize your maps.
  * <p>
- * - DEDUPLICATE: the data from all files will be returned but duplicates will be eliminated. This is
+ * - DEDUPLICATE: The data from all files will be returned but duplicates will be eliminated. This is
  * suitable when multiple maps cover the different areas, but there is some overlap at boundaries. This
  * is the most expensive operation and often it is actually faster to double paint objects.
  */
@@ -48,13 +50,13 @@ public class MultiMapDataStore extends MapDataStore {
 
     private BoundingBox boundingBox;
     private final DataPolicy dataPolicy;
-    private final Set<MapDataStore> mapDatabases;
+    private final List<MapDataStore> mapDatabases;
     private LatLong startPosition;
     private byte startZoomLevel;
 
     public MultiMapDataStore(DataPolicy dataPolicy) {
         this.dataPolicy = dataPolicy;
-        this.mapDatabases = new TreeSet<>();
+        this.mapDatabases = new ArrayList<>();
     }
 
     /**
@@ -81,6 +83,14 @@ public class MultiMapDataStore extends MapDataStore {
         } else {
             this.boundingBox = this.boundingBox.extendBoundingBox(mapDataStore.boundingBox());
         }
+
+        Collections.sort(this.mapDatabases, new Comparator<MapDataStore>() {
+            @Override
+            public int compare(MapDataStore mds1, MapDataStore mds2) {
+                // Reverse order
+                return -Integer.compare(mds1.getPriority(), mds2.getPriority());
+            }
+        });
     }
 
     @Override

@@ -28,7 +28,7 @@ import java.util.Locale;
 /**
  * Base class for map data retrieval.
  */
-public abstract class MapDataStore implements Comparable<MapDataStore> {
+public abstract class MapDataStore {
 
     protected int priority = 0;
 
@@ -240,12 +240,6 @@ public abstract class MapDataStore implements Comparable<MapDataStore> {
     public MapDataStore setPriority(int priority) {
         this.priority = priority;
         return this;
-    }
-
-    @Override
-    public int compareTo(MapDataStore other) {
-        // Reverse order
-        return -Integer.compare(this.getPriority(), other.getPriority());
     }
 
     /**

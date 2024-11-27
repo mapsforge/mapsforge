@@ -238,6 +238,12 @@ public class MapFile extends MapDataStore {
             this.databaseIndexCache = new IndexCache(this.inputChannel, INDEX_CACHE_SIZE);
 
             this.timestamp = mapFile.lastModified();
+
+            // 2024: This may be removed in the future when world.map users get used to the map priorities feature
+            if ("world.map".equalsIgnoreCase(mapFile.getName())) {
+                // Some random (very) negative value no one will use
+                setPriority(Integer.MIN_VALUE + 374);
+            }
         } catch (Exception e) {
             // make sure that the channel is closed
             closeFileChannel();
