@@ -51,10 +51,8 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
     protected abstract Rectangle getBoundary();
 
     /**
-     * Compares elements according to their priority.
-     *
-     * @param other
-     * @return priority order
+     * Compares elements according to their priority and position.
+     * The compare is consistent with equals.
      */
     @Override
     public int compareTo(MapElementContainer other) {
@@ -64,7 +62,13 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
         if (this.priority > other.priority) {
             return 1;
         }
-        return 0;
+
+        // If the priorities are the same, make a more detailed ordering.
+        // Basically we don't want to allow two elements to be arbitrarily ordered,
+        // because that makes drawing the elements non-deterministic.
+        // This also makes the natural ordering of elements consistent with equals,
+        // as it should be.
+        return xy.compareTo(other.xy);
     }
 
     @Override
