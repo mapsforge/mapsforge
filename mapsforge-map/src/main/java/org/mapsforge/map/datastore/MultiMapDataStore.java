@@ -39,6 +39,7 @@ import java.util.List;
  * - DEDUPLICATE: The data from all files will be returned but duplicates will be eliminated. This is
  * suitable when multiple maps cover the different areas, but there is some overlap at boundaries. This
  * is the most expensive operation and often it is actually faster to double paint objects.
+ * Use {@link #setPriority(int)} to prioritize your maps.
  */
 public class MultiMapDataStore extends MapDataStore {
 
