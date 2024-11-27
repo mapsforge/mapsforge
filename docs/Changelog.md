@@ -4,6 +4,8 @@
 
 - Map rotation: marker billboard option [#1563](https://github.com/mapsforge/mapsforge/pull/1563)
 - Map label improvements [#1579](https://github.com/mapsforge/mapsforge/pull/1579)
+- Multi-map improvements [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
+  - `MapDataStore.setPriority`
 - Hillshading performance improvements [#1551](https://github.com/mapsforge/mapsforge/issues/1551)
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
 - Remove `Filter`, use `ThemeCallback` [#1573](https://github.com/mapsforge/mapsforge/pull/1573)
@@ -13,9 +15,9 @@
 ## Version 0.22.0 (2024-10-10)
 
 - Map rotation [#7](https://github.com/mapsforge/mapsforge/issues/7)
-    - Rotation gesture [#1495](https://github.com/mapsforge/mapsforge/issues/1495)
+- Rotation gesture [#1495](https://github.com/mapsforge/mapsforge/issues/1495)
 - Fractional zoom [#75](https://github.com/mapsforge/mapsforge/issues/75)
-    - `Parameters.FRACTIONAL_ZOOM`
+  - `Parameters.FRACTIONAL_ZOOM`
 - Pre-cache map tiles (+-zoom, margin) [#1507](https://github.com/mapsforge/mapsforge/issues/1507)
 - Hillshading new algorithms and improvements [#1551](https://github.com/mapsforge/mapsforge/issues/1551)
 - Hillshading increase default magnitude [#1540](https://github.com/mapsforge/mapsforge/issues/1540)
