@@ -1,6 +1,7 @@
 /*
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015-2022 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -20,19 +21,25 @@ import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Tile;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * A MapDatabase that reads and combines data from multiple map files.
  * The MultiMapDatabase supports the following modes for reading from multiple files:
- * - RETURN_FIRST: the data from the first database to support a tile will be returned. This is the
+ * <p>
+ * - RETURN_FIRST: The data from the first database to support a tile will be returned. This is the
  * fastest operation suitable when you know there is no overlap between map files.
- * - RETURN_ALL: the data from all files will be returned, the data will be combined. This is suitable
+ * <p>
+ * - RETURN_ALL: The data from all files will be returned, the data will be combined. This is suitable
  * if more than one file can contain data for a tile, but you know there is no semantic overlap, e.g.
- * one file contains contour lines, another road data.
- * - DEDUPLICATE: the data from all files will be returned but duplicates will be eliminated. This is
+ * one file contains contour lines, another road data. Use {@link #setPriority(int)} to prioritize your maps.
+ * <p>
+ * - DEDUPLICATE: The data from all files will be returned but duplicates will be eliminated. This is
  * suitable when multiple maps cover the different areas, but there is some overlap at boundaries. This
  * is the most expensive operation and often it is actually faster to double paint objects.
+ * Use {@link #setPriority(int)} to prioritize your maps.
  */
 public class MultiMapDataStore extends MapDataStore {
 
@@ -77,6 +84,14 @@ public class MultiMapDataStore extends MapDataStore {
         } else {
             this.boundingBox = this.boundingBox.extendBoundingBox(mapDataStore.boundingBox());
         }
+
+        Collections.sort(this.mapDatabases, new Comparator<MapDataStore>() {
+            @Override
+            public int compare(MapDataStore mds1, MapDataStore mds2) {
+                // Reverse order
+                return -Integer.compare(mds1.getPriority(), mds2.getPriority());
+            }
+        });
     }
 
     @Override
@@ -143,7 +158,12 @@ public class MultiMapDataStore extends MapDataStore {
 
     private MapReadResult readLabels(Tile tile, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
+        boolean isTileFilled = false;
         for (MapDataStore mdb : mapDatabases) {
+            if (isTileFilled && mdb.getPriority() < 0) {
+                break;
+            }
+
             if (mdb.supportsTile(tile)) {
                 MapReadResult result = mdb.readLabels(tile);
                 if (result == null) {
@@ -152,6 +172,10 @@ public class MultiMapDataStore extends MapDataStore {
                 boolean isWater = mapReadResult.isWater & result.isWater;
                 mapReadResult.isWater = isWater;
                 mapReadResult.add(result, deduplicate);
+            }
+
+            if (mdb.supportsFullTile(tile)) {
+                isTileFilled = true;
             }
         }
         return mapReadResult;
@@ -181,7 +205,12 @@ public class MultiMapDataStore extends MapDataStore {
 
     private MapReadResult readLabels(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
+        boolean isTileFilled = false;
         for (MapDataStore mdb : mapDatabases) {
+            if (isTileFilled && mdb.getPriority() < 0) {
+                break;
+            }
+
             if (mdb.supportsArea(
                     upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
                     upperLeft.zoomLevel
@@ -193,6 +222,13 @@ public class MultiMapDataStore extends MapDataStore {
                 boolean isWater = mapReadResult.isWater & result.isWater;
                 mapReadResult.isWater = isWater;
                 mapReadResult.add(result, deduplicate);
+            }
+
+            if (mdb.supportsFullArea(
+                    upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                    upperLeft.zoomLevel)
+            ) {
+                isTileFilled = true;
             }
         }
         return mapReadResult;
@@ -218,7 +254,12 @@ public class MultiMapDataStore extends MapDataStore {
 
     private MapReadResult readMapData(Tile tile, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
+        boolean isTileFilled = false;
         for (MapDataStore mdb : mapDatabases) {
+            if (isTileFilled && mdb.getPriority() < 0) {
+                break;
+            }
+
             if (mdb.supportsTile(tile)) {
                 MapReadResult result = mdb.readMapData(tile);
                 if (result == null) {
@@ -227,6 +268,10 @@ public class MultiMapDataStore extends MapDataStore {
                 boolean isWater = mapReadResult.isWater & result.isWater;
                 mapReadResult.isWater = isWater;
                 mapReadResult.add(result, deduplicate);
+            }
+
+            if (mdb.supportsFullTile(tile)) {
+                isTileFilled = true;
             }
         }
         return mapReadResult;
@@ -255,7 +300,12 @@ public class MultiMapDataStore extends MapDataStore {
 
     private MapReadResult readMapData(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
+        boolean isTileFilled = false;
         for (MapDataStore mdb : mapDatabases) {
+            if (isTileFilled && mdb.getPriority() < 0) {
+                break;
+            }
+
             if (mdb.supportsArea(
                     upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
                     upperLeft.zoomLevel)
@@ -267,6 +317,13 @@ public class MultiMapDataStore extends MapDataStore {
                 boolean isWater = mapReadResult.isWater & result.isWater;
                 mapReadResult.isWater = isWater;
                 mapReadResult.add(result, deduplicate);
+            }
+
+            if (mdb.supportsFullArea(
+                    upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                    upperLeft.zoomLevel)
+            ) {
+                isTileFilled = true;
             }
         }
         return mapReadResult;
@@ -293,7 +350,12 @@ public class MultiMapDataStore extends MapDataStore {
 
     private MapReadResult readPoiData(Tile tile, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
+        boolean isTileFilled = false;
         for (MapDataStore mdb : mapDatabases) {
+            if (isTileFilled && mdb.getPriority() < 0) {
+                break;
+            }
+
             if (mdb.supportsTile(tile)) {
                 MapReadResult result = mdb.readPoiData(tile);
                 if (result == null) {
@@ -302,6 +364,10 @@ public class MultiMapDataStore extends MapDataStore {
                 boolean isWater = mapReadResult.isWater & result.isWater;
                 mapReadResult.isWater = isWater;
                 mapReadResult.add(result, deduplicate);
+            }
+
+            if (mdb.supportsFullTile(tile)) {
+                isTileFilled = true;
             }
         }
         return mapReadResult;
@@ -331,7 +397,12 @@ public class MultiMapDataStore extends MapDataStore {
 
     private MapReadResult readPoiData(Tile upperLeft, Tile lowerRight, boolean deduplicate) {
         MapReadResult mapReadResult = new MapReadResult();
+        boolean isTileFilled = false;
         for (MapDataStore mdb : mapDatabases) {
+            if (isTileFilled && mdb.getPriority() < 0) {
+                break;
+            }
+
             if (mdb.supportsArea(
                     upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
                     upperLeft.zoomLevel)
@@ -343,6 +414,13 @@ public class MultiMapDataStore extends MapDataStore {
                 boolean isWater = mapReadResult.isWater & result.isWater;
                 mapReadResult.isWater = isWater;
                 mapReadResult.add(result, deduplicate);
+            }
+
+            if (mdb.supportsFullArea(
+                    upperLeft.getBoundingBox().extendBoundingBox(lowerRight.getBoundingBox()),
+                    upperLeft.zoomLevel)
+            ) {
+                isTileFilled = true;
             }
         }
         return mapReadResult;
@@ -383,9 +461,29 @@ public class MultiMapDataStore extends MapDataStore {
     }
 
     @Override
+    public boolean supportsFullTile(Tile tile) {
+        for (MapDataStore mdb : mapDatabases) {
+            if (mdb.supportsFullTile(tile)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean supportsArea(BoundingBox boundingBox, byte zoomLevel) {
         for (MapDataStore mdb : mapDatabases) {
             if (mdb.supportsArea(boundingBox, zoomLevel)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean supportsFullArea(BoundingBox boundingBox, byte zoomLevel) {
+        for (MapDataStore mdb : mapDatabases) {
+            if (mdb.supportsFullArea(boundingBox, zoomLevel)) {
                 return true;
             }
         }

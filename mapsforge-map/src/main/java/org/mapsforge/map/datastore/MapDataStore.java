@@ -2,6 +2,7 @@
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2015 devemux86
  * Copyright 2015 lincomatic
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -28,6 +29,14 @@ import java.util.Locale;
  * Base class for map data retrieval.
  */
 public abstract class MapDataStore {
+
+    /**
+     * Priority of this MapDataStore. A higher number means a higher priority. Negative numbers have a special
+     * meaning, they should only be used for so-called background maps. Data from background maps is only read
+     * if no other map has provided a (complete) map tile. The most famous example of a background map is a
+     * low-resolution world map. The default priority is 0.
+     */
+    protected int priority = 0;
 
     /**
      * Extracts substring of preferred language from multilingual string.<br/>
@@ -231,6 +240,33 @@ public abstract class MapDataStore {
     }
 
     /**
+     * Returns the priority of this MapDataStore. A higher number means a higher priority. Negative numbers
+     * have a special meaning, they should only be used for so-called background maps. Data from background
+     * maps is only read if no other map has provided a (complete) map tile. The most famous example of a
+     * background map is a low-resolution world map.
+     *
+     * @return The priority of this MapDataStore. Default is 0.
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    /**
+     * Sets the priority of this MapDataStore. A higher number means a higher priority. Negative numbers have
+     * a special meaning, they should only be used for so-called background maps. Data from background maps is
+     * only read if no other map has provided a (complete) map tile. The most famous example of a background
+     * map is a low-resolution world map. The default priority is 0.
+     *
+     * @param priority Priority of this MapDataStore. Negative number means background map priority (see above
+     *                 for the description).
+     * @return {@code this} (for chaining)
+     */
+    public MapDataStore setPriority(int priority) {
+        this.priority = priority;
+        return this;
+    }
+
+    /**
      * Gets the initial map position.
      *
      * @return the start position, if available.
@@ -253,6 +289,14 @@ public abstract class MapDataStore {
     public abstract boolean supportsTile(Tile tile);
 
     /**
+     * Returns true if MapDatabase contains a complete tile.
+     *
+     * @param tile tile to be rendered.
+     * @return true if complete tile is part of database.
+     */
+    public abstract boolean supportsFullTile(Tile tile);
+
+    /**
      * Returns true if MapDatabase covers (even partially) certain area in required zoom level.
      *
      * @param boundingBox area we test
@@ -260,6 +304,15 @@ public abstract class MapDataStore {
      * @return true if area is part of the database.
      */
     public abstract boolean supportsArea(BoundingBox boundingBox, byte zoomLevel);
+
+    /**
+     * Returns true if MapDatabase covers certain area completely in required zoom level.
+     *
+     * @param boundingBox area we test
+     * @param zoomLevel   zoom level we test
+     * @return true if complete area is part of the database.
+     */
+    public abstract boolean supportsFullArea(BoundingBox boundingBox, byte zoomLevel);
 
     /**
      * Returns true if a way should be included in the result set for readLabels()

@@ -155,15 +155,20 @@ public final class Samples {
         } else {
             // Vector
             mapView.getModel().displayModel.setFixedTileSize(tileSize);
-            MultiMapDataStore mapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
+            final MultiMapDataStore multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
             for (File file : mapFiles) {
-                mapDataStore.addMapDataStore(new MapFile(file), false, false);
+                final MapFile mapFileDataStore = new MapFile(file);
+
+                if (getWorldMapFileName().equalsIgnoreCase(file.getName())) {
+                    mapFileDataStore.setPriority(-1);
+                }
+                multiMapDataStore.addMapDataStore(mapFileDataStore, false, false);
             }
-            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, mapDataStore, mapView.getModel().mapViewPosition, hillsRenderConfig);
+            TileRendererLayer tileRendererLayer = createTileRendererLayer(tileCache, multiMapDataStore, mapView.getModel().mapViewPosition, hillsRenderConfig);
             layers.add(tileRendererLayer);
             LabelLayer labelLayer = new LabelLayer(AwtGraphicFactory.INSTANCE, tileRendererLayer.getLabelStore());
             mapView.getLayerManager().getLayers().add(labelLayer);
-            boundingBox = mapDataStore.boundingBox();
+            boundingBox = multiMapDataStore.boundingBox();
         }
 
         // Debug
@@ -243,6 +248,13 @@ public final class Samples {
                 result.add(mapFile);
         }
         return result;
+    }
+
+    /**
+     * @return the name of the low res world map file.
+     */
+    public static String getWorldMapFileName() {
+        return "world.map";
     }
 
     private Samples() {
