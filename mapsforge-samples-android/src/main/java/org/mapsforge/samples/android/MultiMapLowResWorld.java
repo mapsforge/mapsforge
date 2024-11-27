@@ -78,7 +78,8 @@ public class MultiMapLowResWorld extends DefaultTheme {
 //                return tile.zoomLevel <= 10 && super.supportsTile(tile);
 //            }
         };
-        multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_AUTOFILL);
+        worldMapFile.setPriority(-1);
+        multiMapDataStore = new MultiMapDataStore(MultiMapDataStore.DataPolicy.RETURN_ALL);
         MapFile mapFile1 = (MapFile) getMapFile1();
         //mapFile1.restrictToZoomRange((byte) 8, Byte.MAX_VALUE);
         multiMapDataStore.addMapDataStore(mapFile1, true, true);
