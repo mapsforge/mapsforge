@@ -48,7 +48,7 @@ public class TileBasedLabelStore extends WorkingSetCache<Tile, List<MapElementCo
      * @param mapItems the map elements.
      */
     public synchronized void storeMapItems(Tile tile, List<MapElementContainer> mapItems) {
-        this.put(tile, LayerUtil.collisionFreeOrdered(mapItems, Rotation.NULL_ROTATION));
+        this.put(tile, LayerUtil.collisionFreeOrdered(mapItems, Rotation.NULL_ROTATION, false));
         this.version += 1;
     }
 

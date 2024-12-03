@@ -4,6 +4,7 @@
  * Copyright 2014-2016 devemux86
  * Copyright 2017 usrusr
  * Copyright 2018 Fabrice Fontaine
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -97,7 +98,7 @@ public class DirectRenderer extends StandardRenderer {
                 }
 
                 if (this.renderLabels) {
-                    Set<MapElementContainer> labelsToDraw = processLabels(renderContext);
+                    List<MapElementContainer> labelsToDraw = processLabels(renderContext);
                     // now draw the ways and the labels
                     renderContext.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
                 }
@@ -125,7 +126,8 @@ public class DirectRenderer extends StandardRenderer {
         }
     }
 
-    private Set<MapElementContainer> processLabels(RenderContext renderContext) {
+    /** TODO (2024): If this renderer is ever going to be used, please see how labels are handled in the {@link DatabaseRenderer}, and then implement here. */
+    private List<MapElementContainer> processLabels(RenderContext renderContext) {
         synchronized (tileDependencies) {
             // if we are drawing the labels per tile, we need to establish which tile-overlapping
             // elements need to be drawn.
@@ -140,7 +142,7 @@ public class DirectRenderer extends StandardRenderer {
             // they already overlap from other tiles. The second one is currentLabels that contains
             // the elements on this tile that do not overlap onto a drawn tile. Now we sort this list and
             // remove those elements that clash in this list already.
-            List<MapElementContainer> currentElementsOrdered = LayerUtil.collisionFreeOrdered(renderContext.labels, Rotation.NULL_ROTATION);
+            List<MapElementContainer> currentElementsOrdered = LayerUtil.collisionFreeOrdered(renderContext.labels, Rotation.NULL_ROTATION, false);
 
             // now we go through this list, ordered by priority, to see which can be drawn without clashing.
             Iterator<MapElementContainer> currentMapElementsIterator = currentElementsOrdered.iterator();
@@ -176,7 +178,7 @@ public class DirectRenderer extends StandardRenderer {
                     }
                 }
             }
-            return labelsToDraw;
+            return new ArrayList<>(labelsToDraw);
         }
     }
 
