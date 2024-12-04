@@ -119,7 +119,7 @@ public final class LayerUtil {
      * @return collision-free, ordered list, a subset of the input.
      */
     public static List<MapElementContainer> collisionFreeOrdered(List<MapElementContainer> input, Rotation rotation, boolean ascendingOrder) {
-        final List<MapElementContainer> output = new LinkedList<>();
+        final LinkedList<MapElementContainer> output = new LinkedList<>();
 
         // sort items by priority (highest first)
         Collections.sort(input, Collections.reverseOrder());
@@ -135,12 +135,12 @@ public final class LayerUtil {
                 }
             }
             if (hasSpace) {
-                output.add(item);
+                if (ascendingOrder) {
+                    output.addFirst(item);
+                } else {
+                    output.add(item);
+                }
             }
-        }
-
-        if (ascendingOrder) {
-            Collections.reverse(output);
         }
 
         return output;

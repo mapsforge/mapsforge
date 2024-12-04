@@ -81,7 +81,7 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
             }
         }
 
-        // If the display and priorities are the same, make a more detailed ordering.
+        // If the priorities and display are the same, make a more detailed ordering.
         // Basically we don't want to allow two elements to be arbitrarily ordered,
         // because that makes drawing the elements non-deterministic.
         // This also makes the natural ordering of elements consistent with equals,
