@@ -124,7 +124,7 @@ public final class LayerUtil {
         // sort items by priority (highest first)
         Collections.sort(input, Collections.reverseOrder());
 
-        // in order of priority, see if an item can be drawn, i.e. none of the items
+        // in order of display and priority, see if an item can be drawn, i.e. none of the items
         // in the currentItemsToDraw list clashes with it.
         for (MapElementContainer item : input) {
             boolean hasSpace = true;
