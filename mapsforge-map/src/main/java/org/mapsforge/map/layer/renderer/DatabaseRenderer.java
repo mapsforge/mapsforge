@@ -73,11 +73,7 @@ public class DatabaseRenderer extends StandardRenderer {
         this.tileCache = tileCache;
         this.labelStore = labelStore;
         this.renderLabels = renderLabels;
-        if (!renderLabels) {
-            this.tileDependencies = null;
-        } else {
-            this.tileDependencies = new TileDependencies();
-        }
+        this.tileDependencies = new TileDependencies();
     }
 
     /**
@@ -86,6 +82,7 @@ public class DatabaseRenderer extends StandardRenderer {
      * @param rendererJob the job that should be executed.
      */
     public TileBitmap executeJob(RendererJob rendererJob) {
+        TileBitmap output = null;
         RenderContext renderContext = null;
         try {
             renderContext = new RenderContext(rendererJob, new CanvasRasterer(graphicFactory));
@@ -126,28 +123,33 @@ public class DatabaseRenderer extends StandardRenderer {
                         renderContext.canvasRasterer.fillOutsideAreas(Color.TRANSPARENT, insideArea);
                     }
                 }
-                return bitmap;
+
+                output = bitmap;
+            } else {
+                // outside of map area with background defined:
+                output = createBackgroundBitmap(renderContext);
             }
-            // outside of map area with background defined:
-            return createBackgroundBitmap(renderContext);
         } catch (Exception e) {
             LOGGER.warning(e.toString());
-            return null;
         } finally {
             if (renderContext != null) {
                 renderContext.destroy();
             }
+            if (!rendererJob.labelsOnly && output != null) {
+                tileCache.put(rendererJob, output);
+                removeTileInProgress(rendererJob.tile);
+            }
         }
+
+        return output;
     }
 
     public MapDataStore getMapDatabase() {
         return this.mapDataStore;
     }
 
-    void removeTileInProgress(Tile tile) {
-        if (this.tileDependencies != null) {
-            this.tileDependencies.removeTileInProgress(tile);
-        }
+    protected void removeTileInProgress(Tile tile) {
+        this.tileDependencies.removeTileInProgress(tile);
     }
 
     /**
