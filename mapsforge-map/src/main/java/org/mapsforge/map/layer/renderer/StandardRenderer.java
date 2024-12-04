@@ -3,6 +3,7 @@
  * Copyright 2014-2015 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -40,14 +41,14 @@ import java.util.Collections;
  */
 public class StandardRenderer implements RenderCallback {
 
-    private static final Byte DEFAULT_START_ZOOM_LEVEL = (byte) 12;
-    private static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
-    private static final byte ZOOM_MAX = 22;
+    protected static final Byte DEFAULT_START_ZOOM_LEVEL = (byte) 12;
+    protected static final Tag TAG_NATURAL_WATER = new Tag("natural", "water");
+    protected static final byte ZOOM_MAX = 22;
 
     public final GraphicFactory graphicFactory;
     public final HillsRenderConfig hillsRenderConfig;
     public final MapDataStore mapDataStore;
-    private final boolean renderLabels;
+    protected final boolean renderLabels;
 
     /**
      * Constructs a new StandardRenderer (without hillshading).

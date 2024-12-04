@@ -19,170 +19,54 @@
  */
 package org.mapsforge.map.layer.renderer;
 
-import org.mapsforge.core.graphics.Color;
 import org.mapsforge.core.graphics.GraphicFactory;
-import org.mapsforge.core.graphics.TileBitmap;
-import org.mapsforge.core.mapelements.MapElementContainer;
-import org.mapsforge.core.model.Rectangle;
-import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
-import org.mapsforge.map.datastore.MapReadResult;
+import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
-import org.mapsforge.map.rendertheme.RenderContext;
-import org.mapsforge.map.util.LayerUtil;
-
-import java.util.*;
-import java.util.logging.Logger;
+import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 
 /**
+ * Note (2024): The DirectRenderer is deprecated, it is here just for compatibility.
+ * It doesn't contain any new functionality not already covered by its superclass, DatabaseRenderer.
+ * The deterministic labels also made calls to the {@link TileRefresher} interface obsolete.
+ * <p>
  * The DirectRenderer renders map tiles by reading from a {@link MapDataStore}.
  * Just rendering the tiles without any memory of what happened before.
  *
  * @see <a href="https://github.com/mapsforge/mapsforge/issues/1085">mapsforge/mapsforge#1085</a>
  */
-public class DirectRenderer extends StandardRenderer {
-    private static final Logger LOGGER = Logger.getLogger(DirectRenderer.class.getName());
-
-    private final boolean renderLabels;
-    private final TileDependencies tileDependencies;
-    private final List<TileRefresher> tileRefreshers;
+public class DirectRenderer extends DatabaseRenderer {
 
     /**
      * Constructs a new DirectRenderer.
+     * There are three possible configurations:
+     * 1) render labels directly onto tiles: renderLabels == true && tileCache != null
+     * 2) do not render labels but cache them: renderLabels == false && labelStore != null
+     * 3) do not render or cache labels: renderLabels == false && labelStore == null
      *
      * @param mapDataStore      the data source.
      * @param graphicFactory    the graphic factory.
+     * @param tileCache         where tiles are cached (needed if labels are drawn directly onto tiles, otherwise null)
+     * @param labelStore        where labels are cached.
      * @param renderLabels      if labels should be rendered.
+     * @param cacheLabels       if labels should be cached.
      * @param hillsRenderConfig the hillshading setup to be used (can be null).
      */
-    public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory,
-                          boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
-        super(mapDataStore, graphicFactory, renderLabels, hillsRenderConfig);
-        this.renderLabels = renderLabels;
-        this.tileDependencies = new TileDependencies();
-        this.tileRefreshers = new ArrayList<>();
-    }
-
-    public void addTileRefresher(TileRefresher tileRefresher) {
-        tileRefreshers.add(tileRefresher);
+    public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, TileCache tileCache, TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels, HillsRenderConfig hillsRenderConfig) {
+        super(mapDataStore, graphicFactory, tileCache, labelStore, renderLabels, cacheLabels, hillsRenderConfig);
     }
 
     /**
-     * Called when a job needs to be executed.
-     *
-     * @param rendererJob the job that should be executed.
+     * Note (2024): No-op, does nothing. Here just for compatibility.
      */
-    public TileBitmap executeJob(RendererJob rendererJob) {
-        RenderContext renderContext = null;
-        try {
-            renderContext = new RenderContext(rendererJob, new CanvasRasterer(graphicFactory));
-
-            if (renderBitmap(renderContext)) {
-                TileBitmap bitmap = null;
-
-                if (this.mapDataStore != null) {
-                    MapReadResult mapReadResult = this.mapDataStore.readMapData(rendererJob.tile);
-                    processReadMapData(renderContext, mapReadResult);
-                }
-
-                if (!rendererJob.labelsOnly) {
-                    renderContext.renderTheme.matchHillShadings(this, renderContext);
-                    bitmap = this.graphicFactory.createTileBitmap(rendererJob.tile.tileSize, rendererJob.hasAlpha);
-                    bitmap.setTimestamp(rendererJob.mapDataStore.getDataTimestamp(rendererJob.tile));
-                    renderContext.canvasRasterer.setCanvasBitmap(bitmap);
-                    if (!rendererJob.hasAlpha && rendererJob.displayModel.getBackgroundColor() != renderContext.renderTheme.getMapBackground()) {
-                        renderContext.canvasRasterer.fill(renderContext.renderTheme.getMapBackground());
-                    }
-                    renderContext.canvasRasterer.drawWays(renderContext);
-                }
-
-                if (this.renderLabels) {
-                    List<MapElementContainer> labelsToDraw = processLabels(renderContext);
-                    // now draw the ways and the labels
-                    renderContext.canvasRasterer.drawMapElements(labelsToDraw, rendererJob.tile);
-                }
-
-                if (!rendererJob.labelsOnly && renderContext.renderTheme.hasMapBackgroundOutside()) {
-                    // blank out all areas outside of map
-                    Rectangle insideArea = this.mapDataStore.boundingBox().getPositionRelativeToTile(rendererJob.tile);
-                    if (!rendererJob.hasAlpha) {
-                        renderContext.canvasRasterer.fillOutsideAreas(renderContext.renderTheme.getMapBackgroundOutside(), insideArea);
-                    } else {
-                        renderContext.canvasRasterer.fillOutsideAreas(Color.TRANSPARENT, insideArea);
-                    }
-                }
-                return bitmap;
-            }
-            // outside of map area
-            return null;
-        } catch (Exception e) {
-            LOGGER.warning(e.toString());
-            return null;
-        } finally {
-            if (renderContext != null) {
-                renderContext.destroy();
-            }
-        }
-    }
-
-    /** TODO (2024): If this renderer is ever going to be used, please see how labels are handled in the {@link DatabaseRenderer}, and then implement here. */
-    private List<MapElementContainer> processLabels(RenderContext renderContext) {
-        synchronized (tileDependencies) {
-            // if we are drawing the labels per tile, we need to establish which tile-overlapping
-            // elements need to be drawn.
-            Set<MapElementContainer> labelsToDraw = new HashSet<>();
-
-            Set<Tile> neighbours = renderContext.rendererJob.tile.getNeighbours();
-            for (Tile neighbour : neighbours) {
-                labelsToDraw.addAll(tileDependencies.getOverlappingElements(neighbour, renderContext.rendererJob.tile));
-            }
-
-            // at this point we have two lists: one is the list of labels that must be drawn because
-            // they already overlap from other tiles. The second one is currentLabels that contains
-            // the elements on this tile that do not overlap onto a drawn tile. Now we sort this list and
-            // remove those elements that clash in this list already.
-            List<MapElementContainer> currentElementsOrdered = LayerUtil.collisionFreeOrdered(renderContext.labels, Rotation.NULL_ROTATION, false);
-
-            // now we go through this list, ordered by priority, to see which can be drawn without clashing.
-            Iterator<MapElementContainer> currentMapElementsIterator = currentElementsOrdered.iterator();
-            while (currentMapElementsIterator.hasNext()) {
-                MapElementContainer current = currentMapElementsIterator.next();
-                for (MapElementContainer label : labelsToDraw) {
-                    if (label.clashesWith(current, Rotation.NULL_ROTATION)) {
-                        currentMapElementsIterator.remove();
-                        break;
-                    }
-                }
-            }
-
-            labelsToDraw.addAll(currentElementsOrdered);
-
-            // update dependencies, add to the dependencies list all the elements that overlap to the
-            // neighbouring tiles, looking for changes
-            for (Tile neighbour : neighbours) {
-                final Set<MapElementContainer> before = tileDependencies.getOverlappingElements(renderContext.rendererJob.tile, neighbour);
-                final Set<MapElementContainer> after = new HashSet<>();
-                for (MapElementContainer element : labelsToDraw) {
-                    if (element.intersects(neighbour.getBoundaryAbsolute())) {
-                        after.add(element);
-                    }
-                }
-                if (!before.equals(after)) {
-                    tileDependencies.removeTileData(renderContext.rendererJob.tile, neighbour);
-                    for (MapElementContainer element : after) {
-                        tileDependencies.addOverlappingElement(renderContext.rendererJob.tile, neighbour, element);
-                    }
-                    for (final TileRefresher tileRefresher : tileRefreshers) {
-                        tileRefresher.refresh(neighbour);
-                    }
-                }
-            }
-            return new ArrayList<>(labelsToDraw);
-        }
+    public void addTileRefresher(TileRefresher tileRefresher) {
     }
 
     public interface TileRefresher {
+        /**
+         * Note (2024): Will not be called. Here just for compatibility.
+         */
         void refresh(Tile tile);
     }
 }

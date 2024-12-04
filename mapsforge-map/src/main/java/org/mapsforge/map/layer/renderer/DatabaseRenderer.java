@@ -44,12 +44,12 @@ import java.util.logging.Logger;
  * The DatabaseRenderer renders map tiles by reading from a {@link org.mapsforge.map.datastore.MapDataStore}.
  */
 public class DatabaseRenderer extends StandardRenderer {
-    private static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
+    protected static final Logger LOGGER = Logger.getLogger(DatabaseRenderer.class.getName());
 
-    private final TileBasedLabelStore labelStore;
-    private final boolean renderLabels;
-    private final TileCache tileCache;
-    private final TileDependencies tileDependencies;
+    protected final TileBasedLabelStore labelStore;
+    protected final boolean renderLabels;
+    protected final TileCache tileCache;
+    protected final TileDependencies tileDependencies;
 
     /**
      * Constructs a new DatabaseRenderer.
@@ -173,7 +173,7 @@ public class DatabaseRenderer extends StandardRenderer {
             Set<MapElementContainer> activeLabels = new HashSet<>();
 
             if (this.labelStore != null) {
-                // Required to prevent non-deterministic labels and label tearing when drawing labels on tiles.
+                // Required to prevent non-deterministic labels and symbols, and label tearing when drawing labels on tiles.
                 // This is similar to what LabelLayer does in its draw() method.
                 activeLabels.addAll(this.labelStore.getVisibleItems(renderContext.rendererJob.tile.getAboveLeft(), renderContext.rendererJob.tile.getBelowRight()));
             }
