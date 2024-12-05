@@ -3,7 +3,7 @@
 ## Next version
 
 - Map rotation: marker billboard option [#1563](https://github.com/mapsforge/mapsforge/pull/1563)
-- Map label improvements [#1579](https://github.com/mapsforge/mapsforge/pull/1579)
+- Map label improvements [#1579](https://github.com/mapsforge/mapsforge/pull/1579) [#1586](https://github.com/mapsforge/mapsforge/pull/1586)
 - Multi-map improvements [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
   - `MapDataStore.setPriority`
 - Hillshading performance improvements [#1551](https://github.com/mapsforge/mapsforge/issues/1551)
