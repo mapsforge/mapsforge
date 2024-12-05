@@ -3,6 +3,7 @@
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2015-2017 devemux86
  * Copyright 2016 ksaihtam
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -151,10 +152,6 @@ public class MapWorkerPool implements Runnable {
                     return;
                 }
 
-                if (!rendererJob.labelsOnly && bitmap != null) {
-                    MapWorkerPool.this.tileCache.put(rendererJob, bitmap);
-                    MapWorkerPool.this.databaseRenderer.removeTileInProgress(rendererJob.tile);
-                }
                 MapWorkerPool.this.layer.requestRedraw();
 
                 if (DEBUG_TIMING) {

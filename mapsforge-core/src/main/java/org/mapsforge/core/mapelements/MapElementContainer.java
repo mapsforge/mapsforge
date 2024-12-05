@@ -38,7 +38,7 @@ import org.mapsforge.core.model.Rotation;
  */
 public abstract class MapElementContainer implements Comparable<MapElementContainer> {
     protected Rectangle boundaryAbsolute;
-    protected Display display;
+    protected final Display display;
     protected final int priority;
     protected final Point xy;
 
@@ -51,7 +51,7 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
     protected abstract Rectangle getBoundary();
 
     /**
-     * Compares elements according to their priority and position.
+     * Compares elements according to their priority, then display, then position.
      * The compare is consistent with equals.
      */
     @Override
@@ -63,7 +63,25 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
             return 1;
         }
 
-        // If the priorities are the same, make a more detailed ordering.
+        if (this.display != other.display) {
+            if (this.display != Display.ALWAYS && other.display == Display.ALWAYS) {
+                return -1;
+            }
+            if (this.display == Display.ALWAYS) {
+                return 1;
+            }
+
+            switch (this.display) {
+                case NEVER:
+                    return -1;
+                case IFSPACE:
+                    return 1;
+                default:
+                    throw new IllegalArgumentException("Unknown Display state for MapElementContainer.compareTo()");
+            }
+        }
+
+        // If the priorities and display are the same, make a more detailed ordering.
         // Basically we don't want to allow two elements to be arbitrarily ordered,
         // because that makes drawing the elements non-deterministic.
         // This also makes the natural ordering of elements consistent with equals,
@@ -80,6 +98,8 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
         }
         MapElementContainer other = (MapElementContainer) obj;
         if (this.priority != other.priority) {
+            return false;
+        } else if (this.display != other.display) {
             return false;
         } else if (!this.xy.equals(other.xy)) {
             return false;
@@ -116,8 +136,8 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
      * @return true if they overlap
      */
     public boolean clashesWith(MapElementContainer other, Rotation rotation) {
-        // if either of the elements is always drawn, the elements do not clash
-        if (Display.ALWAYS == this.display || Display.ALWAYS == other.display) {
+        // If exactly one of the elements is always drawn, the elements do not clash, otherwise do more checks
+        if (Display.ALWAYS == this.display ^ Display.ALWAYS == other.display) {
             return false;
         }
         return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());

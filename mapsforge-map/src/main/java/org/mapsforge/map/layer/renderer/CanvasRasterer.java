@@ -4,6 +4,7 @@
  * Copyright 2016-2020 devemux86
  * Copyright 2017 usrusr
  * Copyright 2020 Adrian Batzill
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -27,10 +28,8 @@ import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.rendertheme.RenderContext;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class CanvasRasterer {
     private final Canvas canvas;
@@ -63,16 +62,12 @@ public class CanvasRasterer {
         }
     }
 
-    void drawMapElements(Set<MapElementContainer> elements, Tile tile) {
-        // we have a set of all map elements (needed so we do not draw elements twice),
-        // but we need to draw in priority order as we now allow overlaps. So we
-        // convert into list, then sort, then draw.
-        List<MapElementContainer> elementsAsList = new ArrayList<>(elements);
+    void drawMapElements(List<MapElementContainer> elements, Tile tile) {
         // draw elements in order of priority: lower priority first, so more important
         // elements will be drawn on top (in case of display=true) items.
-        Collections.sort(elementsAsList);
+        Collections.sort(elements);
 
-        for (MapElementContainer element : elementsAsList) {
+        for (MapElementContainer element : elements) {
             element.draw(canvas, tile.getOrigin(), this.symbolMatrix, Rotation.NULL_ROTATION);
         }
     }

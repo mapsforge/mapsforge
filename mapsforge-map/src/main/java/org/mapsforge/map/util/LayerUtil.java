@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014-2015 Ludwig M Brinckmann
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -117,12 +118,14 @@ public final class LayerUtil {
      * @param input list of MapElements
      * @return collision-free, ordered list, a subset of the input.
      */
-    public static List<MapElementContainer> collisionFreeOrdered(List<MapElementContainer> input, Rotation rotation) {
+    public static List<MapElementContainer> collisionFreeOrdered(List<MapElementContainer> input, Rotation rotation, boolean ascendingOrder) {
+        final LinkedList<MapElementContainer> output = new LinkedList<>();
+
         // sort items by priority (highest first)
         Collections.sort(input, Collections.reverseOrder());
-        // in order of priority, see if an item can be drawn, i.e. none of the items
+
+        // in order of display and priority, see if an item can be drawn, i.e. none of the items
         // in the currentItemsToDraw list clashes with it.
-        List<MapElementContainer> output = new LinkedList<>();
         for (MapElementContainer item : input) {
             boolean hasSpace = true;
             for (MapElementContainer outputElement : output) {
@@ -132,10 +135,27 @@ public final class LayerUtil {
                 }
             }
             if (hasSpace) {
-                output.add(item);
+                if (ascendingOrder) {
+                    output.addFirst(item);
+                } else {
+                    output.add(item);
+                }
             }
         }
+
         return output;
+    }
+
+    /**
+     * Transforms a list of MapElements, orders it and removes those elements that overlap.
+     * This operation is useful for an early elimination of elements in a list that will never
+     * be drawn because they overlap.
+     *
+     * @param input list of MapElements
+     * @return collision-free, ordered list, a subset of the input.
+     */
+    public static List<MapElementContainer> collisionFreeOrdered(List<MapElementContainer> input, Rotation rotation) {
+        return collisionFreeOrdered(input, rotation, true);
     }
 
     private LayerUtil() {

@@ -64,8 +64,9 @@ public abstract class PointTextContainer extends MapElementContainer {
 
     @Override
     public boolean clashesWith(MapElementContainer other, Rotation rotation) {
-        if (super.clashesWith(other, rotation)) {
-            return true;
+        // If exactly one of the elements is always drawn, the elements do not clash, otherwise do more checks
+        if (Display.ALWAYS == this.display ^ Display.ALWAYS == other.display) {
+            return false;
         }
         if (!(other instanceof PointTextContainer)) {
             return false;
@@ -73,14 +74,13 @@ public abstract class PointTextContainer extends MapElementContainer {
 
         PointTextContainer ptc = (PointTextContainer) other;
 
-        if (!Rotation.noRotation(rotation) || DEBUG_CLASH_BOUNDS) {
-            Rectangle rect1 = getClashRect(this, rotation);
-            Rectangle rect2 = getClashRect(ptc, rotation);
+        Rectangle rect1 = getClashRect(this, rotation);
+        Rectangle rect2 = getClashRect(ptc, rotation);
 
-            if (rect1 != null && rect2 != null && rect1.intersects(rect2)) {
-                return true;
-            }
+        if (rect1 != null && rect2 != null && rect1.intersects(rect2)) {
+            return true;
         }
+
         if (this.text.equals(ptc.text) && this.xy.distance(ptc.xy) < 200) {
             return true;
         }

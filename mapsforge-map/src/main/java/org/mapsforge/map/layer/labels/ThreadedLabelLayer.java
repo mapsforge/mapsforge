@@ -24,7 +24,6 @@ import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.util.LayerUtil;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -86,14 +85,10 @@ public class ThreadedLabelLayer extends LabelLayer {
             public void run() {
                 List<MapElementContainer> visibleItems = ThreadedLabelLayer.this.labelStore.getVisibleItems(upperLeft, lowerRight);
 
+                // We need to draw elements in order of ascending priority: lower priority first, so more important
+                // elements will be drawn on top (in case of display=true) items.
                 ThreadedLabelLayer.this.elementsToDraw = LayerUtil.collisionFreeOrdered(visibleItems, rotation);
 
-                // TODO this is code duplicated from CanvasRasterer::drawMapElements, should be factored out
-                // what LayerUtil.collisionFreeOrdered gave us is a list where highest priority comes first,
-                // so we need to reverse that in order to
-                // draw elements in order of priority: lower priority first, so more important
-                // elements will be drawn on top (in case of display=true) items.
-                Collections.sort(ThreadedLabelLayer.this.elementsToDraw);
                 ThreadedLabelLayer.this.upperLeft = upperLeft;
                 ThreadedLabelLayer.this.lowerRight = lowerRight;
                 ThreadedLabelLayer.this.rotation = rotation;
