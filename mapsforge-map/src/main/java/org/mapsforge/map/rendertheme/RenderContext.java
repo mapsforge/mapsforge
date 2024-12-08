@@ -1,5 +1,6 @@
 /*
  * Copyright 2015 Ludwig M Brinckmann
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -14,6 +15,7 @@
  */
 package org.mapsforge.map.rendertheme;
 
+import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.layer.renderer.CanvasRasterer;
@@ -24,6 +26,7 @@ import org.mapsforge.map.rendertheme.rule.RenderTheme;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -43,15 +46,15 @@ public class RenderContext {
     public final CanvasRasterer canvasRasterer;
 
     // Data generated for the rendering process
-    private List<List<ShapePaintContainer>> drawingLayers;
-    public final List<MapElementContainer> labels;
-    public final List<List<List<ShapePaintContainer>>> ways;
+    private List<List<ShapePaintContainer>> drawingLayer;
+    protected final List<MapElementContainer> labels;
+    protected final List<List<List<ShapePaintContainer>>> ways;
 
 
-    public RenderContext(RendererJob rendererJob, CanvasRasterer canvasRasterer) throws InterruptedException, ExecutionException {
+    public RenderContext(RendererJob rendererJob, GraphicFactory graphicFactory) throws InterruptedException, ExecutionException {
         this.rendererJob = rendererJob;
         this.labels = new LinkedList<>();
-        this.canvasRasterer = canvasRasterer;
+        this.canvasRasterer = new CanvasRasterer(RenderContext.this, graphicFactory);
         this.renderTheme = rendererJob.renderThemeFuture.get();
         this.renderTheme.scaleTextSize(rendererJob.textScale, rendererJob.tile.zoomLevel);
         this.ways = createWayLists();
@@ -68,11 +71,43 @@ public class RenderContext {
         } else if (layer >= RenderContext.LAYERS) {
             layer = RenderContext.LAYERS - 1;
         }
-        this.drawingLayers = ways.get(layer);
+        this.drawingLayer = this.ways.get(layer);
     }
 
     public void addToCurrentDrawingLayer(int level, ShapePaintContainer element) {
-        this.drawingLayers.get(level).add(element);
+        this.drawingLayer.get(level).add(element);
+    }
+
+    public void addToDrawingLayer(int layer, int level, ShapePaintContainer element) {
+        this.ways.get(layer).get(level).add(element);
+    }
+
+    public void drawWays() {
+        int levelsPerLayer = this.ways.get(0).size();
+
+        for (int layer = 0, layers = this.ways.size(); layer < layers; ++layer) {
+            List<List<ShapePaintContainer>> shapePaintContainers = this.ways.get(layer);
+
+            for (int level = 0; level < levelsPerLayer; ++level) {
+                List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
+
+                for (int index = wayList.size() - 1; index >= 0; --index) {
+                    canvasRasterer.drawShapePaintContainer(wayList.get(index));
+                }
+            }
+        }
+    }
+
+    public void addLabel(MapElementContainer element) {
+        this.labels.add(element);
+    }
+
+    public List<MapElementContainer> getLabels() {
+        return this.labels;
+    }
+
+    public void clearLabels(Set<MapElementContainer> labelsToClear) {
+        this.labels.removeAll(labelsToClear);
     }
 
     /**
@@ -82,8 +117,7 @@ public class RenderContext {
      * @return a RendererJob based on the current one, only tile changes
      */
     public RendererJob otherTile(Tile tile) {
-        return new RendererJob(tile, this.rendererJob.mapDataStore, this.rendererJob.renderThemeFuture, this.rendererJob.displayModel,
-                this.rendererJob.textScale, this.rendererJob.hasAlpha, this.rendererJob.labelsOnly);
+        return this.rendererJob.otherTile(tile);
     }
 
     private List<List<List<ShapePaintContainer>>> createWayLists() {
@@ -109,5 +143,4 @@ public class RenderContext {
         int zoomLevelDiff = Math.max(zoomLevel - STROKE_MIN_ZOOM_LEVEL, 0);
         this.renderTheme.scaleStrokeWidth((float) Math.pow(STROKE_INCREASE, zoomLevelDiff), this.rendererJob.tile.zoomLevel);
     }
-
 }

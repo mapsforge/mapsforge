@@ -41,6 +41,8 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
     protected final Display display;
     protected final int priority;
     protected final Point xy;
+    protected volatile double clashRotationDegrees;
+    protected volatile Rectangle clashRect;
 
     protected MapElementContainer(Point xy, Display display, int priority) {
         this.xy = xy;
@@ -125,8 +127,10 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
         return boundaryAbsolute;
     }
 
-    public boolean intersects(Rectangle rectangle) {
-        return this.getBoundaryAbsolute().intersects(rectangle);
+    public boolean intersects(Rectangle rectangle, Rotation rotation) {
+        Rectangle rect = this.getClashRect(rotation);
+
+        return rect != null && rect.intersects(rectangle);
     }
 
     /**
@@ -140,7 +144,47 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
         if (Display.ALWAYS == this.display ^ Display.ALWAYS == other.display) {
             return false;
         }
-        return this.getBoundaryAbsolute().intersects(other.getBoundaryAbsolute());
+
+        Rectangle rect1 = this.getClashRect(rotation);
+        Rectangle rect2 = other.getClashRect(rotation);
+
+        if (rect1 != null && rect1.intersects(rect2)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public Rectangle getClashRect(Rotation rotation) {
+        final MapElementContainer pointTextContainer = this;
+
+        Rectangle output = null;
+
+        if (getBoundary() != null) {
+            // All other fields used are final (read only)
+            if (rotation.degrees == pointTextContainer.clashRotationDegrees && pointTextContainer.clashRect != null) {
+                return pointTextContainer.clashRect;
+            }
+
+            final Rotation newRotation = new Rotation(rotation.degrees, 0, 0);
+
+            // We work in the absolute coordinate space of the map (intentionally)
+            double x = pointTextContainer.xy.x;
+            double y = pointTextContainer.xy.y;
+
+            if (!Rotation.noRotation(newRotation)) {
+                Point rotated = newRotation.rotate(x, y, true);
+                x = rotated.x;
+                y = rotated.y;
+            }
+
+            output = new Rectangle(x + getBoundary().left, y + getBoundary().top, x + getBoundary().right, y + getBoundary().bottom);
+
+            pointTextContainer.clashRect = output;
+            pointTextContainer.clashRotationDegrees = newRotation.degrees;
+        }
+
+        return output;
     }
 
     @Override
@@ -162,6 +206,13 @@ public abstract class MapElementContainer implements Comparable<MapElementContai
 
     public int getPriority() {
         return priority;
+    }
+
+    /**
+     * @return {@code true} if this is definitely not visible; {@code false} if it may or may not be visible
+     */
+    public boolean isNotVisible() {
+        return Display.NEVER == this.display;
     }
 
     @Override

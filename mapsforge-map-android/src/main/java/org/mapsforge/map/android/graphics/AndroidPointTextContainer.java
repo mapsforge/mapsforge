@@ -173,7 +173,7 @@ public class AndroidPointTextContainer extends PointTextContainer {
 
     @Override
     public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation) {
-        if (!this.isVisible) {
+        if (this.isNotVisible()) {
             return;
         }
 

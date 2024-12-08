@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -145,12 +146,32 @@ public class Rectangle implements Serializable {
      * @return true if this Rectangle intersects with the given Rectangle, false otherwise.
      */
     public boolean intersects(Rectangle rectangle) {
+        if (rectangle == null) {
+            return false;
+        }
+
         if (this == rectangle) {
             return true;
         }
 
         return this.left <= rectangle.right && rectangle.left <= this.right && this.top <= rectangle.bottom
                 && rectangle.top <= this.bottom;
+    }
+
+    /**
+     * @return true if this Rectangle contains the given Rectangle, false otherwise.
+     */
+    public boolean contains(Rectangle rectangle) {
+        if (rectangle == null) {
+            return false;
+        }
+
+        if (this == rectangle) {
+            return true;
+        }
+
+        return this.left <= rectangle.left && this.right >= rectangle.right && this.top <= rectangle.top
+                && this.bottom >= rectangle.bottom;
     }
 
     public boolean intersectsCircle(double pointX, double pointY, double radius) {
