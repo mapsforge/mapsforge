@@ -177,12 +177,12 @@ public class StandardRenderer implements RenderCallback {
     }
 
     protected void renderPointOfInterest(final RenderContext renderContext, PointOfInterest pointOfInterest) {
-        renderContext.setDrawingLayers(pointOfInterest.layer);
+        renderContext.setDrawingLayer(pointOfInterest.layer);
         renderContext.renderTheme.matchNode(this, renderContext, pointOfInterest);
     }
 
     protected void renderWaterBackground(final RenderContext renderContext) {
-        renderContext.setDrawingLayers((byte) 0);
+        renderContext.setDrawingLayer((byte) 0);
         Point[] coordinates = getTilePixelCoordinates(renderContext.rendererJob.tile.tileSize);
         Point tileOrigin = renderContext.rendererJob.tile.getOrigin();
         for (int i = 0; i < coordinates.length; i++) {
@@ -193,7 +193,7 @@ public class StandardRenderer implements RenderCallback {
     }
 
     protected void renderWay(final RenderContext renderContext, PolylineContainer way) {
-        renderContext.setDrawingLayers(way.getLayer());
+        renderContext.setDrawingLayer(way.getLayer());
 
         if (way.isClosedWay()) {
             if (renderContext.rendererJob.tile.zoomLevel >= Parameters.POLYGON_ZOOM_MIN) {

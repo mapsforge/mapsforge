@@ -76,12 +76,12 @@ public class MapDataStoreLabelStore implements LabelStore {
             }
 
             for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-                renderContext.setDrawingLayers(pointOfInterest.layer);
+                renderContext.setDrawingLayer(pointOfInterest.layer);
                 renderContext.rendererJob.renderThemeFuture.get().matchNode(standardRenderer, renderContext, pointOfInterest);
             }
             for (Way way : mapReadResult.ways) {
                 PolylineContainer polylineContainer = new PolylineContainer(way, upperLeft, lowerRight);
-                renderContext.setDrawingLayers(polylineContainer.getLayer());
+                renderContext.setDrawingLayer(polylineContainer.getLayer());
 
                 if (polylineContainer.isClosedWay()) {
                     renderContext.renderTheme.matchClosedWay(standardRenderer, renderContext, polylineContainer);

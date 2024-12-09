@@ -65,7 +65,7 @@ public class RenderContext {
         this.canvasRasterer.destroy();
     }
 
-    public void setDrawingLayers(byte layer) {
+    public void setDrawingLayer(byte layer) {
         if (layer < 0) {
             layer = 0;
         } else if (layer >= RenderContext.LAYERS) {
