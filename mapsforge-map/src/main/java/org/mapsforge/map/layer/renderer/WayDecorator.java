@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2019 Adrian Batzill
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,12 +17,10 @@
 package org.mapsforge.map.layer.renderer;
 
 import org.mapsforge.core.graphics.*;
-import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.mapelements.SymbolContainer;
 import org.mapsforge.core.mapelements.WayTextContainer;
 import org.mapsforge.core.model.*;
-
-import java.util.List;
+import org.mapsforge.map.rendertheme.RenderContext;
 
 final class WayDecorator {
 
@@ -31,7 +30,7 @@ final class WayDecorator {
     static void renderSymbol(Bitmap symbolBitmap, Display display, int priority, float dy, Rectangle boundary,
                              boolean repeatSymbol, float repeatGap, float repeatStart,
                              SymbolOrientation symbolOrientation, Point[][] coordinates,
-                             List<MapElementContainer> currentItems) {
+                             RenderContext renderContext) {
         int skipPixels = (int) repeatStart;
 
         Point[] c;
@@ -100,7 +99,7 @@ final class WayDecorator {
                 double cooX = previousX + segmentOffset * diffXpx;
                 double cooY = previousY + segmentOffset * diffYpx;
                 Point point = new Point(cooX, cooY);
-                currentItems.add(new SymbolContainer(point, display, priority, boundary, symbolBitmap, theta, false));
+                renderContext.addLabel(new SymbolContainer(point, display, priority, boundary, symbolBitmap, theta, false));
 
                 // increment offset by the gap and the width of drawn image
                 segmentOffset += symbolBitmap.getWidth() + repeatGap;
@@ -131,12 +130,12 @@ final class WayDecorator {
      * @param fill          fill paint for text
      * @param stroke        stroke paint for text
      * @param coordinates   the list of way coordinates
-     * @param currentLabels the list of labels to which a new WayTextContainer will be added
+     * @param renderContext render context with the list of labels to which a new WayTextContainer will be added
      */
     static void renderText(GraphicFactory graphicFactory, Tile upperLeft, Tile lowerRight, String text, Display display, int priority, float dy,
                            Paint fill, Paint stroke,
                            boolean repeat, float repeatGap, float repeatStart, TextOrientation textOrientation, Point[][] coordinates,
-                           List<MapElementContainer> currentLabels) {
+                           RenderContext renderContext) {
         if (coordinates.length == 0) {
             return;
         }
@@ -179,7 +178,7 @@ final class WayDecorator {
 
             // check to prevent inverted way names now happens when drawing, because with rotation we do
             // not know the screen positions in advance any more.
-            currentLabels.add(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight, textOrientation));
+            renderContext.addLabel(new WayTextContainer(graphicFactory, linePart, display, priority, text, fill, stroke, textHeight, textOrientation));
         }
     }
 

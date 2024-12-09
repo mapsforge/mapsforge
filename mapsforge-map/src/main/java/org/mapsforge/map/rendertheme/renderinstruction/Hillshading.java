@@ -65,7 +65,7 @@ public class Hillshading {
     public void render(final RenderContext renderContext, HillsRenderConfig hillsRenderConfig) {
         if (hillsRenderConfig == null) {
             if (always) {
-                renderContext.setDrawingLayers(layer);
+                renderContext.setDrawingLayer(layer);
                 ShapeContainer hillShape = new HillshadingContainer(null, this.magnitude, null, null);
                 renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
             }
@@ -177,7 +177,7 @@ public class Hillshading {
                 final Rectangle maptileRect = new Rectangle(maptileSubrectLeft, maptileSubrectTop, maptileSubrectRight, maptileSubrectBottom);
                 final ShapeContainer hillShape = new HillshadingContainer(shadingTile, effectiveMagnitude, hillsRect, maptileRect);
 
-                renderContext.setDrawingLayers(layer);
+                renderContext.setDrawingLayer(layer);
                 renderContext.addToCurrentDrawingLayer(level, new ShapePaintContainer(hillShape, null));
             }
         }

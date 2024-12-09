@@ -113,7 +113,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderAreaCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PolylineContainer way) {
         if (renderLabels) {
             Point centerPoint = way.getCenterAbsolute().offset(horizontalOffset, verticalOffset);
-            renderContext.labels.add(this.graphicFactory.createPointTextContainer(centerPoint, horizontalOffset, verticalOffset,
+            renderContext.addLabel(this.graphicFactory.createPointTextContainer(centerPoint, horizontalOffset, verticalOffset,
                     display, priority, caption, fill, stroke, null, position, maxTextWidth));
         }
     }
@@ -122,7 +122,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderAreaSymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, PolylineContainer way) {
         if (renderLabels) {
             Point centerPosition = way.getCenterAbsolute();
-            renderContext.labels.add(new SymbolContainer(centerPosition, display, priority, null, symbol, true));
+            renderContext.addLabel(new SymbolContainer(centerPosition, display, priority, null, symbol, true));
         }
     }
 
@@ -130,7 +130,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderPointOfInterestCaption(final RenderContext renderContext, Display display, int priority, String caption, float horizontalOffset, float verticalOffset, Paint fill, Paint stroke, Position position, int maxTextWidth, PointOfInterest poi) {
         if (renderLabels) {
             Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
-            renderContext.labels.add(this.graphicFactory.createPointTextContainer(poiPosition, horizontalOffset, verticalOffset,
+            renderContext.addLabel(this.graphicFactory.createPointTextContainer(poiPosition, horizontalOffset, verticalOffset,
                     display, priority, caption, fill, stroke, null, position, maxTextWidth));
         }
     }
@@ -146,7 +146,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderPointOfInterestSymbol(final RenderContext renderContext, Display display, int priority, Rectangle boundary, Bitmap symbol, PointOfInterest poi) {
         if (renderLabels) {
             Point poiPosition = MercatorProjection.getPixelAbsolute(poi.position, renderContext.rendererJob.tile.mapSize);
-            renderContext.labels.add(new SymbolContainer(poiPosition, display, priority, boundary, symbol, true));
+            renderContext.addLabel(new SymbolContainer(poiPosition, display, priority, boundary, symbol, true));
         }
     }
 
@@ -159,7 +159,7 @@ public class StandardRenderer implements RenderCallback {
     public void renderWaySymbol(final RenderContext renderContext, Display display, int priority, Bitmap symbol, float dy, Rectangle boundary, boolean repeat, float repeatGap, float repeatStart, SymbolOrientation symbolOrientation, PolylineContainer way) {
         if (renderLabels) {
             WayDecorator.renderSymbol(symbol, display, priority, dy, boundary, repeat, repeatGap,
-                    repeatStart, symbolOrientation, way.getCoordinatesAbsolute(), renderContext.labels);
+                    repeatStart, symbolOrientation, way.getCoordinatesAbsolute(), renderContext);
         }
     }
 
@@ -168,7 +168,7 @@ public class StandardRenderer implements RenderCallback {
                               boolean repeat, float repeatGap, float repeatStart, TextOrientation textOrientation, PolylineContainer way) {
         if (renderLabels) {
             WayDecorator.renderText(graphicFactory, way.getUpperLeft(), way.getLowerRight(), textKey, display, priority, dy, fill, stroke,
-                    repeat, repeatGap, repeatStart, textOrientation, way.getCoordinatesAbsolute(), renderContext.labels);
+                    repeat, repeatGap, repeatStart, textOrientation, way.getCoordinatesAbsolute(), renderContext);
         }
     }
 
@@ -177,12 +177,12 @@ public class StandardRenderer implements RenderCallback {
     }
 
     protected void renderPointOfInterest(final RenderContext renderContext, PointOfInterest pointOfInterest) {
-        renderContext.setDrawingLayers(pointOfInterest.layer);
+        renderContext.setDrawingLayer(pointOfInterest.layer);
         renderContext.renderTheme.matchNode(this, renderContext, pointOfInterest);
     }
 
     protected void renderWaterBackground(final RenderContext renderContext) {
-        renderContext.setDrawingLayers((byte) 0);
+        renderContext.setDrawingLayer((byte) 0);
         Point[] coordinates = getTilePixelCoordinates(renderContext.rendererJob.tile.tileSize);
         Point tileOrigin = renderContext.rendererJob.tile.getOrigin();
         for (int i = 0; i < coordinates.length; i++) {
@@ -193,7 +193,7 @@ public class StandardRenderer implements RenderCallback {
     }
 
     protected void renderWay(final RenderContext renderContext, PolylineContainer way) {
-        renderContext.setDrawingLayers(way.getLayer());
+        renderContext.setDrawingLayer(way.getLayer());
 
         if (way.isClosedWay()) {
             if (renderContext.rendererJob.tile.zoomLevel >= Parameters.POLYGON_ZOOM_MIN) {

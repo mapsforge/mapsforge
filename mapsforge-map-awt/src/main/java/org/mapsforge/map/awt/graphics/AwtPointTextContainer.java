@@ -74,7 +74,7 @@ public class AwtPointTextContainer extends PointTextContainer {
 
     @Override
     public void draw(Canvas canvas, Point origin, Matrix matrix, Rotation rotation) {
-        if (this.paintFront.isTransparent() && (this.paintBack == null || this.paintBack.isTransparent())) {
+        if (this.isNotVisible()) {
             return;
         }
 

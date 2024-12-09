@@ -35,7 +35,7 @@ public class MapElementContainerTest {
 
         protected MyDummyContainer(Point xy, Display display, int priority) {
             super(xy, display, priority);
-            boundary = new Rectangle(xy.x, xy.y, xy.x + 10, xy.y + 10);
+            boundary = new Rectangle(0, 0, 10, 10);
         }
 
         @Override

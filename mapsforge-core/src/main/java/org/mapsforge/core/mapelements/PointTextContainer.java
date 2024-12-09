@@ -31,7 +31,7 @@ public abstract class PointTextContainer extends MapElementContainer {
     protected static final boolean DEBUG_CLASH_BOUNDS = false;
 
     public final double horizontalOffset;
-    public final boolean isVisible;
+    public final boolean isNotVisible;
     public final int maxTextWidth;
     public final Paint paintBack;
     public final Paint paintFront;
@@ -39,8 +39,6 @@ public abstract class PointTextContainer extends MapElementContainer {
     public final SymbolContainer symbolContainer;
     public final String text;
     public final double verticalOffset;
-    public volatile double clashRotationDegrees;
-    public volatile Rectangle clashRect;
 
     /**
      * Create a new point container, that holds the x-y coordinates of a point, a text variable, two paint objects, and
@@ -59,7 +57,7 @@ public abstract class PointTextContainer extends MapElementContainer {
         this.position = position;
         this.horizontalOffset = horizontalOffset;
         this.verticalOffset = verticalOffset;
-        this.isVisible = !this.paintFront.isTransparent() || (this.paintBack != null && !this.paintBack.isTransparent());
+        this.isNotVisible = super.isNotVisible() || (this.paintFront.isTransparent() && (this.paintBack == null || this.paintBack.isTransparent()));
     }
 
     @Override
@@ -68,18 +66,19 @@ public abstract class PointTextContainer extends MapElementContainer {
         if (Display.ALWAYS == this.display ^ Display.ALWAYS == other.display) {
             return false;
         }
+
+        Rectangle rect1 = this.getClashRect(rotation);
+        Rectangle rect2 = other.getClashRect(rotation);
+
+        if (rect1 != null && rect2 != null && rect1.intersects(rect2)) {
+            return true;
+        }
+
         if (!(other instanceof PointTextContainer)) {
             return false;
         }
 
         PointTextContainer ptc = (PointTextContainer) other;
-
-        Rectangle rect1 = getClashRect(this, rotation);
-        Rectangle rect2 = getClashRect(ptc, rotation);
-
-        if (rect1 != null && rect2 != null && rect1.intersects(rect2)) {
-            return true;
-        }
 
         if (this.text.equals(ptc.text) && this.xy.distance(ptc.xy) < 200) {
             return true;
@@ -164,8 +163,11 @@ public abstract class PointTextContainer extends MapElementContainer {
      *
      * @return Clash rectangle in absolute coordinate space
      */
-    public static Rectangle getClashRect(PointTextContainer pointTextContainer, Rotation rotation) {
-        if (!pointTextContainer.isVisible) {
+    @Override
+    public Rectangle getClashRect(Rotation rotation) {
+        final PointTextContainer pointTextContainer = this;
+
+        if (isNotVisible()) {
             return null;
         }
 
@@ -280,5 +282,10 @@ public abstract class PointTextContainer extends MapElementContainer {
         }
 
         return output;
+    }
+
+    @Override
+    public boolean isNotVisible() {
+        return this.isNotVisible;
     }
 }

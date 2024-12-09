@@ -42,12 +42,12 @@ public class WayTextContainer extends MapElementContainer {
         this.paintFront = paintFront;
         this.paintBack = paintBack;
 
-        this.boundary = null;
         // a way text container should always run left to right, but I leave this in because it might matter
         // if we support right-to-left text.
         // we also need to make the container larger by textHeight as otherwise the end points do
         // not correctly reflect the size of the text on screen
         this.boundaryAbsolute = lineString.getBounds().enlarge(textHeight / 2d, textHeight / 2d, textHeight / 2d, textHeight / 2d);
+        this.boundary = this.boundaryAbsolute.shift(new Point(-this.xy.x, -this.xy.y));
         this.textOrientation = textOrientation;
     }
 

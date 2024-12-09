@@ -32,11 +32,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class CanvasRasterer {
+    private final RenderContext renderContext;
     private final Canvas canvas;
     private final Path path;
     private final Matrix symbolMatrix;
 
-    public CanvasRasterer(GraphicFactory graphicFactory) {
+    public CanvasRasterer(RenderContext renderContext, GraphicFactory graphicFactory) {
+        this.renderContext = renderContext;
         this.canvas = graphicFactory.createCanvas();
         this.path = graphicFactory.createPath();
         this.symbolMatrix = graphicFactory.createMatrix();
@@ -46,27 +48,10 @@ public class CanvasRasterer {
         this.canvas.destroy();
     }
 
-    void drawWays(RenderContext renderContext) {
-        int levelsPerLayer = renderContext.ways.get(0).size();
-
-        for (int layer = 0, layers = renderContext.ways.size(); layer < layers; ++layer) {
-            List<List<ShapePaintContainer>> shapePaintContainers = renderContext.ways.get(layer);
-
-            for (int level = 0; level < levelsPerLayer; ++level) {
-                List<ShapePaintContainer> wayList = shapePaintContainers.get(level);
-
-                for (int index = wayList.size() - 1; index >= 0; --index) {
-                    drawShapePaintContainer(renderContext, wayList.get(index));
-                }
-            }
-        }
-    }
-
+    /**
+     * Input is assumed to already be sorted by drawing priority.
+     */
     void drawMapElements(List<MapElementContainer> elements, Tile tile) {
-        // draw elements in order of priority: lower priority first, so more important
-        // elements will be drawn on top (in case of display=true) items.
-        Collections.sort(elements);
-
         for (MapElementContainer element : elements) {
             element.draw(canvas, tile.getOrigin(), this.symbolMatrix, Rotation.NULL_ROTATION);
         }
@@ -79,7 +64,7 @@ public class CanvasRasterer {
     }
 
     /**
-     * Fills the area outside the specificed rectangle with color. Use this method when
+     * Fills the area outside the specified rectangle with color. Use this method when
      * overpainting with a transparent color as it sets the PorterDuff mode.
      * This method is used to blank out areas that fall outside the map area.
      *
@@ -119,7 +104,7 @@ public class CanvasRasterer {
         canvas.shadeBitmap(container.bitmap, container.hillsRect, container.tileRect, container.magnitude);
     }
 
-    private void drawPath(RenderContext renderContext, ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
+    private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {
         this.path.clear();
 
         for (Point[] innerList : coordinates) {
@@ -170,6 +155,7 @@ public class CanvasRasterer {
             // Make sure setting the shader shift and actual drawing is synchronized,
             // since the paint object is shared between multiple threads.
             synchronized (shapePaintContainer.paint) {
+                final RenderContext renderContext = this.renderContext;
                 shapePaintContainer.paint.setBitmapShaderShift(renderContext.rendererJob.tile.getOrigin());
                 this.canvas.drawPath(this.path, shapePaintContainer.paint);
             }
@@ -178,7 +164,7 @@ public class CanvasRasterer {
         }
     }
 
-    private void drawShapePaintContainer(RenderContext renderContext, ShapePaintContainer shapePaintContainer) {
+    public void drawShapePaintContainer(ShapePaintContainer shapePaintContainer) {
         ShapeContainer shapeContainer = shapePaintContainer.shapeContainer;
         ShapeType shapeType = shapeContainer.getShapeType();
         switch (shapeType) {
@@ -191,7 +177,7 @@ public class CanvasRasterer {
                 break;
             case POLYLINE:
                 PolylineContainer polylineContainer = (PolylineContainer) shapeContainer;
-                drawPath(renderContext, shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
+                drawPath(shapePaintContainer, polylineContainer.getCoordinatesRelativeToOrigin(), shapePaintContainer.dy);
                 break;
         }
     }

@@ -1,5 +1,6 @@
 /*
  * Copyright 2015 Ludwig M Brinckmann
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,7 +22,6 @@ import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.datastore.MapReadResult;
 import org.mapsforge.map.datastore.PointOfInterest;
 import org.mapsforge.map.datastore.Way;
-import org.mapsforge.map.layer.renderer.CanvasRasterer;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
 import org.mapsforge.map.layer.renderer.RendererJob;
 import org.mapsforge.map.layer.renderer.StandardRenderer;
@@ -47,7 +47,7 @@ public class MapDataStoreLabelStore implements LabelStore {
 
         this.textScale = textScale;
         this.renderThemeFuture = renderThemeFuture;
-        // TODO what about way symbols, we have the problem that ways without names but symbols will not be included.
+        // TODO (2015): what about way symbols, we have the problem that ways without names but symbols will not be included.
         this.standardRenderer = new StandardRenderer(mapDataStore, graphicFactory, true);
         this.displayModel = displayModel;
     }
@@ -67,7 +67,7 @@ public class MapDataStoreLabelStore implements LabelStore {
 
         try {
             RendererJob rendererJob = new RendererJob(upperLeft, this.standardRenderer.mapDataStore, this.renderThemeFuture, this.displayModel, this.textScale, true, true);
-            RenderContext renderContext = new RenderContext(rendererJob, new CanvasRasterer(standardRenderer.graphicFactory));
+            RenderContext renderContext = new RenderContext(rendererJob, standardRenderer.graphicFactory);
 
             MapReadResult mapReadResult = standardRenderer.mapDataStore.readLabels(upperLeft, lowerRight);
 
@@ -76,12 +76,12 @@ public class MapDataStoreLabelStore implements LabelStore {
             }
 
             for (PointOfInterest pointOfInterest : mapReadResult.pointOfInterests) {
-                renderContext.setDrawingLayers(pointOfInterest.layer);
+                renderContext.setDrawingLayer(pointOfInterest.layer);
                 renderContext.rendererJob.renderThemeFuture.get().matchNode(standardRenderer, renderContext, pointOfInterest);
             }
             for (Way way : mapReadResult.ways) {
                 PolylineContainer polylineContainer = new PolylineContainer(way, upperLeft, lowerRight);
-                renderContext.setDrawingLayers(polylineContainer.getLayer());
+                renderContext.setDrawingLayer(polylineContainer.getLayer());
 
                 if (polylineContainer.isClosedWay()) {
                     renderContext.renderTheme.matchClosedWay(standardRenderer, renderContext, polylineContainer);
@@ -90,7 +90,7 @@ public class MapDataStoreLabelStore implements LabelStore {
                 }
             }
 
-            return renderContext.labels;
+            return renderContext.getLabels();
         } catch (Exception e) {
             return new ArrayList<>();
         }
