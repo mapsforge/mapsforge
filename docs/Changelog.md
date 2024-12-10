@@ -4,7 +4,7 @@
 
 - Map rotation: marker billboard option [#1563](https://github.com/mapsforge/mapsforge/pull/1563)
 - Map label improvements [#1579](https://github.com/mapsforge/mapsforge/pull/1579) [#1586](https://github.com/mapsforge/mapsforge/pull/1586) [#1588](https://github.com/mapsforge/mapsforge/pull/1588)
-- Hillshading performance improvements [#1561](https://github.com/mapsforge/mapsforge/issues/1561)
+- Hillshading performance improvements [#1561](https://github.com/mapsforge/mapsforge/pull/1561)
 - Multi-map improvements [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
   - `MapDataStore.setPriority`
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
@@ -20,7 +20,7 @@
   - `Parameters.FRACTIONAL_ZOOM`
 - Pre-cache map tiles (+-zoom, margin) [#1507](https://github.com/mapsforge/mapsforge/issues/1507)
 - Hillshading new algorithms and improvements
-  - [#1521](https://github.com/mapsforge/mapsforge/issues/1521) [#1534](https://github.com/mapsforge/mapsforge/issues/1534) [#1537](https://github.com/mapsforge/mapsforge/issues/1537) [#1543](https://github.com/mapsforge/mapsforge/issues/1543) [#1548](https://github.com/mapsforge/mapsforge/issues/1548) [#1550](https://github.com/mapsforge/mapsforge/issues/1550)
+  - [#1521](https://github.com/mapsforge/mapsforge/pull/1521) [#1534](https://github.com/mapsforge/mapsforge/pull/1534) [#1537](https://github.com/mapsforge/mapsforge/pull/1537) [#1543](https://github.com/mapsforge/mapsforge/pull/1543) [#1548](https://github.com/mapsforge/mapsforge/pull/1548) [#1550](https://github.com/mapsforge/mapsforge/pull/1550)
 - Hillshading increase default magnitude [#1540](https://github.com/mapsforge/mapsforge/issues/1540)
 - Hillshading fix at 0 lat / lon [#1497](https://github.com/mapsforge/mapsforge/issues/1497)
 - Motorider map theme [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
