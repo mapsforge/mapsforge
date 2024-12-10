@@ -19,6 +19,7 @@ package org.mapsforge.map.util;
 import org.mapsforge.core.mapelements.MapElementContainer;
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.Point;
+import org.mapsforge.core.model.Rectangle;
 import org.mapsforge.core.model.Rotation;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.core.util.MercatorProjection;
@@ -156,6 +157,101 @@ public final class LayerUtil {
      */
     public static List<MapElementContainer> collisionFreeOrdered(List<MapElementContainer> input, Rotation rotation) {
         return collisionFreeOrdered(input, rotation, true);
+    }
+
+    /**
+     * Transforms a list of MapElements, orders it and removes those elements that overlap.
+     * Also removes labels that span more than one tile if their position could be contested
+     * by another label of the same or higher priority.
+     */
+    public static List<MapElementContainer> collisionAndContestingFreeOrdered(List<MapElementContainer> input, Tile tile, Rotation rotation, boolean ascendingOrder) {
+        final LinkedList<MapElementContainer> output = new LinkedList<>();
+
+        Collections.sort(input, Collections.reverseOrder());
+
+        final List<MapElementContainer> inputProcessed = omitContestingMultiTiledItems(input, tile, rotation);
+
+        // in order of display and priority, see if an item can be drawn, i.e. none of the items
+        // in the currentItemsToDraw list clashes with it.
+        for (MapElementContainer item : inputProcessed) {
+            boolean hasSpace = true;
+            for (MapElementContainer outputElement : output) {
+                if (item.clashesWith(outputElement, rotation)) {
+                    hasSpace = false;
+                    break;
+                }
+            }
+            if (hasSpace) {
+                if (ascendingOrder) {
+                    output.addFirst(item);
+                } else {
+                    output.add(item);
+                }
+            }
+        }
+
+        return output;
+    }
+
+    /**
+     * Transforms a list of MapElements, orders it and removes those elements that overlap.
+     * Also removes labels that span more than one tile if their position could be contested
+     * by another label of the same or higher priority.
+     */
+    public static List<MapElementContainer> collisionAndContestingFreeOrdered(List<MapElementContainer> input, Tile tile, Rotation rotation) {
+        return collisionAndContestingFreeOrdered(input, tile, rotation, true);
+    }
+
+    /**
+     * Omit labels that span more than one tile if their position could be contested
+     * by another label of the same or higher priority.
+     * <p>
+     * Note: Input is assumed to already be sorted by priority (at least).
+     */
+    public static List<MapElementContainer> omitContestingMultiTiledItems(Collection<MapElementContainer> input, Tile tile, Rotation rotation) {
+        final List<MapElementContainer> output = new ArrayList<>();
+
+        final Rectangle tileRect = tile.getBoundaryAbsolute();
+
+        for (MapElementContainer mainItem : input) {
+            boolean toRetain = true;
+            if (isLabelMultiTiled(mainItem.getClashRect(rotation), tileRect)) {
+                for (MapElementContainer otherItem : input) {
+                    if (otherItem.getPriority() >= mainItem.getPriority()) {
+                        if (!mainItem.equals(otherItem) && mainItem.clashesWith(otherItem, rotation)) {
+                            toRetain = false;
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (toRetain) {
+                output.add(mainItem);
+            }
+        }
+
+        return output;
+    }
+
+    public static void removeInvisibleItems(Collection<MapElementContainer> input) {
+        Iterator<MapElementContainer> iterator = input.iterator();
+
+        while (iterator.hasNext()) {
+            MapElementContainer label = iterator.next();
+            if (label.isNotVisible()) {
+                iterator.remove();
+            }
+        }
+    }
+
+    /**
+     * @return {@code true} if the label is only partially contained within the given tile rectangle;
+     * {@code false} if it's entirely contained or not contained at all
+     */
+    public static boolean isLabelMultiTiled(Rectangle labelRect, Rectangle tileRect) {
+        return !tileRect.contains(labelRect) && tileRect.intersects(labelRect);
     }
 
     private LayerUtil() {

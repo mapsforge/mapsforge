@@ -52,7 +52,7 @@ public class AwtPointTextContainerTest {
         final Rectangle labelRect = new Rectangle(labelPosition.x, labelPosition.y, labelPosition.x + container.boundary.getWidth(), labelPosition.y + container.boundary.getHeight());
 
         // Create the clash rectangle
-        final Rectangle clashRect = AwtPointTextContainer.getClashRect(container, rotation);
+        final Rectangle clashRect = container.getClashRect(rotation);
 
         assert clashRect != null;
 
@@ -91,8 +91,8 @@ public class AwtPointTextContainerTest {
             assert lines2 <= 1;
 
             // Create the clash rectangles
-            Rectangle clashRect1 = AwtPointTextContainer.getClashRect(container1, rotation);
-            Rectangle clashRect2 = AwtPointTextContainer.getClashRect(container2, rotation);
+            Rectangle clashRect1 = container1.getClashRect(rotation);
+            Rectangle clashRect2 = container2.getClashRect(rotation);
 
             assert clashRect1 != null;
             assert clashRect2 != null;
@@ -119,8 +119,8 @@ public class AwtPointTextContainerTest {
             assert lines2 > 1;
 
             // Create the clash rectangles
-            Rectangle clashRect1 = AwtPointTextContainer.getClashRect(container1, rotation);
-            Rectangle clashRect2 = AwtPointTextContainer.getClashRect(container2, rotation);
+            Rectangle clashRect1 = container1.getClashRect(rotation);
+            Rectangle clashRect2 = container2.getClashRect(rotation);
 
             assert clashRect1 != null;
             assert clashRect2 != null;

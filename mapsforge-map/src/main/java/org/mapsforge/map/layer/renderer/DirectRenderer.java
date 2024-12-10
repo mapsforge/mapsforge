@@ -22,17 +22,14 @@ package org.mapsforge.map.layer.renderer;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.Tile;
 import org.mapsforge.map.datastore.MapDataStore;
-import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
-import org.mapsforge.map.layer.labels.TileBasedLabelStore;
+import org.mapsforge.map.layer.labels.MapDataStoreLabelStore;
 
 /**
- * Note (2024): The DirectRenderer is deprecated, it is here just for compatibility.
- * It doesn't contain any new functionality not already covered by its superclass, DatabaseRenderer.
- * The deterministic labels also made calls to the {@link TileRefresher} interface obsolete.
- * <p>
  * The DirectRenderer renders map tiles by reading from a {@link MapDataStore}.
  * Just rendering the tiles without any memory of what happened before.
+ * <p>
+ * Note (2024): The deterministic labels made calls to the {@link TileRefresher} interface obsolete.
  *
  * @see <a href="https://github.com/mapsforge/mapsforge/issues/1085">mapsforge/mapsforge#1085</a>
  */
@@ -40,21 +37,15 @@ public class DirectRenderer extends DatabaseRenderer {
 
     /**
      * Constructs a new DirectRenderer.
-     * There are three possible configurations:
-     * 1) render labels directly onto tiles: renderLabels == true && tileCache != null
-     * 2) do not render labels but cache them: renderLabels == false && labelStore != null
-     * 3) do not render or cache labels: renderLabels == false && labelStore == null
      *
      * @param mapDataStore      the data source.
      * @param graphicFactory    the graphic factory.
-     * @param tileCache         where tiles are cached (needed if labels are drawn directly onto tiles, otherwise null)
-     * @param labelStore        where labels are cached.
+     * @param labelStore        from where labels are read.
      * @param renderLabels      if labels should be rendered.
-     * @param cacheLabels       if labels should be cached.
      * @param hillsRenderConfig the hillshading setup to be used (can be null).
      */
-    public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, TileCache tileCache, TileBasedLabelStore labelStore, boolean renderLabels, boolean cacheLabels, HillsRenderConfig hillsRenderConfig) {
-        super(mapDataStore, graphicFactory, tileCache, labelStore, renderLabels, cacheLabels, hillsRenderConfig);
+    public DirectRenderer(MapDataStore mapDataStore, GraphicFactory graphicFactory, MapDataStoreLabelStore labelStore, boolean renderLabels, HillsRenderConfig hillsRenderConfig) {
+        super(mapDataStore, graphicFactory, null, labelStore, renderLabels, false, hillsRenderConfig);
     }
 
     /**
