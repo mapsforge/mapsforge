@@ -45,7 +45,7 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.MapFile;
 import org.mapsforge.map.scalebar.ImperialUnitAdapter;
 import org.mapsforge.map.scalebar.MetricUnitAdapter;
@@ -235,7 +235,7 @@ public abstract class SamplesBaseActivity extends MapViewerTemplate implements S
     @Override
     protected void onPrepareDialog(int id, final Dialog dialog) {
         if (id == DIALOG_ENTER_COORDINATES) {
-            IMapViewPosition currentPosition = SamplesBaseActivity.this.mapView.getModel().mapViewPosition;
+            MapViewPosition currentPosition = SamplesBaseActivity.this.mapView.getModel().mapViewPosition;
             LatLong currentCenter = currentPosition.getCenter();
             EditText editText = (EditText) dialog.findViewById(R.id.latitude);
             editText.setText(Double.toString(currentCenter.latitude));

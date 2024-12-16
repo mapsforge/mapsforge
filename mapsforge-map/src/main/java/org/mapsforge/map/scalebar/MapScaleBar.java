@@ -24,8 +24,8 @@ import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.MapViewDimension;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.view.MapView;
 
 /**
@@ -47,7 +47,7 @@ public abstract class MapScaleBar {
     protected final Bitmap mapScaleBitmap;
     protected final Canvas mapScaleCanvas;
     private final MapViewDimension mapViewDimension;
-    private final IMapViewPosition mapViewPosition;
+    private final MapViewPosition mapViewPosition;
     private int marginHorizontal;
     private int marginVertical;
     protected MapPosition prevMapPosition;
@@ -69,7 +69,7 @@ public abstract class MapScaleBar {
         }
     }
 
-    public MapScaleBar(IMapViewPosition mapViewPosition, MapViewDimension mapViewDimension, DisplayModel displayModel,
+    public MapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension, DisplayModel displayModel,
                        GraphicFactory graphicFactory, int width, int height, float scale) {
         this.mapViewPosition = mapViewPosition;
         this.mapViewDimension = mapViewDimension;
