@@ -36,6 +36,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.util.AbstractMap;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ class AwtCanvas implements Canvas {
     private BufferedImage bufferedImage;
     private Graphics2D graphics2D;
 
-    private static final java.awt.Color NEUTRAL_HILLS = new java.awt.Color(127, 127, 127);
+    private static final java.awt.Color NEUTRAL_HILLS = AwtGraphicFactory.getColor(Color.TRANSPARENT);
     private static Map.Entry<Float, Composite> sizeOneShadingCompositeCache = null;
     private final AffineTransform transform = new AffineTransform();
 
@@ -98,7 +99,13 @@ class AwtCanvas implements Canvas {
 
     @Override
     public void drawBitmap(Bitmap bitmap, int left, int top) {
-        this.graphics2D.drawImage(AwtGraphicFactory.getBitmap(bitmap), left, top, null);
+        final BufferedImage awtBitmap = AwtGraphicFactory.getBitmap(bitmap);
+        if (awtBitmap.getColorModel() instanceof IndexColorModel) {
+            // We need to clear the existing alpha to get a clean overwrite
+            // (this is currently expected only for hill shading bitmaps)
+            fillColor(Color.TRANSPARENT);
+        }
+        this.graphics2D.drawImage(awtBitmap, left, top, null);
     }
 
     @Override
@@ -417,7 +424,7 @@ class AwtCanvas implements Canvas {
     }
 
     @Override
-    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude) {
+    public void shadeBitmap(Bitmap bitmap, Rectangle shadeRect, Rectangle tileRect, float magnitude, int color) {
         Composite oldComposite = this.graphics2D.getComposite();
         Composite composite = getHillshadingComposite(magnitude);
         this.graphics2D.setComposite(composite);

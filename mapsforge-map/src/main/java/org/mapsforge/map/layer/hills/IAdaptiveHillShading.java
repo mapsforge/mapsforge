@@ -1,5 +1,4 @@
 /*
- * Copyright 2022 usrusr
  * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
@@ -15,15 +14,22 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import java.util.logging.Logger;
-
 /**
- * should implement equals
+ * Interface that specifies adaptive hill shading algorithms.
  */
-public interface DemFolder {
-    Logger LOGGER = Logger.getLogger(DemFolder.class.getName());
+public interface IAdaptiveHillShading {
+    /**
+     * @return Whether the high quality (bicubic) algorithm is enabled or not.
+     */
+    boolean isHqEnabled();
 
-    Iterable<DemFolder> subs();
+    /**
+     * @return {@code true} if the algorithm decides which zoom levels are supported (default), {@code false} to obey values as set in the render theme.
+     */
+    boolean isAdaptiveZoomEnabled();
 
-    Iterable<DemFile> files();
+    /**
+     * @param isEnabled {@code true} to let the algorithm decide which zoom levels are supported (default); {@code false} to obey values as set in the render theme.
+     */
+    void setAdaptiveZoomEnabled(boolean isEnabled);
 }

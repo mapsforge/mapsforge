@@ -39,10 +39,10 @@ import org.mapsforge.map.layer.debug.TileGridLayer;
 import org.mapsforge.map.layer.download.TileDownloadLayer;
 import org.mapsforge.map.layer.download.tilesource.OpenStreetMapMapnik;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
+import org.mapsforge.map.layer.hills.AdaptiveClasyHillShading;
 import org.mapsforge.map.layer.hills.DemFolderFS;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.hills.MemoryCachingHgtReaderTileSource;
-import org.mapsforge.map.layer.hills.StandardClasyHillShading;
 import org.mapsforge.map.layer.labels.LabelLayer;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.mapsforge.map.model.MapViewPosition;
@@ -79,15 +79,17 @@ public final class Samples {
         // Square frame buffer
         Parameters.SQUARE_FRAME_BUFFER = false;
 
-        final HillsRenderConfig hillsCfg;
+        final HillsRenderConfig hillsConfig;
         File demFolder = getDemFolder(args);
         if (demFolder != null) {
-            MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new StandardClasyHillShading(), AwtGraphicFactory.INSTANCE);
-            hillsCfg = new HillsRenderConfig(tileSource);
-            hillsCfg.indexOnThread();
+            MemoryCachingHgtReaderTileSource tileSource = new MemoryCachingHgtReaderTileSource(new DemFolderFS(demFolder), new AdaptiveClasyHillShading(), AwtGraphicFactory.INSTANCE);
+            hillsConfig = new HillsRenderConfig(tileSource);
+            hillsConfig.setMagnitudeScaleFactor(1);
+            hillsConfig.setColor(0xff000000);
+            hillsConfig.indexOnThread();
             args = Arrays.copyOfRange(args, 1, args.length);
         } else {
-            hillsCfg = null;
+            hillsConfig = null;
         }
 
         final List<File> mapFiles = SHOW_RASTER_MAP ? null : getMapFiles(args);
@@ -116,7 +118,7 @@ public final class Samples {
 
             @Override
             public void windowOpened(WindowEvent e) {
-                final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsCfg);
+                final BoundingBox boundingBox = addLayers(mapView, mapFiles, hillsConfig);
                 final Model model = mapView.getModel();
                 model.init(preferencesFacade);
                 if (model.mapViewPosition.getZoomLevel() == 0 || !boundingBox.contains(model.mapViewPosition.getCenter())) {

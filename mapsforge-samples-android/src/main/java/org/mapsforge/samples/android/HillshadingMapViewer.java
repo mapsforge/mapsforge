@@ -1,6 +1,7 @@
 /*
  * Copyright 2017-2022 usrusr
  * Copyright 2017-2019 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -38,7 +39,6 @@ public class HillshadingMapViewer extends DefaultTheme {
     private static final String demUseFiles = "demFolderFiles";
     private static final int SELECT_DEM_FOLDER = 0;
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void createLayers() {
 
@@ -84,9 +84,12 @@ public class HillshadingMapViewer extends DefaultTheme {
         }
         if (anyDems != null) {
             // minimum setup for hillshading
-            MemoryCachingHgtReaderTileSource hillTileSource = new MemoryCachingHgtReaderTileSource(anyDems, new StandardClasyHillShading(), AndroidGraphicFactory.INSTANCE);
+            MemoryCachingHgtReaderTileSource hillTileSource = new MemoryCachingHgtReaderTileSource(anyDems, new AdaptiveClasyHillShading(), AndroidGraphicFactory.INSTANCE);
             customizeConfig(hillTileSource);
+
             hillsConfig = new HillsRenderConfig(hillTileSource);
+            hillsConfig.setMagnitudeScaleFactor(1);
+            hillsConfig.setColor(0xff000000);
 
             // call after setting/changing parameters, walks filesystem for DEM metadata
             hillsConfig.indexOnThread();
@@ -96,7 +99,6 @@ public class HillshadingMapViewer extends DefaultTheme {
     }
 
     private void customizeConfig(MemoryCachingHgtReaderTileSource hillTileSource) {
-        hillTileSource.setEnableInterpolationOverlap(true);
     }
 
     @Override

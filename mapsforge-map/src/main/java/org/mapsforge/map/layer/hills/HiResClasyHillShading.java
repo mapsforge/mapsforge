@@ -14,6 +14,9 @@
  */
 package org.mapsforge.map.layer.hills;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * <p>
  * High resolution / high quality implementation of {@link StandardClasyHillShading}.
@@ -22,29 +25,31 @@ package org.mapsforge.map.layer.hills;
  * It quadruples the number of pixels of the output bitmap (doubles the width and height) and uses bicubic interpolation to achieve the best visual results.
  * </p>
  * <p>
- * Quadrupling does increase the memory used, but it's nothing extreme: The output bitmap is about the size of a 17-megapixel photograph (52 MB),
- * given that the input data was 1-arcsecond one (the highest resolution you can get at this time). For 3-arcsecond data, this drops to about 6 MB.
+ * Quadrupling does increase the memory used, but it's nothing extreme: The output bitmap is about the size of a 17-megapixel photograph,
+ * given that the input data was 1-arcsecond one (1", the highest resolution you can get at this time). For 3-arcsecond data (3"), this drops to about 6 MB.
+ * </p>
+ * <p>
+ * In other words, a standard 1" DEM file containing 1° square data will be processed to an output bitmap of about 7200x7200 px and 52 MB in size.
+ * </p>
+ * <p>
+ * To greatly improve efficiency at wider zoom levels, you should consider using the adaptive quality version instead: {@link AdaptiveClasyHillShading}.
+ * It provides the best results with excellent performance throughout the zoom level range.
  * </p>
  *
+ * @see AdaptiveClasyHillShading
  * @see StandardClasyHillShading
  */
-public class HiResStandardClasyHillShading extends StandardClasyHillShading {
+public class HiResClasyHillShading extends StandardClasyHillShading {
 
     /**
      * Construct this using the parameters provided.
-     * Make sure that {@code clasyParams.isHighQuality()} returns {@code true}, otherwise an {@link IllegalArgumentException} will be thrown.
      *
-     * @param clasyParams Parameters to use while constructing this. Make sure that {@code clasyParams.isHighQuality()} returns {@code true}.
-     * @throws IllegalArgumentException When {@code clasyParams.isHighQuality() == false}
+     * @param clasyParams Parameters to use while constructing this.
      * @see AClasyHillShading#AClasyHillShading(ClasyParams)
-     * @see AClasyHillShading.ClasyParams
+     * @see ClasyParams
      */
-    public HiResStandardClasyHillShading(final ClasyParams clasyParams) {
-        super(clasyParams.setHighQuality(true));
-
-        if (false == this.mIsHighQuality) {
-            throw new IllegalArgumentException("ClasyParams.isHighQuality() should be 'true'");
-        }
+    public HiResClasyHillShading(final ClasyParams clasyParams) {
+        super(clasyParams);
     }
 
     /**
@@ -52,21 +57,20 @@ public class HiResStandardClasyHillShading extends StandardClasyHillShading {
      *
      * @see AClasyHillShading#AClasyHillShading()
      */
-    public HiResStandardClasyHillShading() {
-        super(new ClasyParams().setHighQuality(true));
+    public HiResClasyHillShading() {
+        super();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public int getOutputAxisLen(final HgtCache.HgtFileInfo source) {
-        return 2 * getInputAxisLen(source);
+    protected byte[] convert(InputStream inputStream, int dummyAxisLen, int dummyRowLen, int padding, int zoomLevel, double pxPerLat, double pxPerLon, HgtFileInfo hgtFileInfo) throws IOException {
+        return doTheWork(hgtFileInfo, true, padding, zoomLevel, pxPerLat, pxPerLon);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
+    public int getOutputAxisLen(final HgtFileInfo hgtFileInfo, int zoomLevel, double pxPerLat, double pxPerLon) {
+        return 2 * getInputAxisLen(hgtFileInfo);
+    }
+
     @Override
     protected int processRow_4x4(short[] input, int firstLineIx, int secondLineOffset, int thirdLineOffset, int fourthLineOffset, double dsf, int outputIx, ComputingParams computingParams) {
         final double dsfDouble = 2 * dsf;
@@ -245,9 +249,6 @@ public class HiResStandardClasyHillShading extends StandardClasyHillShading {
         return outputIx;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected int processUnitElement_4x4(final double nw, final double sw, final double se, final double ne, final double nwnw, final double wnw, final double wsw, final double swsw, final double ssw, final double sse, final double sese, final double ese, final double ene, final double nene, final double nne, final double nnw, final double dsf, int outputIx, final ComputingParams computingParams) {
         final double center, nwswHalf, swseHalf, neseHalf, nwneHalf;

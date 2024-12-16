@@ -2,6 +2,7 @@
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2014 Ludwig M Brinckmann
  * Copyright 2014-2016 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -16,12 +17,12 @@
  */
 package org.mapsforge.map.android.graphics;
 
-import android.annotation.TargetApi;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
+import org.mapsforge.core.graphics.ABitmap;
 import org.mapsforge.core.graphics.Bitmap;
 
 import java.io.IOException;
@@ -35,17 +36,17 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-public class AndroidBitmap implements Bitmap {
+public class AndroidBitmap extends ABitmap implements Bitmap {
     private static final List<AndroidBitmap> BITMAP_LIST;
 
     private static final AtomicInteger BITMAP_INSTANCES;
     private static final Logger LOGGER = Logger.getLogger(AndroidBitmap.class.getName());
-    private static final Set<SoftReference<android.graphics.Bitmap>> REUSABLE_BITMAPS = new HashSet<SoftReference<android.graphics.Bitmap>>();
+    private static final Set<SoftReference<android.graphics.Bitmap>> REUSABLE_BITMAPS = new HashSet<>();
 
     static {
         if (AndroidGraphicFactory.DEBUG_BITMAPS) {
             BITMAP_INSTANCES = new AtomicInteger();
-            BITMAP_LIST = new LinkedList<AndroidBitmap>();
+            BITMAP_LIST = new LinkedList<>();
         } else {
             BITMAP_LIST = null;
             BITMAP_INSTANCES = null;
@@ -56,14 +57,14 @@ public class AndroidBitmap implements Bitmap {
         return android.graphics.Bitmap.createBitmap(width, height, config);
     }
 
-    protected static final BitmapFactory.Options createBitmapFactoryOptions(Config config) {
+    protected static BitmapFactory.Options createBitmapFactoryOptions(Config config) {
         BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
         bitmapFactoryOptions.inPreferredConfig = config;
         return bitmapFactoryOptions;
     }
 
-    protected android.graphics.Bitmap bitmap;
-    private AtomicInteger refCount = new AtomicInteger();
+    protected volatile android.graphics.Bitmap bitmap;
+    private final AtomicInteger refCount = new AtomicInteger();
 
     protected AndroidBitmap() {
         if (AndroidGraphicFactory.DEBUG_BITMAPS) {
@@ -132,7 +133,8 @@ public class AndroidBitmap implements Bitmap {
             // http://stackoverflow.com/questions/2895065/what-does-the-filter-parameter-to-createscaledbitmap-do
             // passing true results in smoother edges, less pixellation.
             // If smoother corners improve the readability of map labels is perhaps debatable.
-            android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(this.bitmap, width,
+            final android.graphics.Bitmap myBitmap = this.bitmap;
+            android.graphics.Bitmap scaledBitmap = android.graphics.Bitmap.createScaledBitmap(myBitmap, width,
                     height, true);
             destroy();
             this.bitmap = scaledBitmap;
@@ -147,8 +149,9 @@ public class AndroidBitmap implements Bitmap {
     @Override
     public String toString() {
         String info;
-        if (this.bitmap != null) {
-            if (this.bitmap.hasAlpha()) {
+        final android.graphics.Bitmap myBitmap = this.bitmap;
+        if (myBitmap != null) {
+            if (myBitmap.hasAlpha()) {
                 info = " has alpha";
             } else {
                 info = " no alpha";
@@ -156,15 +159,12 @@ public class AndroidBitmap implements Bitmap {
         } else {
             info = " is recycled";
         }
-        return super.toString() + " rC " + Integer.toString(refCount.get()) + info;
+        return super.toString() + " rC " + refCount.get() + info;
 
     }
 
     protected final boolean canUseBitmap(android.graphics.Bitmap candidate, int width, int height) {
-        if (candidate.getWidth() == width && candidate.getHeight() == height) {
-            return true;
-        }
-        return false;
+        return candidate.getWidth() == width && candidate.getHeight() == height;
     }
 
     protected void destroy() {
@@ -174,32 +174,33 @@ public class AndroidBitmap implements Bitmap {
                 if (BITMAP_LIST.contains(this)) {
                     BITMAP_LIST.remove(this);
                 } else {
-                    LOGGER.severe("BITMAP ALREADY REMOVED " + this.toString());
+                    LOGGER.severe("BITMAP ALREADY REMOVED " + this);
                 }
-                LOGGER.info("BITMAP COUNT " + Integer.toString(i) + " " + BITMAP_LIST.size());
+                LOGGER.info("BITMAP COUNT " + i + " " + BITMAP_LIST.size());
             }
         }
         destroyBitmap();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void destroyBitmap() {
-        if (this.bitmap != null) {
+        final android.graphics.Bitmap myBitmap = this.bitmap;
+        this.bitmap = null;
+
+        if (myBitmap != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 synchronized (REUSABLE_BITMAPS) {
-                    REUSABLE_BITMAPS.add(new SoftReference<android.graphics.Bitmap>(this.bitmap));
+                    REUSABLE_BITMAPS.add(new SoftReference<>(myBitmap));
                 }
             } else {
-                this.bitmap.recycle();
+                myBitmap.recycle();
             }
-            this.bitmap = null;
         }
     }
 
     protected final android.graphics.Bitmap getBitmapFromReusableSet(int width, int height, Config config) {
         android.graphics.Bitmap result = null;
 
-        if (REUSABLE_BITMAPS != null && !REUSABLE_BITMAPS.isEmpty()) {
+        if (!REUSABLE_BITMAPS.isEmpty()) {
             synchronized (REUSABLE_BITMAPS) {
                 final Iterator<SoftReference<android.graphics.Bitmap>> iterator = REUSABLE_BITMAPS.iterator();
                 android.graphics.Bitmap candidate;

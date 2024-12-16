@@ -19,31 +19,33 @@ package org.mapsforge.map.layer.hills;
 import org.mapsforge.core.graphics.Canvas;
 import org.mapsforge.core.graphics.GraphicFactory;
 import org.mapsforge.core.graphics.HillshadingBitmap;
-import org.mapsforge.core.model.BoundingBox;
+import org.mapsforge.map.layer.hills.HillShadingUtils.BlockingSumLimiter;
+import org.mapsforge.map.layer.hills.HillShadingUtils.HillShadingThreadPool;
+import org.mapsforge.map.layer.hills.HillShadingUtils.SilentFutureTask;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * immutably configured, does the work for {@link MemoryCachingHgtReaderTileSource}
+ * Immutably configured, does the work for {@link MemoryCachingHgtReaderTileSource}
+ * <p>
+ * The file indexing implementation is such that it processes files and folders/ZIPs in parallel (ZIP file is treated as a folder).
+ * Packing each HGT file into a separate ZIP and distributing those ZIP files across multiple folders is considered a fairly balanced
+ * tactic for saving storage space.
  */
 public class HgtCache {
-    private static final Logger LOGGER = Logger.getLogger(HgtCache.class.getName());
-
-    /** No need for this to ever be greater than 1 */
-    public static final int PaddingSizeDefault = 1;
 
     // Should be lower-case
     public static final String ZipFileExtension = "zip";
@@ -51,118 +53,89 @@ public class HgtCache {
     public static final String DotZipFileExtension = "." + ZipFileExtension;
     public static final String DotHgtFileExtension = "." + HgtFileExtension;
 
-    final DemFolder demFolder;
-    final ShadingAlgorithm algorithm;
-    final boolean interpolatorOverlap;
-    final int mainCacheSize;
+    /**
+     * Default name prefix for additional reading threads created and used by this. A numbered suffix will be appended.
+     */
+    public static final String ThreadPoolName = "MapsforgeHgtCache";
 
-    private final GraphicFactory graphicsFactory;
+    protected final DemFolder demFolder;
+    protected final ShadingAlgorithm shadingAlgorithm;
+    protected final int padding;
 
-    private final Lru mainLru;
-
-    private final LazyFuture<Map<TileKey, HgtFileInfo>> hgtFiles;
-
-
-    protected static final class TileKey {
-        final int north;
-        final int east;
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
-
-            TileKey tileKey = (TileKey) o;
-
-            return north == tileKey.north && east == tileKey.east;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = north;
-            result = 31 * result + east;
-            return result;
-        }
-
-        TileKey(int north, int east) {
-            this.east = east;
-            this.north = north;
-        }
-    }
-
-    private static class Lru {
-        protected final int size;
-        protected final LinkedHashSet<Future<HillshadingBitmap>> lru;
-
-        Lru(int size) {
-            this.size = size;
-            lru = size > 0 ? new LinkedHashSet<>() : null;
-        }
-
-        /**
-         * @param freshlyUsed the entry that should be marked as freshly used
-         * @return the evicted entry, which is freshlyUsed if size is 0
-         */
-        Future<HillshadingBitmap> markUsed(Future<HillshadingBitmap> freshlyUsed) {
-            if (size > 0 && freshlyUsed != null) {
-                synchronized (lru) {
-                    lru.remove(freshlyUsed);
-                    lru.add(freshlyUsed);
-                    if (lru.size() > size) {
-                        Iterator<Future<HillshadingBitmap>> iterator = lru.iterator();
-                        Future<HillshadingBitmap> evicted = iterator.next();
-                        iterator.remove();
-                        return evicted;
-                    }
-                    return null;
-                }
-            }
-            return freshlyUsed;
-        }
-
-        void evict(Future<HillshadingBitmap> loadingFuture) {
-            if (size > 0) {
-                synchronized (lru) {
-                    lru.add(loadingFuture);
-                }
-            }
-        }
-
-        public int getSize() {
-            return size;
-        }
-    }
+    protected final GraphicFactory graphicsFactory;
+    protected final Lru lruCache;
+    protected final LazyFuture<Map<TileKey, HgtFileInfo>> hgtFiles;
+    protected final BlockingSumLimiter blockingSumLimiter = new BlockingSumLimiter();
 
     protected final List<String> problems = new ArrayList<>();
 
-    HgtCache(DemFolder demFolder, boolean interpolationOverlap, GraphicFactory graphicsFactory, ShadingAlgorithm algorithm, int mainCacheSize) {
+    protected final AtomicReference<HillShadingThreadPool> ThreadPool = new AtomicReference<>(null);
+
+    public HgtCache(DemFolder demFolder, GraphicFactory graphicsFactory, int padding, ShadingAlgorithm algorithm, int cacheMinCount, int cacheMaxCount, long cacheMaxBytes) {
         this.demFolder = demFolder;
-        this.interpolatorOverlap = interpolationOverlap;
         this.graphicsFactory = graphicsFactory;
-        this.algorithm = algorithm;
-        this.mainCacheSize = mainCacheSize;
+        this.shadingAlgorithm = algorithm;
+        this.padding = padding;
 
-        mainLru = new Lru(this.mainCacheSize);
+        this.lruCache = new Lru(cacheMinCount, cacheMaxCount, cacheMaxBytes);
 
-        hgtFiles = new LazyFuture<Map<TileKey, HgtFileInfo>>() {
+        this.hgtFiles = new LazyFuture<Map<TileKey, HgtFileInfo>>() {
+            final Deque<SilentFutureTask> myTasks = new ConcurrentLinkedDeque<>();
+            final Map<TileKey, HgtFileInfo> myMap = new HashMap<>();
+
             @Override
             protected Map<TileKey, HgtFileInfo> calculate() {
-                final Map<TileKey, HgtFileInfo> map = new HashMap<>();
                 final String regex = ".*([ns])(\\d{1,2})([ew])(\\d{1,3})\\.(?:(" + HgtFileExtension + ")|(" + ZipFileExtension + "))";
-                final Matcher matcher = Pattern
-                        .compile(regex, Pattern.CASE_INSENSITIVE)
-                        .matcher("");
-                indexFolder(HgtCache.this.demFolder, matcher, map, problems);
-                return map;
+                final Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+
+                // Create our short-lived thread pool for fast file indexing purposes
+                createThreadPoolMaybe();
+
+                indexFolder(demFolder, pattern, problems);
+
+                while (false == myTasks.isEmpty()) {
+                    myTasks.pollFirst().get();
+                }
+
+                // Our thread pool won't be needed any more
+                destroyThreadPool();
+
+                return myMap;
             }
 
-            void indexFile(DemFile file, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
+            void indexFolder(DemFolder folder, Pattern pattern, List<String> problems) {
+                for (DemFile demFile : folder.files()) {
+                    // Process files concurrently
+                    final SilentFutureTask task = new SilentFutureTask(new Callable<Boolean>() {
+                        public Boolean call() {
+                            indexFile(demFile, pattern, problems);
+                            return true;
+                        }
+                    });
+
+                    postToThreadPoolOrRun(task);
+                    myTasks.add(task);
+                }
+
+                for (final DemFolder sub : folder.subs()) {
+                    // Process folders concurrently
+                    final SilentFutureTask task = new SilentFutureTask(new Callable<Boolean>() {
+                        public Boolean call() {
+                            indexFolder(sub, pattern, problems);
+                            return true;
+                        }
+                    });
+
+                    postToThreadPoolOrRun(task);
+                    myTasks.add(task);
+                }
+            }
+
+            void indexFile(DemFile file, Pattern pattern, List<String> problems) {
                 final String name = file.getName();
-                if (matcher
-                        .reset(name)
-                        .matches()) {
+                final Matcher matcher = pattern.matcher(name);
+
+                if (matcher.matches()) {
                     final int northsouth = Integer.parseInt(matcher.group(2));
                     final int eastwest = Integer.parseInt(matcher.group(4));
 
@@ -179,165 +152,156 @@ public class HgtCache {
                     }
 
                     final TileKey tileKey = new TileKey(north, east);
-                    final HgtFileInfo existing = map.get(tileKey);
-                    if (existing == null || existing.size < length) {
-                        map.put(tileKey, new HgtFileInfo(file, north - 1, east, north, east + 1, length));
-                    }
-                }
-            }
-
-            void indexFolder(DemFolder folder, Matcher matcher, Map<TileKey, HgtFileInfo> map, List<String> problems) {
-                for (DemFile demFile : folder.files()) {
-                    indexFile(demFile, matcher, map, problems);
-                }
-                for (DemFolder sub : folder.subs()) {
-                    indexFolder(sub, matcher, map, problems);
-                }
-            }
-        };
-
-    }
-
-    void indexOnThread() {
-        hgtFiles.withRunningThread();
-    }
-
-
-    class LoadUnmergedFuture extends LazyFuture<HillshadingBitmap> {
-        private final HgtFileInfo hgtFileInfo;
-
-        LoadUnmergedFuture(HgtFileInfo hgtFileInfo) {
-            this.hgtFileInfo = hgtFileInfo;
-        }
-
-        public HillshadingBitmap calculate() {
-            final ShadingAlgorithm.RawShadingResult raw = algorithm.transformToByteBuffer(hgtFileInfo, HgtCache.this.interpolatorOverlap ? PaddingSizeDefault : 0);
-
-            return graphicsFactory.createMonoBitmap(raw.width, raw.height, raw.bytes, raw.padding, hgtFileInfo);
-        }
-    }
-
-    public class HgtFileInfo extends BoundingBox implements ShadingAlgorithm.RawHillTileSource {
-        final DemFile file;
-        final Object mWeakRefSync = new Object();
-        WeakReference<Future<HillshadingBitmap>> weakRef = null;
-
-        final long size;
-
-        HgtFileInfo(DemFile file, double minLatitude, double minLongitude, double maxLatitude, double maxLongitude, long size) {
-            super(minLatitude, minLongitude, maxLatitude, maxLongitude);
-            this.file = file;
-            this.size = size;
-        }
-
-        Future<HillshadingBitmap> getBitmapFuture(double pxPerLat, double pxPerLng) {
-            synchronized (mWeakRefSync) {
-                final WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
-                Future<HillshadingBitmap> candidate = weak == null ? null : weak.get();
-
-                if (candidate == null) {
-                    candidate = new LoadUnmergedFuture(this);
-                    this.weakRef = new WeakReference<>(candidate);
-                }
-
-                mainLru.markUsed(candidate);
-
-                return candidate;
-            }
-        }
-
-        @Override
-        public HillshadingBitmap getFinishedConverted() {
-            synchronized (mWeakRefSync) {
-                WeakReference<Future<HillshadingBitmap>> weak = this.weakRef;
-                if (weak != null) {
-                    Future<HillshadingBitmap> hillshadingBitmapFuture = weak.get();
-                    if (hillshadingBitmapFuture != null && hillshadingBitmapFuture.isDone()) {
-                        try {
-                            return hillshadingBitmapFuture.get();
-                        } catch (InterruptedException | ExecutionException e) {
-//                        e.printStackTrace();
-                            LOGGER.log(Level.WARNING, e.toString());
+                    synchronized (myMap) {
+                        final HgtFileInfo existing = myMap.get(tileKey);
+                        if (existing == null || existing.getSize() < length) {
+                            myMap.put(tileKey, new HgtFileInfo(file, north, east, north + 1, east + 1, length));
                         }
                     }
                 }
-                return null;
+            }
+        };
+    }
+
+    public HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, int zoomLevel, double pxPerLat, double pxPerLon, int color) throws InterruptedException, ExecutionException {
+        HillshadingBitmap output = null;
+
+        final HgtFileInfo hgtFileInfo = hgtFiles.get().get(new TileKey(northInt, eastInt));
+
+        if (hgtFileInfo != null) {
+            final long outputSizeEstimate = shadingAlgorithm.getOutputSizeBytes(hgtFileInfo, padding, zoomLevel, pxPerLat, pxPerLon);
+
+            // Blocking sum limiter is used to prevent cache hammering, and resulting excess memory usage and possible OOM exceptions in extreme situations.
+            // This can happen when many future.get() calls (like the one below) are made concurrently without any limits.
+            blockingSumLimiter.add(outputSizeEstimate, lruCache.maxBytes);
+            try {
+                final HgtFileLoadFuture future = hgtFileInfo.getBitmapFuture(HgtCache.this, shadingAlgorithm, padding, zoomLevel, pxPerLat, pxPerLon, color);
+
+                if (false == future.isDone()) {
+                    lruCache.ensureEnoughSpace(outputSizeEstimate);
+                }
+
+                // This must be called before...
+                output = future.get();
+
+                // ...before this.
+                lruCache.markUsed(future);
+            } finally {
+                blockingSumLimiter.subtract(outputSizeEstimate);
             }
         }
 
-        @Override
-        public long getSize() {
-            return size;
+        return output;
+    }
+
+    /**
+     * @return Whether the zoom level is supported on the lat/lon coordinates.
+     */
+    public boolean isZoomLevelSupported(int zoomLevel, int lat, int lon) {
+        boolean retVal = true;
+
+        try {
+            if (shadingAlgorithm instanceof AThreadedHillShading) {
+                final HgtFileInfo hgtFileInfo = hgtFiles.get().get(new TileKey(lat, lon));
+
+                if (hgtFileInfo != null) {
+                    retVal = ((AThreadedHillShading) shadingAlgorithm).isZoomLevelSupported(zoomLevel, hgtFileInfo);
+                }
+            }
+        } catch (Exception ignored) {
         }
 
-        @Override
-        public DemFile getFile() {
-            return file;
-        }
+        return retVal;
+    }
 
-        @Override
-        public double northLat() {
-            return maxLatitude;
-        }
+    protected HgtFileLoadFuture createHgtFileLoadFuture(HgtFileInfo hgtFileInfo, int padding, int zoomLevel, double pxPerLat, double pxPerLon, int color) {
+        return new HgtFileLoadFuture(hgtFileInfo, padding, zoomLevel, pxPerLat, pxPerLon, color);
+    }
 
-        @Override
-        public double southLat() {
-            return minLatitude;
-        }
+    public void indexOnThread() {
+        hgtFiles.withRunningThread();
+    }
 
-        @Override
-        public double westLng() {
-            return minLongitude;
-        }
+    protected void postToThreadPoolOrRun(final Runnable code) {
+        final HillShadingThreadPool threadPool = ThreadPool.get();
 
-        @Override
-        public double eastLng() {
-            return maxLongitude;
-        }
-
-        @Override
-        public String toString() {
-            Future<HillshadingBitmap> future = weakRef == null ? null : weakRef.get();
-            return "[lt:" + minLatitude + "-" + maxLatitude + " ln:" + minLongitude + "-" + maxLongitude + (future == null ? "" : future.isDone() ? "done" : "wip") + "]";
+        if (threadPool != null) {
+            threadPool.executeOrRun(code);
+        } else {
+            if (code != null) {
+                code.run();
+            }
         }
     }
 
-    HillshadingBitmap getHillshadingBitmap(int northInt, int eastInt, double pxPerLat, double pxPerLng) throws InterruptedException, ExecutionException {
-        final HgtFileInfo hgtFileInfo = hgtFiles
-                .get()
-                .get(new TileKey(northInt, eastInt));
+    protected void createThreadPoolMaybe() {
+        final AtomicReference<HillShadingThreadPool> threadPoolReference = ThreadPool;
 
-        if (hgtFileInfo == null) {
-            return null;
+        if (threadPoolReference.get() == null) {
+            synchronized (threadPoolReference) {
+                if (threadPoolReference.get() == null) {
+                    threadPoolReference.set(createThreadPool());
+                }
+            }
         }
-
-        Future<HillshadingBitmap> future = hgtFileInfo.getBitmapFuture(pxPerLat, pxPerLng);
-        return future.get();
     }
 
-    public static void mergeSameSized(HillshadingBitmap center, HillshadingBitmap neighbor, HillshadingBitmap.Border border, int padding, Canvas copyCanvas) {
-        final HillshadingBitmap sink = center;
-        final HillshadingBitmap source = neighbor;
+    protected HillShadingThreadPool createThreadPool() {
+        final int threadCount = AThreadedHillShading.ReadingThreadsCountDefault;
+        final int queueSize = Integer.MAX_VALUE;
+        return new HillShadingThreadPool(threadCount, threadCount, queueSize, 1, ThreadPoolName).start();
+    }
 
-        copyCanvas.setBitmap(sink);
+    protected void destroyThreadPool() {
+        final AtomicReference<HillShadingThreadPool> threadPoolReference = ThreadPool;
 
-        switch (border) {
-            case WEST:
-                copyCanvas.setClip(0, padding, padding, sink.getHeight() - 2 * padding, true);
-                copyCanvas.drawBitmap(source, -sink.getWidth() + 2 * padding, 0);
-                break;
-            case EAST:
-                copyCanvas.setClip(sink.getWidth() - padding, padding, padding, sink.getHeight() - 2 * padding, true);
-                copyCanvas.drawBitmap(source, sink.getWidth() - 2 * padding, 0);
-                break;
-            case NORTH:
-                copyCanvas.setClip(padding, 0, sink.getWidth() - 2 * padding, padding, true);
-                copyCanvas.drawBitmap(source, 0, -sink.getHeight() + 2 * padding);
-                break;
-            case SOUTH:
-                copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding, true);
-                copyCanvas.drawBitmap(source, 0, sink.getHeight() - 2 * padding);
-                break;
+        synchronized (threadPoolReference) {
+            final HillShadingThreadPool threadPool = threadPoolReference.getAndSet(null);
+
+            if (threadPool != null) {
+                threadPool.stop();
+            }
+        }
+    }
+
+    public static void mergeSameSized(HillshadingBitmap sink, HillshadingBitmap source, HillshadingBitmap.Border border, int padding, Canvas copyCanvas) {
+
+        final Object mutex1, mutex2;
+        {
+            // Mutexes must be ordered to prevent deadlocks (it doesn't matter how, it just has to be consistent)
+            if (source.getMutex().hashCode() < sink.getMutex().hashCode()) {
+                mutex1 = source.getMutex();
+                mutex2 = sink.getMutex();
+            } else {
+                mutex1 = sink.getMutex();
+                mutex2 = source.getMutex();
+            }
+        }
+
+        // Synchronized to prevent visual artifacts when using the bitmaps concurrently (see CanvasRasterer)
+        synchronized (mutex1) {
+            synchronized (mutex2) {
+                copyCanvas.setBitmap(sink);
+
+                switch (border) {
+                    case WEST:
+                        copyCanvas.setClip(0, padding, padding, sink.getHeight() - 2 * padding, true);
+                        copyCanvas.drawBitmap(source, -sink.getWidth() + 2 * padding, 0);
+                        break;
+                    case EAST:
+                        copyCanvas.setClip(sink.getWidth() - padding, padding, padding, sink.getHeight() - 2 * padding, true);
+                        copyCanvas.drawBitmap(source, sink.getWidth() - 2 * padding, 0);
+                        break;
+                    case NORTH:
+                        copyCanvas.setClip(padding, 0, sink.getWidth() - 2 * padding, padding, true);
+                        copyCanvas.drawBitmap(source, 0, -sink.getHeight() + 2 * padding);
+                        break;
+                    case SOUTH:
+                        copyCanvas.setClip(padding, sink.getHeight() - padding, sink.getWidth() - 2 * padding, padding, true);
+                        copyCanvas.drawBitmap(source, 0, sink.getHeight() - 2 * padding);
+                        break;
+                }
+            }
         }
     }
 
@@ -377,68 +341,143 @@ public class HgtCache {
         return isFileNameZip(file.getName());
     }
 
-//    private void logLru(String merged, Lru lru, Future<HillshadingBitmap> ret) {
-//        try {
-//            StringBuilder sb = new StringBuilder();
-//            sb.append(merged).append("\n  LRU: ");
-//            synchronized (lru.lru) {
-//                for (Future<HillshadingBitmap> f : lru.lru){
-//                    sb.append("   E#"+System.identityHashCode(f));
-//                }
-//                sb.append("\n  ");
-//                for(HgtFileInfo hgt : hgtFiles.get().values()){
-//                    WeakReference<Future<HillshadingBitmap>> weakRef = hgt.weakRef;
-//                    if(weakRef!=null){
-//                        Future<HillshadingBitmap> f = weakRef.get();
-//                        if(f!=null){
-//                            sb.append("  ").append(f.getClass().getSimpleName().substring(0,3));
-//                            sb.append("#").append(System.identityHashCode(f));
-//                        }
-//                    }
-//                }
-//            }
-//            System.out.println("\n"+sb+"\n");
-//        }  catch(RuntimeException e){
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    protected class HgtFileLoadFuture extends LazyFuture<HillshadingBitmap> {
+        protected final HgtFileInfo hgtFileInfo;
+        protected final int padding;
+        protected final int zoomLevel;
+        protected final double pxPerLat, pxPerLon;
+        protected final int color;
+        protected volatile long sizeBytes = 0;
 
+        HgtFileLoadFuture(HgtFileInfo hgtFileInfo, int padding, int zoomLevel, double pxPerLat, double pxPerLon, int color) {
+            this.hgtFileInfo = hgtFileInfo;
+            this.padding = padding;
+            this.zoomLevel = zoomLevel;
+            this.pxPerLat = pxPerLat;
+            this.pxPerLon = pxPerLon;
+            this.color = color;
+        }
 
-//    private static void logbytes(HillshadingBitmap fresh, String msg) {
-//        try {
-//            Class<?> superclass = fresh.getClass().getSuperclass();
-//            Field bufferedImage = superclass.getDeclaredField("bufferedImage");
-//            bufferedImage.setAccessible(true);
-//            BufferedImage bi = (BufferedImage) bufferedImage.get(fresh);
-//            Raster data = bi.getData();
-//            StringBuilder sb = new StringBuilder();
-//            for(int y=0;y<data.getHeight();y+=(y==4?data.getHeight()-8:1)) {
-//                if(y==4) {
-//                    sb.append("\n");
-//                    continue;
-//                }
-//                sb.append("\n").append(String.format(" %5d", y)).append(":     ");
-//                for(int x=0;x<data.getWidth();x+=(x==4?data.getWidth()-8:1)) {
-//                    if(x==4) {
-//                        sb.append("   ");
-//                        continue;
-//                    }
-//                    int sample = data.getSample(x, y, 0);
-//                    sb.append(String.format(" %3d", sample));
-//                }
-//
-//            }
-//            System.out.println(msg+" sample: "+fresh.getAreaRect()+sb);
-//
-//        } catch (NoSuchFieldException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+        public HillshadingBitmap calculate() {
+            HillshadingBitmap output = null;
+
+            final ShadingAlgorithm.RawShadingResult raw = shadingAlgorithm.transformToByteBuffer(this.hgtFileInfo, this.padding, this.zoomLevel, this.pxPerLat, this.pxPerLon);
+
+            if (raw != null) {
+                output = graphicsFactory.createMonoBitmap(raw.width, raw.height, raw.bytes, raw.padding, this.hgtFileInfo, this.color);
+
+                if (output != null) {
+                    this.sizeBytes = output.getSizeBytes();
+                } else {
+                    this.sizeBytes = 0;
+                }
+            } else {
+                this.sizeBytes = 0;
+            }
+
+            return output;
+        }
+
+        public long getCacheTag() {
+            return shadingAlgorithm.getCacheTag(this.hgtFileInfo, this.padding, this.zoomLevel, this.pxPerLat, this.pxPerLon);
+        }
+
+        public long getSizeBytes() {
+            return this.sizeBytes;
+        }
+    }
+
+    protected static final class TileKey {
+        final int north;
+        final int east;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
+
+            TileKey tileKey = (TileKey) o;
+
+            return north == tileKey.north && east == tileKey.east;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = north;
+            result = 31 * result + east;
+            return result;
+        }
+
+        TileKey(int north, int east) {
+            this.east = east;
+            this.north = north;
+        }
+    }
+
+    protected static class Lru {
+        protected final int minCount, maxCount;
+        protected final long maxBytes;
+        protected final Deque<HgtFileLoadFuture> lruSet = new ArrayDeque<>();
+        protected final AtomicLong sizeBytes = new AtomicLong(0);
+
+        protected Lru(int minCount, int maxCount, long maxBytes) {
+            this.minCount = minCount;
+            this.maxCount = maxCount;
+            this.maxBytes = maxBytes;
+        }
+
+        /**
+         * Note: The Future should be completed by the time this is called.
+         * This can be ensured by calling this method AFTER at least one call to future.get() elsewhere in the same thread.
+         *
+         * @param freshlyUsed the entry that should be marked as freshly used
+         */
+        public void markUsed(HgtFileLoadFuture freshlyUsed) {
+            if (maxBytes > 0 && freshlyUsed != null) {
+
+                final long sizeBytes = freshlyUsed.getSizeBytes();
+
+                synchronized (lruSet) {
+                    if (lruSet.remove(freshlyUsed)) {
+                        this.sizeBytes.addAndGet(-sizeBytes);
+                    }
+
+                    if (lruSet.add(freshlyUsed)) {
+                        this.sizeBytes.addAndGet(sizeBytes);
+                    }
+                }
+
+                manageSize();
+            }
+        }
+
+        protected void manageSize() {
+            synchronized (lruSet) {
+                while (lruSet.size() > maxCount || (lruSet.size() > minCount && sizeBytes.get() > maxBytes)) {
+                    removeFirst();
+                }
+            }
+        }
+
+        public void removeFirst() {
+            synchronized (lruSet) {
+                final HgtFileLoadFuture future = lruSet.pollFirst();
+
+                if (future != null) {
+                    final long sizeBytes = future.getSizeBytes();
+                    this.sizeBytes.addAndGet(-sizeBytes);
+                }
+            }
+        }
+
+        public void ensureEnoughSpace(long bytes) {
+            synchronized (lruSet) {
+                while (false == lruSet.isEmpty() && bytes + sizeBytes.get() > maxBytes) {
+                    removeFirst();
+                }
+            }
+        }
+    }
 }

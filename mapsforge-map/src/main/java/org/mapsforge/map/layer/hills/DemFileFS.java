@@ -15,7 +15,11 @@
  */
 package org.mapsforge.map.layer.hills;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class DemFileFS implements DemFile {
 
@@ -36,13 +40,21 @@ public class DemFileFS implements DemFile {
     }
 
     @Override
-    public InputStream openInputStream() throws FileNotFoundException {
-        // Buffer size is relatively small to reduce wasteful read-ahead (buffer fill) during multi-threaded processing
-        return new BufferedInputStream(new FileInputStream(file), 512);
+    public InputStream openInputStream() throws IOException {
+        return new BufferedInputStream(rawStream(), BufferSize);
     }
 
     @Override
     public InputStream asStream() throws IOException {
         return openInputStream();
+    }
+
+    @Override
+    public InputStream asRawStream() throws IOException {
+        return new BufferedInputStream(rawStream(), BufferSizeRaw);
+    }
+
+    protected InputStream rawStream() throws IOException {
+        return new FileInputStream(file);
     }
 }

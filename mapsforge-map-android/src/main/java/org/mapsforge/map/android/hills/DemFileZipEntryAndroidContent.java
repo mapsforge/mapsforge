@@ -17,6 +17,7 @@ package org.mapsforge.map.android.hills;
 import android.content.ContentResolver;
 
 import org.mapsforge.core.util.IOUtils;
+import org.mapsforge.map.android.hills.DemFolderAndroidContent.Entry;
 import org.mapsforge.map.layer.hills.DemFile;
 
 import java.io.BufferedInputStream;
@@ -24,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -32,37 +32,53 @@ import java.util.zip.ZipInputStream;
  */
 public class DemFileZipEntryAndroidContent implements DemFile {
 
-    protected final DemFolderAndroidContent.Entry contentResolverEntry;
+    protected final Entry contentResolverEntry;
     protected final ContentResolver contentResolver;
-    protected final ZipEntry zipEntry;
+    protected final String zipEntryName;
+    protected final long zipEntrySize;
 
     /**
      * <em>WARNING: The performance of this can be very poor. Use {@link org.mapsforge.map.layer.hills.DemFileZipEntryFS} instead if you can.</em>
      */
-    public DemFileZipEntryAndroidContent(ZipEntry zipEntry, DemFolderAndroidContent.Entry contentResolverEntry, ContentResolver contentResolver) {
+    public DemFileZipEntryAndroidContent(String zipEntry, long zipEntrySize, Entry contentResolverEntry, ContentResolver contentResolver) {
         this.contentResolverEntry = contentResolverEntry;
         this.contentResolver = contentResolver;
-        this.zipEntry = zipEntry;
+        this.zipEntryName = zipEntry;
+        this.zipEntrySize = zipEntrySize;
     }
 
     @Override
     public String getName() {
-        return zipEntry.getName();
+        return zipEntryName;
     }
 
     @Override
     public long getSize() {
-        return zipEntry.getSize();
+        return zipEntrySize;
     }
 
     @Override
-    public InputStream openInputStream() throws FileNotFoundException {
+    public InputStream openInputStream() throws IOException {
+        return rawStream(BufferSize);
+    }
+
+    @Override
+    public InputStream asStream() throws IOException {
+        return openInputStream();
+    }
+
+    @Override
+    public InputStream asRawStream() throws IOException {
+        return rawStream(BufferSizeRaw);
+    }
+
+    public InputStream rawStream(int bufferSize) throws IOException {
         ZipInputStream output = null;
 
         {
             ZipInputStream zipInputStream = null;
             try {
-                zipInputStream = new ZipInputStream(new BufferedInputStream(contentResolver.openInputStream(contentResolverEntry.uri)));
+                zipInputStream = new ZipInputStream(new BufferedInputStream(contentResolver.openInputStream(contentResolverEntry.uri), bufferSize));
             } catch (FileNotFoundException e) {
                 LOGGER.log(Level.WARNING, e.toString());
             }
@@ -75,10 +91,5 @@ public class DemFileZipEntryAndroidContent implements DemFile {
         }
 
         return output;
-    }
-
-    @Override
-    public InputStream asStream() throws IOException {
-        return openInputStream();
     }
 }

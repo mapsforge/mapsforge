@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -18,6 +19,7 @@ import org.mapsforge.core.graphics.HillshadingBitmap;
 import org.mapsforge.core.model.BoundingBox;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 
 public class AwtHillshadingBitmap extends AwtBitmap implements HillshadingBitmap {
     private final int padding;
@@ -38,5 +40,24 @@ public class AwtHillshadingBitmap extends AwtBitmap implements HillshadingBitmap
     @Override
     public int getPadding() {
         return padding;
+    }
+
+    @Override
+    public long getSizeBytes() {
+        long retVal = 0;
+
+        final BufferedImage myBufferedImage = bufferedImage;
+
+        if (myBufferedImage != null) {
+            final DataBuffer dataBuffer = myBufferedImage
+                    .getData()
+                    .getDataBuffer();
+
+            if (dataBuffer != null) {
+                retVal = (long) dataBuffer.getSize() * DataBuffer.getDataTypeSize(dataBuffer.getDataType()) / 8;
+            }
+        }
+
+        return retVal;
     }
 }

@@ -35,8 +35,11 @@ import java.io.InputStream;
  * {@link #unitElementToShadePixel(double, double, double, double, double)} to change the mapping of slope to shade pixel.
  * </p>
  *
+ * @see AdaptiveClasyHillShading
+ * @see HiResClasyHillShading
  * @see StandardClasyHillShading
- * @see HiResStandardClasyHillShading
+ * @see HalfResClasyHillShading
+ * @see QuarterResClasyHillShading
  */
 public abstract class AClasyHillShading extends AThreadedHillShading {
 
@@ -56,10 +59,10 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
      *
      * @param clasyParams Parameters to use while constructing this.
      * @see AClasyHillShading#AClasyHillShading(ClasyParams)
-     * @see AClasyHillShading.ClasyParams
+     * @see ClasyParams
      */
     public AClasyHillShading(final ClasyParams clasyParams) {
-        super(clasyParams.getReadingThreadsCount(), clasyParams.getComputingThreadsCount(), clasyParams.isHighQuality(), clasyParams.isPreprocess());
+        super(clasyParams.getReadingThreadsCount(), clasyParams.getComputingThreadsCount(), clasyParams.isPreprocess());
 
         mMaxSlope = clasyParams.getMaxSlope();
         mMinSlope = clasyParams.getMinSlope();
@@ -167,7 +170,6 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
         protected volatile double mAsymmetryFactor = AsymmetryFactorDefault;
         protected volatile int mReadingThreadsCount = ReadingThreadsCountDefault;
         protected volatile int mComputingThreadsCount = ComputingThreadsCountDefault;
-        protected volatile boolean mIsHighQuality = IsHighQualityDefault;
         protected volatile boolean mIsPreprocess = IsPreprocessDefault;
 
         public ClasyParams() {
@@ -216,7 +218,7 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
          *                            Zero (0) is not permitted.
          *                            The only time you'd want to set this to 1 is when your data source does not support skipping,
          *                            i.e. the data source is not a file and/or its {@link InputStream#skip(long)} is inefficient.
-         *                            The default is computed as {@code Math.max(1,} {@link #AvailableProcessors} {@code / 3)}.
+         *                            The default is computed as {@code Math.max(1,} {@link #AvailableProcessors}{@code )}.
          */
         public ClasyParams setReadingThreadsCount(final int readingThreadsCount) {
             mReadingThreadsCount = readingThreadsCount;
@@ -233,15 +235,6 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
          */
         public ClasyParams setComputingThreadsCount(final int computingThreadsCount) {
             mComputingThreadsCount = computingThreadsCount;
-            return this;
-        }
-
-        /**
-         * @param highQuality When {@code true}, a unit element is 4x4 data points in size instead of 2x2, for better interpolation capabilities.
-         *                    The default is {@code false}.
-         */
-        public ClasyParams setHighQuality(boolean highQuality) {
-            mIsHighQuality = highQuality;
             return this;
         }
 
@@ -272,10 +265,6 @@ public abstract class AClasyHillShading extends AThreadedHillShading {
 
         public int getComputingThreadsCount() {
             return mComputingThreadsCount;
-        }
-
-        public boolean isHighQuality() {
-            return mIsHighQuality;
         }
 
         public boolean isPreprocess() {

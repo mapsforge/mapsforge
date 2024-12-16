@@ -101,7 +101,12 @@ public class CanvasRasterer {
     }
 
     private void drawHillshading(HillshadingContainer container) {
-        canvas.shadeBitmap(container.bitmap, container.hillsRect, container.tileRect, container.magnitude);
+        final Bitmap bitmap = container.bitmap;
+
+        // Synchronized to prevent concurrent modification by other threads e.g. while merging neighbors
+        synchronized (bitmap.getMutex()) {
+            canvas.shadeBitmap(bitmap, container.hillsRect, container.tileRect, container.magnitude, container.color);
+        }
     }
 
     private void drawPath(ShapePaintContainer shapePaintContainer, Point[][] coordinates, float dy) {

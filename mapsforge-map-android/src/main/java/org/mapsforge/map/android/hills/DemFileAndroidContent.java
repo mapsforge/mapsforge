@@ -20,7 +20,6 @@ import android.content.ContentResolver;
 import org.mapsforge.map.layer.hills.DemFile;
 
 import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -44,11 +43,11 @@ public class DemFileAndroidContent implements DemFile {
     }
 
     @Override
-    public InputStream openInputStream() throws FileNotFoundException {
-        InputStream output = contentResolver.openInputStream(entry.uri);
+    public InputStream openInputStream() throws IOException {
+        InputStream output = rawStream();
 
         if (output != null) {
-            output = new BufferedInputStream(output);
+            output = new BufferedInputStream(output, BufferSize);
         }
 
         return output;
@@ -57,5 +56,20 @@ public class DemFileAndroidContent implements DemFile {
     @Override
     public InputStream asStream() throws IOException {
         return openInputStream();
+    }
+
+    @Override
+    public InputStream asRawStream() throws IOException {
+        InputStream output = rawStream();
+
+        if (output != null) {
+            output = new BufferedInputStream(output, BufferSizeRaw);
+        }
+
+        return output;
+    }
+
+    protected InputStream rawStream() throws IOException {
+        return contentResolver.openInputStream(entry.uri);
     }
 }

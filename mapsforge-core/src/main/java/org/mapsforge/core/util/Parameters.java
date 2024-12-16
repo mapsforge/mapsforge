@@ -2,6 +2,7 @@
  * Copyright 2017-2022 devemux86
  * Copyright 2019 Matthew Egeler
  * Copyright 2020 Lukas Bai
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -49,8 +50,12 @@ public final class Parameters {
 
     /**
      * Use AwtLuminanceShadingComposite or AlphaComposite.
+     * (2024: Deprecated, should not be used)
      */
-    public static boolean LUMINANCE_COMPOSITE = true;
+    public static final boolean LUMINANCE_COMPOSITE = false;
+
+    public static final int HILLSHADING_MAGNITUDE_DEFAULT = 128;
+    public static final int HILLSHADING_COLOR_DEFAULT = 0xff000000;
 
     /**
      * Maximum buffer size for map files.
@@ -63,6 +68,8 @@ public final class Parameters {
      * implementation, maybe one that also takes the available memory into account would be good.
      */
     public static int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors() + 1;
+
+    public static final long MAX_MEMORY_MB = Runtime.getRuntime().maxMemory() / 1000 / 1000;
 
     /**
      * Parent tiles rendering mode.

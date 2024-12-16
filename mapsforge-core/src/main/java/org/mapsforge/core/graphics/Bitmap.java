@@ -1,6 +1,7 @@
 /*
  * Copyright 2010, 2011, 2012, 2013 mapsforge.org
  * Copyright 2016 devemux86
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -19,6 +20,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public interface Bitmap {
+    /**
+     * Can be used to prevent concurrent modification.
+     * On Android this is required.
+     * AWT has a global lock so this isn't necessary (but won't hurt).
+     */
+    Object getMutex();
+
     void compress(OutputStream outputStream) throws IOException;
 
     void decrementRefCount();

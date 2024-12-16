@@ -27,13 +27,16 @@ import java.util.logging.Level;
  * <p>
  * <p>Variations can be created by overriding {@link #exaggerate(double)}</p>
  * <p>
- * Note: For better results and greater flexibility consider using the newer algorithms, {@link StandardClasyHillShading} or {@link HiResStandardClasyHillShading}.
+ * Note: For better results and greater flexibility consider using the newer algorithms, e.g. {@link AdaptiveClasyHillShading}, {@link StandardClasyHillShading} or {@link HiResClasyHillShading}.
  * </p>
  *
+ * @see AdaptiveClasyHillShading
+ * @see HiResClasyHillShading
  * @see StandardClasyHillShading
- * @see HiResStandardClasyHillShading
+ * @see HalfResClasyHillShading
+ * @see QuarterResClasyHillShading
  */
-public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
+public class SimpleShadingAlgorithm extends AShadingAlgorithm {
 
     public final double linearity;
     public final double scale;
@@ -73,8 +76,8 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
     }
 
     @Override
-    public RawShadingResult transformToByteBuffer(HgtCache.HgtFileInfo source, int padding) {
-        final int axisLength = getOutputAxisLen(source);
+    public RawShadingResult transformToByteBuffer(HgtFileInfo source, int padding, int zoomLevel, double pxPerLat, double pxPerLon) {
+        final int axisLength = getOutputAxisLen(source, zoomLevel, pxPerLat, pxPerLon);
         final int rowLen = axisLength + 1;
 
         InputStream map = null;
@@ -85,7 +88,7 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
 
             final byte[] bytes;
             if (map != null) {
-                bytes = convert(map, axisLength, rowLen, padding, source);
+                bytes = convert(map, axisLength, rowLen, padding, zoomLevel, pxPerLat, pxPerLon, source);
             } else {
                 // If stream could not be opened, simply return zeros
                 final int bitmapWidth = axisLength + 2 * padding;
@@ -100,7 +103,7 @@ public class SimpleShadingAlgorithm extends AbsShadingAlgorithmDefaults {
         }
     }
 
-    protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, HgtCache.HgtFileInfo fileInfo) throws IOException {
+    protected byte[] convert(InputStream din, int axisLength, int rowLen, int padding, int zoomLevel, double pxPerLat, double pxPerLon, HgtFileInfo fileInfo) throws IOException {
         final byte[] bytes = new byte[(axisLength + 2 * padding) * (axisLength + 2 * padding)];
         final short[] ringbuffer = new short[rowLen];
 

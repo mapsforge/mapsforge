@@ -3,6 +3,7 @@
  * Copyright 2015 Ludwig M Brinckmann
  * Copyright 2016 devemux86
  * Copyright 2017 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -21,8 +22,8 @@ import org.mapsforge.core.model.Tag;
 import org.mapsforge.core.util.LRUCache;
 import org.mapsforge.core.util.Utils;
 import org.mapsforge.map.datastore.PointOfInterest;
+import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.renderer.PolylineContainer;
-import org.mapsforge.map.layer.renderer.StandardRenderer;
 import org.mapsforge.map.model.DisplayModel;
 import org.mapsforge.map.rendertheme.RenderCallback;
 import org.mapsforge.map.rendertheme.RenderContext;
@@ -44,13 +45,13 @@ public class RenderTheme {
     private final float baseStrokeWidth;
     private final float baseTextSize;
     private final boolean hasBackgroundOutside;
-    private int levels;
+    private volatile int levels;
     private final int mapBackground;
     private final int mapBackgroundOutside;
     private final LRUCache<Integer, RenderInstruction[]> wayMatchingCache;
     private final LRUCache<Integer, RenderInstruction[]> poiMatchingCache;
     private final ArrayList<Rule> rulesList; // NOPMD we need specific interface
-    private ArrayList<Hillshading> hillShadings = new ArrayList<>(); // NOPMD specific interface for trimToSize
+    private final ArrayList<Hillshading> hillShadings = new ArrayList<>(); // NOPMD specific interface for trimToSize
 
     private final Map<Byte, Float> strokeScales = new HashMap<>();
     private final Map<Byte, Float> textScales = new HashMap<>();
@@ -82,6 +83,10 @@ public class RenderTheme {
      */
     public int getLevels() {
         return this.levels;
+    }
+
+    void setLevels(int levels) {
+        this.levels = levels;
     }
 
     /**
@@ -208,10 +213,6 @@ public class RenderTheme {
         }
     }
 
-    void setLevels(int levels) {
-        this.levels = levels;
-    }
-
     private synchronized void matchWay(RenderCallback renderCallback, final RenderContext renderContext, Closed closed, PolylineContainer way) {
         // check cached instructions
         int matchingCacheKey = computeMatchingCacheKey(way.getTags(), way.getUpperLeft().zoomLevel, closed);
@@ -240,9 +241,9 @@ public class RenderTheme {
         }
     }
 
-    public void matchHillShadings(StandardRenderer renderer, RenderContext renderContext) {
+    public void matchHillShadings(RenderContext renderContext, HillsRenderConfig hillsRenderConfig) {
         for (Hillshading hillShading : hillShadings)
-            hillShading.render(renderContext, renderer.hillsRenderConfig);
+            hillShading.render(renderContext, hillsRenderConfig);
     }
 
     private static final int keyCodeName = Utils.hashTagParameter("name");

@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 usrusr
+ * Copyright 2024 Sublimis
  *
  * This program is free software: you can redistribute it and/or modify it under the
  * terms of the GNU Lesser General Public License as published by the Free Software
@@ -36,4 +37,9 @@ public interface HillshadingBitmap extends Bitmap {
      * Optional padding (lies outside of areaRect).
      */
     int getPadding();
+
+    /**
+     * @return Size of this bitmap. [bytes]
+     */
+    long getSizeBytes();
 }

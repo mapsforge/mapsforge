@@ -212,7 +212,7 @@ public final class AndroidGraphicFactory implements GraphicFactory {
     }
 
     @Override
-    public AndroidHillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area) {
+    public AndroidHillshadingBitmap createMonoBitmap(int width, int height, byte[] buffer, int padding, BoundingBox area, int color) {
         AndroidHillshadingBitmap androidBitmap = new AndroidHillshadingBitmap(width + 2 * padding, height + 2 * padding, padding, area);
         if (buffer != null) {
             Buffer b = ByteBuffer.wrap(buffer);
