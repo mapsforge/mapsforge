@@ -110,7 +110,7 @@ public class Tile implements Serializable {
 
     private volatile BoundingBox boundingBox;
     private volatile Point origin;
-    private final Object mSync = new Object();
+    private transient final Object mSync = new Object();
 
     /**
      * @param tileX     the X number of the tile.
