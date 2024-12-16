@@ -8,8 +8,8 @@
 - Multi-map improvements [#1582](https://github.com/mapsforge/mapsforge/pull/1582)
   - `MapDataStore.setPriority`
 - Motorider map theme improvements [#1483](https://github.com/mapsforge/mapsforge/issues/1483)
+- Remove `IMapViewPosition`, use `MapViewPosition` [#1591](https://github.com/mapsforge/mapsforge/pull/1591)
 - Remove `Filter`, use `ThemeCallback` [#1573](https://github.com/mapsforge/mapsforge/pull/1573)
-- Remove `IMapViewPosition` [#1591](https://github.com/mapsforge/mapsforge/pull/1591)
 - Minor improvements and bug fixes
 - [Solved issues](https://github.com/mapsforge/mapsforge/issues?q=is%3Aclosed+milestone%3A0.23.0)
 
