@@ -23,7 +23,7 @@ public class Model implements Persistable {
     public final DisplayModel displayModel = new DisplayModel();
     public final FrameBufferModel frameBufferModel = new FrameBufferModel();
     public final MapViewDimension mapViewDimension = new MapViewDimension();
-    public final IMapViewPosition mapViewPosition = new MapViewPosition(displayModel);
+    public final MapViewPosition mapViewPosition = new MapViewPosition(displayModel);
 
     @Override
     public void init(PreferencesFacade preferencesFacade) {

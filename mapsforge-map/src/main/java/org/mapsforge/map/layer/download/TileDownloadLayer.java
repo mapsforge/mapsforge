@@ -26,7 +26,7 @@ import org.mapsforge.map.layer.TileLayer;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.Observer;
 
 public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observer {
@@ -39,7 +39,7 @@ public class TileDownloadLayer extends TileLayer<DownloadJob> implements Observe
     private TileDownloadThread[] tileDownloadThreads;
     private final TileSource tileSource;
 
-    public TileDownloadLayer(TileCache tileCache, IMapViewPosition mapViewPosition, TileSource tileSource,
+    public TileDownloadLayer(TileCache tileCache, MapViewPosition mapViewPosition, TileSource tileSource,
                              GraphicFactory graphicFactory) {
         super(tileCache, mapViewPosition, graphicFactory.createMatrix(), tileSource.hasAlpha());
 

@@ -36,7 +36,7 @@ import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.cache.TwoLevelTileCache;
 import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.scalebar.DefaultMapScaleBar;
 import org.mapsforge.map.scalebar.DistanceUnitAdapter;
@@ -230,7 +230,7 @@ public final class AndroidUtil {
      * @return the layer
      */
     public static TileRendererLayer createTileRendererLayer(
-            TileCache tileCache, IMapViewPosition mapViewPosition,
+            TileCache tileCache, MapViewPosition mapViewPosition,
             MapDataStore mapFile, XmlRenderTheme renderTheme) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
                 mapViewPosition, AndroidGraphicFactory.INSTANCE);
@@ -251,7 +251,7 @@ public final class AndroidUtil {
      * @return the layer
      */
     public static TileRendererLayer createTileRendererLayer(
-            TileCache tileCache, IMapViewPosition mapViewPosition,
+            TileCache tileCache, MapViewPosition mapViewPosition,
             MapDataStore mapFile, XmlRenderTheme renderTheme, boolean hasAlpha,
             boolean renderLabels, boolean cacheLabels) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,
@@ -274,7 +274,7 @@ public final class AndroidUtil {
      * @return the layer
      */
     public static TileRendererLayer createTileRendererLayer(
-            TileCache tileCache, IMapViewPosition mapViewPosition,
+            TileCache tileCache, MapViewPosition mapViewPosition,
             MapDataStore mapFile, XmlRenderTheme renderTheme, boolean hasAlpha,
             boolean renderLabels, boolean cacheLabels, HillsRenderConfig hillsRenderConfig) {
         TileRendererLayer tileRendererLayer = new TileRendererLayer(tileCache, mapFile,

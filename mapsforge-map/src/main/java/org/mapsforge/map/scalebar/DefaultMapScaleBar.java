@@ -20,8 +20,8 @@ package org.mapsforge.map.scalebar;
 
 import org.mapsforge.core.graphics.*;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.IMapViewPosition;
 import org.mapsforge.map.model.MapViewDimension;
+import org.mapsforge.map.model.MapViewPosition;
 
 /**
  * Displays the default MapScaleBar.
@@ -46,12 +46,12 @@ public class DefaultMapScaleBar extends MapScaleBar {
     protected final Paint paintScaleText;
     protected final Paint paintScaleTextStroke;
 
-    public DefaultMapScaleBar(IMapViewPosition mapViewPosition, MapViewDimension mapViewDimension,
+    public DefaultMapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension,
                               GraphicFactory graphicFactory, DisplayModel displayModel) {
         this(mapViewPosition, mapViewDimension, graphicFactory, displayModel, displayModel.getScaleFactor());
     }
 
-    public DefaultMapScaleBar(IMapViewPosition mapViewPosition, MapViewDimension mapViewDimension,
+    public DefaultMapScaleBar(MapViewPosition mapViewPosition, MapViewDimension mapViewDimension,
                               GraphicFactory graphicFactory, DisplayModel displayModel, float scale) {
         super(mapViewPosition, mapViewDimension, displayModel, graphicFactory, (int) (BITMAP_WIDTH * scale), (int) (BITMAP_HEIGHT * scale), scale);
 

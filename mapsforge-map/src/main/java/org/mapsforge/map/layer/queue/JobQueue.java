@@ -17,7 +17,7 @@
 package org.mapsforge.map.layer.queue;
 
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.model.MapViewPosition;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -29,11 +29,11 @@ public class JobQueue<T extends Job> {
     private final List<T> assignedJobs = new LinkedList<>();
     private final DisplayModel displayModel;
     private boolean isInterrupted;
-    private final IMapViewPosition mapViewPosition;
+    private final MapViewPosition mapViewPosition;
     private final List<QueueItem<T>> queueItems = new LinkedList<>();
     private boolean scheduleNeeded;
 
-    public JobQueue(IMapViewPosition mapViewPosition, DisplayModel displayModel) {
+    public JobQueue(MapViewPosition mapViewPosition, DisplayModel displayModel) {
         this.mapViewPosition = mapViewPosition;
         this.displayModel = displayModel;
     }

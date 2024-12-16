@@ -29,7 +29,7 @@ import org.mapsforge.map.layer.hills.HillsRenderConfig;
 import org.mapsforge.map.layer.labels.LabelStore;
 import org.mapsforge.map.layer.labels.TileBasedLabelStore;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.rendertheme.XmlRenderTheme;
 import org.mapsforge.map.rendertheme.rule.RenderThemeFuture;
@@ -55,7 +55,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
      * @param mapViewPosition the mapViewPosition to know which tiles to render
      * @param graphicFactory  the graphicFactory to carry out platform specific operations
      */
-    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, IMapViewPosition mapViewPosition,
+    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition,
                              GraphicFactory graphicFactory) {
         this(tileCache, mapDataStore, mapViewPosition, false, true, false, graphicFactory);
     }
@@ -71,7 +71,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
      * @param cacheLabels     true if labels should be cached in a LabelStore
      * @param graphicFactory  the graphicFactory to carry out platform specific operations
      */
-    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, IMapViewPosition mapViewPosition,
+    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition,
                              boolean isTransparent, boolean renderLabels, boolean cacheLabels,
                              GraphicFactory graphicFactory) {
         this(tileCache, mapDataStore, mapViewPosition, isTransparent, renderLabels, cacheLabels, graphicFactory, null);
@@ -89,7 +89,7 @@ public class TileRendererLayer extends TileLayer<RendererJob> implements Observe
      * @param graphicFactory    the graphicFactory to carry out platform specific operations
      * @param hillsRenderConfig the hillshading setup to be used (can be null)
      */
-    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, IMapViewPosition mapViewPosition,
+    public TileRendererLayer(TileCache tileCache, MapDataStore mapDataStore, MapViewPosition mapViewPosition,
                              boolean isTransparent, boolean renderLabels, boolean cacheLabels,
                              GraphicFactory graphicFactory, HillsRenderConfig hillsRenderConfig) {
         super(tileCache, mapViewPosition, graphicFactory.createMatrix(), isTransparent);

@@ -18,12 +18,11 @@
 package org.mapsforge.samples.android.cluster;
 
 import android.widget.Toast;
-
 import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.core.model.LatLong;
 import org.mapsforge.core.model.Point;
 import org.mapsforge.map.model.DisplayModel;
-import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.model.common.Observer;
 import org.mapsforge.map.view.MapView;
 
@@ -215,11 +214,11 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
                     Point ptCenter = mapView.getMapViewProjection().toPixels(gpCenter);
                     // find a cluster which contains the marker.
                     if (pos.distance(ptCenter) <= GRIDSIZE
-                    /*
-                     * pos.x >= ptCenter.x - GRIDSIZE && pos.x <= ptCenter.x +
-                     * GRIDSIZE && pos.y >= ptCenter.y - GRIDSIZE && pos.y <=
-                     * ptCenter.y + GRIDSIZE
-                     */) {
+                        /*
+                         * pos.x >= ptCenter.x - GRIDSIZE && pos.x <= ptCenter.x +
+                         * GRIDSIZE && pos.y >= ptCenter.y - GRIDSIZE && pos.y <=
+                         * ptCenter.y + GRIDSIZE
+                         */) {
                         mCluster.addItem(item);
                         return;
                     }
@@ -351,7 +350,7 @@ public class ClusterManager<T extends GeoItem> implements Observer, SelectionHan
             resetViewport(false);
         } else {
             // react on position changes
-            IMapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
+            MapViewPosition mapViewPosition = mapView.getModel().mapViewPosition;
 
             Point posOld = mapView.getMapViewProjection().toPixels(oldCenterLatLong);
             Point posNew = mapView.getMapViewProjection().toPixels(mapViewPosition.getCenter());

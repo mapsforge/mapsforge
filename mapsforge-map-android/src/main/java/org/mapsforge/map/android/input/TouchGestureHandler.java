@@ -34,7 +34,7 @@ import org.mapsforge.core.util.Parameters;
 import org.mapsforge.map.android.view.MapView;
 import org.mapsforge.map.layer.Layer;
 import org.mapsforge.map.layer.Layers;
-import org.mapsforge.map.model.IMapViewPosition;
+import org.mapsforge.map.model.MapViewPosition;
 
 /**
  * Central handling of touch gestures.
@@ -123,7 +123,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
             case MotionEvent.ACTION_UP:
                 // Quick scale in between (cancel double tap)
                 if (this.isInDoubleTap) {
-                    IMapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
+                    MapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
                     if (this.doubleTapEnabled && mapViewPosition.getZoomLevel() < mapViewPosition.getZoomLevelMax()) {
                         if (Parameters.FRACTIONAL_ZOOM) {
                             this.mapView.onZoomEvent();
@@ -291,7 +291,7 @@ public class TouchGestureHandler extends GestureDetector.SimpleOnGestureListener
                     zoomLevelDiff = (byte) Math.round(zoomLevelOffset < 0 ? Math.floor(zoomLevelOffset) : Math.ceil(zoomLevelOffset));
                 }
 
-                IMapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
+                MapViewPosition mapViewPosition = this.mapView.getModel().mapViewPosition;
                 if (zoomLevelDiff != 0 && pivot != null) {
                     // Zoom with focus
                     double moveHorizontal = 0, moveVertical = 0;
